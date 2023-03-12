@@ -282,6 +282,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 						if(npc.m_iWearable1 == -1)
 						{
+							
+							Change_Npc_Collision(npc.index, 3);
 							npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_grenade.mdl");
 							SetVariantString("1.2");
 							AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
