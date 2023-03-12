@@ -367,12 +367,12 @@ public void Ikunagae_ClotThink(int iNPC)
 			if(fl_Spin_To_Win_Ability_Timer[npc.index] < GetGameTime(npc.index))
 			{
 				clearance[npc.index] = false;
-				fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 15.0;	//retry in 15 seconds
+				fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 12.5;	//retry in 12.5 seconds
 				Spin_To_Win_Clearance_Check(npc.index);
 				if(clearance[npc.index])
 				{
 					fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 120.0;
-					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 12.5;
+					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 30.0;
 					
 					Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
 				}
@@ -383,7 +383,7 @@ public void Ikunagae_ClotThink(int iNPC)
 			if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
 			{
 				fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + 60.0;
-				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 7.5;
+				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 12.5;
 				Scaramouche_Activate(npc.index);
 			}
 		}
@@ -447,7 +447,7 @@ public void Ikunagae_ClotThink(int iNPC)
 				if(flDistanceToTarget < 202500 && npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 				{
 					npc.PlayPullSound();
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
 					npc.AddGesture("ACT_MP_THROW");
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -815,7 +815,7 @@ public Action Spin_To_Win_TBB_Tick(int client)
 		fl_Spin_to_win_Angle[npc.index] = 0.0;
 	}
 	int testing = i_spin_to_win_Severity[npc.index];
-	if(i_spin_to_win_throttle[npc.index]>10)//Very fast
+	if(i_spin_to_win_throttle[npc.index]>15)//Very fast
 	{
 		i_spin_to_win_throttle[npc.index] = 0;
 		if(b_spin_to_win_Alternate[npc.index])
@@ -1098,65 +1098,63 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	else if(Health_Current>80)
 	{
 		i_Severity_Barrage[npc.index] = 8;
-		fl_Severity_Scaramouche[npc.index] = 2.8;
+		fl_Severity_Scaramouche[npc.index] = 2.9;
 	}
 	else if(Health_Current>70)
 	{
 		i_Severity_Spin_To_Win[npc.index] = 3;
 		i_Severity_Barrage[npc.index] = 10;
-		fl_Severity_Scaramouche[npc.index] = 2.6;
+		fl_Severity_Scaramouche[npc.index] = 2.85;
 	}
 	else if(Health_Current>60)
 	{
 		i_Severity_Barrage[npc.index] = 12;
-		fl_Severity_Scaramouche[npc.index] = 2.4;
+		fl_Severity_Scaramouche[npc.index] = 2.8;
 		i_Severity_Spin_To_Win[npc.index] = 4;
 	}
 	else if(Health_Current>50)
 	{
-		i_Severity_Spin_To_Win[npc.index] = 5;
-		i_Severity_Barrage[npc.index] = 14;
-		fl_Severity_Scaramouche[npc.index] = 2.2;
+		i_Severity_Spin_To_Win[npc.index] = 4;
+		i_Severity_Barrage[npc.index] = 12;
+		fl_Severity_Scaramouche[npc.index] = 2.75;
 		Spin_To_Win_Damage_Multi[npc.index] = 2;
 	}
 	else if(Health_Current>40)
 	{
-		i_Severity_Spin_To_Win[npc.index] = 3;
+		i_Severity_Spin_To_Win[npc.index] = 2;
 		b_Severity_Spin_To_Win[npc.index] = true;
-		i_Severity_Barrage[npc.index] = 16;
-		fl_Severity_Scaramouche[npc.index] = 1.5;
+		i_Severity_Barrage[npc.index] = 13;
+		fl_Severity_Scaramouche[npc.index] = 2.70;
 	}
 	else if(Health_Current>30)
 	{
 		Spin_To_Win_Damage_Multi[npc.index] = 3;
-		i_Severity_Barrage[npc.index] = 18;
-		fl_Severity_Scaramouche[npc.index] = 1.15;
+		i_Severity_Barrage[npc.index] = 13;
+		fl_Severity_Scaramouche[npc.index] = 2.60;
 	}
 	else if(Health_Current>20)
 	{
-		Spin_To_Win_Damage_Multi[npc.index] = 4;
+		Spin_To_Win_Damage_Multi[npc.index] = 6;
 		i_Severity_Spin_To_Win[npc.index] = 4;
-		fl_Severity_Scaramouche[npc.index] = 2.0;
-		fl_Severity_Scaramouche[npc.index] = 2.0;
-		i_Severity_Barrage[npc.index] = 20;
+		fl_Severity_Scaramouche[npc.index] = 2.25;
+		i_Severity_Barrage[npc.index] = 14;
 	}
 	else if(Health_Current>10)
 	{
-		fl_Severity_Scaramouche[npc.index] = 0.75;
-		Spin_To_Win_Damage_Multi[npc.index] = 5;
-		i_Severity_Barrage[npc.index] = 22;
+		fl_Severity_Scaramouche[npc.index] = 1.75;
+		Spin_To_Win_Damage_Multi[npc.index] = 6;
+		i_Severity_Barrage[npc.index] = 16;
 	}
 	else	// THATS IT YOU FUCKERS
 	{
 		fl_Severity_Scaramouche[npc.index] = 0.5;
 		Spin_To_Win_Damage_Multi[npc.index] = 6;
 		i_Severity_Barrage[npc.index] = 24;
-		i_Severity_Spin_To_Win[npc.index] = 5;
 	}
 	
 	if((ZR_GetWaveCount()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
 	{
-		i_Severity_Barrage[npc.index] = 8;
+		i_Severity_Barrage[npc.index] = 4;
 	}
 }
 
