@@ -115,15 +115,6 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
-	
-	if(!Waves_InSetup() && GetEntProp(iNPC, Prop_Data, "m_iHealth") > 1100000 || Waves_GetRound() > 60)
-	{
-		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
-	}
-	else
-	{
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-	}
 
 	if(Waves_InSetup())
 	{
@@ -135,6 +126,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 		i_PlayMusicSound = 0;
 		npc.m_bPlayingSniper = false;
+		b_NpcIsInvulnerable[npc.index] = true;
 		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
 		return;
 	}
@@ -167,6 +159,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	b_NpcIsInvulnerable[npc.index] = false;
+
 	if(npc.m_iTarget > 0 && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 	{
 		npc.m_iTarget = 0;
@@ -175,41 +169,41 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 	if(npc.m_iSurrender)
 	{
-		if(!Waves_InSetup())
+		if(Waves_InSetup())
 		{
 			npc.m_flNextThinkTime = gameTime + 2.5;
 
 			switch(npc.m_iSurrender++)
 			{
-				case 2:	// 0.0
+				case 1:	// 0.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: What are you waiting for...");
 				}
-				case 4:	// 5.0
+				case 3:	// 5.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: ...");
 				}
-				case 6:	// 10.0
+				case 5:	// 10.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is already the end for me...");
 				}
-				case 8:	// 15.0
+				case 7:	// 15.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Why are you saving me..?");
 				}
-				case 10:	// 20.0
+				case 9:	// 20.0
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Oh I see...");
 				}
-				case 11:	// 22.5
+				case 10:	// 22.5
 				{
 					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just promise me one thing.");
 				}
-				case 12:	// 25.0
+				case 11:	// 25.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
+					CPrintToChatAll("{blue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
 				}
-				case 13:	// 27.5
+				case 12:	// 27.5
 				{
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
@@ -218,8 +212,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
-							GiveNamedItem(client, "The Blue Goggles");
-							CPrintToChat(client, "{default}You gained his favor, you obtained: {blue}''The Blue Goggles''{default}!");
+							GiveNamedItem(client, "Blue Goggles");
+							CPrintToChat(client, "{default}You gained his favor, you obtained: {blue}''Blue Goggles''{default}!");
 						}
 					}
 				}
@@ -528,7 +522,6 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 
 	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 1100000 && Waves_GetRound() < 59)
 	{
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
 		npc.m_bisWalking = false;
@@ -564,14 +557,7 @@ public Action StalkerGoggles_ClotDamaged(int victim, int &attacker, int &inflict
 	npc.m_iChaseAnger = 14;
 
 	if(!Waves_InSetup())
-	{
-		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		return Plugin_Changed;
-	}
-	else
-	{
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-	}
 	
 	damage = 0.0;
 	return Plugin_Handled;

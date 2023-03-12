@@ -9,7 +9,7 @@ public void Weapon_Anti_Material_Rifle(int client, int weapon, const char[] clas
 
 public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 {
-	if(HasNamedItem(client, "The Blue Goggles"))
+	if(HasNamedItem(client, "Blue Goggles"))
 	{
 		TF2_AddCondition(client, TFCond_MiniCritOnKill);
 	}

@@ -47,7 +47,6 @@ methodmap StalkerFather < StalkerShared
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
-
 		Zero(fl_AlreadyStrippedMusic);
 
 		npc.m_iState = -1;
@@ -69,18 +68,15 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup() && Waves_GetRound() > 29)
+	if(!b_NpcIsInvulnerable[npc.index] && !Waves_InSetup() && Waves_GetRound() > 29)
 	{
-		if(b_NpcIsInvulnerable[npc.index])
-		{
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
-		}
-		npc.m_bmovedelay = false;
+		// Vulnerable pass Wave 30
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 	}
-	else if(!b_NpcIsInvulnerable[npc.index])
+	else if(b_NpcIsInvulnerable[npc.index])
 	{
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 	}
 
@@ -138,26 +134,6 @@ public void StalkerFather_ClotThink(int iNPC)
 	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 	if(npc.m_bChaseAnger && npc.CanSeeEnemy())
 	{
-		float engineTime = GetEngineTime();
-
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				GetClientAbsOrigin(client, LastKnownPos);
-				if(GetVectorDistance(vecMe, LastKnownPos, true) < 2000000.0)
-				{
-					if(fl_AlreadyStrippedMusic[client] < engineTime)
-						Music_Stop_All(client);
-					
-					SetMusicTimer(client, GetTime() + 5);
-					fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
-				}
-			}
-		}
-		
-		npc.PlayMusicSound();
-
 		LastKnownPos = WorldSpaceCenter(npc.m_iTarget);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		
@@ -229,7 +205,6 @@ public void StalkerFather_ClotThink(int iNPC)
 			case -1:
 			{
 				npc.StopPathing();
-				return;
 			}
 			case 0:
 			{
@@ -270,6 +245,27 @@ public void StalkerFather_ClotThink(int iNPC)
 			}
 		}
 	}
+
+	float engineTime = GetEngineTime();
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			static float pos[3];
+			GetClientAbsOrigin(client, pos);
+			if(GetVectorDistance(vecMe, pos, true) < 2000000.0)
+			{
+				if(fl_AlreadyStrippedMusic[client] < engineTime)
+					Music_Stop_All(client);
+				
+				SetMusicTimer(client, GetTime() + 5);
+				fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
+			}
+		}
+	}
+	
+	npc.PlayMusicSound();
 }
 
 public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -316,14 +312,7 @@ public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflicto
 	damage *= 15.0 / float(PlayersInGame);
 
 	if(!Waves_InSetup() && Waves_GetRound() > 29)
-	{
-		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		return Plugin_Changed;
-	}
-	else
-	{
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-	}
 	
 	damage = 0.0;
 	return Plugin_Handled;
