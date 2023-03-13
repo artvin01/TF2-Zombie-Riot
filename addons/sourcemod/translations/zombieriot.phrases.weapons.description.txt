@@ -35,9 +35,7 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage"
-		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона."
-		"chi"       "昂贵的超级升级，每5颗子弹将造成大量伤害"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
 	}
 	"Sniper Rifle Pap 4"
 	{

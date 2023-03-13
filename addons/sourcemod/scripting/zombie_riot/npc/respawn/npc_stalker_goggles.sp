@@ -94,6 +94,11 @@ methodmap StalkerGoggles < StalkerShared
 		i_Wearable[npc.index][0] = entity;
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/pyrovision_goggles_sniper.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
+
+		float flPos[3], flAng[3];
+		npc.GetAttachment("head", flPos, flAng);
+		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
+		
 		return npc;
 	}
 	property bool m_bPlayingSniper	// Since these wave files correctly loop themselves
@@ -584,4 +589,7 @@ void StalkerGoggles_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 }

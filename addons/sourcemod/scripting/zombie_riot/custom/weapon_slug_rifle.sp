@@ -11,11 +11,6 @@ public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 {
 	if(HasNamedItem(client, "Blue Goggles"))
 	{
-		TF2_AddCondition(client, TFCond_MiniCritOnKill);
+		TF2Attrib_SetByDefIndex(weapon, 304, 1.1);
 	}
-}
-
-public void Weapon_Anti_Material_Holster(int client)
-{
-	TF2_RemoveCondition(client, TFCond_MiniCritOnKill);
 }
