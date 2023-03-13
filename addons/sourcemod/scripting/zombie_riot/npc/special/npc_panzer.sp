@@ -70,7 +70,7 @@ public void NaziPanzer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSoundCustom(g_AngerSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_GrappleSound));   i++) { PrecacheSound(g_GrappleSound[i]);   }
+	for (int i = 0; i < (sizeof(g_GrappleSound));   i++) { PrecacheSoundCustom(g_GrappleSound[i]);   }
 	for (int i = 0; i < (sizeof(g_FlameSounds));   i++) { PrecacheSound(g_FlameSounds[i]);   }
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");

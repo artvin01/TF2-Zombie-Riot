@@ -34,8 +34,7 @@ void EscapeSentryHat_ApplyBuidingIcon(int client, bool ignore = false)
 			BuildingIconShown[client] = true;
 			TF2_AddCondition(client, TFCond_RuneStrength, -1.0);
 			//hide powerup icon.
-			SetVariantString("ParticleEffectStop");
-			AcceptEntityInput(client, "DispatchEffect"); 
+			CreateTimer(0.5, RemoveStrengthPowerup, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
 		bool DoSentryCheck = false;
@@ -184,6 +183,19 @@ public Action Event_player_builtobject(Handle event, const char[] name, bool don
 	}
 	return Plugin_Continue;
 }
+
+public Action RemoveStrengthPowerup(Handle sentryHud, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if (IsClientConnected(client) && IsPlayerAlive(client))
+	{
+		//SEE IF CRASHES STOPPED!
+		SetVariantString("ParticleEffectStop");
+		AcceptEntityInput(client, "DispatchEffect"); 
+	}
+	return Plugin_Stop;
+}
+
 
 public Action Check_If_Owner_Dead(Handle sentryHud, int ref)
 {

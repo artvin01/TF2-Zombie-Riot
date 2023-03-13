@@ -2625,7 +2625,7 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-int HitEntitiesSphereExplosionTrace[MAXENTITIES];
+int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 
 stock void Explode_Logic_Custom(float damage,
@@ -2733,10 +2733,10 @@ float dmg_against_entity_multiplier = 3.0)
 	}
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{
-		if (HitEntitiesSphereExplosionTrace[entity_traced])
+		if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
 		{
-			VicPos[HitEntitiesSphereExplosionTrace[entity_traced]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced]);
-			distance[HitEntitiesSphereExplosionTrace[entity_traced]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced]], spawnLoc, true);
+			VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]);
+			distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
 			//Save their distances.
 		}
 	}
@@ -2750,22 +2750,22 @@ float dmg_against_entity_multiplier = 3.0)
 		int indexTraced;
 		for (int entity_traced = 0; entity_traced <= maxtargetshit; entity_traced++)
 		{
-			if (HitEntitiesSphereExplosionTrace[entity_traced])
+			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
 			{
 				if( ClosestDistance ) 
 				{
-					if( distance[HitEntitiesSphereExplosionTrace[entity_traced]] < ClosestDistance ) 
+					if( distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] < ClosestDistance ) 
 					{
 						indexTraced = entity_traced;
-						ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced]; 
-						ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced]];  
+						ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
+						ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];  
 					}
 				} 
 				else 
 				{
 					indexTraced = entity_traced;
-					ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced]; 
-					ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced]];
+					ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
+					ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];
 				}	
 			}
 		}
@@ -2813,7 +2813,7 @@ float dmg_against_entity_multiplier = 3.0)
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
 		}
-		HitEntitiesSphereExplosionTrace[indexTraced] = false; //we will need to filter them out entirely now, we did dmg, and thus, its done!
+		HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom] = false; //we will need to filter them out entirely now, we did dmg, and thus, its done!
 		ClosestTarget = false;
 		ClosestDistance = 0.0;
 		indexTraced = false;
@@ -3049,7 +3049,11 @@ float dmg_against_entity_multiplier = 3.0)
 
 void DoExlosionTraceCheck(const float pos1[3], float radius, int entity)
 {
-	Zero(HitEntitiesSphereExplosionTrace);
+//	Zero(HitEntitiesSphereExplosionTrace);
+	for(int i=0; i < MAXENTITIES; i++)
+	{
+		HitEntitiesSphereExplosionTrace[i][entity] = false;
+	}
 //	MaxEntitiesToHit = maxentities;
 	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, entity);
 	//It does all needed logic here.
@@ -3062,9 +3066,9 @@ public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filte
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
 		for(int i=0; i < MAXENTITIES; i++)
 		{
-			if(!HitEntitiesSphereExplosionTrace[i])
+			if(!HitEntitiesSphereExplosionTrace[i][filterentity])
 			{
-				HitEntitiesSphereExplosionTrace[i] = entity;
+				HitEntitiesSphereExplosionTrace[i][filterentity] = entity;
 				break;
 			}
 			/*
