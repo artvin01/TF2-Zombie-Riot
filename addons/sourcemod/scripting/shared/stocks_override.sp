@@ -420,3 +420,5 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 }
 
 #define TF2_SetPlayerClass SetPlayerClass*/
+
+#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks

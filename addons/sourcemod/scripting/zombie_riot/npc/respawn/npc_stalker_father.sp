@@ -7,6 +7,7 @@ static int i_PlayMusicSound;
 void StalkerFather_MapStart()
 {
 	PrecacheSound("#music/radio1.mp3");
+	PrecacheModel("models/zombie/monk_combine.mdl");
 }
 
 methodmap StalkerFather < StalkerShared

@@ -16,7 +16,7 @@ enum struct WeaponData
 
 static ArrayList WeaponList;
 
-public void Configs_ConfigsExecuted()
+void Configs_ConfigsExecuted()
 {
 	char buffer[PLATFORM_MAX_PATH];
 	KeyValues kv;
@@ -59,6 +59,7 @@ public void Configs_ConfigsExecuted()
 		}
 	}
 	
+	FileNetwork_ConfigSetup(kv);
 	
 #if defined ZR
 	Store_ConfigSetup();

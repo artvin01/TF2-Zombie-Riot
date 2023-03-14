@@ -17,6 +17,22 @@ static char g_KillSounds[][] =
 	"cof/purnell/kill4.mp3"
 };
 
+void Doctor_MapStart()
+{
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_KillSounds));	   i++) { PrecacheSoundCustom(g_KillSounds[i]);	   }
+	PrecacheSoundCustom("cof/purnell/death.mp3");
+	PrecacheSoundCustom("cof/purnell/intro.mp3");
+	PrecacheSoundCustom("cof/purnell/converted.mp3");
+	PrecacheSoundCustom("cof/purnell/reload.mp3");
+	PrecacheSoundCustom("cof/purnell/shoot.mp3");
+	PrecacheSoundCustom("cof/purnell/shove.mp3");
+	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
+	PrecacheSoundCustom("cof/purnell/buff.mp3");
+
+	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
+}
+
 methodmap Doctor < CClotBody
 {
 	public void PlayHurtSound()
@@ -25,49 +41,45 @@ methodmap Doctor < CClotBody
 			return;
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("cof/purnell/death.mp3");
-		EmitSoundToAll("cof/purnell/death.mp3");
+		EmitCustomToAll("cof/purnell/death.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayIntroSound()
 	{
-		EmitSoundToAll("cof/purnell/intro.mp3");
-		EmitSoundToAll("cof/purnell/intro.mp3");
+		EmitCustomToAll("cof/purnell/intro.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayFriendlySound()
 	{
-		EmitSoundToAll("cof/purnell/converted.mp3");
-		EmitSoundToAll("cof/purnell/converted.mp3");
+		EmitCustomToAll("cof/purnell/converted.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayReloadSound()
 	{
-		EmitSoundToAll("cof/purnell/reload.mp3", this.index);
-		EmitSoundToAll("cof/purnell/reload.mp3", this.index);
+		EmitCustomToAll("cof/purnell/reload.mp3", this.index, _, _, _, 2.0);
 	}
 	public void PlayShootSound()
 	{
-		EmitSoundToAll("cof/purnell/shoot.mp3", this.index);
+		EmitCustomToAll("cof/purnell/shoot.mp3", this.index);
 	}
 	public void PlayMeleeSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitSoundToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_VOICE);
+		EmitCustomToAll("cof/purnell/shove.mp3", this.index, SNDCHAN_VOICE);
 	}
 	public void PlayHitSound()
 	{
-		EmitSoundToAll("cof/purnell/meleehit.mp3", this.index);
+		EmitCustomToAll("cof/purnell/meleehit.mp3", this.index);
 	}
 	public void PlayKillSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		EmitSoundToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
+		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	public void PlayBuffSound(int entity)
 	{
-		EmitSoundToAll("cof/purnell/buff.mp3", entity);
+		EmitCustomToAll("cof/purnell/buff.mp3", entity);
 	}
 	
 	public Doctor(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)

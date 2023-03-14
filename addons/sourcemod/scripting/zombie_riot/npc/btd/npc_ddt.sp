@@ -77,23 +77,7 @@ static int MoabHealth(bool fortified)
 
 void DDT_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap DDT < CClotBody
@@ -112,17 +96,17 @@ methodmap DDT < CClotBody
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
-		EmitSoundToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabPop) - 1);
-		EmitSoundToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public int UpdateBloonOnDamage()
 	{

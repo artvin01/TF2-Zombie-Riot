@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define FORCE_BLOON_ENABLED
+#define FORCE_BLOON_ENABLED
 
 enum
 {
@@ -154,37 +154,26 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
 	char buffer[256];
 	for(int i; i<sizeof(SoundCeramicHit); i++)
 	{
-		PrecacheSound(SoundCeramicHit[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundCeramicHit[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundCeramicHit[i]);
 	}
 	for (int i = 0; i < (sizeof(SoundCeramicPop));   i++)
 	{
-		PrecacheSound(SoundCeramicPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundCeramicPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundCeramicPop[i]);
 	}
 	for(int i; i<sizeof(SoundLead); i++)
 	{
-		PrecacheSound(SoundLead[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundLead[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundLead[i]);
 	}
 	for(int i; i<sizeof(SoundPop); i++)
 	{
-		PrecacheSound(SoundPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundPop[i]);
 	}
 	for(int i; i<sizeof(SoundPurple); i++)
 	{
-		PrecacheSound(SoundPurple[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundPurple[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundPurple[i]);
 	}
 	
 	static const char Properties[][] = { "", "f", "fg", "g" };
@@ -197,10 +186,6 @@ void Bloon_MapStart()
 		{
 			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%s.vmt", BloonSprites[i], Properties[a]);
 			PrecacheModel(buffer);
-			AddFileToDownloadsTable(buffer);
-			
-			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%s.vtf", BloonSprites[i], Properties[a]);
-			AddFileToDownloadsTable(buffer);
 		}
 	}
 	
@@ -210,19 +195,10 @@ void Bloon_MapStart()
 		{
 			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%d%s.vmt", BloonSprites[Bloon_Ceramic], a, Properties[i]);
 			PrecacheModel(buffer);
-			AddFileToDownloadsTable(buffer);
-			
-			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%d%s.vtf", BloonSprites[Bloon_Ceramic], a, Properties[i]);
-			AddFileToDownloadsTable(buffer);
 		}
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.vvd");
-	#endif
 }
 
 static int BType[MAXENTITIES];
@@ -302,33 +278,29 @@ methodmap Bloon < CClotBody
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
-		EmitSoundToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayPurpleSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundPurple) - 1);
-		EmitSoundToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundCeramicHit) - 1);
-		EmitSoundToAll(SoundCeramicHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundCeramicHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		if(this.m_iType == Bloon_Ceramic)
 		{
 			int sound = GetRandomInt(0, sizeof(SoundCeramicPop) - 1);
-			EmitSoundToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitCustomToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 3.0);
 		}
 		else
 		{
 			int sound = GetRandomInt(0, sizeof(SoundPop) - 1);
-			EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitCustomToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 3.0);
 		}
 	}
 	public int UpdateBloonInfo()

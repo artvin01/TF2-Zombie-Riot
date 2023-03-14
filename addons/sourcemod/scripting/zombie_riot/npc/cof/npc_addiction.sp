@@ -35,11 +35,18 @@ static char g_MeleeMissSounds[][] =
 	"weapons/cbar_miss1.wav",
 };
 
-public void Addiction_OnMapStart_NPC()
+void Addiction_OnMapStart_NPC()
 {
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_PassiveSounds));	   i++) { PrecacheSoundCustom(g_PassiveSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_ThunderSounds));	   i++) { PrecacheSoundCustom(g_ThunderSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));	   i++) { PrecacheSound(g_MeleeMissSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	   i++) { PrecacheSound(g_MeleeHitSounds[i]);	   }
+	PrecacheSoundCustom("cof/addiction/death.mp3");
+
+	PrecacheModel("models/zombie_riot/aom/david_monster.mdl");
 }
+
 methodmap Addicition < CClotBody
 {
 	public void PlayIdleSound()
@@ -48,7 +55,7 @@ methodmap Addicition < CClotBody
 			return;
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + 3.5;
-		EmitSoundToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
+		EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
 	}
 	public void PlayHurtSound()
 	{
@@ -57,7 +64,7 @@ methodmap Addicition < CClotBody
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -70,24 +77,11 @@ methodmap Addicition < CClotBody
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("cof/addiction/death.mp3");
-		EmitSoundToAll("cof/addiction/death.mp3");
-	}
-	public void PlayIntroSound()
-	{
-		EmitSoundToAll("cof/simon/Intro.mp3");
-		EmitSoundToAll("cof/simon/Intro.mp3");
-	}
-	public void PlayAttackSound()
-	{
-		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		EmitSoundToAll("cof/simon/attack.mp3", this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll("cof/addiction/death.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayLightningSound()
 	{
-		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, 3.0);
 	}
 	
 	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
@@ -439,7 +433,7 @@ public void Addicition_ClotThink(int iNPC)
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.PlayAttackSound();
+					//npc.PlayAttackSound();
 					npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.43;
 					npc.m_flAttackHappenswillhappen = true;

@@ -50,6 +50,15 @@ static int SpriteNumber()
 	}
 }
 
+void GoldBloon_MapStart()
+{
+	for(int i; i<sizeof(SoundHit); i++)
+	{
+		PrecacheSoundCustom(SoundHit[i]);
+	}
+	PrecacheSound("zombie_riot/btd/popgolden.wav");
+}
+
 methodmap GoldBloon < CClotBody
 {
 	property int m_iSprite
@@ -66,23 +75,21 @@ methodmap GoldBloon < CClotBody
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
-		EmitSoundToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayPurpleSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundPurple) - 1);
-		EmitSoundToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundHit) - 1);
-		EmitSoundToAll(SoundHit[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-		EmitSoundToAll(SoundHit[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundHit[sound], this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 1.0);
-		EmitSoundToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
@@ -215,7 +222,7 @@ public void GoldBloon_ClotThink(int iNPC)
 				}
 			}
 			
-			if(alive < total / 2)
+			if(alive < (total / 2))
 			{
 				SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9, DMG_SLASH);
 				return;

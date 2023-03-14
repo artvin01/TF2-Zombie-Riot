@@ -64,6 +64,40 @@ methodmap StalkerShared < CClotBody
 	}
 }
 
+void StalkerCombine_MapStart()
+{
+	static const char SoundList[][] =
+	{
+		"npc/zombine/zombine_idle1.wav",
+		"npc/zombine/zombine_idle2.wav",
+		"npc/zombine/zombine_idle3.wav",
+		"npc/zombine/zombine_idle4.wav",
+		"npc/zombine/zombine_alert1.wav",
+		"npc/zombine/zombine_alert2.wav",
+		"npc/zombine/zombine_alert3.wav",
+		"npc/zombine/zombine_alert4.wav",
+		"npc/zombine/zombine_alert5.wav",
+		"npc/zombine/zombine_alert6.wav",
+		"npc/zombine/zombine_alert7.wav",
+		"npc/zombine/zombine_pain1.wav",
+		"npc/zombine/zombine_pain2.wav",
+		"npc/zombine/zombine_pain3.wav",
+		"npc/zombine/zombine_pain4.wav",
+		"npc/zombine/zombine_die1.wav",
+		"npc/zombine/zombine_charge1.wav",
+		"npc/zombine/zombine_charge2.wav",
+		"npc/zombine/zombine_readygrenade2.wav",
+		"#music/vlvx_song11.mp3"
+	};
+
+	for(int i; i < sizeof(SoundList); i++)
+	{
+		PrecacheSoundCustom(SoundList[i]);
+	}
+
+	PrecacheModel("models/zombie/zombie_soldier.mdl");
+}
+
 methodmap StalkerCombine < StalkerShared
 {
 	public void PlayIdleSound()
@@ -79,7 +113,7 @@ methodmap StalkerCombine < StalkerShared
 			"npc/zombine/zombine_idle4.wav"
 		};
 
-		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(6.0, 12.0);
 	}
 	public void PlayIdleAlertSound()
@@ -98,7 +132,7 @@ methodmap StalkerCombine < StalkerShared
 			"npc/zombine/zombine_alert7.wav"
 		};
 		
-		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(6.0, 12.0);
 	}
 	public void PlayHurtSound()
@@ -114,12 +148,12 @@ methodmap StalkerCombine < StalkerShared
 			"npc/zombine/zombine_pain4.wav"
 		};
 		
-		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("npc/zombine/zombine_die1.wav");
+		EmitCustomToAll("npc/zombine/zombine_die1.wav");
 	}
 	public void PlayMeleeHitSound()
 	{
@@ -130,7 +164,7 @@ methodmap StalkerCombine < StalkerShared
 			"npc/fast_zombie/claw_strike3.wav"
 		};
 
-		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAlertSound(int client)
 	{
@@ -141,22 +175,21 @@ methodmap StalkerCombine < StalkerShared
 		};
 		
 		int rand = GetURandomInt() % sizeof(RandomSound);
-		EmitSoundToAll(RandomSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(RandomSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 		if(client > 0 && client <= MaxClients)
-			EmitSoundToClient(client, RandomSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitCustomToClient(client, RandomSound[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlaySpecialSound()
 	{
-		EmitSoundToAll("npc/zombine/zombine_readygrenade2.wav");
+		EmitCustomToAll("npc/zombine/zombine_readygrenade2.wav");
 	}
 	public void PlayMusicSound()
 	{
 		if(i_PlayMusicSound > GetTime())
 			return;
 		
-		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("#music/vlvx_song11.mp3", this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100);
 		i_PlayMusicSound = GetTime() + 76;
 	}
 	
