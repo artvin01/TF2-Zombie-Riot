@@ -4482,7 +4482,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 			if(camoDetection)
 			{
-				if(b_ThisEntityIgnored[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
+				if(b_ThisEntityIgnored[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
 				{
 					return false;
 				}
@@ -4493,7 +4493,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 			else
 			{
-				if(b_ThisEntityIgnored[enemy] || b_IsCamoNPC[enemy] || b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
+				if(b_ThisEntityIgnored[enemy] || b_IsCamoNPC[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
 				{
 					return false;
 				}
@@ -7287,6 +7287,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_XenoInfectedSpecialHurtTime[entity] = 0.0;
 	b_DoGibThisNpc[entity] = true;
 	b_ThisEntityIgnored[entity] = false;
+	b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
+	b_NpcIsInvulnerable[entity] = false;
 	fl_NextIdleSound[entity] = 0.0;
 	fl_AttackHappensMinimum[entity] = 0.0;
 	fl_AttackHappensMaximum[entity] = 0.0;

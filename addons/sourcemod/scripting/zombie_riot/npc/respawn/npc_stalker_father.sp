@@ -254,7 +254,7 @@ public void StalkerFather_ClotThink(int iNPC)
 		{
 			static float pos[3];
 			GetClientAbsOrigin(client, pos);
-			if(GetVectorDistance(vecMe, pos, true) < 2000000.0)
+			if(GetVectorDistance(vecMe, pos, true) < 2000000.0 && (Can_I_See_Enemy(npc.index, client) == client))
 			{
 				if(fl_AlreadyStrippedMusic[client] < engineTime)
 					Music_Stop_All(client);

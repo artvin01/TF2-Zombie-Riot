@@ -125,8 +125,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	{
 		for(int i; i < 9; i++)
 		{
-			StopSound(npc.index, SNDCHAN_STATIC, "#bluerange.wav");
-			StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
+	//		StopSound(npc.index, SNDCHAN_STATIC, "#bluerange.wav");
+	//		StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
 		}
 
 		i_PlayMusicSound = 0;
@@ -444,7 +444,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		if(IsClientInGame(client))
 		{
 			GetClientAbsOrigin(client, vecAng);
-			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 2000000.0 : 1500000.0))
+			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 2000000.0 : 1500000.0) && (Can_I_See_Enemy(npc.index, client) == client))
 			{
 				if(fl_AlreadyStrippedMusic[client] < engineTime)
 					Music_Stop_All(client);
@@ -461,15 +461,15 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		{
 			for(int i; i < 9; i++)
 			{
-				StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
+	//			StopSound(npc.index, SNDCHAN_STATIC, "#bluemelee.wav");
 			}
 
 			npc.m_bPlayingSniper = true;
 			i_PlayMusicSound = 0;
 
 			// This does loop
-			EmitSoundToAll("#bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
-			EmitSoundToAll("#bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	//		EmitSoundToAll("#bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	//		EmitSoundToAll("#bluerange.wav", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		}
 	}
 	else
