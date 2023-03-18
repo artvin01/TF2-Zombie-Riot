@@ -650,7 +650,8 @@ void StalkerCombine_NPCDeath(int entity)
 	float startPosition[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 	startPosition[2] += 32;
-
+	int gib;
+/*
 	int gib = Place_Gib("models/zombie/zombie_soldier_legs.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
 		b_LimitedGibGiveMoreHealth[gib] = true;
@@ -660,7 +661,7 @@ void StalkerCombine_NPCDeath(int entity)
 	gib = Place_Gib("models/zombie/zombie_soldier_torso.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
 		b_LimitedGibGiveMoreHealth[gib] = true;
-	
+*/	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
