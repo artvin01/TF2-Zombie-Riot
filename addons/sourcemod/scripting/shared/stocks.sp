@@ -2802,10 +2802,12 @@ float dmg_against_entity_multiplier = 3.0)
 				NPC_Ignite(ClosestTarget, client, 5.0, weapon);
 			}
 			float damage_1 = damage;
-			if(FromBlueNpc && i_IsABuilding[ClosestTarget])
+
+			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 			}
+			
 			SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius * 2.0), vicpos, _, custom_flags);	
 
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.

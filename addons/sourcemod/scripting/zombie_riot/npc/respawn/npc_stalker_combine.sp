@@ -164,7 +164,7 @@ methodmap StalkerCombine < StalkerShared
 			"npc/fast_zombie/claw_strike3.wav"
 		};
 
-		EmitCustomToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAlertSound(int client)
 	{
