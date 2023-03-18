@@ -221,7 +221,7 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_flSpeed = 50.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_bDissapearOnDeath = true;
+		npc.m_bDissapearOnDeath = false;
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
