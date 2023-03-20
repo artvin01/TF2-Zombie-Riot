@@ -69,23 +69,7 @@ static int MoabHealth(bool fortified)
 
 void Bfb_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
 	PrecacheModel("models/zombie_riot/btd/bfb.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap BFB < CClotBody
@@ -104,12 +88,12 @@ methodmap BFB < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 2.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabPop) - 1);
-		EmitSoundToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public int UpdateBloonOnDamage()
 	{

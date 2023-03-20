@@ -67,31 +67,12 @@ static int MoabHealth(bool fortified)
 
 void Zomg_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
-	char buffer[256];
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
-		PrecacheSound(SoundZomgPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundZomgPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundZomgPop[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/zomg.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgdamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/zomg/zomgstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap Zomg < CClotBody
@@ -110,12 +91,12 @@ methodmap Zomg < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundZomgPop) - 1);
-		EmitSoundToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public int UpdateBloonOnDamage()
 	{

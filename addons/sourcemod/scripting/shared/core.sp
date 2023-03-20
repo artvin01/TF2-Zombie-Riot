@@ -74,6 +74,7 @@ ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
+ConVar zr_downloadconfig;
 
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
@@ -1292,7 +1293,8 @@ public void OnConfigsExecuted()
 		ServerCommand("sm plugins reload zombie_riot");
 		return;
 	}
-	RequestFrame(Configs_ConfigsExecuted);
+	
+	Configs_ConfigsExecuted();
 }
 
 public Action OnReloadBlockNav(int args)

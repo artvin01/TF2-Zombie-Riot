@@ -766,15 +766,8 @@ void NPC_MapStart()
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
 	
-	Bloon_MapStart();
-	Moab_MapStart();
-	Bfb_MapStart();
-	Zomg_MapStart();
-	DDT_MapStart();
-	Bad_MapStart();
 	AltMedicApprenticeMage_OnMapStart_NPC();
 	SawRunner_OnMapStart_NPC();
-	TrueFusionWarrior_OnMapStart();
 	AltMedicCharger_OnMapStart_NPC();
 	AltMedicBerseker_OnMapStart_NPC();
 	
@@ -788,7 +781,6 @@ void NPC_MapStart()
 	MedivalSpearMan_OnMapStart_NPC();
 	MedivalHandCannoneer_OnMapStart_NPC();
 	MedivalEliteSkirmisher_OnMapStart_NPC();
-	Blitzkrieg_OnMapStart();
 	MedivalPikeman_OnMapStart_NPC();
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnMapStart_NPC();
 	Citizen_OnMapStart();
@@ -798,7 +790,6 @@ void NPC_MapStart()
 	Sniper_railgunner_OnMapStart_NPC();
 	
 	L4D2_Tank_OnMapStart_NPC();
-	Addiction_OnMapStart_NPC();
 	MedivalRam_OnMapStart();
 	
 	Soldier_Barrager_OnMapStart_NPC();
@@ -857,8 +848,31 @@ void NPC_MapStart()
 	MechaSoldier_Barrager_OnMapStart_NPC();
 	NearlSwordAbility_OnMapStart_NPC();
 
+	// Raid Low Prio
+	TrueFusionWarrior_OnMapStart();
+	Blitzkrieg_OnMapStart();
+
+	// Bloon Low Prio
+	Bloon_MapStart();
+	GoldBloon_MapStart();
+	Moab_MapStart();
+	Bfb_MapStart();
+	Zomg_MapStart();
+	DDT_MapStart();
+	Bad_MapStart();
+
+	// Stalker Low Prio
+	StalkerCombine_MapStart();
 	StalkerFather_MapStart();
 	StalkerGoggles_OnMapStart();
+
+	// COF Low Prio
+	Addiction_OnMapStart_NPC();
+	Doctor_MapStart();
+	Simon_MapStart();
+
+	// Bloon Raid Low Prio
+	Bloonarius_MapStart();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings

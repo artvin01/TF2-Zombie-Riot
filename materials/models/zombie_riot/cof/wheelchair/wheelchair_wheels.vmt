@@ -1,0 +1,7 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/wheelchair/Wheelchair_wheels"
+	"$nocull" 1
+	"$nolod" 1
+	"$alphatest" 1
+}

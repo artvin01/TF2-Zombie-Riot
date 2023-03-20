@@ -1,22 +1,35 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool StartedQueue[MAXTF2PLAYERS];
+static bool Downloading[MAXTF2PLAYERS];
+
 static ArrayList SoundList;
 static StringMap SoundAlts;
 static int SoundLevel[MAXTF2PLAYERS];
-static bool Downloading[MAXTF2PLAYERS];
+
+static ArrayList ExtraList;
+static int ExtraLevel[MAXTF2PLAYERS];
 
 void FileNetwork_PluginStart()
 {
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
+	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 }
 
 void FileNetwork_MapEnd()
 {
-	Zero(SoundLevel);
+	for(int i; i < sizeof(SoundLevel); i++)
+	{
+		SoundLevel[i] = 0;
+		ExtraLevel[i] = 0;
+	}
+
 	delete SoundList;
 	delete SoundAlts;
+	delete ExtraList;
+
 	FileNetwork_PluginStart();
 }
 
@@ -28,8 +41,93 @@ void FileNetwork_ClientPutInServer(int client)
 
 void FileNetwork_ClientDisconnect(int client)
 {
+	StartedQueue[client] = false;
 	Downloading[client] = false;
 	SoundLevel[client] = 0;
+	ExtraLevel[client] = 0;
+}
+
+void FileNetwork_ConfigSetup(KeyValues map)
+{
+	char buffer[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "downloads");
+	KeyValues kv = new KeyValues("Downloads");
+	kv.ImportFromFile(buffer);
+
+	KeyValues enabled;
+	if(map)
+	{
+		map.Rewind();
+		if(map.JumpToKey("Packages"))
+			enabled = map;
+	}
+
+	if(!enabled)
+	{
+		enabled = kv;
+		if(!enabled.JumpToKey("Default"))
+		{
+			zr_downloadconfig.GetString(buffer, sizeof(buffer));
+			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
+
+			enabled = new KeyValues("Packages");
+			enabled.ImportFromFile(buffer);
+			RequestFrame(DeleteHandle, enabled);
+		}
+	}
+
+	ArrayList list = new ArrayList(ByteCountToCells(sizeof(buffer)));
+
+	enabled.GotoFirstSubKey(false);
+	do
+	{
+		enabled.GetSectionName(buffer, sizeof(buffer));
+		list.PushString(buffer);
+	}
+	while(enabled.GotoNextKey(false));
+	
+	kv.Rewind(); // In case enabled is package
+	if(kv.JumpToKey("Packages"))
+	{
+		int table = FindStringTable("downloadables");
+		bool save = LockStringTables(false);
+		
+		kv.GotoFirstSubKey();
+		do
+		{
+			kv.GetSectionName(buffer, sizeof(buffer));
+			if(kv.GotoFirstSubKey(false))
+			{
+				bool extra = list.FindString(buffer) == -1;
+				
+				do
+				{
+					kv.GetSectionName(buffer, sizeof(buffer));
+					if(extra)
+					{
+						ExtraList.PushString(buffer);
+					}
+					else if(FileExists(buffer, true))
+					{
+						AddToStringTable(table, buffer);
+					}
+					else
+					{
+						LogError("Failed to find file \"%s\" for downloads", buffer);
+					}
+				}
+				while(kv.GotoNextKey(false));
+
+				kv.GoBack();
+			}
+		}
+		while(kv.GotoNextKey());
+
+		LockStringTables(save);
+	}
+
+	delete list;
+	delete kv;
 }
 
 void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int delay = 5)
@@ -63,11 +161,8 @@ static void AddSoundFile(const char[] sound)
 		SoundList.PushString(sound);
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(SoundLevel[client] && !Downloading[client])
-			{
-				SoundLevel[client]--;
+			if(StartedQueue[client] && !Downloading[client])
 				SendNextFile(client);
-			}
 		}
 	}
 }
@@ -82,20 +177,43 @@ static void FormatFileCheck(const char[] file, int client, char[] output, int le
 static void SendNextFile(int client)
 {
 	// First, request a dummy file to see if they have it downloaded before
+
+	StartedQueue[client] = true;
+	
+	static char download[PLATFORM_MAX_PATH];
+	DataPack pack;
+
 	if(SoundLevel[client] < SoundList.Length)
 	{
-		Downloading[client] = true;
+		SoundList.GetString(SoundLevel[client], download, sizeof(download));
+		Format(download, sizeof(download), "sound/%s", download[download[0] == '#' ? 1 : 0]);
 		
-		static char sound[PLATFORM_MAX_PATH];
-		SoundList.GetString(SoundLevel[client], sound, sizeof(sound));
-		Format(sound, sizeof(sound), "sound/%s", sound[sound[0] == '#' ? 1 : 0]);
+		pack = new DataPack();
+		pack.WriteCell(false);	// Is a sound
+	}
+	else if(ExtraLevel[client] < SoundList.Length)
+	{
+		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
 
-		static char filecheck[PLATFORM_MAX_PATH];
-		FormatFileCheck(sound, client, filecheck, sizeof(filecheck));
+		pack = new DataPack();
+		pack.WriteCell(true);	// Is an extra
+	}
+
+	if(pack)
+	{
+		Downloading[client] = true;
+
+		pack.WriteString(download);
 		
-		DataPack pack = new DataPack();
-		pack.WriteString(sound);
+		static char filecheck[PLATFORM_MAX_PATH];
+		FormatFileCheck(download, client, filecheck, sizeof(filecheck));
 		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
+
+		if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
+		{
+			Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
+			DeleteFile(filecheck);
+		}
 	}
 	else
 	{
@@ -105,13 +223,12 @@ static void SendNextFile(int client)
 		PrintToConsole(client, "[ZR/RPG] Finished Downloading/Verifying Files! You will hear and see everything as intended now.");
 		PrintToConsole(client, "---");
 	}
-	
-	SoundLevel[client]++;
 }
 
 public void FileNetwork_RequestResults(int client, const char[] file, int id, bool success, DataPack pack)
 {
 	// If not found, send the actual file
+
 	if(success)
 	{
 		if(!DeleteFile(file, true))
@@ -123,33 +240,46 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		}
 	}
 
-	if(SoundLevel[client])
+	if(StartedQueue[client])
 	{
+		static char download[PLATFORM_MAX_PATH];
+		pack.Reset();
+		bool extra = pack.ReadCell();
+		pack.ReadString(download, sizeof(download));
+
 		if(success)
 		{
+			if(extra)
+			{
+				ExtraLevel[client]++;
+			}
+			else
+			{
+				SoundLevel[client]++;
+			}
+
 			SendNextFile(client);
 		}
 		else
 		{
-			static char sound[PLATFORM_MAX_PATH];
-			pack.Reset();
-			pack.ReadString(sound, sizeof(sound));
-
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
-			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", sound);
+			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", download);
 
-			if(!FileNet_SendFile(client, sound, FileNetwork_SendResults))
-				LogError("Failed to queue file \"%s\" to client", sound);
+			if(FileNet_SendFile(client, download, FileNetwork_SendResults, pack))
+				return;
+			
+			LogError("Failed to queue file \"%s\" to client", download);
 		}
 	}
 
 	delete pack;
 }
 
-public void FileNetwork_SendResults(int client, const char[] file, bool success)
+public void FileNetwork_SendResults(int client, const char[] file, bool success, DataPack pack)
 {
 	// When done, send a dummy file and the next file in queue
-	if(SoundLevel[client])
+	
+	if(StartedQueue[client])
 	{
 		if(success)
 		{
@@ -167,6 +297,16 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 					LogError("Failed to delete file \"%s\"", filecheck);
 			}
 
+			pack.Reset();
+			if(pack.ReadCell())
+			{
+				ExtraLevel[client]++;
+			}
+			else
+			{
+				SoundLevel[client]++;
+			}
+
 			SendNextFile(client);
 		}
 		else
@@ -174,12 +314,15 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success)
 			LogError("Failed to send file \"%s\" to client", file);
 		}
 	}
+
+	delete pack;
 }
 
 public void FileNetwork_SendFileCheck(int client, const char[] file, bool success)
 {
 	// Delete the dummy file left over
-	if(SoundLevel[client] && !success)
+
+	if(StartedQueue[client] && !success)
 		LogError("Failed to send file \"%s\" to client", file);
 	
 	if(!DeleteFile(file))
@@ -188,8 +331,8 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	int soundlevel = SoundList.FindString(sound) + 1;
-	if(soundlevel == 0)
+	int soundlevel = SoundList.FindString(sound);
+	if(soundlevel == -1)
 		ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
 	
 	if(SoundLevel[client] > soundlevel)
@@ -239,8 +382,8 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	int soundlevel = SoundList.FindString(sound) + 1;
-	if(soundlevel == 0)
+	int soundlevel = SoundList.FindString(sound);
+	if(soundlevel == -1)
 		ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
 	
 	int[] custom = new int[numClients];

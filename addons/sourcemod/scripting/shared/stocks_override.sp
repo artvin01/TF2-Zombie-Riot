@@ -375,9 +375,6 @@ void Edited_TF2_RegeneratePlayer(int client)
 	//player needs to be fully nowmally visible.
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);
-#if defined ZR
-	EscapeSentryHat_ApplyBuidingIcon(client, true);
-#endif
 }
 
 #define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
@@ -396,9 +393,6 @@ void Edited_TF2_RespawnPlayer(int client)
 	//player needs to be fully nowmally visible.
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);
-#if defined ZR
-	EscapeSentryHat_ApplyBuidingIcon(client, true);
-#endif
 }
 
 #define TF2_RespawnPlayer Edited_TF2_RespawnPlayer
@@ -426,3 +420,5 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 }
 
 #define TF2_SetPlayerClass SetPlayerClass*/
+
+#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks

@@ -69,39 +69,16 @@ static int MoabHealth(bool fortified)
 
 void Moab_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
-	char buffer[256];
 	for(int i; i<sizeof(SoundMoabHit); i++)
 	{
-		PrecacheSound(SoundMoabHit[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundMoabHit[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	for(int i; i<sizeof(SoundMoabPop); i++)
 	{
-		PrecacheSound(SoundMoabHit[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundMoabPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabreinforceddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabreinforceddiffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap Moab < CClotBody
@@ -120,12 +97,12 @@ methodmap Moab < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabPop) - 1);
-		EmitSoundToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public int UpdateBloonOnDamage()
 	{

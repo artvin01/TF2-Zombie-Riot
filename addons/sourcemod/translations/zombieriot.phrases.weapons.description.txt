@@ -35,9 +35,7 @@
 	}
 	"Sniper Rifle Pap 3"
 	{
-		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage"
-		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона."
-		"chi"       "昂贵的超级升级，每5颗子弹将造成大量伤害"
+		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
 	}
 	"Sniper Rifle Pap 4"
 	{
@@ -587,7 +585,7 @@
 	}
 	"Riot Gun Desc"
 	{
-		"en"	"A gun that comes with a riot shield for anti-range damage.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake 61%% less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
+		"en"	"Press M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
 	}
 	"Riot Gun Pap 1"
 	{

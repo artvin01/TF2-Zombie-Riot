@@ -783,19 +783,149 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
-			
 		char buffer[64];
-		for(int i=10; i>0; i--)
+		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
+		if(IsValidEntity(converted_ref))
+		{	
+			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
+			bool DoSentryCheck = false;
+			switch(BuildingIconType(client))
+			{
+				case 3,4,8,9:
+					DoSentryCheck = true;
+			}
+
+			if(DoSentryCheck) //all non supportive, like sentry and so on.
+			{
+				Cooldowntocheck = f_BuildingIsNotReady[client];
+			}
+
+			Cooldowntocheck -= GetGameTime();
+
+			if(Cooldowntocheck < 0.0)
+			{
+				Cooldowntocheck = 0.0;
+			}
+
+			switch(BuildingIconType(client))
+			{
+				case 1: //armor table
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nAR\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nAR\n", Cooldowntocheck);
+					}
+				}
+				case 2: //Ammo box
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nAM\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nAM\n", Cooldowntocheck);
+					}
+				}
+				case 3: //Mortar
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nMO\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nMO\n", Cooldowntocheck);
+					}
+				}
+				case 4: //Railgun
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nRA\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nRA\n", Cooldowntocheck);
+					}
+				}
+				case 5: //Perk
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nPE\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nPE\n", Cooldowntocheck);
+					}
+				}
+				case 6: //pack a punch
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nPA\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nPA\n", Cooldowntocheck);
+					}
+				}
+				case 7: //Healing Station
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nHE\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nHE\n", Cooldowntocheck);
+					}
+				}
+				case 8: //Village
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nVI\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nVI\n", Cooldowntocheck);
+					}
+				}
+				case 9: //Barracks
+				{
+					if(Cooldowntocheck > 0.0)
+					{
+						Format(buffer, sizeof(buffer), "%.1f\nBA\n", Cooldowntocheck);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "\nBA\n", Cooldowntocheck);
+					}
+				}
+			}
+		}
+		else
 		{
-			if(Armor_Charge[client] >= Armor_Max*(i*0.1))
+			Format(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
+		}
+
+		for(int i=6; i>0; i--)
+		{
+			if(Armor_Charge[client] >= Armor_Max*(i*0.1666))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 			}
-			else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/60.0))
+			else if(Armor_Charge[client] > Armor_Max*(i*0.1666 - 1.0/60.0))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 			}
-			else if(Armor_Charge[client] > Armor_Max*(i*0.1 - 1.0/30.0))
+			else if(Armor_Charge[client] > Armor_Max*(i*0.1666 - 1.0/30.0))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 			}
@@ -817,11 +947,14 @@ public void OnPostThink(int client)
 			
 			if(slowdown_amount < 0.0)
 			{
-				slowdown_amount = 0.0;
+				Format(buffer, sizeof(buffer), "%sWI", buffer, slowdown_amount);
 			}
-			Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
+			else
+			{
+				Format(buffer, sizeof(buffer), "%s%.1f", buffer, slowdown_amount);
+			}
 		}
-		SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.86 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
+		SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			
 			
@@ -907,12 +1040,12 @@ public void OnPostThink(int client)
 	if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
-		EscapeSentryHat_ApplyBuidingIcon(client);
 		//Doesnt reset often enough, fuck clientside.
-		SetVariantString("ParticleEffectStop");
-		AcceptEntityInput(client, "DispatchEffect"); 
 		if (IsPlayerAlive(client))
 		{
+		//	EscapeSentryHat_ApplyBuidingIcon(client);
+		//	SetVariantString("ParticleEffectStop");
+		//	AcceptEntityInput(client, "DispatchEffect"); 
 			static int entity;
 			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);

@@ -115,10 +115,10 @@ void Building_MapStart()
 //	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 //	SyncHud_Notifaction = CreateHudSynchronizer();
 	PrecacheModel(CUSTOM_SENTRYGUN_MODEL); //MORTAR MODEL AND RAILGUN MODEL!!!
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.vvd"); 			//ADD TO DOWNLOADS!
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.mdl");
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx80.vtx");
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx90.vtx");
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.vvd"); 			//ADD TO DOWNLOADS!
 	
 	PrecacheSound(MORTAR_SHOT);
 	PrecacheSound(MORTAR_BOOM); 
