@@ -1,6 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-#pragma dynamic    131072
+//#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
 enum ParticleAttachment_t {
@@ -2627,7 +2627,6 @@ stock int HasNamedItem(int client, const char[] name)
 
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
-
 stock void Explode_Logic_Custom(float damage,
 int client,
 int entity,
@@ -2641,6 +2640,7 @@ int maxtargetshit = 10,
 bool ignite = false,
 float dmg_against_entity_multiplier = 3.0)
 {
+
 	float damage_reduction = 1.0;
 	bool weapon_valid = false;
 	if(IsValidEntity(weapon))
@@ -2648,10 +2648,6 @@ float dmg_against_entity_multiplier = 3.0)
 		weapon_valid = true;
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
-	}
-	for( int i = 1; i < MAXENTITIES; i++ ) 
-	{
-		b_WasAlreadyCalculatedToBeClosest[i] = false;
 	}
 
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
@@ -2715,7 +2711,6 @@ float dmg_against_entity_multiplier = 3.0)
 	}
 
 	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom);
-
 	/*
 	This trace does not filter on what is hit first, thats kinda bad, it filters by what entity number is smaller.
 	solution: Trace all entities, get all their distances, and do a rating, with this we get what entity is the closest
@@ -2724,31 +2719,30 @@ float dmg_against_entity_multiplier = 3.0)
 	*/
 
 	//This will sort the entity in order, first entity is the first to be hit there etc.
-	float distance[MAXENTITIES];
-	float VicPos[MAXENTITIES][3];
+	static float distance[MAXENTITIES];
+	static float VicPos[MAXENTITIES][3];
 
 	if(FromBlueNpc) //Npcs do not have damage falloff, dodge.
 	{
-		maxtargetshit = 50; //we do not care.
+		maxtargetshit = 20; //we do not care.
 	}
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{
-		if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
-		{
-			VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]);
-			distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
-			//Save their distances.
-		}
+		if(!HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
+			break;
+		
+		VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]);
+		distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
+		//Save their distances.
 	}
-
 	//do another check, this time we only need the amount of entities we actually hit.
 	//Im lazy and dumb, i dont know a better way.
 	for (int repeatloop = 0; repeatloop <= maxtargetshit; repeatloop++)
 	{
-		int ClosestTarget;
-		float ClosestDistance;
-		int indexTraced;
-		for (int entity_traced = 0; entity_traced <= maxtargetshit; entity_traced++)
+		static int ClosestTarget;
+		static float ClosestDistance;
+		static int indexTraced;
+		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
 			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
 			{
@@ -2768,6 +2762,10 @@ float dmg_against_entity_multiplier = 3.0)
 					ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];
 				}	
 			}
+			else
+			{
+				break;
+			}
 		}
 		/*
 		We will filter out each entity and them damage them accordingly.
@@ -2780,7 +2778,7 @@ float dmg_against_entity_multiplier = 3.0)
 		//	{
 		//		damage_1 = damage;
 		//	}	
-			float vicpos[3];
+			static float vicpos[3];
 			vicpos = VicPos[ClosestTarget];
 			//if its a blue npc, then we want to do a trace to see if we even hit them.
 			if(FromBlueNpc)
@@ -2801,14 +2799,15 @@ float dmg_against_entity_multiplier = 3.0)
 			{
 				NPC_Ignite(ClosestTarget, client, 5.0, weapon);
 			}
-			float damage_1 = damage;
+			static float damage_1;
+			damage_1 = damage;
 
 			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
 			}
 			
-			SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius * 2.0), vicpos, _, custom_flags);	
+			SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
@@ -2816,9 +2815,19 @@ float dmg_against_entity_multiplier = 3.0)
 			}
 		}
 		HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom] = false; //we will need to filter them out entirely now, we did dmg, and thus, its done!
+
+		indexTraced++;
+		for(; indexTraced < MAXENTITIES; indexTraced++)
+		{
+			HitEntitiesSphereExplosionTrace[indexTraced - 1][entityToEvaluateFrom] = HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom];
+			
+			if(!HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom])
+				break;
+		}
+	
 		ClosestTarget = false;
 		ClosestDistance = 0.0;
-		indexTraced = false;
+		indexTraced = 0;
 	}
 			//HitEntitiesSphereExplosionTrace This is the entity we hit, do all the logic we need.
 	

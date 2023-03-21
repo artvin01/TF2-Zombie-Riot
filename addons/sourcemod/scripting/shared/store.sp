@@ -152,7 +152,7 @@ enum struct ItemInfo
 		this.BackstabCD				= kv.GetFloat(buffer, 1.5);
 		
 		Format(buffer, sizeof(buffer), "%sbackstab_dmg_multi", prefix);
-		this.BackstabDMGMulti		= kv.GetFloat(buffer, 1.0);
+		this.BackstabDMGMulti		= kv.GetFloat(buffer, 0.0);
 		
 		Format(buffer, sizeof(buffer), "%sbackstab_heal_per_tick", prefix);
 		this.BackstabHealPerTick		= kv.GetNum(buffer, 0);
@@ -4810,6 +4810,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
+
+		
+		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 149));
+		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 208));
+		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 638));
+		f_UberOnHitWeapon[entity] = Attributes_FindOnWeapon(client, entity, 17);
 		
 #if defined ZR
 		Enable_Management_Knife(client, entity);

@@ -47,7 +47,7 @@
 #define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
 #endif
 
-#pragma dynamic    131072
+//#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
@@ -349,6 +349,8 @@ float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
+bool b_IsABow[MAXENTITIES];
+bool b_IsAMedigun[MAXENTITIES];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
@@ -443,6 +445,11 @@ int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
 int i_ArsenalBombImplanter[MAXENTITIES]={0, ...}; 				//544
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
+
+int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
+int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
+int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
+float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
 
 int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
 int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000
@@ -2252,6 +2259,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
 		i_NpcInternalId[entity] = 0;
+		b_IsABow[entity] = false;
+		b_IsAMedigun[entity] = false;
 		
 #if defined ZR
 		Wands_Potions_EntityCreated(entity);
@@ -2331,6 +2340,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 			Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
 		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
+		}
+		else if(!StrContains(classname, "tf_weapon_compound_bow"))
+		{
+			b_IsABow[entity] = true;
 		}
 		else if(!StrContains(classname, "func_breakable"))
 		{
@@ -2473,6 +2486,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if (!StrContains(classname, "tf_weapon_medigun")) 
 		{
+			b_IsAMedigun[entity] = true;
 			Medigun_OnEntityCreated(entity);
 		}
 #if defined ZR
