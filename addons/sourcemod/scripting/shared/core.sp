@@ -449,7 +449,7 @@ int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
 int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
 int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208
 int i_ExtinquisherWeapon[MAXENTITIES]={0, ...}; 				//638
-int i_UberOnHitWeapon[MAXENTITIES]={0, ...}; 				//17
+float f_UberOnHitWeapon[MAXENTITIES]={0.0, ...}; 				//17
 
 int i_LowTeslarStaff[MAXENTITIES]={0, ...}; 				//3002
 int i_HighTeslarStaff[MAXENTITIES]={0, ...}; 				//3000

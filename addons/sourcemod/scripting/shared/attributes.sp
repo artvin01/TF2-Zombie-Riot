@@ -99,13 +99,15 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					}
 					//dont actually extinquish, just give them more damage.
 				}
-				if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
+				value = f_UberOnHitWeapon[weapon];
+				if(value)
 				{
-					value = float(i_UberOnHitWeapon[weapon]);	// add uber charge on hit
-					if(value)
+					if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
 					{
-						ArrayList list = new ArrayList();
+						// add uber charge on hit
 						
+						ArrayList list = new ArrayList();
+							
 						int entity, i;
 						while(TF2_GetItem(client, entity, i))
 						{
@@ -149,7 +151,6 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 								SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
 							}
 						}
-						
 						delete list;
 					}
 				}
