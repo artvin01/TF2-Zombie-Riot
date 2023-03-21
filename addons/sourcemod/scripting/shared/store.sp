@@ -4815,7 +4815,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 149));
 		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 208));
 		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 638));
-		f_UberOnHitWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 17));
+		f_UberOnHitWeapon[entity] = Attributes_FindOnWeapon(client, entity, 17);
 		
 #if defined ZR
 		Enable_Management_Knife(client, entity);
