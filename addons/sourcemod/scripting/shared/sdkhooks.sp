@@ -997,7 +997,7 @@ public void OnPostThink(int client)
 			}
 			if(Store_ActiveCanMulti(client))
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer, "Press Button To Switch");
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n\n%t", HudBuffer, "Press Button To Switch");
 			}
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
