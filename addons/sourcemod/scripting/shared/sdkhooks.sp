@@ -1865,7 +1865,7 @@ void LeftForDead_ClientCookiesCached(int client)
 	CookieLeftForDead.Get(client, buffer, sizeof(buffer));
 	int buffers[2];
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-
+	f_LeftForDead_Cooldown[client] = 0.0;
 	if(CurrentGame && buffers[0] == CurrentGame)
 	{
 		f_LeftForDead_Cooldown[client] = float(buffers[1]);
