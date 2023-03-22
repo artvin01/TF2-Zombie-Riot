@@ -69,13 +69,13 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!b_NpcIsInvulnerable[npc.index] && !Waves_InSetup() && Waves_GetRound() > 29)
+	if(b_NpcIsInvulnerable[npc.index] && !Waves_InSetup() && Waves_GetRound() > 29)
 	{
 		// Vulnerable pass Wave 30
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 	}
-	else if(b_NpcIsInvulnerable[npc.index])
+	else if(!b_NpcIsInvulnerable[npc.index])
 	{
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
