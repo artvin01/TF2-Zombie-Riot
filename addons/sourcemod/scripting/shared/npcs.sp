@@ -1153,6 +1153,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	//they dont take drown dmg ever.
+
 	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	{
 		damage = 0.0;
@@ -1166,13 +1167,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	else
 	{
 		float GameTime = GetGameTime();
-		if(HasEntProp(attacker, Prop_Send, "m_iTeamNum"))
+		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
 		{
-			if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
-			{
-				damage = 0.0;
-				return Plugin_Handled;
-			}
+			damage = 0.0;
+			return Plugin_Handled;
 		}
 
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
@@ -1183,12 +1181,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			i_HasBeenHeadShotted[victim] = false;
 		}
 		
-	#if defined ZR
+#if defined ZR
 		if(b_npcspawnprotection[victim])
 			damage *= 0.25;
-	#endif
+#endif
 
-	#if defined RPG
+#if defined RPG
 		if(b_NpcIsInADungeon[victim])
 		{
 			
@@ -1218,7 +1216,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			f_NpcFightTime[victim] = GameTime + 10.0;
 		}
-	#endif
+#endif
 
 		if(f_NpcHasBeenUnstuckAboveThePlayer[victim] > GameTime) //They were immortal, just nullfy any and all damage.
 		{
@@ -1256,7 +1254,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
 		//ZR does not need this.
-	#if defined RPG
+#if defined RPG
 		if(IsValidEntity(attacker))
 		{
 			if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
@@ -1269,7 +1267,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
-	#endif
+#endif
 		if(f_IsThisExplosiveHitscan[attacker] == GameTime)
 		{
 			npcBase.m_vecpunchforce(CalculateDamageForceSelfCalculated(attacker, 10000.0), true);
@@ -1409,7 +1407,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		if(attacker <= MaxClients)
 		{
-	#if defined RPG	
+#if defined RPG	
 
 			//Random crit damage!
 			//Yes, we allow those.
@@ -1419,14 +1417,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 			}
 
-	#endif
+#endif
 
-	#if defined ZR
+#if defined ZR
 			if(dieingstate[attacker] > 0 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
 			{
 				damage *= 0.25;
 			}
-	#endif
+#endif
 			
 			if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 			{
@@ -1435,7 +1433,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			//	return Plugin_Handled;
 			}
 			
-	#if defined ZR
+#if defined ZR
 			if(EscapeMode)
 			{
 				if(IsValidEntity(weapon))
@@ -1450,8 +1448,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 				}
 			}
-	#endif
-			
+#endif
+
 			//NPC STUFF FOR RECORD AND ON KILL
 			LastHitId[victim] = GetClientUserId(attacker);
 			DamageBits[victim] = damagetype;
@@ -1473,23 +1471,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				else
 					damage = 0.0;
 			}
+
 		}
 		//This only ever effects base_bosses so dont worry about sentries hurting you
 		if(!(damagetype & DMG_SLASH)) //Use dmg slash for any npc that shouldnt be scaled.
 		{
-			char classname[32];
 			if(IsValidEntity(inflictor) && inflictor>MaxClients)// && attacker<=MaxClients)
 			{
-				GetEntityClassname(inflictor, classname, sizeof(classname));
-				if(StrEqual(classname, "obj_sentrygun"))
+				if(i_IsABuilding[inflictor])
 				{
-					
-	#if defined ZR
+#if defined ZR
 					if(EscapeMode) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
 					{
 						damage *= 4.0;
 					}
-	#endif
+#endif
 					
 					if(Increaced_Sentry_damage_Low[inflictor] > GameTime)
 					{
@@ -1500,9 +1496,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						damage *= 1.3;
 					}
 				}
-				
-	#if defined ZR
-				else if(StrEqual(classname, "base_boss") && b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
+#if defined ZR
+				else if(b_IsAlliedNpc[inflictor]) //add a filter so it only does it for allied base_bosses
 				{
 					CClotBody npc = view_as<CClotBody>(inflictor);
 					if(npc.m_bScalesWithWaves)
@@ -1546,12 +1541,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						}
 					}
 				}
-	#endif	// ZR
+#endif	// ZR
 				
 			}
 			if(attacker <= MaxClients && IsValidEntity(weapon))
 			{
-	#if defined RPG
+#if defined RPG
 				char Weaponclassname[64];
 				GetEntityClassname(weapon, Weaponclassname, 64);
 
@@ -1589,9 +1584,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 				}		
 				damage = RpgCC_ContractExtrasNpcOnTakeDamage(victim, attacker, damage, damagetype, weapon, slot);
-	#endif
+#endif
 
-	#if defined ZR
+#if defined ZR
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
 					float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
@@ -1619,7 +1614,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
-	#endif
+#endif
 				
 				if(i_HighTeslarStaff[weapon] == 1)
 				{
@@ -1636,8 +1631,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					i_HowManyBombsOnThisEntity[victim][client] = 0; //to clean on death ofc.
 				}
 				*/
-				GetEntityClassname(weapon, classname, sizeof(classname));
-				if(!StrContains(classname, "tf_weapon_knife", false) && f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+				if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
 				{
 					if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 					{
@@ -1669,12 +1663,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
 								damage *= 5.25;
 
-	#if defined ZR
+#if defined ZR
 								if(LastMann)
 								{
 									attack_speed *= 0.5; //extra delay.
 								}
-	#endif
+#endif
 								
 								if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 								{
@@ -1689,7 +1683,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								}
 
 								damage *= f_BackstabDmgMulti[weapon];		
-	#if defined ZR
+#if defined ZR
 								if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 								{
 									damage *= 1.35;
@@ -1697,7 +1691,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 								
 								if(EscapeMode)
 									damage *= 1.35;
-	#endif						
+#endif						
 								
 								//Latest tf2 update broke this, too lazy to fix lol
 								
@@ -1754,7 +1748,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					}
 				}
 #if defined ZR
-				else if(!StrContains(classname, "tf_weapon_compound_bow", false))
+				else if(b_IsABow[weapon])
 				{
 					if(damagetype & DMG_CRIT)
 					{		

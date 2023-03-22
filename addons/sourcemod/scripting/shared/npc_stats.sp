@@ -4580,7 +4580,6 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						float TargetLocation[3]; 
 						GetClientAbsOrigin( i, TargetLocation ); 
 						
-						
 						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
 						if(distance < fldistancelimit)
 						{

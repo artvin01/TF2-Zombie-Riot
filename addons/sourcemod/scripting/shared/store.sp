@@ -152,7 +152,7 @@ enum struct ItemInfo
 		this.BackstabCD				= kv.GetFloat(buffer, 1.5);
 		
 		Format(buffer, sizeof(buffer), "%sbackstab_dmg_multi", prefix);
-		this.BackstabDMGMulti		= kv.GetFloat(buffer, 1.0);
+		this.BackstabDMGMulti		= kv.GetFloat(buffer, 0.0);
 		
 		Format(buffer, sizeof(buffer), "%sbackstab_heal_per_tick", prefix);
 		this.BackstabHealPerTick		= kv.GetNum(buffer, 0);
@@ -1360,10 +1360,10 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 
 void Store_ClientCookiesCached(int client)
 {
-	char buffer[32];
+	char buffer[256];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	
-	int buffers[3];
+	int buffers[32];
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 	if(CurrentGame && buffers[0] == CurrentGame)
 		Database_LoadGameData(client);
@@ -1374,6 +1374,17 @@ void Store_ClientCookiesCached(int client)
 	if(CurrentGame && buffers[0] == CurrentGame)
 	{
 		Ammo_Count_Used[client] = buffers[1];
+	}
+
+	CookieAmmoReserve.Get(client, buffer, sizeof(buffer));
+
+	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	if(CurrentGame && buffers[0] == CurrentGame)
+	{
+		for(int loop; loop < Ammo_MAX; loop++)
+		{
+			CurrentAmmo[client][loop] = buffers[loop + 1];
+		}
 	}
 }
 
@@ -1594,6 +1605,16 @@ void Store_ClientDisconnect(int client)
 		char buffer[32];
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, Ammo_Count_Used[client]);
 		CookieAmmoCount.Set(client, buffer);
+
+		
+		
+		char buffer_ammo[256];
+		FormatEx(buffer_ammo, sizeof(buffer_ammo), "%d", CurrentGame);
+		for(int loop; loop < Ammo_MAX; loop++)
+		{
+			FormatEx(buffer_ammo, sizeof(buffer_ammo), "%s;%d", buffer_ammo, CurrentAmmo[client][loop]);
+		}
+		CookieAmmoReserve.Set(client, buffer_ammo);
 	}
 
 	CashSpent[client] = 0;
@@ -4810,6 +4831,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
 		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
+
+		
+		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 149));
+		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 208));
+		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 638));
+		f_UberOnHitWeapon[entity] = Attributes_FindOnWeapon(client, entity, 17);
 		
 #if defined ZR
 		Enable_Management_Knife(client, entity);

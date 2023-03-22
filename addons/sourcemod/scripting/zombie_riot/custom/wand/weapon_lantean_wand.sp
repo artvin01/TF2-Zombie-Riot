@@ -23,18 +23,19 @@ static float fl_lantean_penetration_dmg_penatly[MAXENTITIES];
 static float fl_lantean_overcharge_dmg_penalty[MAXENTITIES];	
 
 
+#define LANTEAN_MAX_ACTIVE_DRONES 20
 
 #define LANTEEN_PAP_0_PENETRATION 						3
 #define LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF 			1.3
-#define LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF 	2.0
+#define LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF 	1.8
 
 #define LANTEEN_PAP_1_PENETRATION 						7
 #define LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF 			1.2
-#define LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF 	2.0
+#define LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF 	1.4
 
 #define LANTEEN_PAP_2_PENETRATION 						17
 #define LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF 			1.0
-#define LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF 	1.75
+#define LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF 	1.0
 
 
 
@@ -65,395 +66,457 @@ public void Reset_Stats_Lantean_Weapon(int client)
 */
 public void Weapon_lantean_Wand_m1(int client, int weapon, bool crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-
-	if(mana_cost <= Current_Mana[client])
-	{
-		particle_type[client]="flaregun_energyfield_red";
-		Current_Mana[client] -= mana_cost;
-		Mana_Hud_Delay[client] = 0.0;
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-		delay_hud[client] = 0.0;
-
-		float damage = 65.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-					
-		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-			
-			
-		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-
-		Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
-		damage,speed,time);
-	}
-	else
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
+	}
+	else
+	{	
+		int mana_cost;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+		if(address != Address_Null)
+			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	
+		if(mana_cost <= Current_Mana[client])
+		{
+			particle_type[client]="flaregun_energyfield_red";
+			Current_Mana[client] -= mana_cost;
+			Mana_Hud_Delay[client] = 0.0;
+			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			delay_hud[client] = 0.0;
+	
+			float damage = 65.0;
+			address = TF2Attrib_GetByDefIndex(weapon, 410);
+			if(address != Address_Null)
+				damage *= TF2Attrib_GetValue(address);
+						
+			float speed = 1100.0;
+			address = TF2Attrib_GetByDefIndex(weapon, 103);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+	
+			address = TF2Attrib_GetByDefIndex(weapon, 104);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+				
+			address = TF2Attrib_GetByDefIndex(weapon, 475);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+				
+				
+			float time = 500.0/speed;
+			address = TF2Attrib_GetByDefIndex(weapon, 101);
+			if(address != Address_Null)
+				time *= TF2Attrib_GetValue(address);
+				
+			address = TF2Attrib_GetByDefIndex(weapon, 102);
+			if(address != Address_Null)
+				time *= TF2Attrib_GetValue(address);
+	
+			Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
+			damage,speed,time);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
 	}
 }
 
 public void Weapon_lantean_Wand_pap_m1(int client, int weapon, bool crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-		
-	if(mana_cost <= Current_Mana[client])
-	{
-		particle_type[client]="flaregun_energyfield_blue";
-		Current_Mana[client] -= mana_cost;
-		Mana_Hud_Delay[client] = 0.0;
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-		delay_hud[client] = 0.0;
-
-		float damage = 65.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-					
-		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-			
-			
-		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-
-		Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
-		damage,speed,time);
-	}
-	else
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
+	}
+	else
+	{	
+		int mana_cost;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+		if(address != Address_Null)
+			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+			
+		if(mana_cost <= Current_Mana[client])
+		{
+			particle_type[client]="flaregun_energyfield_blue";
+			Current_Mana[client] -= mana_cost;
+			Mana_Hud_Delay[client] = 0.0;
+			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			delay_hud[client] = 0.0;
+	
+			float damage = 65.0;
+			address = TF2Attrib_GetByDefIndex(weapon, 410);
+			if(address != Address_Null)
+				damage *= TF2Attrib_GetValue(address);
+						
+			float speed = 1100.0;
+			address = TF2Attrib_GetByDefIndex(weapon, 103);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+	
+			address = TF2Attrib_GetByDefIndex(weapon, 104);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+				
+			address = TF2Attrib_GetByDefIndex(weapon, 475);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+				
+				
+			float time = 500.0/speed;
+			address = TF2Attrib_GetByDefIndex(weapon, 101);
+			if(address != Address_Null)
+				time *= TF2Attrib_GetValue(address);
+				
+			address = TF2Attrib_GetByDefIndex(weapon, 102);
+			if(address != Address_Null)
+				time *= TF2Attrib_GetValue(address);
+	
+			Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
+			damage,speed,time);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
 	}
 }
 
 public void Weapon_lantean_Wand_pap2_m1(int client, int weapon, bool crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-		
-	if(mana_cost <= Current_Mana[client])
-	{
-		particle_type[client]="flaregun_energyfield_blue";
-		Current_Mana[client] -= mana_cost;
-		Mana_Hud_Delay[client] = 0.0;
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-		delay_hud[client] = 0.0;
-
-		float damage = 65.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-					
-		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-			
-			
-		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-
-		Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
-		damage,speed,time);
-	}
-	else
+	
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
+	}
+	else
+	{			
+		int mana_cost;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+		if(address != Address_Null)
+			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+			
+		if(mana_cost <= Current_Mana[client])
+		{
+			particle_type[client]="flaregun_energyfield_blue";
+			Current_Mana[client] -= mana_cost;
+			Mana_Hud_Delay[client] = 0.0;
+			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			delay_hud[client] = 0.0;
+	
+			float damage = 65.0;
+			address = TF2Attrib_GetByDefIndex(weapon, 410);
+			if(address != Address_Null)
+				damage *= TF2Attrib_GetValue(address);
+						
+			float speed = 1100.0;
+			address = TF2Attrib_GetByDefIndex(weapon, 103);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+	
+			address = TF2Attrib_GetByDefIndex(weapon, 104);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+				
+			address = TF2Attrib_GetByDefIndex(weapon, 475);
+			if(address != Address_Null)
+				speed *= TF2Attrib_GetValue(address);
+				
+				
+			float time = 500.0/speed;
+			address = TF2Attrib_GetByDefIndex(weapon, 101);
+			if(address != Address_Null)
+				time *= TF2Attrib_GetValue(address);
+				
+			address = TF2Attrib_GetByDefIndex(weapon, 102);
+			if(address != Address_Null)
+				time *= TF2Attrib_GetValue(address);
+	
+			Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
+			damage,speed,time);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
 	}
 }
 
 public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-	
-	mana_cost *= 7;
-	if(mana_cost <= Current_Mana[client])
-	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0)
-		{
-			Ability_Apply_Cooldown(client, slot, 30.0);
-	
-			particle_type[client]="scorchshot_trail_crit_red";
-			Current_Mana[client] -= mana_cost;
-			Mana_Hud_Delay[client] = 0.0;
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-			delay_hud[client] = 0.0;
-
-			float damage = 65.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 410);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
-				
-			float speed = 1100.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 103);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 104);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 475);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-		
-			float time = 500.0/speed;
-			address = TF2Attrib_GetByDefIndex(weapon, 101);
-			if(address != Address_Null)
-				time *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 102);
-			if(address != Address_Null)
-				time *= TF2Attrib_GetValue(address);
-
-			for(int i=1 ; i<=5 ; i++)
-			{
-				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
-				damage,speed,time);
-			}
-		}
-		else
-		{
-			float Ability_CD = Ability_Check_Cooldown(client, slot);
-			
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-				
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-		}
-	}
-	else
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
+	}
+	else
+	{	
+		
+		int mana_cost;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+		if(address != Address_Null)
+			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		
+		mana_cost *= 7;
+		if(mana_cost <= Current_Mana[client])
+		{
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			{
+				Ability_Apply_Cooldown(client, slot, 30.0);
+		
+				particle_type[client]="scorchshot_trail_crit_red";
+				Current_Mana[client] -= mana_cost;
+				Mana_Hud_Delay[client] = 0.0;
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				delay_hud[client] = 0.0;
+	
+				float damage = 65.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 410);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+					
+				float speed = 1100.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 103);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 104);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 475);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+			
+				float time = 500.0/speed;
+				address = TF2Attrib_GetByDefIndex(weapon, 101);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 102);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+	
+				for(int i=1 ; i<=5 ; i++)
+				{
+					Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_0_PENETRATION, LANTEEN_PAP_0_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_0_PENETRATION_OVERCHARGE_FALLFOFF,
+					damage,speed,time);
+				}
+			}
+			else
+			{
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+					
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			}
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
 	}
 }
 
 public void Weapon_lantean_Wand_pap_m2(int client, int weapon, bool crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-	
-	mana_cost *= 12;
-	if(mana_cost <= Current_Mana[client])
-	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0)
-		{
-			Ability_Apply_Cooldown(client, slot, 30.0);
-	
-			particle_type[client]="scorchshot_trail_crit_blue";
-			Current_Mana[client] -= mana_cost;
-			Mana_Hud_Delay[client] = 0.0;
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-			delay_hud[client] = 0.0;
-
-			float damage = 65.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 410);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
-				
-			float speed = 1100.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 103);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 104);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 475);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-		
-			float time = 500.0/speed;
-			address = TF2Attrib_GetByDefIndex(weapon, 101);
-			if(address != Address_Null)
-				time *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 102);
-			if(address != Address_Null)
-				time *= TF2Attrib_GetValue(address);
-
-			for(int i=1 ; i<=10 ; i++)
-			{
-				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
-				damage,speed,time);
-			
-			}
-		}
-		else
-		{
-			float Ability_CD = Ability_Check_Cooldown(client, slot);
-			
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-				
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-		}
-	}
-	else
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
+	}
+	else
+	{		
+		int mana_cost;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+		if(address != Address_Null)
+			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		
+		mana_cost *= 12;
+		if(mana_cost <= Current_Mana[client])
+		{
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			{
+				Ability_Apply_Cooldown(client, slot, 30.0);
+		
+				particle_type[client]="scorchshot_trail_crit_blue";
+				Current_Mana[client] -= mana_cost;
+				Mana_Hud_Delay[client] = 0.0;
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				delay_hud[client] = 0.0;
+	
+				float damage = 65.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 410);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+					
+				float speed = 1100.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 103);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 104);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 475);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+			
+				float time = 500.0/speed;
+				address = TF2Attrib_GetByDefIndex(weapon, 101);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 102);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+	
+				for(int i=1 ; i<=10 ; i++)
+				{
+					Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_1_PENETRATION, LANTEEN_PAP_1_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_1_PENETRATION_OVERCHARGE_FALLFOFF,
+					damage,speed,time);
+				
+				}
+			}
+			else
+			{
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+					
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			}
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
 	}
 }
 
 public void Weapon_lantean_Wand_pap_3_m2(int client, int weapon, bool crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-	
-	mana_cost *= 12;
-	if(mana_cost <= Current_Mana[client])
-	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0)
-		{
-			Ability_Apply_Cooldown(client, slot, 30.0);
-	
-			particle_type[client]="scorchshot_trail_crit_blue";
-			Current_Mana[client] -= mana_cost;
-			Mana_Hud_Delay[client] = 0.0;
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-			delay_hud[client] = 0.0;
-
-			float damage = 65.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 410);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
-				
-			float speed = 1100.0;
-			address = TF2Attrib_GetByDefIndex(weapon, 103);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 104);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 475);
-			if(address != Address_Null)
-				speed *= TF2Attrib_GetValue(address);
-		
-		
-			float time = 500.0/speed;
-			address = TF2Attrib_GetByDefIndex(weapon, 101);
-			if(address != Address_Null)
-				time *= TF2Attrib_GetValue(address);
-		
-			address = TF2Attrib_GetByDefIndex(weapon, 102);
-			if(address != Address_Null)
-				time *= TF2Attrib_GetValue(address);
-
-			for(int i=1 ; i<=10 ; i++)
-			{
-				Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
-				damage,speed,time);
-			}
-		}
-		else
-		{
-			float Ability_CD = Ability_Check_Cooldown(client, slot);
-			
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-				
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-		}
-	}
-	else
+	if(lantean_Wand_Drone_Count[client]>=LANTEAN_MAX_ACTIVE_DRONES)	//block if drone count too high due to people being too stupid and just holding m1...
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Too Many Drones");
+	}
+	else
+	{			
+		int mana_cost;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+		if(address != Address_Null)
+			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		
+		mana_cost *= 12;
+		if(mana_cost <= Current_Mana[client])
+		{
+			if (Ability_Check_Cooldown(client, slot) < 0.0)
+			{
+				Ability_Apply_Cooldown(client, slot, 30.0);
+		
+				particle_type[client]="scorchshot_trail_crit_blue";
+				Current_Mana[client] -= mana_cost;
+				Mana_Hud_Delay[client] = 0.0;
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				delay_hud[client] = 0.0;
+	
+				float damage = 65.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 410);
+				if(address != Address_Null)
+					damage *= TF2Attrib_GetValue(address);
+					
+				float speed = 1100.0;
+				address = TF2Attrib_GetByDefIndex(weapon, 103);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 104);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 475);
+				if(address != Address_Null)
+					speed *= TF2Attrib_GetValue(address);
+			
+			
+				float time = 500.0/speed;
+				address = TF2Attrib_GetByDefIndex(weapon, 101);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+			
+				address = TF2Attrib_GetByDefIndex(weapon, 102);
+				if(address != Address_Null)
+					time *= TF2Attrib_GetValue(address);
+	
+				for(int i=1 ; i<=10 ; i++)
+				{
+					Weapon_lantean_Wand(client, weapon, LANTEEN_PAP_2_PENETRATION, LANTEEN_PAP_2_PENETRATION_DMG_FALLFOFF, LANTEEN_PAP_2_PENETRATION_OVERCHARGE_FALLFOFF,
+					damage,speed,time);
+				}
+			}
+			else
+			{
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+					
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			}
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		}
 	}
 }
 

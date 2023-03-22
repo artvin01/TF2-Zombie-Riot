@@ -164,7 +164,7 @@ methodmap StalkerCombine < StalkerShared
 			"npc/fast_zombie/claw_strike3.wav"
 		};
 
-		EmitCustomToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayAlertSound(int client)
 	{
@@ -221,7 +221,7 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_flSpeed = 50.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_bDissapearOnDeath = true;
+		npc.m_bDissapearOnDeath = false;
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -650,7 +650,8 @@ void StalkerCombine_NPCDeath(int entity)
 	float startPosition[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 	startPosition[2] += 32;
-
+	int gib;
+/*
 	int gib = Place_Gib("models/zombie/zombie_soldier_legs.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
 		b_LimitedGibGiveMoreHealth[gib] = true;
@@ -660,7 +661,7 @@ void StalkerCombine_NPCDeath(int entity)
 	gib = Place_Gib("models/zombie/zombie_soldier_torso.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
 		b_LimitedGibGiveMoreHealth[gib] = true;
-	
+*/	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
