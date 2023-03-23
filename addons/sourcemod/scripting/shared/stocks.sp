@@ -2784,7 +2784,7 @@ float dmg_against_entity_multiplier = 3.0)
 			if(FromBlueNpc)
 			{
 				Handle trace; 
-				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);
+				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);
 				int Traced_Target;
 									
 				Traced_Target = TR_GetEntityIndex(trace);
