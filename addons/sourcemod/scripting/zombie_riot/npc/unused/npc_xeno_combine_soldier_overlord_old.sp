@@ -2,60 +2,63 @@
 #pragma newdecls required
 
 
-static const char g_DeathSounds[][] = {
-	")npc/combine_soldier/die1.wav",
-	")npc/combine_soldier/die2.wav",
-	")npc/combine_soldier/die3.wav",
+static char g_DeathSounds[][] = {
+	"npc/dog/dog_straining1.wav",
+	"npc/dog/dog_straining2.wav",
+	"npc/dog/dog_straining3.wav",
 };
 
-static const char g_HurtSounds[][] = {
-	")npc/combine_soldier/pain1.wav",
-	")npc/combine_soldier/pain2.wav",
-	")npc/combine_soldier/pain3.wav",
+static char g_HurtSounds[][] = {
+	"npc/combine_soldier/pain1.wav",
+	"npc/combine_soldier/pain2.wav",
+	"npc/combine_soldier/pain3.wav",
 };
 
-static const char g_IdleSounds[][] = {
-	")npc/combine_soldier/vo/alert1.wav",
-	")npc/combine_soldier/vo/bouncerbouncer.wav",
-	")npc/combine_soldier/vo/boomer.wav",
-	")npc/combine_soldier/vo/contactconfirm.wav",
+static char g_IdleSounds[][] = {
+	"npc/dog/dog_playfull1.wav",
+	"npc/dog/dog_playfull2.wav",
+	"npc/dog/dog_playfull3.wav",
+	"npc/dog/dog_playfull4.wav",
+	"npc/dog/dog_playfull5.wav",
 };
 
-static const char g_IdleAlertedSounds[][] = {
-	")npc/combine_soldier/vo/alert1.wav",
-	")npc/combine_soldier/vo/bouncerbouncer.wav",
-	")npc/combine_soldier/vo/boomer.wav",
-	")npc/combine_soldier/vo/contactconfim.wav",
+static char g_IdleAlertedSounds[][] = {
+	"npc/dog/dog_playfull1.wav",
+	"npc/dog/dog_playfull3.wav",
+	"npc/dog/dog_playfull4.wav",
+	"npc/dog/dog_playfull5.wav",
 };
-static const char g_MeleeHitSounds[][] = {
-	")weapons/halloween_boss/knight_axe_hit.wav",
-};
-
-static const char g_ChargeSounds[][] = {
-	")weapons/physcannon/physcannon_charge.wav",
+static char g_MeleeHitSounds[][] = {
+	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	")weapons/demo_sword_swing1.wav",
-	")weapons/demo_sword_swing2.wav",
-	")weapons/demo_sword_swing3.wav",
+static char g_ChargeSounds[][] = {
+	"npc/dog/dog_angry1.wav",
+	"npc/dog/dog_angry2.wav",
+	"npc/dog/dog_angry3.wav",
+};
+
+static char g_MeleeAttackSounds[][] = {
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
 
-static const char g_RangedAttackSounds[][] = {
+static char g_RangedAttackSounds[][] = {
 	"weapons/ar2/fire1.wav",
 };
 
-static const char g_RangedAttackSoundsSecondary[][] = {
+static char g_RangedAttackSoundsSecondary[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
 
-static const char g_RangedReloadSound[][] = {
+static char g_RangedReloadSound[][] = {
 	"weapons/ar2/npc_ar2_reload.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	")weapons/cbar_miss1.wav",
+static char g_MeleeMissSounds[][] = {
+	"weapons/cbar_miss1.wav",
 };
 
 public void XenoCombineOverlord_OnMapStart_NPC()
@@ -190,13 +193,13 @@ methodmap XenoCombineOverlord < CClotBody
 	
 	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
+		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/overlord_3.mdl", "1.0", "35000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_RUN");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -208,7 +211,7 @@ methodmap XenoCombineOverlord < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoCombineOverlord_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 		
-	//	npc.m_bDissapearOnDeath = true;
+		npc.m_bDissapearOnDeath = true;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
@@ -234,7 +237,7 @@ methodmap XenoCombineOverlord < CClotBody
 		}
 
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
-		
+		/*
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
@@ -245,16 +248,16 @@ methodmap XenoCombineOverlord < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		
+		*/
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		
+		/*
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		
+		*/
 		return npc;
 	}
 	
@@ -310,7 +313,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 7)
 					{
 						npc.m_iChanged_WalkCycle = 7;
-						npc.SetActivity("ACT_RUN");
+						npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 					}
 					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
 					npc.m_flSpeed = 330.0;
@@ -320,7 +323,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 8)
 					{
 						npc.m_iChanged_WalkCycle = 8;
-						npc.SetActivity("ACT_RUN_ON_FIRE");
+						npc.SetActivity("ACT_MP_RUN_MELEE");
 					}
 					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
 					npc.m_flSpeed = 380.0;
@@ -369,7 +372,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				}
 				npc.PlaySpecialChargeSound();
-				npc.AddGesture("ACT_ACTIVATE_BATON");
+				npc.AddGesture("OVERLORD_RAGE");
 				npc.m_flmovedelay = GetGameTime(npc.index) + 0.5;
 				npc.m_flJumpStartTime = GetGameTime(npc.index) + 1.0;
 				PF_StopPathing(npc.index);
@@ -381,7 +384,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 2000.0);
 				if(!npc.m_fbRangedSpecialOn)
 				{
-					npc.AddGesture("ACT_PUSH_PLAYER");
+					npc.AddGesture("ACT_ATTACK_HAND");
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
 					npc.m_fbRangedSpecialOn = true;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 0.3;
@@ -441,67 +444,100 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			if(flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
 			{
 				npc.StartPathing();
-
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				
+				
+			//	npc.FaceTowards(vecTarget, 1000.0);
+				
+				if(npc.m_flAngerDelay > GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index))
 				{
-					if (!npc.m_flAttackHappenswillhappen)
+					
+					npc.FaceTowards(vecTarget, 20000.0);
+					Handle swingTrace;
+					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
-						npc.m_flAttackHappenswillhappen = true;
-					}
 						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.FaceTowards(vecTarget, 20000.0);
-						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
-											
-									Custom_Knockback(npc.index, target, 450.0);
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
-						if(npc.m_flAngerDelay > GetGameTime(npc.index))
+						int target = TR_GetEntityIndex(swingTrace);	
+						
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
+						if(target > 0) 
 						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.2;
-						}
-						else
-						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
-						}
-						npc.m_flAttackHappenswillhappen = false;
+							if(target <= MaxClients)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
+							else
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
+								
+							Custom_Knockback(npc.index, target, 200.0);
+							// Hit particle
+							
+							
+							// Hit sound
+							npc.PlayMeleeHitSound();
+						} 
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					delete swingTrace;
+				}
+				else
+				{
+					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 					{
-						npc.m_flAttackHappenswillhappen = false;
-						if(npc.m_flAngerDelay > GetGameTime(npc.index))
+						if (!npc.m_flAttackHappenswillhappen)
 						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.2;
+							if(npc.m_flAngerDelay < GetGameTime(npc.index))
+							{
+								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+								npc.PlayMeleeSound();
+								npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
+								npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
+								npc.m_flAttackHappenswillhappen = true;
+							}
+							else
+							{
+								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+								npc.m_flAttackHappens = GetGameTime(npc.index)+0.0;
+								npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.14;
+								npc.m_flAttackHappenswillhappen = true;		
+								
+							}
 						}
-						else
+							
+						if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
+							npc.FaceTowards(vecTarget, 20000.0);
+							Handle swingTrace;
+							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+								{
+									
+									int target = TR_GetEntityIndex(swingTrace);	
+									
+									float vecHit[3];
+									TR_GetEndPosition(vecHit, swingTrace);
+									
+									if(target > 0) 
+									{
+										if(!ShouldNpcDealBonusDamage(target))
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB, -1, _, vecHit);
+										else
+											SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
+												
+										Custom_Knockback(npc.index, target, 450.0);
+										
+										// Hit particle
+										
+										
+										// Hit sound
+										npc.PlayMeleeHitSound();
+									} 
+								}
+							delete swingTrace;
+							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
+							npc.m_flAttackHappenswillhappen = false;
+						}
+						else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+						{
+							npc.m_flAttackHappenswillhappen = false;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
 						}
 					}
@@ -586,6 +622,39 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	
+	int entity_death = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity_death))
+	{
+		float pos[3];
+		float Angles[3];
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
+		
+//		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/bosses/overlord_1.mdl");
+
+		DispatchSpawn(entity_death);
+		
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
+		SetEntityCollisionGroup(entity_death, 2);
+		SetVariantString("OVERLORD_DEATH");
+		AcceptEntityInput(entity_death, "SetAnimation");
+		
+		pos[2] += 20.0;
+		if(npc.m_bThisNpcIsABoss)
+		{
+			CreateTimer(2.0, Timer_RemoveEntityOverlord, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		}
+
+	}
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoCombineOverlord_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))

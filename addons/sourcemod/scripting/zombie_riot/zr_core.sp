@@ -125,6 +125,8 @@ Cookie CookiePlayStreak;
 Cookie CookieCache;
 Cookie CookieAmmoCount;
 Cookie CookieXP;
+Cookie CookieAmmoReserve;
+Cookie CookieLeftForDead;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
 Handle g_hSDKMakeCarriedObjectDispenser;
@@ -379,6 +381,9 @@ void ZR_PluginStart()
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
+
+	CookieAmmoReserve = new Cookie("zr_ammoreserve", "Ammo Cookie", CookieAccess_Protected);
+	CookieLeftForDead = new Cookie("zr_leftfordead", "Left For Dead Cookie", CookieAccess_Protected);
 	
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)
@@ -590,6 +595,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
 	Reset_stats_LappLand_Singular(client);
+	LeftForDead_ClientDisconnect(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

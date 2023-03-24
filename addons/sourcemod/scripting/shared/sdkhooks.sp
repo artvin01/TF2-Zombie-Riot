@@ -958,76 +958,71 @@ public void OnPostThink(int client)
 		ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 			
 			
+		char HudBuffer[256];
+		
 		if(!TeutonType[client])
 		{
-			if(Store_ActiveCanMulti(client))
+			int downsleft;
+
+			if(b_LeftForDead[client])
 			{
-				if(Has_Wave_Showing)
-				{
-					PrintKeyHintText(client, "%t\n%t\n%t\n%t\n \n%t",
-					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-					"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-					PerkNames[i_CurrentEquippedPerk[client]],
-					"Zombies Left", Zombies_Currently_Still_Ongoing,
-					"Press Button To Switch");
-				}
-				else
-				{
-					PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t\n \n%t",
-					"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-					"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-					PerkNames[i_CurrentEquippedPerk[client]],
-					"Zombies Left", Zombies_Currently_Still_Ongoing,
-					"Press Button To Switch");	
-				}
-			}
-			else if(Has_Wave_Showing)
-			{
-				PrintKeyHintText(client, "%t\n%t\n%t\n%t",
-				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Zombies Left", Zombies_Currently_Still_Ongoing);
+				downsleft = 1;
 			}
 			else
 			{
-				PrintKeyHintText(client, "%t\n%s | %t\n%t\n%t\n%t",
-				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-				WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]), 
-				PerkNames[i_CurrentEquippedPerk[client]],
-				"Zombies Left", Zombies_Currently_Still_Ongoing);	
+				downsleft = 2;
+			}
+
+			downsleft -= i_AmountDowned[client];
+
+			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
+			"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+			PerkNames[i_CurrentEquippedPerk[client]],
+			"Zombies Left", Zombies_Currently_Still_Ongoing
+			);
+
+			if(f_LeftForDead_Cooldown[client] > GameTime)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer, "Down Cooldown", f_LeftForDead_Cooldown[client] - GameTime);	
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft);	
+			}
+			if(!Has_Wave_Showing)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s | %t", HudBuffer, WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);
+			}
+			if(Store_ActiveCanMulti(client))
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n\n%t", HudBuffer, "Press Button To Switch");
 			}
 		}
 		else if (TeutonType[client] == TEUTON_DEAD)
 		{
-			if(Has_Wave_Showing)
+			Format(HudBuffer, sizeof(HudBuffer), "%s %t\n%t",HudBuffer, "You Died Teuton",
+				"Zombies Left", Zombies_Currently_Still_Ongoing
+			);
+
+			if(!Has_Wave_Showing)
 			{
-				PrintKeyHintText(client, "%t\n%t","You Died Teuton",
-				"Zombies Left", Zombies_Currently_Still_Ongoing);
-			}
-			else
-			{
-				PrintKeyHintText(client, "%t\n%s | %t\n%t","You Died Teuton",
-				WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-				"Zombies Left", Zombies_Currently_Still_Ongoing);				
+				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
 		}
 		else
 		{
-			if(Has_Wave_Showing)
+			Format(HudBuffer, sizeof(HudBuffer), "%s %t\n%t",HudBuffer, "You Wait Teuton",
+				"Zombies Left", Zombies_Currently_Still_Ongoing
+			);
+
+			if(!Has_Wave_Showing)
 			{
-				PrintKeyHintText(client, "%t\n%t","You Wait Teuton",
-				"Zombies Left", Zombies_Currently_Still_Ongoing);
-			}
-			else
-			{
-				PrintKeyHintText(client, "%t\n%s | %t\n%t","You Wait Teuton",
-					WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1,
-				"Zombies Left", Zombies_Currently_Still_Ongoing);				
+				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
 		}
+		PrintKeyHintText(client,"%s", HudBuffer);
 #endif	// ZR
 	}
 
@@ -1592,7 +1587,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 			
 			i_AmountDowned[victim] += 1;
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim] && f_LeftForDead_Cooldown[victim] < GameTime))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
@@ -1606,8 +1601,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				else
 				{
+					if(!SpecterCheckIfAutoRevive(victim)) //only if they dont get revived via this perk
+					{
+						f_LeftForDead_Cooldown[victim] = GameTime + 300.0;
+					}
 					dieingstate[victim] = 500;
 				}
+				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
 				DoOverlay(victim, "debug/yuv");
 				SetEntityCollisionGroup(victim, 1);
@@ -1857,5 +1857,28 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 	}
 	return damage;
+}
+
+void LeftForDead_ClientCookiesCached(int client)
+{
+	char buffer[128];
+	CookieLeftForDead.Get(client, buffer, sizeof(buffer));
+	int buffers[2];
+	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	f_LeftForDead_Cooldown[client] = 0.0;
+	if(CurrentGame && buffers[0] == CurrentGame)
+	{
+		f_LeftForDead_Cooldown[client] = float(buffers[1]);
+	}
+}
+
+void LeftForDead_ClientDisconnect(int client)
+{
+	if(Waves_Started())
+	{
+		char buffer[32];
+		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, RoundToCeil(f_LeftForDead_Cooldown[client]));
+		CookieLeftForDead.Set(client, buffer);
+	}
 }
 #endif

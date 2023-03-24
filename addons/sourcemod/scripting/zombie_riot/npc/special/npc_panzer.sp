@@ -248,7 +248,8 @@ methodmap NaziPanzer < CClotBody
 			
 			if(IsValidEntity(this.m_iWearable3))
 				RemoveEntity(this.m_iWearable3);
-			this.m_iWearable3 = ConnectWithBeam(this.m_iWearable4, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
+
+			this.m_iWearable3 = ConnectWithBeam(this.index, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Panzer_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 			
 		}
@@ -306,29 +307,6 @@ methodmap NaziPanzer < CClotBody
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-		
-		npc.m_iWearable4 = CreateEntityByName("prop_physics_override");
-	
-		SetEntPropEnt(npc.m_iWearable4, Prop_Send, "m_hOwnerEntity", client);
-		DispatchKeyValue(npc.m_iWearable4, "model", ENERGY_BALL_MODEL_PANZER);
-		DispatchKeyValue(npc.m_iWearable4, "modelscale", "0");
-		DispatchSpawn(npc.m_iWearable4);
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-	
-	
-		npc.GetAttachment("hook_middle", flPos, flAng);
-		
-		TeleportEntity(npc.m_iWearable4, flPos, NULL_VECTOR, NULL_VECTOR);
-		SetEntityMoveType(npc.m_iWearable4, MOVETYPE_FLY);
-		
-		SetParent(npc.index, npc.m_iWearable4, "hook_middle");
-		
-		SetEntityCollisionGroup(npc.m_iWearable4, 1);
-		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
 	
 		npc.m_flWaveScale = wave;
 		
@@ -449,8 +427,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 	else if (!npc.m_bLostHalfHealthAnim && npc.m_bLostHalfHealth)
 	{
 		npc.m_flNextThinkTime = npc.m_flDoSpawnGesture;
-		int iActivity = npc.LookupActivity("PANZER_STAGGER_2");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.AddGesture("PANZER_STAGGER_2");
 		npc.m_flSpeed = 0.0;
 		npc.m_bLostHalfHealthAnim = true;
 		PF_StopPathing(npc.index);
@@ -556,7 +533,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			npc.AddGesture("ACT_FLY_LAND");
 			npc.m_bDuringHighFlight = false;
-			npc.m_flStandStill = GetGameTime(npc.index) + 1.0;
+			npc.m_flStandStill = GetGameTime(npc.index) + 1.25;
 		}
 		else if (flDistanceToTarget < 20000 && npc.m_bFlamerToggled)
 		{
@@ -887,7 +864,8 @@ public void NaziPanzer_NPCDeath(int entity)
 		float pos[3];
 		float Angles[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
-
+		
+//		Angles[1] += 90.0;
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
@@ -898,10 +876,8 @@ public void NaziPanzer_NPCDeath(int entity)
 		
 		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("panzer_death_2");
+		SetVariantString("panzer_death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		
-		pos[2] += 20.0;
 		
 		CreateTimer(2.0, Timer_RemoveEntityPanzer, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -940,7 +916,7 @@ public MRESReturn Panzer_DHook_RocketExplodePre(int entity)
 				pack.WriteCell(GetClientUserId(Closest_Player));
 				if(IsValidEntity(npc.m_iWearable3))
 					RemoveEntity(npc.m_iWearable3);
-				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable4, Closest_Player, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
+				npc.m_iWearable3 = ConnectWithBeam(npc.index, Closest_Player, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
 				npc.m_bGrabbedSomeone = true;
 				npc.m_flStandStill = 9999999.0;	
 				

@@ -433,6 +433,7 @@ int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
+float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
@@ -1466,6 +1467,8 @@ public void OnClientPutInServer(int client)
 	DHook_HookClient(client);
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
+//	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
+	//do cooldown upon connection.
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1525,6 +1528,7 @@ public void OnClientCookiesCached(int client)
 #if defined ZR
 	HudSettings_ClientCookiesCached(client);
 	Store_ClientCookiesCached(client);
+	LeftForDead_ClientCookiesCached(client);
 #endif
 
 #if defined RPG

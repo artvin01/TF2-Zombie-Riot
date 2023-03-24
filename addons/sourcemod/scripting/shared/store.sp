@@ -1360,10 +1360,10 @@ void Store_SetNamedItem(int client, const char[] name, int amount)
 
 void Store_ClientCookiesCached(int client)
 {
-	char buffer[32];
+	char buffer[256];
 	CookieCache.Get(client, buffer, sizeof(buffer));
 	
-	int buffers[3];
+	int buffers[32];
 	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 	if(CurrentGame && buffers[0] == CurrentGame)
 		Database_LoadGameData(client);
@@ -1374,6 +1374,17 @@ void Store_ClientCookiesCached(int client)
 	if(CurrentGame && buffers[0] == CurrentGame)
 	{
 		Ammo_Count_Used[client] = buffers[1];
+	}
+
+	CookieAmmoReserve.Get(client, buffer, sizeof(buffer));
+
+	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+	if(CurrentGame && buffers[0] == CurrentGame)
+	{
+		for(int loop; loop < Ammo_MAX; loop++)
+		{
+			CurrentAmmo[client][loop] = buffers[loop + 1];
+		}
 	}
 }
 
@@ -1594,6 +1605,16 @@ void Store_ClientDisconnect(int client)
 		char buffer[32];
 		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, Ammo_Count_Used[client]);
 		CookieAmmoCount.Set(client, buffer);
+
+		
+		
+		char buffer_ammo[256];
+		FormatEx(buffer_ammo, sizeof(buffer_ammo), "%d", CurrentGame);
+		for(int loop; loop < Ammo_MAX; loop++)
+		{
+			FormatEx(buffer_ammo, sizeof(buffer_ammo), "%s;%d", buffer_ammo, CurrentAmmo[client][loop]);
+		}
+		CookieAmmoReserve.Set(client, buffer_ammo);
 	}
 
 	CashSpent[client] = 0;

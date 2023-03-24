@@ -2220,5 +2220,32 @@
 		//"it"		""
 		//"fr"		""
 	}
-	
+	"Downs left"
+	{
+		"#format"	"{1:d}"
+		"en"		"Downs left : {1}"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Down Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Down Cooldown : {1}"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
 }
