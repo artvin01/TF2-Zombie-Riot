@@ -2550,6 +2550,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Specter_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
+		case WEAPON_YAMATO:
+		{
+			Npc_OnTakeDamage_Yamato(attacker, damagetype);
+		}
 	}
 #endif
 	return damage;

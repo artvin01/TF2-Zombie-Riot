@@ -1827,4 +1827,8 @@
 	{
 		"en"	"Your drones can now penetrate up to 10 targets\nLess damge loss on penetration\nLower damage penatly on overcharge too"
 	}
+	"Yamato_Desc"
+	{
+		"en"	"Gain a portion of the son's of sparda's POWER\nEach time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nYou do lose the 10%% melee dmg resist"
+	}
 }
