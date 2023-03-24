@@ -77,7 +77,8 @@ enum
 	WEAPON_LAPPLAND = 13,
 	WEAPON_LANTEAN = 14,
 	WEAPON_SPECTER = 15,
-	WEAPON_RIOT_SHIELD = 16
+	WEAPON_RIOT_SHIELD = 16,
+	WEAPON_YAMATO = 17
 }
 
 ArrayList SpawnerList;
@@ -354,6 +355,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 #include "zombie_riot/custom/weapon_ocean_song.sp"
 #include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
 #include "zombie_riot/custom/weapon_specter.sp"
+#include "zombie_riot/custom/weapon_yamato.sp"
 
 void ZR_PluginLoad()
 {
@@ -532,6 +534,7 @@ void ZR_MapStart()
 	Wand_Potions_Precache();
 	ResetMapStartOcean();
 	Specter_MapStart();
+	Reset_stats_Yamato_Global();	//acts as a reset/map precache
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
