@@ -85,6 +85,7 @@ void Reset_stats_Yamato_Global()	//happens on mapchange!
 	Zero(fl_Yamato_Motivation);
 	Zero(fl_yamato_stats_timer);
 	Zero2(f_Spin_To_Win_Throttle);
+	Zero(Handle_on);
 	gLaser2= PrecacheModel("materials/sprites/laserbeam.vmt");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
