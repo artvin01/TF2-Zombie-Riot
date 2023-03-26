@@ -92,6 +92,7 @@ public void RaidbossSilvester_OnMapStart()
 static int i_TargetToWalkTo[MAXENTITIES];
 static float f_TargetToWalkToDelay[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
+static int i_RaidDuoAllyIndex;
 
 methodmap RaidbossSilvester < CClotBody
 {
@@ -337,6 +338,10 @@ methodmap RaidbossSilvester < CClotBody
 		
 		Citizen_MiniBossSpawn(npc.index);
 		npc.StartPathing();
+
+
+		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
+
 		
 		return npc;
 	}
@@ -392,6 +397,14 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 	if(npc.m_flNextRangedSpecialAttackHappens)
 	{
+		
+		int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
+		if(IsValidEntity(AllyEntity))
+		{
+			i_TargetToWalkTo[npc.index] = i_RaidDuoAllyIndex;
+			npc.m_flSpeed = 500.0;
+		}
+
 		spawnRing(npc.index, NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0 * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
 		
 		for(int EnemyLoop; EnemyLoop < MaxClients; EnemyLoop ++)
@@ -509,6 +522,10 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			}
 		}
 	}
+	else
+	{
+		npc.m_flSpeed = 330.0;
+	}
 
 	if(IsEntityAlive(i_TargetToWalkTo[npc.index]))
 	{
@@ -531,22 +548,22 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		{
 			ActionToTake= -1;
 		}
+		else if(flDistanceToTarget < Pow(1000.0, 2.0) && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
+		{
+			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
+			float flPos[3]; // original
+			float flAng[3]; // original
+			GetAttachment(npc.index, "effect_hand_l", flPos, flAng);
+			int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
+			SetParent(npc.index, particler, "effect_hand_l");
+			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
+			npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
+			//pull or push the target away!
+			ActionToTake = 1;
+		}
 		else if(IsValidEnemy(npc.index, i_TargetToWalkTo[npc.index]))
 		{
-			//Do i look at an enemy right now? or wish to target an enemy?
-			if(flDistanceToTarget < Pow(1000.0, 2.0) && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
-			{
-				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
-				float flPos[3]; // original
-				float flAng[3]; // original
-				GetAttachment(npc.index, "effect_hand_l", flPos, flAng);
-				int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
-				SetParent(npc.index, particler, "effect_hand_l");
-				npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
-				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
-				//pull or push the target away!
-				ActionToTake = 1;
-			}
+			ActionToTake = 0;
 		}
 		else
 		{
@@ -586,6 +603,12 @@ public Action RaidbossSilvester_ClotDamaged(int victim, int &attacker, int &infl
 		return Plugin_Continue;
 		
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
 
 	return Plugin_Changed;
 }
