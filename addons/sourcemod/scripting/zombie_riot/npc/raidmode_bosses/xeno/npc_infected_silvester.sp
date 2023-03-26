@@ -341,8 +341,8 @@ methodmap RaidbossSilvester < CClotBody
 
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
-
 		
+		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
 		return npc;
 	}
 }
@@ -399,10 +399,14 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		
 		int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
-		if(IsValidEntity(AllyEntity))
+		if(IsEntityAlive(AllyEntity))
 		{
-			i_TargetToWalkTo[npc.index] = i_RaidDuoAllyIndex;
+			i_TargetToWalkTo[npc.index] = AllyEntity;
 			npc.m_flSpeed = 500.0;
+		}
+		else
+		{
+			npc.m_flSpeed = 150.0;
 		}
 
 		spawnRing(npc.index, NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0 * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
@@ -557,7 +561,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
 			SetParent(npc.index, particler, "effect_hand_l");
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
-			npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
+			npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 35.0;
 			//pull or push the target away!
 			ActionToTake = 1;
 		}
@@ -645,7 +649,11 @@ public void RaidbossSilvester_NPCDeath(int entity)
 		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 		{
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}						
+		}		
+		if(IsValidClient(EnemyLoop))
+		{
+			ResetDamageHud(EnemyLoop);//show nothing so the damage hud goes away so the other raid can take priority faster.
+		}				
 	}
 	Citizen_MiniBossDeath(entity);
 }
@@ -847,5 +855,31 @@ void ApplySdkHookSilvesterThrow(int ref)
 	{
 		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
 		SDKHook(entity, SDKHook_Think, contact_throw_Silvester_entity);		
+	}
+}
+
+
+
+void Silvester_SpawnAllyDuoRaid(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		int maxhealth;
+
+		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+			
+		maxhealth -= (maxhealth / 4);
+
+		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
+		if(spawn_index > MaxClients)
+		{
+			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
+			Zombies_Currently_Still_Ongoing += 1;
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+		}
 	}
 }

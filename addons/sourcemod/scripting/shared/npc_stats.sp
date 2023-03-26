@@ -3169,7 +3169,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 
 			i_KillsMade[client] += 1;
 #endif
-
+			RemoveHudCooldown(client);
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
 		
@@ -5217,7 +5217,7 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return true;
 	}
 	
-	return true;
+	return false;
 }
 
 float f_StuckTextChatNotif[MAXTF2PLAYERS];
