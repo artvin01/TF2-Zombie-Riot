@@ -395,7 +395,7 @@ bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 
 bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
-int i_Wearable[MAXENTITIES][6];
+int i_Wearable[MAXENTITIES][7];
 
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];

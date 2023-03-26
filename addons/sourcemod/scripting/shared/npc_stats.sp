@@ -1630,6 +1630,24 @@ methodmap CClotBody
 			}
 		}
 	}
+	property int m_iWearable7
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][6]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][6] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][6] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	public float GetMaxJumpHeight() { return 250.0; }
 	public float GetLeadRadius()	{ return 90000.0; }
 	
@@ -7256,6 +7274,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][3] = -1;
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
+	i_Wearable[entity][6] = -1;
 	f3_SpawnPosition[entity][0] = 0.0;
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;

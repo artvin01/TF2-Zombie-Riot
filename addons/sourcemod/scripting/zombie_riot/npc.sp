@@ -227,7 +227,9 @@ enum
 	
 	STALKER_COMBINE		= 193,
 	STALKER_FATHER		= 194,
-	STALKER_GOGGLES		= 195
+	STALKER_GOGGLES		= 195,
+
+	XENO_RAIDBOSS_SILVESTER		= 196
 }
 
 public const char NPC_Names[][] =
@@ -446,6 +448,8 @@ public const char NPC_Names[][] =
 
 	"Spawned Combine",
 	"Spawned Father Grigori",
+	"Spawned Blue Goggles",
+
 	"Spawned Blue Goggles"
 };
 
@@ -660,7 +664,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 
 	"npc_stalker_combine",
 	"npc_stalker_father",
-	"npc_stalker_goggles"
+	"npc_stalker_goggles",
+
+	"npc_xeno_raidboss_silveseter"
 };
 
 void NPC_MapStart()
@@ -851,6 +857,7 @@ void NPC_MapStart()
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
 	Blitzkrieg_OnMapStart();
+	RaidbossSilvester_OnMapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -1653,6 +1660,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = StalkerGoggles(client, vecPos, vecAng, false);
 		}
+		case XENO_RAIDBOSS_SILVESTER:
+		{
+			entity = RaidbossSilvester(client, vecPos, vecAng, false);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2434,6 +2445,10 @@ public void NPCDeath(int entity)
 		{
 			StalkerGoggles_NPCDeath(entity);
 		}
+		case XENO_RAIDBOSS_SILVESTER:
+		{
+			RaidbossSilvester_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2724,3 +2739,6 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_goggles.sp"
+
+
+#include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_silvester.sp"
