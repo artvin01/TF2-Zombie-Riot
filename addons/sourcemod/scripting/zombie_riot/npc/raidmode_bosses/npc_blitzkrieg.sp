@@ -1618,6 +1618,8 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 				alpha=2.75;
 			}
 			
+			startPosition[2] += 50.0;
+			
 			makeexplosion(client, client, startPosition, "", RoundToCeil((225*alpha)*zr_smallmapbalancemulti.FloatValue), 350);
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
