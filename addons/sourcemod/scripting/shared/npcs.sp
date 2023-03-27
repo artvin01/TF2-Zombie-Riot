@@ -1880,6 +1880,11 @@ stock void RemoveAllDamageAddition()
 	Zero(f_damageAddedTogether);
 	Zero(f_damageAddedTogetherGametime);
 }
+void RemoveHudCooldown(int client)
+{
+	f_HudCooldownAntiSpam[client] = 0.0;
+}
+
 
 stock void Calculate_And_Display_HP_Hud(int attacker)
 {
@@ -2197,6 +2202,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 	}
 #endif
+}
+
+void ResetDamageHud(int client)
+{
+	SetHudTextParams(-1.0, 0.05, 1.0, 0, 0, 0, 255, 0, 0.01, 0.01);
+	ShowSyncHudText(client, SyncHud, "");
 }
 
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)

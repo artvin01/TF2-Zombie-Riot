@@ -119,10 +119,7 @@ Current coders that in anyway actively helped, in order of how much:
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
 
-IF YOU WISH TO USE THE MODELS THAT ARENT IN THE SOURCECODE, CONTACT THIS PERSON FOR PERMISSION, OTHERWISE PLEASE HAVE THIS CVAR (zr_nospecial) ON 1
-USING THESE MODELS WITHOUT PERMISSION WILL ANGER US. thanks.
-
-- [Crusty](https://steamcommunity.com/profiles/76561198097667312/) (Modeler)
+Currently zr_nospecial is 1 by default, i will release the models needed to make this work later.
 
 Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.

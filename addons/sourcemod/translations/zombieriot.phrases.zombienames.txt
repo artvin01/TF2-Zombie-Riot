@@ -1525,4 +1525,30 @@
 	{
 		"en"		"Spawned Blue Goggles"
 	}
+	"Silvester"
+	{
+		"en"		"Silvester"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Blue Goggles"
+	{
+		"en"		"Blue Goggles"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
