@@ -59,6 +59,11 @@ static char g_PullSounds[][] = {
 
 #define LASERBEAM "sprites/laserbeam.vmt"
 
+static int i_TargetToWalkTo[MAXENTITIES];
+static float f_TargetToWalkToDelay[MAXENTITIES];
+static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
+static int i_RaidDuoAllyIndex;
+
 public void RaidbossBlueGoggles_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
@@ -89,10 +94,7 @@ public void RaidbossBlueGoggles_OnMapStart()
 #define EMPOWER_WIDTH 5.0
 #define EMPOWER_HIGHT_OFFSET 20.0
 
-static int i_TargetToWalkTo[MAXENTITIES];
-static float f_TargetToWalkToDelay[MAXENTITIES];
-static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
-static int i_RaidDuoAllyIndex;
+static float f_HurtRecentlyAndRedirected[MAXENTITIES]={-1.0, ...};
 
 methodmap RaidbossBlueGoggles < CClotBody
 {
@@ -265,7 +267,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 	
 
-		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
@@ -277,6 +278,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 
@@ -393,6 +395,24 @@ public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &in
 		npc.m_blPlayHurtAnimation = true;
 	}
 
+	//redirect damage and reduce it if in range.
+	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
+	if(IsEntityAlive(AllyEntity))
+	{
+		static float victimPos[3];
+		static float partnerPos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
+		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
+		float Distance = GetVectorDistance(victimPos, partnerPos, true);
+		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		{	
+			damage *= 0.8;
+			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			damage *= 0.25;
+			f_HurtRecentlyAndRedirected[npc.index] = GetGameTime() + 0.15;
+		}
+	}
+
 	return Plugin_Changed;
 }
 
@@ -436,4 +456,19 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 		}						
 	}
 	Citizen_MiniBossDeath(entity);
+}
+
+
+bool Goggles_TookDamageRecently(int entity)
+{
+	if(f_HurtRecentlyAndRedirected[entity] > GetGameTime())
+	{
+		return true;
+	}
+	return false;
+}
+
+void Goggles_SetRaidPartner(int partner)
+{
+	i_RaidDuoAllyIndex = EntIndexToEntRef(partner);
 }
