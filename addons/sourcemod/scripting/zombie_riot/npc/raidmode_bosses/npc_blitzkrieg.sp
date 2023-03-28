@@ -1453,7 +1453,6 @@ public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 		
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(enemy);
-		vecTarget[2] -= 54.0;
 		
 		Handle data = CreateDataPack();
 		WritePackFloat(data, vecTarget[0]);
@@ -1617,10 +1616,9 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 			{
 				alpha=2.75;
 			}
-			
-			startPosition[2] += 50.0;
-			
+			startPosition[2] += 25.0;
 			makeexplosion(client, client, startPosition, "", RoundToCeil((225*alpha)*zr_smallmapbalancemulti.FloatValue), 350);
+			startPosition[2] -= 25.0;
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
