@@ -1532,9 +1532,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range * 0.6),_,_,_,false);
 			
 			SpawnParticlePos[2] += 80.0;
-
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range * 0.6),_,_,_,false);
-			
 			SpawnParticlePos[2] -= 80.0;
 	//		ParticleEffectAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
