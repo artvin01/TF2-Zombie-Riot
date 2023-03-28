@@ -39,7 +39,7 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 static char g_RangedAttackSounds[][] = {
-	"weapons/breadmonster/throwable/bm_throwable_throw.wav",
+	"npc/combine_gunship/gunship_ping_search.wav",
 };
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_teleport.wav",
@@ -59,7 +59,8 @@ static char g_PullSounds[][] = {
 
 #define LASERBEAM "sprites/laserbeam.vmt"
 #define LINKBEAM "sprites/glow01.vmt"
-
+#define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
+#define PILLAR_SPACING 100.0
 
 static bool Silvester_BEAM_CanUse[MAXENTITIES];
 static bool Silvester_BEAM_IsUsing[MAXENTITIES];
@@ -82,6 +83,7 @@ static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 
+static char gExplosive1;
 public void RaidbossSilvester_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
@@ -104,9 +106,12 @@ public void RaidbossSilvester_OnMapStart()
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	Silvester_TBB_Precahce();
+	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
+	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LINKBEAM);
+	PrecacheModel(PILLAR_MODEL);
 }
 
 void Silvester_TBB_Precahce()
@@ -215,6 +220,9 @@ methodmap RaidbossSilvester < CClotBody
 	}
 	
 	public void PlayRangedSound() {
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
@@ -471,6 +479,15 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
+	}
+
+	if(npc.m_flNextRangedAttackHappening && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	{
+		PF_StartPathing(npc.index);
+		npc.m_bPathing = true;
+		npc.m_flSpeed = 330.0;
+		npc.m_iInKame = 0;
+		npc.m_flNextRangedAttackHappening = 0.0;
 	}
 
 
@@ -743,6 +760,10 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 2;
 			}
+			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			{
+				ActionToTake = 4;
+			}
 		}
 		else
 		{
@@ -780,6 +801,37 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
 				}
+			}
+			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
+			{
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;
+				npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_flSpeed = 0.0;
+				npc.FaceTowards(vecTarget, 99999.9);
+				float pos[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				pos[2] += 5.0;
+				float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
+
+				float DelayPillars = 2.0;
+				float DelaybewteenPillars = 0.2;
+				if(ZR_GetWaveCount()+1 > 29)
+				{
+					DelayPillars = 1.5;
+					DelaybewteenPillars = 0.1;
+				}
+				npc.AddGesture("ACT_MP_THROW");
+				npc.PlayRangedSound();
+				Silvester_Damaging_Pillars_Ability(npc.index,
+				50.0 * RaidModeScaling,				 	//damage
+				RoundToNearest(2.0 * RaidModeScaling), 	//how many
+				DelayPillars,									//Delay untill hit
+				DelaybewteenPillars,									//Extra delay between each
+				ang_Look 								/*2 dimensional plane*/,
+				pos);
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
 			}
 			default:
 			{
@@ -1086,7 +1138,173 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 	}
 }
 
+void Silvester_Damaging_Pillars_Ability(int entity,
+float damage,
+int count,
+float delay,
+float delay_PerPillar,
+float direction[3] /*2 dimensional plane*/,
+float origin[3])
+{
+	float timerdelay = GetGameTime() + delay;
+	DataPack pack;
+	CreateDataTimer(delay_PerPillar, Silvester_DamagingPillar, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
+	pack.WriteCell(damage);
+	pack.WriteCell(count);						//how many pillars, this counts down with each pillar made
+	pack.WriteCell(timerdelay);					//Delay for each initial pillar
+	pack.WriteCell(direction[0]);
+	pack.WriteCell(direction[1]);
+	pack.WriteCell(direction[2]);
+	pack.WriteCell(origin[0]);
+	pack.WriteCell(origin[1]);
+	pack.WriteCell(origin[2]);
 
+	float origin_altered[3];
+	origin_altered = origin;
+
+	for(int Repeats; Repeats < count; Repeats++)
+	{
+		float VecForward[3];
+		float vecRight[3];
+		float vecUp[3];
+				
+		GetAngleVectors(direction, VecForward, vecRight, vecUp);
+		
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = origin_altered[0] + VecForward[0] * (PILLAR_SPACING);
+		vecSwingEnd[1] = origin_altered[1] + VecForward[1] * (PILLAR_SPACING);
+		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+		origin_altered = vecSwingEnd;
+		float Range = 100.0;
+		spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 12.0, 6.1, 1);
+		int laser;
+		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
+
+		int red = 212;
+		int green = 155;
+		int blue = 0;
+
+		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
+
+		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	}
+}
+
+
+public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float damage = pack.ReadCell();
+	DataPackPos countPos = pack.Position;
+	int count = pack.ReadCell();
+	float delayUntillImpact = pack.ReadCell();
+	float direction[3];
+	direction[0] = pack.ReadCell();
+	direction[1] = pack.ReadCell();
+	direction[2] = pack.ReadCell();
+	float origin[3];
+	DataPackPos originPos = pack.Position;
+	origin[0] = pack.ReadCell();
+	origin[1] = pack.ReadCell();
+	origin[2] = pack.ReadCell();
+
+	//Timers have a 0.1 impresicison logic, accont for it.
+	if(delayUntillImpact - 0.1 > GetGameTime())
+	{
+		return Plugin_Continue;
+	}
+
+	count -= 1;
+	pack.Position = countPos;
+	pack.WriteCell(count, false);
+	if(IsValidEntity(entity))
+	{
+		float VecForward[3];
+		float vecRight[3];
+		float vecUp[3];
+				
+		GetAngleVectors(direction, VecForward, vecRight, vecUp);
+		
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING);
+		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
+		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+		if(TR_PointOutsideWorld(vecSwingEnd))
+		{
+			return Plugin_Stop;
+		}
+
+		
+		int prop = CreateEntityByName("prop_physics_multiplayer");
+		if(IsValidEntity(prop))
+		{
+
+			float vel[3];
+			vel[2] = 750.0;
+			float SpawnPropPos[3];
+			float SpawnParticlePos[3];
+
+			SpawnPropPos = vecSwingEnd;
+			SpawnParticlePos = vecSwingEnd;
+
+			SpawnPropPos[2] -= 250.0;
+			SpawnParticlePos[2] += 5.0;
+
+			DispatchKeyValue(prop, "model", PILLAR_MODEL);
+			DispatchKeyValue(prop, "physicsmode", "2");
+			DispatchKeyValue(prop, "solid", "0");
+			DispatchKeyValue(prop, "massScale", "1.0");
+			DispatchKeyValue(prop, "spawnflags", "6");
+			DispatchKeyValue(prop, "modelscale", "1.0");
+			DispatchKeyValueVector(prop, "origin",	 SpawnPropPos);
+			direction[2] -= 180.0;
+			direction[1] = GetRandomFloat(-180.0, 180.0);
+			direction[0] = GetRandomFloat(-180.0, 180.0);
+			DispatchKeyValueVector(prop, "angles",	 direction);
+			DispatchSpawn(prop);
+			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
+			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(prop, 215, 155, 0, 165);
+			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
+			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
+			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
+
+			
+			float Range = 100.0;
+
+			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
+			TE_SetupExplosion(SpawnParticlePos, gExplosive1, 10.0, 1, 0, 0, 0);
+			TE_SendToAll();
+			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, SpawnParticlePos);
+		
+		//	spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 1.0, 12.0, 6.1, 1);
+			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+	
+			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		
+		pack.Position = originPos;
+		pack.WriteCell(vecSwingEnd[0], false);
+		pack.WriteCell(vecSwingEnd[1], false);
+		pack.WriteCell(origin[2], false);
+		//override origin, we have a new origin.
+	}
+	else
+	{
+		return Plugin_Stop; //cancel.
+	}
+
+	if(count <= 0)
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
 
 
 void Silvester_TBB_Ability(int client)
