@@ -87,7 +87,6 @@ static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 
-static char gExplosive1;
 
 static int Silvester_TE_Used;
 public void RaidbossSilvester_OnMapStart()
@@ -113,7 +112,6 @@ public void RaidbossSilvester_OnMapStart()
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 	Silvester_TBB_Precahce();
-	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
 	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
 	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
@@ -341,6 +339,7 @@ methodmap RaidbossSilvester < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, RaidbossSilvester_ClotDamaged);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -932,7 +931,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				float DelayPillars = 2.0;
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
 				float DelaybewteenPillars = 0.2;
-				if(ZR_GetWaveCount()+1 > 29)
+				if(ZR_GetWaveCount()+1 > 35)
 				{
 					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 					DelayPillars = 1.5;
@@ -1057,24 +1056,37 @@ public Action RaidbossSilvester_ClotDamaged(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
-	{
-		PF_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.m_flSpeed = 0.0;
-		npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 6.0;
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-		npc.PlayAngerSound();
-		npc.Anger = true; //	>:(
-		RaidModeTime += 10.0;
-		
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		pos[2] += 5.0;
-		ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
-	}
 
 	return Plugin_Changed;
+}
+
+
+public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+{
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
+	if(ZR_GetWaveCount()+1 > 35)
+	{
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		{
+			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
+			{
+				RemoveEntity(i_LaserEntityIndex[npc.index]);
+			}
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_flSpeed = 0.0;
+			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
+			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 6.0;
+			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+			npc.PlayAngerSound();
+			npc.Anger = true; //	>:(
+			RaidModeTime += 10.0;
+			
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			pos[2] += 5.0;
+			ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
+		}
+	}
 }
 
 public void RaidbossSilvester_NPCDeath(int entity)
@@ -1086,6 +1098,7 @@ public void RaidbossSilvester_NPCDeath(int entity)
 	}
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossSilvester_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
