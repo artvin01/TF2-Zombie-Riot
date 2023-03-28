@@ -397,7 +397,7 @@ public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &in
 
 	//redirect damage and reduce it if in range.
 	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
-	if(IsEntityAlive(AllyEntity))
+	if(IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity])
 	{
 		static float victimPos[3];
 		static float partnerPos[3];
