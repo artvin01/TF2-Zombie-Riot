@@ -333,6 +333,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
+	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
 	{
 		for(int EnemyLoop; EnemyLoop < MaxClients; EnemyLoop ++)
@@ -377,7 +378,6 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
 		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
 	}
-	//Set raid to this one incase the previous one has died or somehow vanished
 }
 
 	
