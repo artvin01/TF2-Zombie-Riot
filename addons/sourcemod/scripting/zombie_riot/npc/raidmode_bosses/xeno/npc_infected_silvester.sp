@@ -42,7 +42,7 @@ static char g_RangedAttackSounds[][] = {
 	"npc/combine_gunship/gunship_ping_search.wav",
 };
 static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_teleport.wav",
+	"mvm/mvm_tank_end.wav",
 };
 
 static char g_MeleeMissSounds[][] = {
@@ -50,7 +50,11 @@ static char g_MeleeMissSounds[][] = {
 };
 
 static char g_AngerSounds[][] = {
-	")vo/medic_hat_taunts04.mp3",
+	")vo/medic_item_secop_domination01.mp3",
+};
+
+static char g_AngerSoundsPassed[][] = {
+	")vo/medic_laughlong01.mp3",
 };
 
 static char g_PullSounds[][] = {
@@ -60,7 +64,7 @@ static char g_PullSounds[][] = {
 #define LASERBEAM "sprites/laserbeam.vmt"
 #define LINKBEAM "sprites/glow01.vmt"
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
-#define PILLAR_SPACING 100.0
+#define PILLAR_SPACING 170.0
 
 static bool Silvester_BEAM_CanUse[MAXENTITIES];
 static bool Silvester_BEAM_IsUsing[MAXENTITIES];
@@ -84,6 +88,8 @@ static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 
 static char gExplosive1;
+
+static int Silvester_TE_Used;
 public void RaidbossSilvester_OnMapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
@@ -96,6 +102,7 @@ public void RaidbossSilvester_OnMapStart()
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_AngerSoundsPassed));   i++) { PrecacheSound(g_AngerSoundsPassed[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	
@@ -109,6 +116,7 @@ public void RaidbossSilvester_OnMapStart()
 	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
 	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
+	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
 	PrecacheSound("player/flow.wav");
 	PrecacheModel(LINKBEAM);
 	PrecacheModel(PILLAR_MODEL);
@@ -219,6 +227,18 @@ methodmap RaidbossSilvester < CClotBody
 		pack.WriteCell(EntIndexToEntRef(this.index));
 	}
 	
+	public void PlayAngerSoundPassed() {
+	
+		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
+		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteString(g_AngerSoundsPassed[sound]);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", this.index, SNDCHAN_STATIC, 80, _, 0.8);
+	}
+	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -240,6 +260,7 @@ methodmap RaidbossSilvester < CClotBody
 	
 	
 	public void PlayTeleportSound() {
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
@@ -436,15 +457,43 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		return;
 	}
-
-	if(npc.m_blPlayHurtAnimation)
+	if(!npc.m_flNextChargeSpecialAttack)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
-		npc.PlayHurtSound();
-		npc.m_blPlayHurtAnimation = false;
+		if(npc.m_blPlayHurtAnimation)
+		{
+			npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+			npc.PlayHurtSound();
+			npc.m_blPlayHurtAnimation = false;
+		}
 	}
 	
+	/*
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
+*/
+	if(npc.m_flNextChargeSpecialAttack)
+	{
+		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
+		{
+			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
+			PF_StartPathing(npc.index);
+			npc.m_bPathing = true;
+			npc.m_flSpeed = 330.0;
+			npc.m_iInKame = 0;
+			npc.m_flNextChargeSpecialAttack = 0.0;
+			npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
+			npc.m_bisWalking = true;
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
+				
+			SetVariantColor(view_as<int>({255, 255, 0, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			npc.PlayAngerSoundPassed();
+		}
+		return;
+	}
 	if(f_TargetToWalkToDelay[npc.index] < GetGameTime(npc.index))
 	{
 		if(npc.m_iInKame == 2)
@@ -467,7 +516,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		if(i_TargetToWalkTo[npc.index] != -1)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
-			npc.FaceTowards(vecTarget, 600.0);
+			npc.FaceTowards(vecTarget, 100.0);
 		}
 		PF_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -475,12 +524,14 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	else if(npc.m_iInKame == 1)
 	{
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
 		PF_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 	}
-
+	/*
 	if(npc.m_flNextRangedAttackHappening && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		PF_StartPathing(npc.index);
@@ -488,6 +539,49 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 		npc.m_flNextRangedAttackHappening = 0.0;
+	}
+	*/
+	if(npc.m_iInKame > 0)
+	{
+		if(npc.Anger)
+		{
+			npc.m_flRangedArmor = 0.3;
+			npc.m_flMeleeArmor = 0.3;
+		}	
+		else
+		{
+			npc.m_flRangedArmor = 0.7;
+			npc.m_flMeleeArmor = 0.7;			
+		}
+	}
+	else
+	{
+		if(npc.Anger)
+		{
+			npc.m_flRangedArmor = 0.45;
+			npc.m_flMeleeArmor = 0.45;
+		}	
+		else
+		{
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;			
+		}	
+	}
+	if(npc.m_flReloadDelay && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	{
+		PF_StartPathing(npc.index);
+		npc.m_bPathing = true;
+		npc.m_flSpeed = 330.0;
+		npc.m_iInKame = 0;
+		npc.m_flReloadDelay = 0.0;
+		npc.m_bisWalking = true;
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+	}
+	if(npc.m_flDoingSpecial && npc.m_flDoingSpecial < GetGameTime(npc.index))
+	{
+		npc.SetPlaybackRate(0.0);	//freeze in place.
+		npc.m_flDoingSpecial = 0.0;
 	}
 
 
@@ -764,6 +858,10 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 4;
 			}
+			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+			{
+				ActionToTake = 5;
+			}
 		}
 		else
 		{
@@ -791,24 +889,40 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 					{	
 						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 50.0;
+						if(npc.Anger)
+						{
+							npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
+						}
+						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.0;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
+						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
+					//	npc.AddGesture("ACT_MP_RUN_MELEE");
+						npc.SetPlaybackRate(0.5);	
+						npc.SetCycle(0.15);
 					}
 				}
 				else
 				{
 					npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 50.0;
+					if(npc.Anger)
+					{
+						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
+					}
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
+					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
+					//npc.AddGesture("ACT_MP_RUN_MELEE");
+					npc.SetPlaybackRate(0.5);	
+					npc.SetCycle(0.15);
 				}
 			}
 			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
 			{
-				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;
-				npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
-				PF_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_flSpeed = 0.0;
+		//		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
+		//		PF_StopPathing(npc.index);
+		//		npc.m_bPathing = false;
+		//		npc.m_flSpeed = 0.0;
 				npc.FaceTowards(vecTarget, 99999.9);
 				float pos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -816,22 +930,99 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 
 				float DelayPillars = 2.0;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
 				float DelaybewteenPillars = 0.2;
 				if(ZR_GetWaveCount()+1 > 29)
 				{
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 					DelayPillars = 1.5;
 					DelaybewteenPillars = 0.1;
 				}
 				npc.AddGesture("ACT_MP_THROW");
 				npc.PlayRangedSound();
+				int MaxCount = RoundToNearest(1.0 * RaidModeScaling);
+				if(MaxCount < 1)
+				{
+					MaxCount = 1;
+				}
+				Silvester_TE_Used = 0;
 				Silvester_Damaging_Pillars_Ability(npc.index,
-				50.0 * RaidModeScaling,				 	//damage
-				RoundToNearest(2.0 * RaidModeScaling), 	//how many
+				25.0 * RaidModeScaling,				 	//damage
+				MaxCount, 	//how many
 				DelayPillars,									//Delay untill hit
 				DelaybewteenPillars,									//Extra delay between each
 				ang_Look 								/*2 dimensional plane*/,
 				pos);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
+				if(npc.Anger)
+				{
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+				}
+			}
+			case 5: //Cause a pillar attack, more fany and better looking elemental wand attack
+			{
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
+				npc.m_flReloadDelay = GetGameTime(npc.index) + 3.0;
+				PF_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_flSpeed = 0.0;
+				float pos[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				pos[2] += 5.0;
+
+				float DelayPillars = 3.0;
+				float DelaybewteenPillars = 0.2;
+				if(ZR_GetWaveCount()+1 > 29)
+				{
+					DelayPillars = 2.5;
+					DelaybewteenPillars = 0.1;
+				}
+				npc.AddActivityViaSequence("taunt_the_fist_bump");
+				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
+			//	npc.AddGesture("ACT_");
+			//	npc.AddActivityViaSequence("taunt_the_");
+				npc.SetPlaybackRate(0.5);
+				npc.SetCycle(0.05);
+				npc.m_bisWalking = false;
+				npc.PlayTeleportSound();
+				float ang_Look[3];
+				ang_Look[1] = -180.0;
+				float flPos[3]; // original
+				float flAng[3]; // original
+				GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+				int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 2.0);
+				SetParent(npc.index, particler, "effect_hand_r");
+
+				int MaxCount = RoundToNearest(0.5 * RaidModeScaling);
+
+				if(MaxCount > 15)
+				{
+					MaxCount = 15;
+				}
+				else if(MaxCount < 1)
+				{
+					MaxCount = 1;
+				}
+				
+				Silvester_TE_Used = 0;
+				for(int Repeat; Repeat <= 8; Repeat++)
+				{
+					Silvester_Damaging_Pillars_Ability(npc.index,
+					25.0 * RaidModeScaling,				 	//damage
+					MaxCount, 	//how many
+					DelayPillars,									//Delay untill hit
+					DelaybewteenPillars,									//Extra delay between each
+					ang_Look 								/*2 dimensional plane*/,
+					pos,
+					0.25);									//volume
+					ang_Look[1] += 45.0;
+				}
+				
+				npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 25.0;
+				if(npc.Anger)
+				{
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 20.0;
+				}
 			}
 			default:
 			{
@@ -866,6 +1057,22 @@ public Action RaidbossSilvester_ClotDamaged(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	{
+		PF_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flSpeed = 0.0;
+		npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 6.0;
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		npc.PlayAngerSound();
+		npc.Anger = true; //	>:(
+		RaidModeTime += 10.0;
+		
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 5.0;
+		ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
+	}
 
 	return Plugin_Changed;
 }
@@ -879,6 +1086,10 @@ public void RaidbossSilvester_NPCDeath(int entity)
 	}
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossSilvester_ClotDamaged);
+	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -1144,13 +1355,15 @@ int count,
 float delay,
 float delay_PerPillar,
 float direction[3] /*2 dimensional plane*/,
-float origin[3])
+float origin[3],
+float volume = 0.7)
 {
 	float timerdelay = GetGameTime() + delay;
 	DataPack pack;
 	CreateDataTimer(delay_PerPillar, Silvester_DamagingPillar, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
 	pack.WriteCell(damage);
+	pack.WriteCell(0);						//how many pillars, this counts down with each pillar made
 	pack.WriteCell(count);						//how many pillars, this counts down with each pillar made
 	pack.WriteCell(timerdelay);					//Delay for each initial pillar
 	pack.WriteCell(direction[0]);
@@ -1159,6 +1372,7 @@ float origin[3])
 	pack.WriteCell(origin[0]);
 	pack.WriteCell(origin[1]);
 	pack.WriteCell(origin[2]);
+	pack.WriteCell(volume);
 
 	float origin_altered[3];
 	origin_altered = origin;
@@ -1178,7 +1392,26 @@ float origin[3])
 
 		origin_altered = vecSwingEnd;
 		float Range = 100.0;
-		spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 12.0, 6.1, 1);
+
+		Range += (float(Repeats) * 10.0);
+		Silvester_TE_Used += 1;
+		if(Silvester_TE_Used > 31)
+		{
+			int DelayFrames = (Silvester_TE_Used / 32);
+			DelayFrames *= 2;
+			DataPack pack_TE = new DataPack();
+			pack_TE.WriteCell(origin_altered[0]);
+			pack_TE.WriteCell(origin_altered[1]);
+			pack_TE.WriteCell(origin_altered[2]);
+			pack_TE.WriteCell(Range);
+			pack_TE.WriteCell(delay + (delay_PerPillar * float(Repeats)));
+			RequestFrames(Silvester_DelayTE, DelayFrames, pack_TE);
+			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+		}
+		else
+		{
+			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 12.0, 6.1, 1);	
+		}
 		int laser;
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 
@@ -1192,7 +1425,19 @@ float origin[3])
 
 	}
 }
-
+public void Silvester_DelayTE(DataPack pack)
+{
+	pack.Reset();
+	float Origin[3];
+	Origin[0] = pack.ReadCell();
+	Origin[1] = pack.ReadCell();
+	Origin[2] = pack.ReadCell();
+	float Range = pack.ReadCell();
+	float Delay = pack.ReadCell();
+	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 12.0, 6.1, 1);	
+		
+	delete pack;
+}
 
 public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 {
@@ -1201,6 +1446,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	float damage = pack.ReadCell();
 	DataPackPos countPos = pack.Position;
 	int count = pack.ReadCell();
+	int countMax = pack.ReadCell();
 	float delayUntillImpact = pack.ReadCell();
 	float direction[3];
 	direction[0] = pack.ReadCell();
@@ -1211,6 +1457,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	origin[0] = pack.ReadCell();
 	origin[1] = pack.ReadCell();
 	origin[2] = pack.ReadCell();
+	float volume = pack.ReadCell();
 
 	//Timers have a 0.1 impresicison logic, accont for it.
 	if(delayUntillImpact - 0.1 > GetGameTime())
@@ -1218,7 +1465,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		return Plugin_Continue;
 	}
 
-	count -= 1;
+	count += 1;
 	pack.Position = countPos;
 	pack.WriteCell(count, false);
 	if(IsValidEntity(entity))
@@ -1234,10 +1481,6 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
-		if(TR_PointOutsideWorld(vecSwingEnd))
-		{
-			return Plugin_Stop;
-		}
 
 		
 		int prop = CreateEntityByName("prop_physics_multiplayer");
@@ -1260,32 +1503,54 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchKeyValue(prop, "solid", "0");
 			DispatchKeyValue(prop, "massScale", "1.0");
 			DispatchKeyValue(prop, "spawnflags", "6");
-			DispatchKeyValue(prop, "modelscale", "1.0");
+
+
+			float SizeScale = 0.9;
+
+			SizeScale += (count * 0.1);
+
+			char FloatString[8];
+			FloatToString(SizeScale, FloatString, sizeof(FloatString));
+
+			DispatchKeyValue(prop, "modelscale", FloatString);
 			DispatchKeyValueVector(prop, "origin",	 SpawnPropPos);
 			direction[2] -= 180.0;
 			direction[1] = GetRandomFloat(-180.0, 180.0);
-			direction[0] = GetRandomFloat(-180.0, 180.0);
 			DispatchKeyValueVector(prop, "angles",	 direction);
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(prop, 215, 155, 0, 165);
+			SetEntityRenderColor(prop, 215, 200, 0, 200);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
 
-			
 			float Range = 100.0;
 
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
-			TE_SetupExplosion(SpawnParticlePos, gExplosive1, 10.0, 1, 0, 0, 0);
-			TE_SendToAll();
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, SpawnParticlePos);
+			Range += (float(count) * 10.0);
+			
+			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range * 0.6),_,_,_,false);
+			
+			SpawnParticlePos[2] += 80.0;
+
+			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range * 0.6),_,_,_,false);
+			
+			SpawnParticlePos[2] -= 80.0;
+	//		ParticleEffectAt(SpawnParticlePos, "medic_resist_fire", 1.0);
+			if(volume == 0.25)
+			{
+				EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, SpawnParticlePos);		
+			}
+			else
+			{
+				EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, SpawnParticlePos);
+				EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, SpawnParticlePos);
+			}
 		
 		//	spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 1.0, 12.0, 6.1, 1);
-			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
-	
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+
+			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		
 		pack.Position = originPos;
@@ -1299,7 +1564,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		return Plugin_Stop; //cancel.
 	}
 
-	if(count <= 0)
+	if(count >= countMax)
 	{
 		return Plugin_Stop;
 	}
@@ -1309,7 +1574,15 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 
 void Silvester_TBB_Ability(int client)
 {
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	float flPos[3]; // original
+	float flAng[3]; // original
+	GetAttachment(client, "effect_hand_r", flPos, flAng);
+	int particlel = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
+	SetParent(client, particlel, "effect_hand_r");
+
+	GetAttachment(client, "effect_hand_l", flPos, flAng);
+	int particler = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
+	SetParent(client, particler, "effect_hand_l");
 			
 	Silvester_BEAM_IsUsing[client] = false;
 	Silvester_BEAM_TicksActive[client] = 0;
@@ -1476,7 +1749,7 @@ public Action Silvester_TBB_Tick(int client)
 		flPitch *= -1.0;
 		angles[0] = flPitch;
 		startPoint = GetAbsOrigin(client);
-		startPoint[2] += 50.0;
+		startPoint[2] += 75.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Silvester_BEAM_TraceWallsOnly);
 		if (TR_DidHit(trace))
