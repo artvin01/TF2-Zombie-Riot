@@ -16,14 +16,6 @@ static char g_HurtSounds[][] =
 	"vo/sniper_painsharp04.mp3"
 };
 
-static char g_IdleAlertedSounds[][] =
-{
-	"vo/sniper_battlecry01.mp3",
-	"vo/sniper_battlecry02.mp3",
-	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3"
-};
-
 static char g_MeleeHitSounds[][] =
 {
 	"weapons/cbar_hitbod1.wav",
@@ -38,12 +30,28 @@ static char g_MeleeAttackSounds[][] =
 
 static char g_RangedAttackSounds[][] =
 {
-	"weapons/breadmonster/throwable/bm_throwable_throw.wav",
+	"weapons/sniper_railgun_single_01.wav",
+	"weapons/sniper_railgun_single_02.wav"
 };
 
-static char g_TeleportSounds[][] =
+static char g_RangedSpecialAttackSounds[][] =
 {
-	"misc/halloween/spell_teleport.wav",
+	"mvm/sentrybuster/mvm_sentrybuster_spin.wav"
+};
+
+static char g_BoomSounds[][] =
+{
+	"mvm/mvm_tank_explode.wav"
+};
+
+static char g_SMGAttackSounds[][] =
+{
+	"weapons/doom_sniper_smg.wav"
+};
+
+static char g_BuffSounds[][] =
+{
+	"player/invuln_off_vaccinator.wav"
 };
 
 static char g_AngerSounds[][] =
@@ -67,58 +75,27 @@ static char g_HappySounds[][] =
 	"vo/compmode/cm_sniper_matchwon_14.mp3"
 };
 
-static char g_PullSounds[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav"
-};
-
-#define LASERBEAM "sprites/laserbeam.vmt"
-
-static int i_TargetToWalkTo[MAXENTITIES];
-static float f_TargetToWalkToDelay[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int i_RaidDuoAllyIndex = INVALID_ENT_REFERENCE;
-
-public void RaidbossBlueGoggles_OnMapStart()
-{
-	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
-	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));    i++) { PrecacheSound(g_MeleeHitSounds[i]);    }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));    i++) { PrecacheSound(g_MeleeAttackSounds[i]);    }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	
-	PrecacheSound("player/flow.wav");
-}
-
-#define EMPOWER_SOUND "items/powerup_pickup_king.wav"
-#define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
-#define EMPOWER_WIDTH 5.0
-#define EMPOWER_HIGHT_OFFSET 20.0
-
 static float f_HurtRecentlyAndRedirected[MAXENTITIES]={-1.0, ...};
+
+void RaidbossBlueGoggles_OnMapStart()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedSpecialAttackSounds);
+	PrecacheSoundArray(g_BoomSounds);
+	PrecacheSoundArray(g_SMGAttackSounds);
+	PrecacheSoundArray(g_BuffSounds);
+	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_HappySounds);
+}
 
 methodmap RaidbossBlueGoggles < CClotBody
 {
-	public void PlayIdleAlertSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-			
-		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
-		
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-	}
 	public void PlayHurtSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
@@ -136,14 +113,26 @@ methodmap RaidbossBlueGoggles < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayAngerSound()
+	public void PlaySMGSound()
 	{
-		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SMGAttackSounds[GetRandomInt(0, sizeof(g_SMGAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayRangedSpecialSound()
+	{
+		EmitSoundToAll(g_RangedSpecialAttackSounds[GetRandomInt(0, sizeof(g_RangedSpecialAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayBoomSound()
+	{
+		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayAngerSound()
+	{
+		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
+		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRevengeSound()
 	{
@@ -155,18 +144,13 @@ methodmap RaidbossBlueGoggles < CClotBody
 	{
 		EmitSoundToAll(g_HappySounds[GetRandomInt(0, sizeof(g_HappySounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-
-	public void PlayPullSound()
-	{
-		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
-	public void PlayTeleportSound()
-	{
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayBuffSound()
+	{
+		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
 	property int m_iGunType	// 0 = Melee, 1 = Sniper, 2 = SMG
@@ -253,16 +237,19 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 290.0;
+		npc.m_iTarget = 0;
+		npc.m_flGetClosestTargetTime = 0.0;
 
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		npc.m_iGunType = 0;
-		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 6.0;
+		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(70.0, 100.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(70.0, 120.0);
 		npc.m_flPiggyFor = 0.0;
 
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 5.0;
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(70.0, 90.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
@@ -290,7 +277,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		}
 		else
 		{
-			npc.PlayAngerSound();
+			npc.PlayRevengeSound();
 		}
 
 		if(RaidBossActive != INVALID_ENT_REFERENCE)
@@ -305,6 +292,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		}
 
 		//SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
+
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
 		
 		// Play funny animation intro
 		PF_StopPathing(npc.index);
@@ -314,7 +304,6 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		// Give time to blend our current anim and intro then swap to this idle
 		npc.m_flNextDelayTime = gameTime + 0.4;
 	}
-
 
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -341,7 +330,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
 	{
-		for(int EnemyLoop; EnemyLoop < MaxClients; EnemyLoop ++)
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 		{
 			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
 			{
@@ -354,17 +343,20 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		RaidBossActive = EntIndexToEntRef(npc.index);
 	}
 	
-	if(!IsEntityAlive(i_TargetToWalkTo[npc.index]))
-		f_TargetToWalkToDelay[npc.index] = 0.0;
-	
-	if(f_TargetToWalkToDelay[npc.index] < gameTime)
+	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
 	{
-		i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
-		f_TargetToWalkToDelay[npc.index] = gameTime + 1.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
 	int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
 	bool alone = !IsEntityAlive(ally);
+
+	if(alone && !npc.Anger)
+	{
+		npc.Anger = true;
+		npc.PlayAngerSound();
+	}
 
 	if(npc.m_flPiggyFor)
 	{
@@ -375,20 +367,20 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		}
 	}
 
-	if(i_TargetToWalkTo[npc.index] > 0)
+	if(npc.m_iTarget > 0)
 	{
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		float vecAlly[3];
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
+			vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
 			PF_SetGoalVector(npc.index, vecTarget);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			PF_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
 		int tier = (Waves_GetRound() / 15);
@@ -465,19 +457,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
 				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
 
+				NPCStats_RemoveAllDebuffs(ally);
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
 				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
-				f_HighTeslarDebuff[ally] = 0.0;
-				f_LowTeslarDebuff[ally] = 0.0;
-				IgniteFor[ally] = 0;
-				f_HighIceDebuff[ally] = 0.0;
-				f_LowIceDebuff[ally] = 0.0;
-				f_VeryLowIceDebuff[ally] = 0.0;
-				f_WidowsWineDebuff[ally] = 0.0;
-				f_CrippleDebuff[ally] = 0.0;
-				f_MaimDebuff[ally] = 0.0;
-				f_SpecterDyingDebuff[ally] = 0.0;
-				f_PassangerDebuff[ally] = 0.0;
 			}
 			else
 			{
@@ -499,10 +481,235 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				npc.m_flPiggyCooldown = gameTime + 1.0;
 			}
 		}
+		
+		if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+		{
+			switch(npc.m_iGunType)
+			{
+				case 0:	// Melee
+				{
+					if(npc.m_flAttackHappens)
+					{
+						if(npc.m_flAttackHappens < gameTime)
+						{
+							npc.m_flAttackHappens = 0.0;
+							
+							Handle swingTrace;
+							npc.FaceTowards(vecTarget, 15000.0);
+							if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+							{		
+								int target = TR_GetEntityIndex(swingTrace);
+								if(target == npc.m_iTarget) 
+								{
+									float vecHit[3];
+									TR_GetEndPosition(vecHit, swingTrace);
+									
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (8.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (8.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									
+									npc.PlayMeleeHitSound();
+									
+									if(target > MaxClients)
+									{
+
+									}
+									else if(IsInvuln(target))
+									{
+										Custom_Knockback(npc.index, target, 750.0, true, true);
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									}
+									else
+									{
+										Custom_Knockback(npc.index, target, 400.0, _, true); 
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									}
+
+									npc.m_flSwitchCooldown = 0.0;
+								} 
+							}
+							delete swingTrace;
+						}
+					}
+					else if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+					{
+						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
+						{
+							if(tier > 1 && npc.m_flNextRangedSpecialAttack < gameTime)
+							{
+								// C4 Boom
+								npc.PlayRangedSpecialSound();
+								npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
+
+								npc.m_flNextRangedSpecialAttack = gameTime + 60.0;
+								npc.m_flSwitchCooldown = gameTime + 3.0;
+
+								npc.m_flNextMeleeAttack = gameTime + 0.5;	// When to set new activity
+								npc.m_flAttackHappens = gameTime + 1.95;	// When to go boom
+								npc.m_iGunType = 3;
+
+								if(IsValidEntity(npc.m_iWearable3))
+									RemoveEntity(npc.m_iWearable3);
+								
+								//npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
+								//SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+							}
+							else
+							{
+								// Melee attack
+								npc.PlayMeleeSound();
+								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+
+								npc.m_flAttackHappens = gameTime + 0.25;
+								npc.m_flSwitchCooldown = gameTime + 1.0;
+								npc.m_flNextMeleeAttack = gameTime + 1.0;
+							}
+						}
+					}
+				}
+				case 1:	// Sniper Rifle
+				{
+					if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+					{
+						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
+						{
+							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+
+							if(distance < 1000000.0)	// 1000 HU
+								vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
+							
+							npc.FaceTowards(vecTarget, 30000.0);
+							
+							npc.PlayRangedSound();
+							npc.FireArrow(vecTarget, (30.0 + (float(tier) * 4.0)) * RaidModeScaling, 1000.0);
+							
+							npc.m_flNextMeleeAttack = gameTime + 2.0;
+						}
+					}
+				}
+				case 2:	// SMG
+				{
+					// Happens pretty much every think update (0.1 sec)
+					if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
+					{
+						npc.FaceTowards(vecTarget, 800.0);
+
+						npc.PlaySMGSound();
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+
+						float eyePitch[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+						
+						float x = GetRandomFloat( -0.01, 0.01 ) + GetRandomFloat( -0.01, 0.01 );
+						float y = GetRandomFloat( -0.01, 0.01 ) + GetRandomFloat( -0.01, 0.01 );
+						
+						float vecDirShooting[3], vecRight[3], vecUp[3];
+						
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+						vecDirShooting[1] = eyePitch[1];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						float vecDir[3];
+						vecDir[0] = vecDirShooting[0] + x * vecRight[0] + y * vecUp[0]; 
+						vecDir[1] = vecDirShooting[1] + x * vecRight[1] + y * vecUp[1]; 
+						vecDir[2] = vecDirShooting[2] + x * vecRight[2] + y * vecUp[2]; 
+						NormalizeVector(vecDir, vecDir);
+						
+						float damage = (5.0 + float(tier)) * 0.1 * RaidModeScaling;
+						if(distance > 100000.0)	// 316 HU
+							damage *= 100000.0 / distance;	// Lower damage based on distance
+						
+						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
+					}
+				}
+				case 3:	// C4
+				{
+					if(npc.m_flNextMeleeAttack && npc.m_flNextMeleeAttack < gameTime)
+					{
+						npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
+						npc.m_flNextMeleeAttack = 0.0;
+					}
+					else if(npc.m_flAttackHappens && npc.m_flAttackHappens < gameTime)
+					{
+						vecMe[2] += 45;
+						
+						b_ThisNpcIsSawrunner[npc.index] = true;
+						i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_DROWN_DAMAGE;
+						Explode_Logic_Custom(3000.0 * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
+						b_ThisNpcIsSawrunner[npc.index] = false;
+						
+						npc.PlayBoomSound();
+						TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
+
+						npc.m_flAttackHappens = 0.0;
+						npc.m_flSwitchCooldown = 0.0;
+						npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.89;
+
+						npc.AddGesture("ACT_MP_CYOA_PDA_OUTRO");
+					}
+				}
+			}
+		}
+
+		switch(npc.m_iGunType)
+		{
+			case 0:	// Melee
+			{
+				npc.SetActivity("ACT_MP_RUN_MELEE");
+				if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+					npc.StartPathing();
+			}
+			case 1:	// Sniper Rifle
+			{
+				if(npc.m_flPiggyFor)
+				{
+					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
+					npc.StopPathing();
+				}
+				else if(alone)
+				{
+					npc.SetActivity("ACT_MP_RUN_PRIMARY");
+					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+						npc.StartPathing();
+				}
+				else if(npc.m_flNextMeleeAttack < gameTime)
+				{
+					npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+						npc.StartPathing();
+				}
+				else
+				{
+					npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
+					npc.StopPathing();
+				}
+			}
+			case 2:	// SMG
+			{
+				if(npc.m_flPiggyFor)
+				{
+					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
+					npc.StopPathing();
+				}
+				else
+				{
+					npc.SetActivity("ACT_MP_RUN_SECONDARY");
+					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+						npc.StartPathing();
+				}
+			}
+			case 3:	// C4
+			{
+				npc.StopPathing();
+			}
+		}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.SetActivity("ACT_MP_COMPETITIVE_LOSERSTATE");
 	}
 }

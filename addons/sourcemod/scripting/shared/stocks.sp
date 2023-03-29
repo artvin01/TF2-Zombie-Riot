@@ -2659,7 +2659,7 @@ float dmg_against_entity_multiplier = 3.0)
 	}
 	else //only nerf blue npc radius!
 	{
-		explosionRadius *= 0.65;
+		explosionRadius *= 0.75;
 		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
@@ -2680,10 +2680,15 @@ float dmg_against_entity_multiplier = 3.0)
 	{
 		damage_flags |= DMG_PLASMA;
 	}
+	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_DROWN_DAMAGE))
+	{
+		damage_flags |= DMG_DROWN;
+	}
 	else
 	{
 		damage_flags |= DMG_BLAST;
 	}
+
 	if((i_ExplosiveProjectileHexArray[entity] & EP_GIBS_REGARDLESS))
 	{
 		custom_flags |= ZR_DAMAGE_GIB_REGARDLESS;
@@ -2771,13 +2776,7 @@ float dmg_against_entity_multiplier = 3.0)
 		We will filter out each entity and them damage them accordingly.
 		*/
 		if(IsValidEntity(ClosestTarget))
-		{
-			//Blah blah boom code ddah dah, this is at the end ad this is the easy part.
-		//	float damage_1 = Custom_Explosive_Logic(client, ClosestDistance, explosion_range_dmg_falloff, damage, explosionRadius * 2.0);
-		//	if(damage_1 > damage)
-		//	{
-		//		damage_1 = damage;
-		//	}	
+		{	
 			static float vicpos[3];
 			vicpos = VicPos[ClosestTarget];
 			//if its a blue npc, then we want to do a trace to see if we even hit them.
@@ -2804,7 +2803,7 @@ float dmg_against_entity_multiplier = 3.0)
 
 			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
 			{
-				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
+				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
 			
 			SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
@@ -2829,228 +2828,6 @@ float dmg_against_entity_multiplier = 3.0)
 		ClosestDistance = 0.0;
 		indexTraced = 0;
 	}
-			//HitEntitiesSphereExplosionTrace This is the entity we hit, do all the logic we need.
-	
-	/*
-	if(IsValidEntity(Closest_npc))
-	{
-		VicLoc = WorldSpaceCenter(Closest_npc);
-		float explosion_radius_temp = explosionRadius;
-		if(i_NpcIsABuilding[Closest_npc])
-		{
-			explosion_radius_temp *= 2.0;
-		}
-		float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-		if (distance_1 <= explosion_radius_temp)
-		{			
-			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
-			
-
-			if(damage_1 > damage)
-			{
-				damage_1 = damage;
-			}	
-			
-			if(weapon_valid && ignite)
-			{
-				NPC_Ignite(Closest_npc, client, 5.0, weapon);
-			}
-
-			if(FromBlueNpc && !IsValidClient(Closest_npc))
-			{
-				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-			}
-			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-			
-			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
-			{
-				damage_reduction *= ExplosionDmgMultihitFalloff;
-			}
-		//	b_WasAlreadyCalculatedToBeClosest[Closest_npc] = true; //First target hit/closest might want special stuff idk
-		}
-		
-		if(!FromBlueNpc)
-		{
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
-			{
-				if(TargetsHit >= maxtargetshit)
-				{
-					break;
-				}
-				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
-				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
-				{
-					if(Closest_npc != new_closest_npc) //Double check JUST to be sure.
-					{
-						//Damage Calculations
-						VicLoc = WorldSpaceCenter(new_closest_npc);		
-						distance_1 = GetVectorDistance(VicLoc, spawnLoc);	
-						explosion_radius_temp = explosionRadius;
-						if(i_NpcIsABuilding[new_closest_npc])
-						{
-							explosion_radius_temp *= 2.0;
-						}
-
-						if (distance_1 <= explosion_radius_temp)
-						{
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
-								
-							if(damage_1 > damage)
-							{
-								damage_1 = damage;
-							}	
-							if(weapon_valid && ignite)
-							{
-								NPC_Ignite(Closest_npc, client, 5.0, weapon);
-							}	
-							if(FromBlueNpc)
-							{
-								damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-							}						
-							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-							
-							damage_reduction *= ExplosionDmgMultihitFalloff;
-							TargetsHit += 1;
-						}
-						//Damage Calculations
-					}
-				}
-			}
-		}
-		else //Gotta loop through all here, oopsie!
-		{
-			for( int i = 1; i <= MaxClients; i++ ) 
-			{
-				if(TargetsHit >= maxtargetshit)
-				{
-					break;
-				}
-				if (IsValidClient(i))
-				{
-					CClotBody npc = view_as<CClotBody>(i);
-					if (GetEntProp(i, Prop_Send, "m_iTeamNum")!=GetEntProp(entity, Prop_Send, "m_iTeamNum") && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
-					{
-						VicLoc = WorldSpaceCenter(i);
-						distance_1 = GetVectorDistance(VicLoc, spawnLoc);						
-						if (distance_1 <= explosionRadius)
-						{
-							Handle trace; 
-							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
-							int Traced_Target;
-								
-							Traced_Target = TR_GetEntityIndex(trace);
-							delete trace;
-								
-							if(Traced_Target == i)
-							{
-								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-								
-								if(damage_1 > damage)
-								{
-									damage_1 = damage;
-								}
-								//Dont give 3x dmg to players lmao
-								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-								TargetsHit += 1;
-							}
-						}
-					}
-				}
-			}
-			for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
-			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-				if(IsValidEntity(entity_close) && entity_close != client)
-				{
-			//		if(searcher_team != 2)
-					{
-						CClotBody npc = view_as<CClotBody>(entity_close);
-						if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
-						{
-							VicLoc = WorldSpaceCenter(entity_close);	
-							distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
-							if (distance_1 <= explosionRadius)
-							{
-								Handle trace; 
-								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, entity_close);
-								int Traced_Target;
-								
-								Traced_Target = TR_GetEntityIndex(trace);
-								delete trace;
-								
-								if(Traced_Target == entity_close)
-								{
-									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-																				
-									if(damage_1 > damage)
-									{
-										damage_1 = damage;
-									}
-								//	if(FromBlueNpc)
-								//	{
-								//		damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-								//	}
-							
-									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-									TargetsHit += 1;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-#if defined ZR
-			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
-			{
-				int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-				if(IsValidEntity(entity_close) && entity_close != client)
-				{
-				//	if(searcher_team != 2)
-					{
-						CClotBody npc = view_as<CClotBody>(entity_close);
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
-						{	
-							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-							{
-								VicLoc = WorldSpaceCenter(entity_close);	
-								distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
-								if (distance_1 <= explosionRadius)
-								{
-									Handle trace; 
-									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, entity_close);
-									int Traced_Target;
-									
-									Traced_Target = TR_GetEntityIndex(trace);
-									delete trace;
-									
-									if(Traced_Target == entity_close)
-									{
-										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-																					
-										if(damage_1 > damage)
-										{
-											damage_1 = damage;
-										}
-										if(FromBlueNpc)
-										{
-											damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-										}
-
-										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-										TargetsHit += 1;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-#endif	// ZR
-			
-		}
-	}
-	*/
 }
 
 //#define PARTITION_SOLID_EDICTS        (1 << 1) /**< every edict_t that isn't SOLID_TRIGGER or SOLID_NOT (and static props) */
@@ -3060,12 +2837,10 @@ float dmg_against_entity_multiplier = 3.0)
 
 void DoExlosionTraceCheck(const float pos1[3], float radius, int entity)
 {
-//	Zero(HitEntitiesSphereExplosionTrace);
 	for(int i=0; i < MAXENTITIES; i++)
 	{
 		HitEntitiesSphereExplosionTrace[i][entity] = false;
 	}
-//	MaxEntitiesToHit = maxentities;
 	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, entity);
 	//It does all needed logic here.
 }
@@ -3082,12 +2857,6 @@ public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filte
 				HitEntitiesSphereExplosionTrace[i][filterentity] = entity;
 				break;
 			}
-			/*
-			if(i == MaxEntitiesToHit)
-			{	
-				return false; //We hit the cap, stop!
-			}
-			*/
 		}
 	}
 	//always keep going!

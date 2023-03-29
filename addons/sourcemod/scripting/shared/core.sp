@@ -508,8 +508,7 @@ int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_DEALS_CLUB_DAMAGE              	(1 << 2)   					// To deal melee damage.
 #define EP_GIBS_REGARDLESS              	(1 << 3)   					// Even if its anything then blast, it will still gib.
 #define EP_DEALS_PLASMA_DAMAGE             	(1 << 4)   					// for wands to deal plasma dmg
-
-
+#define EP_DEALS_DROWN_DAMAGE             	(1 << 5)
 
 bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];

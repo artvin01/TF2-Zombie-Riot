@@ -138,8 +138,6 @@ static int i_RaidDuoAllyIndex;
 
 methodmap RaidbossSilvester < CClotBody
 {
-
-
 	property float m_flTimebeforekamehameha
 	{
 		public get()							{ return fl_Timebeforekamehameha[this.index]; }
@@ -644,6 +642,10 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	else
 	{
+		if(IsValidEntity(i_LaserEntityIndex[npc.index]))
+		{
+			RemoveEntity(i_LaserEntityIndex[npc.index]);
+		}
 		AllyEntity = -1;
 	}
 
@@ -1589,10 +1591,10 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 
 			Range += (float(count) * 10.0);
 			
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range * 0.6),_,_,_,false);
+			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 			
 			SpawnParticlePos[2] += 80.0;
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range * 0.6),_,_,_,false);
+			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 			SpawnParticlePos[2] -= 80.0;
 	//		ParticleEffectAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)

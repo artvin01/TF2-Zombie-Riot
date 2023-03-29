@@ -6234,11 +6234,8 @@ stock bool makeexplosion(
 			if(!b_IsAlliedNpc[attacker])
 			{
 				FromBlueNpc = true;
-				
-				Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.65);
 			}
 		}
-		Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.1); //Overall abit more range due to how our checks work.
 		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _, _, dmg_against_entity_multiplier);
 
 	}
