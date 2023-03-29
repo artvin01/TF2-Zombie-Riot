@@ -422,3 +422,13 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 #define TF2_SetPlayerClass SetPlayerClass*/
 
 #define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
+
+stock void PrecacheSoundList(const char[][] array, int length)
+{
+    for(int i; i < length; i++)
+    {
+	PrecacheSound(array[i]);
+    }
+}
+
+#define PrecacheSoundArray(%1)        PrecacheSoundList(%1, sizeof(%1))

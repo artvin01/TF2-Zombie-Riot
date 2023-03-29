@@ -6234,11 +6234,8 @@ stock bool makeexplosion(
 			if(!b_IsAlliedNpc[attacker])
 			{
 				FromBlueNpc = true;
-				
-				Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.65);
 			}
 		}
-		Range_for_boom = RoundToCeil(float(Range_for_boom) * 1.1); //Overall abit more range due to how our checks work.
 		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _, _, dmg_against_entity_multiplier);
 
 	}
@@ -8026,3 +8023,20 @@ bool NpcStats_IsEnemySilenced(int enemy)
 	}
 	return true;
 }
+
+#if defined ZR
+void NPCStats_RemoveAllDebuffs(int enemy)
+{
+	f_HighTeslarDebuff[enemy] = 0.0;
+	f_LowTeslarDebuff[enemy] = 0.0;
+	IgniteFor[enemy] = 0;
+	f_HighIceDebuff[enemy] = 0.0;
+	f_LowIceDebuff[enemy] = 0.0;
+	f_VeryLowIceDebuff[enemy] = 0.0;
+	f_WidowsWineDebuff[enemy] = 0.0;
+	f_CrippleDebuff[enemy] = 0.0;
+	f_MaimDebuff[enemy] = 0.0;
+	f_SpecterDyingDebuff[enemy] = 0.0;
+	f_PassangerDebuff[enemy] = 0.0;
+}
+#endif
