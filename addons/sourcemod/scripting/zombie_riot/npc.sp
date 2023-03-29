@@ -670,9 +670,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_stalker_father",
 	"npc_stalker_goggles",
 
-	"npc_xeno_raidboss_silveseter",
+	"npc_xeno_raidboss_silvester",
 	"npc_xeno_raidboss_blue_goggles",
-	"npc_xeno_raidboss_silveseter",
+	"",
 };
 
 void NPC_MapStart()
