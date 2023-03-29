@@ -944,7 +944,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 
 				float DelayPillars = 2.0;
-				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;
 				float DelaybewteenPillars = 0.2;
 				if(ZR_GetWaveCount()+1 > 35)
 				{
