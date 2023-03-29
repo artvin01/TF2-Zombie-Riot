@@ -230,7 +230,8 @@ enum
 	STALKER_GOGGLES		= 195,
 
 	XENO_RAIDBOSS_SILVESTER		= 196,
-	XENO_RAIDBOSS_BLUE_GOGGLES	= 197
+	XENO_RAIDBOSS_BLUE_GOGGLES	= 197,
+	XENO_RAIDBOSS_SUPERSILVESTER	= 198
 }
 
 public const char NPC_Names[][] =
@@ -452,7 +453,8 @@ public const char NPC_Names[][] =
 	"Spawned Blue Goggles",
 
 	"Silvester",
-	"Blue Goggles"
+	"Blue Goggles",
+	"Angeled Silvester"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -669,7 +671,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_stalker_goggles",
 
 	"npc_xeno_raidboss_silveseter",
-	"npc_xeno_raidboss_blue_goggles"
+	"npc_xeno_raidboss_blue_goggles",
+	"npc_xeno_raidboss_silveseter",
 };
 
 void NPC_MapStart()
@@ -1672,6 +1675,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = RaidbossBlueGoggles(client, vecPos, vecAng, false);
 		}
+		case XENO_RAIDBOSS_SUPERSILVESTER:
+		{
+			entity = RaidbossSilvester(client, vecPos, vecAng, false);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2460,6 +2467,10 @@ public void NPCDeath(int entity)
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
 		{
 			RaidbossBlueGoggles_NPCDeath(entity);
+		}
+		case XENO_RAIDBOSS_SUPERSILVESTER:
+		{
+			RaidbossSilvester_NPCDeath(entity);
 		}
 		default:
 		{

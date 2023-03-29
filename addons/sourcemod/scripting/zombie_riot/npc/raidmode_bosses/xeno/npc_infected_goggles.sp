@@ -389,7 +389,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		if(npc.m_flSwitchCooldown < gameTime)
 		{
-			if(distance > 500000 || !(GetURandomInt() % (tier + 2)))	// 700 HU
+			if(distance > 500000 || !(GetURandomInt() % ((tier * 2) + 6)))	// 700 HU
 			{
 				if(npc.m_iGunType == 1)
 				{
@@ -408,7 +408,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 				}
 			}
-			else if(distance > 100000 || !(GetURandomInt() % (tier + 3)))	// 300 HU
+			else if(distance > 100000 || !(GetURandomInt() % ((tier * 2) + 8)))	// 300 HU
 			{
 				if(npc.m_iGunType == 2)
 				{
