@@ -255,10 +255,11 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.Anger = false;
 		npc.m_flSpeed = 200.0;
 
+		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 6.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(30.0, 40.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(70.0, 100.0);
 		npc.m_flPiggyFor = 0.0;
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 5.0;
@@ -278,6 +279,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 {
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(iNPC);
 	
+	float gameTime = GetGameTime(npc.index);
+
 	//Raidmode timer runs out, they lost.
 	if(npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
@@ -309,21 +312,21 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
 		// Give time to blend our current anim and intro then swap to this idle
-		npc.m_flNextDelayTime = GetGameTime(npc.index) + 0.4;
+		npc.m_flNextDelayTime = gameTime + 0.4;
 	}
 
 
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
 	if(npc.m_flNextThinkTime == FAR_FUTURE)
 		npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
 
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
 	//Think throttling
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
 
 	if(npc.m_blPlayHurtAnimation)
@@ -333,7 +336,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
+	npc.m_flNextThinkTime = gameTime + 0.10;
 
 	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
@@ -354,19 +357,33 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	if(!IsEntityAlive(i_TargetToWalkTo[npc.index]))
 		f_TargetToWalkToDelay[npc.index] = 0.0;
 	
-	if(f_TargetToWalkToDelay[npc.index] < GetGameTime(npc.index))
+	if(f_TargetToWalkToDelay[npc.index] < gameTime)
 	{
 		i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
-		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
+		f_TargetToWalkToDelay[npc.index] = gameTime + 1.0;
+	}
+
+	int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
+	bool alone = !IsEntityAlive(ally);
+
+	if(npc.m_flPiggyFor)
+	{
+		if(npc.m_flPiggyFor < gameTime || alone)
+		{
+			// Disable Piggyback Stuff
+			npc.m_flPiggyFor = 0.0;
+		}
 	}
 
 	if(i_TargetToWalkTo[npc.index] > 0)
 	{
+		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		float vecAlly[3];
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index])
+			vecTarget = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
 			PF_SetGoalVector(npc.index, vecTarget);
 		}
 		else
@@ -374,17 +391,112 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			PF_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
 		}
 
-		int tier = (ZR_GetWaveCount() / 15);
-		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
-		bool alone = !IsEntityAlive(AllyEntity);
+		int tier = (Waves_GetRound() / 15);
 		if(alone)
 			tier++;
 
-		if(npc.m_flSwitchCooldown < GetGameTime(npc.index))
+		if(npc.m_flSwitchCooldown < gameTime)
 		{
-			if(!alone && ally == i_TargetToWalkTo[npc.index])
+			if(distance > 500000 || !(GetURandomInt() % (tier + 2)))	// 700 HU
 			{
+				if(npc.m_iGunType == 1)
+				{
+					npc.m_flSwitchCooldown = gameTime + 1.0;
+				}
+				else
+				{
+					npc.m_flSwitchCooldown = gameTime + 8.0;
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_iGunType = 1;
 
+					if(IsValidEntity(npc.m_iWearable3))
+						RemoveEntity(npc.m_iWearable3);
+					
+					npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
+					SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+				}
+			}
+			else if(distance > 100000 || !(GetURandomInt() % (tier + 3)))	// 300 HU
+			{
+				if(npc.m_iGunType == 2)
+				{
+					npc.m_flSwitchCooldown = gameTime + 1.0;
+				}
+				else
+				{
+					npc.m_flSwitchCooldown = gameTime + 8.0;
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_iGunType = 2;
+
+					if(IsValidEntity(npc.m_iWearable3))
+						RemoveEntity(npc.m_iWearable3);
+					
+					npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_pro_smg/c_pro_smg.mdl");
+					SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+				}
+			}
+			else if(npc.m_iGunType == 0)
+			{
+				npc.m_flSwitchCooldown = gameTime + 1.0;
+			}
+			else
+			{
+				npc.m_flSwitchCooldown = gameTime + 5.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_iGunType = 0;
+
+				if(IsValidEntity(npc.m_iWearable3))
+					RemoveEntity(npc.m_iWearable3);
+				
+				npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
+				SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+			}
+		}
+
+		if(!alone && tier > 0 && npc.m_flBuffCooldown < gameTime && !NpcStats_IsEnemySilenced(npc.index))
+		{
+			vecAlly = WorldSpaceCenter(ally);
+			if(GetVectorDistance(vecAlly, vecMe, true) < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, ally))
+			{
+				// Buff Silver
+				npc.m_flBuffCooldown = gameTime + GetRandomFloat(20.0, 25.0);
+
+				//spawnBeam(0.8, 50, 255, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
+				//spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
+				//spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);
+
+				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
+				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
+				f_HighTeslarDebuff[ally] = 0.0;
+				f_LowTeslarDebuff[ally] = 0.0;
+				IgniteFor[ally] = 0;
+				f_HighIceDebuff[ally] = 0.0;
+				f_LowIceDebuff[ally] = 0.0;
+				f_VeryLowIceDebuff[ally] = 0.0;
+				f_WidowsWineDebuff[ally] = 0.0;
+				f_CrippleDebuff[ally] = 0.0;
+				f_MaimDebuff[ally] = 0.0;
+				f_SpecterDyingDebuff[ally] = 0.0;
+				f_PassangerDebuff[ally] = 0.0;
+			}
+			else
+			{
+				npc.m_flBuffCooldown = gameTime + 2.0;
+			}
+		}
+		else if(!alone && tier > 1 && npc.m_iGunType > 0 && npc.m_flPiggyCooldown < gameTime)
+		{
+			vecAlly = WorldSpaceCenter(ally);
+			if(GetVectorDistance(vecAlly, vecMe, true) < 20000.0)	// 140 HU
+			{
+				// Enable piggyback
+				npc.m_flPiggyCooldown = FAR_FUTURE;
+				npc.m_flPiggyFor = gameTime + 8.0;
+				npc.m_flSwitchCooldown = gameTime + 10.0;
+			}
+			else
+			{
+				npc.m_flPiggyCooldown = gameTime + 1.0;
 			}
 		}
 	}

@@ -1404,6 +1404,10 @@ float volume = 0.7)
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 		origin_altered = vecSwingEnd;
+
+		//Clip to ground, its like stepping on stairs, but for these rocks.
+
+		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, origin_altered);
 		float Range = 100.0;
 
 		Range += (float(Repeats) * 10.0);
@@ -1438,6 +1442,36 @@ float volume = 0.7)
 
 	}
 }
+
+void Silvester_ClipPillarToGround(float vecHull[3], float StepHeight, float vecorigin[3])
+{
+	float startPostionTrace[3];
+	float endPostionTrace[3];
+	endPostionTrace = vecorigin;
+	startPostionTrace = vecorigin;
+	startPostionTrace[2] += StepHeight;
+	endPostionTrace[2] -= 5000.0;
+
+	float vecHullMins[3];
+	vecHullMins = vecHull;
+
+	vecHullMins[0] *= -1.0;
+	vecHullMins[1] *= -1.0;
+	vecHullMins[2] *= -1.0;
+
+	Handle trace;
+	//do not use a filter hull, this can cause immensive lag, a non filter has way less lag.
+	//idealy this will work.
+	trace = TR_TraceHullEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID);
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		// This is the point on the actual surface (the hull could have hit space)
+		TR_GetEndPosition(vecorigin, trace);	
+	}
+	delete trace;
+	//if it doesnt hit anything, then it just does buisness as usual
+}
+			
 public void Silvester_DelayTE(DataPack pack)
 {
 	pack.Reset();
