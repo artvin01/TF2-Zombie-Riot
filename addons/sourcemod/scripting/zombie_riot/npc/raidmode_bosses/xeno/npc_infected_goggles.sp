@@ -461,9 +461,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				// Buff Silver
 				npc.m_flBuffCooldown = gameTime + GetRandomFloat(20.0, 25.0);
 
-				//spawnBeam(0.8, 50, 255, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
-				//spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
-				//spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);
+				spawnBeam(0.8, 50, 255, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
 
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
 				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
@@ -598,4 +598,19 @@ bool Goggles_TookDamageRecently(int entity)
 void Goggles_SetRaidPartner(int partner)
 {
 	i_RaidDuoAllyIndex = EntIndexToEntRef(partner);
+}
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }

@@ -8026,3 +8026,20 @@ bool NpcStats_IsEnemySilenced(int enemy)
 	}
 	return true;
 }
+
+#if defined ZR
+void NPCStats_RemoveAllDebuffs(int enemy)
+{
+	f_HighTeslarDebuff[enemy] = 0.0;
+	f_LowTeslarDebuff[enemy] = 0.0;
+	IgniteFor[enemy] = 0;
+	f_HighIceDebuff[enemy] = 0.0;
+	f_LowIceDebuff[enemy] = 0.0;
+	f_VeryLowIceDebuff[enemy] = 0.0;
+	f_WidowsWineDebuff[enemy] = 0.0;
+	f_CrippleDebuff[enemy] = 0.0;
+	f_MaimDebuff[enemy] = 0.0;
+	f_SpecterDyingDebuff[enemy] = 0.0;
+	f_PassangerDebuff[enemy] = 0.0;
+}
+#endif

@@ -1427,8 +1427,9 @@ float volume = 0.7)
 		}
 		else
 		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 12.0, 6.1, 1);	
+			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
+		/*
 		int laser;
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 
@@ -1439,16 +1440,19 @@ float volume = 0.7)
 		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
 
 		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		*/
 
 	}
 }
 
 void Silvester_ClipPillarToGround(float vecHull[3], float StepHeight, float vecorigin[3])
 {
+	float originalPostionTrace[3];
 	float startPostionTrace[3];
 	float endPostionTrace[3];
 	endPostionTrace = vecorigin;
 	startPostionTrace = vecorigin;
+	originalPostionTrace = vecorigin;
 	startPostionTrace[2] += StepHeight;
 	endPostionTrace[2] -= 5000.0;
 
@@ -1460,14 +1464,21 @@ void Silvester_ClipPillarToGround(float vecHull[3], float StepHeight, float veco
 	vecHullMins[2] *= -1.0;
 
 	Handle trace;
-	//do not use a filter hull, this can cause immensive lag, a non filter has way less lag.
-	//idealy this will work.
-	trace = TR_TraceHullEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID);
+	trace = TR_TraceHullFilterEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID,HitOnlyWorld, 0);
 	if ( TR_GetFraction(trace) < 1.0)
 	{
 		// This is the point on the actual surface (the hull could have hit space)
 		TR_GetEndPosition(vecorigin, trace);	
 	}
+	vecorigin[0] = originalPostionTrace[0];
+	vecorigin[1] = originalPostionTrace[1];
+
+	float VecCalc = (vecorigin[2] - startPostionTrace[2]);
+	if(VecCalc > (StepHeight - (vecHull[2] + 2.0)) || VecCalc > (StepHeight - (vecHull[2] + 2.0)) ) //This means it was inside something, in this case, we take the normal non traced position.
+	{
+		vecorigin[2] = originalPostionTrace[2];
+	}
+
 	delete trace;
 	//if it doesnt hit anything, then it just does buisness as usual
 }
@@ -1481,7 +1492,7 @@ public void Silvester_DelayTE(DataPack pack)
 	Origin[2] = pack.ReadCell();
 	float Range = pack.ReadCell();
 	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 12.0, 6.1, 1);	
+	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 5.0, 0.0, 1);	
 		
 	delete pack;
 }
@@ -1527,6 +1538,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING);
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, vecSwingEnd);
 
 
 		
