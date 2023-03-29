@@ -600,12 +600,12 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
 							if(distance < 1000000.0)	// 1000 HU
-								vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
+								vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1500.0);
 							
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, (30.0 + (float(tier) * 4.0)) * RaidModeScaling, 1000.0);
+							npc.FireArrow(vecTarget, (50.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
 						}
