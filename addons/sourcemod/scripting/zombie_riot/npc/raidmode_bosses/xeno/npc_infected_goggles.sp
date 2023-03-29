@@ -246,10 +246,10 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + 30.0;//GetRandomFloat(70.0, 120.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(60.0, 80.0);
 		npc.m_flPiggyFor = 0.0;
 
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 20.0;//GetRandomFloat(70.0, 90.0);
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(70.0, 90.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
@@ -456,9 +456,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				// Buff Silver
 				npc.m_flBuffCooldown = gameTime + GetRandomFloat(20.0, 25.0);
 
-				spawnBeam(0.8, 50, 255, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
-				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
-				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
 
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecAlly);
 				
@@ -471,6 +471,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				NPCStats_RemoveAllDebuffs(ally);
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
 				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
+
+				npc.PlayBuffSound();
 			}
 			else
 			{
@@ -616,6 +618,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
 						}
+					}
+					else if(!alone)
+					{
+						npc.FaceTowards(vecTarget, 1200.0);
 					}
 				}
 				case 2:	// SMG
