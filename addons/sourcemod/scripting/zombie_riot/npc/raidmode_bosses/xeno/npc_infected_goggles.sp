@@ -246,10 +246,10 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(60.0, 80.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0);
 		npc.m_flPiggyFor = 0.0;
 
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(70.0, 90.0);
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
@@ -461,7 +461,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			if(GetVectorDistance(vecAlly, vecMe, true) < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, ally))
 			{
 				// Buff Silver
-				npc.m_flBuffCooldown = gameTime + GetRandomFloat(20.0, 25.0);
+				npc.m_flBuffCooldown = gameTime + GetRandomFloat(24.0 - float(tier * 4.0), 29.0 - float(tier * 4.0));
 
 				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
@@ -493,7 +493,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				// Enable piggyback
 				npc.m_flSpeed = 0.0;
-				npc.m_flPiggyCooldown = tier > 2 ? (gameTime + 50.0) : FAR_FUTURE;
+				npc.m_flPiggyCooldown = tier > 2 ? (gameTime + 30.0) : FAR_FUTURE;
 				npc.m_flPiggyFor = gameTime + 8.0;
 				npc.m_flSwitchCooldown = gameTime + 10.0;
 				RaidbossSilvester npcally = view_as<RaidbossSilvester>(ally);
@@ -584,7 +584,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.PlayRangedSpecialSound();
 								npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
-								npc.m_flNextRangedSpecialAttack = gameTime + 60.0;
+								npc.m_flNextRangedSpecialAttack = gameTime + 45.0;
 								npc.m_flSwitchCooldown = gameTime + 3.0;
 
 								npc.m_flNextMeleeAttack = gameTime + 0.5;	// When to set new activity
