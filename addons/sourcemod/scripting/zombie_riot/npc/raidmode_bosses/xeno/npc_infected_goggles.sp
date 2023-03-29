@@ -787,7 +787,7 @@ public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &in
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
-		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
 			damage *= 0.8;
 			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
