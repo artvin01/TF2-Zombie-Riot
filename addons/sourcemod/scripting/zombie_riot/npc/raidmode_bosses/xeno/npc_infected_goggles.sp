@@ -246,10 +246,10 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(70.0, 120.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + 20.0;//GetRandomFloat(70.0, 120.0);
 		npc.m_flPiggyFor = 0.0;
 
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(70.0, 90.0);
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 30.0;//GetRandomFloat(70.0, 90.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
@@ -364,6 +364,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		{
 			// Disable Piggyback Stuff
 			npc.m_flPiggyFor = 0.0;
+			AcceptEntityInput(npc.index, "ClearParent");
 		}
 	}
 
@@ -466,7 +467,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				npc.m_flBuffCooldown = gameTime + 2.0;
 			}
 		}
-		else if(!alone && tier > 1 && npc.m_iGunType > 0 && npc.m_flPiggyCooldown < gameTime)
+		else if(!alone && tier > 1 && (npc.m_iGunType == 1 || npc.m_iGunType == 2) && npc.m_flPiggyCooldown < gameTime)
 		{
 			vecAlly = WorldSpaceCenter(ally);
 			if(GetVectorDistance(vecAlly, vecMe, true) < 20000.0)	// 140 HU
@@ -475,6 +476,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				npc.m_flPiggyCooldown = FAR_FUTURE;
 				npc.m_flPiggyFor = gameTime + 8.0;
 				npc.m_flSwitchCooldown = gameTime + 10.0;
+				RaidbossSilvester npcally = view_as<RaidbossSilvester>(ally);
+				
+				float flPos[3]; // original
+				
+				GetEntPropVector(npcally.index, Prop_Data, "m_vecAbsOrigin", flPos);
+
+				flPos[2] += 70.0;
+					
+				SDKCall_SetLocalOrigin(npc.index, flPos);
+				
+				SetParent(npcally.index, npc.index, "");
+
+			//	SDKCall_SetLocalOrigin(npc.index, flPos);
 			}
 			else
 			{
@@ -570,7 +584,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				}
 				case 1:	// Sniper Rifle
 				{
-					if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+					if(npc.m_flNextMeleeAttack < gameTime)
 					{
 						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 						{
