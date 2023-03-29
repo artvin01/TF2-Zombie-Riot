@@ -366,6 +366,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_flPiggyFor = 0.0;
 			npc.m_flSpeed = 290.0;
 			AcceptEntityInput(npc.index, "ClearParent");
+			b_CannotBeKnockedUp[npc.index] = false;
 			b_NoGravity[npc.index] = false;
 		}
 	}
@@ -501,6 +502,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				npc.SetVelocity({0.0,0.0,0.0});
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
+				b_CannotBeKnockedUp[npc.index] = true;
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 				npc.SetVelocity({0.0,0.0,0.0});
