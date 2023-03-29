@@ -246,10 +246,10 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + 20.0;//GetRandomFloat(70.0, 120.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + 30.0;//GetRandomFloat(70.0, 120.0);
 		npc.m_flPiggyFor = 0.0;
 
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 30.0;//GetRandomFloat(70.0, 90.0);
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 20.0;//GetRandomFloat(70.0, 90.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
@@ -360,7 +360,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	if(npc.m_flPiggyFor)
 	{
-		if(npc.m_flPiggyFor < gameTime || alone)
+		if(npc.m_flPiggyFor < gameTime || alone || b_NpcIsInvulnerable[ally])
 		{
 			// Disable Piggyback Stuff
 			npc.m_flPiggyFor = 0.0;
@@ -476,7 +476,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				// Enable piggyback
 				npc.m_flSpeed = 0.0;
-				npc.m_flPiggyCooldown = FAR_FUTURE;
+				npc.m_flPiggyCooldown = tier > 2 ? (gameTime + 50.0) : FAR_FUTURE;
 				npc.m_flPiggyFor = gameTime + 8.0;
 				npc.m_flSwitchCooldown = gameTime + 10.0;
 				RaidbossSilvester npcally = view_as<RaidbossSilvester>(ally);
@@ -573,6 +573,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								
 								//npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
 								//SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+
+								spawnRing_Vectors(vecMe, 900.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 200, 1, 1.9, 5.0, 0.0, 1);
 							}
 							else
 							{
