@@ -1551,4 +1551,17 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Angeled Silvester"
+	{
+		"en"		"Angeled Silvester"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
