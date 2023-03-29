@@ -450,10 +450,12 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	npc.Update();
 
 	//Think throttling
+	/*
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
 	{
 		return;
 	}
+	*/
 	if(!npc.m_flNextChargeSpecialAttack)
 	{
 		if(npc.m_blPlayHurtAnimation)
