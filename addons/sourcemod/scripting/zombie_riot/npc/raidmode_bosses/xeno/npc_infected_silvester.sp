@@ -666,14 +666,14 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextRangedSpecialAttackHappens && npc.m_flNextRangedSpecialAttackHappens != 1.0)
 	{
-		if(AllyEntity != -1)
+		if(AllyEntity != -1 && !b_NoGravity[AllyEntity])
 		{
 			i_TargetToWalkTo[npc.index] = AllyEntity;
 			npc.m_flSpeed = 500.0;
 		}
 		else
 		{
-			npc.m_flSpeed = 150.0;
+			npc.m_flSpeed = 250.0;
 		}
 
 		spawnRing(npc.index, NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0 * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);

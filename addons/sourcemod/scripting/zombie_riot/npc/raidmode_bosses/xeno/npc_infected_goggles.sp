@@ -460,6 +460,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
 				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
 
+				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecAlly);
+				
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 75.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 100.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
+
 				NPCStats_RemoveAllDebuffs(ally);
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
 				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
@@ -575,6 +583,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								//SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
 								spawnRing_Vectors(vecMe, 900.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 200, 1, 1.9, 5.0, 0.0, 1);
+								spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 200, 1, 1.9, 5.0, 0.0, 1, 900.0);
 							}
 							else
 							{
@@ -603,7 +612,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, (50.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
+							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
 						}
