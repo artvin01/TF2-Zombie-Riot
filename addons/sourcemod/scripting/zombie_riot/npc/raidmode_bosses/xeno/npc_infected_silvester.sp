@@ -1019,7 +1019,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				}
 				
 				Silvester_TE_Used = 0;
-				for(int Repeat; Repeat <= 8; Repeat++)
+				for(int Repeat; Repeat <= 7; Repeat++)
 				{
 					Silvester_Damaging_Pillars_Ability(npc.index,
 					25.0 * RaidModeScaling,				 	//damage

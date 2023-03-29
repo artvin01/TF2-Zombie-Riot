@@ -3776,7 +3776,7 @@ public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle h
 {
 #if defined ZR
 	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
-	if(Npc_Is_Targeted_In_Air(entity))
+	if(Npc_Is_Targeted_In_Air(entity) || b_NoGravity[entity])
 	{
 		DHookSetReturn(hReturn, 0.0); //We want no gravity
 	}
@@ -7400,6 +7400,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LowIceDebuff[entity] = 0.0;
 	f_HighIceDebuff[entity] = 0.0;
 	b_Frozen[entity] = false;
+	b_NoGravity[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
 	f_TimeFrozenStill[entity] = 0.0;
 	f_MaimDebuff[entity] = 0.0;

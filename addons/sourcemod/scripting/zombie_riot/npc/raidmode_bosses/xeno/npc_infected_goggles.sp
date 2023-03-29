@@ -364,7 +364,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		{
 			// Disable Piggyback Stuff
 			npc.m_flPiggyFor = 0.0;
+			npc.m_flSpeed = 290.0;
 			AcceptEntityInput(npc.index, "ClearParent");
+			b_NoGravity[npc.index] = false;
 		}
 	}
 
@@ -473,6 +475,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			if(GetVectorDistance(vecAlly, vecMe, true) < 20000.0)	// 140 HU
 			{
 				// Enable piggyback
+				npc.m_flSpeed = 0.0;
 				npc.m_flPiggyCooldown = FAR_FUTURE;
 				npc.m_flPiggyFor = gameTime + 8.0;
 				npc.m_flSwitchCooldown = gameTime + 10.0;
@@ -482,13 +485,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				
 				GetEntPropVector(npcally.index, Prop_Data, "m_vecAbsOrigin", flPos);
 
-				flPos[2] += 70.0;
-					
+				flPos[2] += 85.0;
 				SDKCall_SetLocalOrigin(npc.index, flPos);
-				
+				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+				npc.SetVelocity({0.0,0.0,0.0});
 				SetParent(npcally.index, npc.index, "");
-
-			//	SDKCall_SetLocalOrigin(npc.index, flPos);
+				b_NoGravity[npc.index] = true;
+				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
+				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+				npc.SetVelocity({0.0,0.0,0.0});
 			}
 			else
 			{
@@ -660,7 +665,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 						npc.m_flAttackHappens = 0.0;
 						npc.m_flSwitchCooldown = 0.0;
-						npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.89;
+						npc.m_flNextRangedSpecialAttackHappens = gameTime + 1.9;
 
 						npc.AddGesture("ACT_MP_CYOA_PDA_OUTRO");
 					}
