@@ -462,11 +462,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecAlly);
 				
-				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
-				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
-				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
-				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 75.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
-				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 100.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 12.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 				NPCStats_RemoveAllDebuffs(ally);
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
