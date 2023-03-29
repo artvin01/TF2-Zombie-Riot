@@ -368,6 +368,12 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			AcceptEntityInput(npc.index, "ClearParent");
 			b_CannotBeKnockedUp[npc.index] = false;
 			b_NoGravity[npc.index] = false;
+			float flPos[3]; // original
+				
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] -= 70.0;
+			SDKCall_SetLocalOrigin(npc.index, flPos);
+
 		}
 	}
 
@@ -500,12 +506,17 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				SDKCall_SetLocalOrigin(npc.index, flPos);
 				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 				npc.SetVelocity({0.0,0.0,0.0});
+				float eyePitch[3];
+				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
+				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
 				b_CannotBeKnockedUp[npc.index] = true;
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 				npc.SetVelocity({0.0,0.0,0.0});
+				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
+				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 			}
 			else
 			{
@@ -586,8 +597,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								//npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
 								//SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 
-								spawnRing_Vectors(vecMe, 900.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 200, 1, 1.9, 5.0, 0.0, 1);
-								spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 200, 1, 1.9, 5.0, 0.0, 1, 900.0);
+								spawnRing_Vectors(vecMe, 900.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
+								spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 900.0);
 							}
 							else
 							{

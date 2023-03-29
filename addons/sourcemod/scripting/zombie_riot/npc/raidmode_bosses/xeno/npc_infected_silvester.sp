@@ -682,7 +682,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop))
 			{
-				if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
+				if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
 				{
 					if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 					{
@@ -738,7 +738,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 				if(IsValidEnemy(npc.index, EnemyLoop))
 				{
-					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
+					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
 					{
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", victimPos); 
 						float Distance = GetVectorDistance(victimPos, partnerPos);
