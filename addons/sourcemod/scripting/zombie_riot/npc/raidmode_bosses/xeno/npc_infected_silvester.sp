@@ -302,7 +302,7 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
 			}
 		}
 		
@@ -875,11 +875,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 2;
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(500.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 4;
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(750.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
 				ActionToTake = 5;
 			}

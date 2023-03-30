@@ -8,6 +8,10 @@
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
 		"chi"       "真正的融合战士已经到来。"
 	}
+	"Silvester And Blue Goggles Arrived."
+	{
+		"en" 		"Silvester And Blue Goggles Arrived."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
