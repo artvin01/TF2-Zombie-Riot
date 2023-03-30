@@ -969,6 +969,24 @@ public Action ParticleTransmit(int entity, int client)
 	}
 	return Plugin_Continue;
 }
+
+
+public Action ParticleTransmitCitizen(int entity, int client)
+{
+	static int building_attached;
+	building_attached = EntRefToEntIndex(Building_particle_Owner[entity]);
+
+	if(IsValidEntity(building_attached))
+	{
+		static float Cooldowntocheck;
+		Cooldowntocheck = Building_Collect_Cooldown[building_attached][client];
+
+		if(Cooldowntocheck > GetGameTime())
+			return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
 /*
 public Action ParticleTransmitSelf(int entity, int client)
 {
