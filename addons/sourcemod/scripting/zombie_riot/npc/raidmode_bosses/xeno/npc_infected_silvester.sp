@@ -302,7 +302,7 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
 			}
 		}
 		
@@ -397,7 +397,7 @@ methodmap RaidbossSilvester < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 237, true);
+		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
 		
 		npc.Anger = false;
 		//IDLE
@@ -480,17 +480,28 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			npc.m_flSpeed = 330.0;
 			npc.m_iInKame = 0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
-			npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
+			npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;
 			npc.m_bisWalking = true;
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
+			i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
+
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+
 				
 			SetVariantColor(view_as<int>({255, 255, 0, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			npc.PlayAngerSoundPassed();
+
+
+			npc.m_flTimebeforekamehameha = 0.0;
+			npc.m_flNextRangedSpecialAttack = 0.0;			
+			npc.m_flNextRangedAttack = 0.0;		
+			npc.m_flRangedSpecialDelay = 0.0;		
+			//Reset all cooldowns.
 		}
 		return;
 	}
@@ -594,7 +605,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
-		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
 			if(!IsValidEntity(i_LaserEntityIndex[npc.index]))
 			{
@@ -662,23 +673,23 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextRangedSpecialAttackHappens && npc.m_flNextRangedSpecialAttackHappens != 1.0)
 	{
-		if(AllyEntity != -1)
+		if(AllyEntity != -1 && !b_NoGravity[AllyEntity])
 		{
 			i_TargetToWalkTo[npc.index] = AllyEntity;
 			npc.m_flSpeed = 500.0;
 		}
 		else
 		{
-			npc.m_flSpeed = 150.0;
+			npc.m_flSpeed = 250.0;
 		}
 
 		spawnRing(npc.index, NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0 * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, 231, 181, 59, 125, 10, 0.11, EMPOWER_WIDTH, 6.0, 10);
 		
-		for(int EnemyLoop; EnemyLoop < MaxClients; EnemyLoop ++)
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop))
 			{
-				if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
+				if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
 				{
 					if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 					{
@@ -725,7 +736,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			static float victimPos[3];
 			static float partnerPos[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
-			for(int EnemyLoop; EnemyLoop < MaxClients; EnemyLoop ++)
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
 			{
 				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 				{
@@ -734,7 +745,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 				if(IsValidEnemy(npc.index, EnemyLoop))
 				{
-					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
+					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
 					{
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", victimPos); 
 						float Distance = GetVectorDistance(victimPos, partnerPos);
@@ -748,7 +759,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 							static float velocity[3];
 							GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-							float attraction_intencity = 1.5;
+							float attraction_intencity = 2.5;
 							ScaleVector(velocity, Distance * attraction_intencity);
 											
 											
@@ -769,13 +780,19 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 							static float velocity[3];
 							GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-							float attraction_intencity = 1000.0;
+							float attraction_intencity = 3000.0;
 							ScaleVector(velocity, attraction_intencity);
 											
 											
 							// min Z if on ground
 							if (GetEntityFlags(EnemyLoop) & FL_ONGROUND)
-								velocity[2] = fmax(325.0, velocity[2]);
+							{
+								velocity[2] = 350.0;
+							}
+							else
+							{
+								velocity[2] = 200.0;
+							}
 										
 							// apply velocity
 							velocity[0] *= -1.0;
@@ -858,11 +875,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 2;
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(500.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 4;
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(750.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
 				ActionToTake = 5;
 			}
@@ -933,13 +950,13 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				pos[2] += 5.0;
 				float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 
-				float DelayPillars = 2.0;
-				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
+				float DelayPillars = 1.5;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
 				float DelaybewteenPillars = 0.2;
 				if(ZR_GetWaveCount()+1 > 35)
 				{
-					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
-					DelayPillars = 1.5;
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
+					DelayPillars = 1.0;
 					DelaybewteenPillars = 0.1;
 				}
 				npc.AddGesture("ACT_MP_THROW");
@@ -957,10 +974,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				DelaybewteenPillars,									//Extra delay between each
 				ang_Look 								/*2 dimensional plane*/,
 				pos);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
+
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 				if(npc.Anger)
 				{
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
 				}
 			}
 			case 5: //Cause a pillar attack, more fany and better looking elemental wand attack
@@ -1009,7 +1027,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				}
 				
 				Silvester_TE_Used = 0;
-				for(int Repeat; Repeat <= 8; Repeat++)
+				for(int Repeat; Repeat <= 7; Repeat++)
 				{
 					Silvester_Damaging_Pillars_Ability(npc.index,
 					25.0 * RaidModeScaling,				 	//damage
@@ -1041,7 +1059,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	//This is for self defense, incase an enemy is too close, This exists beacuse
 	//Silvester's main walking target might not be the closest target he has.
-	if(npc.m_iInKame == 0)
+	if(npc.m_iInKame == 0 && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		RaidbossSilvesterSelfDefense(npc,GetGameTime(npc.index)); 
 	}
@@ -1242,7 +1260,7 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 							
 					npc.m_flAttackHappens = gameTime + 0.25;
 
-					npc.m_flDoingAnimation = gameTime + 0.6;
+					npc.m_flDoingAnimation = gameTime + 0.25;
 					npc.m_flNextMeleeAttack = gameTime + 1.2;
 				}
 			}

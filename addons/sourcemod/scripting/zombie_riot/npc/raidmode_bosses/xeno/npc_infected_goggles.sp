@@ -246,10 +246,10 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(70.0, 120.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0);
 		npc.m_flPiggyFor = 0.0;
 
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(70.0, 90.0);
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
@@ -360,10 +360,20 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	if(npc.m_flPiggyFor)
 	{
-		if(npc.m_flPiggyFor < gameTime || alone)
+		if(npc.m_flPiggyFor < gameTime || alone || b_NpcIsInvulnerable[ally])
 		{
 			// Disable Piggyback Stuff
 			npc.m_flPiggyFor = 0.0;
+			npc.m_flSpeed = 290.0;
+			AcceptEntityInput(npc.index, "ClearParent");
+			b_CannotBeKnockedUp[npc.index] = false;
+			b_NoGravity[npc.index] = false;
+			float flPos[3]; // original
+				
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] -= 70.0;
+			SDKCall_SetLocalOrigin(npc.index, flPos);
+
 		}
 	}
 
@@ -389,7 +399,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		if(npc.m_flSwitchCooldown < gameTime)
 		{
-			if(distance > 500000 || !(GetURandomInt() % (tier + 2)))	// 700 HU
+			if(distance > 500000 || !(GetURandomInt() % ((tier * 2) + 6)))	// 700 HU
 			{
 				if(npc.m_iGunType == 1)
 				{
@@ -408,7 +418,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 				}
 			}
-			else if(distance > 100000 || !(GetURandomInt() % (tier + 3)))	// 300 HU
+			else if(distance > 100000 || !(GetURandomInt() % ((tier * 2) + 8)))	// 300 HU
 			{
 				if(npc.m_iGunType == 2)
 				{
@@ -451,30 +461,62 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			if(GetVectorDistance(vecAlly, vecMe, true) < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, ally))
 			{
 				// Buff Silver
-				npc.m_flBuffCooldown = gameTime + GetRandomFloat(20.0, 25.0);
+				npc.m_flBuffCooldown = gameTime + GetRandomFloat(24.0 - (float(tier) * 4.0), 29.0 - (float(tier) * 4.0));
 
-				spawnBeam(0.8, 50, 255, 50, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
-				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
-				spawnBeam(0.8, 50, 255, 50, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
+
+				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecAlly);
+				
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 				NPCStats_RemoveAllDebuffs(ally);
 				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
 				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
+
+				npc.PlayBuffSound();
 			}
 			else
 			{
 				npc.m_flBuffCooldown = gameTime + 2.0;
 			}
 		}
-		else if(!alone && tier > 1 && npc.m_iGunType > 0 && npc.m_flPiggyCooldown < gameTime)
+		else if(!alone && tier > 1 && (npc.m_iGunType == 1 || npc.m_iGunType == 2) && npc.m_flPiggyCooldown < gameTime)
 		{
 			vecAlly = WorldSpaceCenter(ally);
 			if(GetVectorDistance(vecAlly, vecMe, true) < 20000.0)	// 140 HU
 			{
 				// Enable piggyback
-				npc.m_flPiggyCooldown = FAR_FUTURE;
+				npc.m_flSpeed = 0.0;
+				npc.m_flPiggyCooldown = tier > 2 ? (gameTime + 30.0) : FAR_FUTURE;
 				npc.m_flPiggyFor = gameTime + 8.0;
 				npc.m_flSwitchCooldown = gameTime + 10.0;
+				RaidbossSilvester npcally = view_as<RaidbossSilvester>(ally);
+				
+				float flPos[3]; // original
+				
+				GetEntPropVector(npcally.index, Prop_Data, "m_vecAbsOrigin", flPos);
+
+				flPos[2] += 85.0;
+				SDKCall_SetLocalOrigin(npc.index, flPos);
+				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+				npc.SetVelocity({0.0,0.0,0.0});
+				float eyePitch[3];
+				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
+				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				SetParent(npcally.index, npc.index, "");
+				b_NoGravity[npc.index] = true;
+				b_CannotBeKnockedUp[npc.index] = true;
+				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
+				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
+				npc.SetVelocity({0.0,0.0,0.0});
+				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
+				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 			}
 			else
 			{
@@ -542,7 +584,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.PlayRangedSpecialSound();
 								npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
-								npc.m_flNextRangedSpecialAttack = gameTime + 60.0;
+								npc.m_flNextRangedSpecialAttack = gameTime + 45.0;
 								npc.m_flSwitchCooldown = gameTime + 3.0;
 
 								npc.m_flNextMeleeAttack = gameTime + 0.5;	// When to set new activity
@@ -554,6 +596,9 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								
 								//npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_croc_knife/c_croc_knife.mdl");
 								//SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+
+								spawnRing_Vectors(vecMe, 900.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
+								spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 900.0);
 							}
 							else
 							{
@@ -570,22 +615,26 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				}
 				case 1:	// Sniper Rifle
 				{
-					if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+					if(npc.m_flNextMeleeAttack < gameTime)
 					{
 						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
 							if(distance < 1000000.0)	// 1000 HU
-								vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
+								vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1500.0);
 							
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, (30.0 + (float(tier) * 4.0)) * RaidModeScaling, 1000.0);
+							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
 						}
+					}
+					else if(!alone)
+					{
+						npc.FaceTowards(vecTarget, 1200.0);
 					}
 				}
 				case 2:	// SMG
@@ -646,7 +695,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 						npc.m_flAttackHappens = 0.0;
 						npc.m_flSwitchCooldown = 0.0;
-						npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.89;
+						npc.m_flNextRangedSpecialAttackHappens = gameTime + 1.9;
 
 						npc.AddGesture("ACT_MP_CYOA_PDA_OUTRO");
 					}
@@ -738,7 +787,7 @@ public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &in
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
-		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
 			damage *= 0.8;
 			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
