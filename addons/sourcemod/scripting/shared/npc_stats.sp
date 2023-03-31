@@ -5569,7 +5569,7 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 	}
 }
 
-public int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
+int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 {
 	Handle trace; 
 	float pos_npc[3];
