@@ -1485,6 +1485,14 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 
 stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
 {
+	//allow settings for the sick who cant handle screenshake.
+	//can cause headaches.
+#if defined ZR
+	if(!b_HudScreenShake[client])
+	{
+		return false;
+	}
+#endif
 	if (command == SHAKE_STOP) {
 		amplitude = 0.0;
 	}

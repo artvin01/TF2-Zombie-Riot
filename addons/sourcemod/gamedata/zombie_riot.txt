@@ -442,6 +442,13 @@
 					}
 				}
 			}
+			"CBaseGrenade::Detonate"
+			{
+				"offset"	"CBaseGrenade::Detonate"
+				"hooktype"	"entity"
+				"return"	"void"
+				"this"		"entity"
+			}
 			"CTFBaseBoss::BossThink"
            	{
               	 	"signature"    	"CTFBaseBoss::BossThink"
@@ -939,6 +946,11 @@
 			{
 				"linux"		"236"
 				"windows"	"235"
+			}
+			"CBaseGrenade::Detonate"
+			{
+				"linux"		"237"
+				"windows"	"236"
 			}
 			"CTFBaseRocket::Explode"
 			{

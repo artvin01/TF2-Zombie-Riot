@@ -2248,4 +2248,30 @@
 		//"it"		""
 		//"fr"		""
 	}	
+	"Low Health Shake"
+	{
+		"en"		"Low Health Shake"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"Weapon Screen Shake"
+	{
+		"en"		"Weapon Screen Shake"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
 }

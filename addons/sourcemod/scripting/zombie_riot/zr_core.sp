@@ -267,6 +267,9 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
+bool b_HudScreenShake[MAXTF2PLAYERS];
+bool b_HudLowHealthShake[MAXTF2PLAYERS];
+
 #include "zombie_riot/npc.sp"	// Global NPC List
 
 #include "zombie_riot/database.sp"
@@ -383,6 +386,7 @@ void ZR_PluginStart()
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
 	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
+	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 
 	CookieAmmoReserve = new Cookie("zr_ammoreserve", "Ammo Cookie", CookieAccess_Protected);
 	CookieLeftForDead = new Cookie("zr_leftfordead", "Left For Dead Cookie", CookieAccess_Protected);

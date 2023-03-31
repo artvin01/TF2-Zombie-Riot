@@ -223,6 +223,7 @@ ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
 Cookie HudSettings_Cookies;
+Cookie HudSettingsExtra_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;

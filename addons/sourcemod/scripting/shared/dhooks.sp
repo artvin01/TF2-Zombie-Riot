@@ -14,7 +14,8 @@ static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 
 static DynamicDetour gH_MaintainBotQuota = null;
-static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
+//static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
+static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
 DynamicHook g_DhookUpdateTransmitState; 
@@ -34,7 +35,6 @@ static int g_OffsetWeaponMode;
 static int g_OffsetWeaponInfo;
 static int g_OffsetWeaponPunchAngle;
 */
-
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
 
@@ -47,6 +47,9 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
 
 void DHook_Setup()
 {
+	PrecacheSound("weapons/explode1.wav");
+	PrecacheSound("weapons/explode2.wav");
+	PrecacheSound("weapons/explode3.wav");
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	
@@ -96,7 +99,8 @@ void DHook_Setup()
 //	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
-	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+//	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 //	g_ObjStartUpgrading = DHook_CreateVirtual(gamedata, "CBaseObject::StartUpgrading()"); //causes crashes.
@@ -246,7 +250,8 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
-	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+//	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+	g_DHookGrenade_Detonate.HookEntity(Hook_Pre, entity, DHook_GrenadeDetonatePre);
 	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
 	
 	if(Sticky)
@@ -404,9 +409,7 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 */
 
 
-
-
-public MRESReturn DHook_GrenadeExplodePre(int entity)
+public MRESReturn DHook_GrenadeDetonatePre(int entity)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	if (0 < owner <= MaxClients)
@@ -453,10 +456,29 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 			return MRES_Supercede;
 		}
 	}
-	f_CustomGrenadeDamage[entity] = 0.0;
-	return MRES_Ignored;
+	//do not allow normal explosion, this causes screenshake, which in zr is a problem as many happen, and can cause headaches.
+	float GrenadePos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
+	switch(GetRandomInt(1,3))
+	{
+		case 1:
+		{
+			EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+		}
+		case 2:
+		{
+			EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+		}
+		case 3:
+		{
+			EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+		}
+	}
+	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
+	_, _, _, _, _, _, _, _, _, _, 0.0);
+	RemoveEntity(entity);
+	return MRES_Supercede;
 }
-
 //steal from fortress royale
 
 stock int GetOwnerLoop(int entity)
