@@ -5569,15 +5569,21 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 	}
 }
 
-public int Can_I_See_Enemy(int attacker, int enemy)
+public int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 {
 	Handle trace; 
 	float pos_npc[3];
 	float pos_enemy[3];
 	pos_npc = WorldSpaceCenter(attacker);
 	pos_enemy = WorldSpaceCenter(enemy);
-	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_NPCSOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
+
+#if defined ZR
+	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));
+#else
+	bool ingore_buildings = Ignore_Buildings;
+#endif
+
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_SOLID, RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, attacker);
 	int Traced_Target;
 		
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
