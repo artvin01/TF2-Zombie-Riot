@@ -302,7 +302,7 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
 			}
 		}
 		
@@ -495,6 +495,13 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			SetVariantColor(view_as<int>({255, 255, 0, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 			npc.PlayAngerSoundPassed();
+
+
+			npc.m_flTimebeforekamehameha = 0.0;
+			npc.m_flNextRangedSpecialAttack = 0.0;			
+			npc.m_flNextRangedAttack = 0.0;		
+			npc.m_flRangedSpecialDelay = 0.0;		
+			//Reset all cooldowns.
 		}
 		return;
 	}
@@ -598,7 +605,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
-		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
 			if(!IsValidEntity(i_LaserEntityIndex[npc.index]))
 			{
@@ -868,11 +875,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 2;
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(500.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 4;
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(750.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
 				ActionToTake = 5;
 			}
@@ -943,13 +950,13 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				pos[2] += 5.0;
 				float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 
-				float DelayPillars = 2.0;
-				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.5;
+				float DelayPillars = 1.5;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
 				float DelaybewteenPillars = 0.2;
 				if(ZR_GetWaveCount()+1 > 35)
 				{
-					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
-					DelayPillars = 1.5;
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
+					DelayPillars = 1.0;
 					DelaybewteenPillars = 0.1;
 				}
 				npc.AddGesture("ACT_MP_THROW");
@@ -967,10 +974,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				DelaybewteenPillars,									//Extra delay between each
 				ang_Look 								/*2 dimensional plane*/,
 				pos);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
+
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 				if(npc.Anger)
 				{
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
 				}
 			}
 			case 5: //Cause a pillar attack, more fany and better looking elemental wand attack

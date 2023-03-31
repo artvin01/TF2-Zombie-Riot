@@ -278,30 +278,15 @@ stock void RemoveAllWeapons(int client)
 	while(found);
 }
 
-static bool NewFrame;
-
-// In case we ever use this globally, move variable and this outside here
-public void OnGameFrame()
-{
-	NewFrame = true;
-}
-
 stock float ZR_GetGameTime(int entity = 0)
 {
-	static float gameTime;
-	if(NewFrame)
-	{
-		gameTime = GetGameTime();
-		NewFrame = false;
-	}
-	
 	if(entity == 0)
 	{
-		return gameTime;
+		return GetGameTime();
 	}
-	else
+	else	
 	{
-		return (gameTime - f_StunExtraGametimeDuration[entity]);
+		return (GetGameTime() - f_StunExtraGametimeDuration[entity]);
 		//This will allow for stuns and other stuff like that. Mainly used for tank and other stuns.
 		//We will treat the tank stun as such.
 	}
