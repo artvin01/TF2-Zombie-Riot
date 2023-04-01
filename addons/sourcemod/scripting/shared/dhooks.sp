@@ -421,26 +421,40 @@ public MRESReturn DHook_GrenadeDetonatePre(int entity)
 	return MRES_Supercede;
 }
 
+float f_SameExplosionSound[MAXENTITIES];
 void DoGrenadeExplodeLogic(int entity)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
 	//do not allow normal explosion, this causes screenshake, which in zr is a problem as many happen, and can cause headaches.
 	float GrenadePos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
-	switch(GetRandomInt(1,3))
+	bool DoNotPlay = false;
+
+	if(IsValidEntity(owner) && f_SameExplosionSound[owner] == GetGameTime())
+		DoNotPlay = true;
+	
+	//prevent insanely loud explosion sounds.
+	if(!DoNotPlay)
 	{
-		case 1:
+		switch(GetRandomInt(1,3))
 		{
-			EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			case 1:
+			{
+				EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 2:
+			{
+				EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 3:
+			{
+				EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
 		}
-		case 2:
-		{
-			EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
-		}
-		case 3:
-		{
-			EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
-		}
+	}
+	if(!DoNotPlay)
+	{
+		f_SameExplosionSound[owner] = GetGameTime();
 	}
 	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
 	_, _, _, _, _, _, _, _, _, _, 0.0);
