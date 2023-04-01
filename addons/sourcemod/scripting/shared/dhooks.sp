@@ -14,7 +14,7 @@ static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 
 static DynamicDetour gH_MaintainBotQuota = null;
-//static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
+static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
@@ -99,7 +99,7 @@ void DHook_Setup()
 //	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
-//	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
@@ -250,7 +250,7 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
-//	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
 	g_DHookGrenade_Detonate.HookEntity(Hook_Pre, entity, DHook_GrenadeDetonatePre);
 	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
 	
@@ -407,55 +407,23 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 	
 	Because im too stupid to do it myself.
 */
-
+public MRESReturn DHook_GrenadeExplodePre(int entity)
+{
+	DoGrenadeExplodeLogic(entity);
+	RemoveEntity(entity);
+	return MRES_Supercede;
+}
 
 public MRESReturn DHook_GrenadeDetonatePre(int entity)
 {
+	DoGrenadeExplodeLogic(entity);
+	RemoveEntity(entity);
+	return MRES_Supercede;
+}
+
+void DoGrenadeExplodeLogic(int entity)
+{
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
-	if (0 < owner <= MaxClients)
-	{
-		if(f_CustomGrenadeDamage[entity] < 999999.9)
-		{
-			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
-			if(f_CustomGrenadeDamage[entity] > 1.0)
-			{
-				original_damage = f_CustomGrenadeDamage[entity];
-			}
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
-			Explode_Logic_Custom(original_damage, owner, entity, weapon);
-		}
-		else
-		{
-			return MRES_Supercede;
-		}
-	}
-	else if(owner > MaxClients)
-	{
-		if(f_CustomGrenadeDamage[entity] < 999999.9)
-		{
-			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
-			if(f_CustomGrenadeDamage[entity] > 1.0)
-			{
-				original_damage = f_CustomGrenadeDamage[entity];
-			}
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-			
-			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
-			{
-				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
-			}
-			else
-			{
-				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
-			}
-		}
-		else
-		{
-			return MRES_Supercede;
-		}
-	}
 	//do not allow normal explosion, this causes screenshake, which in zr is a problem as many happen, and can cause headaches.
 	float GrenadePos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
@@ -476,8 +444,59 @@ public MRESReturn DHook_GrenadeDetonatePre(int entity)
 	}
 	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
 	_, _, _, _, _, _, _, _, _, _, 0.0);
-	RemoveEntity(entity);
-	return MRES_Supercede;
+	if (0 < owner <= MaxClients)
+	{
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
+		{
+			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+			if(f_CustomGrenadeDamage[entity] > 1.0)
+			{
+				original_damage = f_CustomGrenadeDamage[entity];
+			}
+			else
+			{
+				original_damage *= 1.666666666666666;
+			}
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
+			Explode_Logic_Custom(original_damage, owner, entity, weapon);
+		}
+		else
+		{
+			return;
+		}
+	}
+	else if(owner > MaxClients)
+	{
+		if(f_CustomGrenadeDamage[entity] < 999999.9)
+		{
+			float original_damage = GetEntPropFloat(entity, Prop_Send, "m_flDamage"); 
+			if(f_CustomGrenadeDamage[entity] > 1.0)
+			{
+				original_damage = f_CustomGrenadeDamage[entity];
+			}
+			else
+			{
+				original_damage *= 1.666666666666666;
+			}
+			
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			
+			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,true);	
+			}
+			else
+			{
+				Explode_Logic_Custom(original_damage, owner, entity, -1,_,_,_,_,false);
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
 }
 //steal from fortress royale
 
