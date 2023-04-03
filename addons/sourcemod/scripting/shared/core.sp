@@ -1253,6 +1253,7 @@ public void OnMapStart()
 
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
 	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
+	PrecacheSoundCustom("zombiesurvival/hm.mp3");
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");

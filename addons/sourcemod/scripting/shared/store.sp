@@ -1423,16 +1423,18 @@ void HudSettings_ClientCookiesCached(int client)
 	if(buffer[0])
 	{
 		// Cookie has stuff, get values
-		bool buffers[2];
+		bool buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
 		b_HudScreenShake[client] = buffers[0];
 		b_HudLowHealthShake[client] = buffers[1];
+		b_HudHitMarker[client] = buffers[2];
 	}
 	else
 	{
 		// Cookie empty, get our own
 		b_HudScreenShake[client] = true;
 		b_HudLowHealthShake[client] = true;
+		b_HudHitMarker[client] = true;
 	}
 }
 
@@ -1442,7 +1444,7 @@ void HudSettings_ClientCookiesDisconnect(int client)
 	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 	HudSettings_Cookies.Set(client, buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client]);
+	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
 	HudSettingsExtra_Cookies.Set(client, buffer);
 }
 
@@ -2477,6 +2479,17 @@ public void ReShowSettingsHud(int client)
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-41", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Hit Marker");
+	if(b_HudHitMarker[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-42", buffer);
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
 	menu2.AddItem("-999", buffer);
@@ -2874,6 +2887,18 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					else
 					{
 						b_HudScreenShake[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
+				case -42: 
+				{
+					if(b_HudHitMarker[client])
+					{
+						b_HudHitMarker[client] = false;
+					}
+					else
+					{
+						b_HudHitMarker[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}

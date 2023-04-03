@@ -269,6 +269,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 bool b_HudScreenShake[MAXTF2PLAYERS];
 bool b_HudLowHealthShake[MAXTF2PLAYERS];
+bool b_HudHitMarker[MAXTF2PLAYERS];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 

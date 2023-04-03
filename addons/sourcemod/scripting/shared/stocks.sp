@@ -4176,3 +4176,16 @@ enum g_Collision_Group
     TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS
 	
 };
+
+float f_HitmarkerSameFrame[MAXTF2PLAYERS];
+
+void DoClientHitmarker(int client)
+{
+	if(b_HudHitMarker[client] && f_HitmarkerSameFrame[client] != GetGameTime())
+	{
+		EmitCustomToClient(client, "zombiesurvival/hm.mp3", _, _, 90, _, 0.65, 100);
+		SetHudTextParams(-1.0, -1.0, 0.01, 125, 125, 125, 65);
+		ShowHudText(client, 10, "X");
+		f_HitmarkerSameFrame[client] = GetGameTime();	
+	}
+}
