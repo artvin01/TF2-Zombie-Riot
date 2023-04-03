@@ -4185,7 +4185,7 @@ void DoClientHitmarker(int client)
 	{
 		EmitCustomToClient(client, "zombiesurvival/hm.mp3", _, _, 90, _, 0.65, 100);
 		SetHudTextParams(-1.0, -1.0, 0.01, 125, 125, 125, 65);
-		ShowHudText(client, 10, "X");
+		ShowHudText(client, -1, "X");
 		f_HitmarkerSameFrame[client] = GetGameTime();	
 	}
 }
