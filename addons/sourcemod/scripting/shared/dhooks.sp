@@ -47,9 +47,6 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
 
 void DHook_Setup()
 {
-	PrecacheSound("weapons/explode1.wav");
-	PrecacheSound("weapons/explode2.wav");
-	PrecacheSound("weapons/explode3.wav");
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	
