@@ -1103,7 +1103,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
-			RaidModeTime += 10.0;
+			RaidModeTime += 85.0;
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
