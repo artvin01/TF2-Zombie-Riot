@@ -233,7 +233,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 45;
+		rand = GetURandomInt() % 46;
 	
 	char message[128];
 	switch(rand)
@@ -571,15 +571,29 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}The freeplay wave pattern was randomized");
 			EnemySeed = EnemyChance;
 		}
-		case 40, 41, 42:
+		case 40, 41:
 		{
+			if(EnemyChance > 8)
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+
 			strcopy(message, sizeof(message), "{red}Stronger enemy types are more likely to appear");
-			if(EnemyChance < 7)
-				EnemyChance++;
-			
+			EnemyChance++;
+		}
+		case 42, 43:
+		{
+			if(EnemyChance < 3)
+			{
+				Freeplay_SetupStart(postWaves, wave);
+				return;
+			}
+
+			strcopy(message, sizeof(message), "{red}More enemy types can appear");
 			EnemyCount++;
 		}
-		case 43:
+		case 44:
 		{
 			if(EnemyChance < 3)
 			{
@@ -590,7 +604,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}Stronger enemy types are less likely to appear");
 			EnemyChance--;
 		}
-		case 44:
+		case 45:
 		{
 			if(Medival_Difficulty_Level <= 0.1)
 			{
