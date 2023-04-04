@@ -93,17 +93,17 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 2:
 			{
 				enemy.Index = RAIDMODE_BLITZKRIEG;
-				enemy.Health = 4000000 / 70 * Waves_GetRound();
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound()) * MultiGlobal);
 			}
 			case 3:
 			{
 				enemy.Index = XENO_RAIDBOSS_SILVESTER;
-				enemy.Health = 2500000 / 70 * Waves_GetRound();
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(Waves_GetRound()) * MultiGlobal);
 			}
 			default:
 			{
 				enemy.Index = RAIDMODE_TRUE_FUSION_WARRIOR;
-				enemy.Health = 4000000 / 70 * Waves_GetRound();
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound()) * MultiGlobal);
 			}
 		}
 
@@ -117,7 +117,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	}
 	else
 	{
-		enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * HealthMulti * ((postWaves + 99) * 0.01)));
+		enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.01)));
 		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.02));
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
