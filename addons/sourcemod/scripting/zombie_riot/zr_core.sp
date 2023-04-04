@@ -275,6 +275,7 @@ bool b_HudHitMarker[MAXTF2PLAYERS];
 
 #include "zombie_riot/database.sp"
 #include "zombie_riot/escape.sp"
+#include "zombie_riot/freeplay.sp"
 #include "zombie_riot/item_gift_rpg.sp"
 #include "zombie_riot/music.sp"
 #include "zombie_riot/queue.sp"

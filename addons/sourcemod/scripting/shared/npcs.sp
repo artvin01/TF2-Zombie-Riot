@@ -674,7 +674,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					else
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
-					}	
+					}
+
 					if(zr_spawnprotectiontime.FloatValue > 0.0)
 					{
 				
@@ -690,6 +691,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
+
+					if(Waves_InFreeplay())
+						Freeplay_SpawnEnemy(entity_Spawner);
 				}
 			}
 			else if(!found)
@@ -758,6 +762,9 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			}
 			
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
+
+			if(Waves_InFreeplay())
+				Freeplay_SpawnEnemy(entity);
 		}
 	}
 	return Plugin_Stop;

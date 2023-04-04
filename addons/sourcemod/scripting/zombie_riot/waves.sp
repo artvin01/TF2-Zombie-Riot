@@ -542,6 +542,7 @@ void Waves_RoundStart()
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
 	Waves_RoundEnd();
+	Freeplay_ResetAll();
 	
 	CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	/*
@@ -1147,28 +1148,34 @@ void Waves_Progress()
 		Rounds.GetArray(length, round);
 		if(++CurrentWave < 1)
 		{
-			float multi = 1.0 + ((CurrentRound-length) * 0.02);
+			int postWaves = CurrentRound - length;
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;
-			int Max_Enemy_Get = 0;
-			for(int i; i<length; i++)
+			
+			int Max_Enemy_Get = Freeplay_EnemyCount();
+			for(int i; i < length; i++)
 			{
-				//if(GetRandomInt(0, 1)) //This spwns too many
-				if(GetRandomInt(0, 3) == 3 && Max_Enemy_Get <= 3) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+				if(Freeplay_ShouldAddEnemy(postWaves)) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
 				{
-					Max_Enemy_Get += 1;
 					round.Waves.GetArray(i, wave);
-					int count = RoundToFloor(float(wave.Count) / GetRandomFloat(0.2, 1.3) * multi);
-					wave.EnemyData.Health = (RoundToCeil(float(wave.EnemyData.Health) * float(CurrentRound) * multi * 1.35 * 3.0)); //removing /3 cus i want 3x the hp!!!
-					//Double it, icant be bothered to go through all the configs and change every single number.
-					for(int a; a<count; a++)
+					Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
+
+					if(wave.Count > 0)
 					{
-						Enemies.PushArray(wave.EnemyData);
+						for(int a; a < wave.Count; a++)
+						{
+							Enemies.PushArray(wave.EnemyData);
+						}
+						
+						Zombies_Currently_Still_Ongoing += wave.Count;
+
+						if(!(--Max_Enemy_Get))
+							break;
 					}
-					Zombies_Currently_Still_Ongoing += count;
 				}
 			}
-			if(GetRandomInt(0, 1) == 1) //make him spawn way more often in freeplay.
+
+			if(Freeplay_ShouldMiniBoss())
 			{
 				panzer_spawn = true;
 				NPC_SpawnNext(false, panzer_spawn, false);
@@ -1198,7 +1205,9 @@ void Waves_Progress()
 		}
 		else
 		{
+			Freeplay_OnEndWave(CurrentRound - length, round.Cash);
 			CurrentCash += round.Cash;
+
 			if(round.Cash)
 			{
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
@@ -1207,7 +1216,7 @@ void Waves_Progress()
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
-			Rounds.GetArray(length, round);
+			//Rounds.GetArray(length, round);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
 			{
 				for(int client=1; client<=MaxClients; client++)
