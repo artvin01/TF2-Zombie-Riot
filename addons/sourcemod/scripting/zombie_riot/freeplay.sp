@@ -117,7 +117,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	}
 	else
 	{
-		enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.01)));
+		if(enemy.Health)
+			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.01)));
+		
 		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.02));
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
@@ -584,13 +586,13 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 42, 43:
 		{
-			if(EnemyChance < 3)
+			if(EnemyCount < 6)
 			{
 				Freeplay_SetupStart(postWaves, wave);
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}More enemy types can appear");
+			strcopy(message, sizeof(message), "{red}More enemy groups can appear");
 			EnemyCount++;
 		}
 		case 44:
