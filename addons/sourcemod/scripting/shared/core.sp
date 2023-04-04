@@ -550,6 +550,7 @@ bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
+bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 float f_CooldownForHurtHud[MAXPLAYERS];	
@@ -2265,6 +2266,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsAGib[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
+		b_IgnoredByPlayerProjectiles[entity] = false;
+		b_DoNotUnStuck[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
 		i_NpcInternalId[entity] = 0;

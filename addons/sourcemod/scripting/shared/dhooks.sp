@@ -719,6 +719,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				}
 				return false;
 			}
+			else if(b_IgnoredByPlayerProjectiles[entity2])
+			{
+				return false;
+			}
 			else if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
@@ -769,6 +773,10 @@ things i tried
 				return false;
 			}
 			else if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+			else if (b_DoNotUnStuck[entity2])
 			{
 				return false;
 			}

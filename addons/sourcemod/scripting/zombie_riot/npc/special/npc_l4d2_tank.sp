@@ -924,7 +924,7 @@ public Action CheckStuckTank(Handle timer, any entid)
 	if(IsValidEntity(client))
 	{
 		float flMyPos[3];
-		GetEntPropVector(client, Prop_Data, "m_vecOrigin", flMyPos);
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		static float hullcheckmaxs_Player[3];
 		static float hullcheckmins_Player[3];
 		if(b_IsGiant[client])
