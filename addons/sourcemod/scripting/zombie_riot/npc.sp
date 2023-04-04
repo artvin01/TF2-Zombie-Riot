@@ -231,7 +231,8 @@ enum
 
 	XENO_RAIDBOSS_SILVESTER		= 196,
 	XENO_RAIDBOSS_BLUE_GOGGLES	= 197,
-	XENO_RAIDBOSS_SUPERSILVESTER	= 198
+	XENO_RAIDBOSS_SUPERSILVESTER	= 198,
+	XENO_RAIDBOSS_NEMESIS	= 199
 }
 
 public const char NPC_Names[][] =
@@ -454,7 +455,8 @@ public const char NPC_Names[][] =
 
 	"Silvester",
 	"Blue Goggles",
-	"Angeled Silvester"
+	"Angeled Silvester",
+	"Nemesis"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -673,6 +675,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_xeno_raidboss_silvester",
 	"npc_xeno_raidboss_blue_goggles",
 	"",
+	"npc_xeno_raidboss_nemesis",
 };
 
 void NPC_MapStart()
@@ -865,6 +868,7 @@ void NPC_MapStart()
 	Blitzkrieg_OnMapStart();
 	RaidbossSilvester_OnMapStart();
 	RaidbossBlueGoggles_OnMapStart();
+	RaidbossNemesis_OnMapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -1679,6 +1683,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = RaidbossSilvester(client, vecPos, vecAng, false);
 		}
+		case XENO_RAIDBOSS_NEMESIS:
+		{
+			entity = RaidbossNemesis(client, vecPos, vecAng, false);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2472,6 +2480,10 @@ public void NPCDeath(int entity)
 		{
 			RaidbossSilvester_NPCDeath(entity);
 		}
+		case XENO_RAIDBOSS_NEMESIS:
+		{
+			RaidbossNemesis_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2766,3 +2778,4 @@ public void NPCDeath(int entity)
 
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_silvester.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_goggles.sp"
+#include "zombie_riot/npc/raidmode_bosses/xeno/npc_nemesis.sp"
