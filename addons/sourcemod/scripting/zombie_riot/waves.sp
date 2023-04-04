@@ -1152,7 +1152,7 @@ void Waves_Progress()
 			float multi = Pow(1.08, playercount);
 			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
 			MultiGlobal = multi;
-			
+
 			int postWaves = CurrentRound - length;
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;
@@ -1210,7 +1210,8 @@ void Waves_Progress()
 		}
 		else
 		{
-			Freeplay_OnEndWave(CurrentRound - length, round.Cash);
+			int postWaves = CurrentRound - length;
+			Freeplay_OnEndWave(postWaves, round.Cash);
 			CurrentCash += round.Cash;
 
 			if(round.Cash)
@@ -1241,6 +1242,8 @@ void Waves_Progress()
 			}
 			if((CurrentRound % 5) == 4)
 			{
+				Freeplay_SetupStart(postWaves);
+
 				Cooldown = round.Setup + 30.0;
 				
 				InSetup = true;
