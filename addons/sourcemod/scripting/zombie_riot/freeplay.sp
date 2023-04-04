@@ -232,7 +232,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 	static int RerollTry;
 
 	int rand = 6;
-	if((++RerollTry) > 3)
+	if((++RerollTry) < 4)
 		rand = GetURandomInt() % 45;
 	
 	char message[128];
