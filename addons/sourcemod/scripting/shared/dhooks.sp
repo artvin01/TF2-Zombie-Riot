@@ -704,6 +704,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
+			{
+				return false;
+			}
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
