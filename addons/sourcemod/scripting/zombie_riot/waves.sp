@@ -59,6 +59,15 @@ enum struct Round
 	int GrigoriMaxSellsItems;
 	float Setup;
 	ArrayList Waves;
+	
+	char Skyname[64];
+	bool FogChange;
+	char FogBlend[32];
+	char FogColor1[32];
+	char FogColor2[32];
+	float FogStart;
+	float FogEnd;
+	float FogDesnity;
 }
 
 enum struct Vote
@@ -78,6 +87,10 @@ static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
 
+static ConVar CvarSkyName;
+static char SkyNameRestore[64];
+static int FogEntity = INVALID_ENT_REFERENCE;
+
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
@@ -86,6 +99,8 @@ static char TextStoreItem[48];
 
 void Waves_PluginStart()
 {
+	CvarSkyName = FindConVar("sv_skyname");
+
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
 }
@@ -102,6 +117,8 @@ bool Waves_InSetup()
 
 void Waves_MapStart()
 {
+	FogEntity = INVALID_ENT_REFERENCE;
+	SkyNameRestore[0] = 0;
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
 	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
@@ -430,6 +447,17 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 		kv.GetString("message_outro", round.Message, sizeof(round.Message));
 
+		round.FogChange = view_as<bool>(kv.GetNum("fogenable"));
+		if(round.FogChange)
+		{
+			kv.GetString("fogblend", round.FogBlend, sizeof(round.FogBlend));
+			kv.GetString("fogcolor", round.FogColor1, sizeof(round.FogColor1));
+			kv.GetString("fogcolor2", round.FogColor2, sizeof(round.FogColor2));
+			round.FogStart = kv.GetFloat("fogstart");
+			round.FogEnd = kv.GetFloat("fogend");
+			round.FogDesnity = kv.GetFloat("fogmaxdensity");
+		}
+
 		round.Waves = new ArrayList(sizeof(Wave));
 		if(kv.GotoFirstSubKey())
 		{
@@ -487,6 +515,21 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 void Waves_RoundStart()
 {
+	if(SkyNameRestore[0])
+	{
+		CvarSkyName.SetString(SkyNameRestore, true);
+		SkyNameRestore[0] = 0;
+	}
+
+	if(FogEntity != INVALID_ENT_REFERENCE)
+	{
+		int entity = EntRefToEntIndex(FogEntity);
+		if(entity != INVALID_ENT_REFERENCE)
+			RemoveEntity(entity);
+		
+		FogEntity = INVALID_ENT_REFERENCE;
+	}
+
 	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
 	{
 		int length = Voting.Length;
@@ -842,6 +885,45 @@ void Waves_Progress()
 				ExcuteRelay("zr_setuptime");
 				Citizen_SetupStart();
 				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
+			}
+
+			if(round.Skyname[0])
+			{
+				if(!SkyNameRestore[0])
+					CvarSkyName.GetString(SkyNameRestore, sizeof(SkyNameRestore));
+				
+				CvarSkyName.SetString(round.Skyname, true);
+			}
+
+			if(round.FogChange)
+			{
+				int entity = -1;
+				if(FogEntity == INVALID_ENT_REFERENCE)
+					entity = EntRefToEntIndex(FogEntity);
+				
+				if(FogEntity == INVALID_ENT_REFERENCE)
+					entity = CreateEntityByName("env_fog_controller");
+				
+				if(entity != -1)
+				{
+					DispatchKeyValue(entity, "fogblend", round.FogBlend);
+					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
+					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
+					DispatchKeyValueFloat(entity, "fogstart", round.FogStart);
+					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
+					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
+
+					if(FogEntity == INVALID_ENT_REFERENCE)
+					{
+						DispatchKeyValue(entity, "targetname", "rpg_fortress");
+						DispatchKeyValue(entity, "fogenable", "1");
+						DispatchKeyValue(entity, "spawnflags", "1");
+						DispatchSpawn(entity);
+						AcceptEntityInput(entity, "TurnOn");
+
+						FogEntity = EntIndexToEntRef(entity);
+					}
+				}
 			}
 			
 			//Loop through all the still alive enemies that are indexed!
@@ -1401,6 +1483,7 @@ float GetWaveSetupCooldown()
 {
 	return Cooldown;
 }
+
 public Action Waves_ProgressTimer(Handle timer)
 {
 	WaveTimer = null;
