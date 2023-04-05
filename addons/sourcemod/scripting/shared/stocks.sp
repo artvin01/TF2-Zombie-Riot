@@ -987,7 +987,6 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 	return Plugin_Stop;
 }
 
-#if defined RPG
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
 	BleedAmountCountStack[client] += 1;
@@ -1023,7 +1022,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pos = WorldSpaceCenter(client);
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
 	if(bleed_count < 1)
@@ -1036,7 +1035,6 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.WriteCell(bleed_count-1, false);
 	return Plugin_Continue;
 }
-#endif
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
@@ -2646,7 +2644,8 @@ float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
 bool FromBlueNpc = false,
 int maxtargetshit = 10,
 bool ignite = false,
-float dmg_against_entity_multiplier = 3.0)
+float dmg_against_entity_multiplier = 3.0,
+Function FunctionToCallOnHit = INVALID_FUNCTION)
 {
 
 	float damage_reduction = 1.0;
@@ -2806,16 +2805,26 @@ float dmg_against_entity_multiplier = 3.0)
 			{
 				NPC_Ignite(ClosestTarget, client, 5.0, weapon);
 			}
-			static float damage_1;
-			damage_1 = damage;
-
-			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			if(damage > 0)
 			{
-				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
-			}
-			
-			SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+				static float damage_1;
+				damage_1 = damage;
 
+				if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+				{
+					damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+				}
+				
+				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+			}
+			if(FunctionToCallOnHit != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, FunctionToCallOnHit);
+				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(ClosestTarget);
+				Call_Finish();
+			}
+			//i want owner entity and hit entity
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
