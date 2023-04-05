@@ -123,6 +123,15 @@ void Waves_MapStart()
 	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
 
+void Waves_PlayerSpawn(int client)
+{
+	if(FogEntity != INVALID_ENT_REFERENCE)
+	{
+		SetVariantString("rpg_fortress_envfog");
+		AcceptEntityInput(client, "SetFogController");
+	}
+}
+
 public Action Waves_ForcePanzer(int client, int args)
 {
 	NPC_SpawnNext(false, true, true); //This will force spawn a panzer.
@@ -917,13 +926,22 @@ void Waves_Progress()
 
 					if(FogEntity == INVALID_ENT_REFERENCE)
 					{
-						DispatchKeyValue(entity, "targetname", "rpg_fortress");
+						DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 						DispatchKeyValue(entity, "fogenable", "1");
 						DispatchKeyValue(entity, "spawnflags", "1");
 						DispatchSpawn(entity);
 						AcceptEntityInput(entity, "TurnOn");
 
 						FogEntity = EntIndexToEntRef(entity);
+					}
+
+					for(int client = 1; client <= MaxClients; client++)
+					{
+						if(IsClientInGame(client))
+						{
+							SetVariantString("rpg_fortress_envfog");
+							AcceptEntityInput(client, "SetFogController");
+						}
 					}
 				}
 			}
