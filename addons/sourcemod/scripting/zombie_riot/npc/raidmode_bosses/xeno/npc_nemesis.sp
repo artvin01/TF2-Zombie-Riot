@@ -10,38 +10,39 @@ static char g_DeathSounds[][] =
 
 static char g_HurtSounds[][] =
 {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3"
+	"npc/zombie/zombie_pain1.wav",
+	"npc/zombie/zombie_pain2.wav",
+	"npc/zombie/zombie_pain3.wav",
+	"npc/zombie/zombie_pain4.wav",
+	"npc/zombie/zombie_pain5.wav",
+	"npc/zombie/zombie_pain6.wav",
 };
 
 static char g_MeleeHitSounds[][] =
 {
-	"weapons/cbar_hitbod1.wav",
-	"weapons/cbar_hitbod2.wav",
-	"weapons/cbar_hitbod3.wav"
+	"npc/vort/foot_hit.wav",
 };
 
 static char g_MeleeAttackSounds[][] =
 {
-	"weapons/machete_swing.wav"
+	"npc/zombie_poison/pz_warn1.wav",
+	"npc/zombie_poison/pz_warn2.wav",
 };
 
 static char g_RangedAttackSounds[][] =
 {
-	"weapons/sniper_railgun_single_01.wav",
-	"weapons/sniper_railgun_single_02.wav"
+	"npc/zombie_poison/pz_throw2.wav",
+	"npc/zombie_poison/pz_throw3.wav",
 };
 
 static char g_RangedSpecialAttackSounds[][] =
 {
-	"mvm/sentrybuster/mvm_sentrybuster_spin.wav"
+	"npc/fast_zombie/leap1.wav",
 };
 
 static char g_BoomSounds[][] =
 {
-	"mvm/mvm_tank_explode.wav"
+	"npc/strider/striderx_die1.wav"
 };
 
 static char g_SMGAttackSounds[][] =
@@ -56,12 +57,7 @@ static char g_BuffSounds[][] =
 
 static char g_AngerSounds[][] =
 {
-	"vo/taunts/sniper_taunts05.mp3",
-	"vo/taunts/sniper_taunts06.mp3",
-	"vo/taunts/sniper_taunts08.mp3",
-	"vo/taunts/sniper_taunts11.mp3",
-	"vo/taunts/sniper_taunts12.mp3",
-	"vo/taunts/sniper_taunts14.mp3"
+	"mvm/mvm_tank_end.wav",
 };
 
 static char g_HappySounds[][] =
@@ -93,14 +89,26 @@ static int i_TankAntiStuck[MAXENTITIES];
 static int i_GunMode[MAXENTITIES];
 static int i_GunAmmo[MAXENTITIES];
 float f_NemesisImmuneToInfection[MAXENTITIES];
+float f_NemesisSpecialDeathAnimation[MAXENTITIES];
+float f_NemesisRandomInfectionCycle[MAXENTITIES];
+#define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v5.mdl"
 #define INFECTION_MODEL "models/weapons/w_bugbait.mdl"
 #define INFECTION_RANGE 150.0
 #define INFECTION_DELAY 0.8
 
 void RaidbossNemesis_OnMapStart()
 {
+	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
+	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));    i++) { PrecacheSound(g_MeleeHitSounds[i]);    }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));    i++) { PrecacheSound(g_MeleeAttackSounds[i]);    }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	PrecacheModel(INFECTION_MODEL);
-	PrecacheModel("models/zombie_riot/bosses/nemesis_ft1_v4.mdl");
+	PrecacheModel(NEMESIS_MODEL);
+	PrecacheSound("weapons/cow_mangler_explode.wav");
+	PrecacheSoundCustom("#zombie_riot/320_now.mp3");
 }
 
 methodmap RaidbossNemesis < CClotBody
@@ -109,7 +117,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
 
-		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 65);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 	}
 	public void PlayDeathSound()
@@ -120,7 +128,7 @@ methodmap RaidbossNemesis < CClotBody
 	}
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlaySMGSound()
 	{
@@ -128,15 +136,16 @@ methodmap RaidbossNemesis < CClotBody
 	}
 	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,65);
 	}
 	public void PlayRangedSpecialSound()
 	{
-		EmitSoundToAll(g_RangedSpecialAttackSounds[GetRandomInt(0, sizeof(g_RangedSpecialAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedSpecialAttackSounds[GetRandomInt(0, sizeof(g_RangedSpecialAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangedSpecialAttackSounds[GetRandomInt(0, sizeof(g_RangedSpecialAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayBoomSound()
 	{
-		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
 	}
 	public void PlayAngerSound()
 	{
@@ -155,7 +164,7 @@ methodmap RaidbossNemesis < CClotBody
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayBuffSound()
 	{
@@ -163,7 +172,7 @@ methodmap RaidbossNemesis < CClotBody
 	}
 	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, "models/zombie_riot/bosses/nemesis_ft1_v4.mdl", "1.75", "25000", ally, false, true, true,true)); //giant!
+		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		
 		//model originally from Roach, https://steamcommunity.com/sharedfiles/filedetails/?id=2053348633&searchtext=nemesis
 
@@ -178,16 +187,37 @@ methodmap RaidbossNemesis < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamage, RaidbossNemesis_ClotDamaged);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		npc.m_flMeleeArmor = 1.5; 		//Melee should be rewarded for trying to face this monster
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_TANK;
+
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "item_armor", 1, "%t", "Nemesis Arrived.");
+			}
+		}
+
+		Music_SetRaidMusic("#zombie_riot/320_now.mp3", 200, true, 1.0);
+		RaidModeScaling = 9999999.99;
+		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
 		npc.m_flSpeed = 300.0;
+		if(npc.Anger)
+			npc.m_flSpeed = 350.0;
+
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_bDissapearOnDeath = true;
@@ -197,6 +227,8 @@ methodmap RaidbossNemesis < CClotBody
 		i_GrabbedThis[npc.index] = -1;
 		fl_RegainWalkAnim[npc.index] = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 15.0;
+		f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
+		f_NemesisRandomInfectionCycle[npc.index] = 0.0;
 		Zero(f_NemesisImmuneToInfection);
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
@@ -228,17 +260,95 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
 	}
 
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+
 	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
+	}
+	
+	if(f_NemesisSpecialDeathAnimation[npc.index])
+	{
+		npc.m_flMeleeArmor = 0.5;
+		npc.m_flRangedArmor = 0.5;
+
+		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2000;
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		}
+
+		if(f_NemesisSpecialDeathAnimation[npc.index] + 0.1 > GetGameTime(npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 20) 	
+			{
+				PF_StopPathing(npc.index);
+				npc.m_bisWalking = false;
+				npc.m_bPathing = false;
+				npc.m_flSpeed = 0.0;
+				int iActivity = npc.LookupActivity("ACT_FT_FLINCH");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.m_iChanged_WalkCycle = 20;
+			}
+		}
+		if(f_NemesisSpecialDeathAnimation[npc.index] + 3.0 > GetGameTime(npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 12) 	
+			{
+				int iActivity = npc.LookupActivity("ACT_FT_DOWN_1");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.m_iChanged_WalkCycle = 12;
+			}
+		}
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 14.0 > GetGameTime(npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 13) 	
+			{
+				int iActivity = npc.LookupActivity("ACT_FT_DOWN_2");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.m_iChanged_WalkCycle = 13;
+			}
+		}
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 15.0 > GetGameTime(npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 14) 	
+			{
+				int iActivity = npc.LookupActivity("ACT_FT_DOWN_3");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.m_iChanged_WalkCycle = 14;
+			}
+		}
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.0 > GetGameTime(npc.index))
+		{
+			f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
+			fl_RegainWalkAnim[npc.index] = gameTime + 0.1;
+		}
+		return;
+	}
+	else
+	{
+		npc.m_flMeleeArmor = 1.5; 		//Melee should be rewarded for trying to face this monster
 	}
 	if(npc.m_flDoingAnimation < gameTime && i_GunMode[npc.index] == 0)
 	{
 		Nemesis_TryDodgeAttack(npc.index);
+	}
+	
+	if(f_NemesisRandomInfectionCycle[npc.index] < GetGameTime(npc.index))
+	{
+		f_NemesisRandomInfectionCycle[npc.index] = GetGameTime(npc.index) + 10.0;
+		float flPos[3]; // original
+		float flAng[3]; // original
+		npc.GetAttachment("RightHand", flPos, flAng);
+		Nemesis_DoInfectionThrow(npc.index, 5, flPos);
+		ParticleEffectAt(flPos, "duck_collect_blood_green", 1.0);
 	}
 
 	if(fl_StopDodge[npc.index])
@@ -271,7 +381,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			float flPos[3]; // original
 			float flAng[3]; // original
 			npc.GetAttachment("RightHand", flPos, flAng);
-			Nemesis_DoInfectionThrow(npc.index, 5, flPos);
+			Nemesis_DoInfectionThrow(npc.index, 10, flPos);
 			ParticleEffectAt(flPos, "duck_collect_blood_green", 1.0);
 			f_NemesisCauseInfectionBox[npc.index] = 0.0;
 		}
@@ -335,6 +445,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 2;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 300.0;
+						if(npc.Anger)
+							npc.m_flSpeed = 350.0;
 						npc.StartPathing();
 						f_NpcTurnPenalty[npc.index] = 1.0;
 					}
@@ -348,8 +460,17 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 10;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 50.0;
+						if(npc.Anger)
+							npc.m_flSpeed = 100.0;
 						npc.StartPathing();
 						f_NpcTurnPenalty[npc.index] = 1.0;
+						if(IsValidEntity(npc.m_iWearable1))
+						{
+							RemoveEntity(npc.m_iWearable1);
+						}
+						npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
+						SetVariantString("1.0");
+						AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 					}					
 				}
 			}
@@ -399,6 +520,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				SDKHooks_TakeDamage(client_victim, npc.index, npc.index, 10000.0, DMG_CLUB, -1);
 				i_TankAntiStuck[client_victim] = EntIndexToEntRef(npc.index);
 				CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client_victim), TIMER_FLAG_NO_MAPCHANGE);
+				npc.PlayRangedSpecialSound();
 			}
 		}
 	}
@@ -413,6 +535,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 6;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 600.0;
+					if(npc.Anger)
+							npc.m_flSpeed = 900.0;
 					npc.StartPathing();
 				}
 				if(npc.flXenoInfectedSpecialHurtTime < gameTime && npc.m_flNextRangedAttackHappening - 1.5 > gameTime)
@@ -444,6 +568,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.m_flDoingAnimation = gameTime + 5.0;
 						npc.m_flNextRangedAttackHappening = gameTime + 3.1;
 						fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
+						npc.PlayRangedSound();
 
 						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 						
@@ -499,6 +624,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 2;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 300.0;
+						if(npc.Anger)
+							npc.m_flSpeed = 350.0;
 						npc.StartPathing();
 						f_NpcTurnPenalty[npc.index] = 1.0;
 					}
@@ -548,8 +675,11 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							npc.m_iChanged_WalkCycle = 3;
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 50.0;
+							if(npc.Anger)
+								npc.m_flSpeed = 100.0;
 							npc.StartPathing();
 							f_NpcTurnPenalty[npc.index] = 0.25;
+							npc.PlayMeleeSound();
 						}
 						else
 						{
@@ -567,6 +697,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 300.0;
+					if(npc.Anger)
+							npc.m_flSpeed = 350.0;
 					npc.StartPathing();
 					f_NpcTurnPenalty[npc.index] = 1.0;
 				}
@@ -664,8 +796,11 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 1;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 50.0;
+					if(npc.Anger)
+							npc.m_flSpeed = 100.0;
 					npc.StartPathing();
 					f_NpcTurnPenalty[npc.index] = 0.25;
+					npc.PlayMeleeSound();
 				}
 			}
 			case 2:
@@ -678,6 +813,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 				if(npc.m_iChanged_WalkCycle != 4) 
 				{
+					npc.PlayAngerSound();
 					int iActivity = npc.LookupActivity("ACT_FT2_GRAB");
 					if(iActivity > 0) npc.StartActivity(iActivity);
 					npc.m_iChanged_WalkCycle = 4;
@@ -699,8 +835,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					vecTarget = Vecpos;
 
-					if(flDistanceToTarget < 1000000.0)	// 1000 HU
-						vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
+				//	if(flDistanceToTarget < 1000000.0)	// 1000 HU
+					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
 
 					vecTarget[0] += GetRandomFloat(-50.0,50.0);
 					vecTarget[1] += GetRandomFloat(-50.0,50.0);
@@ -708,7 +844,13 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 					i_GunAmmo[npc.index] -= 1;
 					
-					npc.FireRocket(vecTarget, 75.0, 1300.0, "models/weapons/w_bullet.mdl", 2.0,_, 45.0);	
+					float damage = 75.0;
+
+					if(npc.Anger)
+					{
+						damage = 100.0;
+					}
+					npc.FireRocket(vecTarget, damage, 1300.0, "models/weapons/w_bullet.mdl", 2.0,_, 45.0);	
 				}
 			}
 		}
@@ -736,6 +878,23 @@ public Action RaidbossNemesis_ClotDamaged(int victim, int &attacker, int &inflic
 	}
 
 	return Plugin_Changed;
+}
+
+public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype)
+{
+	RaidbossNemesis npc = view_as<RaidbossNemesis>(victim);
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	{
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		i_GunMode[npc.index] = 1;
+		i_GunAmmo[npc.index] = 500;
+		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
+		npc.PlayBoomSound();
+		npc.Anger = true; //	>:(
+	}
 }
 
 public void RaidbossNemesis_NPCDeath(int entity)
@@ -774,7 +933,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/bosses/nemesis_ft1_v4.mdl");
+		DispatchKeyValue(entity_death, "model", NEMESIS_MODEL);
 		DispatchSpawn(entity_death);
 		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.75); 
 		SetEntityCollisionGroup(entity_death, 2);
@@ -884,6 +1043,7 @@ void Nemesis_TryDodgeAttack(int entity)
 				npc.m_bisWalking = false;
 				npc.m_bAllowBackWalking = true;
 				npc.m_flSpeed = 600.0;
+
 				fl_OverrideWalkDest[npc.index] = GetGameTime(npc.index) + 1.5;
 				if(IsValidEntity(npc.m_iTarget))
 				{
@@ -945,6 +1105,7 @@ void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_
 			{
 				f_NemesisEnemyHitCooldown[i_NemesisEntitiesHitAoeSwing[counter]] = GetGameTime() + 0.15;
 				SDKHooks_TakeDamage(i_NemesisEntitiesHitAoeSwing[counter], npc.index, npc.index, damage, DMG_CLUB, -1);
+				npc.PlayMeleeHitSound();
 			}
 		}
 		else
@@ -1254,7 +1415,11 @@ public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
 	if(IsValidEntity(entity))
 	{
 		Explode_Logic_Custom(damage, entity, entity, -1, origin, INFECTION_RANGE, _, _, true, _, _, 1.0, NemesisHitInfection);
-		ParticleEffectAt(origin, "powercore_embers_blue", 1.0);
+		int particle = ParticleEffectAt(origin, "green_wof_sparks", 1.0);
+		float Ang[3];
+		Ang[0] = -90.0;
+		TeleportEntity(particle, NULL_VECTOR, Ang, NULL_VECTOR);
+		EmitSoundToAll("weapons/cow_mangler_explode.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, origin);
 	}
 	return Plugin_Handled;
 }

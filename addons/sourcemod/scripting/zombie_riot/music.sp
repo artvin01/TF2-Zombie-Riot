@@ -5,6 +5,7 @@ static int Music_Timer[MAXTF2PLAYERS];
 static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
+static float RaidMusicVolume;
 
 
 /*
@@ -12,16 +13,17 @@ Big thanks to backwards#8236 For pointing me towards GetTime and helping me with
 DO NOT USE GetEngineTime, its not good in this case
 */
 
-void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom)
+void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, float volume = 2.0)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
 			Music_Stop_All(client); //This is actually more expensive then i thought.
-			SetMusicTimer(client, GetTime() + 5);
+			SetMusicTimer(client, GetTime() + 3);
 		}
 	}
+	RaidMusicVolume = volume;
 	strcopy(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), MusicPath);
 	i_RaidMusicLength1 = duration;
 	b_RaidMusicCustom1 = isCustom;
@@ -299,7 +301,7 @@ void Music_PostThink(int client)
 			{
 				if(b_RaidMusicCustom1)
 				{
-					EmitCustomToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, RaidMusicVolume);
 				}
 				else
 				{

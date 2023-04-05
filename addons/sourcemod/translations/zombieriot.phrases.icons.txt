@@ -12,6 +12,10 @@
 	{
 		"en" 		"Silvester And Blue Goggles Arrived."
 	}
+	"Nemesis Arrived."
+	{
+		"en" 		"Nemesis, the original Xeno infector arrived."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
