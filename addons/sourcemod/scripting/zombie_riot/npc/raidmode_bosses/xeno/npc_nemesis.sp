@@ -228,7 +228,7 @@ methodmap RaidbossNemesis < CClotBody
 		fl_RegainWalkAnim[npc.index] = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 15.0;
 		f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
-		f_NemesisRandomInfectionCycle[npc.index] = 0.0;
+		f_NemesisRandomInfectionCycle[npc.index] = GetGameTime(npc.index) + 10.0;
 		Zero(f_NemesisImmuneToInfection);
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
