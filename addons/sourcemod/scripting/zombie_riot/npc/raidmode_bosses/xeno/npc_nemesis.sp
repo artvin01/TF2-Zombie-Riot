@@ -1254,7 +1254,7 @@ public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
 	if(IsValidEntity(entity))
 	{
 		Explode_Logic_Custom(damage, entity, entity, -1, origin, INFECTION_RANGE, _, _, true, _, _, 1.0, NemesisHitInfection);
-		ParticleEffectAt(origin, "duck_collect_blood_green", 1.0);
+		ParticleEffectAt(origin, "powercore_embers_blue", 1.0);
 	}
 	return Plugin_Handled;
 }
