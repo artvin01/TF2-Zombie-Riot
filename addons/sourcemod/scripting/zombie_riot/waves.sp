@@ -447,6 +447,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 		kv.GetString("message_outro", round.Message, sizeof(round.Message));
 
+		kv.GetString("skyname", round.Skyname, sizeof(round.Skyname));
+
 		round.FogChange = view_as<bool>(kv.GetNum("fogenable"));
 		if(round.FogChange)
 		{
