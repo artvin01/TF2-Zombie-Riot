@@ -278,7 +278,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = 0.5;
 		npc.m_flRangedArmor = 0.5;
 
-		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2000;
+		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4000;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 		{
