@@ -74,7 +74,9 @@ bool Freeplay_ShouldAddEnemy(int postWaves)
 	}
 	else
 	{
-		EnemySeed *= postWaves;
+		EnemySeed = (EnemySeed - postWaves) * postWaves;
+		if(EnemySeed < 0)
+			EnemySeed = -EnemySeed;
 	}
 
 	return result;
