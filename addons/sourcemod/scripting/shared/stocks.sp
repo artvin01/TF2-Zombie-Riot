@@ -899,22 +899,25 @@ stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", co
 	
 	if (szAttachment[0] != '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
 	{
-		SetVariantString(szAttachment); // "head"
+		if (szAttachment[0]) // do i even have anything?
+		{
+			SetVariantString(szAttachment); // "head"
 
-		if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
-		{
-			if(!maintain_anyways)
+			if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 			{
-				float vPos[3];
-				GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
-				AddVectors(vPos, vOffsets, vPos);
-				TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+				if(!maintain_anyways)
+				{
+					float vPos[3];
+					GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
+					AddVectors(vPos, vOffsets, vPos);
+					TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+				}
+				AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
 			}
-			AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
-		}
-		else
-		{
-			AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
+			else
+			{
+				AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
+			}
 		}
 	}
 }

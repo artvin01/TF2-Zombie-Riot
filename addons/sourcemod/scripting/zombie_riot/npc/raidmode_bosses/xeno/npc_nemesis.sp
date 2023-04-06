@@ -494,8 +494,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.GetAttachment("RightHand", flPos, flAng);
 				TeleportEntity(client_victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 						
-				SDKCall_SetLocalOrigin(client_victim, flPos);
-						
 				if(client_victim <= MaxClients)
 				{
 					SetEntityMoveType(client_victim, MOVETYPE_WALK); //can move XD
@@ -578,8 +576,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.GetAttachment("RightHand", flPos, flAng);
 						
 						TeleportEntity(Enemy_I_See, flPos, NULL_VECTOR, {0.0,0.0,0.0});
-						
-						SDKCall_SetLocalOrigin(Enemy_I_See, flPos);
 						
 						CClotBody npcenemy = view_as<CClotBody>(Enemy_I_See);
 
@@ -1113,6 +1109,7 @@ void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_
 			break;
 		}
 	}
+	/*
 	for(int client; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client))
@@ -1126,6 +1123,7 @@ void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_
 			TE_DrawBox(client, f_pos, m_vecMins_2, m_vecMaxs_2, 0.1, view_as<int>({255, 0, 0, 255}));
 		}
 	}
+	*/
 }
 
 static bool Nemeis_AoeAttack(int entity, int contentsMask, int filterentity)
@@ -1381,9 +1379,8 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount, float StartVec[3])
 				SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 				SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 				SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
-				CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 				int particle = ParticleEffectAt(StartVec, "spellbook_minor_fire", 1.0);
-				TeleportEntity(particle, StartVec, NULL_VECTOR, NULL_VECTOR);
 				SetParent(prop, particle, "");
 
 				spawnRing_Vectors(VicLoc, INFECTION_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1);	
