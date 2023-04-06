@@ -2159,15 +2159,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 		
 		if(!NPCOnly[client] && section == -1)
