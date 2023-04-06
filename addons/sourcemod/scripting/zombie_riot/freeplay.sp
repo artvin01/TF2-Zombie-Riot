@@ -39,7 +39,7 @@ void Freeplay_ResetAll()
 	FriendlyDay = false;
 	KillBonus = 0.0;
 	CountBonus = 0;
-	CountMulti = 0.0;
+	CountMulti = 1.0;
 	MiniBossChance = 0.2;
 	HussarBuff = false;
 	PernellBuff = false;
@@ -120,7 +120,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		if(enemy.Health)
 			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.01)));
 		
-		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.02));
+		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01));
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
 			enemy.Is_Boss = 1;
