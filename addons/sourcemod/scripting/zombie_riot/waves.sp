@@ -59,6 +59,15 @@ enum struct Round
 	int GrigoriMaxSellsItems;
 	float Setup;
 	ArrayList Waves;
+	
+	char Skyname[64];
+	bool FogChange;
+	char FogBlend[32];
+	char FogColor1[32];
+	char FogColor2[32];
+	float FogStart;
+	float FogEnd;
+	float FogDesnity;
 }
 
 enum struct Vote
@@ -78,6 +87,10 @@ static bool InSetup;
 //static bool InFreeplay;
 static int WaveIntencity;
 
+static ConVar CvarSkyName;
+static char SkyNameRestore[64];
+static int FogEntity = INVALID_ENT_REFERENCE;
+
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
 
@@ -86,6 +99,8 @@ static char TextStoreItem[48];
 
 void Waves_PluginStart()
 {
+	CvarSkyName = FindConVar("sv_skyname");
+
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
 }
@@ -102,8 +117,19 @@ bool Waves_InSetup()
 
 void Waves_MapStart()
 {
+	FogEntity = INVALID_ENT_REFERENCE;
+	SkyNameRestore[0] = 0;
 	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
 	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
+}
+
+void Waves_PlayerSpawn(int client)
+{
+	if(FogEntity != INVALID_ENT_REFERENCE)
+	{
+		SetVariantString("rpg_fortress_envfog");
+		AcceptEntityInput(client, "SetFogController");
+	}
 }
 
 public Action Waves_ForcePanzer(int client, int args)
@@ -430,6 +456,19 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 		kv.GetString("message_outro", round.Message, sizeof(round.Message));
 
+		kv.GetString("skyname", round.Skyname, sizeof(round.Skyname));
+
+		round.FogChange = view_as<bool>(kv.GetNum("fogenable"));
+		if(round.FogChange)
+		{
+			kv.GetString("fogblend", round.FogBlend, sizeof(round.FogBlend));
+			kv.GetString("fogcolor", round.FogColor1, sizeof(round.FogColor1));
+			kv.GetString("fogcolor2", round.FogColor2, sizeof(round.FogColor2));
+			round.FogStart = kv.GetFloat("fogstart");
+			round.FogEnd = kv.GetFloat("fogend");
+			round.FogDesnity = kv.GetFloat("fogmaxdensity");
+		}
+
 		round.Waves = new ArrayList(sizeof(Wave));
 		if(kv.GotoFirstSubKey())
 		{
@@ -487,6 +526,21 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 void Waves_RoundStart()
 {
+	if(SkyNameRestore[0])
+	{
+		CvarSkyName.SetString(SkyNameRestore, true);
+		SkyNameRestore[0] = 0;
+	}
+
+	if(FogEntity != INVALID_ENT_REFERENCE)
+	{
+		int entity = EntRefToEntIndex(FogEntity);
+		if(entity != INVALID_ENT_REFERENCE)
+			RemoveEntity(entity);
+		
+		FogEntity = INVALID_ENT_REFERENCE;
+	}
+
 	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
 	{
 		int length = Voting.Length;
@@ -542,6 +596,7 @@ void Waves_RoundStart()
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
 	Waves_RoundEnd();
+	Freeplay_ResetAll();
 	
 	CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	/*
@@ -841,6 +896,54 @@ void Waves_Progress()
 				ExcuteRelay("zr_setuptime");
 				Citizen_SetupStart();
 				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
+			}
+
+			if(round.Skyname[0])
+			{
+				if(!SkyNameRestore[0])
+					CvarSkyName.GetString(SkyNameRestore, sizeof(SkyNameRestore));
+				
+				CvarSkyName.SetString(round.Skyname, true);
+			}
+
+			if(round.FogChange)
+			{
+				int entity = -1;
+				if(FogEntity == INVALID_ENT_REFERENCE)
+					entity = EntRefToEntIndex(FogEntity);
+				
+				if(FogEntity == INVALID_ENT_REFERENCE)
+					entity = CreateEntityByName("env_fog_controller");
+				
+				if(entity != -1)
+				{
+					DispatchKeyValue(entity, "fogblend", round.FogBlend);
+					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
+					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
+					DispatchKeyValueFloat(entity, "fogstart", round.FogStart);
+					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
+					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
+
+					if(FogEntity == INVALID_ENT_REFERENCE)
+					{
+						DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
+						DispatchKeyValue(entity, "fogenable", "1");
+						DispatchKeyValue(entity, "spawnflags", "1");
+						DispatchSpawn(entity);
+						AcceptEntityInput(entity, "TurnOn");
+
+						FogEntity = EntIndexToEntRef(entity);
+					}
+
+					for(int client = 1; client <= MaxClients; client++)
+					{
+						if(IsClientInGame(client))
+						{
+							SetVariantString("rpg_fortress_envfog");
+							AcceptEntityInput(client, "SetFogController");
+						}
+					}
+				}
 			}
 			
 			//Loop through all the still alive enemies that are indexed!
@@ -1147,28 +1250,39 @@ void Waves_Progress()
 		Rounds.GetArray(length, round);
 		if(++CurrentWave < 1)
 		{
-			float multi = 1.0 + ((CurrentRound-length) * 0.02);
+			float playercount = float(CountPlayersOnRed());
+			float multi = Pow(1.08, playercount);
+			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
+			MultiGlobal = multi;
+
+			int postWaves = CurrentRound - length;
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;
-			int Max_Enemy_Get = 0;
-			for(int i; i<length; i++)
+			
+			int Max_Enemy_Get = Freeplay_EnemyCount();
+			for(int i; i < length; i++)
 			{
-				//if(GetRandomInt(0, 1)) //This spwns too many
-				if(GetRandomInt(0, 3) == 3 && Max_Enemy_Get <= 3) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+				if(Freeplay_ShouldAddEnemy(postWaves)) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
 				{
-					Max_Enemy_Get += 1;
 					round.Waves.GetArray(i, wave);
-					int count = RoundToFloor(float(wave.Count) / GetRandomFloat(0.2, 1.3) * multi);
-					wave.EnemyData.Health = (RoundToCeil(float(wave.EnemyData.Health) * float(CurrentRound) * multi * 1.35 * 3.0)); //removing /3 cus i want 3x the hp!!!
-					//Double it, icant be bothered to go through all the configs and change every single number.
-					for(int a; a<count; a++)
+					Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
+
+					if(wave.Count > 0)
 					{
-						Enemies.PushArray(wave.EnemyData);
+						for(int a; a < wave.Count; a++)
+						{
+							Enemies.PushArray(wave.EnemyData);
+						}
+						
+						Zombies_Currently_Still_Ongoing += wave.Count;
+
+						if(!(--Max_Enemy_Get))
+							break;
 					}
-					Zombies_Currently_Still_Ongoing += count;
 				}
 			}
-			if(GetRandomInt(0, 1) == 1) //make him spawn way more often in freeplay.
+
+			if(Freeplay_ShouldMiniBoss())
 			{
 				panzer_spawn = true;
 				NPC_SpawnNext(false, panzer_spawn, false);
@@ -1198,7 +1312,10 @@ void Waves_Progress()
 		}
 		else
 		{
+			int postWaves = CurrentRound - length;
+			Freeplay_OnEndWave(postWaves, round.Cash);
 			CurrentCash += round.Cash;
+
 			if(round.Cash)
 			{
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
@@ -1207,7 +1324,7 @@ void Waves_Progress()
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
-			Rounds.GetArray(length, round);
+			//Rounds.GetArray(length, round);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
 			{
 				for(int client=1; client<=MaxClients; client++)
@@ -1227,6 +1344,8 @@ void Waves_Progress()
 			}
 			if((CurrentRound % 5) == 4)
 			{
+				Freeplay_SetupStart(postWaves);
+
 				Cooldown = round.Setup + 30.0;
 				
 				InSetup = true;
@@ -1384,6 +1503,7 @@ float GetWaveSetupCooldown()
 {
 	return Cooldown;
 }
+
 public Action Waves_ProgressTimer(Handle timer)
 {
 	WaveTimer = null;

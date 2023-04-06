@@ -1259,8 +1259,14 @@ bool Citizen_GivePerk(int entity, int type)
 			npc.m_iWearable2 = -1;
 		}
 	}
+	if(IsValidEntity(npc.m_iWearable2))
+	{
+		SDKUnhook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmit);
+		SDKHook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmitCitizen);
+	}
 	return true;
 }
+
 
 bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo info)
 {

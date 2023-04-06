@@ -492,6 +492,10 @@
 		"ru"	"Увеличенный урон и скорость атаки, удаление обоймы, бесконечный размер обоймы."
 		"chi"   "增加伤害和攻击速度，无限子弹。"
 	}
+	"SMG Pap 5"
+	{
+		"en"	"Massively increased damage and attackspeed and clip size and way longer reload time."
+	}
 	
 	"People Popper Desc"
 	{

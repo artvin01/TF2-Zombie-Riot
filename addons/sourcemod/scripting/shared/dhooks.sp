@@ -15,6 +15,7 @@ static DynamicHook g_WrenchSmack;
 
 static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
+static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DHookScoutSecondaryFire; 
 DynamicHook g_DhookUpdateTransmitState; 
@@ -34,7 +35,6 @@ static int g_OffsetWeaponMode;
 static int g_OffsetWeaponInfo;
 static int g_OffsetWeaponPunchAngle;
 */
-
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
 
@@ -97,6 +97,7 @@ void DHook_Setup()
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
+	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 //	g_ObjStartUpgrading = DHook_CreateVirtual(gamedata, "CBaseObject::StartUpgrading()"); //causes crashes.
@@ -247,6 +248,7 @@ MRESReturn Detour_CalcPlayerScore(DHookReturn hReturn, DHookParam hParams)
 public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 {
 	g_DHookGrenadeExplode.HookEntity(Hook_Pre, entity, DHook_GrenadeExplodePre);
+	g_DHookGrenade_Detonate.HookEntity(Hook_Pre, entity, DHook_GrenadeDetonatePre);
 	DHookEntity(g_detour_CTFGrenadePipebombProjectile_PipebombTouch, false, entity, _, GrenadePipebombProjectile_PipebombTouch);
 	
 	if(Sticky)
@@ -402,13 +404,57 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 	
 	Because im too stupid to do it myself.
 */
-
-
-
-
 public MRESReturn DHook_GrenadeExplodePre(int entity)
 {
+	DoGrenadeExplodeLogic(entity);
+	RemoveEntity(entity);
+	return MRES_Supercede;
+}
+
+public MRESReturn DHook_GrenadeDetonatePre(int entity)
+{
+	DoGrenadeExplodeLogic(entity);
+	RemoveEntity(entity);
+	return MRES_Supercede;
+}
+
+float f_SameExplosionSound[MAXENTITIES];
+void DoGrenadeExplodeLogic(int entity)
+{
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hThrower");
+	//do not allow normal explosion, this causes screenshake, which in zr is a problem as many happen, and can cause headaches.
+	float GrenadePos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
+	bool DoNotPlay = false;
+
+	if(IsValidEntity(owner) && f_SameExplosionSound[owner] == GetGameTime())
+		DoNotPlay = true;
+	
+	//prevent insanely loud explosion sounds.
+	if(!DoNotPlay)
+	{
+		switch(GetRandomInt(1,3))
+		{
+			case 1:
+			{
+				EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 2:
+			{
+				EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 3:
+			{
+				EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+		}
+	}
+	if(!DoNotPlay)
+	{
+		f_SameExplosionSound[owner] = GetGameTime();
+	}
+	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
+	_, _, _, _, _, _, _, _, _, _, 0.0);
 	if (0 < owner <= MaxClients)
 	{
 		if(f_CustomGrenadeDamage[entity] < 999999.9)
@@ -418,13 +464,17 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 			{
 				original_damage = f_CustomGrenadeDamage[entity];
 			}
+			else
+			{
+				original_damage *= 1.666666666666666;
+			}
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			int weapon = GetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher");
 			Explode_Logic_Custom(original_damage, owner, entity, weapon);
 		}
 		else
 		{
-			return MRES_Supercede;
+			return;
 		}
 	}
 	else if(owner > MaxClients)
@@ -436,6 +486,11 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 			{
 				original_damage = f_CustomGrenadeDamage[entity];
 			}
+			else
+			{
+				original_damage *= 1.666666666666666;
+			}
+			
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			
 			//Important, make them not act as an ai if its on red, or else they are BUSTED AS FUCK.
@@ -450,13 +505,10 @@ public MRESReturn DHook_GrenadeExplodePre(int entity)
 		}
 		else
 		{
-			return MRES_Supercede;
+			return;
 		}
 	}
-	f_CustomGrenadeDamage[entity] = 0.0;
-	return MRES_Ignored;
 }
-
 //steal from fortress royale
 
 stock int GetOwnerLoop(int entity)
@@ -652,6 +704,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
+			{
+				return false;
+			}
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
@@ -665,6 +721,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				{
 					RemoveEntity(entity_particle);
 				}
+				return false;
+			}
+			else if(b_IgnoredByPlayerProjectiles[entity2])
+			{
 				return false;
 			}
 			else if(b_ThisEntityIgnored[entity2])
@@ -717,6 +777,10 @@ things i tried
 				return false;
 			}
 			else if(b_Is_Blue_Npc[entity2])
+			{
+				return false;
+			}
+			else if (b_DoNotUnStuck[entity2])
 			{
 				return false;
 			}

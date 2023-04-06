@@ -2248,4 +2248,57 @@
 		//"it"		""
 		//"fr"		""
 	}	
+	"Low Health Shake"
+	{
+		"en"		"Low Health Shake"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"Weapon Screen Shake"
+	{
+		"en"		"Weapon Screen Shake"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Hit Marker"
+	{
+		"en"		"Hit Marker"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"You have been Infected by Nemesis"
+	{
+		"en"		"You have been Infected by Nemesis!\nDo not get close to allies."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	
 }

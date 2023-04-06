@@ -2184,13 +2184,15 @@ methodmap CClotBody
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		return entity;
 	}
-	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0) //No defaults, otherwise i cant even judge.
+	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
 		vecSwingStart = GetAbsOrigin(this.index);
 		vecSwingStart[2] += 54.0;
+
+		vecSwingStart[2] += offset;
 
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
@@ -5569,15 +5571,21 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 	}
 }
 
-public int Can_I_See_Enemy(int attacker, int enemy)
+int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 {
 	Handle trace; 
 	float pos_npc[3];
 	float pos_enemy[3];
 	pos_npc = WorldSpaceCenter(attacker);
 	pos_enemy = WorldSpaceCenter(enemy);
-	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_NPCSOLID, RayType_EndPoint, BulletAndMeleeTrace, attacker);
+
+#if defined ZR
+	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));
+#else
+	bool ingore_buildings = Ignore_Buildings;
+#endif
+
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_SOLID, RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, attacker);
 	int Traced_Target;
 		
 //	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");

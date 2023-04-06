@@ -1419,6 +1419,23 @@ void HudSettings_ClientCookiesCached(int client)
 		f_NotifHudOffsetX[client] = 0.0;
 		f_NotifHudOffsetY[client] = 0.0;
 	}
+	HudSettingsExtra_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		// Cookie has stuff, get values
+		bool buffers[3];
+		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+		b_HudScreenShake[client] = buffers[0];
+		b_HudLowHealthShake[client] = buffers[1];
+		b_HudHitMarker[client] = buffers[2];
+	}
+	else
+	{
+		// Cookie empty, get our own
+		b_HudScreenShake[client] = true;
+		b_HudLowHealthShake[client] = true;
+		b_HudHitMarker[client] = true;
+	}
 }
 
 void HudSettings_ClientCookiesDisconnect(int client)
@@ -1426,6 +1443,9 @@ void HudSettings_ClientCookiesDisconnect(int client)
 	char buffer[128];
 	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
 	HudSettings_Cookies.Set(client, buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+	HudSettingsExtra_Cookies.Set(client, buffer);
 }
 
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped, int sell)
@@ -2139,15 +2159,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], xpNext - XP[client], nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 		
 		if(!NPCOnly[client] && section == -1)
@@ -2418,6 +2438,65 @@ static char[] AddPluses(int amount)
 	return buffer;
 }
 */
+
+public void ReShowSettingsHud(int client)
+{
+	char buffer [128];
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Settings Page");
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
+	menu2.AddItem("-2", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
+	menu2.AddItem("-8", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
+	menu2.AddItem("-14", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
+	menu2.AddItem("-20", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
+
+	if(b_HudLowHealthShake[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-40", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Screen Shake");
+	if(b_HudScreenShake[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-41", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Hit Marker");
+	if(b_HudHitMarker[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-42", buffer);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-999", buffer);
+	
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
 
 public void ReShowArmorHud(int client)
 {
@@ -2786,28 +2865,47 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					
 					ReShowNotifHud(client);
 				}
+				case -40: 
+				{
+					if(b_HudLowHealthShake[client])
+					{
+						b_HudLowHealthShake[client] = false;
+					}
+					else
+					{
+						b_HudLowHealthShake[client] = true;
+					}
+					
+					ReShowSettingsHud(client);
+				}
+				case -41: 
+				{
+					if(b_HudScreenShake[client])
+					{
+						b_HudScreenShake[client] = false;
+					}
+					else
+					{
+						b_HudScreenShake[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
+				case -42: 
+				{
+					if(b_HudHitMarker[client])
+					{
+						b_HudHitMarker[client] = false;
+					}
+					else
+					{
+						b_HudHitMarker[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
 
 				case -1: //Move Armor Hud right
 				{
-					Menu menu2 = new Menu(Settings_MenuPage);
-					menu2.SetTitle("%t", "Settings Page");
-
-					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
-					menu2.AddItem("-2", buffer);
-
-					FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
-					menu2.AddItem("-8", buffer);
-					
-					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
-					menu2.AddItem("-14", buffer);
-							
-					FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
-					menu2.AddItem("-20", buffer);
-					
-					FormatEx(buffer, sizeof(buffer), "%t", "Back");
-					menu2.AddItem("-999", buffer);
-					
-					menu2.Display(client, MENU_TIME_FOREVER);
+					ReShowSettingsHud(client);
 				}
 				default:
 				{
@@ -2866,25 +2964,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				
 				case -23:
 				{
-					Menu menu2 = new Menu(Settings_MenuPage);
-					menu2.SetTitle("%t", "Settings Page");
-
-					FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
-					menu2.AddItem("-2", buffer);
-
-					FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
-					menu2.AddItem("-8", buffer);
-
-					FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
-					menu2.AddItem("-14", buffer);
-
-					FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
-					menu2.AddItem("-20", buffer);
-					
-					FormatEx(buffer, sizeof(buffer), "%t", "Back");
-					menu2.AddItem("-999", buffer);
-					
-					menu2.Display(client, MENU_TIME_FOREVER);
+					ReShowSettingsHud(client);
 				}
 				case -21:
 				{

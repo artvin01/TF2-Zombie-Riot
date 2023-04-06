@@ -196,7 +196,7 @@ public void OnPostThink(int client)
 	{
 		RollAngle_Regen_Delay[client] = GameTime + 0.5;
 		
-		if(CvarSvRollagle && zr_viewshakeonlowhealth.BoolValue)
+		if(CvarSvRollagle && zr_viewshakeonlowhealth.BoolValue && b_HudLowHealthShake[client])
 		{
 			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
@@ -237,6 +237,7 @@ public void OnPostThink(int client)
 		else
 		{
 			RollAngle_Regen_Delay[client] = GameTime + 5.0;
+			CvarSvRollagle.ReplicateToClient(client, "0"); //set replicate back to normal.
 		}
 	}
 #endif	// ZR

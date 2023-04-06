@@ -223,6 +223,7 @@ ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
 Cookie HudSettings_Cookies;
+Cookie HudSettingsExtra_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -549,6 +550,7 @@ bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
 bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
+bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 float f_CooldownForHurtHud[MAXPLAYERS];	
@@ -1252,6 +1254,10 @@ public void OnMapStart()
 
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
 	PrecacheSoundCustom("zombiesurvival/headshot2.wav");
+	PrecacheSoundCustom("zombiesurvival/hm.mp3");
+	PrecacheSound("weapons/explode1.wav");
+	PrecacheSound("weapons/explode2.wav");
+	PrecacheSound("weapons/explode3.wav");
 	
 	MapStartResetAll();
 	
@@ -2260,6 +2266,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsAGib[entity] = false;
 		b_ThisEntityIgnored[entity] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[entity] = false;
+		b_IgnoredByPlayerProjectiles[entity] = false;
+		b_DoNotUnStuck[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
 		i_NpcInternalId[entity] = 0;

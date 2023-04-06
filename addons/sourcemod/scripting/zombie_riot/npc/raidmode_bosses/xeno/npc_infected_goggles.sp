@@ -539,7 +539,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							Handle swingTrace;
 							npc.FaceTowards(vecTarget, 15000.0);
 							if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-							{		
+							{	
 								int target = TR_GetEntityIndex(swingTrace);
 								if(target == npc.m_iTarget) 
 								{

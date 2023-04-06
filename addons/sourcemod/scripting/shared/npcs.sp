@@ -674,7 +674,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					else
 					{
 						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
-					}	
+					}
+
 					if(zr_spawnprotectiontime.FloatValue > 0.0)
 					{
 				
@@ -690,6 +691,9 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
+
+					if(Waves_InFreeplay())
+						Freeplay_SpawnEnemy(entity_Spawner);
 				}
 			}
 			else if(!found)
@@ -758,6 +762,9 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			}
 			
 			b_NpcForcepowerupspawn[entity] = forcepowerup;
+
+			if(Waves_InFreeplay())
+				Freeplay_SpawnEnemy(entity);
 		}
 	}
 	return Plugin_Stop;
@@ -1544,259 +1551,267 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif	// ZR
 				
 			}
-			if(attacker <= MaxClients && IsValidEntity(weapon))
+			if(attacker <= MaxClients)
 			{
-#if defined RPG
-				char Weaponclassname[64];
-				GetEntityClassname(weapon, Weaponclassname, 64);
-
-				int slot = TF2_GetClassnameSlot(Weaponclassname);
-
-				if(f_HealingPotionDuration[attacker] > GameTime) //Client has a buff, but which one?
-				{
-					switch(f_HealingPotionEffect[attacker])
-					{
-						case MELEE_BUFF_2:
-						{
-							if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
-							{
-								damage *= 1.15;
-							}
-						}
-						case RANGED_BUFF_2: 
-						{
-							if(slot < TFWeaponSlot_Melee) //Only Ranged
-							{
-								damage *= 1.25;
-							}
-						}
-						case MAGE_BUFF_2:
-						{
-							if(i_IsWandWeapon[weapon]) //Only Mage.
-							{
-								damage *= 1.25;
-							}
-						}
-						default: //Nothing.
-						{
-							damage *= 1.0;
-						}
-					}
-				}		
-				damage = RpgCC_ContractExtrasNpcOnTakeDamage(victim, attacker, damage, damagetype, weapon, slot);
-#endif
-
-#if defined ZR
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
-					float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
-					damage = modified_damage;
+					DoClientHitmarker(attacker);
 				}
-				
-				
-				if(i_ArsenalBombImplanter[weapon] > 0)
+				if(IsValidEntity(weapon))
 				{
-					float damage_save = 50.0;
-					Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-					if(address != Address_Null)
-						damage_save *= RoundToCeil(TF2Attrib_GetValue(address));
+#if defined RPG
+					char Weaponclassname[64];
+					GetEntityClassname(weapon, Weaponclassname, 64);
 
-					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
+					int slot = TF2_GetClassnameSlot(Weaponclassname);
 
-					if(f_ChargeTerroriserSniper[weapon] > 149.0)
+					if(f_HealingPotionDuration[attacker] > GameTime) //Client has a buff, but which one?
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += 2;
-					}
-					else
-					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += 1;
-					}
-					Apply_Particle_Teroriser_Indicator(victim);
-					damage = 0.0;
-				}
-#endif
-				
-				if(i_HighTeslarStaff[weapon] == 1)
-				{
-					f_HighTeslarDebuff[victim] = GameTime + 5.0;
-				}
-				else if(i_LowTeslarStaff[weapon] == 1)
-				{
-					f_LowTeslarDebuff[victim] = GameTime + 5.0;
-				}
-				
-				/*
-				for (int client = 1; client <= MaxClients; client++)
-				{
-					i_HowManyBombsOnThisEntity[victim][client] = 0; //to clean on death ofc.
-				}
-				*/
-				if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
-				{
-					if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
-					{
-						if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+						switch(f_HealingPotionEffect[attacker])
 						{
-							int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-							int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-							if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
+							case MELEE_BUFF_2:
 							{
-								i_HasBeenBackstabbed[victim] = true;
-									
-								float attack_speed;
-
-								attack_speed = 1.0;
-								
-								attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
-								attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0); //Extra
-									
-								EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
-									
-								DataPack pack = new DataPack();
-								RequestFrame(DoMeleeAnimationFrameLater, pack);
-								pack.WriteCell(EntIndexToEntRef(viewmodel));
-								pack.WriteCell(melee);
-
-
-								attack_speed *= f_BackstabCooldown[weapon]; //extra delay.
-
-							//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
-								damage *= 5.25;
-
-#if defined ZR
-								if(LastMann)
+								if(slot == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //Only melee.
 								{
-									attack_speed *= 0.5; //extra delay.
+									damage *= 1.15;
 								}
+							}
+							case RANGED_BUFF_2: 
+							{
+								if(slot < TFWeaponSlot_Melee) //Only Ranged
+								{
+									damage *= 1.25;
+								}
+							}
+							case MAGE_BUFF_2:
+							{
+								if(i_IsWandWeapon[weapon]) //Only Mage.
+								{
+									damage *= 1.25;
+								}
+							}
+							default: //Nothing.
+							{
+								damage *= 1.0;
+							}
+						}
+					}		
+					damage = RpgCC_ContractExtrasNpcOnTakeDamage(victim, attacker, damage, damagetype, weapon, slot);
 #endif
-								
-								if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
-								{
-									damage *= 0.35; //cut damage in half and then some.
-								}
-								
-								CClotBody npc = view_as<CClotBody>(victim);
-								
-								if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
-								{
-									damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
-								}
 
-								damage *= f_BackstabDmgMulti[weapon];		
 #if defined ZR
-								if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
-								{
-									damage *= 1.35;
-								}
-								
-								if(EscapeMode)
-									damage *= 1.35;
-#endif						
-								
-								//Latest tf2 update broke this, too lazy to fix lol
-								
-					//			THERE IS A FIX IN SOURCEMOD 1.12 FOR THIS!
-								if(!b_IsPlayerNiko[attacker])
-								{
-									if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
-									{
-										Animation_Retry[attacker] = 4;
-										RequestFrame(Try_Backstab_Anim_Again, attacker);
-										TE_Start("PlayerAnimEvent");
-										Animation_Setting[attacker] = 1;
-										Animation_Index[attacker] = 33;
-										TE_WriteEnt("m_hPlayer",attacker);
-										TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-										TE_WriteNum("m_nData", Animation_Index[attacker]);
-										TE_SendToAll();
-									}
-								}
-								
-							
-								int heal_amount = i_BackstabHealEachTick[weapon];
-								int heal_ticks = i_BackstabHealTicks[weapon];
-								if(heal_amount && heal_ticks)
-								{
-									if(b_FaceStabber[attacker])
-									{
-										heal_amount /= 4;
-										heal_ticks	/= 4;
-										if(heal_amount < 1)
-										{
-											heal_amount = 1;
-										}
-										if(heal_ticks < 1)
-										{
-											heal_ticks = 1;
-										}
+					if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+					{
+						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+						damage = modified_damage;
+					}
+					
+					
+					if(i_ArsenalBombImplanter[weapon] > 0)
+					{
+						float damage_save = 50.0;
+						Address address = TF2Attrib_GetByDefIndex(weapon, 2);
+						if(address != Address_Null)
+							damage_save *= RoundToCeil(TF2Attrib_GetValue(address));
 
-									}
-									StartHealingTimer(attacker, 0.1, heal_amount, heal_ticks);
-								}
-								if(f_BackstabCooldown[weapon] != 0.0)
-								{
-									SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GameTime+(attack_speed));
-									SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GameTime+(attack_speed));
-								}
+						f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 
-								if(b_BackstabLaugh[weapon])
+						if(f_ChargeTerroriserSniper[weapon] > 149.0)
+						{
+							i_HowManyBombsOnThisEntity[victim][attacker] += 2;
+						}
+						else
+						{
+							i_HowManyBombsOnThisEntity[victim][attacker] += 1;
+						}
+						Apply_Particle_Teroriser_Indicator(victim);
+						damage = 0.0;
+					}
+	#endif
+					
+					if(i_HighTeslarStaff[weapon] == 1)
+					{
+						f_HighTeslarDebuff[victim] = GameTime + 5.0;
+					}
+					else if(i_LowTeslarStaff[weapon] == 1)
+					{
+						f_LowTeslarDebuff[victim] = GameTime + 5.0;
+					}
+					
+					/*
+					for (int client = 1; client <= MaxClients; client++)
+					{
+						i_HowManyBombsOnThisEntity[victim][client] = 0; //to clean on death ofc.
+					}
+					*/
+					if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+					{
+						if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
+						{
+							if(IsBehindAndFacingTarget(attacker, victim) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+							{
+								int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+								int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+								if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 								{
-									SepcialBackstabLaughSpy(attacker);
+									i_HasBeenBackstabbed[victim] = true;
+										
+									float attack_speed;
+
+									attack_speed = 1.0;
+									
+									attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 6, true, 1.0);
+									attack_speed *= Attributes_FindOnWeapon(attacker, weapon, 396, true, 1.0); //Extra
+										
+									EmitSoundToAll("weapons/knife_swing_crit.wav", attacker, _, _, _, 0.7);
+										
+									DataPack pack = new DataPack();
+									RequestFrame(DoMeleeAnimationFrameLater, pack);
+									pack.WriteCell(EntIndexToEntRef(viewmodel));
+									pack.WriteCell(melee);
+
+
+									attack_speed *= f_BackstabCooldown[weapon]; //extra delay.
+
+								//	damagetype |= DMG_CRIT; For some reason post ontakedamage doenst like crits. Shits wierd man.
+									damage *= 5.25;
+
+	#if defined ZR
+									if(LastMann)
+									{
+										attack_speed *= 0.5; //extra delay.
+									}
+	#endif
+									
+									if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+									{
+										damage *= 0.35; //cut damage in half and then some.
+									}
+									
+									CClotBody npc = view_as<CClotBody>(victim);
+									
+									if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
+									{
+										damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
+									}
+
+									damage *= f_BackstabDmgMulti[weapon];		
+	#if defined ZR
+									if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+									{
+										damage *= 1.35;
+									}
+									
+									if(EscapeMode)
+										damage *= 1.35;
+	#endif						
+									
+									//Latest tf2 update broke this, too lazy to fix lol
+									
+						//			THERE IS A FIX IN SOURCEMOD 1.12 FOR THIS!
+									if(!b_IsPlayerNiko[attacker])
+									{
+										if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
+										{
+											Animation_Retry[attacker] = 4;
+											RequestFrame(Try_Backstab_Anim_Again, attacker);
+											TE_Start("PlayerAnimEvent");
+											Animation_Setting[attacker] = 1;
+											Animation_Index[attacker] = 33;
+											TE_WriteEnt("m_hPlayer",attacker);
+											TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+											TE_WriteNum("m_nData", Animation_Index[attacker]);
+											TE_SendToAll();
+										}
+									}
+									
+								
+									int heal_amount = i_BackstabHealEachTick[weapon];
+									int heal_ticks = i_BackstabHealTicks[weapon];
+									if(heal_amount && heal_ticks)
+									{
+										if(b_FaceStabber[attacker])
+										{
+											heal_amount /= 4;
+											heal_ticks	/= 4;
+											if(heal_amount < 1)
+											{
+												heal_amount = 1;
+											}
+											if(heal_ticks < 1)
+											{
+												heal_ticks = 1;
+											}
+
+										}
+										StartHealingTimer(attacker, 0.1, heal_amount, heal_ticks);
+									}
+									if(f_BackstabCooldown[weapon] != 0.0)
+									{
+										SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GameTime+(attack_speed));
+										SetEntPropFloat(attacker, Prop_Send, "m_flNextAttack", GameTime+(attack_speed));
+									}
+
+									if(b_BackstabLaugh[weapon])
+									{
+										SepcialBackstabLaughSpy(attacker);
+									}
 								}
 							}
 						}
 					}
-				}
-#if defined ZR
-				else if(b_IsABow[weapon])
-				{
-					if(damagetype & DMG_CRIT)
-					{		
-						if(i_HeadshotAffinity[attacker] == 1)
-						{
-							damage *= 1.35;
+	#if defined ZR
+					else if(b_IsABow[weapon])
+					{
+						if(damagetype & DMG_CRIT)
+						{		
+							if(i_HeadshotAffinity[attacker] == 1)
+							{
+								damage *= 1.35;
+							}
+							if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
+							{
+								damage *= 1.35;
+							}
 						}
-						if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
+						else
 						{
-							damage *= 1.35;
+							if(i_HeadshotAffinity[attacker] == 1) //if no crit, penalise
+							{
+								damage *= 0.75;
+							}
 						}
 					}
+	#endif
+					
+					/*
 					else
-					{
-						if(i_HeadshotAffinity[attacker] == 1) //if no crit, penalise
+					{	
+						int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+						//Check if the weapon is a laser weapon, these weapons have wierd shit that causes people to crash with the way we use them
+						switch(weaponindex)
 						{
-							damage *= 0.75;
+							case 442: // Bison
+							{
+								PrintToChatAll("test");
+								int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+								SetEntProp(viewmodel, Prop_Send, "m_nSequence", 1);
+							}
+							case 588: // Pomson
+							{
+								int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+								SetEntProp(viewmodel, Prop_Send, "m_nSequence", 1);
+							}
+							case 441: // Mangler
+							{
+								int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
+								SetEntProp(viewmodel, Prop_Send, "m_nSequence", 1);
+							}
 						}
 					}
+					*/
+						
 				}
-#endif
-				
-				/*
-				else
-				{	
-					int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-					//Check if the weapon is a laser weapon, these weapons have wierd shit that causes people to crash with the way we use them
-					switch(weaponindex)
-					{
-						case 442: // Bison
-						{
-							PrintToChatAll("test");
-							int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-							SetEntProp(viewmodel, Prop_Send, "m_nSequence", 1);
-						}
-						case 588: // Pomson
-						{
-							int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-							SetEntProp(viewmodel, Prop_Send, "m_nSequence", 1);
-						}
-						case 441: // Mangler
-						{
-							int viewmodel = GetEntPropEnt(attacker, Prop_Send, "m_hViewModel");
-							SetEntProp(viewmodel, Prop_Send, "m_nSequence", 1);
-						}
-					}
-				}
-				*/
 			}
 		}
 		switch (damagecustom) //Make sure taunts dont do any damage, cus op as fuck

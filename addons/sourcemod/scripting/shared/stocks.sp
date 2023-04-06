@@ -899,22 +899,25 @@ stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", co
 	
 	if (szAttachment[0] != '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
 	{
-		SetVariantString(szAttachment); // "head"
+		if (szAttachment[0]) // do i even have anything?
+		{
+			SetVariantString(szAttachment); // "head"
 
-		if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
-		{
-			if(!maintain_anyways)
+			if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 			{
-				float vPos[3];
-				GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
-				AddVectors(vPos, vOffsets, vPos);
-				TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+				if(!maintain_anyways)
+				{
+					float vPos[3];
+					GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
+					AddVectors(vPos, vOffsets, vPos);
+					TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+				}
+				AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
 			}
-			AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
-		}
-		else
-		{
-			AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
+			else
+			{
+				AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
+			}
 		}
 	}
 }
@@ -987,7 +990,6 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 	return Plugin_Stop;
 }
 
-#if defined RPG
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
 	BleedAmountCountStack[client] += 1;
@@ -1023,7 +1025,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pos = WorldSpaceCenter(client);
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
 	if(bleed_count < 1)
@@ -1036,7 +1038,6 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.WriteCell(bleed_count-1, false);
 	return Plugin_Continue;
 }
-#endif
 
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
@@ -1485,6 +1486,14 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 
 stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
 {
+	//allow settings for the sick who cant handle screenshake.
+	//can cause headaches.
+#if defined ZR
+	if(!b_HudScreenShake[client])
+	{
+		return false;
+	}
+#endif
 	if (command == SHAKE_STOP) {
 		amplitude = 0.0;
 	}
@@ -2638,7 +2647,8 @@ float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
 bool FromBlueNpc = false,
 int maxtargetshit = 10,
 bool ignite = false,
-float dmg_against_entity_multiplier = 3.0)
+float dmg_against_entity_multiplier = 3.0,
+Function FunctionToCallOnHit = INVALID_FUNCTION)
 {
 
 	float damage_reduction = 1.0;
@@ -2798,16 +2808,26 @@ float dmg_against_entity_multiplier = 3.0)
 			{
 				NPC_Ignite(ClosestTarget, client, 5.0, weapon);
 			}
-			static float damage_1;
-			damage_1 = damage;
-
-			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			if(damage > 0)
 			{
-				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
-			}
-			
-			SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+				static float damage_1;
+				damage_1 = damage;
 
+				if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+				{
+					damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+				}
+				
+				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+			}
+			if(FunctionToCallOnHit != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, FunctionToCallOnHit);
+				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(ClosestTarget);
+				Call_Finish();
+			}
+			//i want owner entity and hit entity
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
@@ -4168,3 +4188,16 @@ enum g_Collision_Group
     TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS
 	
 };
+
+float f_HitmarkerSameFrame[MAXTF2PLAYERS];
+
+void DoClientHitmarker(int client)
+{
+	if(b_HudHitMarker[client] && f_HitmarkerSameFrame[client] != GetGameTime())
+	{
+		EmitCustomToClient(client, "zombiesurvival/hm.mp3", _, _, 90, _, 0.75, 100);
+		SetHudTextParams(-1.0, -1.0, 0.01, 125, 125, 125, 65);
+		ShowHudText(client, -1, "X");
+		f_HitmarkerSameFrame[client] = GetGameTime();	
+	}
+}
