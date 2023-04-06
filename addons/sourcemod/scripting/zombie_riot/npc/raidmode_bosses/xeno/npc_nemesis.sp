@@ -1381,7 +1381,7 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount, float StartVec[3])
 				SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
 				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 				int particle = ParticleEffectAt(StartVec, "spellbook_minor_fire", 1.0);
-				SetParent(prop, particle, "root");
+				SetParent(prop, particle, "");
 
 				spawnRing_Vectors(VicLoc, INFECTION_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1);	
 				VicLoc[2] -= 5.0;
