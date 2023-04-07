@@ -328,7 +328,26 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.0 > GetGameTime(npc.index))
 		{
 			f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
-			fl_RegainWalkAnim[npc.index] = gameTime + 0.1;
+			if(npc.m_iChanged_WalkCycle != 10) 	
+			{
+				int iActivity = npc.LookupActivity("ACT_FT_WALK");
+				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.m_iChanged_WalkCycle = 10;
+				npc.m_bisWalking = true;
+				npc.m_flSpeed = 50.0;
+				if(npc.Anger)
+					npc.m_flSpeed = 100.0;
+
+				npc.StartPathing();
+				f_NpcTurnPenalty[npc.index] = 1.0;
+				if(IsValidEntity(npc.m_iWearable1))
+				{
+					RemoveEntity(npc.m_iWearable1);
+				}
+				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
+				SetVariantString("1.0");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			}	
 		}
 		return;
 	}
@@ -823,11 +842,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				npc.m_flJumpStartTime = gameTime + 0.1;
 				npc.FaceTowards(vecTarget, 99999.9);
-
-				float Vecpos[3];
-				Vecpos = vecTarget;
-
-				vecTarget = Vecpos;
 
 				//	if(flDistanceToTarget < 1000000.0)	// 1000 HU
 				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
