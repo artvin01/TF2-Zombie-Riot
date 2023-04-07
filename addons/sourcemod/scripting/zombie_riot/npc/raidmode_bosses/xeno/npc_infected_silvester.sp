@@ -1287,7 +1287,23 @@ public Action contact_throw_Silvester_entity(int client)
 	float chargerPos[3];
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
-	if (npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime(npc.index))
+	bool EndThrow = false;
+	if (IsValidClient(client) && ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1))
+	{
+		if (fl_ThrowDelay[client] < GetGameTime(npc.index))
+		{
+			EndThrow = true;
+		}
+	}
+	else
+	{
+		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime(npc.index))
+		{
+			EndThrow = true;
+		}
+	}
+
+	if(EndThrow)
 	{
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{

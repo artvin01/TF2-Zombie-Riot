@@ -406,16 +406,30 @@ static MRESReturn GrenadePipebombProjectile_PipebombTouch(int self, Handle param
 */
 public MRESReturn DHook_GrenadeExplodePre(int entity)
 {
-	DoGrenadeExplodeLogic(entity);
-	RemoveEntity(entity);
-	return MRES_Supercede;
+	if(IsValidEntity(entity))
+	{
+		DoGrenadeExplodeLogic(entity);
+		RemoveEntity(entity);
+		return MRES_Supercede;
+	}
+	else
+	{
+		return MRES_Ignored;
+	}
 }
 
 public MRESReturn DHook_GrenadeDetonatePre(int entity)
 {
-	DoGrenadeExplodeLogic(entity);
-	RemoveEntity(entity);
-	return MRES_Supercede;
+	if(IsValidEntity(entity))
+	{
+		DoGrenadeExplodeLogic(entity);
+		RemoveEntity(entity);
+		return MRES_Supercede;
+	}
+	else
+	{
+		return MRES_Ignored;
+	}
 }
 
 float f_SameExplosionSound[MAXENTITIES];
