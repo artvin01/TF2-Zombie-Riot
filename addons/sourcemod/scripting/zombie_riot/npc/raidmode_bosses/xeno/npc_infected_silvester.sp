@@ -331,6 +331,8 @@ methodmap RaidbossSilvester < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+
+			
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
@@ -406,7 +408,9 @@ methodmap RaidbossSilvester < CClotBody
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 5.0;
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
-		
+
+		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn(npc.index);
 		npc.StartPathing();
 

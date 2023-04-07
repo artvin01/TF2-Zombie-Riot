@@ -5,7 +5,7 @@ static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float fl_IncreaseAttackSpeed[MAXPLAYERS+1]={0.0, ...};
 static float fl_IncreaseDamage[MAXPLAYERS+1]={1.0, ...};
-static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
+//static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
 
 #define TheTimerForCoolDown 1.0
 #define SlowStunTimer 0.88
@@ -67,7 +67,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 				}
 				case 2:
 				{
-					TF2_AddCondition(client, TFCond_CritCola, MinicritTimer, 0);
+					TF2_AddCondition(client, TFCond_CritCola, 0.44, 0);
 					//PrintToChat(client, "Minicrits")
 				}
 				case 3:
@@ -99,12 +99,13 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 				}
 				case 6:
 				{
-					fl_IncreaseDamageTaken[client] = 1.0;
+					/*fl_IncreaseDamageTaken[client] = 1.0;
 					Address address = TF2Attrib_GetByDefIndex(weapon, 412);
 					if(address != Address_Null)
 					fl_IncreaseDamageTaken[client] = TF2Attrib_GetValue(address);
 					TF2Attrib_SetByDefIndex(weapon, 412, fl_IncreaseDamageTaken[client] * TakeMoreDamageMultiplier);
-					CreateTimer(0.88, Reset_TakeMoreDmg, client, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(0.88, Reset_TakeMoreDmg, client, TIMER_FLAG_NO_MAPCHANGE);*/
+					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, MinicritTimer, 0);
 					//PrintToChat(client, "Take More Dmg")
 				}
 				case 7:
@@ -274,9 +275,10 @@ public Action TakeMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = EntRefToEntIndex(weapon_id[client]);
-		ApplyTempAttrib(weapon, 412, TakeMoreDamageMultiplier_Pap, ResetTakeMoreDmgTimer);
+		//int weapon = EntRefToEntIndex(weapon_id[client]);
+		//ApplyTempAttrib(weapon, 412, TakeMoreDamageMultiplier_Pap, ResetTakeMoreDmgTimer);
 		//PrintToChat(client, "More Attack Damage works!")
+		TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.44, 0);
 	}
 	return Plugin_Handled;
 }
@@ -386,7 +388,7 @@ public Action Reset_fl_DecreaseDamage_Pap(Handle cut_timer, int client)
 	}
 	return Plugin_Handled;
 }
-*/
+
 public Action Reset_TakeMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
@@ -399,4 +401,4 @@ public Action Reset_TakeMoreDmg(Handle cut_timer, int client)
 		//PrintToChat(client, "Reset Take More Dmg")
 	}
 	return Plugin_Handled;
-}
+}*/

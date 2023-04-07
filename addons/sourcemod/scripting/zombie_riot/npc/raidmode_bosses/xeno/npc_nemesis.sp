@@ -827,27 +827,24 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				float Vecpos[3];
 				Vecpos = vecTarget;
 
-				for(int Repeat; Repeat <= 2; Repeat++)
-				{
-					vecTarget = Vecpos;
+				vecTarget = Vecpos;
 
 				//	if(flDistanceToTarget < 1000000.0)	// 1000 HU
-					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
+				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
 
-					vecTarget[0] += GetRandomFloat(-50.0,50.0);
-					vecTarget[1] += GetRandomFloat(-50.0,50.0);
-					vecTarget[2] += GetRandomFloat(-50.0,50.0);
+				vecTarget[0] += GetRandomFloat(-50.0,50.0);
+				vecTarget[1] += GetRandomFloat(-50.0,50.0);
+				vecTarget[2] += GetRandomFloat(-50.0,50.0);
 
-					i_GunAmmo[npc.index] -= 1;
+				i_GunAmmo[npc.index] -= 1;
 					
-					float damage = 75.0;
+				float damage = 210.0;
 
-					if(npc.Anger)
-					{
-						damage = 100.0;
-					}
-					npc.FireRocket(vecTarget, damage, 1300.0, "models/weapons/w_bullet.mdl", 2.0,_, 45.0);	
+				if(npc.Anger)
+				{
+					damage = 300.0;
 				}
+				npc.FireRocket(vecTarget, damage, 1300.0, "models/weapons/w_bullet.mdl", 2.0,_, 45.0);	
 			}
 		}
 	}
