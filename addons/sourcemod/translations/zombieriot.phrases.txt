@@ -2300,5 +2300,56 @@
 		//"it"		""
 		//"fr"		""
 	}	
-	
+	"Xeno_Wave_1"
+	{
+		"en"		"Eradicate all the xeno infected\nFind the cause behind this."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_2"
+	{
+		"en"		"Slvester and Goggles didnt attack you for no reason."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_3"
+	{
+		"en"		"They tried to warn you and prevent you from certain doom."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_4"
+	{
+		"en"		"Prove them wrong, kill the remaining few infected."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }

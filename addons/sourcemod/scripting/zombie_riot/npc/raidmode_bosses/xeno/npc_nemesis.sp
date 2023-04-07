@@ -91,7 +91,7 @@ static int i_GunAmmo[MAXENTITIES];
 float f_NemesisImmuneToInfection[MAXENTITIES];
 float f_NemesisSpecialDeathAnimation[MAXENTITIES];
 float f_NemesisRandomInfectionCycle[MAXENTITIES];
-#define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v5.mdl"
+#define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v6.mdl"
 #define INFECTION_MODEL "models/weapons/w_bugbait.mdl"
 #define INFECTION_RANGE 150.0
 #define INFECTION_DELAY 0.8
@@ -391,6 +391,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			f_NpcTurnPenalty[npc.index] = 1.0;
+
+			return; //just to be sure.
 		}
 	}
 	if(f_NemesisCauseInfectionBox[npc.index])
@@ -843,22 +845,29 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.m_flJumpStartTime = gameTime + 0.1;
 				npc.FaceTowards(vecTarget, 99999.9);
 
-				//	if(flDistanceToTarget < 1000000.0)	// 1000 HU
 				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1300.0);
+				float VecSave[3];
+				VecSave = vecTarget;
 
-				vecTarget[0] += GetRandomFloat(-50.0,50.0);
-				vecTarget[1] += GetRandomFloat(-50.0,50.0);
-				vecTarget[2] += GetRandomFloat(-50.0,50.0);
-
-				i_GunAmmo[npc.index] -= 1;
-					
-				float damage = 210.0;
-
-				if(npc.Anger)
+				for(int repeat = 1; repeat <= 2; repeat++)
 				{
-					damage = 300.0;
+					vecTarget = VecSave;
+					//	if(flDistanceToTarget < 1000000.0)	// 1000 HU
+
+					vecTarget[0] += GetRandomFloat(-50.0,50.0);
+					vecTarget[1] += GetRandomFloat(-50.0,50.0);
+					vecTarget[2] += GetRandomFloat(-50.0,50.0);
+
+					i_GunAmmo[npc.index] -= 1;
+						
+					float damage = 105.0;
+
+					if(npc.Anger)
+					{
+						damage = 150.0;
+					}
+					npc.FireRocket(vecTarget, damage, 1300.0, "models/weapons/w_bullet.mdl", 2.0,_, 45.0);	
 				}
-				npc.FireRocket(vecTarget, damage, 1300.0, "models/weapons/w_bullet.mdl", 2.0,_, 45.0);	
 			}
 		}
 	}
@@ -901,6 +910,27 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
 		npc.PlayBoomSound();
 		npc.Anger = true; //	>:(
+
+		int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+		if(IsValidEntity(client))
+		{
+			AcceptEntityInput(client, "ClearParent");
+			b_NoGravity[npc.index] = true;
+			b_CannotBeKnockedUp[npc.index] = true;
+			npc.SetVelocity({0.0,0.0,0.0});
+			if(IsValidClient(client))
+			{
+				SetEntityMoveType(client, MOVETYPE_WALK); //can move XD
+				SetEntityCollisionGroup(client, 5);
+			}
+			
+			float pos[3];
+			float Angles[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+			TeleportEntity(client, pos, Angles, NULL_VECTOR);
+		}	
 	}
 }
 
