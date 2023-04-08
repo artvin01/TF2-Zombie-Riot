@@ -2315,7 +2315,7 @@
 	}
 	"Xeno_Wave_2"
 	{
-		"en"		"Slvester and Goggles didnt attack you for no reason."
+		"en"		"Silvester and Goggles didnt attack you for no reason."
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
