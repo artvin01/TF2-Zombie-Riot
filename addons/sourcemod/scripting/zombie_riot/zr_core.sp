@@ -1469,8 +1469,11 @@ void ReviveAll(bool raidspawned = false)
 				}
 				if(raidspawned)
 				{
-					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-					RequestFrame(SetHealthAfterReviveRaid, client);	
+					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
+					{
+						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+						RequestFrame(SetHealthAfterReviveRaid, client);	
+					}
 				}
 			}
 		}

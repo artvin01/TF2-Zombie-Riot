@@ -27,13 +27,16 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 			PrintHintText(client,"Medigun Medicine Fluid: %iml\n Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.", GetAmmo(client, 22));
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 		}
+
 		float damage = 75.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 8);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-			
+
+		damage *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
+
+		if(LastMann)	
+			damage *= 2.0;
+
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 314);
+		Address address = TF2Attrib_GetByDefIndex(weapon, 314);
 		if(address != Address_Null)
 			speed *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
 	

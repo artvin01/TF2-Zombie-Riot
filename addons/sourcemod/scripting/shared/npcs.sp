@@ -986,7 +986,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 				{
-					damage *= 1.35;
+					damage *= 1.25;
 				}
 #endif
 				
@@ -1699,7 +1699,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	#if defined ZR
 									if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 									{
-										damage *= 1.35;
+										damage *= 1.25;
 									}
 									
 									if(EscapeMode)
@@ -1771,7 +1771,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							}
 							if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 							{
-								damage *= 1.35;
+								damage *= 1.25;
 							}
 						}
 						else

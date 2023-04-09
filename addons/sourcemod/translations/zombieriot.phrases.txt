@@ -1039,11 +1039,11 @@
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.35x Extra Headshot and backstab damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.35x доп. урона от выстрела в голову и удар в спину"
-		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.35-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.35x Dano extra com tiros na cabeça e facas nas costas"
-		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.35x Meer Hoofdschotschade en Rugstekingschade"
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
+		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x доп. урона от выстрела в голову и удар в спину"
+		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
+		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.25x Meer Hoofdschotschade en Rugstekingschade"
 		"chi" 		"死亡宣告:射击精准度提升，爆头、背刺伤害提升"
 	}
 	"Widows Wine Recieved"
