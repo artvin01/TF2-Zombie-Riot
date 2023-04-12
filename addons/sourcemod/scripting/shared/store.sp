@@ -4923,6 +4923,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
+		Enable_Management_Banner_1(client, entity);
+		Enable_Management_Banner_2(client, entity);
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);

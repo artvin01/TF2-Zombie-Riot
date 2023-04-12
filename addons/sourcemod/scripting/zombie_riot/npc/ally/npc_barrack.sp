@@ -306,21 +306,21 @@ methodmap BarrackBody < CClotBody
 
 public int BarrackBody_HealthHud(BarrackBody npc)
 {
-		char HealthText[32];
-		int HealthColour[4];
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		for(int i=0; i<10; i++)
+	char HealthText[32];
+	int HealthColour[4];
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	for(int i=0; i<10; i++)
+	{
+		if(Health >= MaxHealth*(i*0.1))
 		{
-			if(Health >= MaxHealth*(i*0.1))
-			{
-				Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
-			}
-			else
-			{
-				Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "-");
-			}
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
 		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
 
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
@@ -349,7 +349,7 @@ public int BarrackBody_HealthHud(BarrackBody npc)
 	}
 	else
 	{
-		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,50.0}, 15, HealthColour, npc.index);
+		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,50.0}, 13, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 		DispatchKeyValue(TextEntity, "font", "1");
 		npc.m_iWearable6 = TextEntity;	

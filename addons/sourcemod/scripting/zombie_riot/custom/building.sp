@@ -6004,7 +6004,7 @@ static const int SummonerData[][] =
 
 
 	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 100, 15, 16 }		// Construction Master
+	{ BARRACK_HUSSAR, 0, 400, 15, 15, 16 }		// Construction Master
 };
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)

@@ -210,19 +210,31 @@ public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookP
 //This changes player classes to the correct one.
 public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
 {	
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false); 
+	for(int client_2=1; client_2<=MaxClients; client_2++)
+	{
+		if(IsClientInGame(client_2) && !TeutonType[client_2])
+		{
+			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false); 
+		}
+	}
 	return MRES_Ignored;
 }
 public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle hParams)
 {
-#if defined ZR
-	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0 || TeutonType[client] != TEUTON_NONE) //otherwise death sounds dont work.
-#else
-	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0)
-#endif
-
+	for(int client_2=1; client_2<=MaxClients; client_2++)
 	{
-		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+		if(IsClientInGame(client_2) && !TeutonType[client_2])
+		{
+			#if defined ZR
+				if(GetEntProp(client_2, Prop_Send, "m_iHealth") > 0 || TeutonType[client_2] != TEUTON_NONE) //otherwise death sounds dont work.
+			#else
+				if(GetEntProp(client_2, Prop_Send, "m_iHealth") > 0)
+			#endif
+
+				{
+					TF2_SetPlayerClass(client_2, WeaponClass[client_2], false, false);
+				}
+		}
 	}
 	return MRES_Ignored;
 }

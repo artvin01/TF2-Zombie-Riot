@@ -1044,8 +1044,8 @@ public void OnPostThink(int client)
 		//	AcceptEntityInput(client, "DispatchEffect"); 
 			static int entity;
 			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
-			Building_ShowInteractionHud(client, entity);
-			f_DelayLookingAtHud[client] = GameTime + 0.5;	
+			Building_ShowInteractionHud(client, entity);	
+			f_DelayLookingAtHud[client] = GameTime + 0.25;	
 		}
 		else
 		{

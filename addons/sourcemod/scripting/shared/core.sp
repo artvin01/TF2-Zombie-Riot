@@ -371,6 +371,8 @@ bool b_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
+float f_BuffBannerNpcBuff[MAXENTITIES];
+float f_BattilonsNpcBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
@@ -2103,7 +2105,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				f_DelayAttackspeedPanicAttack[weapon] = 1.0;				
 			}
-			if(!StrContains(classname, "tf_weapon_knife"))
+			if(!StrContains(classname, "tf_weapon_knife") && !i_IsWrench[weapon])
 			{
 				Handle swingTrace;
 				b_LagCompNPC_No_Layers = true;
@@ -2146,7 +2148,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				delete swingTrace;
 			}
-			else
+			else if(!i_IsWrench[weapon])
 			{
 				DataPack pack = new DataPack();
 				//The delay is usually 0.2 seconds.
@@ -2258,6 +2260,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
+		f_BuffBannerNpcBuff[entity] = 0.0;
+		f_BattilonsNpcBuff[entity] = 0.0;
 		b_NpcHasDied[entity] = true;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
