@@ -377,6 +377,7 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
@@ -689,6 +690,32 @@ public Action Command_TestTutorial(int client, int args)
 	{
 		StartTutorial(targets[target]);
 	}
+	return Plugin_Handled;
+}
+
+public Action Command_GiveCashAll(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_cash_all <cash>");
+        return Plugin_Handled;
+    }
+
+	char buf[12];
+	GetCmdArg(1, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+	
+	if(money > 0)
+	{
+		PrintToChatAll("You gained %i cash due to the admin %N!", money, client);	
+	}
+	else
+	{
+		PrintToChatAll("You lost %i cash due to the admin %N!", money, client);	
+	}
+	CurrentCash += money;
+
 	return Plugin_Handled;
 }
 public Action Command_GiveCash(int client, int args)

@@ -6220,13 +6220,42 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
 						int npc = Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
+						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
+
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusDamageBonus = 1.3;
+							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.3;
 						}
 						if(npc > MaxClients && GlassBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusDamageBonus = 1.15;
+							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.15;
+						}
+
+						//double tap
+						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 3)
+						{
+							view_as<BarrackBody>(npc).BonusFireRate *= 1.15;
+						}
+						if(npc > MaxClients && FinalBuilder[owner])
+						{
+							view_as<BarrackBody>(npc).BonusFireRate *= 1.2;
+						}
+						//juggernog
+						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 2)
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.3));
+						}
+						if(npc > MaxClients && FinalBuilder[owner])
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth") * 1.3));
+						}
+						if(npc > MaxClients && GlassBuilder[owner])
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 0.8));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 0.8));
 						}
 
 						if(TrainingQueue[owner] != -1)
