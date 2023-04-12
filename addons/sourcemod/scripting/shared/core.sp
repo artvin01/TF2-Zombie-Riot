@@ -526,6 +526,7 @@ int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
+bool i_InternalMeleeTrace[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
@@ -2105,7 +2106,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				f_DelayAttackspeedPanicAttack[weapon] = 1.0;				
 			}
-			if(!StrContains(classname, "tf_weapon_knife") && !i_IsWrench[weapon])
+			if(!StrContains(classname, "tf_weapon_knife") && i_InternalMeleeTrace[weapon])
 			{
 				Handle swingTrace;
 				b_LagCompNPC_No_Layers = true;
@@ -2148,7 +2149,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				delete swingTrace;
 			}
-			else if(!i_IsWrench[weapon])
+			else if(i_InternalMeleeTrace[weapon])
 			{
 				DataPack pack = new DataPack();
 				//The delay is usually 0.2 seconds.
