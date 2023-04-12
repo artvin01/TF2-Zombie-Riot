@@ -1299,24 +1299,31 @@ public Action contact_throw_Silvester_entity(int client)
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
 	bool EndThrow = false;
-	if (IsValidClient(client) && ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1))
+	if (IsValidClient(client))
 	{
-		if (fl_ThrowDelay[client] < GetGameTime(npc.index))
+		if(((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1))
+		{
+			if (fl_ThrowDelay[client] < GetGameTime())
+			{
+				EndThrow = true;
+			}		
+		}
+	}
+	else if(!b_NpcHasDied[client]) //It died.
+	{
+		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime())
 		{
 			EndThrow = true;
 		}
 	}
 	else
 	{
-		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime(npc.index))
-		{
-			EndThrow = true;
-		}
+		EndThrow = true;
 	}
 
 	if(EndThrow)
 	{
-		for(int entity=1; entity <= MAXENTITIES; entity++)
+		for(int entity=1; entity < MAXENTITIES; entity++)
 		{
 			b_AlreadyHitTankThrow[client][entity] = false;
 		}
