@@ -6235,11 +6235,11 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						//double tap
 						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 3)
 						{
-							view_as<BarrackBody>(npc).BonusFireRate *= 1.15;
+							view_as<BarrackBody>(npc).BonusFireRate *= 0.85;
 						}
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusFireRate *= 1.2;
+							view_as<BarrackBody>(npc).BonusFireRate *= 0.8;
 						}
 						//juggernog
 						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 2)
