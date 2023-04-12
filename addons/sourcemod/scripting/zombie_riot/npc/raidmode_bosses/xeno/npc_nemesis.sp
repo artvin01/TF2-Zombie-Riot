@@ -235,6 +235,7 @@ methodmap RaidbossNemesis < CClotBody
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		i_GunMode[npc.index] = 0;
 		i_GunAmmo[npc.index] = 0;
+		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		
 		Citizen_MiniBossSpawn(npc.index);
 		npc.StartPathing();
@@ -531,8 +532,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				}
 				else
 				{
-					b_NoGravity[npc.index] = true;
-					b_CannotBeKnockedUp[npc.index] = true;
+					b_NoGravity[client_victim] = true;
+					b_CannotBeKnockedUp[client_victim] = true;
 					npc.SetVelocity({0.0,0.0,0.0});
 				}
 				npc.m_flNextRangedAttackHappening = 0.0;	
@@ -608,8 +609,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						}
 						else
 						{
-							b_NoGravity[npc.index] = true;
-							b_CannotBeKnockedUp[npc.index] = true;
+							b_NoGravity[Enemy_I_See] = true;
+							b_CannotBeKnockedUp[Enemy_I_See] = true;
 							npcenemy.SetVelocity({0.0,0.0,0.0});
 						}
 						f_TankGrabbedStandStill[npcenemy.index] = GetGameTime() + 3.5;
@@ -907,6 +908,7 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		}
 		i_GunMode[npc.index] = 1;
 		i_GunAmmo[npc.index] = 500;
+		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
 		npc.PlayBoomSound();
 		npc.Anger = true; //	>:(
@@ -946,8 +948,8 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	if(IsValidEntity(client))
 	{
 		AcceptEntityInput(client, "ClearParent");
-		b_NoGravity[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
+		b_NoGravity[client] = true;
+		b_CannotBeKnockedUp[client] = true;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
 		{
