@@ -6250,7 +6250,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
 							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
-							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth") * 1.3));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.3));
 						}
 						if(npc > MaxClients && GlassBuilder[owner])
 						{
