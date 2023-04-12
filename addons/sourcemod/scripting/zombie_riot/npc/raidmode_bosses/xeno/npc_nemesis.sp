@@ -917,8 +917,8 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		if(IsValidEntity(client))
 		{
 			AcceptEntityInput(client, "ClearParent");
-			b_NoGravity[npc.index] = true;
-			b_CannotBeKnockedUp[npc.index] = true;
+			b_NoGravity[client] = true;
+			b_CannotBeKnockedUp[client] = true;
 			npc.SetVelocity({0.0,0.0,0.0});
 			if(IsValidClient(client))
 			{
