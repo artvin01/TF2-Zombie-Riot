@@ -408,7 +408,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				else
 				{
 					npc.m_flSwitchCooldown = gameTime + 8.0;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 2.5;
 					npc.m_iGunType = 1;
 
 					if(IsValidEntity(npc.m_iWearable3))
@@ -630,6 +630,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
+						}
+						else
+						{
+							npc.m_flNextMeleeAttack = gameTime + 1.0;
 						}
 					}
 					else if(!alone)
