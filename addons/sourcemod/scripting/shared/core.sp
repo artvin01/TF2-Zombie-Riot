@@ -513,6 +513,7 @@ int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_GIBS_REGARDLESS              	(1 << 3)   					// Even if its anything then blast, it will still gib.
 #define EP_DEALS_PLASMA_DAMAGE             	(1 << 4)   					// for wands to deal plasma dmg
 #define EP_DEALS_DROWN_DAMAGE             	(1 << 5)
+#define EP_IS_ICE_DAMAGE              		(1 << 6)   					// Even if its anything then blast, it will still gib.
 
 bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
@@ -989,6 +990,7 @@ float f_StuckOutOfBoundsCheck[MAXENTITIES];
 int g_particleImpactMetal;
 
 char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 
 /*
 	Above Are Variables/Defines That Are Shared
@@ -2207,6 +2209,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 #endif
+		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 		f_DelayAttackspeedPreivous[entity] = -1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;

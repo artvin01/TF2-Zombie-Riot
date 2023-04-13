@@ -6004,7 +6004,7 @@ static const int SummonerData[][] =
 
 
 	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 15, 15, 16 }		// Construction Master
+	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16 }		// Construction Master
 };
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
@@ -6225,7 +6225,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.3;
+							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.5;
 						}
 						if(npc > MaxClients && GlassBuilder[owner])
 						{
@@ -6239,7 +6239,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						}
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusFireRate *= 0.8;
+							view_as<BarrackBody>(npc).BonusFireRate *= 0.75;
 						}
 						//juggernog
 						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 2)
@@ -6249,8 +6249,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						}
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
-							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
-							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.3));
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.65));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.65));
 						}
 						if(npc > MaxClients && GlassBuilder[owner])
 						{

@@ -109,7 +109,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 					
 				delay_hud[client] = 0.0;
 
-				i_FireBallsToThrow[client] = 5;
+				i_FireBallsToThrow[client] = 3;
 				CreateTimer(0.2, FireMultipleFireBalls, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 			}

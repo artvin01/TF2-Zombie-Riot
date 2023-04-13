@@ -195,6 +195,7 @@ methodmap RaidbossNemesis < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -1466,7 +1467,7 @@ public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
 }
 
 
-void NemesisHitInfection(int entity, int victim)
+void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 {
 	if(f_NemesisImmuneToInfection[victim] < GetGameTime())
 	{
@@ -1546,7 +1547,7 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 			float Distance = GetVectorDistance(vAngles, entity_angles);
 			if(Distance < 65.0)
 			{		
-				NemesisHitInfection(entity, AllyClient);
+				NemesisHitInfection(entity, AllyClient, 0.0 , -1);
 			}
 		}
 	}
