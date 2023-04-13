@@ -1074,12 +1074,7 @@
 	}
 	"Help?"
 	{
-		"en" 		"Help?"
-		"ru" 		"Помощь?"
-		"de"		"Hilfe?"
-		"pt"		"Ajuda?"
-		"nl"		"Hulp?"
-		"chi"       "帮助"
+		"en" 		"Help/FAQ"
 	}
 	"Help Title?"
 	{
@@ -1200,12 +1195,7 @@
 	}
 	"Special Zombies Explained"
 	{
-		"en" 		"Panzer Soldat: Guaranteed spawn at wave 12 and then it has a low chance to come, increases every wave."
-		"ru" 		"Панцер-солдат: Гарантированно появляется на 12-й волне, а затем у него низкий шанс прийти снова, увеличивающийся с каждой волной."
-		"de"		"Panzer-Soldat: erscheint Garantiert an runde 12, dann hat es eine kleine Chance zu kommen, wird höher jede runde."
-		"pt"		"Panzer Soldat: Garantido aparecer na onda 12 e então ele tem uma pequena chance de aparecer, aumenta a cada onda."
-		"nl"		"Panzer Soldaat: Gegarandeert om op golf 12 te spawnen en kan verder nog met een kleine kans terugkomen, kans verhoogt elke volgende golf!"
-		"chi"       "特级感染变异僵尸，有一定几率在第12波尸潮中出现。\n特级感染变异僵尸拥有更高的生命值、更高的伤害、更快的速度!"
+		"en" 		"These are mini-bosses that spawn randomly after wave 12."
 	}
 	"Revival Zombies Explained"
 	{
@@ -1751,8 +1741,7 @@
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
-		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
+		"en"		"Good! Now Navigate to ''weapons'' and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
 		"ru"		"Отлично! Теперь перейдите к оружию и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
 		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nТеперь перейдите к оружию и купите любое оружие, какое захотите.\nОткройте чат и введите «/store» для повторного открытия магазина, если он был закрыт!"
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
@@ -1825,11 +1814,7 @@
 	}
 	"Save New"
 	{
-		"en"		"Enter name in chatbox to create a new loadout"
-		"ru"		"Введите имя в поле чата, чтобы создать новое снаряжение"
-		"pt"		"Digite no chat o nome do Loadout que você quer criar"
-		"nl"		"Typ een naam in de chatbox om een nieuwe loudout te creëren"
-		"chi"       "在聊天框中输入名称以创建新的预设值"
+		"en"		"Enter name in chatbox to create a new loadout\nIt will save your current bought items with the name you give.\nYou can rebuy said loadout if you have enough cash."
 	}
 	"Invalid Name"
 	{
