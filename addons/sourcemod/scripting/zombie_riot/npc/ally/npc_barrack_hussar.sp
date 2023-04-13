@@ -10,7 +10,7 @@ methodmap BarrackHussar < BarrackBody
 	}
 	public BarrackHussar(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "3500"));
+		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "2500"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_HUSSAR;
 		
