@@ -546,8 +546,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
 									
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (8.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (8.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 									
 									npc.PlayMeleeHitSound();
 									
