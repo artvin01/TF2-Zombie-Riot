@@ -2415,7 +2415,14 @@ public void MenuPage(int client, int section)
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
 		menu.AddItem("-3", buffer);
 		
-		if(!starterPlayer)
+		if(starterPlayer)
+		{
+			menu.AddItem("-43", buffer, ITEMDRAW_SPACER);
+
+			FormatEx(buffer, sizeof(buffer), "%t", "Skip Starter");
+			menu.AddItem("-43", buffer);
+		}
+		else
 		{
 			zr_tagblacklist.GetString(buffer, sizeof(buffer));
 			if(StrContains(buffer, "private", false) == -1)
@@ -3168,6 +3175,24 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				case -22:
 				{
 					LoadoutPage(client);
+				}
+				case -43:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Skip Starter Confirm");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Skip Starter Yes");
+					menu2.AddItem("-44", buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -44:
+				{
+					XP[client] = LevelToXp(5);
+					GiveXP(client, 0);
 				}
 				default:
 				{

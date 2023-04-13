@@ -1840,6 +1840,18 @@
 	{
 		"en"		"Welcome to TF2: Zombie Riot!\nAdvanced weapons will unlock at Level 5"
 	}
+	"Skip Starter"
+	{
+		"en"		"Skip starter weapons and unlock advanced weapons"
+	}
+	"Skip Starter Confirm"
+	{
+		"en"		"You will be set to Level 5 and have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
+	}
+	"Skip Starter Yes"
+	{
+		"en"		"Yes, set me to Level 5"
+	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
