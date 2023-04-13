@@ -53,6 +53,11 @@ methodmap BaseSquad < CClotBody
 		public get()		{ return this.Anger; }
 		public set(bool value) 	{ this.Anger = value; }
 	}
+	property bool m_bRanged
+	{
+		public get()		{ return this.m_fbGunout; }
+		public set(bool value) 	{ this.m_fbGunout = value; }
+	}
 	property int m_iTargetAttack
 	{
 		public get()		{ return this.m_iTarget; }
@@ -158,7 +163,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
 		if(npc.m_iTargetWalk)
 		{
 			float vecTarget[3];
-			npc.m_iTargetWalk = WorldSpaceCenter(vecTarget);
+			vecTarget = WorldSpaceCenter(npc.m_iTargetWalk);
 
 			if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
 			{
@@ -207,34 +212,32 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
 	}
 }
 
-void BaseSquad_BaseAnim(any npcIndex, float speed, const char[] idlePassive, const char[] walkPassive, const char[] idleAnger, const char[] walkAnger)
+bool BaseSquad_BaseAnim(any npcIndex, float speedPassive, const char[] idlePassive, const char[] walkPassive, float speedAnger = 0.0, const char[] idleAnger = "", const char[] walkAnger = "")
 {
 	BaseSquad npc = view_as<BaseSquad>(npcIndex);
 
 	if(npc.m_bPathing)
 	{
-		npc.m_flSpeed = speed;
-
-		if(npc.m_iNoTargetCount < 20)
+		if(walkAnger[0] && npc.m_iNoTargetCount < 20)
 		{
+			npc.m_flSpeed = speedAnger;
 			npc.SetActivity(walkAnger);
+			return true;
 		}
-		else
-		{
-			npc.SetActivity(walkPassive);
-		}
+		
+		npc.m_flSpeed = speedPassive;
+		npc.SetActivity(walkPassive);
+		return false;
 	}
-	else
-	{
-		npc.m_flSpeed = 0.0;
+	
+	npc.m_flSpeed = 0.0;
 
-		if(npc.m_iNoTargetCount < 20)
-		{
-			npc.SetActivity(idleAnger);
-		}
-		else
-		{
-			npc.SetActivity(idlePassive);
-		}
+	if(idleAnger[0] && npc.m_iNoTargetCount < 20)
+	{
+		npc.SetActivity(idleAnger);
+		return true;
 	}
+	
+	npc.SetActivity(idlePassive);
+	return false;
 }
