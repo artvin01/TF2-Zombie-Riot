@@ -2818,13 +2818,13 @@ Function FunctionToCallOnHit = INVALID_FUNCTION)
 					damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 				}
 				//npcs do not take damage from drown damage, so what we will do instead
-				//is to make it do slash damage, slash damage ignores most resitances like drown does.
+				//is to make it do slash damage, slash damage ignores most resistances like drown does.
 				if(ClosestTarget > MaxClients)
 				{
 					if((damage_flags & DMG_DROWN))
 					{
-						damagetype &= ~DMG_DROWN;
-						damagetype |= DMG_SLASH; 
+						damage_flags &= ~DMG_DROWN;
+						damage_flags |= DMG_SLASH; 
 					}
 				}
 				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
