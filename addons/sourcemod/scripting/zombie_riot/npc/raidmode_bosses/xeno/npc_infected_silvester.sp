@@ -1212,8 +1212,8 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 						}
 						else if(ZR_GetWaveCount()+1 > 55)
 						{
-							damage = 19.0; //nerf
-							damage_rage = 20.0; //nerf
+							damage = 17.5; //nerf
+							damage_rage = 18.5; //nerf
 						}
 
 						if(!npc.Anger)

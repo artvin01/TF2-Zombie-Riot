@@ -675,6 +675,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(distance > 100000.0)	// 316 HU
 							damage *= 100000.0 / distance;	// Lower damage based on distance
 						
+						damage *= 1.5;
+						
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 				}

@@ -386,7 +386,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			fl_StopDodge[npc.index] = 0.0;
 
 			i_GunMode[npc.index] = 1;
-			i_GunAmmo[npc.index] = 300;
+			i_GunAmmo[npc.index] = 150;
 
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
 			SetVariantString("1.0");
@@ -907,7 +907,7 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 			RemoveEntity(npc.m_iWearable1);
 		}
 		i_GunMode[npc.index] = 1;
-		i_GunAmmo[npc.index] = 500;
+		i_GunAmmo[npc.index] = 250;
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
 		npc.PlayBoomSound();
