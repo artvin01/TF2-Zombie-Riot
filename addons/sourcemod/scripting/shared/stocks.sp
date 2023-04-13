@@ -2703,6 +2703,10 @@ Function FunctionToCallOnHit = INVALID_FUNCTION)
 	{
 		custom_flags |= ZR_DAMAGE_GIB_REGARDLESS;
 	}
+	if((i_ExplosiveProjectileHexArray[entity] & EP_IS_ICE_DAMAGE))
+	{
+		custom_flags |= ZR_DAMAGE_ICE;
+	}
 	
 	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
 	{
@@ -2808,16 +2812,26 @@ Function FunctionToCallOnHit = INVALID_FUNCTION)
 			{
 				NPC_Ignite(ClosestTarget, client, 5.0, weapon);
 			}
+			static float damage_1;
+			damage_1 = damage;
+
+			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			{
+				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+			}
+			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
 			if(damage > 0)
 			{
-				static float damage_1;
-				damage_1 = damage;
-
-				if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+				//npcs do not take damage from drown damage, so what we will do instead
+				//is to make it do slash damage, slash damage ignores most resistances like drown does.
+				if(ClosestTarget > MaxClients)
 				{
-					damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+					if((damage_flags & DMG_DROWN))
+					{
+						damage_flags &= ~DMG_DROWN;
+						damage_flags |= DMG_SLASH; 
+					}
 				}
-				
 				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
@@ -2825,6 +2839,8 @@ Function FunctionToCallOnHit = INVALID_FUNCTION)
 				Call_StartFunction(null, FunctionToCallOnHit);
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
+				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushCell(weapon);
 				Call_Finish();
 			}
 			//i want owner entity and hit entity

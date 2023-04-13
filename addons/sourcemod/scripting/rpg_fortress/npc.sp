@@ -356,7 +356,7 @@ public void NPC_Despawn(int entity)
 	}
 }
 
-void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
+void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	

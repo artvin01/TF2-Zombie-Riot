@@ -408,7 +408,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				else
 				{
 					npc.m_flSwitchCooldown = gameTime + 8.0;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 2.5;
 					npc.m_iGunType = 1;
 
 					if(IsValidEntity(npc.m_iWearable3))
@@ -546,8 +546,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
 									
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (8.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (8.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 									
 									npc.PlayMeleeHitSound();
 									
@@ -631,6 +631,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
 						}
+						else
+						{
+							npc.m_flNextMeleeAttack = gameTime + 1.0;
+						}
 					}
 					else if(!alone)
 					{
@@ -670,6 +674,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						float damage = (5.0 + float(tier)) * 0.1 * RaidModeScaling;
 						if(distance > 100000.0)	// 316 HU
 							damage *= 100000.0 / distance;	// Lower damage based on distance
+						
+						damage *= 1.5;
 						
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}

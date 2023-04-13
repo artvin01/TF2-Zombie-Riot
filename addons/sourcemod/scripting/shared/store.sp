@@ -53,6 +53,7 @@ enum struct ItemInfo
 
 	bool IsWand;
 	bool IsWrench;
+	bool InternalMeleeTrace;
 	
 	char Classname[36];
 	char Custom_Name[64];
@@ -214,6 +215,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%sinternal_melee_trace", prefix);
+		this.InternalMeleeTrace	= view_as<bool>(kv.GetNum(buffer, 1));
 		
 
 		
@@ -4359,6 +4363,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_WeaponDamageFalloff[entity] = 1.0;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
+				i_InternalMeleeTrace[entity] = true;
 				
 				if(entity > MaxClients)
 				{
@@ -4441,6 +4446,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWrench)
 					{
 						i_IsWrench[entity] = true;
+					}
+					if(!info.InternalMeleeTrace)
+					{
+						i_InternalMeleeTrace[entity] = false;
 					}
 
 					i_Hex_WeaponUsesTheseAbilities[entity] = 0;
@@ -4923,6 +4932,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
 		Enable_Management_Banner(client, entity);
+		Enable_Management_Banner_1(client, entity);
+		Enable_Management_Banner_2(client, entity);
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);

@@ -109,15 +109,16 @@ void Stats_AddNeuralDamage(int client, int attacker, int damage)
 		if(NeuralDamage[client] >= NERVOUS_IMPAIRMENT)
 		{
 			NeuralDamage[client] = 0;
+			TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
+
 			int health = GetClientHealth(client);
 			if(health > 500)
 			{
-				TF2_StunPlayer(client, 5.0, 1.0, TF_STUNFLAGS_BIGBONK, client);
 				SetEntityHealth(client, health - 500);
 			}
 			else
 			{
-				SDKHooks_TakeDamage(client, attacker, attacker, damage * 10.0, DMG_DROWN);
+				SDKHooks_TakeDamage(client, attacker, attacker, 5000.0, DMG_DROWN);
 			}
 		}
 	}

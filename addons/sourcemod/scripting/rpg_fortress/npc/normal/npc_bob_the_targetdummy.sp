@@ -188,7 +188,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 

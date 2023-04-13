@@ -860,16 +860,14 @@
 	}
 	"Fire Wand Pap 1"
 	{
-		"en"	"Increased damage, fires 5 fireballs in quick succession"
-		"ru"	"Увеличенный урон, выпускает 5 огненных шаров в быстрой последовательности."
+		"en"	"Increased damage, fires 3 fireballs in quick succession"
+		"ru"	"Увеличенный урон, выпускает 3 огненных шаров в быстрой последовательности."
 		"chi"   "增加伤害，快速连续发射5个火球"
 	}
 	
 	"Cryo Staff Desc"
 	{
-		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location, which deals massively increased damage to frozen zombies."
-		"ru"	"M1 - распыляет ледяной туман, подобно огнемёту, и замораживает врагов при определённом пороге урона. M2 - вызывает небольшую ударную волну в месте вашего нахождения, которая наносит замороженным зомби значительно больший урон."
-		"chi"   "M1喷射像火焰喷射器一样的冰雾，并将冻结敌人在一定的伤害阈值。M2在你的位置触发一个小冲击波，对冰冻僵尸造成大量的伤害。"
+		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location, which deals massively increased damage to frozen zombies.\nAnd instantly freeze all non frozen enemies within a limit."
 	}
 	"Cryo Staff Pap 1"
 	{

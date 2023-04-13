@@ -1039,11 +1039,11 @@
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.35x Extra Headshot and backstab damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.35x доп. урона от выстрела в голову и удар в спину"
-		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.35-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.35x Dano extra com tiros na cabeça e facas nas costas"
-		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.35x Meer Hoofdschotschade en Rugstekingschade"
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
+		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x доп. урона от выстрела в голову и удар в спину"
+		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
+		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.25x Meer Hoofdschotschade en Rugstekingschade"
 		"chi" 		"死亡宣告:射击精准度提升，爆头、背刺伤害提升"
 	}
 	"Widows Wine Recieved"
@@ -2300,5 +2300,56 @@
 		//"it"		""
 		//"fr"		""
 	}	
-	
+	"Xeno_Wave_1"
+	{
+		"en"		"Eradicate all the xeno infected\nFind the cause behind this."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_2"
+	{
+		"en"		"Silvester and Goggles didnt attack you for no reason."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_3"
+	{
+		"en"		"They tried to warn you and prevent you from certain doom."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_4"
+	{
+		"en"		"Prove them wrong, kill the remaining few infected."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }

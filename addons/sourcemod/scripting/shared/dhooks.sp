@@ -210,19 +210,31 @@ public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookP
 //This changes player classes to the correct one.
 public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
 {	
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false); 
+	for(int client_2=1; client_2<=MaxClients; client_2++)
+	{
+		if(IsClientInGame(client_2) && !TeutonType[client_2])
+		{
+			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false); 
+		}
+	}
 	return MRES_Ignored;
 }
 public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle hParams)
 {
-#if defined ZR
-	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0 || TeutonType[client] != TEUTON_NONE) //otherwise death sounds dont work.
-#else
-	if(GetEntProp(client, Prop_Send, "m_iHealth") > 0)
-#endif
-
+	for(int client_2=1; client_2<=MaxClients; client_2++)
 	{
-		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+		if(IsClientInGame(client_2) && !TeutonType[client_2])
+		{
+			#if defined ZR
+				if(GetEntProp(client_2, Prop_Send, "m_iHealth") > 0 || TeutonType[client_2] != TEUTON_NONE) //otherwise death sounds dont work.
+			#else
+				if(GetEntProp(client_2, Prop_Send, "m_iHealth") > 0)
+			#endif
+
+				{
+					TF2_SetPlayerClass(client_2, WeaponClass[client_2], false, false);
+				}
+		}
 	}
 	return MRES_Ignored;
 }
@@ -441,11 +453,36 @@ void DoGrenadeExplodeLogic(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	bool DoNotPlay = false;
 
-	if(IsValidEntity(owner) && f_SameExplosionSound[owner] == GetGameTime())
-		DoNotPlay = true;
-	
-	//prevent insanely loud explosion sounds.
-	if(!DoNotPlay)
+	if(IsValidEntity(owner))
+	{
+		if(f_SameExplosionSound[owner] == GetGameTime())
+			DoNotPlay = true;
+		
+		//prevent insanely loud explosion sounds.
+		if(!DoNotPlay)
+		{
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+				}
+				case 2:
+				{
+					EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+				}
+				case 3:
+				{
+					EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+				}
+			}
+		}
+		if(!DoNotPlay)
+		{
+			f_SameExplosionSound[owner] = GetGameTime();
+		}
+	}
+	else
 	{
 		switch(GetRandomInt(1,3))
 		{
@@ -462,10 +499,6 @@ void DoGrenadeExplodeLogic(int entity)
 				EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 			}
 		}
-	}
-	if(!DoNotPlay)
-	{
-		f_SameExplosionSound[owner] = GetGameTime();
 	}
 	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
 	_, _, _, _, _, _, _, _, _, _, 0.0);

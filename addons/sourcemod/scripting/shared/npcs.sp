@@ -986,7 +986,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 				{
-					damage *= 1.35;
+					damage *= 1.25;
 				}
 #endif
 				
@@ -1369,7 +1369,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage *= 1.15;
 		}
+		if(f_BuffBannerNpcBuff[attacker] > GameTime)
+		{
+			damage *= 1.35;
+		}
 
+
+		if(f_BattilonsNpcBuff[victim] > GameTime)
+		{
+			damage *= 0.65;
+		}
 		if(f_HighTeslarDebuff[victim] > GameTime)
 		{
 			damage *= 1.35;
@@ -1699,7 +1708,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	#if defined ZR
 									if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
 									{
-										damage *= 1.35;
+										damage *= 1.25;
 									}
 									
 									if(EscapeMode)
@@ -1771,7 +1780,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 							}
 							if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 							{
-								damage *= 1.35;
+								damage *= 1.25;
 							}
 						}
 						else
@@ -1995,71 +2004,162 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	char Debuff_Adder[64];
 		
 	bool Debuff_added = false;
+	bool Debuff_added_hud = false;
 	float GameTime = GetGameTime();
 
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁⌁");
 	}
 	else if(f_LowTeslarDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "⌁");
 	}
 		
 	if(BleedAmountCountStack[victim] > 0) //bleed
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
 	}
 		
 	if(IgniteFor[victim] > 0) //burn
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s♨", Debuff_Adder);			
 	}
 		
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅❅", Debuff_Adder);
 	}
 	else if(f_LowIceDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅❅", Debuff_Adder);
 	}
 	else if (f_VeryLowIceDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
 	}
 		
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s४", Debuff_Adder);
 	}
 		
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
 	}
 		
 	if(f_MaimDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
 	}
 	if(NpcStats_IsEnemySilenced(victim))
 	{
 		Debuff_added = true;
+		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%sX", Debuff_Adder);
 	}
-		
-	
+	if(Increaced_Overall_damage_Low[victim] > GameTime)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "⌃%s", Debuff_Adder);
+	}
+	if(Resistance_Overall_Low[victim] > GameTime)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "⌅%s", Debuff_Adder);
+	}
+	if(f_EmpowerStateOther[victim] > GameTime) //Do not show fusion self buff.
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "⍋%s", Debuff_Adder);
+	}
+	if(f_HussarBuff[victim] > GameTime) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "ᐩ%s", Debuff_Adder);
+	}
+	if(f_Ocean_Buff_Stronk_Buff[victim] > GameTime) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "⍟%s", Debuff_Adder);
+	}
+	else if(f_Ocean_Buff_Weak_Buff[victim] > GameTime) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "⌾%s", Debuff_Adder);
+	}
+	if(f_BattilonsNpcBuff[victim] > GameTime) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "⛨%s", Debuff_Adder);
+	}
+	if(f_BuffBannerNpcBuff[victim] > GameTime) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "↖%s", Debuff_Adder);
+	}
+
 	if(Debuff_added)
 	{
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
@@ -2145,7 +2245,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				}
 			}
 
-			if(DoesNpcHaveHudDebuff(raidboss, GameTime))
+			if(DoesNpcHaveHudDebuffOrBuff(raidboss, GameTime))
 			{
 				HudOffset += 0.035;
 			}
@@ -2265,7 +2365,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	}
 }
 
-stock bool DoesNpcHaveHudDebuff(int npc, float GameTime)
+stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
 		return true;
@@ -2289,7 +2389,22 @@ stock bool DoesNpcHaveHudDebuff(int npc, float GameTime)
 		return true;
 	else if(NpcStats_IsEnemySilenced(npc))
 		return true;
-				
+	else if(Increaced_Overall_damage_Low[npc] > GameTime)
+		return true;
+	else if(Resistance_Overall_Low[npc] > GameTime)
+		return true;
+	else if(f_EmpowerStateOther[npc] > GameTime)
+		return true;
+	else if(f_HussarBuff[npc] > GameTime)
+		return true;
+	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
+		return true;
+	else if(f_Ocean_Buff_Weak_Buff[npc] > GameTime)
+		return true;
+	else if(f_BattilonsNpcBuff[npc] > GameTime)
+		return true;
+	else if(f_BuffBannerNpcBuff[npc] > GameTime)
+		return true;
 
 	return false;
 }

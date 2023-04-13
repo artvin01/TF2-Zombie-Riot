@@ -371,6 +371,8 @@ bool b_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
+float f_BuffBannerNpcBuff[MAXENTITIES];
+float f_BattilonsNpcBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
@@ -511,6 +513,7 @@ int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_GIBS_REGARDLESS              	(1 << 3)   					// Even if its anything then blast, it will still gib.
 #define EP_DEALS_PLASMA_DAMAGE             	(1 << 4)   					// for wands to deal plasma dmg
 #define EP_DEALS_DROWN_DAMAGE             	(1 << 5)
+#define EP_IS_ICE_DAMAGE              		(1 << 6)   					// Even if its anything then blast, it will still gib.
 
 bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
@@ -524,6 +527,7 @@ int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
 bool i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
+bool i_InternalMeleeTrace[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
@@ -986,6 +990,7 @@ float f_StuckOutOfBoundsCheck[MAXENTITIES];
 int g_particleImpactMetal;
 
 char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
+float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 
 /*
 	Above Are Variables/Defines That Are Shared
@@ -2103,7 +2108,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				f_DelayAttackspeedPanicAttack[weapon] = 1.0;				
 			}
-			if(!StrContains(classname, "tf_weapon_knife"))
+			if(!StrContains(classname, "tf_weapon_knife") && i_InternalMeleeTrace[weapon])
 			{
 				Handle swingTrace;
 				b_LagCompNPC_No_Layers = true;
@@ -2146,7 +2151,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				delete swingTrace;
 			}
-			else
+			else if(i_InternalMeleeTrace[weapon])
 			{
 				DataPack pack = new DataPack();
 				//The delay is usually 0.2 seconds.
@@ -2204,6 +2209,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 #endif
+		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 		f_DelayAttackspeedPreivous[entity] = -1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
@@ -2258,6 +2264,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
+		f_BuffBannerNpcBuff[entity] = 0.0;
+		f_BattilonsNpcBuff[entity] = 0.0;
 		b_NpcHasDied[entity] = true;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;

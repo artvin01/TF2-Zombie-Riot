@@ -263,7 +263,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
 #if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
@@ -536,7 +536,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						Is_Allied_Npc = true;
 					}
 					
-					float Healing_Value = Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
+					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
 
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
@@ -763,7 +763,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
 #if defined ZR
 					if(LastMann)	
 						flDrainRate *= 2.0;
@@ -790,9 +790,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 				}
 				
-				if (flChargeLevel==1.0) {
+				if (flChargeLevel==1.0) 
+				{
 					SetEntProp(medigun, Prop_Send, "m_bChargeRelease", 1);
 				}
+				new_ammo -= 6;
+
 				SetAmmo(owner, 22, new_ammo);
 				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
 				if(medigun_hud_delay[owner] < GetGameTime())
@@ -815,7 +818,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.4;
+					float heatrefresh = 0.05;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -840,7 +843,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.3;
+					float heatrefresh = 0.05;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -853,6 +856,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
+				
 				}
 			}
 			else 
@@ -896,7 +900,7 @@ public void GB_On_Reload(int client, int weapon, bool crit) {
 	}
 	PrintHintText(client,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-						
+	SetEntProp(weapon, Prop_Send, "m_bChargeRelease", 1);
 	gb_medigun_on_reload[client] = true;
 }
 #if defined ZR
@@ -908,7 +912,7 @@ public void GB_Check_Ball(int client, int weapon, bool crit)
 		return;
 	}
 	
-	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.03;
+	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.06;
 						
 	if (flChargeLevel >= 1.0) 
 	{

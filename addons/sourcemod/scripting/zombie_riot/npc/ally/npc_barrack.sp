@@ -271,12 +271,13 @@ methodmap BarrackBody < CClotBody
 
 		SDKHook(npc.index, SDKHook_OnTakeDamage, BarrackBody_ClotDamaged);
 		
+
 		int particle = CreateEntityByName("info_particle_system");
 		if(particle != -1)
 		{
 			float vecPos2[3];
 			vecPos2 = vecPos;
-			vecPos2[2] += 50.0;
+			vecPos2[2] += 70.0;
 			TeleportEntity(particle, vecPos2, NULL_VECTOR, NULL_VECTOR);
 			DispatchKeyValue(particle, "targetname", "tf2particle");
 			DispatchKeyValue(particle, "effect_name", "powerup_icon_strength_red");
@@ -293,12 +294,67 @@ methodmap BarrackBody < CClotBody
 			SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
 			SDKHook(particle, SDKHook_SetTransmit, BarrackBody_Transmit);
 			
-			npc.m_iWearable6 = particle;
+			npc.m_iWearable7 = particle;
 		}
-		
+
+		int Textentity = BarrackBody_HealthHud(npc);
+		BarrackOwner[Textentity] = client;
 		npc.StartPathing();
 		return npc;
 	}
+}
+
+public int BarrackBody_HealthHud(BarrackBody npc)
+{
+	char HealthText[32];
+	int HealthColour[4];
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	for(int i=0; i<10; i++)
+	{
+		if(Health >= MaxHealth*(i*0.1))
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	if(Health <= MaxHealth)
+	{
+		HealthColour[0] = Health * 255  / MaxHealth;
+		HealthColour[1] = Health * 255  / MaxHealth;
+		
+		HealthColour[0] = 255 - HealthColour[0];
+	}
+	else
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 0;
+		HealthColour[2] = 255;
+	}	
+	HealthColour[3] = 255;
+
+	if(IsValidEntity(npc.m_iWearable6))
+	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(npc.m_iWearable6,     "color", sColor);
+		DispatchKeyValue(npc.m_iWearable6, "message", HealthText);
+	}
+	else
+	{
+		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,50.0}, 13, HealthColour, npc.index);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
+		DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iWearable6 = TextEntity;	
+	}
+	return npc.m_iWearable6;
 }
 
 public Action BarrackBody_Transmit(int entity, int client)
@@ -325,9 +381,12 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
 	
 	if(npc.m_flNextThinkTime > GameTime)
 		return false;
+		
+	BarrackBody_HealthHud(npc);
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
@@ -732,4 +791,7 @@ void BarrackBody_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }

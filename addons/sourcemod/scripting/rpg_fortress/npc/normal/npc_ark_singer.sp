@@ -171,7 +171,7 @@ public void ArkSinger_ClotThink(int iNPC)
 		return;
 	}
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -256,7 +256,7 @@ public void ArkSinger_ClotThink(int iNPC)
 				// Scarlet Singer (50% dmg)
 
 				if(npc.m_iTarget <= MaxClients)
-					Stats_AddNeuralDamage(npc.m_iTarget, npc.index, 40);	// (20% -> 5%)
+					Stats_AddNeuralDamage(npc.m_iTarget, npc.index, 50);	// (20% of dmg)
 			}
 		}
 	}

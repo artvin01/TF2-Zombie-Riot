@@ -86,6 +86,7 @@ static bool Silvester_BEAM_HitDetected[MAXENTITIES];
 static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
+static bool b_RageAnimated[MAXENTITIES];
 
 
 static int Silvester_TE_Used;
@@ -470,6 +471,19 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			npc.m_blPlayHurtAnimation = false;
 		}
 	}
+	
+	if(npc.Anger)
+	{
+		if(!b_RageAnimated[npc.index])
+		{
+			PF_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_flSpeed = 0.0;
+			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
+			b_RageAnimated[npc.index] = true;
+		}
+	}
+
 	
 	/*
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
@@ -1099,14 +1113,11 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			{
 				RemoveEntity(i_LaserEntityIndex[npc.index]);
 			}
-			PF_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.m_flSpeed = 0.0;
-			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 6.0;
 			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
+			b_RageAnimated[npc.index] = false;
 			RaidModeTime += 85.0;
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1201,8 +1212,8 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 						}
 						else if(ZR_GetWaveCount()+1 > 55)
 						{
-							damage = 19.0; //nerf
-							damage_rage = 20.0; //nerf
+							damage = 17.5; //nerf
+							damage_rage = 18.5; //nerf
 						}
 
 						if(!npc.Anger)
@@ -1288,24 +1299,31 @@ public Action contact_throw_Silvester_entity(int client)
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
 	bool EndThrow = false;
-	if (IsValidClient(client) && ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1))
+	if (IsValidClient(client))
 	{
-		if (fl_ThrowDelay[client] < GetGameTime(npc.index))
+		if(((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1))
+		{
+			if (fl_ThrowDelay[client] < GetGameTime())
+			{
+				EndThrow = true;
+			}		
+		}
+	}
+	else if(!b_NpcHasDied[client]) //It died.
+	{
+		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime())
 		{
 			EndThrow = true;
 		}
 	}
 	else
 	{
-		if(npc.IsOnGround() && fl_ThrowDelay[client] < GetGameTime(npc.index))
-		{
-			EndThrow = true;
-		}
+		EndThrow = true;
 	}
 
 	if(EndThrow)
 	{
-		for(int entity=1; entity <= MAXENTITIES; entity++)
+		for(int entity=1; entity < MAXENTITIES; entity++)
 		{
 			b_AlreadyHitTankThrow[client][entity] = false;
 		}
