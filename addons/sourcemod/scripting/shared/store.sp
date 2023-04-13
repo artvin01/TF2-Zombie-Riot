@@ -368,7 +368,7 @@ enum struct Item
 	int Level;
 	int Slot;
 	int Special;
-	bool Default;
+	bool Starter;
 	bool NoEscape;
 	bool MaxBarricadesBuild;
 	bool Hidden;
@@ -1036,6 +1036,7 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 		}
 	}
 	
+	item.Starter = view_as<bool>(kv.GetNum("starter"));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
 	kv.GetString("textstore", item.TextStore, sizeof(item.TextStore));
@@ -1045,7 +1046,6 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 	
 	if(isItem)
 	{
-		item.Default = view_as<bool>(kv.GetNum("default"));
 		item.Scale = kv.GetNum("scale");
 		item.CostPerWave = kv.GetNum("extracost_per_wave");
 		item.MaxBarricadesBuild = view_as<bool>(kv.GetNum("max_barricade_buy_logic"));
@@ -1922,11 +1922,14 @@ public void MenuPage(int client, int section)
 	
 	Menu menu;
 	
+	bool starterPlayer = Level[client] < STARTER_WEAPON_LEVEL;
+
 	if(CvarInfiniteCash.BoolValue)
 	{
 		CurrentCash = 999999;
 		Ammo_Count_Used[client] = -999999;
 		CashSpent[client] = 0;
+		starterPlayer = false;
 	}
 
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
@@ -2143,15 +2146,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n \n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%s", "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
+			menu.SetTitle("%t\n \n%t\n%t\n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], "Store Discount", TranslateItemName(client, item.Name, info.Custom_Name));
 		}
 	}
 	else
@@ -2163,15 +2166,15 @@ public void MenuPage(int client, int section)
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
 		{
-			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n%t\n%t\n \n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!" , "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
+			menu.SetTitle("%t\n \n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 		}
 		
 		if(!NPCOnly[client] && section == -1)
@@ -2209,10 +2212,19 @@ public void MenuPage(int client, int section)
 		}
 		else if(section == -2)
 		{
-			if(item.Hidden || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.TextStore[0])
+			if((!starterPlayer && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.TextStore[0])
 				continue;
 		}
-		else if(item.Hidden || item.Section != section || item.Level > ClientLevel || (EscapeMode && item.NoEscape))
+		else if(item.Section != section)
+		{
+			continue;
+		}
+		else if(starterPlayer)
+		{
+			if(!item.Starter)
+				continue;
+		}
+		else if(item.Hidden || item.Level > ClientLevel)
 		{
 			continue;
 		}
@@ -2394,7 +2406,7 @@ public void MenuPage(int client, int section)
 	
 	if(section == -1 && !NPCOnly[client])
 	{
-		if(Level[client] > 1)
+		if(Level[client] > STARTER_WEAPON_LEVEL)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
 			menu.AddItem("-22", buffer);
@@ -2403,21 +2415,24 @@ public void MenuPage(int client, int section)
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
 		menu.AddItem("-3", buffer);
 		
-		zr_tagblacklist.GetString(buffer, sizeof(buffer));
-		if(StrContains(buffer, "private", false) == -1)
+		if(!starterPlayer)
 		{
-			FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
-			menu.AddItem("-13", buffer);
+			zr_tagblacklist.GetString(buffer, sizeof(buffer));
+			if(StrContains(buffer, "private", false) == -1)
+			{
+				FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
+				menu.AddItem("-13", buffer);
+				
+				FormatEx(buffer, sizeof(buffer), "%t", "Bored or Dead");
+				menu.AddItem("-14", buffer);
+			}
 			
-			FormatEx(buffer, sizeof(buffer), "%t", "Bored or Dead");
-			menu.AddItem("-14", buffer);
+			FormatEx(buffer, sizeof(buffer), "%t", "Settings"); //Settings
+			menu.AddItem("-23", buffer);
+			
+			FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
+			menu.AddItem("-21", buffer);
 		}
-		
-		FormatEx(buffer, sizeof(buffer), "%t", "Settings"); //Settings
-		menu.AddItem("-23", buffer);
-		
-		FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
-		menu.AddItem("-21", buffer);
 	}
 	else if(!found)
 	{
@@ -3540,7 +3555,8 @@ static void LoadoutPage(int client, bool last = false)
 		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
 	}
 	
-	if((Level[client] / 2) > length)
+	int slots = (Level[client] + 1 - STARTER_WEAPON_LEVEL) / 2;
+	if(slots > length)
 	{
 		menu.SetTitle("%t\n%t\n \n%t", "TF2: Zombie Riot", "Loadouts", "Save New");
 	}

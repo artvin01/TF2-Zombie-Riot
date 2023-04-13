@@ -1847,6 +1847,14 @@
 		"pt"		"Vagas para Loadout: {1}"
 		"nl"		"{1} Loadout Slot(en)"
 	}
+	"All Weapons Unlocked"
+	{
+		"en"		"{pink}All weapons and upgrades are unlocked to buy!"
+	}
+	"Starter Mode"
+	{
+		"en"		"Welcome to TF2: Zombie Riot!\nAdvanced weapons will unlock at Level 5"
+	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."

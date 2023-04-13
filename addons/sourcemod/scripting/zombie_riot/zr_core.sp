@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define STARTER_WEAPON_LEVEL	5
+
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Waves_GetRound
 
@@ -1580,11 +1582,14 @@ void GiveXP(int client, int xp)
 		while(Level[client] < nextLevel)
 		{
 			Level[client]++;
+
+			if(Level[client] == STARTER_WEAPON_LEVEL)
+				CPrintToChat(client, "%t", "All Weapons Unlocked");
 			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
 			
-			if(!(Level[client] % 2))
+			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
 				slots++;
 		}
 		
