@@ -22,7 +22,7 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 #define FinalWrathRageCooldown 65.0 //How Long you can reuse it again
 #define FinalWrathRageStunTimer 2.5 // How Long Stun is
 #define FinalWrathRageUberTimer 1.5 //How long uber is
-#define FinalWrathRagePapSpeed 0.30 //Attack Speed Boost attribute 6
+#define FinalWrathRagePapSpeed 0.38 //Attack Speed Boost attribute 6
 #define FinalWrathResetSpeedTimer 17.0 //Back to normal Attack speed
 
 //Don't touch these unless you know how to do it
