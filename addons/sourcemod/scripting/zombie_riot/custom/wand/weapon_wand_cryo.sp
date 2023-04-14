@@ -26,7 +26,7 @@ static float Cryo_M2_Radius_Pap2 = 600.0;
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 15.0;	//M2 Cooldown
 
-static float Cryo_FreezeRequirement = 0.35; //% of target's max health M1 must do in order to trigger the freeze
+static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
 static float Cryo_FreezeDuration = 1.5; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_FreezeDuration_Pap1 = 2.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_FreezeDuration_Pap2 = 2.5; //Duration to freeze zombies when the threshold is surpassed

@@ -355,6 +355,7 @@ public void Npc_Irene_Launch_client(int client)
 			FakeClientCommand(client, "use tf_weapon_knife");
 		}
 		SDKUnhook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
+		return;
 	}	
 	else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
 	{
@@ -363,6 +364,7 @@ public void Npc_Irene_Launch_client(int client)
 		{
 			Store_RemoveSpecificItem(client, "Irene's Handcannon");
 			SDKUnhook(client, SDKHook_PreThink, Npc_Irene_Launch_client);
+			return;
 		}
 		i_ExplosiveProjectileHexArray[TemomaryGun] = EP_DEALS_CLUB_DAMAGE;
 
