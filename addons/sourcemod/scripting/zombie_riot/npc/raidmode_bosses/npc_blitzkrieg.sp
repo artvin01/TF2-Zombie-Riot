@@ -461,7 +461,10 @@ methodmap Blitzkrieg < CClotBody
 		
 		//adjust the "/4.0" to adjust how hard raid scaling happens. however be warned that on high player counts/waves blitz's scaling can scale extremely highly. 
 		fl_blitzscale[npc.index] = (RaidModeScaling/4.0)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
-		fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
+		if(i_currentwave[npc.index]<=60)
+		{
+			fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
+		}
 		
 		/*
 		Original scaling is divided by 4, the multiplied by the numbers bellow.
