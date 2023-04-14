@@ -18,17 +18,19 @@ static float Cryo_M2_Damage_Pap = 550.0; //M2 base damage (Pack-a-Punch)
 static float Cryo_M2_FreezeMult_Pap = 3.0;	//Amount to multiply damage dealt by M2 to frozen zombies (Pack-a-Punch)
 static float Cryo_M2_Damage_Pap2 = 650.0; //M2 base damage (Pack-a-Punch Tier 2)
 static float Cryo_M2_FreezeMult_Pap2 = 4.0;	//Amount to multiply damage dealt by M2 to frozen zombies (Pack-a-Punch Tier 2)
-static int Cryo_M2_Cost = 250;	//M2 Cost
+static int Cryo_M2_Cost = 400;	//M2 Cost
 static float Cryo_M2_Radius = 400.0;
 static float Cryo_M2_Radius_Pap = 500.0;
 static float Cryo_M2_Radius_Pap2 = 600.0;
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static float Cryo_M2_Cooldown = 30.0;	//M2 Cooldown
+static float Cryo_M2_Cooldown = 40.0;	//M2 Cooldown
 
 static float Cryo_FreezeRequirement = 0.25; //% of target's max health M1 must do in order to trigger the freeze
-static float Cryo_FreezeDuration = 2.0; //Duration to freeze zombies when the threshold is surpassed
-static float Cryo_SlowDuration = 5.0; //Duration to slow zombies when they are unfrozen
+static float Cryo_FreezeDuration = 1.5; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_FreezeDuration_Pap1 = 2.0; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_FreezeDuration_Pap2 = 2.5; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_SlowDuration = 8.0; //Duration to slow zombies when they are unfrozen
 static int Cryo_SlowType[MAXENTITIES] = {0, ...}; //Type of slow applied by the projectile, 0: None, 1: Weak Teslar Slow, 2: Strong Teslar Slow
 static int Cryo_SlowType_Zombie[MAXENTITIES] = {0, ...};	//^Ditto, but applied to zombies when they get frozen
 
@@ -510,19 +512,34 @@ public void Cryo_FreezeZombie(int zombie)
 	ZNPC.m_bFrozen = true;
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
+	float FreezeDuration;
 
-	float FreezeDuration = Cryo_FreezeDuration;
+	switch (Cryo_SlowType_Zombie[zombie])
+	{
+		case 0:
+		{
+			FreezeDuration = Cryo_FreezeDuration;
+		}
+		case 1:
+		{
+			FreezeDuration = Cryo_FreezeDuration_Pap1;
+		}
+		case 2:
+		{
+			FreezeDuration = Cryo_FreezeDuration_Pap2;
+		}
+	}
+
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		FreezeDuration *= 0.75; //Less duration against raids.
 	}
 
-
-	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
-	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
 
+	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
+	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
 	switch (Cryo_SlowType_Zombie[zombie])
@@ -530,6 +547,7 @@ public void Cryo_FreezeZombie(int zombie)
 		case 0:
 		{
 			f_VeryLowIceDebuff[zombie] = GetGameTime() + (Cryo_SlowDuration + FreezeDuration);
+
 		}
 		case 1:
 		{
