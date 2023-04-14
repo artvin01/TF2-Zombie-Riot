@@ -131,6 +131,8 @@ Cookie CookieAmmoCount;
 Cookie CookieXP;
 Cookie CookieAmmoReserve;
 Cookie CookieLeftForDead;
+Cookie HudSettings_Cookies;
+Cookie HudSettingsExtra_Cookies;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
 Handle g_hSDKMakeCarriedObjectDispenser;
@@ -272,7 +274,6 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 bool b_HudScreenShake[MAXTF2PLAYERS];
 bool b_HudLowHealthShake[MAXTF2PLAYERS];
-bool b_HudHitMarker[MAXTF2PLAYERS];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
@@ -480,7 +481,7 @@ void ZR_MapStart()
 	Cosmic_Map_Precache();
 	Weapon_lantean_Wand_Map_Precache();
 	EscapeSentryHat_MapStart();
-	
+	PrecachePlayerGiveGiveResponseVoice();
 	
 	Waves_MapStart();
 	Music_MapStart();

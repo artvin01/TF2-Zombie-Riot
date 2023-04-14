@@ -407,7 +407,11 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		
+#if defined ZR
 		Waves_PlayerSpawn(client);
+#endif
+
 		Thirdperson_PlayerSpawn(client);
 
 		// Resets the hand/arm pos for melee weapons 
