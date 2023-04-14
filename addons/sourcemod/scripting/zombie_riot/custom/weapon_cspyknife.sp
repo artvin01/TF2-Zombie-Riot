@@ -29,7 +29,7 @@ static float fl_IncreaseDamage[MAXPLAYERS+1]={1.0, ...};
 #define DamageMultiplier_Pap 2.2
 #define TakeMoreDamageMultiplier_Pap 1.15
 #define IncreaseAttackSpeed_Pap 0.28
-#define DecreaseAttackSpeed_Pap 1.35
+#define DecreaseAttackSpeed_Pap 1.55
 #define SlownessAmount_Pap 0.55
 
 #define ResetAttackSpeedTimer 1.22
@@ -61,7 +61,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					if(address != Address_Null)
 					fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 					TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed);*/
-					ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed);
+					ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed, 0.1);
 					//CreateTimer(0.88, Reset_ToNormalAttackSpeed, client, TIMER_FLAG_NO_MAPCHANGE);
 					//PrintToChat(client, "AttackSpeed bonus")
 				}
@@ -230,7 +230,7 @@ public Action MoreAttackSpeed(Handle cut_timer, int client)
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed_Pap);*/
-		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap);
+		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap, 0.1);
 		//CreateTimer(ResetLessAttackSpeedTimer, Reset_ToNormalAttackSpeed_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "More Attack Speed works!")
 	}
