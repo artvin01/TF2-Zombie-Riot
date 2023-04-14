@@ -2648,7 +2648,8 @@ bool FromBlueNpc = false,
 int maxtargetshit = 10,
 bool ignite = false,
 float dmg_against_entity_multiplier = 3.0,
-Function FunctionToCallOnHit = INVALID_FUNCTION)
+Function FunctionToCallOnHit = INVALID_FUNCTION,
+Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 {
 
 	float damage_reduction = 1.0;
@@ -2820,6 +2821,15 @@ Function FunctionToCallOnHit = INVALID_FUNCTION)
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
 			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
+			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, FunctionToCallBeforeHit);
+				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(ClosestTarget);
+				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushCell(weapon);
+				Call_Finish();
+			}
 			if(damage > 0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
