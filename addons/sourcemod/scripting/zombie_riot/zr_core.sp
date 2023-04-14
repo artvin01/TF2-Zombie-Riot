@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define STARTER_WEAPON_LEVEL	5
+
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Waves_GetRound
 
@@ -129,6 +131,8 @@ Cookie CookieAmmoCount;
 Cookie CookieXP;
 Cookie CookieAmmoReserve;
 Cookie CookieLeftForDead;
+Cookie HudSettings_Cookies;
+Cookie HudSettingsExtra_Cookies;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
 Handle g_hSDKMakeCarriedObjectDispenser;
@@ -270,7 +274,6 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 bool b_HudScreenShake[MAXTF2PLAYERS];
 bool b_HudLowHealthShake[MAXTF2PLAYERS];
-bool b_HudHitMarker[MAXTF2PLAYERS];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
@@ -478,7 +481,7 @@ void ZR_MapStart()
 	Cosmic_Map_Precache();
 	Weapon_lantean_Wand_Map_Precache();
 	EscapeSentryHat_MapStart();
-	
+	PrecachePlayerGiveGiveResponseVoice();
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -1580,11 +1583,14 @@ void GiveXP(int client, int xp)
 		while(Level[client] < nextLevel)
 		{
 			Level[client]++;
+
+			if(Level[client] == STARTER_WEAPON_LEVEL)
+				CPrintToChat(client, "%t", "All Weapons Unlocked");
 			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
 			
-			if(!(Level[client] % 2))
+			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
 				slots++;
 		}
 		

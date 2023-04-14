@@ -2319,11 +2319,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif
 }
 
+#if defined ZR
 void ResetDamageHud(int client)
 {
 	SetHudTextParams(-1.0, 0.05, 1.0, 0, 0, 0, 255, 0, 0.01, 0.01);
 	ShowSyncHudText(client, SyncHud, "");
 }
+#endif
 
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
 {

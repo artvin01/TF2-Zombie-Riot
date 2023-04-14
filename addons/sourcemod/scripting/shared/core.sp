@@ -222,8 +222,6 @@ ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
-Cookie HudSettings_Cookies;
-Cookie HudSettingsExtra_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -291,8 +289,7 @@ float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
-
-
+bool b_HudHitMarker[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -614,8 +611,10 @@ Handle g_hFindBodygroupByName;
 Handle g_hSetBodyGroup;
 Handle g_hSelectWeightedSequence;
 Handle g_hResetSequenceInfo;
+#if defined ZR
 Handle g_hLookupBone;
 Handle g_hGetBonePosition;
+#endif
 //Death
 Handle g_hNextBotCombatCharacter_Event_Killed;
 Handle g_hCBaseCombatCharacter_Event_Killed;
@@ -1281,7 +1280,6 @@ public void OnMapStart()
 	MapStart_CustomMeleePrecache();
 	OnMapStart_Build_on_Build();
 	WandStocks_Map_Precache();
-	PrecachePlayerGiveGiveResponseVoice();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");

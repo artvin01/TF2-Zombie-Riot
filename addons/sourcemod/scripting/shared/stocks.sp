@@ -2648,7 +2648,8 @@ bool FromBlueNpc = false,
 int maxtargetshit = 10,
 bool ignite = false,
 float dmg_against_entity_multiplier = 3.0,
-Function FunctionToCallOnHit = INVALID_FUNCTION)
+Function FunctionToCallOnHit = INVALID_FUNCTION,
+Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 {
 
 	float damage_reduction = 1.0;
@@ -2820,6 +2821,15 @@ Function FunctionToCallOnHit = INVALID_FUNCTION)
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
 			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
+			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, FunctionToCallBeforeHit);
+				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(ClosestTarget);
+				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushCell(weapon);
+				Call_Finish();
+			}
 			if(damage > 0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
@@ -3614,6 +3624,7 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 // Thank you miku:)
 // https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
 
+#if defined ZR
 static bool HazardResult;
 
 bool IsPointHazard(const float pos1[3])
@@ -3672,6 +3683,7 @@ public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int cli
 	
 	return true;
 }
+#endif	// ZR
 
 stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
 {
@@ -3788,6 +3800,7 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 	return iBeam;
 }
 
+#if defined ZR
 //bool identified if it went above max health or not.
 
 static float f_IncrementalSmallHeal[MAXENTITIES];
@@ -4159,14 +4172,13 @@ void MakePlayerGiveResponseVoice(int client, int status)
 	}
 }
 
-#if defined ZR
 void KillDyingGlowEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
 	if(entity > MaxClients)
 		RemoveEntity(entity);
 }
-#endif
+#endif	// ZR
 
 enum g_Collision_Group
 {

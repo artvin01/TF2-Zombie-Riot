@@ -60,7 +60,8 @@ void SDKCall_Setup()
 	g_hSetLocalOrigin = EndPrepSDKCall();
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
-		
+
+#if defined ZR
 	//CBaseAnimating::LookupBone( const char *szName )
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalOrigin");
@@ -75,7 +76,7 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if ((g_hGetBonePosition = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::GetBonePosition signature!");
-	
+#endif
 
 	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
 
@@ -267,6 +268,7 @@ void SDKCall_GetShootSound(int entity, int index, char[] buffer, int length)
 
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
+#if defined ZR
 int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
@@ -274,6 +276,7 @@ int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float f
 	
 	return -1;
 }
+#endif
 
 /*		
 ( const Vector &position, const QAngle &angles, 
@@ -392,6 +395,7 @@ void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
 
+#if defined ZR
 void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
 {
 	int iBone = SDKCall(g_hLookupBone, client, BoneName);
@@ -400,6 +404,7 @@ void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float ang
 		
 	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
 }
+#endif
 
 void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {

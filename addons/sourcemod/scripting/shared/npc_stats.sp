@@ -7178,7 +7178,6 @@ stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
 	{
-
 		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally)) 
 		{
 			return true;
@@ -8011,7 +8010,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun;
 }
 
-
+#if defined ZR
 void NpcStats_SilenceEnemy(int enemy, float duration)
 {
 	float GameTime = GetGameTime();
@@ -8020,6 +8019,7 @@ void NpcStats_SilenceEnemy(int enemy, float duration)
 		f_Silenced[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
 	}
 }
+#endif
 
 bool NpcStats_IsEnemySilenced(int enemy)
 {

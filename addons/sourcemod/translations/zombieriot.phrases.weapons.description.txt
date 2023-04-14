@@ -867,7 +867,7 @@
 	
 	"Cryo Staff Desc"
 	{
-		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location, which deals massively increased damage to frozen zombies.\nAnd instantly freeze all non frozen enemies within a limit."
+		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location\n which deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage."
 	}
 	"Cryo Staff Pap 1"
 	{

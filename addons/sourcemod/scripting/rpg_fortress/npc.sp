@@ -26,7 +26,10 @@ enum
 	ARK_SLUG		= 17,
 	ARK_SINGER		= 18,
 	ARK_SLUGACID		= 19,
-	ARK_SLUG_INFUSED	= 20
+	ARK_SLUG_INFUSED	= 20,
+
+	COMBINE_PISTOL,
+	COMBINE_SMG
 }
 
 public const char NPC_Names[][] =
@@ -51,7 +54,9 @@ public const char NPC_Names[][] =
 	"Originium Slug",
 	"Scarlet Singer",
 	"Acid Originium Slug",
-	"Infused Originium Slug"
+	"Infused Originium Slug",
+	"Metro Cop",
+	"Metro Raider"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -76,7 +81,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_ark_slug",
 	"npc_ark_singer",
 	"npc_ark_slug_acid",
-	"npc_ark_slug_infused"
+	"npc_ark_slug_infused",
+	"npc_combine_pistol",
+	"npc_combine_smg"
 };
 
 void NPC_MapStart()
@@ -101,6 +108,7 @@ void NPC_MapStart()
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
 	ArkSlugInfused_MapStart();
+	BaseSquad_MapStart();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -190,6 +198,14 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case ARK_SLUG_INFUSED:
 		{
 			entity = ArkSlugInfused(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_PISTOL:
+		{
+			entity = CombinePistol(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_SMG:
+		{
+			entity = CombineSMG(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -283,6 +299,14 @@ public void NPCDeath(int entity)
 		case ARK_SLUG_INFUSED:
 		{
 			ArkSlugInfused_NPCDeath(entity);
+		}
+		case COMBINE_PISTOL:
+		{
+			CombinePistol_NPCDeath(entity);
+		}
+		case COMBINE_SMG:
+		{
+			CombineSMG_NPCDeath(entity);
 		}
 		default:
 		{
@@ -598,3 +622,7 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_infused.sp"
+
+#include "rpg_fortress/npc/combine/npc_basesquad.sp"
+#include "rpg_fortress/npc/combine/npc_combine_pistol.sp"
+#include "rpg_fortress/npc/combine/npc_combine_smg.sp"

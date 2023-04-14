@@ -5,7 +5,7 @@ methodmap CombinePistol < CombinePolice
 {
 	public CombinePistol(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombinePistol npc = view_as<CombinePistol>(CombinePolice(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false));
+		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
 		
 		i_NpcInternalId[npc.index] = COMBINE_PISTOL;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -14,14 +14,14 @@ methodmap CombinePistol < CombinePolice
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		npc.m_bRanged = false;
+		npc.m_bRanged = true;
 
 		npc.m_flNextMeleeAttack = 0.0;
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 12;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombinePistol_OnTakeDamage);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, BaseSquad_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, CombinePistol_ClotThink);
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
@@ -32,14 +32,14 @@ methodmap CombinePistol < CombinePolice
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		AcceptEntityInput(npc.m_iWearable1, "Disable");
+		AcceptEntityInput(npc.m_iWearable2, "Disable");
 		return npc;
 	}
 }
 
 public void CombinePistol_ClotThink(int iNPC)
 {
-	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(iNPC);
+	CombinePistol npc = view_as<CombinePistol>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -51,7 +51,7 @@ public void CombinePistol_ClotThink(int iNPC)
 	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime)
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
-		npc.PlayHurtSound();
+		npc.PlayHurt();
 		npc.m_blPlayHurtAnimation = false;
 	}
 
@@ -74,7 +74,7 @@ public void CombinePistol_ClotThink(int iNPC)
 
 		for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 		{
-			if(i != entity)
+			if(i != npc.index)
 			{
 				BaseSquad ally = view_as<BaseSquad>(i);
 				if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !npc.m_bRanged)
@@ -118,7 +118,7 @@ public void CombinePistol_ClotThink(int iNPC)
 					npc.m_iAttacksTillReload = 12;
 					npc.PlayPistolReload();
 				}
-				else if(IsValidEnemy(Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+				else if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 				{
 					npc.FaceTowards(vecTarget, 2000.0);
 					canWalk = false;
@@ -148,11 +148,11 @@ public void CombinePistol_ClotThink(int iNPC)
 
 					NormalizeVector(vecDir, vecDir);
 					
-					// E2 L0 = 10.5, E2 L5 = 12.25
-					FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.35, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					// E2 L0 = 6.0, E2 L5 = 7.0
+					FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.2, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
-					npc.PlayPistol();
+					npc.PlayPistolFire();
 				}
 			}
 			else
@@ -169,6 +169,7 @@ public void CombinePistol_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
 				npc.m_bRanged = false;
 				npc.m_flAttackHappens = 0.0;
+				npc.PlayStunStickDeploy();
 			}
 			
 			if(npc.m_flAttackHappenswillhappen)
@@ -182,14 +183,14 @@ public void CombinePistol_ClotThink(int iNPC)
 					if(npc.DoSwingTrace(swingTrace, npc.m_iTargetAttack))
 					{
 						int target = TR_GetEntityIndex(swingTrace);
-						if(IsValidEnemy(target))
+						if(IsValidEnemy(npc.index, target))
 						{
 							TR_GetEndPosition(vecTarget, swingTrace);
 
 							// E2 L0 = 90, E2 L5 = 105
-							SDKHooks_TakeDamage(target, npc.index, npc.index, Level[client] * 3.0, DMG_CLUB, -1, _, vecTarget);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
 							if(target <= MaxClients)
-								Stats_AddNeuralDamage(target, npc.index, RoundToFloor(Level[client] * 0.45));	// (15% of dmg)
+								Stats_AddNeuralDamage(target, npc.index, RoundToFloor(Level[npc.index] * 0.45));	// (15% of dmg)
 							
 							npc.PlayStunStickHit();
 						}
@@ -200,10 +201,10 @@ public void CombinePistol_ClotThink(int iNPC)
 			}
 			else if(npc.m_flNextMeleeAttack < gameTime)
 			{
-				if(distance < 10000.0 && IsValidEnemy(Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))	// 100 HU
+				if(distance < 10000.0 && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))	// 100 HU
 				{
 					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-					npc.PlayStunStickSwing();
+					npc.PlayStunStickFire();
 
 					npc.m_flAttackHappens = gameTime + 0.35;
 					npc.m_flNextMeleeAttack = gameTime + 1.05;
@@ -223,4 +224,21 @@ public void CombinePistol_ClotThink(int iNPC)
 
 	bool anger = BaseSquad_BaseAnim(npc, 66.33, npc.m_bRanged ? "ACT_IDLE_PISTOL" : "ACT_IDLE", npc.m_bRanged ? "ACT_WALK_PISTOL" : "ACT_WALK_ANGRY", 212.24, npc.m_bRanged ? "ACT_IDLE_ANGRY_PISTOL" : "ACT_IDLE_ANGRY_MELEE", npc.m_bRanged ? "ACT_RUN_PISTOL" : "ACT_RUN");
 	npc.PlayIdle(anger);
+}
+
+void CombinePistol_NPCDeath(int entity)
+{
+	CombinePistol npc = view_as<CombinePistol>(entity);
+	
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BaseSquad_TakeDamage);
+	SDKUnhook(npc.index, SDKHook_Think, CombinePistol_ClotThink);
+
+	if(!npc.m_bGib)
+		npc.PlayDeath();
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }

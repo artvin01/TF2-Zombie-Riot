@@ -209,10 +209,16 @@ public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookP
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
 //This changes player classes to the correct one.
 public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle hParams)
-{	
+{
 	for(int client_2=1; client_2<=MaxClients; client_2++)
 	{
+
+#if defined ZR
 		if(IsClientInGame(client_2) && !TeutonType[client_2])
+#else
+		if(IsClientInGame(client_2))
+#endif
+
 		{
 			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false); 
 		}
@@ -223,7 +229,13 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 {
 	for(int client_2=1; client_2<=MaxClients; client_2++)
 	{
+		
+#if defined ZR
 		if(IsClientInGame(client_2) && !TeutonType[client_2])
+#else
+		if(IsClientInGame(client_2))
+#endif
+
 		{
 			#if defined ZR
 				if(GetEntProp(client_2, Prop_Send, "m_iHealth") > 0 || TeutonType[client_2] != TEUTON_NONE) //otherwise death sounds dont work.
@@ -751,10 +763,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+
+#if defined ZR
 			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
 			{
 				return false;
 			}
+#endif
+
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
