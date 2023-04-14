@@ -230,7 +230,7 @@ public Action MoreAttackSpeed(Handle cut_timer, int client)
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed_Pap);*/
-		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap);
+		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap, 0.1);
 		//CreateTimer(ResetLessAttackSpeedTimer, Reset_ToNormalAttackSpeed_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "More Attack Speed works!")
 	}
