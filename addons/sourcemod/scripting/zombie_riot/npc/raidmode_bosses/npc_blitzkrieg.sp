@@ -465,6 +465,10 @@ methodmap Blitzkrieg < CClotBody
 		{
 			fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
 		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
+		}
 		
 		/*
 		Original scaling is divided by 4, the multiplied by the numbers bellow.
