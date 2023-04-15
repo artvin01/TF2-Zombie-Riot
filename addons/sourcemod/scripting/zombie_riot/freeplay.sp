@@ -25,13 +25,11 @@ static int PerkMachine;
 static int RaidFight;
 static bool WaveSkulls;
 
-static int EnemySeed;
-
 void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = 4;
+	EnemyChance = 5;
 	EnemyCount = 5;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
@@ -54,9 +52,6 @@ void Freeplay_ResetAll()
 	WaveSkulls = false;
 
 	EscapeModeForNpc = false;
-
-	char buffer[64];
-	EnemySeed = GetCurrentMap(buffer, sizeof(buffer)) * buffer[3];
 }
 
 int Freeplay_EnemyCount()
@@ -66,20 +61,7 @@ int Freeplay_EnemyCount()
 
 bool Freeplay_ShouldAddEnemy(int postWaves)
 {
-	bool result = !(EnemySeed % EnemyChance);
-
-	if(EnemySeed > 2000000000)
-	{
-		EnemySeed = (EnemySeed / 20000000) + postWaves;
-	}
-	else
-	{
-		EnemySeed = (EnemySeed - postWaves) * postWaves;
-		if(EnemySeed < 0)
-			EnemySeed = -EnemySeed;
-	}
-
-	return result;
+	return !(GetURandomInt() % EnemyChance);
 }
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
@@ -120,7 +102,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else
 	{
 		if(enemy.Health)
-			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.01)));
+			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.0125)));
 		
 		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01));
 
@@ -237,7 +219,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 46;
+		rand = GetURandomInt() % 44;
 	
 	char message[128];
 	switch(rand)
@@ -312,30 +294,6 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 13:
 		{
-			if(GrigoriMaxSells > 4)
-			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{green}Father Grigori sells +1 item");
-			GrigoriMaxSells++;
-			Store_RandomizeNPCStore(false);
-		}
-		case 14:
-		{
-			if(GrigoriMaxSells < 1)
-			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
-			}
-
-			strcopy(message, sizeof(message), "{red}Father Grigori sells -1 item");
-			GrigoriMaxSells--;
-			Store_RandomizeNPCStore(false);
-		}
-		case 15:
-		{
 			if(KillBonus > 0)
 			{
 				Freeplay_SetupStart(postWaves, wave);
@@ -345,7 +303,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}All enemies give +1 credits on death");
 			KillBonus++;
 		}
-		case 16:
+		case 14:
 		{
 			if(KillBonus < 1)
 			{
@@ -356,17 +314,17 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies give -1 credits on death");
 			KillBonus--;
 		}
-		case 17:
+		case 15:
 		{
 			strcopy(message, sizeof(message), "{red}Mini-boss spawn rate +50%");
 			MiniBossChance *= 1.5;
 		}
-		case 18:
+		case 16:
 		{
 			strcopy(message, sizeof(message), "{green}Mini-boss spawn rate -25%");
 			MiniBossChance *= 0.75;
 		}
-		case 19:
+		case 17:
 		{
 			if(CashBonus < 100)
 			{
@@ -377,12 +335,12 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}-100 credits gained per round");
 			CashBonus -= 100;
 		}
-		case 20:
+		case 18:
 		{
 			strcopy(message, sizeof(message), "{green}+120 credits gained per round");
 			CashBonus += 120;
 		}
-		case 21:
+		case 19:
 		{
 			if(EnemyBosses == 1)
 			{
@@ -400,7 +358,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				EnemyBosses = 6;
 			}
 		}
-		case 22:
+		case 20:
 		{
 			if(ImmuneNuke == 1)
 			{
@@ -418,7 +376,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				ImmuneNuke = 4;
 			}
 		}
-		case 23:
+		case 21:
 		{
 			if(HussarBuff)
 			{
@@ -429,7 +387,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies gain the Hussar buff");
 			HussarBuff = true;
 		}
-		case 24:
+		case 22:
 		{
 			if(PernellBuff)
 			{
@@ -440,7 +398,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies gain the Pernell buff");
 			PernellBuff = true;
 		}
-		case 25:
+		case 23:
 		{
 			if(PerkMachine == 1)
 			{
@@ -451,7 +409,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Juggernog");
 			PerkMachine = 1;
 		}
-		case 26:
+		case 24:
 		{
 			if(PerkMachine == 2)
 			{
@@ -462,7 +420,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Deadshot Daiquiri");
 			PerkMachine = 2;
 		}
-		case 27:
+		case 25:
 		{
 			if(PerkMachine == 2)
 			{
@@ -473,7 +431,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Double Tap");
 			PerkMachine = 2;
 		}
-		case 28:
+		case 26:
 		{
 			if(PerkMachine == 3)
 			{
@@ -484,7 +442,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Widows Wine");
 			PerkMachine = 3;
 		}
-		case 29:
+		case 27:
 		{
 			if(PerkMachine == 4)
 			{
@@ -495,7 +453,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Speed Cola");
 			PerkMachine = 4;
 		}
-		case 30:
+		case 28:
 		{
 			if(PerkMachine == 0)
 			{
@@ -506,7 +464,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}All enemies are now using the perk Quick Revive");
 			PerkMachine = 0;
 		}
-		case 31:
+		case 29:
 		{
 			if(IceDebuff > 2)
 			{
@@ -517,7 +475,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}All enemies gain a layer of Cyro debuff");
 			IceDebuff++;
 		}
-		case 32:
+		case 30:
 		{
 			if(TeslarDebuff > 1)
 			{
@@ -528,7 +486,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}All enemies gain a layer of Teslar debuff");
 			TeslarDebuff++;
 		}
-		case 33:
+		case 31:
 		{
 			if(FusionBuff > 2)
 			{
@@ -539,7 +497,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies gain a layer of Fusion buff");
 			FusionBuff++;
 		}
-		case 34:
+		case 32:
 		{
 			if(OceanBuff > 1)
 			{
@@ -550,43 +508,38 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}All enemies gain a layer of Ocean buff");
 			OceanBuff++;
 		}
-		case 35:
+		case 33:
 		{
 			strcopy(message, sizeof(message), "{green}The next 300 enemies gain Cripple debuff");
 			CrippleDebuff += 300;
 		}
-		case 36:
+		case 34:
 		{
 			strcopy(message, sizeof(message), "{red}The next enemy becomes a Stalker");
 			StalkerBuff++;
 		}
-		case 37:
+		case 35:
 		{
 			strcopy(message, sizeof(message), "{red}The next enemy group will be True Fusion Warrior");
 			RaidFight = 1;
 		}
-		case 38:
+		case 36:
 		{
 			strcopy(message, sizeof(message), "{yellow}Every wave will add a new skull until setup");
 			WaveSkulls = true;
 		}
-		case 39:
+		case 37, 38, 39, 40:
 		{
-			strcopy(message, sizeof(message), "{red}The freeplay wave pattern was randomized");
-			EnemySeed = EnemyChance;
-		}
-		case 40, 41:
-		{
-			if(EnemyChance > 8)
-			{
-				Freeplay_SetupStart(postWaves, wave);
-				return;
-			}
+			//if(EnemyChance > 8)
+			//{
+			//	Freeplay_SetupStart(postWaves, wave);
+			//	return;
+			//}
 
 			strcopy(message, sizeof(message), "{red}Stronger enemy types are more likely to appear");
 			EnemyChance++;
 		}
-		case 42, 43:
+		case 41:
 		{
 			if(EnemyCount < 6)
 			{
@@ -597,7 +550,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{red}More enemy groups can appear");
 			EnemyCount++;
 		}
-		case 44:
+		case 42:
 		{
 			if(EnemyChance < 3)
 			{
@@ -608,7 +561,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			strcopy(message, sizeof(message), "{green}Stronger enemy types are less likely to appear");
 			EnemyChance--;
 		}
-		case 45:
+		case 43:
 		{
 			if(Medival_Difficulty_Level <= 0.1)
 			{
