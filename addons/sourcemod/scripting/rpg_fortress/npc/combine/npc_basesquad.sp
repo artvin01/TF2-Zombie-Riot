@@ -319,6 +319,39 @@ methodmap CombinePolice < BaseSquad
 	}
 }
 
+methodmap CombineSoldier < BaseSquad
+{
+	public void PlayIdle(bool anger)
+	{
+		float gameTime = GetGameTime(this.index);
+
+		if(anger)
+		{
+			if(this.m_flNextIdleAlertSound > gameTime)
+				return;
+			
+			EmitSoundToAll(SoldierIdleAlert[GetURandomInt() % sizeof(SoldierIdleAlert)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+			this.m_flNextIdleAlertSound = gameTime + GetRandomFloat(12.0, 24.0);
+		}
+		else
+		{
+			if(this.m_flNextIdleSound > gameTime)
+				return;
+			
+			EmitSoundToAll(SoldierIdle[GetURandomInt() % sizeof(SoldierIdle)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+			this.m_flNextIdleSound = gameTime + GetRandomFloat(12.0, 24.0);
+		}
+	}
+	public void PlayHurt()
+	{
+		EmitSoundToAll(SoldierHurt[GetURandomInt() % sizeof(SoldierHurt)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayDeath()
+	{
+		EmitSoundToAll(PoliceDeath[GetURandomInt() % sizeof(PoliceDeath)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	}
+}
+
 void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
 {
 	BaseSquad npc = view_as<BaseSquad>(npcIndex);
