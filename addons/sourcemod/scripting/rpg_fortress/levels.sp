@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define CURRENT_MAX_LEVEL	55 // E2 L25
+
 static Handle HudLevel;
 
 void Levels_PluginStart()
@@ -110,9 +112,12 @@ void GetDisplayString(int base, char[] buffer, int length, bool short = false)
 void GiveXP(int client, int xp, bool silent = false)
 {
 	TextStore_AddXP(client, RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue));
+
+	int levelCap = GetLevelCap(Tier[client]);
+	if(levelCap < Level[client])
+		levelCap = CURRENT_MAX_LEVEL;
 	
 	int nextLevel = XpToLevel(XP[client]);
-	int levelCap = GetLevelCap(Tier[client]);
 	if(nextLevel > levelCap)
 		nextLevel = levelCap;
 	
@@ -170,7 +175,7 @@ void ShowLevelHud(int client)
 		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
 	}
 
-	if(Level[client] == GetLevelCap(Tier[client]))
+	if(Level[client] >= CURRENT_MAX_LEVEL || Level[client] == GetLevelCap(Tier[client]))
 	{
 		Format(buffer, sizeof(buffer), "%s\n%d", buffer, XP[client] - LevelToXp(Level[client]));
 

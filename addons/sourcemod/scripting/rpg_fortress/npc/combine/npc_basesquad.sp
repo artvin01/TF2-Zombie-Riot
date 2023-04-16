@@ -169,6 +169,7 @@ void BaseSquad_MapStart()
 	
 	PrecacheModel("models/police.mdl");
 	PrecacheModel("models/combine_soldier.mdl");
+	PrecacheModel("models/weapons/w_grenade.mdl");
 }
 
 methodmap BaseSquad < CClotBody
@@ -277,8 +278,8 @@ methodmap BaseSquad < CClotBody
 	}
 	property float m_flNextIdleAlertSound
 	{
-		public get()		{ return this.m_flNextRangedSpecialAttackHappens; }
-		public set(float value)	{ this.m_flNextRangedSpecialAttackHappens = value; }
+		public get()		{ return this.m_flRangedSpecialDelay; }
+		public set(float value)	{ this.m_flRangedSpecialDelay = value; }
 	}
 }
 
@@ -472,6 +473,20 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
 				npc.UpdateHealthBar();
 			}
 
+			if(npc.m_flMeleeArmor > 0.5)
+			{
+				npc.m_flMeleeArmor -= 0.01;
+				if(npc.m_flMeleeArmor < 0.5)
+					npc.m_flMeleeArmor = 0.5;
+			}
+
+			if(npc.m_RangedArmor < 1.0)
+			{
+				npc.m_RangedArmor -= 0.01;
+				if(npc.m_RangedArmor < 0.5)
+					npc.m_RangedArmor = 0.5;
+			}
+
 			npc.StopPathing();
 		}
 	}
@@ -518,6 +533,25 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 		return Plugin_Continue;
 
 	BaseSquad npc = view_as<BaseSquad>(victim);
+
+	if(damagetype & DMG_CLUB)
+	{
+		if(npc.m_flMeleeArmor < 1.25)
+		{
+			npc.m_flMeleeArmor += 0.25001;
+			if(npc.m_flMeleeArmor > 1.25)
+				npc.m_flMeleeArmor = 1.25;
+		}
+	}
+	else if(!(damagetype & DMG_SLASH))
+	{
+		if(npc.m_RangedArmor < 1.25)
+		{
+			npc.m_RangedArmor += 0.10001;
+			if(npc.m_RangedArmor > 1.25)
+				npc.m_RangedArmor = 1.25;
+		}
+	}
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flHeadshotCooldown < gameTime)
