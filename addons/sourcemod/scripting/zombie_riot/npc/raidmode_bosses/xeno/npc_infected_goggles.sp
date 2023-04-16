@@ -621,7 +621,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
-							if(distance < 1000000.0)	// 1000 HU
+							if(distance < 1000000.0 && !NpcStats_IsEnemySilenced(npc.index))	// 1000 HU
 								vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1500.0);
 							
 							npc.FaceTowards(vecTarget, 30000.0);
@@ -815,6 +815,9 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossBlueGoggles_ClotDamaged);
 	
+	RaidModeTime += 2.0; //cant afford to delete it, since duo.
+	//add 2 seconds so if its close, they dont lose to timer.
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

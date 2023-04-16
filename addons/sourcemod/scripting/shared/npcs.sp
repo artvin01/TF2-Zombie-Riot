@@ -965,6 +965,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
+				if(b_ThisNpcIsSawrunner[victim])
+				{
+					damage *= 2.0;
+				}
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
