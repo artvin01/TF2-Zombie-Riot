@@ -465,6 +465,10 @@ methodmap Blitzkrieg < CClotBody
 		{
 			fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
 		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
+		}
 		
 		/*
 		Original scaling is divided by 4, the multiplied by the numbers bellow.
@@ -479,7 +483,7 @@ methodmap Blitzkrieg < CClotBody
 		b_BlitzLight_stop[npc.index]=false;		//Tell's the npc when blitzlight has ended
 		b_BlitzLight_sound[npc.index]=false;	//Stops sounds related to blitzlight.
 		
-		BlitzLight_Duration_notick[npc.index]=GetGameTime(npc.index)+300.0;	//Used to findout the current duration of blitzlight without tick's
+		BlitzLight_Duration_notick[npc.index]=GetGameTime(npc.index)+1000.0;	//Used to findout the current duration of blitzlight without tick's
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;	//Block's KB from certain abilities. mainly blitzlight
 		
