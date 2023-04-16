@@ -577,7 +577,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				}
 			}
 
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 			{
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
