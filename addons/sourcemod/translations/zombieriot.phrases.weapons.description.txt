@@ -1628,13 +1628,13 @@
 	}
 	"Tornado Blitz Desc Spam2"
 	{
-		"en"	"We may be approaching the upper limit of what our technology can do at this point\nBut we must press on\nWe increased the cooling of the launcher to achieve even more potent kinetic Nano-rockets\nEnjoy!"
+		"en"	"We may be approaching the upper limit of what our technology can do at this point\nBut we must press on\nWe increased the cooling of the launcher to achieve even more potent kinetic Nano-rockets\nOh also you can switch between barrage mode and standard with mouse2\nBe ware barrage mode is less rocket efficient\nEnjoy!"
 		"ru"	"Возможно, мы приближаемся к самому пределу возможностей нашей технологии на данный момент\nНо мы должны продолжать\nМы увеличили охлаждение ракетомёта, чтобы получить ещё более мощные кинетические наноракеты\nНаслаждайтесь!"
 		"chi"   "在这一点上，我们可能已经接近了我们技术的上限，但我们必须继续努力，我们增加了发射装置的冷却，以实现更强大的动能纳米火箭，享受!"
 	}
 	"Tornado Blitz Desc Spam3"
 	{
-		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nWe have no idea if this is safe, however it is still quite potent."
+		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nBarrage was also made more powerfull\nWe have no idea if this is safe, however it is still quite potent."
 		"ru"	"Мы не несём ответственности за то, что может вызвать это чудовище\nМы добавили охлаждение жидким азотом, чтобы увеличить эффективность наноракеты\nМы не знаем, безопасно ли это, однако она всё ещё достаточно мощная."
 		"chi"   "我们对这个怪物可能造成的后果不负责，我们已经添加了液氮冷却来提高纳米火箭的效率，我们不知道这是否安全，但它仍然相当有效。"
 	}
@@ -1795,11 +1795,11 @@
 	}
 	"Lantean Staff Desc"
 	{
-		"en" 	"Wherever you look, the drones fly, going over 10 drones makes them harder to control\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control"
+		"en" 	"Wherever you look, the drones fly\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control"
 	}
 	"Lantean Staff Desc pap"
 	{
-		"en"	"Your drones can now penetrate enemies up to 5 times, less damage each time it penetrates a target.\nLess damage loss on overcharge"
+		"en"	"Your drones can now penetrate more enemies\nLess damage loss on overcharge"
 	}
 	"Specter Pap 1"
 	{
@@ -1827,10 +1827,10 @@
 	}
 	"Lantean Staff Desc pap2"
 	{
-		"en"	"Your drones can now penetrate up to 10 targets\nLess damge loss on penetration\nLower damage penatly on overcharge too"
+		"en"	"Your drones can now penetrate even more targets\nLess damge loss on penetration\nLower damage penatly on overcharge too"
 	}
 	"Yamato_Desc"
 	{
-		"en"	"Gain a portion of the son's of sparda's POWER\nEach time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nYou do lose the 10%% melee dmg resist"
+		"en"	"Gain a portion of the son's of sparda's POWER\nEach time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist"
 	}
 }
