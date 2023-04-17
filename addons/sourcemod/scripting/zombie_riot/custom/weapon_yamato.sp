@@ -51,10 +51,16 @@ static char gLaser2;
 #define YAMATO_SUB_RAINSWORD_PASSIVE_DRAIN	0.1	//How fast the player loses motivation with this ability active. its a passive drain thats constant even while doing dmg. THIS IS PER INDIVIDUAL SWORD!!!!
 #define YAMATO_SUB_RAINSWORD_GAIN	0.125		//How much motivation the player gains back when they deal damage while in rainsword second mode. THIS IS PER INDIVIDUAL SWORD!!!!
 
+#define YAMATO_MOUSE2_ATTACK_DELAY 0.1			//A attack delay to the rainsword firing
+
+#define YAMATO_RAINSWORD_SOUND "weapons/shooting_star_shoot.wav"
+
 static int i_Yamato_Max_Rainsword_Count[MAXTF2PLAYERS+1];
 static float f_Yamato_Rainsword_Reload_Time[MAXTF2PLAYERS+1];
 static float f_Yamato_Rainsword_Damage[MAXTF2PLAYERS+1];
 static float f_Yamato_Rainsword_Cost[MAXTF2PLAYERS+1];
+
+static float f_Yamato_Mouse2_attack_delay[MAXTF2PLAYERS+1];
 
 static float f_Yamato_Sub_Rainsword_Dmg[MAXTF2PLAYERS+1];
 static float f_Yamato_Sub_Rainsword_Passive_Drain[MAXTF2PLAYERS+1];
@@ -86,7 +92,9 @@ void Reset_stats_Yamato_Global()	//happens on mapchange!
 	Zero(fl_yamato_stats_timer);
 	Zero2(f_Spin_To_Win_Throttle);
 	Zero(Handle_on);
+	Zero(f_Yamato_Mouse2_attack_delay);
 	gLaser2= PrecacheModel("materials/sprites/laserbeam.vmt");
+	PrecacheSound(YAMATO_RAINSWORD_SOUND);
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	
@@ -109,9 +117,8 @@ public void Yamato_m1(int client, int weapon, bool crit, int slot)
 	CPrintToChatAll("ADDED 5, total: %f",fl_Yamato_Motivation[client]);
 }*/
 
-public void Yamato_m2(int client, int weapon, bool crit, int slot)
+static void Yamato_Mouse2(int client)
 {
-	
 	switch(i_Yamato_Combo[client])
 	{
 		case 1:
@@ -371,6 +378,7 @@ static void Yamato_Rainsword_Spawn(int client, float SpawnVec[3], int num, float
 		Yamato_Rocket_Launch(client, weapon, SpawnVec, endLoc, 1400.0, f_Yamato_Rainsword_Damage[client], "raygun_projectile_blue");
 		f_Yamato_Rainsword_Reload_Timer[client][ID] = GetGameTime() + f_Yamato_Rainsword_Reload_Time[client];
 		fl_Yamato_Motivation[client] -= f_Yamato_Rainsword_Cost[client];
+		EmitSoundToClient(client, YAMATO_RAINSWORD_SOUND, _, _, _, _, 0.35);
 	}
 	int colour[4];
 	colour[0]=41;
@@ -750,6 +758,14 @@ public Action Yamato_Activate_Tick(int client)
 				Yamato_Rainsword_Skill_2_Loop(client);
 			}
 		}
+	}
+	
+	bool M2Down = (GetClientButtons(client) & IN_ATTACK2) != 0;
+	
+	if(M2Down && f_Yamato_Mouse2_attack_delay[client] < GetGameTime())
+	{
+		f_Yamato_Mouse2_attack_delay[client] = GetGameTime() + YAMATO_MOUSE2_ATTACK_DELAY;
+		Yamato_Mouse2(client);
 	}
 	
 	return Plugin_Continue;
