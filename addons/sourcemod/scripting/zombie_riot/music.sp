@@ -213,6 +213,10 @@ float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 
 //ty miku for tellingg
 
+float ClientMusicVolume(int client)
+{
+	return f_ClientMusicVolume[client];
+}
 public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
 	if(result == ConVarQuery_Okay)

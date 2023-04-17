@@ -446,7 +446,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && !IsFakeClient(client) && f_ClientMusicVolume[client] > 0.05)
+			if(IsClientInGame(client) && !IsFakeClient(client) && ClientMusicVolume(client) > 0.05)
 			{
 				EmitSoundToClient(client, sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
 			}
