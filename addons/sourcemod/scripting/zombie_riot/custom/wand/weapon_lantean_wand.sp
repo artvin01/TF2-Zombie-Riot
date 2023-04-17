@@ -605,7 +605,7 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 			int particle = EntRefToEntIndex(i_WandParticle[entity]);
 			if(IsValidEntity(particle))
 			{
-				RemoveEntity(particle);
+				RequestFrame(Delete_FrameLater, EntIndexToEntRef(particle));
 			}
 			switch(GetRandomInt(1,4)) 
 			{
@@ -617,7 +617,7 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
-			RemoveEntity(entity);
+			RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity));
 			lantean_Wand_Drone_Count[owner] -= 1;
 		}
 	}
@@ -679,11 +679,11 @@ public void lantean_Wand_Touch(int entity, int other)
 			}
 			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[entity])
 			{
-				RemoveEntity(entity);
+				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity));
 				lantean_Wand_Drone_Count[owner] -= 1;
 				if(IsValidEntity(particle))
 				{
-					RemoveEntity(particle);
+					RequestFrame(Delete_FrameLater, EntIndexToEntRef(particle));
 				}
 			}
 		}

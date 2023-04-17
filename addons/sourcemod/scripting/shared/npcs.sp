@@ -965,6 +965,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
+				if(b_ThisNpcIsSawrunner[victim])
+				{
+					damage *= 2.0;
+				}
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
@@ -1205,7 +1209,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		//Realisticly speaking this should never be an issue.
 		else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] < GameTime || !IsClientInGame(i_NpcFightOwner[victim]) || !IsPlayerAlive(i_NpcFightOwner[victim]))
 		{
-			if(b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] && Level[victim] < (Level[attacker] - 5))
+			if(b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] && Level[victim] < (Level[attacker] - 8))
 			{
 				damage = 0.0;
 			}
@@ -1222,6 +1226,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		else
 		{
 			f_NpcFightTime[victim] = GameTime + 10.0;
+		}
+
+		if(!b_NpcIsInADungeon[victim] && Level[victim] < 100000)
+		{
+			// Reduces damage when fighting enemies higher level than you
+			int underLv = Level[attacker] - Level[victim];
+			if(underLv > 3)
+			{
+				damage /= Pow(float(underLv - 2), 0.5);
+			}
 		}
 #endif
 

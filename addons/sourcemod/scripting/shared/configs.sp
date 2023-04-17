@@ -12,6 +12,7 @@ enum struct WeaponData
 	float Charge;
 	float Healing;
 	float Range;
+	bool FullReload;
 }
 
 static ArrayList WeaponList;
@@ -108,6 +109,7 @@ void Configs_ConfigsExecuted()
 			data.Charge = kv.GetFloat("chargespeed");
 			data.Healing = kv.GetFloat("healing");
 			data.Range = kv.GetFloat("range");
+			data.FullReload = view_as<bool>(kv.GetFloat("fullload"));
 			WeaponList.PushArray(data);
 		}
 	} while(kv.GotoNextKey());
@@ -171,18 +173,31 @@ stock float Config_GetDPSOfEntity(int entity)
 	address = TF2Attrib_GetByDefIndex(entity, 6);
 	if(address != Address_Null)
 		data.FireRate *= TF2Attrib_GetValue(address);
-	
-	
-	address = TF2Attrib_GetByDefIndex(entity, 876);
+
+	if(!data.Reload)
+		return data.Damage / data.FireRate;
+
+	address = TF2Attrib_GetByDefIndex(entity, 96);
 	if(address != Address_Null)
-		data.Damage *= TF2Attrib_GetValue(address);
+		data.Reload *= TF2Attrib_GetValue(address);
 	
-
-	float damagedps;
+	address = TF2Attrib_GetByDefIndex(entity, 97);
+	if(address != Address_Null)
+		data.Reload *= TF2Attrib_GetValue(address);
 	
-	damagedps = data.Damage / data.FireRate;
+	if(!data.FullReload && TF2Attrib_GetByDefIndex(entity, 43) == Address_Null)
+		data.Reload *= data.Clip;
+	
+	// Example:
+	// 300 Damage, 2.5 Reload Time, 0.5 Fire Rate, 25 Clip
+	// onTime = 25 * 0.2 = 5
+	// onToOff = 5 / (5 + 2.5) = 2/3
+	// DPS = (300 / 0.5) * 2/3 = 400
 
-	return damagedps;
+	float onTime = data.Clip * data.FireRate;		// The time we're firing our weapon
+	float onToOff = onTime / (onTime + data.Reload);	// The ratio of firing and reloading time
+
+	return (data.Damage / data.FireRate) * onToOff;
 }
 
 void Config_CreateDescription(const char[] classname, const int[] attrib, const float[] value, int attribs, char[] buffer, int length)
@@ -315,7 +330,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 					data.Reload *= value[i];
 			}
 			
-			Format(buffer, length, "%s\nReload: %.3fs", buffer, data.Reload);
+			Format(buffer, length, "%s\nReload: %.3fs (%s)", buffer, data.Reload, data.FullReload ? "Full" : "Clip");
 		}
 	}
 	
@@ -433,7 +448,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 	}
 	
 	// Melee Range
-	if(data.Range > 0)
+	/*if(data.Range > 0)
 	{
 		for(i=0; i<attribs; i++)
 		{
@@ -454,7 +469,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 		}
 		
 		Format(buffer, length, "%s\nRange: x%.2f", buffer, data.Range);
-	}
+	}*/
 
 	if(damage_Calc)
 	{

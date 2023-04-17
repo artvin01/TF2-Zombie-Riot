@@ -16,8 +16,6 @@ methodmap CombineSMG < CombinePolice
 		
 		npc.m_bRanged = false;
 
-		npc.m_flNextMeleeAttack = 0.0;
-
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 45;
 		
