@@ -108,7 +108,7 @@ void RaidbossNemesis_OnMapStart()
 	PrecacheModel(INFECTION_MODEL);
 	PrecacheModel(NEMESIS_MODEL);
 	PrecacheSound("weapons/cow_mangler_explode.wav");
-	PrecacheSoundCustom("#zombie_riot/320_now.mp3");
+	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
 }
 
 methodmap RaidbossNemesis < CClotBody
@@ -210,7 +210,7 @@ methodmap RaidbossNemesis < CClotBody
 			}
 		}
 
-		Music_SetRaidMusic("#zombie_riot/320_now.mp3", 200, true, 1.0);
+		Music_SetRaidMusic("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
 		RaidModeScaling = 9999999.99;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		npc.m_bThisNpcIsABoss = true;
