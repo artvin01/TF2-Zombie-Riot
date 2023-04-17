@@ -71,16 +71,18 @@ public void CombinePistol_ClotThink(int iNPC)
 		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
 
 		bool shouldGun = !npc.m_iTargetWalk;
-
-		for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+		if(!shouldGun)
 		{
-			if(i != npc.index)
+			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 			{
-				BaseSquad ally = view_as<BaseSquad>(i);
-				if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !npc.m_bRanged)
+				if(i != npc.index)
 				{
-					shouldGun = true;	// An ally rushing with a melee, I should cover them
-					break;
+					BaseSquad ally = view_as<BaseSquad>(i);
+					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
+					{
+						shouldGun = true;	// An ally rushing with a melee, I should cover them
+						break;
+					}
 				}
 			}
 		}
@@ -172,7 +174,7 @@ public void CombinePistol_ClotThink(int iNPC)
 				npc.PlayStunStickDeploy();
 			}
 			
-			if(npc.m_flAttackHappenswillhappen)
+			if(npc.m_flAttackHappens)
 			{
 				if(npc.m_flAttackHappens < gameTime)
 				{

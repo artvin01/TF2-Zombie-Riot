@@ -277,8 +277,17 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	
 	if(f_NemesisSpecialDeathAnimation[npc.index])
 	{
-		npc.m_flMeleeArmor = 0.5;
-		npc.m_flRangedArmor = 0.5;
+		if(!NpcStats_IsEnemySilenced(npc.index))
+		{
+			npc.m_flMeleeArmor = 0.5;
+			npc.m_flRangedArmor = 0.5;
+		}
+		else
+		{
+			npc.m_flMeleeArmor = 0.75;
+			npc.m_flRangedArmor = 0.75;
+		}
+		//silence doesnt completly delete it, but moreso, nerf it.
 
 		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4000;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
@@ -498,6 +507,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				}
 			}
 			fl_RegainWalkAnim[npc.index] = 0.0;
+			return; //just incase.
 		}
 	}
 	int client_victim = EntRefToEntIndex(i_GrabbedThis[npc.index]);
@@ -567,7 +577,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				}
 			}
 
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 			{
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);

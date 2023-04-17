@@ -2291,7 +2291,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
-			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly_Disolve);
+			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
@@ -2782,9 +2782,13 @@ public void Delete_instantly(int entity)
 	RemoveEntity(entity);
 }
 
-public void Delete_instantly_Disolve(int entity) //arck, they are client side...
+public void Delete_FrameLater(int ref) //arck, they are client side...
 {
-	RemoveEntity(entity);
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		RemoveEntity(entity);
+	}
 }
 
 /*

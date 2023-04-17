@@ -570,7 +570,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flNextRangedAttackHappening = 0.0;
 	}
 	*/
-	if(npc.m_iInKame > 0)
+	if(npc.m_iInKame > 0 && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		if(npc.Anger)
 		{
@@ -1137,11 +1137,14 @@ public void RaidbossSilvester_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossSilvester_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
-	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	
+	RaidModeTime += 2.0; //cant afford to delete it, since duo.
+	//add 2 seconds so if its close, they dont lose to timer.
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

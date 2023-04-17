@@ -435,7 +435,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 		{
 			if(client == target || Party_IsClientMember(client, target))
 			{
-				if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
+				if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity])
 					GiveXP(client, XP[entity]);
 				
 				if(i_CreditsOnKill[entity])

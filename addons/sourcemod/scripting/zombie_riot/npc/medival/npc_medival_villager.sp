@@ -413,7 +413,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			{
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
 				
-				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				PF_SetGoalEntity(npc.index, buildingentity);
 				PF_StartPathing(iNPC);
 				//Walk to building.
 				if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, buildingentity))

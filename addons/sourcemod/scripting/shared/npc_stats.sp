@@ -5831,7 +5831,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 							StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-							RemoveEntity(gib);
+							RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));
 							CurrentGibCount -= 1;
 						}
 					}

@@ -1192,9 +1192,9 @@
 	
 	"Bob's Enhancer Desc"
 	{
-		"en"	"2x increased Melee Damage, +22 HP on kill and +600 HP, +7%% melee resistance with melee equipped"
-		"ru"	"Двукратное увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加2倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+7%%的近战抗性"
+		"en"	"1.65x increased Melee Damage, +22 HP on kill and +600 HP, +7%% melee resistance with melee equipped"
+	//	"ru"	"Двукратное увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+7%%的近战抗性"
 	}
 	
 	"Repair Handling book for dummies Desc"
