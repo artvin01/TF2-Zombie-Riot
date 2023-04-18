@@ -2757,9 +2757,9 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 	//Im lazy and dumb, i dont know a better way.
 	for (int repeatloop = 0; repeatloop <= maxtargetshit; repeatloop++)
 	{
-		static int ClosestTarget;
-		static float ClosestDistance;
-		static int indexTraced;
+		int ClosestTarget;
+		float ClosestDistance;
+		int indexTraced;
 		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
 			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
