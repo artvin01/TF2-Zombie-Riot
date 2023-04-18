@@ -2452,6 +2452,10 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1; //I dont exist?
 	}
+	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[owner_projectile])
+	{
+		return -1; //Im about to be deleted.
+	}
 	if(other_entity == 0)
 	{
 		return 0;

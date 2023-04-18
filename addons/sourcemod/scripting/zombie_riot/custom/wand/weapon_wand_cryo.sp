@@ -399,6 +399,7 @@ public void Cryo_Touch(int entity, int other)
 				{
 					RequestFrame(Delete_FrameLater, EntIndexToEntRef(particle));
 				}
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity));
 			}
 

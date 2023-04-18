@@ -5849,6 +5849,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 							RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));
+							b_ThisEntityIgnoredEntirelyFromAllCollisions[gib] = true;
 							CurrentGibCount -= 1;
 						}
 					}

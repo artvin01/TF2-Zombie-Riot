@@ -67,7 +67,7 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 	if(address != Address_Null)
 		damage *= TF2Attrib_GetValue(address);
 
-	float speed = 3500.0;
+	float speed = 1750.0;
 	address = TF2Attrib_GetByDefIndex(weapon, 103);
 	if(address != Address_Null)
 		speed *= TF2Attrib_GetValue(address);
@@ -226,7 +226,6 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 			EmitSoundToAll(SOUND_ZAP_STAR, entity, SNDCHAN_STATIC, 70, _, 0.6);
 			RemoveEntity(particle);
 		}
-
 		RemoveEntity(entity);
 	}
 	return Plugin_Handled;
