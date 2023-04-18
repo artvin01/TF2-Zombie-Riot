@@ -56,7 +56,7 @@ public void CombineSMG_ClotThink(int iNPC)
 	vecMe = WorldSpaceCenter(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
-	bool canWalk = view_as<bool>(npc.m_iTargetWalk);
+	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
@@ -132,16 +132,16 @@ public void CombineSMG_ClotThink(int iNPC)
 		npc.StopPathing();
 	}
 
-	if(!npc.m_bPathing && npc.m_iAttacksTillReload < 45)
+	bool anger = BaseSquad_BaseAnim(npc, 66.33, "ACT_IDLE_SMG", "ACT_WALK_RIFLE", 212.24, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE");
+	npc.PlayIdle(anger);
+
+	if(!anger && !npc.m_bPathing && npc.m_iAttacksTillReload < 45)
 	{
 		npc.AddGesture("ACT_RELOAD_SMG1");
 		npc.m_flNextRangedAttack = gameTime + 1.75;
 		npc.m_iAttacksTillReload = 45;
 		npc.PlaySMGReload();
 	}
-
-	bool anger = BaseSquad_BaseAnim(npc, 66.33, "ACT_IDLE_SMG", "ACT_WALK_RIFLE", 212.24, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE");
-	npc.PlayIdle(anger);
 }
 
 void CombineSMG_NPCDeath(int entity)

@@ -64,7 +64,7 @@ public void CombinePistol_ClotThink(int iNPC)
 	vecMe = WorldSpaceCenter(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
-	bool canWalk = view_as<bool>(npc.m_iTargetWalk);
+	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
@@ -178,6 +178,8 @@ public void CombinePistol_ClotThink(int iNPC)
 			{
 				if(npc.m_flAttackHappens < gameTime)
 				{
+					npc.m_flAttackHappens = 0.0;
+					
 					canWalk = false;
 					npc.FaceTowards(vecTarget, 20000.0);
 

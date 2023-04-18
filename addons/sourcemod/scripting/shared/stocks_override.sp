@@ -418,6 +418,7 @@ stock void PrecacheSoundList(const char[][] array, int length)
 
 #define PrecacheSoundArray(%1)        PrecacheSoundList(%1, sizeof(%1))
 
+#if defined ZR
 void Edited_EmitSoundToAll(const char[] sample,
 				 int entity = SOUND_FROM_PLAYER,
 				 int channel = SNDCHAN_AUTO,
@@ -456,3 +457,4 @@ void Edited_EmitSoundToAll(const char[] sample,
 }
 
 #define EmitSoundToAll Edited_EmitSoundToAll
+#endif	// ZR

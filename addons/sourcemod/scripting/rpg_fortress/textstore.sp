@@ -474,7 +474,7 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		{
 			if(item < 0)
 			{
-				Tinker_DescItem(item, desc);
+				Tinker_DescItem(client, item, desc);
 			}
 			else
 			{
