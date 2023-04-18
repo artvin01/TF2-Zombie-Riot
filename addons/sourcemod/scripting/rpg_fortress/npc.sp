@@ -29,7 +29,13 @@ enum
 	ARK_SLUG_INFUSED	= 20,
 
 	COMBINE_PISTOL,
-	COMBINE_SMG
+	COMBINE_SMG,
+	COMBINE_AR2,
+	COMBINE_ELITE,
+	COMBINE_SHOTGUN,
+	COMBINE_SWORDSMAN,
+	COMBINE_GIANT,
+	COMBINE_OVERLORD
 }
 
 public const char NPC_Names[][] =
@@ -56,7 +62,13 @@ public const char NPC_Names[][] =
 	"Acid Originium Slug",
 	"Infused Originium Slug",
 	"Metro Cop",
-	"Metro Raider"
+	"Metro Raider",
+	"Combine Rifler",
+	"Combine Elite",
+	"Combine Shotgunner",
+	"Combine Swordsman",
+	"Combine Giant Swordsman",
+	"Combine Overlord"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -83,7 +95,13 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_ark_slug_acid",
 	"npc_ark_slug_infused",
 	"npc_combine_pistol",
-	"npc_combine_smg"
+	"npc_combine_smg",
+	"npc_combine_ar2",
+	"npc_combine_elite",
+	"npc_combine_shotgun",
+	"npc_combine_swordsman",
+	"npc_combine_giant",
+	"npc_combine_overlord"
 };
 
 void NPC_MapStart()
@@ -207,6 +225,30 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		{
 			entity = CombineSMG(client, vecPos, vecAng, ally);
 		}
+		case COMBINE_AR2:
+		{
+			entity = CombineAR2(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_ELITE:
+		{
+			entity = CombineElite(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_SHOTGUN:
+		{
+			entity = CombineShotgun(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_SWORDSMAN:
+		{
+			entity = CombineSwordsman(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_GIANT:
+		{
+			entity = CombineGiant(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_OVERLORD:
+		{
+			entity = CombineOverlord(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -307,6 +349,30 @@ public void NPCDeath(int entity)
 		case COMBINE_SMG:
 		{
 			CombineSMG_NPCDeath(entity);
+		}
+		case COMBINE_AR2:
+		{
+			CombineAR2_NPCDeath(entity);
+		}
+		case COMBINE_ELITE:
+		{
+			CombineElite_NPCDeath(entity);
+		}
+		case COMBINE_SHOTGUN:
+		{
+			CombineShotgun_NPCDeath(entity);
+		}
+		case COMBINE_SWORDSMAN:
+		{
+			CombineSwordsman_NPCDeath(entity);
+		}
+		case COMBINE_GIANT:
+		{
+			CombineGiant_NPCDeath(entity);
+		}
+		case COMBINE_OVERLORD:
+		{
+			CombineOverlord_NPCDeath(entity);
 		}
 		default:
 		{
@@ -626,3 +692,9 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/combine/npc_basesquad.sp"
 #include "rpg_fortress/npc/combine/npc_combine_pistol.sp"
 #include "rpg_fortress/npc/combine/npc_combine_smg.sp"
+#include "rpg_fortress/npc/combine/npc_combine_ar2.sp"
+#include "rpg_fortress/npc/combine/npc_combine_elite.sp"
+#include "rpg_fortress/npc/combine/npc_combine_shotgun.sp"
+#include "rpg_fortress/npc/combine/npc_combine_swordsman.sp"
+#include "rpg_fortress/npc/combine/npc_combine_giant.sp"
+#include "rpg_fortress/npc/combine/npc_combine_overlord.sp"

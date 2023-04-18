@@ -1,20 +1,20 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-methodmap CombineAR2 < CombineSoldier
+methodmap CombineElite < CombineSoldier
 {
-	public CombineAR2(int client, float vecPos[3], float vecAng[3], bool ally)
+	public CombineElite(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombineAR2 npc = view_as<CombineAR2>(BaseSquad(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", ally, false));
+		CombineElite npc = view_as<CombineElite>(BaseSquad(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", ally, false));
 		
-		i_NpcInternalId[npc.index] = COMBINE_AR2;
+		i_NpcInternalId[npc.index] = COMBINE_ELITE;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		npc.m_bRanged = true;
+		npc.m_bRanged = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -26,7 +26,7 @@ methodmap CombineAR2 < CombineSoldier
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, BaseSquad_TakeDamage);
-		SDKHook(npc.index, SDKHook_Think, CombineAR2_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, CombineElite_ClotThink);
 
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
@@ -35,9 +35,9 @@ methodmap CombineAR2 < CombineSoldier
 	}
 }
 
-public void CombineAR2_ClotThink(int iNPC)
+public void CombineElite_ClotThink(int iNPC)
 {
-	CombineAR2 npc = view_as<CombineAR2>(iNPC);
+	CombineElite npc = view_as<CombineElite>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -63,39 +63,10 @@ public void CombineAR2_ClotThink(int iNPC)
 	BaseSquad_BaseThinking(npc, vecMe);
 
 	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
-	bool duckAnim;
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
-
-		bool shouldFlank = view_as<bool>(npc.m_iTargetWalk);
-		if(shouldFlank)
-		{
-			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
-			{
-				if(i != npc.index)
-				{
-					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
-					{
-						shouldFlank = false;	// An ally rushing with a melee, I should cover them
-						break;
-					}
-				}
-			}
-		}
-
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
-		if(shouldFlank)
-		{
-			if(distance > (npc.m_bRanged ? 70000.0 : 125000.0))	// 265, 355  HU
-			{
-				shouldFlank = false;
-			}
-		}
-
-		npc.m_bRanged = shouldFlank;
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -129,13 +100,14 @@ public void CombineAR2_ClotThink(int iNPC)
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
 				npc.m_flNextRangedSpecialAttackHappens = 0.0;
-				
+
 				// E2 L5 = 280, E2 L10 = 320
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0);
-				npc.FireGrenade(vecTarget, 800.0, Level[npc.index] * 8.0, "models/weapons/w_grenade.mdl");
+				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 500.0);
+				npc.FireRocket(vecTarget, Level[npc.index] * 8.0, 500.0, "models/effects/combineball.mdl");
 			}
 		}
 
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(npc.m_flNextRangedAttack > gameTime)
 		{
 			canWalk = false;
@@ -156,15 +128,28 @@ public void CombineAR2_ClotThink(int iNPC)
 		}
 		else if(distance < 250000.0 || !npc.m_iTargetWalk)	// 500 HU
 		{
-			if(npc.m_flNextMeleeAttack < gameTime)
+			if(npc.m_flNextRangedSpecialAttack < gameTime)
+			{
+				if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+				{
+					npc.AddGesture("ACT_COMBINE_AR2_ALTFIRE");
+					npc.PlayAR2Special();
+
+					npc.m_flNextMeleeAttack = gameTime + 1.05;
+					npc.m_flNextRangedAttack = gameTime + 1.05;
+					npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.45;
+					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
+				}
+			}
+			else if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				if(npc.m_iAttacksTillReload < 1)
 				{
 					canWalk = false;
 					
-					npc.AddGesture((npc.m_flNextRangedSpecialAttack > gameTime && npc.m_bRanged) ? "ACT_RELOAD_LOW" : "ACT_RELOAD");
-					npc.m_flNextMeleeAttack = gameTime + 1.85;
-					npc.m_flNextRangedAttack = gameTime + 2.15;
+					npc.AddGesture("ACT_RELOAD");
+					npc.m_flNextMeleeAttack = gameTime + 1.75;
+					npc.m_flNextRangedAttack = gameTime + 2.05;
 					npc.m_iAttacksTillReload = 30;
 					npc.PlayAR2Reload();
 				}
@@ -179,8 +164,8 @@ public void CombineAR2_ClotThink(int iNPC)
 					float eyePitch[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 					
-					float x = GetRandomFloat( -0.05, 0.05 );
-					float y = GetRandomFloat( -0.05, 0.05 );
+					float x = GetRandomFloat( -0.04, 0.04 );
+					float y = GetRandomFloat( -0.04, 0.04 );
 					
 					float vecDirShooting[3], vecRight[3], vecUp[3];
 					
@@ -211,22 +196,35 @@ public void CombineAR2_ClotThink(int iNPC)
 				canWalk = false;
 			}
 		}
-		else if(npc.m_flNextRangedSpecialAttack < gameTime)
+		else if((npc.m_flNextRangedAttack + 6.0) < gameTime)
 		{
-			if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
-			{
-				npc.AddGesture("ACT_COMBINE_THROW_GRENADE");
-				npc.PlayFistFire();
+			canWalk = false;
 
-				npc.m_flNextMeleeAttack = gameTime + 0.95;
-				npc.m_flNextRangedAttack = gameTime + 1.15;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.55;
-				npc.m_flNextRangedSpecialAttack = gameTime + 19.5;
+			npc.AddGesture("ACT_SIGNAL_ADVANCE");
+			npc.PlaySpecial();
+
+			npc.m_flNextMeleeAttack = gameTime + 0.95;
+			npc.m_flNextRangedAttack = gameTime + 1.15;
+			
+			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+			{
+				if(i != npc.index)
+				{
+					BaseSquad ally = view_as<BaseSquad>(i);
+					if(ally.m_bIsSquad && IsValidAlly(npc.index, ally.index))
+					{
+						vecTarget = WorldSpaceCenter(ally.index);
+						if(GetVectorDistance(vecMe, vecTarget, true) < 50000.0)	// 224 HU
+						{
+							ally.m_flRangedArmor = 0.00001;
+							ally.m_flMeleeArmor = 0.00001;
+							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
+							break;
+						}
+					}
+				}
 			}
 		}
-
-		if(npc.m_flNextRangedSpecialAttack > gameTime && !npc.m_flAttackHappens && (!canWalk || npc.m_flNextRangedAttack < gameTime) && npc.m_bRanged && distance > 20000.0)	// 141 HU
-			duckAnim = true;
 	}
 
 	if(canWalk)
@@ -238,26 +236,26 @@ public void CombineAR2_ClotThink(int iNPC)
 		npc.StopPathing();
 	}
 
-	bool anger = BaseSquad_BaseAnim(npc, 89.60, "ACT_IDLE", "ACT_WALK_EASY", 108.20, duckAnim ? "ACT_COVER" : "ACT_IDLE_ANGRY", duckAnim ? "ACT_WALK_CROUCH_RIFLE" : "ACT_WALK_AIM_RIFLE");
+	bool anger = BaseSquad_BaseAnim(npc, 89.60, "ACT_IDLE", "ACT_WALK_EASY", 247.00, "ACT_IDLE_ANGRY", "ACT_RUN_AIM_RIFLE");
 	npc.PlayIdle(anger);
 
 	if(!anger && !npc.m_bPathing && npc.m_iAttacksTillReload < 31)
 	{
 		npc.AddGesture("ACT_RELOAD");
-		npc.m_flNextMeleeAttack = gameTime + 1.85;
-		npc.m_flNextRangedAttack = gameTime + 2.15;
+		npc.m_flNextMeleeAttack = gameTime + 1.75;
+		npc.m_flNextRangedAttack = gameTime + 2.05;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_iAttacksTillReload = 31;
 		npc.PlayAR2Reload();
 	}
 }
 
-void CombineAR2_NPCDeath(int entity)
+void CombineElite_NPCDeath(int entity)
 {
-	CombineAR2 npc = view_as<CombineAR2>(entity);
+	CombineElite npc = view_as<CombineElite>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BaseSquad_TakeDamage);
-	SDKUnhook(npc.index, SDKHook_Think, CombineAR2_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, CombineElite_ClotThink);
 
 	if(!npc.m_bGib)
 		npc.PlayDeath();
