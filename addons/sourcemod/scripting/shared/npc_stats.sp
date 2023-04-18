@@ -104,7 +104,7 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
-	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 #if defined ZR
@@ -572,19 +572,36 @@ methodmap CClotBody
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
-	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1)
+	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
-		switch(Npc_Type)
+		if(!custom)
 		{
-			case STEPSOUND_NORMAL: //normal
+			switch(Npc_Type)
 			{
-				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
+				case STEPSOUND_NORMAL: //normal
+				{
+					EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
+				}
+				case STEPSOUND_GIANT: //giant
+				{
+					EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
+				}
+				
 			}
-			case STEPSOUND_GIANT: //giant
+		}
+		else
+		{
+			switch(Npc_Type)
 			{
-				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
-			}
-			
+				case STEPSOUND_NORMAL: //normal
+				{
+					EmitCustomToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
+				}
+				case STEPSOUND_GIANT: //giant
+				{
+					EmitCustomToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
+				}
+			}			
 		}
 	//	PrintToServer("%i PlayStepSound(\"%s\")", this.index, sound);
 	}
@@ -3754,8 +3771,8 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
-					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
-					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType, true);
+					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType, true);
 				}
 			}
 		}

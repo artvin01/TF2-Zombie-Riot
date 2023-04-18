@@ -952,10 +952,8 @@ stock bool AreVectorsEqual(const float vVec1[3], const float vVec2[3])
 public Action Timer_RemoveEntity(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity>MaxClients)
+	if(IsValidEntity(entity))
 	{
-		
-		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
 	return Plugin_Stop;

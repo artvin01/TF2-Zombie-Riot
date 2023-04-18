@@ -834,7 +834,7 @@ char g_RobotStepSound[][] = {
 };
 
 char g_TankStepSound[][] = {
-	"infected_riot/tank/tank_walk_1.mp3",
+	"infected_riot/tank/tank_walk_1_fix.mp3",
 };
 
 float f_ArrowDamage[MAXENTITIES];
