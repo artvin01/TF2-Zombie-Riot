@@ -365,6 +365,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						f_clientMinedThisSpot[client] = GetGameTime() + 5.0; //You cannot mine the exact same spot after 5 seconds.
 						f_clientMinedThisSpotPos[client] = f_positionhit;
 					}
+					
+					DoClientHitmarker(client);
 
 					bool Rare_hit = false;
 					if(f_clientFoundRareRockSpot[client] > GetGameTime())

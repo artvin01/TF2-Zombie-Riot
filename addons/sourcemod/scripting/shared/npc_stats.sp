@@ -7670,17 +7670,21 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 	return false;
 } 
 
-#if defined ZR
 //TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
-bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
+/*
+	note:
+	This is garbage lol
+
+*/
+bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool ForPlayer = false, float startPos[3] = {0.0,0.0,0.0})
 {
 	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
 	
-	static float startPos[3];
-	startPos = GetAbsOrigin(npc);
-
-	startPos[2] += 25.0;
-
+	if(startPos[0] == 0.0)
+	{
+		startPos = GetAbsOrigin(npc);
+		startPos[2] += 25.0;		
+	}
 	static float testPos[3];
 	bool found = false;
 
@@ -7747,7 +7751,14 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 				// before we test this position, ensure it has line of sight from the point our player looked from
 				// this ensures the player can't teleport through walls
 				static float tmpPos[3];
-				TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
+				if(!ForPlayer)
+				{
+					TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
+				}
+				else
+				{
+					TR_TraceRayFilter(endPos, testPos, MASK_PLAYERSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat);
+				}
 				TR_GetEndPosition(tmpPos);
 				if (testPos[0] != tmpPos[0] || testPos[1] != tmpPos[1] || testPos[2] != tmpPos[2])
 					continue;
@@ -7757,29 +7768,34 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 	
 	if (!IsSpotSafe(npc, testPos, sizeMultiplier))
 		return false;
+	
+	if(!ForPlayer)
+	{
+		Handle trace; 
 
-	Handle trace; 
+		int Traced_Target;
+				
+		trace = TR_TraceRayFilterEx(startPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, npc);
 
-	int Traced_Target;
+		Traced_Target = TR_GetEntityIndex(trace);
+
+		delete trace;
+						
+		//Can i see This enemy, is something in the way of us?
+		//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+
+		if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
+		{	
+			return false; //We are unable to perfom this task. Abort mission
+		}
+		//Trace found nothing has collided! Horray! Perform our teleport.
 			
-	trace = TR_TraceRayFilterEx(startPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, npc);
-
-	Traced_Target = TR_GetEntityIndex(trace);
-
-	delete trace;
-					
-	//Can i see This enemy, is something in the way of us?
-	//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
-
-	if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
-	{	
-		return false; //We are unable to perfom this task. Abort mission
 	}
-	//Trace found nothing has collided! Horray! Perform our teleport.
 
 	TeleportEntity(npc, testPos, NULL_VECTOR, NULL_VECTOR);
 	return true;
 }
+
 
 bool TraceFilterClients(int entity, int mask, any data)
 {    
@@ -7957,7 +7973,7 @@ bool Resize_OneTrace(const float startPos[3], const float endPos[3])
 
 //	MASK_NPCSOLID, TraceRayHitPlayersOnly
 
-	TR_TraceRayFilter(startPos, endPos, MASK_NPCSOLID, RayType_EndPoint, Resize_TracePlayersAndBuildings);
+	TR_TraceRayFilter(startPos, endPos, MASK_SOLID, RayType_EndPoint, Resize_TracePlayersAndBuildings);
 	if (ResizeTraceFailed)
 	{
 		return false;
@@ -7979,7 +7995,9 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
+#if defined ZR
 		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
+#endif
 		{
 			if (!b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity] && GetClientTeam(entity) != ResizeMyTeam)
 			{
@@ -8002,7 +8020,6 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 
 	return false;
 }
-#endif
 
 //TELEPORT LOGIC END.
 
