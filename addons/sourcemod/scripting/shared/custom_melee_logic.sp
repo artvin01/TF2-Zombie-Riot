@@ -672,7 +672,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				RequestFrame(MakeExplosionFrameLater, pack_boom);
 			}
 			delete swingTrace;
-			if(target == 0)
+			//only if we did not hit an enemy.
+			if(!IsValidEnemy(client, target, true, true))
 			{
 				float pos[3];
 				float angles[3];

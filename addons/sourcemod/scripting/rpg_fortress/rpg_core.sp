@@ -55,6 +55,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_wand_fire_ball.sp"
+#include "rpg_fortress/custom/wand/weapon_short_teleport.sp"
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
 #include "rpg_fortress/custom/ground_pound_melee.sp"
@@ -125,6 +126,7 @@ void RPG_MapStart()
 	Wand_Lightning_Map_Precache();
 	GroundSlam_Map_Precache();
 	Wand_FireBall_Map_Precache();
+	Wand_Short_Teleport_Map_Precache();
 	Mortar_MapStart();
 	BoomStick_MapPrecache();
 	Medigun_PersonOnMapStart();
