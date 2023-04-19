@@ -73,7 +73,7 @@ public void TownGuardPistol_ClotThink(int iNPC)
 
 	float vecMe[3];
 	vecMe = WorldSpaceCenter(npc.index);
-	BaseSquad_BaseThinking(npc, vecMe);
+	BaseSquad_BaseThinking(npc, vecMe, true);
 
 	// Due to animation bug, we force switch our idle anim
 	forceWalk = (forceWalk != view_as<bool>(npc.m_iTargetAttack));

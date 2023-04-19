@@ -112,11 +112,11 @@ public void CombineGiant_ClotThink(int iNPC)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
-				npc.AddGesture("ACT_COLOSUS_ATTACK");
+				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 				npc.PlaySwordFire();
 
-				npc.m_flAttackHappens = gameTime + 0.65;
-				npc.m_flNextMeleeAttack = gameTime + 1.45;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flNextMeleeAttack = gameTime + 1.15;
 			}
 		}
 

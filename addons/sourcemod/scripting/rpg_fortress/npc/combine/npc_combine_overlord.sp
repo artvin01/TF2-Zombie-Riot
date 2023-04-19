@@ -173,7 +173,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 		}
 		else if(!anger)
 		{
-			if((npc.m_flNextRangedAttack < gameTime || !npc.m_iTargetWalk) && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+			if((npc.m_flNextRangedAttack < gameTime || (i_NpcFightOwner[npc.index] && !npc.m_iTargetWalk)) && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
 				npc.AddGesture("ACT_PUSH_PLAYER");
 
