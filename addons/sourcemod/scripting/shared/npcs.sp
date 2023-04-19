@@ -1969,7 +1969,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
-		
+
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	int red = 255;
@@ -2320,20 +2320,26 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif	// ZR
 
 #if defined RPG
+	char level[32];
+	GetDisplayString(Level[victim], level, sizeof(level));
+
 	if(IsValidEntity(npc.m_iTextEntity3))
 	{
-		char level[32];
-		GetDisplayString(Level[victim], level, sizeof(level));
-			
-		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		//RPG cannot support translations! due to test and its used everywhere.
-		ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-			
 		char HealthString[512];
 		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
 			
 		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 	}
+	float HudY = -1.0;
+	float HudOffset = 0.05;
+
+	HudY += f_HurtHudOffsetY[attacker];
+	HudOffset += f_HurtHudOffsetX[attacker];
+
+	SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		
+	//RPG cannot support translations! due to test and its used everywhere.
+	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
 }
 

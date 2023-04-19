@@ -208,40 +208,10 @@ void Music_Stop_All(int client)
 	
 }
 
-float f_ClientMusicVolume[MAXTF2PLAYERS];
-float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
-
-//ty miku for tellingg
-
-float ClientMusicVolume(int client)
-{
-	return f_ClientMusicVolume[client];
-}
-public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
-}
-
 public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
 	if(result == ConVarQuery_Okay)
 		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
-}
-
-public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-	{
-		if(f_BegPlayerToSetDuckConvar[client] < GetGameTime())
-		{
-			f_BegPlayerToSetDuckConvar[client] = GetGameTime() + 300.0;
-			if(StringToFloat(cvarValue) < 0.9)
-			{
-				PrintToChat(client,"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!");
-			}
-		}
-	}
 }
 
 //TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!

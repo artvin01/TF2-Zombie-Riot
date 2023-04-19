@@ -134,6 +134,10 @@ void Music_SetOverride(int client, const char[] file = "", int time = 0, bool cu
 
 void Music_PlayerRunCmd(int client)
 {
+	//Do not play anything if the client has no sound.
+	if(f_ClientMusicVolume[client] < 0.05)
+		return;
+
 	if(CurrentSong[client][0] || NextSong[client][0] || OverrideSong[client][0])
 	{
 		bool wasInFade;
