@@ -131,8 +131,6 @@ Cookie CookieAmmoCount;
 Cookie CookieXP;
 Cookie CookieAmmoReserve;
 Cookie CookieLeftForDead;
-Cookie HudSettings_Cookies;
-Cookie HudSettingsExtra_Cookies;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
 Handle g_hSDKMakeCarriedObjectDispenser;
@@ -260,20 +258,6 @@ bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
-float f_ArmorHudOffsetX[MAXTF2PLAYERS];
-float f_ArmorHudOffsetY[MAXTF2PLAYERS];
-
-float f_HurtHudOffsetX[MAXTF2PLAYERS];
-float f_HurtHudOffsetY[MAXTF2PLAYERS];
-
-float f_WeaponHudOffsetX[MAXTF2PLAYERS];
-float f_WeaponHudOffsetY[MAXTF2PLAYERS];
-
-float f_NotifHudOffsetX[MAXTF2PLAYERS];
-float f_NotifHudOffsetY[MAXTF2PLAYERS];
-
-bool b_HudScreenShake[MAXTF2PLAYERS];
-bool b_HudLowHealthShake[MAXTF2PLAYERS];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
@@ -392,8 +376,6 @@ void ZR_PluginStart()
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
 	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
-	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
-	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 
 	CookieAmmoReserve = new Cookie("zr_ammoreserve", "Ammo Cookie", CookieAccess_Protected);
 	CookieLeftForDead = new Cookie("zr_leftfordead", "Left For Dead Cookie", CookieAccess_Protected);
@@ -595,7 +577,6 @@ void ZR_ClientPutInServer(int client)
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
 	
-	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 }
 
 void ZR_ClientDisconnect(int client)

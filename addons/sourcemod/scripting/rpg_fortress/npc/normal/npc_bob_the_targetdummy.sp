@@ -39,7 +39,7 @@ methodmap BobTheTargetDummy < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_IDLE_BOB");
+		npc.SetActivity("ACT_IDLE");
 
 		npc.m_bisWalking = false;
 

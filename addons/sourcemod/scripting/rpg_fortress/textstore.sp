@@ -986,10 +986,11 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	menu.AddItem("rpg_stats", "Player Stats");
-	menu.AddItem("rpg_spawns", "Spawn Stats");
-	menu.AddItem("rpg_party", "Party");
-	menu.AddItem("rpg_help", "Search");
+	menu.AddItem("rpg_stats", 		"Player Stats");
+	menu.AddItem("rpg_spawns", 		"Spawn Stats");
+	menu.AddItem("rpg_party", 		"Party");
+	menu.AddItem("rpg_help", 		"Search");
+	menu.AddItem("rpg_settings", 	"Settings");
 	return Plugin_Changed;
 }
 

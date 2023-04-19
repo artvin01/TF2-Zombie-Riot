@@ -477,6 +477,21 @@ public void TextStore_LoadFrame(int userid)
 #endif
 
 #if defined RPG
+
+void RpgPluginStart_Store()
+{
+	RegConsoleCmd("rpg_settings", SettingsStore_Command);
+}
+
+public Action SettingsStore_Command(int client, int args)
+{
+	if(client)
+	{
+		ReShowSettingsHud(client);
+	}
+	return Plugin_Handled;
+}
+
 int Store_GetStoreOfEntity(int entity)
 {
 	int pos = EquippedItems.FindValue(EntIndexToEntRef(entity), ItemInfo::EntRef);
@@ -1326,6 +1341,68 @@ void Store_Reset()
 	return false;
 }*/
 
+
+void HudSettings_ClientCookiesCached(int client)
+{
+	char buffer[128];
+	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		// Cookie has stuff, get values
+		float buffers[8];
+		ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
+
+		f_ArmorHudOffsetX[client] = buffers[0];
+		f_ArmorHudOffsetY[client] = buffers[1];
+		f_HurtHudOffsetX[client] = buffers[2];
+		f_HurtHudOffsetY[client] = buffers[3];
+		f_WeaponHudOffsetX[client] = buffers[4];
+		f_WeaponHudOffsetY[client] = buffers[5];
+		f_NotifHudOffsetX[client] = buffers[6];
+		f_NotifHudOffsetY[client] = buffers[7];
+	}
+	else
+	{
+		// Cookie empty, get our own
+		f_ArmorHudOffsetX[client] = -0.085;
+		f_ArmorHudOffsetY[client] = 0.0;
+		f_HurtHudOffsetX[client] = 0.0;
+		f_HurtHudOffsetY[client] = 0.0;
+		f_WeaponHudOffsetX[client] = 0.0;
+		f_WeaponHudOffsetY[client] = 0.0;
+		f_NotifHudOffsetX[client] = 0.0;
+		f_NotifHudOffsetY[client] = 0.0;
+	}
+	HudSettingsExtra_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		// Cookie has stuff, get values
+		bool buffers[3];
+		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+		b_HudScreenShake[client] = buffers[0];
+		b_HudLowHealthShake[client] = buffers[1];
+		b_HudHitMarker[client] = buffers[2];
+	}
+	else
+	{
+		// Cookie empty, get our own
+		b_HudScreenShake[client] = true;
+		b_HudLowHealthShake[client] = true;
+		b_HudHitMarker[client] = true;
+	}
+}
+
+void HudSettings_ClientCookiesDisconnect(int client)
+{
+	char buffer[128];
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
+	HudSettings_Cookies.Set(client, buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+	HudSettingsExtra_Cookies.Set(client, buffer);
+}
+
+
 #if defined ZR
 int Store_HasNamedItem(int client, const char[] name)
 {
@@ -1390,66 +1467,6 @@ void Store_ClientCookiesCached(int client)
 			CurrentAmmo[client][loop] = buffers[loop + 1];
 		}
 	}
-}
-
-void HudSettings_ClientCookiesCached(int client)
-{
-	char buffer[128];
-	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
-	if(buffer[0])
-	{
-		// Cookie has stuff, get values
-		float buffers[8];
-		ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
-
-		f_ArmorHudOffsetX[client] = buffers[0];
-		f_ArmorHudOffsetY[client] = buffers[1];
-		f_HurtHudOffsetX[client] = buffers[2];
-		f_HurtHudOffsetY[client] = buffers[3];
-		f_WeaponHudOffsetX[client] = buffers[4];
-		f_WeaponHudOffsetY[client] = buffers[5];
-		f_NotifHudOffsetX[client] = buffers[6];
-		f_NotifHudOffsetY[client] = buffers[7];
-	}
-	else
-	{
-		// Cookie empty, get our own
-		f_ArmorHudOffsetX[client] = -0.085;
-		f_ArmorHudOffsetY[client] = 0.0;
-		f_HurtHudOffsetX[client] = 0.0;
-		f_HurtHudOffsetY[client] = 0.0;
-		f_WeaponHudOffsetX[client] = 0.0;
-		f_WeaponHudOffsetY[client] = 0.0;
-		f_NotifHudOffsetX[client] = 0.0;
-		f_NotifHudOffsetY[client] = 0.0;
-	}
-	HudSettingsExtra_Cookies.Get(client, buffer, sizeof(buffer));
-	if(buffer[0])
-	{
-		// Cookie has stuff, get values
-		bool buffers[3];
-		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-		b_HudScreenShake[client] = buffers[0];
-		b_HudLowHealthShake[client] = buffers[1];
-		b_HudHitMarker[client] = buffers[2];
-	}
-	else
-	{
-		// Cookie empty, get our own
-		b_HudScreenShake[client] = true;
-		b_HudLowHealthShake[client] = true;
-		b_HudHitMarker[client] = true;
-	}
-}
-
-void HudSettings_ClientCookiesDisconnect(int client)
-{
-	char buffer[128];
-	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
-	HudSettings_Cookies.Set(client, buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
-	HudSettingsExtra_Cookies.Set(client, buffer);
 }
 
 void Store_SetClientItem(int client, int index, int owned, int scaled, int equipped, int sell)
@@ -1672,6 +1689,496 @@ void Store_ClientDisconnect(int client)
 		}
 	}
 #endif
+}
+
+public void ReShowSettingsHud(int client)
+{
+	char buffer [128];
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Settings Page");
+#if defined ZR
+	FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
+	menu2.AddItem("-2", buffer);
+#endif
+	FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
+	menu2.AddItem("-8", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
+	menu2.AddItem("-14", buffer);
+#if defined ZR
+	FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
+	menu2.AddItem("-20", buffer);
+
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
+
+	if(b_HudLowHealthShake[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-40", buffer);
+#endif
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Screen Shake");
+	if(b_HudScreenShake[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-41", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Hit Marker");
+	if(b_HudHitMarker[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-42", buffer);
+	
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-999", buffer);
+	
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+
+public void ReShowArmorHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-3", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-4", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-5", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-6", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-7", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public void ReShowHurtHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Hurt Hud Setting Inside",f_HurtHudOffsetX[client],f_HurtHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-9", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-10", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-11", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-12", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-13", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+	
+	Calculate_And_Display_hp(client, client, 0.0, true); //Apply hud update so they know where it is now
+}
+
+public void ReShowWeaponHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Weapon Hud Setting Inside",f_WeaponHudOffsetX[client],f_WeaponHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-15", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-16", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-17", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-18", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-19", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public void ReShowNotifHud(int client)
+{
+	char buffer[24];
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	menu2.SetTitle("%t", "Notif Hud Setting Inside",f_NotifHudOffsetX[client],f_NotifHudOffsetY[client]);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
+	menu2.AddItem("-21", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
+	menu2.AddItem("-22", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
+	menu2.AddItem("-23", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
+	menu2.AddItem("-24", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
+	menu2.AddItem("-25", buffer);
+					
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
+
+	SetDefaultHudPosition(client);
+	SetGlobalTransTarget(client);
+	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "nothing");
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choice)
+{
+	SetGlobalTransTarget(client);
+
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+			{
+#if defined ZR
+				static Item item;
+				menu.GetItem(0, item.Name, sizeof(item.Name));
+				int index = StringToInt(item.Name);
+				if(index < 0)
+				{
+					item.Section = -1;
+				}
+				else
+				{
+					StoreItems.GetArray(index, item);
+					if(item.Section != -1)
+						StoreItems.GetArray(item.Section, item);
+				}
+
+				MenuPage(client, item.Section);
+#else
+				delete menu;
+#endif
+			}
+			/*
+			else if(choice != MenuCancel_Disconnected)
+			{
+				StopSound(client, SNDCHAN_STATIC, "#items/tf_music_upgrade_machine.wav");
+			}
+			*/
+		}
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -2:
+				{
+					ReShowArmorHud(client);
+				}
+				case -3: //Move Armor Hud Up
+				{
+					f_ArmorHudOffsetX[client] -= 0.005;
+					if(f_ArmorHudOffsetX[client] < -1.0)
+					{
+						f_ArmorHudOffsetX[client] = -1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -4: //Move Armor Hud Down
+				{
+					f_ArmorHudOffsetX[client] += 0.005;
+					if(f_ArmorHudOffsetX[client] > -0.085)
+					{
+						f_ArmorHudOffsetX[client] = -0.085;
+					}
+					ReShowArmorHud(client);
+				}
+				case -5: //Move Armor Hud Left
+				{
+					f_ArmorHudOffsetY[client] -= 0.005;
+					if(f_ArmorHudOffsetY[client] < -1.0)
+					{
+						f_ArmorHudOffsetY[client] = -1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -6: //Move Armor Hud right
+				{
+					f_ArmorHudOffsetY[client] += 0.005;
+					if(f_ArmorHudOffsetY[client] > 1.0)
+					{
+						f_ArmorHudOffsetY[client] = 1.0;
+					}
+					ReShowArmorHud(client);
+				}
+				case -7: //ResetARmorHud To default
+				{
+					f_ArmorHudOffsetX[client] = -0.085;
+					f_ArmorHudOffsetY[client] = 0.0;
+					
+					ReShowArmorHud(client);
+				}
+				
+				//HURT HUD STUFF!
+				case -8:
+				{
+					ReShowHurtHud(client);
+				}
+				case -9: //Move Armor Hud Up
+				{
+					f_HurtHudOffsetX[client] -= 0.005;
+					if(f_HurtHudOffsetX[client] < -1.0)
+					{
+						f_HurtHudOffsetX[client] = -1.0;
+					}
+					ReShowHurtHud(client);
+				}
+				case -10: //Move Armor Hud Down
+				{
+					f_HurtHudOffsetX[client] += 0.005;
+					if(f_HurtHudOffsetX[client] > -0.085)
+					{
+						f_HurtHudOffsetX[client] = -0.085;
+					}
+					ReShowHurtHud(client);
+				}
+				case -11: //Move Armor Hud Left
+				{
+					f_HurtHudOffsetY[client] -= 0.005;
+					if(f_HurtHudOffsetY[client] < 0.1)
+					{
+						f_HurtHudOffsetY[client] = 0.1;
+					}
+					ReShowHurtHud(client);
+				}
+				case -12: //Move Armor Hud right
+				{
+					if(f_HurtHudOffsetY[client] < 0.1)
+					{
+						f_HurtHudOffsetY[client] = 0.1;
+					}
+					f_HurtHudOffsetY[client] += 0.005;
+					if(f_HurtHudOffsetY[client] > 0.995)
+					{
+						f_HurtHudOffsetY[client] = 0.995;
+					}
+					ReShowHurtHud(client);
+				}
+				case -13: //ResetARmorHud To default
+				{
+					f_HurtHudOffsetX[client] = 0.0;
+					f_HurtHudOffsetY[client] = 0.0;
+					
+					ReShowHurtHud(client);
+				}
+
+				//Weapon HUD STUFF!
+				case -14:
+				{
+					ReShowWeaponHud(client);
+				}
+				case -15: //Move Armor Hud Up
+				{
+					f_WeaponHudOffsetX[client] -= 0.005;
+					if(f_WeaponHudOffsetX[client] < -1.0)
+					{
+						f_WeaponHudOffsetX[client] = -1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -16: //Move Armor Hud Down
+				{
+					f_WeaponHudOffsetX[client] += 0.005;
+					if(f_WeaponHudOffsetX[client] > 1.0)
+					{
+						f_WeaponHudOffsetX[client] = 1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -17: //Move Armor Hud Left
+				{
+					f_WeaponHudOffsetY[client] -= 0.005;
+					if(f_WeaponHudOffsetY[client] < 0.10)
+					{
+						f_WeaponHudOffsetY[client] = 0.10;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -18: //Move Armor Hud right
+				{
+					if(f_WeaponHudOffsetY[client] < 0.10)
+					{
+						f_WeaponHudOffsetY[client] = 0.10;
+					}
+					f_WeaponHudOffsetY[client] += 0.005;
+					if(f_WeaponHudOffsetY[client] > 1.0)
+					{
+						f_WeaponHudOffsetY[client] = 1.0;
+					}
+					ReShowWeaponHud(client);
+				}
+				case -19: //ResetARmorHud To default
+				{
+					f_WeaponHudOffsetX[client] = 0.0;
+					f_WeaponHudOffsetY[client] = 0.0;
+					
+					ReShowWeaponHud(client);
+				}
+
+				case -20:
+				{
+					ReShowNotifHud(client);
+				}
+				case -21: //Move Armor Hud Up
+				{
+					f_NotifHudOffsetX[client] -= 0.005;
+					if(f_NotifHudOffsetX[client] < -1.0)
+					{
+						f_NotifHudOffsetX[client] = -1.0;
+					}
+					ReShowNotifHud(client);
+				}
+				case -22: //Move Armor Hud Down
+				{
+					f_NotifHudOffsetX[client] += 0.005;
+					if(f_NotifHudOffsetX[client] > 1.0)
+					{
+						f_NotifHudOffsetX[client] = 1.0;
+					}
+					ReShowNotifHud(client);
+				}
+				case -23: //Move Armor Hud Left
+				{
+					f_NotifHudOffsetY[client] -= 0.005;
+					if(f_NotifHudOffsetY[client] < 0.10)
+					{
+						f_NotifHudOffsetY[client] = 0.10;
+					}
+					ReShowNotifHud(client);
+				}
+				case -24: //Move Armor Hud right
+				{
+					if(f_NotifHudOffsetY[client] < 0.10)
+					{
+						f_NotifHudOffsetY[client] = 0.10;
+					}
+					f_NotifHudOffsetY[client] += 0.005;
+					if(f_NotifHudOffsetY[client] > 1.0)
+					{
+						f_NotifHudOffsetY[client] = 1.0;
+					}
+					ReShowNotifHud(client);
+				}
+				case -25: 
+				{
+					f_NotifHudOffsetX[client] = 0.0;
+					f_NotifHudOffsetY[client] = 0.0;
+					
+					ReShowNotifHud(client);
+				}
+				case -40: 
+				{
+					if(b_HudLowHealthShake[client])
+					{
+						b_HudLowHealthShake[client] = false;
+					}
+					else
+					{
+						b_HudLowHealthShake[client] = true;
+					}
+					
+					ReShowSettingsHud(client);
+				}
+				case -41: 
+				{
+					if(b_HudScreenShake[client])
+					{
+						b_HudScreenShake[client] = false;
+					}
+					else
+					{
+						b_HudScreenShake[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
+				case -42: 
+				{
+					if(b_HudHitMarker[client])
+					{
+						b_HudHitMarker[client] = false;
+					}
+					else
+					{
+						b_HudHitMarker[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
+
+				case -1: //Move Armor Hud right
+				{
+					ReShowSettingsHud(client);
+				}
+				default:
+				{
+#if defined ZR
+				MenuPage(client, -1);
+#else
+				delete menu;
+#endif
+					
+				}
+			}
+		}
+
+	}
+	return 0;
 }
 
 #if defined ZR
@@ -2464,485 +2971,6 @@ static char[] AddPluses(int amount)
 	return buffer;
 }
 */
-
-public void ReShowSettingsHud(int client)
-{
-	char buffer [128];
-	Menu menu2 = new Menu(Settings_MenuPage);
-	menu2.SetTitle("%t", "Settings Page");
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
-	menu2.AddItem("-2", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
-	menu2.AddItem("-8", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Hud Setting");
-	menu2.AddItem("-14", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
-	menu2.AddItem("-20", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
-
-	if(b_HudLowHealthShake[client])
-	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
-	}
-	else
-	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
-	}
-	menu2.AddItem("-40", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Weapon Screen Shake");
-	if(b_HudScreenShake[client])
-	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
-	}
-	else
-	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
-	}
-	menu2.AddItem("-41", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Hit Marker");
-	if(b_HudHitMarker[client])
-	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
-	}
-	else
-	{
-		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
-	}
-	menu2.AddItem("-42", buffer);
-	
-	FormatEx(buffer, sizeof(buffer), "%t", "Back");
-	menu2.AddItem("-999", buffer);
-	
-	menu2.Display(client, MENU_TIME_FOREVER);
-}
-
-
-public void ReShowArmorHud(int client)
-{
-	char buffer[24];
-
-	Menu menu2 = new Menu(Settings_MenuPage);
-	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
-	menu2.AddItem("-3", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
-	menu2.AddItem("-4", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
-	menu2.AddItem("-5", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
-	menu2.AddItem("-6", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
-	menu2.AddItem("-7", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "Back");
-	menu2.AddItem("-1", buffer);
-
-	menu2.Display(client, MENU_TIME_FOREVER);
-}
-
-public void ReShowHurtHud(int client)
-{
-	char buffer[24];
-
-	Menu menu2 = new Menu(Settings_MenuPage);
-	menu2.SetTitle("%t", "Hurt Hud Setting Inside",f_HurtHudOffsetX[client],f_HurtHudOffsetY[client]);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
-	menu2.AddItem("-9", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
-	menu2.AddItem("-10", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
-	menu2.AddItem("-11", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
-	menu2.AddItem("-12", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
-	menu2.AddItem("-13", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "Back");
-	menu2.AddItem("-1", buffer);
-
-	menu2.Display(client, MENU_TIME_FOREVER);
-
-	Calculate_And_Display_hp(client, 0, 0.0, true); //Apply hud update so they know where it is now
-}
-
-public void ReShowWeaponHud(int client)
-{
-	char buffer[24];
-
-	Menu menu2 = new Menu(Settings_MenuPage);
-	menu2.SetTitle("%t", "Weapon Hud Setting Inside",f_WeaponHudOffsetX[client],f_WeaponHudOffsetY[client]);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
-	menu2.AddItem("-15", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
-	menu2.AddItem("-16", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
-	menu2.AddItem("-17", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
-	menu2.AddItem("-18", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
-	menu2.AddItem("-19", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "Back");
-	menu2.AddItem("-1", buffer);
-
-	menu2.Display(client, MENU_TIME_FOREVER);
-}
-
-public void ReShowNotifHud(int client)
-{
-	char buffer[24];
-
-	Menu menu2 = new Menu(Settings_MenuPage);
-	menu2.SetTitle("%t", "Notif Hud Setting Inside",f_NotifHudOffsetX[client],f_NotifHudOffsetY[client]);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
-	menu2.AddItem("-21", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Down");
-	menu2.AddItem("-22", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Left");
-	menu2.AddItem("-23", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Right");
-	menu2.AddItem("-24", buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%t", "Reset to Default");
-	menu2.AddItem("-25", buffer);
-					
-	FormatEx(buffer, sizeof(buffer), "%t", "Back");
-	menu2.AddItem("-1", buffer);
-
-	SetDefaultHudPosition(client);
-	SetGlobalTransTarget(client);
-	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "nothing");
-
-	menu2.Display(client, MENU_TIME_FOREVER);
-}
-
-public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choice)
-{
-	SetGlobalTransTarget(client);
-
-	switch(action)
-	{
-		case MenuAction_End:
-		{
-			delete menu;
-		}
-		case MenuAction_Cancel:
-		{
-			if(choice == MenuCancel_ExitBack)
-			{
-				static Item item;
-				menu.GetItem(0, item.Name, sizeof(item.Name));
-				int index = StringToInt(item.Name);
-				if(index < 0)
-				{
-					item.Section = -1;
-				}
-				else
-				{
-					StoreItems.GetArray(index, item);
-					if(item.Section != -1)
-						StoreItems.GetArray(item.Section, item);
-				}
-
-				MenuPage(client, item.Section);
-			}
-			/*
-			else if(choice != MenuCancel_Disconnected)
-			{
-				StopSound(client, SNDCHAN_STATIC, "#items/tf_music_upgrade_machine.wav");
-			}
-			*/
-		}
-		case MenuAction_Select:
-		{
-			char buffer[24];
-			menu.GetItem(choice, buffer, sizeof(buffer));
-			int id = StringToInt(buffer);
-			switch(id)
-			{
-				case -2:
-				{
-					ReShowArmorHud(client);
-				}
-				case -3: //Move Armor Hud Up
-				{
-					f_ArmorHudOffsetX[client] -= 0.005;
-					if(f_ArmorHudOffsetX[client] < -1.0)
-					{
-						f_ArmorHudOffsetX[client] = -1.0;
-					}
-					ReShowArmorHud(client);
-				}
-				case -4: //Move Armor Hud Down
-				{
-					f_ArmorHudOffsetX[client] += 0.005;
-					if(f_ArmorHudOffsetX[client] > -0.085)
-					{
-						f_ArmorHudOffsetX[client] = -0.085;
-					}
-					ReShowArmorHud(client);
-				}
-				case -5: //Move Armor Hud Left
-				{
-					f_ArmorHudOffsetY[client] -= 0.005;
-					if(f_ArmorHudOffsetY[client] < -1.0)
-					{
-						f_ArmorHudOffsetY[client] = -1.0;
-					}
-					ReShowArmorHud(client);
-				}
-				case -6: //Move Armor Hud right
-				{
-					f_ArmorHudOffsetY[client] += 0.005;
-					if(f_ArmorHudOffsetY[client] > 1.0)
-					{
-						f_ArmorHudOffsetY[client] = 1.0;
-					}
-					ReShowArmorHud(client);
-				}
-				case -7: //ResetARmorHud To default
-				{
-					f_ArmorHudOffsetX[client] = -0.085;
-					f_ArmorHudOffsetY[client] = 0.0;
-					
-					ReShowArmorHud(client);
-				}
-				
-				//HURT HUD STUFF!
-				case -8:
-				{
-					ReShowHurtHud(client);
-				}
-				case -9: //Move Armor Hud Up
-				{
-					f_HurtHudOffsetX[client] -= 0.005;
-					if(f_HurtHudOffsetX[client] < -1.0)
-					{
-						f_HurtHudOffsetX[client] = -1.0;
-					}
-					ReShowHurtHud(client);
-				}
-				case -10: //Move Armor Hud Down
-				{
-					f_HurtHudOffsetX[client] += 0.005;
-					if(f_HurtHudOffsetX[client] > -0.085)
-					{
-						f_HurtHudOffsetX[client] = -0.085;
-					}
-					ReShowHurtHud(client);
-				}
-				case -11: //Move Armor Hud Left
-				{
-					f_HurtHudOffsetY[client] -= 0.005;
-					if(f_HurtHudOffsetY[client] < 0.1)
-					{
-						f_HurtHudOffsetY[client] = 0.1;
-					}
-					ReShowHurtHud(client);
-				}
-				case -12: //Move Armor Hud right
-				{
-					if(f_HurtHudOffsetY[client] < 0.1)
-					{
-						f_HurtHudOffsetY[client] = 0.1;
-					}
-					f_HurtHudOffsetY[client] += 0.005;
-					if(f_HurtHudOffsetY[client] > 0.995)
-					{
-						f_HurtHudOffsetY[client] = 0.995;
-					}
-					ReShowHurtHud(client);
-				}
-				case -13: //ResetARmorHud To default
-				{
-					f_HurtHudOffsetX[client] = 0.0;
-					f_HurtHudOffsetY[client] = 0.0;
-					
-					ReShowHurtHud(client);
-				}
-
-				//Weapon HUD STUFF!
-				case -14:
-				{
-					ReShowWeaponHud(client);
-				}
-				case -15: //Move Armor Hud Up
-				{
-					f_WeaponHudOffsetX[client] -= 0.005;
-					if(f_WeaponHudOffsetX[client] < -1.0)
-					{
-						f_WeaponHudOffsetX[client] = -1.0;
-					}
-					ReShowWeaponHud(client);
-				}
-				case -16: //Move Armor Hud Down
-				{
-					f_WeaponHudOffsetX[client] += 0.005;
-					if(f_WeaponHudOffsetX[client] > 1.0)
-					{
-						f_WeaponHudOffsetX[client] = 1.0;
-					}
-					ReShowWeaponHud(client);
-				}
-				case -17: //Move Armor Hud Left
-				{
-					f_WeaponHudOffsetY[client] -= 0.005;
-					if(f_WeaponHudOffsetY[client] < 0.10)
-					{
-						f_WeaponHudOffsetY[client] = 0.10;
-					}
-					ReShowWeaponHud(client);
-				}
-				case -18: //Move Armor Hud right
-				{
-					if(f_WeaponHudOffsetY[client] < 0.10)
-					{
-						f_WeaponHudOffsetY[client] = 0.10;
-					}
-					f_WeaponHudOffsetY[client] += 0.005;
-					if(f_WeaponHudOffsetY[client] > 1.0)
-					{
-						f_WeaponHudOffsetY[client] = 1.0;
-					}
-					ReShowWeaponHud(client);
-				}
-				case -19: //ResetARmorHud To default
-				{
-					f_WeaponHudOffsetX[client] = 0.0;
-					f_WeaponHudOffsetY[client] = 0.0;
-					
-					ReShowWeaponHud(client);
-				}
-
-				case -20:
-				{
-					ReShowNotifHud(client);
-				}
-				case -21: //Move Armor Hud Up
-				{
-					f_NotifHudOffsetX[client] -= 0.005;
-					if(f_NotifHudOffsetX[client] < -1.0)
-					{
-						f_NotifHudOffsetX[client] = -1.0;
-					}
-					ReShowNotifHud(client);
-				}
-				case -22: //Move Armor Hud Down
-				{
-					f_NotifHudOffsetX[client] += 0.005;
-					if(f_NotifHudOffsetX[client] > 1.0)
-					{
-						f_NotifHudOffsetX[client] = 1.0;
-					}
-					ReShowNotifHud(client);
-				}
-				case -23: //Move Armor Hud Left
-				{
-					f_NotifHudOffsetY[client] -= 0.005;
-					if(f_NotifHudOffsetY[client] < 0.10)
-					{
-						f_NotifHudOffsetY[client] = 0.10;
-					}
-					ReShowNotifHud(client);
-				}
-				case -24: //Move Armor Hud right
-				{
-					if(f_NotifHudOffsetY[client] < 0.10)
-					{
-						f_NotifHudOffsetY[client] = 0.10;
-					}
-					f_NotifHudOffsetY[client] += 0.005;
-					if(f_NotifHudOffsetY[client] > 1.0)
-					{
-						f_NotifHudOffsetY[client] = 1.0;
-					}
-					ReShowNotifHud(client);
-				}
-				case -25: 
-				{
-					f_NotifHudOffsetX[client] = 0.0;
-					f_NotifHudOffsetY[client] = 0.0;
-					
-					ReShowNotifHud(client);
-				}
-				case -40: 
-				{
-					if(b_HudLowHealthShake[client])
-					{
-						b_HudLowHealthShake[client] = false;
-					}
-					else
-					{
-						b_HudLowHealthShake[client] = true;
-					}
-					
-					ReShowSettingsHud(client);
-				}
-				case -41: 
-				{
-					if(b_HudScreenShake[client])
-					{
-						b_HudScreenShake[client] = false;
-					}
-					else
-					{
-						b_HudScreenShake[client] = true;
-					}
-					ReShowSettingsHud(client);
-				}
-				case -42: 
-				{
-					if(b_HudHitMarker[client])
-					{
-						b_HudHitMarker[client] = false;
-					}
-					else
-					{
-						b_HudHitMarker[client] = true;
-					}
-					ReShowSettingsHud(client);
-				}
-
-				case -1: //Move Armor Hud right
-				{
-					ReShowSettingsHud(client);
-				}
-				default:
-				{
-					MenuPage(client, -1);
-				}
-			}
-		}
-
-	}
-	return 0;
-}
 public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 {
 	SetGlobalTransTarget(client);

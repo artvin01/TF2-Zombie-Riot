@@ -373,6 +373,17 @@ public void OnPostThink(int client)
 	
 	if(Mana_Hud_Delay[client] < GameTime)	
 	{
+		static float HudY;
+		HudY = 0.90;
+#if defined RPG		
+			HudY = 0.85;
+#endif
+		static float HudX;
+		HudX = -1.0;
+	
+		HudX += f_WeaponHudOffsetY[client];
+		HudY += f_WeaponHudOffsetX[client];
+
 		Mana_Hud_Delay[client] = GameTime + 0.4;
 		char buffer[255];
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -529,6 +540,7 @@ public void OnPostThink(int client)
 #endif	// ZR
 			if(had_An_ability)
 			{
+				HudY -= 0.035;
 				Format(buffer, sizeof(buffer), "%s\n", buffer);
 			}
 		}
@@ -596,21 +608,12 @@ public void OnPostThink(int client)
 			
 			Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
 		}
-		static float HudY;
-		HudY = 0.90;
-		static float HudX;
-		HudX = -1.0;
-	
-#if defined ZR
-		HudX += f_WeaponHudOffsetY[client];
-		HudY += f_WeaponHudOffsetX[client];
-#endif
+
 		static bool had_An_ability;
 		had_An_ability = false;
 		char bufferbuffs[64];
 		//BUFFS!
 #if defined RPG		
-		HudY = 0.85;
 		if(f_HealingPotionDuration[client] > GameTime) //Client has a buff, but which one?
 		{
 			float time_left = f_HealingPotionDuration[client] - GameTime;

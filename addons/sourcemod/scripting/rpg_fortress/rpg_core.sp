@@ -130,6 +130,11 @@ void RPG_MapStart()
 	Medigun_PersonOnMapStart();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
 	Wand_Arts_MapStart();
+
+	RpgPluginStart_Store();
+
+	
+	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void RPG_MapEnd()
@@ -229,4 +234,32 @@ public void CheckAlivePlayersforward(int killed)
 void CheckAlivePlayers(int killed = 0)
 {
 	Dungeon_CheckAlivePlayers(killed);
+}
+
+
+public Action CheckClientConvars(Handle timer)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
+			{
+				if(IsFakeClient(client))
+				{
+					KickClient(client);	
+				}
+				else
+				{
+					ClientCommand(client, "retry");
+				}
+			}
+			else if(!IsFakeClient(client))
+			{
+				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //snd_musicvolume
+				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //snd_ducktovolume
+			}
+		}
+	}
+	return Plugin_Continue;
 }
