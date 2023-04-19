@@ -1592,7 +1592,7 @@ static int GetBackpackSize(int client)
 	return amount;
 }
 
-void TextStore_DespoitBackpack(int client, bool death)
+void TextStore_DepositBackpack(int client, bool death, bool message = false)
 {
 	float pos[3];
 	int amount;
@@ -1622,10 +1622,12 @@ void TextStore_DespoitBackpack(int client, bool death)
 			}
 			else if(pack.Item == -1)
 			{
+				cash = 1;
 				TextStore_Cash(client, pack.Amount);
 			}
 			else
 			{
+				cash = 1;
 				TextStore_GetInv(client, pack.Item, amount);
 				TextStore_SetInv(client, pack.Item, pack.Amount + amount);
 			}
@@ -1648,6 +1650,10 @@ void TextStore_DespoitBackpack(int client, bool death)
 		{
 			SPrintToChat(client, "You have dropped %d items", amount);
 		}
+	}
+	else if(message && cash)
+	{
+		SPrintToChat(client, "You backpack was deposited");
 	}
 }
 

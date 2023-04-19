@@ -145,7 +145,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	if(client)
 	{
 #if defined RPG
-		TextStore_DespoitBackpack(client, false);
+		TextStore_DepositBackpack(client, false, Level[client] < 5);
 #endif
 
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
@@ -458,7 +458,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined RPG
-		TextStore_DespoitBackpack(client, true);
+		TextStore_DepositBackpack(client, true);
 		UpdateLevelAbovePlayerText(client, true);
 #endif
 
