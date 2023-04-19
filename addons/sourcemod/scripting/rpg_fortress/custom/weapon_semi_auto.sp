@@ -46,3 +46,9 @@ public void Weapon_SemiAuto_Frame(DataPack pack)
 	delete pack;
 	InFrame[client] = false;
 }
+
+void NPC_TakeDamage_StunStick(int victim, int damagetype)
+{
+	if(damagetype & DMG_CLUB)
+		FreezeNpcInTime(victim, 0.25);
+}
