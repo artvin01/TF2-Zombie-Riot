@@ -5,7 +5,7 @@ methodmap CombinePistol < CombinePolice
 {
 	public CombinePistol(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, "models/police.mdl", "1.15", ally, false));
+		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
 		i_NpcInternalId[npc.index] = COMBINE_PISTOL;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -60,9 +60,15 @@ public void CombinePistol_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	// Due to animation bug, we force switch our idle anim
+	bool forceWalk = view_as<bool>(npc.m_iTargetAttack);
+
 	float vecMe[3];
 	vecMe = WorldSpaceCenter(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
+
+	// Due to animation bug, we force switch our idle anim
+	forceWalk = (forceWalk != view_as<bool>(npc.m_iTargetAttack));
 
 	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
 	if(npc.m_iTargetAttack)
@@ -78,7 +84,7 @@ public void CombinePistol_ClotThink(int iNPC)
 				if(i != npc.index)
 				{
 					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
+					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
 					{
 						shouldGun = true;	// An ally rushing with a melee, I should cover them
 						break;
@@ -120,41 +126,49 @@ public void CombinePistol_ClotThink(int iNPC)
 					npc.m_iAttacksTillReload = 12;
 					npc.PlayPistolReload();
 				}
-				else if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+				else
 				{
-					npc.FaceTowards(vecTarget, 2000.0);
-					canWalk = false;
-
-					npc.m_flNextRangedAttack = gameTime + 0.75 - (Level[npc.index] * 0.015);	// E2 L0 = 0.3, E2 L5 = 0.225  (Note: Rounds to 0.1 cause think)
-					npc.m_iAttacksTillReload--;
-					
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					float x = GetRandomFloat( -0.03, 0.03 );
-					float y = GetRandomFloat( -0.03, 0.03 );
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-					float vecDir[3];
-					for(int i; i < 3; i++)
+					int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
+					if(IsValidEnemy(npc.index, target))
 					{
-						vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
-					}
+						npc.FaceTowards(vecTarget, 2000.0);
+						canWalk = false;
 
-					NormalizeVector(vecDir, vecDir);
-					
-					// E2 L0 = 6.0, E2 L5 = 7.0
-					FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.2, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
-					npc.PlayPistolFire();
+						float eyePitch[3], vecDirShooting[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+						
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+
+						if(BaseSquad_InFireRange(vecDirShooting[1], eyePitch[1]))
+						{
+							vecDirShooting[1] = eyePitch[1];
+
+							npc.m_flNextRangedAttack = gameTime + 0.75 - (Level[npc.index] * 0.015);	// E2 L0 = 0.3, E2 L5 = 0.225  (Note: Rounds to 0.1 cause think)
+							npc.m_iAttacksTillReload--;
+							
+							float x = GetRandomFloat( -0.03, 0.03 );
+							float y = GetRandomFloat( -0.03, 0.03 );
+							
+							float vecRight[3], vecUp[3];
+							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+							
+							float vecDir[3];
+							for(int i; i < 3; i++)
+							{
+								vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+							}
+
+							NormalizeVector(vecDir, vecDir);
+							
+							// E2 L0 = 6.0, E2 L5 = 7.0
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.2, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							
+							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
+							npc.PlayPistolFire();
+						}
+					}
 				}
 			}
 			else
@@ -217,9 +231,9 @@ public void CombinePistol_ClotThink(int iNPC)
 		}
 	}
 
-	if(canWalk)
+	if(canWalk || forceWalk)
 	{
-		BaseSquad_BaseWalking(npc, vecMe);
+		BaseSquad_BaseWalking(npc, vecMe, !npc.m_bRanged);
 	}
 	else
 	{

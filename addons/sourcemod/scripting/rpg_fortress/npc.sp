@@ -32,10 +32,11 @@ enum
 	COMBINE_SMG,
 	COMBINE_AR2,
 	COMBINE_ELITE,
-	COMBINE_SHOTGUN,
+	COMBINE_SHOTGUN		= 25,
 	COMBINE_SWORDSMAN,
 	COMBINE_GIANT,
-	COMBINE_OVERLORD
+	COMBINE_OVERLORD,
+	TOWNGUARD_PISTOL
 }
 
 public const char NPC_Names[][] =
@@ -68,7 +69,8 @@ public const char NPC_Names[][] =
 	"Combine Shotgunner",
 	"Combine Swordsman",
 	"Combine Giant Swordsman",
-	"Combine Overlord"
+	"Combine Overlord",
+	"Rebel Guard"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -101,7 +103,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_combine_shotgun",
 	"npc_combine_swordsman",
 	"npc_combine_giant",
-	"npc_combine_overlord"
+	"npc_combine_overlord",
+	"npc_townguard_pistol"
 };
 
 void NPC_MapStart()
@@ -249,6 +252,10 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		{
 			entity = CombineOverlord(client, vecPos, vecAng, ally);
 		}
+		case TOWNGUARD_PISTOL:
+		{
+			entity = TownGuardPistol(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -373,6 +380,10 @@ public void NPCDeath(int entity)
 		case COMBINE_OVERLORD:
 		{
 			CombineOverlord_NPCDeath(entity);
+		}
+		case TOWNGUARD_PISTOL:
+		{
+			TownGuardPistol_NPCDeath(entity);
 		}
 		default:
 		{
@@ -698,3 +709,4 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/combine/npc_combine_swordsman.sp"
 #include "rpg_fortress/npc/combine/npc_combine_giant.sp"
 #include "rpg_fortress/npc/combine/npc_combine_overlord.sp"
+#include "rpg_fortress/npc/combine/npc_townguard_pistol.sp"

@@ -354,6 +354,11 @@ void TextStore_ConfigSetup(KeyValues map)
 	MarketKv = new KeyValues("MarketData");
 	MarketKv.ImportFromFile(buffer);
 	
+	RequestFrame(TextStore_ConfigSetupFrame);
+}
+
+public void TextStore_ConfigSetupFrame()
+{
 	HashCheck();
 	for(int client = 1; client <= MaxClients; client++)
 	{

@@ -105,13 +105,14 @@ enum struct MineEnum
 		{
 			int entity = EntRefToEntIndex(this.EntRef);
 			if(entity != -1)
+			{
 				RemoveEntity(entity);
 
-			int text = EntRefToEntIndex(i_TextEntity[entity][0]);
-			if(text != -1)
-				RemoveEntity(text);
-
-			
+				int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+				if(text != -1)
+					RemoveEntity(text);
+			}
+						
 			this.EntRef = INVALID_ENT_REFERENCE;
 		}
 	}

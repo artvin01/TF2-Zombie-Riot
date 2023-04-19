@@ -60,7 +60,7 @@ public Action Command_PetMenu(int client, int argc)
 	
 	if(argc < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [data] [ally]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [data] [ally] [rpg level]");
 		return Plugin_Handled;
 	}
 	
@@ -87,6 +87,13 @@ public Action Command_PetMenu(int client, int argc)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}
+	}
+#elseif defined RPG
+	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	if(IsValidEntity(entity))
+	{
+		Level[entity] = argc > 3 ? GetCmdArgInt(4) : 0;
+		Apply_Text_Above_Npc(entity, 0, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 	}
 #else
 	Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
@@ -4485,8 +4492,7 @@ stock bool IsEntityAlive(int index)
 			{
 				return false;	
 			}
-#endif
-#if defined RPG
+#else
 			if(!IsPlayerAlive(index))
 			{
 				return false;	
@@ -4513,7 +4519,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(b_NpcIsInvulnerable[index] && !target_invul)
+			if(b_NpcIsInvulnerable[enemy] && !target_invul)
 			{
 				return false;
 			}
@@ -5594,7 +5600,9 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	float pos_npc[3];
 	float pos_enemy[3];
 	pos_npc = WorldSpaceCenter(attacker);
+	pos_npc[2] += 35.0;
 	pos_enemy = WorldSpaceCenter(enemy);
+	pos_enemy[2] += 35.0;
 
 #if defined ZR
 	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));

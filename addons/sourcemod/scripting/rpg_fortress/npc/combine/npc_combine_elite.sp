@@ -115,7 +115,7 @@ public void CombineElite_ClotThink(int iNPC)
 			if(Can_I_See_Enemy(npc.index, npc.m_iTargetAttack) == npc.m_iTargetAttack)
 				npc.FaceTowards(vecTarget, 2000.0);
 		}
-		else if(distance < 10000.0)	// 100 HU
+		else if(distance < 15000.0)	// 122 HU
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
@@ -153,47 +153,50 @@ public void CombineElite_ClotThink(int iNPC)
 					npc.m_iAttacksTillReload = 30;
 					npc.PlayAR2Reload();
 				}
-				else if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+				else
 				{
-					npc.FaceTowards(vecTarget, 2000.0);
-					canWalk = false;
-
-					//npc.m_flNextRangedAttack = gameTime + 0.09;
-					npc.m_iAttacksTillReload--;
-					
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					float x = GetRandomFloat( -0.04, 0.04 );
-					float y = GetRandomFloat( -0.04, 0.04 );
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-					float vecDir[3];
-					for(int i; i < 3; i++)
+					int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
+					if(IsValidEnemy(npc.index, target))
 					{
-						vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
-					}
+						npc.FaceTowards(vecTarget, 2000.0);
+						canWalk = false;
 
-					NormalizeVector(vecDir, vecDir);
-					
-					// E2 L5 = 5.25, E2 L10 = 6
-					FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
-					npc.PlayAR2Fire();
+						float eyePitch[3], vecDirShooting[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+						
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+
+						if(BaseSquad_InFireRange(vecDirShooting[1], eyePitch[1]))
+						{
+							vecDirShooting[1] = eyePitch[1];
+
+							//npc.m_flNextRangedAttack = gameTime + 0.09;
+							npc.m_iAttacksTillReload--;
+							
+							float x = GetRandomFloat( -0.04, 0.04 );
+							float y = GetRandomFloat( -0.04, 0.04 );
+							
+							float vecRight[3], vecUp[3];
+							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+							
+							float vecDir[3];
+							for(int i; i < 3; i++)
+							{
+								vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+							}
+
+							NormalizeVector(vecDir, vecDir);
+							
+							// E2 L5 = 5.25, E2 L10 = 6
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							
+							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
+							npc.PlayAR2Fire();
+						}
+					}
 				}
-			}
-			else
-			{
-				npc.FaceTowards(vecTarget, 1500.0);
-				canWalk = false;
 			}
 		}
 		else if((npc.m_flNextRangedAttack + 6.0) < gameTime)
@@ -214,7 +217,7 @@ public void CombineElite_ClotThink(int iNPC)
 					if(ally.m_bIsSquad && IsValidAlly(npc.index, ally.index))
 					{
 						vecTarget = WorldSpaceCenter(ally.index);
-						if(GetVectorDistance(vecMe, vecTarget, true) < 50000.0)	// 224 HU
+						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
 						{
 							ally.m_flRangedArmor = 0.00001;
 							ally.m_flMeleeArmor = 0.00001;
@@ -229,7 +232,7 @@ public void CombineElite_ClotThink(int iNPC)
 
 	if(canWalk)
 	{
-		BaseSquad_BaseWalking(npc, vecMe);
+		BaseSquad_BaseWalking(npc, vecMe, true);
 	}
 	else
 	{

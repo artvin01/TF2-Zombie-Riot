@@ -8,7 +8,6 @@
 bool DisabledDownloads[MAXTF2PLAYERS];
 
 int Tier[MAXTF2PLAYERS];
-int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 
 char StoreWeapon[MAXENTITIES][48];

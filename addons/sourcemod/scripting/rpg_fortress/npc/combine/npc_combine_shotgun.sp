@@ -101,59 +101,62 @@ public void CombineShotgun_ClotThink(int iNPC)
 			{
 				// Too far away to shoot
 			}
-			else if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+			else
 			{
-				if(npc.m_iAttacksTillReload > 0)
+				int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
+				if(IsValidEnemy(npc.index, target))
 				{
-					npc.m_flNextRangedAttack = gameTime + 1.45;
-					npc.m_iAttacksTillReload--;
-					
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-
-					float vecDir[3];
-
-					for(int i; i < 5; i++)
+					if(npc.m_iAttacksTillReload > 0)
 					{
-						float x = GetRandomFloat( -0.075, 0.075 );
-						float y = GetRandomFloat( -0.075, 0.075 );
+						float eyePitch[3], vecDirShooting[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
 						
-						for(int a; a < 3; a++)
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+
+						if(BaseSquad_InFireRange(vecDirShooting[1], eyePitch[1]))
 						{
-							vecDir[a] = vecDirShooting[a] + x * vecRight[a] + y * vecUp[a]; 
+							vecDirShooting[1] = eyePitch[1];
+
+							npc.m_flNextRangedAttack = gameTime + 1.45;
+							npc.m_iAttacksTillReload--;
+							
+							float vecRight[3], vecUp[3];
+							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+
+							float vecDir[3];
+
+							for(int i; i < 5; i++)
+							{
+								float x = GetRandomFloat( -0.075, 0.075 );
+								float y = GetRandomFloat( -0.075, 0.075 );
+								
+								for(int a; a < 3; a++)
+								{
+									vecDir[a] = vecDirShooting[a] + x * vecRight[a] + y * vecUp[a]; 
+								}
+
+								NormalizeVector(vecDir, vecDir);
+								
+								// E2 L5 = 10.5, E2 L10 = 12
+								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.25, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							}
+
+							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
+							npc.PlayShotgunFire();
 						}
-
-						NormalizeVector(vecDir, vecDir);
-						
-						// E2 L5 = 10.5, E2 L10 = 12
-						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.25, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
+					else if(distance < 10000.0)	// 100 HU
+					{
+						npc.AddGesture("ACT_MELEE_ATTACK1");
+						npc.PlayFistFire();
 
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN");
-					npc.PlayShotgunFire();
-				}
-				else if(distance < 10000.0)	// 100 HU
-				{
-					npc.AddGesture("ACT_MELEE_ATTACK1");
-					npc.PlayFistFire();
-
-					npc.m_flAttackHappens = gameTime + 0.35;
-					npc.m_flNextMeleeAttack = gameTime + 0.85;
+						npc.m_flAttackHappens = gameTime + 0.35;
+						npc.m_flNextRangedAttack = gameTime + 0.85;
+					}
 				}
 			}
-		}
-		else
-		{
-			npc.FaceTowards(vecTarget, 1500.0);
-			canWalk = false;
 		}
 	}
 

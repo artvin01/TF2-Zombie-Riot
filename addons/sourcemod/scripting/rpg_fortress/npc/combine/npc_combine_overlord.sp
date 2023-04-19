@@ -136,11 +136,11 @@ public void CombineOverlord_ClotThink(int iNPC)
 
 					static float velocity[3];
 					GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(velocity, Pow(distance, 0.5) * 2.0);
+					ScaleVector(velocity, Pow(distance, 0.5) * 2.15);
 					
 					// min Z if on ground
 					if(GetEntityFlags(npc.m_iTargetAttack) & FL_ONGROUND)
-						velocity[2] = fmax(300.0, velocity[2]);
+						velocity[2] = fmax(400.0, velocity[2]);
 					
 					// apply velocity
 					TeleportEntity(npc.m_iTargetAttack, NULL_VECTOR, NULL_VECTOR, velocity);
@@ -155,7 +155,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 2000.0);
 			}
 		}
-		else if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
+		else if(npc.m_flNextRangedSpecialAttackHappens > gameTime)
 		{
 			canWalk = false;
 		}
@@ -173,22 +173,22 @@ public void CombineOverlord_ClotThink(int iNPC)
 		}
 		else if(!anger)
 		{
-			if(npc.m_flNextRangedAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+			if((npc.m_flNextRangedAttack < gameTime || !npc.m_iTargetWalk) && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
 				npc.AddGesture("ACT_PUSH_PLAYER");
 
 				npc.m_flNextRangedAttackHappening = gameTime + 0.45;
 				npc.m_flNextRangedAttack = gameTime + 8.5;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.65;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 0.85;
 			}
-		}
-		else if(npc.m_flNextRangedSpecialAttack < gameTime && npc.m_iAttacksTillReload < 66)
-		{
-			npc.m_flNextRangedSpecialAttack = gameTime + 19.5;
-			npc.m_flNextRangedSpecialAttackHappens = gameTime + 1.45;
-			npc.m_flAngerDelay = gameTime + 4.5;
+			else if(npc.m_flNextRangedSpecialAttack < gameTime && npc.m_iAttacksTillReload < 66)
+			{
+				npc.m_flNextRangedSpecialAttack = gameTime + 19.5;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 1.45;
+				npc.m_flAngerDelay = gameTime + 4.5;
 
-			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+			}
 		}
 	}
 
@@ -198,7 +198,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = 0;
 		
-		BaseSquad_BaseWalking(npc, vecMe);
+		BaseSquad_BaseWalking(npc, vecMe, true, true);
 
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = attacker;
@@ -211,7 +211,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 		npc.StopPathing();
 	}
 
-	BaseSquad_BaseAnim(npc, 66.33, "ACT_IDLE_BOB", "ACT_WALK_ANGRY", anger ? 241.5 : 212.24, anger ? "ACT_RUN_SHIELDZOBIE" : "ACT_IDLE_ANGRY_MELEE", anger ? "ACT_RUN_SHIELDZOBIE" : "ACT_RUN");
+	BaseSquad_BaseAnim(npc, 66.33, "ACT_IDLE_BOB", "ACT_WALK_ANGRY", anger ? 424.48/*241.5*/ : 212.24, anger ? "ACT_RUN_SHIELDZOBIE" : "ACT_IDLE_ANGRY_MELEE", anger ? "ACT_RUN_SHIELDZOBIE" : "ACT_RUN");
 	npc.PlayIdle(true);
 }
 
@@ -220,23 +220,20 @@ public Action CombineOverlord_TakeDamage(int victim, int &attacker, int &inflict
 	CombineOverlord npc = view_as<CombineOverlord>(victim);
 
 	float gameTime = GetGameTime(npc.index);
-	if(!npc.m_iTargetWalk && npc.m_iTargetAttack && npc.m_flAngerDelay < gameTime)
+	if(npc.m_flAngerDelay > gameTime)
 	{
-		if(GetURandomInt() % 5)
-		{
-			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5);
-		}
-		else
-		{
-			// TODO: Miss particle here
-			damage = 0.0;
-		}
+		damage *= 0.25;
+	}
+	else if((!npc.m_iTargetWalk && npc.m_iTargetAttack) || (GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER)))
+	{
+		damage = 0.0;
+		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	else if(damagetype & DMG_CLUB)
 	{
 		if(npc.m_flMeleeArmor < 1.5)
 		{
-			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5);
+			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flMeleeArmor += (npc.m_flMeleeArmor < 0.5) ? 0.25001 : 0.05001;
 			if(npc.m_flMeleeArmor > 1.5)
@@ -247,7 +244,7 @@ public Action CombineOverlord_TakeDamage(int victim, int &attacker, int &inflict
 	{
 		if(npc.m_flRangedArmor < 1.5)
 		{
-			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5);
+			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flRangedArmor += (npc.m_flRangedArmor < 0.5) ? 0.10001 : 0.02001;
 			if(npc.m_flRangedArmor > 1.5)
@@ -255,7 +252,7 @@ public Action CombineOverlord_TakeDamage(int victim, int &attacker, int &inflict
 		}
 	}
 
-	if(npc.m_flHeadshotCooldown < gameTime)
+	if(damage > 0.0 && npc.m_flHeadshotCooldown < gameTime)
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;

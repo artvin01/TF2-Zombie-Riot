@@ -27,7 +27,7 @@ void Zones_ResetAll()
 	delete ActiveZones;
 	ActiveZones = new ArrayList(ByteCountToCells(32));
 	
-	char name[32];
+	/*char name[32];
 	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 	
 	int entity = -1;
@@ -37,7 +37,7 @@ void Zones_ResetAll()
 			AcceptEntityInput(entity, "TouchTest", entity, entity);
 	}
 	
-	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
+	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);*/
 }
 
 static void OnEnter(int entity, const char[] name)

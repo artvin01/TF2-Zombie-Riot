@@ -68,7 +68,7 @@ public void CombineGiant_ClotThink(int iNPC)
 				if(i != npc.index)
 				{
 					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
+					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
 					{
 						shouldCharge = false;	// An ally already attacking with melee, let them 1v1 em
 						break;
@@ -135,7 +135,7 @@ public void CombineGiant_ClotThink(int iNPC)
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = 0;
 		
-		BaseSquad_BaseWalking(npc, vecMe);
+		BaseSquad_BaseWalking(npc, vecMe, true);
 
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = attacker;
@@ -148,7 +148,7 @@ public void CombineGiant_ClotThink(int iNPC)
 	npc.m_flMeleeArmor = 1.0001;
 	npc.m_flRangedArmor = 1.0001;
 
-	bool anger = BaseSquad_BaseAnim(npc, 112.0, "ACT_COLOSUS_IDLE", "ACT_COLOSUS_WALK");
+	bool anger = BaseSquad_BaseAnim(npc, 112.0, "ACT_COLOSUS_IDLE", "ACT_COLOSUS_WALK", 112.0, "ACT_COLOSUS_IDLE", "ACT_COLOSUS_WALK");
 	npc.PlayIdle(anger);
 
 	if(!anger)
@@ -174,7 +174,7 @@ public Action CombineGiant_TakeDamage(int victim, int &attacker, int &inflictor,
 			float vecMe[3], vecTarget[3];
 			vecMe = WorldSpaceCenter(npc.index);
 			vecTarget = WorldSpaceCenter(attacker);
-			if(GetVectorDistance(vecMe, vecTarget, true) > 50000.0)	// 224 HU
+			if(GetVectorDistance(vecMe, vecTarget, true) > 30000.0)	// 173 HU
 			{
 				EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 				damage = 0.0;

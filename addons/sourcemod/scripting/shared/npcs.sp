@@ -1202,7 +1202,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #if defined RPG
-		if(b_NpcIsInADungeon[victim])
+		if(b_NpcIsInADungeon[victim] || attacker > MaxClients)
 		{
 			
 		}

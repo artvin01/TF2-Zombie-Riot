@@ -79,41 +79,49 @@ public void CombineSMG_ClotThink(int iNPC)
 				npc.m_iAttacksTillReload = 45;
 				npc.PlaySMGReload();
 			}
-			else if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+			else
 			{
-				npc.FaceTowards(vecTarget, 2000.0);
-				canWalk = false;
-
-				//npc.m_flNextRangedAttack = gameTime + 0.09;
-				npc.m_iAttacksTillReload--;
-				
-				float eyePitch[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-				
-				float x = GetRandomFloat( -0.1, 0.1 );
-				float y = GetRandomFloat( -0.1, 0.1 );
-				
-				float vecDirShooting[3], vecRight[3], vecUp[3];
-				
-				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
-				GetVectorAngles(vecDirShooting, vecDirShooting);
-				vecDirShooting[1] = eyePitch[1];
-				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-				
-				float vecDir[3];
-				for(int i; i < 3; i++)
+				int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
+				if(IsValidEnemy(npc.index, target))
 				{
-					vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
-				}
+					npc.FaceTowards(vecTarget, 2000.0);
+					canWalk = false;
 
-				NormalizeVector(vecDir, vecDir);
-				
-				// E2 L0 = 3.75, E2 L5 = 4.375
-				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-				
-				npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
-				npc.PlaySMGFire();
+					float eyePitch[3], vecDirShooting[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+					
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+
+					if(BaseSquad_InFireRange(vecDirShooting[1], eyePitch[1]))
+					{
+						vecDirShooting[1] = eyePitch[1];
+
+						//npc.m_flNextRangedAttack = gameTime + 0.09;
+						npc.m_iAttacksTillReload--;
+						
+						float x = GetRandomFloat( -0.1, 0.1 );
+						float y = GetRandomFloat( -0.1, 0.1 );
+						
+						float vecRight[3], vecUp[3];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						float vecDir[3];
+						for(int i; i < 3; i++)
+						{
+							vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+						}
+
+						NormalizeVector(vecDir, vecDir);
+						
+						// E2 L0 = 3.75, E2 L5 = 4.375
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						
+						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
+						npc.PlaySMGFire();
+					}
+				}
 			}
 		}
 		else

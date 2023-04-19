@@ -76,11 +76,13 @@ enum struct TinkerNPCEnum
 		if(this.EntRef != INVALID_ENT_REFERENCE)
 		{
 			int entity = EntRefToEntIndex(this.EntRef);
-
-			int brush = EntRefToEntIndex(b_OwnerToBrush[entity]);
-			if(IsValidEntity(brush))
+			if(entity != -1)
 			{
-				RemoveEntity(brush);
+				int brush = EntRefToEntIndex(b_OwnerToBrush[entity]);
+				if(IsValidEntity(brush))
+				{
+					RemoveEntity(brush);
+				}
 			}
 
 			if(entity != -1)

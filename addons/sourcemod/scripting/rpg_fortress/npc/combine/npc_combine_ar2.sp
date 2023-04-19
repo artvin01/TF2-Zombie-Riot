@@ -69,17 +69,17 @@ public void CombineAR2_ClotThink(int iNPC)
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
 
-		bool shouldFlank = view_as<bool>(npc.m_iTargetWalk);
-		if(shouldFlank)
+		bool shouldGun = !npc.m_iTargetWalk;
+		if(!shouldGun)
 		{
 			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 			{
 				if(i != npc.index)
 				{
 					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
+					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
 					{
-						shouldFlank = false;	// An ally rushing with a melee, I should cover them
+						shouldGun = true;	// An ally rushing with a melee, I should cover them
 						break;
 					}
 				}
@@ -87,15 +87,15 @@ public void CombineAR2_ClotThink(int iNPC)
 		}
 
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
-		if(shouldFlank)
+		if(!shouldGun)
 		{
 			if(distance > (npc.m_bRanged ? 70000.0 : 125000.0))	// 265, 355  HU
 			{
-				shouldFlank = false;
+				shouldGun = true;
 			}
 		}
 
-		npc.m_bRanged = shouldFlank;
+		npc.m_bRanged = shouldGun;
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -162,50 +162,61 @@ public void CombineAR2_ClotThink(int iNPC)
 				{
 					canWalk = false;
 					
-					npc.AddGesture((npc.m_flNextRangedSpecialAttack > gameTime && npc.m_bRanged) ? "ACT_RELOAD_LOW" : "ACT_RELOAD");
+					npc.AddGesture((npc.m_flNextRangedSpecialAttack > gameTime && npc.m_bRanged && distance > 20000.0) ? "ACT_RELOAD_LOW" : "ACT_RELOAD");	// 141 HU
 					npc.m_flNextMeleeAttack = gameTime + 1.85;
 					npc.m_flNextRangedAttack = gameTime + 2.15;
 					npc.m_iAttacksTillReload = 30;
 					npc.PlayAR2Reload();
 				}
-				else if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
+				else
 				{
-					npc.FaceTowards(vecTarget, 2000.0);
-					canWalk = false;
-
-					//npc.m_flNextRangedAttack = gameTime + 0.09;
-					npc.m_iAttacksTillReload--;
-					
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					float x = GetRandomFloat( -0.05, 0.05 );
-					float y = GetRandomFloat( -0.05, 0.05 );
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-					float vecDir[3];
-					for(int i; i < 3; i++)
+					int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
+					if(IsValidEnemy(npc.index, target))
 					{
-						vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
-					}
+						if(npc.m_bRanged)
+						{
+							npc.FaceTowards(vecTarget, 2000.0);
+							canWalk = false;
+						}
 
-					NormalizeVector(vecDir, vecDir);
-					
-					// E2 L5 = 5.25, E2 L10 = 6
-					FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
-					npc.PlayAR2Fire();
+						float eyePitch[3], vecDirShooting[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+						
+						vecTarget[2] += 15.0;
+						MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+						GetVectorAngles(vecDirShooting, vecDirShooting);
+
+						if(BaseSquad_InFireRange(vecDirShooting[1], eyePitch[1]))
+						{
+							vecDirShooting[1] = eyePitch[1];
+
+							//npc.m_flNextRangedAttack = gameTime + 0.05;
+							npc.m_iAttacksTillReload--;
+							
+							float x = GetRandomFloat( -0.05, 0.05 );
+							float y = GetRandomFloat( -0.05, 0.05 );
+							
+							float vecRight[3], vecUp[3];
+							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+							
+							float vecDir[3];
+							for(int i; i < 3; i++)
+							{
+								vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+							}
+
+							NormalizeVector(vecDir, vecDir);
+							
+							// E2 L5 = 5.25, E2 L10 = 6
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							
+							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
+							npc.PlayAR2Fire();
+						}
+					}
 				}
 			}
-			else
+			else if(npc.m_bRanged)
 			{
 				npc.FaceTowards(vecTarget, 1500.0);
 				canWalk = false;
@@ -215,6 +226,9 @@ public void CombineAR2_ClotThink(int iNPC)
 		{
 			if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
+				npc.FaceTowards(vecTarget, 2000.0);
+				canWalk = false;
+
 				npc.AddGesture("ACT_COMBINE_THROW_GRENADE");
 				npc.PlayFistFire();
 
@@ -225,7 +239,7 @@ public void CombineAR2_ClotThink(int iNPC)
 			}
 		}
 
-		if(npc.m_flNextRangedSpecialAttack > gameTime && !npc.m_flAttackHappens && (!canWalk || npc.m_flNextRangedAttack < gameTime) && npc.m_bRanged && distance > 20000.0)	// 141 HU
+		if(npc.m_flNextRangedSpecialAttack > gameTime && !npc.m_flAttackHappens && (!canWalk || npc.m_flNextMeleeAttack < gameTime) && npc.m_bRanged && distance > 20000.0)	// 141 HU
 			duckAnim = true;
 	}
 

@@ -473,6 +473,7 @@ int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
 
 #if defined RPG
+int Level[MAXENTITIES];
 bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
 bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
 bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];

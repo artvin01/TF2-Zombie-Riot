@@ -82,7 +82,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 				if(i != npc.index)
 				{
 					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
+					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
 					{
 						shouldCharge = false;	// An ally already attacking with melee, let them 1v1 em
 						break;
@@ -208,7 +208,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = 0;
 		
-		BaseSquad_BaseWalking(npc, vecMe);
+		BaseSquad_BaseWalking(npc, vecMe, true);
 
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = attacker;
