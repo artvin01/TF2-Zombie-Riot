@@ -19,7 +19,7 @@ methodmap CombinePistol < CombinePolice
 		npc.m_flNextMeleeAttack = 0.0;
 
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_iAttacksTillReload = 12;
+		npc.m_iAttacksTillReload = 18;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, BaseSquad_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, CombinePistol_ClotThink);
@@ -123,7 +123,7 @@ public void CombinePistol_ClotThink(int iNPC)
 					
 					npc.AddGesture("ACT_RELOAD_PISTOL");
 					npc.m_flNextRangedAttack = gameTime + 1.35;
-					npc.m_iAttacksTillReload = 12;
+					npc.m_iAttacksTillReload = 18;
 					npc.PlayPistolReload();
 				}
 				else

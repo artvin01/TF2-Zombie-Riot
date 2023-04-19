@@ -537,15 +537,31 @@ methodmap CombineWarrior < BaseSquad
 	}
 }
 
-bool BaseSquad_InFireRange(float eyePitch, float vecDirShooting)
+bool BaseSquad_InFireRange(float eyePitch, float vecDir)
 {
-	float sub = fabs(fixAngle(eyePitch)) - fabs(fixAngle(vecDirShooting));
+	float sub = fabs(fixAngle(eyePitch)) - fabs(fixAngle(vecDir));
 	return (sub > -12.5 && sub < 12.5);
 }
 
-void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
+static bool InVisionRange(const float vecMe[3], BaseSquad npc, int enemy)
+{
+	float eyePitch[3], vecTarget[3], vecDir[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+	vecTarget = WorldSpaceCenter(enemy);
+
+	MakeVectorFromPoints(vecMe, vecTarget, vecDir);
+	GetVectorAngles(vecDir, vecDir);
+
+	float sub = fabs(fixAngle(eyePitch[1])) - fabs(fixAngle(vecDir[1]));
+	return (sub > -60.0 && sub < 60.0);
+}
+
+void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS = false)
 {
 	BaseSquad npc = view_as<BaseSquad>(npcIndex);
+
+	float gameTime = GetGameTime(npc.index);
+	float gameRealTime = GetGameTime();
 
 	if(npc.m_iTargetAttack && !IsValidEnemy(npc.index, npc.m_iTargetAttack))
 	{
@@ -554,6 +570,10 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
 		if(npc.m_iTargetAttack == i_NpcFightOwner[npc.index])
 			i_NpcFightOwner[npc.index] = 0;
 	}
+	else if(i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameRealTime)
+	{
+		npc.m_flGetClosestTargetTime = 0.0;
+	}
 
 	if(npc.m_iTargetWalk && !IsEntityAlive(npc.m_iTargetAttack))
 	{
@@ -561,24 +581,21 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
 		//npc.m_flGetClosestTargetTime = 0.0;
 	}
 	
-	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-		float distance = 500.0;
-		if(b_NpcIsInADungeon[npc.index])
-			distance = 99999.9;
-
+		float distance = b_NpcIsInADungeon[npc.index] ? 99999.9 : (npc.m_iTargetAttack ? 800.0 : 500.0);
+		
 		float vecTarget[3];
 		
 		// We constantly target who attacked us
-		if(b_NpcIsInADungeon[npc.index] || !npc.m_iTargetAttack || !npc.m_iTargetWalk || !i_NpcFightOwner[npc.index] || f_NpcFightTime[npc.index] < gameTime)
+		if(b_NpcIsInADungeon[npc.index] || !npc.m_iTargetAttack || !npc.m_iTargetWalk || !i_NpcFightOwner[npc.index] || f_NpcFightTime[npc.index] < gameRealTime)
 		{
 			npc.m_iTargetAttack = 0;
 			npc.m_iTargetWalk = 0;
 
-			if(i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameTime && IsValidEnemy(npc.index, i_NpcFightOwner[npc.index]))
+			if(i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameRealTime && IsValidEnemy(npc.index, i_NpcFightOwner[npc.index]))
 			{
 				npc.m_iTargetAttack = i_NpcFightOwner[npc.index];
 				npc.m_iTargetWalk = npc.m_iTargetAttack;
@@ -586,7 +603,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
 			else
 			{
 				int target = GetClosestTarget(npc.index, false, distance);
-				if(target > 0 && (b_NpcIsInADungeon[npc.index] || Can_I_See_Enemy(npc.index, target)))
+				if(target > 0 && (b_NpcIsInADungeon[npc.index] || (Can_I_See_Enemy(npc.index, target) && (ignoreLOS || InVisionRange(vecMe, npc, target)))))
 				{
 					npc.m_iTargetAttack = target;
 					npc.m_iTargetWalk = npc.m_iTargetAttack;
