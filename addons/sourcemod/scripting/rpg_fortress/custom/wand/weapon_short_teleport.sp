@@ -134,6 +134,8 @@ bool Player_Teleport_Safe(int client, float endPos[3], float startPos[3] = {0.0,
 		{
 			if (FoundSafeSpot)
 				break;
+
+			endPos[1] = OriginalPos[1];
 				
 			switch(y)
 			{
@@ -160,6 +162,8 @@ bool Player_Teleport_Safe(int client, float endPos[3], float startPos[3] = {0.0,
 			{
 				if (FoundSafeSpot)
 					break;
+
+				endPos[2] = OriginalPos[2];
 						
 				switch(z)
 				{
