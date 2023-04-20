@@ -2821,6 +2821,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
 			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
+			float GetBeforeDamage;
 			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallBeforeHit);
@@ -2828,7 +2829,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				Call_PushCell(ClosestTarget);
 				Call_PushFloat(damage_1 / damage_reduction);
 				Call_PushCell(weapon);
-				Call_Finish();
+				Call_Finish(GetBeforeDamage);
 			}
 			if(damage > 0)
 			{
@@ -2842,6 +2843,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 						damage_flags |= DMG_SLASH; 
 					}
 				}
+				damage_1 += GetBeforeDamage;
 				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)

@@ -1,10 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
-static float f_OriginalDamage[MAXTF2PLAYERS];
-static int i_weaponused[MAXTF2PLAYERS];
+static int HitEntitiesTeleportTrace[MAXENTITIES];
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_TELEPORT_SOUND "misc/halloween/spell_teleport.wav"
@@ -14,8 +11,6 @@ static int ShortTeleportLaserIndex;
 public void Wand_Short_Teleport_ClearAll()
 {
 	ShortTeleportLaserIndex = PrecacheModel("materials/sprites/laser.vmt", false);
-	Zero(i_FireBallsToThrow);
-	Zero(ability_cooldown);
 }
 
 void Wand_Short_Teleport_Map_Precache()
@@ -61,10 +56,11 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 	
 	damage = Config_GetDPSOfEntity(weapon);
 
-	damage *= 2.0;	
+	damage *= 2.0;
+		
 	static float startPos[3];
 	GetClientEyePosition(client, startPos);
-	float sizeMultiplier = GetEntPropFloat(client, Prop_Send, "m_flModelScale");
+//	float sizeMultiplier = GetEntPropFloat(client, Prop_Send, "m_flModelScale");
 	static float endPos[3], eyeAngles[3];
 	GetClientEyeAngles(client, eyeAngles);
 	TR_TraceRayFilter(startPos, eyeAngles, MASK_PLAYERSOLID, RayType_Infinite, TraceRayDontHitPlayersOrEntityCombat, client);
@@ -78,14 +74,14 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 		return 0.0;
 	}
 		
-	if (distance > (500.0 * level))
-		constrainDistance(startPos, endPos, distance, (500.0 * level));
+	if (distance > (400.0 * level))
+		constrainDistance(startPos, endPos, distance, (400.0 * level));
 	else // shave just a tiny bit off the end position so our point isn't directly on top of a wall
 		constrainDistance(startPos, endPos, distance, distance - 1.0);
 
 	float abspos[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", abspos);
 
-	if(Player_Teleport_Safe(client, endPos, startPos))
+	if(Player_Teleport_Safe(client, endPos))
 	{
 		float Range = 100.0;
 		float Time = 0.25;
@@ -95,21 +91,64 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);	
 		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt",		255, 255, 255, 200, 1,		Time, 10.0, 8.0, 1,Range * 2.0);		
 		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);		
-		abspos[2] += 40.0;
-		endPos[2] += 40.0;
 		
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		Explode_Logic_Custom(damage, entity, entity, weapon, abspos, Range, _, _, false, _, _, _);
-		Explode_Logic_Custom(damage, entity, entity, weapon, endPos, Range, _, _, false, _, _, _);
+		Explode_Logic_Custom(damage, client, client, weapon, abspos, Range, _, _, false, _, _, _);
+		Explode_Logic_Custom(damage, client, client, weapon, endPos, Range, _, _, false, _, _, _);
+
+		Zero(HitEntitiesTeleportTrace);
+		static float maxs[3];
+		static float mins[3];
+		maxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		mins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+		Handle hTrace = TR_TraceHullFilterEx(abspos, endPos, mins, maxs, MASK_SOLID, TeleportDetectEnemy, client);
+		delete hTrace;
+		float damage_1;
+		float VictimPos[3];
+		float damage_reduction = 1.0;
+		damage_1 = damage;
+		float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF;
+		float Teleport_CD = 15.0;
+
+		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+		{
+			if(!HitEntitiesTeleportTrace[entity_traced])
+				break;
+
+			VictimPos = WorldSpaceCenter(HitEntitiesTeleportTrace[entity_traced]);
+
+			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0), VictimPos, false);	
+			damage_reduction *= ExplosionDmgMultihitFalloff;
+			Teleport_CD = 5.0;
+		}
 		FinishLagCompensation_Base_boss();
+		abspos[2] += 40.0;
+		endPos[2] += 40.0;
 		TE_SetupBeamPoints(abspos, endPos, ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
 		TE_SendToAll(0.0);
-		return 2.0;
+		return Teleport_CD;
 	}
 	ClientCommand(client, "playgamesound items/medshotno1.wav");
 	return 0.0;
 }
+
+public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
+{
+	if(IsValidEnemy(iExclude, entity, true, true))
+	{
+		for(int i=0; i < MAXENTITIES; i++)
+		{
+			if(!HitEntitiesTeleportTrace[i])
+			{
+				HitEntitiesTeleportTrace[i] = entity;
+				break;
+			}
+		}
+	}
+	return false;
+}
+
 
 //TODO:
 /*
@@ -118,7 +157,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 
 	Higher levels allow to bring allies
 */
-bool Player_Teleport_Safe(int client, float endPos[3], float startPos[3] = {0.0,0.0,0.0})
+bool Player_Teleport_Safe(int client, float endPos[3])
 {
 	bool FoundSafeSpot = false;
 

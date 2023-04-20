@@ -4,27 +4,16 @@
 #define PILLAR_SPACING 170.0
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
-static float f_OriginalDamage[MAXTF2PLAYERS];
-static int i_weaponused[MAXTF2PLAYERS];
 static int Icicle_TE_Used;
+static bool Cryo_Frozen[MAXENTITIES]={false, ...}; //Is this zombie frozen?
+static bool Cryo_Slowed[MAXENTITIES]={false, ...}; //Is this zombie frozen?
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_TELEPORT_SOUND "misc/halloween/spell_teleport.wav"
 
-static int ShortTeleportLaserIndex;
-
-public void Wand_IcicleShard_ClearAll()
-{
-	ShortTeleportLaserIndex = PrecacheModel("materials/sprites/laser.vmt", false);
-	Zero(i_FireBallsToThrow);
-	Zero(ability_cooldown);
-}
 
 void Wand_IcicleShard_Map_Precache()
 {
-	Wand_IcicleShard_ClearAll();
 	PrecacheSound(WAND_TELEPORT_SOUND);
 	PrecacheSound(SOUND_WAND_ATTACKSPEED_ABILITY);
 	PrecacheSound("weapons/icicle_melt_01.wav");
@@ -66,9 +55,9 @@ float Weapon_Wand_IcicleShard(int client, int weapon, int level)
 	
 	damage = Config_GetDPSOfEntity(weapon);
 
-	damage *= 1.5;	
+	damage *= 5.0;	
 
-	int MaxCount = 7;
+	int MaxCount = (7 * level);
 	float DelayPillars = 0.25;
 	float DelaybewteenPillars = 0.1;
 	float ang_Look[3]; GetClientEyeAngles(client, ang_Look);
@@ -87,7 +76,7 @@ float Weapon_Wand_IcicleShard(int client, int weapon, int level)
 	pos,
 	1.0,
 	Scale);									//volume
-	return 0.0;
+	return 25.0;
 }
 
 
@@ -301,15 +290,14 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 		if(IsValidEntity(prop))
 		{
 
-			float vel[3];
-			vel[2] = 750.0;
+		//	float vel[3];
+		//	vel[2] = 750.0;
 			float SpawnPropPos[3];
 			float SpawnParticlePos[3];
 
 			SpawnPropPos = vecSwingEnd;
 			SpawnParticlePos = vecSwingEnd;
 
-			SpawnPropPos[2] -= 250.0;
 			SpawnParticlePos[2] += 5.0;
 
 			DispatchKeyValue(prop, "model", PILLAR_MODEL);
@@ -320,10 +308,7 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 
 
 			float SizeScale = 0.9;
-
-
 			SizeScale += (count * 0.1);
-
 			SizeScale *= Scale;
 
 			char FloatString[8];
@@ -332,15 +317,17 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 			DispatchKeyValue(prop, "modelscale", FloatString);
 			DispatchKeyValueVector(prop, "origin",	 SpawnPropPos);
 			direction[2] -= 180.0;
-			direction[1] = GetRandomFloat(-180.0, 180.0);
+			direction[1] -= 180.0;
+			direction[0] = -40.0;
 			DispatchKeyValueVector(prop, "angles",	 direction);
 			DispatchSpawn(prop);
-			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
+		//	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(prop, 125, 125, 255, 200);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
+			SetEntityMoveType(prop, MOVETYPE_NONE);
 
 			float Range = 100.0;
 
@@ -348,7 +335,7 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 
 			Range *= Scale;
 			
-			Explode_Logic_Custom(damage, entity, entity, weapon, SpawnParticlePos, Range, _, _, false, _, _, _);
+			Explode_Logic_Custom(damage, entity, entity, weapon, SpawnParticlePos, Range, _, _, false, _, _, _, Cryo_FreezeZombie);
 			
 			if(volume == 0.25)
 			{
@@ -361,6 +348,8 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 			}
 		
 			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+			
+			TE_Particle("xms_snowburst_child01", SpawnParticlePos, NULL_VECTOR, NULL_VECTOR, prop, _, _, _, _, _, _, _, _, _, 0.0);
 
 			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -381,4 +370,89 @@ public Action Icicle_DamagingPillar(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
+}
+
+public void Cryo_FreezeZombie(int client, int zombie, float damage, int weapon)
+{
+	if (!IsValidEntity(zombie))
+		return;
+
+	if(!Cryo_Slowed[zombie] && !Cryo_Frozen[zombie])
+	{
+		CClotBody ZNPC = view_as<CClotBody>(zombie);
+		ZNPC.m_bFrozen = true;
+		Cryo_Frozen[zombie] = true;
+		float FreezeDuration;
+
+		FreezeDuration = 1.5;
+
+		CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
+		FreezeNpcInTime(zombie, FreezeDuration);
+
+		SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
+		SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
+		float position[3];
+		GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
+
+		f_HighIceDebuff[zombie] = GetGameTime() + (8.0 + FreezeDuration);
+
+		//Un-comment the following line if you want a particle to appear on frozen zombies:
+		//int particle = ParticleEffectAt(position, CRYO_FREEZE_PARTICLE, Cryo_FreezeDuration);
+			
+	}
+}
+
+
+
+public Action Cryo_Unfreeze(Handle Unfreeze, int ref)
+{
+	int zombie = EntRefToEntIndex(ref);
+	
+	if (!IsValidEntity(zombie))
+	return Plugin_Continue;
+	
+	if (Cryo_Frozen[zombie])
+	{
+		Cryo_Frozen[zombie] = false;
+		Cryo_Slowed[zombie] = true;
+		CClotBody ZNPC = view_as<CClotBody>(zombie);
+		ZNPC.m_bFrozen = false;		
+		CreateTimer(8.0, Cryo_Unslow, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
+		
+		SetEntityRenderMode(zombie, i_EntityRenderMode[zombie], true, 2, false, true);
+		SetEntityRenderColor(zombie, i_EntityRenderColour1[zombie], i_EntityRenderColour2[zombie], i_EntityRenderColour3[zombie], i_EntityRenderColour4[zombie], true, false, true);
+	}
+	
+	return Plugin_Continue;
+}
+
+
+
+public Action Cryo_Unslow(Handle Unslow, int ref)
+{
+	int zombie = EntRefToEntIndex(ref);
+	
+	if (!IsValidEntity(zombie))
+	return Plugin_Continue;
+	
+	Cryo_Slowed[zombie] = false;
+	
+	return Plugin_Continue;
+}
+
+public void CleanAllApplied_Cryo(int entity)
+{
+	Cryo_Frozen[entity] = false;
+	Cryo_Slowed[entity] = false;
+}
+
+
+public float FireBallBonusDamage(int client, int zombie, float damage, int weapon)
+{
+	if (Cryo_Frozen[zombie])
+	{
+		damage *= 2.0;
+		DisplayCritAboveNpc(zombie, client, true); //Display crit above head
+	}
+	return damage;
 }

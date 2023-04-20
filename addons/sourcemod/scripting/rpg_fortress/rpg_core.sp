@@ -64,6 +64,8 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/wand/weapon_icicles.sp"
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
+#include "rpg_fortress/custom/ranged_quick_reflex.sp"
+#include "rpg_fortress/custom/ranged_sentrythrow.sp"
 #include "rpg_fortress/custom/ground_pound_melee.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
@@ -143,6 +145,8 @@ void RPG_MapStart()
 
 	RpgPluginStart_Store();
 	Wand_IcicleShard_Map_Precache();
+	SentryThrow_MapStart();
+	QuickReflex_MapStart();
 
 	
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
