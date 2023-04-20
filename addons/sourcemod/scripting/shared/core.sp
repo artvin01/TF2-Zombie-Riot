@@ -272,6 +272,7 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPreivous[MAXENTITIES];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
+int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 float f_ClientReviveDelay[MAXENTITIES];
 

@@ -4424,9 +4424,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 #if defined ZR
 				StoreWeapon[entity] = index;
-				i_CustomWeaponEquipLogic[entity] = 0;
 #endif
 				
+				i_CustomWeaponEquipLogic[entity] = 0;
 				i_SemiAutoWeapon[entity] = false;
 				i_WeaponCannotHeadshot[entity] = false;
 				i_WeaponDamageFalloff[entity] = 1.0;
@@ -4436,13 +4436,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				
 				if(entity > MaxClients)
 				{
-					
-#if defined ZR
 					if(info.CustomWeaponOnEquip != 0)
 					{
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 					}
-#endif
+					
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))

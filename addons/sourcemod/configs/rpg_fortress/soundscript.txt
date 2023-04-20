@@ -729,7 +729,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Talk"
+"Rpgfortress.Alyx.Talk"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -753,7 +753,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Leave"
+"Rpgfortress.Alyx.Leave"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -776,7 +776,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Accept"
+"Rpgfortress.Alyx.Accept"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -792,7 +792,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Turnin"
+"Rpgfortress.Alyx.Turnin"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -810,7 +810,7 @@
 	}
 }
 
-"Rpgfortress.Alex.LastAccept"
+"Rpgfortress.Alyx.LastAccept"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -825,7 +825,7 @@
 	}
 }
 
-"Rpgfortress.Alex.LastTurnin"
+"Rpgfortress.Alyx.LastTurnin"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"

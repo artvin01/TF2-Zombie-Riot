@@ -5,6 +5,11 @@
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
 
+enum
+{
+	WEAPON_STUNSTICK = 1
+}
+
 bool DisabledDownloads[MAXTF2PLAYERS];
 
 int Tier[MAXTF2PLAYERS];
@@ -63,6 +68,8 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
+#include "rpg_fortress/custom/weapon_semi_auto.sp"
+#include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
 
 void RPG_PluginStart()
 {

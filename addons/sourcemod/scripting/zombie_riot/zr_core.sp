@@ -202,7 +202,6 @@ int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 
 int StoreWeapon[MAXENTITIES];
-int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 
 int Level[MAXTF2PLAYERS];

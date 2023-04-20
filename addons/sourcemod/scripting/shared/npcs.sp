@@ -2723,6 +2723,17 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 	}
 #endif
+
+#if defined RPG
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_STUNSTICK:
+		{
+			Weapon_TakeDamage_StunStick(victim, damagetype);
+		}
+	}
+#endif
+
 	return damage;
 }
 

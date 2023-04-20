@@ -33,7 +33,7 @@ public void Weapon_SemiAuto_Frame(DataPack pack)
 			{
 				if(GetClientButtons(client) & IN_ATTACK)
 				{
-					RequestFrame(Weapon_USPMatch_Frame, pack);
+					RequestFrame(Weapon_SemiAuto_Frame, pack);
 					return;
 				}
 
@@ -47,8 +47,25 @@ public void Weapon_SemiAuto_Frame(DataPack pack)
 	InFrame[client] = false;
 }
 
-void NPC_TakeDamage_StunStick(int victim, int damagetype)
+void Weapon_TakeDamage_StunStick(int victim, int damagetype)
 {
 	if(damagetype & DMG_CLUB)
-		FreezeNpcInTime(victim, 0.25);
+		FreezeNpcInTime(victim, 0.2);
+}
+
+public void Weapon_Overlord_M2(int client, int weapon, bool crit, int slot)
+{
+	float cooldown = Ability_Check_Cooldown(client, slot);
+	if(cooldown < 0.0)
+	{
+		ApplyTempAttrib(weapon, 6, 0.33, 1.5);
+		Ability_Apply_Cooldown(client, slot, 30.0);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
+	}
 }
