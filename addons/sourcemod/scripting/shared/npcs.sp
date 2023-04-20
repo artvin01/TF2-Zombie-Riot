@@ -1520,7 +1520,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						damage *= 4.0;
 					}
 #endif
-					
+#if defined RPG
+					if(RpgHasSentry(attacker)) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
+					{
+						damage = SentryDamageRpg(attacker);
+					}
+#endif
 					if(Increaced_Sentry_damage_Low[inflictor] > GameTime)
 					{
 						damage *= 1.15;

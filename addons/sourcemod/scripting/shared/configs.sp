@@ -185,16 +185,27 @@ stock float Config_GetDPSOfEntity(int entity)
 	if(address != Address_Null)
 		data.Reload *= TF2Attrib_GetValue(address);
 	
+	float clip = data.Clip;
+
+	//there is technically less clip.
+	address = TF2Attrib_GetByDefIndex(entity, 298);
+	if(address != Address_Null)
+		data.Clip *= TF2Attrib_GetValue(address);
+
 	if(!data.FullReload && TF2Attrib_GetByDefIndex(entity, 43) == Address_Null)
-		data.Reload *= data.Clip;
-	
+		data.Reload *= clip;
+
+	address = TF2Attrib_GetByDefIndex(entity, 876);
+	if(address != Address_Null)
+		data.Damage *= TF2Attrib_GetValue(address);
+		
 	// Example:
 	// 300 Damage, 2.5 Reload Time, 0.5 Fire Rate, 25 Clip
 	// onTime = 25 * 0.2 = 5
 	// onToOff = 5 / (5 + 2.5) = 2/3
 	// DPS = (300 / 0.5) * 2/3 = 400
 
-	float onTime = data.Clip * data.FireRate;		// The time we're firing our weapon
+	float onTime = clip * data.FireRate;		// The time we're firing our weapon
 	float onToOff = onTime / (onTime + data.Reload);	// The ratio of firing and reloading time
 
 	return (data.Damage / data.FireRate) * onToOff;
@@ -485,8 +496,18 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 				break;
 			}
 		}
+		val = 1.0;
+		for(i=0; i<attribs; i++)
+		{
+			if(attrib[i] == 298)
+			{
+				val = RoundFloat(value[i]);
+				break;
+			}
+		}
+		damagepersecond /= val;
 
-		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
+		Format(buffer, length, "%s\nDPS: %1.f (Aproximation, might not be accurate)", buffer, damagepersecond);
 	}
 }
 

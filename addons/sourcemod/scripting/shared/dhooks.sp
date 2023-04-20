@@ -588,7 +588,7 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 #if defined RPG
 	int weapon;
 	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
-	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true);
+	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true,_,_,FireBallBonusDamage);
 #endif
 
 #if defined ZR

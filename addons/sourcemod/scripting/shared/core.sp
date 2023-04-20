@@ -1577,7 +1577,7 @@ public void OnClientDisconnect(int client)
 	
 
 	HudSettings_ClientCookiesDisconnect(client);
-
+	char buffer[12];
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
@@ -1585,7 +1585,6 @@ public void OnClientDisconnect(int client)
 	
 	if(Scrap[client] > -1)
 	{
-		char buffer[12];
 		IntToString(Scrap[client], buffer, sizeof(buffer));
 		CookieScrap.Set(client, buffer);
 	}
@@ -1593,20 +1592,20 @@ public void OnClientDisconnect(int client)
 	
 	if(XP[client] > 0)
 	{
-		char buffer[12];
 		IntToString(XP[client], buffer, sizeof(buffer));
 		CookieXP.Set(client, buffer);
 		
-		int niko_int = 0;
-		
-		if(b_IsPlayerNiko[client])
-			niko_int = 1;
-			
-		IntToString(niko_int, buffer, sizeof(buffer));
-		Niko_Cookies.Set(client, buffer);
 	}
 	XP[client] = 0;
 #endif
+	int niko_int = 0;
+		
+	if(b_IsPlayerNiko[client])
+		niko_int = 1;
+			
+	IntToString(niko_int, buffer, sizeof(buffer));
+	Niko_Cookies.Set(client, buffer);
+
 	b_DisplayDamageHud[client] = false;
 	WeaponClass[client] = TFClass_Unknown;
 
@@ -2842,10 +2841,9 @@ public void RemoveNpcThingsAgain(int entity)
 	//incase this breaks, add a baseboss check
 #if defined ZR
 	CleanAllApplied_Aresenal(entity, true);
-	CleanAllApplied_Cryo(entity);
 	b_NpcForcepowerupspawn[entity] = 0;	
 #endif
-	
+	CleanAllApplied_Cryo(entity);	
 	i_HexCustomDamageTypes[entity] = 0;
 }
 
