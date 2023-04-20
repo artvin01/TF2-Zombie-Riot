@@ -9,8 +9,11 @@ static int i_weaponused[MAXTF2PLAYERS];
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_TELEPORT_SOUND "misc/halloween/spell_teleport.wav"
 
+static int ShortTeleportLaserIndex;
+
 public void Wand_Short_Teleport_ClearAll()
 {
+	ShortTeleportLaserIndex = PrecacheModel("materials/sprites/laser.vmt", false);
 	Zero(i_FireBallsToThrow);
 	Zero(ability_cooldown);
 }
@@ -54,6 +57,11 @@ public float AbilityShortTeleport(int client, int index, char name[48])
 float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 {
 
+	float damage;
+	
+	damage = Config_GetDPSOfEntity(weapon);
+
+	damage *= 2.0;	
 	static float startPos[3];
 	GetClientEyePosition(client, startPos);
 	float sizeMultiplier = GetEntPropFloat(client, Prop_Send, "m_flModelScale");
@@ -65,17 +73,41 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 	// don't even try if the distance is less than 82
 	float distance = GetVectorDistance(startPos, endPos);
 	if (distance < 82.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return 0.0;
+	}
 		
 	if (distance > (500.0 * level))
 		constrainDistance(startPos, endPos, distance, (500.0 * level));
 	else // shave just a tiny bit off the end position so our point isn't directly on top of a wall
 		constrainDistance(startPos, endPos, distance, distance - 1.0);
-	
+
+	float abspos[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", abspos);
+
 	if(Player_Teleport_Safe(client, endPos, startPos))
 	{
+		float Range = 100.0;
+		float Time = 0.25;
+		spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+		spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+		spawnRing_Vectors(abspos, Range * 2.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 	Time, 10.0, 8.0, 1, 1.0);	
+		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);	
+		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt",		255, 255, 255, 200, 1,		Time, 10.0, 8.0, 1,Range * 2.0);		
+		spawnRing_Vectors(endPos, 1.0, 0.0, 0.0, 70.0, "materials/sprites/laserbeam.vmt", 		255, 255, 255, 200, 1, 		Time, 10.0, 8.0, 1,Range * 2.0);		
+		abspos[2] += 40.0;
+		endPos[2] += 40.0;
+		
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+		Explode_Logic_Custom(damage, entity, entity, weapon, abspos, Range, _, _, false, _, _, _);
+		Explode_Logic_Custom(damage, entity, entity, weapon, endPos, Range, _, _, false, _, _, _);
+		FinishLagCompensation_Base_boss();
+		TE_SetupBeamPoints(abspos, endPos, ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
+		TE_SendToAll(0.0);
 		return 2.0;
 	}
+	ClientCommand(client, "playgamesound items/medshotno1.wav");
 	return 0.0;
 }
 
@@ -130,7 +162,7 @@ bool Player_Teleport_Safe(int client, float endPos[3], float startPos[3] = {0.0,
 			case 5:
 				endPos[0] -= 40.0;	
 		}
-		for (int y = 0; y < 6; y++)
+		for (int y = 0; y < 7; y++)
 		{
 			if (FoundSafeSpot)
 				break;
@@ -139,26 +171,26 @@ bool Player_Teleport_Safe(int client, float endPos[3], float startPos[3] = {0.0,
 				
 			switch(y)
 			{
-				case 0:
+				case 1:
 					endPos[1] += 20.0;
 
-				case 1:
+				case 2:
 					endPos[1] -= 20.0;
 
-				case 2:
+				case 3:
 					endPos[1] += 30.0;
 
-				case 3:
+				case 4:
 					endPos[1] -= 30.0;
 
-				case 4:
+				case 5:
 					endPos[1] += 40.0;
 
-				case 5:
+				case 6:
 					endPos[1] -= 40.0;	
 			}
 
-			for (int z = 0; z < 6; z++)
+			for (int z = 0; z < 7; z++)
 			{
 				if (FoundSafeSpot)
 					break;
@@ -167,22 +199,22 @@ bool Player_Teleport_Safe(int client, float endPos[3], float startPos[3] = {0.0,
 						
 				switch(z)
 				{
-					case 0:
+					case 1:
 						endPos[2] += 20.0;
 
-					case 1:
+					case 2:
 						endPos[2] -= 20.0;
 
-					case 2:
+					case 3:
 						endPos[2] += 30.0;
 
-					case 3:
+					case 4:
 						endPos[2] -= 30.0;
 
-					case 4:
+					case 5:
 						endPos[2] += 40.0;
 
-					case 5:
+					case 6:
 						endPos[2] -= 40.0;	
 				}
 				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))

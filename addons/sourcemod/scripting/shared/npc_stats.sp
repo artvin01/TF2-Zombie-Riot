@@ -4513,6 +4513,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 {
 	if(IsValidEntity(enemy))
 	{
+		if(b_ThisEntityIgnored[enemy])
+		{
+			return false;
+		}
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
@@ -4525,7 +4529,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 			if(camoDetection)
 			{
-				if(b_ThisEntityIgnored[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
+				if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
 				{
 					return false;
 				}
@@ -4536,7 +4540,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 			else
 			{
-				if(b_ThisEntityIgnored[enemy] || b_IsCamoNPC[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
+				if(b_IsCamoNPC[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
 				{
 					return false;
 				}

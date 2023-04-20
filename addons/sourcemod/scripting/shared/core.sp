@@ -2285,6 +2285,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
+		else if(!StrContains(classname, "instanced_scripted_scene"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);

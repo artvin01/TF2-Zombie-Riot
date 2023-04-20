@@ -3534,9 +3534,11 @@ stock void spawnRing_Vectors(float center[3],
 			 int speed,
 			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
+	float Center_Internal[3];
+	Center_Internal = center;
+	Center_Internal[0] += modif_X;
+	Center_Internal[1] += modif_Y;
+	Center_Internal[2] += modif_Z;
 			
 	int ICE_INT = PrecacheModel(sprite);
 		
@@ -3551,7 +3553,7 @@ stock void spawnRing_Vectors(float center[3],
 		endRange = range + 0.5;
 	}
 	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SetupBeamRingPoint(Center_Internal, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
 
