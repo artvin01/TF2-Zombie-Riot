@@ -6,7 +6,7 @@ static ArrayList ActiveZones;
 void Zones_PluginStart()
 {
 	// Fixes crash when reloading the plugin
-	ReqeustFrame(Zones_PluginStartFrame);
+	RequestFrame(Zones_PluginStartFrame);
 }
 
 public void Zones_PluginStartFrame()

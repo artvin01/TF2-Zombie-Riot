@@ -1235,7 +1235,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(!b_NpcIsInADungeon[victim] && Level[victim] < 100000)
 		{
 			// Reduces damage when fighting enemies higher level than you
-			int underLv = Level[attacker] - Level[victim];
+			int underLv = Level[victim] - Level[attacker];
 			if(underLv > 3)
 			{
 				damage /= Pow(float(underLv - 2), 0.5);
@@ -1776,7 +1776,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 											}
 
 										}
-										StartHealingTimer(attacker, 0.1, heal_amount, heal_ticks);
+										StartHealingTimer(attacker, 0.1, float(heal_amount), heal_ticks);
 									}
 									if(f_BackstabCooldown[weapon] != 0.0)
 									{

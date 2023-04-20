@@ -1475,7 +1475,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				
 				damage *= 0.85;
 			}
-			
 #if defined ZR
 			if(i_HealthBeforeSuit[victim] == 0)
 			{
@@ -1542,7 +1541,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif	// ZR
 			
 		}
-#if defined RPG
+#if defined RPG		
+		damage = BeserkHealthArmor_OnTakeDamage(victim, attacker, damage, damagetype);
+
 		damage = RpgCC_ContractExtrasPlayerOnTakeDamage(victim, attacker, damage, damagetype);
 #endif
 	}

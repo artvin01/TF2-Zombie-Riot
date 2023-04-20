@@ -198,7 +198,7 @@ stock float Config_GetDPSOfEntity(int entity)
 	address = TF2Attrib_GetByDefIndex(entity, 876);
 	if(address != Address_Null)
 		data.Damage *= TF2Attrib_GetValue(address);
-		
+
 	// Example:
 	// 300 Damage, 2.5 Reload Time, 0.5 Fire Rate, 25 Clip
 	// onTime = 25 * 0.2 = 5
@@ -496,7 +496,7 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 				break;
 			}
 		}
-		val = 1.0;
+		val = 1;
 		for(i=0; i<attribs; i++)
 		{
 			if(attrib[i] == 298)

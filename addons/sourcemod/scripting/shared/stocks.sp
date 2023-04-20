@@ -1105,100 +1105,130 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void StartHealingTimer(int client, float delay, int health, int amount=0, bool maxhealth=true)
+void StartHealingTimer(int entity, float delay, float health, int amount=0, bool maxhealth=true)
 {
 	DataPack pack;
 	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(client));
-	pack.WriteCell(health);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(health);
 	pack.WriteCell(maxhealth);
 	pack.WriteCell(amount);
 }
 
+static float f_IncrementalSmallHeal[MAXENTITIES];
+
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	
-	bool IsAnEntity = false;
-	
-	if(IsValidEntity(client))
-	{
-		if(client <= MAXENTITIES && client > MaxClients)
-		{
-			IsAnEntity = true;
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	
-	if(!IsAnEntity)
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity <= MaxClients)
 	{
 		
 #if defined ZR
-		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+		if(entity < 1 || !IsClientInGame(entity) || !IsPlayerAlive(entity) || dieingstate[entity] > 0)
 #else
-		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+		if(entity < 1 || !IsClientInGame(entity) || !IsPlayerAlive(entity))
 #endif
 		
 		{
 			return Plugin_Stop;
 		}
 	}
-	int current;
-	if(!IsAnEntity)
+	else if(!IsValidEntity(entity))
 	{
-		current = GetClientHealth(client);
+		return Plugin_Stop;
+	}
+
+	int lastHealth;
+	if(entity > MaxClients)
+	{
+		lastHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 	}
 	else
 	{
-		current = GetEntProp(client, Prop_Data, "m_iHealth");
+		lastHealth = GetClientHealth(entity);
 	}
+
+	// Our Current Health + Leftover Float Health + New Health Gained
+	float newHealth = float(lastHealth) + f_IncrementalSmallHeal[entity] + pack.ReadFloat();
 	
-	int health = pack.ReadCell();
-	if(pack.ReadCell())
+	if(pack.ReadCell() && newHealth > 0.0)	// Max Health Cap
 	{
-		int maxhealth;
-		if(!IsAnEntity)
+		float maxHealth;
+		if(entity > MaxClients)
 		{
-			maxhealth = SDKCall_GetMaxHealth(client);
+			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 		}
 		else
 		{
-			maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+			maxHealth = float(SDKCall_GetMaxHealth(entity));
 		}
 		
-		if(current > maxhealth)
-		{
-			health = 0;
-		}
-		else if(current+health > maxhealth)
-		{
-			health = maxhealth-current;
-		}
+		if(newHealth > maxHealth)
+			newHealth = maxHealth;
 	}
 
-	current += health;
-	if(current < 1)
+	if(newHealth >= 1.0)
 	{
-		if(!IsAnEntity)
-		{
-			ForcePlayerSuicide(client);
-		}
-	}
-	else if(current)
-	{
-		SetEntProp(client, Prop_Data, "m_iHealth", current);
-		if(!IsAnEntity)
-		{
-			if(health>1 || health<-1)
-				ApplyHealEvent(client, client, health);
-		}
-	}
+		int setHealth = RoundToFloor(newHealth);	// Health to set
 
-	current = pack.ReadCell();
+		f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
+
+		if(entity > MaxClients)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
+		}
+		else
+		{
+			SetEntityHealth(entity, setHealth);
+
+			int difference = setHealth - lastHealth;
+			ApplyHealEvent(entity, difference);	// Show healing number
+		}
+	}
+	else
+	{
+		if(entity > MaxClients)
+		{
+
+		}
+		else
+		{
+			ForcePlayerSuicide(entity);
+		}
+	}
+	
+	/*
+	int i_TargetHealAmount;
+	//The healing is less then 1 ? Do own logic.
+					
+	if (healing_Amount <= 1.0)
+	{
+		f_IncrementalSmallHeal[healTarget] += healing_Amount;
+						
+		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+		{
+			f_IncrementalSmallHeal[healTarget] -= 1.0;
+			i_TargetHealAmount = 1;
+		}
+	}
+	else
+	{
+		i_TargetHealAmount = RoundToFloor(healing_Amount);
+						
+		float Decimal_healing = FloatFraction(healing_Amount);
+						
+		f_IncrementalSmallHeal[healTarget] += Decimal_healing;
+						
+		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+		{
+			f_IncrementalSmallHeal[healTarget] -= 1.0;
+			i_TargetHealAmount += 1;
+		}
+	}
+	*/
+
+	int current = pack.ReadCell();
 	if(current < 2)
 		return Plugin_Stop;
 
@@ -1207,13 +1237,12 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void ApplyHealEvent(int patient, int healer, int amount)
+stock void ApplyHealEvent(int entindex, int amount)
 {
-	Event event = CreateEvent("player_healed", true);
+	Event event = CreateEvent("player_healonhit", true);
 
-	event.SetInt("patient", patient);
-	event.SetInt("healer", healer);
-	event.SetInt("heals", amount);
+	event.SetInt("entindex", entindex);
+	event.SetInt("amount", amount);
 
 	event.Fire();
 }

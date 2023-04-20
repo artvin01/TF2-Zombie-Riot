@@ -36,7 +36,7 @@ public void Ability_QuickReflex(int client, int level, int weapon)
 {
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(client, "partyhat", flPos, flAng);		
+	GetAttachment(client, "head", flPos, flAng);		
 	int particler = ParticleEffectAt(flPos, "scout_dodge_red", 6.0);
 	SetParent(client, particler, "head");
 
@@ -56,4 +56,5 @@ public Action Timer_UpdateMovementSpeed(Handle timer, int ref)
 		TF2Attrib_SetByDefIndex(client, 442, 1.0);
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
+	return Plugin_Handled;
 }

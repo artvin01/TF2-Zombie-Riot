@@ -1858,7 +1858,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			}
 			Give_Assist_Points(target, owner);
 			
-			StartHealingTimer(target, 0.1, ammo_amount_left/10, 10, true);
+			StartHealingTimer(target, 0.1, float(ammo_amount_left/10), 10, true);
 			
 #if defined ZR
 			Healing_done_in_total[owner] += ammo_amount_left;
