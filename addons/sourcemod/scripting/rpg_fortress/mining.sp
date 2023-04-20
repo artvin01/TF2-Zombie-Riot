@@ -139,6 +139,7 @@ enum struct MineEnum
 				Format(buffer,sizeof(buffer),this.Model);
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", buffer);
+				DispatchKeyValueFloat(entity, "modelscale", this.Scale);
 				DispatchKeyValue(entity, "solid", "6");
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2400.0);				

@@ -1451,7 +1451,7 @@ static void DropItem(int client, int index, float pos[3], int amount)
 				DispatchKeyValue(entity, "spawnflags", "6");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
-				ang[1] = kv.GetFloat("modelscale", -1.0);
+				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
 				if(ang[1] > 0.0)
 					DispatchKeyValueFloat(entity, "modelscale", ang[1]);
 

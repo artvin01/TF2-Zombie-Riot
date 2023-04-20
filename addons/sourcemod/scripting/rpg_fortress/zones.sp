@@ -5,6 +5,12 @@ static ArrayList ActiveZones;
 
 void Zones_PluginStart()
 {
+	// Fixes crash when reloading the plugin
+	ReqeustFrame(Zones_PluginStartFrame);
+}
+
+public void Zones_PluginStartFrame()
+{
 	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
 	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
