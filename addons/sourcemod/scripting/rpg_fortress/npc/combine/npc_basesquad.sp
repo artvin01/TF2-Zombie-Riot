@@ -221,6 +221,7 @@ static const char SwordsmanIdleAlert[][] =
 };
 
 static int DeathDamage[MAXENTITIES];
+static int CCFlags[MAXENTITIES];
 
 void BaseSquad_MapStart()
 {
@@ -386,6 +387,7 @@ methodmap BaseSquad < CClotBody
 		npc.m_iNoTargetCount = 0;
 		npc.m_flNextIdleSound = 0.0;
 		npc.m_flNextIdleAlertSound = 0.0;
+		npc.m_hCCFlags = 0;
 		//npc.m_flSpeed = 600.0;
 
 		//PF_SetGoalVector(npc.index, vecPos);
@@ -439,6 +441,11 @@ methodmap BaseSquad < CClotBody
 	{
 		public get()		{ return this.m_flRangedSpecialDelay; }
 		public set(float value)	{ this.m_flRangedSpecialDelay = value; }
+	}
+	property int m_hCCFlags
+	{
+		public get()		{ return CCFlags[this.index]; }
+		public set(int value) 	{ CCFlags[this.index] = value; }
 	}
 }
 

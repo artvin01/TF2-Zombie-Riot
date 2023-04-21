@@ -1873,7 +1873,7 @@ public void Dungeon_GrigoriBuff(int entity)
 
 public void Dungeon_25PercentMoreDamage(int entity)
 {
-	b_DungeonContracts_25PercentMoreDamage[entity] = true; //15% faster zombies.
+	b_DungeonContracts_25PercentMoreDamage[entity] = true;
 }
 
 public void Dungeon_FastZombies15(int entity)
