@@ -129,7 +129,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 			{
 				DamageDealt[client] = 0.0;
 			}
-			else if(DamageLastHit[client] > (gameTime + 4.0))
+			else if(DamageLastHit[client] < (gameTime - 4.0))
 			{
 				PrintCenterText(client, "");
 				DamageDealt[client] = 0.0;
