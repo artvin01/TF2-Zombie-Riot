@@ -631,7 +631,7 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 		QuestKv.GoBack();
 	}
 
-	return canTurnIn;
+	return (canTurnIn || CvarRPGInfiniteLevelAndAmmo.BoolValue);
 }
 
 public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choice)

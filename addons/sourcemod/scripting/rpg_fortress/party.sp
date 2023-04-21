@@ -44,7 +44,7 @@ void Party_PlayerModel(int client, const char[] model)
 	if(entity != -1)
 		RemoveEntity(entity);
 	
-	int entity = CreateEntityByName("tf_taunt_prop");
+	entity = CreateEntityByName("tf_taunt_prop");
 	if(IsValidEntity(entity))
 	{
 		SetEntProp(entity, Prop_Data, "m_iInitialTeamNum", 2);

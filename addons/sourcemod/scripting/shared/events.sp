@@ -384,7 +384,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
 		UpdateLevelAbovePlayerText(client);
-		Party_PlayerResupply(client);
 #endif
 	}
 }
