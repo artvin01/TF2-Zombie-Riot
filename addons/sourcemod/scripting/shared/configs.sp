@@ -109,7 +109,7 @@ void Configs_ConfigsExecuted()
 			data.Charge = kv.GetFloat("chargespeed");
 			data.Healing = kv.GetFloat("healing");
 			data.Range = kv.GetFloat("range");
-			data.FullReload = view_as<bool>(kv.GetFloat("fullload"));
+			data.FullReload = view_as<bool>(kv.GetNum("fullload"));
 			WeaponList.PushArray(data);
 		}
 	} while(kv.GotoNextKey());

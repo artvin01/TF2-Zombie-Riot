@@ -5,7 +5,7 @@
 
 static float DamageDealt[MAXTF2PLAYERS];
 static float DamageTime[MAXTF2PLAYERS];
-static float DamageLastHit[MAXTF2PLAYERS];
+static float DamageExpire[MAXTF2PLAYERS];
 static bool DamageUpdate[MAXTF2PLAYERS];
 
 static const char g_IdleSound[][] = {
@@ -129,7 +129,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 			{
 				DamageDealt[client] = 0.0;
 			}
-			else if(DamageLastHit[client] < (gameTime - 4.0))
+			else if(DamageExpire[client] < gameTime)
 			{
 				PrintCenterText(client, "");
 				DamageDealt[client] = 0.0;
@@ -186,7 +186,8 @@ public void BobTheTargetDummy_OnTakeDamagePost(int victim, int attacker, int inf
 
 		if(!DamageDealt[attacker])
 			DamageTime[attacker] = DamageLastHit[attacker];
-		
+
+		DamageLastHit[attacker] += 4.0;	
 		DamageDealt[attacker] += damage;
 		DamageUpdate[attacker] = true;
 	}
