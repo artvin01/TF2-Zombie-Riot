@@ -123,7 +123,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 			}
 			else if(DamageExpire[client] < gameTime)
 			{
-				PrintCenterText(client, "EXPIRED");
+				PrintCenterText(client, "");
 				DamageDealt[client] = 0.0;
 			}
 			else if(DamageUpdate[client])
@@ -132,7 +132,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 				if(time < 1.0)
 					time = 1.0;
 				
-				PrintCenterText(client, "Your DPS is around %.0f / %.0f!", DamageDealt[client], time);
+				PrintCenterText(client, "Your DPS is around %.0f!", DamageDealt[client] / time);
 				DamageUpdate[client] = false;
 			}
 		}
