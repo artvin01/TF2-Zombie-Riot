@@ -1183,7 +1183,8 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 			SetEntityHealth(entity, setHealth);
 
 			int difference = setHealth - lastHealth;
-			ApplyHealEvent(entity, difference);	// Show healing number
+			if(difference != -1)
+				ApplyHealEvent(entity, difference);	// Show healing number
 		}
 	}
 	else

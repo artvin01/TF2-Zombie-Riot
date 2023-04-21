@@ -53,6 +53,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/stats.sp"
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/tinker.sp"
+#include "rpg_fortress/traffic.sp"
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/npc_despawn_zone.sp"
 
@@ -87,6 +88,7 @@ void RPG_PluginStart()
 	Spawns_PluginStart();
 	Stats_PluginStart();
 	TextStore_PluginStart();
+	Traffic_PluginStart();
 	Zones_PluginStart();
 
 	CountPlayersOnRed();

@@ -105,6 +105,13 @@ static const char SwordSpecial[][] =
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
 
+static const char Overload[][] =
+{
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3"
+};
+
 static const char PoliceIdle[][] =
 {
 	"npc/metropolice/vo/catchthatbliponstabilization.wav",
@@ -235,6 +242,7 @@ void BaseSquad_MapStart()
 	PrecacheSoundArray(SwordHit);
 	PrecacheSoundArray(SwordFire);
 	PrecacheSoundArray(SwordSpecial);
+	PrecacheSoundArray(Overload);
 
 	PrecacheSoundArray(PoliceIdle);
 	PrecacheSoundArray(PoliceIdleAlert);
@@ -345,6 +353,10 @@ methodmap BaseSquad < CClotBody
 	public void PlaySwordSpecial()
 	{
 		EmitSoundToAll(SwordSpecial[GetURandomInt() % sizeof(SwordSpecial)], this.index, _, 94);
+	}
+	public void PlayOverload()
+	{
+		EmitSoundToAll(Overload[GetURandomInt() % sizeof(Overload)], this.index, _, 94);
 	}
 	public BaseSquad(float vecPos[3], float vecAng[3],
 						const char[] model,
@@ -595,7 +607,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 			npc.m_iTargetAttack = 0;
 			npc.m_iTargetWalk = 0;
 
-			if(i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameRealTime && IsValidEnemy(npc.index, i_NpcFightOwner[npc.index]))
+			if(!b_NpcIsInADungeon[npc.index] && i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameRealTime && IsValidEnemy(npc.index, i_NpcFightOwner[npc.index]))
 			{
 				npc.m_iTargetAttack = i_NpcFightOwner[npc.index];
 				npc.m_iTargetWalk = npc.m_iTargetAttack;

@@ -5857,7 +5857,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 							{
 								Heal_Amount_calc *= 3;
 							}
-							StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
+							StartHealingTimer(player, 0.1, 1.0, Heal_Amount_calc);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 							RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));

@@ -61,7 +61,7 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		StartHealingTimer(client, kv.GetFloat("interval"), kv.GetNum("healing"), kv.GetNum("amount"), !kv.GetNum("overheal"));
+		StartHealingTimer(client, kv.GetFloat("interval"), kv.GetFloat("healing"), kv.GetNum("amount"), !kv.GetNum("overheal"));
 
 		if(kv.GetNum("consume", 1))
 		{

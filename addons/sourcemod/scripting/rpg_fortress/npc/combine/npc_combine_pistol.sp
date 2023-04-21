@@ -77,7 +77,7 @@ public void CombinePistol_ClotThink(int iNPC)
 		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
 
 		bool shouldGun = !npc.m_iTargetWalk;
-		if(!shouldGun)
+		if(!shouldGun && !b_NpcIsInADungeon[npc.index])
 		{
 			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 			{

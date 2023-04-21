@@ -579,6 +579,8 @@ static void LoadItems(int client)
 	int cap = GetLevelCap(Tier[client]);
 	if(Level[client] > cap)
 		Level[client] = cap;
+	
+	Traffic_LoadItems(client);
 }
 
 void TextStore_AddXP(int client, int xp)

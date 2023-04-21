@@ -69,29 +69,33 @@ public void CombineAR2_ClotThink(int iNPC)
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(npc.m_iTargetAttack);
 
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
+
 		bool shouldGun = !npc.m_iTargetWalk;
-		if(!shouldGun)
+		if(!b_NpcIsInADungeon[npc.index])
 		{
-			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+			if(!shouldGun)
 			{
-				if(i != npc.index)
+				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 				{
-					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+					if(i != npc.index)
 					{
-						shouldGun = true;	// An ally rushing with a melee, I should cover them
-						break;
+						BaseSquad ally = view_as<BaseSquad>(i);
+						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+						{
+							shouldGun = true;	// An ally rushing with a melee, I should cover them
+							break;
+						}
 					}
 				}
 			}
-		}
 
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
-		if(!shouldGun)
-		{
-			if(distance > (npc.m_bRanged ? 70000.0 : 125000.0))	// 265, 355  HU
+			if(!shouldGun)
 			{
-				shouldGun = true;
+				if(distance > (npc.m_bRanged ? 70000.0 : 125000.0))	// 265, 355  HU
+				{
+					shouldGun = true;
+				}
 			}
 		}
 
@@ -124,7 +128,7 @@ public void CombineAR2_ClotThink(int iNPC)
 			}
 		}
 
-		if(npc.m_flNextRangedSpecialAttackHappens)
+		if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttackHappens)
 		{
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{

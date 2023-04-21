@@ -128,7 +128,7 @@ public void CombineElite_ClotThink(int iNPC)
 		}
 		else if(distance < 250000.0 || !npc.m_iTargetWalk)	// 500 HU
 		{
-			if(npc.m_flNextRangedSpecialAttack < gameTime)
+			if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttack < gameTime)
 			{
 				if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 				{
@@ -158,8 +158,11 @@ public void CombineElite_ClotThink(int iNPC)
 					int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
 					if(IsValidEnemy(npc.index, target))
 					{
-						npc.FaceTowards(vecTarget, 2000.0);
-						canWalk = false;
+						if(!b_NpcIsInADungeon[npc.index])
+						{
+							npc.FaceTowards(vecTarget, 2000.0);
+							canWalk = false;
+						}
 
 						float eyePitch[3], vecDirShooting[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -209,20 +212,23 @@ public void CombineElite_ClotThink(int iNPC)
 			npc.m_flNextMeleeAttack = gameTime + 0.95;
 			npc.m_flNextRangedAttack = gameTime + 1.15;
 			
-			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+			if(!b_NpcIsInADungeon[npc.index])
 			{
-				if(i != npc.index)
+				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 				{
-					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && IsValidAlly(npc.index, ally.index))
+					if(i != npc.index)
 					{
-						vecTarget = WorldSpaceCenter(ally.index);
-						if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
+						BaseSquad ally = view_as<BaseSquad>(i);
+						if(ally.m_bIsSquad && IsValidAlly(npc.index, ally.index))
 						{
-							ally.m_flRangedArmor = 0.00001;
-							ally.m_flMeleeArmor = 0.00001;
-							ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
-							break;
+							vecTarget = WorldSpaceCenter(ally.index);
+							if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
+							{
+								ally.m_flRangedArmor = 0.00001;
+								ally.m_flMeleeArmor = 0.00001;
+								ParticleEffectAt(vecTarget, "utaunt_bubbles_glow_green_parent", 0.5);
+								break;
+							}
 						}
 					}
 				}

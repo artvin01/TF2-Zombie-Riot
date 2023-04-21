@@ -77,15 +77,18 @@ public void CombineSwordsman_ClotThink(int iNPC)
 		{
 			bool shouldCharge = true;
 
-			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+			if(!b_NpcIsInADungeon[npc.index])
 			{
-				if(i != npc.index)
+				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 				{
-					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+					if(i != npc.index)
 					{
-						shouldCharge = false;	// An ally already attacking with melee, let them 1v1 em
-						break;
+						BaseSquad ally = view_as<BaseSquad>(i);
+						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+						{
+							shouldCharge = false;	// An ally already attacking with melee, let them 1v1 em
+							break;
+						}
 					}
 				}
 			}
