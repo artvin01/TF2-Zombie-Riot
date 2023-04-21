@@ -324,7 +324,7 @@ public Action TextStore_GiveMeAllCommand(int client, int args)
 		{
 			TextStore_GetInv(client, i, count);
 			if(count < 1)
-				TextStore_SetInv(client, i, count);
+				TextStore_SetInv(client, i, 1);
 		}
 	}
 	return Plugin_Handled;
