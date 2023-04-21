@@ -66,6 +66,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
 #include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
+#include "rpg_fortress/custom/ground_aircutter.sp"	
 #include "rpg_fortress/custom/ranged_quick_reflex.sp"
 #include "rpg_fortress/custom/ranged_sentrythrow.sp"
 #include "rpg_fortress/custom/ground_pound_melee.sp"
@@ -151,6 +152,7 @@ void RPG_MapStart()
 	SentryThrow_MapStart();
 	QuickReflex_MapStart();
 	BeserkerRageGain_Map_Precache();
+	AirCutter_Map_Precache();
 
 	
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);

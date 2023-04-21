@@ -553,9 +553,14 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);
 		
 		aoeSwing = i_EntitiesHitAtOnceMax;
-
+	
 		int target = TR_GetEntityIndex(swingTrace);	
-										
+
+		//This is here beacuse if we manipulate the eyes alot of the client, hitting with traces becomes bad, so we force them to hit.
+		if(IsValidEntity(i_EntityToAlwaysMeleeHit[client]))
+		{
+			target = i_EntityToAlwaysMeleeHit[client];
+		}						
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
 #if defined ZR		

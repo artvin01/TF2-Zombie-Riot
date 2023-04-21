@@ -211,6 +211,7 @@ bool DoingLagCompensation;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
+int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
@@ -1578,6 +1579,7 @@ public void OnClientDisconnect(int client)
 
 	HudSettings_ClientCookiesDisconnect(client);
 	char buffer[12];
+	i_EntityToAlwaysMeleeHit[client] = 0;
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;

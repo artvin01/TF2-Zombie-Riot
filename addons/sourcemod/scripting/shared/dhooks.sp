@@ -1127,10 +1127,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 {
 //	PrintToChatAll("finish lag comp");
 	//Set this to false to be sure.
-//	StartLagCompensation_Base_Boss
-//	FinishLagCompensation_Base_boss(param);
-//	int Compensator = param.Get(1);
-	
 	FinishLagCompMoveBack();
 	
 	#if defined LagCompensation
