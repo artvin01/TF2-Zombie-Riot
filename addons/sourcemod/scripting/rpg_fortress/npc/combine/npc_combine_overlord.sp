@@ -203,7 +203,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 		if(!npc.m_iTargetWalk)
 			npc.m_iTargetAttack = attacker;
 		
-		if(npc.m_iNoTargetCount > 39)
+		if(npc.m_iNoTargetCount > 69)
 			npc.m_iAttacksTillReload = 100;
 	}
 	else

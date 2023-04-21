@@ -250,8 +250,8 @@ public void ArkSinger_ClotThink(int iNPC)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 600.0);
-				npc.FireRocket(vPredictedPos, 250.0, 600.0, "models/effects/combineball.mdl");
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0);
+				npc.FireRocket(vPredictedPos, 250.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 				// Scarlet Singer (50% dmg)
 

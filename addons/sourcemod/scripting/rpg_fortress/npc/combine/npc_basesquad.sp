@@ -710,7 +710,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 			npc.StopPathing();
 		}
 	}
-	else if(++npc.m_iNoTargetCount > 19)
+	else if(++npc.m_iNoTargetCount > (teleport ? 49 : 19))
 	{
 		if(teleport && GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) > 25000.0)	// 158 HU
 		{

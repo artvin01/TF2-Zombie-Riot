@@ -231,7 +231,6 @@ public void ArkSlug_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						
-						int maxhealth = target > MaxClients ? GetEntProp(target, Prop_Data, "m_iMaxHealth") : SDKCall_GetMaxHealth(target);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 92.5, DMG_CLUB);
 						Stats_AddOriginium(target, 1);
 						// Originium Slug α (50% dmg)
