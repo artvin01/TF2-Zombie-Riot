@@ -700,7 +700,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 void TextStore_ZoneEnter(int client, const char[] name)
 {
 	static StoreEnum store;
-	if(StoreList.GetArray(name, store, sizeof(store)) && (store.Key[0] && TextStore_GetItemCount(client, store.Key[0])))
+	if(StoreList.GetArray(name, store, sizeof(store)))
 	{
 		if(store.EntRef == INVALID_ENT_REFERENCE)
 		{
@@ -708,35 +708,42 @@ void TextStore_ZoneEnter(int client, const char[] name)
 			StoreList.SetArray(name, store, sizeof(store));
 		}
 
-		store.PlayEnter(client);
-		strcopy(InStore[client], sizeof(InStore[]), name);
-		strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
-
-		if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
+		if(store.Key[0] && TextStore_GetItemCount(client, store.Key[0]))
 		{
-			MarketKv.Rewind();
-			if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
-			{
-				if(MarketKv.GotoFirstSubKey())
-				{
-					do
-					{
-						int cash = MarketKv.GetNum("cash");
-						MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
-						SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
-						TextStore_Cash(client, cash);
-					}
-					while(MarketKv.GotoNextKey());
-
-					MarketKv.GoBack();
-				}
-
-				MarketKv.DeleteThis();
-				SaveMarket(client);
-			}
+			SPrintToChat(client, "You require \"%s\" to use this shop", store.Key);
 		}
-		
-		FakeClientCommand(client, "sm_buy");
+		else
+		{
+			store.PlayEnter(client);
+			strcopy(InStore[client], sizeof(InStore[]), name);
+			strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
+
+			if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
+			{
+				MarketKv.Rewind();
+				if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
+				{
+					if(MarketKv.GotoFirstSubKey())
+					{
+						do
+						{
+							int cash = MarketKv.GetNum("cash");
+							MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
+							SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
+							TextStore_Cash(client, cash);
+						}
+						while(MarketKv.GotoNextKey());
+
+						MarketKv.GoBack();
+					}
+
+					MarketKv.DeleteThis();
+					SaveMarket(client);
+				}
+			}
+			
+			FakeClientCommand(client, "sm_buy");
+		}
 	}
 }
 
