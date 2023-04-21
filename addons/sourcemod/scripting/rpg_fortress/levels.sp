@@ -38,7 +38,7 @@ int Levels_GetSpawnPoint(int client)
 	return StringToInt(buffer);
 }
 
-void Levels_SetSpawnPoint(int client, int point)
+bool Levels_SetSpawnPoint(int client, int point)
 {
 	if(Tier[client] < point)
 		return false;
@@ -46,6 +46,7 @@ void Levels_SetSpawnPoint(int client, int point)
 	char buffer[6];
 	IntToString(point, buffer, sizeof(buffer));
 	SpawnCookie.Set(client, buffer);
+	return true;
 }
 
 public Action Levels_Command(int client, int args)
