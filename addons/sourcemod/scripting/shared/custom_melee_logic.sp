@@ -326,7 +326,7 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 }
 */
 
-#define MELEE_RANGE 100
+#define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
 stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
@@ -394,10 +394,11 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		{
 			// See if we hit anything.
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+			if ( TR_GetFraction(trace) >= 1.0)
 			{
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
 			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}	
 		}
@@ -405,10 +406,11 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		{
 			// See if we hit anything.
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTraceAlly, client );
-			if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+			if ( TR_GetFraction(trace) >= 1.0)
 			{
 				delete trace;
 				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTraceAlly, client );
+				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
 			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}			
 		}		
@@ -425,12 +427,13 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		if(b_iHitNothing) //aaa panic
 		{
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
-			if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+			if ( TR_GetFraction(trace) >= 1.0)
 			{
-				if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+				if ( TR_GetFraction(trace) >= 1.0)
 				{
 					delete trace;
 					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
 				//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 				}
 			}
@@ -550,9 +553,14 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);
 		
 		aoeSwing = i_EntitiesHitAtOnceMax;
-
+	
 		int target = TR_GetEntityIndex(swingTrace);	
-										
+
+		//This is here beacuse if we manipulate the eyes alot of the client, hitting with traces becomes bad, so we force them to hit.
+		if(IsValidEntity(i_EntityToAlwaysMeleeHit[client]))
+		{
+			target = i_EntityToAlwaysMeleeHit[client];
+		}						
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
 #if defined ZR		
@@ -668,7 +676,25 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				pack_boom.WriteCell(1);
 				RequestFrame(MakeExplosionFrameLater, pack_boom);
 			}
-				
+			delete swingTrace;
+			//only if we did not hit an enemy.
+			if(!IsValidEnemy(client, target, true, true))
+			{
+				float pos[3];
+				float angles[3];
+				GetClientEyeAngles(client, angles);
+				GetClientEyePosition(client, pos);
+				float impactEndPos[3];
+				GetAngleVectors(angles, impactEndPos, NULL_VECTOR, NULL_VECTOR);
+				ScaleVector(impactEndPos, MELEE_RANGE);
+				AddVectors(impactEndPos, vecHit, impactEndPos);
+
+				TR_TraceRayFilter(vecHit, impactEndPos, MASK_SHOT_HULL, RayType_EndPoint, BulletAndMeleeTrace, client);
+				if(TR_DidHit())
+				{
+					UTIL_ImpactTrace(client, pos, DMG_CLUB);
+				}
+			}
 		}
 		delete swingTrace;
 		FinishLagCompensation_Base_boss();
@@ -695,3 +721,111 @@ static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)
 	}
 	return false;
 }
+
+void FindHullIntersection(const float vecSrc[3], Handle &tr, const float mins[3], const float maxs[3], int client)
+{
+	Handle tmpTrace;
+	float vecEnd[3];
+	float distance = FAR_FUTURE;
+	float vecHullEnd[3];
+	TR_GetEndPosition(vecHullEnd, tr);
+
+	for(int repeat; repeat < 3; repeat++)
+	{
+		vecHullEnd[repeat] = vecSrc[repeat] + ((vecHullEnd[repeat] - vecSrc[repeat])*2);
+	}
+				
+	tmpTrace = TR_TraceRayFilterEx(vecSrc, vecHullEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client);
+	//UTIL_TraceLine( vecSrc, vecHullEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
+
+	if(TR_GetFraction(tmpTrace) < 1.0)
+	{
+		delete tr;
+		tr = tmpTrace;
+		return;
+	}
+
+	delete tmpTrace;
+
+	for(int i; i < 2; i++)
+	{
+		for(int j; j < 2; j++)
+		{
+			for(int k; k < 2; k++)
+			{
+				vecEnd[0] = vecHullEnd[0] + (i ? maxs[0] : mins[0]);
+				vecEnd[1] = vecHullEnd[1] + (j ? maxs[1] : mins[1]);
+				vecEnd[2] = vecHullEnd[2] + (k ? maxs[2] : mins[2]);
+
+				tmpTrace = TR_TraceRayFilterEx(vecSrc, vecEnd, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTrace, client);
+				//UTIL_TraceLine( vecSrc, vecEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
+				
+				if(TR_GetFraction(tmpTrace) < 1.0)
+				{
+					TR_GetEndPosition(vecEnd, tmpTrace);
+					float thisDistance = GetVectorDistance(vecEnd, vecSrc, true);
+					if(thisDistance < distance)
+					{
+						delete tr;
+						tr = tmpTrace;
+						distance = thisDistance;
+					}
+					else
+					{
+						delete tmpTrace;
+					}
+				}
+				else
+				{
+					delete tmpTrace;
+				}
+			}
+		}
+	}
+}
+
+/*
+
+void FindHullIntersection( const Vector &vecSrc, trace_t &tr, const Vector &mins, const Vector &maxs, CBaseEntity *pEntity )
+{
+	int	i, j, k;
+	trace_t tmpTrace;
+	Vector vecEnd;
+	float distance = 1e6f;
+	Vector minmaxs[2] = {mins, maxs};
+	Vector vecHullEnd = tr.endpos;
+
+	vecHullEnd = vecSrc + ((vecHullEnd - vecSrc)*2);
+	UTIL_TraceLine( vecSrc, vecHullEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
+	if ( tmpTrace.fraction < 1.0 )
+	{
+		tr = tmpTrace;
+		return;
+	}
+
+	for ( i = 0; i < 2; i++ )
+	{
+		for ( j = 0; j < 2; j++ )
+		{
+			for ( k = 0; k < 2; k++ )
+			{
+				vecEnd.x = vecHullEnd.x + minmaxs[i][0];
+				vecEnd.y = vecHullEnd.y + minmaxs[j][1];
+				vecEnd.z = vecHullEnd.z + minmaxs[k][2];
+
+				UTIL_TraceLine( vecSrc, vecEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
+				if ( tmpTrace.fraction < 1.0 )
+				{
+					float thisDistance = (tmpTrace.endpos - vecSrc).Length();
+					if ( thisDistance < distance )
+					{
+						tr = tmpTrace;
+						distance = thisDistance;
+					}
+				}
+			}
+		}
+	}
+}
+
+*/

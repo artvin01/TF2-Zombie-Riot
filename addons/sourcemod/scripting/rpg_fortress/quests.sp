@@ -391,6 +391,8 @@ void Quests_MainMenu(int client, const char[] name)
 
 static void MainMenu(int client)
 {
+	TextStore_DepositBackpack(client, false);
+	
 	SaveKv.Rewind();
 	SaveKv.JumpToKey(CurrentNPC[client], true);
 	
@@ -440,18 +442,6 @@ static void MainMenu(int client)
 						}
 						default:
 						{
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
-							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
 							PrintToChatAll("INVALID QUEST STATUSSSSSSSS REPORTME!!!!!!");
 						}
 					}

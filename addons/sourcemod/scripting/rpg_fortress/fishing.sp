@@ -8,11 +8,11 @@ static const char FishingLevels[MAX_FISH_TIER][] =
 	"Leaf (0)",
 	"Feather (1)",
 	"Silk (2)",
+	"Silk (2)",
 	"Wire (3)",
 	"IV Cable (4)",
 	"Carving Tool (5)",
-	"MV Cable (6)",
-	"HV Cable (7)"
+	"MV Cable (6)"
 };
 
 #define SHALLOW_WATER_POS_LIMIT 30.0

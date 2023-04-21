@@ -5,6 +5,12 @@ static ArrayList ActiveZones;
 
 void Zones_PluginStart()
 {
+	// Fixes crash when reloading the plugin
+	RequestFrame(Zones_PluginStartFrame);
+}
+
+public void Zones_PluginStartFrame()
+{
 	HookEntityOutput("trigger_multiple", "OnStartTouch", Zones_StartTouch);
 	HookEntityOutput("trigger_multiple", "OnStartTouchAll", Zones_StartTouchAll);
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Zones_EndTouch);
@@ -27,7 +33,7 @@ void Zones_ResetAll()
 	delete ActiveZones;
 	ActiveZones = new ArrayList(ByteCountToCells(32));
 	
-	char name[32];
+	/*char name[32];
 	HookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
 	
 	int entity = -1;
@@ -37,7 +43,7 @@ void Zones_ResetAll()
 			AcceptEntityInput(entity, "TouchTest", entity, entity);
 	}
 	
-	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);
+	UnhookEntityOutput("trigger_multiple", "OnTouching", Zones_StartTouchAll);*/
 }
 
 static void OnEnter(int entity, const char[] name)

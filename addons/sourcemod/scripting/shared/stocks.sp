@@ -952,10 +952,8 @@ stock bool AreVectorsEqual(const float vVec1[3], const float vVec2[3])
 public Action Timer_RemoveEntity(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity>MaxClients)
+	if(IsValidEntity(entity))
 	{
-		
-		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
 	return Plugin_Stop;
@@ -1107,100 +1105,131 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void StartHealingTimer(int client, float delay, int health, int amount=0, bool maxhealth=true)
+void StartHealingTimer(int entity, float delay, float health, int amount=0, bool maxhealth=true)
 {
 	DataPack pack;
 	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(client));
-	pack.WriteCell(health);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(health);
 	pack.WriteCell(maxhealth);
 	pack.WriteCell(amount);
 }
 
+static float f_IncrementalSmallHeal[MAXENTITIES];
+
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	
-	bool IsAnEntity = false;
-	
-	if(IsValidEntity(client))
-	{
-		if(client <= MAXENTITIES && client > MaxClients)
-		{
-			IsAnEntity = true;
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	
-	if(!IsAnEntity)
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity <= MaxClients)
 	{
 		
 #if defined ZR
-		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+		if(entity < 1 || !IsClientInGame(entity) || !IsPlayerAlive(entity) || dieingstate[entity] > 0)
 #else
-		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+		if(entity < 1 || !IsClientInGame(entity) || !IsPlayerAlive(entity))
 #endif
 		
 		{
 			return Plugin_Stop;
 		}
 	}
-	int current;
-	if(!IsAnEntity)
+	else if(!IsValidEntity(entity))
 	{
-		current = GetClientHealth(client);
+		return Plugin_Stop;
+	}
+
+	int lastHealth;
+	if(entity > MaxClients)
+	{
+		lastHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 	}
 	else
 	{
-		current = GetEntProp(client, Prop_Data, "m_iHealth");
+		lastHealth = GetClientHealth(entity);
 	}
+
+	// Our Current Health + Leftover Float Health + New Health Gained
+	float newHealth = float(lastHealth) + f_IncrementalSmallHeal[entity] + pack.ReadFloat();
 	
-	int health = pack.ReadCell();
-	if(pack.ReadCell())
+	if(pack.ReadCell() && newHealth > 0.0)	// Max Health Cap
 	{
-		int maxhealth;
-		if(!IsAnEntity)
+		float maxHealth;
+		if(entity > MaxClients)
 		{
-			maxhealth = SDKCall_GetMaxHealth(client);
+			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 		}
 		else
 		{
-			maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+			maxHealth = float(SDKCall_GetMaxHealth(entity));
 		}
 		
-		if(current > maxhealth)
-		{
-			health = 0;
-		}
-		else if(current+health > maxhealth)
-		{
-			health = maxhealth-current;
-		}
+		if(newHealth > maxHealth)
+			newHealth = maxHealth;
 	}
 
-	current += health;
-	if(current < 1)
+	if(newHealth >= 1.0)
 	{
-		if(!IsAnEntity)
-		{
-			ForcePlayerSuicide(client);
-		}
-	}
-	else if(current)
-	{
-		SetEntProp(client, Prop_Data, "m_iHealth", current);
-		if(!IsAnEntity)
-		{
-			if(health>1 || health<-1)
-				ApplyHealEvent(client, client, health);
-		}
-	}
+		int setHealth = RoundToFloor(newHealth);	// Health to set
 
-	current = pack.ReadCell();
+		f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
+
+		if(entity > MaxClients)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
+		}
+		else
+		{
+			SetEntityHealth(entity, setHealth);
+
+			int difference = setHealth - lastHealth;
+			if(difference != -1)
+				ApplyHealEvent(entity, difference);	// Show healing number
+		}
+	}
+	else
+	{
+		if(entity > MaxClients)
+		{
+
+		}
+		else
+		{
+			ForcePlayerSuicide(entity);
+		}
+	}
+	
+	/*
+	int i_TargetHealAmount;
+	//The healing is less then 1 ? Do own logic.
+					
+	if (healing_Amount <= 1.0)
+	{
+		f_IncrementalSmallHeal[healTarget] += healing_Amount;
+						
+		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+		{
+			f_IncrementalSmallHeal[healTarget] -= 1.0;
+			i_TargetHealAmount = 1;
+		}
+	}
+	else
+	{
+		i_TargetHealAmount = RoundToFloor(healing_Amount);
+						
+		float Decimal_healing = FloatFraction(healing_Amount);
+						
+		f_IncrementalSmallHeal[healTarget] += Decimal_healing;
+						
+		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+		{
+			f_IncrementalSmallHeal[healTarget] -= 1.0;
+			i_TargetHealAmount += 1;
+		}
+	}
+	*/
+
+	int current = pack.ReadCell();
 	if(current < 2)
 		return Plugin_Stop;
 
@@ -1209,13 +1238,12 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void ApplyHealEvent(int patient, int healer, int amount)
+stock void ApplyHealEvent(int entindex, int amount)
 {
-	Event event = CreateEvent("player_healed", true);
+	Event event = CreateEvent("player_healonhit", true);
 
-	event.SetInt("patient", patient);
-	event.SetInt("healer", healer);
-	event.SetInt("heals", amount);
+	event.SetInt("entindex", entindex);
+	event.SetInt("amount", amount);
 
 	event.Fire();
 }
@@ -1488,12 +1516,10 @@ stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.
 {
 	//allow settings for the sick who cant handle screenshake.
 	//can cause headaches.
-#if defined ZR
 	if(!b_HudScreenShake[client])
 	{
 		return false;
 	}
-#endif
 	if (command == SHAKE_STOP) {
 		amplitude = 0.0;
 	}
@@ -2454,6 +2480,10 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1; //I dont exist?
 	}
+	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[owner_projectile])
+	{
+		return -1; //Im about to be deleted.
+	}
 	if(other_entity == 0)
 	{
 		return 0;
@@ -2759,9 +2789,9 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 	//Im lazy and dumb, i dont know a better way.
 	for (int repeatloop = 0; repeatloop <= maxtargetshit; repeatloop++)
 	{
-		static int ClosestTarget;
-		static float ClosestDistance;
-		static int indexTraced;
+		int ClosestTarget;
+		float ClosestDistance;
+		int indexTraced;
 		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
 			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
@@ -2821,6 +2851,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
 			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
+			float GetBeforeDamage;
 			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallBeforeHit);
@@ -2828,7 +2859,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				Call_PushCell(ClosestTarget);
 				Call_PushFloat(damage_1 / damage_reduction);
 				Call_PushCell(weapon);
-				Call_Finish();
+				Call_Finish(GetBeforeDamage);
 			}
 			if(damage > 0)
 			{
@@ -2842,6 +2873,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 						damage_flags |= DMG_SLASH; 
 					}
 				}
+				damage_1 += GetBeforeDamage;
 				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
@@ -3534,9 +3566,11 @@ stock void spawnRing_Vectors(float center[3],
 			 int speed,
 			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
+	float Center_Internal[3];
+	Center_Internal = center;
+	Center_Internal[0] += modif_X;
+	Center_Internal[1] += modif_Y;
+	Center_Internal[2] += modif_Z;
 			
 	int ICE_INT = PrecacheModel(sprite);
 		
@@ -3551,7 +3585,7 @@ stock void spawnRing_Vectors(float center[3],
 		endRange = range + 0.5;
 	}
 	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SetupBeamRingPoint(Center_Internal, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
 
@@ -3690,10 +3724,8 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 
 	float HudY = 0.75;
 	float HudX = -1.0;
-#if defined ZR
 	HudX += f_NotifHudOffsetY[client];
 	HudY += f_NotifHudOffsetX[client];
-#endif
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 
@@ -4228,4 +4260,75 @@ void DoClientHitmarker(int client)
 		ShowHudText(client, -1, "X");
 		f_HitmarkerSameFrame[client] = GetGameTime();	
 	}
+}
+
+
+/*
+	taken from 
+	https://github.com/Daisreich/customguns-tf/blob/4b7b0eed2b2847052e11e7cb015b4ad05df5b2d6/scripting/include/customguns/stocks.inc#L503
+
+*/
+
+stock void UTIL_ImpactTrace(int  client , const float start[3], int iDamageType, const char[] pCustomImpactName = "Impact")
+{
+	if(TR_GetEntityIndex() == -1 || TR_GetFraction() == 1.0)
+	{ 
+		//+check sky
+		return;
+	}
+	float origin[3]; TR_GetEndPosition(origin);
+
+	TE_SetupEffectDispatch(origin, start, NULL_VECTOR, NULL_VECTOR, 0, 0.0, 1.0, 0, 0,
+		getEffectDispatchStringTableIndex(pCustomImpactName), 0, iDamageType, TR_GetHitGroup(), TR_GetEntityIndex(), 0, 0.0, false,
+		NULL_VECTOR, NULL_VECTOR, false, 0, NULL_VECTOR);
+	TE_SendToAll();
+}
+
+
+stock void TE_SetupEffectDispatch(const float origin[3], const float start[3], const float angles[3], const float normal[3],
+	int flags, float magnitude, float scale, int attachmentIndex, int surfaceProp, int effectName, int material, int damageType,
+	int hitbox, int entindex, int color, float radius, bool customColors, const float customColor1[3], const float customColor2[3],
+	bool controlPoint1, int cp1ParticleAttachment, const float cp1Offset[3])
+{
+	TE_Start("EffectDispatch");
+	TE_WriteFloat("m_vOrigin[0]", origin[0]);
+	TE_WriteFloat("m_vOrigin[1]", origin[1]);
+	TE_WriteFloat("m_vOrigin[2]", origin[2]);
+	TE_WriteFloat("m_vStart[0]", start[0]);
+	TE_WriteFloat("m_vStart[1]", start[1]);
+	TE_WriteFloat("m_vStart[2]", start[2]);
+	TE_WriteVector("m_vAngles", angles);
+	TE_WriteVector("m_vNormal", normal);
+	TE_WriteNum("m_fFlags", flags);
+	TE_WriteFloat("m_flMagnitude", magnitude);
+	TE_WriteFloat("m_flScale", scale);
+	TE_WriteNum("m_nAttachmentIndex", attachmentIndex);
+	TE_WriteNum("m_nSurfaceProp", surfaceProp);
+	TE_WriteNum("m_iEffectName", effectName);
+	TE_WriteNum("m_nMaterial", material);
+	TE_WriteNum("m_nDamageType", damageType);
+	TE_WriteNum("m_nHitBox", hitbox);
+	TE_WriteNum("entindex", entindex);
+	TE_WriteNum("m_nColor", color);
+	TE_WriteFloat("m_flRadius", radius);
+	TE_WriteNum("m_bCustomColors", customColors);
+	//TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
+	//TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
+	TE_WriteNum("m_bControlPoint1", controlPoint1);
+	TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", cp1ParticleAttachment);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", cp1Offset[0]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", cp1Offset[1]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", cp1Offset[2]);
+}
+
+stock int getEffectDispatchStringTableIndex(const char[] effectName){
+	static int table = INVALID_STRING_TABLE;
+	if(table == INVALID_STRING_TABLE){
+		table = FindStringTable("EffectDispatch");
+	}
+	int index;
+	if( (index = FindStringIndex(table, effectName)) != INVALID_STRING_INDEX)
+		return index;
+	AddToStringTable(table, effectName);
+	return FindStringIndex(table, effectName);
 }

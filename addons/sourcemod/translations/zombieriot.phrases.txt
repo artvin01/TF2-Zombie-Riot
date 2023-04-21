@@ -1852,6 +1852,10 @@
 	{
 		"en"		"Yes, set me to Level 5"
 	}
+	"nothing"
+	{
+		"en" 		"Example Text!"
+	}
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."

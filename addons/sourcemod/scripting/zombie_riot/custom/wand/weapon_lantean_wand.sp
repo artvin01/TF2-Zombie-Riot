@@ -597,7 +597,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand_Lanteen(Handle timer, Data
 public Action lantean_Wand_Touch_World(int entity, int other)
 {
 	//If it touches world.
-	if(other == 0)
+	if(other == 0 && !b_ThisEntityIgnoredEntirelyFromAllCollisions[entity])
 	{
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		if(fl_lantean_Wand_Drone_Life[entity] < GetGameTime())
@@ -618,6 +618,7 @@ public Action lantean_Wand_Touch_World(int entity, int other)
 				case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 			}
 			RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity));
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 			lantean_Wand_Drone_Count[owner] -= 1;
 		}
 	}
@@ -680,6 +681,7 @@ public void lantean_Wand_Touch(int entity, int other)
 			if(i_drone_targets_penetrated[entity] >= i_lantean_max_penetration[entity])
 			{
 				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity));
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 				lantean_Wand_Drone_Count[owner] -= 1;
 				if(IsValidEntity(particle))
 				{

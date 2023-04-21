@@ -211,6 +211,7 @@ bool DoingLagCompensation;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
+int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
@@ -222,6 +223,8 @@ ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 Cookie Niko_Cookies;
+Cookie HudSettings_Cookies;
+Cookie HudSettingsExtra_Cookies;
 
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
@@ -270,6 +273,7 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPreivous[MAXENTITIES];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
+int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 float f_ClientReviveDelay[MAXENTITIES];
 
@@ -290,6 +294,21 @@ float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS];
+
+float f_ArmorHudOffsetX[MAXTF2PLAYERS];
+float f_ArmorHudOffsetY[MAXTF2PLAYERS];
+
+float f_HurtHudOffsetX[MAXTF2PLAYERS];
+float f_HurtHudOffsetY[MAXTF2PLAYERS];
+
+float f_WeaponHudOffsetX[MAXTF2PLAYERS];
+float f_WeaponHudOffsetY[MAXTF2PLAYERS];
+
+float f_NotifHudOffsetX[MAXTF2PLAYERS];
+float f_NotifHudOffsetY[MAXTF2PLAYERS];
+
+bool b_HudScreenShake[MAXTF2PLAYERS];
+bool b_HudLowHealthShake[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -471,8 +490,11 @@ Function EntityFuncReload4[MAXENTITIES];
 
 int i_assist_heal_player[MAXTF2PLAYERS];
 float f_assist_heal_player_time[MAXTF2PLAYERS];
+float f_ClientMusicVolume[MAXTF2PLAYERS];
+float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 
 #if defined RPG
+int Level[MAXENTITIES];
 bool b_DungeonContracts_BleedOnHit[MAXENTITIES];
 bool b_DungeonContracts_FlatDamageIncreace5[MAXTF2PLAYERS];
 bool b_DungeonContracts_ZombieSpeedTimes3[MAXENTITIES];
@@ -834,7 +856,7 @@ char g_RobotStepSound[][] = {
 };
 
 char g_TankStepSound[][] = {
-	"infected_riot/tank/tank_walk_1.mp3",
+	"infected_riot/tank/tank_walk_1_fix.mp3",
 };
 
 float f_ArrowDamage[MAXENTITIES];
@@ -1152,7 +1174,10 @@ public void OnPluginStart()
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
-		
+
+	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
+	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -1283,7 +1308,6 @@ public void OnMapStart()
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
-	
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -1498,6 +1522,8 @@ public void OnClientPutInServer(int client)
 
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
+
+	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
 }
 
@@ -1534,8 +1560,8 @@ public void OnClientCookiesCached(int client)
 	}
 
 	
-#if defined ZR
 	HudSettings_ClientCookiesCached(client);
+#if defined ZR
 	Store_ClientCookiesCached(client);
 	LeftForDead_ClientCookiesCached(client);
 #endif
@@ -1550,15 +1576,17 @@ public void OnClientDisconnect(int client)
 	FileNetwork_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
-#if defined ZR
+
 	HudSettings_ClientCookiesDisconnect(client);
+	char buffer[12];
+	i_EntityToAlwaysMeleeHit[client] = 0;
+#if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
 	
 	if(Scrap[client] > -1)
 	{
-		char buffer[12];
 		IntToString(Scrap[client], buffer, sizeof(buffer));
 		CookieScrap.Set(client, buffer);
 	}
@@ -1566,20 +1594,20 @@ public void OnClientDisconnect(int client)
 	
 	if(XP[client] > 0)
 	{
-		char buffer[12];
 		IntToString(XP[client], buffer, sizeof(buffer));
 		CookieXP.Set(client, buffer);
 		
-		int niko_int = 0;
-		
-		if(b_IsPlayerNiko[client])
-			niko_int = 1;
-			
-		IntToString(niko_int, buffer, sizeof(buffer));
-		Niko_Cookies.Set(client, buffer);
 	}
 	XP[client] = 0;
 #endif
+	int niko_int = 0;
+		
+	if(b_IsPlayerNiko[client])
+		niko_int = 1;
+			
+	IntToString(niko_int, buffer, sizeof(buffer));
+	Niko_Cookies.Set(client, buffer);
+
 	b_DisplayDamageHud[client] = false;
 	WeaponClass[client] = TFClass_Unknown;
 
@@ -2108,46 +2136,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			if(!StrContains(classname, "tf_weapon_knife") && i_InternalMeleeTrace[weapon])
 			{
-				Handle swingTrace;
-				b_LagCompNPC_No_Layers = true;
-				float vecSwingForward[3];
-				StartLagCompensation_Base_Boss(client);
-				DoSwingTrace_Custom(swingTrace, client, vecSwingForward);
-				FinishLagCompensation_Base_boss();
-				int target = TR_GetEntityIndex(swingTrace);	
-										
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);	
-					
-				int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
-
-				if(soundIndex > 0)
-				{
-					char SoundStringToPlay[256];
-					SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
-					EmitGameSoundToAll(SoundStringToPlay, client);
-				}
-					
-				if(target > 0)
-				{
-				//	PrintToChatAll("%i",MELEE_HIT);
-				//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
-				// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
-					float damage = 40.0;
-					
-					Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-					if(address != Address_Null)
-						damage *= TF2Attrib_GetValue(address);
-						
-					
-					address = TF2Attrib_GetByDefIndex(weapon, 1);
-					if(address != Address_Null)
-						damage *= TF2Attrib_GetValue(address);
-						
-					SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit, false); //, CalculateBulletDamageForce(m_vecDirShooting, 1.0));	
-				}
-				delete swingTrace;
+				DataPack pack = new DataPack();
+				pack.WriteCell(GetClientUserId(client));
+				pack.WriteCell(EntIndexToEntRef(weapon));
+				pack.WriteString(classname);
+				Timer_Do_Melee_Attack(pack);
 			}
 			else if(i_InternalMeleeTrace[weapon])
 			{
@@ -2292,6 +2285,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		if(!StrContains(classname, "env_entity_dissolver"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "instanced_scripted_scene"))
+		{
+			b_ThisEntityIgnored[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
@@ -2846,10 +2843,9 @@ public void RemoveNpcThingsAgain(int entity)
 	//incase this breaks, add a baseboss check
 #if defined ZR
 	CleanAllApplied_Aresenal(entity, true);
-	CleanAllApplied_Cryo(entity);
 	b_NpcForcepowerupspawn[entity] = 0;	
 #endif
-	
+	CleanAllApplied_Cryo(entity);	
 	i_HexCustomDamageTypes[entity] = 0;
 }
 
@@ -3159,4 +3155,32 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
+}
+
+//ty miku for tellingg
+
+float ClientMusicVolume(int client)
+{
+	return f_ClientMusicVolume[client];
+}
+
+public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
+}
+
+public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+	{
+		if(f_BegPlayerToSetDuckConvar[client] < GetGameTime())
+		{
+			f_BegPlayerToSetDuckConvar[client] = GetGameTime() + 300.0;
+			if(StringToFloat(cvarValue) < 0.9)
+			{
+				PrintToChat(client,"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!");
+			}
+		}
+	}
 }

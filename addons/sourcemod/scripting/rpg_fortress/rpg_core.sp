@@ -5,10 +5,14 @@
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
 
+enum
+{
+	WEAPON_STUNSTICK = 1
+}
+
 bool DisabledDownloads[MAXTF2PLAYERS];
 
 int Tier[MAXTF2PLAYERS];
-int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 
 char StoreWeapon[MAXENTITIES][48];
@@ -49,6 +53,7 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/stats.sp"
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/tinker.sp"
+#include "rpg_fortress/traffic.sp"
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/npc_despawn_zone.sp"
 
@@ -56,13 +61,21 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_wand_fire_ball.sp"
+#include "rpg_fortress/custom/wand/weapon_short_teleport.sp"
+#include "rpg_fortress/custom/wand/weapon_icicles.sp"
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
+#include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
+#include "rpg_fortress/custom/ground_aircutter.sp"	
+#include "rpg_fortress/custom/ranged_quick_reflex.sp"
+#include "rpg_fortress/custom/ranged_sentrythrow.sp"
 #include "rpg_fortress/custom/ground_pound_melee.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
+#include "rpg_fortress/custom/weapon_semi_auto.sp"
+#include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
 
 void RPG_PluginStart()
 {
@@ -76,6 +89,7 @@ void RPG_PluginStart()
 	Spawns_PluginStart();
 	Stats_PluginStart();
 	TextStore_PluginStart();
+	Traffic_PluginStart();
 	Zones_PluginStart();
 
 	CountPlayersOnRed();
@@ -126,11 +140,22 @@ void RPG_MapStart()
 	Wand_Lightning_Map_Precache();
 	GroundSlam_Map_Precache();
 	Wand_FireBall_Map_Precache();
+	Wand_Short_Teleport_Map_Precache();
 	Mortar_MapStart();
 	BoomStick_MapPrecache();
 	Medigun_PersonOnMapStart();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
 	Wand_Arts_MapStart();
+
+	RpgPluginStart_Store();
+	Wand_IcicleShard_Map_Precache();
+	SentryThrow_MapStart();
+	QuickReflex_MapStart();
+	BeserkerRageGain_Map_Precache();
+	AirCutter_Map_Precache();
+
+	
+	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 void RPG_MapEnd()
@@ -191,6 +216,7 @@ void RPG_ClientDisconnect(int client)
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
 	MudrockShieldDisconnect(client);
+	BeserkHealthArmorDisconnect(client);
 }
 
 void RPG_ClientDisconnect_Post()
@@ -230,4 +256,32 @@ public void CheckAlivePlayersforward(int killed)
 void CheckAlivePlayers(int killed = 0)
 {
 	Dungeon_CheckAlivePlayers(killed);
+}
+
+
+public Action CheckClientConvars(Handle timer)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
+			{
+				if(IsFakeClient(client))
+				{
+					KickClient(client);	
+				}
+				else
+				{
+					ClientCommand(client, "retry");
+				}
+			}
+			else if(!IsFakeClient(client))
+			{
+				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //snd_musicvolume
+				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //snd_ducktovolume
+			}
+		}
+	}
+	return Plugin_Continue;
 }

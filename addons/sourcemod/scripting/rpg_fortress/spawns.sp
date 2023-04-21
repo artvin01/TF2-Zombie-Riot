@@ -440,11 +440,11 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 				
 				if(i_CreditsOnKill[entity])
 				{
-					if(i_CreditsOnKill[entity] > 199)
+					if(i_CreditsOnKill[entity] > 49)
 					{
 						TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
 					}
-					else if(i_CreditsOnKill[entity] > 49)
+					else if(i_CreditsOnKill[entity] > 14)
 					{
 						if(GetURandomInt() % 2)
 							TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);

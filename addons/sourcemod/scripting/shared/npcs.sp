@@ -965,10 +965,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
+				
+#if defined ZR
 				if(b_ThisNpcIsSawrunner[victim])
 				{
 					damage *= 2.0;
 				}
+#endif
+
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 2.0;
@@ -1198,7 +1202,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #if defined RPG
-		if(b_NpcIsInADungeon[victim])
+		if(b_NpcIsInADungeon[victim] || attacker > MaxClients)
 		{
 			
 		}
@@ -1231,7 +1235,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(!b_NpcIsInADungeon[victim] && Level[victim] < 100000)
 		{
 			// Reduces damage when fighting enemies higher level than you
-			int underLv = Level[attacker] - Level[victim];
+			int underLv = Level[victim] - Level[attacker];
 			if(underLv > 3)
 			{
 				damage /= Pow(float(underLv - 2), 0.5);
@@ -1516,7 +1520,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						damage *= 4.0;
 					}
 #endif
-					
+#if defined RPG
+					if(RpgHasSentry(attacker)) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
+					{
+						damage = SentryDamageRpg(attacker);
+					}
+#endif
 					if(Increaced_Sentry_damage_Low[inflictor] > GameTime)
 					{
 						damage *= 1.15;
@@ -1767,7 +1776,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 											}
 
 										}
-										StartHealingTimer(attacker, 0.1, heal_amount, heal_ticks);
+										StartHealingTimer(attacker, 0.1, float(heal_amount), heal_ticks);
 									}
 									if(f_BackstabCooldown[weapon] != 0.0)
 									{
@@ -1965,7 +1974,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
-		
+
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 	int red = 255;
@@ -2316,20 +2325,26 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif	// ZR
 
 #if defined RPG
+	char level[32];
+	GetDisplayString(Level[victim], level, sizeof(level));
+
 	if(IsValidEntity(npc.m_iTextEntity3))
 	{
-		char level[32];
-		GetDisplayString(Level[victim], level, sizeof(level));
-			
-		SetHudTextParams(-1.0, 0.15, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		//RPG cannot support translations! due to test and its used everywhere.
-		ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
-			
 		char HealthString[512];
 		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
 			
 		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 	}
+	float HudY = -1.0;
+	float HudOffset = 0.05;
+
+	HudY += f_HurtHudOffsetY[attacker];
+	HudOffset += f_HurtHudOffsetX[attacker];
+
+	SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		
+	//RPG cannot support translations! due to test and its used everywhere.
+	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
 }
 
@@ -2713,6 +2728,17 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 	}
 #endif
+
+#if defined RPG
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_STUNSTICK:
+		{
+			Weapon_TakeDamage_StunStick(victim, damagetype);
+		}
+	}
+#endif
+
 	return damage;
 }
 

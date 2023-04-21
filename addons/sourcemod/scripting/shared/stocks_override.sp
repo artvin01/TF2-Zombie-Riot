@@ -417,3 +417,44 @@ stock void PrecacheSoundList(const char[][] array, int length)
 }
 
 #define PrecacheSoundArray(%1)        PrecacheSoundList(%1, sizeof(%1))
+
+#if defined ZR
+void Edited_EmitSoundToAll(const char[] sample,
+				 int entity = SOUND_FROM_PLAYER,
+				 int channel = SNDCHAN_AUTO,
+				 int level = SNDLEVEL_NORMAL,
+				 int flags = SND_NOFLAGS,
+				 float volume = SNDVOL_NORMAL,
+				 int pitch = SNDPITCH_NORMAL,
+				 int speakerentity = -1,
+				 const float origin[3] = NULL_VECTOR,
+				 const float dir[3] = NULL_VECTOR,
+				 bool updatePos = true,
+				 float soundtime = 0.0)
+{
+	//# will indicate its for music, reason:
+	/*
+		main issue is that the sounds still go through, but, they do not get played, but saved up,
+		so if it happens too much, sounds gets bugged out, and that leads to an error and all sounds vanish,
+		 reneabling the music slider will play them all at once.
+
+	*/
+	if(sample[0] != '#')
+	{
+		EmitSoundToAll(sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+	}
+	else
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client) && ClientMusicVolume(client) > 0.05)
+			{
+				EmitSoundToClient(client, sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+			}
+		}
+	}
+		
+}
+
+#define EmitSoundToAll Edited_EmitSoundToAll
+#endif	// ZR

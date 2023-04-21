@@ -354,6 +354,11 @@ void TextStore_ConfigSetup(KeyValues map)
 	MarketKv = new KeyValues("MarketData");
 	MarketKv.ImportFromFile(buffer);
 	
+	RequestFrame(TextStore_ConfigSetupFrame);
+}
+
+public void TextStore_ConfigSetupFrame()
+{
 	HashCheck();
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -474,7 +479,7 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		{
 			if(item < 0)
 			{
-				Tinker_DescItem(item, desc);
+				Tinker_DescItem(client, item, desc);
 			}
 			else
 			{
@@ -574,6 +579,8 @@ static void LoadItems(int client)
 	int cap = GetLevelCap(Tier[client]);
 	if(Level[client] > cap)
 		Level[client] = cap;
+	
+	Traffic_LoadItems(client);
 }
 
 void TextStore_AddXP(int client, int xp)
@@ -981,10 +988,11 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	menu.AddItem("rpg_stats", "Player Stats");
-	menu.AddItem("rpg_spawns", "Spawn Stats");
-	menu.AddItem("rpg_party", "Party");
-	menu.AddItem("rpg_help", "Search");
+	menu.AddItem("rpg_stats", 		"Player Stats");
+	menu.AddItem("rpg_spawns", 		"Spawn Stats");
+	menu.AddItem("rpg_party", 		"Party");
+	menu.AddItem("rpg_help", 		"Search");
+	menu.AddItem("rpg_settings", 	"Settings");
 	return Plugin_Changed;
 }
 
@@ -1445,6 +1453,10 @@ static void DropItem(int client, int index, float pos[3], int amount)
 				DispatchKeyValue(entity, "spawnflags", "6");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
+				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
+				if(ang[1] > 0.0)
+					DispatchKeyValueFloat(entity, "modelscale", ang[1]);
+
 				if(index != -1)
 				{
 					ang[0] = GetRandomFloat(0.0, 360.0);
@@ -1587,7 +1599,7 @@ static int GetBackpackSize(int client)
 	return amount;
 }
 
-void TextStore_DespoitBackpack(int client, bool death)
+void TextStore_DepositBackpack(int client, bool death, bool message = false)
 {
 	float pos[3];
 	int amount;
@@ -1617,10 +1629,12 @@ void TextStore_DespoitBackpack(int client, bool death)
 			}
 			else if(pack.Item == -1)
 			{
+				cash = 1;
 				TextStore_Cash(client, pack.Amount);
 			}
 			else
 			{
+				cash = 1;
 				TextStore_GetInv(client, pack.Item, amount);
 				TextStore_SetInv(client, pack.Item, pack.Amount + amount);
 			}
@@ -1643,6 +1657,10 @@ void TextStore_DespoitBackpack(int client, bool death)
 		{
 			SPrintToChat(client, "You have dropped %d items", amount);
 		}
+	}
+	else if(message && cash)
+	{
+		SPrintToChat(client, "You backpack was deposited");
 	}
 }
 

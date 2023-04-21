@@ -40,6 +40,78 @@ static const char SMGReload[][] =
 	"weapons/smg1/smg1_reload.wav"
 };
 
+static const char FistHit[][] =
+{
+	"npc/vort/foot_hit.wav",
+};
+
+static const char FistFire[][] =
+{
+	"npc/combine_soldier/gear1.wav",
+	"npc/combine_soldier/gear2.wav",
+	"npc/combine_soldier/gear3.wav",
+	"npc/combine_soldier/gear4.wav",
+	"npc/combine_soldier/gear5.wav",
+	"npc/combine_soldier/gear6.wav"
+};
+
+static const char AR2Fire[][] =
+{
+	"weapons/ar2/fire1.wav"
+};
+
+static const char AR2Reload[][] =
+{
+	"weapons/ar2/npc_ar2_reload.wav"
+};
+
+static const char AR2Special[][] =
+{
+	"weapons/irifle/irifle_fire2.wav",
+};
+
+static const char ShotgunFire[][] =
+{
+	"weapons/shotgun/shotgun_fire6.wav",
+	"weapons/shotgun/shotgun_fire7.wav"
+};
+
+static const char ShotgunReload[][] =
+{
+	"weapons/shotgun/shotgun_reload1.wav",
+	"weapons/shotgun/shotgun_reload2.wav",
+	"weapons/shotgun/shotgun_reload3.wav"
+};
+
+static const char SwordDeploy[][] =
+{
+	"weapons/medi_shield_deploy.wav"
+};
+
+static const char SwordHit[][] =
+{
+	"weapons/halloween_boss/knight_axe_hit.wav"
+};
+
+static const char SwordFire[][] =
+{
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav"
+};
+
+static const char SwordSpecial[][] =
+{
+	"weapons/physcannon/energy_sing_explosion2.wav"
+};
+
+static const char Overload[][] =
+{
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3"
+};
+
 static const char PoliceIdle[][] =
 {
 	"npc/metropolice/vo/catchthatbliponstabilization.wav",
@@ -121,6 +193,11 @@ static const char SoldierHurt[][] =
 	"npc/combine_soldier/die3.wav"
 };
 
+static const char SoldierSpecial[][] =
+{
+	"npc/combine_soldier/vo/targetcompromisedmovein.wav"
+};
+
 static const char SwordsmanIdle[][] =
 {
 	"npc/combine_soldier/vo/blade.wav",
@@ -154,6 +231,18 @@ void BaseSquad_MapStart()
 	PrecacheSoundArray(StunStickFire);
 	PrecacheSoundArray(SMGFire);
 	PrecacheSoundArray(SMGReload);
+	PrecacheSoundArray(FistHit);
+	PrecacheSoundArray(FistFire);
+	PrecacheSoundArray(AR2Fire);
+	PrecacheSoundArray(AR2Reload);
+	PrecacheSoundArray(AR2Special);
+	PrecacheSoundArray(ShotgunFire);
+	PrecacheSoundArray(ShotgunReload);
+	PrecacheSoundArray(SwordDeploy);
+	PrecacheSoundArray(SwordHit);
+	PrecacheSoundArray(SwordFire);
+	PrecacheSoundArray(SwordSpecial);
+	PrecacheSoundArray(Overload);
 
 	PrecacheSoundArray(PoliceIdle);
 	PrecacheSoundArray(PoliceIdleAlert);
@@ -164,43 +253,110 @@ void BaseSquad_MapStart()
 	PrecacheSoundArray(SoldierIdleAlert);
 	PrecacheSoundArray(SoldierHurt);
 	PrecacheSoundArray(SoldierDeath);
+	PrecacheSoundArray(SoldierSpecial);
 	PrecacheSoundArray(SwordsmanIdle);
 	PrecacheSoundArray(SwordsmanIdleAlert);
 	
 	PrecacheModel("models/police.mdl");
 	PrecacheModel("models/combine_soldier.mdl");
+	PrecacheModel("models/combine_super_soldier.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
+	PrecacheModel("models/effects/combineball.mdl");
+
+	PrecacheModel("models/humans/group03/male_01_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_02_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_03_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_04_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_05_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_06_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_07_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_08_bloody.mdl");
+	PrecacheModel("models/humans/group03/male_09_bloody.mdl");
+	PrecacheModel("models/humans/group03/female_01_bloody.mdl");
+	PrecacheModel("models/humans/group03/female_02_bloody.mdl");
+	PrecacheModel("models/humans/group03/female_03_bloody.mdl");
+	PrecacheModel("models/humans/group03/female_05_bloody.mdl");
+	PrecacheModel("models/humans/group03/female_06_bloody.mdl");
+	PrecacheModel("models/humans/group03/female_07_bloody.mdl");
 }
 
 methodmap BaseSquad < CClotBody
 {
 	public void PlayPistolFire()
 	{
-		EmitSoundToAll(PistolFire[GetURandomInt() % sizeof(PistolFire)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(PistolFire[GetURandomInt() % sizeof(PistolFire)], this.index, _, 94);
 	}
 	public void PlayPistolReload()
 	{
-		EmitSoundToAll(PistolReload[GetURandomInt() % sizeof(PistolReload)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(PistolReload[GetURandomInt() % sizeof(PistolReload)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlayStunStickDeploy()
 	{
-		EmitSoundToAll(StunStickDeploy[GetURandomInt() % sizeof(StunStickDeploy)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(StunStickDeploy[GetURandomInt() % sizeof(StunStickDeploy)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlayStunStickFire()
 	{
-		EmitSoundToAll(StunStickFire[GetURandomInt() % sizeof(StunStickFire)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(StunStickFire[GetURandomInt() % sizeof(StunStickFire)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlayStunStickHit()
 	{
-		EmitSoundToAll(StunStickHit[GetURandomInt() % sizeof(StunStickHit)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(StunStickHit[GetURandomInt() % sizeof(StunStickHit)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlaySMGFire()
 	{
-		EmitSoundToAll(SMGFire[GetURandomInt() % sizeof(SMGFire)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(SMGFire[GetURandomInt() % sizeof(SMGFire)], this.index, _, 94);
 	}
 	public void PlaySMGReload()
 	{
-		EmitSoundToAll(SMGReload[GetURandomInt() % sizeof(SMGReload)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(SMGReload[GetURandomInt() % sizeof(SMGReload)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlayFistHit()
+	{
+		EmitSoundToAll(FistHit[GetURandomInt() % sizeof(FistHit)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlayFistFire()
+	{
+		EmitSoundToAll(FistFire[GetURandomInt() % sizeof(FistFire)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlayAR2Fire()
+	{
+		EmitSoundToAll(AR2Fire[GetURandomInt() % sizeof(AR2Fire)], this.index, _, 94);
+	}
+	public void PlayAR2Reload()
+	{
+		EmitSoundToAll(AR2Reload[GetURandomInt() % sizeof(AR2Reload)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlayAR2Special()
+	{
+		EmitSoundToAll(AR2Special[GetURandomInt() % sizeof(AR2Special)], this.index, _, 94);
+	}
+	public void PlayShotgunFire()
+	{
+		EmitSoundToAll(ShotgunFire[GetURandomInt() % sizeof(ShotgunFire)], this.index, _, 94);
+	}
+	public void PlayShotgunReload()
+	{
+		EmitSoundToAll(ShotgunReload[GetURandomInt() % sizeof(ShotgunReload)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlaySwordDeploy()
+	{
+		EmitSoundToAll(SwordDeploy[GetURandomInt() % sizeof(SwordDeploy)], this.index, _, 94);
+	}
+	public void PlaySwordFire()
+	{
+		EmitSoundToAll(SwordFire[GetURandomInt() % sizeof(SwordFire)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlaySwordHit()
+	{
+		EmitSoundToAll(SwordHit[GetURandomInt() % sizeof(SwordHit)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlaySwordSpecial()
+	{
+		EmitSoundToAll(SwordSpecial[GetURandomInt() % sizeof(SwordSpecial)], this.index, _, 94);
+	}
+	public void PlayOverload()
+	{
+		EmitSoundToAll(Overload[GetURandomInt() % sizeof(Overload)], this.index, _, 94);
 	}
 	public BaseSquad(float vecPos[3], float vecAng[3],
 						const char[] model,
@@ -230,7 +386,10 @@ methodmap BaseSquad < CClotBody
 		npc.m_iNoTargetCount = 0;
 		npc.m_flNextIdleSound = 0.0;
 		npc.m_flNextIdleAlertSound = 0.0;
+		//npc.m_flSpeed = 600.0;
 
+		//PF_SetGoalVector(npc.index, vecPos);
+		//npc.StartPathing();
 		return npc;
 	}
 	public void UpdateHealthBar()
@@ -294,7 +453,7 @@ methodmap CombinePolice < BaseSquad
 			if(this.m_flNextIdleAlertSound > gameTime)
 				return;
 			
-			EmitSoundToAll(PoliceIdleAlert[GetURandomInt() % sizeof(PoliceIdleAlert)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+			EmitSoundToAll(PoliceIdleAlert[GetURandomInt() % sizeof(PoliceIdleAlert)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 			this.m_flNextIdleAlertSound = gameTime + GetRandomFloat(12.0, 24.0);
 		}
 		else
@@ -302,21 +461,21 @@ methodmap CombinePolice < BaseSquad
 			if(this.m_flNextIdleSound > gameTime)
 				return;
 			
-			EmitSoundToAll(PoliceIdle[GetURandomInt() % sizeof(PoliceIdle)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+			EmitSoundToAll(PoliceIdle[GetURandomInt() % sizeof(PoliceIdle)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 			this.m_flNextIdleSound = gameTime + GetRandomFloat(12.0, 24.0);
 		}
 	}
 	public void PlayHurt()
 	{
-		EmitSoundToAll(PoliceHurt[GetURandomInt() % sizeof(PoliceHurt)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(PoliceHurt[GetURandomInt() % sizeof(PoliceHurt)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlayDeath()
 	{
-		EmitSoundToAll(PoliceDeath[GetURandomInt() % sizeof(PoliceDeath)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(PoliceDeath[GetURandomInt() % sizeof(PoliceDeath)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlayPanic()
 	{
-		EmitSoundToAll(PolicePanic[GetURandomInt() % sizeof(PolicePanic)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(PolicePanic[GetURandomInt() % sizeof(PolicePanic)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 }
 
@@ -331,7 +490,7 @@ methodmap CombineSoldier < BaseSquad
 			if(this.m_flNextIdleAlertSound > gameTime)
 				return;
 			
-			EmitSoundToAll(SoldierIdleAlert[GetURandomInt() % sizeof(SoldierIdleAlert)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+			EmitSoundToAll(SoldierIdleAlert[GetURandomInt() % sizeof(SoldierIdleAlert)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 			this.m_flNextIdleAlertSound = gameTime + GetRandomFloat(12.0, 24.0);
 		}
 		else
@@ -339,23 +498,82 @@ methodmap CombineSoldier < BaseSquad
 			if(this.m_flNextIdleSound > gameTime)
 				return;
 			
-			EmitSoundToAll(SoldierIdle[GetURandomInt() % sizeof(SoldierIdle)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+			EmitSoundToAll(SoldierIdle[GetURandomInt() % sizeof(SoldierIdle)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 			this.m_flNextIdleSound = gameTime + GetRandomFloat(12.0, 24.0);
 		}
 	}
 	public void PlayHurt()
 	{
-		EmitSoundToAll(SoldierHurt[GetURandomInt() % sizeof(SoldierHurt)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(SoldierHurt[GetURandomInt() % sizeof(SoldierHurt)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 	public void PlayDeath()
 	{
-		EmitSoundToAll(PoliceDeath[GetURandomInt() % sizeof(PoliceDeath)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(PoliceDeath[GetURandomInt() % sizeof(PoliceDeath)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlaySpecial()
+	{
+		EmitSoundToAll(SoldierSpecial[GetURandomInt() % sizeof(SoldierSpecial)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
 	}
 }
 
-void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
+methodmap CombineWarrior < BaseSquad
+{
+	public void PlayIdle(bool anger)
+	{
+		float gameTime = GetGameTime(this.index);
+
+		if(anger)
+		{
+			if(this.m_flNextIdleAlertSound > gameTime)
+				return;
+			
+			EmitSoundToAll(SwordsmanIdleAlert[GetURandomInt() % sizeof(SwordsmanIdleAlert)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
+			this.m_flNextIdleAlertSound = gameTime + GetRandomFloat(12.0, 24.0);
+		}
+		else
+		{
+			if(this.m_flNextIdleSound > gameTime)
+				return;
+			
+			EmitSoundToAll(SwordsmanIdle[GetURandomInt() % sizeof(SwordsmanIdle)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
+			this.m_flNextIdleSound = gameTime + GetRandomFloat(4.0, 6.0);
+		}
+	}
+	public void PlayHurt()
+	{
+		EmitSoundToAll(SoldierHurt[GetURandomInt() % sizeof(SoldierHurt)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+	public void PlayDeath()
+	{
+		EmitSoundToAll(SoldierDeath[GetURandomInt() % sizeof(SoldierDeath)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL);
+	}
+}
+
+bool BaseSquad_InFireRange(float eyePitch, float vecDir)
+{
+	float sub = fabs(fixAngle(eyePitch)) - fabs(fixAngle(vecDir));
+	return (sub > -12.5 && sub < 12.5);
+}
+
+static bool InVisionRange(const float vecMe[3], BaseSquad npc, int enemy)
+{
+	float eyePitch[3], vecTarget[3], vecDir[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+	vecTarget = WorldSpaceCenter(enemy);
+
+	MakeVectorFromPoints(vecMe, vecTarget, vecDir);
+	GetVectorAngles(vecDir, vecDir);
+
+	float sub = fabs(fixAngle(eyePitch[1])) - fabs(fixAngle(vecDir[1]));
+	return (sub > -60.0 && sub < 60.0);
+}
+
+void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS = false)
 {
 	BaseSquad npc = view_as<BaseSquad>(npcIndex);
+
+	float gameTime = GetGameTime(npc.index);
+	float gameRealTime = GetGameTime();
 
 	if(npc.m_iTargetAttack && !IsValidEnemy(npc.index, npc.m_iTargetAttack))
 	{
@@ -364,49 +582,61 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
 		if(npc.m_iTargetAttack == i_NpcFightOwner[npc.index])
 			i_NpcFightOwner[npc.index] = 0;
 	}
+	else if(i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameRealTime)
+	{
+		npc.m_flGetClosestTargetTime = 0.0;
+	}
 
 	if(npc.m_iTargetWalk && !IsEntityAlive(npc.m_iTargetAttack))
 	{
 		npc.m_iTargetWalk = 0;
-		npc.m_flGetClosestTargetTime = 0.0;
+		//npc.m_flGetClosestTargetTime = 0.0;
 	}
 	
-	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-		float distance = 500.0;
-		if(b_NpcIsInADungeon[npc.index])
-			distance = 99999.9;
+		float distance = b_NpcIsInADungeon[npc.index] ? 99999.9 : (npc.m_iTargetAttack ? 800.0 : 500.0);
+		
+		float vecTarget[3];
 		
 		// We constantly target who attacked us
-		if(b_NpcIsInADungeon[npc.index] || !npc.m_iTargetAttack || !i_NpcFightOwner[npc.index] || f_NpcFightTime[npc.index] < gameTime)
+		if(b_NpcIsInADungeon[npc.index] || !npc.m_iTargetAttack || !npc.m_iTargetWalk || !i_NpcFightOwner[npc.index] || f_NpcFightTime[npc.index] < gameRealTime)
 		{
-			int target = GetClosestTarget(npc.index, false, distance);
-			if(target && (b_NpcIsInADungeon[npc.index] || Can_I_See_Enemy(npc.index, target)))
+			npc.m_iTargetAttack = 0;
+			npc.m_iTargetWalk = 0;
+
+			if(!b_NpcIsInADungeon[npc.index] && i_NpcFightOwner[npc.index] && f_NpcFightTime[npc.index] > gameRealTime && IsValidEnemy(npc.index, i_NpcFightOwner[npc.index]))
 			{
-				npc.m_iTargetAttack = target;
+				npc.m_iTargetAttack = i_NpcFightOwner[npc.index];
 				npc.m_iTargetWalk = npc.m_iTargetAttack;
 			}
 			else
 			{
-				float vecTarget[3];
-
-				// Ask our squad members if they can see them
-				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+				int target = GetClosestTarget(npc.index, false, distance);
+				if(target > 0 && (b_NpcIsInADungeon[npc.index] || (Can_I_See_Enemy(npc.index, target) && (ignoreLOS || InVisionRange(vecMe, npc, target)))))
 				{
-					if(i != npc.index)
+					npc.m_iTargetAttack = target;
+					npc.m_iTargetWalk = npc.m_iTargetAttack;
+				}
+				else
+				{
+					// Ask our squad members if they can see them
+					for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
 					{
-						BaseSquad ally = view_as<BaseSquad>(i);
-						if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidAlly(npc.index, ally.index))
+						if(i != npc.index)
 						{
-							vecTarget = WorldSpaceCenter(ally.index);
-							if(GetVectorDistance(vecMe, vecTarget, true) < 100000.0)	// 316 HU
+							BaseSquad ally = view_as<BaseSquad>(i);
+							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidAlly(npc.index, ally.index) && IsValidEnemy(npc.index, ally.m_iTargetAttack))
 							{
-								npc.m_iTargetAttack = ally.m_iTargetAttack;
-								npc.m_iTargetWalk = ally.m_iTargetAttack;
-								break;
+								vecTarget = WorldSpaceCenter(ally.index);
+								if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
+								{
+									npc.m_iTargetAttack = ally.m_iTargetAttack;
+									npc.m_iTargetWalk = ally.m_iTargetAttack;
+									break;
+								}
 							}
 						}
 					}
@@ -415,29 +645,55 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3])
 		}
 
 		// We can't run after them, stand still and do shooty logic
-		if(npc.m_iTargetWalk && !PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk))
+		if(npc.m_iTargetWalk)
 		{
-			npc.m_iTargetWalk = 0;
+			float length;
+			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER)) && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length))
+			{
+				// Players can be above a nav mesh and a "path" is possible
+				// Check if the target is above a place
+
+				vecTarget = WorldSpaceCenter(npc.m_iTargetWalk);
+				distance = vecTarget[2] - vecMe[2];
+				if(distance > 100.0 || (distance > 15.0 && distance > length))
+					npc.m_iTargetWalk = 0;
+			}
+			else
+			{
+				npc.m_iTargetWalk = 0;
+			}
 		}
 	}
 }
 
-void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
+void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = false, bool teleport = false)
 {
 	BaseSquad npc = view_as<BaseSquad>(npcIndex);
 
-	if(npc.m_iTargetWalk || npc.m_iTargetAttack)
+	if(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER))
+	{
+		TeleportEntity(npc.index, f3_SpawnPosition[npc.index]);
+	}
+	else if(npc.m_iTargetWalk || npc.m_iTargetAttack)
 	{
 		npc.m_iNoTargetCount = 0;
 		
 		if(npc.m_iTargetWalk)
 		{
-			float vecTarget[3];
-			vecTarget = WorldSpaceCenter(npc.m_iTargetWalk);
-
-			if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
+			if(predict)
 			{
-				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetWalk);
+				float vecTarget[3];
+				vecTarget = WorldSpaceCenter(npc.m_iTargetWalk);
+
+				if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
+				{
+					vecTarget = PredictSubjectPosition(npc, npc.m_iTargetWalk);
+					PF_SetGoalVector(npc.index, vecTarget);
+				}
+				else
+				{
+					PF_SetGoalEntity(npc.index, npc.m_iTargetWalk);
+				}
 			}
 			else
 			{
@@ -453,7 +709,11 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
 	}
 	else if(++npc.m_iNoTargetCount > 19)
 	{
-		if(GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) < 8000.0)	// 90 HU
+		if(teleport && GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) > 25000.0)	// 158 HU
+		{
+			TeleportEntity(npc.index, f3_SpawnPosition[npc.index]);
+		}
+		else if(GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) > 8000.0)	// 90 HU
 		{
 			PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 			npc.StartPathing();
@@ -465,7 +725,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
 
 			if(health < maxhealth)
 			{
-				health += maxhealth / 100;
+				health += maxhealth / 50;
 				if(health > maxhealth)
 					health = maxhealth;
 				
@@ -475,16 +735,16 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3])
 
 			if(npc.m_flMeleeArmor > 0.5)
 			{
-				npc.m_flMeleeArmor -= 0.01;
+				npc.m_flMeleeArmor -= 0.025;
 				if(npc.m_flMeleeArmor < 0.5)
 					npc.m_flMeleeArmor = 0.5;
 			}
 
-			if(npc.m_RangedArmor < 1.0)
+			if(npc.m_flRangedArmor > 0.5)
 			{
-				npc.m_RangedArmor -= 0.01;
-				if(npc.m_RangedArmor < 0.5)
-					npc.m_RangedArmor = 0.5;
+				npc.m_flRangedArmor -= 0.025;
+				if(npc.m_flRangedArmor < 0.5)
+					npc.m_flRangedArmor = 0.5;
 			}
 
 			npc.StopPathing();
@@ -500,30 +760,37 @@ bool BaseSquad_BaseAnim(any npcIndex, float speedPassive, const char[] idlePassi
 {
 	BaseSquad npc = view_as<BaseSquad>(npcIndex);
 
+	bool anger;
 	if(npc.m_bPathing)
 	{
 		if(walkAnger[0] && npc.m_iNoTargetCount < 20)
 		{
 			npc.m_flSpeed = speedAnger;
 			npc.SetActivity(walkAnger);
-			return true;
+			anger = true;
 		}
-		
-		npc.m_flSpeed = speedPassive;
-		npc.SetActivity(walkPassive);
-		return false;
+		else
+		{
+			npc.m_flSpeed = speedPassive;
+			npc.SetActivity(walkPassive);
+		}
 	}
-	
-	npc.m_flSpeed = 0.0;
-
-	if(idleAnger[0] && npc.m_iNoTargetCount < 20)
+	else
 	{
-		npc.SetActivity(idleAnger);
-		return true;
+		npc.m_flSpeed = 0.0;
+
+		if(idleAnger[0] && npc.m_iNoTargetCount < 20)
+		{
+			npc.SetActivity(idleAnger);
+			anger = true;
+		}
+		else
+		{
+			npc.SetActivity(idlePassive);
+		}
 	}
-	
-	npc.SetActivity(idlePassive);
-	return false;
+
+	return anger;
 }
 
 public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -538,6 +805,8 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 	{
 		if(npc.m_flMeleeArmor < 1.25)
 		{
+			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
 			npc.m_flMeleeArmor += 0.25001;
 			if(npc.m_flMeleeArmor > 1.25)
 				npc.m_flMeleeArmor = 1.25;
@@ -545,11 +814,13 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
-		if(npc.m_RangedArmor < 1.25)
+		if(npc.m_flRangedArmor < 1.25)
 		{
-			npc.m_RangedArmor += 0.10001;
-			if(npc.m_RangedArmor > 1.25)
-				npc.m_RangedArmor = 1.25;
+			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+			npc.m_flRangedArmor += 0.10001;
+			if(npc.m_flRangedArmor > 1.25)
+				npc.m_flRangedArmor = 1.25;
 		}
 	}
 

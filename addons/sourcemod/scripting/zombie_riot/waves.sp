@@ -170,7 +170,12 @@ bool Waves_CallVote(int client)
 			Voting.GetArray(i, vote);
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 			
-			if(Level[client] < vote.Level)
+			if(vote.Level > 0 && LastWaveWas[0] && StrEqual(vote.Config, LastWaveWas))
+			{
+				Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
+				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
+			}
+			else if(Level[client] < vote.Level)
 			{
 				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, Level[client]);
 				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
@@ -274,25 +279,6 @@ void Waves_SetupVote(KeyValues map)
 		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey());
-	
-	if(LastWaveWas[0])
-	{
-		int length = Voting.Length;
-		if(length > 2)
-		{
-			for(int i; i < length; i++)
-			{
-				Voting.GetArray(i, vote);
-				if(StrEqual(vote.Config, LastWaveWas))
-				{
-					if(vote.Level > 0)
-						Voting.Erase(i);
-					
-					break;
-				}
-			}
-		}
-	}
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -580,6 +566,7 @@ void Waves_RoundStart()
 				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
 				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
 				
+				vote.Name[0] = CharToUpper(vote.Name[0]);
 				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
 				
 				char buffer[PLATFORM_MAX_PATH];

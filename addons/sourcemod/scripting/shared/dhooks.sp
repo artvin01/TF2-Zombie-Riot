@@ -588,7 +588,7 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 #if defined RPG
 	int weapon;
 	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
-	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true);
+	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true,_,_,FireBallBonusDamage);
 #endif
 
 #if defined ZR
@@ -779,6 +779,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
 				//This is only used for wands so place beware, we will just delete the entity.
 				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
+				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
 				int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
 				if(IsValidEntity(entity_particle))
 				{
@@ -1126,10 +1127,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 {
 //	PrintToChatAll("finish lag comp");
 	//Set this to false to be sure.
-//	StartLagCompensation_Base_Boss
-//	FinishLagCompensation_Base_boss(param);
-//	int Compensator = param.Get(1);
-	
 	FinishLagCompMoveBack();
 	
 	#if defined LagCompensation
@@ -1350,6 +1347,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		if(GetClientTeam(client) != 3)
 			ChangeClientTeam(client, 3);
 		
+		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
 	}
 	
@@ -1856,7 +1854,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			}
 			Give_Assist_Points(target, owner);
 			
-			StartHealingTimer(target, 0.1, ammo_amount_left/10, 10, true);
+			StartHealingTimer(target, 0.1, float(ammo_amount_left/10), 10, true);
 			
 #if defined ZR
 			Healing_done_in_total[owner] += ammo_amount_left;

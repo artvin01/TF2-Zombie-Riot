@@ -60,7 +60,7 @@ public Action Command_PetMenu(int client, int argc)
 	
 	if(argc < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [data] [ally]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [data] [ally] [rpg level]");
 		return Plugin_Handled;
 	}
 	
@@ -88,6 +88,13 @@ public Action Command_PetMenu(int client, int argc)
 			Zombies_Currently_Still_Ongoing += 1;
 		}
 	}
+#elseif defined RPG
+	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
+	if(IsValidEntity(entity))
+	{
+		Level[entity] = argc > 3 ? GetCmdArgInt(4) : 0;
+		Apply_Text_Above_Npc(entity, 0, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+	}
 #else
 	Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
 #endif
@@ -104,7 +111,7 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
-	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSound(g_TankStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 #if defined ZR
@@ -572,19 +579,36 @@ methodmap CClotBody
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
-	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1)
+	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
-		switch(Npc_Type)
+		if(!custom)
 		{
-			case STEPSOUND_NORMAL: //normal
+			switch(Npc_Type)
 			{
-				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
+				case STEPSOUND_NORMAL: //normal
+				{
+					EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
+				}
+				case STEPSOUND_GIANT: //giant
+				{
+					EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
+				}
+				
 			}
-			case STEPSOUND_GIANT: //giant
+		}
+		else
+		{
+			switch(Npc_Type)
 			{
-				EmitSoundToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
-			}
-			
+				case STEPSOUND_NORMAL: //normal
+				{
+					EmitCustomToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 100, _);
+				}
+				case STEPSOUND_GIANT: //giant
+				{
+					EmitCustomToAll(sound, this.index, SNDCHAN_AUTO, 80, _, volume, 80, _);
+				}
+			}			
 		}
 	//	PrintToServer("%i PlayStepSound(\"%s\")", this.index, sound);
 	}
@@ -3754,8 +3778,8 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
-					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
-					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType, true);
+					npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, npc.m_iStepNoiseType, true);
 				}
 			}
 		}
@@ -3776,14 +3800,12 @@ public MRESReturn ILocomotion_GetMaxAcceleration(Address pThis, Handle hReturn, 
 public MRESReturn ILocomotion_GetFrictionSideways(Address pThis, Handle hReturn, Handle hParams) { DHookSetReturn(hReturn, 3.0);	return MRES_Supercede; }
 public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)
 {
-#if defined ZR
 	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
 	if(Npc_Is_Targeted_In_Air(entity) || b_NoGravity[entity])
 	{
 		DHookSetReturn(hReturn, 0.0); //We want no gravity
 	}
 	else
-#endif
 	{
 		DHookSetReturn(hReturn, 800.0); 
 	}
@@ -4468,8 +4490,7 @@ stock bool IsEntityAlive(int index)
 			{
 				return false;	
 			}
-#endif
-#if defined RPG
+#else
 			if(!IsPlayerAlive(index))
 			{
 				return false;	
@@ -4490,19 +4511,23 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 {
 	if(IsValidEntity(enemy))
 	{
+		if(b_ThisEntityIgnored[enemy])
+		{
+			return false;
+		}
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{
 				return false;
 			}
-			if(b_NpcIsInvulnerable[index] && !target_invul)
+			if(b_NpcIsInvulnerable[enemy] && !target_invul)
 			{
 				return false;
 			}
 			if(camoDetection)
 			{
-				if(b_ThisEntityIgnored[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
+				if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
 				{
 					return false;
 				}
@@ -4513,7 +4538,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			}
 			else
 			{
-				if(b_ThisEntityIgnored[enemy] || b_IsCamoNPC[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
+				if(b_IsCamoNPC[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
 				{
 					return false;
 				}
@@ -5577,7 +5602,9 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	float pos_npc[3];
 	float pos_enemy[3];
 	pos_npc = WorldSpaceCenter(attacker);
+	pos_npc[2] += 35.0;
 	pos_enemy = WorldSpaceCenter(enemy);
+	pos_enemy[2] += 35.0;
 
 #if defined ZR
 	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));
@@ -5828,10 +5855,11 @@ public void GibCollidePlayerInteraction(int gib, int player)
 							{
 								Heal_Amount_calc *= 3;
 							}
-							StartHealingTimer(player, 0.1, 1, Heal_Amount_calc);
+							StartHealingTimer(player, 0.1, 1.0, Heal_Amount_calc);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 							RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));
+							b_ThisEntityIgnoredEntirelyFromAllCollisions[gib] = true;
 							CurrentGibCount -= 1;
 						}
 					}
@@ -7644,17 +7672,22 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 	return false;
 } 
 
-#if defined ZR
 //TELEPORT IS SAFE? FROM SARYSA BUT EDITED FOR NPCS!
-bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
+/*
+	note:
+	This is garbage lol
+
+*/
+#if defined ZR
+bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool ForPlayer = false, float startPos[3] = {0.0,0.0,0.0})
 {
 	float sizeMultiplier = 1.0; //We do not want to teleport giants, yet.
 	
-	static float startPos[3];
-	startPos = GetAbsOrigin(npc);
-
-	startPos[2] += 25.0;
-
+	if(startPos[0] == 0.0)
+	{
+		startPos = GetAbsOrigin(npc);
+		startPos[2] += 25.0;		
+	}
 	static float testPos[3];
 	bool found = false;
 
@@ -7721,7 +7754,14 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 				// before we test this position, ensure it has line of sight from the point our player looked from
 				// this ensures the player can't teleport through walls
 				static float tmpPos[3];
-				TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
+				if(!ForPlayer)
+				{
+					TR_TraceRayFilter(endPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceFilterClients);
+				}
+				else
+				{
+					TR_TraceRayFilter(endPos, testPos, MASK_PLAYERSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat);
+				}
 				TR_GetEndPosition(tmpPos);
 				if (testPos[0] != tmpPos[0] || testPos[1] != tmpPos[1] || testPos[2] != tmpPos[2])
 					continue;
@@ -7731,29 +7771,34 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/)
 	
 	if (!IsSpotSafe(npc, testPos, sizeMultiplier))
 		return false;
+	
+	if(!ForPlayer)
+	{
+		Handle trace; 
 
-	Handle trace; 
+		int Traced_Target;
+				
+		trace = TR_TraceRayFilterEx(startPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, npc);
 
-	int Traced_Target;
+		Traced_Target = TR_GetEntityIndex(trace);
+
+		delete trace;
+						
+		//Can i see This enemy, is something in the way of us?
+		//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
+
+		if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
+		{	
+			return false; //We are unable to perfom this task. Abort mission
+		}
+		//Trace found nothing has collided! Horray! Perform our teleport.
 			
-	trace = TR_TraceRayFilterEx(startPos, testPos, MASK_NPCSOLID, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, npc);
-
-	Traced_Target = TR_GetEntityIndex(trace);
-
-	delete trace;
-					
-	//Can i see This enemy, is something in the way of us?
-	//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
-
-	if(Traced_Target != -1) //We wanna make sure that whever we teleport, nothing has collided with us. (Mainly world)
-	{	
-		return false; //We are unable to perfom this task. Abort mission
 	}
-	//Trace found nothing has collided! Horray! Perform our teleport.
 
 	TeleportEntity(npc, testPos, NULL_VECTOR, NULL_VECTOR);
 	return true;
 }
+
 
 bool TraceFilterClients(int entity, int mask, any data)
 {    
@@ -7931,7 +7976,7 @@ bool Resize_OneTrace(const float startPos[3], const float endPos[3])
 
 //	MASK_NPCSOLID, TraceRayHitPlayersOnly
 
-	TR_TraceRayFilter(startPos, endPos, MASK_NPCSOLID, RayType_EndPoint, Resize_TracePlayersAndBuildings);
+	TR_TraceRayFilter(startPos, endPos, MASK_SOLID, RayType_EndPoint, Resize_TracePlayersAndBuildings);
 	if (ResizeTraceFailed)
 	{
 		return false;
@@ -7977,7 +8022,6 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 	return false;
 }
 #endif
-
 //TELEPORT LOGIC END.
 
 public void KillNpc(int ref)
