@@ -110,7 +110,7 @@ public void TownGuardPistol_ClotThink(int iNPC)
 					{
 						vecDirShooting[1] = eyePitch[1];
 
-						npc.m_flNextRangedAttack = gameTime + 0.25;
+						npc.m_flNextRangedAttack = gameTime + 0.15;
 						
 						float x = GetRandomFloat( -0.04, 0.04 );
 						float y = GetRandomFloat( -0.04, 0.04 );

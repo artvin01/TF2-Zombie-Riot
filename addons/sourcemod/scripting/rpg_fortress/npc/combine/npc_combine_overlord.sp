@@ -318,7 +318,7 @@ static void BringCombineAlly(CombineOverlord npc, int index)
 
 		for(int i; i < count; i++)
 		{
-			BaseSquad ally = view_as<BaseSquad>(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]);
+			BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]));
 			if(ally.index != -1 && ally.index != npc.index)
 			{
 				if(ally.m_bIsSquad && i_NpcInternalId[ally.index] == index && !b_NpcIsInADungeon[ally.index])

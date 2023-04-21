@@ -84,7 +84,7 @@ public void CombinePistol_ClotThink(int iNPC)
 
 			for(int i; i < count; i++)
 			{
-				BaseSquad ally = view_as<BaseSquad>(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]);
+				BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]));
 				if(ally.index != -1 && ally.index != npc.index)
 				{
 					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
