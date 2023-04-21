@@ -14,6 +14,7 @@ static const char RarityName[][] =
 enum struct StoreEnum
 {
 	char Tag[16];
+	char Key[48];
 	
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
@@ -38,6 +39,7 @@ enum struct StoreEnum
 	void SetupEnum(KeyValues kv)
 	{
 		kv.GetString("tag", this.Tag, 16);
+		kv.GetString("key", this.Key, 48);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH);
 		if(this.Model[0])
@@ -698,7 +700,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 void TextStore_ZoneEnter(int client, const char[] name)
 {
 	static StoreEnum store;
-	if(StoreList.GetArray(name, store, sizeof(store)))
+	if(StoreList.GetArray(name, store, sizeof(store)) && (store.Key[0] && TextStore_GetItemCount(client, store.Key[0])))
 	{
 		if(store.EntRef == INVALID_ENT_REFERENCE)
 		{
