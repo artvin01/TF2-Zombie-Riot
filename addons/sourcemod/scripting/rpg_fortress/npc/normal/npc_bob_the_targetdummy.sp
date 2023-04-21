@@ -182,12 +182,12 @@ public void BobTheTargetDummy_OnTakeDamagePost(int victim, int attacker, int inf
 
 	if(attacker > 0 && attacker <= MaxClients)
 	{
-		DamageLastHit[attacker] = GetGameTime();
+		DamageExpire[attacker] = GetGameTime();
 
 		if(!DamageDealt[attacker])
-			DamageTime[attacker] = DamageLastHit[attacker];
+			DamageTime[attacker] = DamageExpire[attacker];
 
-		DamageLastHit[attacker] += 4.0;	
+		DamageExpire[attacker] += 4.0;	
 		DamageDealt[attacker] += damage;
 		DamageUpdate[attacker] = true;
 	}
