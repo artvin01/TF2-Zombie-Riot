@@ -628,7 +628,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 						if(i != npc.index)
 						{
 							BaseSquad ally = view_as<BaseSquad>(i);
-							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidAlly(npc.index, ally.index) && IsValidEnemy(npc.index, ally.m_iTargetAttack))
+							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidAlly(npc.index, ally.index) && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
 							{
 								vecTarget = WorldSpaceCenter(ally.index);
 								if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
