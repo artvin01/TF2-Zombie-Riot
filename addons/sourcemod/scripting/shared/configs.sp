@@ -192,7 +192,7 @@ stock float Config_GetDPSOfEntity(int entity)
 	if(address != Address_Null)
 		data.Clip *= TF2Attrib_GetValue(address);
 
-	if(!data.FullReload && TF2Attrib_GetByDefIndex(entity, 43) == Address_Null)
+	if(GetEntProp(entity, Prop_Data, "m_bReloadsSingly"))
 		data.Reload *= clip;
 
 	address = TF2Attrib_GetByDefIndex(entity, 876);
@@ -335,13 +335,20 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 		// Reload
 		if(data.Reload)
 		{
+			bool type = data.FullReload;
 			for(i=0; i<attribs; i++)
 			{
-				if(attrib[i]==96 || attrib[i]==97 || attrib[i]==241)
+				if(attrib[i] == 43)
+				{
+					type = view_as<bool>(value[i]);
+				}
+				else if(attrib[i] == 96 || attrib[i] == 97 || attrib[i] == 241)
+				{
 					data.Reload *= value[i];
+				}
 			}
 			
-			Format(buffer, length, "%s\nReload: %.3fs (%s)", buffer, data.Reload, data.FullReload ? "Full" : "Clip");
+			Format(buffer, length, "%s\nReload: %.3fs (%s)", buffer, data.Reload, type ? "Full" : "Clip");
 		}
 	}
 	
