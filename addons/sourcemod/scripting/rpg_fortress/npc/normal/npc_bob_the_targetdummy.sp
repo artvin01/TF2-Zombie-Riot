@@ -132,7 +132,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 				if(time < 1.0)
 					time = 1.0;
 				
-				PrintCenterText(client, "Your DPS is around %.0f!", DamageDealt[client] / time);
+				PrintCenterText(client, "DPS: %.0f | Total: %.0f", DamageDealt[client] / time, DamageDealt[client]);
 				DamageUpdate[client] = false;
 			}
 		}
