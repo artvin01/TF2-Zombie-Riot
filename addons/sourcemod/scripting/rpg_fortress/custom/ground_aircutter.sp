@@ -35,7 +35,16 @@ public float AirCutterAbility(int client, int index, char name[48])
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
 			{
-				return (GetGameTime() + Ability_AirCutter(client, 1, weapon));
+				if(Stats_Strength(client) >= 25)
+				{
+					return (GetGameTime() + Ability_AirCutter(client, 1, weapon));	
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Strength [25]");
+					return 0.0;
+				}
 			}
 			else
 			{
@@ -107,7 +116,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		i_NpcToTarget[target] = client;
 		//There is no need to ent ref this, the code fires every frame, and the same index cannot be used for 1 second.
 		SDKHook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
-		return 1.0;
+		return 35.0;
 	}
 	else
 	{

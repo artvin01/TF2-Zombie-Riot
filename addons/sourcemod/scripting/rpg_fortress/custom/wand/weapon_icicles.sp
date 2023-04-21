@@ -32,8 +32,17 @@ public float AbilityIcicleShard(int client, int index, char name[48])
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if (i_IsWandWeapon[weapon])
 			{
-				float time = Weapon_Wand_IcicleShard(client, weapon, 1);
-				return (GetGameTime() + time);
+				if(Stats_Intelligence(client) >= 25)
+				{
+					float time = Weapon_Wand_IcicleShard(client, weapon, 1);
+					return (GetGameTime() + time);
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+					return 0.0;
+				}
 			}
 			else
 			{

@@ -15,8 +15,18 @@ public float AbilityQuickReflex(int client, int index, char name[48])
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
 			{
-				Ability_QuickReflex(client, 1, weapon);
-				return (GetGameTime() + 30.0);
+				if(Stats_Dexterity(client) >= 20)
+				{
+					Ability_QuickReflex(client, 1, weapon);
+					return (GetGameTime() + 30.0);
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Dexterity [20]");
+					return 0.0;
+				}
+
 			}
 			else
 			{
