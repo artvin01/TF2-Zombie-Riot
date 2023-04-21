@@ -622,13 +622,16 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				}
 				else
 				{
+					bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+					int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
 					// Ask our squad members if they can see them
-					for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+					for(int i; i < count; i++)
 					{
-						if(i != npc.index)
+						BaseSquad ally = view_as<BaseSquad>(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]);
+						if(ally.index != -1 && ally.index != npc.index)
 						{
-							BaseSquad ally = view_as<BaseSquad>(i);
-							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidAlly(npc.index, ally.index) && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
+							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
 							{
 								vecTarget = WorldSpaceCenter(ally.index);
 								if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU

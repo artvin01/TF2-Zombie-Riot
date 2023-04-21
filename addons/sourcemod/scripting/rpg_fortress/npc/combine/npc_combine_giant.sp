@@ -65,12 +65,15 @@ public void CombineGiant_ClotThink(int iNPC)
 
 			if(!b_NpcIsInADungeon[npc.index])
 			{
-				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+				bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+				int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
+				for(int i; i < count; i++)
 				{
-					if(i != npc.index)
+					BaseSquad ally = view_as<BaseSquad>(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]);
+					if(ally.index != -1 && ally.index != npc.index)
 					{
-						BaseSquad ally = view_as<BaseSquad>(i);
-						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
 						{
 							shouldCharge = false;	// An ally already attacking with melee, let them 1v1 em
 							break;

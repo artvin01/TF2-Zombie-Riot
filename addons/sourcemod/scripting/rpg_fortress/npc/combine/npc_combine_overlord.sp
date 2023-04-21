@@ -313,12 +313,15 @@ static void BringCombineAlly(CombineOverlord npc, int index)
 {
 	if(!b_NpcIsInADungeon[npc.index])
 	{
-		for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+		int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
+		for(int i; i < count; i++)
 		{
-			if(i != npc.index)
+			BaseSquad ally = view_as<BaseSquad>(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]);
+			if(ally.index != -1 && ally.index != npc.index)
 			{
-				BaseSquad ally = view_as<BaseSquad>(i);
-				if(ally.m_bIsSquad && i_NpcInternalId[ally.index] == index && !b_NpcIsInADungeon[ally.index] && IsValidAlly(npc.index, ally.index))
+				if(ally.m_bIsSquad && i_NpcInternalId[ally.index] == index && !b_NpcIsInADungeon[ally.index])
 				{
 					float vecMe[3];
 					vecMe = WorldSpaceCenter(npc.index);
