@@ -34,7 +34,7 @@ public Action Traffic_LevelCheck(Handle timer, int userid)
 		if(Level[client] < TRAFFIC_LEVEL)
 			return Plugin_Continue;
 		
-		if(Level[client] == TRAFFIC_LEVEL && TextStore_GetItemCount(client, TRAFFIC_TICKET) > 0)
+		if(Level[client] == TRAFFIC_LEVEL && TextStore_GetItemCount(client, TRAFFIC_TICKET) < 1)
 		{
 			TicketQueue.Push(userid);
 			if(!TicketTimer)
