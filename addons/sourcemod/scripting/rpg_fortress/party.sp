@@ -17,7 +17,7 @@ void Party_PluginEnd()
 {
 	for(int i; i < MAXTF2PLAYERS; i++)
 	{
-		int entity = EntRefToEntIndex(PartyOutlineRef[client]);
+		int entity = EntRefToEntIndex(PartyOutlineRef[i]);
 		if(entity != -1)
 			RemoveEntity(entity);
 	}
