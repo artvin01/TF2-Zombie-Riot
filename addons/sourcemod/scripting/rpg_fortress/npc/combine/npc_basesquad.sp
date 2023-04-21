@@ -803,24 +803,24 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 
 	if(damagetype & DMG_CLUB)
 	{
-		if(npc.m_flMeleeArmor < 1.25)
+		if(npc.m_flMeleeArmor < 1.5)
 		{
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flMeleeArmor += 0.25001;
-			if(npc.m_flMeleeArmor > 1.25)
-				npc.m_flMeleeArmor = 1.25;
+			if(npc.m_flMeleeArmor > 1.5)
+				npc.m_flMeleeArmor = 1.5;
 		}
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
-		if(npc.m_flRangedArmor < 1.25)
+		if(npc.m_flRangedArmor < 1.5)
 		{
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flRangedArmor += 0.10001;
-			if(npc.m_flRangedArmor > 1.25)
-				npc.m_flRangedArmor = 1.25;
+			if(npc.m_flRangedArmor > 1.5)
+				npc.m_flRangedArmor = 1.5;
 		}
 	}
 
