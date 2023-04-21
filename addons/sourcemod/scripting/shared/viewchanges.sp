@@ -84,6 +84,11 @@ void ViewChange_PlayerModel(int client)
 			SetVariantString(NIKO_PLAYERMODEL);
 			AcceptEntityInput(client, "SetCustomModel");
 			SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
+
+#if defined RPG
+			Party_PlayerModel(client, NIKO_PLAYERMODEL);
+#endif
+
 		}
 		else
 		{
@@ -91,7 +96,7 @@ void ViewChange_PlayerModel(int client)
 			int entity = CreateEntityByName("tf_wearable");
 			if(entity > MaxClients)	// Weapon viewmodel
 			{
-				#if defined ZR
+#if defined ZR
 				if(i_HealthBeforeSuit[client] == 0)
 				{
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
@@ -100,9 +105,9 @@ void ViewChange_PlayerModel(int client)
 				{
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
 				}
-				#else
+#else
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
-				#endif
+#endif
 				
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
@@ -117,6 +122,11 @@ void ViewChange_PlayerModel(int client)
 		
 				SDKCall_EquipWearable(client, entity);
 				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+
+#if defined RPG
+				Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
+#endif
+
 			}
 		}
 	}
