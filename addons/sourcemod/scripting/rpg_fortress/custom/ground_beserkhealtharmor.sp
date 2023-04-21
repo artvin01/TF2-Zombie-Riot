@@ -24,8 +24,17 @@ public float BeserkerRageGain(int client, int index, char name[48])
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
 			{
-				Ability_BeserkerRageGain(client, 1, weapon);
-				return (GetGameTime() + 40.0);
+				if(Stats_Strength(client) >= 20)
+				{
+					Ability_BeserkerRageGain(client, 1, weapon);
+					return (GetGameTime() + 40.0);
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Strength [20]");
+					return 0.0;
+				}
 			}
 			else
 			{
