@@ -54,7 +54,6 @@ methodmap BobTheTargetDummy < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BobTheTargetDummy_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BobTheTargetDummy_OnTakeDamagePost);
 		SDKHook(npc.index, SDKHook_Think, BobTheTargetDummy_ClotThink);
 
@@ -105,14 +104,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
-	npc.Update();	
-
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
-	{
-	//	npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
-	//	npc.PlayHurtSound();
-		npc.m_blPlayHurtAnimation = false;
-	}
+	npc.Update();
 
 	if(npc.m_flNextThinkTime > gameTime)
 	{
@@ -131,7 +123,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 			}
 			else if(DamageExpire[client] < gameTime)
 			{
-				PrintCenterText(client, "");
+				PrintCenterText(client, "EXPIRED");
 				DamageDealt[client] = 0.0;
 			}
 			else if(DamageUpdate[client])
@@ -140,7 +132,7 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 				if(time < 1.0)
 					time = 1.0;
 				
-				PrintCenterText(client, "Your DPS is around %.0f!", DamageDealt[client] / time);
+				PrintCenterText(client, "Your DPS is around %.0f / %.0f!", DamageDealt[client], time);
 				DamageUpdate[client] = false;
 			}
 		}
@@ -154,26 +146,6 @@ public void BobTheTargetDummy_ClotThink(int iNPC)
 		DispatchKeyValue(npc.m_iTextEntity3, "rainbow", "1");
 
 	npc.PlayIdleSound();
-}
-
-
-public Action BobTheTargetDummy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	BobTheTargetDummy npc = view_as<BobTheTargetDummy>(victim);
-
-	float gameTime = GetGameTime(npc.index);
-
-	if (npc.m_flHeadshotCooldown < gameTime)
-	{
-		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-
-	return Plugin_Changed;
 }
 
 public void BobTheTargetDummy_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
@@ -200,7 +172,6 @@ public void BobTheTargetDummy_NPCDeath(int entity)
 	BobTheTargetDummy npc = view_as<BobTheTargetDummy>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, BobTheTargetDummy_OnTakeDamagePost);
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BobTheTargetDummy_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BobTheTargetDummy_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
