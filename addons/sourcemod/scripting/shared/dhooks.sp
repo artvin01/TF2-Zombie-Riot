@@ -73,6 +73,7 @@ void DHook_Setup()
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
 	
+	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "HandleRageGain", DHook_HandleRageGainPre, DHook_HandleRageGainPost);
@@ -2065,3 +2066,10 @@ public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams)
 	return MRES_Ignored;
 }
 */
+
+public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
+{
+	// Gives our desired class's wearables
+	TF2_SetPlayerClass(client, CurrentClass[client]);
+	return MRES_Ignored;
+}
