@@ -128,6 +128,8 @@ void RPG_PluginEnd()
 			RemoveEntity(i);
 		}
 	}
+
+	Party_PluginEnd();
 }
 
 void RPG_MapStart()

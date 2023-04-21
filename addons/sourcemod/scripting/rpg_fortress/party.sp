@@ -13,6 +13,16 @@ void Party_PluginStart()
 	RegConsoleCmd("sm_party", Party_Command, "Join or create a party", FCVAR_HIDDEN);
 }
 
+void Party_PluginEnd()
+{
+	for(int i; i < MAXTF2PLAYERS; i++)
+	{
+		int entity = EntRefToEntIndex(PartyOutlineRef[client]);
+		if(entity != -1)
+			RemoveEntity(entity);
+	}
+}
+
 static bool IsInvitedBy(int client, int leader)
 {
 	return view_as<bool>(PartyInvitedBy[client] & (1 << (leader - 1)));
