@@ -302,6 +302,7 @@ void TextStore_PluginStart()
 {
 	CreateTimer(2.0, TextStore_ItemTimer, _, TIMER_REPEAT);
 	RegConsoleCmd("rpg_help", TextStore_HelpCommand, _, FCVAR_HIDDEN);
+	RegAdminCmd("rpg_givemeall", TextStore_GiveMeAllCommand, ADMFLAG_ROOT);
 }
 
 public Action TextStore_HelpCommand(int client, int args)
@@ -310,6 +311,22 @@ public Action TextStore_HelpCommand(int client, int args)
 	if(client)
 		FakeClientCommandEx(client, "sm_store");
 	
+	return Plugin_Handled;
+}
+
+public Action TextStore_GiveMeAllCommand(int client, int args)
+{
+	if(client)
+	{
+		int count;
+		int length = TextStore_GetItems();
+		for(int i; i < length; i++)
+		{
+			TextStore_GetInv(client, i, count);
+			if(count < 1)
+				TextStore_SetInv(client, i, count);
+		}
+	}
 	return Plugin_Handled;
 }
 
