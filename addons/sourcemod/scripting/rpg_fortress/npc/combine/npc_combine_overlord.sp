@@ -78,7 +78,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 	vecMe = WorldSpaceCenter(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
-	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
+	bool canWalk = true;
 	bool anger = npc.m_flAngerDelay > gameTime;
 	if(npc.m_iTargetAttack)
 	{
