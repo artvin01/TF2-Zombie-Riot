@@ -127,7 +127,7 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 				
 				if(Can_I_See_Enemy(npc.index, npc.m_iTargetAttack) == npc.m_iTargetAttack)
 				{
-					BurnTarget(npc, target);
+					BurnTarget(npc, npc.m_iTargetAttack);
 					npc.PlayOverload();
 				}
 

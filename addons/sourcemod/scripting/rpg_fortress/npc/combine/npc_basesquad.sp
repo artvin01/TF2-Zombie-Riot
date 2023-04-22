@@ -842,3 +842,13 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 	}
 	return Plugin_Changed;
 }
+
+public void Dungeon_CombineSuperArmor(int entity)
+{
+	if(i_NpcInternalId[entity] != COMBINE_GIANT)
+	{
+		BaseSquad npc = view_as<BaseSquad>(entity);
+		npc.m_flMeleeArmor = 0.0001;
+		npc.m_flRangedArmor = 0.0001;
+	}
+}

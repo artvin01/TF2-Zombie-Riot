@@ -131,7 +131,7 @@ public void CombineAR2_ClotThink(int iNPC)
 			}
 		}
 
-		if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttackHappens)
+		if(npc.m_flNextRangedSpecialAttackHappens)
 		{
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
@@ -229,7 +229,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				canWalk = false;
 			}
 		}
-		else if(npc.m_flNextRangedSpecialAttack < gameTime)
+		else if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{

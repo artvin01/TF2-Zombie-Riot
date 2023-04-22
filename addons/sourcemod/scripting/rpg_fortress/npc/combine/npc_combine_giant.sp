@@ -207,3 +207,12 @@ void CombineGiant_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 }
+
+public void Dungeon_FastGiant(int entity)
+{
+	if(i_NpcInternalId[entity] == COMBINE_GIANT)
+	{
+		b_DungeonContracts_ZombieSpeedTimes3[entity] = true;
+		Level[entity]++;
+	}
+}
