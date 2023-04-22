@@ -375,8 +375,9 @@ public void OnPostThink(int client)
 	{
 		static float HudY;
 		HudY = 0.90;
+		char buffer[255];
 #if defined RPG		
-			HudY = 0.85;
+		HudY = 0.90;
 #endif
 		static float HudX;
 		HudX = -1.0;
@@ -385,7 +386,7 @@ public void OnPostThink(int client)
 		HudY += f_WeaponHudOffsetX[client];
 
 		Mana_Hud_Delay[client] = GameTime + 0.4;
-		char buffer[255];
+
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
@@ -718,6 +719,58 @@ public void OnPostThink(int client)
 		{
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
 			HudY += -0.0345; //correct offset
+		}
+		if(Tier[client])
+		{
+			Format(buffer, sizeof(buffer), "%s\nElite %d Level %d",buffer, Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "%s\nLevel %d",buffer, Level[client]);
+		}
+
+		if(Level[client] >= CURRENT_MAX_LEVEL || Level[client] == GetLevelCap(Tier[client]))
+		{
+			Format(buffer, sizeof(buffer), "%s\n%d", buffer, XP[client] - LevelToXp(Level[client]));
+
+			for(int i=1; i<21; i++)
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+			}
+
+			Format(buffer, sizeof(buffer), "%s E%d", buffer, Tier[client] + 1);
+		}
+		else
+		{
+			int xpLevel = LevelToXp(Level[client]);
+			int xpNext = LevelToXp(Level[client]+1);
+			
+			int extra = XP[client]-xpLevel;
+			int nextAt = xpNext-xpLevel;
+			
+			Format(buffer, sizeof(buffer), "%s\n%d ", buffer, extra);
+
+			for(int i=1; i<21; i++)
+			{
+				if(extra > nextAt*(i*0.05))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(extra > nextAt*(i*0.05 - 1.0/60.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(extra > nextAt*(i*0.05 - 1.0/30.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+			}
+
+			Format(buffer, sizeof(buffer), "%s %d", buffer, xpNext - XP[client]);
 		}
 
 		if(buffer[0])

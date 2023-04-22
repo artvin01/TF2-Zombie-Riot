@@ -11,7 +11,7 @@ void Levels_PluginStart()
 	SpawnCookie = new Cookie("rpg_spawn_point", "Spawn Point Cookie", CookieAccess_Protected);
 
 	HudLevel = CreateHudSynchronizer();
-	CreateTimer(1.0, Levels_Timer, _, TIMER_REPEAT);
+//	CreateTimer(1.0, Levels_Timer, _, TIMER_REPEAT);
 	RegConsoleCmd("rpg_xp_help", Levels_Command, _, FCVAR_HIDDEN);
 }
 
@@ -69,7 +69,7 @@ public Action Levels_Command(int client, int args)
 	}
 	return Plugin_Handled;
 }
-
+/*
 public Action Levels_Timer(Handle timer)
 {
 	for(int client = 1; client <= MaxClients; client++)
@@ -79,7 +79,7 @@ public Action Levels_Timer(Handle timer)
 	}
 	return Plugin_Continue;
 }
-
+*/
 int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp/100.0, 0.5));	// sqrt(x/100)
@@ -176,9 +176,10 @@ void GiveXP(int client, int xp, bool silent = false)
 
 		UpdateLevelAbovePlayerText(client);
 	}
-
+/*
 	if(!silent)
 		ShowLevelHud(client);
+*/
 }
 
 void GiveTier(int client)
@@ -197,9 +198,9 @@ void GiveTier(int client)
 
 	Stats_ShowLevelUp(client, oldLevel, Tier[client] - 1);
 	Store_ApplyAttribs(client);
-	ShowLevelHud(client);
+//	ShowLevelHud(client);
 }
-
+/*
 void ShowLevelHud(int client)
 {
 	static char buffer[128];
@@ -259,3 +260,4 @@ void ShowLevelHud(int client)
 	SetHudTextParams(-1.0, 0.96, 1.8, 200, 69, 0, 200);
 	ShowSyncHudText(client, HudLevel, buffer);
 }
+*/

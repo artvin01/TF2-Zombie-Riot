@@ -93,8 +93,8 @@ stock int GivePropAttachment(int entity, const char[] model)
 		SetVariantString("head");
 		AcceptEntityInput(prop, "SetParentAttachmentMaintainOffset"); 
 
-		SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
-		SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2000.0);
+		SetEntPropFloat(prop, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
+		SetEntPropFloat(prop, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 
 	}
 	return prop;
