@@ -36,7 +36,9 @@ void FileNetwork_MapEnd()
 void FileNetwork_ClientPutInServer(int client)
 {
 	FileNetwork_ClientDisconnect(client);
+#if !defined UseDownloadTable
 	SendNextFile(client);
+#endif
 }
 
 void FileNetwork_ClientDisconnect(int client)
@@ -133,15 +135,23 @@ void FileNetwork_ConfigSetup(KeyValues map)
 void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int delay = 5)
 {
 	PrecacheSound(sound);
+
+#if defined UseDownloadTable
+	char buffer[PLATFORM_MAX_PATH];
+	FormatEx(buffer, sizeof(buffer), "sound/%s", sound);
+	ReplaceString(buffer, sizeof(buffer), "#", "");
+	AddFileToDownloadsTable(buffer);
+
+#else
 	if(altsound[0])
 	{
 		PrecacheSound(altsound);
 		SoundAlts.SetString(sound, altsound);
 	}
-
 	DataPack pack = new DataPack();
 	pack.WriteString(sound);
 	RequestFrames(FileNetwork_AddSoundFrame, delay, pack);
+#endif
 }
 
 public void FileNetwork_AddSoundFrame(DataPack pack)
@@ -159,11 +169,13 @@ static void AddSoundFile(const char[] sound)
 	if(SoundList.FindString(sound) == -1)
 	{
 		SoundList.PushString(sound);
+#if !defined UseDownloadTable
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(StartedQueue[client] && !Downloading[client])
 				SendNextFile(client);
 		}
+#endif
 	}
 }
 
@@ -207,8 +219,9 @@ static void SendNextFile(int client)
 		
 		static char filecheck[PLATFORM_MAX_PATH];
 		FormatFileCheck(download, client, filecheck, sizeof(filecheck));
+#if !defined UseDownloadTable
 		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
-
+#endif
 		if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
 		{
 			Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
@@ -262,13 +275,14 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		}
 		else
 		{
+#if !defined UseDownloadTable
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
 			PrintToConsole(client, "[ZR/RPG] Downloading '%s'", download);
-
 			if(FileNet_SendFile(client, download, FileNetwork_SendResults, pack))
 				return;
 			
 			LogError("Failed to queue file \"%s\" to client", download);
+#endif
 		}
 	}
 
@@ -289,14 +303,14 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			File filec = OpenFile(filecheck, "wt");
 			filec.WriteLine("Used for file checks for ZR/RPG");
 			filec.Close();
-
+#if !defined UseDownloadTable
 			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
 			{
 				LogError("Failed to queue file \"%s\" to client", filecheck);
 				if(!DeleteFile(filecheck))
 					LogError("Failed to delete file \"%s\"", filecheck);
 			}
-
+#endif
 			pack.Reset();
 			if(pack.ReadCell())
 			{
@@ -331,6 +345,19 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
+#if defined UseDownloadTable
+		float volume2 = volume;
+		int count = RoundToCeil(volume);
+		if(count > 1)
+			volume2 /= float(count);
+		
+		for(int i; i < count; i++)
+		{
+			EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+		}
+		return true;
+#else
+
 	int soundlevel = SoundList.FindString(sound);
 	if(soundlevel == -1)
 		ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
@@ -362,6 +389,7 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 	{
 		EmitSoundToClient(client, buffer, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
 	}
+#endif
 	return true;
 }
 
@@ -382,6 +410,17 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
+#if defined UseDownloadTable
+	float volume2 = volume;
+	int count = RoundToCeil(volume);
+	if(count > 1)
+		volume2 /= float(count);
+		
+	for(int i; i < count; i++)
+	{
+		EmitSound(clients, numClients, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+	}
+#else
 	int soundlevel = SoundList.FindString(sound);
 	if(soundlevel == -1)
 		ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
@@ -392,6 +431,7 @@ stock void EmitCustom(const int[] clients, int numClients, const char[] sound, i
 	
 	for(int i; i < numClients; i++)
 	{
+
 		if(SoundLevel[clients[i]] > soundlevel)
 		{
 			custom[customNum++] = clients[i];
@@ -431,4 +471,5 @@ stock void EmitCustom(const int[] clients, int numClients, const char[] sound, i
 			}
 		}
 	}
+#endif
 }

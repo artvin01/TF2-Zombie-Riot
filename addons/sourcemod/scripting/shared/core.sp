@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define UseDownloadTable
+
 #include <tf2_stocks>
 #include <sdkhooks>
 #include <collisionhook>
@@ -14,8 +16,9 @@
 #include <PathFollower_Nav>
 #include <morecolors>
 #include <tf2utils>
+#if !defined UseDownloadTable
 #include <filenetwork>
-
+#endif
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
 #define CHAR_PARTEMPTY	"▒"
@@ -51,6 +54,7 @@
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
+
 
 #define LagCompensation
 
