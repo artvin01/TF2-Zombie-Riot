@@ -1170,21 +1170,32 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 
 	if(newHealth >= 1.0)
 	{
-		int setHealth = RoundToFloor(newHealth);	// Health to set
+		float maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 
-		f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
-
-		if(entity > MaxClients)
+		//TARGET HEAL
+		if(lastHealth < maxHealth)
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
-		}
-		else
-		{
-			SetEntityHealth(entity, setHealth);
+			if(newHealth >= maxHealth)
+			{
+				newHealth = maxHealth;
+			}
 
-			int difference = setHealth - lastHealth;
-			if(difference != -1)
-				ApplyHealEvent(entity, difference);	// Show healing number
+			int setHealth = RoundToFloor(newHealth);	// Health to set
+
+			f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
+			
+			if(entity > MaxClients)
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
+			}
+			else
+			{
+				SetEntityHealth(entity, setHealth);
+
+				int difference = setHealth - lastHealth;
+				if(difference != -1)
+					ApplyHealEvent(entity, difference);	// Show healing number
+			}
 		}
 	}
 	else
