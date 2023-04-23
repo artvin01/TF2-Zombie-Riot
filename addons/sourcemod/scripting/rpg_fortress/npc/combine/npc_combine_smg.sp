@@ -116,7 +116,7 @@ public void CombineSMG_ClotThink(int iNPC)
 						NormalizeVector(vecDir, vecDir);
 						
 						// E2 L0 = 3.75, E2 L5 = 4.375
-						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.10, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 						
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 						npc.PlaySMGFire();

@@ -64,7 +64,7 @@ float Weapon_Wand_IcicleShard(int client, int weapon, int level)
 	
 	damage = Config_GetDPSOfEntity(weapon);
 
-	damage *= 5.0;	
+	damage *= 2.5;	
 
 	int MaxCount = (7 * level);
 	float DelayPillars = 0.25;
@@ -460,7 +460,7 @@ public float FireBallBonusDamage(int client, int zombie, float damage, int weapo
 {
 	if (Cryo_Frozen[zombie])
 	{
-		damage *= 2.0;
+		damage *= 1.35;
 		DisplayCritAboveNpc(zombie, client, true); //Display crit above head
 	}
 	return damage;

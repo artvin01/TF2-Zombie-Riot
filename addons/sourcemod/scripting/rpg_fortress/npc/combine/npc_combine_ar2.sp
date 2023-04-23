@@ -122,7 +122,7 @@ public void CombineAR2_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L5 = 105, E2 L10 = 120
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 2.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 					}
 				}
@@ -139,7 +139,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				
 				// E2 L5 = 280, E2 L10 = 320
 				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0);
-				npc.FireGrenade(vecTarget, 800.0, Level[npc.index] * 8.0, "models/weapons/w_grenade.mdl");
+				npc.FireGrenade(vecTarget, 800.0, Level[npc.index] * 6.5, "models/weapons/w_grenade.mdl");
 			}
 		}
 
@@ -215,7 +215,7 @@ public void CombineAR2_ClotThink(int iNPC)
 							NormalizeVector(vecDir, vecDir);
 							
 							// E2 L5 = 5.25, E2 L10 = 6
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.1, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
 							npc.PlayAR2Fire();
