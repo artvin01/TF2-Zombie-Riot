@@ -764,14 +764,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-
 #if defined ZR
 			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
 			{
 				return false;
 			}
 #endif
-
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{

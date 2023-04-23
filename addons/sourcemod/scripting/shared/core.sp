@@ -36,8 +36,8 @@
 #define MAX_PLAYER_COUNT_STRING		"12"
 
 //This is for spectating
-#define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 24, rest is for killfeed bots
-#define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
+#define MAX_PLAYER_COUNT_SLOTS				16 //Max should be 16, rest is for killfeed bots
+#define MAX_PLAYER_COUNT_STRING_SLOTS		"16"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 #else
 #define MAX_PLAYER_COUNT			24
