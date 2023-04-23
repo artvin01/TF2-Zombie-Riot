@@ -3,14 +3,14 @@
 
 #define CURRENT_MAX_LEVEL	55 // E2 L25
 
-static Handle HudLevel;
+//static Handle HudLevel;
 static Cookie SpawnCookie;
 
 void Levels_PluginStart()
 {
 	SpawnCookie = new Cookie("rpg_spawn_point", "Spawn Point Cookie", CookieAccess_Protected);
 
-	HudLevel = CreateHudSynchronizer();
+//	HudLevel = CreateHudSynchronizer();
 //	CreateTimer(1.0, Levels_Timer, _, TIMER_REPEAT);
 	RegConsoleCmd("rpg_xp_help", Levels_Command, _, FCVAR_HIDDEN);
 }

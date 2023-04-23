@@ -1691,7 +1691,7 @@ public Action BobTheGod_showHud(Handle dashHud, int client)
 	if (IsValidClient(client))
 	{
 		EmitSoundToAll("items/smallmedkit1.wav", client, _, 90, _, 1.0);
-		StartHealingTimer(client, 0.1, 1, 25, true);
+		StartHealingTimer(client, 0.1, 1.0, 25, true);
 	}
 	return Plugin_Handled;
 }

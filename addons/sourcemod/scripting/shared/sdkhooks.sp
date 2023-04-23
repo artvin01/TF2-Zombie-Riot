@@ -342,7 +342,7 @@ public void OnPostThink(int client)
 					healing_Amount -= newHealth - flMaxHealthJesus;
 					newHealth = flMaxHealthJesus;
 				}
-				
+				ApplyHealEvent(client, healing_Amount);
 				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
 				flHealth = newHealth;
 			}
@@ -362,6 +362,7 @@ public void OnPostThink(int client)
 						healing_Amount -= newHealth - flMaxHealth;
 						newHealth = flMaxHealth;
 					}
+					ApplyHealEvent(client, healing_Amount);
 						
 					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
 				}				
@@ -720,6 +721,7 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
 			HudY += -0.0345; //correct offset
 		}
+#if defined RPG
 		if(Tier[client])
 		{
 			Format(buffer, sizeof(buffer), "%s\nElite %d Level %d",buffer, Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
@@ -772,7 +774,7 @@ public void OnPostThink(int client)
 
 			Format(buffer, sizeof(buffer), "%s %d", buffer, xpNext - XP[client]);
 		}
-
+#endif
 		if(buffer[0])
 		{
 			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);

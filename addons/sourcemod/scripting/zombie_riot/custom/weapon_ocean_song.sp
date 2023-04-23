@@ -313,7 +313,11 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					} 
 					flHealMutli_Calc *= extra_heal;
 					int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
-					Healing_done_in_total[client] += healingdone;
+					if(healingdone > 0)
+					{
+						Healing_done_in_total[client] += healingdone;
+						ApplyHealEvent(ally, healingdone);
+					}
 				}
 				if(f_OceanBuffAbility[client] > GetGameTime())
 				{

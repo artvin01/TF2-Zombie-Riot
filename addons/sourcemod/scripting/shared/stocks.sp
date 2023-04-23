@@ -1238,15 +1238,53 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+//doing this litterally every heal spams it, so we make a 0.5 second delay, and thus, will stack it, and then show it all at once.
+Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static int i_HealsDone_Event[MAXENTITIES]={0, ...};
+
 stock void ApplyHealEvent(int entindex, int amount)
 {
-	Event event = CreateEvent("player_healonhit", true);
-
-	event.SetInt("entindex", entindex);
-	event.SetInt("amount", amount);
-
-	event.Fire();
+	if(IsValidClient(entindex))
+	{
+		i_HealsDone_Event[entindex] += amount;
+		if (h_Timer_HealEventApply[entindex] == INVALID_HANDLE)
+		{
+			DataPack pack;
+			h_Timer_HealEventApply[entindex] = CreateDataTimer(0.5, Timer_HealEventApply, pack, _);
+			pack.WriteCell(entindex);
+			pack.WriteCell(EntIndexToEntRef(entindex));
+		}
+	}
 }
+
+public Action Timer_HealEventApply(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int clientOriginalIndex = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
+
+	if (!IsValidMulti(client))
+		ApplyHealEvent_TimerDeleter(clientOriginalIndex);
+
+	Event event = CreateEvent("player_healonhit", true);
+	event.SetInt("entindex", client);
+	event.SetInt("amount", i_HealsDone_Event[client]);
+	event.Fire();
+
+	ApplyHealEvent_TimerDeleter(clientOriginalIndex);
+	return Plugin_Continue;
+}
+
+void ApplyHealEvent_TimerDeleter(int client) //This is on disconnect/connect
+{
+	if (h_Timer_HealEventApply[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_Timer_HealEventApply[client]);
+	}	
+	i_HealsDone_Event[client] = 0;
+	h_Timer_HealEventApply[client] = INVALID_HANDLE;
+}
+
 
 public bool Trace_DontHitEntity(int entity, int mask, any data)
 {
@@ -3835,7 +3873,6 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 #if defined ZR
 //bool identified if it went above max health or not.
 
-static float f_IncrementalSmallHeal[MAXENTITIES];
 //No need to delele it, its just 1 ho difference, wow so huge.
 int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0)
 {
@@ -4257,7 +4294,7 @@ void DoClientHitmarker(int client)
 	{
 		EmitCustomToClient(client, "zombiesurvival/hm.mp3", _, _, 90, _, 0.75, 100);
 		SetHudTextParams(-1.0, -1.0, 0.01, 125, 125, 125, 65);
-		ShowHudText(client, -1, "X");
+		ShowHudText(client, 10, "X"); //we use 10
 		f_HitmarkerSameFrame[client] = GetGameTime();	
 	}
 }

@@ -665,6 +665,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							newHealth = flMaxHealth;
 						}
 						
+						ApplyHealEvent(healTarget, i_TargetHealAmount);
 						SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
 						new_ammo -= i_TargetHealAmount;
 #if defined ZR
@@ -697,6 +698,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							i_SelfHealAmount -= newHealth - flMaxHealth;
 							newHealth = flMaxHealth;
 						}
+						ApplyHealEvent(owner, i_SelfHealAmount);
 						
 						SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
 						new_ammo -= i_SelfHealAmount;

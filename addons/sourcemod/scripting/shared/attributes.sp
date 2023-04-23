@@ -293,20 +293,6 @@ void Attributes_OnKill(int client, int weapon)
 		if(value)
 			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
 		
-#if defined ZR
-		if(EscapeMode)
-		{
-			if(!i_IsWandWeapon[weapon])
-			{
-				char melee_classname[64];
-				GetEntityClassname(weapon, melee_classname, 64);
-					
-				if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-					StartHealingTimer(client, 0.1, 1, 5, true);
-			}
-		}
-#endif
-		
 	}
 	/*
 	value = Attributes_FindOnWeapon(client, weapon, 220, true);	// restore health on kill
