@@ -39,8 +39,8 @@
 #define MAX_PLAYER_COUNT_STRING		"12"
 
 //This is for spectating
-#define MAX_PLAYER_COUNT_SLOTS				16 //Max should be 16, rest is for killfeed bots
-#define MAX_PLAYER_COUNT_STRING_SLOTS		"16"
+#define MAX_PLAYER_COUNT_SLOTS				17 //Max should be 16, rest is for killfeed bots
+#define MAX_PLAYER_COUNT_STRING_SLOTS		"17"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 #else
 #define MAX_PLAYER_COUNT			24
@@ -1493,11 +1493,14 @@ public void OnClientPutInServer(int client)
 		return;
 	}
 
-	if(CountPlayersOnServer() > MAX_PLAYER_COUNT_SLOTS)
+	if(CountPlayersOnServer() > (MAX_PLAYER_COUNT_SLOTS))
 	{
-		if(!(GetUserFlagBits(client) & ADMFLAG_SLAY))
+		//doesnt work.
+		if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
 		{
-			KickClient(client, "Server is full, do not use the console to connect, thank you.");
+		//	ClientCommand(client,"redirect 74.91.113.50:27016");
+		//	CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
 		}
 	}
 	
@@ -3186,5 +3189,14 @@ public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQue
 				PrintToChat(client,"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!");
 			}
 		}
+	}
+}
+
+public Action RedirectPlayer(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		KickClient(client, "This server is full, try the 2nd server: 74.91.113.50:27016.");
 	}
 }
