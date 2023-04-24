@@ -221,7 +221,11 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 #endif
 
 		{
-			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false); 
+			if(!CurrentClass[client_2])
+			{
+				CurrentClass[client_2] = TFClass_Scout;
+			}
+			TF2_SetPlayerClass(client_2, CurrentClass[client], false, false);
 		}
 	}
 	return MRES_Ignored;
@@ -245,6 +249,10 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 			#endif
 
 				{
+					if(!WeaponClass[client_2])
+					{
+						WeaponClass[client_2] = TFClass_Scout;
+					}
 					TF2_SetPlayerClass(client_2, WeaponClass[client_2], false, false);
 				}
 		}
@@ -2062,6 +2070,10 @@ public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams)
 public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 {
 	// Gives our desired class's wearables
+	if(!CurrentClass[client])
+	{
+		CurrentClass[client] = TFClass_Scout;
+	}
 	TF2_SetPlayerClass(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
