@@ -785,13 +785,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
 				//This is only used for wands so place beware, we will just delete the entity.
-			//	RemoveEntity(entity1);
-				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
+				RemoveEntity(entity1);
+			//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
+			//	b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
 				int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
 				if(IsValidEntity(entity_particle))
 				{
-					RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
+					RemoveEntity(entity_particle);
+				//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
 				}
 				return false;
 			}

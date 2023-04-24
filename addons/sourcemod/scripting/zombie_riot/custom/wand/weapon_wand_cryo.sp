@@ -397,10 +397,9 @@ public void Cryo_Touch(int entity, int other)
 				int particle = EntRefToEntIndex(i_WandParticle[entity]);
 				if(IsValidEntity(particle))
 				{
-					RequestFrame(Delete_FrameLater, EntIndexToEntRef(particle));
+					RemoveEntity(particle);
 				}
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
-				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity));
+				RemoveEntity(entity);
 			}
 
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?

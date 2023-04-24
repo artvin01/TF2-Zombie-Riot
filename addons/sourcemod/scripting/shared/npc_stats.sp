@@ -3270,7 +3270,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
 		b_ThisEntityIgnored[pThis] = true;
-		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
+	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		
 		/*
 		#if defined ISSPECIALDEATHANIMATION
@@ -5878,8 +5878,9 @@ public void GibCollidePlayerInteraction(int gib, int player)
 							StartHealingTimer(player, 0.1, 1.0, Heal_Amount_calc);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-							RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));
-							b_ThisEntityIgnoredEntirelyFromAllCollisions[gib] = true;
+						//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));
+							RemoveEntity(gib);
+						//	b_ThisEntityIgnoredEntirelyFromAllCollisions[gib] = true;
 							CurrentGibCount -= 1;
 						}
 					}
