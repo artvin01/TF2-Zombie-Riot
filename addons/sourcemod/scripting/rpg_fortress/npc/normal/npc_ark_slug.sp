@@ -231,7 +231,6 @@ public void ArkSlug_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						
-						int maxhealth = target > MaxClients ? GetEntProp(target, Prop_Data, "m_iMaxHealth") : SDKCall_GetMaxHealth(target);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 92.5, DMG_CLUB);
 						Stats_AddOriginium(target, 1);
 						// Originium Slug α (50% dmg)
@@ -239,24 +238,6 @@ public void ArkSlug_ClotThink(int iNPC)
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
 						{
 							npc.PlayKilledEnemySound();
-							
-							// Remove when the golden age comes:
-							float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							
-							int entity = Npc_Create(HEADCRAB_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-							if(entity > MaxClients)
-							{
-								hFromSpawnerIndex[entity] = hFromSpawnerIndex[npc.index];
-								Level[entity] = Level[target];
-								i_CreditsOnKill[entity] = 0;
-								XP[entity] = 0;
-								b_thisNpcIsABoss[entity] = false;
-								
-								SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
-								SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-								Apply_Text_Above_Npc(entity, 0, maxhealth);
-							}
 						}
 					}
 				}

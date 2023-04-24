@@ -53,7 +53,7 @@ public void CombineGiant_ClotThink(int iNPC)
 	vecMe = WorldSpaceCenter(npc.index);
 	BaseSquad_BaseThinking(npc, vecMe);
 
-	bool canWalk = (npc.m_iTargetWalk || !npc.m_iTargetAttack);
+	bool canWalk = true;
 	if(npc.m_iTargetAttack)
 	{
 		float vecTarget[3];
@@ -65,12 +65,15 @@ public void CombineGiant_ClotThink(int iNPC)
 
 			if(!b_NpcIsInADungeon[npc.index])
 			{
-				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+				bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+				int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
+				for(int i; i < count; i++)
 				{
-					if(i != npc.index)
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]));
+					if(ally.index != -1 && ally.index != npc.index)
 					{
-						BaseSquad ally = view_as<BaseSquad>(i);
-						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
 						{
 							shouldCharge = false;	// An ally already attacking with melee, let them 1v1 em
 							break;
@@ -203,4 +206,13 @@ void CombineGiant_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+}
+
+public void Dungeon_FastGiant(int entity)
+{
+	if(i_NpcInternalId[entity] == COMBINE_GIANT)
+	{
+		b_DungeonContracts_ZombieSpeedTimes3[entity] = true;
+		Level[entity]++;
+	}
 }

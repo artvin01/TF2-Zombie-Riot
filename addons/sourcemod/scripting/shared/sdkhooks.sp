@@ -342,7 +342,7 @@ public void OnPostThink(int client)
 					healing_Amount -= newHealth - flMaxHealthJesus;
 					newHealth = flMaxHealthJesus;
 				}
-				
+				ApplyHealEvent(client, healing_Amount);
 				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
 				flHealth = newHealth;
 			}
@@ -362,6 +362,7 @@ public void OnPostThink(int client)
 						healing_Amount -= newHealth - flMaxHealth;
 						newHealth = flMaxHealth;
 					}
+					ApplyHealEvent(client, healing_Amount);
 						
 					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
 				}				
@@ -375,8 +376,9 @@ public void OnPostThink(int client)
 	{
 		static float HudY;
 		HudY = 0.90;
+		char buffer[255];
 #if defined RPG		
-			HudY = 0.85;
+		HudY = 0.95;
 #endif
 		static float HudX;
 		HudX = -1.0;
@@ -385,7 +387,7 @@ public void OnPostThink(int client)
 		HudY += f_WeaponHudOffsetX[client];
 
 		Mana_Hud_Delay[client] = GameTime + 0.4;
-		char buffer[255];
+
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		
 		if(IsValidEntity(weapon))
@@ -719,7 +721,60 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
 			HudY += -0.0345; //correct offset
 		}
+#if defined RPG
+		int xpLevel = LevelToXp(Level[client]);
+		int xpNext = LevelToXp(Level[client]+1);
+			
+		int extra = XP[client]-xpLevel;
+		int nextAt = xpNext-xpLevel;
+			
+	
 
+		if(Tier[client])
+		{
+			Format(buffer, sizeof(buffer), "%s\n%d | Elite %d Level %d",buffer, extra, Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "%s\n%d | Level %d",buffer,extra, Level[client]);
+		}
+
+
+		if(Level[client] >= CURRENT_MAX_LEVEL || Level[client] == GetLevelCap(Tier[client]))
+		{
+			Format(buffer, sizeof(buffer), "%s | E%d\n", buffer, Tier[client] + 1);
+
+			for(int i=1; i<21; i++)
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+			}
+
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "%s | %d\n", buffer, xpNext - XP[client]);
+			for(int i=1; i<21; i++)
+			{
+				if(extra > nextAt*(i*0.05))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+				}
+				else if(extra > nextAt*(i*0.05 - 1.0/60.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+				}
+				else if(extra > nextAt*(i*0.05 - 1.0/30.0))
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+				}
+				else
+				{
+					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+				}
+			}
+			Format(buffer, sizeof(buffer), "%s\n", buffer);
+		}
+#endif
 		if(buffer[0])
 		{
 			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);

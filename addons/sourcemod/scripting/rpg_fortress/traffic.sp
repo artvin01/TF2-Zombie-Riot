@@ -12,7 +12,7 @@ stock void Traffic_LoadItems(int client) { }
 #endinput
 #endif
 
-static float NextTicket[4];
+static float NextTicket[MAX_PARTY_SIZE];
 static ArrayList TicketQueue;
 static Handle TicketTimer;
 

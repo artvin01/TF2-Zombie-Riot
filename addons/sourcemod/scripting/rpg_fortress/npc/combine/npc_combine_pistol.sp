@@ -79,12 +79,15 @@ public void CombinePistol_ClotThink(int iNPC)
 		bool shouldGun = !npc.m_iTargetWalk;
 		if(!shouldGun && !b_NpcIsInADungeon[npc.index])
 		{
-			for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+			bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+			int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
+			for(int i; i < count; i++)
 			{
-				if(i != npc.index)
+				BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]));
+				if(ally.index != -1 && ally.index != npc.index)
 				{
-					BaseSquad ally = view_as<BaseSquad>(i);
-					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+					if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
 					{
 						shouldGun = true;	// An ally rushing with a melee, I should cover them
 						break;
@@ -163,7 +166,7 @@ public void CombinePistol_ClotThink(int iNPC)
 							NormalizeVector(vecDir, vecDir);
 							
 							// E2 L0 = 6.0, E2 L5 = 7.0
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.2, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.15, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
 							npc.PlayPistolFire();
@@ -206,7 +209,7 @@ public void CombinePistol_ClotThink(int iNPC)
 							TR_GetEndPosition(vecTarget, swingTrace);
 
 							// E2 L0 = 90, E2 L5 = 105
-							SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 2.5, DMG_CLUB, -1, _, vecTarget);
 							if(target <= MaxClients)
 								Stats_AddNeuralDamage(target, npc.index, RoundToFloor(Level[npc.index] * 0.45));	// (15% of dmg)
 							

@@ -36,8 +36,17 @@ public float AbilitySentryThrow(int client, int index, char name[48])
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
 			{
-				Ability_SentryThrow(client, 1, weapon);
-				return (GetGameTime() + 40.0);
+				if(Stats_Dexterity(client) >= 25)
+				{
+					Ability_SentryThrow(client, 1, weapon);
+					return (GetGameTime() + 40.0);
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Dexterity [25]");
+					return 0.0;
+				}
 			}
 			else
 			{

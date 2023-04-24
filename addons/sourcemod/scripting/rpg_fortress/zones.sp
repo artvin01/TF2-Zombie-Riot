@@ -57,6 +57,7 @@ static void OnEnter(int entity, const char[] name)
 		Crafting_ClientEnter(entity, name);
 		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
+		Levels_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
 		Quests_EnableZone(entity, name);
 		Spawns_ClientEnter(entity, name);

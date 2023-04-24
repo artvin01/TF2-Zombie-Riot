@@ -1822,11 +1822,28 @@ methodmap CClotBody
 	}
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
-		int activity = this.LookupActivity(animation);
-		if(activity > 0 && activity != this.m_iState)
+		if(Is_sequence)
 		{
-			this.m_iState = activity;
-			this.StartActivity(activity);
+			int sequence = this.LookupSequence(animation);
+			if(sequence > 0 && sequence != this.m_iState)
+			{
+				this.m_iState = sequence;
+				this.m_iActivity = 0;
+				
+				this.SetSequence(sequence);
+				this.SetPlaybackRate(1.0);
+				this.SetCycle(0.0);
+				this.ResetSequenceInfo();
+			}
+		}
+		else
+		{
+			int activity = this.LookupActivity(animation);
+			if(activity > 0 && activity != this.m_iState)
+			{
+				this.m_iState = activity;
+				this.StartActivity(activity);
+			}
 		}
 	}
 	public bool IsPlayingGesture(const char[] anim)
@@ -1973,7 +1990,7 @@ methodmap CClotBody
 	//	SetEntProp(item, Prop_Send, "m_nNextThinkTick", 9999999);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 	
-		if(!StrEqual(anim, ""))
+		if(anim[0])
 		{
 			SetVariantString(anim);
 			AcceptEntityInput(item, "SetAnimation");
@@ -1987,8 +2004,11 @@ methodmap CClotBody
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
 
-		SetVariantString(attachment);
-		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
+		if(attachment[0])
+		{
+			SetVariantString(attachment);
+			AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 
+		}	
 		
 		SetEntityCollisionGroup(item, 1);
 		/*
@@ -7206,6 +7226,11 @@ stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
 	{
+		if(b_ThisEntityIgnored[ally])
+		{
+			return false;
+		}
+
 		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally)) 
 		{
 			return true;

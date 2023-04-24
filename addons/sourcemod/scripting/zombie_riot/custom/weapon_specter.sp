@@ -398,6 +398,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 					{
 						f_SpecterDyingTime[client] = 0.0;
 						int maxhealth = SDKCall_GetMaxHealth(client);
+						ApplyHealEvent(client, maxhealth / 2);
 						SetEntityHealth(client, maxhealth / 2); //Heal the client to half of their max health after being revived, otherwise this revive makes no sense.
 					}
 				}

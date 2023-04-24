@@ -1743,6 +1743,48 @@ public void Dungeon_Wave_CoreInfection_Grigori(ArrayList list)
 	list.PushArray(wave);
 }
 
+public void Dungeon_Wave_HighRule_RushAll(ArrayList list)
+{
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		static WaveEnum wave;
+		list.GetArray(i, wave);
+		wave.Delay *= 0.75;
+		list.SetArray(i, wave);
+	}
+}
+
+public void Dungeon_Wave_HighRule_ReplaceGiantWithGrigori(ArrayList list)
+{
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		static WaveEnum wave;
+		list.GetArray(i, wave);
+		if(wave.Index == COMBINE_GIANT)
+		{
+			wave.Index = FATHER_GRIGORI;
+			list.SetArray(i, wave);
+		}
+	}
+}
+
+public void Dungeon_Wave_HighRule_ReplaceGiantWithOverlord(ArrayList list)
+{
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		static WaveEnum wave;
+		list.GetArray(i, wave);
+		if(wave.Index == COMBINE_GIANT)
+		{
+			wave.Index = COMBINE_OVERLORD_CC;
+			list.SetArray(i, wave);
+		}
+	}
+}
+
 public void Dungeon_RegenZombie(int entity)
 {
 	CreateTimer(1.0, HpRegenZombie25, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -1873,7 +1915,7 @@ public void Dungeon_GrigoriBuff(int entity)
 
 public void Dungeon_25PercentMoreDamage(int entity)
 {
-	b_DungeonContracts_25PercentMoreDamage[entity] = true; //15% faster zombies.
+	b_DungeonContracts_25PercentMoreDamage[entity] = true;
 }
 
 public void Dungeon_FastZombies15(int entity)

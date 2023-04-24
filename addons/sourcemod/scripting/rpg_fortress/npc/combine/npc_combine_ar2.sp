@@ -76,12 +76,15 @@ public void CombineAR2_ClotThink(int iNPC)
 		{
 			if(!shouldGun)
 			{
-				for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+				bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+				int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
+				for(int i; i < count; i++)
 				{
-					if(i != npc.index)
+					BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]));
+					if(ally.index != -1 && ally.index != npc.index)
 					{
-						BaseSquad ally = view_as<BaseSquad>(i);
-						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged && IsValidAlly(npc.index, ally.index))
+						if(ally.m_bIsSquad && ally.m_iTargetAttack == npc.m_iTargetAttack && !ally.m_bRanged)
 						{
 							shouldGun = true;	// An ally rushing with a melee, I should cover them
 							break;
@@ -119,7 +122,7 @@ public void CombineAR2_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L5 = 105, E2 L10 = 120
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 2.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 					}
 				}
@@ -128,7 +131,7 @@ public void CombineAR2_ClotThink(int iNPC)
 			}
 		}
 
-		if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttackHappens)
+		if(npc.m_flNextRangedSpecialAttackHappens)
 		{
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
@@ -136,7 +139,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				
 				// E2 L5 = 280, E2 L10 = 320
 				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTargetAttack, 800.0);
-				npc.FireGrenade(vecTarget, 800.0, Level[npc.index] * 8.0, "models/weapons/w_grenade.mdl");
+				npc.FireGrenade(vecTarget, 800.0, Level[npc.index] * 6.5, "models/weapons/w_grenade.mdl");
 			}
 		}
 
@@ -212,7 +215,7 @@ public void CombineAR2_ClotThink(int iNPC)
 							NormalizeVector(vecDir, vecDir);
 							
 							// E2 L5 = 5.25, E2 L10 = 6
-							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.1, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
 							npc.PlayAR2Fire();
@@ -226,7 +229,7 @@ public void CombineAR2_ClotThink(int iNPC)
 				canWalk = false;
 			}
 		}
-		else if(npc.m_flNextRangedSpecialAttack < gameTime)
+		else if(!b_NpcIsInADungeon[npc.index] && npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			if(IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{

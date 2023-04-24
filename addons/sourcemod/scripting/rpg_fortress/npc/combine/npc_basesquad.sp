@@ -221,6 +221,7 @@ static const char SwordsmanIdleAlert[][] =
 };
 
 static int DeathDamage[MAXENTITIES];
+static int CCFlags[MAXENTITIES];
 
 void BaseSquad_MapStart()
 {
@@ -386,6 +387,7 @@ methodmap BaseSquad < CClotBody
 		npc.m_iNoTargetCount = 0;
 		npc.m_flNextIdleSound = 0.0;
 		npc.m_flNextIdleAlertSound = 0.0;
+		npc.m_hCCFlags = 0;
 		//npc.m_flSpeed = 600.0;
 
 		//PF_SetGoalVector(npc.index, vecPos);
@@ -439,6 +441,11 @@ methodmap BaseSquad < CClotBody
 	{
 		public get()		{ return this.m_flRangedSpecialDelay; }
 		public set(float value)	{ this.m_flRangedSpecialDelay = value; }
+	}
+	property int m_hCCFlags
+	{
+		public get()		{ return CCFlags[this.index]; }
+		public set(int value) 	{ CCFlags[this.index] = value; }
 	}
 }
 
@@ -622,13 +629,16 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 				}
 				else
 				{
+					bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+					int count = friendly ? i_MaxcountNpc_Allied : i_MaxcountNpc;
+
 					// Ask our squad members if they can see them
-					for(int i = MaxClients + 1; i < MAXENTITIES; i++) 
+					for(int i; i < count; i++)
 					{
-						if(i != npc.index)
+						BaseSquad ally = view_as<BaseSquad>(EntRefToEntIndex(friendly ? i_ObjectsNpcs_Allied[i] : i_ObjectsNpcs[i]));
+						if(ally.index != -1 && ally.index != npc.index)
 						{
-							BaseSquad ally = view_as<BaseSquad>(i);
-							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidAlly(npc.index, ally.index) && IsValidEnemy(npc.index, ally.m_iTargetAttack))
+							if(ally.m_bIsSquad && ally.m_iTargetAttack && IsValidEnemy(npc.index, ally.m_iTargetAttack) && Can_I_See_Enemy(ally.index, ally.m_iTargetAttack))
 							{
 								vecTarget = WorldSpaceCenter(ally.index);
 								if(GetVectorDistance(vecMe, vecTarget, true) < 250000.0)	// 500 HU
@@ -707,7 +717,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 			npc.StopPathing();
 		}
 	}
-	else if(++npc.m_iNoTargetCount > 19)
+	else if(++npc.m_iNoTargetCount > (teleport ? 49 : 19))
 	{
 		if(teleport && GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) > 25000.0)	// 158 HU
 		{
@@ -803,24 +813,24 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 
 	if(damagetype & DMG_CLUB)
 	{
-		if(npc.m_flMeleeArmor < 1.25)
+		if(npc.m_flMeleeArmor < 1.5)
 		{
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flMeleeArmor += 0.25001;
-			if(npc.m_flMeleeArmor > 1.25)
-				npc.m_flMeleeArmor = 1.25;
+			if(npc.m_flMeleeArmor > 1.5)
+				npc.m_flMeleeArmor = 1.5;
 		}
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
-		if(npc.m_flRangedArmor < 1.25)
+		if(npc.m_flRangedArmor < 1.5)
 		{
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 			npc.m_flRangedArmor += 0.10001;
-			if(npc.m_flRangedArmor > 1.25)
-				npc.m_flRangedArmor = 1.25;
+			if(npc.m_flRangedArmor > 1.5)
+				npc.m_flRangedArmor = 1.5;
 		}
 	}
 
@@ -831,4 +841,14 @@ public Action BaseSquad_TakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_blPlayHurtAnimation = true;
 	}
 	return Plugin_Changed;
+}
+
+public void Dungeon_CombineSuperArmor(int entity)
+{
+	if(i_NpcInternalId[entity] != COMBINE_GIANT)
+	{
+		BaseSquad npc = view_as<BaseSquad>(entity);
+		npc.m_flMeleeArmor = 0.0001;
+		npc.m_flRangedArmor = 0.0001;
+	}
 }

@@ -1,6 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define CC_FLAG_BURNDAMAGE	(1 << 0)
+#define CC_FLAG_BURNSPEED	(1 << 1)
+#define CC_FLAG_MELEEDAMAGE	(1 << 2)
+
 methodmap CombineOverlordCC < CombineSoldier
 {
 	public CombineOverlordCC(int client, float vecPos[3], float vecAng[3], bool ally)
@@ -99,11 +103,10 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 					{
 						TR_GetEndPosition(vecTarget, swingTrace);
 
-						ExtinguishEntity(target);
-						IgniteEntity(target, 10.0);
+						BurnTarget(npc, target);
 
 						// E2 L20 = 150, E2 L25 = 165
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * ((npc.m_hCCFlags & CC_FLAG_MELEEDAMAGE) ? 6.0 : 3.0), DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
 					}
 				}
@@ -124,10 +127,7 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 				
 				if(Can_I_See_Enemy(npc.index, npc.m_iTargetAttack) == npc.m_iTargetAttack)
 				{
-					ExtinguishEntity(npc.m_iTargetAttack);
-					IgniteEntity(npc.m_iTargetAttack, 10.0);
-					//StartHealingTimer(npc.m_iTargetAttack, 0.1, -1.0, 100);
-
+					BurnTarget(npc, npc.m_iTargetAttack);
 					npc.PlayOverload();
 				}
 
@@ -169,7 +169,7 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 				npc.AddGesture("ACT_MELEE_PULSE");
 
 				npc.m_flNextRangedAttackHappening = gameTime + 0.35;
-				npc.m_flNextRangedAttack = gameTime + 17.5;
+				npc.m_flNextRangedAttack = gameTime + ((npc.m_hCCFlags & CC_FLAG_BURNSPEED) ? 7.0 : 17.5);
 
 				float time = gameTime + 0.95;
 				if(npc.m_flNextRangedSpecialAttackHappens < time)
@@ -191,6 +191,19 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 	}
 
 	BaseSquad_BaseAnim(npc, 73.6, "ACT_PRINCE_IDLE", "ACT_PRINCE_WALK");
+}
+
+static void BurnTarget(CombineOverlordCC npc, int entity)
+{
+	if(npc.m_hCCFlags & CC_FLAG_BURNDAMAGE)
+	{
+		StartHealingTimer(entity, 0.2, -3.0, 50);
+	}
+	else
+	{
+		ExtinguishEntity(entity);
+		IgniteEntity(entity, 10.0);
+	}
 }
 
 public Action CombineOverlordCC_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -229,4 +242,48 @@ void CombineOverlordCC_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+}
+
+public void Dungeon_OverlordBurnSpeed(int entity)
+{
+	if(i_NpcInternalId[entity] == COMBINE_OVERLORD_CC)
+	{
+		Level[entity] += 2;
+
+		CombineOverlordCC npc = view_as<CombineOverlordCC>(entity);
+		npc.m_hCCFlags |= CC_FLAG_BURNSPEED;
+	}
+}
+
+public void Dungeon_OverlordMoveSpeed(int entity)
+{
+	if(i_NpcInternalId[entity] == COMBINE_OVERLORD_CC)
+	{
+		Level[entity] += 2;
+
+		CombineOverlordCC npc = view_as<CombineOverlordCC>(entity);
+		npc.m_flNextRangedSpecialAttackHappens -= 30.0;
+	}
+}
+
+public void Dungeon_OverlordBurnDamage(int entity)
+{
+	if(i_NpcInternalId[entity] == COMBINE_OVERLORD_CC)
+	{
+		Level[entity] += 2;
+
+		CombineOverlordCC npc = view_as<CombineOverlordCC>(entity);
+		npc.m_hCCFlags |= CC_FLAG_BURNDAMAGE;
+	}
+}
+
+public void Dungeon_OverlordMeleeDamage(int entity)
+{
+	if(i_NpcInternalId[entity] == COMBINE_OVERLORD_CC)
+	{
+		Level[entity] += 2;
+
+		CombineOverlordCC npc = view_as<CombineOverlordCC>(entity);
+		npc.m_hCCFlags |= CC_FLAG_MELEEDAMAGE;
+	}
 }

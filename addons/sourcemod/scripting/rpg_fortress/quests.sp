@@ -143,8 +143,8 @@ void Quests_EnableZone(int client, const char[] name)
 				//	SetVariantString("solid 2");
 				//	AcceptEntityInput(entity, "AddOutput");
 					AcceptEntityInput(entity, "DisableCollision");
-					SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
-					SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2000.0);
+					SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
+					SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 
 					int brush = SpawnSeperateCollisionBox(entity);
 					//Just reuse it.
@@ -631,7 +631,7 @@ static bool CanTurnInQuest(int client, const char[] steamid, char title[512] = "
 		QuestKv.GoBack();
 	}
 
-	return canTurnIn;
+	return (canTurnIn || CvarRPGInfiniteLevelAndAmmo.BoolValue);
 }
 
 public int Quests_MenuHandle(Menu menu2, MenuAction action, int client, int choice)

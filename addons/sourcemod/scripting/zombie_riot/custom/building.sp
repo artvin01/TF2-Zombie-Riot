@@ -1950,7 +1950,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						}
 					}
 			*/
-					StartHealingTimer(client, 0.1, HealAmmount, HealTime);
+					StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
 					if(owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
 						if(owner != client)
@@ -3108,7 +3108,7 @@ public bool BuildingCustomCommand(int client)
 					{
 						Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-						StartHealingTimer(client, 0.1, 1, 30);
+						StartHealingTimer(client, 0.1, 1.0, 30);
 					}
 					else
 					{
@@ -3137,7 +3137,7 @@ public bool BuildingCustomCommand(int client)
 								{
 									Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-									StartHealingTimer(client, 0.1, 1, 30);
+									StartHealingTimer(client, 0.1, 1.0, 30);
 								}
 								else
 								{

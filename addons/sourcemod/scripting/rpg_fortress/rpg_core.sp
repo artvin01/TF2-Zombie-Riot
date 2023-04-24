@@ -4,6 +4,8 @@
 #define ITEM_CASH	"Credits"
 #define ITEM_XP		"XP"
 #define ITEM_TIER	"Elite Promotion"
+#define MIN_FADE_DISTANCE 3000.0
+#define MAX_FADE_DISTANCE 3700.0
 
 enum
 {
@@ -128,6 +130,8 @@ void RPG_PluginEnd()
 			RemoveEntity(i);
 		}
 	}
+
+	Party_PluginEnd();
 }
 
 void RPG_MapStart()

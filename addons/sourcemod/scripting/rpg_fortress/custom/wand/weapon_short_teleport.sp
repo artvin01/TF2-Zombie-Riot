@@ -32,8 +32,17 @@ public float AbilityShortTeleport(int client, int index, char name[48])
 			GetEntityClassname(weapon, classname, sizeof(classname));
 			if (i_IsWandWeapon[weapon])
 			{
-				float time = Weapon_Wand_ShortTeleport(client, weapon, 1);
-				return (GetGameTime() + time);
+				if(Stats_Intelligence(client) >= 20)
+				{
+					float time = Weapon_Wand_ShortTeleport(client, weapon, 1);
+					return (GetGameTime() + time);
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [20]");
+					return 0.0;
+				}
 			}
 			else
 			{
@@ -74,8 +83,8 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 		return 0.0;
 	}
 		
-	if (distance > (400.0 * level))
-		constrainDistance(startPos, endPos, distance, (400.0 * level));
+	if (distance > (600.0 * level))
+		constrainDistance(startPos, endPos, distance, (600.0 * level));
 	else // shave just a tiny bit off the end position so our point isn't directly on top of a wall
 		constrainDistance(startPos, endPos, distance, distance - 1.0);
 
@@ -109,7 +118,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 		float damage_reduction = 1.0;
 		damage_1 = damage;
 		float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF;
-		float Teleport_CD = 15.0;
+		float Teleport_CD = 10.0;
 
 		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
@@ -120,7 +129,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 
 			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0), VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
-			Teleport_CD = 5.0;
+			Teleport_CD = 4.0;
 		}
 		FinishLagCompensation_Base_boss();
 		abspos[2] += 40.0;

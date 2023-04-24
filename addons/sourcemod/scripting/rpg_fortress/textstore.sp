@@ -14,6 +14,7 @@ static const char RarityName[][] =
 enum struct StoreEnum
 {
 	char Tag[16];
+	char Key[48];
 	
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
@@ -38,6 +39,7 @@ enum struct StoreEnum
 	void SetupEnum(KeyValues kv)
 	{
 		kv.GetString("tag", this.Tag, 16);
+		kv.GetString("key", this.Key, 48);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH);
 		if(this.Model[0])
@@ -302,6 +304,7 @@ void TextStore_PluginStart()
 {
 	CreateTimer(2.0, TextStore_ItemTimer, _, TIMER_REPEAT);
 	RegConsoleCmd("rpg_help", TextStore_HelpCommand, _, FCVAR_HIDDEN);
+	RegAdminCmd("rpg_givemeall", TextStore_GiveMeAllCommand, ADMFLAG_ROOT);
 }
 
 public Action TextStore_HelpCommand(int client, int args)
@@ -310,6 +313,22 @@ public Action TextStore_HelpCommand(int client, int args)
 	if(client)
 		FakeClientCommandEx(client, "sm_store");
 	
+	return Plugin_Handled;
+}
+
+public Action TextStore_GiveMeAllCommand(int client, int args)
+{
+	if(client)
+	{
+		int count;
+		int length = TextStore_GetItems();
+		for(int i; i < length; i++)
+		{
+			TextStore_GetInv(client, i, count);
+			if(count < 1)
+				TextStore_SetInv(client, i, 1);
+		}
+	}
 	return Plugin_Handled;
 }
 
@@ -689,35 +708,42 @@ void TextStore_ZoneEnter(int client, const char[] name)
 			StoreList.SetArray(name, store, sizeof(store));
 		}
 
-		store.PlayEnter(client);
-		strcopy(InStore[client], sizeof(InStore[]), name);
-		strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
-
-		if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
+		if(store.Key[0] && TextStore_GetItemCount(client, store.Key[0]))
 		{
-			MarketKv.Rewind();
-			if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
-			{
-				if(MarketKv.GotoFirstSubKey())
-				{
-					do
-					{
-						int cash = MarketKv.GetNum("cash");
-						MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
-						SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
-						TextStore_Cash(client, cash);
-					}
-					while(MarketKv.GotoNextKey());
-
-					MarketKv.GoBack();
-				}
-
-				MarketKv.DeleteThis();
-				SaveMarket(client);
-			}
+			SPrintToChat(client, "You require \"%s\" to use this shop", store.Key);
 		}
-		
-		FakeClientCommand(client, "sm_buy");
+		else
+		{
+			store.PlayEnter(client);
+			strcopy(InStore[client], sizeof(InStore[]), name);
+			strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
+
+			if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
+			{
+				MarketKv.Rewind();
+				if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
+				{
+					if(MarketKv.GotoFirstSubKey())
+					{
+						do
+						{
+							int cash = MarketKv.GetNum("cash");
+							MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
+							SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
+							TextStore_Cash(client, cash);
+						}
+						while(MarketKv.GotoNextKey());
+
+						MarketKv.GoBack();
+					}
+
+					MarketKv.DeleteThis();
+					SaveMarket(client);
+				}
+			}
+			
+			FakeClientCommand(client, "sm_buy");
+		}
 	}
 }
 

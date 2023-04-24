@@ -88,7 +88,7 @@ public Action Medikit_healing(int client, int buttons)
 												ammo_amount_left = Health_To_Max;
 											}
 											
-											StartHealingTimer(player_looking_at, 0.1, 1, ammo_amount_left);
+											StartHealingTimer(player_looking_at, 0.1, 1.0, ammo_amount_left);
 											Healing_done_in_total[client] += ammo_amount_left;
 											if(EscapeMode)
 											{
@@ -189,7 +189,7 @@ public Action Medikit_healing(int client, int buttons)
 										ammo_amount_left = Health_To_Max;
 									}
 									
-									StartHealingTimer(client, 0.1, 1, ammo_amount_left);
+									StartHealingTimer(client, 0.1, 1.0, ammo_amount_left);
 									Healing_done_in_total[client] += ammo_amount_left;
 									int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 									

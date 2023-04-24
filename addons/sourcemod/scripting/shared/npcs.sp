@@ -1202,7 +1202,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #if defined RPG
-		if(b_NpcIsInADungeon[victim] || attacker > MaxClients)
+		if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 100000)
 		{
 			
 		}
@@ -1951,7 +1951,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(raid_entity != victim) //If a raid is alive, but the victim is not the raid! we need extra rules.
 		{
-			if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
+			if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 				return;
 
 			f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
@@ -1959,7 +1959,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		else
 		{
 			//need a diff timer for raids, otherwise it cant display both huds!!
-			if(f_HudCooldownAntiSpamRaid[attacker] > GetGameTime())
+			if(f_HudCooldownAntiSpamRaid[attacker] >= GetGameTime())
 				return;
 
 			f_HudCooldownAntiSpamRaid[attacker] = GetGameTime() + 0.2;
@@ -1969,7 +1969,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif
 	
 	{
-		if(f_HudCooldownAntiSpam[attacker] > GetGameTime())
+		if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 			return;
 
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		

@@ -37,7 +37,9 @@ enum
 	COMBINE_GIANT,
 	COMBINE_OVERLORD,
 	TOWNGUARD_PISTOL,
-	COMBINE_OVERLORD_CC	= 30
+	COMBINE_OVERLORD_CC	= 30,
+	COMBINE_TURTLE,
+	FARM_BEAR
 }
 
 public const char NPC_Names[][] =
@@ -73,6 +75,8 @@ public const char NPC_Names[][] =
 	"Combine Overlord",
 	"Rebel Guard",
 	"Overlord The Last",
+	"Hat Turtle",
+	"Heavy Farm Bear"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -107,7 +111,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_combine_giant",
 	"npc_combine_overlord",
 	"npc_townguard_pistol",
-	"npc_combine_overlord_cc"
+	"npc_combine_overlord_cc",
+	"npc_combine_turtle",
+	"npc_heavy_farm_bear",
 };
 
 void NPC_MapStart()
@@ -133,6 +139,8 @@ void NPC_MapStart()
 	ArkSlugAcid_MapStart();
 	ArkSlugInfused_MapStart();
 	BaseSquad_MapStart();
+	CombineTurtle_MapStart();
+	FarmBear_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -262,6 +270,14 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case COMBINE_OVERLORD_CC:
 		{
 			entity = CombineOverlordCC(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_TURTLE:
+		{
+			entity = CombineTurtle(client, vecPos, vecAng, ally);
+		}
+		case FARM_BEAR:
+		{
+			entity = FarmBear(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -395,6 +411,14 @@ public void NPCDeath(int entity)
 		case COMBINE_OVERLORD_CC:
 		{
 			CombineOverlordCC_NPCDeath(entity);
+		}
+		case COMBINE_TURTLE:
+		{
+			CombineTurtle_NPCDeath(entity);
+		}
+		case FARM_BEAR:
+		{
+			FarmBear_NPCDeath(entity);
 		}
 		default:
 		{
@@ -683,6 +707,10 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 		{
 			result = HeavyCow_Interact(client, weapon);
 		}
+		case FARM_BEAR:
+		{
+			result = HeavyBear_Interact(client, weapon);
+		}
 	}
 	return result;
 }
@@ -705,6 +733,7 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
 
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
+#include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
 
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
@@ -722,3 +751,4 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/combine/npc_combine_overlord.sp"
 #include "rpg_fortress/npc/combine/npc_townguard_pistol.sp"
 #include "rpg_fortress/npc/combine/npc_combine_overlord_cc.sp"
+#include "rpg_fortress/npc/combine/npc_combine_turtle.sp"

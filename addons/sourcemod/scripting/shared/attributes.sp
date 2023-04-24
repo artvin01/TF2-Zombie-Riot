@@ -50,15 +50,15 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			float value;
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
-/*
+
 				value = Attributes_FindOnWeapon(client, weapon, 16) +
 					Attributes_FindOnWeapon(client, weapon, 98) +
 					Attributes_FindOnWeapon(client, weapon, 110) +
 					Attributes_FindOnWeapon(client, weapon, 111);	// add_onhit_addhealth
 					
 				if(value)
-					StartHealingTimer(client, 0.1, value > 0 ? 1 : -1, value > 0 ? RoundFloat(value) : RoundFloat(-value));
-				
+					StartHealingTimer(client, 0.1, value > 0 ? 1.0 : -1.0, value > 0 ? RoundFloat(value) : RoundFloat(-value));
+/*		
 				value = Attributes_FindOnWeapon(client, weapon, 19);	//  tmp dmgbuff on hit
 				if(value)
 					TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
@@ -292,20 +292,6 @@ void Attributes_OnKill(int client, int weapon)
 		value = Attributes_FindOnWeapon(client, weapon, 180);	// heal on kill
 		if(value)
 			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
-		
-#if defined ZR
-		if(EscapeMode)
-		{
-			if(!i_IsWandWeapon[weapon])
-			{
-				char melee_classname[64];
-				GetEntityClassname(weapon, melee_classname, 64);
-					
-				if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-					StartHealingTimer(client, 0.1, 1, 5, true);
-			}
-		}
-#endif
 		
 	}
 	/*

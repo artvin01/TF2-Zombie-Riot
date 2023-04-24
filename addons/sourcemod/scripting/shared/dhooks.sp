@@ -73,6 +73,7 @@ void DHook_Setup()
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
 	
+	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "HandleRageGain", DHook_HandleRageGainPre, DHook_HandleRageGainPost);
@@ -220,7 +221,11 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 #endif
 
 		{
-			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false); 
+			if(!CurrentClass[client_2])
+			{
+				CurrentClass[client_2] = TFClass_Scout;
+			}
+			TF2_SetPlayerClass(client_2, CurrentClass[client], false, false);
 		}
 	}
 	return MRES_Ignored;
@@ -244,6 +249,10 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 			#endif
 
 				{
+					if(!WeaponClass[client_2])
+					{
+						WeaponClass[client_2] = TFClass_Scout;
+					}
 					TF2_SetPlayerClass(client_2, WeaponClass[client_2], false, false);
 				}
 		}
@@ -763,14 +772,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-
 #if defined ZR
 			else if(i_IsABuilding[entity2] && IsValidEntity(RaidBossActive))
 			{
 				return false;
 			}
 #endif
-
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
@@ -1532,30 +1539,24 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 		}
 		else
 		{
-			int foundEnt = -1;
-			int foundLv = -1;
+			int level = Levels_GetSpawnPoint(client);
 			int entity = -1;
 			while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
 			{
 				static char buffer[32];
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "rpg_spawn_", false))
+				if(!StrContains(buffer, "rpg_respawn_", false))
 				{
 					int lv = StringToInt(buffer[10]);
-					if(lv > foundLv && Tier[client] >= lv)
+					if(level == lv)
 					{
-						foundEnt = entity;
-						foundLv = lv;
+						float pos[3], ang[3];
+						GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+						TeleportEntity(client, pos, ang, NULL_VECTOR);
+						break;
 					}
 				}
-			}
-
-			if(foundEnt != -1)
-			{
-				float pos[3], ang[3];
-				GetEntPropVector(foundEnt, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(foundEnt, Prop_Data, "m_angRotation", ang);
-				TeleportEntity(client, pos, ang, NULL_VECTOR);
 			}
 		}
 #endif
@@ -1854,7 +1855,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			}
 			Give_Assist_Points(target, owner);
 			
-			StartHealingTimer(target, 0.1, float(ammo_amount_left/10), 10, true);
+			StartHealingTimer(target, 0.1, float(ammo_amount_left) * 0.1, 10, true);
 			
 #if defined ZR
 			Healing_done_in_total[owner] += ammo_amount_left;
@@ -2065,3 +2066,14 @@ public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams)
 	return MRES_Ignored;
 }
 */
+
+public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
+{
+	// Gives our desired class's wearables
+	if(!CurrentClass[client])
+	{
+		CurrentClass[client] = TFClass_Scout;
+	}
+	TF2_SetPlayerClass(client, CurrentClass[client]);
+	return MRES_Ignored;
+}

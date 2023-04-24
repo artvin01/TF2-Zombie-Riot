@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define UseDownloadTable
+
 #include <tf2_stocks>
 #include <sdkhooks>
 #include <collisionhook>
@@ -14,8 +16,9 @@
 #include <PathFollower_Nav>
 #include <morecolors>
 #include <tf2utils>
+#if !defined UseDownloadTable
 #include <filenetwork>
-
+#endif
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
 #define CHAR_PARTEMPTY	"▒"
@@ -36,7 +39,7 @@
 #define MAX_PLAYER_COUNT_STRING		"12"
 
 //This is for spectating
-#define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 24, rest is for killfeed bots
+#define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 16, rest is for killfeed bots
 #define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
 //cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
 #else
@@ -51,6 +54,7 @@
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
+
 
 #define LagCompensation
 
@@ -1489,11 +1493,14 @@ public void OnClientPutInServer(int client)
 		return;
 	}
 
-	if(CountPlayersOnServer() > MAX_PLAYER_COUNT_SLOTS)
+	if(CountPlayersOnServer() > (MAX_PLAYER_COUNT))
 	{
-		if(!(GetUserFlagBits(client) & ADMFLAG_SLAY))
+		//doesnt work.
+		if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
 		{
-			KickClient(client, "Server is full, do not use the console to connect, thank you.");
+		//	ClientCommand(client,"redirect 185.107.96.3:27015");
+		//	CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
 		}
 	}
 	
@@ -3182,5 +3189,14 @@ public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQue
 				PrintToChat(client,"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!");
 			}
 		}
+	}
+}
+
+public Action RedirectPlayer(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		KickClient(client, "This server is full, try the 2nd server: 74.91.113.50:27016.");
 	}
 }
