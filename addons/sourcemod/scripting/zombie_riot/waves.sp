@@ -225,6 +225,87 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+public Action Waves_VoteDisplayTimer(Handle timer)
+{
+	if(!Voting)
+		return Plugin_Stop;
+	
+	Waves_DisplayHintVote();
+	return Plugin_Continue;
+}
+
+void Waves_DisplayHintVote()
+{
+	int length = Voting.Length;
+	if(length > 1)
+	{
+		int count, total;
+		int[] votes = new int[length + 1];
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2)
+			{
+				total++;
+
+				if(VotedFor[client])
+				{
+					count++;
+
+					if(VotedFor[client] > 0)
+						votes[VotedFor[client] - 1]++;
+				}
+			}
+		}
+
+		int top[3] = {-1, ...};
+		for(int i; i < length; i++)
+		{
+			if(votes[i] < 1)
+			{
+
+			}
+			else if(top[0] == -1 || votes[i] > votes[top[0]])
+			{
+				top[0] = i;
+				top[1] = top[0];
+				top[2] = top[1];
+			}
+			else if(top[1] == -1 || votes[i] > votes[top[1]])
+			{
+				top[1] = i;
+				top[2] = top[1];
+			}
+			else if(top[2] == -1 || votes[i] > votes[top[2]])
+			{
+				top[2] = i;
+			}
+		}
+
+		if(top[0] != -1)
+		{
+			Vote vote;
+			Voting.GetArray(top[0], vote);
+			vote.Name[0] = CharToUpper(vote.Name[0]);
+
+			char buffer[256];
+			FormatEx(buffer, sizeof(buffer), "Votes: %d / %d\n1. %s: (%d)", count, total, vote.Name, votes[top[0]]);
+
+			for(int i = 1; i < sizeof(top); i++)
+			{
+				if(top[i] != -1)
+				{
+					Voting.GetArray(top[i], vote);
+					vote.Name[0] = CharToUpper(vote.Name[0]);
+
+					Format(buffer, sizeof(buffer), "%s\n%d. %s: (%d)", buffer, i + 1, vote.Name, votes[top[i]]);
+				}
+			}
+
+			PrintHintTextToAll(buffer);
+		}
+	}
+}
+
 void OnMapEndWaves()
 {
 	if(Voting)
@@ -291,6 +372,8 @@ void Waves_SetupVote(KeyValues map)
 		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey());
+
+	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -544,6 +627,8 @@ void Waves_RoundStart()
 		int length = Voting.Length;
 		if(length)
 		{
+			Waves_DisplayHintVote();
+
 			int[] votes = new int[length];
 			for(int client=1; client<=MaxClients; client++)
 			{
