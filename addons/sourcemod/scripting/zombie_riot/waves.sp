@@ -101,6 +101,8 @@ void Waves_PluginStart()
 {
 	CvarSkyName = FindConVar("sv_skyname");
 
+	RegConsoleCmd("sm_revote", Waves_RevoteCmd, "Revote the vote");
+
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
 }
@@ -148,6 +150,16 @@ public Action Waves_SetWaveCmd(int client, int args)
 	CurrentRound = StringToInt(buffer);
 	CurrentWave = -1;
 	Waves_Progress();
+	return Plugin_Handled;
+}
+
+public Action Waves_RevoteCmd(int client, int args)
+{
+	if(Voting && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	{
+		VotedFor[client] = 0;
+		Waves_CallVote(client);
+	}
 	return Plugin_Handled;
 }
 
