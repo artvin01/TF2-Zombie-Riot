@@ -3198,7 +3198,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 	{
 		int KickAt;
 
-		if(CvarKickPlayersAt.IntValue)
+		if(CvarKickPlayersAt.IntValue > 0)
 		{
 			KickAt = CvarKickPlayersAt.IntValue;
 		}
@@ -3206,6 +3206,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 		{
 			KickAt = MAX_PLAYER_COUNT_SLOTS;
 		}
+
 		int playersOnServer = CountPlayersOnServer();
 
 		if(playersOnServer > (KickAt))
@@ -3276,6 +3277,6 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 	{
 		char buffer[64];
 		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
-		KickClient(client, "You were in spectator and the server was full.",buffer);
+		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
 	}
 }

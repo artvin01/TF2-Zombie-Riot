@@ -160,57 +160,68 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				case 0:
 				{
-					ChangeClientTeam(client, 1);
-					Queue_Menu(client);
+					if(IsValidClient(client))
+					{
+						ChangeClientTeam(client, 1);
+						Queue_Menu(client);
+					}
 				}
 				case 1:
 				{
-					
-					int count;
-					for(int i=1; i<=MaxClients; i++)
+					if(IsValidClient(client))
 					{
-						if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2)
+						int count;
+						for(int i=1; i<=MaxClients; i++)
 						{
-							if(++count >= MAX_PLAYER_COUNT)
+							if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2)
 							{
-								Queue_Menu(client);
-								if(GetClientTeam(client) != 2)
+								if(++count >= MAX_PLAYER_COUNT)
 								{
-									ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-									ShowVGUIPanel(client, "class_red");
+									Queue_Menu(client);
+									if(GetClientTeam(client) != 2)
+									{
+										ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+										ShowVGUIPanel(client, "class_red");
+									}
+									return 0;
 								}
-								return 0;
 							}
 						}
-					}
-					
-					ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-					if(IsPlayerAlive(client))
-						ForcePlayerSuicide(client);
-					
-					WaitingInQueue[client] = false;
-					CookiePlayStreak.Set(client, "1");
-				}
-				case 2:
-				{
-					char buffer[16];
-					menu.GetItem(choice, buffer, sizeof(buffer));
-					if(StringToInt(buffer))
-					{
-						WaitingInQueue[client] = false;
+						
+						ChangeClientTeam(client, view_as<int>(TFTeam_Red));
 						if(IsPlayerAlive(client))
 							ForcePlayerSuicide(client);
 						
-						ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-						ShowVGUIPanel(client, "class_red");
-						CookiePlayStreak.Set(client, "99");
+						WaitingInQueue[client] = false;
+						CookiePlayStreak.Set(client, "1");
+					}
+				}
+				case 2:
+				{
+					if(IsValidClient(client))
+					{
+						char buffer[16];
+						menu.GetItem(choice, buffer, sizeof(buffer));
+						if(StringToInt(buffer))
+						{
+							WaitingInQueue[client] = false;
+							if(IsPlayerAlive(client))
+								ForcePlayerSuicide(client);
+							
+							ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+							ShowVGUIPanel(client, "class_red");
+							CookiePlayStreak.Set(client, "99");
+						}
 					}
 				}
 				default:
 				{
-					char buffer[16];
-					menu.GetItem(choice, buffer, sizeof(buffer));
-					FakeClientCommand(client, buffer);
+					if(IsValidClient(client))
+					{
+						char buffer[16];
+						menu.GetItem(choice, buffer, sizeof(buffer));
+						FakeClientCommand(client, buffer);
+					}
 				}
 			}
 		}

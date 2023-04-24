@@ -729,7 +729,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
-	
+	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
+	{
+		return false;
+	}	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
 		static int entity1;
@@ -743,10 +746,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			entity1 = ent2;
 			entity2 = ent1;			
-		}
-		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[entity2])
-		{
-			return false;
 		}
 #if defined ZR
 		else if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
@@ -827,10 +826,12 @@ things i tried
 			{
 		//		//Have to use this here, please check wand_projectile for more info!
 				Cryo_Touch(entity1, entity2);
+				return false;
 			}
 			else if (i_WandIdNumber[entity1] == 14)
 			{
 				lantean_Wand_Touch(entity1, entity2);
+				return false;
 			}
 #endif
 		}
