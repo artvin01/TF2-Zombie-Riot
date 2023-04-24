@@ -1498,9 +1498,9 @@ public void OnClientPutInServer(int client)
 		//doesnt work.
 		if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
 		{
-		//	ClientCommand(client,"redirect 74.91.113.50:27016");
-		//	CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-			KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
+			ClientCommand(client,"redirect 185.107.96.3:27015");
+			//CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			//KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
 		}
 	}
 	
