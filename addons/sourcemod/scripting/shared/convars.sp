@@ -87,7 +87,7 @@ void ConVar_PluginStart()
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);
-	CvarKickPlayersAt = CreateConVar("zr_kickPlayersAt", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
+	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
 	
 	AutoExecConfig(true, "zombie_riot");
 	
