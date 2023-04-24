@@ -80,6 +80,7 @@ ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 ConVar zr_downloadconfig;
 ConVar CvarRerouteToIp;
+ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 
 bool Toggle_sv_cheats = false;
@@ -247,6 +248,7 @@ int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
 float f_CooldownForHurtParticle[MAXENTITIES];	
+float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
 float f_BackstabCooldown[MAXENTITIES];
 int i_BackstabHealEachTick[MAXENTITIES];
@@ -1499,6 +1501,7 @@ public void OnClientPutInServer(int client)
 		b_IsPlayerABot[client] = true;
 		return;
 	}
+	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	
 	DHook_HookClient(client);
 	FileNetwork_ClientPutInServer(client);
@@ -3203,24 +3206,55 @@ public Action AdminCheckKick(Handle timer, int ref)
 		{
 			KickAt = MAX_PLAYER_COUNT_SLOTS;
 		}
+		int playersOnServer = CountPlayersOnServer();
 
-		if(CountPlayersOnServer() > (KickAt))
+		if(playersOnServer > (KickAt))
 		{
-			//doesnt work.
-			if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
+			for(int clientkick=1; clientkick<=MaxClients; clientkick++)
 			{
-				char buffer[64];
-				CvarRerouteToIp.GetString(buffer, sizeof(buffer));
-				if(buffer[0])
+				if(IsClientConnected(clientkick))
 				{
-					ClientCommand(client,"redirect %s",buffer);
-					CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-				}
-				else
-				{
-					KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
+					if(!IsFakeClient(clientkick) && GetClientTeam(clientkick) < 2 && f_ClientConnectTime[clientkick] < GetGameTime())
+					{
+						if(!(CheckCommandAccess(clientkick, "sm_mute", ADMFLAG_SLAY)))
+						{
+							playersOnServer--;
+							char buffer[64];
+							CvarRerouteToIpAfk.GetString(buffer, sizeof(buffer));
+							if(buffer[0])
+							{
+								ClientCommand(clientkick,"redirect %s",buffer);
+								CreateTimer(1.0, RedirectPlayerSpec, EntIndexToEntRef(clientkick), TIMER_FLAG_NO_MAPCHANGE);
+							}
+							else
+							{
+								KickClient(clientkick, "You were in spectator and the server was full.");
+							}
+							break;
+						}
+					}
 				}
 			}
+
+			if(playersOnServer > (KickAt))
+			{
+				//doesnt work.
+				if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
+				{
+					char buffer[64];
+					CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+					if(buffer[0])
+					{
+						ClientCommand(client,"redirect %s",buffer);
+						CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+					}
+					else
+					{
+						KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
+					}
+				}
+			}
+
 		}
 	}
 }
@@ -3233,5 +3267,15 @@ public Action RedirectPlayer(Handle timer, int ref)
 		char buffer[64];
 		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
 		KickClient(client, "This server is full, try: %s",buffer);
+	}
+}
+public Action RedirectPlayerSpec(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		char buffer[64];
+		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+		KickClient(client, "You were in spectator and the server was full.",buffer);
 	}
 }
