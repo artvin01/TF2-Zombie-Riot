@@ -11,7 +11,7 @@
 #include <tf2items>
 #include <tf_econ_data>
 #include <tf2attributes>
-#include <lambda>
+//#include <lambda>
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
@@ -3258,6 +3258,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 
 		}
 	}
+	return Plugin_Continue;
 }
 
 public Action RedirectPlayer(Handle timer, int ref)
@@ -3269,6 +3270,7 @@ public Action RedirectPlayer(Handle timer, int ref)
 		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
 		KickClient(client, "This server is full, try: %s",buffer);
 	}
+	return Plugin_Continue;
 }
 public Action RedirectPlayerSpec(Handle timer, int ref)
 {
@@ -3279,4 +3281,5 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
 		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
 	}
+	return Plugin_Continue;
 }

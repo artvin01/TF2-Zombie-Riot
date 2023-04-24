@@ -733,6 +733,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 	{
 		return false;
 	}	
+	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
 		static int entity1;
@@ -748,7 +749,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity2 = ent1;			
 		}
 #if defined ZR
-		else if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
 			{
@@ -757,7 +758,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif
-		else if(b_Is_Npc_Projectile[entity1])
+		if(b_Is_Npc_Projectile[entity1])
 		{
 			if(b_ThisEntityIgnored[entity2])
 			{
@@ -784,6 +785,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
 				//This is only used for wands so place beware, we will just delete the entity.
+			//	RemoveEntity(entity1);
 				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
 				int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
