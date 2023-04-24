@@ -1170,8 +1170,16 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 
 	if(newHealth >= 1.0)
 	{
-		float maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		float maxHealth;
 
+		if(entity > MaxClients)
+		{
+			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		}
+		else
+		{
+			maxHealth = float(SDKCall_GetMaxHealth(entity));
+		}
 		//TARGET HEAL
 		if(lastHealth < maxHealth)
 		{
