@@ -79,6 +79,8 @@ ConVar CvarDisableThink;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 ConVar zr_downloadconfig;
+ConVar CvarRerouteToIp;
+ConVar CvarKickPlayersAt;
 
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
@@ -1481,6 +1483,11 @@ public Action Command_ToggleReload(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+public void OnClientPostAdminCheck(int client)
+{
+	CreateTimer(1.0, AdminCheckKick, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+}
 				
 public void OnClientPutInServer(int client)
 {
@@ -1491,17 +1498,6 @@ public void OnClientPutInServer(int client)
 		DHook_HookClient(client);
 		b_IsPlayerABot[client] = true;
 		return;
-	}
-
-	if(CountPlayersOnServer() > (MAX_PLAYER_COUNT))
-	{
-		//doesnt work.
-		if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
-		{
-		//	ClientCommand(client,"redirect 185.107.96.3:27015");
-		//	CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-			KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
-		}
 	}
 	
 	DHook_HookClient(client);
@@ -3192,11 +3188,50 @@ public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQue
 	}
 }
 
+public Action AdminCheckKick(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		int KickAt;
+
+		if(CvarKickPlayersAt.IntValue)
+		{
+			KickAt = CvarKickPlayersAt.IntValue;
+		}
+		else
+		{
+			KickAt = MAX_PLAYER_COUNT_SLOTS;
+		}
+
+		if(CountPlayersOnServer() > (KickAt))
+		{
+			//doesnt work.
+			if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
+			{
+				char buffer[64];
+				CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+				if(buffer[0])
+				{
+					ClientCommand(client,"redirect %s",buffer);
+					CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+				}
+				else
+				{
+					KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
+				}
+			}
+		}
+	}
+}
+
 public Action RedirectPlayer(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		KickClient(client, "This server is full, try the 2nd server: 74.91.113.50:27016.");
+		char buffer[64];
+		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+		KickClient(client, "This server is full, try: %s",buffer);
 	}
 }
