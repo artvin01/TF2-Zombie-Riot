@@ -297,7 +297,7 @@ float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
-bool b_HudHitMarker[MAXTF2PLAYERS];
+bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 
 float f_ArmorHudOffsetX[MAXTF2PLAYERS];
 float f_ArmorHudOffsetY[MAXTF2PLAYERS];
@@ -1540,7 +1540,8 @@ public void OnClientDisconnect(int client)
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake[client] = true;
-
+	b_HudHitMarker[client] = true;
+	
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
