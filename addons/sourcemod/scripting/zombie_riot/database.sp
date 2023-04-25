@@ -194,6 +194,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			PlayStreak[client] = results[1].FetchInt(2);
 			Scrap[client] = results[1].FetchInt(3);
 			tutorial = results[1].FetchInt(4);
+			Level[client] = XpToLevel(XP[client]);
 		}
 		else if(!results[1].MoreRows)
 		{
