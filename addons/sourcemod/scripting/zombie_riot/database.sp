@@ -233,7 +233,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			if(!tr)
 				tr = new Transaction();
 
-			FormatEx(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_MISC ... " (steamid) VALUES (%d)", GetSteamAccountID(client));
+			FormatEx(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SETTINGS ... " (steamid) VALUES (%d)", GetSteamAccountID(client));
 			tr.AddQuery(buffer);
 		}
 
