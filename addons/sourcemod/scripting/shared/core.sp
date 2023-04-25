@@ -1510,6 +1510,7 @@ public void OnClientPutInServer(int client)
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
+	f_TutorialUpdateStep[client] = 0.0;
 	ZR_ClientPutInServer(client);
 #endif
 	
