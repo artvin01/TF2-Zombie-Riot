@@ -229,10 +229,6 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
-Cookie Niko_Cookies;
-Cookie HudSettings_Cookies;
-Cookie HudSettingsExtra_Cookies;
-
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_ExtendBoundingBox;
@@ -1150,8 +1146,6 @@ public void OnPluginStart()
 
 	sv_cheats.Flags &= ~FCVAR_NOTIFY;
 	
-	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
-	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
@@ -1182,9 +1176,6 @@ public void OnPluginStart()
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
-
-	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
-	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -1524,95 +1515,33 @@ public void OnClientPutInServer(int client)
 	
 #if defined RPG
 	RPG_PutInServer(client);
-#endif
 
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
+#endif
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
 }
 
+#if defined RPG
 public void OnClientCookiesCached(int client)
 {
-	char buffer[12];
-	
-#if defined ZR
-	Tutorial_LoadCookies(client);
-
-	CookieScrap.Get(client, buffer, sizeof(buffer));
-	Scrap[client] = StringToInt(buffer);
-	
-	if(Scrap[client] < 0)
-	{
-		Scrap[client] = 0;
-	}
-	
-	CookieXP.Get(client, buffer, sizeof(buffer));
-	XP[client] = StringToInt(buffer);
-	Level[client] = XpToLevel(XP[client]);
-#endif
-
-	ThirdPerson_OnClientCookiesCached(client);
-	
-	Niko_Cookies.Get(client, buffer, sizeof(buffer));
-	if(StringToInt(buffer) == 1)
-	{
-	 	b_IsPlayerNiko[client] = true;
-	}
-	else
-	{
-		b_IsPlayerNiko[client] = false;
-	}
-
-	
-	HudSettings_ClientCookiesCached(client);
-#if defined ZR
-	Store_ClientCookiesCached(client);
-	LeftForDead_ClientCookiesCached(client);
-#endif
-
-#if defined RPG
 	RPG_ClientCookiesCached(client);
-#endif
 }
+#endif
 
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
-
-	HudSettings_ClientCookiesDisconnect(client);
-	char buffer[12];
 	i_EntityToAlwaysMeleeHit[client] = 0;
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
-	
-	if(Scrap[client] > -1)
-	{
-		IntToString(Scrap[client], buffer, sizeof(buffer));
-		CookieScrap.Set(client, buffer);
-	}
-	Scrap[client] = -1;
-	
-	if(XP[client] > 0)
-	{
-		IntToString(XP[client], buffer, sizeof(buffer));
-		CookieXP.Set(client, buffer);
-		
-	}
-	XP[client] = 0;
 #endif
-	int niko_int = 0;
-		
-	if(b_IsPlayerNiko[client])
-		niko_int = 1;
-			
-	IntToString(niko_int, buffer, sizeof(buffer));
-	Niko_Cookies.Set(client, buffer);
 
 	b_DisplayDamageHud[client] = false;
 	WeaponClass[client] = TFClass_Unknown;

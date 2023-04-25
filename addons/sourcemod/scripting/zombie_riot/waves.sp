@@ -1346,7 +1346,7 @@ void Waves_Progress()
 			int Max_Enemy_Get = Freeplay_EnemyCount();
 			for(int i; i < length; i++)
 			{
-				if(Freeplay_ShouldAddEnemy(postWaves)) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+				if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
 				{
 					round.Waves.GetArray(i, wave);
 					Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);

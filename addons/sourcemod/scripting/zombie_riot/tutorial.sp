@@ -5,25 +5,18 @@ bool b_IsInTutorialMode[MAXTF2PLAYERS];
 int i_TutorialStep[MAXTF2PLAYERS];
 float f_TutorialUpdateStep[MAXTF2PLAYERS];
 
-static Cookie TutorialCheck;
 static Handle SyncHud;
 
-
-public void Tutorial_PluginStart()
+void Tutorial_PluginStart()
 {
-	TutorialCheck = new Cookie("zr_tutorial_check", "Has the player done the tutorial?", CookieAccess_Protected);
 	SyncHud = CreateHudSynchronizer();
 }
 
-
-public void Tutorial_LoadCookies(int client)
+void Tutorial_ClientSetup(int client, int value)
 {
-	char buffer[12];
-	TutorialCheck.Get(client, buffer, sizeof(buffer));
-	
 	f_TutorialUpdateStep[client] = 0.0;
 	
-	if(StringToInt(buffer) != 2)
+	if(value != 2)
 	{
 	 	StartTutorial(client);
 	}
@@ -41,39 +34,39 @@ public void Tutorial_LoadCookies(int client)
 	ShowAnnotationToPlayer(client, chargerPos, "Press Tab to open the store!", 5.0, client);
 */
 
-public void StartTutorial(int client)
+void StartTutorial(int client)
 {
 	SetClientTutorialMode(client, true);
 	SetClientTutorialStep(client, 1);
 }
 
-public void SetTutorialUpdateTime(int client, float time)
+void SetTutorialUpdateTime(int client, float time)
 {
 	f_TutorialUpdateStep[client] = time;
 }
 
-public bool IsClientInTutorial(int client)
+bool IsClientInTutorial(int client)
 {
 	return b_IsInTutorialMode[client];
 }
 
-public int ClientTutorialStep(int client)
+int ClientTutorialStep(int client)
 {
 	return i_TutorialStep[client];
 }
 
-public void SetClientTutorialMode(int client, bool set_tutorial)
+void SetClientTutorialMode(int client, bool set_tutorial)
 {
 	b_IsInTutorialMode[client] = set_tutorial;
 }
 
-public void SetClientTutorialStep(int client, int stepcount)
+void SetClientTutorialStep(int client, int stepcount)
 {
 	i_TutorialStep[client] = stepcount;
 }
 
 
-public void Tutorial_MakeClientNotMove(int client)
+void Tutorial_MakeClientNotMove(int client)
 {
 	if(IsClientInTutorial(client) && TeutonType[client] != TEUTON_WAITING)
 	{
@@ -81,8 +74,7 @@ public void Tutorial_MakeClientNotMove(int client)
 	}
 }
 
-
-public void DoTutorialStep(int client, bool obeycooldown)
+void DoTutorialStep(int client, bool obeycooldown)
 {
 	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)
 	{
@@ -136,7 +128,7 @@ public void DoTutorialStep(int client, bool obeycooldown)
 				
 					//two means done.
 					
-					TutorialCheck.Set(client, "2");
+					Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 2);
 	
 					CreateTimer(8.0, TimerTutorial_End, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 				}

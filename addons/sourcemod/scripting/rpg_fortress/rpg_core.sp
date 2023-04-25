@@ -38,6 +38,10 @@ bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 
+Cookie Niko_Cookies;
+Cookie HudSettings_Cookies;
+Cookie HudSettingsExtra_Cookies;
+
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
 #include "rpg_fortress/ammo.sp"
@@ -81,6 +85,10 @@ bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 
 void RPG_PluginStart()
 {
+	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
+	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
+	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
+
 	Ammo_PluginStart();
 	Dungeon_PluginStart();
 	Fishing_PluginStart();
@@ -196,7 +204,19 @@ public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult re
 void RPG_ClientCookiesCached(int client)
 {
 	Ammo_ClientCookiesCached(client);
+	HudSettings_ClientCookiesCached(client);
 	Stats_ClientCookiesCached(client);
+	ThirdPerson_OnClientCookiesCached(client);
+
+	Niko_Cookies.Get(client, buffer, sizeof(buffer));
+	if(StringToInt(buffer) == 1)
+	{
+	 	b_IsPlayerNiko[client] = true;
+	}
+	else
+	{
+		b_IsPlayerNiko[client] = false;
+	}
 }
 
 void RPG_ClientDisconnect(int client)
@@ -210,6 +230,14 @@ void RPG_ClientDisconnect(int client)
 	}
 
 	DisabledDownloads[client] = false;
+
+	int niko_int = 0;
+		
+	if(b_IsPlayerNiko[client])
+		niko_int = 1;
+			
+	IntToString(niko_int, buffer, sizeof(buffer));
+	Niko_Cookies.Set(client, buffer);
 
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
@@ -288,4 +316,64 @@ public Action CheckClientConvars(Handle timer)
 		}
 	}
 	return Plugin_Continue;
+}
+
+void HudSettings_ClientCookiesCached(int client)
+{
+	char buffer[128];
+	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		// Cookie has stuff, get values
+		float buffers[8];
+		ExplodeStringFloat(buffer, ";", buffers, sizeof(buffers));
+
+		f_ArmorHudOffsetX[client] = buffers[0];
+		f_ArmorHudOffsetY[client] = buffers[1];
+		f_HurtHudOffsetX[client] = buffers[2];
+		f_HurtHudOffsetY[client] = buffers[3];
+		f_WeaponHudOffsetX[client] = buffers[4];
+		f_WeaponHudOffsetY[client] = buffers[5];
+		f_NotifHudOffsetX[client] = buffers[6];
+		f_NotifHudOffsetY[client] = buffers[7];
+	}
+	else
+	{
+		// Cookie empty, get our own
+		f_ArmorHudOffsetX[client] = -0.085;
+		f_ArmorHudOffsetY[client] = 0.0;
+		f_HurtHudOffsetX[client] = 0.0;
+		f_HurtHudOffsetY[client] = 0.0;
+		f_WeaponHudOffsetX[client] = 0.0;
+		f_WeaponHudOffsetY[client] = 0.0;
+		f_NotifHudOffsetX[client] = 0.0;
+		f_NotifHudOffsetY[client] = 0.0;
+	}
+	HudSettingsExtra_Cookies.Get(client, buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		// Cookie has stuff, get values
+		bool buffers[3];
+		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
+		b_HudScreenShake[client] = buffers[0];
+		b_HudLowHealthShake[client] = buffers[1];
+		b_HudHitMarker[client] = buffers[2];
+	}
+	else
+	{
+		// Cookie empty, get our own
+		b_HudScreenShake[client] = true;
+		b_HudLowHealthShake[client] = true;
+		b_HudHitMarker[client] = true;
+	}
+}
+
+void HudSettings_ClientCookiesDisconnect(int client)
+{
+	char buffer[128];
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
+	HudSettings_Cookies.Set(client, buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+	HudSettingsExtra_Cookies.Set(client, buffer);
 }

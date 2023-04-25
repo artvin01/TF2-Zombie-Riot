@@ -1918,27 +1918,4 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	}
 	return damage;
 }
-
-void LeftForDead_ClientCookiesCached(int client)
-{
-	char buffer[128];
-	CookieLeftForDead.Get(client, buffer, sizeof(buffer));
-	int buffers[2];
-	ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-	f_LeftForDead_Cooldown[client] = 0.0;
-	if(CurrentGame && buffers[0] == CurrentGame)
-	{
-		f_LeftForDead_Cooldown[client] = float(buffers[1]);
-	}
-}
-
-void LeftForDead_ClientDisconnect(int client)
-{
-	if(Waves_Started())
-	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d;%d", CurrentGame, RoundToCeil(f_LeftForDead_Cooldown[client]));
-		CookieLeftForDead.Set(client, buffer);
-	}
-}
 #endif
