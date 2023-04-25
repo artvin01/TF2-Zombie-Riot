@@ -266,14 +266,14 @@ void Waves_DisplayHintVote()
 			}
 			else if(top[0] == -1 || votes[i] > votes[top[0]])
 			{
-				top[0] = i;
-				top[1] = top[0];
 				top[2] = top[1];
+				top[1] = top[0];
+				top[0] = i;
 			}
 			else if(top[1] == -1 || votes[i] > votes[top[1]])
 			{
-				top[1] = i;
 				top[2] = top[1];
+				top[1] = i;
 			}
 			else if(top[2] == -1 || votes[i] > votes[top[2]])
 			{
@@ -288,7 +288,7 @@ void Waves_DisplayHintVote()
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "Votes: %d / %d\n1. %s: (%d)", count, total, vote.Name, votes[top[0]]);
+			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d\n1. %s: (%d)", count, total, vote.Name, votes[top[0]]);
 
 			for(int i = 1; i < sizeof(top); i++)
 			{
