@@ -268,9 +268,33 @@ void DataBase_ClientDisconnect(int client)
 			tr.AddQuery(buffer);
 
 			FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SETTINGS ... " SET "
-			... "niko = %d "
+			... "niko = %d, "
+			... "armorx = %.3f, "
+			... "armory = %.3f, "
+			... "hurtx = %.3f, "
+			... "hurty = %.3f, "
+			... "weaponx = %.3f, "
+			... "weapony = %.3f, "
+			... "notifx = %.3f, "
+			... "notify = %.3f, "
+			... "screenshake = %d, "
+			... "lowhealthshake = %d, "
+			... "hitmarker = %d, "
+			... "tp = %d "
 			... "WHERE steamid = %d;",
 			b_IsPlayerNiko[client],
+			f_ArmorHudOffsetX[client],
+			f_ArmorHudOffsetY[client],
+			f_HurtHudOffsetX[client],
+			f_HurtHudOffsetY[client],
+			f_WeaponHudOffsetX[client],
+			f_WeaponHudOffsetY[client],
+			f_NotifHudOffsetX[client],
+			f_NotifHudOffsetY[client],
+			b_HudScreenShake[client],
+			b_HudLowHealthShake[client],
+			b_HudHitMarker[client],
+			thirdperson[client],
 			id);
 
 			tr.AddQuery(buffer);
