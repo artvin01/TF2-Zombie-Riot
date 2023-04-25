@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #define DATABASE_LOCAL		"zr_local"
-#define DATATABLE_MAIN	"zr_timestamp"
+#define DATATABLE_MAIN		"zr_timestamp"
 #define DATATABLE_AMMO		"zr_ammo"
 #define DATATABLE_GAMEDATA	"zr_gamedata"
 
@@ -199,6 +199,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		{
 			CookieXP.Get(client, buffer, sizeof(buffer));
 			XP[client] = StringToInt(buffer);
+			Level[client] = XpToLevel(XP[client]);
 
 			CookieScrap.Get(client, buffer, sizeof(buffer));
 			Scrap[client] = StringToInt(buffer);
