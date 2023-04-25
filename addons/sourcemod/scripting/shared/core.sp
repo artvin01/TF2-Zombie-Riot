@@ -311,8 +311,8 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
-bool b_HudScreenShake[MAXTF2PLAYERS];
-bool b_HudLowHealthShake[MAXTF2PLAYERS];
+bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
+bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -1538,6 +1538,9 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	
 	i_EntityToAlwaysMeleeHit[client] = 0;
+	b_HudScreenShake[client] = true;
+	b_HudLowHealthShake[client] = true;
+
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
