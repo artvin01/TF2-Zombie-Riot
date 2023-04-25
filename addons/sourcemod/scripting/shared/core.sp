@@ -1538,10 +1538,7 @@ public void OnClientDisconnect(int client)
 	Store_ClientDisconnect(client);
 	
 	i_EntityToAlwaysMeleeHit[client] = 0;
-	b_HudScreenShake[client] = true;
-	b_HudLowHealthShake[client] = true;
-	b_HudHitMarker[client] = true;
-	
+
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
@@ -1554,6 +1551,9 @@ public void OnClientDisconnect(int client)
 #if defined RPG
 	RPG_ClientDisconnect(client);
 #endif
+	b_HudScreenShake[client] = true;
+	b_HudLowHealthShake[client] = true;
+	b_HudHitMarker[client] = true;
 }
 
 public void OnClientDisconnect_Post(int client)
