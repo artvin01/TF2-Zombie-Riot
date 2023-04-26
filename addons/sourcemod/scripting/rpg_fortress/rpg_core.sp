@@ -208,6 +208,7 @@ void RPG_ClientCookiesCached(int client)
 	Stats_ClientCookiesCached(client);
 	ThirdPerson_OnClientCookiesCached(client);
 
+	char buffer[4];
 	Niko_Cookies.Get(client, buffer, sizeof(buffer));
 	if(StringToInt(buffer) == 1)
 	{
@@ -235,7 +236,8 @@ void RPG_ClientDisconnect(int client)
 		
 	if(b_IsPlayerNiko[client])
 		niko_int = 1;
-			
+
+	char buffer[4];			
 	IntToString(niko_int, buffer, sizeof(buffer));
 	Niko_Cookies.Set(client, buffer);
 
