@@ -2316,7 +2316,7 @@ public void MenuPage(int client, int section)
 	
 	Menu menu;
 	
-	bool starterPlayer = Level[client] < STARTER_WEAPON_LEVEL;
+	bool starterPlayer = (Level[client] < STARTER_WEAPON_LEVEL && Database_IsCached(client));
 
 	if(CvarInfiniteCash.BoolValue)
 	{
@@ -2564,11 +2564,25 @@ public void MenuPage(int client, int section)
 		}
 		else if(!Waves_InSetup())
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", Database_IsCached(client) ? "XP and Level" : "XP Loading", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
+			if(Database_IsCached(client))
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
+			}
+			else
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP Loading", "Credits", CurrentCash-CashSpent[client]);
+			}
 		}
 		else
 		{
-			menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", Database_IsCached(client) ? "XP and Level" : "XP Loading", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			if(Database_IsCached(client))
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
+			else
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", "TF2: Zombie Riot", "XP Loading", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
 		}
 		
 		if(!NPCOnly[client] && section == -1)
