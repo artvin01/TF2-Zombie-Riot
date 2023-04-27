@@ -110,6 +110,16 @@ void Queue_Menu(int client)
 	
 	menu.AddItem("", "Wait for the next map");
 	menu.AddItem("", "Wait for an open slot");
+	char buffer[64];
+	CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		menu.AddItem("", "Redirect to different ZR server");	
+	}
+	else
+	{
+		menu.AddItem("", "Redirect to different ZR server", ITEMDRAW_DISABLED);	
+	}
 	
 //	if(CheckCommandAccess(client, "zr_joinanytime", ADMFLAG_RESERVATION, true))
 //	{
@@ -199,6 +209,15 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 							ShowVGUIPanel(client, "class_red");
 							PlayStreak[client] = 99;
 						}
+					}
+				}
+				case 3:
+				{
+					if(IsValidClient(client))
+					{
+						char buffer[64];
+						CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+						ClientCommand(client,"redirect %s",buffer);
 					}
 				}
 				default:

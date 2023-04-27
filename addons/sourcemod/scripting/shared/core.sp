@@ -3147,7 +3147,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 		{
 			for(int clientkick=1; clientkick<=MaxClients; clientkick++)
 			{
-				if(IsClientConnected(clientkick))
+				if(IsClientInGame(clientkick))
 				{
 					if(!IsFakeClient(clientkick) && GetClientTeam(clientkick) < 2 && f_ClientConnectTime[clientkick] < GetGameTime())
 					{
