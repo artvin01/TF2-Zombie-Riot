@@ -5622,9 +5622,7 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	float pos_npc[3];
 	float pos_enemy[3];
 	pos_npc = WorldSpaceCenter(attacker);
-	pos_npc[2] += 35.0;
 	pos_enemy = WorldSpaceCenter(enemy);
-	pos_enemy[2] += 35.0;
 
 #if defined ZR
 	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));
