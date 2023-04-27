@@ -1283,11 +1283,14 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	int client = EntRefToEntIndex(pack.ReadCell());
 
 	if (!IsValidMulti(client))
+	{
 		ApplyHealEvent_TimerDeleter(clientOriginalIndex);
+		return Plugin_Continue;
+	}
 
 	Event event = CreateEvent("player_healonhit", true);
 	event.SetInt("entindex", client);
-	event.SetInt("amount", i_HealsDone_Event[client]);
+	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
 	event.Fire();
 
 	ApplyHealEvent_TimerDeleter(clientOriginalIndex);
