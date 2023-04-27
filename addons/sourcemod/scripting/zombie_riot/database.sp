@@ -117,7 +117,7 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 	}
 	else
 	{
-		LogError("[Database] %s", error);
+		LogError("[Database_GlobalConnected] %s", error);
 	}
 }
 
@@ -438,7 +438,7 @@ static void Database_LocalConnected(Database db, const char[] error)
 	}
 	else
 	{
-		LogError("[Database] %s", error);
+		LogError("[Database_LocalConnected] %s", error);
 	}
 }
 
@@ -583,11 +583,11 @@ public void Database_Success(Database db, any data, int numQueries, DBResultSet[
 
 public void Database_Fail(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
-	LogError("[Database] %s", error);
+	LogError("[Database_Fail] %s", error);
 }
 
 public void Database_FailHandle(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
-	LogError("[Database] %s", error);
+	LogError("[Database_FailHandle] %s", error);
 	CloseHandle(data);
 }
