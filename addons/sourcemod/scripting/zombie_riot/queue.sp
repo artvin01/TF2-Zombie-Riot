@@ -197,24 +197,6 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 				{
 					if(IsValidClient(client))
 					{
-						char buffer[16];
-						menu.GetItem(choice, buffer, sizeof(buffer));
-						if(StringToInt(buffer))
-						{
-							WaitingInQueue[client] = false;
-							if(IsPlayerAlive(client))
-								ForcePlayerSuicide(client);
-							
-							ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-							ShowVGUIPanel(client, "class_red");
-							PlayStreak[client] = 99;
-						}
-					}
-				}
-				case 3:
-				{
-					if(IsValidClient(client))
-					{
 						char buffer[64];
 						CvarRerouteToIp.GetString(buffer, sizeof(buffer));
 						ClientCommand(client,"redirect %s",buffer);
