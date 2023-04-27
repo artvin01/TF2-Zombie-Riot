@@ -5058,7 +5058,7 @@ stock bool CheckForSee(int client)
 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -5550,6 +5550,15 @@ public void Check_If_Stuck(int iNPC)
 			hullcheckmins[2] = 41.0;
 		}
 		
+		//god i love floating point imprecision
+		hullcheckmaxs[0] += 1.0;
+		hullcheckmaxs[1] += 1.0;
+		hullcheckmaxs[2] += 1.0;
+
+		hullcheckmins[0] -= 1.0;
+		hullcheckmins[1] -= 1.0;
+		hullcheckmins[2] -= 1.0;
+		
 		//invert to save 1 frame per 3 minutes
 		/*
 		static float hullcheckmaxs_Resized[3];
@@ -5583,8 +5592,12 @@ public void Check_If_Stuck(int iNPC)
 			{
 				if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
 				{
-					static float vec3Origin[3];
-					npc.SetVelocity(vec3Origin);
+					if (!npc.g_bNPCVelocityCancel)
+					{
+						static float vec3Origin[3];
+						npc.SetVelocity(vec3Origin);
+						npc.g_bNPCVelocityCancel = true;
+					}
 					//we found a valid pos to teleport them to to unstuck them, if need be, reunstuck them.
 				}
 				else
@@ -5598,7 +5611,7 @@ public void Check_If_Stuck(int iNPC)
 	}
 	else
 	{
-//		npc.g_bNPCVelocityCancel = false;
+		npc.g_bNPCVelocityCancel = false;
 		npc.g_bNPCTeleportOutOfStuck = false;
 	}
 	
@@ -8261,7 +8274,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 
 	if(FoundSafeSpot)
 	{
-		TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
+		SDKCall_SetLocalOrigin(client, endPos);	
 	}
 	return FoundSafeSpot;
 }
