@@ -3617,12 +3617,9 @@ public bool Store_SayCommand(int client)
 	GetCmdArgString(buffer, sizeof(buffer));
 	ReplaceString(buffer, sizeof(buffer), "\"", "");
 	
-	PrintToChatAll("%s",buffer);
-	
 	int length = 33;
 	if(Database_Escape(buffer, sizeof(buffer), length) && length < 31)
 	{
-		PrintToChatAll("%s",buffer);
 
 		Database_SaveLoadout(client, buffer);
 		
