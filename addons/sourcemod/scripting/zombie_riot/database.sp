@@ -364,7 +364,6 @@ void Database_LoadLoadout(int client, const char[] name, bool free)
 			
 			char buffer[256];
 			Global.Format(buffer, sizeof(buffer), "SELECT item FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
-			PrintToChatAll(buffer);
 			tr.AddQuery(buffer);
 			
 			DataPack pack = new DataPack();
