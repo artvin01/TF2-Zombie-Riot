@@ -910,6 +910,7 @@ bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
 bool b_NPCVelocityCancel[MAXENTITIES];
+bool b_NPCTeleportOutOfStuck[MAXENTITIES];
 float fl_DoSpawnGesture[MAXENTITIES];
 bool b_isWalking[MAXENTITIES];
 int i_StepNoiseType[MAXENTITIES];

@@ -1433,6 +1433,11 @@ methodmap CClotBody
 		public get()							{ return b_NPCVelocityCancel[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NPCVelocityCancel[this.index] = TempValueForProperty; }
 	}
+	property bool g_bNPCTeleportOutOfStuck
+	{
+		public get()							{ return b_NPCTeleportOutOfStuck[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_NPCTeleportOutOfStuck[this.index] = TempValueForProperty; }
+	}
 	property float m_flDoSpawnGesture
 	{
 		public get()							{ return fl_DoSpawnGesture[this.index]; }
@@ -5546,26 +5551,55 @@ public void Check_If_Stuck(int iNPC)
 		}
 		
 		//invert to save 1 frame per 3 minutes
-	
-		hullcheckmins[0] -= 15.0;
-		hullcheckmins[1] -= 15.0;
+		/*
+		static float hullcheckmaxs_Resized[3];
+		static float hullcheckmins_Resized[3];
+
+		hullcheckmaxs_Resized = hullcheckmaxs;
+		hullcheckmins_Resized = hullcheckmins;
+		hullcheckmaxs_Resized[0] -= 15.0;
+		hullcheckmaxs_Resized[1] -= 15.0;
 		
-		hullcheckmaxs[0] += 15.0;
-		hullcheckmaxs[1] += 15.0;
+		hullcheckmaxs_Resized[0] += 15.0;
+		hullcheckmaxs_Resized[1] += 15.0;
 		
-		hullcheckmins[2] -= 20.0; //STEP HEIGHT
-		hullcheckmaxs[2] += 20.0;
+		hullcheckmaxs_Resized[2] -= 20.0; //STEP HEIGHT
+		hullcheckmaxs_Resized[2] += 20.0;
 		
-		if (!npc.g_bNPCVelocityCancel && IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))//The boss will start to merge with shits, cancel out velocity.
+		if (!npc.g_bNPCVelocityCancel)//The boss will start to merge with shits, cancel out velocity.
 		{
-			static float vec3Origin[3];
-			npc.SetVelocity(vec3Origin);
-			npc.g_bNPCVelocityCancel = true;
+			if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins_Resized, hullcheckmaxs_Resized, iNPC))
+			{
+				static float vec3Origin[3];
+				npc.SetVelocity(vec3Origin);
+				npc.g_bNPCVelocityCancel = true;
+			}
+		}
+		else 
+		*/
+		if (!npc.g_bNPCTeleportOutOfStuck) //We have tried caneling the velocity, now we do extra checks on if they are still inside world walls
+		{
+			if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
+			{
+				if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
+				{
+					static float vec3Origin[3];
+					npc.SetVelocity(vec3Origin);
+					//we found a valid pos to teleport them to to unstuck them, if need be, reunstuck them.
+				}
+				else
+				{
+					//We have tried 64 differnet spots, yet they are still stuck, let them stay stuck.
+					npc.g_bNPCTeleportOutOfStuck = true;
+
+				}
+			}
 		}
 	}
 	else
 	{
-		npc.g_bNPCVelocityCancel = false;
+//		npc.g_bNPCVelocityCancel = false;
+		npc.g_bNPCTeleportOutOfStuck = false;
 	}
 	
 	
@@ -7370,6 +7404,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_thisNpcIsABoss[entity] = false;
 	b_StaticNPC[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
+	b_NPCTeleportOutOfStuck[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
 	i_StepNoiseType[entity] = 0;
@@ -8117,3 +8152,132 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_PassangerDebuff[enemy] = 0.0;
 }
 #endif
+
+
+
+
+bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3])
+{
+	bool FoundSafeSpot = false;
+	//Try base position.
+	float OriginalPos[3];
+	OriginalPos = endPos;
+
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+		FoundSafeSpot = true;
+
+	for (int x = 0; x < 6; x++)
+	{
+		if (FoundSafeSpot)
+			break;
+
+		endPos = OriginalPos;
+		//ignore 0 at all costs.
+		
+		switch(x)
+		{
+			case 0:
+				endPos[2] -= 20.0;
+
+			case 1:
+				endPos[2] += 20.0;
+
+			case 2:
+				endPos[2] += 30.0;
+
+			case 3:
+				endPos[2] -= 30.0;
+
+			case 4:
+				endPos[2] += 40.0;
+
+			case 5:
+				endPos[2] -= 40.0;	
+		}
+		for (int y = 0; y < 7; y++)
+		{
+			if (FoundSafeSpot)
+				break;
+
+			endPos[1] = OriginalPos[1];
+				
+			switch(y)
+			{
+				case 1:
+					endPos[1] += 20.0;
+
+				case 2:
+					endPos[1] -= 20.0;
+
+				case 3:
+					endPos[1] += 30.0;
+
+				case 4:
+					endPos[1] -= 30.0;
+
+				case 5:
+					endPos[1] += 40.0;
+
+				case 6:
+					endPos[1] -= 40.0;	
+			}
+
+			for (int z = 0; z < 7; z++)
+			{
+				if (FoundSafeSpot)
+					break;
+
+				endPos[0] = OriginalPos[0];
+						
+				switch(z)
+				{
+					case 1:
+						endPos[0] += 20.0;
+
+					case 2:
+						endPos[0] -= 20.0;
+
+					case 3:
+						endPos[0] += 30.0;
+
+					case 4:
+						endPos[0] -= 30.0;
+
+					case 5:
+						endPos[0] += 40.0;
+
+					case 6:
+						endPos[0] -= 40.0;	
+				}
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+					FoundSafeSpot = true;
+			}
+		}
+	}
+				
+
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+		FoundSafeSpot = true;
+
+	if(FoundSafeSpot)
+	{
+		TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
+	}
+	return FoundSafeSpot;
+}
+
+
+//We wish to check if this poisiton is safe or not.
+//This is only for players.
+bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
+{
+	int ref;
+	Handle hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	if(ref < 0) //It hit nothing, good!
+		return true;
+	
+	//It Hit something, bad!
+	return false;
+}

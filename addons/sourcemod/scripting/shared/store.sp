@@ -3615,10 +3615,15 @@ public bool Store_SayCommand(int client)
 	
 	char buffer[64];
 	GetCmdArgString(buffer, sizeof(buffer));
+
+	
+	PrintToChatAll("%s",buffer);
 	
 	int length = 33;
 	if(Database_Escape(buffer, sizeof(buffer), length) && length < 31)
 	{
+		PrintToChatAll("%s",buffer);
+
 		Database_SaveLoadout(client, buffer);
 		
 		if(!Loadouts[client])
