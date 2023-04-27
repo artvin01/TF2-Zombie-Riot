@@ -491,7 +491,7 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 			FormatEx(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_MAIN ... " (steamid) VALUES (%d)", GetSteamAccountID(client));
 			tr.AddQuery(buffer);
 			
-			Local.Execute(tr, Database_LocalGamedata, Database_Fail, userid);
+			Local.Execute(tr, Database_Success, Database_Fail, userid);
 		}
 	}
 }
@@ -513,10 +513,13 @@ public void Database_LocalGamedata(Database db, int userid, int numQueries, DBRe
 				CurrentAmmo[client][results[1].FetchInt(1)] = results[1].FetchInt(2);
 		}
 		
-		SetGlobalTransTarget(client);
-		PrintToChat(client, "%t", "Your loadout was updated from your previous state.");
-		if(IsPlayerAlive(client))
-			TF2_RegeneratePlayer(client);
+		if(IsClientInGame(client))
+		{
+			SetGlobalTransTarget(client);
+			PrintToChat(client, "%t", "Your loadout was updated from your previous state.");
+			if(IsPlayerAlive(client))
+				TF2_RegeneratePlayer(client);
+		}
 	}
 }
 
