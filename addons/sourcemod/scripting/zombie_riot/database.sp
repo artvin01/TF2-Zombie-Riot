@@ -30,7 +30,8 @@ bool Database_Escape(char[] buffer, int length, int &bytes)
 	if(!Global)
 		return false;
 	
-	return Global.Escape(buffer, buffer, length, bytes);
+	bytes = Global.Format(buffer, length, "%s", buffer);
+	return true;
 }
 
 public void Database_LocalSetup(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
