@@ -419,7 +419,7 @@ static void Database_LocalConnected(Database db, const char[] error)
 		... "spent INTEGER NOT NULL DEFAULT 0, "
 		... "total INTEGER NOT NULL DEFAULT 0, "
 		... "ammo INTEGER NOT NULL DEFAULT 0, "
-		... "leftfordead FLOAT NOT NULL DEFAULT 0.0");
+		... "leftfordead FLOAT NOT NULL DEFAULT 0.0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_AMMO ... " ("
 		... "steamid INTEGER NOT NULL, "
