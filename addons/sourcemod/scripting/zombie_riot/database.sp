@@ -27,11 +27,10 @@ void Database_PluginStart()
 
 bool Database_Escape(char[] buffer, int length, int &bytes)
 {
-	if(!Global)
+	if(!Local)
 		return false;
 	
-	bytes = Global.Format(buffer, length, "%s", buffer);
-	return true;
+	return Local.Escape(buffer, buffer, length, bytes);
 }
 
 public void Database_LocalSetup(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
@@ -363,7 +362,8 @@ void Database_LoadLoadout(int client, const char[] name, bool free)
 			Transaction tr = new Transaction();
 			
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "SELECT item FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			Global.Format(buffer, sizeof(buffer), "SELECT item FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			PrintToChatAll(buffer);
 			tr.AddQuery(buffer);
 			
 			DataPack pack = new DataPack();
