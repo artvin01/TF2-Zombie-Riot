@@ -3615,7 +3615,7 @@ public bool Store_SayCommand(int client)
 	
 	char buffer[64];
 	GetCmdArgString(buffer, sizeof(buffer));
-
+	ReplaceString(buffer, sizeof(buffer), "\"", "");
 	
 	PrintToChatAll("%s",buffer);
 	
