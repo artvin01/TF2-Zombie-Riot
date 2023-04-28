@@ -297,6 +297,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
 #include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_skulls.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
@@ -466,6 +467,7 @@ void ZR_MapStart()
 	Mangler_MapStart();
 	Pipebomb_MapStart();
 	Wand_Map_Precache();
+	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
 	Wand_Fire_Map_Precache();
 	Wand_FireBall_Map_Precache();
