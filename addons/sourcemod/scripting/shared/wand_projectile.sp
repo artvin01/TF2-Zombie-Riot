@@ -199,6 +199,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Event_Ark_OnHatTouch(entity, target);
 		}
+		case 17:
+		{
+			//Staff of the Skull Servants auto-fire projectiles.
+		}
 		/*		
 		case WEAPON_LANTEAN:
 		{

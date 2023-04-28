@@ -170,11 +170,86 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 	if(address != Address_Null)
 		velocity *= TF2Attrib_GetValue(address);
 		
-	float pos[3];
+	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
+	
+	Handle trace = getAimTrace(client);
+	TR_GetEndPosition(TargetLoc, trace);
+	delete trace;
+	
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
+	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
+	tier = Skull_Tier[ent];
+	float dmg = Skull_LaunchDMG[ent];
 	RemoveEntity(ent);
 	
-	//TODO: Spawn a rocket at the skull's location, launch it at the location the player is aiming, play sounds
+	int iRocket = CreateEntityByName("tf_projectile_rocket");
+	if (IsValidEntity(iRocket))
+	{
+		float vVelocity[3], vBuffer[3];
+		
+		GetAngleVectors(ang, vBuffer, NULL_VECTOR, NULL_VECTOR);
+		
+		float VelocityMod = velocity;
+		
+		vVelocity[0] = vBuffer[0]*VelocityMod;
+		vVelocity[1] = vBuffer[1]*VelocityMod;
+		vVelocity[2] = vBuffer[2]*VelocityMod;
+		
+		int iTeam = GetClientTeam(client);
+		
+		SetEntPropEnt(iRocket, Prop_Send, "m_hOwnerEntity", client);
+		SetEntProp(iRocket,    Prop_Send, "m_bCritical", (GetRandomInt(0, 100) <= 5)? 1 : 0, 1);
+		SetEntProp(iRocket,    Prop_Send, "m_iTeamNum",     iTeam, 1);
+		SetEntData(iRocket, FindSendPropInfo("CTFProjectile_Rocket", "m_nSkin"), (iTeam-2), 1, true);
+		SetEntDataFloat(iRocket, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected") + 4, dmg, true);
+		
+		TeleportEntity(iRocket, pos, ang, vVelocity);
+		
+		SetVariantInt(iTeam);
+		AcceptEntityInput(iRocket, "TeamNum", -1, -1, 0);
+		
+		SetVariantInt(iTeam);
+		AcceptEntityInput(iRocket, "SetTeam", -1, -1, 0); 
+		
+		DispatchSpawn(iRocket);
+		
+		SetEntityModel(iRocket, SKULL_MODEL);
+		switch(tier)
+		{
+			case 0:
+			{
+				SetEntProp(iRocket, Prop_Send, "m_nSkin", 2);
+				Skull_AttachParticle(iRocket, SKULL_PARTICLE_1, _, "bloodpoint");
+			}
+			case 1:
+			{
+				SetEntProp(iRocket, Prop_Send, "m_nSkin", 0);
+				Skull_AttachParticle(iRocket, SKULL_PARTICLE_2, _, "bloodpoint");
+			}
+			case 2:
+			{
+				SetEntProp(iRocket, Prop_Send, "m_nSkin", 1);
+				Skull_AttachParticle(iRocket, SKULL_PARTICLE_3, _, "bloodpoint");
+			}
+		}
+		
+		EmitSoundToAll(SKULL_SOUND_LAUNCH, iRocket);
+		switch(GetRandomInt(1, 3))
+		{
+			case 1:
+			{
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_1, iRocket);
+			}
+			case 2:
+			{
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_2, iRocket);
+			}
+			case 3:
+			{
+				EmitSoundToAll(SKULL_SOUND_LAUNCH_LAUGH_3, iRocket);
+			}
+		}
+	}
 }
 
 public void Weapon_Skulls_M2(int client, int weapon, bool crit)
@@ -410,24 +485,68 @@ public void Skulls_Management(int client)
 			Skull_MoveToTargetPosition(ent, client);
 			if (GetGameTime() <= Skull_NextShootTime[ent])
 			{
-				Skull_AttemptShoot(ent);
+				Skull_AttemptShoot(ent, client);
 			}
 		}
 	}
 }
 
-public void Skull_AttemptShoot(int ent)
+public void Skull_AttemptShoot(int ent, int client)
 {
 	int target = Skull_GetClosestTarget(ent);
 	if (IsValidEdict(target))
 	{
-		Skull_AutoFire(ent, target);
+		Skull_AutoFire(ent, target, client);
 	}
 }
 
-void Skull_AutoFire(int ent, int target)
+void Skull_AutoFire(int ent, int target, int client)
 {
-	//TODO: Put a modified version of Wand_Projectile_Spawn in here which fires directly at the victim
+	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
+	GetEntPropVector(target, Prop_Send, "m_angRotation", DummyAngles);
+	GetEntPropVector(target, Prop_Send, "m_vecOrigin", TargetLoc);
+	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
+	TargetLoc[2] += 60.0;
+	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
+	
+	char particle[255];
+	switch(Skull_Tier[ent])
+	{
+		case 0:
+		{
+			particle = SKULL_PROJECTILE_PARTICLE_1;
+		}
+		case 1:
+		{
+			particle = SKULL_PROJECTILE_PARTICLE_2;
+		}
+		case 2:
+		{
+			particle = SKULL_PROJECTILE_PARTICLE_3;
+		}
+	}
+	
+	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, Skull_ShootDMG[ent], 17, -1, particle, ang);
+	
+	if (IsValidEdict(projectile))
+	{
+		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
+	}
+}
+
+float GetAngleToPoint(int ent, float TargetLoc[3], float DummyAngles[3], const float Output[3])
+{
+	float ang[3], pos[3], fVecFinal[3], fFinalPos[3], vAngles[3];
+
+	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);		
+
+	AddInFrontOf(TargetLoc, DummyAngles, 7.0, fVecFinal);
+	MakeVectorFromPoints(pos, fVecFinal, fFinalPos);
+
+	GetVectorAngles(fFinalPos, ang);
+
+	Output = ang;
 }
 
 public int Skull_GetClosestTarget(int ent)
@@ -444,7 +563,7 @@ public int Skull_GetClosestTarget(int ent)
 	for (int i = MaxClients + 1; i <= MAXENTITIES; i++)
 	{
 		char entname[255];
-		GetEntityClassname(i, entname);
+		GetEntityClassname(i, entname, 255);
 		if (StrContains(entname, "base_boss") != -1) //TODO: This does not filter out friendly AI, figure out how to do that.
 		{
 			GetEntPropVector(i, Prop_Send, "m_vecOrigin", TargetLoc);
@@ -672,7 +791,7 @@ stock void GetViewVector(float fVecAngle[3], float fOutPut[3])
 	fOutPut[2] = -Sine(fVecAngle[0] / (180 / FLOAT_PI));
 }
 
-public bool Skull_DontHitSkulls(entity, contentsMask) //Borrowed from Apocalips
+public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Apocalips
 {
 	if (IsValidClient(entity))
 	{
@@ -696,4 +815,23 @@ public bool Skull_DontHitSkulls(entity, contentsMask) //Borrowed from Apocalips
 	}
 	
 	return true;
+}
+
+Handle getAimTrace(int client)
+{
+	if (!IsValidClient(client))
+	{
+		return null;
+	}
+	
+	float eyePos[3];
+	float eyeAng[3];
+	GetClientEyePosition(client, eyePos);
+	GetClientEyeAngles(client, eyeAng);
+	
+	Handle trace;
+	
+	trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
+	
+	return trace;
 }
