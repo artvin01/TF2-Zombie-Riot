@@ -550,6 +550,8 @@ public void Skulls_Management(int client)
 			}
 		}
 	}
+	
+	delete Skulls;
 }
 
 public void Skull_AttemptShoot(int ent, int client)
@@ -850,6 +852,8 @@ public void Skulls_UpdateFollowerPositions(int client)
 			}
 		}
 	}
+	
+	delete Skulls;
 }
 
 //Does the player have no summoned skulls?
@@ -925,23 +929,26 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 		return false;
 	}
 	
-	for (int i = 1; i <= MaxClients; i++)
+	bool hit = true;
+	for (int i = 1; i <= MaxClients && hit; i++)
 	{
 		if (!Skulls_PlayerHasNoSkulls(i))
 		{
 			Queue skulls = Skulls_Queue[i].Clone();
 			
-			while (!skulls.Empty)
+			while (!skulls.Empty && hit)
 			{
 				int ent = EntRefToEntIndex(skulls.Pop());
 				
 				if (entity == ent)
-					return false;
+					hit = false;
 			}
+			
+			delete skulls;
 		}
 	}
 	
-	return true;
+	return hit;
 }
 
 Handle getAimTrace(int client)
