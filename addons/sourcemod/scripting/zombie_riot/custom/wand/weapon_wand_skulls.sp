@@ -51,13 +51,14 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 300.0, 350.0, 400.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootDMG[3] = { 300.0, 400.0, 450.0 };	//Damage dealt by projectiles fired by skulls
 float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
 float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
 float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.0 };	//Time it takes for skulls to auto-fire
 float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
 float Skulls_LaunchDMG[3] = { 600.0, 1800.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
+float Skulls_ShootPenaltyPerSkull[3] = { 0.0, 0.1, 0.08 };
 int Skulls_ManaCost_M1[3] = { 200, 600, 1200 };	//Mana cost of M1
 int Skulls_ManaCost_M2[3] = { 50, 150, 300 };	//Mana cost of M2
 //I contemplated adding a mana cost to the skulls' auto-fire. Decided against it.
@@ -617,6 +618,13 @@ void Skull_AutoFire(int ent, int target, int client)
 		address = TF2Attrib_GetByDefIndex(weapon, 410);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);
+	}
+	
+	int NumSkulls = Skulls_Queue[client].Length;
+	float penalty = Skulls_ShootPenaltyPerSkull[Skull_Tier[ent]];
+	if (penalty != 0.0)
+	{
+		damage *= 1.0 - (penalty * float(NumSkulls));
 	}
 	
 	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, damage, 17, weapon, particle, ang);
