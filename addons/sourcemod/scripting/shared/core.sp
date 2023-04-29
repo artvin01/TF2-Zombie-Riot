@@ -19,6 +19,7 @@
 #if !defined UseDownloadTable
 #include <filenetwork>
 #endif
+#include <queue>
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
 #define CHAR_PARTEMPTY	"▒"
