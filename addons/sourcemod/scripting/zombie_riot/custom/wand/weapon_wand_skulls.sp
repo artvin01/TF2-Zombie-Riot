@@ -653,6 +653,8 @@ public int Skull_GetClosestTarget(int ent, float range)
 	return Closest;
 }
 
+//TODO: Drones get jittery and move towards their owner's head if the player moves too much. This is almost certainly caused by
+//the trace in Skull_UpdateFollowerPositions getting stuck on something. Figure it out later and fix it.
 public void Skull_MoveToTargetPosition(int ent, int client)
 {
 	if (ent < MaxClients + 1 || ent > 2048)
@@ -674,27 +676,29 @@ public void Skull_MoveToTargetPosition(int ent, int client)
 	
 	Skull_ChangeSpeed(ent, 10.0, TargetSpeed);
 	
+	float dist = GetVectorDistance(DroneLoc, Skull_MoveTarget[ent]);
+	
 	float fVecFinal[3], fFinalPos[3], DummyAngles[3];
 	GetClientEyeAngles(client, DummyAngles);
-	
+		
 	AddInFrontOf(Skull_MoveTarget[ent], DummyAngles, 7.0, fVecFinal);
 	MakeVectorFromPoints(DroneLoc, fVecFinal, fFinalPos);
-	
+		
 	GetVectorAngles(fFinalPos, Angles);
-	
+		
 	GetAngleVectors(Angles, Velocity, NULL_VECTOR, NULL_VECTOR);
-	float mult = (GetVectorDistance(DroneLoc, Skull_MoveTarget[ent])/80.0);
+	float mult = (dist/80.0);
 	if (mult > 1.0)
 	{
 		mult = 1.0;
 	}
-	
+		
 	float FinalVelScale = Skull_CurrentSpeed[ent] * mult;
 	ScaleVector(Velocity, FinalVelScale);
-	
+		
 	GetClientEyeAngles(client, Angles);
 	Angles[0] = 0.0;
-	
+		
 	TeleportEntity(ent, NULL_VECTOR, Angles, Velocity);
 }
 
@@ -760,7 +764,7 @@ public void Skulls_UpdateFollowerPositions(int client)
 			eyeAng[1] = float(NumSpaced) * Spacing + (mult * Skulls_OrbitAngle[client]);
 			eyeAng[2] = 0.0;
 						
-			Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
+			Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, Skull_DontHitSkulls/*TraceEntityFilterPlayer*/);
 						
 			if (TR_DidHit(trace))
 			{
@@ -864,7 +868,7 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (Skulls_Queue[i] != null && !Skulls_PlayerHasNoSkulls(i))
+		if (!Skulls_PlayerHasNoSkulls(i))
 		{
 			Queue skulls = Skulls_Queue[i].Clone();
 			
@@ -872,7 +876,7 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 			{
 				int ent = EntRefToEntIndex(skulls.Pop());
 				
-				if (IsValidEdict(ent))
+				if (entity == ent)
 					return false;
 			}
 		}
