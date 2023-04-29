@@ -122,6 +122,14 @@ public void Wand_Skull_Summon_ClearAll()
 	Zero(ability_cooldown);
 }
 
+public void Skulls_PlayerKilled(int client)
+{
+	if (Skulls_Queue[client] != null)
+	{
+		DeleteAllSkulls(client);
+	}
+}
+
 //Launches all summoned skulls towards your cursor.
 public void Weapon_Skulls_M1(int client, int weapon, bool crit)
 {
@@ -481,7 +489,7 @@ public Action Skulls_PreThink(int client)
 {
 	if (!IsPlayerAlive(client) || !IsClientInGame(client))
 	{
-		DeleteAllSkulls(Skulls_Queue[client]);
+		SDKUnhook(client, SDKHook_PreThink, Skulls_PreThink);
 		return Plugin_Continue;
 	}
 	
@@ -506,17 +514,19 @@ public Action Skulls_PreThink(int client)
 	return Plugin_Continue;
 }
 
-void DeleteAllSkulls(Queue SkullQueue)
+void DeleteAllSkulls(int client)
 {
-	while (!SkullQueue.Empty)
+	while (!Skulls_Queue[client].Empty)
 	{
-		int ent = EntRefToEntIndex(SkullQueue.Pop());
+		int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
 			
 		if (IsValidEdict(ent))
 		{
 			RemoveEntity(ent);
 		}
 	}
+		
+	Skulls_Queue[client] = null;
 }
 
 public void Skulls_Management(int client)
@@ -703,8 +713,6 @@ public int Skull_GetClosestTarget(int ent, float range)
 	return Closest;
 }
 
-//TODO: Drones get jittery and move towards their owner's head if the player moves too much. This is almost certainly caused by
-//the trace in Skull_UpdateFollowerPositions getting stuck on something. Figure it out later and fix it.
 public void Skull_MoveToTargetPosition(int ent, int client)
 {
 	if (ent < MaxClients + 1 || ent > 2048)
@@ -946,6 +954,13 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 			
 			delete skulls;
 		}
+	}
+	
+	if (hit && IsValidEntity(entity))
+	{
+		char entname[255];
+		GetEntityClassname(entity, entname, 255);
+		hit = StrContains(entname, "base_boss") == -1;
 	}
 	
 	return hit;
