@@ -2380,6 +2380,7 @@
 	}
 	"Skull Servant Summoned"
 	{
+		"#format"	"{1:d},{2:d}"
 		"en"		"You have summoned {1}/{2} Skull Servant(s)."
 		//"de"		""
 		//"ru"		""
