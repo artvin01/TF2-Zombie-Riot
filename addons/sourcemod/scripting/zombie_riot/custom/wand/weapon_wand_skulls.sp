@@ -465,10 +465,10 @@ public void Skulls_SetVariables(int prop, int weapon, int tier)
 	Skull_ShootVelocity[prop] = velocity;
 	Skull_ShootRange[prop] = Skulls_ShootRange[tier];
 	Skull_ShootFrequency[prop] = Skulls_ShootFrequency[tier];
-	Skull_NextShootTime[prop] = GetGameTime() + Skull_ShootFrequency[prop];
 	Skull_Tier[prop] = tier;
 	Skull_Weapon[prop] = EntIndexToEntRef(weapon);
 	Skull_LifetimeEnd[prop] = GetGameTime() + Skulls_Lifespan[tier];
+	Skull_SetNextShootTime(prop);
 }
 
 public Action Skulls_PreThink(int client)
@@ -577,12 +577,23 @@ void Skull_AutoFire(int ent, int target, int client)
 		}
 	}
 	
-	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, Skull_ShootDMG[ent], 17, EntRefToEntIndex(Skull_Weapon[ent]), particle, ang);
+	float damage = Skull_ShootDMG[ent];
+	int weapon = EntRefToEntIndex(Skull_Weapon[ent]);
+	
+	if (IsValidEntity(weapon))
+	{
+		Address address;
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+	}
+	
+	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, damage, 17, weapon, particle, ang);
 	
 	if (IsValidEdict(projectile))
 	{
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
-		Skull_NextShootTime[ent] = Skull_ShootFrequency[ent] + GetGameTime();
+		Skull_SetNextShootTime(ent);
 		switch(Skull_Tier[ent])
 		{
 			case 0:
@@ -599,6 +610,22 @@ void Skull_AutoFire(int ent, int target, int client)
 			}
 		}
 	}
+}
+
+void Skull_SetNextShootTime(int ent)
+{
+	float BuffAmt = 1.0;
+	int weapon = EntRefToEntIndex(Skull_Weapon[ent]);
+	
+	if (IsValidEntity(weapon))
+	{
+		Address address;
+		address = TF2Attrib_GetByDefIndex(weapon, 6);
+		if(address != Address_Null)
+			BuffAmt = TF2Attrib_GetValue(address);
+	}
+	
+	Skull_NextShootTime[ent] = (Skull_ShootFrequency[ent] * BuffAmt) + GetGameTime();
 }
 
 void GetAngleToPoint(int ent, float TargetLoc[3], float DummyAngles[3], const float Output[3])
