@@ -4776,7 +4776,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								DistancePathed = (DistancePathed * DistancePathed) * 1.15;
+								DistancePathed = (DistancePathed * DistancePathed) * 0.8;
 								if(DistancePathed < distance)
 								{
 									if( TargetDistance ) 
@@ -4837,7 +4837,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								DistancePathed = (DistancePathed * DistancePathed) * 1.15;
+								DistancePathed = (DistancePathed * DistancePathed) * 0.8;
 								if(DistancePathed < distance)
 								{
 									if( TargetDistance ) 
