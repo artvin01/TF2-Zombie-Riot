@@ -51,12 +51,12 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 300.0, 600.0, 800.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootDMG[3] = { 300.0, 400.0, 500.0 };	//Damage dealt by projectiles fired by skulls
 float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
-float Skulls_ShootRange[3] = { 500.0, 750.0, 1000.0 };	//Max range in which skulls will auto-fire at zombies
-float Skulls_ShootFrequency[3] = { 1.5, 1.2, 0.8 };	//Time it takes for skulls to auto-fire
+float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
+float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.0 };	//Time it takes for skulls to auto-fire
 float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
-float Skulls_LaunchDMG[3] = { 800.0, 1600.0, 2500.0 };	//Damage of skulls which get launched
+float Skulls_LaunchDMG[3] = { 600.0, 1800.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
 int Skulls_ManaCost_M1[3] = { 200, 600, 1200 };	//Mana cost of M1
 int Skulls_ManaCost_M2[3] = { 50, 150, 300 };	//Mana cost of M2
@@ -402,7 +402,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					EmitSoundToAll(SKULL_SOUND_SUMMON, Drone);
 					EmitSoundToClient(client, SKULL_SOUND_SUMMON, Drone);
 					
-					Skulls_SetVariables(prop, weapon, tier);
+					Skulls_SetVariables(prop, weapon, tier, client);
 					
 					//Create queue and apply prethink hook if the queue is null:
 					if (Skulls_Queue[client] == null)
@@ -454,7 +454,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 	}
 }
 
-public void Skulls_SetVariables(int prop, int weapon, int tier)
+public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 {
 	Address address;
 	float damage = Skulls_ShootDMG[tier];
@@ -654,6 +654,11 @@ void Skull_SetNextShootTime(int ent)
 		address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 			BuffAmt = TF2Attrib_GetValue(address);
+	}
+	
+	if (LastMann)
+	{
+		BuffAmt = BuffAmt / 2.0;
 	}
 	
 	Skull_NextShootTime[ent] = (Skull_ShootFrequency[ent] * BuffAmt) + GetGameTime();
