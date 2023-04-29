@@ -363,7 +363,7 @@ enum struct StageEnum
 
 			TextStore_AddItemCount(clients[i], ITEM_CASH, this.Cash * (10 + tier) / 10);
 
-			if(Level[clients[i]] <= this.MaxLevel && GetLevelCap(Tier[clients[i]]) != Level[clients[i]])
+			if(XpToLevel(XP[clients[i]]) <= this.MaxLevel)
 				TextStore_AddItemCount(clients[i], ITEM_XP, this.XP * (10 + tier) / 10);
 		}
 
@@ -767,6 +767,7 @@ static void ShowMenu(int client, int page)
 
 				if(AltMenu[client] ==  2)
 				{
+					int level = XpToLevel(XP[client]);
 					int luck;
 					for(int target = 1; target <= MaxClients; target++)
 					{
@@ -774,63 +775,63 @@ static void ShowMenu(int client, int page)
 							luck += Stats_Luck(target);
 					}
 					
-					stage.DropChance1 = stage.GetDropChance(Level[client], luck, tier, stage.DropName1, stage.DropChance1, stage.DropTier1);
+					stage.DropChance1 = stage.GetDropChance(level, luck, tier, stage.DropName1, stage.DropChance1, stage.DropTier1);
 					if(stage.DropChance1)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName1, RoundToFloor(stage.DropChance1 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance2 = stage.GetDropChance(Level[client], luck, tier, stage.DropName2, stage.DropChance2, stage.DropTier2);
+					stage.DropChance2 = stage.GetDropChance(level, luck, tier, stage.DropName2, stage.DropChance2, stage.DropTier2);
 					if(stage.DropChance2)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName2, RoundToFloor(stage.DropChance2 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance3 = stage.GetDropChance(Level[client], luck, tier, stage.DropName3, stage.DropChance3, stage.DropTier3);
+					stage.DropChance3 = stage.GetDropChance(level, luck, tier, stage.DropName3, stage.DropChance3, stage.DropTier3);
 					if(stage.DropChance3)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName3, RoundToFloor(stage.DropChance3 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance4 = stage.GetDropChance(Level[client], luck, tier, stage.DropName4, stage.DropChance4, stage.DropTier4);
+					stage.DropChance4 = stage.GetDropChance(level, luck, tier, stage.DropName4, stage.DropChance4, stage.DropTier4);
 					if(stage.DropChance4)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName4, RoundToFloor(stage.DropChance4 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance5 = stage.GetDropChance(Level[client], luck, tier, stage.DropName5, stage.DropChance5, stage.DropTier5);
+					stage.DropChance5 = stage.GetDropChance(level, luck, tier, stage.DropName5, stage.DropChance5, stage.DropTier5);
 					if(stage.DropChance5)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName5, RoundToFloor(stage.DropChance5 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance6 = stage.GetDropChance(Level[client], luck, tier, stage.DropName6, stage.DropChance6, stage.DropTier6);
+					stage.DropChance6 = stage.GetDropChance(level, luck, tier, stage.DropName6, stage.DropChance6, stage.DropTier6);
 					if(stage.DropChance6)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName6, RoundToFloor(stage.DropChance6 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance7 = stage.GetDropChance(Level[client], luck, tier, stage.DropName7, stage.DropChance7, stage.DropTier7);
+					stage.DropChance7 = stage.GetDropChance(level, luck, tier, stage.DropName7, stage.DropChance7, stage.DropTier7);
 					if(stage.DropChance7)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName7, RoundToFloor(stage.DropChance7 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance8 = stage.GetDropChance(Level[client], luck, tier, stage.DropName8, stage.DropChance8, stage.DropTier8);
+					stage.DropChance8 = stage.GetDropChance(level, luck, tier, stage.DropName8, stage.DropChance8, stage.DropTier8);
 					if(stage.DropChance8)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName8, RoundToFloor(stage.DropChance8 * 100.0));
 						menu.AddItem(NULL_STRING, dungeon.CurrentStage, ITEMDRAW_DISABLED);
 					}
 					
-					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9, stage.DropChance9, stage.DropTier9);
+					stage.DropChance9 = stage.GetDropChance(level, luck, tier, stage.DropName9, stage.DropChance9, stage.DropTier9);
 					if(stage.DropChance9)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - %d%%", stage.DropName9, RoundToFloor(stage.DropChance9 * 100.0));
@@ -838,7 +839,7 @@ static void ShowMenu(int client, int page)
 					}
 					
 					strcopy(stage.DropName9, sizeof(stage.DropName9), ITEM_XP);
-					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9);
+					stage.DropChance9 = stage.GetDropChance(level, luck, tier, stage.DropName9);
 					if(stage.DropChance9)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - 100%%", stage.DropName9);
@@ -846,7 +847,7 @@ static void ShowMenu(int client, int page)
 					}
 					
 					strcopy(stage.DropName9, sizeof(stage.DropName9), ITEM_CASH);
-					stage.DropChance9 = stage.GetDropChance(Level[client], luck, tier, stage.DropName9);
+					stage.DropChance9 = stage.GetDropChance(level, luck, tier, stage.DropName9);
 					if(stage.DropChance9)
 					{
 						Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%s - 100%%", stage.DropName9);

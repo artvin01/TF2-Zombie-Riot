@@ -149,9 +149,9 @@ stock float Stats_OriginiumPower(int client)
 		return 3.0 - (float(originium - ORIGINIUM_UNSTABLE) / float(ORIGINIUM_UNSTABLE * 3));
 	
 	if(originium >= ORIGINIUM_INFECTED)
-		return float(originium) / float(ORIGINIUM_INFECTED);
+		return float(originium) / float(ORIGINIUM_INFECTED);	// x1.0 - x3.0
 	
-	return float(originium / 2) / float(ORIGINIUM_INFECTED);
+	return float(originium / 2) / float(ORIGINIUM_INFECTED);	// x0.0 - x1.0
 }
 
 static int OriginiumHealth(int client)

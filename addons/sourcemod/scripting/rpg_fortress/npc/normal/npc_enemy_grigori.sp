@@ -490,7 +490,7 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime)
+		else if(!NpcStats_IsEnemySilenced(npc.index) && flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			npc.m_iState = 5; //Deploy shield.
 		}

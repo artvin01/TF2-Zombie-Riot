@@ -9,7 +9,8 @@
 
 enum
 {
-	WEAPON_STUNSTICK = 1
+	WEAPON_STUNSTICK = 1,
+	WEAPON_SILENCESTICK = 2
 }
 
 bool DisabledDownloads[MAXTF2PLAYERS];
@@ -237,9 +238,15 @@ void RPG_ClientDisconnect(int client)
 	if(b_IsPlayerNiko[client])
 		niko_int = 1;
 
-	char buffer[4];			
+	char buffer[128];		
 	IntToString(niko_int, buffer, sizeof(buffer));
 	Niko_Cookies.Set(client, buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
+	HudSettings_Cookies.Set(client, buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+	HudSettingsExtra_Cookies.Set(client, buffer);
 
 	UpdateLevelAbovePlayerText(client, true);
 	Ammo_ClientDisconnect(client);
@@ -320,7 +327,7 @@ public Action CheckClientConvars(Handle timer)
 	return Plugin_Continue;
 }
 
-void HudSettings_ClientCookiesCached(int client)
+static void HudSettings_ClientCookiesCached(int client)
 {
 	char buffer[128];
 	HudSettings_Cookies.Get(client, buffer, sizeof(buffer));
@@ -368,14 +375,4 @@ void HudSettings_ClientCookiesCached(int client)
 		b_HudLowHealthShake[client] = true;
 		b_HudHitMarker[client] = true;
 	}
-}
-
-void HudSettings_ClientCookiesDisconnect(int client)
-{
-	char buffer[128];
-	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
-	HudSettings_Cookies.Set(client, buffer);
-
-	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
-	HudSettingsExtra_Cookies.Set(client, buffer);
 }

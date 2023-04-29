@@ -405,7 +405,7 @@ methodmap BaseSquad < CClotBody
 	}
 	property bool m_bIsSquad
 	{
-		public get()		{ return view_as<bool>(this.m_iDeathDamage); }
+		public get()		{ return this.m_iDeathDamage && !NpcStats_IsEnemySilenced(this.index); }
 	}
 	property bool m_bAnger
 	{
@@ -848,7 +848,10 @@ public void Dungeon_CombineSuperArmor(int entity)
 	if(i_NpcInternalId[entity] != COMBINE_GIANT)
 	{
 		BaseSquad npc = view_as<BaseSquad>(entity);
-		npc.m_flMeleeArmor = 0.0001;
-		npc.m_flRangedArmor = 0.0001;
+		if(npc.m_bIsSquad)
+		{
+			npc.m_flMeleeArmor = 0.0001;
+			npc.m_flRangedArmor = 0.0001;
+		}
 	}
 }

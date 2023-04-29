@@ -2737,6 +2737,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Weapon_TakeDamage_StunStick(victim, damagetype);
 		}
+		case WEAPON_SILENCESTICK:
+		{
+			Weapon_TakeDamage_SilenceStick(victim, attacker, damagetype);
+		}
 	}
 #endif
 

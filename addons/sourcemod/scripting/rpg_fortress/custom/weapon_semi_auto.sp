@@ -18,6 +18,18 @@ public void Weapon_USPMatch_M1(int client, int weapon, bool crit, int slot)
 	}
 }
 
+public void Weapon_DoubleUSPMatch_M1(int client, int weapon, bool crit, int slot)
+{
+	if(!InFrame[client])
+	{
+		DataPack pack = new DataPack();
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteFloat(0.2);	// 0.25s -> 0.05s
+		RequestFrame(Weapon_SemiAuto_Frame, pack);
+	}
+}
+
 public void Weapon_SemiAuto_Frame(DataPack pack)
 {
 	pack.Reset();
@@ -51,6 +63,12 @@ void Weapon_TakeDamage_StunStick(int victim, int damagetype)
 {
 	if(damagetype & DMG_CLUB)
 		FreezeNpcInTime(victim, 0.2);
+}
+
+void Weapon_TakeDamage_SilenceStick(int victim, int attacker, int damagetype)
+{
+	if(damagetype & DMG_CLUB)
+		NpcStats_SilenceEnemy(victim, Stats_OriginiumPower(attacker));
 }
 
 public void Weapon_Overlord_M2(int client, int weapon, bool crit, int slot)
