@@ -6863,6 +6863,7 @@ stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, f
 	// validate this destination
 
 	// don't lead through walls
+	/*
 	if (GetVectorLength(lead, true) > 36.0)
 	{
 		float fraction;
@@ -6874,6 +6875,8 @@ stock float[] PredictSubjectPositionForProjectiles(CClotBody npc, int subject, f
 			pathTarget[2] = subjectPos[2] + fraction * ( pathTarget[2] - subjectPos[2] );
 		}
 	}
+	*/
+	//replace this with a trace.
 	return pathTarget;
 }
 

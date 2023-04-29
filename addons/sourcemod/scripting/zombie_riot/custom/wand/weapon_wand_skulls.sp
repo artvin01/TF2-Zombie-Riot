@@ -52,7 +52,7 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
 float Skulls_ShootDMG[3] = { 300.0, 600.0, 800.0 };	//Damage dealt by projectiles fired by skulls
-float Skulls_ShootVelocity[3] = { 600.0, 900.0, 1200.0 };	//Velocity of projectiles fired by skulls
+float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
 float Skulls_ShootRange[3] = { 500.0, 750.0, 1000.0 };	//Max range in which skulls will auto-fire at zombies
 float Skulls_ShootFrequency[3] = { 1.5, 1.2, 0.8 };	//Time it takes for skulls to auto-fire
 float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
@@ -79,6 +79,7 @@ int Skull_Weapon[MAXENTITIES + 1] = { -1, ... };
 //Launch variables are applied at the moment the skull is launched instead of when the skull is created.
 //Again, this is intentional.
 float Skull_LaunchDMG[MAXENTITIES + 1] = { 0.0, ... };
+float SkullFloatDelay[MAXENTITIES + 1] = { 0.0, ... };
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
@@ -117,6 +118,7 @@ public void Skulls_EntityDestroyed(int ent)
 
 public void Wand_Skull_Summon_ClearAll()
 {
+	Zero(SkullFloatDelay);
 	Zero(ability_cooldown);
 }
 
@@ -362,6 +364,10 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					SetEntityGravity(Drone, 0.0);
 					SetEntityCollisionGroup(Drone, COLLISION_GROUP_DEBRIS_TRIGGER);
 					SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS_TRIGGER);
+					SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
+					SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
+					SetEntProp(Drone, Prop_Send, "m_usSolidFlags", 12); 
+					SetEntProp(Drone, Prop_Data, "m_nSolidType", 6); 
 								
 					switch(tier)
 					{
@@ -463,7 +469,7 @@ public void Skulls_SetVariables(int prop, int weapon, int tier)
 	
 	Skull_ShootDMG[prop] = damage;
 	Skull_ShootVelocity[prop] = velocity;
-	Skull_ShootRange[prop] = Skulls_ShootRange[tier];
+	Skull_ShootRange[prop] = Pow(Skulls_ShootRange[tier], 2.0);
 	Skull_ShootFrequency[prop] = Skulls_ShootFrequency[tier];
 	Skull_Tier[prop] = tier;
 	Skull_Weapon[prop] = EntIndexToEntRef(weapon);
@@ -491,8 +497,11 @@ public Action Skulls_PreThink(int client)
 	{
 		Skulls_OrbitAngle[client] = 0.0;
 	}
-	
-	Skulls_Management(client);
+	if (SkullFloatDelay[client] < GetGameTime())
+	{	
+		Skulls_Management(client);
+		SkullFloatDelay[client] = GetGameTime() + 0.05; //add a tiny delay, otherwise optentially too much processing.
+	}
 	
 	return Plugin_Continue;
 }
@@ -555,9 +564,19 @@ public void Skull_AttemptShoot(int ent, int client)
 void Skull_AutoFire(int ent, int target, int client)
 {
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
+	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
 	GetEntPropVector(target, Prop_Send, "m_angRotation", DummyAngles);
 	TargetLoc = WorldSpaceCenter(target);
-	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", pos);
+
+
+	float dist = GetVectorDistance(pos, TargetLoc, true);
+	
+	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
+	{
+		CClotBody npc = view_as<CClotBody>(ent);
+		TargetLoc = PredictSubjectPositionForProjectiles(npc, target, Skull_ShootVelocity[ent]);
+	}
+
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
 	
 	char particle[255];
@@ -660,20 +679,22 @@ public int Skull_GetClosestTarget(int ent, float range)
 		if(IsValidEntity(i) && !b_NpcHasDied[i])
 		{
 			TargetLoc = WorldSpaceCenter(i);
-				
-			Handle Trace = TR_TraceRayFilterEx(DroneLoc, TargetLoc, MASK_SHOT, RayType_EndPoint, Skull_DontHitSkulls);
-				
-			if (!TR_DidHit(Trace))
-			{
-				float dist = GetVectorDistance(DroneLoc, TargetLoc);
-				if (dist < ShortestDistance && dist <= range)
+			float dist = GetVectorDistance(DroneLoc, TargetLoc, true);
+			if(dist <= range)
+			{	
+				Handle Trace = TR_TraceRayFilterEx(DroneLoc, TargetLoc, MASK_SHOT, RayType_EndPoint, Skull_DontHitSkulls);
+					
+				if (!TR_DidHit(Trace))
 				{
-					Closest = i;
-					ShortestDistance = dist;
+					if (dist < ShortestDistance)
+					{
+						Closest = i;
+						ShortestDistance = dist;
+					}
 				}
+					
+				delete Trace;
 			}
-				
-			delete Trace;
 		}
 	}
 	
@@ -790,12 +811,23 @@ public void Skulls_UpdateFollowerPositions(int client)
 			eyeAng[0] = -22.5;
 			eyeAng[1] = float(NumSpaced) * Spacing + (mult * Skulls_OrbitAngle[client]);
 			eyeAng[2] = 0.0;
-						
+
 			Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, Skull_DontHitSkulls/*TraceEntityFilterPlayer*/);
 						
 			if (TR_DidHit(trace))
 			{
 				TR_GetEndPosition(spawnLoc, trace);
+				static float hullcheckmaxs_Player[3];
+				static float hullcheckmins_Player[3];
+				hullcheckmaxs_Player = view_as<float>( { 10.0, 10.0, 10.0 } );
+				hullcheckmins_Player = view_as<float>( { -10.0, -10.0, -10.0 } );	
+				delete trace;
+				trace = TR_TraceHullFilterEx(eyePos, spawnLoc, hullcheckmins_Player, hullcheckmaxs_Player, MASK_SHOT, Skull_DontHitSkulls);
+				if (TR_DidHit(trace))
+				{
+					TR_GetEndPosition(spawnLoc, trace);//gets middle of trace.
+				}
+			
 			}
 						
 			delete trace;
