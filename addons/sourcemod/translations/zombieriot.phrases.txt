@@ -2365,4 +2365,30 @@
 		//"it"		""
 		//"fr"		""
 	}
+	"Skull Servant Launch Failure"
+	{
+		"en"		"This attack requires you to summon at least one skull!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Skull Servant Summoned"
+	{
+		"en"		"You have summoned {1}/{2} Skull Servant(s)."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
 }
