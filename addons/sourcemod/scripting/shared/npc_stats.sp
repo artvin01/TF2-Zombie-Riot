@@ -4628,6 +4628,10 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
+
+
+	float fldistancelimit_Inside = Pow(fldistancelimit, 2.0);
+	float fldistancelimit_Inside_AllyNpc = Pow(fldistancelimitAllyNPC, 2.0);
 	/*
 	NavMesh_GetNearestArea
 	float vecCenter[3], vecFromCenter[3];
@@ -4661,8 +4665,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						float TargetLocation[3]; 
 						GetClientAbsOrigin( i, TargetLocation ); 
 						
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if(distance < fldistancelimit_Inside)
 						{
 							if( TargetDistance ) 
 							{
@@ -4685,8 +4689,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						GetClientAbsOrigin( i, TargetLocation ); 
 						
 						
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if(distance < fldistancelimit_Inside)
 						{
 							if( TargetDistance ) 
 							{
@@ -4743,8 +4747,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 									
 									
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
+						if(distance < fldistancelimit_Inside)
 						{
 							if( TargetDistance ) 
 							{
@@ -4767,8 +4771,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
 							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimit)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if(distance < fldistancelimit_Inside)
 						{
 							if( TargetDistance ) 
 							{
@@ -4814,8 +4818,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 									
 									
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimitAllyNPC)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
 							if( TargetDistance ) 
 							{
@@ -4838,8 +4842,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
 							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimitAllyNPC)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
 							if( TargetDistance ) 
 							{
@@ -4888,8 +4892,8 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 									
 									
-						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-						if(distance < fldistancelimitAllyNPC)
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
 							if( TargetDistance ) 
 							{
