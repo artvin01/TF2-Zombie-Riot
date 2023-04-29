@@ -4575,6 +4575,11 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		}
 		else if(i_IsABuilding[enemy])
 		{
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				return false;
+			}
+
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{
 				return false;
@@ -4630,19 +4635,9 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	}
 
 
-	float fldistancelimit_Inside = Pow(fldistancelimit, 2.0);
-	float fldistancelimit_Inside_AllyNpc = Pow(fldistancelimitAllyNPC, 2.0);
-	/*
-	NavMesh_GetNearestArea
-	float vecCenter[3], vecFromCenter[3];
-	area.GetCenter(vecCenter);
-	from_area.GetCenter(vecFromCenter);
-		
-	float vecSubtracted[3];
-	SubtractVectors(vecCenter, vecFromCenter, vecSubtracted);
-		
-	dist = GetVectorLength(vecSubtracted);
-	*/
+	float fldistancelimit_Inside = fldistancelimit * fldistancelimit;
+	float fldistancelimit_Inside_AllyNpc = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
+	
 	if(searcher_team != 2)
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
@@ -4654,42 +4649,20 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 				{
 					if(CanSee)
 					{
-						int Enemy_I_See = Can_I_See_Enemy(entity, i);
+						static int Enemy_I_See;
+						Enemy_I_See = Can_I_See_Enemy(entity, i);
 						if(Enemy_I_See != i)
 						{
 							continue;
 						}
 					}
-					if(camoDetection)
+					if (!npc.m_bCamo || camoDetection)
 					{
-						float TargetLocation[3]; 
+						static float TargetLocation[3]; 
 						GetClientAbsOrigin( i, TargetLocation ); 
 						
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside)
-						{
-							if( TargetDistance ) 
-							{
-								if( distance < TargetDistance ) 
-								{
-									ClosestTarget = i; 
-									TargetDistance = distance;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = i; 
-								TargetDistance = distance;
-							}	
-						}	
-					}
-					else if (!npc.m_bCamo)
-					{
-						float TargetLocation[3]; 
-						GetClientAbsOrigin( i, TargetLocation ); 
-						
-						
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						static float distance;
+						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 						if(distance < fldistancelimit_Inside)
 						{
 							if( TargetDistance ) 
@@ -4735,43 +4708,20 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 				{
 					if(CanSee)
 					{
-						int Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
+						static int Enemy_I_See;
+						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
 						if(Enemy_I_See != entity_close)
 						{
 							continue;
 						}
 					}
-					if(camoDetection)
+					if (!npc.m_bCamo || camoDetection)
 					{
-						float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
-						if(distance < fldistancelimit_Inside)
-						{
-							if( TargetDistance ) 
-							{
-								if( distance < TargetDistance ) 
-								{
-									ClosestTarget = entity_close; 
-									TargetDistance = distance;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget =entity_close; 
-								TargetDistance = distance;
-							}	
-						}	
-					}
-					else if (!npc.m_bCamo)
-					{
-						float TargetLocation[3]; 
+						static float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						static float distance;
+						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 						if(distance < fldistancelimit_Inside)
 						{
 							if( TargetDistance ) 
@@ -4806,58 +4756,44 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 				{
 					if(CanSee)
 					{
-						int Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
+						static int Enemy_I_See;
+						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
 						if(Enemy_I_See != entity_close)
 						{
 							continue;
 						}
 					}
-					if(camoDetection)
+					if (!npc.m_bCamo || camoDetection)
 					{
-						float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside_AllyNpc)
-						{
-							if( TargetDistance ) 
-							{
-								if( distance < TargetDistance ) 
-								{
-									ClosestTarget = entity_close; 
-									TargetDistance = distance;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = entity_close; 
-								TargetDistance = distance;
-							}	
-						}	
-					}
-					else if (!npc.m_bCamo)
-					{
-						float TargetLocation[3]; 
+						static float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-							
 						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+
 						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
-							if( TargetDistance ) 
+							static float DistancePathed;
+							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
-								if( distance < TargetDistance ) 
+								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
+								DistancePathed = (DistancePathed * DistancePathed) * 1.15;
+								if(DistancePathed < distance)
 								{
-									ClosestTarget = entity_close; 
-									TargetDistance = distance;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = entity_close; 
-								TargetDistance = distance;
-							}	
+									if( TargetDistance ) 
+									{
+										if( distance < TargetDistance ) 
+										{
+											ClosestTarget = entity_close; 
+											TargetDistance = distance;		  
+										}
+									} 
+									else 
+									{
+										ClosestTarget = entity_close; 
+										TargetDistance = distance;
+									}
+								}	
+							}
 						}	
 					}
 				}
@@ -4876,153 +4812,55 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
-					CClotBody npc = view_as<CClotBody>(entity_close);
-					if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				CClotBody npc = view_as<CClotBody>(entity_close);
+				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				{
+					if(CanSee)
 					{
-						if(CanSee)
+						static int Enemy_I_See;
+						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
+						if(Enemy_I_See != entity_close)
 						{
-							int Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-							if(Enemy_I_See != entity_close)
-							{
-								continue;
-							}
-						}
-
-						float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside_AllyNpc)
-						{
-							if( TargetDistance ) 
-							{
-								if( distance < TargetDistance ) 
-								{
-									ClosestTarget = entity_close; 
-									TargetDistance = distance;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = entity_close; 
-								TargetDistance = distance;
-							}	
+							continue;
 						}
 					}
-			}
-		}
-	}
-	/*
-//	if() //Make sure that they completly ignore barricades during raids
-	{
-		for (int pass = 0; pass <= 2; pass++)
-		{
-			static char classname[1024];
-			if (pass == 0) classname = "obj_sentrygun";
-			else if (pass == 1) classname = "obj_dispenser";
-		//	else if (pass == 2) classname = "obj_teleporter";
-			else if (pass == 2) classname = "base_boss";
-	
-			int i = MaxClients + 1;
-			while ((i = FindEntityByClassname(i, classname)) != -1)
-			{
-				if (searcher_team != GetEntProp(i, Prop_Send, "m_iTeamNum")) 
-				{
-					CClotBody npc = view_as<CClotBody>(i);
-					if(pass != 2)
+					if (!npc.m_bCamo || camoDetection)
 					{
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
-						{
+						static float TargetLocation[3]; 
+						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
-							{
-								float EntityLocation[3], TargetLocation[3]; 
-								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-								if(distance < fldistancelimit)
-								{
-									if( TargetDistance ) 
-									{
-										if( distance < TargetDistance ) 
-										{
-											ClosestTarget = i; 
-											TargetDistance = distance;		  
-										}
-									} 
-									else 
-									{
-										ClosestTarget = i; 
-										TargetDistance = distance;
-									}	
-								}
-							}
-						}			
-					}		
-					else
-					{
-						if(!npc.m_bThisEntityIgnored && GetEntProp(i, Prop_Data, "m_iHealth") > 0 && !onlyPlayers) //Check if dead or even targetable
+						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+
+						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
-							if(camoDetection)
+							static float DistancePathed;
+							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
-								float EntityLocation[3], TargetLocation[3]; 
-								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-								if(distance < fldistancelimit)
+								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
+								DistancePathed = (DistancePathed * DistancePathed) * 1.15;
+								if(DistancePathed < distance)
 								{
 									if( TargetDistance ) 
 									{
 										if( distance < TargetDistance ) 
 										{
-											ClosestTarget = i; 
+											ClosestTarget = entity_close; 
 											TargetDistance = distance;		  
 										}
 									} 
 									else 
 									{
-										ClosestTarget = i; 
+										ClosestTarget = entity_close; 
 										TargetDistance = distance;
-									}	
+									}
 								}	
 							}
-							else if (!npc.m_bCamo)
-							{
-								float EntityLocation[3], TargetLocation[3]; 
-								GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-								GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-									
-									
-								float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
-								if(distance < fldistancelimit)
-								{
-									if( TargetDistance ) 
-									{
-										if( distance < TargetDistance ) 
-										{
-											ClosestTarget = i; 
-											TargetDistance = distance;		  
-										}
-									} 
-									else 
-									{
-										ClosestTarget = i; 
-										TargetDistance = distance;
-									}	
-								}	
-							}
-						}
+						}	
 					}
 				}
 			}
 		}
 	}
-	*/
 	return ClosestTarget; 
 }
 
@@ -8310,3 +8148,73 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 	//It Hit something, bad!
 	return false;
 }
+
+
+/*
+float Calculate_PointValueClosestTargetNpc(int npc, float Npc_Vector[3], float Target_Vector[3])
+{
+	//If we return anything thats in the exact 
+	NavArea NpcArea = TheNavMesh.GetNearestNavArea_Vec( Npc_Vector );
+	NavArea TargetArea = TheNavMesh.GetNearestNavArea_Vec( Target_Vector );
+
+	if(NpcArea == TargetArea)
+	{
+		//If its in the exact same nav area, do this instead.
+	}
+	
+	float distanceCost = TheNavMesh.NavAreaTravelDistance(NpcArea, TargetArea, PluginBot_PathCost);
+
+	if(distanceCost == -1.0)
+	{
+		//panic!
+		return 2.0;
+	}
+	return 1.0;
+}
+
+
+template< typename CostFunctor >
+float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, CostFunctor &costFunc )
+{
+	CNavArea *startArea = TheNavMesh->GetNearestNavArea( startPos );
+	if (startArea == NULL)
+	{
+		return -1.0f;
+	}
+
+	// compute path between areas using given cost heuristic
+	CNavArea *goalArea = NULL;
+	if (NavAreaBuildPath( startArea, NULL, &goalPos, costFunc, &goalArea ) == false)
+	{
+		return -1.0f;
+	}
+
+	// compute distance along path
+	if (goalArea->GetParent() == NULL)
+	{
+		// both points are in the same area - return euclidean distance
+		return (goalPos - startPos).Length();
+	}
+	else
+	{
+		CNavArea *area;
+		float distance;
+
+		// goalPos is assumed to be inside goalArea (or very close to it) - skip to next area
+		area = goalArea->GetParent();
+		distance = (goalPos - area->GetCenter()).Length();
+
+		for( ; area->GetParent(); area = area->GetParent() )
+		{
+			distance += (area->GetCenter() - area->GetParent()->GetCenter()).Length();
+		}
+
+		// add in distance to startPos
+		distance += (startPos - area->GetCenter()).Length();
+
+		return distance;
+	}
+}
+
+#endif // _CS_NAV_PATHFIND_H_
+*/
