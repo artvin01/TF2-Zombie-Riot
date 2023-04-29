@@ -71,9 +71,10 @@ void NPC_PluginStart()
 #endif
 
 	SyncHud = CreateHudSynchronizer();
-	
+	/*
 	LF_HookSpawn("", NPC_OnCreatePre, false);
 	LF_HookSpawn("", NPC_OnCreatePost, true);
+	*/
 }
 
 #if defined ZR
@@ -96,7 +97,7 @@ public Action LF_OnMakeNPC(char[] classname, int &entity)
 	
 	return Plugin_Handled;
 }
-
+/*
 public Action NPC_OnCreatePre(char[] classname)
 {
 	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
@@ -115,7 +116,7 @@ public void NPC_OnCreatePost(const char[] classname, int entity)
 		SDKHook(entity, SDKHook_SpawnPost, NPC_EntitySpawned);
 	}
 }
-
+*/
 public void NPC_EntitySpawned(int entity)
 {
 	int index = GetIndexByPluginName(LastClassname[entity]);
@@ -2735,6 +2736,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_STUNSTICK:
 		{
 			Weapon_TakeDamage_StunStick(victim, damagetype);
+		}
+		case WEAPON_SILENCESTICK:
+		{
+			Weapon_TakeDamage_SilenceStick(victim, attacker, damagetype);
 		}
 	}
 #endif

@@ -1283,11 +1283,14 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	int client = EntRefToEntIndex(pack.ReadCell());
 
 	if (!IsValidMulti(client))
+	{
 		ApplyHealEvent_TimerDeleter(clientOriginalIndex);
+		return Plugin_Continue;
+	}
 
 	Event event = CreateEvent("player_healonhit", true);
 	event.SetInt("entindex", client);
-	event.SetInt("amount", i_HealsDone_Event[client]);
+	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
 	event.Fire();
 
 	ApplyHealEvent_TimerDeleter(clientOriginalIndex);
@@ -2536,10 +2539,6 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	else if(owner_projectile < 1)
 	{
 		return -1; //I dont exist?
-	}
-	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[owner_projectile])
-	{
-		return -1; //Im about to be deleted.
 	}
 	if(other_entity == 0)
 	{

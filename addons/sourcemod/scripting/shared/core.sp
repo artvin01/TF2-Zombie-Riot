@@ -11,7 +11,7 @@
 #include <tf2items>
 #include <tf_econ_data>
 #include <tf2attributes>
-#include <lambda>
+//#include <lambda>
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
@@ -19,6 +19,7 @@
 #if !defined UseDownloadTable
 #include <filenetwork>
 #endif
+#include <queue>
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
 #define CHAR_PARTEMPTY	"▒"
@@ -79,6 +80,9 @@ ConVar CvarDisableThink;
 ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 ConVar zr_downloadconfig;
+ConVar CvarRerouteToIp;
+ConVar CvarRerouteToIpAfk;
+ConVar CvarKickPlayersAt;
 
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
@@ -226,10 +230,6 @@ ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
 ConVar nav_edit;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
-Cookie Niko_Cookies;
-Cookie HudSettings_Cookies;
-Cookie HudSettingsExtra_Cookies;
-
 bool b_LagCompNPC_No_Layers;
 bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_ExtendBoundingBox;
@@ -245,6 +245,7 @@ int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
 float f_CooldownForHurtParticle[MAXENTITIES];	
+float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
 float f_BackstabCooldown[MAXENTITIES];
 int i_BackstabHealEachTick[MAXENTITIES];
@@ -297,7 +298,7 @@ float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
-bool b_HudHitMarker[MAXTF2PLAYERS];
+bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 
 float f_ArmorHudOffsetX[MAXTF2PLAYERS];
 float f_ArmorHudOffsetY[MAXTF2PLAYERS];
@@ -311,8 +312,8 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
-bool b_HudScreenShake[MAXTF2PLAYERS];
-bool b_HudLowHealthShake[MAXTF2PLAYERS];
+bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
+bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -910,6 +911,7 @@ bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
 bool b_NPCVelocityCancel[MAXENTITIES];
+bool b_NPCTeleportOutOfStuck[MAXENTITIES];
 float fl_DoSpawnGesture[MAXENTITIES];
 bool b_isWalking[MAXENTITIES];
 int i_StepNoiseType[MAXENTITIES];
@@ -1146,8 +1148,6 @@ public void OnPluginStart()
 
 	sv_cheats.Flags &= ~FCVAR_NOTIFY;
 	
-	Niko_Cookies = new Cookie("zr_niko", "Are you a niko", CookieAccess_Protected);
-	
 	LoadTranslations("zombieriot.phrases");
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
@@ -1178,9 +1178,6 @@ public void OnPluginStart()
 	//Global Hud for huds.
 	SyncHud_Notifaction = CreateHudSynchronizer();
 	SyncHud_WandMana = CreateHudSynchronizer();
-
-	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
-	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -1481,6 +1478,11 @@ public Action Command_ToggleReload(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+public void OnClientPostAdminCheck(int client)
+{
+	CreateTimer(1.0, AdminCheckKick, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+}
 				
 public void OnClientPutInServer(int client)
 {
@@ -1492,17 +1494,7 @@ public void OnClientPutInServer(int client)
 		b_IsPlayerABot[client] = true;
 		return;
 	}
-
-	if(CountPlayersOnServer() > (MAX_PLAYER_COUNT))
-	{
-		//doesnt work.
-		if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
-		{
-		//	ClientCommand(client,"redirect 185.107.96.3:27015");
-		//	CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-			KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
-		}
-	}
+	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	
 	DHook_HookClient(client);
 	FileNetwork_ClientPutInServer(client);
@@ -1520,100 +1512,40 @@ public void OnClientPutInServer(int client)
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
+	f_TutorialUpdateStep[client] = 0.0;
 	ZR_ClientPutInServer(client);
 #endif
 	
 #if defined RPG
 	RPG_PutInServer(client);
-#endif
 
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
 		OnClientCookiesCached(client);	
+#endif
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
 	
 }
 
+#if defined RPG
 public void OnClientCookiesCached(int client)
 {
-	char buffer[12];
-	
-#if defined ZR
-	Tutorial_LoadCookies(client);
-
-	CookieScrap.Get(client, buffer, sizeof(buffer));
-	Scrap[client] = StringToInt(buffer);
-	
-	if(Scrap[client] < 0)
-	{
-		Scrap[client] = 0;
-	}
-	
-	CookieXP.Get(client, buffer, sizeof(buffer));
-	XP[client] = StringToInt(buffer);
-	Level[client] = XpToLevel(XP[client]);
-#endif
-
-	ThirdPerson_OnClientCookiesCached(client);
-	
-	Niko_Cookies.Get(client, buffer, sizeof(buffer));
-	if(StringToInt(buffer) == 1)
-	{
-	 	b_IsPlayerNiko[client] = true;
-	}
-	else
-	{
-		b_IsPlayerNiko[client] = false;
-	}
-
-	
-	HudSettings_ClientCookiesCached(client);
-#if defined ZR
-	Store_ClientCookiesCached(client);
-	LeftForDead_ClientCookiesCached(client);
-#endif
-
-#if defined RPG
 	RPG_ClientCookiesCached(client);
-#endif
 }
+#endif
 
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
-
-	HudSettings_ClientCookiesDisconnect(client);
-	char buffer[12];
 	i_EntityToAlwaysMeleeHit[client] = 0;
+
 #if defined ZR
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
-	
-	if(Scrap[client] > -1)
-	{
-		IntToString(Scrap[client], buffer, sizeof(buffer));
-		CookieScrap.Set(client, buffer);
-	}
-	Scrap[client] = -1;
-	
-	if(XP[client] > 0)
-	{
-		IntToString(XP[client], buffer, sizeof(buffer));
-		CookieXP.Set(client, buffer);
-		
-	}
-	XP[client] = 0;
 #endif
-	int niko_int = 0;
-		
-	if(b_IsPlayerNiko[client])
-		niko_int = 1;
-			
-	IntToString(niko_int, buffer, sizeof(buffer));
-	Niko_Cookies.Set(client, buffer);
 
 	b_DisplayDamageHud[client] = false;
 	WeaponClass[client] = TFClass_Unknown;
@@ -1621,6 +1553,9 @@ public void OnClientDisconnect(int client)
 #if defined RPG
 	RPG_ClientDisconnect(client);
 #endif
+	b_HudScreenShake[client] = true;
+	b_HudLowHealthShake[client] = true;
+	b_HudHitMarker[client] = true;
 }
 
 public void OnClientDisconnect_Post(int client)
@@ -3192,11 +3127,95 @@ public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQue
 	}
 }
 
+public Action AdminCheckKick(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		int KickAt;
+
+		if(CvarKickPlayersAt.IntValue > 0)
+		{
+			KickAt = CvarKickPlayersAt.IntValue;
+		}
+		else
+		{
+			KickAt = MAX_PLAYER_COUNT_SLOTS;
+		}
+
+		int playersOnServer = CountPlayersOnServer();
+
+		if(playersOnServer > (KickAt))
+		{
+			for(int clientkick=1; clientkick<=MaxClients; clientkick++)
+			{
+				if(IsClientInGame(clientkick))
+				{
+					if(!IsFakeClient(clientkick) && GetClientTeam(clientkick) < 2 && f_ClientConnectTime[clientkick] < GetGameTime())
+					{
+						if(!(CheckCommandAccess(clientkick, "sm_mute", ADMFLAG_SLAY)))
+						{
+							playersOnServer--;
+							char buffer[64];
+							CvarRerouteToIpAfk.GetString(buffer, sizeof(buffer));
+							if(buffer[0])
+							{
+								ClientCommand(clientkick,"redirect %s",buffer);
+								CreateTimer(1.0, RedirectPlayerSpec, EntIndexToEntRef(clientkick), TIMER_FLAG_NO_MAPCHANGE);
+							}
+							else
+							{
+								KickClient(clientkick, "You were in spectator and the server was full.");
+							}
+							break;
+						}
+					}
+				}
+			}
+
+			if(playersOnServer > (KickAt))
+			{
+				//doesnt work.
+				if(!(CheckCommandAccess(client, "sm_mute", ADMFLAG_SLAY)))
+				{
+					char buffer[64];
+					CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+					if(buffer[0])
+					{
+						ClientCommand(client,"redirect %s",buffer);
+						CreateTimer(1.0, RedirectPlayer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+					}
+					else
+					{
+						KickClient(client, "Server is full, please wait. All files should have been downloaded for you already");
+					}
+				}
+			}
+
+		}
+	}
+	return Plugin_Continue;
+}
+
 public Action RedirectPlayer(Handle timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		KickClient(client, "This server is full, try the 2nd server: 74.91.113.50:27016.");
+		char buffer[64];
+		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+		KickClient(client, "This server is full, try: %s",buffer);
 	}
+	return Plugin_Continue;
+}
+public Action RedirectPlayerSpec(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+	{
+		char buffer[64];
+		CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
+	}
+	return Plugin_Continue;
 }

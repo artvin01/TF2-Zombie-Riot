@@ -226,7 +226,8 @@ enum
 	MENU_NONE = -1,
 	MENU_WEAPONS = 0,
 	MENU_SPELLS = 1,
-	MENU_BACKPACK = 2
+	MENU_BACKPACK = 2,
+	MENU_BUILDING = 3
 }
 
 static int ItemXP = -1;
@@ -2098,6 +2099,18 @@ static void ShowMenu(int client, int page = 0)
 
 			menu.ExitBackButton = true;
 			InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
+		}
+		case MENU_BUILDING:
+		{
+			/*if(Plots_ShowMenu(client))
+			{
+				InMenu[client] = true;
+			}
+			else*/
+			{
+				MenuType[client] = MENU_WEAPONS;
+				InMenu[client] = false;
+			}
 		}
 		default:
 		{

@@ -26,13 +26,10 @@ void Queue_PutInServer(int client)
 
 void Queue_AddPoint(int client)
 {
-	if(!AddedPoint[client] && AreClientCookiesCached(client))
+	if(!AddedPoint[client] && Database_IsCached(client))
 	{
-		char buffer[6];
 		AddedPoint[client] = true;
-		CookiePlayStreak.Get(client, buffer, sizeof(buffer));
-		IntToString(StringToInt(buffer) + 1, buffer, sizeof(buffer));
-		CookiePlayStreak.Set(client, buffer);
+		PlayStreak[client]++;
 	}
 }
 
@@ -51,7 +48,7 @@ void Queue_WaitingForPlayersEnd()
 			else
 			{
 				WaitingInQueue[i] = true;	
-				CookiePlayStreak.Set(i, "0");
+				PlayStreak[i] = 0;
 			}
 		}
 	}
@@ -68,9 +65,7 @@ void Queue_WaitingForPlayersEnd()
 		
 		for(; i<count; i++)
 		{
-			if(AreClientCookiesCached(queue[i]))
-				CookiePlayStreak.Set(queue[i], "0");
-			
+			PlayStreak[queue[i]] = 0;
 			WaitingInQueue[queue[i]] = true;
 			PrintCenterText(queue[i], "Server is full with a maximum of %d players", MAX_PLAYER_COUNT);
 			PrintToChat(queue[i], "Server is full with a maximum of %d players", MAX_PLAYER_COUNT);
@@ -88,29 +83,21 @@ void Queue_WaitingForPlayersEnd()
 
 public int Queue_Sorting(int elem1, int elem2, const int[] array, Handle hndl)
 {
-	if(!AreClientCookiesCached(elem1))
+	if(!Database_IsCached(elem1))
 	{
-		if(elem1 > elem2 && !AreClientCookiesCached(elem2))
+		if(elem1 > elem2 && !Database_IsCached(elem2))
 			return -1;
 		
 		return 1;
 	}
 	
-	if(!AreClientCookiesCached(elem2))
+	if(!Database_IsCached(elem2))
 		return -1;
 	
-	char buffer[6];
-	
-	CookiePlayStreak.Get(elem1, buffer, sizeof(buffer));
-	int play1 = StringToInt(buffer);
-	
-	CookiePlayStreak.Get(elem2, buffer, sizeof(buffer));
-	int play2 = StringToInt(buffer);
-	
-	if(play1 < play2)
+	if(PlayStreak[elem1] < PlayStreak[elem2])
 		return -1;
 	
-	if(play1 > play2 || elem1 < elem2)
+	if(PlayStreak[elem1] > PlayStreak[elem2] || elem1 < elem2)
 		return 1;
 	
 	return -1;
@@ -123,6 +110,16 @@ void Queue_Menu(int client)
 	
 	menu.AddItem("", "Wait for the next map");
 	menu.AddItem("", "Wait for an open slot");
+	char buffer[64];
+	CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+	if(buffer[0])
+	{
+		menu.AddItem("", "Redirect to different ZR server");	
+	}
+	else
+	{
+		menu.AddItem("", "Redirect to different ZR server", ITEMDRAW_DISABLED);	
+	}
 	
 //	if(CheckCommandAccess(client, "zr_joinanytime", ADMFLAG_RESERVATION, true))
 //	{
@@ -160,57 +157,59 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				case 0:
 				{
-					ChangeClientTeam(client, 1);
-					Queue_Menu(client);
+					if(IsValidClient(client))
+					{
+						ChangeClientTeam(client, 1);
+						Queue_Menu(client);
+					}
 				}
 				case 1:
 				{
-					
-					int count;
-					for(int i=1; i<=MaxClients; i++)
+					if(IsValidClient(client))
 					{
-						if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2)
+						int count;
+						for(int i=1; i<=MaxClients; i++)
 						{
-							if(++count >= MAX_PLAYER_COUNT)
+							if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2)
 							{
-								Queue_Menu(client);
-								if(GetClientTeam(client) != 2)
+								if(++count >= MAX_PLAYER_COUNT)
 								{
-									ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-									ShowVGUIPanel(client, "class_red");
+									Queue_Menu(client);
+									if(GetClientTeam(client) != 2)
+									{
+										ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+										ShowVGUIPanel(client, "class_red");
+									}
+									return 0;
 								}
-								return 0;
 							}
 						}
-					}
-					
-					ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-					if(IsPlayerAlive(client))
-						ForcePlayerSuicide(client);
-					
-					WaitingInQueue[client] = false;
-					CookiePlayStreak.Set(client, "1");
-				}
-				case 2:
-				{
-					char buffer[16];
-					menu.GetItem(choice, buffer, sizeof(buffer));
-					if(StringToInt(buffer))
-					{
-						WaitingInQueue[client] = false;
+						
+						ChangeClientTeam(client, view_as<int>(TFTeam_Red));
 						if(IsPlayerAlive(client))
 							ForcePlayerSuicide(client);
 						
-						ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-						ShowVGUIPanel(client, "class_red");
-						CookiePlayStreak.Set(client, "99");
+						WaitingInQueue[client] = false;
+						PlayStreak[client] = 1;
+					}
+				}
+				case 2:
+				{
+					if(IsValidClient(client))
+					{
+						char buffer[64];
+						CvarRerouteToIp.GetString(buffer, sizeof(buffer));
+						ClientCommand(client,"redirect %s",buffer);
 					}
 				}
 				default:
 				{
-					char buffer[16];
-					menu.GetItem(choice, buffer, sizeof(buffer));
-					FakeClientCommand(client, buffer);
+					if(IsValidClient(client))
+					{
+						char buffer[16];
+						menu.GetItem(choice, buffer, sizeof(buffer));
+						FakeClientCommand(client, buffer);
+					}
 				}
 			}
 		}
@@ -239,9 +238,7 @@ bool Queue_JoinTeam(int client)
 	}
 	
 	WaitingInQueue[client] = false;
-	if(AreClientCookiesCached(client))
-		CookiePlayStreak.Set(client, "1");
-	
+	PlayStreak[client] = 1;
 	return true;
 }
 
@@ -280,6 +277,6 @@ void Queue_ClientDisconnect(int client)
 		
 		ChangeClientTeam(target, view_as<int>(TFTeam_Red));
 		ShowVGUIPanel(target, "class_red");
-		CookiePlayStreak.Set(target, "1");
+		PlayStreak[client] = 1;
 	}
 }

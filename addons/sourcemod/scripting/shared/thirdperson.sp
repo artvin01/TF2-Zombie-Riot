@@ -1,7 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#if defined RPG
 static Cookie clientcookie;
+#endif
 
 void Thirdperson_PluginLoad()
 {
@@ -16,12 +18,15 @@ void Thirdperson_PluginStart()
 	RegConsoleCmd("sm_firstperson", Command_TpOn, "Usage: sm_firstperson");
 	RegConsoleCmd("sm_fp", Command_TpOn, "Usage: sm_firstperson");
 
+#if defined RPG
 	clientcookie = RegClientCookie("tp_cookie", "", CookieAccess_Protected);
+#endif
 
 	LoadTranslations("common.phrases");
 	LoadTranslations("core.phrases");
 }
 
+#if defined RPG
 void ThirdPerson_OnClientCookiesCached(int client)
 {
 	if (!IsFakeClient(client))
@@ -57,6 +62,7 @@ static void storeClientCookies(int client)															   // stores client's c
 		SetClientCookie(client, clientcookie, cookie);
 	}
 }
+#endif	// RPG
 
 void Thirdperson_PlayerSpawn(int client)
 {
@@ -124,8 +130,11 @@ public Action Command_TpOn(int client, int args)
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		thirdperson[client] = false;		
 	}
-	storeClientCookies(client);
 
+#if defined RPG
+	storeClientCookies(client);
+#endif
+	
 	return Plugin_Handled;
 }
 
@@ -141,8 +150,11 @@ public Action Command_TpOff(int client, int args)
 		AcceptEntityInput(client, "SetForcedTauntCam");
 	}
 
-	thirdperson[client] = false;													 // Set it anyways, because they want us to
+	thirdperson[client] = false;
+	
+#if defined RPG
 	storeClientCookies(client);
+#endif
 
 	return Plugin_Handled;
 }

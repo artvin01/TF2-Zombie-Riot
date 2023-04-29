@@ -274,16 +274,19 @@ void ArkSlugInfused_NPCDeath(int entity)
 {
 	ArkSlugInfused npc = view_as<ArkSlugInfused>(entity);
 	
-	float pos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos); 
-	pos[2] += 30;
-	
-	DataPack pack;
-	CreateDataTimer(0.5, ArkSlugInfused_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(entity);
-	pack.WriteFloat(pos[0]);
-	pack.WriteFloat(pos[1]);
-	pack.WriteFloat(pos[2]);
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		float pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos); 
+		pos[2] += 30;
+		
+		DataPack pack;
+		CreateDataTimer(0.5, ArkSlugInfused_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(entity);
+		pack.WriteFloat(pos[0]);
+		pack.WriteFloat(pos[1]);
+		pack.WriteFloat(pos[2]);
+	}
 
 	SDKUnhook(entity, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, ArkSlugInfused_ClotThink);

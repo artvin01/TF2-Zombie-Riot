@@ -283,23 +283,6 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 	return FoundSafeSpot;
 }
 
-//We wish to check if this poisiton is safe or not.
-//This is only for players.
-bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
-{
-	int ref;
-	Handle hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
-	ref = TR_GetEntityIndex(hTrace);
-	delete hTrace;
-	if(ref < 0) //It hit nothing, good!
-		return true;
-	
-	//It Hit something, bad!
-	return false;
-}
-
-
-
 static void constrainDistance(const float[] startPoint, float[] endPoint, float distance, float maxDistance)
 {
 	float constrainFactor = maxDistance / distance;

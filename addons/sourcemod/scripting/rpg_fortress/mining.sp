@@ -135,10 +135,8 @@ enum struct MineEnum
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))
 			{
-				char buffer[255];
-				Format(buffer,sizeof(buffer),this.Model);
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
-				DispatchKeyValue(entity, "model", buffer);
+				DispatchKeyValue(entity, "model", this.Model);
 				DispatchKeyValueFloat(entity, "modelscale", this.Scale);
 				DispatchKeyValue(entity, "solid", "6");
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);

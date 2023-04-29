@@ -59,7 +59,7 @@ int Freeplay_EnemyCount()
 	return EnemyCount;
 }
 
-bool Freeplay_ShouldAddEnemy(int postWaves)
+bool Freeplay_ShouldAddEnemy()
 {
 	return !(GetURandomInt() % EnemyChance);
 }

@@ -127,12 +127,7 @@ bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 Cookie CookieScrap;
-Cookie CookiePlayStreak;
-Cookie CookieCache;
-Cookie CookieAmmoCount;
 Cookie CookieXP;
-Cookie CookieAmmoReserve;
-Cookie CookieLeftForDead;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
 Handle g_hSDKMakeCarriedObjectDispenser;
@@ -176,6 +171,7 @@ int CashSpent[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Scrap[MAXTF2PLAYERS];
+int PlayStreak[MAXTF2PLAYERS];
 int Ammo_Count_Ready;
 int Ammo_Count_Used[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
@@ -301,6 +297,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
 #include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_skulls.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
@@ -372,14 +369,8 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
-	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
-	CookieAmmoCount = new Cookie("zr_ammoboxcount", "Ammobox count from game", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
-	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
-
-	CookieAmmoReserve = new Cookie("zr_ammoreserve", "Ammo Cookie", CookieAccess_Protected);
-	CookieLeftForDead = new Cookie("zr_leftfordead", "Left For Dead Cookie", CookieAccess_Protected);
 	
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)
@@ -429,6 +420,7 @@ void ZR_MapStart()
 	Wand_Fire_Spell_ClearAll();
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
+	Wand_Skull_Summon_ClearAll();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -476,6 +468,7 @@ void ZR_MapStart()
 	Mangler_MapStart();
 	Pipebomb_MapStart();
 	Wand_Map_Precache();
+	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
 	Wand_Fire_Map_Precache();
 	Wand_FireBall_Map_Precache();
@@ -584,6 +577,7 @@ void ZR_ClientDisconnect(int client)
 {
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
+	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
@@ -591,7 +585,6 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
 	Reset_stats_LappLand_Singular(client);
-	LeftForDead_ClientDisconnect(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -1264,7 +1257,7 @@ stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 5;
+	Points += Healing_done_in_total[client] / 3;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
 

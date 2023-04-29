@@ -346,16 +346,16 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
 #if defined UseDownloadTable
-		float volume2 = volume;
-		int count = RoundToCeil(volume);
-		if(count > 1)
-			volume2 /= float(count);
+	float volume2 = volume;
+	int count = RoundToCeil(volume);
+	if(count > 1)
+		volume2 /= float(count);
 		
-		for(int i; i < count; i++)
-		{
-			EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
-		}
-		return true;
+	for(int i; i < count; i++)
+	{
+		EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
+	}
+	return true;
 #else
 
 	int soundlevel = SoundList.FindString(sound);
@@ -389,8 +389,8 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 	{
 		EmitSoundToClient(client, buffer, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
 	}
-#endif
 	return true;
+#endif
 }
 
 stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)

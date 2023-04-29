@@ -101,6 +101,8 @@ void Waves_PluginStart()
 {
 	CvarSkyName = FindConVar("sv_skyname");
 
+	RegConsoleCmd("sm_revote", Waves_RevoteCmd, "Revote the vote");
+
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
 }
@@ -148,6 +150,16 @@ public Action Waves_SetWaveCmd(int client, int args)
 	CurrentRound = StringToInt(buffer);
 	CurrentWave = -1;
 	Waves_Progress();
+	return Plugin_Handled;
+}
+
+public Action Waves_RevoteCmd(int client, int args)
+{
+	if(Voting && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	{
+		VotedFor[client] = 0;
+		Waves_CallVote(client);
+	}
 	return Plugin_Handled;
 }
 
@@ -211,6 +223,87 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+public Action Waves_VoteDisplayTimer(Handle timer)
+{
+	if(!Voting)
+		return Plugin_Stop;
+	
+	Waves_DisplayHintVote();
+	return Plugin_Continue;
+}
+
+void Waves_DisplayHintVote()
+{
+	int length = Voting.Length;
+	if(length > 1)
+	{
+		int count, total;
+		int[] votes = new int[length + 1];
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2)
+			{
+				total++;
+
+				if(VotedFor[client])
+				{
+					count++;
+
+					if(VotedFor[client] > 0)
+						votes[VotedFor[client] - 1]++;
+				}
+			}
+		}
+
+		int top[3] = {-1, ...};
+		for(int i; i < length; i++)
+		{
+			if(votes[i] < 1)
+			{
+
+			}
+			else if(top[0] == -1 || votes[i] > votes[top[0]])
+			{
+				top[2] = top[1];
+				top[1] = top[0];
+				top[0] = i;
+			}
+			else if(top[1] == -1 || votes[i] > votes[top[1]])
+			{
+				top[2] = top[1];
+				top[1] = i;
+			}
+			else if(top[2] == -1 || votes[i] > votes[top[2]])
+			{
+				top[2] = i;
+			}
+		}
+
+		if(top[0] != -1)
+		{
+			Vote vote;
+			Voting.GetArray(top[0], vote);
+			vote.Name[0] = CharToUpper(vote.Name[0]);
+
+			char buffer[256];
+			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d\n1. %s: (%d)", count, total, vote.Name, votes[top[0]]);
+
+			for(int i = 1; i < sizeof(top); i++)
+			{
+				if(top[i] != -1)
+				{
+					Voting.GetArray(top[i], vote);
+					vote.Name[0] = CharToUpper(vote.Name[0]);
+
+					Format(buffer, sizeof(buffer), "%s\n%d. %s: (%d)", buffer, i + 1, vote.Name, votes[top[i]]);
+				}
+			}
+
+			PrintHintTextToAll(buffer);
+		}
+	}
 }
 
 void OnMapEndWaves()
@@ -279,6 +372,8 @@ void Waves_SetupVote(KeyValues map)
 		vote.Level = kv.GetNum("level");
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey());
+
+	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -532,6 +627,8 @@ void Waves_RoundStart()
 		int length = Voting.Length;
 		if(length)
 		{
+			Waves_DisplayHintVote();
+
 			int[] votes = new int[length];
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -1249,7 +1346,7 @@ void Waves_Progress()
 			int Max_Enemy_Get = Freeplay_EnemyCount();
 			for(int i; i < length; i++)
 			{
-				if(Freeplay_ShouldAddEnemy(postWaves)) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+				if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
 				{
 					round.Waves.GetArray(i, wave);
 					Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);

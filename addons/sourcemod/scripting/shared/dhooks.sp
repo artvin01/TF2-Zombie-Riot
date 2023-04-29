@@ -729,6 +729,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 	}
+	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
+	{
+		return false;
+	}	
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
 	{
@@ -744,12 +748,8 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-		if(b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[entity2])
-		{
-			return false;
-		}
 #if defined ZR
-		else if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
+		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
 			{
@@ -758,7 +758,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif
-		else if(b_Is_Npc_Projectile[entity1])
+		if(b_Is_Npc_Projectile[entity1])
 		{
 			if(b_ThisEntityIgnored[entity2])
 			{
@@ -785,12 +785,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
 				//This is only used for wands so place beware, we will just delete the entity.
-				RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
+				RemoveEntity(entity1);
+			//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
+			//	b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
 				int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
 				if(IsValidEntity(entity_particle))
 				{
-					RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
+					RemoveEntity(entity_particle);
+				//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
 				}
 				return false;
 			}
@@ -827,10 +829,12 @@ things i tried
 			{
 		//		//Have to use this here, please check wand_projectile for more info!
 				Cryo_Touch(entity1, entity2);
+				return false;
 			}
 			else if (i_WandIdNumber[entity1] == 14)
 			{
 				lantean_Wand_Touch(entity1, entity2);
+				return false;
 			}
 #endif
 		}
