@@ -502,7 +502,9 @@ public void MedivalVillager_ClotThink(int iNPC)
 
 				
 				npc.m_bisWalking = true;
-	
+
+				VillagerSelfDefense(npc,GetGameTime(npc.index)); //This is for self defense, incase an enemy is too close. This isnt the villagers main thing.
+				
 				if(IsValidEnemy(npc.index,npc.m_iTarget))
 				{
 					PF_SetGoalEntity(npc.index, npc.m_iTarget);
