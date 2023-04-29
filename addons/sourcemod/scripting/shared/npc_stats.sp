@@ -4628,6 +4628,17 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
+	/*
+	NavMesh_GetNearestArea
+	float vecCenter[3], vecFromCenter[3];
+	area.GetCenter(vecCenter);
+	from_area.GetCenter(vecFromCenter);
+		
+	float vecSubtracted[3];
+	SubtractVectors(vecCenter, vecFromCenter, vecSubtracted);
+		
+	dist = GetVectorLength(vecSubtracted);
+	*/
 	if(searcher_team != 2)
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
