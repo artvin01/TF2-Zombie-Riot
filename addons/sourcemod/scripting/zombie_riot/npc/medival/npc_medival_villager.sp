@@ -213,6 +213,10 @@ methodmap MedivalVillager < CClotBody
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+		i_BuildingRef[npc.index] = -1;
+		
+		npc.m_flAttackHappens = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 
 		float wave = float(ZR_GetWaveCount()+1);
 		
@@ -308,13 +312,13 @@ public void MedivalVillager_ClotThink(int iNPC)
 {
 	MedivalVillager npc = view_as<MedivalVillager>(iNPC);
 	
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
-	
 	npc.Update();	
 	
 	if(npc.m_blPlayHurtAnimation)
@@ -328,7 +332,6 @@ public void MedivalVillager_ClotThink(int iNPC)
 	{
 		return;
 	}
-
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 
 	//Top logic should be ignored.
