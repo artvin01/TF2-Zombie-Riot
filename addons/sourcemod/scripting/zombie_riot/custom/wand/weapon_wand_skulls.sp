@@ -51,14 +51,15 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 300.0, 600.0, 800.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootDMG[3] = { 300.0, 400.0, 450.0 };	//Damage dealt by projectiles fired by skulls
 float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
-float Skulls_ShootRange[3] = { 500.0, 750.0, 1000.0 };	//Max range in which skulls will auto-fire at zombies
-float Skulls_ShootFrequency[3] = { 1.5, 1.2, 0.8 };	//Time it takes for skulls to auto-fire
+float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
+float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.0 };	//Time it takes for skulls to auto-fire
 float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
-float Skulls_LaunchDMG[3] = { 800.0, 1600.0, 2500.0 };	//Damage of skulls which get launched
+float Skulls_LaunchDMG[3] = { 600.0, 2250.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
-int Skulls_ManaCost_M1[3] = { 200, 600, 1200 };	//Mana cost of M1
+float Skulls_ShootPenaltyPerSkull[3] = { 0.0, 0.1, 0.08 };
+int Skulls_ManaCost_M1[3] = { 100, 300, 600 };	//Mana cost of M1
 int Skulls_ManaCost_M2[3] = { 50, 150, 300 };	//Mana cost of M2
 //I contemplated adding a mana cost to the skulls' auto-fire. Decided against it.
 int Skulls_MaxSkulls[3] = { 2, 3, 4 };	//Max skulls summoned at once
@@ -120,6 +121,14 @@ public void Wand_Skull_Summon_ClearAll()
 {
 	Zero(SkullFloatDelay);
 	Zero(ability_cooldown);
+}
+
+public void Skulls_PlayerKilled(int client)
+{
+	if (Skulls_Queue[client] != null)
+	{
+		DeleteAllSkulls(client);
+	}
 }
 
 //Launches all summoned skulls towards your cursor.
@@ -394,7 +403,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					EmitSoundToAll(SKULL_SOUND_SUMMON, Drone);
 					EmitSoundToClient(client, SKULL_SOUND_SUMMON, Drone);
 					
-					Skulls_SetVariables(prop, weapon, tier);
+					Skulls_SetVariables(prop, weapon, tier, client);
 					
 					//Create queue and apply prethink hook if the queue is null:
 					if (Skulls_Queue[client] == null)
@@ -446,7 +455,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 	}
 }
 
-public void Skulls_SetVariables(int prop, int weapon, int tier)
+public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 {
 	Address address;
 	float damage = Skulls_ShootDMG[tier];
@@ -481,7 +490,7 @@ public Action Skulls_PreThink(int client)
 {
 	if (!IsPlayerAlive(client) || !IsClientInGame(client))
 	{
-		DeleteAllSkulls(Skulls_Queue[client]);
+		SDKUnhook(client, SDKHook_PreThink, Skulls_PreThink);
 		return Plugin_Continue;
 	}
 	
@@ -506,17 +515,19 @@ public Action Skulls_PreThink(int client)
 	return Plugin_Continue;
 }
 
-void DeleteAllSkulls(Queue SkullQueue)
+void DeleteAllSkulls(int client)
 {
-	while (!SkullQueue.Empty)
+	while (!Skulls_Queue[client].Empty)
 	{
-		int ent = EntRefToEntIndex(SkullQueue.Pop());
+		int ent = EntRefToEntIndex(Skulls_Queue[client].Pop());
 			
 		if (IsValidEdict(ent))
 		{
 			RemoveEntity(ent);
 		}
 	}
+		
+	Skulls_Queue[client] = null;
 }
 
 public void Skulls_Management(int client)
@@ -550,6 +561,8 @@ public void Skulls_Management(int client)
 			}
 		}
 	}
+	
+	delete Skulls;
 }
 
 public void Skull_AttemptShoot(int ent, int client)
@@ -607,6 +620,13 @@ void Skull_AutoFire(int ent, int target, int client)
 			damage *= TF2Attrib_GetValue(address);
 	}
 	
+	int NumSkulls = Skulls_Queue[client].Length;
+	float penalty = Skulls_ShootPenaltyPerSkull[Skull_Tier[ent]];
+	if (penalty != 0.0)
+	{
+		damage *= 1.0 - (penalty * float(NumSkulls));
+	}
+	
 	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, damage, 17, weapon, particle, ang);
 	
 	if (IsValidEdict(projectile))
@@ -642,6 +662,11 @@ void Skull_SetNextShootTime(int ent)
 		address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 			BuffAmt = TF2Attrib_GetValue(address);
+	}
+	
+	if (LastMann)
+	{
+		BuffAmt = BuffAmt / 2.0;
 	}
 	
 	Skull_NextShootTime[ent] = (Skull_ShootFrequency[ent] * BuffAmt) + GetGameTime();
@@ -701,8 +726,6 @@ public int Skull_GetClosestTarget(int ent, float range)
 	return Closest;
 }
 
-//TODO: Drones get jittery and move towards their owner's head if the player moves too much. This is almost certainly caused by
-//the trace in Skull_UpdateFollowerPositions getting stuck on something. Figure it out later and fix it.
 public void Skull_MoveToTargetPosition(int ent, int client)
 {
 	if (ent < MaxClients + 1 || ent > 2048)
@@ -850,6 +873,8 @@ public void Skulls_UpdateFollowerPositions(int client)
 			}
 		}
 	}
+	
+	delete Skulls;
 }
 
 //Does the player have no summoned skulls?
@@ -925,23 +950,33 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 		return false;
 	}
 	
-	for (int i = 1; i <= MaxClients; i++)
+	bool hit = true;
+	for (int i = 1; i <= MaxClients && hit; i++)
 	{
 		if (!Skulls_PlayerHasNoSkulls(i))
 		{
 			Queue skulls = Skulls_Queue[i].Clone();
 			
-			while (!skulls.Empty)
+			while (!skulls.Empty && hit)
 			{
 				int ent = EntRefToEntIndex(skulls.Pop());
 				
 				if (entity == ent)
-					return false;
+					hit = false;
 			}
+			
+			delete skulls;
 		}
 	}
 	
-	return true;
+	if (hit && IsValidEntity(entity))
+	{
+		char entname[255];
+		GetEntityClassname(entity, entname, 255);
+		hit = StrContains(entname, "base_boss") == -1;
+	}
+	
+	return hit;
 }
 
 Handle getAimTrace(int client)

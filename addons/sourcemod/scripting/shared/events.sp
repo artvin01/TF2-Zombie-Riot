@@ -455,6 +455,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 		Citizen_PlayerDeath(client);
 		Bob_player_killed(event, name, dontBroadcast);
+		Skulls_PlayerKilled(client);
 #endif
 
 #if defined RPG
