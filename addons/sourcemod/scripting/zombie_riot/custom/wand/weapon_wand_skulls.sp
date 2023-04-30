@@ -51,7 +51,7 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 300.0, 350.0, 400.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootDMG[3] = { 400.0, 700.0, 1100.0 };	//Damage dealt by projectiles fired by skulls
 float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
 float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
 float Skulls_ShootFrequency[3] = { 1.5, 1.3, 1.2 };	//Time it takes for skulls to auto-fire
@@ -459,11 +459,13 @@ public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 {
 	Address address;
 	float damage = Skulls_ShootDMG[tier];
+	/*
 	address = TF2Attrib_GetByDefIndex(weapon, 410);
 	if(address != Address_Null)
 		damage *= TF2Attrib_GetValue(address);
-			
+	*/
 	float velocity = Skulls_ShootVelocity[tier];
+	/*
 	address = TF2Attrib_GetByDefIndex(weapon, 103);
 	if(address != Address_Null)
 		velocity *= TF2Attrib_GetValue(address);
@@ -475,6 +477,7 @@ public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 	address = TF2Attrib_GetByDefIndex(weapon, 475);
 	if(address != Address_Null)
 		velocity *= TF2Attrib_GetValue(address);
+	*/
 	
 	Skull_ShootDMG[prop] = damage;
 	Skull_ShootVelocity[prop] = velocity;
@@ -584,10 +587,34 @@ void Skull_AutoFire(int ent, int target, int client)
 
 	float dist = GetVectorDistance(pos, TargetLoc, true);
 	
+	float velocity = Skull_ShootVelocity[ent];
+	float damage = Skull_ShootDMG[ent];
+	int weapon = EntRefToEntIndex(Skull_Weapon[ent]);
+	
+	if (IsValidEntity(weapon))
+	{
+		Address address;
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+
+		address = TF2Attrib_GetByDefIndex(weapon, 103);
+		if(address != Address_Null)
+			velocity *= TF2Attrib_GetValue(address);
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 104);
+		if(address != Address_Null)
+			velocity *= TF2Attrib_GetValue(address);
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 475);
+		if(address != Address_Null)
+			velocity *= TF2Attrib_GetValue(address);
+	}
+
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);
-		TargetLoc = PredictSubjectPositionForProjectiles(npc, target, Skull_ShootVelocity[ent]);
+		TargetLoc = PredictSubjectPositionForProjectiles(npc, target, velocity);
 	}
 
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
@@ -609,17 +636,6 @@ void Skull_AutoFire(int ent, int target, int client)
 		}
 	}
 	
-	float damage = Skull_ShootDMG[ent];
-	int weapon = EntRefToEntIndex(Skull_Weapon[ent]);
-	
-	if (IsValidEntity(weapon))
-	{
-		Address address;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-	}
-	
 	int NumSkulls = Skulls_Queue[client].Length;
 	float penalty = Skulls_ShootPenaltyPerSkull[Skull_Tier[ent]];
 	if (penalty != 0.0)
@@ -627,7 +643,7 @@ void Skull_AutoFire(int ent, int target, int client)
 		damage *= 1.0 - (penalty * float(NumSkulls));
 	}
 	
-	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, damage, 17, weapon, particle, ang);
+	int projectile = Wand_Projectile_Spawn(client, velocity, 5.0, damage, 17, weapon, particle, ang);
 	
 	if (IsValidEdict(projectile))
 	{
