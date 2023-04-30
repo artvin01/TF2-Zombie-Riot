@@ -156,7 +156,7 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 public Action Waves_RevoteCmd(int client, int args)
 {
-	if(Voting && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	if(Voting)
 	{
 		VotedFor[client] = 0;
 		Waves_CallVote(client);
@@ -166,7 +166,7 @@ public Action Waves_RevoteCmd(int client, int args)
 
 bool Waves_CallVote(int client)
 {
-	if(Voting && !VotedFor[client] && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	if(Voting && !VotedFor[client])
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
@@ -633,8 +633,8 @@ void Waves_RoundStart()
 	{
 		float wait = zr_waitingtime.FloatValue;
 		float time = wait - 30.0;
-		if(time < 30.0)
-			time = 30.0;
+		if(time < 20.0)
+			time = 20.0;
 		
 		VoteEndTime = GetGameTime() + time;
 		CreateTimer(time, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
