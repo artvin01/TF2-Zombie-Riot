@@ -59,7 +59,7 @@ float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls whic
 float Skulls_LaunchDMG[3] = { 600.0, 1800.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
 float Skulls_ShootPenaltyPerSkull[3] = { 0.0, 0.1, 0.08 };
-int Skulls_ManaCost_M1[3] = { 200, 600, 1200 };	//Mana cost of M1
+int Skulls_ManaCost_M1[3] = { 100, 300, 600 };	//Mana cost of M1
 int Skulls_ManaCost_M2[3] = { 50, 150, 300 };	//Mana cost of M2
 //I contemplated adding a mana cost to the skulls' auto-fire. Decided against it.
 int Skulls_MaxSkulls[3] = { 2, 3, 4 };	//Max skulls summoned at once
