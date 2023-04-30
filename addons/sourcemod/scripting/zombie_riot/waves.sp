@@ -769,11 +769,13 @@ void Waves_Progress()
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
 	static int panzer_chance;
+
 	if(CurrentRound < length)
 	{
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
+			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 			WaveIntencity = wave.Intencity;
 			
@@ -1340,6 +1342,10 @@ void Waves_Progress()
 			MultiGlobal = multi;
 
 			int postWaves = CurrentRound - length;
+
+			f_FreeplayDamageExtra = ((postWaves + 99) * 0.0075);
+			f_FreeplayDamageExtra += 1.0;
+
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;
 			

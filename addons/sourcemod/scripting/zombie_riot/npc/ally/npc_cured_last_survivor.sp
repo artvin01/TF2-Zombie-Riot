@@ -317,6 +317,7 @@ methodmap CuredFatherGrigori < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, CuredFatherGrigori_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		npc.m_flNextMeleeAttack = 0.0;
 					

@@ -51,10 +51,10 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 300.0, 400.0, 450.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootDMG[3] = { 300.0, 350.0, 400.0 };	//Damage dealt by projectiles fired by skulls
 float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
 float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
-float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.0 };	//Time it takes for skulls to auto-fire
+float Skulls_ShootFrequency[3] = { 1.5, 1.3, 1.2 };	//Time it takes for skulls to auto-fire
 float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
 float Skulls_LaunchDMG[3] = { 600.0, 2250.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
