@@ -31,6 +31,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	b_GameOnGoing = true;
 	
 	LastMann = false;
+	Ammo_Count_Ready = 0;
+	Zero(Ammo_Count_Used);
 	
 	if(RoundStartTime > GetGameTime())
 		return;

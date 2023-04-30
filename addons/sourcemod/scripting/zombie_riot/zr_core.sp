@@ -396,6 +396,8 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Ammo_Count_Ready = 0;
+	Store_Reset();
 	ZombieMusicPlayed = false;
 	EscapeMode = false;
 	EscapeModeForNpc = false;
