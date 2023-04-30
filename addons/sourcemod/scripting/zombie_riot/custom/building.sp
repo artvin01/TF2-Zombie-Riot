@@ -893,6 +893,11 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
+	}
 	
 	if(b_thisNpcIsABoss[attacker])
 	{
@@ -1155,48 +1160,62 @@ public Action Building_Set_HP_Elevator(Handle dashHud, int ref)
 
 public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
-	if(damagetype != DMG_CRUSH)
+	if(damagetype == DMG_CRUSH)
 	{
-		int dmg = RoundFloat(damage);
-		
-		if(!Building_cannot_be_repaired[entity])
-		{
-			Building_Repair_Health[entity] -= dmg;
-			if(Building_Repair_Health[entity] > 0)
-			{
-				dmg = 0;
-				int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-				progress += 1; //so it goes to 100 :)
-				if(progress > 100)
-				{
-					progress = 100;
-				}
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
-			}
-			else
-			{
-				dmg += Building_Repair_Health[entity];
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
-				Building_cannot_be_repaired[entity] = true;
-			}
-		}
-		
-		if(dmg)
-		{
-			int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
-			if(health < 1)
-				health = 1;
-			
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-		}
-		int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-		if(IsValidClient(client))
-		{
-			i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
-		}
+		damage = 0.0;
+		return;
+	}
+	if(i_BeingCarried[entity])
+	{
+		return;
+	}
+	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
+	{
+		return;
 	}
 
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
+	}
 
+	int dmg = RoundFloat(damage);
+		
+	if(!Building_cannot_be_repaired[entity])
+	{
+		Building_Repair_Health[entity] -= dmg;
+		if(Building_Repair_Health[entity] > 0)
+		{
+			dmg = 0;
+			int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+			progress += 1; //so it goes to 100 :)
+			if(progress > 100)
+			{
+				progress = 100;
+			}
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
+		}
+		else
+		{
+			dmg += Building_Repair_Health[entity];
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+			Building_cannot_be_repaired[entity] = true;
+		}
+	}
+	
+	if(dmg)
+	{
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
+		if(health < 1)
+			health = 1;
+		
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	}
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	if(IsValidClient(client))
+	{
+		i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
+	}
 }
 
 /*

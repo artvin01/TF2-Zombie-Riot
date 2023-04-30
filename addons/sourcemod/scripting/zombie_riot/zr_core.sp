@@ -119,6 +119,7 @@ float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
+float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 int PlayersAliveScaling;
@@ -395,6 +396,8 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Ammo_Count_Ready = 0;
+	Store_Reset();
 	ZombieMusicPlayed = false;
 	EscapeMode = false;
 	EscapeModeForNpc = false;

@@ -1335,6 +1335,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 	}
+	//freeplay causes more damage taken.
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
+	}
 	
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(!b_ThisNpcIsSawrunner[attacker])

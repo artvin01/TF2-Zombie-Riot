@@ -1553,6 +1553,8 @@ public void OnClientDisconnect(int client)
 #if defined RPG
 	RPG_ClientDisconnect(client);
 #endif
+
+	f_LeftForDead_Cooldown[client] = 0.0;
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake[client] = true;
 	b_HudHitMarker[client] = true;

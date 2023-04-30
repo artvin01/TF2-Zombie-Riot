@@ -1188,6 +1188,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage = 0.0;
 			return Plugin_Handled;
 		}
+		if(b_IsAlliedNpc[victim])
+		{
+			if(f_FreeplayDamageExtra != 1.0)
+			{
+				damage *= f_FreeplayDamageExtra;
+			}
+		}
+
 
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 		i_HasBeenBackstabbed[victim] = false;
@@ -2107,7 +2115,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2117,7 +2125,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2127,7 +2135,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2137,7 +2145,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2147,7 +2155,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2157,7 +2165,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2167,7 +2175,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2177,7 +2185,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
