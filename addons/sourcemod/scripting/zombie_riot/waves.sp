@@ -93,16 +93,14 @@ static int FogEntity = INVALID_ENT_REFERENCE;
 
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
+static float VoteEndTime;
 
 static char LastWaveWas[64];
 static char TextStoreItem[48];
 
-static ConVar mp_waitingforplayers_time;
-
 void Waves_PluginStart()
 {
 	CvarSkyName = FindConVar("sv_skyname");
-	mp_waitingforplayers_time = FindConVar("mp_waitingforplayers_time");
 
 	RegConsoleCmd("sm_revote", Waves_RevoteCmd, "Revote the vote");
 
@@ -291,7 +289,7 @@ void Waves_DisplayHintVote()
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d\n1. %s: (%d)", count, total, vote.Name, votes[top[0]]);
+			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %s: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
 
 			for(int i = 1; i < sizeof(top); i++)
 			{
@@ -624,8 +622,101 @@ void Waves_RoundStart()
 		
 		FogEntity = INVALID_ENT_REFERENCE;
 	}
+	
+	delete Enemies;
+	Enemies = new ArrayStack(sizeof(Enemy));
+	
+	Waves_RoundEnd();
+	Freeplay_ResetAll();
+	
+	if(Voting)
+	{
+		float wait = zr_waitingtime.FloatValue;
+		float time = wait - 30.0;
+		if(time < 30.0)
+			time = 30.0;
+		
+		VoteEndTime = GetGameTime() + time;
+		CreateTimer(time, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
-	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
+		if(wait < time)
+			wait = time;
+
+		SpawnTimer(wait);
+		CreateTimer(wait, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	else
+	{
+		SpawnTimer(60.0);
+		CreateTimer(60.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	}
+
+	/*
+	char buffer[64];
+	for(int i=MAXENTITIES; i>MaxClients; i--)
+	{
+		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
+		{
+			if(StrEqual(buffer, "base_boss"))
+				RemoveEntity(i);
+		}
+	}
+	*/
+	//DONT. Breaks map base_boss.
+	if(CurrentCash != StartCash)
+	{
+		Store_Reset();
+		CurrentGame = GetTime();
+		CurrentCash = StartCash;
+		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
+		for(int client=1; client<=MaxClients; client++)
+		{
+			CurrentAmmo[client] = CurrentAmmo[0];
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+				TF2_RegeneratePlayer(client);
+		}
+	}
+}
+
+void Waves_RoundEnd()
+{
+	Cooldown = 0.0;
+	InSetup = true;
+//	InFreeplay = false;
+	WaveIntencity = 0;
+	CurrentRound = 0;
+	CurrentWave = -1;
+	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
+}
+
+public Action Waves_RoundStartTimer(Handle timer)
+{
+	if(!Voting)
+	{
+		bool any_player_on = false;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
+				any_player_on = true;
+		}
+		if(any_player_on && !CvarNoRoundStart.BoolValue)
+		{
+			
+			InSetup = false;
+			Waves_Progress();
+		}
+		else
+		{
+			CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		
+	}
+	return Plugin_Continue;
+}
+
+public Action Waves_EndVote(Handle timer, float time)
+{
+	if(Voting)
 	{
 		int length = Voting.Length;
 		if(length)
@@ -677,104 +768,6 @@ void Waves_RoundStart()
 				delete kv;
 			}
 		}
-	}
-	
-	delete Enemies;
-	Enemies = new ArrayStack(sizeof(Enemy));
-	
-	Waves_RoundEnd();
-	Freeplay_ResetAll();
-	
-	if(GameRules_GetProp("m_bInWaitingForPlayers"))
-	{
-		float waiting = mp_waitingforplayers_time.FloatValue;
-		float time = waiting - 60.0;
-		if(time < 20.0)
-			time = 20.0;
-		
-		waiting = waiting - time;
-		if(waiting < 1.0)
-			waiting = 1.0;
-		
-		CreateTimer(time, Waves_EndWaitingForPlayers, waiting, TIMER_FLAG_NO_MAPCHANGE);
-	}
-	else
-	{
-		SpawnTimer(60.0);
-		CreateTimer(60.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-	}
-
-	/*
-	char buffer[64];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
-		{
-			if(StrEqual(buffer, "base_boss"))
-				RemoveEntity(i);
-		}
-	}
-	*/
-	//DONT. Breaks map base_boss.
-	if(CurrentCash != StartCash)
-	{
-		Store_Reset();
-		CurrentGame = GetTime();
-		CurrentCash = StartCash;
-		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
-		for(int client=1; client<=MaxClients; client++)
-		{
-			CurrentAmmo[client] = CurrentAmmo[0];
-			if(IsClientInGame(client) && IsPlayerAlive(client))
-				TF2_RegeneratePlayer(client);
-		}
-	}
-}
-
-void Waves_RoundEnd()
-{
-	Cooldown = 0.0;
-	InSetup = true;
-//	InFreeplay = false;
-	WaveIntencity = 0;
-	CurrentRound = 0;
-	CurrentWave = -1;
-	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
-}
-
-public Action Waves_RoundStartTimer(Handle timer)
-{
-	if(!GameRules_GetProp("m_bInWaitingForPlayers"))
-	{
-		bool any_player_on = false;
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
-				any_player_on = true;
-		}
-		if(any_player_on && !CvarNoRoundStart.BoolValue)
-		{
-			
-			InSetup = false;
-			Waves_Progress();
-		}
-		else
-		{
-			CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-		}
-		
-	}
-	return Plugin_Continue;
-}
-
-public Action Waves_EndWaitingForPlayers(Handle timer, float time)
-{
-	if(GameRules_GetProp("m_bInWaitingForPlayers"))
-	{
-		ServerCommand("mp_waitingforplayers_cancel 1");
-
-		SpawnTimer(time);
-		CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return Plugin_Continue;
 }
