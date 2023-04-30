@@ -45,8 +45,9 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 #if defined RPG
 	Zones_ResetAll();
-	ServerCommand("mp_waitingforplayers_cancel 1");
 #endif
+	
+	ServerCommand("mp_waitingforplayers_cancel 1");
 }
 
 #if defined ZR
