@@ -684,9 +684,9 @@ stock bool Store_ActiveCanMulti(int client)
 	return false;
 }
 
-float Ability_Check_Cooldown(int client, int what_slot)
+float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 {
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
 	{
 
@@ -732,9 +732,9 @@ float Ability_Check_Cooldown(int client, int what_slot)
 	return 0.0;
 }
 
-void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
+void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
 {
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
 	{
 		
@@ -2690,7 +2690,7 @@ public void MenuPage(int client, int section)
 				int npcwallet = item.NPCWeaponAlways ? 0 : NPCCash[client];
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost <= CurrentCash && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
+				if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
 				{
 					ItemCost(client, item, info.Cost);
 					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
@@ -2722,7 +2722,7 @@ public void MenuPage(int client, int section)
 		else
 		{
 			item.GetItemInfo(0, info);
-			if(info.Cost <= CurrentCash)
+			if(info.Cost < 1001 || info.Cost <= CurrentCash)
 			{
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
@@ -4910,6 +4910,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_OceanSong(client, entity);
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
+		Saga_Enable(client, entity);
 #endif
 
 #if defined RPG

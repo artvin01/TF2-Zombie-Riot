@@ -2223,6 +2223,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 #if defined ZR
 		Wands_Potions_EntityCreated(entity);
+		Saga_EntityCreated(entity);
 #endif
 
 #if defined RPG

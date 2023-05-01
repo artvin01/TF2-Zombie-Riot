@@ -2592,6 +2592,7 @@ void NPC_DeadEffects(int entity)
 #if defined ZR
 			GiveXP(client, 1);
 			GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
+			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			
 #if defined RPG
@@ -2734,6 +2735,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_YAMATO:
 		{
 			Npc_OnTakeDamage_Yamato(attacker, damagetype);
+		}
+		case WEAPON_SAGA:
+		{
+			Saga_OnTakeDamage(victim, attacker, damage, weapon);
 		}
 	}
 #endif
