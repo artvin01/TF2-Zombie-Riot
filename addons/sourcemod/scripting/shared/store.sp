@@ -5237,10 +5237,8 @@ static void ItemCost(int client, Item item, int &cost)
 
 	//these should account for selling.
 	int scaled = item.Scaled[client];
-	if(item.MaxScaled > scaled)
+	if(scaled > item.MaxScaled)
 		scaled = item.MaxScaled;
-	
-	PrintToChatAll("Scaled %d / %d -> %d", item.Scaled[client], item.MaxScaled, scaled);
 	
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * CurrentRound;
