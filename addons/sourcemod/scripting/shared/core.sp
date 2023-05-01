@@ -1288,6 +1288,10 @@ public void OnMapStart()
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");
+	PrecacheSound(")weapons/pipe_bomb1.wav");
+	PrecacheSound(")weapons/pipe_bomb2.wav");
+	PrecacheSound(")weapons/pipe_bomb3.wav");
+
 	
 	MapStartResetAll();
 	

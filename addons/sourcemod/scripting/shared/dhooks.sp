@@ -486,15 +486,15 @@ void DoGrenadeExplodeLogic(int entity)
 			{
 				case 1:
 				{
-					EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+					EmitAmbientSound(")weapons/pipe_bomb1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 				}
 				case 2:
 				{
-					EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+					EmitAmbientSound(")weapons/pipe_bomb2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 				}
 				case 3:
 				{
-					EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+					EmitAmbientSound(")weapons/pipe_bomb3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 				}
 			}
 		}
