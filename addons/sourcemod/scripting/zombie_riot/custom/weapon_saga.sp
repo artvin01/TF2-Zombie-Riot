@@ -59,17 +59,17 @@ void Saga_Enable(int client, int weapon)
 		if(address == Address_Null)
 		{
 			// Elite 0 Special 1
-			WeaponTimer[client] = CreateTimer(3.5, Saga_Timer1, client);
+			WeaponTimer[client] = CreateTimer(3.5, Saga_Timer1, client, TIMER_REPEAT);
 		}
 		else if(!TF2Attrib_GetValue(address))
 		{
 			// Elite 1 Special 2
-			WeaponTimer[client] = CreateTimer(1.0, Saga_Timer2, client);
+			WeaponTimer[client] = CreateTimer(1.0, Saga_Timer2, client, TIMER_REPEAT);
 		}
 		else
 		{
 			// Elite 1 Special 3
-			WeaponTimer[client] = CreateTimer(1.0, Saga_Timer3, client);
+			WeaponTimer[client] = CreateTimer(1.0, Saga_Timer3, client, TIMER_REPEAT);
 		}
 	}
 }
@@ -78,14 +78,19 @@ public Action Saga_Timer1(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(EntRefToEntIndex(WeaponRef[client]) != GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+		int weapon = EntRefToEntIndex(WeaponRef[client]);
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			int amount = 1 + (WeaponCharge[client] * 7 / 2);
-			if(amount > 1)
-				WeaponCharge[client] -= amount + 1;
+			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			{
+				int amount = 1 + (WeaponCharge[client] * 7 / 2);
+				if(amount > 1)
+					WeaponCharge[client] -= amount + 1;
+				
+				CashRecievedNonWave[client] += amount;
+				CashSpent[client] -= amount;
+			}
 			
-			CashRecievedNonWave[client] += amount;
-			CashSpent[client] -= amount;
 			return Plugin_Continue;
 		}
 	}
@@ -98,13 +103,18 @@ public Action Saga_Timer2(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(EntRefToEntIndex(WeaponRef[client]) != GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+		int weapon = EntRefToEntIndex(WeaponRef[client]);
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			if(++WeaponCharge[client] > 32)
-				WeaponCharge[client] = 32;
-			
-			PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			{
+				if(++WeaponCharge[client] > 32)
+					WeaponCharge[client] = 32;
+				
+				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			}
+
 			return Plugin_Continue;
 		}
 	}
@@ -117,13 +127,18 @@ public Action Saga_Timer3(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		if(EntRefToEntIndex(WeaponRef[client]) != GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+		int weapon = EntRefToEntIndex(WeaponRef[client]);
+		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			if(++WeaponCharge[client] > 39)
-				WeaponCharge[client] = 39;
-			
-			PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 13, 13 - (WeaponCharge[client] % 13));
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			{
+				if(++WeaponCharge[client] > 39)
+					WeaponCharge[client] = 39;
+				
+				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 13, 13 - (WeaponCharge[client] % 13));
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			}
+
 			return Plugin_Continue;
 		}
 	}
