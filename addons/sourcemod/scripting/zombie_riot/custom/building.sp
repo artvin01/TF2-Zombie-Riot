@@ -3922,7 +3922,7 @@ public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 
 public int MaxBarricadesAllowed(int client)
 {
-	int maxAllowed = 3;
+	int maxAllowed = 4;
 	
  //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
@@ -6522,7 +6522,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 static bool AtMaxSupply(int client)
 {
 	int userid = GetClientUserId(client);
-	int personal = i_BarricadesBuild[client];
+	int personal = i_BarricadesBuild[client] * 3 / 2;
 	int global;
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)

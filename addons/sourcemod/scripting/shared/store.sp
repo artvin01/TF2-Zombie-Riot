@@ -1525,9 +1525,6 @@ void Store_BuyClientItem(int client, Item item, const ItemInfo info)
 	item.Sell[client] = 0;
 	item.BuyWave[client] = -1;
 	
-	if(item.MaxScaled < item.Scaled[client])
-		item.Scaled[client] = item.MaxScaled;
-	
 	if(info.FuncOnBuy != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, info.FuncOnBuy);
@@ -3415,10 +3412,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(info.Cost <= 0) //make sure it even can be sold.
 								{
 									item.Owned[client] = false;
-									if((item.Scale*item.Scaled[client]) > 0)
-									{
+									if(item.Scaled[client] > 0)
 										item.Scaled[client]--;
-									}
 								}
 								item.Equipped[client] = false;
 								StoreItems.SetArray(index, item);
@@ -3950,8 +3945,8 @@ void Store_ApplyAttribs(int client)
 	
 	Mana_Regen_Level[client] = Attributes_FindOnPlayer(client, 405, true, 1.0);
 	
-	delete map;
 	delete snapshot;
+	delete map;
 
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
@@ -5241,7 +5236,11 @@ static void ItemCost(int client, Item item, int &cost)
 	bool GregSale = false;
 
 	//these should account for selling.
-	cost += item.Scale*item.Scaled[client]; 
+	int scaled = item.Scaled[client];
+	if(item.MaxScaled > scaled)
+		scaled = item.MaxScaled;
+	
+	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * CurrentRound;
 	
 	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);

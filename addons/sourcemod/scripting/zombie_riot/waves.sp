@@ -309,10 +309,8 @@ void Waves_DisplayHintVote()
 
 void OnMapEndWaves()
 {
-	if(Voting)
-	{
-		delete Voting;
-	}
+	CurrentGame = -1;
+	delete Voting;
 	Zero(VotedFor);
 }
 
@@ -1454,17 +1452,23 @@ void Waves_Progress()
 	{
 		if(StartCash < 1500)
 			Store_RemoveSellValue();
-
-		for(int client=1; client<=MaxClients; client++)
+		
+		Ammo_Count_Ready = 8;
+		if(StartCash < 1500)
 		{
-			Ammo_Count_Ready = 8;
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
+			for(int client=1; client<=MaxClients; client++)
 			{
-				if(StartCash < 1500)
+				if(IsClientInGame(client) && GetClientTeam(client)==2)
 				{
-					CashSpent[client] = StartCash;
+					int cash = StartCash - (Resupplies_Supplied[client] * 10);
+					if(CashSpent[client] < cash)
+						CashSpent[client] = cash;
+					
+					CashSpent[client] -= StartCash;
 				}
 			}
+
+			CurrentCash = 0;
 		}
 	}
 	if(CurrentWave == 0)
