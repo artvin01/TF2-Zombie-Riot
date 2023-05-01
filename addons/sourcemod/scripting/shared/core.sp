@@ -2038,7 +2038,6 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 			}
 			f_DelayAttackspeedPreivous[weapon] = attack_speed;
-			
 		}
 
 		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
@@ -2115,6 +2114,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		{
 			f_DelayAttackspeedAnimation[client] = GameTime + 0.25;
 			TF2Attrib_SetByDefIndex(client, 201, 1.0);
+			f_DelayAttackspeedPreivous[weapon] = 1.0;
 		}
 	}
 	return action;
