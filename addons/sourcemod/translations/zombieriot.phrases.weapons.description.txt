@@ -1075,9 +1075,9 @@
 	
 	"Buildable Barricade Desc"
 	{
-		"en"	"Each wave increases its cost, you may only have 3 barricades built at once."
-		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 3 баррикады."
-		"chi"   "每一波都会增加它的价格，你最多只能建造3个路障。"
+		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
+		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 4 баррикады."
+		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
 	}
 	
 	"Buildable Armortable Desc"
