@@ -5240,6 +5240,8 @@ static void ItemCost(int client, Item item, int &cost)
 	if(item.MaxScaled > scaled)
 		scaled = item.MaxScaled;
 	
+	PrintToChatAll("Scaled %d / %d -> %d", item.Scaled[client], item.MaxScaled, scaled);
+	
 	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * CurrentRound;
 	
