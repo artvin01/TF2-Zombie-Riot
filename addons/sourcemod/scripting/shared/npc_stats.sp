@@ -5374,7 +5374,7 @@ public void Check_If_Stuck(int iNPC)
 
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
-	if (!npc.IsOnGround())
+	if (!npc.IsOnGround() && !b_DoNotUnStuck[iNPC])
 	{
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];

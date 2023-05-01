@@ -219,6 +219,12 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
 	tier = Skull_Tier[ent];
 	weapon = EntRefToEntIndex(Skull_Weapon[ent]);
+
+	NearlSwordAbility npc = view_as<NearlSwordAbility>(ent);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+
 	RemoveEntity(ent);
 	char particle[255];
 	
@@ -400,12 +406,19 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
 						}
 					}
-					
+
 					EmitSoundToAll(SKULL_SOUND_SUMMON, Drone);
 					EmitSoundToClient(client, SKULL_SOUND_SUMMON, Drone);
 					
 					Skulls_SetVariables(prop, weapon, tier, client);
+					NearlSwordAbility npc = view_as<NearlSwordAbility>(prop);
+
+					int Textentity = WandSkulls_HealthHud(npc);
+
+					i_WandOwner[Textentity] = client;
 					
+					SDKHook(Textentity, SDKHook_SetTransmit, Skulls_Transmit);
+										
 					//Create queue and apply prethink hook if the queue is null:
 					if (Skulls_Queue[client] == null)
 					{
@@ -546,6 +559,8 @@ public void Skulls_Management(int client)
 		
 		if (IsValidEdict(ent))
 		{
+			NearlSwordAbility npc = view_as<NearlSwordAbility>(ent);
+			WandSkulls_HealthHud(npc);
 			if (!IsValidEntity(EntRefToEntIndex(Skull_Weapon[ent])))	//Make sure the skull has a weapon index associated with it at all times. The index doesn't affect any stats, it's just there so Wand_Projectile_Spawn doesn't freak out when I pass it an invalid weapon. Side-note: support for just not having a weapon index would be great for Wand_Projectile_Spawn.
 			{
 				Skull_Weapon[ent] = EntIndexToEntRef(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
@@ -1080,4 +1095,71 @@ public void Wand_Skulls_Touch_Launched(int entity, int target)
 	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
 		
 	RemoveEntity(entity);
+}
+
+
+public int WandSkulls_HealthHud(NearlSwordAbility npc)
+{
+	char HealthText[32];
+	int HealthColour[4];
+
+	int MaxHealth = RoundToCeil((Skulls_Lifespan[Skull_Tier[npc.index]]) * 10.0);
+	int Health = RoundToCeil((Skull_LifetimeEnd[npc.index] - GetGameTime()) * 10.0);
+	if(Health == 0)
+	{
+		Health = 1;
+	}
+	for(int i=0; i<4; i++)
+	{
+		if(Health >= MaxHealth*(i*0.25))
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	if(Health <= MaxHealth)
+	{
+		HealthColour[0] = Health * 255  / MaxHealth;
+		HealthColour[1] = Health * 255  / MaxHealth;
+		
+		HealthColour[0] = 255 - HealthColour[0];
+	}
+	else
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 0;
+		HealthColour[2] = 255;
+	}	
+	HealthColour[3] = 255;
+
+	if(IsValidEntity(npc.m_iWearable6))
+	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(npc.m_iWearable6,     "color", sColor);
+		DispatchKeyValue(npc.m_iWearable6, "message", HealthText);
+	}
+	else
+	{
+		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,25.0}, 11, HealthColour, npc.index);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
+		DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iWearable6 = TextEntity;	
+	}
+	return npc.m_iWearable6;
+}
+
+public Action Skulls_Transmit(int entity, int client)
+{
+	if(client == i_WandOwner[entity])
+		return Plugin_Continue;
+	
+	return Plugin_Handled;
 }

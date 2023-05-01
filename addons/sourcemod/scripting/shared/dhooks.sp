@@ -756,6 +756,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				GibCollidePlayerInteraction(entity1, entity2);
 				return false;
 			}
+			return false;
 		}
 #endif
 		if(b_Is_Npc_Projectile[entity1])
