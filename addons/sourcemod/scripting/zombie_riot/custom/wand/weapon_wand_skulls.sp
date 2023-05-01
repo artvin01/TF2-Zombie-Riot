@@ -353,7 +353,8 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					DispatchKeyValue(Drone, "StartDisabled", "false");
 		
 					DispatchKeyValue(prop, "Health", "9999999999");
-					SetEntProp(prop, Prop_Data, "m_takedamage", 2, 1);
+					//SetEntProp(prop, Prop_Data, "m_takedamage", 2, 1);
+					SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
 					
 					DispatchSpawn(Drone);
 					
