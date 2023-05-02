@@ -1552,7 +1552,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "rpg_respawn_", false))
 				{
-					int lv = StringToInt(buffer[10]);
+					int lv = StringToInt(buffer[12]);
 					if(level == lv)
 					{
 						float pos[3], ang[3];

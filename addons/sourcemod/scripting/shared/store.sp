@@ -4170,6 +4170,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
+
 	Manual_Impulse_101(client, health);
 }
 

@@ -404,9 +404,20 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
 		UpdateLevelAbovePlayerText(client);
+
+		RequestFrame(UpdateHealthFrame, userid);
 #endif
 	}
 }
+
+#if defined RPG
+public void UpdateHealthFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+}
+#endif
 
 #if defined ZR
 public Action OnTeutonHealth(int client, int &health)

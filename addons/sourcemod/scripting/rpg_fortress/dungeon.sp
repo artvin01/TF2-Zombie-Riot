@@ -320,7 +320,7 @@ enum struct StageEnum
 		if(!name[0] || required > tier)
 			return 0.0;
 		
-		if(StrEqual(name, ITEM_XP))
+		if(StrEqual(name, ITEM_XP, false))
 		{
 			if(level > this.MaxLevel || !this.XP)
 				return 0.0;
@@ -329,7 +329,7 @@ enum struct StageEnum
 			return 1.0;
 		}
 		
-		if(StrEqual(name, ITEM_CASH))
+		if(StrEqual(name, ITEM_CASH, false))
 		{
 			Format(name, sizeof(name), "%d Credits", this.Cash * (10 + tier) / 10);
 			return 1.0;

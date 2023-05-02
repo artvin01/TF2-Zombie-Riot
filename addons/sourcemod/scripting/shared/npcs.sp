@@ -1188,14 +1188,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage = 0.0;
 			return Plugin_Handled;
 		}
-		if(b_IsAlliedNpc[victim])
-		{
-			if(f_FreeplayDamageExtra != 1.0)
-			{
-				damage *= f_FreeplayDamageExtra;
-			}
-		}
-
 
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 		i_HasBeenBackstabbed[victim] = false;
@@ -1206,6 +1198,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		
 #if defined ZR
+		if(b_IsAlliedNpc[victim])
+		{
+			if(f_FreeplayDamageExtra != 1.0)
+			{
+				damage *= f_FreeplayDamageExtra;
+			}
+		}
+
 		if(b_npcspawnprotection[victim])
 			damage *= 0.25;
 #endif

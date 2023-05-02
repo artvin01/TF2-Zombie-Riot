@@ -4575,10 +4575,12 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		}
 		else if(i_IsABuilding[enemy])
 		{
+#if defined ZR
 			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			{
 				return false;
 			}
+#endif
 
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
 			{

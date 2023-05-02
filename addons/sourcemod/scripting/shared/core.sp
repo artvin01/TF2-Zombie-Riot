@@ -1549,6 +1549,7 @@ public void OnClientDisconnect(int client)
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
+	f_LeftForDead_Cooldown[client] = 0.0;
 #endif
 
 	b_DisplayDamageHud[client] = false;
@@ -1558,7 +1559,6 @@ public void OnClientDisconnect(int client)
 	RPG_ClientDisconnect(client);
 #endif
 
-	f_LeftForDead_Cooldown[client] = 0.0;
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake[client] = true;
 	b_HudHitMarker[client] = true;
@@ -2505,8 +2505,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 		}
+		else if(!StrContains(classname, "func_regenerate"))
+		{
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_Regenerate_StartTouch);
+			SDKHook(entity, SDKHook_Touch, SDKHook_Regenerate_Touch);
+		}
 	}
-	
 }
 
 
@@ -2536,6 +2540,25 @@ public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
 		i_InSafeZone[target]--;
+}
+
+public Action SDKHook_Regenerate_StartTouch(int entity, int target)
+{
+	if(target > 0 && target <= MaxClients)
+	{
+		TF2_RegeneratePlayer(target);
+		return Plugin_Handled;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action SDKHook_Regenerate_Touch(int entity, int target)
+{
+	if(target > 0 && target <= MaxClients)
+		return Plugin_Handled;
+
+	return Plugin_Continue;
 }
 
 public void Set_Projectile_Collision(int entity)
