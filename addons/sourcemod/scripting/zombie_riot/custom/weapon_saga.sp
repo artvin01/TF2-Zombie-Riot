@@ -1,11 +1,21 @@
-#define SAGA_ABILITY_1	"items/samurai/tf_samurai_noisemaker_setb_01.wav"
-#define SAGA_ABILITY_2	"items/samurai/tf_samurai_noisemaker_setb_02.wav"
-#define SAGA_ABILITY_3	"items/samurai/tf_samurai_noisemaker_setb_03.wav"
+#define SAGA_ABILITY_1	"npc/waste_scanner/grenade_fire.wav"
+#define SAGA_ABILITY_2	"npc/waste_scanner/grenade_fire.wav"
+#define SAGA_ABILITY_3	"npc/waste_scanner/grenade_fire.wav"
 
+
+//NA GO GOHOM
 static Handle WeaponTimer[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
 static int WeaponCharge[MAXTF2PLAYERS];
 static float SagaCrippled[MAXENTITIES + 1];
+static bool SagaRegen[MAXENTITIES];
+
+static const char g_MeleeHitSounds[][] = {
+	"weapons/samurai/tf_katana_slice_01.wav",
+	"weapons/samurai/tf_katana_slice_02.wav",
+	"weapons/samurai/tf_katana_slice_03.wav",
+};
+
 
 void Saga_MapStart()
 {
@@ -14,12 +24,25 @@ void Saga_MapStart()
 	PrecacheSound(SAGA_ABILITY_3);
 	Zero(SagaCrippled);
 	Zero(WeaponCharge);
+	Zero(SagaRegen);
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 }
 
 void Saga_EntityCreated(int entity)
 {
 	SagaCrippled[entity] = 0.0;
 }
+
+bool Saga_EnemyDoomed(int entity)
+{
+	return view_as<bool>(SagaCrippled[entity]);
+}
+
+bool Saga_RegenHealth(int entity)
+{
+	return SagaRegen[entity];
+}
+
 
 void Saga_DeadEffects(int victim, int attacker, int weapon)
 {
@@ -50,6 +73,7 @@ void Saga_ChargeReduction(int client, int weapon, float time)
 
 void Saga_Enable(int client, int weapon)
 {
+	SagaRegen[client] = false;
 	if(i_CustomWeaponEquipLogic[weapon] == 19)
 	{
 		WeaponRef[client] = EntIndexToEntRef(weapon);
@@ -127,6 +151,7 @@ public Action Saga_Timer3(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
+		SagaRegen[client] = true;
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
@@ -160,6 +185,10 @@ public void Weapon_SagaE2_M2(int client, int weapon, bool crit, int slot)
 static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 {
 	int cost = mastery ? 13 : 16;
+	if(CvarInfiniteCash.BoolValue)
+	{
+		WeaponCharge[client] = 999;
+	}
 	if(WeaponCharge[client] < cost)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -169,6 +198,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 	}
 	else
 	{
+		MakePlayerGiveResponseVoice(client, 4); //haha!
 		WeaponCharge[client] -= cost + 1;
 		CashRecievedNonWave[client] += 4;
 		CashSpent[client] -= 4;
@@ -180,15 +210,26 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		
 		int value = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
-		
-		Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, 1.0, 0.0, false, 6);
+
+		float UserLoc[3];
+		GetClientAbsOrigin(client, UserLoc);
+
+		float Range = 400.0;
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 12.0, 6.1, 1, Range * 2.0);	
+		spawnRing_Vectors(UserLoc, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 12.0, 6.1, 1, 0.0);	
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);				
+		Explode_Logic_Custom(damage, client, client, weapon, _, Range, 1.0, 0.0, false, 6,_,_,SagaCutFirst);
+		FinishLagCompensation_Base_boss();
 		
 		i_ExplosiveProjectileHexArray[client] = value;
+		TF2_AddCondition(client, TFCond_DefenseBuffed, 1.0);
+		SetEntityMoveType(client, MOVETYPE_NONE);
 
-		CreateTimer(0.8, Saga_DelayedExplode, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.2, Saga_DelayedExplode, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
 		int rand = GetURandomInt() % 3;
-		EmitSoundToAll(rand == 0 ? SAGA_ABILITY_1 : (rand == 1 ? SAGA_ABILITY_2 : SAGA_ABILITY_3), client, SNDCHAN_AUTO, 75);
+		EmitSoundToAll(rand == 0 ? SAGA_ABILITY_1 : (rand == 1 ? SAGA_ABILITY_2 : SAGA_ABILITY_3), client, SNDCHAN_AUTO, 75_,_,0.6);
 
 		TriggerTimer(WeaponTimer[client], true);
 	}
@@ -209,9 +250,12 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 			
 			int value = i_ExplosiveProjectileHexArray[client];
 			i_ExplosiveProjectileHexArray[client] = EP_DEALS_SLASH_DAMAGE;
+			SetEntityMoveType(client, MOVETYPE_WALK);
 			
-			Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, 1.0, 0.0, false, 99);
-			
+			b_LagCompNPC_No_Layers = true;
+			StartLagCompensation_Base_Boss(client);						
+			Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, 1.0, 0.0, false, 99,_,_,SagaCutLast);
+			FinishLagCompensation_Base_boss();			
 			i_ExplosiveProjectileHexArray[client] = value;
 		}
 	}
@@ -231,14 +275,97 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon)
 		SagaCrippled[victim] = TF2Attrib_GetByDefIndex(weapon, 861) == Address_Null ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
+		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);
+		SetEntityRenderColor(victim, 255, 65, 65, 125, false, false, true);
+		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
+		Change_Npc_Collision(victim, 3);
+		SetEntityCollisionGroup(victim, 17);
+		b_DoNotUnStuck[victim] = true;
+		CClotBody npc = view_as<CClotBody>(victim);
+		Npc_DebuffWorldTextUpdate(npc);
+		Attributes_OnKill(attacker, weapon);
 	}
 }
 
 public Action Saga_ExcuteTarget(Handle timer, int ref)
 {
-	int entity = EntIndexToEntRef(ref);
+	int entity = EntRefToEntIndex(ref);
 	if(entity != INVALID_ENT_REFERENCE)
-		SDKHooks_TakeDamage(entity, 0, 0, 9999.9, DMG_DROWN);
+		SDKHooks_TakeDamage(entity, 0, 0, 9999.9, DMG_SLASH);
 	
 	return Plugin_Continue;
+}
+
+
+
+void SagaCutFirst(int entity, int victim, float damage, int weapon)
+{
+	FreezeNpcInTime(victim, 0.2);
+	float Range = 150.0;
+	float Pos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", Pos);
+	spawnRing_Vectors(Pos, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 12.0, 6.1, 1, 0.0);	
+}
+
+
+void SagaCutLast(int entity, int victim, float damage, int weapon)
+{
+	if(SagaCrippled[victim])
+	{
+		float VicLoc[3];
+		VicLoc = WorldSpaceCenter(victim);
+
+		float Pos1[3];
+		float Pos2[3];
+		float PosRand[3];
+
+		Pos1 = VicLoc;
+		Pos2 = VicLoc;
+
+		PosRand[2] = GetRandomFloat(50.0,75.0);
+		PosRand[0] = GetRandomFloat(-25.0,25.0);
+		PosRand[1] = GetRandomFloat(-25.0,25.0);
+
+		if(b_IsGiant[victim])
+		{
+			PosRand[0] *= 1.5;
+			PosRand[1] *= 1.5;
+			PosRand[2] *= 1.5;
+		}
+
+		Pos1[0] += PosRand[0];
+		Pos1[1] += PosRand[1];
+		Pos1[2] += PosRand[2];
+
+		Pos2[0] -= PosRand[0];
+		Pos2[1] -= PosRand[1];
+		Pos2[2] -= PosRand[2];
+
+		//get random pos offset for cool slash effect cus i can.
+		int particle = ParticleEffectAt(Pos1, "raygun_projectile_red_crit", 0.15);
+
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(particle));
+		pack.WriteFloat(Pos2[0]);
+		pack.WriteFloat(Pos2[1]);
+		pack.WriteFloat(Pos2[2]);
+
+	//	TE_SetupBeamPoints(Pos1, Pos2, ShortTeleportLaserIndex, 0, 0, 0, 0.25, 10.0, 10.0, 0, 1.0, {255,0,0,200}, 3);
+	//	TE_SendToAll(0.0);
+
+		RequestFrames(TeleportParticleArk, 6,pack);
+
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
+	
+		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, _, _, _, _);
+	}
+}
+
+void SagaAttackBeforeSwing(int client, int weapon)
+{
+	SagaCrippled[client] = 1.0;
+}
+void SagaAttackAfterSwing(int client, int weapon)
+{
+	SagaCrippled[client] = 0.0;
 }

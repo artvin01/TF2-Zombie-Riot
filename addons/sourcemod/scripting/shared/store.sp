@@ -3694,6 +3694,7 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 
+	TF2Attrib_SetByDefIndex(client, 201, f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.

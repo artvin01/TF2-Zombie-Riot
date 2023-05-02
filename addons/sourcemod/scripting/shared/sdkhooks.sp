@@ -318,6 +318,24 @@ public void OnPostThink(int client)
 		Armour_Level_Current[client] = 0;
 		int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
+		if(Saga_RegenHealth(client))
+		{
+			int healing_Amount = 10;
+					
+			if(dieingstate[client] > 0)
+			{
+				int newHealth = flHealth + healing_Amount;
+							
+				if(newHealth >= flMaxHealth)
+				{
+					healing_Amount -= newHealth - flMaxHealth;
+					newHealth = flMaxHealth;
+				}
+				ApplyHealEvent(client, healing_Amount);
+				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
+				flHealth = newHealth;	
+			}
+		}
 		if (Jesus_Blessing[client] == 1)
 		{	
 			int flMaxHealthJesus;

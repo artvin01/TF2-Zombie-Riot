@@ -4215,6 +4215,11 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 
+	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
+	{
+		return false;
+	}
+
 	return !(entity == iExclude);
 }
 
@@ -4550,28 +4555,24 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			if(camoDetection)
+
+			if(!camoDetection && b_IsCamoNPC[enemy])
 			{
-				if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
-				{
-					return false;
-				}
-				else
-				{
-					return IsEntityAlive(enemy);
-				}
+				return false;
+			}
+			
+			if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && index > MaxClients && !b_Is_Player_Projectile[index]))
+			{
+				return false;
+			}
+			if(Saga_EnemyDoomed(enemy) && index > MaxClients && !b_Is_Player_Projectile[index])
+			{
+				return false;
 			}
 			else
 			{
-				if(b_IsCamoNPC[enemy] || (b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && !target_invul))
-				{
-					return false;
-				}
-				else
-				{
-					return IsEntityAlive(enemy);
-				}
-			}	
+				return IsEntityAlive(enemy);
+			}
 		}
 		else if(i_IsABuilding[enemy])
 		{
@@ -5152,6 +5153,15 @@ public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
+	//Reuse this think for text huds.
+
+	if(f_TextEntityDelay[iNPC] < GetGameTime())
+	{
+		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
+		Npc_DebuffWorldTextUpdate(npc);
+	}
+
+	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
 		/*	
@@ -5201,7 +5211,7 @@ public void Check_If_Stuck(int iNPC)
 				CreateTimer(1.0, Timer_CheckStuckOutsideMap, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
-		if(f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
+		if(!b_DoNotUnStuck[iNPC] && f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
 		{
 			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.1;
 			//This is a tempomary fix. find a better one for players getting stuck.
@@ -7387,6 +7397,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_EntityInCrouchSpot[entity] = false;
 	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
+	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
 #if defined ZR
 	ResetBoundVillageAlly(entity);
@@ -8220,3 +8231,57 @@ float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, Cost
 
 #endif // _CS_NAV_PATHFIND_H_
 */
+
+
+public void Npc_DebuffWorldTextUpdate(CClotBody npc)
+{
+	char HealthText[32];
+	int HealthColour[4];
+
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 255;
+	HealthColour[3] = 255;
+
+	if(NpcStats_IsEnemySilenced(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "X");
+	}
+	if(Saga_EnemyDoomed(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "%s#", HealthText);
+	}
+
+	if(!HealthText[0])
+	{
+		if(IsValidEntity(npc.m_iTextEntity1))
+		{
+			RemoveEntity(npc.m_iTextEntity1);
+		}
+		return;
+	}
+	
+
+	if(IsValidEntity(npc.m_iTextEntity1))
+	{
+	//	char sColor[32];
+	//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+	//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
+	// Colour will never be Edited probably.
+		DispatchKeyValue(npc.m_iTextEntity1, "message", HealthText);
+	}
+	else
+	{
+		float Offset[3];
+
+		Offset[2] += 90.0;
+		if(b_IsGiant[npc.index])
+		{
+			Offset[2] += 50.0;
+		}
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
+	//	DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iTextEntity1 = TextEntity;	
+	}
+}

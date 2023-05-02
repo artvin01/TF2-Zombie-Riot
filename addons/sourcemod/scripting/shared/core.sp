@@ -276,7 +276,7 @@ int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
-float f_DelayAttackspeedPreivous[MAXENTITIES];
+float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
@@ -421,7 +421,6 @@ bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][7];
-
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 float f_SpecterDyingDebuff[MAXENTITIES];
@@ -991,6 +990,7 @@ bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
 int i_TextEntity[MAXENTITIES][3];
+float f_TextEntityDelay[MAXENTITIES];
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
@@ -2040,11 +2040,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			{
 				attack_speed *= 0.5; //Too fast! It makes animations barely play at all
 			}
-			if(f_DelayAttackspeedPreivous[weapon] != attack_speed) //Its not the exact same as before, dont set, no need.
+			if(f_DelayAttackspeedPreivous[client] != attack_speed) //Its not the exact same as before, dont set, no need.
 			{
 				TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 			}
-			f_DelayAttackspeedPreivous[weapon] = attack_speed;
+			f_DelayAttackspeedPreivous[client] = attack_speed;
 		}
 
 		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
@@ -2121,7 +2121,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		{
 			f_DelayAttackspeedAnimation[client] = GameTime + 0.25;
 			TF2Attrib_SetByDefIndex(client, 201, 1.0);
-			f_DelayAttackspeedPreivous[weapon] = 1.0;
+			f_DelayAttackspeedPreivous[client] = 1.0;
 		}
 	}
 	return action;
@@ -2156,7 +2156,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 #endif
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
-		f_DelayAttackspeedPreivous[entity] = -1.0;
+		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
