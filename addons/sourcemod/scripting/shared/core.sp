@@ -1546,6 +1546,8 @@ public void OnClientDisconnect(int client)
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR
+	b_HoldingInspectWeapon[client] = false;
+	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
@@ -1767,10 +1769,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			{
 				Queue_Menu(client);
 			}
+			else if(b_HoldingInspectWeapon[client])
+			{
+				Store_OpenItemPage(client);
+			}
 			else
 			{
 				Store_Menu(client);
 			}
+
 		}
 #endif
 		

@@ -67,6 +67,10 @@ public void Event_ObjectMoved(Handle event, const char[] name, bool dontBroadCas
 
 		posStacked[2] = posMain[2];
 
+		if(i_WhatBuilding[building] == BuildingAmmobox)
+		{
+			posStacked[2] -= (32.0 * 0.5);
+		}
 		float Delta;
 		switch(i_WhatBuilding[iBuildingDependency[building]])
 		{
@@ -126,6 +130,10 @@ public void Event_ObjectMoved_Custom(int building)
 		posStacked[2] = posMain[2];
 		
 		float Delta;
+		if(i_WhatBuilding[building] == BuildingAmmobox)
+		{
+			posStacked[2] -= (32.0 * 0.5);
+		}
 		switch(i_WhatBuilding[iBuildingDependency[building]])
 		{
 			case BuildingAmmobox:
@@ -462,6 +470,10 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 
 		
 			float Delta;
+			if(i_WhatBuilding[entity] == BuildingAmmobox)
+			{
+				posStacked[2] -= (32.0 * 0.5);
+			}
 			switch(i_WhatBuilding[iBuildingDependency[entity]])
 			{
 				case BuildingAmmobox:
