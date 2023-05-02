@@ -1411,7 +1411,6 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
 				{
-					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
 					SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 					CClotBody npc = view_as<CClotBody>(entity);
 					npc.bBuildingIsPlaced = false;
@@ -1454,7 +1453,8 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						Spawn_Buildable(client);
 						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 					}	
-				}			
+					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
+				}	
 			}
 		}
 	}
@@ -6538,4 +6538,21 @@ static bool AtMaxSupply(int client)
 	}
 
 	return (global > 9 || personal > 2);
+}
+
+
+void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)
+{
+	int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+	int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+
+	TeleportEntity(entity,origin,angles,velocity);
+	if(IsValidEntity(prop1))
+	{
+		TeleportEntity(prop1,origin,angles,velocity);
+	}
+	if(IsValidEntity(prop2))
+	{
+		TeleportEntity(prop2,origin,angles,velocity);
+	}
 }

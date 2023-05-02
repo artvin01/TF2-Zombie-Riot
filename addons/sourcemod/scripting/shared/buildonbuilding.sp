@@ -60,7 +60,39 @@ public void Event_ObjectMoved(Handle event, const char[] name, bool dontBroadCas
 	}
 	if(iBuildingDependency[building])
 	{
-		SDKHooks_TakeDamage(iBuildingDependency[building], 0, 0, 100000.0, DMG_ACID);
+		float posMain[3]; 
+		GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", posMain);
+		float posStacked[3]; 
+		GetEntPropVector(iBuildingDependency[building], Prop_Data, "m_vecAbsOrigin", posStacked);
+
+		posStacked[2] = posMain[2];
+
+		float Delta;
+		switch(i_WhatBuilding[iBuildingDependency[building]])
+		{
+			case BuildingAmmobox:
+			{
+				Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
+			}
+		}
+		posStacked[2] += Delta;
+
+		TeleportBuilding(iBuildingDependency[building], posStacked, NULL_VECTOR, NULL_VECTOR);
+		CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
+		buildingclot.bBuildingIsStacked = false;
+		//make npc's that target the previous building target the stacked one now.
+		for(int targ; targ<i_MaxcountNpc; targ++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+			{
+				CClotBody npc = view_as<CClotBody>(baseboss_index);
+				if(npc.m_iTarget == building)
+				{
+					npc.m_iTarget = iBuildingDependency[building]; 
+				}
+			}
+		}
 		iBuildingDependency[building]=0;
 		for(int i=0; i<2048; i++)
 		{
@@ -86,8 +118,42 @@ public void Event_ObjectMoved_Custom(int building)
 	}
 	if(iBuildingDependency[building])
 	{
-		SDKHooks_TakeDamage(iBuildingDependency[building], 0, 0, 100000.0, DMG_ACID);
+		float posMain[3]; 
+		GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", posMain);
+		float posStacked[3]; 
+		GetEntPropVector(iBuildingDependency[building], Prop_Data, "m_vecAbsOrigin", posStacked);
+
+		posStacked[2] = posMain[2];
+		
+		float Delta;
+		switch(i_WhatBuilding[iBuildingDependency[building]])
+		{
+			case BuildingAmmobox:
+			{
+				Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
+			}
+		}
+		posStacked[2] += Delta;
+		TeleportBuilding(iBuildingDependency[building], posStacked, NULL_VECTOR, NULL_VECTOR);
+		CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
+		buildingclot.bBuildingIsStacked = false;
+		//make npc's that target the previous building target the stacked one now.
+		for(int targ; targ<i_MaxcountNpc; targ++)
+		{
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+			{
+				CClotBody npc = view_as<CClotBody>(baseboss_index);
+				if(npc.m_iTarget == building)
+				{
+					npc.m_iTarget = iBuildingDependency[building]; 
+				}
+			}
+		}
+		
+	//	SDKHooks_TakeDamage(iBuildingDependency[building], 0, 0, 100000.0, DMG_ACID);
 		iBuildingDependency[building]=0;
+		
 		for(int i=0; i<2048; i++)
 		{
 			if(iBuildingDependency[i]==building)
@@ -95,6 +161,7 @@ public void Event_ObjectMoved_Custom(int building)
 				iBuildingDependency[i]=0;
 			}
 		}
+		
 	}
 }
 
@@ -386,7 +453,40 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 	{
 		if(IsValidEntity(iBuildingDependency[entity]))
 		{
-			SDKHooks_TakeDamage(iBuildingDependency[entity], 0, 0, 100000.0, DMG_ACID);
+			float posMain[3]; 
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posMain);
+			float posStacked[3]; 
+			GetEntPropVector(iBuildingDependency[entity], Prop_Data, "m_vecAbsOrigin", posStacked);
+
+			posStacked[2] = posMain[2];
+
+		
+			float Delta;
+			switch(i_WhatBuilding[iBuildingDependency[entity]])
+			{
+				case BuildingAmmobox:
+				{
+					Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
+				}
+			}
+			posStacked[2] += Delta;			
+			TeleportBuilding(iBuildingDependency[entity], posStacked, NULL_VECTOR, NULL_VECTOR);
+			CClotBody building = view_as<CClotBody>(iBuildingDependency[entity]);
+			building.bBuildingIsStacked = false;
+			//make npc's that target the previous building target the stacked one now.
+			for(int targ; targ<i_MaxcountNpc; targ++)
+			{
+				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+				if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+				{
+					CClotBody npc = view_as<CClotBody>(baseboss_index);
+					if(npc.m_iTarget == entity)
+					{
+						npc.m_iTarget = iBuildingDependency[entity]; 
+					}
+				}
+			}
+	//		SDKHooks_TakeDamage(iBuildingDependency[entity], 0, 0, 100000.0, DMG_ACID);
 		}
 		iBuildingDependency[entity]=0;
 	}
