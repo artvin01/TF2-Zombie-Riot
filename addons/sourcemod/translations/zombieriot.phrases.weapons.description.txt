@@ -147,13 +147,13 @@
 	}
 	"Grenade Launcher Pap 2"
 	{
-		"en"		"Increased damage and attackspeed."
+		"en"		"Reduced damage and attackspeed."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 3"
 	{
-		"en"		"Increased damage and massively increased attackspeed and reload speed."
+		"en"		"Sligthty increased damage and massively increased attackspeed and reload speed."
 		"ru"		"Увеличенный урон и крупно увеличенная скорости атаки и скорости перезарядки."
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
@@ -377,7 +377,7 @@
 	}
 	"The Cow Mangler 6000 Pap 1"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"Increased damage and attackspeed and max ammo"
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 	}

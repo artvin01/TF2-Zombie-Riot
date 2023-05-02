@@ -64,12 +64,6 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	
-	float Energy = GetEntPropFloat(entity, Prop_Send, "m_flEnergy");
-		
-	Energy -= 20.0;
-		
-	SetEntPropFloat(entity, Prop_Send, "m_flEnergy", Energy);
-	
 	if(!EscapeMode)
 	{
 		int new_ammo = GetAmmo(client, 23);
@@ -89,10 +83,15 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			Client_Shake(client, 0, 50.0, 25.0, 0.5);
 			
 			Strength[client] = 112.0;
-			
-			Strength[client] *= 4.0;
+
+			Strength[client] *= 2.5; //tiny penalty.
+
+			Address address = TF2Attrib_GetByDefIndex(entity, 335);
+			if(address != Address_Null)
+				Strength[client] *= TF2Attrib_GetValue(address);	
+
 					
-			Address address = TF2Attrib_GetByDefIndex(entity, 1);
+			address = TF2Attrib_GetByDefIndex(entity, 1);
 			if(address != Address_Null)
 				Strength[client] *= TF2Attrib_GetValue(address);
 						
