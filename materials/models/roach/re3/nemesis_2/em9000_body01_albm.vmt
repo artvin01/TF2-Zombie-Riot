@@ -1,7 +1,7 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "models/roach/re3/nemesis/em9000_body01_ALBM"
-	"$bumpmap" "models/roach/re3/nemesis/em9000_body01_NRMR"
+	"$basetexture" "models/roach/re3/nemesis_2/em9000_body01_ALBM"
+	"$bumpmap" "models/roach/re3/nemesis_2/em9000_body01_NRMR"
 	$nodecal 1
 
 	"$color2"		"[0.87 0.87 0.87]"
@@ -15,7 +15,7 @@
 	"$phongalbedotint" 1
 	// // "$phongexponenttexture" "models\Dark_Souls\shared\souls_green"
 
-	"$detail" "models/roach/re3/nemesis/em9000_body01_ALBM"
+	"$detail" "models/roach/re3/nemesis_2/em9000_body01_ALBM"
 	$detailscale 1
 	$detailblendmode 7
 	$detailblendfactor 1
