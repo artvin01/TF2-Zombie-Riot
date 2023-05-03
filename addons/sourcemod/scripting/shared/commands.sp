@@ -40,7 +40,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 #endif
 
 #if defined RPG
-		TextStore_Inpsect(client);
+		TextStore_Inspect(client);
 #endif
 
 		return Plugin_Handled;

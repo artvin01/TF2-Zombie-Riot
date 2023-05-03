@@ -2307,7 +2307,7 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 	return 0;
 }
 
-void TextStore_Inpsect(int client)
+void TextStore_Inspect(int client)
 {
 	switch(MenuType[client])
 	{
@@ -2316,7 +2316,7 @@ void TextStore_Inpsect(int client)
 			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
 		}
-		case MENU_SPELLS:
+		case MENU_SPELLS, MENU_BUILDING:
 		{
 			MenuType[client] = MENU_WEAPONS;
 			RefreshAt[client] = 1.0;

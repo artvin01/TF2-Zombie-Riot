@@ -66,6 +66,17 @@ enum struct BlockEnum
 	}
 }
 
+enum struct BuildEnum
+{
+	int Owner;
+	char Item[48];
+
+	int Pos[3];
+	int Ang[3];
+
+	int EntRef;
+}
+
 enum
 {
 	Build_None = 0,
@@ -75,14 +86,16 @@ enum
 
 static ArrayList BlockList;
 static StringMap PlotOwner;
+static ArrayList BuildList;
 static char BlockZone[32];
 static int LevelRequired;
 static int MaxBlocks;
 static int MaxRange;
+static int CurrentEdicts;
 
-static char InPlot[MAXTF2PLAYERS][32];
+static char InPlot[MAXENTITIES+1][32];
 static bool InMenu[MAXTF2PLAYERS];
-static int LastPage[MAXTF2PLAYERS];
+static char CurrentItem[MAXTF2PLAYERS][32];
 static int PartyMode[MAXTF2PLAYERS];
 
 void Plots_ConfigSetup(KeyValues map)
@@ -134,6 +147,26 @@ void Plots_ConfigSetup(KeyValues map)
 		delete kv;
 }
 
+void Plots_EntityCreated(int entity)
+{
+	InPlot[entity][0] = 0;
+
+	if(entity > CurrentEdicts)
+		CurrentEdicts = entity;
+}
+
+void Plots_EntityDestoryed()
+{
+	// In Source Engine, edicts won't get reallocated for 1 second after being freed
+	CreateTimer(1.01, Plots_EdictCleared);
+}
+
+public Action Plots_EdictCleared(Handle timer)
+{
+	CurrentEdicts--;
+	return Plugin_Continue;
+}
+
 void Plots_ClientEnter(int client, const char[] name)
 {
 	if(!InPlot[client][0] && !StrContains(name, BlockZone, false))
@@ -159,7 +192,7 @@ void Plots_ClientEnter(int client, const char[] name)
 	}
 }
 
-void Plots_ClientLeave(const char[] name)
+void Plots_ClientLeave(int client, const char[] name)
 {
 	if(InPlot[client][0] && StrEqual(name, InPlot[client]))
 	{
@@ -169,9 +202,17 @@ void Plots_ClientLeave(const char[] name)
 	}
 }
 
+void Plots_DisableZone(const char[] name)
+{
+	int owner;
+	if(PlotOwner.GetValue(name, owner) && (owner = GetClientOfUserId(owner)))
+	{
+	}
+}
+
 bool Plots_CanShowMenu(int client)
 {
-	return CanBuildHere(client);
+	return (CanClaimHere(client) || CanBuildHere(client));
 }
 
 bool Plots_ShowMenu(int client)
@@ -179,17 +220,176 @@ bool Plots_ShowMenu(int client)
 	int owner;
 	if(PlotOwner.GetValue(name, owner) && (owner = GetClientOfUserId(owner)))
 	{
-		Menu menu = new Menu(Plots_MainMenu);
+		int length = BlockList.Length;
+		int[] blocks = new int[length];
+		int total = GetBlockSpace(owner, blocks, true);
+
+		Menu menu;
 
 		if(owner == client)
 		{
-			menu.SetTitle("RPG Fortress\n \nPlot:");
+			menu = new Menu(Plots_MainMenu);
+			menu.SetTitle("RPG Fortress\n \nPlot:\n%d / %d Blocks", total, MaxBlocks);
 
-			menu.AddItem(NULL_STRING, "Party Setting:");
+			static const char Settings[][] = { "Party Setting: None", "Party Setting: Interact Only", "Party Setting: Allow Building" }
+			menu.AddItem(NULL_STRING, Settings[PartyMode[client]]);
+		}
+		else if(CanBuildHere(client))
+		{
+			menu = new Menu(Plots_MainMenu);
+			menu.SetTitle("RPG Fortress\n \n%N's Plot:\n%d / %d Blocks", owner, total, MaxBlocks);
 		}
 		else
 		{
-			menu.SetTitle("RPG Fortress\n \n%N's Plot:", owner);
+			return false;
+		}
+
+		char num[12];
+		int page;
+		for(int i; i < length; i++)
+		{
+			static BlockEnum block;
+			BlockList.GetArray(i, block);
+
+			int limit = TextStore_GetItemCount(client, block.Item);
+			if(limit > 0)
+			{
+				bool same = (!page && StrEqual(block.Item, CurrentItem[client]));
+
+				Format(block.Item, sizeof(block.Item), "%s (%d / %d)", block.Item, blocks[i], limit);
+
+				if(same)
+				{
+					page = i;
+					menu.AddItem(NULL_STRING, block.Item, ITEMDRAW_DISABLED);
+				}
+				else
+				{
+					IntToString(i, num, sizeof(num));
+					menu.AddItem(num, block.Item);
+				}
+			}
+		}
+
+		InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
+	}
+	else
+	{
+		Menu menu = new Menu(Plots_MainMenu);
+
+		menu.SetTitle("RPG Fortress\n \nPlot:\n ");
+
+		if(TextStore_GetItemCount(client, "Plot Building Permit"))
+		{
+			menu.AddItem(NULL_STRING, "Claim Plot");
+		}
+		else
+		{
+			menu.AddItem(NULL_STRING, "Claim Plot (Requires Plot Building Permit)", ITEMDRAW_DISABLED);
+		}
+
+		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, "Plots allows you to build on your own land.", ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, "These plots will be saved each time you reclaim a plot.", ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, "You can use this land to show off and build special objects.", ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, "You can choose how you want party members to interact with your land.", ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
+		menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_DISABLED);
+
+		menu.AddItem(NULL_STRING, "Items");
+
+		menu.Pagination = 0;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+
+	return true;
+}
+
+public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			InMenu[client] = false;
+			TextStore_Inspect(client);
+		}
+		case MenuAction_Select:
+		{
+			if(InMenu[client])
+			{
+				InMenu[client] = false;
+			}
+			else if(choice)
+			{
+				TextStore_Inspect(client);
+			}
+			else
+			{
+				StringMapSnapshot snap = PlotOwner.Snapshot();
+				int length = snap.Length;
+				for(int i; i < length; i++)
+				{
+					int size = snap.KeyBufferSize(i) + 1;
+					char[] buffer = new char[size];
+					snap.GetKey(i, buffer, size);
+					
+					if(!PlotOwner.GetValue(buffer, size))
+					{
+						PlotOwner.Erase(buffer);
+					}
+					else if(GetClientOfUserId(size) == client)
+					{
+						Plots_DisableZone(buffer);
+						break;
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+static int GetBlockByName(const char[] item, BlockEnum block)
+{
+	int length = BlockList.Length;
+	for(int i; i < length; i++)
+	{
+		BlockList.GetArray(i, block);
+		if(StrEqual(block.Item, item))
+			return i;
+	}
+
+	return -1;
+}
+
+static int GetBlockSpace(int client, int[] blocks = 0, bool countBlocks = false)
+{
+	int amount;
+	int length = BuildList.Length;
+	for(int i; i < length; i++)
+	{
+		static BuildEnum build;
+		BuildList.GetArray(i, build);
+		if(build.Owner == owner)
+		{
+			static BlockEnum block;
+			int id = GetBlockByName(build.Item, block);
+			if(id == -1)
+			{
+				BuildList.Erase(i);
+			}
+			else
+			{
+				amount += block.Space;
+				if(countBlocks)
+					blocks[id]++;
+			}
 		}
 	}
 }
@@ -201,7 +401,7 @@ static bool CanInteractHere(int client)
 		int owner;
 		if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
 		{
-			if(Party_IsClientMember(client, owner) && PartyMode[owner] >= Build_Interact)
+			if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] >= Build_Interact))
 				return true;
 		}
 	}
@@ -215,9 +415,20 @@ static bool CanBuildHere(int client)
 		int owner;
 		if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
 		{
-			if(Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All)
+			if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))
 				return true;
 		}
+	}
+	return false;
+}
+
+static bool CanClaimHere(int client)
+{
+	if(InPlot[client][0])
+	{
+		int owner;
+		if(!PlotOwner.GetValue(InPlot[client], owner) || !GetClientOfUserId(owner))
+			return true;
 	}
 	return false;
 }
