@@ -471,7 +471,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 
 public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 {
-	Address address;
+//	Address address;
 	float damage = Skulls_ShootDMG[tier];
 	/*
 	address = TF2Attrib_GetByDefIndex(weapon, 410);

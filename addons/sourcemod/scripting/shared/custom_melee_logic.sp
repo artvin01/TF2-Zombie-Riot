@@ -385,7 +385,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			}	
 			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
 			{
-				SagaAttackBeforeSwing(client, weapon);
+				SagaAttackBeforeSwing(client);
 			}	
 		}	
 	}
@@ -705,7 +705,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		FinishLagCompensation_Base_boss();
 	}
 	delete pack;
-	SagaAttackAfterSwing(client, weapon);
+	SagaAttackAfterSwing(client);
 }
 
 static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)

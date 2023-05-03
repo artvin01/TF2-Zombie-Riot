@@ -361,11 +361,11 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 	}
 }
 
-void SagaAttackBeforeSwing(int client, int weapon)
+void SagaAttackBeforeSwing(int client)
 {
 	SagaCrippled[client] = 1.0;
 }
-void SagaAttackAfterSwing(int client, int weapon)
+void SagaAttackAfterSwing(int client)
 {
 	SagaCrippled[client] = 0.0;
 }

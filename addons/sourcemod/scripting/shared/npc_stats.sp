@@ -2281,7 +2281,7 @@ methodmap CClotBody
 			}
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
-			SetEntityCollisionGroup(entity, 19); //our savior
+			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 		}
@@ -2347,7 +2347,7 @@ methodmap CClotBody
 			}
 			
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
-			SetEntityCollisionGroup(entity, 19); //our savior
+			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 			
@@ -2466,7 +2466,7 @@ methodmap CClotBody
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
-			SetEntityCollisionGroup(entity, 19); //our savior
+			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Arrow_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*

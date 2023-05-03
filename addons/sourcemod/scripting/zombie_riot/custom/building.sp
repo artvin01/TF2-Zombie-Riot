@@ -45,7 +45,7 @@
 
 #define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 
-#define BUILDINGCOLLISIONNUMBER	27
+#define BUILDINGCOLLISIONNUMBER	24
 
 #define MAX_REBELS_ALLOWED 4
 
