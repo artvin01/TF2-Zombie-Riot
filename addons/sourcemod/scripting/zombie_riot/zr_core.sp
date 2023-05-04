@@ -83,7 +83,8 @@ enum
 	WEAPON_SPECTER = 15,
 	WEAPON_RIOT_SHIELD = 16,
 	WEAPON_YAMATO = 17,
-	WEAPON_BATTILONS = 18
+	WEAPON_BATTILONS = 18,
+	WEAPON_SAGA = 19
 }
 
 ArrayList SpawnerList;
@@ -105,6 +106,7 @@ ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
+ConVar zr_waitingtime;
 //ConVar CvarEnablePrivatePlugins;
 int CurrentGame;
 bool b_GameOnGoing = true;
@@ -119,6 +121,7 @@ float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
+float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 int PlayersAliveScaling;
@@ -347,6 +350,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
 #include "zombie_riot/custom/weapon_specter.sp"
 #include "zombie_riot/custom/weapon_yamato.sp"
+#include "zombie_riot/custom/weapon_saga.sp"
 
 void ZR_PluginLoad()
 {
@@ -363,6 +367,7 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
@@ -395,6 +400,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	EscapeMode = false;
 	EscapeModeForNpc = false;
@@ -522,6 +528,7 @@ void ZR_MapStart()
 	ResetMapStartOcean();
 	Specter_MapStart();
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
+	Saga_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -734,6 +741,50 @@ public Action Command_GiveCash(int client, int args)
 		{
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
+		}
+	}
+	
+	return Plugin_Handled;
+}
+
+
+public Action Command_GiveXp(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_xp <target> <cash>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
+			XP[targets[target]] += money;
+		}
+		else
+		{
+			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
+			XP[targets[target]] += money;			
 		}
 	}
 	

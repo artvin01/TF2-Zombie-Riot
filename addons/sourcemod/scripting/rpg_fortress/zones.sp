@@ -81,10 +81,10 @@ static void OnLeave(int entity, const char[] name)
 
 static void OnActive(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[entity]) //An npc just touched it!
+	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
 	}
-	else
+	else*/
 	{
 		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
@@ -95,10 +95,10 @@ static void OnActive(int entity, const char[] name)
 
 static void OnDisable(int entity, const char[] name)
 {
-	if(!b_NpcHasDied[entity]) //An npc just touched it!
+	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
 	}
-	else
+	else*/
 	{
 		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);

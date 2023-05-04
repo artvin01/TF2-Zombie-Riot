@@ -71,10 +71,10 @@ void NPC_PluginStart()
 #endif
 
 	SyncHud = CreateHudSynchronizer();
-	/*
+	
 	LF_HookSpawn("", NPC_OnCreatePre, false);
 	LF_HookSpawn("", NPC_OnCreatePost, true);
-	*/
+	
 }
 
 #if defined ZR
@@ -97,7 +97,7 @@ public Action LF_OnMakeNPC(char[] classname, int &entity)
 	
 	return Plugin_Handled;
 }
-/*
+
 public Action NPC_OnCreatePre(char[] classname)
 {
 	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
@@ -116,7 +116,7 @@ public void NPC_OnCreatePost(const char[] classname, int entity)
 		SDKHook(entity, SDKHook_SpawnPost, NPC_EntitySpawned);
 	}
 }
-*/
+
 public void NPC_EntitySpawned(int entity)
 {
 	int index = GetIndexByPluginName(LastClassname[entity]);
@@ -1182,6 +1182,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else
 	{
+		//teutons should not steal.
+		if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		float GameTime = GetGameTime();
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
 		{
@@ -1198,6 +1204,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		
 #if defined ZR
+		if(b_IsAlliedNpc[victim])
+		{
+			if(f_FreeplayDamageExtra != 1.0)
+			{
+				damage *= f_FreeplayDamageExtra;
+			}
+		}
+
 		if(b_npcspawnprotection[victim])
 			damage *= 0.25;
 #endif
@@ -2107,7 +2121,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2117,7 +2131,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2127,7 +2141,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2137,7 +2151,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2147,7 +2161,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2157,7 +2171,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2167,7 +2181,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2177,7 +2191,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(Debuff_added_hud)
 		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), " %s| ", Debuff_Adder);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
 			Debuff_added_hud = false;
 		}
 		Debuff_added = true;
@@ -2584,6 +2598,7 @@ void NPC_DeadEffects(int entity)
 #if defined ZR
 			GiveXP(client, 1);
 			GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
+			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			
 #if defined RPG
@@ -2726,6 +2741,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_YAMATO:
 		{
 			Npc_OnTakeDamage_Yamato(attacker, damagetype);
+		}
+		case WEAPON_SAGA:
+		{
+			Saga_OnTakeDamage(victim, attacker, damage, weapon);
 		}
 	}
 #endif

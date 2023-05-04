@@ -383,6 +383,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
 			}	
+			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
+			{
+				SagaAttackBeforeSwing(client);
+			}	
 		}	
 	}
 #endif
@@ -439,6 +443,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			}
 		}
 	}
+
 }
 
 public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon)
@@ -700,6 +705,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		FinishLagCompensation_Base_boss();
 	}
 	delete pack;
+	SagaAttackAfterSwing(client);
 }
 
 static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)

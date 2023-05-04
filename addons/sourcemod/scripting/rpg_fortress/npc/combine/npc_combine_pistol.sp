@@ -116,7 +116,7 @@ public void CombinePistol_ClotThink(int iNPC)
 
 			if(npc.m_flNextRangedAttack < gameTime)
 			{
-				if(distance > 4000000.0 && npc.m_iTargetWalk)	// 2000 HU
+				if(distance > 650000.0 && npc.m_iTargetWalk)	// 806 HU
 				{
 					// Too far away to shoot
 				}

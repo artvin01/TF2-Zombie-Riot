@@ -181,6 +181,9 @@ methodmap NearlSwordAbility < CClotBody
 
 		PF_StopPathing(npc.index);
 
+		NearlSword_HealthHud(npc);
+		b_DoNotUnStuck[npc.index] = true;
+
 		return npc;
 	}
 }
@@ -189,12 +192,73 @@ public void NearlSwordAbility_ClotThink(int iNPC)
 {
 	NearlSwordAbility npc = view_as<NearlSwordAbility>(iNPC);
 
+	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+		return;
+	
+	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+	NearlSword_HealthHud(npc);
 }
+
+
+public int NearlSword_HealthHud(NearlSwordAbility npc)
+{
+	char HealthText[32];
+	int HealthColour[4];
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	for(int i=0; i<10; i++)
+	{
+		if(Health >= MaxHealth*(i*0.1))
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	if(Health <= MaxHealth)
+	{
+		HealthColour[0] = Health * 255  / MaxHealth;
+		HealthColour[1] = Health * 255  / MaxHealth;
+		
+		HealthColour[0] = 255 - HealthColour[0];
+	}
+	else
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 0;
+		HealthColour[2] = 255;
+	}	
+	HealthColour[3] = 255;
+
+	if(IsValidEntity(npc.m_iWearable6))
+	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(npc.m_iWearable6,     "color", sColor);
+		DispatchKeyValue(npc.m_iWearable6, "message", HealthText);
+	}
+	else
+	{
+		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,100.0}, 17, HealthColour, npc.index);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
+		DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iWearable6 = TextEntity;	
+	}
+	return npc.m_iWearable6;
+}
+
 
 public Action NearlSwordAbility_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -229,12 +293,22 @@ public void NearlSwordAbility_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, NearlSwordAbility_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }

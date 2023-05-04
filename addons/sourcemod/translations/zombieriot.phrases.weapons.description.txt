@@ -147,13 +147,13 @@
 	}
 	"Grenade Launcher Pap 2"
 	{
-		"en"		"Increased damage and attackspeed."
+		"en"		"Reduced damage and attackspeed."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 3"
 	{
-		"en"		"Increased damage and massively increased attackspeed and reload speed."
+		"en"		"Sligthty increased damage and massively increased attackspeed and reload speed."
 		"ru"		"Увеличенный урон и крупно увеличенная скорости атаки и скорости перезарядки."
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
@@ -377,7 +377,7 @@
 	}
 	"The Cow Mangler 6000 Pap 1"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"Increased damage and attackspeed and max ammo"
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
 	}
@@ -1075,9 +1075,9 @@
 	
 	"Buildable Barricade Desc"
 	{
-		"en"	"Each wave increases its cost, you may only have 3 barricades built at once."
-		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 3 баррикады."
-		"chi"   "每一波都会增加它的价格，你最多只能建造3个路障。"
+		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
+		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 4 баррикады."
+		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
 	}
 	
 	"Buildable Armortable Desc"
@@ -1832,5 +1832,17 @@
 	"Yamato_Desc"
 	{
 		"en"	"Gain a portion of the son's of sparda's POWER\nEach time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist"
+	}
+	"Preaching Sword Desc"
+	{
+		"en"	"A quick attacking cheap sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
+	}
+	"Preaching Sword Pap 1"
+	{
+		"en"	"Gains an ability that deals 320%% of damage to 6 nearby enemies and all enemies with Critically Wounded.\nCritically Wounded debuff now provides two seconds cooldown recharge."
+	}
+	"Preaching Sword Pap 2"
+	{
+		"en"	"Ability gains a third charge, decreased recharge time, and deals 400%% damage.\nProvides 10 health regeneration while not taking damage."
 	}
 }

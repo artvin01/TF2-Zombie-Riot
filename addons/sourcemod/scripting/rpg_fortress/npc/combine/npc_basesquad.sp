@@ -357,7 +357,9 @@ methodmap BaseSquad < CClotBody
 	}
 	public void PlayOverload()
 	{
-		EmitSoundToAll(Overload[GetURandomInt() % sizeof(Overload)], this.index, _, 94);
+		int rand = GetURandomInt() % sizeof(Overload);
+		EmitSoundToAll(Overload[rand], this.index, _, 94);
+		EmitSoundToAll(Overload[rand], this.index, _, 94);
 	}
 	public BaseSquad(float vecPos[3], float vecAng[3],
 						const char[] model,

@@ -93,6 +93,7 @@ static int FogEntity = INVALID_ENT_REFERENCE;
 
 static int Gave_Ammo_Supply;
 static int VotedFor[MAXTF2PLAYERS];
+static float VoteEndTime;
 
 static char LastWaveWas[64];
 static char TextStoreItem[48];
@@ -155,7 +156,7 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 public Action Waves_RevoteCmd(int client, int args)
 {
-	if(Voting && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	if(Voting)
 	{
 		VotedFor[client] = 0;
 		Waves_CallVote(client);
@@ -165,7 +166,7 @@ public Action Waves_RevoteCmd(int client, int args)
 
 bool Waves_CallVote(int client)
 {
-	if(Voting && !VotedFor[client] && GameRules_GetProp("m_bInWaitingForPlayers", 1))
+	if(Voting && !VotedFor[client])
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
@@ -288,7 +289,7 @@ void Waves_DisplayHintVote()
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d\n1. %s: (%d)", count, total, vote.Name, votes[top[0]]);
+			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %s: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
 
 			for(int i = 1; i < sizeof(top); i++)
 			{
@@ -308,10 +309,8 @@ void Waves_DisplayHintVote()
 
 void OnMapEndWaves()
 {
-	if(Voting)
-	{
-		delete Voting;
-	}
+	CurrentGame = -1;
+	delete Voting;
 	Zero(VotedFor);
 }
 
@@ -621,8 +620,101 @@ void Waves_RoundStart()
 		
 		FogEntity = INVALID_ENT_REFERENCE;
 	}
+	
+	delete Enemies;
+	Enemies = new ArrayStack(sizeof(Enemy));
+	
+	Waves_RoundEnd();
+	Freeplay_ResetAll();
+	
+	if(Voting)
+	{
+		float wait = zr_waitingtime.FloatValue;
+		float time = wait - 30.0;
+		if(time < 20.0)
+			time = 20.0;
+		
+		VoteEndTime = GetGameTime() + time;
+		CreateTimer(time, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
-	if(Voting && !GameRules_GetProp("m_bInWaitingForPlayers"))
+		if(wait < time)
+			wait = time;
+
+		SpawnTimer(wait);
+		CreateTimer(wait, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	else
+	{
+		SpawnTimer(60.0);
+		CreateTimer(60.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	}
+
+	/*
+	char buffer[64];
+	for(int i=MAXENTITIES; i>MaxClients; i--)
+	{
+		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
+		{
+			if(StrEqual(buffer, "base_boss"))
+				RemoveEntity(i);
+		}
+	}
+	*/
+	//DONT. Breaks map base_boss.
+	if(CurrentCash != StartCash)
+	{
+		Store_Reset();
+		CurrentGame = GetTime();
+		CurrentCash = StartCash;
+		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
+		for(int client=1; client<=MaxClients; client++)
+		{
+			CurrentAmmo[client] = CurrentAmmo[0];
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+				TF2_RegeneratePlayer(client);
+		}
+	}
+}
+
+void Waves_RoundEnd()
+{
+	Cooldown = 0.0;
+	InSetup = true;
+//	InFreeplay = false;
+	WaveIntencity = 0;
+	CurrentRound = 0;
+	CurrentWave = -1;
+	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
+}
+
+public Action Waves_RoundStartTimer(Handle timer)
+{
+	if(!Voting)
+	{
+		bool any_player_on = false;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
+				any_player_on = true;
+		}
+		if(any_player_on && !CvarNoRoundStart.BoolValue)
+		{
+			
+			InSetup = false;
+			Waves_Progress();
+		}
+		else
+		{
+			CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		
+	}
+	return Plugin_Continue;
+}
+
+public Action Waves_EndVote(Handle timer, float time)
+{
+	if(Voting)
 	{
 		int length = Voting.Length;
 		if(length)
@@ -675,74 +767,6 @@ void Waves_RoundStart()
 			}
 		}
 	}
-	
-	delete Enemies;
-	Enemies = new ArrayStack(sizeof(Enemy));
-	
-	Waves_RoundEnd();
-	Freeplay_ResetAll();
-	
-	CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-	/*
-	char buffer[64];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
-		{
-			if(StrEqual(buffer, "base_boss"))
-				RemoveEntity(i);
-		}
-	}
-	*/
-	//DONT. Breaks map base_boss.
-	if(CurrentCash != StartCash)
-	{
-		Store_Reset();
-		CurrentGame = GetTime();
-		CurrentCash = StartCash;
-		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
-		for(int client=1; client<=MaxClients; client++)
-		{
-			CurrentAmmo[client] = CurrentAmmo[0];
-			if(IsClientInGame(client) && IsPlayerAlive(client))
-				TF2_RegeneratePlayer(client);
-		}
-	}
-}
-
-void Waves_RoundEnd()
-{
-	Cooldown = 0.0;
-	InSetup = true;
-//	InFreeplay = false;
-	WaveIntencity = 0;
-	CurrentRound = 0;
-	CurrentWave = -1;
-	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
-}
-
-public Action Waves_RoundStartTimer(Handle timer)
-{
-	if(!GameRules_GetProp("m_bInWaitingForPlayers"))
-	{
-		bool any_player_on = false;
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
-				any_player_on = true;
-		}
-		if(any_player_on && !CvarNoRoundStart.BoolValue)
-		{
-			
-			InSetup = false;
-			Waves_Progress();
-		}
-		else
-		{
-			CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-		}
-		
-	}
 	return Plugin_Continue;
 }
 
@@ -769,11 +793,13 @@ void Waves_Progress()
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
 	static int panzer_chance;
+
 	if(CurrentRound < length)
 	{
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
+			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 			WaveIntencity = wave.Intencity;
 			
@@ -1181,30 +1207,15 @@ void Waves_Progress()
 			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
-				Cooldown = round.Setup + 30.0;
+				Cooldown = GetGameTime() + 30.0;
 				
 				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				ExcuteRelay("zr_victory");
 				
-				int timer = CreateEntityByName("team_round_timer");
-				DispatchKeyValue(timer, "show_in_hud", "1");
-				DispatchSpawn(timer);
-				
-				SetVariantInt(RoundToCeil(Cooldown));
-				AcceptEntityInput(timer, "SetTime");
-				AcceptEntityInput(timer, "Resume");
-				AcceptEntityInput(timer, "Enable");
-				SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-				
-				GameRules_SetPropFloat("m_flStateTransitionTime", Cooldown);
-				CreateTimer(Cooldown, Timer_RemoveEntity, EntIndexToEntRef(timer));
-				
-				Event event = CreateEvent("teamplay_update_timer", true);
-				event.Fire();
-				
-				CreateTimer(Cooldown, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				SpawnTimer(30.0);
+				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
 				int total = 0;
 				int[] players = new int[MaxClients];
@@ -1266,28 +1277,13 @@ void Waves_Progress()
 			}
 			else if(round.Setup > 0.0)
 			{
-				Cooldown = round.Setup+GetGameTime();
+				Cooldown = GetGameTime() + round.Setup;
 				
 				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				
-				int timer = CreateEntityByName("team_round_timer");
-				DispatchKeyValue(timer, "show_in_hud", "1");
-				DispatchSpawn(timer);
-				
-				SetVariantInt(RoundToFloor(round.Setup));
-				AcceptEntityInput(timer, "SetTime");
-				AcceptEntityInput(timer, "Resume");
-				AcceptEntityInput(timer, "Enable");
-				SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-				
-				GameRules_SetPropFloat("m_flStateTransitionTime", Cooldown);
-				CreateTimer(round.Setup, Timer_RemoveEntity, EntIndexToEntRef(timer));
-				
-				Event event = CreateEvent("teamplay_update_timer", true);
-				event.Fire();
-				
+				SpawnTimer(round.Setup);
 				CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
 				Citizen_SetupStart();
@@ -1296,22 +1292,7 @@ void Waves_Progress()
 			{
 				Cooldown = GetGameTime() + 30.0;
 				
-				int timer = CreateEntityByName("team_round_timer");
-				DispatchKeyValue(timer, "show_in_hud", "1");
-				DispatchSpawn(timer);
-				
-				SetVariantInt(30);
-				AcceptEntityInput(timer, "SetTime");
-				AcceptEntityInput(timer, "Resume");
-				AcceptEntityInput(timer, "Enable");
-				SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-				
-				GameRules_SetPropFloat("m_flStateTransitionTime", Cooldown);
-				CreateTimer(30.0, Timer_RemoveEntity, EntIndexToEntRef(timer));
-				
-				Event event = CreateEvent("teamplay_update_timer", true);
-				event.Fire();
-				
+				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
 				PrintToChatAll("You were given extra 30 seconds to prepare...");
@@ -1340,6 +1321,10 @@ void Waves_Progress()
 			MultiGlobal = multi;
 
 			int postWaves = CurrentRound - length;
+
+			f_FreeplayDamageExtra = ((postWaves + 99) * 0.0075);
+			f_FreeplayDamageExtra += 1.0;
+
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;
 			
@@ -1430,28 +1415,13 @@ void Waves_Progress()
 			{
 				Freeplay_SetupStart(postWaves);
 
-				Cooldown = round.Setup + 30.0;
+				Cooldown = GetGameTime() + 30.0;
 				
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				
-				int timer = CreateEntityByName("team_round_timer");
-				DispatchKeyValue(timer, "show_in_hud", "1");
-				DispatchSpawn(timer);
-				
-				SetVariantInt(RoundToCeil(Cooldown));
-				AcceptEntityInput(timer, "SetTime");
-				AcceptEntityInput(timer, "Resume");
-				AcceptEntityInput(timer, "Enable");
-				SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-				
-				GameRules_SetPropFloat("m_flStateTransitionTime", Cooldown);
-				CreateTimer(Cooldown, Timer_RemoveEntity, EntIndexToEntRef(timer));
-				
-				Event event = CreateEvent("teamplay_update_timer", true);
-				event.Fire();
-				
-				CreateTimer(Cooldown, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				SpawnTimer(30.0);
+				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
 				Menu menu = new Menu(Waves_FreeplayVote);
 				menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
@@ -1482,17 +1452,23 @@ void Waves_Progress()
 	{
 		if(StartCash < 1500)
 			Store_RemoveSellValue();
-
-		for(int client=1; client<=MaxClients; client++)
+		
+		Ammo_Count_Ready = 8;
+		if(StartCash < 1500)
 		{
-			Ammo_Count_Ready = 8;
-			if(IsClientInGame(client) && GetClientTeam(client)==2)
+			for(int client=1; client<=MaxClients; client++)
 			{
-				if(StartCash < 1500)
+				if(IsClientInGame(client) && GetClientTeam(client)==2)
 				{
-					CashSpent[client] = StartCash;
+					int cash = StartCash - (Resupplies_Supplied[client] * 10);
+					if(CashSpent[client] < cash)
+						CashSpent[client] = cash;
+					
+					CashSpent[client] -= StartCash;
 				}
 			}
+
+			CurrentCash = 0;
 		}
 	}
 	if(CurrentWave == 0)
@@ -1593,4 +1569,23 @@ public Action Waves_ProgressTimer(Handle timer)
 	WaveTimer = null;
 	Waves_Progress();
 	return Plugin_Continue;
+}
+
+static void SpawnTimer(float time)
+{
+	int timer = CreateEntityByName("team_round_timer");
+	DispatchKeyValue(timer, "show_in_hud", "1");
+	DispatchSpawn(timer);
+	
+	SetVariantInt(RoundToCeil(time));
+	AcceptEntityInput(timer, "SetTime");
+	AcceptEntityInput(timer, "Resume");
+	AcceptEntityInput(timer, "Enable");
+	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
+	
+	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
+	
+	Event event = CreateEvent("teamplay_update_timer", true);
+	event.Fire();
 }

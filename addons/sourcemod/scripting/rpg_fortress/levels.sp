@@ -17,16 +17,19 @@ void Levels_PluginStart()
 
 void Levels_ClientEnter(int client, const char[] name)
 {
-	if(!StrContains(name, "zr_respawn_", false))
+	if(!StrContains(name, "rpg_respawn_", false))
 	{
-		int level = StringToInt(name[10]);
-		if(Levels_GetSpawnPoint(client) != level && Levels_SetSpawnPoint(client, level))
+		int level = StringToInt(name[12]);
+		if(Levels_GetSpawnPoint(client) != level)
 		{
-			SPrintToChat(client, "You have changed your respawn point.");
-		}
-		else
-		{
-			SPrintToChat(client, "You can not set your respawn point here.");
+			if(Levels_SetSpawnPoint(client, level))
+			{
+				SPrintToChat(client, "You have changed your respawn point.");
+			}
+			else
+			{
+				SPrintToChat(client, "You can not set your respawn point here.");
+			}
 		}
 	}
 }

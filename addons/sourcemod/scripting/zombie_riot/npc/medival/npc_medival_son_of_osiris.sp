@@ -354,7 +354,6 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

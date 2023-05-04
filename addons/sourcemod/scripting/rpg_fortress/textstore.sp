@@ -627,7 +627,7 @@ stock void TextStore_AddTier(int client)
 
 int TextStore_GetItemCount(int client, const char[] name)
 {
-	if(StrEqual(name, ITEM_CASH))
+	if(StrEqual(name, ITEM_CASH, false))
 		return TextStore_Cash(client);
 	
 	int amount = -1;
@@ -649,13 +649,13 @@ int TextStore_GetItemCount(int client, const char[] name)
 
 void TextStore_AddItemCount(int client, const char[] name, int amount)
 {
-	if(StrEqual(name, ITEM_CASH))
+	if(StrEqual(name, ITEM_CASH, false))
 	{
 		TextStore_Cash(client, amount);
 		if(amount > 0)
 			SPrintToChat(client, "You gained %d credits", amount);
 	}
-	else if(StrEqual(name, ITEM_XP))
+	else if(StrEqual(name, ITEM_XP, false))
 	{
 		GiveXP(client, amount);
 		if(amount > 0)
@@ -663,7 +663,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 	}
 	else
 	{
-		bool tier = StrEqual(name, ITEM_TIER);
+		bool tier = StrEqual(name, ITEM_TIER, false);
 		if(tier)
 		{
 			amount = 1;
@@ -2307,7 +2307,7 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 	return 0;
 }
 
-void TextStore_Inpsect(int client)
+void TextStore_Inspect(int client)
 {
 	switch(MenuType[client])
 	{
@@ -2316,7 +2316,7 @@ void TextStore_Inpsect(int client)
 			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
 		}
-		case MENU_SPELLS:
+		case MENU_SPELLS, MENU_BUILDING:
 		{
 			MenuType[client] = MENU_WEAPONS;
 			RefreshAt[client] = 1.0;

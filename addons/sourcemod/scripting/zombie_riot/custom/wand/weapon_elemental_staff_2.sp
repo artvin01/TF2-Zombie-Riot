@@ -394,6 +394,11 @@ public Action Timer_Management_Passanger(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+void Passanger_ChargeReduced(int client, float time)
+{
+	if(h_TimerPassangerManagement[client] != INVALID_HANDLE)
+		f_PassangerAbilityCooldownRegen[client] -= time;
+}
 
 public void Passanger_Cooldown_Logic(int client, int weapon)
 {

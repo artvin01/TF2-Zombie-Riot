@@ -17,7 +17,7 @@ public void Weapon_SwordWand(int client, int weapon, bool crit)
 	}
 	else
 	{
-		float damage = 0.5;
+		float damage = 1.0;
 		address = TF2Attrib_GetByDefIndex(weapon, 410);
 		if(address != Address_Null)
 			damage *= TF2Attrib_GetValue(address);

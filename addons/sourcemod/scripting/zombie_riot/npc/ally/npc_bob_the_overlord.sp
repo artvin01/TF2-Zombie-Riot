@@ -229,6 +229,7 @@ methodmap BobTheGod < CClotBody
 					
 		
 		npc.m_bThisEntityIgnored = true;
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, BobTheGod_ClotDamaged);
 		SDKHook(npc.index, SDKHook_Think, BobTheGod_ClotThink);

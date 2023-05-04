@@ -11,7 +11,7 @@
 #include <tf2items>
 #include <tf_econ_data>
 #include <tf2attributes>
-//#include <lambda>
+#include <lambda>
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
@@ -276,7 +276,7 @@ int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
-float f_DelayAttackspeedPreivous[MAXENTITIES];
+float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
@@ -421,7 +421,6 @@ bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
 bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 //6 wearables
 int i_Wearable[MAXENTITIES][7];
-
 float f_WidowsWineDebuff[MAXENTITIES];
 float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 float f_SpecterDyingDebuff[MAXENTITIES];
@@ -991,6 +990,7 @@ bool b_GetClosestTargetTimeAlly[MAXENTITIES];
 float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
 int i_TextEntity[MAXENTITIES][3];
+float f_TextEntityDelay[MAXENTITIES];
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
@@ -1288,6 +1288,10 @@ public void OnMapStart()
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");
+	PrecacheSound(")weapons/pipe_bomb1.wav");
+	PrecacheSound(")weapons/pipe_bomb2.wav");
+	PrecacheSound(")weapons/pipe_bomb3.wav");
+
 	
 	MapStartResetAll();
 	
@@ -1542,9 +1546,12 @@ public void OnClientDisconnect(int client)
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR
+	b_HoldingInspectWeapon[client] = false;
+	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
+	f_LeftForDead_Cooldown[client] = 0.0;
 #endif
 
 	b_DisplayDamageHud[client] = false;
@@ -1553,9 +1560,11 @@ public void OnClientDisconnect(int client)
 #if defined RPG
 	RPG_ClientDisconnect(client);
 #endif
+
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake[client] = true;
 	b_HudHitMarker[client] = true;
+	b_IsPlayerNiko[client] = false;
 }
 
 public void OnClientDisconnect_Post(int client)
@@ -1761,10 +1770,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			{
 				Queue_Menu(client);
 			}
+			else if(b_HoldingInspectWeapon[client])
+			{
+				Store_OpenItemPage(client);
+			}
 			else
 			{
 				Store_Menu(client);
 			}
+
 		}
 #endif
 		
@@ -2027,12 +2041,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			{
 				attack_speed *= 0.5; //Too fast! It makes animations barely play at all
 			}
-			if(f_DelayAttackspeedPreivous[weapon] != attack_speed) //Its not the exact same as before, dont set, no need.
+			if(f_DelayAttackspeedPreivous[client] != attack_speed) //Its not the exact same as before, dont set, no need.
 			{
 				TF2Attrib_SetByDefIndex(client, 201, attack_speed);
 			}
-			f_DelayAttackspeedPreivous[weapon] = attack_speed;
-			
+			f_DelayAttackspeedPreivous[client] = attack_speed;
 		}
 
 		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
@@ -2109,6 +2122,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		{
 			f_DelayAttackspeedAnimation[client] = GameTime + 0.25;
 			TF2Attrib_SetByDefIndex(client, 201, 1.0);
+			f_DelayAttackspeedPreivous[client] = 1.0;
 		}
 	}
 	return action;
@@ -2143,7 +2157,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 #endif
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
-		f_DelayAttackspeedPreivous[entity] = -1.0;
+		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
@@ -2217,6 +2231,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 #if defined ZR
 		Wands_Potions_EntityCreated(entity);
+		Saga_EntityCreated(entity);
 #endif
 
 #if defined RPG
@@ -2498,8 +2513,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 		}
+		else if(!StrContains(classname, "func_regenerate"))
+		{
+			SDKHook(entity, SDKHook_StartTouch, SDKHook_Regenerate_StartTouch);
+			SDKHook(entity, SDKHook_Touch, SDKHook_Regenerate_Touch);
+		}
 	}
-	
 }
 
 
@@ -2529,6 +2548,25 @@ public void SDKHook_RespawnRoom_EndTouch(int entity, int target)
 {
 	if(target > 0 && target < sizeof(i_InSafeZone) && GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(target, Prop_Send, "m_iTeamNum"))
 		i_InSafeZone[target]--;
+}
+
+public Action SDKHook_Regenerate_StartTouch(int entity, int target)
+{
+	if(target > 0 && target <= MaxClients)
+	{
+		TF2_RegeneratePlayer(target);
+		return Plugin_Handled;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action SDKHook_Regenerate_Touch(int entity, int target)
+{
+	if(target > 0 && target <= MaxClients)
+		return Plugin_Handled;
+
+	return Plugin_Continue;
 }
 
 public void Set_Projectile_Collision(int entity)

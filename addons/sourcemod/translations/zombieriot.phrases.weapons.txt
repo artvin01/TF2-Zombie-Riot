@@ -2144,4 +2144,8 @@
 	{
 		"en"	"Elite Unchained Blade"
 	}
+	"Preaching Sword"
+	{
+		"en"	"Preaching Sword"
+	}
 }

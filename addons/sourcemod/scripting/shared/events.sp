@@ -31,6 +31,25 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	b_GameOnGoing = true;
 	
 	LastMann = false;
+	Ammo_Count_Ready = 0;
+	Zero(Ammo_Count_Used);
+	Zero2(Armor_table_money_limit);
+	Zero2(i_Healing_station_money_limit);
+	Zero2(Perk_Machine_money_limit);
+	Zero2(Pack_A_Punch_Machine_money_limit);
+	Zero(Healing_done_in_total);
+	Zero(Damage_dealt_in_total);
+	Zero(Resupplies_Supplied);
+	Zero(i_BarricadeHasBeenDamaged);
+	Zero(i_ExtraPlayerPoints);
+	CurrentGibCount = 0;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		for(int i; i<Ammo_MAX; i++)
+		{
+			CurrentAmmo[client][i] = CurrentAmmo[0][i];
+		}	
+	}
 	
 	if(RoundStartTime > GetGameTime())
 		return;
@@ -43,8 +62,9 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 
 #if defined RPG
 	Zones_ResetAll();
-	ServerCommand("mp_waitingforplayers_cancel 1");
 #endif
+	
+	ServerCommand("mp_waitingforplayers_cancel 1");
 }
 
 #if defined ZR
@@ -108,7 +128,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	Store_RandomizeNPCStore(true);
-	
+	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -384,9 +404,20 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
 		UpdateLevelAbovePlayerText(client);
+
+		RequestFrame(UpdateHealthFrame, userid);
 #endif
 	}
 }
+
+#if defined RPG
+public void UpdateHealthFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+}
+#endif
 
 #if defined ZR
 public Action OnTeutonHealth(int client, int &health)

@@ -486,15 +486,15 @@ void DoGrenadeExplodeLogic(int entity)
 			{
 				case 1:
 				{
-					EmitAmbientSound("weapons/explode1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+					EmitAmbientSound(")weapons/pipe_bomb1.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 				}
 				case 2:
 				{
-					EmitAmbientSound("weapons/explode2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+					EmitAmbientSound(")weapons/pipe_bomb2.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 				}
 				case 3:
 				{
-					EmitAmbientSound("weapons/explode3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
+					EmitAmbientSound(")weapons/pipe_bomb3.wav", GrenadePos, _, 85, _,0.9, GetRandomInt(95, 105));
 				}
 			}
 		}
@@ -756,6 +756,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				GibCollidePlayerInteraction(entity1, entity2);
 				return false;
 			}
+			return false;
 		}
 #endif
 		if(b_Is_Npc_Projectile[entity1])
@@ -1551,7 +1552,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrContains(buffer, "rpg_respawn_", false))
 				{
-					int lv = StringToInt(buffer[10]);
+					int lv = StringToInt(buffer[12]);
 					if(level == lv)
 					{
 						float pos[3], ang[3];

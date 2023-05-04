@@ -45,7 +45,7 @@
 
 #define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 
-#define BUILDINGCOLLISIONNUMBER	27
+#define BUILDINGCOLLISIONNUMBER	24
 
 #define MAX_REBELS_ALLOWED 4
 
@@ -893,6 +893,11 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
+	}
 	
 	if(b_thisNpcIsABoss[attacker])
 	{
@@ -1155,48 +1160,62 @@ public Action Building_Set_HP_Elevator(Handle dashHud, int ref)
 
 public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
-	if(damagetype != DMG_CRUSH)
+	if(damagetype == DMG_CRUSH)
 	{
-		int dmg = RoundFloat(damage);
-		
-		if(!Building_cannot_be_repaired[entity])
-		{
-			Building_Repair_Health[entity] -= dmg;
-			if(Building_Repair_Health[entity] > 0)
-			{
-				dmg = 0;
-				int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-				progress += 1; //so it goes to 100 :)
-				if(progress > 100)
-				{
-					progress = 100;
-				}
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
-			}
-			else
-			{
-				dmg += Building_Repair_Health[entity];
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
-				Building_cannot_be_repaired[entity] = true;
-			}
-		}
-		
-		if(dmg)
-		{
-			int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
-			if(health < 1)
-				health = 1;
-			
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-		}
-		int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-		if(IsValidClient(client))
-		{
-			i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
-		}
+		damage = 0.0;
+		return;
+	}
+	if(i_BeingCarried[entity])
+	{
+		return;
+	}
+	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
+	{
+		return;
 	}
 
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
+	}
 
+	int dmg = RoundFloat(damage);
+		
+	if(!Building_cannot_be_repaired[entity])
+	{
+		Building_Repair_Health[entity] -= dmg;
+		if(Building_Repair_Health[entity] > 0)
+		{
+			dmg = 0;
+			int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+			progress += 1; //so it goes to 100 :)
+			if(progress > 100)
+			{
+				progress = 100;
+			}
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
+		}
+		else
+		{
+			dmg += Building_Repair_Health[entity];
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+			Building_cannot_be_repaired[entity] = true;
+		}
+	}
+	
+	if(dmg)
+	{
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
+		if(health < 1)
+			health = 1;
+		
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	}
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	if(IsValidClient(client))
+	{
+		i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
+	}
 }
 
 /*
@@ -1392,7 +1411,6 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
 				{
-					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
 					SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 					CClotBody npc = view_as<CClotBody>(entity);
 					npc.bBuildingIsPlaced = false;
@@ -1435,7 +1453,8 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						Spawn_Buildable(client);
 						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 					}	
-				}			
+					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
+				}	
 			}
 		}
 	}
@@ -3903,7 +3922,7 @@ public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 
 public int MaxBarricadesAllowed(int client)
 {
-	int maxAllowed = 3;
+	int maxAllowed = 4;
 	
  //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
@@ -6503,7 +6522,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 static bool AtMaxSupply(int client)
 {
 	int userid = GetClientUserId(client);
-	int personal = i_BarricadesBuild[client];
+	int personal = i_BarricadesBuild[client] * 3 / 2;
 	int global;
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
@@ -6519,4 +6538,21 @@ static bool AtMaxSupply(int client)
 	}
 
 	return (global > 9 || personal > 2);
+}
+
+
+void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)
+{
+	int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+	int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+
+	TeleportEntity(entity,origin,angles,velocity);
+	if(IsValidEntity(prop1))
+	{
+		TeleportEntity(prop1,origin,angles,velocity);
+	}
+	if(IsValidEntity(prop2))
+	{
+		TeleportEntity(prop2,origin,angles,velocity);
+	}
 }

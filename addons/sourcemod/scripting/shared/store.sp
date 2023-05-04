@@ -684,9 +684,9 @@ stock bool Store_ActiveCanMulti(int client)
 	return false;
 }
 
-float Ability_Check_Cooldown(int client, int what_slot)
+float Ability_Check_Cooldown(int client, int what_slot, int thisWeapon = -1)
 {
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
 	{
 
@@ -732,9 +732,9 @@ float Ability_Check_Cooldown(int client, int what_slot)
 	return 0.0;
 }
 
-void Ability_Apply_Cooldown(int client, int what_slot, float cooldown)
+void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisWeapon = -1)
 {
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int weapon = thisWeapon == -1 ? GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") : thisWeapon;
 	if(weapon != -1)
 	{
 		
@@ -1524,9 +1524,6 @@ void Store_BuyClientItem(int client, Item item, const ItemInfo info)
 	item.Equipped[client] = true;
 	item.Sell[client] = 0;
 	item.BuyWave[client] = -1;
-	
-	if(item.MaxScaled < item.Scaled[client])
-		item.Scaled[client] = item.MaxScaled;
 	
 	if(info.FuncOnBuy != INVALID_FUNCTION)
 	{
@@ -2693,7 +2690,7 @@ public void MenuPage(int client, int section)
 				int npcwallet = item.NPCWeaponAlways ? 0 : NPCCash[client];
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost <= CurrentCash && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
+				if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
 				{
 					ItemCost(client, item, info.Cost);
 					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
@@ -2725,7 +2722,7 @@ public void MenuPage(int client, int section)
 		else
 		{
 			item.GetItemInfo(0, info);
-			if(info.Cost <= CurrentCash)
+			if(info.Cost < 1001 || info.Cost <= CurrentCash)
 			{
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
@@ -3415,10 +3412,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(info.Cost <= 0) //make sure it even can be sold.
 								{
 									item.Owned[client] = false;
-									if((item.Scale*item.Scaled[client]) > 0)
-									{
+									if(item.Scaled[client] > 0)
 										item.Scaled[client]--;
-									}
 								}
 								item.Equipped[client] = false;
 								StoreItems.SetArray(index, item);
@@ -3699,6 +3694,7 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 
+	TF2Attrib_SetByDefIndex(client, 201, f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
@@ -3950,8 +3946,8 @@ void Store_ApplyAttribs(int client)
 	
 	Mana_Regen_Level[client] = Attributes_FindOnPlayer(client, 405, true, 1.0);
 	
-	delete map;
 	delete snapshot;
+	delete map;
 
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
@@ -4175,6 +4171,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
+
 	Manual_Impulse_101(client, health);
 }
 
@@ -4915,6 +4912,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_OceanSong(client, entity);
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
+		Saga_Enable(client, entity);
 #endif
 
 #if defined RPG
@@ -5241,7 +5239,11 @@ static void ItemCost(int client, Item item, int &cost)
 	bool GregSale = false;
 
 	//these should account for selling.
-	cost += item.Scale*item.Scaled[client]; 
+	int scaled = item.Scaled[client];
+	if(scaled > item.MaxScaled)
+		scaled = item.MaxScaled;
+	
+	cost += item.Scale * scaled; 
 	cost += item.CostPerWave * CurrentRound;
 	
 	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);

@@ -318,6 +318,24 @@ public void OnPostThink(int client)
 		Armour_Level_Current[client] = 0;
 		int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
+		if(Saga_RegenHealth(client))
+		{
+			if(dieingstate[client] == 0)
+			{
+				int healing_Amount = 10;
+					
+				int newHealth = flHealth + healing_Amount;
+							
+				if(newHealth >= flMaxHealth)
+				{
+					healing_Amount -= newHealth - flMaxHealth;
+					newHealth = flMaxHealth;
+				}
+				ApplyHealEvent(client, healing_Amount);
+				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
+				flHealth = newHealth;	
+			}
+		}
 		if (Jesus_Blessing[client] == 1)
 		{	
 			int flMaxHealthJesus;
@@ -1334,6 +1352,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		difficulty_math = 1.0 - difficulty_math;
 		
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
+	}
+	//freeplay causes more damage taken.
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
 	}
 	
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");

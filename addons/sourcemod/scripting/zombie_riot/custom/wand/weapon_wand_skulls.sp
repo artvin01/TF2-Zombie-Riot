@@ -51,10 +51,10 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 300.0, 400.0, 450.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootDMG[3] = { 350.0, 700.0, 1200.0 };	//Damage dealt by projectiles fired by skulls
 float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
 float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
-float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.0 };	//Time it takes for skulls to auto-fire
+float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.1 };	//Time it takes for skulls to auto-fire
 float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
 float Skulls_LaunchDMG[3] = { 600.0, 2250.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
@@ -219,6 +219,12 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
 	tier = Skull_Tier[ent];
 	weapon = EntRefToEntIndex(Skull_Weapon[ent]);
+
+	NearlSwordAbility npc = view_as<NearlSwordAbility>(ent);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+
 	RemoveEntity(ent);
 	char particle[255];
 	
@@ -353,7 +359,8 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					DispatchKeyValue(Drone, "StartDisabled", "false");
 		
 					DispatchKeyValue(prop, "Health", "9999999999");
-					SetEntProp(prop, Prop_Data, "m_takedamage", 2, 1);
+					//SetEntProp(prop, Prop_Data, "m_takedamage", 2, 1);
+					SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
 					
 					DispatchSpawn(Drone);
 					
@@ -399,12 +406,19 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
 						}
 					}
-					
+
 					EmitSoundToAll(SKULL_SOUND_SUMMON, Drone);
 					EmitSoundToClient(client, SKULL_SOUND_SUMMON, Drone);
 					
 					Skulls_SetVariables(prop, weapon, tier, client);
+					NearlSwordAbility npc = view_as<NearlSwordAbility>(prop);
+
+					int Textentity = WandSkulls_HealthHud(npc);
+
+					i_WandOwner[Textentity] = client;
 					
+					SDKHook(Textentity, SDKHook_SetTransmit, Skulls_Transmit);
+										
 					//Create queue and apply prethink hook if the queue is null:
 					if (Skulls_Queue[client] == null)
 					{
@@ -457,13 +471,15 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 
 public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 {
-	Address address;
+//	Address address;
 	float damage = Skulls_ShootDMG[tier];
+	/*
 	address = TF2Attrib_GetByDefIndex(weapon, 410);
 	if(address != Address_Null)
 		damage *= TF2Attrib_GetValue(address);
-			
+	*/
 	float velocity = Skulls_ShootVelocity[tier];
+	/*
 	address = TF2Attrib_GetByDefIndex(weapon, 103);
 	if(address != Address_Null)
 		velocity *= TF2Attrib_GetValue(address);
@@ -475,6 +491,7 @@ public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 	address = TF2Attrib_GetByDefIndex(weapon, 475);
 	if(address != Address_Null)
 		velocity *= TF2Attrib_GetValue(address);
+	*/
 	
 	Skull_ShootDMG[prop] = damage;
 	Skull_ShootVelocity[prop] = velocity;
@@ -542,6 +559,8 @@ public void Skulls_Management(int client)
 		
 		if (IsValidEdict(ent))
 		{
+			NearlSwordAbility npc = view_as<NearlSwordAbility>(ent);
+			WandSkulls_HealthHud(npc);
 			if (!IsValidEntity(EntRefToEntIndex(Skull_Weapon[ent])))	//Make sure the skull has a weapon index associated with it at all times. The index doesn't affect any stats, it's just there so Wand_Projectile_Spawn doesn't freak out when I pass it an invalid weapon. Side-note: support for just not having a weapon index would be great for Wand_Projectile_Spawn.
 			{
 				Skull_Weapon[ent] = EntIndexToEntRef(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
@@ -584,10 +603,34 @@ void Skull_AutoFire(int ent, int target, int client)
 
 	float dist = GetVectorDistance(pos, TargetLoc, true);
 	
+	float velocity = Skull_ShootVelocity[ent];
+	float damage = Skull_ShootDMG[ent];
+	int weapon = EntRefToEntIndex(Skull_Weapon[ent]);
+	
+	if (IsValidEntity(weapon))
+	{
+		Address address;
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+
+		address = TF2Attrib_GetByDefIndex(weapon, 103);
+		if(address != Address_Null)
+			velocity *= TF2Attrib_GetValue(address);
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 104);
+		if(address != Address_Null)
+			velocity *= TF2Attrib_GetValue(address);
+		
+		address = TF2Attrib_GetByDefIndex(weapon, 475);
+		if(address != Address_Null)
+			velocity *= TF2Attrib_GetValue(address);
+	}
+
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);
-		TargetLoc = PredictSubjectPositionForProjectiles(npc, target, Skull_ShootVelocity[ent]);
+		TargetLoc = PredictSubjectPositionForProjectiles(npc, target, velocity);
 	}
 
 	GetAngleToPoint(ent, TargetLoc, DummyAngles, ang);
@@ -609,17 +652,6 @@ void Skull_AutoFire(int ent, int target, int client)
 		}
 	}
 	
-	float damage = Skull_ShootDMG[ent];
-	int weapon = EntRefToEntIndex(Skull_Weapon[ent]);
-	
-	if (IsValidEntity(weapon))
-	{
-		Address address;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-	}
-	
 	int NumSkulls = Skulls_Queue[client].Length;
 	float penalty = Skulls_ShootPenaltyPerSkull[Skull_Tier[ent]];
 	if (penalty != 0.0)
@@ -627,7 +659,7 @@ void Skull_AutoFire(int ent, int target, int client)
 		damage *= 1.0 - (penalty * float(NumSkulls));
 	}
 	
-	int projectile = Wand_Projectile_Spawn(client, Skull_ShootVelocity[ent], 5.0, damage, 17, weapon, particle, ang);
+	int projectile = Wand_Projectile_Spawn(client, velocity, 5.0, damage, 17, weapon, particle, ang);
 	
 	if (IsValidEdict(projectile))
 	{
@@ -1063,4 +1095,71 @@ public void Wand_Skulls_Touch_Launched(int entity, int target)
 	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, position, 280.0, _, _, false);
 		
 	RemoveEntity(entity);
+}
+
+
+public int WandSkulls_HealthHud(NearlSwordAbility npc)
+{
+	char HealthText[32];
+	int HealthColour[4];
+
+	int MaxHealth = RoundToCeil((Skulls_Lifespan[Skull_Tier[npc.index]]) * 10.0);
+	int Health = RoundToCeil((Skull_LifetimeEnd[npc.index] - GetGameTime()) * 10.0);
+	if(Health == 0)
+	{
+		Health = 1;
+	}
+	for(int i=0; i<4; i++)
+	{
+		if(Health >= MaxHealth*(i*0.25))
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	if(Health <= MaxHealth)
+	{
+		HealthColour[0] = Health * 255  / MaxHealth;
+		HealthColour[1] = Health * 255  / MaxHealth;
+		
+		HealthColour[0] = 255 - HealthColour[0];
+	}
+	else
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 0;
+		HealthColour[2] = 255;
+	}	
+	HealthColour[3] = 255;
+
+	if(IsValidEntity(npc.m_iWearable6))
+	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(npc.m_iWearable6,     "color", sColor);
+		DispatchKeyValue(npc.m_iWearable6, "message", HealthText);
+	}
+	else
+	{
+		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,25.0}, 11, HealthColour, npc.index);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
+		DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iWearable6 = TextEntity;	
+	}
+	return npc.m_iWearable6;
+}
+
+public Action Skulls_Transmit(int entity, int client)
+{
+	if(client == i_WandOwner[entity])
+		return Plugin_Continue;
+	
+	return Plugin_Handled;
 }
