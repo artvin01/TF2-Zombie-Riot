@@ -1564,6 +1564,7 @@ public void OnClientDisconnect(int client)
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake[client] = true;
 	b_HudHitMarker[client] = true;
+	b_IsPlayerNiko[client] = false;
 }
 
 public void OnClientDisconnect_Post(int client)
