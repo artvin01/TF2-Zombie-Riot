@@ -1182,6 +1182,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else
 	{
+		//teutons should not steal.
+		if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		{
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		float GameTime = GetGameTime();
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
 		{

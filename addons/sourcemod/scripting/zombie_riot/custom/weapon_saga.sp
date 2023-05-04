@@ -135,7 +135,7 @@ public Action Saga_Timer2(Handle timer, int client)
 				if(++WeaponCharge[client] > 32)
 					WeaponCharge[client] = 32;
 				
-				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
+				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 18, 18 - (WeaponCharge[client] % 18));
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
 
@@ -160,7 +160,7 @@ public Action Saga_Timer3(Handle timer, int client)
 				if(++WeaponCharge[client] > 39)
 					WeaponCharge[client] = 39;
 				
-				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 13, 13 - (WeaponCharge[client] % 13));
+				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
 
@@ -284,6 +284,11 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon)
 		CClotBody npc = view_as<CClotBody>(victim);
 		Npc_DebuffWorldTextUpdate(npc);
 		Attributes_OnKill(attacker, weapon);
+		//so using this sword against a raid doesnt result in an auto lose.
+		if(EntRefToEntIndex(RaidBossActive) == victim)
+		{
+			RaidModeTime += 11.0;
+		}
 	}
 }
 
@@ -342,18 +347,20 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 		Pos2[2] -= PosRand[2];
 
 		//get random pos offset for cool slash effect cus i can.
-		int particle = ParticleEffectAt(Pos1, "raygun_projectile_red_crit", 0.15);
+		
+		int particle = ParticleEffectAt(Pos1, "raygun_projectile_red_crit", 0.3);
 
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(particle));
 		pack.WriteFloat(Pos2[0]);
 		pack.WriteFloat(Pos2[1]);
 		pack.WriteFloat(Pos2[2]);
+		RequestFrames(TeleportParticleArk, 10,pack);
+		
 
 	//	TE_SetupBeamPoints(Pos1, Pos2, ShortTeleportLaserIndex, 0, 0, 0, 0.25, 10.0, 10.0, 0, 1.0, {255,0,0,200}, 3);
 	//	TE_SendToAll(0.0);
 
-		RequestFrames(TeleportParticleArk, 6,pack);
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
 	
