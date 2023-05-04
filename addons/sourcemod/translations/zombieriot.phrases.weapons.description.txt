@@ -1642,207 +1642,250 @@
 	{
 		"en"	"Fight your away while creating your own combos that give off different effects."
 		"ru"	"Сражайтесь с противником, создавая собственные комбо, которые дают различные эффекты."
+		"chi"   "战斗，同时创造自己的连击，给不同的效果。"
 	}
 	"The Street Fighter Pap 1"
 	{
 		"en"	"Increased damage and combos are now affected by being mid-air or ducking."
 		"ru"	"На увеличение урона и комбо теперь влияет нахождение в воздухе или состояние пригнувшись."
+		"chi"   "增加的伤害和连击现在受到空中或躲闪的影响。"
 	}
 	
 	"Irene Weapon Desc"
 	{
 		"en"	"You double attack with each attack.\nHitting any enemy 64 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks."
 		"ru"	"Вы удваиваете атаку при каждой атаке.\nУдарив любого врага 64 раза, вы получите способность.\nСпособность подбрасывает врагов в воздух и бомбардирует их атаками с уроном по области."
+		"chi"   "每次攻击都是双倍攻击。\n击中任何敌人64次将获得一个技能。\n此技能将敌人踢到空中并用AOE攻击轰炸他们。"
 	}
 	
 	"Cosmic Terror Desc"
 	{
 		"en" "Have you ever looked at the sky and wondered if you could use that as a weapon?\nWell wonder-no-more!\nIntroducing the ''Cosmic Terror''\nEnjoy eviscerating your foes with the power of the moon!"
 		"ru" "Вы когда-нибудь смотрели на небо и думали, можно ли использовать его в качестве оружия?\nЧто ж, не удивляйтесь!\nПредставляем вам «Космический террор»\nНаслаждайтесь уничтожением своих врагов с помощью силы луны!"
+		"chi" "你是否曾仰望天空，想过是否可以将其用作武器?\n不必再等待!\n介绍“宇宙恐怖”\n享受与月亮的力量掏空你的敌人!"
 	}
 	"Cosmic Terror Desc pap1"
 	{
 		"en" "Do you need more power? more oomph?\nWell look no further, introducing 3 magnifying lenses that almost double the potential damage\nWarning: Warranty void on purchase."
 		"ru" "Вам нужно больше силы? Больше мощи?\nНу тогда смотрите дальше, представляем вам 3 увеличительные линзы, которые почти удваивают потенциальный урон\nПредупреждение: Гарантия аннигилируется при покупке."
+		"chi" "你需要更多的动力吗?更多的性感吗?\n我们不会再看了，介绍3个放大镜，几乎是潜在损害的两倍\n警告:购买保修无效。"
 	}
 	"Cosmic Terror Desc pap2"
 	{
 		"en" "Whats better than 1 death beam?\n4 more death beams of course\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
 		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
+		"chi" "有什么比一个死亡光束更好的?\n当然是更多的死亡光束\n多亏了这些额外的光束，我们重新创造了月球的力量!\n警告:购买时保修失效。"
 	}
 
 	"Alchemist Potion Desc"
 	{
 		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
 		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
+		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
 	}
 	"Alchemist Potion Pap 1"
 	{
 		"en"	"M2 now allows to throw an ally current active weapon buffing potions that grants a attackspeed bonus for the duration."
 		"ru"	"M2 теперь позволяет бросить союзнику зелье усиления для выбранного оружия, дающее бонус к скорости атаки на время действия."
+		"chi"   "M2现在允许向盟友投掷当前有效的武器强化药水，并在持续时间内获得攻速加成。"
 	}
 	"Alchemist Potion Pap 2"
 	{
 		"en"	"Able to apply an explosive coat over an enemy which causes an explosion if killed.\nWorks with Terroriser Rifle!"
 		"ru"	"Возможность нанести на врага взрывное покрытие, которое при убийстве вызывает взрыв.\nРаботает с винтовкой террориста!"
+		"chi"   "能够在敌人身上涂上一层爆炸衣，如果杀死敌人就会引起爆炸。与恐怖步枪一起工作!"
 	}
 	"Alchemist Potion Pap 3"
 	{
 		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding."
 		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х5 урона от кровотечения."
+		"chi"   "增加射速，溅射效果持续一段时间，金属敌人因流血造成的伤害增加5倍。"
 	}
 	"Alchemist Potion Pap 4"
 	{
 		"en"	"Buffing potions last longer and is able to buff multiple allies current active weapon at once."
 		"ru"	"Зелья с усилениями действуют дольше и могут усилить сразу несколько союзников с им выбранным оружием."
+		"chi"   "buff药水持续时间更长，并且可以同时buff多个盟友当前的有效武器。"
 	}
 	"Alchemist Potion Pap 5"
 	{
 		"en"	"M2 will now increase your fire rate heavily but lower your damage and prevent mana gain for the duration."
 		"ru"	"M2 теперь сильно повышает вашу скорострельность, но снижает урон и препятствует получению маны на время действия."
+		"chi"   "M2现在会大大提高你的射速，但会降低你的伤害，并在持续时间内阻止你获得法力值。"
 	}
 	"Alchemist Potion Pap 6"
 	{
 		"en"	"Coated enemies now take extra damage from all sources for a few seconds."
 		"ru"	"Враги с покрытием теперь получают дополнительный урон от всех источников в течение нескольких секунд."
+		"chi"   "被涂层的敌人现在会在几秒钟内受到来自所有来源的额外伤害。"
 	}
 	"Alchemist Potion Pap 7"
 	{
 		"en"	"Buffing potions last until the allies gets revived from a wave end or a down or reset or perk cola or shop buy."
 		"ru"	"Зелья усиления действуют до тех пор, пока союзники не воскреснут после окончания волны, или выведения из строя, или сброса, или перк-колы, или покупки в магазине."
+		"chi"   "buff药水会持续到盟友从一波结束或低谷、重置或振作可乐或商店购买中恢复。"
 	}
 	"Alchemist Potion Pap 8"
 	{
 		"en"	"M2 now affects some nearby allies, granting increased fire rate but lower damage."
 		"ru"	"M2 теперь действует на некоторых ближайших союзников, увеличивая скорострельность, но снижая урон."
+		"chi"   "M2现在影响附近的一些盟友，增加射速，但降低伤害。"
 	}
 	"Alchemist Potion Pap 9"
 	{
 		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow.\nBosses will instead remove this debuff after a few seconds."
 		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление.\nБоссы будут снимать этот эффект через несколько секунд."
+		"chi"   "M2现在可以收缩敌人，造成永久debuff和减速。\nboss会在几秒后移除这个debuff。"
 	}
 
 	"Crusader Desc"
 	{
 		"en"	"Heals an ally for a bit and gives them the medigun buff for 15 seconds and yourself for 5 seconds.\nBuff works on full HP targets."
 		"ru"	"Немного лечит союзника и накладывает на него эфф. лечебной пушки на 15 секунд, а на себя - на 5 секунд.\nЭффект действует на цели с полным ОЗ."
+		"chi"   "治疗一个盟友一点，并给予他们15秒和你自己5秒的医疗buff。\nBuff适用于满HP目标。"
 	}
 
 	"Buildable Barracks Desc"
 	{
 		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troops to give more commands."
 		"ru"	"Позволяет обучать союзников, чтобы они сражались за вас.\nРемонт даёт больше ресурсов.\nУлучшение строения даёт более сильных союзников.\nНажмите R на своих войсках для командования."
+		"chi"   "允许训练盟友为你而战。\nRepair升级提供了更多的资源。建筑升级提供更强大的盟友。在你的盟友上按R键可以发出更多命令。"
 	}
 	"Militia Desc"
 	{
 		"en"	"Basic cheap melee unit"
 		"ru"	"Базовая дешёвая единица ближнего боя"
+		"chi"   "基本的廉价近战单位"
 	}
 	"Archer Desc"
 	{
 		"en"	"Basic first ranged unit"
 		"ru"	"Базовая первая единица дальнего боя"
+		"chi"   "基本第一远程单位"
 	}
 	"Man-At-Arms Desc"
 	{
 		"en"	"Upgraded Militia suitable for fortified zombies"
 		"ru"	"Улучшенный ополченец подходит для укреплённых зомби"
+		"chi"   "升级民兵适合强化僵尸"
 	}
 	"Crossbow Man Desc"
 	{
 		"en"	"Upgraded Archer suitable for basic combine armor"
 		"ru"	"Улучшенный лучник подходит для базовой брони комбайнов"
+		"chi"   "升级射手适合基本的联合装甲"
 	}
 	"Long Swordsman Desc"
 	{
 		"en"	"Upgraded Man-At-Arms suitable for warrior combine armor"
 		"ru"	"Улучшенный гвардеец подходит для брони комбайнов-воинов"
+		"chi"   "升级的人-武器适合战士组合装甲"
 	}
 	"Medival Abalest Desc"
 	{
 		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
 		"ru"	"Улучшенный арбалетчик подходит для поражения с безопасного расстояния"
+		"chi"   "升级弓弩人适合在安全距离内击倒敌人"
 	}
 	"Twohanded Swordsman Desc"
 	{
 		"en"	"Upgraded Long Swordsman suitable for heavy targets"
 		"ru"	"Улучшенный мечник с длинным мечом подходит для тяжёлых целей"
+		"chi"   "升级长剑手，适合重型目标"
 	}
 	"Medival Longbowmen Desc"
 	{
 		"en"	"Fire slower than Abalest but deals much more damage and a longer range"
 		"ru"	"Стреляет медленнее, чем арбалетчик, но наносит гораздо больше урона и имеет большую дальность"
+		"chi"   "射击速度比Abalest慢，但造成的伤害更大，射程更远"
 	}
 	"Champion Desc"
 	{
 		"en"	"Has a much more health and damage than Two-Handed Swordsman"
 		"ru"	"Имеет гораздо больше здоровья и урона, чем двуручный мечник"
+		"chi"   "有比双手剑客更多的生命值和伤害"
 	}
 	"Monk Desc"
 	{
 		"en"	"Provides AOE damage around it but lacks self defense"
 		"ru"	"Исцеляет всех союзников вокруг себя, но не имеет самозащиты"
+		"chi"   "在周围提供AOE伤害，但缺乏自我防御"
 	}
 	"Hussar Desc"
 	{
 		"en"	"High damage and health and provides a buffing aura to nearby allies"
 		"ru"	"Высокий урон и здоровье и имеет ауру усиления ближайшим союзникам"
+		"chi"   "高伤害和高生命值，并为附近的盟友提供buff光环"
 	}
 	"Fish Melee Desc"
 	{
 		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25% dmg buff to all allies for 15 sec."
 		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25% на всех союзников на 15 сек."
+		"chi"   "缓慢治疗你周围的盟友，并给予他们10%%的伤害buff。\nscale与mediggun升级。\nM1对盟友施放额外治疗值。对所有盟友造成25%%的伤害buff，持续15秒。"
 	}
 	"Lantean Staff Desc"
 	{
 		"en" 	"Wherever you look, the drones fly\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control"
+		"chi"   "无论你往哪里看，无人机都在飞。超过10架无人机会让魔杖过度充电，这意味着它们造成的伤害更小，也更难控制"
 	}
 	"Lantean Staff Desc pap"
 	{
 		"en"	"Your drones can now penetrate more enemies\nLess damage loss on overcharge"
+		"chi"   "你的无人机现在可以穿透更多的敌人，但在过度充能时伤害损失更少"
 	}
 	"Specter Pap 1"
 	{
 		"en"	"Attacks slower but hits two targets at once"
+		"chi"   "攻击速度较慢，但能同时击中两个目标"
 	}
 	"Specter Pap 2a"
 	{
 		"en"	"Attacks a third target"
+		"chi"   "可以同时攻击三个目标"
 	}
 	"Specter Pap 2b"
 	{
 		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards"
+		"chi"   "获得无形的技能，但会失去所有生命值，之后会被击晕"
 	}
 	"Specter Pap 3"
 	{
 		"en"	"Grants the effect of the previous unbought upgrade"
+		"chi"   "获得先前未购买升级的效果"
 	}
 	"Specter Pap 4"
 	{
 		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt"
+		"chi"   "增加伤害，并获得自我复活能力，如果造成足够的伤害"
 	}
 	"Specter Pap 5"
 	{
 		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage\nYou do more dmg, and take less damage."
+		"chi"   "将技能从无形变为三倍伤害，抗性，攻击第4个目标\n生命值只在攻击比你生命值低的敌人时损失，否则造成额外伤害\n你造成更多伤害，会使你受到更少伤害。"
 	}
 	"Lantean Staff Desc pap2"
 	{
 		"en"	"Your drones can now penetrate even more targets\nLess damge loss on penetration\nLower damage penatly on overcharge too"
+		"chi"   "你的无人机现在可以穿透更多的目标，更少的穿透伤害损失，更低的充能伤害"
 	}
 	"Yamato_Desc"
 	{
 		"en"	"Gain a portion of the son's of sparda's POWER\nEach time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist"
+		"chi"   "获得一部分斯巴达之子的力量\n每次你造成伤害你获得“动机”，它用作能量来源你的能力\nR:切换“召唤剑”和“螺旋剑”\ n按住鼠标右键向你的敌人发射你的召唤剑!你会失去10%%的近战伤害抗性"
 	}
 	"Preaching Sword Desc"
 	{
 		"en"	"A quick attacking cheap sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
+		"chi"   "一个快速攻击的廉价剑，增加了卖回价值。造成致命伤害会对敌人造成重伤。杀死重伤的敌人提供1秒的冷却时间。"
 	}
 	"Preaching Sword Pap 1"
 	{
 		"en"	"Gains an ability that deals 320%% of damage to 6 nearby enemies and all enemies with Critically Wounded.\nCritically Wounded debuff now provides two seconds cooldown recharge."
+		"chi"   "获得一种技能，对附近的6个敌人和所有重伤的敌人造成320%的伤害。\n重伤debuff现在提供2秒的冷却时间。"
 	}
 	"Preaching Sword Pap 2"
 	{
 		"en"	"Ability gains a third charge, decreased recharge time, and deals 400%% damage.\nProvides 10 health regeneration while not taking damage."
+		"chi"   "技能获得第三次充能，减少充能时间，造成400%%伤害。\n在不受伤害的情况下提供10点生命回复。"
 	}
 }
