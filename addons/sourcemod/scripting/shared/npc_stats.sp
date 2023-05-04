@@ -1551,6 +1551,24 @@ methodmap CClotBody
 			}
 		}
 	}
+	property int m_iTextEntity4
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TextEntity[this.index][3]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_TextEntity[this.index][3] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TextEntity[this.index][3] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property int m_iWearable1
 	{
 		public get()		 
@@ -3256,6 +3274,8 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			RemoveEntity(npc.m_iTextEntity2);
 		if(IsValidEntity(npc.m_iTextEntity3))
 			RemoveEntity(npc.m_iTextEntity3);
+		if(IsValidEntity(npc.m_iTextEntity4))
+			RemoveEntity(npc.m_iTextEntity4);
 		
 #if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
@@ -8260,34 +8280,35 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 
 	if(!HealthText[0])
 	{
-		if(IsValidEntity(npc.m_iTextEntity1))
+		if(IsValidEntity(npc.m_iTextEntity4))
 		{
-			RemoveEntity(npc.m_iTextEntity1);
+			RemoveEntity(npc.m_iTextEntity4);
 		}
 		return;
 	}
 	
 
-	if(IsValidEntity(npc.m_iTextEntity1))
+	if(IsValidEntity(npc.m_iTextEntity4))
 	{
 	//	char sColor[32];
 	//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
 	//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
 	// Colour will never be Edited probably.
-		DispatchKeyValue(npc.m_iTextEntity1, "message", HealthText);
+		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}
 	else
 	{
 		float Offset[3];
 
-		Offset[2] += 90.0;
-		if(b_IsGiant[npc.index])
-		{
-			Offset[2] += 50.0;
-		}
+		Offset[2] += 95.0;
+
+		OffsetFromHead[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
+#if defined RPG
+		Offset[2] += 30.0;
+#endif
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 	//	DispatchKeyValue(TextEntity, "font", "1");
-		npc.m_iTextEntity1 = TextEntity;	
+		npc.m_iTextEntity4 = TextEntity;	
 	}
 }
