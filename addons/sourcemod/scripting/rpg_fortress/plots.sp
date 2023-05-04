@@ -88,7 +88,6 @@ static ArrayList BlockList;
 static StringMap PlotOwner;
 static ArrayList BuildList;
 static char BlockZone[32];
-static int LevelRequired;
 static int MaxBlocks;
 static int MaxRange;
 static int CurrentEdicts;
@@ -121,8 +120,7 @@ void Plots_ConfigSetup(KeyValues map)
 
 	MaxBlocks = kv.GetNum("maxblocks", 80);
 	kv.GetString("zoneprefix", BlockZone, sizeof(BlockZone));
-	LevelRequired = kv.GetNum("levelrequired", 50);
-	MaxRange = kv.GetNum("maxrange", 8);
+	MaxRange = kv.GetNum("maxrange", 9) / 2;
 	
 	delete BlockList;
 	BlockList = new ArrayList(sizeof(BlockEnum));

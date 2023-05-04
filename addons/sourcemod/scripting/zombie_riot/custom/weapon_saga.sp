@@ -2,7 +2,6 @@
 #define SAGA_ABILITY_2	"npc/waste_scanner/grenade_fire.wav"
 #define SAGA_ABILITY_3	"npc/waste_scanner/grenade_fire.wav"
 
-
 //NA GO GOHOM
 static Handle WeaponTimer[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
@@ -10,12 +9,12 @@ static int WeaponCharge[MAXTF2PLAYERS];
 static float SagaCrippled[MAXENTITIES + 1];
 static bool SagaRegen[MAXENTITIES];
 
-static const char g_MeleeHitSounds[][] = {
+static const char g_MeleeHitSounds[][] =
+{
 	"weapons/samurai/tf_katana_slice_01.wav",
 	"weapons/samurai/tf_katana_slice_02.wav",
 	"weapons/samurai/tf_katana_slice_03.wav",
 };
-
 
 void Saga_MapStart()
 {
@@ -43,7 +42,6 @@ bool Saga_RegenHealth(int entity)
 	return SagaRegen[entity];
 }
 
-
 void Saga_DeadEffects(int victim, int attacker, int weapon)
 {
 	if(SagaCrippled[victim])
@@ -56,7 +54,7 @@ void Saga_ChargeReduction(int client, int weapon, float time)
 
 	if(WeaponTimer[client] && EntRefToEntIndex(WeaponRef[client]) == weapon)
 	{
-		WeaponCharge[client] += RoundFloat(time) - 1;
+		//WeaponCharge[client] += RoundFloat(time) - 1;
 		TriggerTimer(WeaponTimer[client], false);
 	}
 	
@@ -74,6 +72,7 @@ void Saga_ChargeReduction(int client, int weapon, float time)
 void Saga_Enable(int client, int weapon)
 {
 	SagaRegen[client] = false;
+
 	if(i_CustomWeaponEquipLogic[weapon] == 19)
 	{
 		WeaponRef[client] = EntIndexToEntRef(weapon);
@@ -135,7 +134,7 @@ public Action Saga_Timer2(Handle timer, int client)
 				if(++WeaponCharge[client] > 32)
 					WeaponCharge[client] = 32;
 				
-				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 18, 18 - (WeaponCharge[client] % 18));
+				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
 
@@ -151,23 +150,28 @@ public Action Saga_Timer3(Handle timer, int client)
 {
 	if(IsClientInGame(client))
 	{
-		SagaRegen[client] = true;
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
+				SagaRegen[client] = true;
 				if(++WeaponCharge[client] > 39)
 					WeaponCharge[client] = 39;
 				
-				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
+				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 13, 13 - (WeaponCharge[client] % 13));
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			}
+			else
+			{
+				SagaRegen[client] = false;
 			}
 
 			return Plugin_Continue;
 		}
 	}
 
+	SagaRegen[client] = false;
 	WeaponTimer[client] = null;
 	return Plugin_Stop;
 }
