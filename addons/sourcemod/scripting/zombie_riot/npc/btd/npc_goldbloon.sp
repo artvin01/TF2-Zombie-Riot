@@ -54,7 +54,8 @@ void GoldBloon_MapStart()
 {
 	for(int i; i<sizeof(SoundHit); i++)
 	{
-		PrecacheSoundCustom(SoundHit[i]);
+		PrecacheSound(SoundHit[i]);
+	//	PrecacheSoundCustom(SoundHit[i]);
 	}
 	PrecacheSound("zombie_riot/btd/popgolden.wav");
 }

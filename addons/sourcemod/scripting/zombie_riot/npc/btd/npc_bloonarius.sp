@@ -172,10 +172,16 @@ static int i_PlayMusicSound;
 
 void Bloonarius_MapStart()
 {
+	PrecacheSound("zombie_riot/btd/bossbloonariusdeath.wav");
+	PrecacheSound("zombie_riot/btd/bossbloonariusspawn.wav");
+	PrecacheSound("zombie_riot/btd/bossbloonariusvomit.wav");
+	PrecacheSound("#zombie_riot/btd/musicbossbloonarius.mp3");
+	/*
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusdeath.wav");
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusspawn.wav");
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusvomit.wav");
 	PrecacheSoundCustom("#zombie_riot/btd/musicbossbloonarius.mp3");
+	*/
 }
 
 methodmap Bloonarius < CClotBody

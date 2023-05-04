@@ -157,23 +157,28 @@ void Bloon_MapStart()
 	char buffer[256];
 	for(int i; i<sizeof(SoundCeramicHit); i++)
 	{
-		PrecacheSoundCustom(SoundCeramicHit[i]);
+		PrecacheSound(SoundCeramicHit[i]);
+	//	PrecacheSoundCustom(SoundCeramicHit[i]);
 	}
 	for (int i = 0; i < (sizeof(SoundCeramicPop));   i++)
 	{
-		PrecacheSoundCustom(SoundCeramicPop[i]);
+		PrecacheSound(SoundCeramicPop[i]);
+	//	PrecacheSoundCustom(SoundCeramicPop[i]);
 	}
 	for(int i; i<sizeof(SoundLead); i++)
 	{
-		PrecacheSoundCustom(SoundLead[i]);
+		PrecacheSound(SoundLead[i]);
+	//	PrecacheSoundCustom(SoundLead[i]);
 	}
 	for(int i; i<sizeof(SoundPop); i++)
 	{
-		PrecacheSoundCustom(SoundPop[i]);
+		PrecacheSound(SoundPop[i]);
+	//	PrecacheSoundCustom(SoundPop[i]);
 	}
 	for(int i; i<sizeof(SoundPurple); i++)
 	{
-		PrecacheSoundCustom(SoundPurple[i]);
+		PrecacheSound(SoundPurple[i]);
+	//	PrecacheSoundCustom(SoundPurple[i]);
 	}
 	
 	static const char Properties[][] = { "", "f", "fg", "g" };
