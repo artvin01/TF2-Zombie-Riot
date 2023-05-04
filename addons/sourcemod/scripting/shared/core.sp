@@ -11,7 +11,7 @@
 #include <tf2items>
 #include <tf_econ_data>
 #include <tf2attributes>
-//#include <lambda>
+#include <lambda>
 #include <PathFollower>
 #include <PathFollower_Nav>
 #include <morecolors>
