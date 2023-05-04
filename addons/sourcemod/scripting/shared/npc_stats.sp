@@ -111,7 +111,9 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
+#if defined ZR
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
+#endif
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 #if defined ZR
