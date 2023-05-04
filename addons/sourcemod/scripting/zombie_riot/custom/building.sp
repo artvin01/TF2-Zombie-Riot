@@ -6540,7 +6540,6 @@ static bool AtMaxSupply(int client)
 	return (global > 9 || personal > 2);
 }
 
-
 void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)
 {
 	int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);

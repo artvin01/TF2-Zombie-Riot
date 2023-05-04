@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define UseDownloadTable
+//#define UseDownloadTable
 
 #include <tf2_stocks>
 #include <sdkhooks>
@@ -1045,7 +1045,6 @@ float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 */
 
 #include "shared/attributes.sp"
-#include "shared/buildonbuilding.sp"
 #include "shared/commands.sp"
 #include "shared/configs.sp"
 #include "shared/convars.sp"
@@ -1161,7 +1160,6 @@ public void OnPluginStart()
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
-	OnPluginStart_Build_on_Building();
 //	Building_PluginStart();
 #if defined LagCompensation
 	OnPluginStart_LagComp();
@@ -1308,7 +1306,6 @@ public void OnMapStart()
 	SDKHook_MapStart();
 	ViewChange_MapStart();
 	MapStart_CustomMeleePrecache();
-	OnMapStart_Build_on_Build();
 	WandStocks_Map_Precache();
 	
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
@@ -2208,7 +2205,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
-		OnEntityCreated_Build_On_Build(entity, classname);
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		f_BuffBannerNpcBuff[entity] = 0.0;
@@ -2230,6 +2226,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsAMedigun[entity] = false;
 		
 #if defined ZR
+		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 #endif
@@ -2811,8 +2808,10 @@ public void OnEntityDestroyed(int entity)
 		}
 	}
 	
+#if defined ZR
 	OnEntityDestroyed_Build_On_Build(entity);
-	
+#endif
+
 	NPC_Base_OnEntityDestroyed();
 }
 
@@ -3138,11 +3137,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 }
 
 //ty miku for tellingg
-
-float ClientMusicVolume(int client)
-{
-	return f_ClientMusicVolume[client];
-}
 
 public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {

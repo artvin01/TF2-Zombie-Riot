@@ -179,6 +179,7 @@ void RPG_MapEnd()
 void RPG_PutInServer(int client)
 {
 	CountPlayersOnRed();
+	AdjustBotCount();
 
 	int userid = GetClientUserId(client);
 	QueryClientConVar(client, "cl_allowdownload", OnQueryFinished, userid);

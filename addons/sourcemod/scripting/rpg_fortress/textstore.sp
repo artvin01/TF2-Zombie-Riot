@@ -709,7 +709,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 			StoreList.SetArray(name, store, sizeof(store));
 		}
 
-		if(store.Key[0] && TextStore_GetItemCount(client, store.Key[0]))
+		if(store.Key[0] && TextStore_GetItemCount(client, store.Key))
 		{
 			SPrintToChat(client, "You require \"%s\" to use this shop", store.Key);
 		}

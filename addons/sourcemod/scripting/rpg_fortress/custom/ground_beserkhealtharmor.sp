@@ -111,7 +111,7 @@ public Action Timer_BeserkDeactivate(Handle timer, int ref)
 	return Plugin_Handled;
 }
 
-float BeserkHealthArmor_OnTakeDamage(int victim, int attacker, float damage, int damagetype)
+float BeserkHealthArmor_OnTakeDamage(int victim, float damage)
 {
 	if(b_BeserkActive[victim] && f_DamageToAbsorb[victim] > 0)
 	{

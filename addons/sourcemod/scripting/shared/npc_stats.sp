@@ -4215,10 +4215,12 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 
+#if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
 	{
 		return false;
 	}
+#endif
 
 	return !(entity == iExclude);
 }
@@ -4565,11 +4567,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
+#if defined ZR
 			if(Saga_EnemyDoomed(enemy) && index > MaxClients && !b_Is_Player_Projectile[index])
 			{
 				return false;
 			}
 			else
+#endif
 			{
 				return IsEntityAlive(enemy);
 			}
@@ -5160,7 +5164,6 @@ public void Check_If_Stuck(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
-
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
@@ -8247,10 +8250,13 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "X");
 	}
+
+#if defined ZR
 	if(Saga_EnemyDoomed(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "%s#", HealthText);
+		Format(HealthText, sizeof(HealthText), "#");
 	}
+#endif
 
 	if(!HealthText[0])
 	{
