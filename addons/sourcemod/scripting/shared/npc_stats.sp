@@ -8278,6 +8278,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "#");
 	}
+	if(b_HasBombImplanted[npc.index])
+	{
+		Format(HealthText, sizeof(HealthText), "!");
+	}
 #endif
 
 	if(!HealthText[0])

@@ -398,6 +398,7 @@ float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
+bool b_HasBombImplanted[MAXENTITIES];
 int g_particleCritText;
 int LastHitId[MAXENTITIES];
 int DamageBits[MAXENTITIES];
@@ -2224,6 +2225,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NpcInternalId[entity] = 0;
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
+		b_HasBombImplanted[entity] = false;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);
