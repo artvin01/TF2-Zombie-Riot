@@ -232,7 +232,7 @@ enum struct StageEnum
 		{
 			if(this.MusicEasyCustom)
 			{
-				PrecacheSoundCustom(this.MusicEasy);
+				PrecacheSoundCustom(this.MusicEasy, _, this.Level);
 			}
 			else
 			{
@@ -250,7 +250,7 @@ enum struct StageEnum
 		{
 			if(this.MusicHardCustom)
 			{
-				PrecacheSoundCustom(this.MusicHard);
+				PrecacheSoundCustom(this.MusicHard, _, this.Level);
 			}
 			else
 			{
