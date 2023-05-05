@@ -445,9 +445,9 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 
 		SpellList.PushArray(spell);
 	}
-	else
+	else if(!Store_EquipItem(client, item, index, name, auto))
 	{
-		Store_EquipItem(client, item, index, name, auto);
+		return Item_None;
 	}
 	return Item_On;
 }

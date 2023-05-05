@@ -532,8 +532,8 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name, boo
 
 	info.SetupKV(kv, name);
 
-	//if(!auto)
-	Store_EquipSlotCheck(client, info.Slot);
+	if(!auto)
+		Store_EquipSlotCheck(client, info.Slot);
 	
 	info.Owner = client;
 	info.Store = index;
