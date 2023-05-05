@@ -145,7 +145,6 @@ void Beserk_EndAbility(int client)
 {
 	float HealthToRegen = f_HealthToRegain[client];
 	f_HealthToRegain[client] = 0.0;
-	PrintToChatAll("%f",HealthToRegen);
 	HealthToRegen *= 0.04;
 	//adjusts for 25 ticks of healing
 
