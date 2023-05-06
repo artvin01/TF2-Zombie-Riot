@@ -2023,13 +2023,13 @@
 	{
 	     "en"       "Bigger Radius"
 		 "ru"       "Увеличенный радиус"
-	     "chi"       "加大影响范围"
+	     "chi"      "加大影响范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
 		 "ru"       "Барабаны джунглей"
-	     "chi"       "加快范围内攻击速度"
+	     "chi"      "加快范围内攻击速度"
 	}
 	"Grow Blocker"
 	{
@@ -2077,40 +2077,48 @@
 	{
 		"en"       "Judgement Of Iberia"
 		"ru"       "Суд Иберии"
+		"chi"      "伊比利亚的判决"
 	}
 	"Tornado-Blitz"
 	{
 		"en"		"Tornado-Blitz"
 		"ru"		"Торнадо-Блиц"
+		"chi"       "龙卷风突袭"
 	}
 	"Cosmic Terror"
 	{
 		"en"		"Cosmic Terror"
 		"ru"		"Космический террор"
+		"chi"       "宇宙恐怖"
 	}
 	"Passanger's Device"
 	{
 		"en"	"Passanger's Device"
 		"ru"	"Пассажирское устройство"
+		"chi"   "乘客设备"
 	}
 	"Alchemist Potion"
 	{
 		"en"	"Alchemist Potion"
 		"ru"	"Зелье алхимика"
+		"chi"   "炼金术士药水"
 	}
 	"Builder Extra Gear"
 	{
 		"en"	"Builder Extra Gear"
 		"ru"	"Доп. снаряж. строителя"
+		"chi"   "建造者额外装备"
 	}
 	"Buildable Barracks"
 	{
 		"en"	"Buildable Barracks"
 		"ru"	"Возведение казармы"
+		"chi"   "可建造兵营"
 	}
 	"Nearl Silvester Spear"
 	{
 		"en"	"Nearl Silvester Spear"
+		"chi"   "西尔维斯特矛"
 	}
 	"Lapplands Sword"
 	{
@@ -2123,29 +2131,36 @@
 	"Chainblade"
 	{
 		"en"	"Chainblade"
+		"chi"   "链刃"
 	}
 	"Skilled Chainblade"
 	{
 		"en"	"Skilled Chainblade"
+		"chi"   "精通链刃"
 	}
 	"Elite Chainblade"
 	{
 		"en"	"Elite Chainblade"
+		"chi"   "精英链刃"
 	}
 	"Elite Skilled Chainblade"
 	{
 		"en"	"Elite Skilled Chainblade"
+		"chi"   "精英技能链刃"
 	}
 	"Unchained Blade"
 	{
 		"en"	"Unchained Blade"
+		"chi"   "无链之刃"
 	}
 	"Elite Unchained Blade"
 	{
 		"en"	"Elite Unchained Blade"
+		"chi"   "精英无链之刃"
 	}
 	"Preaching Sword"
 	{
 		"en"	"Preaching Sword"
+		"chi"   "传道之剑"
 	}
 }
