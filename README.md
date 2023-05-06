@@ -79,16 +79,17 @@ Sub Servers that also host the gamemode:
 ## Installation
 
 Go to Database.cfg inside your configs folder, and add
+
 	"zr_local"
-    {
+	{
 		"driver"			"sqlite"
 		"database"			"zr_local_database"
-    }
+	}
 	"zr_global"
-    {
+	{
 		"driver"			"sqlite"
 		"database"			"zr_global_database"
-    }
+	}
 global zr can be a shared database across multiple servers, local one should stay sqlite.
 
 
