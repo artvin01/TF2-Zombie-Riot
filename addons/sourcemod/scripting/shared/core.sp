@@ -3154,7 +3154,8 @@ public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQue
 			f_BegPlayerToSetDuckConvar[client] = GetGameTime() + 300.0;
 			if(StringToFloat(cvarValue) < 0.9)
 			{
-				PrintToChat(client,"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!");
+				SetGlobalTransTarget(client);
+				PrintToChat(client,"%t", "Show Grigori Mute Hint Message");
 			}
 		}
 	}

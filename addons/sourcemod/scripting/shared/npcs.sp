@@ -1344,7 +1344,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 			damage *= fl_RangedArmor[victim];
 		}
-	}
 		//No resistances towards slash as its internal.
 
 		if(damagePosition[0] != 0.0) //If there is no pos, then dont.
