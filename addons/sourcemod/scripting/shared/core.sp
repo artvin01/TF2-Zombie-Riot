@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define UseDownloadTable
 
 #include <tf2_stocks>
 #include <sdkhooks>

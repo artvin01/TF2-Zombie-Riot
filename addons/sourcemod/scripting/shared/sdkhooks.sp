@@ -1311,7 +1311,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
-			PrintToChat(victim, "Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it.");
+			SetGlobalTransTarget(victim);
+			PrintToChat(victim, "%t", "Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it.");
 			if (GameTime > f_ClientWasTooLongInsideHurtZone[victim])
 			{
 				f_ClientWasTooLongInsideHurtZone[victim] = GameTime + 6.0;	

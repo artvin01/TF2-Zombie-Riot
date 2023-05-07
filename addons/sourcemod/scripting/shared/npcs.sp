@@ -1318,29 +1318,33 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damagetype |= DMG_BULLET; //add bullet logic
 			damagetype &= ~DMG_BLAST; //remove blast logic			
 		}
-		if(!NpcStats_IsEnemySilenced(victim))
+		if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 		{
-			if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
-			{
 #if defined ZR
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
 				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
 				{
 					damage *= Medival_Difficulty_Level;
 				}
-#endif
-				damage *= fl_MeleeArmor[victim];
 			}
-			else if(!(damagetype & DMG_SLASH))
-			{
-#if defined ZR
-				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
-				{
-					damage *= Medival_Difficulty_Level;
-				}
 #endif
-				damage *= fl_RangedArmor[victim];
-			}
+			damage *= fl_MeleeArmor[victim];
 		}
+		else if(!(damagetype & DMG_SLASH))
+		{
+#if defined ZR
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
+				{
+					damage *= Medival_Difficulty_Level;
+				}
+			}
+#endif
+			damage *= fl_RangedArmor[victim];
+		}
+	}
 		//No resistances towards slash as its internal.
 
 		if(damagePosition[0] != 0.0) //If there is no pos, then dont.
