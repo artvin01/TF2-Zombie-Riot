@@ -4103,8 +4103,8 @@ static const char g_ScoutSagaResponse[][] = {
 };
 
 static const char g_SoldierSagaResponse[][] = {
-	"vo/soldier_taunts14.mp3",
-	"vo/soldier_taunts17.mp3",
+	"vo/taunts/soldier_taunts14.mp3",
+	"vo/taunts/soldier_taunts17.mp3",
 	"vo/soldier_specialcompleted02.mp3",
 	"vo/soldier_specialcompleted05.mp3",
 };

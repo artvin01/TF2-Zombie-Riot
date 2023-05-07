@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+//#define UseDownloadTable
+
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 #define STARTER_WEAPON_LEVEL	5
@@ -261,6 +263,7 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
+#include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/escape.sp"
 #include "zombie_riot/freeplay.sp"
@@ -381,6 +384,7 @@ void ZR_PluginStart()
 	if(CvarSvRollagle)
 		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	OnPluginStart_Build_on_Building();
 	Database_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
@@ -408,6 +412,7 @@ void ZR_MapStart()
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
+	OnMapStart_Build_on_Build();
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
 	Music_ClearAll();

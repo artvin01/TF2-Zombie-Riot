@@ -1,8 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#if defined ZR
 float f_MedicCallIngore[MAXTF2PLAYERS];
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
+#endif
 
 void Commands_PluginStart()
 {
@@ -45,6 +47,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 
 		return Plugin_Handled;
 	}
+#if defined ZR
 	else if(StrEqual(buffer, "-inspect_server", false))
 	{
 		b_HoldingInspectWeapon[client] = false;
@@ -60,6 +63,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 			return Plugin_Handled;
 		}
 	}
+#endif
 	/*
 	HINT: there is a - version, which is detected when letting go of the button, its basically a fancy onclientruncmd, although it shouldnt be used really.
 

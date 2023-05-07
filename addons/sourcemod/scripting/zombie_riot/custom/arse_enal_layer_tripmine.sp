@@ -544,6 +544,8 @@ int Terroriser_Bomb_Implant_Particle[MAXENTITIES+1] = {-1, ...};
 
 public void Apply_Particle_Teroriser_Indicator(int entity)
 {
+	b_HasBombImplanted[entity] = true;	
+	/*
 	int particle_index;
 	particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
 	if(!IsValidEntity(particle_index))
@@ -554,6 +556,7 @@ public void Apply_Particle_Teroriser_Indicator(int entity)
 		flPos[2] += 90.0 * GetEntPropFloat(entity, Prop_Data, "m_flModelScale");
 		Terroriser_Bomb_Implant_Particle[entity] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "powerup_icon_supernova_red",entity));
 	}
+	*/
 }
 
 void CleanAllApplied_Aresenal(int entity, bool force = false)
@@ -568,14 +571,17 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	}
 	if(!Anyplayerhasbombsleft || force)
 	{
-		int particle_index;
+		b_HasBombImplanted[entity] = false;	
+	}
+	/*
+			int particle_index;
 		particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
 
 		if(IsValidEntity(particle_index))
 		{
 			RemoveEntity(particle_index);
 		}		
-	}
+		*/
 }
 
 void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2[3], bool allowLagcomp = false)

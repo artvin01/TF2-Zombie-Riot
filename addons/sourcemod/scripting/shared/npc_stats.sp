@@ -111,7 +111,9 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
+#if defined ZR
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
+#endif
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
 #if defined ZR
@@ -1548,6 +1550,24 @@ methodmap CClotBody
 			else
 			{
 				i_TextEntity[this.index][2] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iTextEntity4
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_TextEntity[this.index][3]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_TextEntity[this.index][3] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TextEntity[this.index][3] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -3256,6 +3276,8 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 			RemoveEntity(npc.m_iTextEntity2);
 		if(IsValidEntity(npc.m_iTextEntity3))
 			RemoveEntity(npc.m_iTextEntity3);
+		if(IsValidEntity(npc.m_iTextEntity4))
+			RemoveEntity(npc.m_iTextEntity4);
 		
 #if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
@@ -4215,10 +4237,12 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 
+#if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
 	{
 		return false;
 	}
+#endif
 
 	return !(entity == iExclude);
 }
@@ -4565,11 +4589,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
+#if defined ZR
 			if(Saga_EnemyDoomed(enemy) && index > MaxClients && !b_Is_Player_Projectile[index])
 			{
 				return false;
 			}
 			else
+#endif
 			{
 				return IsEntityAlive(enemy);
 			}
@@ -5160,7 +5186,6 @@ public void Check_If_Stuck(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
-
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
@@ -8247,41 +8272,49 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "X");
 	}
+
+#if defined ZR
 	if(Saga_EnemyDoomed(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "%s#", HealthText);
+		Format(HealthText, sizeof(HealthText), "#");
 	}
+	if(b_HasBombImplanted[npc.index])
+	{
+		Format(HealthText, sizeof(HealthText), "!");
+	}
+#endif
 
 	if(!HealthText[0])
 	{
-		if(IsValidEntity(npc.m_iTextEntity1))
+		if(IsValidEntity(npc.m_iTextEntity4))
 		{
-			RemoveEntity(npc.m_iTextEntity1);
+			RemoveEntity(npc.m_iTextEntity4);
 		}
 		return;
 	}
 	
 
-	if(IsValidEntity(npc.m_iTextEntity1))
+	if(IsValidEntity(npc.m_iTextEntity4))
 	{
 	//	char sColor[32];
 	//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
 	//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
 	// Colour will never be Edited probably.
-		DispatchKeyValue(npc.m_iTextEntity1, "message", HealthText);
+		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}
 	else
 	{
 		float Offset[3];
 
-		Offset[2] += 90.0;
-		if(b_IsGiant[npc.index])
-		{
-			Offset[2] += 50.0;
-		}
+		Offset[2] += 95.0;
+
+		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
+#if defined RPG
+		Offset[2] += 30.0;
+#endif
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 	//	DispatchKeyValue(TextEntity, "font", "1");
-		npc.m_iTextEntity1 = TextEntity;	
+		npc.m_iTextEntity4 = TextEntity;	
 	}
 }

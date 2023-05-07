@@ -13,7 +13,14 @@ float SentryDamageRpg(int client)
 
 int RpgHasSentry(int client)
 {
-	return HasSentry[client];
+	if(client <= MaxClients)
+	{
+		return HasSentry[client];
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void SentryThrow_MapStart()
@@ -38,8 +45,17 @@ public float AbilitySentryThrow(int client, int index, char name[48])
 			{
 				if(Stats_Dexterity(client) >= 25)
 				{
-					Ability_SentryThrow(client, 1, weapon);
-					return (GetGameTime() + 40.0);
+					if(!IsValidEntity(HasSentry[client]))
+					{
+						Ability_SentryThrow(client, 1, weapon);
+						return (GetGameTime() + 40.0);
+					}
+					else
+					{
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						ShowGameText(client,"leaderboard_streak", 0, "Your sentry is already deployed.");
+						return 0.0;
+					}
 				}
 				else
 				{
@@ -66,7 +82,7 @@ public void Ability_SentryThrow(int client, int level, int weapon)
 {
 	float damage = Config_GetDPSOfEntity(weapon);
 	
-	SentryDamage[client] = (damage * 0.15);
+	SentryDamage[client] = (damage * 0.3);
 	
 	DrainRate[client] = 10 - level*2;
 	float pos[3];

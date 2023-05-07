@@ -1666,12 +1666,14 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 static int LastTeam;
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
 {
+#if defined ZR
 //	if(!Disconnecting)
 	{
 		LastTeam = GetEntProp(client, Prop_Send, "m_iTeamNum");
 		GameRules_SetProp("m_bPlayingMannVsMachine", true);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 	}
+#endif
 	return MRES_Ignored;
 }
 /*
@@ -1700,11 +1702,13 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 */
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookParam param)
 {
+#if defined ZR
 //	if(!Disconnecting)
 	{
 		GameRules_SetProp("m_bPlayingMannVsMachine", false);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", LastTeam);
 	}
+#endif
 	return MRES_Ignored;
 }
 

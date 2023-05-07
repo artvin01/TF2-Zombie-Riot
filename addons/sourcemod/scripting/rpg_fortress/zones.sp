@@ -93,7 +93,7 @@ static void OnActive(int entity, const char[] name)
 	}
 }
 
-static void OnDisable(int entity, const char[] name)
+static void OnDisable(const char[] name)
 {
 	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
@@ -161,7 +161,7 @@ public Action Zones_EndTouchAll(const char[] output, int entity, int caller, flo
 			if(pos != -1)
 			{
 				ActiveZones.Erase(pos);
-				OnDisable(entity, name);
+				OnDisable(name);
 			}
 		}
 	}

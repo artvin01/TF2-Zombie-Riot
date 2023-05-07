@@ -203,7 +203,7 @@ static void SendNextFile(int client)
 		pack = new DataPack();
 		pack.WriteCell(false);	// Is a sound
 	}
-	else if(ExtraLevel[client] < SoundList.Length)
+	else if(ExtraLevel[client] < ExtraList.Length)
 	{
 		ExtraList.GetString(ExtraLevel[client], download, sizeof(download));
 

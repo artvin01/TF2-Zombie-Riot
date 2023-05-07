@@ -487,6 +487,8 @@ public void NPC_Despawn(int entity)
 			RemoveEntity(npc.m_iTextEntity2);
 		if(IsValidEntity(npc.m_iTextEntity3))
 			RemoveEntity(npc.m_iTextEntity3);
+		if(IsValidEntity(npc.m_iTextEntity4))
+			RemoveEntity(npc.m_iTextEntity4);
 
 		RemoveEntity(entity);
 	}

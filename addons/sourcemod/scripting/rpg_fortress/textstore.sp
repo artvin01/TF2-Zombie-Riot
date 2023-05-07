@@ -445,9 +445,9 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 
 		SpellList.PushArray(spell);
 	}
-	else
+	else if(!Store_EquipItem(client, item, index, name, auto))
 	{
-		Store_EquipItem(client, item, index, name, auto);
+		return Item_None;
 	}
 	return Item_On;
 }
@@ -709,7 +709,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 			StoreList.SetArray(name, store, sizeof(store));
 		}
 
-		if(store.Key[0] && TextStore_GetItemCount(client, store.Key[0]))
+		if(store.Key[0] && !TextStore_GetItemCount(client, store.Key))
 		{
 			SPrintToChat(client, "You require \"%s\" to use this shop", store.Key);
 		}

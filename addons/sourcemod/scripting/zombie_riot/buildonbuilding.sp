@@ -212,20 +212,11 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 	}
 	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
-#if defined ZR
 		if (IsValidEntity(entity) && (IsEntitySpike(entity) || b_Is_Player_Projectile[entity]))
 		{
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
-#endif
-#if defined RPG
-		if (IsValidEntity(entity) && (b_Is_Player_Projectile[entity]))
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
-		}
-#endif
 	}
-#if defined ZR
 	for(int entitycount_again; entitycount_again<ZR_MAX_TRAPS; entitycount_again++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount_again]);
@@ -234,7 +225,6 @@ public MRESReturn OnIsPlacementPosValidPre(int pThis, Handle hReturn, Handle hPa
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
 	}
-#endif
 	return MRES_Ignored;
 }
 
@@ -364,7 +354,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		//We use custom offets for buildings, so we do our own magic here
 		float Delta = 50.0; //default is 50
 
-#if defined ZR
 		switch(i_WhatBuilding[buildingHit])
 		{
 			case BuildingAmmobox:
@@ -397,7 +386,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			}
 
 		}
-#endif
 		
 		if(FloatAbs(endPos2[2]-endPos[2])<Delta)
 		{
@@ -642,13 +630,10 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 	{
 		return false;
 	}
-	
-#if defined ZR
 	if(!Building_Constructed[entity]) //Make sure they are actually build.
 	{
 		return false;
 	}
-#endif
 	
 	char str[32];
 	GetEntityClassname(entity, str, sizeof(str));

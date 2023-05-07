@@ -1504,7 +1504,6 @@ void Store_EquipSlotCheck(int client, int slot)
 					{
 						PrintToChat(client, "%s was unequipped", info.Custom_Name);
 						TextStore_SetInv(client, info.Store, _, false);
-						break;
 					}
 				}
 			}

@@ -1620,7 +1620,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 		}
 #if defined RPG		
-		damage = BeserkHealthArmor_OnTakeDamage(victim, attacker, damage, damagetype);
+		damage = BeserkHealthArmor_OnTakeDamage(victim, damage);
 
 		damage = RpgCC_ContractExtrasPlayerOnTakeDamage(victim, attacker, damage, damagetype);
 #endif

@@ -705,7 +705,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		FinishLagCompensation_Base_boss();
 	}
 	delete pack;
+
+#if defined ZR
 	SagaAttackAfterSwing(client);
+#endif
 }
 
 static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)

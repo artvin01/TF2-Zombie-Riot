@@ -13,13 +13,14 @@ enum struct MusicEnum
 		kv.GetString("sound", this.Sound, PLATFORM_MAX_PATH);
 		this.Duration = kv.GetNum("duration");
 		this.Volume = kv.GetFloat("volume", 1.0);
-		this.Custom = view_as<bool>(kv.GetNum("download"));
+		int custom = kv.GetNum("download");
+		this.Custom = view_as<bool>(custom);
 		
 		if(this.Sound[0])
 		{
 			if(this.Custom)
 			{
-				PrecacheSoundCustom(this.Sound);
+				PrecacheSoundCustom(this.Sound, _, custom);
 			}
 			else
 			{

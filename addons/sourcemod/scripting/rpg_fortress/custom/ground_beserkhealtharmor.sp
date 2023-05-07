@@ -111,7 +111,7 @@ public Action Timer_BeserkDeactivate(Handle timer, int ref)
 	return Plugin_Handled;
 }
 
-float BeserkHealthArmor_OnTakeDamage(int victim, int attacker, float damage, int damagetype)
+float BeserkHealthArmor_OnTakeDamage(int victim, float damage)
 {
 	if(b_BeserkActive[victim] && f_DamageToAbsorb[victim] > 0)
 	{
@@ -145,7 +145,6 @@ void Beserk_EndAbility(int client)
 {
 	float HealthToRegen = f_HealthToRegain[client];
 	f_HealthToRegain[client] = 0.0;
-	PrintToChatAll("%f",HealthToRegen);
 	HealthToRegen *= 0.04;
 	//adjusts for 25 ticks of healing
 
