@@ -1076,6 +1076,14 @@
 		"nl"		"Extra Ammunitie"
 		"chi"       "弹药补给已到达"
 	}
+	"Max Health Activated"
+	{
+		"en" 		"Extra Health!"
+	}
+	"Max Money Activated"
+	{
+		"en" 		"Extra Cash!"
+	}
 	"Help?"
 	{
 		"en" 		"Help/FAQ"
