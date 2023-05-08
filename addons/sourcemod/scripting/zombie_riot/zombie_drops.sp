@@ -17,23 +17,23 @@ bool b_ToggleTransparency[MAXENTITIES];
 
 static int i_KilledThisMany_Nuke = 0;
 static bool i_AllowNuke = true;
-static float f_KillTheseManyMorePowerup_base_Nuke = 120.0;
-static int i_KillTheseManyMorePowerup_Nuke = 120;
+static float f_KillTheseManyMorePowerup_base_Nuke = 125.0;
+static int i_KillTheseManyMorePowerup_Nuke = 125;
 
 static int i_KilledThisMany_Maxammo = 0;
 static bool i_AllowMaxammo = true;
-static float f_KillTheseManyMorePowerup_base_Maxammo = 110.0;
-static int i_KillTheseManyMorePowerup_Maxammo = 110;
+static float f_KillTheseManyMorePowerup_base_Maxammo = 120.0;
+static int i_KillTheseManyMorePowerup_Maxammo = 120;
 
 static int i_KilledThisMany_Health = 0;
 static bool i_AllowHealth = true;
-static float f_KillTheseManyMorePowerup_base_Health = 140.0;
-static int i_KillTheseManyMorePowerup_Health = 140;
+static float f_KillTheseManyMorePowerup_base_Health = 150.0;
+static int i_KillTheseManyMorePowerup_Health = 150;
 
 static int i_KilledThisMany_Money = 0;
 static bool i_AllowMoney = true;
-static float f_KillTheseManyMorePowerup_base_Money = 140.0;
-static int i_KillTheseManyMorePowerup_Money = 140;
+static float f_KillTheseManyMorePowerup_base_Money = 160.0;
+static int i_KillTheseManyMorePowerup_Money = 160;
 
 static bool b_ForceSpawnNextTimeNuke;
 static bool b_ForceSpawnNextTimeAmmo;
@@ -545,25 +545,25 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
-					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
+				//	EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
 						{
-							int MaxHealth = SDKCall_GetMaxHealth(client);
-							int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
+							int MaxHealth = SDKCall_GetMaxHealth(client_Hud);
+							int flHealth = GetEntProp(client_Hud, Prop_Send, "m_iHealth");
 							
 							flHealth += MaxHealth / 2;
 
-							SetEntProp(client, Prop_Send, "m_iHealth", flHealth);
-							ApplyHealEvent(client, MaxHealth / 2);	// Show healing number
+							SetEntProp(client_Hud, Prop_Send, "m_iHealth", flHealth);
+							ApplyHealEvent(client_Hud, MaxHealth / 2);	// Show healing number
 
 							int Armor_Max = 150;
 							int Extra = 0;
 								
 							Extra = Armor_Level[client_Hud];
 								
-							Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+							Armor_Max = MaxArmorCalculation(Extra, client_Hud, 1.0);
 								
 							if(Armor_Charge[client_Hud] < Armor_Max)
 							{
@@ -660,11 +660,12 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
-					CurrentCash += 500;
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
 						{
+							CashSpent[client_Hud] -= 500;
+							CashRecievedNonWave[client_Hud] += 500;
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Money Activated");
