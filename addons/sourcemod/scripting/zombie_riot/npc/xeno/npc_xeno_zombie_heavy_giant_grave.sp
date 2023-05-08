@@ -339,21 +339,24 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float startPosition[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-	maxhealth /= 3;
-	for(int i; i<1; i++)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		
-		int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-		if(spawn_index > MaxClients)
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		float startPosition[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+		maxhealth /= 3;
+		for(int i; i<1; i++)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
 		}
 	}
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoHeavyGiant_ClotDamaged);

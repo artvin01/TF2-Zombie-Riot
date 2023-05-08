@@ -836,7 +836,8 @@ public void OnPostThink(int client)
 			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
 			{
 				f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
-				PrintToChat(client,"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!");
+				SetGlobalTransTarget(client);
+				PrintToChat(client,"%t", "Show Plugin Messages Hint");
 			}
 		}
 		int Armor_Max = 50;
@@ -1311,7 +1312,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
-			PrintToChat(victim, "Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it.");
+			SetGlobalTransTarget(victim);
+			PrintToChat(victim, "%t", "Npc Stuck Spot Warning");
 			if (GameTime > f_ClientWasTooLongInsideHurtZone[victim])
 			{
 				f_ClientWasTooLongInsideHurtZone[victim] = GameTime + 6.0;	

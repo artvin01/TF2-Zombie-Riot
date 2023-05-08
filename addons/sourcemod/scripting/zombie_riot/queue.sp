@@ -105,38 +105,44 @@ public int Queue_Sorting(int elem1, int elem2, const int[] array, Handle hndl)
 
 void Queue_Menu(int client)
 {
+	SetGlobalTransTarget(client);
 	Menu menu = new Menu(Queue_MenuH);
-	menu.SetTitle("Server is full, what would you like to do:");
+	char buffer[128];
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Server is full, what would you like to do:");
+	menu.SetTitle(buffer);
 	
-	menu.AddItem("", "Wait for the next map");
-	menu.AddItem("", "Wait for an open slot");
-	char buffer[64];
+	FormatEx(buffer, sizeof(buffer), "%t", "Wait for the next map");
+	menu.AddItem("", buffer);
+	FormatEx(buffer, sizeof(buffer), "%t", "Wait for an open slot");
+	menu.AddItem("", buffer);
+
 	CvarRerouteToIp.GetString(buffer, sizeof(buffer));
 	if(buffer[0])
 	{
-		menu.AddItem("", "Redirect to different ZR server");	
+		FormatEx(buffer, sizeof(buffer), "%t", "Redirect to different ZR server");
+		menu.AddItem("", buffer);
 	}
 	else
 	{
-		menu.AddItem("", "Redirect to different ZR server", ITEMDRAW_DISABLED);	
+		FormatEx(buffer, sizeof(buffer), "%t", "Redirect to different ZR server");
+		menu.AddItem("", buffer,ITEMDRAW_DISABLED);
 	}
 	
-//	if(CheckCommandAccess(client, "zr_joinanytime", ADMFLAG_RESERVATION, true))
-//	{
-//		menu.AddItem("1", "Reserve slot join");
-//	}
-//	else
-//	{
-	menu.AddItem("0", " ", ITEMDRAW_SPACER);
-//	}
-	
-	menu.AddItem("sm_encyclopedia", "Encyclopedia");
-	menu.AddItem("sm_idlemine", "Idle Miner");
-	menu.AddItem("sm_tetris", "Tetris");
-	menu.AddItem("sm_snake", "Snake");
-	menu.AddItem("sm_solitaire", "Solitaire");
-	menu.AddItem("sm_pong", "Pong");
-	menu.AddItem("sm_connect4", "Connect4");
+	zr_tagblacklist.GetString(buffer, sizeof(buffer));
+	if(StrContains(buffer, "private", false) == -1)
+	{
+		menu.AddItem("0", " ", ITEMDRAW_SPACER);
+		
+		menu.AddItem("sm_encyclopedia", "Encyclopedia");
+		menu.AddItem("sm_idlemine", "Idle Miner");
+		menu.AddItem("sm_tetris", "Tetris");
+		menu.AddItem("sm_snake", "Snake");
+		menu.AddItem("sm_solitaire", "Solitaire");
+		menu.AddItem("sm_pong", "Pong");
+		menu.AddItem("sm_connect4", "Connect4");
+	}	
+
 	
 	menu.Pagination = false;
 	menu.ExitButton = true;
