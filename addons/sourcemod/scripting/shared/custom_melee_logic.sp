@@ -141,7 +141,7 @@ static const char g_MeatHitWorld[][] = {
 };
 */
 
-int i_EntitiesHitAoeSwing[MAXENTITIES];	//Who got hit
+int i_EntitiesHitAoeSwing[MAXENTITIES]= {-1, ...};	//Who got hit
 int i_EntitiesHitAtOnceMax; //How many do we stack
 bool b_iHitNothing;
 
@@ -352,28 +352,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingMins = view_as<float>({-MELEE_BOUNDS, -MELEE_BOUNDS, -MELEE_BOUNDS});
 		vecSwingMaxs = view_as<float>({MELEE_BOUNDS, MELEE_BOUNDS, MELEE_BOUNDS});
 	}
-	float vecSwingStart[3];
-//	float vecSwingForward[3];
-	float ang[3];
-	GetClientEyePosition(client, vecSwingStart);
-	GetClientEyeAngles(client, ang);
-	
-	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
-	
-	float vecSwingEnd[3];
-
-	if(CustomMeleeRange)
-	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
-	}
-	else
-	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
-	}
 #if defined ZR
 	if(weapon > 0)
 	{
@@ -390,6 +368,34 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		}	
 	}
 #endif
+	float vecSwingStart[3];
+//	float vecSwingForward[3];
+	float ang[3];
+	GetClientEyePosition(client, vecSwingStart);
+	GetClientEyeAngles(client, ang);
+	
+	GetAngleVectors(ang, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+	
+	float vecSwingEnd[3];
+	float vecSwingEndHull[3];
+
+	if(CustomMeleeRange)
+	{
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
+	}
+	else
+	{
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
+
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2);
+	}
+
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
 	
 	if(enemies_hit_aoe < 2)
@@ -421,25 +427,19 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	}
 	else
 	{
-		for (int i = 1; i < MAXENTITIES; i++)
-		{
-			i_EntitiesHitAoeSwing[i] = -1;
-		}
 		b_iHitNothing = true;
-		trace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
-		delete trace;
+		Handle TempTrace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEndHull, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace_Multi, client);	// 1073741824 is CONTENTS_LADDER?
+		delete TempTrace;
 		if(b_iHitNothing) //aaa panic
 		{
+			delete trace;
 			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, client );
 			if ( TR_GetFraction(trace) >= 1.0)
 			{
-				if ( TR_GetFraction(trace) >= 1.0)
-				{
-					delete trace;
-					trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
-					FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client );
-				//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
-				}
+				delete trace;
+				trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID ), BulletAndMeleeTrace, client );
+				FindHullIntersection(vecSwingStart, trace, vecSwingMins, vecSwingMaxs, client);
+			//	TE_DrawBox(client, vecSwingStart, vecSwingMins, vecSwingMaxs, 0.5, view_as<int>( { 0, 0, 255, 255 } ));
 			}
 		}
 	}
@@ -628,77 +628,79 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			damage *= TF2Attrib_GetValue(address);
 				
 		
-		if(aoeSwing > 1)
+		bool PlayOnceOnly = false;
+		float playerPos[3];
+		for (int counter = 1; counter < MAXENTITIES; counter++)
 		{
-			bool PlayOnceOnly = false;
-			float playerPos[3];
-			for (int counter = 0; counter < MAXENTITIES; counter++)
+			if (i_EntitiesHitAoeSwing[counter] != -1)
 			{
-				if (i_EntitiesHitAoeSwing[counter] != -1)
+				if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
 				{
-					if(IsValidEntity(i_EntitiesHitAoeSwing[counter]))
+					if(!PlayOnceOnly)
 					{
-						if(!PlayOnceOnly)
-						{
-							PlayOnceOnly = true;
-							soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon);	
+						PlayOnceOnly = true;
+						soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon);	
 
-							if(soundIndex > 0)
-							{
-								char SoundStringToPlay[256];
-								SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
-								EmitGameSoundToAll(SoundStringToPlay, client);
-							}	
-						}
-						GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
-						SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
+						if(soundIndex > 0)
+						{
+							char SoundStringToPlay[256];
+							SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+							EmitGameSoundToAll(SoundStringToPlay, client);
+						}	
 					}
+					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
+					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
 				}
+			}
+			else
+			{
+				break;
 			}
 		}
-		else
+		for (int i = 1; i < MAXENTITIES; i++)
 		{
-			if(target > 0 && Item_Index != 214)
-			{
-			//	PrintToChatAll("%i",MELEE_HIT);
-			//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
-			// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
-				
-					
-				SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
-			}
-			else if(target > -1 && Item_Index == 214)
-			{
-				i_ExplosiveProjectileHexArray[weapon] = 0;
-				i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
-				i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
-				
-				Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
-				DataPack pack_boom = new DataPack();
-				pack_boom.WriteFloat(vecHit[0]);
-				pack_boom.WriteFloat(vecHit[1]);
-				pack_boom.WriteFloat(vecHit[2]);
-				pack_boom.WriteCell(1);
-				RequestFrame(MakeExplosionFrameLater, pack_boom);
-			}
-			delete swingTrace;
-			//only if we did not hit an enemy.
-			if(!IsValidEnemy(client, target, true, true))
-			{
-				float pos[3];
-				float angles[3];
-				GetClientEyeAngles(client, angles);
-				GetClientEyePosition(client, pos);
-				float impactEndPos[3];
-				GetAngleVectors(angles, impactEndPos, NULL_VECTOR, NULL_VECTOR);
-				ScaleVector(impactEndPos, MELEE_RANGE);
-				AddVectors(impactEndPos, vecHit, impactEndPos);
+			i_EntitiesHitAoeSwing[i] = -1;
+		}
 
-				TR_TraceRayFilter(vecHit, impactEndPos, MASK_SHOT_HULL, RayType_EndPoint, BulletAndMeleeTrace, client);
-				if(TR_DidHit())
-				{
-					UTIL_ImpactTrace(client, pos, DMG_CLUB);
-				}
+		if(target > 0 && Item_Index != 214)
+		{
+		//	PrintToChatAll("%i",MELEE_HIT);
+		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
+		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
+			
+				
+			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), vecHit);	
+		}
+		else if(target > -1 && Item_Index == 214)
+		{
+			i_ExplosiveProjectileHexArray[weapon] = 0;
+			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
+			i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
+				
+			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
+			DataPack pack_boom = new DataPack();
+			pack_boom.WriteFloat(vecHit[0]);
+			pack_boom.WriteFloat(vecHit[1]);
+			pack_boom.WriteFloat(vecHit[2]);
+			pack_boom.WriteCell(1);
+			RequestFrame(MakeExplosionFrameLater, pack_boom);
+		}
+		//only if we did not hit an enemy.
+		if(!IsValidEnemy(client, target, true, true) && !PlayOnceOnly) //dont play if we already made one.
+		{
+			float pos[3];
+			float angles[3];
+			GetClientEyeAngles(client, angles);
+			GetClientEyePosition(client, pos);
+			float impactEndPos[3];
+			GetAngleVectors(angles, impactEndPos, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(impactEndPos, MELEE_RANGE);
+			AddVectors(impactEndPos, vecHit, impactEndPos);
+
+			TR_TraceRayFilter(vecHit, impactEndPos, MASK_SHOT_HULL, RayType_EndPoint, BulletAndMeleeTrace, client);
+			if(TR_DidHit())
+			{
+				UTIL_ImpactTrace(client, pos, DMG_CLUB);
 			}
 		}
 		delete swingTrace;
