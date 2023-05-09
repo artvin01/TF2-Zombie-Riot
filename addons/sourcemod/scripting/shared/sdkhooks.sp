@@ -392,14 +392,13 @@ public void OnPostThink(int client)
 	
 	if(Mana_Hud_Delay[client] < GameTime)	
 	{
-		static float HudY;
-		HudY = 0.90;
 		char buffer[255];
 #if defined RPG		
-		HudY = 0.95;
+		float HudY = 0.95;
+#else
+		float HudY = 0.90;
 #endif
-		static float HudX;
-		HudX = -1.0;
+		float HudX = -1.0;
 	
 		HudX += f_WeaponHudOffsetY[client];
 		HudY += f_WeaponHudOffsetX[client];
@@ -840,17 +839,18 @@ public void OnPostThink(int client)
 				PrintToChat(client,"%t", "Show Plugin Messages Hint");
 			}
 		}
-		int Armor_Max = 50;
-		int Extra = 0;
-		
-		Extra = Armor_Level[client];
-				
-		Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+
+		int Extra = Armor_Level[client];
+		int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 			
 		int red = 255;
 		int green = 255;
 		int blue = 0;
-		if(Armor_Charge[client] != Armor_Max)
+		if(Armor_Charge[client] < 0)
+		{
+			green = 0;
+		}
+		else if(Armor_Charge[client] != Armor_Max)
 		{
 			red = Armor_Charge[client] * 255  / Armor_Max;
 			green = Armor_Charge[client] * 255  / Armor_Max;
@@ -993,17 +993,18 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
 		}
 
+		int armor = abs(Armor_Charge[client]);
 		for(int i=6; i>0; i--)
 		{
-			if(Armor_Charge[client] >= Armor_Max*(i*0.1666))
+			if(armor >= Armor_Max*(i*0.1666))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 			}
-			else if(Armor_Charge[client] > Armor_Max*(i*0.1666 - 1.0/60.0))
+			else if(armor > Armor_Max*(i*0.1666 - 1.0/60.0))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 			}
-			else if(Armor_Charge[client] > Armor_Max*(i*0.1666 - 1.0/30.0))
+			else if(armor > Armor_Max*(i*0.1666 - 1.0/30.0))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 			}

@@ -1191,7 +1191,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						
 					else
 						Armor_Charge[client] = 150;
-									
 				}
 			}
 		}
