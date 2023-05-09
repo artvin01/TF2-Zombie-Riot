@@ -733,7 +733,11 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌾%s", bufferbuffs);
 		}
-
+		if(f_BuffBannerNpcBuff[client] > GameTime) //hussar!
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "↖%s", bufferbuffs);
+		}
 		if(had_An_ability)
 		{
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);

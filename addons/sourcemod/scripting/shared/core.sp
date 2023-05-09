@@ -2921,6 +2921,11 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_RemoveCondition(client, TFCond_SpawnOutline);
 	}
+	else if(condition == TFCond_Buffed)
+	{
+		f_BuffBannerNpcBuff[client] = GetGameTime() + 1.1;
+		TF2_RemoveCondition(client, TFCond_Buffed);
+	}
 	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{
 		SetVariantInt(0);

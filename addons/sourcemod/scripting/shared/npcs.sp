@@ -1318,6 +1318,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damagetype |= DMG_BULLET; //add bullet logic
 			damagetype &= ~DMG_BLAST; //remove blast logic			
 		}
+
 		if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 		{
 #if defined ZR
@@ -1379,6 +1380,89 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
+
+		float BaseDamageBeforeBuffs = damage;
+
+		if(!NpcStats_IsEnemySilenced(attacker))
+		{
+			if(f_HussarBuff[attacker] > GameTime) //hussar!
+			{
+		//		damage *= 1.10;
+				damage += BaseDamageBeforeBuffs * 0.1;
+			}
+		}
+		if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
+		{
+	//		BaseDamageBeforeBuffs 
+	//		damage *= 1.25;
+			damage += BaseDamageBeforeBuffs * 0.25;
+		}
+		else if (f_Ocean_Buff_Weak_Buff[attacker] > GameTime) //hussar!
+		{
+		//	damage *= 1.10;
+			damage += BaseDamageBeforeBuffs * 0.1;
+		}
+		if(f_EmpowerStateOther[attacker] > GameTime) //Allow stacking.
+		{
+		//	damage *= 1.1;
+			damage += BaseDamageBeforeBuffs * 0.1;
+		}
+		if(f_EmpowerStateSelf[attacker] > GameTime) //Allow stacking.
+		{
+		//	damage *= 1.15;
+			damage += BaseDamageBeforeBuffs * 0.15;
+		}
+		if(f_BuffBannerNpcBuff[attacker] > GameTime)
+		{
+	//		damage *= 1.35;
+			damage += BaseDamageBeforeBuffs * 0.35;
+		}
+		if(f_HighTeslarDebuff[victim] > GameTime)
+		{
+	//		damage *= 1.35;
+			damage += BaseDamageBeforeBuffs * 0.35;
+		}
+		else if(f_LowTeslarDebuff[victim] > GameTime)
+		{
+	//		damage *= 1.25;
+			damage += BaseDamageBeforeBuffs * 0.25;
+		}
+		
+		if(f_HighIceDebuff[victim] > GameTime)
+		{
+		//	damage *= 1.15;
+			damage += BaseDamageBeforeBuffs * 0.15;
+		}
+		else if(f_LowIceDebuff[victim] > GameTime)
+		{
+		//	damage *= 1.10;
+			damage += BaseDamageBeforeBuffs * 0.10;
+		}
+		else if(f_VeryLowIceDebuff[victim] > GameTime)
+		{
+		//	damage *= 1.05;
+			damage += BaseDamageBeforeBuffs * 0.05;
+		}
+		
+		if(f_WidowsWineDebuff[victim] > GameTime)
+		{
+		//	damage *= 1.35;
+			damage += BaseDamageBeforeBuffs * 0.35;
+		}
+
+		if(Increaced_Overall_damage_Low[attacker] > GameTime)
+		{
+		//	damage *= 1.25;
+			damage += BaseDamageBeforeBuffs * 0.25;
+		}
+		
+		if(f_CrippleDebuff[victim] > GameTime)
+		{
+		//	damage *= 1.4;
+			damage += BaseDamageBeforeBuffs * 0.4;
+		}
+
+		//Resistance buffs will not count towards this flat decreace, they will be universal!
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
 			if(f_HussarBuff[victim] > GameTime) //hussar!
@@ -1386,81 +1470,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				damage *= 0.90;
 			}
 		}
-		if(!NpcStats_IsEnemySilenced(attacker))
-		{
-			if(f_HussarBuff[attacker] > GameTime) //hussar!
-			{
-				damage *= 1.10;
-			}
-		}
-		if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
-		{
-			damage *= 1.25;
-		}
-		else if (f_Ocean_Buff_Weak_Buff[attacker] > GameTime) //hussar!
-		{
-			damage *= 1.10;
-		}
-		if(f_EmpowerStateOther[attacker] > GameTime) //Allow stacking.
-		{
-			damage *= 1.1;
-		}
-		if(f_EmpowerStateSelf[attacker] > GameTime) //Allow stacking.
-		{
-			damage *= 1.15;
-		}
-		if(f_BuffBannerNpcBuff[attacker] > GameTime)
-		{
-			damage *= 1.35;
-		}
-
-
 		if(f_BattilonsNpcBuff[victim] > GameTime)
 		{
 			damage *= 0.65;
-		}
-		if(f_HighTeslarDebuff[victim] > GameTime)
-		{
-			damage *= 1.35;
-		}
-		else if(f_LowTeslarDebuff[victim] > GameTime)
-		{
-			damage *= 1.25;
-		}
-		
-		if(f_HighIceDebuff[victim] > GameTime)
-		{
-			damage *= 1.15;
-		}
-		else if(f_LowIceDebuff[victim] > GameTime)
-		{
-			damage *= 1.10;
-		}
-		else if(f_VeryLowIceDebuff[victim] > GameTime)
-		{
-			damage *= 1.05;
-		}
-		
-		if(f_WidowsWineDebuff[victim] > GameTime)
-		{
-			damage *= 1.35;
-		}
-		
+		}		
 		if(Resistance_Overall_Low[victim] > GameTime)
 		{
 			damage *= 0.85;
 		}
-		
-		if(Increaced_Overall_damage_Low[attacker] > GameTime)
-		{
-			damage *= 1.25;
-		}
-		
-		if(f_CrippleDebuff[victim] > GameTime)
-		{
-			damage *= 1.4;
-		}
-		
+				
 		if(attacker <= MaxClients)
 		{
 #if defined RPG	
@@ -1884,14 +1902,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	npcBase.m_bGib = false;
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
-		float damage_amp = damage;
-		if(attacker <= MaxClients && attacker > 0)
-		{	
-			if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed))
-			{
-				damage_amp *= 1.35;
-			}
-		}
 		if((damagetype & DMG_BLAST))
 		{
 			npcBase.m_bGib = true;
@@ -1900,7 +1910,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if(damage_amp > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -1914,18 +1924,10 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
-		if(TF2_IsPlayerInCondition(inflictor, TFCond_Buffed))
-		{
-			damage *= 1.35;
-		}
 		Calculate_And_Display_hp(inflictor, victim, damage, false);
 	}
 	else if(attacker > 0 && attacker <= MaxClients)
 	{
-		if(TF2_IsPlayerInCondition(attacker, TFCond_Buffed))
-		{
-			damage *= 1.35;
-		}
 		Calculate_And_Display_hp(attacker, victim, damage, false);	
 	}
 	/*
