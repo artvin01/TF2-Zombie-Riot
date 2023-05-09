@@ -76,9 +76,9 @@ methodmap SeaRunner < CClotBody
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_XENO;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaRunner_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);

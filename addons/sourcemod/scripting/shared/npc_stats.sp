@@ -3883,6 +3883,15 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 			}
 		}
+		case STEPTYPE_SEABORN:
+		{
+			if(IsWalkEvent(event))
+			{
+				static char strSound[64];
+				Format(strSound, sizeof(strSound), "player/footsteps/mud%d.wav", GetRandomInt(1,4));
+				npc.PlayStepSound(strSound, 0.8, npc.m_iStepNoiseType);
+			}
+		}
 	}
 	return MRES_Ignored;
 }
