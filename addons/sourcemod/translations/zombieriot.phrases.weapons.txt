@@ -2103,9 +2103,9 @@
 		"ru"	"Зелье алхимика"
 		"chi"   "炼金术士药水"
 	}
-	"Press your action slot (k) to access an extra menu!"
+	"Press your action slot (h) to access an extra menu!"
 	{
-		"en"	"Press your action slot (k) to access an extra menu!"
+		"en"	"Press your action slot (h) to access an extra menu!"
 	}
 	"Buildable Barracks"
 	{
