@@ -366,6 +366,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		npc.m_flMeleeArmor = 1.0; 		//Melee should be rewarded for trying to face this monster
 	}
+	
 	if(npc.m_flDoingAnimation < gameTime && i_GunMode[npc.index] == 0)
 	{
 		Nemesis_TryDodgeAttack(npc.index);
