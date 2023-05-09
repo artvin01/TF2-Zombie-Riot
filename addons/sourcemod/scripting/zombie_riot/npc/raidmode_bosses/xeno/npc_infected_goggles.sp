@@ -631,14 +631,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							
 							npc.m_flNextMeleeAttack = gameTime + 2.0;
 						}
-						else
+						/*else
 						{
 							npc.m_flNextMeleeAttack = gameTime + 1.0;
-						}
+						}*/
 					}
 					else if(!alone)
 					{
-						npc.FaceTowards(vecTarget, 1200.0);
+						npc.FaceTowards(vecTarget, 2000.0);
 					}
 				}
 				case 2:	// SMG
