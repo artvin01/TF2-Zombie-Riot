@@ -3579,7 +3579,7 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						{
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 							startPosition[2] += 42;
-							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, _, _, _, _, true, true, true);
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, _, _, _, _, true, true);
 							if(!Limit_Gibs)
 							{
 								startPosition[2] -= 10;
