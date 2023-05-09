@@ -197,7 +197,7 @@ const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
-//float Resistance_for_building_High[MAXENTITIES];
+float Resistance_for_building_High[MAXENTITIES];
 int i_WhatBuilding[MAXENTITIES]={0, ...};
 bool Building_Constructed[MAXENTITIES]={false, ...};
 

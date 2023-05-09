@@ -2225,6 +2225,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
+		Resistance_for_building_High[entity] = 0.0;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);

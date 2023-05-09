@@ -2103,11 +2103,9 @@
 		"ru"	"Зелье алхимика"
 		"chi"   "炼金术士药水"
 	}
-	"Builder Extra Gear"
+	"Press your action slot (k) to access an extra menu!"
 	{
-		"en"	"Builder Extra Gear"
-		"ru"	"Доп. снаряж. строителя"
-		"chi"   "建造者额外装备"
+		"en"	"Press your action slot (k) to access an extra menu!"
 	}
 	"Buildable Barracks"
 	{
