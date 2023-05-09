@@ -51,7 +51,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 							GetClientAbsOrigin(ally, targPos);
 							if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 							{
-								TF2_AddCondition(ally, TFCond_Buffed, 0.5, client); //So if they go out of range, they'll keep it abit
+								f_BuffBannerNpcBuff[ally] = GetGameTime() + 1.1;
 								i_ExtraPlayerPoints[client] += 1;
 							}
 						}
@@ -64,7 +64,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 							if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 							{
-								f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+								f_BuffBannerNpcBuff[ally] = GetGameTime() + 1.1;
 								i_ExtraPlayerPoints[client] += 1;
 							}
 						}
@@ -137,18 +137,19 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 			{
 				if(i_BuffBannerPassively[weapon] == 1)
 				{
-					if(TF2_IsPlayerInCondition(client, TFCond_Buffed))
+					if(f_BuffBannerNpcBuff[client] > GetGameTime())
 					{
 						float BannerPos[3];
 						float targPos[3];
 						GetClientAbsOrigin(client, BannerPos);
 						for(int ally=1; ally<=MaxClients; ally++)
 						{
-							if(IsClientInGame(ally) && IsPlayerAlive(ally))
+							if(IsClientInGame(ally) && IsPlayerAlive(ally) && ally != client)
 							{
 								GetClientAbsOrigin(ally, targPos);
 								if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 								{
+									f_BuffBannerNpcBuff[ally] = GetGameTime() + 1.1;
 									i_ExtraPlayerPoints[client] += 1;
 								}
 							}
