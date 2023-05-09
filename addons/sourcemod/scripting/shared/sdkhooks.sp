@@ -320,7 +320,7 @@ public void OnPostThink(int client)
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
 		if(Saga_RegenHealth(client))
 		{
-			if(dieingstate[client] == 0)
+			if(dieingstate[client] == 0 && flHealth < flMaxHealth)
 			{
 				int healing_Amount = 10;
 					
