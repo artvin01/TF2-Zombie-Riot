@@ -718,9 +718,10 @@ enum
 {
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
-	BLEEDTYPE_RUBBER = 3,	
+	BLEEDTYPE_RUBBER = 3,
 	BLEEDTYPE_XENO = 4,
-	BLEEDTYPE_SKELETON = 5
+	BLEEDTYPE_SKELETON = 5,
+	BLEEDTYPE_SEABORN = 6
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
