@@ -25,11 +25,10 @@ static const char g_IdleAlertedSounds[][] =
 	"npc/zombie/zombie_alert3.wav"
 };
 
-static const char g_MeleeHitSounds[][] =
+static const char g_MeleeMissSounds[][] =
 {
-	"npc/fast_zombie/claw_strike1.wav",
-	"npc/fast_zombie/claw_strike2.wav",
-	"npc/fast_zombie/claw_strike3.wav"
+	"npc/fast_zombie/claw_miss1.wav",
+	"npc/fast_zombie/claw_miss2.wav",
 };
 
 static const char g_MeleeAttackSounds[][] =
@@ -38,7 +37,7 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie/zo_attack2.wav"
 };
 
-methodmap SeaSlider < CClotBody
+methodmap SeaSpitter < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -60,28 +59,28 @@ methodmap SeaSlider < CClotBody
  	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
-	public void PlayMeleeHitSound()
+	public void PlayRangedSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaSlider(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaSpitter(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		SeaSlider npc = view_as<SeaSlider>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "540" : "420", ally, false));
-		// 2800 x 0.15
-		// 3600 x 0.15
+		SeaSpitter npc = view_as<SeaSpitter>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "750" : "660", ally, false));
+		// 4400 x 0.15
+		// 5000 x 0.15
 
-		i_NpcInternalId[npc.index] = data[0] ? SEASLIDER_ALT : SEASLIDER;
-		npc.SetActivity("ACT_WALK_ON_FIRE");
+		i_NpcInternalId[npc.index] = data[0] ? SEASPITTER_ALT : SEASPITTER;
+		npc.SetActivity("ACT_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
-		SDKHook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSpitter_TakeDamage);
+		SDKHook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 		
-		npc.m_flSpeed = 275.0;	// 1.1 x 250
+		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -92,11 +91,11 @@ methodmap SeaSlider < CClotBody
 	}
 }
 
-public void SeaSlider_ClotThink(int iNPC)
+public void SeaSpitter_ClotThink(int iNPC)
 {
-	SeaSlider npc = view_as<SeaSlider>(iNPC);
+	SeaSpitter npc = view_as<SeaSpitter>(iNPC);
 
-	if(i_NpcInternalId[npc.index] == SEASLIDER_ALT)
+	if(i_NpcInternalId[npc.index] == SEASPITTER_ALT)
 	{
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -133,19 +132,26 @@ public void SeaSlider_ClotThink(int iNPC)
 	if(npc.m_iTarget > 0)
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 		
-		if(distance < npc.GetLeadRadius())
+		if(npc.m_flDoingAnimation > gameTime)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			npc.StopPathing();
 		}
-		else 
+		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				PF_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			}
 
-		npc.StartPathing();
+			npc.StartPathing();
+		}
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -153,47 +159,30 @@ public void SeaSlider_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-
-					if(target > 0) 
-					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 54.0 : 42.0, DMG_CLUB);
-						// 280 x 0.15
-						// 360 x 0.15
-
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 9 : 7);
-						// 280 x 0.15 x 0.15
-						// 360 x 0.15 x 0.15
-					}
-				}
-
-				delete swingTrace;
+				
+				npc.PlayRangedSound();
+				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48 : 42, 800.0);
+				// 280 * 0.15
+				// 320 * 0.15
 			}
 		}
 
-		if(distance < 10000.0)
+		if(distance < 250000.0)	// 2.5 * 200
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_RANGE_ATTACK1");
+				npc.AddGesture((GetURandomInt() % 2) ? "ACT_ZOM_SWATLEFTMID" : "ACT_ZOM_SWATRIGHTMID");
 
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = gameTime + 0.45;
+				npc.m_flAttackHappens = gameTime + 0.25;
 
-				//npc.m_flDoingAnimation = gameTime + 1.2;
-				npc.m_flNextMeleeAttack = gameTime + 2.0;
+				npc.m_flDoingAnimation = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 3.0;
 				npc.m_flHeadshotCooldown = gameTime + 2.0;
 			}
 		}
@@ -206,12 +195,12 @@ public void SeaSlider_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaSlider_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaSpitter_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 		
-	SeaSlider npc = view_as<SeaSlider>(victim);
+	SeaSpitter npc = view_as<SeaSpitter>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -220,31 +209,19 @@ public Action SeaSlider_TakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-void SeaSlider_NPCDeath(int entity)
+void SeaSpitter_NPCDeath(int entity)
 {
-	SeaSlider npc = view_as<SeaSlider>(entity);
+	SeaSpitter npc = view_as<SeaSpitter>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
-	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSpitter_TakeDamage);
+	SDKUnhook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 }
 
-void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
+void SeaSpitter_AddNeuralDamage(int victim, int attacker, int damage)
 {
-	if(victim > MaxClients)
-	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health > 0)
-		{
-			health -= damage * 5;
-			if(health < 0)
-				health = 0;
-			
-			Building_SetBuildingRepair(victim, health);
-		}
-	}
-	else if(Armor_Charge[victim] < 1)
+	if(Armor_Charge[victim] < 1)
 	{
 		Armor_Charge[victim] -= damage;
 		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[client], victim, 1.0)))

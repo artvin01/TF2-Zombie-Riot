@@ -1153,6 +1153,16 @@ public Action Building_Set_HP_Elevator(Handle dashHud, int ref)
 }
 */
 
+int Building_GetBuildingRepair(int entity)
+{
+	return Building_Repair_Health[entity];
+}
+
+void Building_SetBuildingRepair(int entity, int health)
+{
+	Building_Repair_Health[entity] = health;
+}
+
 public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 	if(damagetype == DMG_CRUSH)

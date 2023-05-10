@@ -67,14 +67,12 @@ methodmap SeaRunner < CClotBody
 	
 	public SeaRunner(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", data[0] ? "400" : "300", ally, false));
-		// 3000 x 0.1
-		// 4000 x 0.1
+		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", data[0] ? "600" : "450", ally, false));
+		// 3000 x 0.15
+		// 4000 x 0.15
 
 		i_NpcInternalId[npc.index] = data[0] ? SEARUNNER_ALT : SEARUNNER;
-		
-		int iActivity = npc.LookupActivity("ACT_RUN");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -87,7 +85,7 @@ methodmap SeaRunner < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, data[0] ? 255 : 50, 50, data[0] ? 50 : 255, 255);
+		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
 		
 		npc.StartPathing();
 		return npc;
@@ -105,7 +103,7 @@ public void SeaRunner_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime)
+	if(npc.m_blPlayHurtAnimation)
 	{
 		//npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
