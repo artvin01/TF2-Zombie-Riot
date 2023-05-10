@@ -86,7 +86,8 @@ enum
 	WEAPON_RIOT_SHIELD = 16,
 	WEAPON_YAMATO = 17,
 	WEAPON_BATTILONS = 18,
-	WEAPON_SAGA = 19
+	WEAPON_SAGA = 19,
+	WEAPON_BEAM_PAP = 20
 }
 
 ArrayList SpawnerList;
@@ -354,6 +355,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_specter.sp"
 #include "zombie_riot/custom/weapon_yamato.sp"
 #include "zombie_riot/custom/weapon_saga.sp"
+#include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
 
 void ZR_PluginLoad()
 {
@@ -534,6 +536,7 @@ void ZR_MapStart()
 	Specter_MapStart();
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
 	Saga_MapStart();
+	Beam_Wand_Pap_OnMapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

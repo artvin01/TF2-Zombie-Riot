@@ -499,7 +499,7 @@ void Cosmic_Terror_FullCharge(int client)
 	colour[2]=blue;
 	colour[3]=alpha;
 	
-	TE_SetupBeamPoints(Cosmic_BeamLoc[client], SkyLoc, gLaser1, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
+	TE_SetupBeamPoints(Cosmic_BeamLoc[client], SkyLoc, gLaser1, 0, 0, 0, 0.1, 15.0, 15.0, 0, 1.0, colour, 1);
 	TE_SendToAll();
 	
 	Cosmic_Terror_Do_Dmg(client);
@@ -574,7 +574,7 @@ void Cosmic_Terror_FullCharge(int client)
 
 void Spawn_4Beams(int client, float endLoc[3], int colour[4])
 {
-	TE_SetupBeamPoints(Cosmic_BeamLoc[client], endLoc, gLaser1, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
+	TE_SetupBeamPoints(Cosmic_BeamLoc[client], endLoc, gLaser1, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.75, colour, 1);
 	TE_SendToClient(client);	
 }
 

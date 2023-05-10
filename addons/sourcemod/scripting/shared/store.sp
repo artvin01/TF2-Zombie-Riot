@@ -4904,6 +4904,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
 		Reset_stats_Irene_Singular_Weapon(entity);
+		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Enable_Irene(client, entity);
 		Enable_LappLand(client, entity);
