@@ -6,6 +6,7 @@ static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
+static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 static int g_BeamIndex_heal = -1;
@@ -46,6 +47,7 @@ public void M3_Abilities_Precache()
 }
 public void M3_ClearAll()
 {
+	Zero(b_ActivatedDuringLastMann);
 	Zero(ability_cooldown);
 	Zero(ability_cooldown_2);
 	Zero(Attack3AbilitySlotArray);
@@ -604,6 +606,11 @@ public void GearTesting(int client)
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
 			i_ClientHasCustomGearEquipped[client] = true;
+			b_ActivatedDuringLastMann[client] = false;
+			if(LastMann)
+			{
+				b_ActivatedDuringLastMann[client] = true;
+			}
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
@@ -658,7 +665,6 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 
 			i_ClientHasCustomGearEquipped[client] = true;
 			
-
 			Store_GiveAll(client, 50, true);
 			ViewChange_PlayerModel(client);
 			
@@ -715,6 +721,13 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
+		if(b_ActivatedDuringLastMann[client])
+		{
+			int MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+			SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+		}
+		b_ActivatedDuringLastMann[client] = false;
+		//if in lastman, then give extra health.
 	}
 	return Plugin_Handled;
 }

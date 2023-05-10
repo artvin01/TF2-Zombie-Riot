@@ -481,6 +481,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 		//Incase they die, do suit!
 		i_HealthBeforeSuit[client] = 0;
+		i_ClientHasCustomGearEquipped[client] = false;
 		CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 		//
 
