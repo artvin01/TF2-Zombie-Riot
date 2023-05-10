@@ -13,7 +13,7 @@ enum struct Enemy
 	bool Friendly;
 	int Index;
 	float Credits;
-	char Data[16];
+	char Data[64];
 }
 
 enum struct MiniBoss

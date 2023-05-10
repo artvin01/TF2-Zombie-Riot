@@ -705,7 +705,8 @@ enum
 	STEPTYPE_PANZER = 3,
 	STEPTYPE_COMBINE_METRO = 4,
 	STEPTYPE_TANK = 5,
-	STEPTYPE_ROBOT = 6
+	STEPTYPE_ROBOT = 6,
+	STEPTYPE_SEABORN = 7
 }
 
 enum
@@ -718,9 +719,10 @@ enum
 {
 	BLEEDTYPE_NORMAL = 1,	
 	BLEEDTYPE_METAL = 2,	
-	BLEEDTYPE_RUBBER = 3,	
+	BLEEDTYPE_RUBBER = 3,
 	BLEEDTYPE_XENO = 4,
-	BLEEDTYPE_SKELETON = 5
+	BLEEDTYPE_SKELETON = 5,
+	BLEEDTYPE_SEABORN = 6
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
@@ -2225,6 +2227,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
+		Resistance_for_building_High[entity] = 0.0;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);
@@ -2917,6 +2920,11 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//Idea got from a client dump.
 	{
 		TF2_RemoveCondition(client, TFCond_SpawnOutline);
+	}
+	else if(condition == TFCond_Buffed)
+	{
+		f_BuffBannerNpcBuff[client] = GetGameTime() + 1.1;
+		TF2_RemoveCondition(client, TFCond_Buffed);
 	}
 	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{

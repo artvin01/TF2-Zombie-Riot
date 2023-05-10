@@ -1888,4 +1888,12 @@
 		"en"	"Ability gains a third charge, decreased recharge time, and deals 400%% damage.\nProvides 10 health regeneration while not taking damage."
 		"chi"   "技能获得第三次充能，减少充能时间，造成400%%伤害。\n在不受伤害的情况下提供10点生命回复。"
 	}
+	"Spike Layer Pap 1"
+	{
+		"en"	"Faster Attackspeed, Spike limit increaces to 60, damage increaces slightly."
+	}
+	"Throwable Repair Grenade Desc"
+	{
+		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25% damage resistance while in range."
+	}
 }

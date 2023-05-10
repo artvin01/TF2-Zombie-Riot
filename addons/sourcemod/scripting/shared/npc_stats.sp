@@ -72,7 +72,7 @@ public Action Command_PetMenu(int client, int argc)
 		return Plugin_Handled;
 	}
 	
-	char buffer[16];
+	char buffer[64];
 	GetCmdArg(2, buffer, sizeof(buffer));
 	
 	bool ally;
@@ -3330,226 +3330,272 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 
 				static int Main_Gib;
 				
-				
-				if(npc.m_iBleedType == 1)
+				switch(npc.m_iBleedType)
 				{
-					npc.PlayGibSound();
-					if(npc.m_bIsGiant)
+					case BLEEDTYPE_NORMAL:
 					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 64;
-						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
-						if(!Limit_Gibs)
+						npc.PlayGibSound();
+						if(npc.m_bIsGiant)
 						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 64;
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
+							if(!Limit_Gibs)
+							{
+								startPosition[2] -= 15;
+								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
+								startPosition[2] += 44;
+								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+								{
+									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+								}
+								else
+								{
+									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+								}
+							}
+							else
+							{
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
+							}
+						}
+						else
+						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 42;
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
+							if(!Limit_Gibs)
+							{
+								startPosition[2] -= 10;
+								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
+								startPosition[2] += 34;
+								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+								{
+									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+								}
+								else
+								{
+									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+								}
+							}
+							else
+							{
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
+							}
+						}	
+					}	
+					case BLEEDTYPE_METAL:
+					{
+						npc.PlayGibSoundMetal();
+						if(npc.m_bIsGiant)
+						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 64;
+							Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
+							if(!Limit_Gibs)
+							{
+								startPosition[2] -= 15;
+								Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
+								startPosition[2] += 44;
+								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+								{
+									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+									Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+								}
+								else
+								{
+									Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+								}
+							}
+							else
+							{
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
+							}
+						}
+						else
+						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 42;
+							Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
+							if(!Limit_Gibs)
+							{
+								startPosition[2] -= 10;
+								Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
+								startPosition[2] += 34;
+								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+								{
+									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+									Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+								}
+								else
+								{
+									Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+								}
+							}
+							else
+							{
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
+							}
+						}		
+					}
+					case BLEEDTYPE_XENO:
+					{
+						npc.PlayGibSound();
+						if(npc.m_bIsGiant)
+						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 64;
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
+							if(!Limit_Gibs)
+							{
+								startPosition[2] -= 15;
+								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
+								startPosition[2] += 44;
+								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+								{
+									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+								}
+								else
+								{
+									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+								}
+							}
+							else
+							{
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
+							}
+						}
+						else
+						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 42;
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
+							if(!Limit_Gibs)
+							{
+								startPosition[2] -= 10;
+								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+								startPosition[2] += 34;
+								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+								{
+									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+								}
+								else
+								{
+									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+								}
+							}
+							else
+							{
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
+							}
+						}	
+					}
+					case BLEEDTYPE_SKELETON:
+					{
+						npc.PlayGibSound();
+						if(npc.m_bIsGiant)
+						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 64;
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
 							startPosition[2] -= 15;
-							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
 							startPosition[2] += 44;
 							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 							{
 								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+								Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
 							}
 							else
 							{
-								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+								Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);		
 							}
 						}
 						else
 						{
-							if(IsValidEntity(Main_Gib))
-							{
-								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
-							}
-						}
-					}
-					else
-					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 42;
-						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
-						if(!Limit_Gibs)
-						{
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 42;
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
 							startPosition[2] -= 10;
-							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
+							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
 							startPosition[2] += 34;
 							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 							{
 								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
 							}
 							else
 							{
-								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
 							}
-						}
-						else
-						{
-							if(IsValidEntity(Main_Gib))
-							{
-								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
-							}
-						}
-					}	
-				}	
-				else if(npc.m_iBleedType == 2)
-				{
-					npc.PlayGibSoundMetal();
-					if(npc.m_bIsGiant)
-					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 64;
-						Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
-						if(!Limit_Gibs)
-						{
-							startPosition[2] -= 15;
-							Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
-							startPosition[2] += 44;
-							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
-							{
-								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-								Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
-							}
-							else
-							{
-								Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
-							}
-						}
-						else
-						{
-							if(IsValidEntity(Main_Gib))
-							{
-								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
-							}
-						}
+						}	
 					}
-					else
+					case BLEEDTYPE_SEABORN:
 					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 42;
-						Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
-						if(!Limit_Gibs)
+						npc.PlayGibSound();
+						if(npc.m_bIsGiant)
 						{
-							startPosition[2] -= 10;
-							Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
-							startPosition[2] += 34;
-							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 64;
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, true, _, _, _, true, true);
+							if(!Limit_Gibs)
 							{
-								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-								Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+								startPosition[2] -= 15;
+								Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, false, true, _, _, _, true, true);
+								startPosition[2] += 44;
+								Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, false, true, _, _, _, true, true);
 							}
 							else
 							{
-								Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
 							}
 						}
 						else
 						{
-							if(IsValidEntity(Main_Gib))
+							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+							startPosition[2] += 42;
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, _, _, _, _, true, true);
+							if(!Limit_Gibs)
 							{
-								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
-							}
-						}
-					}		
-				}
-				else if(npc.m_iBleedType == 4)
-				{
-					npc.PlayGibSound();
-					if(npc.m_bIsGiant)
-					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 64;
-						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
-						if(!Limit_Gibs)
-						{
-							startPosition[2] -= 15;
-							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
-							startPosition[2] += 44;
-							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
-							{
-								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+								startPosition[2] -= 10;
+								Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, _, _, _, _, _, true, true);
+								startPosition[2] += 34;
+								Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, _, _, _, _, _, true, true);
 							}
 							else
 							{
-								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+								if(IsValidEntity(Main_Gib))
+								{
+									b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+								}
 							}
-						}
-						else
-						{
-							if(IsValidEntity(Main_Gib))
-							{
-								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
-							}
-						}
+						}	
 					}
-					else
-					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 42;
-						Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
-						if(!Limit_Gibs)
-						{
-							startPosition[2] -= 10;
-							Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
-							startPosition[2] += 34;
-							if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
-							{
-								npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-								Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
-							}
-							else
-							{
-								Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
-							}
-						}
-						else
-						{
-							if(IsValidEntity(Main_Gib))
-							{
-								b_LimitedGibGiveMoreHealth[Main_Gib] = true;
-							}
-						}
-					}	
-				}
-				else if(npc.m_iBleedType == 5)
-				{
-					npc.PlayGibSound();
-					if(npc.m_bIsGiant)
-					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 64;
-						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
-						startPosition[2] -= 15;
-						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
-						startPosition[2] += 44;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
-						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
-						}
-						else
-						{
-							Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);		
-						}
-					}
-					else
-					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-						startPosition[2] += 42;
-						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
-						startPosition[2] -= 10;
-						Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
-						startPosition[2] += 34;
-						if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
-						{
-							npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-							Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
-						}
-						else
-						{
-							Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
-						}
-					}	
 				}
 			//	#endif	
 				SetNpcToDeadViaGib(pThis);
@@ -3835,6 +3881,15 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			if(IsWalkEvent(event))
 			{
 				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
+			}
+		}
+		case STEPTYPE_SEABORN:
+		{
+			if(IsWalkEvent(event))
+			{
+				static char strSound[64];
+				Format(strSound, sizeof(strSound), "player/footsteps/mud%d.wav", GetRandomInt(1,4));
+				npc.PlayStepSound(strSound, 0.8, npc.m_iStepNoiseType);
 			}
 		}
 	}
@@ -4653,7 +4708,16 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 }
 
 
-stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldistancelimit = 999999.9, bool camoDetection=false, bool onlyPlayers = false, int ingore_client = -1, float EntityLocation[3] = {0.0,0.0,0.0}, bool CanSee = false, float fldistancelimitAllyNPC = 350.0)
+stock int GetClosestTarget(int entity,
+ bool IgnoreBuildings = false,
+  float fldistancelimit = 999999.9,
+   bool camoDetection=false,
+    bool onlyPlayers = false,
+	 int ingore_client = -1, 
+	 float EntityLocation[3] = {0.0,0.0,0.0},
+	  bool CanSee = false,
+	   float fldistancelimitAllyNPC = 350.0,
+	   bool IgnorePlayers = false)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
@@ -4667,7 +4731,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 	float fldistancelimit_Inside = fldistancelimit * fldistancelimit;
 	float fldistancelimit_Inside_AllyNpc = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
 	
-	if(searcher_team != 2)
+	if(searcher_team != 2 && !IgnorePlayers)
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
 		{
@@ -4772,7 +4836,7 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 			}
 		}
 	}
-	if(searcher_team != 2)
+	if(searcher_team != 2 && !IgnorePlayers)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
 		{
@@ -4805,23 +4869,20 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								DistancePathed = (DistancePathed * DistancePathed) * 0.65;
-								if(DistancePathed < distance)
+								distance = (DistancePathed * DistancePathed) * 0.65;
+								if( TargetDistance ) 
 								{
-									if( TargetDistance ) 
-									{
-										if( distance < TargetDistance ) 
-										{
-											ClosestTarget = entity_close; 
-											TargetDistance = distance;		  
-										}
-									} 
-									else 
+									if( distance < TargetDistance ) 
 									{
 										ClosestTarget = entity_close; 
-										TargetDistance = distance;
+										TargetDistance = distance;		  
 									}
-								}	
+								} 
+								else 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;
+								}
 							}
 						}	
 					}
@@ -4866,23 +4927,20 @@ stock int GetClosestTarget(int entity, bool IgnoreBuildings = false, float fldis
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								DistancePathed = (DistancePathed * DistancePathed) * 0.65;
-								if(DistancePathed < distance)
+								distance = (DistancePathed * DistancePathed) * 0.65;
+								if( TargetDistance ) 
 								{
-									if( TargetDistance ) 
-									{
-										if( distance < TargetDistance ) 
-										{
-											ClosestTarget = entity_close; 
-											TargetDistance = distance;		  
-										}
-									} 
-									else 
+									if( distance < TargetDistance ) 
 									{
 										ClosestTarget = entity_close; 
-										TargetDistance = distance;
+										TargetDistance = distance;		  
 									}
-								}	
+								} 
+								else 
+								{
+									ClosestTarget = entity_close; 
+									TargetDistance = distance;
+								}
 							}
 						}	
 					}
@@ -5661,7 +5719,6 @@ public void RequestFramesCallback(DataPack pack)
 //	models/Gibs/HGIBS_spine.mdl
 //	models/Gibs/HGIBS_rib.mdl
 //	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
-
 
 
 int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
@@ -8317,4 +8374,125 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	//	DispatchKeyValue(TextEntity, "font", "1");
 		npc.m_iTextEntity4 = TextEntity;	
 	}
+}
+
+static int b_TouchedEntity[MAXENTITIES];
+
+//TODO: teleport entities instead, but this is easier to i sleep :)
+stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
+{
+	static float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	float vecUp[3];
+	float vecForward[3];
+	float vecRight[3];
+
+	GetVectors(iNPC, vecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
+
+	float vecSwingEnd[3];
+	vecSwingEnd[0] = flMyPos[0] + vecForward[0] * (25.0);
+	vecSwingEnd[1] = flMyPos[1] + vecForward[1] * (25.0);
+	vecSwingEnd[2] = flMyPos[2];
+				
+
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+	if(b_IsGiant[iNPC])
+	{
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
+	{
+		hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
+
+		hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmins[2] = 0.0;	
+	}
+	else
+	{
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+		
+	//god i love floating point imprecision
+	hullcheckmaxs[0] += 1.0;
+	hullcheckmaxs[1] += 1.0;
+	hullcheckmaxs[2] += 1.0;
+
+	hullcheckmins[0] -= 1.0;
+	hullcheckmins[1] -= 1.0;
+	hullcheckmins[2] -= 1.0;
+	/*
+	for(int client; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client))
+		{
+			static float m_vecMaxs_2[3];
+			static float m_vecMins_2[3];
+			static float f_pos[3];
+			m_vecMaxs_2 = hullcheckmaxs;
+			m_vecMins_2 = hullcheckmins;	
+			f_pos = vecSwingEnd;
+			TE_DrawBox(client, f_pos, m_vecMins_2, m_vecMaxs_2, 0.1, view_as<int>({255, 0, 0, 255}));
+		}
+	}
+	*/
+
+	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
+
+	float vAngles[3], vDirection[3];								
+	GetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 								
+	if(vAngles[0] > -45.0)
+	{
+		vAngles[0] = -45.0;
+	}
+	GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+	float knockback = 200.0;
+	ScaleVector(vDirection, knockback);
+
+	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	{
+		if(!b_TouchedEntity[entity_traced])
+			break;
+
+		if(b_TouchedEntity[entity_traced] <= MaxClients)
+		{
+		//	TF2_AddCondition(b_TouchedEntity[entity_traced], TFCond_LostFooting, 0.1);
+		//	TF2_AddCondition(b_TouchedEntity[entity_traced], TFCond_AirCurrent, 0.1);
+			vDirection[0] += GetEntPropFloat(b_TouchedEntity[entity_traced], Prop_Send, "m_vecVelocity[0]");
+			vDirection[1] += GetEntPropFloat(b_TouchedEntity[entity_traced], Prop_Send, "m_vecVelocity[1]");
+			vDirection[2] = GetEntPropFloat(b_TouchedEntity[entity_traced], Prop_Send, "m_vecVelocity[2]");
+		}
+		
+		SDKHooks_TakeDamage(b_TouchedEntity[entity_traced], iNPC, iNPC, damage, DMG_CRUSH, -1, _);
+		Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
+	}
+
+	Zero(b_TouchedEntity);
+}
+
+stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
+{
+	TR_EnumerateEntitiesHull(pos, pos, mins, maxs, false, ResolvePlayerCollisionsTrace, entity);
+}
+
+public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
+{
+	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
+	{
+		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
+		for(int i=0; i < MAXENTITIES; i++)
+		{
+			if(!b_TouchedEntity[i])
+			{
+				b_TouchedEntity[i] = entity;
+				break;
+			}
+		}
+	}
+	return true;
 }

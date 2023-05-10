@@ -56,7 +56,6 @@ public bool Spike_ShouldCollide(int client, int collisiongroup, int contentsmask
 
 
 static int Spike_Health[MAXENTITIES]={0, ...};
-static int Spike_Limit[MAXPLAYERS+1]={40, ...}; //Default is 40.
 static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
@@ -70,7 +69,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 {
 	if(weapon >= MaxClients)
 	{
-		if(Spike_Limit[client] <= Spikes_Alive[client])
+		if(40 <= Spikes_Alive[client])
 		{
 			//ONLY give back ammo IF the Spike has full health.
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
@@ -88,6 +87,96 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		}
 		
 		float Calculate_HP_Spikes = 70.0; 
+		
+		float Bonus_damage;
+			
+		float attack_speed;
+		
+		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+		Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		
+		if (EscapeMode)
+		{
+			Calculate_HP_Spikes *= 3.0;
+		}
+		
+		if (Bonus_damage <= 1.0)
+			Bonus_damage = 1.0;
+			
+		Calculate_HP_Spikes *= Bonus_damage;
+		
+		static float ang[3], pos[3], vel[3];
+		int team = GetClientTeam(client);
+
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
+		GetClientEyeAngles(client, ang);
+		pos[2] += 63;
+
+		vel[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*1500.0;
+		vel[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*1500.0;
+		vel[2] = Sine(DegToRad(ang[0]))*-1500.0;
+
+		int entity = CreateEntityByName("tf_projectile_pipe_remote");
+		if(IsValidEntity(entity))
+		{
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
+																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
+			SetEntProp(entity, Prop_Send, "m_iType", 1);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
+			Spike_Health[entity] = RoundToCeil(Calculate_HP_Spikes);
+			Spike_MaxHealth[entity] = RoundToCeil(Calculate_HP_Spikes);
+			Is_Spike[entity] = true;
+		//	SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", weapon);
+		//	SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+		/*
+			DONT DO THIS!!
+			Entity 69 (class 'tf_projectile_pipe_remote') reported ENTITY_CHANGE_NONE but 'm_hOriginalLauncher' changed.
+			Entity 69 (class 'tf_projectile_pipe_remote') reported ENTITY_CHANGE_NONE but 'm_hLauncher' changed.
+		
+		*/
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vel);
+
+			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+			DispatchSpawn(entity);
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vel);
+		//	Spike_Owner[entity] = client;
+
+		//	HasSentry[client] = EntIndexToEntRef(entity);
+		//	EmitSoundToAll("weapons/drg_wrench_teleport.wav", entity, SNDCHAN_WEAPON, 70);
+			Spikes_Alive[client] += 1;
+			CreateTimer(0.25, Detect_Spike_Still, EntIndexToEntRef(entity), TIMER_REPEAT);
+		}
+		//Borowed from RPG fortress!
+	}
+}
+
+
+public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classname, bool &result)
+{
+	if(weapon >= MaxClients)
+	{
+		if(60 <= Spikes_Alive[client])
+		{
+			//ONLY give back ammo IF the Spike has full health.
+			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
+			for(int i; i<Ammo_MAX; i++)
+			{
+				CurrentAmmo[client][i] = GetAmmo(client, i);
+			}	
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
+			return;
+		}
+		
+		float Calculate_HP_Spikes = 80.0; 
 		
 		float Bonus_damage;
 			

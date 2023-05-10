@@ -915,18 +915,13 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage *= 3.0; //OTHERWISE EXPLOSIVES ARE EXTREAMLY WEAK!!
 	}
 	*/
-	/*
+	
 	if(Resistance_for_building_High[entity] > GetGameTime())
 	{
-		damage *= 0.15;
+		damage *= 0.75;
 		return Plugin_Changed;
 	}
-	else if(Resistance_for_building_Low[entity] > GetGameTime())
-	{
-		damage *= 0.30;
-		return Plugin_Changed;
-	}
-	*/
+	
 
 	damagePosition[2] -= 40.0;
 	TE_ParticleInt(g_particleImpactMetal, damagePosition);
@@ -1157,6 +1152,16 @@ public Action Building_Set_HP_Elevator(Handle dashHud, int ref)
 	}
 }
 */
+
+int Building_GetBuildingRepair(int entity)
+{
+	return Building_Repair_Health[entity];
+}
+
+void Building_SetBuildingRepair(int entity, int health)
+{
+	Building_Repair_Health[entity] = health;
+}
 
 public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {

@@ -1,24 +1,44 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+bool b_ToggleTransparency[MAXENTITIES];
+
 #define NUKE_MODEL "models/props_trainyard/cart_bomb_separate.mdl"
 #define NUKE_SOUND "ambient/explosions/explode_5.wav"
 
 #define AMMO_MODEL "models/items/ammopack_large.mdl"
 #define AMMO_SOUND "items/powerup_pickup_regeneration.wav"
 
+#define HEALTH_MODEL "models/items/medkit_medium.mdl"
+#define HEALTH_SOUND "items/powerup_pickup_strength.wav"
+
+#define MONEY_MODEL "models/items/currencypack_large.mdl"
+#define MONEY_SOUND "items/powerup_pickup_crits.wav"
+
 static int i_KilledThisMany_Nuke = 0;
 static bool i_AllowNuke = true;
-static float f_KillTheseManyMorePowerup_base_Nuke = 110.0;
-static int i_KillTheseManyMorePowerup_Nuke = 110;
+static float f_KillTheseManyMorePowerup_base_Nuke = 125.0;
+static int i_KillTheseManyMorePowerup_Nuke = 125;
 
 static int i_KilledThisMany_Maxammo = 0;
 static bool i_AllowMaxammo = true;
-static float f_KillTheseManyMorePowerup_base_Maxammo = 90.0;
-static int i_KillTheseManyMorePowerup_Maxammo = 90;
+static float f_KillTheseManyMorePowerup_base_Maxammo = 120.0;
+static int i_KillTheseManyMorePowerup_Maxammo = 120;
+
+static int i_KilledThisMany_Health = 0;
+static bool i_AllowHealth = true;
+static float f_KillTheseManyMorePowerup_base_Health = 150.0;
+static int i_KillTheseManyMorePowerup_Health = 150;
+
+static int i_KilledThisMany_Money = 0;
+static bool i_AllowMoney = true;
+static float f_KillTheseManyMorePowerup_base_Money = 160.0;
+static int i_KillTheseManyMorePowerup_Money = 160;
 
 static bool b_ForceSpawnNextTimeNuke;
 static bool b_ForceSpawnNextTimeAmmo;
+static bool b_ForceSpawnNextTimeHealth;
+static bool b_ForceSpawnNextTimeMoney;
 
 void Map_Precache_Zombie_Drops()
 {
@@ -27,6 +47,12 @@ void Map_Precache_Zombie_Drops()
 	
 	PrecacheModel(AMMO_MODEL, true);
 	PrecacheSound(AMMO_SOUND, true);
+
+	PrecacheModel(HEALTH_MODEL, true);
+	PrecacheSound(HEALTH_SOUND, true);
+	
+	PrecacheModel(MONEY_MODEL, true);
+	PrecacheSound(MONEY_SOUND, true);
 }
 
 public void Renable_Powerups()
@@ -37,16 +63,10 @@ public void Renable_Powerups()
 
 public void BalanceDropMinimum(float multi)
 {
-	if(EscapeMode)
-	{
-		i_KillTheseManyMorePowerup_Nuke = RoundToCeil(f_KillTheseManyMorePowerup_base_Nuke * multi);
-		i_KillTheseManyMorePowerup_Maxammo = RoundToCeil(f_KillTheseManyMorePowerup_base_Maxammo * multi);
-	}
-	else
-	{
-		i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (multi));
-		i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (multi));
-	}
+	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (multi));
+	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (multi));
+	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (Waves_GetRound() * 2)) * (multi));
+	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (Waves_GetRound() * 2)) * (multi));
 }
 
 
@@ -54,7 +74,17 @@ public void DropPowerupChance(int entity)
 {
 	if(b_NpcForcepowerupspawn[entity] == 2)
 	{
-		SpawnMaxAmmo(entity); //Dont care.
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				SpawnMaxAmmo(entity); //Dont care.)
+
+			case 1:
+				SpawnHealth(entity); //Dont care.)
+
+			case 2:
+				SpawnMoney(entity); //Dont care.)
+		}
 	}
 	i_KilledThisMany_Nuke += 1;
 	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
@@ -83,33 +113,84 @@ public void DropPowerupChance(int entity)
 			}
 		}
 	}
-	if(!EscapeMode)
+	i_KilledThisMany_Maxammo += 1;
+	if(i_KilledThisMany_Maxammo > i_KillTheseManyMorePowerup_Maxammo || b_ForceSpawnNextTimeAmmo)
 	{
-		i_KilledThisMany_Maxammo += 1;
-		if(i_KilledThisMany_Maxammo > i_KillTheseManyMorePowerup_Maxammo || b_ForceSpawnNextTimeAmmo)
+		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeAmmo)
 		{
-			if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeAmmo)
+			if(i_AllowMaxammo)
 			{
-				if(i_AllowMaxammo)
+				if(!EscapeMode)
 				{
-					if(!EscapeMode)
-					{
-						i_AllowMaxammo = false;
-					}
-					float VecOrigin[3];
-					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
-					VecOrigin[2] += 54.0;
-					if(!IsPointHazard(VecOrigin)) //Is it valid?
-					{
-						b_ForceSpawnNextTimeAmmo = false;
-						SpawnMaxAmmo(entity);
-					}
-					else //Not a valid position, we must force it! next time we try!
-					{
-						b_ForceSpawnNextTimeAmmo = true;
-					}
-					i_KilledThisMany_Maxammo = 0;
+					i_AllowMaxammo = false;
 				}
+				float VecOrigin[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+				VecOrigin[2] += 54.0;
+				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				{
+					b_ForceSpawnNextTimeAmmo = false;
+					SpawnMaxAmmo(entity);
+				}
+				else //Not a valid position, we must force it! next time we try!
+				{
+					b_ForceSpawnNextTimeAmmo = true;
+				}
+				i_KilledThisMany_Maxammo = 0;
+			}
+		}
+	}
+	i_KilledThisMany_Health += 1;
+	if(i_KilledThisMany_Health > i_KillTheseManyMorePowerup_Health || b_ForceSpawnNextTimeHealth)
+	{
+		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeHealth)
+		{
+			if(i_AllowHealth)
+			{
+				if(!EscapeMode)
+				{
+					i_AllowHealth = false;
+				}
+				float VecOrigin[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+				VecOrigin[2] += 54.0;
+				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				{
+					b_ForceSpawnNextTimeHealth = false;
+					SpawnHealth(entity);
+				}
+				else //Not a valid position, we must force it! next time we try!
+				{
+					b_ForceSpawnNextTimeHealth = true;
+				}
+				i_KilledThisMany_Health = 0;
+			}
+		}
+	}
+	i_KilledThisMany_Money += 1;
+	if(i_KilledThisMany_Money > i_KillTheseManyMorePowerup_Money || b_ForceSpawnNextTimeMoney)
+	{
+		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeMoney)
+		{
+			if(i_AllowMoney)
+			{
+				if(!EscapeMode)
+				{
+					i_AllowMoney = false;
+				}
+				float VecOrigin[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+				VecOrigin[2] += 54.0;
+				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				{
+					b_ForceSpawnNextTimeMoney = false;
+					SpawnMoney(entity);
+				}
+				else //Not a valid position, we must force it! next time we try!
+				{
+					b_ForceSpawnNextTimeMoney = true;
+				}
+				i_KilledThisMany_Money = 0;
 			}
 		}
 	}
@@ -122,6 +203,7 @@ public void SpawnNuke(int entity)
 	int prop = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(prop))
 	{
+		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", NUKE_MODEL);
 		DispatchKeyValue(prop, "modelscale", "0.65");
 		DispatchKeyValue(prop, "StartDisabled", "false");
@@ -214,6 +296,7 @@ public void SpawnMaxAmmo(int entity)
 	int prop = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(prop))
 	{
+		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", AMMO_MODEL);
 		DispatchKeyValue(prop, "modelscale", "1.0");
 		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
@@ -409,12 +492,226 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 	return Plugin_Continue;
 }
 
+
+
+public void SpawnHealth(int entity)
+{
+	float VecOrigin[3];
+	float VecAngles[3];
+	int prop = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(prop))
+	{
+		b_ToggleTransparency[prop] = false;
+		DispatchKeyValue(prop, "model", HEALTH_MODEL);
+		DispatchKeyValue(prop, "modelscale", "1.0");
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+		DispatchKeyValue(prop, "StartDisabled", "false");
+		DispatchKeyValue(prop, "Solid", "0");
+		SetEntProp(prop, Prop_Data, "m_nSolidType", 0);
+		VecAngles[0] = -31.0;
+		VecOrigin[2] += 54.0;
+		TeleportEntity(prop, VecOrigin, VecAngles, NULL_VECTOR);
+		DispatchSpawn(prop);
+		SetEntityCollisionGroup(prop, 1);
+		AcceptEntityInput(prop, "DisableShadow");
+		AcceptEntityInput(prop, "DisableCollision");
+		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(prop, 125, 255, 125, 200);
+		
+		int particle = ParticleEffectAt(VecOrigin, "utaunt_arcane_green_lights", 30.0);	
+		SetParent(prop, particle);
+		
+		CreateTimer(0.1, Timer_Detect_Player_Near_Health, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		CreateTimer(20.0, Timer_Aleart_Despawn, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(30.0, Timer_Despawn_Powerup, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	}	
+}
+
+public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		float powerup_pos[3];
+		float client_pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
+			{
+				GetClientAbsOrigin(client, client_pos);
+				client_pos[2] += 35.0;
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				{
+					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
+					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
+				//	EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
+					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
+					{
+						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
+						{
+							int MaxHealth = SDKCall_GetMaxHealth(client_Hud);
+							int flHealth = GetEntProp(client_Hud, Prop_Send, "m_iHealth");
+							
+							flHealth += MaxHealth / 2;
+
+							SetEntProp(client_Hud, Prop_Send, "m_iHealth", flHealth);
+							ApplyHealEvent(client_Hud, MaxHealth / 2);	// Show healing number
+
+							int Armor_Max = 150;
+							int Extra = 0;
+								
+							Extra = Armor_Level[client_Hud];
+								
+							Armor_Max = MaxArmorCalculation(Extra, client_Hud, 1.0);
+								
+							if(Armor_Charge[client_Hud] < Armor_Max)
+							{
+								if(Extra == 50)
+									Armor_Charge[client_Hud] += 150;
+									
+								else if(Extra == 100)
+									Armor_Charge[client_Hud] += 200;
+									
+								else if(Extra == 150)
+									Armor_Charge[client_Hud] += 400;
+									
+								else if(Extra == 200)
+									Armor_Charge[client_Hud] += 800;
+									
+								else
+									Armor_Charge[client_Hud] += 50;
+											
+								if(Armor_Charge[client_Hud] >= Armor_Max)
+								{
+									Armor_Charge[client_Hud] = Armor_Max;
+								}
+							}
+
+							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
+							SetGlobalTransTarget(client_Hud);
+							ShowHudText(client_Hud,  -1, "%t", "Max Health Activated");
+						}
+					}
+					AcceptEntityInput(entity, "KillHierarchy"); 
+					return Plugin_Stop;
+				}
+			}
+		}
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
+
+
+public void SpawnMoney(int entity)
+{
+	float VecOrigin[3];
+	float VecAngles[3];
+	int prop = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(prop))
+	{
+		b_ToggleTransparency[prop] = false;
+		DispatchKeyValue(prop, "model", MONEY_MODEL);
+		DispatchKeyValue(prop, "modelscale", "1.0");
+		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
+		DispatchKeyValue(prop, "StartDisabled", "false");
+		DispatchKeyValue(prop, "Solid", "0");
+		SetEntProp(prop, Prop_Data, "m_nSolidType", 0);
+		VecAngles[0] = -31.0;
+		VecOrigin[2] += 54.0;
+		TeleportEntity(prop, VecOrigin, VecAngles, NULL_VECTOR);
+		DispatchSpawn(prop);
+		SetEntityCollisionGroup(prop, 1);
+		AcceptEntityInput(prop, "DisableShadow");
+		AcceptEntityInput(prop, "DisableCollision");
+		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(prop, 125, 255, 125, 200);
+		
+		int particle = ParticleEffectAt(VecOrigin, "utaunt_arcane_green_lights", 30.0);	
+		SetParent(prop, particle);
+		
+		CreateTimer(0.1, Timer_Detect_Player_Near_Money, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		CreateTimer(20.0, Timer_Aleart_Despawn, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(30.0, Timer_Despawn_Powerup, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+	}	
+}
+
+public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		float powerup_pos[3];
+		float client_pos[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red))
+			{
+				GetClientAbsOrigin(client, client_pos);
+				client_pos[2] += 35.0;
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				{
+					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
+					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
+					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
+					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
+					{
+						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
+						{
+							CashSpent[client_Hud] -= 500;
+							CashRecievedNonWave[client_Hud] += 500;
+							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
+							SetGlobalTransTarget(client_Hud);
+							ShowHudText(client_Hud,  -1, "%t", "Max Money Activated");
+						}
+					}
+					AcceptEntityInput(entity, "KillHierarchy"); 
+					return Plugin_Stop;
+				}
+			}
+		}
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
 public Action Timer_Aleart_Despawn(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
-		SetEntityRenderFx(entity, RENDERFX_PULSE_FAST); 
+		CreateTimer(1.0, Timer_ToggleTransparrency, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	}
+	return Plugin_Stop;
+}
+
+public Action Timer_ToggleTransparrency(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		if(!b_ToggleTransparency[entity])
+		{
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(entity, 125, 255, 125, 100);
+			b_ToggleTransparency[entity] = true;
+		}
+		else
+		{
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(entity, 125, 255, 125, 200);
+			b_ToggleTransparency[entity] = false;
+		}
+		return Plugin_Continue;
 	}
 	return Plugin_Stop;
 }

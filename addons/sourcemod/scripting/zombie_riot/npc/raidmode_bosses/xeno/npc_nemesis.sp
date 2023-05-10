@@ -190,7 +190,7 @@ methodmap RaidbossNemesis < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
-		npc.m_flMeleeArmor = 1.5; 		//Melee should be rewarded for trying to face this monster
+		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -364,8 +364,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flMeleeArmor = 1.5; 		//Melee should be rewarded for trying to face this monster
+		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 	}
+	
 	if(npc.m_flDoingAnimation < gameTime && i_GunMode[npc.index] == 0)
 	{
 		Nemesis_TryDodgeAttack(npc.index);

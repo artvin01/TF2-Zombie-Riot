@@ -92,6 +92,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		}
 
 		count = 1;
+		RaidFight = 0;
 	}
 	else if(FriendlyDay)
 	{
@@ -103,8 +104,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	{
 		if(enemy.Health)
 			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.0125)));
-
-		
 		
 		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01));
 

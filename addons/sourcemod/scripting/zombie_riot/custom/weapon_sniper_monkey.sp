@@ -84,7 +84,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 
 float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration;
+	float duration = 2.0;
 	switch(i_NpcInternalId[victim])
 	{
 		case BTD_MOAB:
@@ -96,9 +96,6 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 			duration = 3.0;
 		}
 		case BTD_BLOON, BTD_GOLDBLOON, BTD_BAD:
-		{
-		}
-		default:
 		{
 			duration = 1.5;
 		}
@@ -119,7 +116,7 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 
 float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration = 1.5;
+	float duration = 2.0;
 	switch(i_NpcInternalId[victim])
 	{
 		case BTD_BLOON, BTD_GOLDBLOON:
@@ -234,7 +231,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		{
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
-			Ability_Apply_Cooldown(client, slot, 300.0);
+			Ability_Apply_Cooldown(client, slot, 150.0);
 		}
 		else
 		{
@@ -271,7 +268,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		{
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_expert_friend.wav");
-			Ability_Apply_Cooldown(client, slot, 240.0);
+			Ability_Apply_Cooldown(client, slot, 120.0);
 		}
 		else
 		{
