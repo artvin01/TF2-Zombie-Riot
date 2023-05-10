@@ -2147,6 +2147,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		i_CustomWeaponEquipLogic[entity] = 0;
 		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 #if defined ZR
@@ -3066,6 +3067,7 @@ public any Native_GetLevelCount(Handle plugin, int numParams)
 
 static void MapStartResetAll()
 {
+	Zero(i_CustomWeaponEquipLogic);
 	Zero(b_IsAGib);
 	Zero(f_StuckTextChatNotif);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
