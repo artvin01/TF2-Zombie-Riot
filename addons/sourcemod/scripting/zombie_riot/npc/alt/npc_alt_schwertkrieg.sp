@@ -271,8 +271,8 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		//	EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 		//}
 		EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
-		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
+		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
+		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 	}
 	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && TempOpener[npc.index])
 	{
@@ -322,9 +322,9 @@ public void Schwertkrieg_ClotThink(int iNPC)
 				if(TELEPORT_STRIKE_TeleportUsage[npc.index])
 				{
 					int color[4];
-					color[0] = 0;
-					color[1] = 255;
-					color[2] = 120;
+					color[0] = 145;
+					color[1] = 47;
+					color[2] = 47;
 					color[3] = 255;
 			
 					int SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
@@ -375,7 +375,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 					WritePackFloat(pack, vEnd[2]);
 					WritePackFloat(pack, TELEPORT_STRIKE_Smite_BaseDMG);
 				
-					TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 0, 120, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
+					TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
 					//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 					
@@ -546,16 +546,16 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			TELEPORT_STRIKE_spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.4, 1, (TELEPORT_STRIKE_Smite_Radius * 5.0)/float(sequential));
+			TELEPORT_STRIKE_spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.4, 1, (TELEPORT_STRIKE_Smite_Radius * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
 		//secondLoc[2] = 9999.0;
 		secondLoc[2] = 1500.0;
 		
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);
 		EmitAmbientSound(TELEPORT_STRIKE_HIT, spawnLoc, _, 240);
 		EmitAmbientSound(TELEPORT_STRIKE_HIT, spawnLoc, _, 240);
 		
@@ -591,7 +591,7 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	else
 	{
 		
-		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.1, 1, 1.0);
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 		
