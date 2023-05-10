@@ -2445,8 +2445,8 @@ public void MenuPage(int client, int section)
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
-							style = ITEMDRAW_SPACER;
+							FormatEx(buffer, sizeof(buffer), "%t", "------");
+							style = ITEMDRAW_DISABLED;
 						}
 					}
 					else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
@@ -3348,13 +3348,13 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								Store_GiveAll(client, GetClientHealth(client));
 							}
 						}
-						else if (info.Attack3AbilitySlot != 0) //equip back special ability slot item
+						else
 						{
 							Store_EquipSlotCheck(client, item.Slot);
 
 							item.Equipped[client] = true;
 							StoreItems.SetArray(index, item);
-								
+							
 							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 							{
 							//	Store_GiveItem(client, index, item.Equipped[client]);
@@ -3366,7 +3366,6 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));
 							}
-							
 						}
 					}
 				}

@@ -25,6 +25,12 @@ static const char g_IdleAlertedSounds[][] =
 	"npc/zombine/zombine_alert7.wav"
 };
 
+static const char g_AngerSounds[][] =
+{
+	"npc/zombine/zombine_charge1.wav",
+	"npc/zombine/zombine_charge2.wav"
+};
+
 static const char g_MeleeHitSounds[][] =
 {
 	"npc/fast_zombie/claw_strike1.wav",
@@ -74,7 +80,7 @@ methodmap FirstToTalk < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, FirstToTalk_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
 		
-		npc.m_flSpeed = 275.0;	// 1.1 x 250
+		npc.m_flSpeed = 200.0;	// 0.8 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 
 		npc.m_flNextMeleeAttack = 0.0;
