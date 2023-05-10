@@ -377,7 +377,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 				
 					TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
 					//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
-					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
+					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 					
 					//npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 					TELEPORT_STRIKEActive[npc.index] = false;
