@@ -2746,7 +2746,13 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
-
+	//this should make explosives during raids more usefull.
+#if defined ZR
+	if(EntRefToEntIndex(RaidBossActive))
+	{
+		damage *= 1.35;
+	}	
+#endif
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
 		if(spawnLoc[0] == 0.0)

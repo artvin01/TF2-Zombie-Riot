@@ -553,6 +553,13 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	static float vecHit[3];
 	GetBeamDrawStartPoint_Stock(client, StartLightningPos);
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
+
+	//deal more damage during raids, otherwise its really weak in most cases.
+	if(EntRefToEntIndex(RaidBossActive))
+	{
+		damage *= 1.5;
+	}
+
 	if(Firstlightning)
 	{
 		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(target), 1);
