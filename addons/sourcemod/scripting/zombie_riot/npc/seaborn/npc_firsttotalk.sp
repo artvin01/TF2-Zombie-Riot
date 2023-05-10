@@ -31,13 +31,6 @@ static const char g_AngerSounds[][] =
 	"npc/zombine/zombine_charge2.wav"
 };
 
-static const char g_MeleeHitSounds[][] =
-{
-	"npc/fast_zombie/claw_strike1.wav",
-	"npc/fast_zombie/claw_strike2.wav",
-	"npc/fast_zombie/claw_strike3.wav"
-};
-
 methodmap FirstToTalk < CClotBody
 {
 	public void PlayIdleSound()
@@ -45,24 +38,20 @@ methodmap FirstToTalk < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
-	public void PlayMeleeSound()
+	public void PlayAngerSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-	}
-	public void PlayMeleeHitSound()
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
+		EmitCustomToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	
 	public FirstToTalk(int client, float vecPos[3], float vecAng[3], bool ally)
@@ -111,7 +100,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		//npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -177,20 +166,20 @@ public void FirstToTalk_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0)
+		if(distance < 250000.0)	// 2.5 * 200
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_COLOSUS_ATTACK");
+				npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
 
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = gameTime + 0.45;
+				npc.m_flAttackHappens = gameTime + 0.35;
 
-				//npc.m_flDoingAnimation = gameTime + 1.2;
+				npc.m_flDoingAnimation = gameTime + 1.0;
 				npc.m_flNextMeleeAttack = gameTime + 2.0;
 				npc.m_flHeadshotCooldown = gameTime + 2.0;
 			}
