@@ -2773,7 +2773,7 @@ public void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(!info.Cost && item.WhiteOut)
+					if(item.WhiteOut)
 					{
 						if(item.ShouldThisCountSupportBuildings)
 						{
@@ -2784,6 +2784,10 @@ public void MenuPage(int client, int section)
 							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						style = ITEMDRAW_DISABLED;
+					}
+					else if(!info.Cost)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s %s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 					}
 					else
 					{
