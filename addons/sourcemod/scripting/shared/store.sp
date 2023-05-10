@@ -2445,7 +2445,7 @@ public void MenuPage(int client, int section)
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%t", "------");
+							FormatEx(buffer, sizeof(buffer), "%s", "------");
 							style = ITEMDRAW_DISABLED;
 						}
 					}
