@@ -92,8 +92,8 @@ void StalkerCombine_MapStart()
 
 	for(int i; i < sizeof(SoundList); i++)
 	{
-		PrecacheSound(SoundList[i]);
-	//	PrecacheSoundCustom(SoundList[i]);
+	//	PrecacheSound(SoundList[i]);
+		PrecacheSoundCustom(SoundList[i]);
 	}
 
 	PrecacheModel("models/zombie/zombie_soldier.mdl");

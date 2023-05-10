@@ -49,7 +49,7 @@ methodmap SeaSpitter < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayDeathSound() 
 	{
@@ -162,7 +162,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48 : 42, 800.0);
+				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48.0 : 42.0, 800.0);
 				// 280 * 0.15
 				// 320 * 0.15
 			}
@@ -217,18 +217,4 @@ void SeaSpitter_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSpitter_TakeDamage);
 	SDKUnhook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
-}
-
-void SeaSpitter_AddNeuralDamage(int victim, int attacker, int damage)
-{
-	if(Armor_Charge[victim] < 1)
-	{
-		Armor_Charge[victim] -= damage;
-		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[client], victim, 1.0)))
-		{
-			Armor_Charge[victim] = 0;
-			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_SLASH);
-			TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN|TF_STUNFLAG_CHEERSOUND);
-		}
-	}
 }

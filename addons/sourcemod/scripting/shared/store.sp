@@ -2445,18 +2445,18 @@ public void MenuPage(int client, int section)
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%t", "Equip");
-							style = ITEMDRAW_DISABLED;
+							FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
+							style = ITEMDRAW_SPACER;
 						}
 					}
 					else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Equip");
-						if(!info.Classname[0])
-						{
-							if(item.Owned[client] && info.Attack3AbilitySlot == 0)
-								style = ITEMDRAW_DISABLED;
-						}
+						//if(!info.Classname[0])
+						//{
+						//	if(item.Owned[client] && info.Attack3AbilitySlot == 0)
+						//		style = ITEMDRAW_DISABLED;
+						//}
 					}
 					else	// Buy it
 					{

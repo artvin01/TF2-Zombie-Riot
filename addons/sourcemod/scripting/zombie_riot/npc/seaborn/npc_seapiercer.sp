@@ -1,44 +1,48 @@
 #pragma semicolon 1
 #pragma newdecls required
- 
+
 static const char g_DeathSounds[][] =
 {
-	"npc/zombie/zombie_die1.wav",
-	"npc/zombie/zombie_die2.wav",
-	"npc/zombie/zombie_die3.wav"
+	"npc/headcrab_poison/ph_pain3.wav"
 };
 
-static const char g_HurtSounds[][] =
+static const char g_HurtSound[][] =
 {
-	"npc/zombie/zombie_pain1.wav",
-	"npc/zombie/zombie_pain2.wav",
-	"npc/zombie/zombie_pain3.wav",
-	"npc/zombie/zombie_pain4.wav",
-	"npc/zombie/zombie_pain5.wav",
-	"npc/zombie/zombie_pain6.wav"
+	"npc/headcrab_poison/ph_pain1.wav",
+	"npc/headcrab_poison/ph_pain2.wav"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"npc/zombie/zombie_alert1.wav",
-	"npc/zombie/zombie_alert2.wav",
-	"npc/zombie/zombie_alert3.wav"
-};
-
-static const char g_MeleeHitSounds[][] =
-{
-	"npc/fast_zombie/claw_strike1.wav",
-	"npc/fast_zombie/claw_strike2.wav",
-	"npc/fast_zombie/claw_strike3.wav"
+	"npc/headcrab_poison/ph_rattle1.wav",
+	"npc/headcrab_poison/ph_rattle2.wav",
+	"npc/headcrab_poison/ph_rattle3.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"npc/zombie/zo_attack1.wav",
-	"npc/zombie/zo_attack2.wav"
+	"npc/headcrab_poison/ph_scream1.wav",
+	"npc/headcrab_poison/ph_scream2.wav",
+	"npc/headcrab_poison/ph_scream3.wav"
 };
 
-methodmap SeaSlider < CClotBody
+static const char g_MeleeHitSounds[][] =
+{
+	"npc/headcrab/headbite.wav"
+};
+
+void SeaPiercer_MapStart()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_HurtSound);
+
+	PrecacheModel("models/headcrabblack.mdl");
+}
+
+methodmap SeaPiercer < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -50,7 +54,7 @@ methodmap SeaSlider < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayDeathSound() 
 	{
@@ -65,23 +69,23 @@ methodmap SeaSlider < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaSlider(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaPiercer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		SeaSlider npc = view_as<SeaSlider>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "540" : "420", ally, false));
-		// 2800 x 0.15
-		// 3600 x 0.15
+		SeaPiercer npc = view_as<SeaPiercer>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.25", data[0] ? "1875" : "1350", ally, false, true));
+		// 9000 x 0.15
+		// 12500 x 0.15
 
-		i_NpcInternalId[npc.index] = data[0] ? SEASLIDER_ALT : SEASLIDER;
-		npc.SetActivity("ACT_WALK_ON_FIRE");
+		i_NpcInternalId[npc.index] = data[0] ? SEAPIERCER_ALT : SEAPIERCER;
+		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
-		SDKHook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaPiercer_TakeDamage);
+		SDKHook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
 		
-		npc.m_flSpeed = 275.0;	// 1.1 x 250
+		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -92,15 +96,9 @@ methodmap SeaSlider < CClotBody
 	}
 }
 
-public void SeaSlider_ClotThink(int iNPC)
+public void SeaPiercer_ClotThink(int iNPC)
 {
-	SeaSlider npc = view_as<SeaSlider>(iNPC);
-
-	if(i_NpcInternalId[npc.index] == SEASLIDER_ALT)
-	{
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-	}
+	SeaPiercer npc = view_as<SeaPiercer>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -111,7 +109,7 @@ public void SeaSlider_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		//npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -165,13 +163,22 @@ public void SeaSlider_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 54.0 : 42.0, DMG_CLUB);
-						// 280 x 0.15
-						// 360 x 0.15
+						
+						b_ThisNpcIsSawrunner[npc.index] = true;
 
-						SeaSlider_AddNeuralDamage(target, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 9 : 7);
-						// 280 x 0.15 x 0.15
-						// 360 x 0.15 x 0.15
+						if(target <= MaxClients && i_HealthBeforeSuit[target] > 0)
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.9, DMG_DROWN); // Make it oneshot the enemy if they have the quantum armor
+							Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
+						}
+						else
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAPIERCER_ALT ? 105.0 : 82.5, DMG_DROWN);
+							// 550 x 0.15
+							// 700 x 0.15
+						}
+
+						b_ThisNpcIsSawrunner[npc.index] = false;
 					}
 				}
 
@@ -179,22 +186,22 @@ public void SeaSlider_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0)
+		if(distance < 22500.0)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_RANGE_ATTACK1");
+				npc.AddGesture("ACT_HEADCRAB_THREAT_DISPLAY");
 
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = gameTime + 0.45;
+				npc.m_flAttackHappens = gameTime + 0.55;
 
 				//npc.m_flDoingAnimation = gameTime + 1.2;
-				npc.m_flNextMeleeAttack = gameTime + 2.0;
-				npc.m_flHeadshotCooldown = gameTime + 2.0;
+				npc.m_flNextMeleeAttack = gameTime + 3.5;
+				npc.m_flHeadshotCooldown = gameTime + 1.5;
 			}
 		}
 	}
@@ -206,12 +213,12 @@ public void SeaSlider_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaSlider_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaPiercer_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 		
-	SeaSlider npc = view_as<SeaSlider>(victim);
+	SeaPiercer npc = view_as<SeaPiercer>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -220,45 +227,12 @@ public Action SeaSlider_TakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-void SeaSlider_NPCDeath(int entity)
+void SeaPiercer_NPCDeath(int entity)
 {
-	SeaSlider npc = view_as<SeaSlider>(entity);
+	SeaPiercer npc = view_as<SeaPiercer>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
-	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
-}
-
-void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
-{
-	if(victim > MaxClients)
-	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health > 0)
-		{
-			health -= damage * 5;
-			if(health < 0)
-				health = 0;
-			
-			Building_SetBuildingRepair(victim, health);
-		}
-	}
-	else if(Armor_Charge[victim] < 1)
-	{
-		Armor_Charge[victim] -= damage;
-		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
-		{
-			Armor_Charge[victim] = 0;
-
-			TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-
-			bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-			b_ThisNpcIsSawrunner[attacker] = true;
-			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN);
-			b_ThisNpcIsSawrunner[attacker] = sawrunner;
-		}
-		
-		ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
-	}
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaPiercer_TakeDamage);
+	SDKUnhook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
 }
