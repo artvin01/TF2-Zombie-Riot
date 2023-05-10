@@ -2755,6 +2755,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Saga_OnTakeDamage(victim, attacker, damage, weapon);
 		}
+		case WEAPON_BEAM_PAP:
+		{
+			Npc_OnTakeDamage_BeamWand_Pap(attacker, damagetype);
+		}
 	}
 #endif
 

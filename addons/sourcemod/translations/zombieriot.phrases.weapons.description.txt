@@ -1896,4 +1896,12 @@
 	{
 		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25% damage resistance while in range."
 	}
+	"Beam Wand pap Alt 1"
+	{
+		"en"	"Have you ever wondered what it would be like to fire 2 laser beams?\nWell, wonder-no-more!\nHold Mouse1 to attack\nOnce charge is full press Mouse2 to use it!"
+	}
+	"Beam Wand pap Alt 2"
+	{
+		"en"	"So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot piecre multiple targets!"
+	}
 }
