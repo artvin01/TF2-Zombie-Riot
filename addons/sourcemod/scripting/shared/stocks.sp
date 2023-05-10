@@ -2748,7 +2748,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 	}
 	//this should make explosives during raids more usefull.
 #if defined ZR
-	if(EntRefToEntIndex(RaidBossActive))
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		damage *= 1.35;
 	}	
