@@ -244,7 +244,7 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
 			Building_SetBuildingRepair(victim, health);
 		}
 	}
-	else if(Armor_Charge[victim] < 1)
+	else if(Armor_Charge[victim] < 1 && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
 		Armor_Charge[victim] -= damage;
 		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))

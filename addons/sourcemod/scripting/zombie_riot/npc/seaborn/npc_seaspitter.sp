@@ -134,25 +134,6 @@ public void SeaSpitter_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 		
-		if(npc.m_flDoingAnimation > gameTime)
-		{
-			npc.StopPathing();
-		}
-		else
-		{
-			if(distance < npc.GetLeadRadius())
-			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				PF_SetGoalEntity(npc.index, npc.m_iTarget);
-			}
-
-			npc.StartPathing();
-		}
-		
 		if(npc.m_flAttackHappens)
 		{
 			if(npc.m_flAttackHappens < gameTime)
@@ -185,6 +166,25 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.m_flNextMeleeAttack = gameTime + 3.0;
 				npc.m_flHeadshotCooldown = gameTime + 2.0;
 			}
+		}
+		
+		if(npc.m_flDoingAnimation > gameTime)
+		{
+			npc.StopPathing();
+		}
+		else
+		{
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				PF_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			}
+
+			npc.StartPathing();
 		}
 	}
 	else

@@ -246,7 +246,8 @@ enum
 	SEACRAWLER_ALT,
 	SEAPIERCER	= 210,
 	SEAPIERCER_ALT,
-	FIRSTTOTALK	= 212
+	FIRSTTOTALK	= 212,
+	UNDERTIDES	= 213
 }
 
 public const char NPC_Names[][] =
@@ -485,6 +486,7 @@ public const char NPC_Names[][] =
 	"Primal Sea Piercer",
 	"Nourished Piercer",
 	"The First To Talk",
+	"Sal Viento Bishop Quintus"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -717,7 +719,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"npc_seapiercer",
 	"",
-	"npc_firsttotalk"
+	"npc_firsttotalk",
+	"npc_undertides"
 };
 
 void NPC_MapStart()
@@ -908,6 +911,7 @@ void NPC_MapStart()
 	SeaRunner_MapStart();
 	SeaPiercer_MapStart();
 	SeaCrawler_MapStart();
+	FirstToTalk_MapStart();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1757,6 +1761,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = SeaPiercer(client, vecPos, vecAng, ally, data);
 		}
+		case FIRSTTOTALK:
+		{
+			entity = FirstToTalk(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2578,6 +2586,10 @@ public void NPCDeath(int entity)
 		{
 			SeaPiercer_NPCDeath(entity);
 		}
+		case FIRSTTOTALK:
+		{
+			FirstToTalk_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2879,3 +2891,4 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/seaborn/npc_searunner.sp"
 #include "zombie_riot/npc/seaborn/npc_seaslider.sp"
 #include "zombie_riot/npc/seaborn/npc_seaspitter.sp"
+#include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"

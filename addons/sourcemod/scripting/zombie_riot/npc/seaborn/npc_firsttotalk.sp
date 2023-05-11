@@ -3,38 +3,42 @@
  
 static const char g_DeathSounds[][] =
 {
-	"npc/zombine/zombine_die1.wav"
-};
-
-static const char g_HurtSounds[][] =
-{
-	"npc/zombine/zombine_pain1.wav",
-	"npc/zombine/zombine_pain2.wav",
-	"npc/zombine/zombine_pain3.wav",
-	"npc/zombine/zombine_pain4.wav"
+	"npc/zombie/zombie_die1.wav",
+	"npc/zombie/zombie_die2.wav",
+	"npc/zombie/zombie_die3.wav"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"npc/zombine/zombine_alert1.wav",
-	"npc/zombine/zombine_alert2.wav",
-	"npc/zombine/zombine_alert3.wav",
-	"npc/zombine/zombine_alert4.wav",
-	"npc/zombine/zombine_alert5.wav",
-	"npc/zombine/zombine_alert6.wav",
-	"npc/zombine/zombine_alert7.wav"
+	"vo/npc/vortigaunt/giveover.wav",
+	"vo/npc/vortigaunt/livetoserve.wav",
+	"vo/npc/vortigaunt/opaque.wav",
+	"vo/npc/vortigaunt/ourplacehere.wav",
+	"vo/npc/vortigaunt/persevere.wav",
+	"vo/npc/vortigaunt/prevail.wav",
+	"vo/npc/vortigaunt/returntoall.wav",
+	"vo/npc/vortigaunt/surge.wav",
+	"vo/npc/vortigaunt/undeserving.wav",
+	"vo/npc/vortigaunt/weclaimyou.wav"
 };
 
 static const char g_AngerSounds[][] =
 {
-	"npc/zombine/zombine_charge1.wav",
-	"npc/zombine/zombine_charge2.wav"
+	"npc/roller/mine/rmine_taunt2.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
 	"weapons/bow_shoot.wav",
 };
+
+static int HitEnemies[16];
+
+void FirstToTalk_MapStart()
+{
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_AngerSounds);
+}
 
 methodmap FirstToTalk < CClotBody
 {
@@ -45,10 +49,6 @@ methodmap FirstToTalk < CClotBody
 		
 		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-	}
-	public void PlayHurtSound()
-	{
-		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayDeathSound() 
 	{
@@ -106,57 +106,25 @@ public void FirstToTalk_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-
-	if(npc.m_blPlayHurtAnimation)
-	{
-		//npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
-		npc.PlayHurtSound();
-		npc.m_blPlayHurtAnimation = false;
-	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
+	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 		npc.m_iTarget = 0;
 	
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
 	if(npc.m_iTarget > 0)
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
-		
-		if(npc.m_flDoingAnimation > gameTime)
-		{
-			npc.StopPathing();
-		}
-		else
-		{
-			if(distance < npc.GetLeadRadius())
-			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				PF_SetGoalEntity(npc.index, npc.m_iTarget);
-			}
-
-			npc.StartPathing();
-
-			if(b_NpcIsInvulnerable[npc.index])
-			{
-				b_NpcIsInvulnerable[npc.index] = false;
-				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
-			}
-		}
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -178,7 +146,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 		if(distance < 250000.0 && npc.m_flNextMeleeAttack < gameTime)	// 2.5 * 200
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, target))
+			if(IsValidEnemy(npc.index, target, true))
 			{
 				npc.m_iTarget = target;
 
@@ -186,7 +154,8 @@ public void FirstToTalk_ClotThink(int iNPC)
 				{
 					npc.PlayAngerSound();
 					npc.SetActivity("ACT_MUDROCK_RAGE");
-
+					b_NpcIsInvulnerable[npc.index] = true;
+					
 					vecTarget[2] += 10.0;
 
 					DataPack pack = new DataPack();
@@ -219,6 +188,31 @@ public void FirstToTalk_ClotThink(int iNPC)
 				}
 			}
 		}
+		
+		if(npc.m_flDoingAnimation > gameTime)
+		{
+			npc.StopPathing();
+		}
+		else
+		{
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				PF_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			}
+
+			npc.StartPathing();
+
+			if(b_NpcIsInvulnerable[npc.index])
+			{
+				b_NpcIsInvulnerable[npc.index] = false;
+				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+			}
+		}
 	}
 	else
 	{
@@ -241,24 +235,25 @@ public Action FirstToTalk_Timer(Handle timer, DataPack pack)
 
 		spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
 
-		DoExlosionTraceCheck(vecPos, 325.0, npc.index);
+		Zero(HitEnemies);
+		TR_EnumerateEntitiesSphere(vecPos, 325.0, PARTITION_NON_STATIC_EDICTS, FirstToTalk_EnumerateEntitiesInRange, npc.index);
 
 		// Hits the target with the highest armor within range
 
 		int victim;
 		int armor = -9999999;
-		for(int i; i < sizeof(HitEntitiesSphereExplosionTrace); i++)
+		for(int i; i < sizeof(HitEnemies); i++)
 		{
-			if(!HitEntitiesSphereExplosionTrace[i][npc.index])
+			if(!HitEnemies[i])
 				break;
 			
 			int myArmor = 1;
-			if(HitEntitiesSphereExplosionTrace[i][npc.index] <= MaxClients)
-				myArmor = Armor_Charge[HitEntitiesSphereExplosionTrace[i][npc.index]];
+			if(HitEnemies[i] <= MaxClients)
+				myArmor = Armor_Charge[HitEnemies[i]];
 			
 			if(myArmor > armor)
 			{
-				victim = HitEntitiesSphereExplosionTrace[i][npc.index];
+				victim = HitEnemies[i];
 				armor = myArmor;
 			}
 		}
@@ -275,6 +270,25 @@ public Action FirstToTalk_Timer(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
+public bool FirstToTalk_EnumerateEntitiesInRange(int victim, int attacker)
+{
+	if(IsValidEnemy(attacker, victim, true))
+	{
+		for(int i; i < sizeof(HitEnemies); i++)
+		{
+			if(!HitEnemies[i])
+			{
+				HitEnemies[i] = victim;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	return true;
+}
+
 public Action FirstToTalk_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
@@ -282,14 +296,8 @@ public Action FirstToTalk_TakeDamage(int victim, int &attacker, int &inflictor, 
 	
 	FirstToTalk npc = view_as<FirstToTalk>(victim);
 	if(b_NpcIsInvulnerable[npc.index])
-	{
 		damage = 0.0;
-	}
-	else if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
+	
 	return Plugin_Changed;
 }
 
