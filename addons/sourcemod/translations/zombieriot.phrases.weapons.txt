@@ -228,7 +228,7 @@
 		"de"		"Aresenals Tripminschicht"
 		"pt"		"Camada de Minas do Aresenal"
 		"nl"		"Aresenal's Explosieve Valmijn legger"
-		//"chi"       "安森尔"
+		"chi"       "兵厂三聚氰胺层"
 	}
 	"Heavy Charge Builder Laser"
 	{
@@ -273,6 +273,7 @@
 		"de"		"Terrorisar Bomben Implantiertes Scharfschützengewehr"
 		"pt"		"Rifle Implantador de Bombas Aterrorizante"
 		"nl"		"Terrorizerende bomplantende Scherpshuttergeweer"
+		"chi"       "恐怖炸弹狙击步枪"
 	}
 	"Rampager Automatic Rifle"
 	{
