@@ -1173,7 +1173,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					ShowHudText(client, -1, "%T", "Last Alive", client);
 					int MaxHealth;
 					MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-					if(i_HealthBeforeSuit[client] != 0)
+					if(i_HealthBeforeSuit[client] == 0)
 					{
 						SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
 					}
