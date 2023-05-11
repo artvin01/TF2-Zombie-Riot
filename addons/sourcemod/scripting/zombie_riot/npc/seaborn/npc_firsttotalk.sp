@@ -31,6 +31,11 @@ static const char g_AngerSounds[][] =
 	"npc/zombine/zombine_charge2.wav"
 };
 
+static const char g_MeleeAttackSounds[][] =
+{
+	"weapons/bow_shoot.wav",
+};
+
 methodmap FirstToTalk < CClotBody
 {
 	public void PlayIdleSound()
@@ -53,6 +58,10 @@ methodmap FirstToTalk < CClotBody
  	{
 		EmitCustomToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
+	public void PlayMeleeSound()
+ 	{
+		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+	}
 	
 	public FirstToTalk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
@@ -73,7 +82,7 @@ methodmap FirstToTalk < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
@@ -124,17 +133,30 @@ public void FirstToTalk_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
 		
-		if(distance < npc.GetLeadRadius())
+		if(npc.m_flDoingAnimation > gameTime)
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			npc.StopPathing();
 		}
-		else 
+		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				PF_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			}
 
-		npc.StartPathing();
+			npc.StartPathing();
+
+			if(b_NpcIsInvulnerable[npc.index])
+			{
+				b_NpcIsInvulnerable[npc.index] = false;
+				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+			}
+		}
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -142,46 +164,59 @@ public void FirstToTalk_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
 
-					if(target > 0) 
-					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 90.0, DMG_CLUB);
-						// 600 x 0.15
+				npc.PlayMeleeSound();
+				npc.FireArrow(vecTarget, 90.0, 1200.0);
+				// 600 x 0.15
 
-						FirstToTalk_AddNeuralDamage(target, npc.index, 36);
-						// 600 x 0.4 x 0.15
-					}
-				}
-
-				delete swingTrace;
+				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 36);
+				// 600 x 0.4 x 0.15
 			}
 		}
 
-		if(distance < 250000.0)	// 2.5 * 200
+		if(distance < 250000.0 && npc.m_flNextMeleeAttack < gameTime)	// 2.5 * 200
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
+				if(npc.m_flNextRangedAttack < gameTime)
+				{
+					npc.PlayAngerSound();
+					npc.SetActivity("ACT_MUDROCK_RAGE");
 
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.35;
+					vecTarget[2] += 10.0;
 
-				npc.m_flDoingAnimation = gameTime + 1.0;
-				npc.m_flNextMeleeAttack = gameTime + 2.0;
-				npc.m_flHeadshotCooldown = gameTime + 2.0;
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(npc.index));
+					pack.WriteFloat(vecTarget[0]);
+					pack.WriteFloat(vecTarget[1]);
+					pack.WriteFloat(vecTarget[2]);
+
+					CreateTimer(5.0, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(5.75, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(6.5, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(7.25, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(8.0, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(8.75, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+
+					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 9.0, 6.0, 0.1, 1);
+
+					npc.m_flDoingAnimation = gameTime + 10.0;
+					npc.m_flNextMeleeAttack = gameTime + 12.0;
+					npc.m_flNextRangedAttack = gameTime + 40.0;
+				}
+				else
+				{
+					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
+					
+					npc.m_flAttackHappens = gameTime + 0.35;
+
+					npc.m_flDoingAnimation = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 3.0;
+				}
 			}
 		}
 	}
@@ -193,13 +228,53 @@ public void FirstToTalk_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public Action FirstToTalk_Timer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
+	if(npc.index != INVALID_ENT_REFERENCE)
+	{
+		float vecPos[3];
+		vecPos[0] = pack.ReadFloat();
+		vecPos[1] = pack.ReadFloat();
+		vecPos[2] = pack.ReadFloat();
+
+		spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
+
+		DoExlosionTraceCheck(vecPos, 325.0, npc.index);
+		// 600 x 0.15
+
+		int victim;
+		int armor = -9999999;
+		for(int i; i < sizeof(HitEntitiesSphereExplosionTrace); i++)
+		{
+			if(!HitEntitiesSphereExplosionTrace[i][npc.index])
+				break;
+			
+			int myArmor = 1;
+			if(HitEntitiesSphereExplosionTrace[i][npc.index] <= MaxClients)
+				myArmor = Armor_Charge[HitEntitiesSphereExplosionTrace[i][npc.index]];
+			
+			if(myArmor > armor)
+			{
+				
+			}
+		}
+	}
+	return Plugin_Stop;
+}
+
 public Action FirstToTalk_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
-		
+	
 	FirstToTalk npc = view_as<FirstToTalk>(victim);
-	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	if(b_NpcIsInvulnerable[npc.index])
+	{
+		damage = 0.0;
+	}
+	else if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;

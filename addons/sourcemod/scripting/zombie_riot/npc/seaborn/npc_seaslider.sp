@@ -179,7 +179,7 @@ public void SeaSlider_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0)
+		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
