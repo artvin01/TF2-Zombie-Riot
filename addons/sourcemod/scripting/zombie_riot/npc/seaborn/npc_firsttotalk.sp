@@ -242,7 +242,8 @@ public Action FirstToTalk_Timer(Handle timer, DataPack pack)
 		spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
 
 		DoExlosionTraceCheck(vecPos, 325.0, npc.index);
-		// 600 x 0.15
+
+		// Hits the target with the highest armor within range
 
 		int victim;
 		int armor = -9999999;
@@ -257,8 +258,18 @@ public Action FirstToTalk_Timer(Handle timer, DataPack pack)
 			
 			if(myArmor > armor)
 			{
-				
+				victim = HitEntitiesSphereExplosionTrace[i][npc.index];
+				armor = myArmor;
 			}
+		}
+
+		if(victim)
+		{
+			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
+			// 600 x 0.15
+			
+			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
+			// 600 x 0.4 x 0.15
 		}
 	}
 	return Plugin_Stop;
