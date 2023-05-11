@@ -328,9 +328,8 @@
 	
 	"Elite Sniper Desc"
 	{
-		"en"	"Trained monkeys master the skills of bouncing bullets, which will go from target to target, killing them."
-		"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага."
-		"chi"   "训练有素的幸存者掌握弹跳子弹的技能，子弹会从一个目标弹到另一个目标，杀死它们。"
+		"en"	"Trained monkeys master the skills of bouncing bullets, which will go from target to target, killing them.\nDeals 1.5x dmg during raids."
+		
 	}
 	"Elite Sniper Pap 1"
 	{
@@ -352,9 +351,9 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"Cripples targets heavily, making them slower and take 35%% more damage."
-		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 35%% больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到35%%的伤害。"
+		"en"		"Cripples targets heavily, making them slower and take 40%% more damage."
+		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 40%% больше урона."
+		"chi"       "严重致残目标，使他们变慢并受到40%%的伤害。"
 	}
 	"Elite Sniper Pap 5"
 	{
@@ -809,13 +808,13 @@
 	
 	"Medusa Teslar Stick Desc"
 	{
-		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25% more dmg takes for affected enemies."
+		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies."
 		"ru"	"Вызывает кровотечение, 5%% доп. сопр. в ближнем бою. Накладывает на врага эффект, который замедляет его и заставляет получать больше урона."
 		"chi"   "对敌人造成流血，额外获得5%%近战抗性。对敌人造成负面效果，使敌人减速并受到更多伤害"
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, Debuff is massively stronger, enemies will take 35% more dmg."
+		"en"	"Increased damage and attackspeed, Debuff is massively stronger, enemies will take 35%% more dmg."
 		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}

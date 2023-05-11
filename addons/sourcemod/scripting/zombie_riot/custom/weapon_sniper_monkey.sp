@@ -20,6 +20,10 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 		
 		if(SmartBounce)
 		{
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				damage *= 1.5;
+			}
 			float pos[3];
 			
 			int targets[3];
@@ -74,7 +78,10 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			LastHitTarget = victim;
 			
 			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 4);
-			
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				damage *= 1.5;
+			}			
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
 		}
@@ -84,20 +91,20 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 
 float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration = 2.0;
+	float duration = 6.0;
 	switch(i_NpcInternalId[victim])
 	{
 		case BTD_MOAB:
 		{
-			duration = 6.0;
+			duration = 12.0;
 		}
 		case BTD_BFB:
 		{
-			duration = 3.0;
+			duration = 9.0;
 		}
 		case BTD_BLOON, BTD_GOLDBLOON, BTD_BAD:
 		{
-			duration = 1.5;
+			duration = 5.0;
 		}
 	}
 	
@@ -110,13 +117,13 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 		if(duration > f_MaimDebuff[victim])
 			f_MaimDebuff[victim] = duration;
 	}
-	
+
 	return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
 
 float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration = 2.0;
+	float duration = 6.0;
 	switch(i_NpcInternalId[victim])
 	{
 		case BTD_BLOON, BTD_GOLDBLOON:

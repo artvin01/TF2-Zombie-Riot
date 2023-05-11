@@ -1542,6 +1542,8 @@ public void OnClientDisconnect(int client)
 	FileNetwork_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
+	i_HealthBeforeSuit[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR

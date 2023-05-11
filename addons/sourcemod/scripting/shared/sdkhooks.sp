@@ -1396,16 +1396,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) && i_HealthBeforeSuit[victim] > 0)
 		{
-			if(damagetype & DMG_CLUB)
-			{
-				Replicated_Damage *= 4.0; //when a raid is alive, make quantum armor 2x as bad at tanking.
-				damage *= 4.0;	
-			}		
-			else //If its melee dmg, 4x, else, 2x
-			{
-				Replicated_Damage *= 2.0; //when a raid is alive, make quantum armor 2x as bad at tanking.
-				damage *= 2.0;	
-			}
+			Replicated_Damage *= 8.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
+			damage *= 8.0;	
 		}
 		
 		if(EscapeMode)
