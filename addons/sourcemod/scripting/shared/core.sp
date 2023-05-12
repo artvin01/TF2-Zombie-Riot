@@ -737,7 +737,7 @@ enum
 
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
-
+//
 #define EF_BONEMERGE		(1 << 0)
 #define EF_PARENT_ANIMATES	(1 << 9)
 
