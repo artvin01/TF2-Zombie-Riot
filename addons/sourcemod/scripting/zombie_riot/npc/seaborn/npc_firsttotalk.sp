@@ -103,7 +103,9 @@ methodmap FirstToTalk < CClotBody
 		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = 
+		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		npc.m_iWearable3 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
+		SetParent(npc.index, npc.m_iWearable3);
 		
 		npc.StartPathing();
 		return npc;
@@ -250,12 +252,21 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 	if(npc.index != INVALID_ENT_REFERENCE)
 	{
 		float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
+		vecPos[2] += 100.0;
 
 		npc.PlayMeleeSound();
 
-		vecPos[2] += 100.0;
-		npc.FireArrow(vecPos, 90.0, 2000.0);
-		//f_ArrowTrailParticle[entity]
+		int entity = npc.FireArrow(vecPos, 90.0, 2000.0);
+		if(entity != -1)
+		{
+			if(IsValidEntity(f_ArrowTrailParticle[entity]))
+				RemoveEntity(f_ArrowTrailParticle[entity]);
+			
+			vecPos = WorldSpaceCenter(entity);
+			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", -1.0);
+			SetParent(entity, f_ArrowTrailParticle[entity]);
+			f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+		}
 	}
 }
 
@@ -298,14 +309,23 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 		if(victim)
 		{
 			vecPos = WorldSpaceCenter(npc.index);
+			ParticleEffectAt(vecPos, "water_splash01", 3.0);
+			
 			vecPos[2] += 300.0;
 
 			int entity = npc.FireArrow(vecPos, 90.0, 3000.0);
 			if(entity != -1)
 			{
 				TeleportEntity(vecPos, NULL_VECTOR, {0.0, 0.0, 0.0}, {0.0, 0.0, -3000.0});
+
+				if(IsValidEntity(f_ArrowTrailParticle[entity]))
+					RemoveEntity(f_ArrowTrailParticle[entity]);
+				
+				vecPos = WorldSpaceCenter(entity);
+				f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", -1.0);
+				SetParent(entity, f_ArrowTrailParticle[entity]);
+				f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 			}
-			//f_ArrowTrailParticle[entity]
 
 			//SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
 			// 600 x 0.15
@@ -362,4 +382,7 @@ void FirstToTalk_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }

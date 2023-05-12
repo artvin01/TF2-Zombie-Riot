@@ -83,6 +83,10 @@ methodmap UnderTides < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
+		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
+		SetParent(npc.index, npc.m_iWearable2);
+
 		if(data[0])	// Species Outbreak
 		{
 			npc.m_bThisNpcIsABoss = true;
@@ -271,11 +275,22 @@ public void UnderTides_ClotThink(int iNPC)
 				{
 					vecTarget = WorldSpaceCenter(enemy[i]);
 
-					npc.FireArrow(vecTarget, 57.0, 1200.0);
+					int entity = npc.FireArrow(vecTarget, 57.0, 1200.0);
 					// 380 * 0.15
 
 					SeaSlider_AddNeuralDamage(enemy[i], npc.index, 12);
 					// 380 * 0.2 * 0.15
+					
+					if(entity != -1)
+					{
+						if(IsValidEntity(f_ArrowTrailParticle[entity]))
+							RemoveEntity(f_ArrowTrailParticle[entity]);
+						
+						vecTarget = WorldSpaceCenter(entity);
+						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", -1.0);
+						SetParent(entity, f_ArrowTrailParticle[entity]);
+						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+					}
 				}
 			}
 
@@ -475,4 +490,7 @@ void UnderTides_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }

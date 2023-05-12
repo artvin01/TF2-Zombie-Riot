@@ -120,7 +120,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	}
 	
 	if(npc.Anger)
-		SDKHooks_TakeDamage(npc.index, 0, 0, 2.0, DMG_DROWN);
+		SDKHooks_TakeDamage(npc.index, 0, 0, float(GetURandomInt() % 2) + 2.0, DMG_DROWN);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -252,6 +252,7 @@ public void SeaReaper_ClotThink(int iNPC)
 
 public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
+	ParticleEffectAt(WorldSpaceCenter(victim), "snow_steppuff01", 1.5);
 	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[attacker] == SEAREAPER_ALT ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15

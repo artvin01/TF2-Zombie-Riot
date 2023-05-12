@@ -144,9 +144,20 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48.0 : 42.0, 800.0);
+				int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48.0 : 42.0, 800.0);
 				// 280 * 0.15
 				// 320 * 0.15
+				
+				if(entity != -1)
+				{
+					if(IsValidEntity(f_ArrowTrailParticle[entity]))
+						RemoveEntity(f_ArrowTrailParticle[entity]);
+					
+					vecTarget = WorldSpaceCenter(entity);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", -1.0);
+					SetParent(entity, f_ArrowTrailParticle[entity]);
+					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+				}
 			}
 		}
 
