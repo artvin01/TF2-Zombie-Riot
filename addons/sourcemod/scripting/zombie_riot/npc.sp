@@ -249,7 +249,9 @@ enum
 	FIRSTTOTALK	= 212,
 	UNDERTIDES	= 213,
 	SEABORN_KAZIMIERZ_KNIGHT	= 214,
-	SEABORN_KAZIMIERZ_KNIGHT_ARCHER	= 215
+	SEABORN_KAZIMIERZ_KNIGHT_ARCHER	= 215,
+	SEABORN_KAZIMIERZ_BESERKER	= 216,
+	SEABORN_KAZIMIERZ_LONGARCHER	= 217
 }
 
 public const char NPC_Names[][] =
@@ -490,7 +492,9 @@ public const char NPC_Names[][] =
 	"The First To Talk",
 	"Sal Viento Bishop Quintus",
 	"Seaborn Kazimierz Knight",
-	"Seaborn Kazimierz Archer"
+	"Seaborn Kazimierz Archer",
+	"Seaborn Kazimierz Beserker",
+	"Seaborn Kazimierz Assasin"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -727,6 +731,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_undertides",
 	"npc_seaborn_kazimersch_knight",
 	"npc_seaborn_kazimersch_knight_archer",
+	"npc_seaborn_kazimersch_beserker",
+	"npc_seaborn_kazimersch_longrange",
 };
 
 void NPC_MapStart()
@@ -921,6 +927,8 @@ void NPC_MapStart()
 	UnderTides_MapStart();
 	KazimierzKnight_OnMapStart_NPC();
 	KazimierzKnightArcher_OnMapStart_NPC();
+	KazimierzBeserker_OnMapStart_NPC();
+	KazimierzLongArcher_OnMapStart_NPC();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1784,7 +1792,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		}
 		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
 		{
-			entity = KazimierzKnightArcher(client, vecPos, vecAng, ally);
+			entity = KazimierzKnightArcher(client, vecPos, vecAng, ally, data);
+		}
+		case SEABORN_KAZIMIERZ_BESERKER:
+		{
+			entity = KazimierzBeserker(client, vecPos, vecAng, ally);
+		}
+		case SEABORN_KAZIMIERZ_LONGARCHER:
+		{
+			entity = KazimierzLongArcher(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -1796,6 +1812,24 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 }	
 public void NPCDeath(int entity)
 {
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			switch(i_NpcInternalId[baseboss_index])
+			{
+				case SEABORN_KAZIMIERZ_BESERKER:
+				{
+					if(i_NpcInternalId[entity] != SEABORN_KAZIMIERZ_BESERKER)
+					{
+						KazimierzBeserker_AllyDeath(entity, baseboss_index);	
+					}
+				}
+			}
+		}
+	}
+
 	switch(i_NpcInternalId[entity])
 	{
 		case HEADCRAB_ZOMBIE:
@@ -2623,6 +2657,14 @@ public void NPCDeath(int entity)
 		{
 			KazimierzKnightArcher_NPCDeath(entity);
 		}
+		case SEABORN_KAZIMIERZ_BESERKER:
+		{
+			KazimierzBeserker_NPCDeath(entity);
+		}
+		case SEABORN_KAZIMIERZ_LONGARCHER:
+		{
+			KazimierzLongArcher_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2928,3 +2970,5 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/seaborn/npc_undertides.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_knight.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_archer.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_beserker.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_longrange.sp"

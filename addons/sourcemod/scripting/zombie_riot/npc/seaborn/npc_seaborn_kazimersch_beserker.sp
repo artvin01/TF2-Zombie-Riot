@@ -40,7 +40,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
-void KazimierzKnight_OnMapStart_NPC()
+void KazimierzBeserker_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -52,9 +52,24 @@ void KazimierzKnight_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
-methodmap KazimierzKnight < CClotBody
+methodmap KazimierzBeserker < CClotBody
 {
-	
+	property int m_iAlliesDied
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	property int m_iAlliesMaxDeath
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property float m_flPercentageAngry
+	{
+		public get()							{ return fl_Charge_delay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Charge_delay[this.index] = TempValueForProperty; }
+	}
+
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -88,8 +103,7 @@ methodmap KazimierzKnight < CClotBody
 		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-	}
-	
+	}	
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
@@ -101,20 +115,19 @@ methodmap KazimierzKnight < CClotBody
 	}
 	
 	
-	public KazimierzKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		KazimierzKnight npc = view_as<KazimierzKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
+		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "7500", false, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_KNIGHT;
+		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_BESERKER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_TOOL_1");
+		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_BESERK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -123,25 +136,33 @@ methodmap KazimierzKnight < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, KazimierzKnight_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, KazimierzKnight_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, KazimierzBeserker_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, KazimierzBeserker_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 220.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 
+		//how many deaths untill we reach full power?
+		float MaxAlliesDeath = 10.0;
+		MaxAlliesDeath *= MultiGlobal;
+		npc.m_iAlliesMaxDeath = RoundToCeil(MaxAlliesDeath);
+
+		npc.m_flPercentageAngry = 0.0;
+		npc.m_iAlliesDied = 0;
+
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sum19_backbreakers_skullcracker/sum19_backbreakers_skullcracker.mdl");
-		SetVariantString("1.35");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
@@ -177,9 +198,9 @@ methodmap KazimierzKnight < CClotBody
 
 //TODO 
 //Rewrite
-public void KazimierzKnight_ClotThink(int iNPC)
+public void KazimierzBeserker_ClotThink(int iNPC)
 {
-	KazimierzKnight npc = view_as<KazimierzKnight>(iNPC);
+	KazimierzBeserker npc = view_as<KazimierzBeserker>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -210,6 +231,15 @@ public void KazimierzKnight_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
+	npc.m_flSpeed = 220.0;
+	if(npc.m_flPercentageAngry == 1.0)
+	{
+		npc.m_flSpeed = 360.0;
+	}
+	else if(npc.m_flPercentageAngry > 0.5)
+	{
+		npc.m_flSpeed = 300.0;
+	}
 
 	if(npc.m_flAttackHappens)
 	{
@@ -221,13 +251,22 @@ public void KazimierzKnight_ClotThink(int iNPC)
 			{
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 65.0;
+					float damage = 75.0;
+					
+					if(npc.m_flPercentageAngry == 1.0)
+					{
+						damage *= 3.0;
+					}
+					else if(npc.m_flPercentageAngry > 0.5)
+					{
+						damage *= 2.0;
+					}
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
@@ -239,40 +278,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
-				}
-				delete swingTrace;
-			}
-		}
-	}
-	
-	if(npc.m_flNextRangedSpecialAttack)
-	{
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flNextRangedSpecialAttack = 0.0;
-			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 120.0;
-
-					if(ShouldNpcDealBonusDamage(target))
-					{
-						damage *= 4.0;
-					}
-
-					npc.PlayMeleeHitSound();
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-					}
+					Custom_Knockback(npc.index, target, 250.0);
 				}
 				delete swingTrace;
 			}
@@ -296,15 +302,11 @@ public void KazimierzKnight_ClotThink(int iNPC)
 		}
 		//Get position for just travel here.
 
-		if(npc.m_flNextRangedSpecialAttack && npc.m_fbRangedSpecialOn)
-		{
-			npc.m_iState = 2; //Engage in Close Range Destruction.
-		}
-		else if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
+		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.35, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -329,7 +331,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
+					npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 				}
 			}
 			case 1:
@@ -342,7 +344,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
+					npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 				}	
 
 				int Enemy_I_See;
@@ -354,29 +356,24 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_1");
+					npc.AddGesture("ACT_SEABORN_ATTACK_BESERK_1");
 					
 
 					npc.PlayMeleeSound();
 
 					npc.m_flAttackHappens = gameTime + 0.35;
 					npc.m_flDoingAnimation = gameTime + 0.35;
-					npc.m_flNextMeleeAttack = gameTime + 0.75;
-					
+					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					if(npc.m_flPercentageAngry == 1.0)
+					{
+						npc.m_flNextMeleeAttack = gameTime + 0.65;
+					}
+					else if(npc.m_flPercentageAngry > 0.5)
+					{
+						npc.m_flNextMeleeAttack = gameTime + 1.0;
+					}
 					npc.m_bisWalking = true;
 				}
-			}
-			case 2:
-			{		
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				npc.RemoveGesture("ACT_SEABORN_ATTACK_TOOL_1");
-				npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
-				npc.m_flAttackHappens = 0.0;
-					
-				npc.m_fbRangedSpecialOn = false;
-				npc.PlayDeflectSound();
-
-				npc.m_flDoingAnimation = gameTime + 0.8;
 			}
 		}
 	}
@@ -391,32 +388,26 @@ public void KazimierzKnight_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action KazimierzKnight_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action KazimierzBeserker_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	KazimierzKnight npc = view_as<KazimierzKnight>(victim);
-	
-	if(!NpcStats_IsEnemySilenced(victim))
-	{
-		if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
-		{
-			if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
-			{	
-				npc.m_fbRangedSpecialOn = true;
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.0;
-				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 0.6;
-				damage *= 0.1;
-			}
-		}
-	}
+	KazimierzBeserker npc = view_as<KazimierzBeserker>(victim);
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
+	if(npc.m_flPercentageAngry == 1.0)
+	{
+		damage *= 0.35;
+	}
+	else if(npc.m_flPercentageAngry > 0.5)
+	{
+		damage *= 0.5;
+	}
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -428,19 +419,77 @@ public Action KazimierzKnight_ClotDamaged(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-public void KazimierzKnight_NPCDeath(int entity)
+public void KazimierzBeserker_NPCDeath(int entity)
 {
-	KazimierzKnight npc = view_as<KazimierzKnight>(entity);
+	KazimierzBeserker npc = view_as<KazimierzBeserker>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, KazimierzKnight_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzKnight_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, KazimierzBeserker_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, KazimierzBeserker_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+}
+
+public void KazimierzBeserker_AllyDeath(int ally, int self)
+{
+	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
+
+	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	{
+		return;
+	}
+
+	float AllyPos[3];
+	GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", AllyPos);
+	float SelfPos[3];
+	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", SelfPos);
+	float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
+	if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 8.0, 2.0))
+	{
+		npc.m_iAlliesDied += 1;
+
+		if(npc.m_iAlliesDied >= npc.m_iAlliesMaxDeath)
+		{
+			npc.m_flPercentageAngry = 1.0;
+		}
+		else
+		{
+			npc.m_flPercentageAngry = float(npc.m_iAlliesDied)	/ float(npc.m_iAlliesMaxDeath);
+		}
+
+		float flPos[3]; // original
+		float flAng[3]; // original
+		if(npc.m_flPercentageAngry == 1.0)
+		{
+			if(IsValidEntity(npc.m_iWearable5))
+			{
+				RemoveEntity(npc.m_iWearable5);
+			}
+			if(!IsValidEntity(npc.m_iWearable6))
+			{
+				npc.GetAttachment("eyes_r", flPos, flAng);
+		
+				npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", npc.index, "eyes_r", {0.0,0.0,0.0});
+			}
+		}
+		else if(npc.m_flPercentageAngry > 0.5)
+		{
+			if(!IsValidEntity(npc.m_iWearable5))
+			{
+				npc.GetAttachment("eyes_r", flPos, flAng);
+		
+				npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyes_r", {0.0,0.0,0.0});
+			}
+		}
+	}
 }

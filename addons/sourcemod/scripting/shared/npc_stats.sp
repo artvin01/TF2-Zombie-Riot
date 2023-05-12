@@ -3820,6 +3820,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			HandleAnimEventMedival_KazimierzArcher(pThis, event);
 		}
+		case SEABORN_KAZIMIERZ_LONGARCHER:
+		{
+			HandleAnimEventKazimierzLongArcher(pThis, event);
+		}
 	}
 #endif
 	
@@ -3893,7 +3897,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				static char strSound[64];
 				Format(strSound, sizeof(strSound), "player/footsteps/mud%d.wav", GetRandomInt(1,4));
-				npc.PlayStepSound(strSound, 0.8, npc.m_iStepNoiseType);
+				npc.PlayStepSound(strSound, 0.5, npc.m_iStepNoiseType);
 			}
 		}
 	}
