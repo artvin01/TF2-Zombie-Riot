@@ -1273,4 +1273,12 @@
 	{
 		"en"		"Seaborn Kazimierz Archer"
 	}
+	"Seaborn Kazimierz Beserker"
+	{
+		"en"		"Seaborn Kazimierz Beserker"
+	}
+	"Seaborn Kazimierz Assasin"
+	{
+		"en"		"Seaborn Kazimierz Assasin"
+	}
 }

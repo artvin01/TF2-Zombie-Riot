@@ -2,38 +2,28 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/vo/male01/no01.wav",
-	"npc/vo/male01/no02.wav",
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/vo/male01/pain01.wav",
-	"npc/vo/male01/pain02.wav",
-	"npc/vo/male01/pain03.wav",
-	"npc/vo/male01/pain05.wav",
-	"npc/vo/male01/pain06.wav",
-	"npc/vo/male01/pain07.wav",
-	"npc/vo/male01/pain08.wav",
-	"npc/vo/male01/pain09.wav",
+	"vo/npc/male01/pain01.wav",
+	"vo/npc/male01/pain02.wav",
+	"vo/npc/male01/pain03.wav",
+	"vo/npc/male01/pain05.wav",
+	"vo/npc/male01/pain06.wav",
+	"vo/npc/male01/pain07.wav",
+	"vo/npc/male01/pain08.wav",
+	"vo/npc/male01/pain09.wav",
 };
 static const char g_IdleAlertedSounds[][] = {
-	"npc/vo/male01/ohno.wav",
-	"npc/vo/male01/overthere01.wav",
-	"npc/vo/male01/overthere02.wav",
-};
-
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"weapons/bow_shoot.wav",
 };
 
 void KazimierzKnightArcher_OnMapStart_NPC()
@@ -41,9 +31,8 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
 
@@ -79,23 +68,23 @@ methodmap KazimierzKnightArcher < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 	
-	public void PlayMeleeHitSound() 
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-	}
-
-	public void PlayMeleeMissSound() 
-	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-	}
 	
-	
-	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+
+		if(data[0])
+		{
+			npc.m_iOverlordComboAttack = StringToInt(data);
+		}
+		else
+		{
+			npc.m_iOverlordComboAttack = 1000;
+		}
 
 		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_KNIGHT_ARCHER;
 		
@@ -118,11 +107,11 @@ methodmap KazimierzKnightArcher < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 210.0;
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
-
+		npc.m_flNextRangedSpecialAttack = GetGameTime() + 10.0;
+ 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
@@ -138,6 +127,9 @@ methodmap KazimierzKnightArcher < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 155, 155, 255, 255);
 
+		npc.m_iWearable3 = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 /*
 		int seed = GetURandomInt();
 		bool female = !(seed % 2);
@@ -168,8 +160,19 @@ methodmap KazimierzKnightArcher < CClotBody
 public void KazimierzKnightArcher_ClotThink(int iNPC)
 {
 	KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(iNPC);
-	Citizen npcsound = view_as<Citizen>(iNPC);
-	
+	if(npc.m_flNextRangedSpecialAttack)
+	{
+		if(npc.m_flNextRangedSpecialAttack < GetGameTime())
+		{
+			npc.m_flNextRangedSpecialAttack = 0.0;
+			npc.m_iOverlordComboAttack = 0;
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				RemoveEntity(npc.m_iWearable3);
+			}
+		}
+	}
+
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -199,40 +202,6 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
-	
-	if(npc.m_flNextRangedSpecialAttack)
-	{
-		if(npc.m_flNextRangedSpecialAttack < gameTime)
-		{
-			npc.m_flNextRangedSpecialAttack = 0.0;
-			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 120.0;
-
-					if(ShouldNpcDealBonusDamage(target))
-					{
-						damage *= 4.0;
-					}
-
-					npc.PlayMeleeHitSound();
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-					}
-				}
-				delete swingTrace;
-			}
-		}
-	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
@@ -255,15 +224,12 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 			npc.m_flSpeed = 210.0;
 			npc.StartPathing();
 		}
-		if(npc.m_flNextRangedSpecialAttack && npc.m_fbRangedSpecialOn)
-		{
-			npc.m_iState = 2; //Engage in Close Range Destruction.
-		}
-		else if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
+
+		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -315,13 +281,11 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 
 					npc.m_flSpeed = 0.0;
 					npc.AddGesture("ACT_SEABORN_ATTACK_RANGED_1");
-					
 
-					npc.PlayMeleeSound();
 
 					npc.m_flAttackHappens = gameTime + 0.35;
 					npc.m_flDoingAnimation = gameTime + 0.35;
-					npc.m_flNextMeleeAttack = gameTime + 0.75;
+					npc.m_flNextMeleeAttack = gameTime + 1.5;
 					npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					
 					npc.m_bisWalking = true;
@@ -355,8 +319,17 @@ public Action KazimierzKnightArcher_ClotDamaged(int victim, int &attacker, int &
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
 		return Plugin_Continue;
 	*/
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	if(npc.m_iOverlordComboAttack && npc.m_flNextRangedSpecialAttack > GetGameTime())
+	{
+		damage -= float(npc.m_iOverlordComboAttack);
+		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(damage < 0.0)
+		{
+			damage = 0.0;
+		}
+	}
+
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index) && damage > 0)
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
@@ -381,6 +354,8 @@ public void KazimierzKnightArcher_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
 
 
@@ -405,10 +380,6 @@ public void HandleAnimEventMedival_KazimierzArcher(int entity, int event)
 			npc.PlayMeleeSound();
 			
 			float damage = 40.0;
-			if(Medival_Difficulty_Level > 1.0)
-			{
-				damage = 55.0;
-			}
 			npc.FireArrow(vecTarget, damage, projectile_speed);
 		}
 	}

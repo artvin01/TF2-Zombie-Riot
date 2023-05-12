@@ -192,7 +192,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 					CreateTimer(8.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(8.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 
-					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 9.0, 6.0, 0.1, 1);
+					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 9.0, 6.0, 0.1, 1);
 
 					npc.m_flDoingAnimation = gameTime + 8.0;
 					npc.m_flNextMeleeAttack = gameTime + 10.0;
