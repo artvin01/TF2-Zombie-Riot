@@ -148,10 +148,7 @@ methodmap MedivalArcher < CClotBody
 	public MedivalArcher(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalArcher npc = view_as<MedivalArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
-	
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_ARCHER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

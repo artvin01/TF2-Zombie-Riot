@@ -148,8 +148,7 @@ methodmap MedivalRiddenArcher < CClotBody
 	public MedivalRiddenArcher(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalRiddenArcher npc = view_as<MedivalRiddenArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6500", ally));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_RIDDENARCHER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -165,11 +165,7 @@ methodmap CombineGaint < CClotBody
 	public CombineGaint(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		CombineGaint npc = view_as<CombineGaint>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
-
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-				
+		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_GIANT_SWORDSMAN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

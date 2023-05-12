@@ -166,10 +166,7 @@ methodmap CombineDeutsch < CClotBody
 	public CombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-				
+		
 		i_NpcInternalId[npc.index] = COMBINE_DEUTSCH_RITTER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

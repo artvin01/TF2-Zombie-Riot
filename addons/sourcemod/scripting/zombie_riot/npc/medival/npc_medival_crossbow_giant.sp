@@ -136,8 +136,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 	public MedivalCrossbowGiant(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally, false, true));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_CROSSBOW_GIANT;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

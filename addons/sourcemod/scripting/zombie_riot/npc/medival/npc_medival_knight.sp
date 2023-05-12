@@ -166,8 +166,7 @@ methodmap MedivalKnight < CClotBody
 	public MedivalKnight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalKnight npc = view_as<MedivalKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_KNIGHT;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

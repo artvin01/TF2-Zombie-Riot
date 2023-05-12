@@ -191,8 +191,7 @@ methodmap XenoCombineOverlord < CClotBody
 	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

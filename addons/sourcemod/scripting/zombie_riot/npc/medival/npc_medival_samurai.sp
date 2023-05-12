@@ -165,8 +165,7 @@ methodmap MedivalSamurai < CClotBody
 	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_SAMURAI;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

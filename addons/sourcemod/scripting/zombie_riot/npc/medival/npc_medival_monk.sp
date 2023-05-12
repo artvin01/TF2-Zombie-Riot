@@ -160,8 +160,7 @@ methodmap MedivalMonk < CClotBody
 	public MedivalMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_MONK;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

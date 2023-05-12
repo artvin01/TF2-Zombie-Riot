@@ -150,8 +150,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 	public MedivalSonOfOsiris(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalSonOfOsiris npc = view_as<MedivalSonOfOsiris>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "750000", ally));
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
+		
 		i_NpcInternalId[npc.index] = MEDIVAL_SON_OF_OSIRIS;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
