@@ -102,6 +102,8 @@ methodmap FirstToTalk < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		npc.m_iWearable3 = 
 		
 		npc.StartPathing();
 		return npc;
@@ -176,17 +178,24 @@ public void FirstToTalk_ClotThink(int iNPC)
 					pack.WriteFloat(vecTarget[1]);
 					pack.WriteFloat(vecTarget[2]);
 
-					CreateTimer(5.0, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(5.75, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(6.5, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(7.25, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(8.0, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(8.75, FirstToTalk_Timer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+					CreateTimer(1.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+
+					CreateTimer(5.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(5.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(6.5, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(7.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(8.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(8.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 
 					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 9.0, 6.0, 0.1, 1);
 
-					npc.m_flDoingAnimation = gameTime + 10.0;
-					npc.m_flNextMeleeAttack = gameTime + 12.0;
+					npc.m_flDoingAnimation = gameTime + 8.0;
+					npc.m_flNextMeleeAttack = gameTime + 10.0;
 					npc.m_flNextRangedAttack = gameTime + 40.0;
 				}
 				else
@@ -234,7 +243,23 @@ public void FirstToTalk_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action FirstToTalk_Timer(Handle timer, DataPack pack)
+public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
+	if(npc.index != INVALID_ENT_REFERENCE)
+	{
+		float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
+
+		npc.PlayMeleeSound();
+
+		vecPos[2] += 100.0;
+		npc.FireArrow(vecPos, 90.0, 2000.0);
+		//f_ArrowTrailParticle[entity]
+	}
+}
+
+public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
@@ -245,7 +270,7 @@ public Action FirstToTalk_Timer(Handle timer, DataPack pack)
 		vecPos[1] = pack.ReadFloat();
 		vecPos[2] = pack.ReadFloat();
 
-		spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
+		//spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
 
 		Zero(HitEnemies);
 		TR_EnumerateEntitiesSphere(vecPos, 325.0, PARTITION_NON_STATIC_EDICTS, FirstToTalk_EnumerateEntitiesInRange, npc.index);
@@ -272,7 +297,17 @@ public Action FirstToTalk_Timer(Handle timer, DataPack pack)
 
 		if(victim)
 		{
-			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
+			vecPos = WorldSpaceCenter(npc.index);
+			vecPos[2] += 300.0;
+
+			int entity = npc.FireArrow(vecPos, 90.0, 3000.0);
+			if(entity != -1)
+			{
+				TeleportEntity(vecPos, NULL_VECTOR, {0.0, 0.0, 0.0}, {0.0, 0.0, -3000.0});
+			}
+			//f_ArrowTrailParticle[entity]
+
+			//SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
 			// 600 x 0.15
 			
 			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
