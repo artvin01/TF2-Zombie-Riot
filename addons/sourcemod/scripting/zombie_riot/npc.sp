@@ -912,6 +912,7 @@ void NPC_MapStart()
 	SeaPiercer_MapStart();
 	SeaCrawler_MapStart();
 	FirstToTalk_MapStart();
+	UnderTides_MapStart();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1765,6 +1766,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = FirstToTalk(client, vecPos, vecAng, ally);
 		}
+		case UNDERTIDES:
+		{
+			entity = UnderTides(client, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2590,6 +2595,10 @@ public void NPCDeath(int entity)
 		{
 			FirstToTalk_NPCDeath(entity);
 		}
+		case UNDERTIDES:
+		{
+			UnderTides_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2885,10 +2894,11 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_goggles.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_nemesis.sp"
 
+#include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"
 #include "zombie_riot/npc/seaborn/npc_seacrawler.sp"
 #include "zombie_riot/npc/seaborn/npc_seapiercer.sp"
 #include "zombie_riot/npc/seaborn/npc_seareaper.sp"
 #include "zombie_riot/npc/seaborn/npc_searunner.sp"
 #include "zombie_riot/npc/seaborn/npc_seaslider.sp"
 #include "zombie_riot/npc/seaborn/npc_seaspitter.sp"
-#include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"
+#include "zombie_riot/npc/seaborn/npc_undertides.sp"

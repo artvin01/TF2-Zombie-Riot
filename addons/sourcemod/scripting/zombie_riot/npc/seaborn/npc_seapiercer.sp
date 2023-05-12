@@ -71,7 +71,7 @@ methodmap SeaPiercer < CClotBody
 	
 	public SeaPiercer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		SeaPiercer npc = view_as<SeaPiercer>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.25", data[0] ? "1875" : "1350", ally, false, true));
+		SeaPiercer npc = view_as<SeaPiercer>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", data[0] ? "1875" : "1350", ally, false, true));
 		// 9000 x 0.15
 		// 12500 x 0.15
 
@@ -87,6 +87,7 @@ methodmap SeaPiercer < CClotBody
 		
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);

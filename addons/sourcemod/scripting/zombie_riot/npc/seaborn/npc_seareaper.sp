@@ -98,6 +98,8 @@ methodmap SeaReaper < CClotBody
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.Anger = false;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
@@ -117,7 +119,8 @@ public void SeaReaper_ClotThink(int iNPC)
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 	}
 	
-	SDKHooks_TakeDamage(npc.index, 0, 0, 2.0, DMG_DROWN);
+	if(npc.Anger)
+		SDKHooks_TakeDamage(npc.index, 0, 0, 2.0, DMG_DROWN);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

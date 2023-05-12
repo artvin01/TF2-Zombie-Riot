@@ -47,20 +47,20 @@ methodmap FirstToTalk < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayAngerSound()
  	{
-		EmitCustomToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	
 	public FirstToTalk(int client, float vecPos[3], float vecAng[3], bool ally)
@@ -84,12 +84,24 @@ methodmap FirstToTalk < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
+		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+		SetEntityRenderColor(npc.index, _, _, _, 0);
+
+		int seed = GetURandomInt();
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-		SetVariantString("3.0");
+		char model[PLATFORM_MAX_PATH];
+		Citizen_GenerateModel(seed, !(seed % 8), 2, model, sizeof(model));
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", model);
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+		
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		SetVariantString("3.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.StartPathing();
 		return npc;
@@ -312,4 +324,7 @@ void FirstToTalk_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }

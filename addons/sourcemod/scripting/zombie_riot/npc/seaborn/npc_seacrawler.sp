@@ -110,8 +110,8 @@ public void SeaCrawler_ClotThink(int iNPC)
 			npc.PlayAngerSound();
 
 			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 1000.0);
-			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, 0, npc.index, -1, vecMe, 500.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
+			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 800.0);
+			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, 0, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
 			// 300 x 0.15
 			// 400 x 0.15
 		}

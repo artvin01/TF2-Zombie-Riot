@@ -3,41 +3,34 @@
  
 static const char g_DeathSounds[][] =
 {
-	"npc/zombie/zombie_die1.wav",
-	"npc/zombie/zombie_die2.wav",
-	"npc/zombie/zombie_die3.wav"
+	"npc/env_headcrabcanister/explosion.wav"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/npc/vortigaunt/giveover.wav",
-	"vo/npc/vortigaunt/livetoserve.wav",
-	"vo/npc/vortigaunt/opaque.wav",
-	"vo/npc/vortigaunt/ourplacehere.wav",
-	"vo/npc/vortigaunt/persevere.wav",
-	"vo/npc/vortigaunt/prevail.wav",
-	"vo/npc/vortigaunt/returntoall.wav",
-	"vo/npc/vortigaunt/surge.wav",
-	"vo/npc/vortigaunt/undeserving.wav",
-	"vo/npc/vortigaunt/weclaimyou.wav"
+	"npc/ichthyosaur/attack_growl1.wav",
+	"npc/ichthyosaur/attack_growl2.wav",
+	"npc/ichthyosaur/attack_growl3.wav"
 };
 
-static const char g_AngerSounds[][] =
+static const char g_SpecialAttackSounds[][] =
 {
-	"npc/roller/mine/rmine_taunt2.wav"
+	"ambient/explosions/explode_2.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/bow_shoot.wav",
+	"npc/waste_scanner/grenade_fire.wav",
 };
-
-static int HitEnemies[16];
 
 void UnderTides_MapStart()
 {
+	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_SpecialAttackSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	
+	PrecacheModel("models/synth.mdl");
 }
 
 methodmap UnderTides < CClotBody
@@ -47,20 +40,24 @@ methodmap UnderTides < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)]);
 	}
-	public void PlayAngerSound()
+	public void PlaySpecialSound()
  	{
-		EmitCustomToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_SpecialAttackSounds[GetRandomInt(0, sizeof(g_SpecialAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+	}
+	public void PlayRangedSound()
+ 	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 	}
 	
 	public UnderTides(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
@@ -74,35 +71,27 @@ methodmap UnderTides < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, UnderTides_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 		
 		i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		npc.m_flSpeed = 1.0;
-		npc.m_flMeleeArmor = 2.0;
-
-		npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
-		npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 50.0;
-		npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 30.0;
-
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		npc.Anger = true;
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
-		SetVariantString("0.25");
+		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/synth.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 50, 50, 255, 255);
 
 		if(data[0])	// Species Outbreak
 		{
 			npc.m_bThisNpcIsABoss = true;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = npc.m_flNextMeleeAttack + 290.0;
+			RaidModeTime = GetGameTime() + 300.0;
 			RaidModeScaling = 100.0;
+
+			//Music_SetRaidMusic("#zombiesurvival/wave_music/bat_abyssalhunters.mp3", 168, true);
 		}
 
 		npc.StopPathing();
@@ -114,7 +103,19 @@ public void UnderTides_ClotThink(int iNPC)
 {
 	UnderTides npc = view_as<UnderTides>(iNPC);
 
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime();	// You can't stun it
+
+	if(RaidBossActive != INVALID_ENT_REFERENCE && RaidModeTime < gameTime)
+	{
+		int entity = CreateEntityByName("game_round_win");
+		DispatchKeyValue(entity, "force_map_reset", "1");
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "RoundWin");
+		Music_RoundEnd(entity);
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	}
+
 	/*if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
@@ -126,7 +127,84 @@ public void UnderTides_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;*/
 
-	if(npc.m_flNextMeleeAttack < gameTime)
+	if(npc.Anger)
+	{
+		if(npc.m_flNextThinkTime > gameTime)
+			return;
+		
+		npc.m_flNextThinkTime = gameTime + 0.1;
+
+		float AproxRandomSpaceToWalkTo[3];
+
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
+
+		AproxRandomSpaceToWalkTo[2] += 50.0;
+
+		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
+		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
+
+		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+			return;	//Retry.
+		
+		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+		
+		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
+		delete ToGroundTrace;
+
+		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+			return;
+
+		NavArea area = TheNavMesh.GetNearestNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+		if(area == NavArea_Null)
+			return;
+		
+		area.GetCenter(AproxRandomSpaceToWalkTo);
+
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+
+		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
+			return;
+		
+		static float hullcheckmaxs_Player_Again[3];
+		static float hullcheckmins_Player_Again[3];
+
+		hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+		hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+
+		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+			return;
+
+		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+			return;
+		
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+			return;
+		
+		AproxRandomSpaceToWalkTo[2] -= 18.0;
+		AproxRandomSpaceToWalkTo[2] -= 18.0;
+		AproxRandomSpaceToWalkTo[2] -= 18.0;
+
+		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+			return;
+		
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+
+		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+
+		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		
+		npc.Anger = false;
+		npc.m_flMeleeArmor = 2.0;
+
+		npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
+		npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 30.0;
+		npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 50.0;
+
+		Citizen_MiniBossSpawn(npc.index);
+	}
+	else if(npc.m_flNextMeleeAttack < gameTime)
 	{
 		float vecTarget[3];
 
@@ -168,9 +246,6 @@ public void UnderTides_ClotThink(int iNPC)
 
 					npc.FireArrow(vecTarget, 57.0, 1300.0);
 					// 380 * 0.15
-
-					SeaSlider_AddNeuralDamage(enemy[i], npc.index, 12);
-					// 380 * 0.2 * 0.15
 				}
 			}
 
@@ -285,9 +360,9 @@ static void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
 
 	if(team != 3)
 	{
-		for(int i; i < i_MaxcountNpc; i++)
+		for(int a; a < i_MaxcountNpc; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
@@ -319,9 +394,9 @@ static void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
 
 	if(team != 2)
 	{
-		for(int i; i < i_MaxcountNpc_Allied; i++)
+		for(int a; a < i_MaxcountNpc_Allied; a++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
@@ -390,92 +465,12 @@ static void AddToList(int data, int pos, int[] list, int count)
 	list[pos] = data;
 }
 
-public Action UnderTides_Timer(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	UnderTides npc = view_as<UnderTides>(EntRefToEntIndex(pack.ReadCell()));
-	if(npc.index != INVALID_ENT_REFERENCE)
-	{
-		float vecPos[3];
-		vecPos[0] = pack.ReadFloat();
-		vecPos[1] = pack.ReadFloat();
-		vecPos[2] = pack.ReadFloat();
-
-		spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
-
-		Zero(HitEnemies);
-		TR_EnumerateEntitiesSphere(vecPos, 325.0, PARTITION_NON_STATIC_EDICTS, UnderTides_EnumerateEntitiesInRange, npc.index);
-
-		// Hits the target with the highest armor within range
-
-		int victim;
-		int armor = -9999999;
-		for(int i; i < sizeof(HitEnemies); i++)
-		{
-			if(!HitEnemies[i])
-				break;
-			
-			int myArmor = 1;
-			if(HitEnemies[i] <= MaxClients)
-				myArmor = Armor_Charge[HitEnemies[i]];
-			
-			if(myArmor > armor)
-			{
-				victim = HitEnemies[i];
-				armor = myArmor;
-			}
-		}
-
-		if(victim)
-		{
-			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
-			// 600 x 0.15
-			
-			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
-			// 600 x 0.4 x 0.15
-		}
-	}
-	return Plugin_Stop;
-}
-
-public bool UnderTides_EnumerateEntitiesInRange(int victim, int attacker)
-{
-	if(IsValidEnemy(attacker, victim, true, true))
-	{
-		for(int i; i < sizeof(HitEnemies); i++)
-		{
-			if(!HitEnemies[i])
-			{
-				HitEnemies[i] = victim;
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	return true;
-}
-
-public Action UnderTides_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(attacker < 1)
-		return Plugin_Continue;
-	
-	UnderTides npc = view_as<UnderTides>(victim);
-	if(b_NpcIsInvulnerable[npc.index])
-		damage = 0.0;
-	
-	return Plugin_Changed;
-}
-
 void UnderTides_NPCDeath(int entity)
 {
 	UnderTides npc = view_as<UnderTides>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, UnderTides_TakeDamage);
+	npc.PlayDeathSound();
+	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

@@ -431,7 +431,6 @@ stock void EmitCustom(const int[] clients, int numClients, const char[] sound, i
 	
 	for(int i; i < numClients; i++)
 	{
-
 		if(SoundLevel[clients[i]] > soundlevel)
 		{
 			custom[customNum++] = clients[i];
