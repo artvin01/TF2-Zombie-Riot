@@ -2,24 +2,24 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/male01/no01.wav",
-	"npc/male01/no02.wav",
+	"npc/vo/male01/no01.wav",
+	"npc/vo/male01/no02.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/male01/pain01.wav",
-	"npc/male01/pain02.wav",
-	"npc/male01/pain03.wav",
-	"npc/male01/pain05.wav",
-	"npc/male01/pain06.wav",
-	"npc/male01/pain07.wav",
-	"npc/male01/pain08.wav",
-	"npc/male01/pain09.wav",
+	"npc/vo/male01/pain01.wav",
+	"npc/vo/male01/pain02.wav",
+	"npc/vo/male01/pain03.wav",
+	"npc/vo/male01/pain05.wav",
+	"npc/vo/male01/pain06.wav",
+	"npc/vo/male01/pain07.wav",
+	"npc/vo/male01/pain08.wav",
+	"npc/vo/male01/pain09.wav",
 };
 static const char g_IdleAlertedSounds[][] = {
-	"npc/male01/ohno.wav",
-	"npc/male01/overthere01.wav",
-	"npc/male01/overthere02.wav",
+	"npc/vo/male01/ohno.wav",
+	"npc/vo/male01/overthere01.wav",
+	"npc/vo/male01/overthere02.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -43,7 +43,6 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeDeflectAttack));	i++) { PrecacheSound(g_MeleeDeflectAttack[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
@@ -117,7 +116,7 @@ methodmap KazimierzKnightArcher < CClotBody
 		SDKHook(npc.index, SDKHook_Think, KazimierzKnightArcher_ClotThink);
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 210.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -200,40 +199,6 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
-
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 65.0;
-
-					if(ShouldNpcDealBonusDamage(target))
-					{
-						damage *= 4.0;
-					}
-
-					npc.PlayMeleeHitSound();
-					if(target > 0) 
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-					}
-				}
-				delete swingTrace;
-			}
-		}
-	}
 	
 	if(npc.m_flNextRangedSpecialAttack)
 	{
@@ -285,7 +250,11 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 			PF_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
-
+		if(npc.m_flJumpStartTime < GetGameTime(npc.index))
+		{
+			npc.m_flSpeed = 210.0;
+			npc.StartPathing();
+		}
 		if(npc.m_flNextRangedSpecialAttack && npc.m_fbRangedSpecialOn)
 		{
 			npc.m_iState = 2; //Engage in Close Range Destruction.
@@ -344,6 +313,7 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
+					npc.m_flSpeed = 0.0;
 					npc.AddGesture("ACT_SEABORN_ATTACK_RANGED_1");
 					
 
@@ -352,8 +322,12 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.35;
 					npc.m_flDoingAnimation = gameTime + 0.35;
 					npc.m_flNextMeleeAttack = gameTime + 0.75;
+					npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					
 					npc.m_bisWalking = true;
+					
+					PF_StopPathing(npc.index);
+					npc.m_bPathing = false;
 				}
 			}
 		}

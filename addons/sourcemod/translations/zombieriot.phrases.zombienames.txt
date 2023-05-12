@@ -1269,4 +1269,8 @@
 	{
 		"en"		"Seaborn Kazimierz Knight"
 	}
+	"Seaborn Kazimierz Archer"
+	{
+		"en"		"Seaborn Kazimierz Archer"
+	}
 }

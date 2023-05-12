@@ -2927,3 +2927,4 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/seaborn/npc_seaspitter.sp"
 #include "zombie_riot/npc/seaborn/npc_undertides.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_knight.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_archer.sp"

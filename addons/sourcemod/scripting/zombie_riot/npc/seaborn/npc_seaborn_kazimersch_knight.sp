@@ -2,24 +2,24 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/male01/no01.wav",
-	"npc/male01/no02.wav",
+	"npc/vo/male01/no01.wav",
+	"npc/vo/male01/no02.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/male01/pain01.wav",
-	"npc/male01/pain02.wav",
-	"npc/male01/pain03.wav",
-	"npc/male01/pain05.wav",
-	"npc/male01/pain06.wav",
-	"npc/male01/pain07.wav",
-	"npc/male01/pain08.wav",
-	"npc/male01/pain09.wav",
+	"npc/vo/male01/pain01.wav",
+	"npc/vo/male01/pain02.wav",
+	"npc/vo/male01/pain03.wav",
+	"npc/vo/male01/pain05.wav",
+	"npc/vo/male01/pain06.wav",
+	"npc/vo/male01/pain07.wav",
+	"npc/vo/male01/pain08.wav",
+	"npc/vo/male01/pain09.wav",
 };
 static const char g_IdleAlertedSounds[][] = {
-	"npc/male01/ohno.wav",
-	"npc/male01/overthere01.wav",
-	"npc/male01/overthere02.wav",
+	"npc/vo/male01/ohno.wav",
+	"npc/vo/male01/overthere01.wav",
+	"npc/vo/male01/overthere02.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
