@@ -154,7 +154,8 @@ methodmap MedivalCavalary < CClotBody
 	public MedivalCavalary(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalCavalary npc = view_as<MedivalCavalary>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcInternalId[npc.index] = MEDIVAL_CAVALARY;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

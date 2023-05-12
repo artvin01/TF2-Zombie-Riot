@@ -3816,6 +3816,10 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			StalkerCombine_HandleAnimEvent(pThis, event);
 		}
+		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+		{
+			HandleAnimEventMedival_KazimierzArcher(pThis, event);
+		}
 	}
 #endif
 	

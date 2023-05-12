@@ -148,7 +148,8 @@ methodmap MedivalHandCannoneer < CClotBody
 	public MedivalHandCannoneer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalHandCannoneer npc = view_as<MedivalHandCannoneer>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12500", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcInternalId[npc.index] = MEDIVAL_HANDCANNONEER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

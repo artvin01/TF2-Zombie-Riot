@@ -247,7 +247,9 @@ enum
 	SEAPIERCER	= 210,
 	SEAPIERCER_ALT,
 	FIRSTTOTALK	= 212,
-	UNDERTIDES	= 213
+	UNDERTIDES	= 213,
+	SEABORN_KAZIMIERZ_KNIGHT	= 214,
+	SEABORN_KAZIMIERZ_KNIGHT_ARCHER	= 215
 }
 
 public const char NPC_Names[][] =
@@ -486,7 +488,9 @@ public const char NPC_Names[][] =
 	"Primal Sea Piercer",
 	"Nourished Piercer",
 	"The First To Talk",
-	"Sal Viento Bishop Quintus"
+	"Sal Viento Bishop Quintus",
+	"Seaborn Kazimierz Knight",
+	"Seaborn Kazimierz Archer"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -720,7 +724,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_seapiercer",
 	"",
 	"npc_firsttotalk",
-	"npc_undertides"
+	"npc_undertides",
+	"npc_seaborn_kazimersch_knight",
+	"npc_seaborn_kazimersch_knight_archer",
 };
 
 void NPC_MapStart()
@@ -913,6 +919,8 @@ void NPC_MapStart()
 	SeaCrawler_MapStart();
 	FirstToTalk_MapStart();
 	UnderTides_MapStart();
+	KazimierzKnight_OnMapStart_NPC();
+	KazimierzKnightArcher_OnMapStart_NPC();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1770,6 +1778,14 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = UnderTides(client, vecPos, vecAng, ally, data);
 		}
+		case SEABORN_KAZIMIERZ_KNIGHT:
+		{
+			entity = KazimierzKnight(client, vecPos, vecAng, ally);
+		}
+		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+		{
+			entity = KazimierzKnightArcher(client, vecPos, vecAng, ally);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2599,6 +2615,14 @@ public void NPCDeath(int entity)
 		{
 			UnderTides_NPCDeath(entity);
 		}
+		case SEABORN_KAZIMIERZ_KNIGHT:
+		{
+			KazimierzKnight_NPCDeath(entity);
+		}
+		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+		{
+			KazimierzKnightArcher_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2902,3 +2926,4 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/seaborn/npc_seaslider.sp"
 #include "zombie_riot/npc/seaborn/npc_seaspitter.sp"
 #include "zombie_riot/npc/seaborn/npc_undertides.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_knight.sp"

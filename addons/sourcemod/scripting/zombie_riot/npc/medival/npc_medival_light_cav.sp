@@ -166,7 +166,8 @@ methodmap MedivalLightCav < CClotBody
 	public MedivalLightCav(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalLightCav npc = view_as<MedivalLightCav>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcInternalId[npc.index] = MEDIVAL_LIGHT_CAV;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

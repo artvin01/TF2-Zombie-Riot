@@ -170,7 +170,8 @@ methodmap MedivalEagleScout < CClotBody
 	public MedivalEagleScout(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalEagleScout npc = view_as<MedivalEagleScout>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "600", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcInternalId[npc.index] = MEDIVAL_EAGLE_SCOUT;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

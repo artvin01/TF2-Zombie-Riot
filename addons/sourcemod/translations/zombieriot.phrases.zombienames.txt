@@ -1265,4 +1265,8 @@
 		"en"		"Sal Viento Bishop Quintus"
 		"chi"		"盐风主教昆图斯"
 	}
+	"Seaborn Kazimierz Knight"
+	{
+		"en"		"Seaborn Kazimierz Knight"
+	}
 }

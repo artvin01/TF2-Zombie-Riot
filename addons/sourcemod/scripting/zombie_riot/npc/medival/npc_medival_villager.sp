@@ -179,7 +179,8 @@ methodmap MedivalVillager < CClotBody
 	public MedivalVillager(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetVillagerHealth(), ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		i_NpcInternalId[npc.index] = MEDIVAL_VILLAGER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

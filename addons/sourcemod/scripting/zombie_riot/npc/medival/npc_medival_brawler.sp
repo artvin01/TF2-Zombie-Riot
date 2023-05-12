@@ -166,7 +166,9 @@ methodmap MedivalBrawler < CClotBody
 	public MedivalBrawler(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalBrawler npc = view_as<MedivalBrawler>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4500", ally));
-		
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcInternalId[npc.index] = MEDIVAL_BRAWLER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

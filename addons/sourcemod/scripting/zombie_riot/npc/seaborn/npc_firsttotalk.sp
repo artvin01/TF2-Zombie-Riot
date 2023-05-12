@@ -69,7 +69,7 @@ methodmap FirstToTalk < CClotBody
 		// 21000 x 0.15
 
 		i_NpcInternalId[npc.index] = FIRSTTOTALK;
-		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -165,7 +165,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 				if(npc.m_flNextRangedAttack < gameTime)
 				{
 					npc.PlayAngerSound();
-					npc.SetActivity("ACT_MUDROCK_RAGE");
+					npc.SetActivity("ACT_SEABORN_FIRST_ATTACK_2");
 					b_NpcIsInvulnerable[npc.index] = true;
 					
 					vecTarget[2] += 10.0;
@@ -191,7 +191,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 				}
 				else
 				{
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
+					npc.AddGesture("ACT_SEABORN_FIRST_ATTACK_1");
 					
 					npc.m_flAttackHappens = gameTime + 0.35;
 
@@ -222,7 +222,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 			if(b_NpcIsInvulnerable[npc.index])
 			{
 				b_NpcIsInvulnerable[npc.index] = false;
-				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+				npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 			}
 		}
 	}
