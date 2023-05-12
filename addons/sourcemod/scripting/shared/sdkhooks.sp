@@ -853,6 +853,7 @@ public void OnPostThink(int client)
 		if(Armor_Charge[client] < 0)
 		{
 			green = 0;
+			blue = 255;
 		}
 		else if(Armor_Charge[client] != Armor_Max)
 		{
