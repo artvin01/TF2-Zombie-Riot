@@ -1397,8 +1397,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) && i_HealthBeforeSuit[victim] > 0)
 		{
-			Replicated_Damage *= 8.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
-			damage *= 8.0;	
+			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
+			damage *= 5.0;	
 		}
 		
 		if(EscapeMode)
