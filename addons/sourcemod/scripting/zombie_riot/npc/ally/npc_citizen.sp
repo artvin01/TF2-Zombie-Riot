@@ -681,7 +681,7 @@ void Citizen_OnMapStart()
 
 static int ThereCanBeOnlyOne = -1;
 static bool FirstBlood[MAXENTITIES];
-static bool IsDowned[MAXENTITIES];
+static int IsDowned[MAXENTITIES];
 static bool SeakingMedic[MAXENTITIES];
 static bool SeakingGeneric[MAXENTITIES];
 static int HasPerk[MAXENTITIES];
@@ -743,7 +743,7 @@ methodmap Citizen < CClotBody
 		
 		npc.m_iSeed = seed;
 		
-		npc.m_bDowned = true;
+		npc.m_nDowned = 1;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_iReviveTicks = 0;
 		npc.m_bFirstBlood = false;
@@ -786,10 +786,10 @@ methodmap Citizen < CClotBody
 		public get()		{ return !(this.m_iSeed % 2); }
 	}
 	
-	property bool m_bDowned
+	property int m_nDowned
 	{
 		public get()		{ return IsDowned[this.index]; }
-		public set(bool value) 	{ IsDowned[this.index] = value; }
+		public set(int value) 	{ IsDowned[this.index] = value; }
 	}
 	property int m_iReviveTicks
 	{
@@ -966,12 +966,37 @@ methodmap Citizen < CClotBody
 			this.StartActivity(activity);
 		}
 	}
-	public void SetDowned(bool state, int client = 0)
+	public void SetDowned(int state, int client = 0)
 	{
-		this.m_bDowned = state;
+		this.m_nDowned = state;
 		this.UpdateCollision(state || this.m_bCamo);
 		
-		if(this.m_bDowned)
+		if(this.m_nDowned == 2)
+		{
+			this.m_iHasPerk = Cit_None;
+			this.m_bThisEntityIgnored = true;
+			this.m_iReviveTicks = 99999;
+			this.SetActivity("ACT_BUSY_SIT_GROUND");
+			
+			if(this.m_bPathing)
+			{
+				PF_StopPathing(this.index);
+				this.m_bPathing = false;
+			}
+			
+			int glow = this.m_iTeamGlow;
+			if(glow > 0)
+				AcceptEntityInput(glow, "Disable");
+			
+			if(this.m_iWearable1 > 0)
+				AcceptEntityInput(this.m_iWearable1, "Disable");
+			
+			if(this.m_iWearable3 > 0)
+				RemoveEntity(this.m_iWearable3);
+			
+			SetEntityRenderMode(this.index, RENDER_NONE);
+		}
+		else if(this.m_nDowned)
 		{
 			this.m_iHasPerk = Cit_None;
 			this.m_bThisEntityIgnored = true;
@@ -1000,7 +1025,7 @@ methodmap Citizen < CClotBody
 			SetVariantColor(view_as<int>({0, 255, 0, 255}));
 			AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
 			
-			SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(this.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(this.index, 255, 255, 255, 125);
 		}
 		else
@@ -1146,7 +1171,7 @@ void Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 
 bool Citizen_ThatIsDowned(int entity)
 {
-	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_bDowned);
+	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_nDowned);
 }
 
 int Citizen_ReviveTicks(int entity, int amount, int client)
@@ -1154,7 +1179,7 @@ int Citizen_ReviveTicks(int entity, int amount, int client)
 	Citizen npc = view_as<Citizen>(entity);
 	npc.m_iReviveTicks -= amount;
 	if(npc.m_iReviveTicks < 1)
-		npc.SetDowned(false, client);
+		npc.SetDowned(0, client);
 	
 	return npc.m_iReviveTicks;
 }
@@ -1165,7 +1190,11 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_bDowned)
+		if(npc.m_nDowned == 2)
+		{
+			return 0;
+		}
+		else if(npc.m_nDowned == 1)
 		{
 			SetGlobalTransTarget(client);
 			PrintCenterText(client, "%t", "Revive Teammate tooltip");
@@ -1183,7 +1212,7 @@ int Citizen_BuildingInteract(int entity)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_bDowned)
+		if(npc.m_nDowned)
 			return 0;
 		
 		return npc.m_iBuildingType;
@@ -1197,7 +1226,7 @@ bool Citizen_Interact(int client, int entity)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_bDowned)
+		if(npc.m_nDowned)
 			return false;
 		
 		npc.PlaySound(Cit_Greet);
@@ -1272,7 +1301,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	if(npc.m_bDowned || type <= Cit_None)
+	if(npc.m_nDowned || type <= Cit_None)
 		return false;
 	
 	if(type > 9)
@@ -1399,7 +1428,7 @@ void Citizen_SetupStart()
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
 			Citizen npc = view_as<Citizen>(i);
-			if(npc.m_bBarney && !npc.m_bDowned && IsValidEntity(i))
+			if(npc.m_bBarney && !npc.m_nDowned && IsValidEntity(i))
 			{
 				int found;
 				float distance = FAR_FUTURE;
@@ -1480,21 +1509,24 @@ public void Citizen_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
 	
-	if(npc.m_bDowned)
+	if(npc.m_nDowned)
 	{
 		npc.m_iTargetAlly = 0;
 		npc.m_bSeakingMedic = false;
 		npc.m_bSeakingGeneric = false;
 		npc.m_bGetClosestTargetTimeAlly = true;
 		
-		if(npc.m_flidle_talk == FAR_FUTURE)
+		if(npc.m_nDowned != 2)
 		{
-			npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
-		}
-		else if(npc.m_flidle_talk < gameTime)
-		{
-			npc.PlaySound(Cit_Lost);
-			npc.m_flidle_talk = FAR_FUTURE;
+			if(npc.m_flidle_talk == FAR_FUTURE)
+			{
+				npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
+			}
+			else if(npc.m_flidle_talk < gameTime)
+			{
+				npc.PlaySound(Cit_Lost);
+				npc.m_flidle_talk = FAR_FUTURE;
+			}
 		}
 		return;
 	}
@@ -2867,7 +2899,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Continue;
 	
 	Citizen npc = view_as<Citizen>(victim);
-	if(npc.m_bDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
+	if(npc.m_nDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		return Plugin_Handled;
 	
 	if(npc.m_iGunValue > 10000)
@@ -2917,7 +2949,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage);
 	if(health < 1)
 	{
-		npc.SetDowned(true);
+		npc.SetDowned(1);
 	}
 	else
 	{

@@ -60,6 +60,9 @@ methodmap SeaCrawler < CClotBody
 		// 25000 x 0.15
 		// 35000 x 0.15
 
+		SetVariantInt(data[0] ? 31 : 7);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		i_NpcInternalId[npc.index] = data[0] ? SEACRAWLER_ALT : SEACRAWLER;
 		npc.SetActivity("ACT_WALK");
 		
@@ -76,8 +79,6 @@ methodmap SeaCrawler < CClotBody
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
-		
-		npc.StartPathing();
 		return npc;
 	}
 }
@@ -85,9 +86,6 @@ methodmap SeaCrawler < CClotBody
 public void SeaCrawler_ClotThink(int iNPC)
 {
 	SeaCrawler npc = view_as<SeaCrawler>(iNPC);
-
-	SetVariantInt(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 31 : 7);
-	AcceptEntityInput(npc.index, "SetBodyGroup");
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

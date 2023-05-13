@@ -71,6 +71,12 @@ methodmap SeaSlider < CClotBody
 		// 2800 x 0.15
 		// 3600 x 0.15
 
+		if(data[0])
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(npc.index, "SetBodyGroup");
+		}
+		
 		i_NpcInternalId[npc.index] = data[0] ? SEASLIDER_ALT : SEASLIDER;
 		npc.SetActivity("ACT_WALK_ON_FIRE");
 		
@@ -84,11 +90,10 @@ methodmap SeaSlider < CClotBody
 		npc.m_flSpeed = 275.0;	// 1.1 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
-		
-		npc.StartPathing();
 		return npc;
 	}
 }
@@ -96,12 +101,6 @@ methodmap SeaSlider < CClotBody
 public void SeaSlider_ClotThink(int iNPC)
 {
 	SeaSlider npc = view_as<SeaSlider>(iNPC);
-
-	if(i_NpcInternalId[npc.index] == SEASLIDER_ALT)
-	{
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-	}
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

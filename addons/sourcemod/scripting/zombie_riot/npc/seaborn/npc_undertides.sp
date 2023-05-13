@@ -40,7 +40,7 @@ methodmap UnderTides < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayDeathSound() 
@@ -49,20 +49,20 @@ methodmap UnderTides < CClotBody
 	}
 	public void PlaySpecialSound()
  	{
-		EmitSoundToAll(g_SpecialAttackSounds[GetRandomInt(0, sizeof(g_SpecialAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_SpecialAttackSounds[GetRandomInt(0, sizeof(g_SpecialAttackSounds) - 1)]);
 	}
 	public void PlayRangedSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public UnderTides(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/props_urban/urban_skybuilding005a.mdl", "1.0", "15000", ally, false));
+		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 200.0}));
 		// 100,000 x 0.15
 
 		i_NpcInternalId[npc.index] = UNDERTIDES;
@@ -70,6 +70,7 @@ methodmap UnderTides < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_bDissapearOnDeath = true;
 		
 		SDKHook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 		
@@ -78,14 +79,10 @@ methodmap UnderTides < CClotBody
 
 		npc.m_flSpeed = 1.0;
 		npc.Anger = true;
-		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/synth.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
-		SetParent(npc.index, npc.m_iWearable2);
+		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
+		SetParent(npc.index, npc.m_iWearable1);
 
 		if(data[0])	// Species Outbreak
 		{
@@ -97,8 +94,7 @@ methodmap UnderTides < CClotBody
 
 			//Music_SetRaidMusic("#zombiesurvival/wave_music/bat_abyssalhunters.mp3", 168, true);
 		}
-
-		npc.StopPathing();
+		
 		return npc;
 	}
 }
@@ -223,6 +219,8 @@ public void UnderTides_ClotThink(int iNPC)
 				{
 					vecTarget = WorldSpaceCenter(enemy[i]);
 
+					ParticleEffectAt(vecTarget, "water_splash01", 3.0);
+
 					SDKHooks_TakeDamage(enemy[i], npc.index, npc.index, 57.0, DMG_BULLET);
 					// 380 * 0.15
 
@@ -231,6 +229,7 @@ public void UnderTides_ClotThink(int iNPC)
 				}
 			}
 
+			npc.AddGesture("ACT_CHARGE_END");
 			npc.PlaySpecialSound();
 			npc.m_flNextRangedSpecialAttack = gameTime + 60.0;
 			npc.m_flNextMeleeAttack = gameTime + 6.0;
@@ -255,6 +254,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 			if(vecTarget[0])
 			{
+				npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayRangedSound();
 				npc.m_flNextRangedAttack = gameTime + 25.0;
 				npc.m_flNextMeleeAttack = gameTime + 6.0;
@@ -287,7 +287,7 @@ public void UnderTides_ClotThink(int iNPC)
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
 						vecTarget = WorldSpaceCenter(entity);
-						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", -1.0);
+						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 					}
@@ -296,6 +296,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 			if(vecTarget[0])
 			{
+				npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayMeleeSound();
 				npc.m_flNextMeleeAttack = gameTime + 3.5;
 			}
@@ -485,12 +486,13 @@ void UnderTides_NPCDeath(int entity)
 	UnderTides npc = view_as<UnderTides>(entity);
 	
 	npc.PlayDeathSound();
+
+	float pos[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 }

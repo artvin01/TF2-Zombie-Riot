@@ -76,23 +76,188 @@ void EndSpeaker_MapStart()
 #define BUFF_REEFBREAKER	(1 << 5)
 
 static bool HardMode;
+static int FreeplayStage;
 static int BaseHealth;
+static float SpawnPos[3];
+static float SpawnAng[3];
 
 methodmap EndSpeaker < CClotBody
 {
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(DigDown[GetRandomInt(0, sizeof(DigDown) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		EmitSoundToAll(DigDown[GetRandomInt(0, sizeof(DigDown) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlaySpawnSound() 
 	{
-		EmitSoundToAll(DigUp[GetRandomInt(0, sizeof(DigUp) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		EmitSoundToAll(DigUp[GetRandomInt(0, sizeof(DigUp) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayGrabSound(int entity) 
+	public EndSpeaker(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		FreeplayStage++;
+		switch(FreeplayStage)
+		{
+			case 2:
+			{
+				return view_as<EndSpeaker>(EndSpeaker2(ally));
+			}
+			case 3:
+			{
+				return view_as<EndSpeaker>(EndSpeaker3(ally));
+			}
+			case 4:
+			{
+				return view_as<EndSpeaker>(EndSpeaker4(ally));
+			}
+		}
+		
+		FreeplayStage = 1;
+		return view_as<EndSpeaker>(EndSpeaker1(client, vecPos, vecAng, ally));
 	}
-	
+	public void GetSpawn(float pos[3], float ang[3])
+	{
+		pos[0] = SpawnPos[0];
+		pos[1] = SpawnPos[1];
+		pos[2] = SpawnPos[2];
+
+		ang[0] = SpawnAng[0];
+		ang[1] = SpawnAng[1];
+		ang[2] = SpawnAng[2];
+	}
+	public void SetSpawn(const float pos[3], const float ang[3])
+	{
+		SpawnPos[0] = pos[0];
+		SpawnPos[1] = pos[1];
+		SpawnPos[2] = pos[2];
+
+		SpawnAng[0] = ang[0];
+		SpawnAng[1] = ang[1];
+		SpawnAng[2] = ang[2];
+	}
+	public float Attack(float gameTime)
+	{
+		if(!(this.m_hBuffs & BUFF_REEFBREAKER))
+			return 1.0;
+
+		if(this.m_flStackDecayAt < gameTime)
+		{
+			// Every second decreases by 1 after 2.5 seconds
+			this.m_iAttackStack -= 1 + RoundToFloor(gameTime - this.m_flStackDecayAt);
+			if(this.m_iAttackStack < 0)
+				this.m_iAttackStack = 0;
+		}
+
+		float multi = 1.0 + (this.m_iAttackStack * 0.08);
+
+		if(++this.m_iAttackStack > 20)
+			this.m_iAttackStack = 20;
+		
+		this.m_flStackDecayAt = gameTime + 3.5;
+
+		return multi;
+	}
+	public void EatBuffs()
+	{
+		this.m_hBuffs = 0;
+		this.m_iAttackStack = 0;
+		this.m_flStackDecayAt = FAR_FUTURE;
+		this.m_bIgnoreBuildings = false;
+
+		int count;
+		int[] remain = new int[i_MaxcountNpc_Allied];
+
+		for(int i; i < i_MaxcountNpc_Allied; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+			if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
+			{
+				remain[count++] = entity;
+			}
+		}
+
+		float vecTarget[3], vecOther[3];
+
+		int hunger = this.m_bHardMode ? 2 : 1;
+		for(int a; a < hunger; a++)
+		{
+			float distance = FAR_FUTURE;
+			int entity;
+
+			for(int b; b < count; b++)
+			{
+				vecTarget = WorldSpaceCenter(remain[b]);
+
+				float dist = GetVectorDistance(SpawnPos, vecTarget, true);
+				if(dist < distance)
+				{
+					entity = remain[b];
+					distance = dist;
+				}
+
+			}
+
+			if(entity)
+			{
+				vecTarget = WorldSpaceCenter(entity);
+
+				for(int b; b < count; b++)
+				{
+					vecOther = WorldSpaceCenter(remain[b]);
+
+					if(remain[b] != entity)
+					{
+						float dist = GetVectorDistance(vecTarget, vecOther, true);
+						if(dist > 160000.0)	// 400 HU
+							continue;
+					}
+
+					this.m_hBuffs |= view_as<Remains>(remain[b]).m_iBuffType;
+					ParticleEffectAt(vecOther, "water_splash01", 3.0);
+					spawnRing_Vectors(vecOther, 800.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
+				}
+
+				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
+				Explode_Logic_Custom(999999.9, -1, this.index, -1, vecTarget, 400.0, _, _, true, _, false, _, EndSpeaker_EatPost);
+				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			}
+		}
+
+		for(int i; i < count; i++)
+		{
+			SDKHooks_TakeDamage(remain[i], 0, 0, 99999999.9, DMG_DROWN);
+		}
+
+		if(this.m_hBuffs & BUFF_FOUNDER)
+			this.m_flRangedArmor *= 0.4;
+
+		if(this.m_hBuffs & BUFF_SWARMCALLER)
+		{
+			b_CannotBeSlowed[this.index] = true;
+			this.m_bThisNpcIsABoss = true;
+		}
+	}
+
+	property float m_flStackDecayAt
+	{
+		public get()
+		{
+			return this.m_flGrappleCooldown;
+		}
+		public set(float value)
+		{
+			this.m_flGrappleCooldown = value;
+		}
+	}
+	property int m_iAttackStack
+	{
+		public get()
+		{
+			return this.m_iOverlordComboAttack;
+		}
+		public set(int value)
+		{
+			this.m_iOverlordComboAttack = value;
+		}
+	}
 	property int m_hBuffs
 	{
 		public get()
@@ -115,6 +280,17 @@ methodmap EndSpeaker < CClotBody
 			BaseHealth = value;
 		}
 	}
+	property bool m_bIgnoreBuildings
+	{
+		public get()
+		{
+			return this.Anger;
+		}
+		public set(bool value)
+		{
+			this.Anger = value;
+		}
+	}
 	property bool m_bHardMode
 	{
 		public get()
@@ -128,19 +304,28 @@ methodmap EndSpeaker < CClotBody
 	}
 }
 
+public void EndSpeaker_EatPost(int attacker, int victim, float damage, int weapon)
+{
+	if(i_NpcInternalId[victim] == CITIZEN)
+	{
+		// Eaten
+		view_as<Citizen>(victim).SetDowned(2);
+	}
+}
+
 methodmap EndSpeakerLarge < EndSpeaker
 {
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(LargeDeath[GetRandomInt(0, sizeof(LargeDeath) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		EmitSoundToAll(LargeDeath[GetRandomInt(0, sizeof(LargeDeath) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(LargeAnger[GetRandomInt(0, sizeof(LargeAnger) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		EmitSoundToAll(LargeAnger[GetRandomInt(0, sizeof(LargeAnger) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(LargeMeleeHit[GetRandomInt(0, sizeof(LargeMeleeHit) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);	
+		EmitSoundToAll(LargeMeleeHit[GetRandomInt(0, sizeof(LargeMeleeHit) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 	}
 }
 
@@ -148,11 +333,11 @@ methodmap EndSpeakerNormal < EndSpeaker
 {
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(NormalAttack[GetRandomInt(0, sizeof(NormalAttack) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		EmitSoundToAll(NormalAttack[GetRandomInt(0, sizeof(NormalAttack) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(NormalHurt[GetRandomInt(0, sizeof(NormalHurt) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);	
+		EmitSoundToAll(NormalHurt[GetRandomInt(0, sizeof(NormalHurt) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 	}
 }
 
@@ -160,10 +345,48 @@ methodmap EndSpeakerSmall < EndSpeaker
 {
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(SmallAttack[GetRandomInt(0, sizeof(SmallAttack) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);
+		EmitSoundToAll(SmallAttack[GetRandomInt(0, sizeof(SmallAttack) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(SmallHurt[GetRandomInt(0, sizeof(SmallHurt) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_SOUNDLEVEL);	
+		EmitSoundToAll(SmallHurt[GetRandomInt(0, sizeof(SmallHurt) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
 	}
+}
+
+public Action EndSpeaker_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(attacker < 1)
+		return Plugin_Continue;
+	
+	EndSpeaker npc = view_as<EndSpeaker>(victim);
+	float gameTime = GetGameTime(npc.index);
+
+	if((npc.m_hBuffs & BUFF_PREDATOR) && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && (GetURandomInt() % 2))
+	{
+		damage = 0.0;
+	}
+	else if(npc.m_flHeadshotCooldown < gameTime)
+	{
+		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+	
+	if(!npc.m_bIgnoreBuildings && (npc.m_hBuffs & BUFF_BRANDGUIDER))
+	{
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		if(health < (maxhealth * 2 / 5))
+		{
+			npc.m_flMeleeArmor /= 4.0;
+			npc.m_bIgnoreBuildings = true;
+			Change_Npc_Collision(npc.index, 1);	// Ignore buildings
+		}
+	}
+	return Plugin_Changed;
+}
+
+public void EndSpeaker_BurrowAnim(const char[] output, int caller, int activator, float delay)
+{
+	RemoveEntity(caller);
 }

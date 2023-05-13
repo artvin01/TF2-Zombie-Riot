@@ -1281,4 +1281,58 @@
 	{
 		"en"		"Seaborn Kazimierz Assasin"
 	}
+	"Consumable Remains"
+	{
+		"en"		"Consumable Remains"
+	}
+	"The Endspeaker, Will of We Many"
+	{
+		"en"		"The Endspeaker, Will of We Many"
+		"chi"		"屠谕者，大群意志"
+	}
+	"Nethersea Founder"
+	{
+		"en"		"Nethersea Founder"
+		"chi"		"深溟奠基者"
+	}
+	"Nourished Founder"
+	{
+		"en"		"Nethersea Founder"
+		"chi"		"富营养的奠基者"
+	}
+	"Regressed Founder"
+	{
+		"en"		"Regressed Founder"
+		"chi"		"退行的奠基者"
+	}
+	"Nethersea Predator"
+	{
+		"en"		"Nethersea Predator"
+		"chi"		"深溟猎食者"
+	}
+	"Nourished Predator"
+	{
+		"en"		"Nourished Predator"
+		"chi"		"富营养的猎食者"
+	}
+	"Regressed Predator"
+	{
+		"en"		"Regressed Predator"
+		"chi"		"退行的猎食者"
+	}
+	"Nethersea Brandguider"
+	{
+		"en"		"Nethersea Brandguider"
+		"chi"		"深溟引痕者"
+	}
+	"Nourished Brandguider"
+	{
+		"en"		"Nourished Brandguider"
+		"chi"		"富营养的引痕者"
+	}
+	"Regressed Brandguider"
+	{
+		"en"		"Regressed Brandguider"
+		"chi"		"退行的引痕者"
+	}
 }

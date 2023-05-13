@@ -3,23 +3,15 @@
  
 static const char g_DeathSounds[][] =
 {
-	"npc/zombie/zombie_die1.wav",
-	"npc/zombie/zombie_die2.wav",
-	"npc/zombie/zombie_die3.wav"
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/npc/vortigaunt/giveover.wav",
-	"vo/npc/vortigaunt/livetoserve.wav",
-	"vo/npc/vortigaunt/opaque.wav",
-	"vo/npc/vortigaunt/ourplacehere.wav",
-	"vo/npc/vortigaunt/persevere.wav",
-	"vo/npc/vortigaunt/prevail.wav",
-	"vo/npc/vortigaunt/returntoall.wav",
-	"vo/npc/vortigaunt/surge.wav",
-	"vo/npc/vortigaunt/undeserving.wav",
-	"vo/npc/vortigaunt/weclaimyou.wav"
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_AngerSounds[][] =
@@ -36,6 +28,7 @@ static int HitEnemies[16];
 
 void FirstToTalk_MapStart()
 {
+	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_AngerSounds);
 }
@@ -47,26 +40,29 @@ methodmap FirstToTalk < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlayAngerSound()
  	{
-		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public FirstToTalk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		FirstToTalk npc = view_as<FirstToTalk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "3150", ally, false));
 		// 21000 x 0.15
+
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcInternalId[npc.index] = FIRSTTOTALK;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
@@ -84,30 +80,12 @@ methodmap FirstToTalk < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
-		SetEntityRenderColor(npc.index, _, _, _, 0);
-
-		int seed = GetURandomInt();
-		
-		char model[PLATFORM_MAX_PATH];
-		Citizen_GenerateModel(seed, !(seed % 8), 2, model, sizeof(model));
-
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", model);
-		SetVariantString("1.15");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-		SetVariantString("3.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		npc.m_iWearable3 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
-		SetParent(npc.index, npc.m_iWearable3);
-		
-		npc.StartPathing();
+		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
+		SetParent(npc.index, npc.m_iWearable1);
 		return npc;
 	}
 }
@@ -151,11 +129,22 @@ public void FirstToTalk_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				npc.FireArrow(vecTarget, 90.0, 1200.0);
+				int entity = npc.FireArrow(vecTarget, 90.0, 1200.0);
 				// 600 x 0.15
 
 				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 36);
 				// 600 x 0.4 x 0.15
+
+				if(entity != -1)
+				{
+					if(IsValidEntity(f_ArrowTrailParticle[entity]))
+						RemoveEntity(f_ArrowTrailParticle[entity]);
+					
+					vecTarget = WorldSpaceCenter(entity);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
+					SetParent(entity, f_ArrowTrailParticle[entity]);
+					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+				}
 			}
 		}
 
@@ -263,11 +252,12 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 				RemoveEntity(f_ArrowTrailParticle[entity]);
 			
 			vecPos = WorldSpaceCenter(entity);
-			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", -1.0);
+			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", 3.0);
 			SetParent(entity, f_ArrowTrailParticle[entity]);
 			f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 		}
 	}
+	return Plugin_Stop;
 }
 
 public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
@@ -310,19 +300,19 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 		{
 			vecPos = WorldSpaceCenter(npc.index);
 			ParticleEffectAt(vecPos, "water_splash01", 3.0);
-			
-			vecPos[2] += 300.0;
+
+			vecPos[2] += 250.0;
 
 			int entity = npc.FireArrow(vecPos, 90.0, 3000.0);
 			if(entity != -1)
 			{
-				TeleportEntity(vecPos, NULL_VECTOR, {0.0, 0.0, 0.0}, {0.0, 0.0, -3000.0});
+				TeleportEntity(entity, vecPos, {90.0, 0.0, 0.0}, {0.0, 0.0, -3000.0});
 
 				if(IsValidEntity(f_ArrowTrailParticle[entity]))
 					RemoveEntity(f_ArrowTrailParticle[entity]);
 				
 				vecPos = WorldSpaceCenter(entity);
-				f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", -1.0);
+				f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", 3.0);
 				SetParent(entity, f_ArrowTrailParticle[entity]);
 				f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 			}
@@ -379,10 +369,4 @@ void FirstToTalk_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
 }

@@ -283,12 +283,12 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			npc.PlayMeleeSound();
 			float AllyPos[3];
 			float SelfPos[3];
-			GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 			for(int client=1; client<=MaxClients; client++)
 			{
 				if(IsClientInGame(client) && IsEntityAlive(client))
 				{
-					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", AllyPos);
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
 					float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
 					if(flDistanceToTarget < Pow(500.0, 2.0))
 					{
