@@ -1835,6 +1835,10 @@
 		"ru"	"Высокий урон и здоровье и имеет ауру усиления ближайшим союзникам"
 		"chi"   "高伤害和高生命值，并为附近的盟友提供buff光环"
 	}
+	"Thorns Desc"
+	{
+		"en"	"Takes 3 supply, high damage, health, and range."
+	}
 	"Fish Melee Desc"
 	{
 		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25% dmg buff to all allies for 15 sec."

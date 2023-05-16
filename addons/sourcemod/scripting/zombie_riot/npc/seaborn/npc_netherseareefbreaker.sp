@@ -70,9 +70,9 @@ methodmap SeaReefbreaker < CClotBody
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
 
-		SeaReefbreaker npc = view_as<SeaReefbreaker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", elite ? "4200" : "6000", ally, false));
+		SeaReefbreaker npc = view_as<SeaReefbreaker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", elite ? "7500" : "6000", ally, false));
 		// 20000 x 0.3
-		// 14000 x 0.3
+		// 25000 x 0.3
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

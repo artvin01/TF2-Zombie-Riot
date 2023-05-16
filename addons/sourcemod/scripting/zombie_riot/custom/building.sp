@@ -6118,6 +6118,7 @@ public bool Building_Summoner(int client, int entity)
 	TrainingIn[client] = 0.0;
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
+	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
 	
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = true;
@@ -6390,8 +6391,6 @@ static void CheckSummonerUpgrades(int client)
 	
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
 		SupplyRate[client] += 10;
-	
-	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
 	
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = (CivType[client] || HasNamedItem(client, "Medieval Crown"));

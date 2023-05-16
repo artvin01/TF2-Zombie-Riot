@@ -1388,4 +1388,9 @@
 		"en"		"Regressed Reefbreaker"
 		"chi"		"退行的裂礁者"
 	}
+	"Thorns"
+	{
+		"en"		"Thorns"
+		"chi"		"棘刺"
+	}
 }

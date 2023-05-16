@@ -111,7 +111,7 @@ methodmap EndSpeaker < CClotBody
 		}
 		
 		FreeplayStage = 1;
-		return view_as<EndSpeaker>(EndSpeaker1(client, vecPos, vecAng, ally));
+		return view_as<EndSpeaker>(EndSpeaker1(client, vecPos, vecAng, ally, "Elite"));
 	}
 	public void GetSpawn(float pos[3], float ang[3])
 	{

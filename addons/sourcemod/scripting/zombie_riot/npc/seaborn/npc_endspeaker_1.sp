@@ -3,7 +3,7 @@
 
 methodmap EndSpeaker1 < EndSpeakerSmall
 {
-	public EndSpeaker1(int client, float vecPos[3], float vecAng[3], bool ally)
+	public EndSpeaker1(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		EndSpeaker1 npc = view_as<EndSpeaker1>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.0", "1200", ally, false, _, true));
 		// 10000 x 0.4 x 0.3
@@ -15,6 +15,7 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_bHardMode = view_as<bool>(data[0]);
 		
 		SDKHook(npc.index, SDKHook_Think, EndSpeaker1_ClotThink);
 		

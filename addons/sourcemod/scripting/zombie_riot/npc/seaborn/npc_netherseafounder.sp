@@ -298,7 +298,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > 2)
+	if(++SpreadTicks > 8)
 	{
 		SpreadTicks = 0;
 

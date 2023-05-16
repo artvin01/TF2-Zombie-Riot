@@ -1674,7 +1674,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Remains(client, vecPos, vecAng, data);
 		
 		case ENDSPEAKER_1:
-			entity = EndSpeaker1(client, vecPos, vecAng, ally);
+			entity = EndSpeaker1(client, vecPos, vecAng, ally, data);
 		
 		case ENDSPEAKER_2:
 			entity = EndSpeaker2(ally);
