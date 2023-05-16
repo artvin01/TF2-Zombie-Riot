@@ -120,9 +120,7 @@ methodmap KazimierzKnightAssasin < CClotBody
 		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_TOOL_2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
 		npc.m_flNextMeleeAttack = 0.0;
-		
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -213,10 +211,12 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	{
 		if(!KazimierzMeleeAssasinRange(npc, 500.0));
 		{
+			npc.m_flSpeed = 200.0;
 			npc.m_flExtraDamage += 5.0;
 			if(npc.m_flExtraDamage > 500.0)
 			{
 				npc.m_flExtraDamage = 500.0;
+				npc.m_flSpeed = 300.0;
 			}
 			int colour_red = (npc.m_flExtraDamage * 0.5);
 			if(IsValidEntity(npc.m_iWearable1))
@@ -224,6 +224,10 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 				SetEntityRenderColor(npc.m_iWearable1, colour_red, 65, 65, 255);
 			}
 		}
+	}
+	else
+	{
+		npc.m_flSpeed = 300.0;
 	}
 
 	if(npc.m_flAttackHappens)
