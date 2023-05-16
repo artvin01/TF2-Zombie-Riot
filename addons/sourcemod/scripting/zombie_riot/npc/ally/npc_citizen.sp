@@ -62,7 +62,7 @@ static const float BaseRange[] =
 	1000.0
 };
 
-static void Citizen_GenerateModel(int seed, bool female, int group, char[] buffer, int length)
+void Citizen_GenerateModel(int seed, bool female, int group, char[] buffer, int length)
 {
 	if(female)
 	{

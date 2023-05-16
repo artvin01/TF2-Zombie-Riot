@@ -49,7 +49,7 @@ methodmap SeaSpitter < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayDeathSound() 
 	{
@@ -82,6 +82,7 @@ methodmap SeaSpitter < CClotBody
 		
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
@@ -134,6 +135,40 @@ public void SeaSpitter_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 		
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
+			{
+				npc.m_flAttackHappens = 0.0;
+				
+				npc.FaceTowards(vecTarget, 15000.0);
+				
+				npc.PlayRangedSound();
+				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48.0 : 42.0, 800.0);
+				// 280 * 0.15
+				// 320 * 0.15
+			}
+		}
+
+		if(distance < 250000.0 && npc.m_flNextMeleeAttack < gameTime)	// 2.5 * 200
+		{
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, target))
+			{
+				npc.m_iTarget = target;
+
+				npc.AddGesture((GetURandomInt() % 2) ? "ACT_ZOM_SWATLEFTMID" : "ACT_ZOM_SWATRIGHTMID");
+
+				npc.PlayMeleeSound();
+				
+				npc.m_flAttackHappens = gameTime + 0.25;
+
+				npc.m_flDoingAnimation = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 3.0;
+				npc.m_flHeadshotCooldown = gameTime + 2.0;
+			}
+		}
+		
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			npc.StopPathing();
@@ -151,40 +186,6 @@ public void SeaSpitter_ClotThink(int iNPC)
 			}
 
 			npc.StartPathing();
-		}
-		
-		if(npc.m_flAttackHappens)
-		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.m_flAttackHappens = 0.0;
-				
-				npc.FaceTowards(vecTarget, 15000.0);
-				
-				npc.PlayRangedSound();
-				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48 : 42, 800.0);
-				// 280 * 0.15
-				// 320 * 0.15
-			}
-		}
-
-		if(distance < 250000.0)	// 2.5 * 200
-		{
-			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, target))
-			{
-				npc.m_iTarget = target;
-
-				npc.AddGesture((GetURandomInt() % 2) ? "ACT_ZOM_SWATLEFTMID" : "ACT_ZOM_SWATRIGHTMID");
-
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.25;
-
-				npc.m_flDoingAnimation = gameTime + 1.2;
-				npc.m_flNextMeleeAttack = gameTime + 3.0;
-				npc.m_flHeadshotCooldown = gameTime + 2.0;
-			}
 		}
 	}
 	else
@@ -217,18 +218,4 @@ void SeaSpitter_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSpitter_TakeDamage);
 	SDKUnhook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
-}
-
-void SeaSpitter_AddNeuralDamage(int victim, int attacker, int damage)
-{
-	if(Armor_Charge[victim] < 1)
-	{
-		Armor_Charge[victim] -= damage;
-		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[client], victim, 1.0)))
-		{
-			Armor_Charge[victim] = 0;
-			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_SLASH);
-			TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN|TF_STUNFLAG_CHEERSOUND);
-		}
-	}
 }

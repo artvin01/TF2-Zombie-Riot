@@ -57,7 +57,7 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -400.0;
+		float knockback = -200.0;
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
@@ -92,7 +92,7 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
 		
-		float knockback = -400.0;
+		float knockback = -200.0;
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
@@ -156,7 +156,7 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -400.0;
+		float knockback = -200.0;
 		
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)

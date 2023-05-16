@@ -1,51 +1,55 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"npc/headcrab/die1.wav",
-	"npc/headcrab/die2.wav"
+static const char g_DeathSounds[][] =
+{
+	"npc/headcrab_poison/ph_pain3.wav"
 };
 
-static const char g_HurtSound[][] = {
-	"npc/headcrab/pain1.wav",
-	"npc/headcrab/pain2.wav",
-	"npc/headcrab/pain3.wav"
+static const char g_HurtSound[][] =
+{
+	"npc/headcrab_poison/ph_pain1.wav",
+	"npc/headcrab_poison/ph_pain2.wav"
 };
 
-static const char g_IdleSound[][] = {
-	"npc/headcrab/alert1.wav",
-	"npc/headcrab/idle3.wav"
+static const char g_IdleAlertedSounds[][] =
+{
+	"npc/headcrab_poison/ph_rattle1.wav",
+	"npc/headcrab_poison/ph_rattle2.wav",
+	"npc/headcrab_poison/ph_rattle3.wav"
 };
 
-static const char g_MeleeHitSounds[][] = {
+static const char g_MeleeAttackSounds[][] =
+{
+	"npc/headcrab_poison/ph_scream1.wav",
+	"npc/headcrab_poison/ph_scream2.wav",
+	"npc/headcrab_poison/ph_scream3.wav"
+};
+
+static const char g_MeleeHitSounds[][] =
+{
 	"npc/headcrab/headbite.wav"
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"npc/headcrab/attack1.wav",
-	"npc/headcrab/attack2.wav",
-	"npc/headcrab/attack3.wav"
-};
-
-void SeaRunner_MapStart()
+void SeaPiercer_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_IdleSound);
+	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_HurtSound);
 
-	PrecacheModel("models/headcrabclassic.mdl");
+	PrecacheModel("models/headcrabblack.mdl");
 }
 
-methodmap SeaRunner < CClotBody
+methodmap SeaPiercer < CClotBody
 {
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound()
@@ -65,23 +69,23 @@ methodmap SeaRunner < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaRunner(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaPiercer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", data[0] ? "600" : "450", ally, false));
-		// 3000 x 0.15
-		// 4000 x 0.15
+		SeaPiercer npc = view_as<SeaPiercer>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", data[0] ? "1875" : "1350", ally, false, true));
+		// 9000 x 0.15
+		// 12500 x 0.15
 
-		i_NpcInternalId[npc.index] = data[0] ? SEARUNNER_ALT : SEARUNNER;
+		i_NpcInternalId[npc.index] = data[0] ? SEAPIERCER_ALT : SEAPIERCER;
 		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaRunner_TakeDamage);
-		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaPiercer_TakeDamage);
+		SDKHook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
 		
-		npc.m_flSpeed = 475.0;	// 1.9 x 250
+		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -93,9 +97,9 @@ methodmap SeaRunner < CClotBody
 	}
 }
 
-public void SeaRunner_ClotThink(int iNPC)
+public void SeaPiercer_ClotThink(int iNPC)
 {
-	SeaRunner npc = view_as<SeaRunner>(iNPC);
+	SeaPiercer npc = view_as<SeaPiercer>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -160,9 +164,22 @@ public void SeaRunner_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEARUNNER_ALT ? 51.0 : 42.0, DMG_CLUB);
-						// 280 x 0.15
-						// 340 x 0.15
+						
+						b_ThisNpcIsSawrunner[npc.index] = true;
+
+						if(target <= MaxClients && i_HealthBeforeSuit[target] > 0)
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.9, DMG_DROWN); // Make it oneshot the enemy if they have the quantum armor
+							Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
+						}
+						else
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAPIERCER_ALT ? 105.0 : 82.5, DMG_DROWN);
+							// 550 x 0.15
+							// 700 x 0.15
+						}
+
+						b_ThisNpcIsSawrunner[npc.index] = false;
 					}
 				}
 
@@ -170,22 +187,22 @@ public void SeaRunner_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < 22500.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_RANGE_ATTACK1");
+				npc.AddGesture("ACT_HEADCRAB_THREAT_DISPLAY");
 
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = gameTime + 0.45;
+				npc.m_flAttackHappens = gameTime + 0.55;
 
 				//npc.m_flDoingAnimation = gameTime + 1.2;
-				npc.m_flNextMeleeAttack = gameTime + 1.25;
-				npc.m_flHeadshotCooldown = gameTime + 1.25;
+				npc.m_flNextMeleeAttack = gameTime + 3.5;
+				npc.m_flHeadshotCooldown = gameTime + 1.5;
 			}
 		}
 	}
@@ -197,12 +214,12 @@ public void SeaRunner_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaRunner_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaPiercer_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 		
-	SeaRunner npc = view_as<SeaRunner>(victim);
+	SeaPiercer npc = view_as<SeaPiercer>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -211,14 +228,12 @@ public Action SeaRunner_TakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-void SeaRunner_NPCDeath(int entity)
+void SeaPiercer_NPCDeath(int entity)
 {
-	SeaRunner npc = view_as<SeaRunner>(entity);
+	SeaPiercer npc = view_as<SeaPiercer>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaRunner_TakeDamage);
-	SDKUnhook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaPiercer_TakeDamage);
+	SDKUnhook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
 }
-
-

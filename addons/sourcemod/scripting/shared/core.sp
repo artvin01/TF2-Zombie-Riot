@@ -737,7 +737,7 @@ enum
 
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
-
+//
 #define EF_BONEMERGE		(1 << 0)
 #define EF_PARENT_ANIMATES	(1 << 9)
 
@@ -1542,6 +1542,8 @@ public void OnClientDisconnect(int client)
 	FileNetwork_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
+	i_HealthBeforeSuit[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR
@@ -2147,6 +2149,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		i_CustomWeaponEquipLogic[entity] = 0;
 		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 #if defined ZR
@@ -3066,6 +3069,7 @@ public any Native_GetLevelCount(Handle plugin, int numParams)
 
 static void MapStartResetAll()
 {
+	Zero(i_CustomWeaponEquipLogic);
 	Zero(b_IsAGib);
 	Zero(f_StuckTextChatNotif);
 	Zero(i_Hex_WeaponUsesTheseAbilities);

@@ -228,7 +228,6 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		
 		i_ExplosiveProjectileHexArray[client] = value;
 		TF2_AddCondition(client, TFCond_DefenseBuffed, 1.0);
-		SetEntityMoveType(client, MOVETYPE_NONE);
 
 		CreateTimer(0.2, Saga_DelayedExplode, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -254,8 +253,7 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 			
 			int value = i_ExplosiveProjectileHexArray[client];
 			i_ExplosiveProjectileHexArray[client] = EP_DEALS_SLASH_DAMAGE;
-			SetEntityMoveType(client, MOVETYPE_WALK);
-			
+
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);						
 			Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, 1.0, 0.0, false, 99,_,_,SagaCutLast);

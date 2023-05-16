@@ -103,9 +103,8 @@ void Music_RoundEnd(int victim)
 			TF2_RemoveCondition(client, TFCond_RuneHaste);
 			TF2_RemoveCondition(client, TFCond_CritCanteen);
 			Music_Stop_All(client);
-			FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
-			
-			FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+			char_MusicString1[0] = 0;
+			char_MusicString2[0] = 0;
 		
 			i_MusicLength1 = 1;
 					
@@ -291,14 +290,28 @@ void Music_PostThink(int client)
 				{
 					if(char_MusicString1[0])
 					{
-						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						if(b_MusicCustom1)
+						{
+							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						}
+						else
+						{
+							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						}
 						SetMusicTimer(client, GetTime() + i_MusicLength1);
 					}
 					else if(char_MusicString2[0])
 					{
-						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						if(b_MusicCustom2)
+						{
+							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						}
+						else
+						{
+							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						}
 						SetMusicTimer(client, GetTime() + i_MusicLength2);				
 					}
 					//Make checks to be sure.
@@ -307,14 +320,28 @@ void Music_PostThink(int client)
 				{
 					if(char_MusicString2[0])
 					{
-						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						if(b_MusicCustom2)
+						{
+							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						}
+						else
+						{
+							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						}
 						SetMusicTimer(client, GetTime() + i_MusicLength2);
 					}
 					else if(char_MusicString1[0])
 					{
-						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-						EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						if(b_MusicCustom1)
+						{
+							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						}
+						else
+						{
+							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						}
 						SetMusicTimer(client, GetTime() + i_MusicLength1);				
 					}
 					//Make checks to be sure.

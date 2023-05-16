@@ -143,8 +143,10 @@ float f_RingDelayGift[MAXENTITIES];
 //custom wave music.
 char char_MusicString1[256];
 int i_MusicLength1;
+bool b_MusicCustom1;
 char char_MusicString2[256];
 int i_MusicLength2;
+bool b_MusicCustom2;
 char char_RaidMusicSpecial1[256];
 int i_RaidMusicLength1;
 bool b_RaidMusicCustom1;
@@ -546,10 +548,9 @@ void ZR_MapStart()
 	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	
-	FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
-			
-	FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
-	FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
+	char_MusicString1[0] = 0;
+	char_MusicString2[0] = 0;
+	char_RaidMusicSpecial1[0] = 0;
 			
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
@@ -1173,8 +1174,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					ShowHudText(client, -1, "%T", "Last Alive", client);
 					int MaxHealth;
 					MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-					
-					SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+					if(i_HealthBeforeSuit[client] == 0)
+					{
+						SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+					}
+					//if in quantum suit, dont.
 					
 					int Extra = 0;
 						

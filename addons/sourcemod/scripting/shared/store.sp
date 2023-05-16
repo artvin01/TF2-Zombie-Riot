@@ -2445,18 +2445,18 @@ public void MenuPage(int client, int section)
 						}
 						else	// No Ammo
 						{
-							FormatEx(buffer, sizeof(buffer), "%t", "Equip");
+							FormatEx(buffer, sizeof(buffer), "%s", "------");
 							style = ITEMDRAW_DISABLED;
 						}
 					}
 					else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Equip");
-						if(!info.Classname[0])
-						{
-							if(item.Owned[client] && info.Attack3AbilitySlot == 0)
-								style = ITEMDRAW_DISABLED;
-						}
+						//if(!info.Classname[0])
+						//{
+						//	if(item.Owned[client] && info.Attack3AbilitySlot == 0)
+						//		style = ITEMDRAW_DISABLED;
+						//}
 					}
 					else	// Buy it
 					{
@@ -2773,7 +2773,7 @@ public void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(!info.Cost && item.WhiteOut)
+					if(item.WhiteOut)
 					{
 						if(item.ShouldThisCountSupportBuildings)
 						{
@@ -2784,6 +2784,10 @@ public void MenuPage(int client, int section)
 							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						style = ITEMDRAW_DISABLED;
+					}
+					else if(!info.Cost)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s %s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 					}
 					else
 					{
@@ -3348,13 +3352,13 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								Store_GiveAll(client, GetClientHealth(client));
 							}
 						}
-						else if (info.Attack3AbilitySlot != 0) //equip back special ability slot item
+						else
 						{
 							Store_EquipSlotCheck(client, item.Slot);
 
 							item.Equipped[client] = true;
 							StoreItems.SetArray(index, item);
-								
+							
 							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 							{
 							//	Store_GiveItem(client, index, item.Equipped[client]);
@@ -3366,7 +3370,6 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								Store_ApplyAttribs(client);
 								Store_GiveAll(client, GetClientHealth(client));
 							}
-							
 						}
 					}
 				}

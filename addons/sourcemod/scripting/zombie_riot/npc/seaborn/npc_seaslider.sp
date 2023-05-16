@@ -50,7 +50,7 @@ methodmap SeaSlider < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayDeathSound() 
 	{
@@ -83,6 +83,7 @@ methodmap SeaSlider < CClotBody
 		
 		npc.m_flSpeed = 275.0;	// 1.1 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
@@ -169,7 +170,7 @@ public void SeaSlider_ClotThink(int iNPC)
 						// 280 x 0.15
 						// 360 x 0.15
 
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 9 : 7);
+						SeaSlider_AddNeuralDamage(target, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 9 : 7);
 						// 280 x 0.15 x 0.15
 						// 360 x 0.15 x 0.15
 					}
@@ -179,7 +180,7 @@ public void SeaSlider_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0)
+		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
@@ -244,14 +245,21 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
 			Building_SetBuildingRepair(victim, health);
 		}
 	}
-	else if(Armor_Charge[victim] < 1)
+	else if(Armor_Charge[victim] < 1 && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 	{
 		Armor_Charge[victim] -= damage;
-		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[client], victim, 1.0)))
+		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 		{
 			Armor_Charge[victim] = 0;
-			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_SLASH);
-			TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN|TF_STUNFLAG_CHEERSOUND);
+
+			TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+
+			bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+			b_ThisNpcIsSawrunner[attacker] = true;
+			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN);
+			b_ThisNpcIsSawrunner[attacker] = sawrunner;
 		}
+		
+		ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 	}
 }

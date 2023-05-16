@@ -26,7 +26,7 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/stunstick/alyx_stunner2.wav"
 };
 
-void SeaRunner_MapStart()
+void SeaCrawler_MapStart()
 {
 	PrecacheSoundArray(g_MeleeAttackSounds);
 }
@@ -43,7 +43,7 @@ methodmap SeaCrawler < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayDeathSound() 
 	{
@@ -64,7 +64,7 @@ methodmap SeaCrawler < CClotBody
 		npc.SetActivity("ACT_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaCrawler_TakeDamage);
@@ -109,8 +109,9 @@ public void SeaCrawler_ClotThink(int iNPC)
 			npc.m_iAttacksTillReload--;
 			npc.PlayAngerSound();
 
-			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 1000.0);
-			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, 0, npc.index, -1, vecMe, 500.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
+			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 800.0);
+			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, 0, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
 			// 300 x 0.15
 			// 400 x 0.15
 		}
@@ -124,7 +125,6 @@ public void SeaCrawler_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 	
-	float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -134,7 +134,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 	if(npc.m_iTarget > 0)
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, vecMe, true);		
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);		
 		
 		if(distance < npc.GetLeadRadius())
 		{

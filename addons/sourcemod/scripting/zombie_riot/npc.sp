@@ -232,7 +232,22 @@ enum
 	XENO_RAIDBOSS_SILVESTER		= 196,
 	XENO_RAIDBOSS_BLUE_GOGGLES	= 197,
 	XENO_RAIDBOSS_SUPERSILVESTER	= 198,
-	XENO_RAIDBOSS_NEMESIS	= 199
+	XENO_RAIDBOSS_NEMESIS	= 199,
+
+	SEARUNNER	= 200,
+	SEARUNNER_ALT,
+	SEASLIDER	= 202,
+	SEASLIDER_ALT,
+	SEASPITTER	= 204,
+	SEASPITTER_ALT,
+	SEAREAPER	= 206,
+	SEAREAPER_ALT,
+	SEACRAWLER	= 208,
+	SEACRAWLER_ALT,
+	SEAPIERCER	= 210,
+	SEAPIERCER_ALT,
+	FIRSTTOTALK	= 212,
+	UNDERTIDES	= 213
 }
 
 public const char NPC_Names[][] =
@@ -456,7 +471,22 @@ public const char NPC_Names[][] =
 	"Silvester",
 	"Blue Goggles",
 	"Angeled Silvester",
-	"Nemesis"
+	"Nemesis",
+
+	"Shell Sea Runner",
+	"Nourished Runner",
+	"Deep Sea Slider",
+	"Nourished Slider",
+	"Ridge Sea Spitter",
+	"Nourished Spitter",
+	"Basin Sea Reaper",
+	"Nourished Reaper",
+	"Pocket Sea Crawler",
+	"Nourished Crawler",
+	"Primal Sea Piercer",
+	"Nourished Piercer",
+	"The First To Talk",
+	"Sal Viento Bishop Quintus"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -676,6 +706,21 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_xeno_raidboss_blue_goggles",
 	"",
 	"npc_xeno_raidboss_nemesis",
+
+	"npc_searunner",
+	"",
+	"npc_seaslider",
+	"",
+	"npc_seaspitter",
+	"",
+	"npc_seareaper",
+	"",
+	"npc_seacrawler",
+	"",
+	"npc_seapiercer",
+	"",
+	"npc_firsttotalk",
+	"npc_undertides"
 };
 
 void NPC_MapStart()
@@ -862,6 +907,12 @@ void NPC_MapStart()
 	Ikunagae_OnMapStart_NPC();
 	MechaSoldier_Barrager_OnMapStart_NPC();
 	NearlSwordAbility_OnMapStart_NPC();
+
+	SeaRunner_MapStart();
+	SeaPiercer_MapStart();
+	SeaCrawler_MapStart();
+	FirstToTalk_MapStart();
+	UnderTides_MapStart();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1687,6 +1738,38 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		{
 			entity = RaidbossNemesis(client, vecPos, vecAng, false);
 		}
+		case SEARUNNER, SEARUNNER_ALT:
+		{
+			entity = SeaRunner(client, vecPos, vecAng, ally, data);
+		}
+		case SEASLIDER, SEASLIDER_ALT:
+		{
+			entity = SeaSlider(client, vecPos, vecAng, ally, data);
+		}
+		case SEASPITTER, SEASPITTER_ALT:
+		{
+			entity = SeaSpitter(client, vecPos, vecAng, ally, data);
+		}
+		case SEAREAPER, SEAREAPER_ALT:
+		{
+			entity = SeaReaper(client, vecPos, vecAng, ally, data);
+		}
+		case SEACRAWLER, SEACRAWLER_ALT:
+		{
+			entity = SeaCrawler(client, vecPos, vecAng, ally, data);
+		}
+		case SEAPIERCER, SEAPIERCER_ALT:
+		{
+			entity = SeaPiercer(client, vecPos, vecAng, ally, data);
+		}
+		case FIRSTTOTALK:
+		{
+			entity = FirstToTalk(client, vecPos, vecAng, ally);
+		}
+		case UNDERTIDES:
+		{
+			entity = UnderTides(client, vecPos, vecAng, ally, data);
+		}
 		default:
 		{
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2484,6 +2567,38 @@ public void NPCDeath(int entity)
 		{
 			RaidbossNemesis_NPCDeath(entity);
 		}
+		case SEARUNNER, SEARUNNER_ALT:
+		{
+			SeaRunner_NPCDeath(entity);
+		}
+		case SEASLIDER, SEASLIDER_ALT:
+		{
+			SeaSlider_NPCDeath(entity);
+		}
+		case SEASPITTER, SEASPITTER_ALT:
+		{
+			SeaSpitter_NPCDeath(entity);
+		}
+		case SEAREAPER, SEAREAPER_ALT:
+		{
+			SeaReaper_NPCDeath(entity);
+		}
+		case SEACRAWLER, SEACRAWLER_ALT:
+		{
+			SeaCrawler_NPCDeath(entity);
+		}
+		case SEAPIERCER, SEAPIERCER_ALT:
+		{
+			SeaPiercer_NPCDeath(entity);
+		}
+		case FIRSTTOTALK:
+		{
+			FirstToTalk_NPCDeath(entity);
+		}
+		case UNDERTIDES:
+		{
+			UnderTides_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2775,7 +2890,15 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_goggles.sp"
 
-
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_silvester.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_goggles.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_nemesis.sp"
+
+#include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"
+#include "zombie_riot/npc/seaborn/npc_seacrawler.sp"
+#include "zombie_riot/npc/seaborn/npc_seapiercer.sp"
+#include "zombie_riot/npc/seaborn/npc_seareaper.sp"
+#include "zombie_riot/npc/seaborn/npc_searunner.sp"
+#include "zombie_riot/npc/seaborn/npc_seaslider.sp"
+#include "zombie_riot/npc/seaborn/npc_seaspitter.sp"
+#include "zombie_riot/npc/seaborn/npc_undertides.sp"

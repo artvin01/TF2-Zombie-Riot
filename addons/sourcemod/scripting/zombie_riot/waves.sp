@@ -50,8 +50,10 @@ enum struct Round
 	
 	char music_round_1[255];
 	int music_duration_1;
+	bool music_custom_1;
 	char music_round_2[255];
 	int music_duration_2;
+	bool music_custom_2;
 	char music_round_outro[255];
 	bool music_custom_outro;
 	char Message[255];
@@ -508,15 +510,35 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 		kv.GetString("music_track_1", round.music_round_1, sizeof(round.music_round_1));
 		round.music_duration_1 = kv.GetNum("music_seconds_1");
+		round.music_custom_1 = view_as<bool>(kv.GetNum("music_download_1"));
 		
 		kv.GetString("music_track_2", round.music_round_2, sizeof(round.music_round_2));
 		round.music_duration_2 = kv.GetNum("music_seconds_2");
+		round.music_custom_2 = view_as<bool>(kv.GetNum("music_download_2"));
 		
 		if(round.music_round_1[0])
-			PrecacheSound(round.music_round_1);
+		{
+			if(round.music_custom_1)
+			{
+				PrecacheSoundCustom(round.music_round_1);
+			}
+			else
+			{
+				PrecacheSound(round.music_round_1);
+			}
+		}
 		
 		if(round.music_round_2[0])
-			PrecacheSound(round.music_round_2);
+		{
+			if(round.music_custom_2)
+			{
+				PrecacheSoundCustom(round.music_round_2);
+			}
+			else
+			{
+				PrecacheSound(round.music_round_2);
+			}
+		}
 		
 		kv.GetString("music_track_outro", round.music_round_outro, sizeof(round.music_round_outro));
 		round.music_custom_outro = view_as<bool>(kv.GetNum("music_download_outro"));
@@ -1169,7 +1191,6 @@ void Waves_Progress()
 				RoundHasCustomMusic = true;
 			}
 
-				
 			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
 			{
 				for(int client=1; client<=MaxClients; client++)
@@ -1181,14 +1202,17 @@ void Waves_Progress()
 					}
 				}	
 			}
+
 			//This should nullfy anyways if nothings in it
-			FormatEx(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
-			
-			FormatEx(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
-			FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
+			strcopy(char_MusicString1, sizeof(char_MusicString1), round.music_round_1);
+			strcopy(char_MusicString2, sizeof(char_MusicString2), round.music_round_2);
+			char_RaidMusicSpecial1[0] = 0;
+
 			i_MusicLength1 = round.music_duration_1;
-			
 			i_MusicLength2 = round.music_duration_2;
+
+			b_MusicCustom1 = round.music_custom_1;
+			b_MusicCustom2 = round.music_custom_2;
 			
 			if(round.Setup > 1.0)
 			{
@@ -1256,11 +1280,9 @@ void Waves_Progress()
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				
-				FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
-
-				FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
-
-				FormatEx(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), "");
+				char_MusicString1[0] = 0;
+				char_MusicString2[0] = 0;
+				char_RaidMusicSpecial1[0] = 0;
 
 				i_MusicLength1 = 1;
 				i_MusicLength2 = 1;

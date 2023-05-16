@@ -61,7 +61,7 @@ methodmap SeaReaper < CClotBody
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayDeathSound() 
 	{
@@ -90,7 +90,7 @@ methodmap SeaReaper < CClotBody
 		npc.SetActivity("ACT_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaReaper_TakeDamage);
@@ -98,6 +98,8 @@ methodmap SeaReaper < CClotBody
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.Anger = false;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
@@ -117,7 +119,8 @@ public void SeaReaper_ClotThink(int iNPC)
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 	}
 	
-	SDKHooks_TakeDamage(npc.index, 0, 0, 2.0, DMG_DROWN);
+	if(npc.Anger)
+		SDKHooks_TakeDamage(npc.index, 0, 0, 2.0, DMG_DROWN);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -210,7 +213,7 @@ public void SeaReaper_ClotThink(int iNPC)
 						// 400 x 0.15
 						// 500 x 0.15
 
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 8 : 6);
+						SeaSlider_AddNeuralDamage(target, npc.index,i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 8 : 6);
 						// 400 x 0.1 x 0.15
 						// 500 x 0.1 x 0.15
 					}
@@ -220,7 +223,7 @@ public void SeaReaper_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < 10000.0)
+		if(distance < 22500.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
@@ -249,7 +252,7 @@ public void SeaReaper_ClotThink(int iNPC)
 
 public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 15 : 12);
+	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[attacker] == SEAREAPER_ALT ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15
 }

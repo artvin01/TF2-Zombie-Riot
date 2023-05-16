@@ -853,6 +853,7 @@ public void OnPostThink(int client)
 		if(Armor_Charge[client] < 0)
 		{
 			green = 0;
+			blue = 255;
 		}
 		else if(Armor_Charge[client] != Armor_Max)
 		{
@@ -1396,16 +1397,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) && i_HealthBeforeSuit[victim] > 0)
 		{
-			if(damagetype & DMG_CLUB)
-			{
-				Replicated_Damage *= 4.0; //when a raid is alive, make quantum armor 2x as bad at tanking.
-				damage *= 4.0;	
-			}		
-			else //If its melee dmg, 4x, else, 2x
-			{
-				Replicated_Damage *= 2.0; //when a raid is alive, make quantum armor 2x as bad at tanking.
-				damage *= 2.0;	
-			}
+			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
+			damage *= 5.0;	
 		}
 		
 		if(EscapeMode)

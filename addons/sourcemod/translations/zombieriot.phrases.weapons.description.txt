@@ -36,6 +36,7 @@
 	"Sniper Rifle Pap 3"
 	{
 		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
+		"chi"       "昂贵的超级升级，5发子弹一次造成极端伤害。\n有些护目镜在充满电时可能会进一步增加伤害。"
 	}
 	"Sniper Rifle Pap 4"
 	{
@@ -317,6 +318,7 @@
 	"Star Shooter Desc"
 	{
 		"en"	"Sure, Brain, but where are you going to get enough stars for this?\nYour M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
+		"chi"   "当然，兄弟，但你要去哪里弄到足够的星星呢?你射击时，冷却时间会告诉你它多久才会再次冷却。更高的过热意味着更少的伤害。"
 	}
 	
 	"Loose Cannon Pap 1"
@@ -328,9 +330,9 @@
 	
 	"Elite Sniper Desc"
 	{
-		"en"	"Trained monkeys master the skills of bouncing bullets, which will go from target to target, killing them."
-		"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага."
-		"chi"   "训练有素的幸存者掌握弹跳子弹的技能，子弹会从一个目标弹到另一个目标，杀死它们。"
+		"en"	"Trained monkeys master the skills of bouncing bullets, which will go from target to target, killing them.\nDeals 1.5x dmg during raids."
+		"chi"   "经过训练的猴子掌握了弹跳子弹的技能，子弹会从一个目标射到另一个目标，杀死它们。\n在突袭中造成1.5倍伤害。"
+		
 	}
 	"Elite Sniper Pap 1"
 	{
@@ -352,9 +354,9 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"Cripples targets heavily, making them slower and take 35%% more damage."
-		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 35%% больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到35%%的伤害。"
+		"en"		"Cripples targets heavily, making them slower and take 40%% more damage."
+		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 40%% больше урона."
+		"chi"       "严重致残目标，使他们变慢并受到40%%的伤害。"
 	}
 	"Elite Sniper Pap 5"
 	{
@@ -495,6 +497,7 @@
 	"SMG Pap 5"
 	{
 		"en"	"Massively increased damage and attackspeed and clip size and way longer reload time."
+		"chi"   "大量增加伤害，攻击速度，弹夹大小和更长的装填时间。"
 	}
 	
 	"People Popper Desc"
@@ -590,11 +593,13 @@
 	"Riot Gun Desc"
 	{
 		"en"	"Press M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
+		"chi"   "按M2击晕附近的敌人，并为最多10个命中的目标大幅提高攻击速度和伤害。\n从你看到的攻击中受到更少的伤害，boss和突袭穿透它一半。极速可乐减少技能冷却时间。"
 	}
 	"Riot Gun Pap 1"
 	{
 		"en"	"Boosts resistance, including melee. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nPress M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets"
 		"ru"	"Усиливает сопр., в том числе в ближнем бою. Оружие стреляет 3 пулями одновременно. Становится основным оружием.\nНажмите М2 вблизи врагов для оглушения и увеличения скорость атаки и урона до 10 целей."
+		"chi"   "增加抵抗，包括近战。武器一次发射3发子弹。成为主要武器。\n按M2击晕附近的敌人，并获得大量提高攻击速度和伤害，最多可击中10个目标"
 	}
 	"Buff Banner Desc"
 	{
@@ -708,6 +713,7 @@
 	{
 		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20% of your maxhealth (cant kill you)\nbut you gain a 30% faster attackspeed and 35% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
 		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20% от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30% быстрой скорости атаки и 35% сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
+		"chi"   "增加伤害和攻击速度，R给你20%最大生命值的伤害加成(不会杀死你)\n但你获得30%的攻击速度和35%的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
 	}
 	"Kunai Desc"
 	{
@@ -749,6 +755,7 @@
 	"Fractured Ark Pap 3"
 	{
 		"en"	"Abilities change.\nEach attack silences the enemies for 5 seconds.\nAttacks give charges, melee gives 2x more.\nRanged attacks if melee didnt hit.\nHomes onto enemy that you looked at.\nAbility 2x dmg and ability duration and AOE silence."
+		"chi"   "能力的改变。每次攻击使敌人沉默5秒。攻击能充能，近战多充能2倍。如果近战没有命中，远程攻击。你所看到的敌人。2倍伤害，持续时间和AOE沉默。"
 	}
 	
 	"Longsword Desc"
@@ -780,6 +787,7 @@
 	{
 		"en"	"Insert Metal Gear Revengeance Reference."
 		"ru"	"Вставьте отсылку к Metal Gear Revengeance."
+		"chi"   "插入《合金装备复仇》参考。"
 	}
 	"Speed Fists Of Speed Pap 1"
 	{
@@ -809,13 +817,13 @@
 	
 	"Medusa Teslar Stick Desc"
 	{
-		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25% more dmg takes for affected enemies."
+		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies."
 		"ru"	"Вызывает кровотечение, 5%% доп. сопр. в ближнем бою. Накладывает на врага эффект, который замедляет его и заставляет получать больше урона."
 		"chi"   "对敌人造成流血，额外获得5%%近战抗性。对敌人造成负面效果，使敌人减速并受到更多伤害"
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, Debuff is massively stronger, enemies will take 35% more dmg."
+		"en"	"Increased damage and attackspeed, Debuff is massively stronger, enemies will take 35%% more dmg."
 		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}
@@ -868,6 +876,7 @@
 	"Cryo Staff Desc"
 	{
 		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location\n which deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage."
+		"chi"   "M1像火焰喷射器一样喷射冰雾，并将敌人冻结在一定的伤害阈值。\nM2在你的位置触发一个小冲击波，对冰冻僵尸造成大量增加的伤害。并冻结敌人，如果造成足够的伤害。"
 	}
 	"Cryo Staff Pap 1"
 	{
@@ -899,12 +908,14 @@
 	{
 		"en"	"Increased Damage"
 		"ru"	"Увеличенный урон"
+		"chi"   "增加伤害"
 	}
 
 	"Lightning Staff Pap 3"
 	{
 		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time."
 		"ru"	"Значительно увеличенный урон.\nВаша способность изменяется на двойную заряженную, случайную атаку, многоударную цепную атаку молнией.\nВаша атака также будет цепной по 4 врагам, но атаковать в 3 раза медленнее, каждая атака будет сильно замедлять врага на короткое время."
+		"chi"   "大量增加伤害。你的技能充能速度+2倍，随机目标，多击闪电连锁攻击。\n你的攻击也会连锁4个敌人，但攻击速度会慢3倍，每次攻击都会在短时间内严重减缓敌人的速度。"
 	}
 	
 	"Beam Wand Desc"
@@ -1053,10 +1064,12 @@
 	"Wrench Desc"
 	{
 		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
+		"chi"   "修理建筑物和哨兵，用任何扳手工作。"
 	}
 	"Builder Extra Gear Desc"
 	{
 		"en"	"Extra Menu for builders!"
+		"chi"   "建造师的额外装备(用鼠标滚轮打开)"
 	}
 	
 	"Texan business Desc"
@@ -1132,6 +1145,7 @@
 	"Buildable Healing Station Desc"
 	{
 		"en"	"Heals for 30 Health, scales with medigun upgrades."
+		"chi"   "治疗30点生命值，随着武器升级而增加。"
 	}
 	
 	"Buildable Village Desc"
@@ -1446,6 +1460,7 @@
 	"Panic Attack Desc"
 	{
 		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive.\nPassive healing wont work if your holding weapon has this effect, such as ocean song, but still give buffs."
+		"chi"   "你的攻击速度会慢15%，但是你的血量越低，你的攻击速度就越快\n最快25%，对最后一个活着的人不起作用。\n如果你的手持武器有这个效果，被动治疗将不起作用，比如海洋之歌，但仍然给予buff。"
 	}
 	
 	"Barbarians Mind Desc"
@@ -1603,14 +1618,17 @@
 	"Fusion Blade Pap 1.5"
 	{
 		"en"	"Increased damage."
+		"chi"   "增加伤害。"
 	}
 	"Fusion Blade Pap 2"
 	{
 		"en"	"More damage and 5%% melee resistance."
+		"chi"   "更多的伤害和5%的近战抗性。"
 	}
 	"Fusion Blade Pap 3"
 	{
 		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nSparing ''fusion warrior'' might give you extra strength..."
+		"chi"   "M2技能改变。在你面前放一把巨大的剑，造成伤害。\n击晕范围内所有敌人。你会得到大buff。无伤害的敌人集中剑给你2x伤害。\n“核聚变战士”属性可能会给你额外的力量……"
 	}
 
 	
@@ -1749,49 +1767,49 @@
 	{
 		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troops to give more commands."
 		"ru"	"Позволяет обучать союзников, чтобы они сражались за вас.\nРемонт даёт больше ресурсов.\nУлучшение строения даёт более сильных союзников.\nНажмите R на своих войсках для командования."
-		"chi"   "允许训练盟友为你而战。\nRepair升级提供了更多的资源。建筑升级提供更强大的盟友。在你的盟友上按R键可以发出更多命令。"
+		"chi"   "允许训练战士为你而战。\n建筑修复属性升级会影响这一点。\n建筑升级属性提供更强大的战士。在你的战士上按R键可以发出更多命令。"
 	}
 	"Militia Desc"
 	{
 		"en"	"Basic cheap melee unit"
 		"ru"	"Базовая дешёвая единица ближнего боя"
-		"chi"   "基本的廉价近战单位"
+		"chi"   "廉价近战士兵"
 	}
 	"Archer Desc"
 	{
 		"en"	"Basic first ranged unit"
 		"ru"	"Базовая первая единица дальнего боя"
-		"chi"   "基本第一远程单位"
+		"chi"   "廉价远程士兵"
 	}
 	"Man-At-Arms Desc"
 	{
 		"en"	"Upgraded Militia suitable for fortified zombies"
 		"ru"	"Улучшенный ополченец подходит для укреплённых зомби"
-		"chi"   "升级民兵适合强化僵尸"
+		"chi"   "升级的战士"
 	}
 	"Crossbow Man Desc"
 	{
 		"en"	"Upgraded Archer suitable for basic combine armor"
 		"ru"	"Улучшенный лучник подходит для базовой брони комбайнов"
-		"chi"   "升级射手适合基本的联合装甲"
+		"chi"   "升级的射手"
 	}
 	"Long Swordsman Desc"
 	{
 		"en"	"Upgraded Man-At-Arms suitable for warrior combine armor"
 		"ru"	"Улучшенный гвардеец подходит для брони комбайнов-воинов"
-		"chi"   "升级的人-武器适合战士组合装甲"
+		"chi"   "升级的高级战士"
 	}
 	"Medival Abalest Desc"
 	{
 		"en"	"Upgraded Crossbow Man suitable for takes downs from a safe distance"
 		"ru"	"Улучшенный арбалетчик подходит для поражения с безопасного расстояния"
-		"chi"   "升级弓弩人适合在安全距离内击倒敌人"
+		"chi"   "升级的弓弩人"
 	}
 	"Twohanded Swordsman Desc"
 	{
 		"en"	"Upgraded Long Swordsman suitable for heavy targets"
 		"ru"	"Улучшенный мечник с длинным мечом подходит для тяжёлых целей"
-		"chi"   "升级长剑手，适合重型目标"
+		"chi"   "升级长剑手"
 	}
 	"Medival Longbowmen Desc"
 	{
@@ -1821,7 +1839,7 @@
 	{
 		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25% dmg buff to all allies for 15 sec."
 		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25% на всех союзников на 15 сек."
-		"chi"   "缓慢治疗你周围的盟友，并给予他们10%%的伤害buff。\nscale与mediggun升级。\nM1对盟友施放额外治疗值。对所有盟友造成25%%的伤害buff，持续15秒。"
+		"chi"   "可以缓慢治疗你附近的队友，并给予他们10%%的伤害buff。\n收到医疗属性升级影响。\nM1对盟友施放额外治疗值。M2释放光波对所有队友添加25%%的伤害加成buff，持续15秒。"
 	}
 	"Lantean Staff Desc"
 	{
@@ -1891,10 +1909,22 @@
 	"Spike Layer Pap 1"
 	{
 		"en"	"Faster Attackspeed, Spike limit increaces to 60, damage increaces slightly."
+		"chi"   "更快的攻击速度，尖刺限制增加到60，伤害略有增加。"
 	}
 	"Throwable Repair Grenade Desc"
 	{
 		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25% damage resistance while in range."
+		"chi"   "投掷一枚手榴弹，随着时间的推移可以修复附近的建筑物。\n建筑升级会影响它。可能需要配备扳手才能完全工作。在有效射程内给予建筑物25%的伤害抗性。"
+	}
+	"Beam Wand pap Alt 1"
+	{
+		"en"	"Have you ever wondered what it would be like to fire 2 laser beams?\nWell, wonder-no-more!\nHold Mouse1 to attack\nOnce charge is full press Mouse2 to use it!"
+		"chi"   "你有没有想过发射两束激光会是什么样子?\n 左键攻击\n一旦充能完毕，按右键使用它!"
+	}
+	"Beam Wand pap Alt 2"
+	{
+		"en"	"So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot piecre multiple targets!"
+		"chi"   "所以，你想要更大的力量?\n介绍“粒子炮”\n按R在粒子束/炮之间切换\n粒子炮也有自己的鼠标右键技能\n粒子炮不能拼接多个目标!"
 	}
 	"Beam Wand pap Alt 1"
 	{

@@ -138,11 +138,11 @@ methodmap RaidbossBlueGoggles < CClotBody
 	{
 		char buffer[64];
 		FormatEx(buffer, sizeof(buffer), "vo/sniper_revenge%02d.mp3", (GetURandomInt() % 25) + 1);
-		EmitSoundToAll(buffer, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(buffer);
 	}
 	public void PlayHappySound()
 	{
-		EmitSoundToAll(g_HappySounds[GetRandomInt(0, sizeof(g_HappySounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HappySounds[GetRandomInt(0, sizeof(g_HappySounds) - 1)]);
 	}
 	public void PlayMeleeHitSound()
 	{
@@ -325,7 +325,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
-	npc.m_flNextThinkTime = gameTime + 0.10;
+	npc.m_flNextThinkTime = gameTime + 0.5;
 
 	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
@@ -546,8 +546,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
 									
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+								//	SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 									
 									npc.PlayMeleeHitSound();
 									
@@ -675,7 +675,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(distance > 100000.0)	// 316 HU
 							damage *= 100000.0 / distance;	// Lower damage based on distance
 						
-						damage *= 1.5;
+						damage *= 5.5;
 						
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
