@@ -265,7 +265,8 @@ enum
 	SEAPREDATOR_CARRIER,
 	SEABRANDGUIDER	= 229,
 	SEABRANDGUIDER_ALT,
-	SEABRANDGUIDER_CARRIER
+	SEABRANDGUIDER_CARRIER,
+	SEABORN_KAZIMIERZ_ASSASIN_MELEE	= 232,
 }
 
 public const char NPC_Names[][] =
@@ -505,10 +506,10 @@ public const char NPC_Names[][] =
 	"Nourished Piercer",
 	"The First To Talk",
 	"Sal Viento Bishop Quintus",
-	"Seaborn Kazimierz Knight",
-	"Seaborn Kazimierz Archer",
-	"Seaborn Kazimierz Beserker",
-	"Seaborn Kazimierz Assasin",
+	"Armorless Union Knight",
+	"Roar Knightclub Trainee",
+	"Bloodboil Knightclub Trainee",
+	"Armorless Union Cleanup Squad",
 	"Consumable Remains",
 	"The Endspeaker, Will of We Many",
 	"The Endspeaker, Will of We Many",
@@ -522,7 +523,8 @@ public const char NPC_Names[][] =
 	"Regressed Predator",
 	"Nethersea Brandguider",
 	"Nourished Brandguider",
-	"Regressed Brandguider"
+	"Regressed Brandguider",
+	"Armorless Union Assassin"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -774,7 +776,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"npc_netherseabrandguider",
 	"",
-	""
+	"",
+	"npc_seaborn_kazimersch_melee_assasin",
 };
 
 void NPC_MapStart()
@@ -973,6 +976,7 @@ void NPC_MapStart()
 	KazimierzLongArcher_OnMapStart_NPC();
 	EndSpeaker_MapStart();
 	Remain_MapStart();
+	KazimierzKnightAssasin_OnMapStart_NPC();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1659,6 +1663,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
 			entity = SeaBrandguider(client, vecPos, vecAng, ally, data);
+
+		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
+			entity = KazimierzKnightAssasin(client, vecPos, vecAng, ally);
+
 		
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2337,6 +2345,9 @@ public void NPCDeath(int entity)
 		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
 			SeaBrandguider_NPCDeath(entity);
 		
+		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
+			KazimierzKnightAssasin_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		

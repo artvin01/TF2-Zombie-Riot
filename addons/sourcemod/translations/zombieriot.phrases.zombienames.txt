@@ -1265,21 +1265,24 @@
 		"en"		"Sal Viento Bishop Quintus"
 		"chi"		"盐风主教昆图斯"
 	}
-	"Seaborn Kazimierz Knight"
+	"Armorless Union Knight"
 	{
-		"en"		"Seaborn Kazimierz Knight"
+		"en"		"Armorless Union Knight"
 	}
-	"Seaborn Kazimierz Archer"
+	"Roar Knightclub Trainee"
 	{
-		"en"		"Seaborn Kazimierz Archer"
+		"en"		"Roar Knightclub Trainee"
+		"chi"		"呼啸骑士团学徒"
 	}
-	"Seaborn Kazimierz Beserker"
+	"Bloodboil Knightclub Trainee"
 	{
-		"en"		"Seaborn Kazimierz Beserker"
+		"en"		"Bloodboil Knightclub Trainee"
+		"chi"		"沸血骑士团学徒"
 	}
-	"Seaborn Kazimierz Assasin"
+	"Armorless Union Cleanup Squad"
 	{
-		"en"		"Seaborn Kazimierz Assasin"
+		"en"		"Armorless Union Cleanup Squad"
+		"chi"		"无胄盟清扫小队"
 	}
 	"Consumable Remains"
 	{
@@ -1334,5 +1337,10 @@
 	{
 		"en"		"Regressed Brandguider"
 		"chi"		"退行的引痕者"
+	}
+	"Armorless Union Assassin"
+	{
+		"en"		"Armorless Union Assassin"
+		"chi"		"无胄盟刺客"
 	}
 }
