@@ -259,6 +259,7 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
 			b_ThisNpcIsSawrunner[attacker] = sawrunner;
 		}
 		
-		ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+		if(damage > 2)
+			ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 	}
 }

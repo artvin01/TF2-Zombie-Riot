@@ -1,7 +1,5 @@
 #pragma semicolon 1
 #pragma newdecls required
-
-// TODO: Ignore buildings while they're on nethersea
  
 static const char g_DeathSounds[][] =
 {
@@ -85,6 +83,7 @@ methodmap SeaPredator < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.Anger = false;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
@@ -137,7 +136,21 @@ public void SeaPredator_ClotThink(int iNPC)
 	
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		if(npc.Anger)
+		{
+			if(!SeaFounder_TouchingNethersea(npc.index))
+			{
+				npc.Anger = false;
+				Change_Npc_Collision(npc.index, 2);	// Attack buildings
+			}
+		}
+		else if(SeaFounder_TouchingNethersea(npc.index))
+		{
+			npc.Anger = true;
+			Change_Npc_Collision(npc.index, 1);	// Ignore buildings
+		}
+
+		npc.m_iTarget = GetClosestTarget(npc.index, npc.Anger);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
