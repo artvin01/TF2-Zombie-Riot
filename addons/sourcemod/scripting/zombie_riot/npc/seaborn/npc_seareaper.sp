@@ -169,7 +169,7 @@ public void SeaReaper_ClotThink(int iNPC)
 		if(npc.Anger)
 		{
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 1000.0);
-			Explode_Logic_Custom(0.0, 0, npc.index, -1, vecMe, 400.0, _, _, true, _, false, _, SeaRepear_ExplodePost);
+			Explode_Logic_Custom(0.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, _, SeaRepear_ExplodePost);
 		}
 	}
 	

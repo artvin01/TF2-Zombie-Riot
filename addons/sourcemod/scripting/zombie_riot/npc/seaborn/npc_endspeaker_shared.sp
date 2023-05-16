@@ -361,17 +361,20 @@ public Action EndSpeaker_TakeDamage(int victim, int &attacker, int &inflictor, f
 	EndSpeaker npc = view_as<EndSpeaker>(victim);
 	float gameTime = GetGameTime(npc.index);
 
-	if((npc.m_hBuffs & BUFF_PREDATOR) && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && (GetURandomInt() % 2))
+	static int Pity;
+	if((npc.m_hBuffs & BUFF_PREDATOR) && Pity < (NpcStats_IsEnemySilenced(npc.index) ? 2 : 6) && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && (GetURandomInt() % 2))
 	{
 		damage = 0.0;
+		Pity++;
 	}
 	else if(npc.m_flHeadshotCooldown < gameTime)
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		Pity = 0;
 	}
 	
-	if(!npc.m_bIgnoreBuildings && (npc.m_hBuffs & BUFF_BRANDGUIDER))
+	if(!npc.m_bIgnoreBuildings && (npc.m_hBuffs & BUFF_BRANDGUIDER) && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");

@@ -97,7 +97,7 @@ methodmap SeaFounder < CClotBody
 		}
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/pyro/pyro_pyromancers_mask.mdl");
-		SetVariantString("1.1");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);

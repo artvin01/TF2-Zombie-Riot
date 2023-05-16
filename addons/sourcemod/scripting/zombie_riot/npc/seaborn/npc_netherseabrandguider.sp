@@ -25,6 +25,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/npc/male01/overthere01.wav",
 	"vo/npc/male01/overthere02.wav",
 };
+
 static const char g_MeleeHitSounds[][] =
 {
 	"weapons/halloween_boss/knight_axe_hit.wav"
@@ -105,7 +106,7 @@ methodmap SeaBrandguider < CClotBody
 		}
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", elite ? "models/workshop/player/items/all_class/hwn2021_goalkeeper/hwn2021_goalkeeper_medic.mdl" : "models/workshop/player/items/all_class/hwn2021_goalkeeper_style2/hwn2021_goalkeeper_style2_medic.mdl");
-		SetVariantString("1.1");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");

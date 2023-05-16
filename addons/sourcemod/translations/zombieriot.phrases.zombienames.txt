@@ -1343,4 +1343,49 @@
 		"en"		"Armorless Union Assassin"
 		"chi"		"无胄盟刺客"
 	}
+	"Nethersea Spewer"
+	{
+		"en"		"Nethersea Spewer"
+		"chi"		"深溟喷溅者"
+	}
+	"Nourished Spewer"
+	{
+		"en"		"Nourished Spewer"
+		"chi"		"富营养的喷溅者"
+	}
+	"Regressed Spewer"
+	{
+		"en"		"Regressed Spewer"
+		"chi"		"退行的喷溅者"
+	}
+	"Nethersea Swarmcaller"
+	{
+		"en"		"Nethersea Swarmcaller"
+		"chi"		"深溟巢涌者"
+	}
+	"Nourished Swarmcaller"
+	{
+		"en"		"Nourished Swarmcaller"
+		"chi"		"富营养的巢涌者"
+	}
+	"Regressed Swarmcaller"
+	{
+		"en"		"Regressed Swarmcaller"
+		"chi"		"退行的巢涌者"
+	}
+	"Nethersea Reefbreaker"
+	{
+		"en"		"Nethersea Reefbreaker"
+		"chi"		"深溟裂礁者"
+	}
+	"Nourished Reefbreaker"
+	{
+		"en"		"Nourished Reefbreaker"
+		"chi"		"富营养的裂礁者"
+	}
+	"Regressed Reefbreaker"
+	{
+		"en"		"Regressed Reefbreaker"
+		"chi"		"退行的裂礁者"
+	}
 }

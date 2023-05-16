@@ -98,7 +98,7 @@ methodmap SeaPredator < CClotBody
 		}
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/pyro/hw2013_visage_of_the_crow/hw2013_visage_of_the_crow.mdl");
-		SetVariantString("1.1");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
@@ -234,14 +234,17 @@ public Action SeaPredator_TakeDamage(int victim, int &attacker, int &inflictor, 
 	SeaPredator npc = view_as<SeaPredator>(victim);
 	float gameTime = GetGameTime(npc.index);
 
-	if(npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 10 : 5)))
+	static int Pity;
+	if(Pity < 30 && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 10 : 5)))
 	{
 		damage = 0.0;
+		Pity += i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 1 : 2;
 	}
 	else if(npc.m_flHeadshotCooldown < gameTime)
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		Pity = 0;
 	}
 	return Plugin_Changed;
 }

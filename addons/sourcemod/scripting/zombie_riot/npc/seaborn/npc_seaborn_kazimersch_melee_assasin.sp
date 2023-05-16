@@ -209,7 +209,7 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(!KazimierzMeleeAssasinRange(npc, 500.0));
+		if(!KazimierzMeleeAssasinRange(npc, 500.0))
 		{
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 			SelfPos[2] += 20.0;

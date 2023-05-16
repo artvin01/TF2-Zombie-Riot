@@ -267,6 +267,16 @@ enum
 	SEABRANDGUIDER_ALT,
 	SEABRANDGUIDER_CARRIER,
 	SEABORN_KAZIMIERZ_ASSASIN_MELEE	= 232,
+	SEASPEWER	= 233,
+	SEASPEWER_ALT,
+	SEASPEWER_CARRIER,
+	SEASWARMCALLER	= 236,
+	SEASWARMCALLER_ALT,
+	SEASWARMCALLER_CARRIER,
+	SEAREEFBREAKER	= 239,
+	SEAREEFBREAKER_ALT,
+	SEAREEFBREAKER_CARRIER,
+	//THING		= 242
 }
 
 public const char NPC_Names[][] =
@@ -524,7 +534,16 @@ public const char NPC_Names[][] =
 	"Nethersea Brandguider",
 	"Nourished Brandguider",
 	"Regressed Brandguider",
-	"Armorless Union Assassin"
+	"Armorless Union Assassin",
+	"Nethersea Spewer",
+	"Nourished Spewer",
+	"Regressed Spewer",
+	"Nethersea Swarmcaller",
+	"Nourished Swarmcaller",
+	"Regressed Swarmcaller",
+	"Nethersea Reefbreaker",
+	"Nourished Reefbreaker",
+	"Regressed Reefbreaker"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -778,6 +797,15 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_seaborn_kazimersch_melee_assasin",
+	"npc_netherseaspewer",
+	"",
+	"",
+	"npc_netherseaswarmcaller",
+	"",
+	"",
+	"npc_netherseareefbreaker",
+	"",
+	""
 };
 
 void NPC_MapStart()
@@ -1666,8 +1694,16 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
 			entity = KazimierzKnightAssasin(client, vecPos, vecAng, ally);
-
 		
+		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
+			entity = SeaSpewer(client, vecPos, vecAng, ally, data);
+		
+		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
+			entity = SeaSwarmcaller(client, vecPos, vecAng, ally, data);
+		
+		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
+			entity = SeaReefbreaker(client, vecPos, vecAng, ally, data);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2347,6 +2383,15 @@ public void NPCDeath(int entity)
 		
 		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
 			KazimierzKnightAssasin_NPCDeath(entity);
+		
+		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
+			SeaSpewer_NPCDeath(entity);
+		
+		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
+			SeaSwarmcaller_NPCDeath(entity);
+		
+		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
+			SeaReefbreaker_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2663,3 +2708,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/seaborn/npc_netherseafounder.sp"
 #include "zombie_riot/npc/seaborn/npc_netherseapredator.sp"
 #include "zombie_riot/npc/seaborn/npc_netherseabrandguider.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_kazimersch_melee_assasin.sp"
+#include "zombie_riot/npc/seaborn/npc_netherseaspewer.sp"
+#include "zombie_riot/npc/seaborn/npc_netherseaswarmcaller.sp"
+#include "zombie_riot/npc/seaborn/npc_netherseareefbreaker.sp"
