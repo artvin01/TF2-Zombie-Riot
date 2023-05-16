@@ -276,7 +276,7 @@ enum
 	SEAREEFBREAKER	= 239,
 	SEAREEFBREAKER_ALT,
 	SEAREEFBREAKER_CARRIER,
-	//THING		= 242
+	BARRACK_THORNS	= 242
 }
 
 public const char NPC_Names[][] =
@@ -543,7 +543,8 @@ public const char NPC_Names[][] =
 	"Regressed Swarmcaller",
 	"Nethersea Reefbreaker",
 	"Nourished Reefbreaker",
-	"Regressed Reefbreaker"
+	"Regressed Reefbreaker",
+	"Thorns"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -804,6 +805,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_netherseareefbreaker",
+	"",
 	"",
 	""
 };
@@ -1703,6 +1705,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
 			entity = SeaReefbreaker(client, vecPos, vecAng, ally, data);
+		
+		case BARRACK_THORNS:
+			entity = BarrackThorns(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2392,6 +2397,9 @@ public void NPCDeath(int entity)
 		
 		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
 			SeaReefbreaker_NPCDeath(entity);
+		
+		case BARRACK_THORNS:
+			BarrackThorns_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -2678,6 +2686,7 @@ public void NPCDeath(int entity)
 #include "zombie_riot/npc/ally/npc_barrack_monk.sp"
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
+#include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
 
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"

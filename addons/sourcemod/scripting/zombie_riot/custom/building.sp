@@ -5982,6 +5982,7 @@ static int CommandMode[MAXTF2PLAYERS];
 static bool FinalBuilder[MAXTF2PLAYERS];
 static bool MedievalUnlock[MAXTF2PLAYERS];
 static bool GlassBuilder[MAXTF2PLAYERS];
+static int CivType[MAXTF2PLAYERS];
 
 enum
 {
@@ -5990,7 +5991,14 @@ enum
 	FoodCost,
 	GoldCost,
 	TrainTime,
-	TrainLevel
+	TrainLevel,
+	SupplyCost
+}
+
+enum
+{
+	Default = 0,
+	Thorns
 }
 
 static const char CommandName[][] =
@@ -6009,27 +6017,72 @@ static const char CommandName[][] =
 	Cosmic Repair Handling book - 20.5/s
 */
 
-static const int SummonerData[][] =
+static const int SummonerBase[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
+
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
+
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
+
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
+
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
+
+
+	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1 },	// Construction Expert
+	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16, 1 }	// Construction Master
+};
+
+static const int SummonerThorns[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },		// None
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2 },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4 },	// Construction Apprentice
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4 },		// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7 },		// Construction Worker
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7 },		// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11 },	// Construction Expert
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11 },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
 
 
-	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16 }		// Construction Master
+	{ BARRACK_THORNS, 0, 400, 35, 15, 11, 3 }	// Construction Expert
 };
+
+static int GetUnitCount(int civ)
+{
+	switch(civ)
+	{
+		case Thorns:
+			return sizeof(SummonerThorns);
+		
+		default:
+			return sizeof(SummonerBase);
+	}
+}
+
+static int GetData(int civ, int unit, int index)
+{
+	switch(civ)
+	{
+		case Thorns:
+			return SummonerThorns[unit][index];
+		
+		default:
+			return SummonerBase[unit][index];
+	}
+}
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
 {
@@ -6207,7 +6260,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 		if(TrainingIn[owner])
 		{
-			if(!AtMaxSupply(owner))
+			if(!AtMaxSupply(owner) && GetSupplyLeft(owner) >= GetData(CivType[owner], TrainingIndex[owner], SupplyCost))
 			{
 				float gameTime = GetGameTime();
 				if(TrainingIn[owner] < gameTime)
@@ -6243,7 +6296,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						int npc = Npc_Create(GetData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
 
@@ -6286,7 +6339,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						{
 							TrainingIndex[owner] = TrainingQueue[owner];
 							TrainingStartedIn[owner] = GetGameTime();
-							TrainingIn[owner] = TrainingStartedIn[owner] + float(SummonerData[TrainingQueue[owner]][TrainTime]);
+							TrainingIn[owner] = TrainingStartedIn[owner] + float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
 							TrainingQueue[owner] = -1;
 						}
 					}
@@ -6338,8 +6391,10 @@ static void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
 		SupplyRate[client] += 10;
 	
+	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
+	
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
+	MedievalUnlock[client] = (CivType[client] || HasNamedItem(client, "Medieval Crown"));
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 }
 
@@ -6373,25 +6428,25 @@ static void SummonerMenu(int client, int viewer)
 	char buffer1[256];
 	if(TrainingIn[client])
 	{
-		if(AtMaxSupply(client))
+		if(AtMaxSupply(client) || GetSupplyLeft(client) < GetData(CivType[owner], TrainingIndex[client], SupplyCost))
 		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetData(CivType[owner], TrainingIndex[client], NPCIndex)]);
 			if(i_BarricadesBuild[client])
 				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 		}
 		else if(TrainingStartedIn[client] < 0.0)
 		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[GetData(CivType[owner], TrainingIndex[client], NPCIndex)]);
 		}
 		else
 		{
 			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[GetData(CivType[owner], TrainingIndex[client], NPCIndex)],
 				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 		}
 
 		if(TrainingQueue[client] != -1)
-			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[SummonerData[TrainingQueue[client]][NPCIndex]]);
+			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[owner], TrainingQueue[client], NPCIndex)]);
 		
 		menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
@@ -6402,26 +6457,29 @@ static void SummonerMenu(int client, int viewer)
 
 	char buffer2[64];
 	int options;
-	for(int i = sizeof(SummonerData) - 1; i >= 0; i--)
+	for(int i = GetUnitCount(CivType[owner]) - 1; i >= 0; i--)
 	{
-		if(SummonerData[i][TrainLevel] > level)
+		if(GetData(CivType[owner], i, TrainLevel) > level)
 			continue;
 		
-		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[SummonerData[i][NPCIndex]]);
-		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[SummonerData[i][NPCIndex]]);
+		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetData(CivType[owner], i, NPCIndex)]);
+		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetData(CivType[owner], i, NPCIndex)]);
 
-		if(SummonerData[i][WoodCost])
-			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, SummonerData[i][WoodCost]);
+		if(GetData(CivType[owner], i, WoodCost))
+			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetData(CivType[owner], i, WoodCost));
 		
-		if(SummonerData[i][FoodCost])
-			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, SummonerData[i][FoodCost]);
+		if(GetData(CivType[owner], i, FoodCost))
+			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetData(CivType[owner], i, FoodCost));
 		
-		if(SummonerData[i][GoldCost])
-			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, SummonerData[i][GoldCost]);
+		if(GetData(CivType[owner], i, GoldCost))
+			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetData(CivType[owner], i, GoldCost));
 		
 		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
 		IntToString(i, buffer2, sizeof(buffer2));
-		bool poor = (!owner || WoodAmount[client] < SummonerData[i][WoodCost]) || (FoodAmount[client] < SummonerData[i][FoodCost]) || (GoldAmount[client] < SummonerData[i][GoldCost]);
+		bool poor = (!owner ||
+			WoodAmount[client] < GetData(CivType[owner], i, WoodCost) ||
+			FoodAmount[client] < GetData(CivType[owner], i, FoodCost) ||
+			GoldAmount[client] < GetData(CivType[owner], i, GoldCost));
 
 		menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		if(++options > 3)
@@ -6457,9 +6515,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						if(TrainingQueue[client] != -1)
 						{
-							WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
-							FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
-							GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+							WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
+							FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
+							GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
 
 							TrainingQueue[client] = -1;
 						}
@@ -6467,9 +6525,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							TrainingIn[client] = 0.0;
 
-							WoodAmount[client] += float(SummonerData[TrainingIndex[client]][WoodCost]);
-							FoodAmount[client] += float(SummonerData[TrainingIndex[client]][FoodCost]);
-							GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
+							WoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], WoodCost));
+							FoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], FoodCost));
+							GoldAmount[client] += float(GetData(CivType[client], TrainingIndex[client], GoldCost));
 						}
 					}
 					else
@@ -6478,9 +6536,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						menu.GetItem(choice, num, sizeof(num));
 						int item = StringToInt(num);
 
-						float woodcost = float(SummonerData[item][WoodCost]);
-						float foodcost = float(SummonerData[item][FoodCost]);
-						float goldcost = float(SummonerData[item][GoldCost]);
+						float woodcost = float(GetData(CivType[client], item, WoodCost));
+						float foodcost = float(GetData(CivType[client], item, FoodCost));
+						float goldcost = float(GetData(CivType[client], item, GoldCost));
 
 						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
 						{
@@ -6488,7 +6546,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							{
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
-								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (SummonerData[item][TrainTime] / 3) : SummonerData[item][TrainTime]);
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetData(CivType[client], item, TrainTime) / 3) : GetData(CivType[client], item, TrainTime));
 							}
 							else if(TrainingQueue[client] == -1)
 							{
@@ -6496,9 +6554,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 							else
 							{
-								WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
-								FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
-								GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+								WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
 
 								TrainingQueue[client] = item;
 							}
@@ -6524,6 +6582,24 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+static bool GetSupplyLeft(int client)
+{
+	int userid = GetClientUserId(client);
+	int personal = i_BarricadesBuild[client] * 3 / 2;
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId == userid)
+				personal += npc.m_iSupplyCount;
+		}
+	}
+
+	return 3 - personal;
+}
+
 static bool AtMaxSupply(int client)
 {
 	int userid = GetClientUserId(client);
@@ -6538,7 +6614,7 @@ static bool AtMaxSupply(int client)
 
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
-				personal++;
+				personal += npc.m_iSupplyCount;
 		}
 	}
 
