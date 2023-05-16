@@ -211,11 +211,23 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	{
 		if(!KazimierzMeleeAssasinRange(npc, 500.0));
 		{
-			npc.m_flSpeed = 200.0;
-			npc.m_flExtraDamage += 5.0;
-			if(npc.m_flExtraDamage > 500.0)
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
+			SelfPos[2] += 20.0;
+			float SelfPos[3];
+			if(IsPointHazard(SelfPos))
 			{
-				npc.m_flExtraDamage = 500.0;
+				npc.m_flSpeed = 250.0;
+				npc.m_flExtraDamage += 1.0;
+			}
+			else
+			{
+				npc.m_flSpeed = 200.0;
+				npc.m_flExtraDamage += 2.5;
+			}
+
+			if(npc.m_flExtraDamage > 250.0)
+			{
+				npc.m_flExtraDamage = 250.0;
 				npc.m_flSpeed = 300.0;
 			}
 			int colour_red = (npc.m_flExtraDamage * 0.5);
@@ -407,6 +419,8 @@ public void KazimierzKnightAssasin_NPCDeath(int entity)
 
 public bool KazimierzMeleeAssasinRange(int npc, float range)
 {
+	float SelfPos[3];
+	float AllyPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 	for(int client=1; client<=MaxClients; client++)
 	{
