@@ -2413,7 +2413,7 @@ methodmap CClotBody
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
-	public void FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
+	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
@@ -2493,6 +2493,7 @@ methodmap CClotBody
 	//		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, ArrowStartTouch);
 		}
+		return entity;
 	}
 	/*
 	public void FireBolt(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "" , float model_scale = 1.0) //No defaults, otherwise i cant even judge.
@@ -3816,6 +3817,14 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			StalkerCombine_HandleAnimEvent(pThis, event);
 		}
+		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+		{
+			HandleAnimEventMedival_KazimierzArcher(pThis, event);
+		}
+		case SEABORN_KAZIMIERZ_LONGARCHER:
+		{
+			HandleAnimEventKazimierzLongArcher(pThis, event);
+		}
 	}
 #endif
 	
@@ -3889,7 +3898,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				static char strSound[64];
 				Format(strSound, sizeof(strSound), "player/footsteps/mud%d.wav", GetRandomInt(1,4));
-				npc.PlayStepSound(strSound, 0.8, npc.m_iStepNoiseType);
+				npc.PlayStepSound(strSound, 0.5, npc.m_iStepNoiseType);
 			}
 		}
 	}

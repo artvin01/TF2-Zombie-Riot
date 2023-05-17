@@ -127,6 +127,7 @@ static int BarrackOwner[MAXENTITIES];
 static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
+static int SupplyCount[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -219,6 +220,17 @@ methodmap BarrackBody < CClotBody
 		public set(int value)
 		{
 			CommandOverride[view_as<int>(this)] = value;
+		}
+	}
+	property int m_iSupplyCount
+	{
+		public get()
+		{
+			return SupplyCount[view_as<int>(this)];
+		}
+		public set(int value)
+		{
+			SupplyCount[view_as<int>(this)] = value;
 		}
 	}
 	property int m_iTargetRally

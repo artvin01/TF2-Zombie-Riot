@@ -70,6 +70,12 @@ methodmap SeaSpitter < CClotBody
 		// 4400 x 0.15
 		// 5000 x 0.15
 
+		if(data[0])
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(npc.index, "SetBodyGroup");
+		}
+		
 		i_NpcInternalId[npc.index] = data[0] ? SEASPITTER_ALT : SEASPITTER;
 		npc.SetActivity("ACT_WALK");
 		
@@ -83,11 +89,10 @@ methodmap SeaSpitter < CClotBody
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
-		
-		npc.StartPathing();
 		return npc;
 	}
 }
@@ -95,12 +100,6 @@ methodmap SeaSpitter < CClotBody
 public void SeaSpitter_ClotThink(int iNPC)
 {
 	SeaSpitter npc = view_as<SeaSpitter>(iNPC);
-
-	if(i_NpcInternalId[npc.index] == SEASPITTER_ALT)
-	{
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-	}
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -144,9 +143,20 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48.0 : 42.0, 800.0);
+				int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 48.0 : 42.0, 800.0);
 				// 280 * 0.15
 				// 320 * 0.15
+				
+				if(entity != -1)
+				{
+					if(IsValidEntity(f_ArrowTrailParticle[entity]))
+						RemoveEntity(f_ArrowTrailParticle[entity]);
+					
+					vecTarget = WorldSpaceCenter(entity);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
+					SetParent(entity, f_ArrowTrailParticle[entity]);
+					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+				}
 			}
 		}
 
