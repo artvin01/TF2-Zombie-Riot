@@ -262,7 +262,6 @@ methodmap BarrackBody < CClotBody
 		FireRateBonus[npc.index] = 1.0;
 		DamageBonus[npc.index] = 1.0;
 		CommandOverride[npc.index] = -1;
-		SupplyCount[npc.index] = 1;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

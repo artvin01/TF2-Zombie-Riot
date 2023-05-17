@@ -14,7 +14,6 @@ methodmap BarrackThorns < BarrackBody
 		SDKHook(npc.index, SDKHook_Think, BarrackThorns_ClotThink);
 
 		npc.m_flSpeed = 250.0;
-		npc.m_iSupplyCount = 3;
 
 		if(elite)
 			npc.BonusDamageBonus *= 1.5;

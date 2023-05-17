@@ -6060,6 +6060,12 @@ static const int SummonerThorns[][] =
 	{ BARRACK_THORNS, 0, 400, 35, 15, 11, 3 }	// Construction Expert
 };
 
+static const char CivName[][] =
+{
+	"Standard Barracks",
+	"Iberia Barracks"
+};
+
 static int GetUnitCount(int civ)
 {
 	switch(civ)
@@ -6300,6 +6306,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						int npc = Npc_Create(GetData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
+						view_as<BarrackBody>(npc).m_iSupplyCount = GetData(CivType[owner], TrainingIndex[owner], SupplyCost);
 
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
@@ -6420,7 +6427,7 @@ static void SummonerMenu(int client, int viewer)
 	Menu menu = new Menu(SummonerMenuH);
 	
 	SetGlobalTransTarget(viewer);
-	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
+	menu.SetTitle("%s\n \n$%d £%d ¥%d\n ", CivName[CivType[owner]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
 	
 	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
