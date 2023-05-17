@@ -78,7 +78,7 @@ methodmap FirstToTalk < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
@@ -131,8 +131,8 @@ public void FirstToTalk_ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				int entity = npc.FireArrow(vecTarget, 90.0, 1200.0);
 				// 600 x 0.15
-
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 36);
+				SDKUnhook(entity, SDKHook_StartTouch, ArrowStartTouch);
+				SDKHook(entity, SDKHook_StartTouch, ArrowStartTouchFirstTalk);
 				// 600 x 0.4 x 0.15
 
 				if(entity != -1)
@@ -369,4 +369,57 @@ void FirstToTalk_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
+
+
+
+public void ArrowStartTouchFirstTalk(int arrow, int entity)
+{
+	if(entity > 0 && entity < MAXENTITIES)
+	{
+		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+		if(ShouldNpcDealBonusDamage(entity))
+		{
+			f_ArrowDamage[arrow] *= 3.0;
+		}
+
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(owner == -1)
+			owner = arrow;
+
+		int inflictor = h_ArrowInflictorRef[arrow];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[arrow]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+
+		SeaSlider_AddNeuralDamage(entity, owner, 36);
+		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
+		if(IsValidEntity(arrow_particle))
+		{
+			DispatchKeyValue(arrow_particle, "parentname", "none");
+			AcceptEntityInput(arrow_particle, "ClearParent");
+			float f3_PositionTemp[3];
+			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	else
+	{
+		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
+		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
+		if(IsValidEntity(arrow_particle))
+		{
+			DispatchKeyValue(arrow_particle, "parentname", "none");
+			AcceptEntityInput(arrow_particle, "ClearParent");
+			float f3_PositionTemp[3];
+			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	RemoveEntity(arrow);
 }
