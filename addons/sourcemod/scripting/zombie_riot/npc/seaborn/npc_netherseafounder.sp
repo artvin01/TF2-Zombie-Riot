@@ -435,11 +435,14 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NavArea nav = TheNavMesh.GetNavArea_Vec(pos, 25.0);
 			if(nav != NavArea_Null && NavList.FindValue(nav) != -1)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, 6.0, DMG_BULLET);
+				bool resist = Building_NeatherseaReduced(client);
+
+				SDKHooks_TakeDamage(client, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
 				// 120 x 0.25 x 0.2
 
-				SeaSlider_AddNeuralDamage(client, 0, 1);
-				// 20 x 0.25 x 0.2
+				if(!resist)
+					SeaSlider_AddNeuralDamage(client, 0, 1);
+					// 20 x 0.25 x 0.2
 
 				NervousTouching[client] = NervousTouching[0];
 			}
@@ -471,11 +474,14 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NavArea nav = TheNavMesh.GetNavArea_Vec(pos, 25.0);
 			if(nav != NavArea_Null && NavList.FindValue(nav) != -1)
 			{
-				SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET);
+				bool resist = Building_NeatherseaReduced(entity);
+
+				SDKHooks_TakeDamage(entity, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
 				// 120 x 0.25 x 0.2
 
-				SeaSlider_AddNeuralDamage(entity, 0, 1);
-				// 20 x 0.25 x 0.2
+				if(!resist)
+					SeaSlider_AddNeuralDamage(entity, 0, 1);
+					// 20 x 0.25 x 0.2
 
 				NervousTouching[entity] = NervousTouching[0];
 			}

@@ -173,7 +173,7 @@ methodmap GenghisKhan < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, GenghisKhan_ClotDamaged);
 		
 		Citizen_MiniBossSpawn(npc.index);
-		
+		Building_RaidSpawned(npc.index);
 		return npc;
 	}
 }

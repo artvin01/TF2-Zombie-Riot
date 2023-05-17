@@ -239,6 +239,7 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		
 		Citizen_MiniBossSpawn(npc.index);
+		Building_RaidSpawned(npc.index);
 		npc.StartPathing();
 		return npc;
 	}
