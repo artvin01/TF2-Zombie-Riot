@@ -211,9 +211,9 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	{
 		if(!KazimierzMeleeAssasinRange(npc, 500.0))
 		{
+			float SelfPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 			SelfPos[2] += 20.0;
-			float SelfPos[3];
 			if(IsPointHazard(SelfPos))
 			{
 				npc.m_flSpeed = 250.0;
@@ -442,8 +442,8 @@ public bool KazimierzMeleeAssasinRange(int npc, float range)
 		int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
 		if(IsValidEntity(entity_close))
 		{
-			CClotBody npc = view_as<CClotBody>(entity_close);
-			if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+			CClotBody npcenemy = view_as<CClotBody>(entity_close);
+			if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 			{
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 				float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);

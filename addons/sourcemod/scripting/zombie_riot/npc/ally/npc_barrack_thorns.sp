@@ -8,7 +8,10 @@ methodmap BarrackThorns < BarrackBody
 		bool elite = Store_HasNamedItem(client, "Construction Master");
 
 		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, elite ? "1200" : "900"));
-		
+
+		SetVariantInt(8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		i_NpcInternalId[npc.index] = BARRACK_THORNS;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackThorns_ClotThink);
@@ -22,13 +25,9 @@ methodmap BarrackThorns < BarrackBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/soldier/sum20_breach_and_bomb/sum20_breach_and_bomb.mdl");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/player/items/demo/hwn_demo_hat.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/medic/hw2013_spacemans_suit/hw2013_spacemans_suit.mdl");
-		SetVariantString("0.9");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
 	}
@@ -54,7 +53,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				{
 					if(!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
+						npc.AddGesture("ACT_THORNS_ATTACK_1");
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
@@ -102,7 +101,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_IDLE", "ACT_CUSTOM_WALK_SWORD");
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_THORNS_STAND", "ACT_THORNS_WALK");
 	}
 }
 
