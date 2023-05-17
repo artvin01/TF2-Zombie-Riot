@@ -457,4 +457,5 @@ public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 			}
 		}
 	}
+	return false;
 }
