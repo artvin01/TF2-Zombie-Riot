@@ -230,7 +230,7 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 				npc.m_flExtraDamage = 250.0;
 				npc.m_flSpeed = 300.0;
 			}
-			int colour_red = (npc.m_flExtraDamage * 0.5);
+			int colour_red = RoundToFloor(npc.m_flExtraDamage * 0.5);
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				SetEntityRenderColor(npc.m_iWearable1, colour_red, 65, 65, 255);
@@ -417,7 +417,7 @@ public void KazimierzKnightAssasin_NPCDeath(int entity)
 }
 
 
-public bool KazimierzMeleeAssasinRange(int npc, float range)
+public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 {
 	float SelfPos[3];
 	float AllyPos[3];

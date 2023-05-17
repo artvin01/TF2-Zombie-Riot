@@ -5,7 +5,7 @@ methodmap BarrackThorns < BarrackBody
 {
 	public BarrackThorns(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		bool elite = Store_HasNamedItem(client, "Construction Master");
+		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
 
 		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, elite ? "1200" : "900"));
 
@@ -84,7 +84,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 						}
 						else
 						{
-							float vecTarget[3]; vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1600.0);
+							vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1600.0);
 							npc.FaceTowards(vecTarget, 30000.0);
 							
 							npc.PlayRangedSound();

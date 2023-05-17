@@ -219,7 +219,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int count)
 {
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-	float gameTime = GetGameTime();
+//	float gameTime = GetGameTime();
 	float vecTarget[3];
 	int found;
 	bool silenced = NpcStats_IsEnemySilenced(npc.index);
