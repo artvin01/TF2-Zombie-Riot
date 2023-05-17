@@ -196,10 +196,15 @@ public void SeaBrandguider_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEABRANDGUIDER_ALT ? 135.0 : 120.0, DMG_CLUB);
+						float attack = i_NpcInternalId[npc.index] == SEABRANDGUIDER_ALT ? 135.0 : 120.0;
 						// 800 x 0.15
 						// 900 x 0.15
+
+						if(ShouldNpcDealBonusDamage(target))
+							attack *= 2.5;
+						
+						npc.PlayMeleeHitSound();
+						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 					}
 				}
 

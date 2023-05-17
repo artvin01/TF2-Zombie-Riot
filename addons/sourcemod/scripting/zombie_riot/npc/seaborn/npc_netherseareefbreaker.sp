@@ -269,6 +269,9 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 						{
 							failed = false;
 
+							if(ShouldNpcDealBonusDamage(target))
+								attack *= 2.5;
+							
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 2.0, DMG_CLUB);
 							npc.PlayMeleeHitSound();
 

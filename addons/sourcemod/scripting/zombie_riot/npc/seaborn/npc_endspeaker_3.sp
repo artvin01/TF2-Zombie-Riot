@@ -125,7 +125,12 @@ public void EndSpeaker3_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 
 						if(target > 0)
+						{
+							if(ShouldNpcDealBonusDamage(target))
+								attack *= 4.0;
+							
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
+						}
 					}
 
 					delete swingTrace;

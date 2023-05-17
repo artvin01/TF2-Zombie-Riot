@@ -177,12 +177,17 @@ public void SeaFounder_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 90.0 : 67.5, DMG_CLUB);
+						float attack = i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 90.0 : 67.5;
 						// 450 x 0.15
 						// 600 x 0.15
+						
+						if(ShouldNpcDealBonusDamage(target))
+							attack *= 2.5;
 
-						SeaSlider_AddNeuralDamage(target, npc.index, i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER ? 14 : (i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 9 : 7));
+						npc.PlayMeleeHitSound();
+						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
+
+						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER ? 0.2 : 0.1)));
 						// 450 x 0.1 x 0.15
 						// 600 x 0.1 x 0.15
 						// 450 x 0.2 x 0.15
