@@ -4419,6 +4419,24 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		Village_Effects.PushArray(buff);
 		
 		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+
+		if(target <= MaxClients)
+		{
+			if(effects & VILLAGE_002)
+			{
+				if(Armor_Charge[target])
+				{
+					int maxarmor = MaxArmorCalculation(Armor_Level[target], target, 0.5);
+					if(Armor_Charge[target] < maxarmor)
+						Armor_Charge[target]++;
+				}
+			}
+			else if(effects & VILLAGE_001)
+			{
+				if(Armor_Charge[target] < 0)
+					Armor_Charge[target]++;
+			}
+		}
 	}
 	
 	length = weapons.Length;
@@ -4690,7 +4708,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	
 	if(Village_Flags[client] & VILLAGE_005)
 	{
-		menu.AddItem("", TranslateItemName(viewer, "Iberia Lighthouse"), ITEMDRAW_DISABLED);
+		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 		menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 	}

@@ -918,18 +918,12 @@ void Waves_Progress()
 		else
 		{
 			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
-			int extra = Building_GetCashOnWave(round.Cash);
 			CurrentCash += round.Cash;
 			if(round.Cash)
 			{
 				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
 			}
-			
-			if(extra)
-			{
-				CPrintToChatAll("{green}%t","Cash Gained This Wave Village", extra);
-			}
-			
+
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
@@ -941,12 +935,6 @@ void Waves_Progress()
 			{
 				if(IsClientInGame(client_Penalise))
 				{
-					if(extra)
-					{
-						CashSpent[client_Penalise] -= extra;
-						CashRecievedNonWave[client_Penalise] += extra;
-					}
-					
 					if(GetClientTeam(client_Penalise)!=2)
 					{
 						SetGlobalTransTarget(client_Penalise);

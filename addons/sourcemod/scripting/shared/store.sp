@@ -5300,10 +5300,6 @@ static void ItemCost(int client, Item item, int &cost)
 
 	}
 	
-	float discount = Building_GetDiscount();
-	if(discount != 1.0)
-		cost = RoundToNearest(float(cost) * discount);
-	
 	if((CurrentRound != 0 || CurrentWave != -1) && cost)
 	{
 		if(!CurrentPlayers)
