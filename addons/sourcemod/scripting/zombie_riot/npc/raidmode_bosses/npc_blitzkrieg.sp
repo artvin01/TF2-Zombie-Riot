@@ -413,6 +413,14 @@ methodmap Blitzkrieg < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+			
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
+		SetVariantColor(view_as<int>({145, 47, 47, 255}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_rocketlauncher.mdl");
 		SetVariantString("1.0");
@@ -500,9 +508,6 @@ methodmap Blitzkrieg < CClotBody
 		b_life3[npc.index]=false;	//tell's the npc if 3rd life is true.
 		
 		b_allies[npc.index]=false;
-		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		Citizen_MiniBossSpawn(npc.index);
 	
