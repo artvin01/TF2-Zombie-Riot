@@ -498,7 +498,6 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 
 			SortCustom2D(sort, sizeof(sort), SeaFounder_Sorting);
 
-			newLine = false;
 			list.Erase(d);
 
 			for(int i; i < 3; i += 2)
