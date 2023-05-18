@@ -9,7 +9,7 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
 
 		char health[12];
-		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 5 / 2, health, sizeof(health));
+		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 4, health, sizeof(health));
 
 		EndSpeaker4 npc = view_as<EndSpeaker4>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.15", health, ally, false, true));
 		
