@@ -329,7 +329,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	/*if(++SpreadTicks > 14)
+	if(++SpreadTicks > 14)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -365,7 +365,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		}
 
 		delete list;
-	}*/
+	}
 
 	float lines1[6], lines2[6];
 	//float line1[3], line2[3];
