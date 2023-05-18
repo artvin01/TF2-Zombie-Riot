@@ -357,7 +357,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					for(int c; c < count; c++)
 					{
 						NavArea nav2 = nav1.GetAdjacentArea(b, c);
-						if(nav2 != NavArea_Null)
+						if(nav2 != NavArea_Null && NavList.FindValue(nav2) == -1)
 							NavList.Push(nav2);
 					}
 				}
