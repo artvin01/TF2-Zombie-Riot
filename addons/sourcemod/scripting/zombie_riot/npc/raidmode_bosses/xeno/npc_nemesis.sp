@@ -280,12 +280,12 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		if(!NpcStats_IsEnemySilenced(npc.index))
 		{
-			npc.m_flMeleeArmor = 0.5;
+			npc.m_flMeleeArmor = 0.625;
 			npc.m_flRangedArmor = 0.5;
 		}
 		else
 		{
-			npc.m_flMeleeArmor = 0.75;
+			npc.m_flMeleeArmor = 0.9375;
 			npc.m_flRangedArmor = 0.75;
 		}
 		//silence doesnt completly delete it, but moreso, nerf it.

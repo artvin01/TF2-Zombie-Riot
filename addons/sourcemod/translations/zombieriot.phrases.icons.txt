@@ -16,6 +16,10 @@
 	{
 		"en" 		"Nemesis, the original Xeno infector arrived."
 	}
+	"Arkantos Arrived"
+	{
+		"en" 		"The Atlantean and great leader Arkantos arrived."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."

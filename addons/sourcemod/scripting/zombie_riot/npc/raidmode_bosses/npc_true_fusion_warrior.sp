@@ -64,8 +64,8 @@ static char gLaser1;
 static bool FusionWarrior_BEAM_CanUse[MAXENTITIES];
 static bool FusionWarrior_BEAM_IsUsing[MAXENTITIES];
 static int FusionWarrior_BEAM_TicksActive[MAXENTITIES];
-static int FusionWarrior_BEAM_Laser;
-static int FusionWarrior_BEAM_Glow;
+int FusionWarrior_BEAM_Laser;
+int FusionWarrior_BEAM_Glow;
 static float FusionWarrior_BEAM_CloseDPT[MAXENTITIES];
 static float FusionWarrior_BEAM_FarDPT[MAXENTITIES];
 static int FusionWarrior_BEAM_MaxDistance[MAXENTITIES];
@@ -468,17 +468,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		if(b_angered_twice[npc.index])
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;
+			npc.m_flMeleeArmor = 1.25;
 		}
 		else if(npc.Anger)
 		{
 			npc.m_flRangedArmor = 0.6;
-			npc.m_flMeleeArmor = 0.6;
+			npc.m_flMeleeArmor = 0.75;
 		}	
 		else
 		{
 			npc.m_flRangedArmor = 0.7;
-			npc.m_flMeleeArmor = 0.7;			
+			npc.m_flMeleeArmor = 0.875;			
 		}
 	}
 	else
@@ -486,17 +486,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		if(b_angered_twice[npc.index])
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;
+			npc.m_flMeleeArmor = 1.25;
 		}
 		else if(npc.Anger)
 		{
 			npc.m_flRangedArmor = 0.85;
-			npc.m_flMeleeArmor = 0.85;
+			npc.m_flMeleeArmor = 1.0625;
 		}	
 		else
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;			
+			npc.m_flMeleeArmor = 1.25;			
 		}	
 	}
 	

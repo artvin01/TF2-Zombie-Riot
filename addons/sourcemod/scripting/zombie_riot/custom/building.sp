@@ -4488,7 +4488,7 @@ void Building_RaidSpawned(int entity)
 
 bool Building_NeatherseaReduced(int entity)
 {
-	return (GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
+	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
 }
 
 void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)

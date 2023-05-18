@@ -1245,6 +1245,10 @@ methodmap CClotBody
 		{
 			speed_for_return *= 1.20;
 		}
+		if(f_GodArkantosBuff[this.index] > Gametime)
+		{
+			speed_for_return *= 1.50;
+		}
 		if(b_NpcResizedForCrouch[this.index])
 		{
 			speed_for_return *= 0.33333;
@@ -5056,7 +5060,7 @@ public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
 				return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -7208,8 +7212,14 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					
+				
+				if(!b_NpcHasDied[entity])
+				{
+					if(!PF_IsPathToEntityPossible(entity, i, _))
+					{
+						continue;
+					}
+				}
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 				if( distance < limitsquared )
 				{

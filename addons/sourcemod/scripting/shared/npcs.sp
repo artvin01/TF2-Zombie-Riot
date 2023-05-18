@@ -1397,6 +1397,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		//		damage *= 1.10;
 				damage += BaseDamageBeforeBuffs * 0.1;
 			}
+			if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+			{
+				damage += BaseDamageBeforeBuffs * 0.5; //50% more damage!
+			}
 		}
 		if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 		{
@@ -1475,6 +1479,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			if(f_HussarBuff[victim] > GameTime) //hussar!
 			{
 				damage *= 0.90;
+			}
+			if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+			{
+				damage *= 0.75;
 			}
 		}
 		if(f_BattilonsNpcBuff[victim] > GameTime)
@@ -2173,6 +2181,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "ᐩ%s", Debuff_Adder);
 	}
+	if(f_GodArkantosBuff[victim] > GameTime)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "ß%s", Debuff_Adder);
+	}
 	if(f_Ocean_Buff_Stronk_Buff[victim] > GameTime) //hussar!
 	{
 		if(Debuff_added_hud)
@@ -2458,6 +2476,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	else if(f_EmpowerStateOther[npc] > GameTime)
 		return true;
 	else if(f_HussarBuff[npc] > GameTime)
+		return true;
+	else if(f_GodArkantosBuff[npc] > GameTime)
 		return true;
 	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
 		return true;

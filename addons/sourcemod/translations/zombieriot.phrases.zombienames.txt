@@ -1393,4 +1393,8 @@
 		"en"		"Thorns"
 		"chi"		"棘刺"
 	}
+	"God Arkantos"
+	{
+		"en"		"God Arkantos"
+	}
 }

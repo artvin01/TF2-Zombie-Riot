@@ -902,6 +902,10 @@ void Waves_Progress()
 				{
 					multi -= 0.2544; //So if its 2 players, it defaults to 1.0 or less if alone.
 				}
+				else //do not save if its not a boss.
+				{
+					MultiGlobalHealth = multi;
+				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi);
 				wave.EnemyData.Health = Tempomary_Health;

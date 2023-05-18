@@ -298,6 +298,27 @@ void SeaFounder_SpawnNethersea(const float pos[3])
 	}
 }
 
+static bool Similar(float val1, float val2)
+{
+	return fabs(val1 - val2) < 2.0;
+}
+
+static bool SimilarMore(float val1, float val2)
+{
+	return (val1 > val2) && !Similar(val1, val2);
+}
+
+static bool SimilarLess(float val1, float val2)
+{
+	return (val1 < val2) && !Similar(val1, val2);
+}
+
+static bool Overlapping(const float[] pos1, const float[] pos2, int index1, int index2)
+{
+	return !((SimilarMore(pos1[index1], pos2[index1]) && SimilarMore(pos1[index2], pos2[index2]) && SimilarMore(pos1[index1], pos2[index2]) && SimilarMore(pos1[index2], pos2[index1])) ||
+			(SimilarLess(pos1[index1], pos2[index1]) && SimilarLess(pos1[index2], pos2[index2]) && SimilarLess(pos1[index1], pos2[index2]) && SimilarLess(pos1[index2], pos2[index1])));
+}
+
 public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 {
 	if(!NavList || (Waves_InSetup() && !CvarNoRoundStart.BoolValue))
@@ -308,7 +329,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > 14)
+	/*if(++SpreadTicks > 14)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -344,12 +365,12 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		}
 
 		delete list;
-	}
+	}*/
 
-	float lines1[7], lines2[7];
+	float lines1[6], lines2[6];
 	//float line1[3], line2[3];
 
-	ArrayList list = new ArrayList(7);
+	ArrayList list = new ArrayList(sizeof(lines1));
 
 	int length1 = NavList.Length;
 	float corner[NUM_CORNERS][3];
@@ -396,8 +417,8 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 			{
 				list.GetArray(d, lines2);
 
-				if(lines1[0] == lines1[3] && lines1[0] == lines2[0] && lines1[3] == lines2[3] &&	// Same x-axis
-				 !((lines1[1] > lines2[1] && lines1[4] > lines2[4]) || (lines1[1] < lines2[1] && lines1[4] < lines2[4])))	// Overlapping y-axis
+				if(Similar(lines1[0], lines1[3]) && Similar(lines1[0], lines2[0]) && Similar(lines1[3], lines2[3]) &&	// Same x-axis
+					Overlapping(lines1, lines2, 1, 4))	// Overlapping y-axis
 				{
 					sort[0][0] = lines1[1];
 					sort[0][1] = lines1[2];
@@ -415,13 +436,13 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					bool overriden;
 					for(int i; i < 3; i += 2)	// Compare 1st and 2nd, 3rd and 4th
 					{
-						if(fabs(sort[i][0] - sort[i + 1][0]) > 3.0)
+						if(!Similar(sort[i][0], sort[i + 1][0]))
 						{
 							lines2[1] = sort[i][0];
 							lines2[2] = sort[i][1];
 							lines2[4] = sort[i + 1][0];
 							lines2[5] = sort[i + 1][1];
-							lines2[6] = 0.0;
+							//lines2[6] = 0.0;
 
 							if(overriden)
 							{
@@ -437,15 +458,16 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 
 					if(!overriden)
 					{
-						lines2[6] = 1.0;	// Don't use line
-						list.SetArray(d, lines2);
+						//lines2[6] = 1.0;	// Don't use line
+						//list.SetArray(d, lines2);
+						list.Erase(d);
 					}
 					
 					break;
 				}
 
-				if(lines1[1] == lines1[4] && lines1[1] == lines2[1] && lines1[4] == lines2[4] &&	// Same y-axis
-				 !((lines1[0] > lines2[0] && lines1[3] > lines2[3]) || (lines1[0] < lines2[0] && lines1[3] < lines2[3])))	// Overlapping x-axis
+				if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
+					Overlapping(lines1, lines2, 0, 3))	// Overlapping x-axis
 				{
 					sort[0][0] = lines1[0];
 					sort[0][1] = lines1[2];
@@ -463,13 +485,13 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					bool overriden;
 					for(int i; i < 3; i += 2)
 					{
-						if(fabs(sort[i][0] - sort[i + 1][0]) > 3.0)
+						if(!Similar(sort[i][0], sort[i + 1][0]))
 						{
 							lines2[0] = sort[i][0];
 							lines2[2] = sort[i][1];
 							lines2[3] = sort[i + 1][0];
 							lines2[5] = sort[i + 1][1];
-							lines2[6] = 0.0;
+							//lines2[6] = 0.0;
 
 							if(overriden)
 							{
@@ -485,8 +507,9 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 
 					if(!overriden)
 					{
-						lines2[6] = 1.0;	// Don't use line
-						list.SetArray(d, lines2);
+						//lines2[6] = 1.0;	// Don't use line
+						//list.SetArray(d, lines2);
+						list.Erase(d);
 					}
 					break;
 				}
@@ -504,7 +527,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 	{
 		list.GetArray(a, lines1);
 
-		if(!lines1[6])
+		//if(!lines1[6])
 		{
 			/*line1[0] = lines1[0];
 			line1[1] = lines1[1];
@@ -530,7 +553,16 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 
 public int SeaFounder_Sorting(int[] elem1, int[] elem2, const int[][] array, Handle hndl)
 {
-	return elem1[0] > elem2[0] ? -1 : 1;
+	float value1 = view_as<float>(elem1[0]);
+	float value2 = view_as<float>(elem2[0]);
+
+	if(value1 > value2)
+		return -1;
+	
+	if(value1 < value2)
+		return 1;
+	
+	return 0;
 }
 
 public void SeaFounder_RenderFrame(DataPack pack)
