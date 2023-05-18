@@ -248,6 +248,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
 		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0);
 		npc.m_flPiggyFor = 0.0;
+		npc.m_flMeleeArmor = 1.25;
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;

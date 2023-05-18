@@ -218,6 +218,7 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
+int i_PlayerDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 
@@ -231,6 +232,7 @@ int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 float MultiGlobal = 0.25;
+float MultiGlobalHealth = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
@@ -571,6 +573,7 @@ void ZR_ClientPutInServer(int client)
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
+	i_PlayerDamaged[client] = 0;
 	i_KillsMade[client] = 0;
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
@@ -1328,6 +1331,8 @@ stock void UpdatePlayerPoints(int client)
 	Points += Resupplies_Supplied[client] * 2;
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
+
+	Points += i_PlayerDamaged[client] / 20;
 	
 	Points += i_ExtraPlayerPoints[client] / 2;
 	

@@ -342,7 +342,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				else if(i_currentwave[iNPC] >= 60)
 				{
 					EnemyToSpawn = MEDIVAL_CONSTRUCT;
-					IncreaceSpawnRates *= 0.65; //Swarm.
+					IncreaceSpawnRates *= 0.15; //Swarm.
 				}
 
 				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);

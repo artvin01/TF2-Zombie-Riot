@@ -276,7 +276,8 @@ enum
 	SEAREEFBREAKER	= 239,
 	SEAREEFBREAKER_ALT,
 	SEAREEFBREAKER_CARRIER,
-	BARRACK_THORNS	= 242
+	BARRACK_THORNS	= 242,
+	RAIDMODE_GOD_ARKANTOS = 243
 }
 
 public const char NPC_Names[][] =
@@ -544,7 +545,8 @@ public const char NPC_Names[][] =
 	"Nethersea Reefbreaker",
 	"Nourished Reefbreaker",
 	"Regressed Reefbreaker",
-	"Thorns"
+	"Thorns",
+	"God Arkantos"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -807,7 +809,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_netherseareefbreaker",
 	"",
 	"",
-	""
+	"",
+	"npc_god_arkantos"
 };
 
 void NPC_MapStart()
@@ -1014,6 +1017,7 @@ void NPC_MapStart()
 	RaidbossSilvester_OnMapStart();
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
+	GodArkantos_OnMapStart();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -1708,6 +1712,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case BARRACK_THORNS:
 			entity = BarrackThorns(client, vecPos, vecAng, ally);
+		
+		case RAIDMODE_GOD_ARKANTOS:
+			entity = GodArkantos(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2401,6 +2408,9 @@ public void NPCDeath(int entity)
 		case BARRACK_THORNS:
 			BarrackThorns_NPCDeath(entity);
 
+		case RAIDMODE_GOD_ARKANTOS:
+			GodArkantos_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -2587,6 +2597,7 @@ public void NPCDeath(int entity)
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_god_arkantos.sp"
 
 //Alt
 

@@ -542,7 +542,6 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		}
 		f_TargetToWalkToDelay[npc.index] = GetGameTime(npc.index) + 1.0;
 	}
-	
 	if(npc.m_iInKame == 2)
 	{
 		if(i_TargetToWalkTo[npc.index] != -1)
@@ -578,12 +577,12 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		if(npc.Anger)
 		{
 			npc.m_flRangedArmor = 0.3;
-			npc.m_flMeleeArmor = 0.3;
+			npc.m_flMeleeArmor = 0.375;
 		}	
 		else
 		{
 			npc.m_flRangedArmor = 0.7;
-			npc.m_flMeleeArmor = 0.7;			
+			npc.m_flMeleeArmor = 0.875;			
 		}
 	}
 	else
@@ -591,12 +590,12 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		if(npc.Anger)
 		{
 			npc.m_flRangedArmor = 0.45;
-			npc.m_flMeleeArmor = 0.45;
+			npc.m_flMeleeArmor = 0.5625;
 		}	
 		else
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;			
+			npc.m_flMeleeArmor = 1.25;			
 		}	
 	}
 	if(npc.m_flReloadDelay && npc.m_flDoingAnimation < GetGameTime(npc.index))

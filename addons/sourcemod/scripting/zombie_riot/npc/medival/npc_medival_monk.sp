@@ -626,7 +626,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 		{
 			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS)
 			{
 				static float pos2[3];
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
@@ -646,7 +646,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 			{
 				int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS)
 				{
 					static float pos2[3];
 					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
