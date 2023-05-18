@@ -4424,12 +4424,9 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		{
 			if(effects & VILLAGE_002)
 			{
-				if(Armor_Charge[target])
-				{
-					int maxarmor = MaxArmorCalculation(Armor_Level[target], target, 0.5);
-					if(Armor_Charge[target] < maxarmor)
-						Armor_Charge[target]++;
-				}
+				int maxarmor = MaxArmorCalculation(Armor_Level[target], target, 0.5);
+				if(Armor_Charge[target] < maxarmor)
+					Armor_Charge[target]++;
 			}
 			else if(effects & VILLAGE_001)
 			{
@@ -4773,8 +4770,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "Armor Aid [$2000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 2000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Gain a point of armor every half second.\n ", ITEMDRAW_DISABLED);
-		menu.AddItem("", "to all players with armor in range.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Gain a point of armor every half.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
