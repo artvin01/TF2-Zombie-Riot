@@ -240,7 +240,7 @@ public Action SeaPredator_TakeDamage(int victim, int &attacker, int &inflictor, 
 	float gameTime = GetGameTime(npc.index);
 
 	static int Pity;
-	if(Pity < 30 && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 10 : 5)))
+	if(Pity < 30 && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 5 : 3)))
 	{
 		if(attacker <= MaxClients && attacker > 0)
 		{
