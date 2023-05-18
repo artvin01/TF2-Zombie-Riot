@@ -410,7 +410,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 				lines1[5] = corner[b][2];
 			}
 
-			AddLineToListTest(list, lines1);
+			AddLineToListTest(0, list, lines1);
 		}
 	}
 
@@ -443,13 +443,13 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-static void AddLineToListTest(ArrayList list, const float lines1[6])
+static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 {
 	float sort[4][2], lines2[6];
 
 	bool newLine = true;
 	int length2 = list.Length;
-	for(int d; d < length2; d++)	// Find dupe lines from touching tiles
+	for(int d = start; d < length2; d++)	// Find dupe lines from touching tiles
 	{
 		list.GetArray(d, lines2);
 
@@ -468,7 +468,7 @@ static void AddLineToListTest(ArrayList list, const float lines1[6])
 			SortCustom2D(sort, sizeof(sort), SeaFounder_Sorting);
 
 			newLine = false;
-			list.Erase(d--);
+			list.Erase(d);
 			length2--;
 
 			for(int e; e < 3; e += 2)	// Compare 1st and 2nd, 3rd and 4th
@@ -480,9 +480,11 @@ static void AddLineToListTest(ArrayList list, const float lines1[6])
 					lines2[4] = sort[e + 1][0];
 					lines2[5] = sort[e + 1][1];
 
-					AddLineToListTest(list, lines2);
+					AddLineToListTest(d, list, lines2);
 				}
 			}
+			
+			d--;
 		}
 		else if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
 			Overlapping(lines1, lines2, 0, 3))	// Overlapping x-axis
@@ -511,9 +513,11 @@ static void AddLineToListTest(ArrayList list, const float lines1[6])
 					lines2[3] = sort[i + 1][0];
 					lines2[5] = sort[i + 1][1];
 
-					AddLineToListTest(list, lines2);
+					AddLineToListTest(d, list, lines2);
 				}
 			}
+
+			d--;
 		}
 	}
 
