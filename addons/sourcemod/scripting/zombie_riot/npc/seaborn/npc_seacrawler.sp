@@ -60,6 +60,9 @@ methodmap SeaCrawler < CClotBody
 		// 25000 x 0.15
 		// 35000 x 0.15
 
+		SetVariantInt(data[0] ? 31 : 7);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		i_NpcInternalId[npc.index] = data[0] ? SEACRAWLER_ALT : SEACRAWLER;
 		npc.SetActivity("ACT_WALK");
 		
@@ -76,8 +79,6 @@ methodmap SeaCrawler < CClotBody
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
-		
-		npc.StartPathing();
 		return npc;
 	}
 }
@@ -85,9 +86,6 @@ methodmap SeaCrawler < CClotBody
 public void SeaCrawler_ClotThink(int iNPC)
 {
 	SeaCrawler npc = view_as<SeaCrawler>(iNPC);
-
-	SetVariantInt(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 31 : 7);
-	AcceptEntityInput(npc.index, "SetBodyGroup");
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -111,7 +109,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 
 			float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 800.0);
-			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, 0, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
+			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEACRAWLER_ALT ? 60.0 : 45.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, 1.0, SeaCrawler_ExplodePost);
 			// 300 x 0.15
 			// 400 x 0.15
 		}
@@ -158,6 +156,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 
 public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
+	ParticleEffectAt(WorldSpaceCenter(victim), "water_bulletsplash01", 3.0);
 	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
 }
 

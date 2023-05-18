@@ -67,7 +67,7 @@ methodmap SeaRunner < CClotBody
 	
 	public SeaRunner(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", data[0] ? "600" : "450", ally, false));
+		SeaRunner npc = view_as<SeaRunner>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", data[0] ? "450" : "350", ally, false));
 		// 3000 x 0.15
 		// 4000 x 0.15
 
@@ -81,14 +81,13 @@ methodmap SeaRunner < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaRunner_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 		
-		npc.m_flSpeed = 475.0;	// 1.9 x 250
+		npc.m_flSpeed = 330.0;	// 1.9 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
-		
-		npc.StartPathing();
 		return npc;
 	}
 }
@@ -160,7 +159,7 @@ public void SeaRunner_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEARUNNER_ALT ? 51.0 : 42.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEARUNNER_ALT ? 41.0 : 32.0, DMG_CLUB);
 						// 280 x 0.15
 						// 340 x 0.15
 					}

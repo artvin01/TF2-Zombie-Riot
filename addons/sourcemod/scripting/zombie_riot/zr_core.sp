@@ -1553,7 +1553,7 @@ void ReviveAll(bool raidspawned = false)
 		if(i_NpcInternalId[entity] == CITIZEN)
 		{
 			Citizen npc = view_as<Citizen>(entity);
-			if(npc.m_bDowned && npc.m_iWearable3 > 0)
+			if(npc.m_nDowned && npc.m_iWearable3 > 0)
 			{
 				npc.SetDowned(false);
 				if(!Waves_InSetup())

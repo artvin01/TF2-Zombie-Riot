@@ -127,6 +127,7 @@ static int BarrackOwner[MAXENTITIES];
 static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
+static int SupplyCount[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -221,6 +222,17 @@ methodmap BarrackBody < CClotBody
 			CommandOverride[view_as<int>(this)] = value;
 		}
 	}
+	property int m_iSupplyCount
+	{
+		public get()
+		{
+			return SupplyCount[view_as<int>(this)];
+		}
+		public set(int value)
+		{
+			SupplyCount[view_as<int>(this)] = value;
+		}
+	}
 	property int m_iTargetRally
 	{
 		public get()
@@ -243,7 +255,8 @@ methodmap BarrackBody < CClotBody
 	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health)
 	{
 		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.575", health, true, .Ally_Collideeachother = true));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		BarrackOwner[npc.index] = client ? GetClientUserId(client) : 0;

@@ -399,6 +399,7 @@ float f_CrippleDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int g_particleCritText;
+int g_particleMissText;
 int LastHitId[MAXENTITIES];
 int DamageBits[MAXENTITIES];
 float Damage[MAXENTITIES];
@@ -408,6 +409,7 @@ int IgniteFor[MAXENTITIES];
 int IgniteId[MAXENTITIES];
 int IgniteRef[MAXENTITIES];
 float BurnDamage[MAXENTITIES];
+int i_NervousImpairmentArrowAmount[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
@@ -727,7 +729,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_191.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_206.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
@@ -2231,6 +2233,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
 		Resistance_for_building_High[entity] = 0.0;
+		i_NervousImpairmentArrowAmount[entity] = 0;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);

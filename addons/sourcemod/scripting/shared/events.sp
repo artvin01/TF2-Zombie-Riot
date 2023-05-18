@@ -248,6 +248,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
+		//	SetEntProp(client, Prop_Send, "m_nBody", 1);
+			SetVariantInt(1);
+			AcceptEntityInput(client, "SetBodyGroup");
+			//apply model correctly.
+
 
 	   		ViewChange_Switch(client, weapon_index);
 

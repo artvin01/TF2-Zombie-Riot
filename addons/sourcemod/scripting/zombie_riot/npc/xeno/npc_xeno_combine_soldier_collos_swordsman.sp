@@ -174,7 +174,8 @@ methodmap XenoCombineCollos < CClotBody
 	public XenoCombineCollos(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoCombineCollos npc = view_as<XenoCombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_COLLOSS;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

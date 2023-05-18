@@ -540,8 +540,6 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 	}
 }
 
-int Terroriser_Bomb_Implant_Particle[MAXENTITIES+1] = {-1, ...};
-
 public void Apply_Particle_Teroriser_Indicator(int entity)
 {
 	b_HasBombImplanted[entity] = true;	

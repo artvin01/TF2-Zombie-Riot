@@ -162,7 +162,8 @@ methodmap XenoCombineDDT < CClotBody
 	public XenoCombineDDT(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoCombineDDT npc = view_as<XenoCombineDDT>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1250", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_DDT;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -86,6 +86,12 @@ methodmap SeaReaper < CClotBody
 		// 20000 x 0.15
 		// 25000 x 0.15
 
+		if(data[0])
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(npc.index, "SetBodyGroup");
+		}
+
 		i_NpcInternalId[npc.index] = data[0] ? SEAREAPER_ALT : SEAREAPER;
 		npc.SetActivity("ACT_WALK");
 		
@@ -99,12 +105,11 @@ methodmap SeaReaper < CClotBody
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
-		
-		npc.StartPathing();
 		return npc;
 	}
 }
@@ -112,15 +117,9 @@ methodmap SeaReaper < CClotBody
 public void SeaReaper_ClotThink(int iNPC)
 {
 	SeaReaper npc = view_as<SeaReaper>(iNPC);
-
-	if(i_NpcInternalId[npc.index] == SEAREAPER_ALT)
-	{
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-	}
 	
 	if(npc.Anger)
-		SDKHooks_TakeDamage(npc.index, 0, 0, 2.0, DMG_DROWN);
+		SDKHooks_TakeDamage(npc.index, 0, 0, float(GetURandomInt() % 2) + 2.0, DMG_DROWN);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -170,7 +169,7 @@ public void SeaReaper_ClotThink(int iNPC)
 		if(npc.Anger)
 		{
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 1000.0);
-			Explode_Logic_Custom(0.0, 0, npc.index, -1, vecMe, 400.0, _, _, true, _, false, _, SeaRepear_ExplodePost);
+			Explode_Logic_Custom(0.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, _, SeaRepear_ExplodePost);
 		}
 	}
 	
@@ -252,6 +251,7 @@ public void SeaReaper_ClotThink(int iNPC)
 
 public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
+	ParticleEffectAt(WorldSpaceCenter(victim), "water_bulletsplash01", 1.5);
 	SeaSlider_AddNeuralDamage(victim, attacker, i_NpcInternalId[attacker] == SEAREAPER_ALT ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15

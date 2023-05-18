@@ -4308,7 +4308,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		{
 			range += 125.0;
 		}
-		else if(effects & VILLAGE_004)
+		else if(effects & VILLAGE_005)
 		{
 			range += 150.0;
 		}
@@ -4419,6 +4419,24 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		Village_Effects.PushArray(buff);
 		
 		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
+
+		if(target <= MaxClients)
+		{
+			if(effects & VILLAGE_002)
+			{
+				if(Armor_Charge[target])
+				{
+					int maxarmor = MaxArmorCalculation(Armor_Level[target], target, 0.5);
+					if(Armor_Charge[target] < maxarmor)
+						Armor_Charge[target]++;
+				}
+			}
+			else if(effects & VILLAGE_001)
+			{
+				if(Armor_Charge[target] < 0)
+					Armor_Charge[target]++;
+			}
+		}
 	}
 	
 	length = weapons.Length;
@@ -4453,29 +4471,24 @@ void Building_ClearRefBuffs(int ref)
 	}
 }
 
-float Building_GetDiscount()
+void Building_RaidSpawned(int entity)
 {
-	int extra;
-	bool found;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
 		{
-			if(Village_Flags[client] & VILLAGE_001)
-				found = true;
-			
-			if(Village_Flags[client] & VILLAGE_002)
-				extra++;
+			if(Village_Flags[client] & VILLAGE_004)
+			{
+				f_CrippleDebuff[entity] = FAR_FUTURE;
+				break;
+			}
 		}
 	}
-	
-	if(!found)
-		return 1.0;
-	
-	if(extra > 3)
-		extra = 3;
-	
-	return 0.98 - (extra * 0.01);
+}
+
+bool Building_NeatherseaReduced(int entity)
+{
+	return (GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
 }
 
 void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
@@ -4486,90 +4499,14 @@ void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
 		{
 			if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
 			{
-				if(camo && (Village_Flags[client] & VILLAGE_010) && (GetURandomInt() % 2))
+				if(camo && (Village_Flags[client] & VILLAGE_020) && !(GetURandomInt() % 5))
 					camo = false;
 				
-				if(regrow && (Village_Flags[client] & VILLAGE_020) && !(GetURandomInt() % 5))
+				if(regrow && (Village_Flags[client] & VILLAGE_010) && !(GetURandomInt() % 5))
 					regrow = false;
 			}
 		}
 	}
-}
-/*
-float Building_GetCashOnKillMulti(int client)
-{
-	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
-		return 1.15;
-	
-	return 1.0;
-}
-*/
-stock int Building_GetCashOnWave(int current)
-{
-	/*
-	int popCash;
-	int extras;
-	int farms;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
-		{
-			if(Village_Flags[client] & VILLAGE_003)
-			{
-				i_ExtraPlayerPoints[client] += 50;
-				popCash++;
-			}
-			
-			if(Village_Flags[client] & VILLAGE_300 || Village_Flags[client] & VILLAGE_400 || Village_Flags[client] & VILLAGE_500)//VILLAGE_004)
-			{
-				i_ExtraPlayerPoints[client] += 10;
-				extras++;
-			}
-			
-			if(Village_Flags[client] & VILLAGE_005)
-			{
-				i_ExtraPlayerPoints[client] += 200; //Alot of free points.
-				farms++;
-			}
-		}
-	}
-	
-	if(extras)
-	{
-		if(RebelTimerSpawnIn >= 3)
-		{
-			RebelTimerSpawnIn = 0;
-			int count;
-			
-			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_boss")) != -1)
-			{
-				if(i_NpcInternalId[i] == CITIZEN)
-					count++;
-			}
-			
-			for(i = 0; i < extras && count < MAX_REBELS_ALLOWED; i++) //Do not allow more then this many npcs
-			{
-				Citizen_SpawnAtPoint();
-				count++;
-			}
-		}
-		else
-		{
-			RebelTimerSpawnIn += 1;
-		}
-	}
-	
-	if(popCash > 3)
-		popCash = 3;
-	
-	int red = CountPlayersOnRed();
-	if(!red)
-		red = 1;
-	
-	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / red);
-	*/
-	return 0;
 }
 
 static void VillageCheckItems(int client)
@@ -4783,72 +4720,70 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$250]", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [$250]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || cash < 250) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
 	}
-	/*
+	
 	if(Village_Flags[client] & VILLAGE_005)
 	{
-		menu.AddItem("", TranslateItemName(viewer, "Monkeyopolis"), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Provides extra $2400 for each passive", ITEMDRAW_DISABLED);
-		menu.AddItem("", "round that's split among other players.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_004)
 	{
 		if(Village_TierExists[1] == 5)
 		{
-			menu.AddItem("", TranslateItemName(viewer, "Monkey City"), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Increases influence radius, cash generation from other Monkeyopolis,", ITEMDRAW_DISABLED);
-			menu.AddItem("", "and spawns a Rebel every 10 round up to 6 Rebels at once.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Iberia Anti-Raid", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Causes Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$12000]", TranslateItemName(viewer, "Monkeyopolis"));
-			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || cash < 12000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Provides extra $2400 for each passive", ITEMDRAW_DISABLED);
-			menu.AddItem("", "round that's split among other players.\n ", ITEMDRAW_DISABLED);
+			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [$30000]");
+			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || cash < 30000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
+			menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$3000]", TranslateItemName(viewer, "Monkey City"));
-		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || cash < 3000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Increases influence radius, cash generation from other Monkeyopolis,", ITEMDRAW_DISABLED);
-		menu.AddItem("", "and spawns a Rebel every 10 round up to 6 Rebels at once.\n ", ITEMDRAW_DISABLED);
+		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [$30000]");
+		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || cash < 30000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Spawned in Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)
 	{
 		if(tier)
 		{
-			menu.AddItem("", TranslateItemName(viewer, "Monkey Commerce"), ITEMDRAW_DISABLED);
-			menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
-			menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Armor Aid", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Gain a point of armor every half second.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "to all players with armor in range.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$9000]%s", TranslateItemName(viewer, "Monkey Town"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
+			FormatEx(buffer, sizeof(buffer), "Little Handy [$9000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || cash < 9000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "All players within the radius of the Monkey Town get extra cash per", ITEMDRAW_DISABLED);
-			menu.AddItem("", "kill and a stackable (up to 3) increase in cash gained on wave end.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Reduces the damage caused by nethersea brands", ITEMDRAW_DISABLED);
+			menu.AddItem("", "by 80% to all allies with in range.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_001)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(viewer, "Monkey Commerce"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
-		menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
+		FormatEx(buffer, sizeof(buffer), "Armor Aid [$2000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 2000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Gain a point of armor every half second.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "to all players with armor in range.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(viewer, "Monkey Business"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "Wandering Aid [$1000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a global 2% discount", ITEMDRAW_DISABLED);
-		menu.AddItem("", "on items in the main store.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Heals a point of armor erosion every.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
-	*/
+	
 	menu.Pagination = 0;
 	menu.ExitButton = true;
 	menu.Display(viewer, MENU_TIME_FOREVER);
@@ -4980,15 +4915,15 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_005:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 5);
-					CashSpent[client] += 12000;
-					CashSpentTotal[client] += 12000;
+					CashSpent[client] += 30000;
+					CashSpentTotal[client] += 30000;
 					Village_TierExists[2] = 5;
 				}
 				case VILLAGE_004:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 4);
-					CashSpent[client] += 3000;
-					CashSpentTotal[client] += 3000;
+					CashSpent[client] += 30000;
+					CashSpentTotal[client] += 30000;
 					Village_TierExists[2] = 4;
 				}
 				case VILLAGE_003:
@@ -5001,8 +4936,8 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_002:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 2);
-					CashSpent[client] += 1000;
-					CashSpentTotal[client] += 1000;
+					CashSpent[client] += 2000;
+					CashSpentTotal[client] += 2000;
 					Village_TierExists[2] = 2;
 				}
 				case VILLAGE_001:
@@ -5108,6 +5043,20 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							if(attrib != Address_Null)
 								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.25);
 						}
+						case VILLAGE_005:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.75);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.75);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.5);
+						}
 					}
 				}
 			}
@@ -5162,6 +5111,20 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
 							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.25);
+					}
+					case VILLAGE_005:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.75);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.75);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.5);
 					}
 				}
 			}
@@ -5232,6 +5195,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							npc.m_fGunFirerate *= 0.875;
 							npc.m_fGunReload *= 0.875;
 						}
+						case VILLAGE_005:
+						{
+							npc.m_fGunFirerate *= 0.75;
+							npc.m_fGunReload *= 0.75;
+						}
 					}
 				}
 			}
@@ -5283,6 +5251,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						npc.m_fGunFirerate /= 0.875;
 						npc.m_fGunReload /= 0.875;
 					}
+					case VILLAGE_005:
+					{
+						npc.m_fGunFirerate /= 0.75;
+						npc.m_fGunReload /= 0.75;
+					}
 				}
 			}
 		}
@@ -5320,6 +5293,10 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							{
 								npc.BonusFireRate *= 0.875;
 							}
+							case VILLAGE_005:
+							{
+								npc.BonusFireRate *= 0.75;
+							}
 						}
 					}
 				}
@@ -5342,6 +5319,10 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						case VILLAGE_050:
 						{
 							npc.BonusFireRate /= 0.875;
+						}
+						case VILLAGE_005:
+						{
+							npc.BonusFireRate /= 0.75;
 						}
 					}
 				}
@@ -5982,6 +5963,7 @@ static int CommandMode[MAXTF2PLAYERS];
 static bool FinalBuilder[MAXTF2PLAYERS];
 static bool MedievalUnlock[MAXTF2PLAYERS];
 static bool GlassBuilder[MAXTF2PLAYERS];
+static int CivType[MAXTF2PLAYERS];
 
 enum
 {
@@ -5990,7 +5972,15 @@ enum
 	FoodCost,
 	GoldCost,
 	TrainTime,
-	TrainLevel
+	TrainLevel,
+	SupplyCost
+}
+
+enum
+{
+	Default = 0,
+	Thorns = 1,
+	Civ_number_2
 }
 
 static const char CommandName[][] =
@@ -6009,27 +5999,78 @@ static const char CommandName[][] =
 	Cosmic Repair Handling book - 20.5/s
 */
 
-static const int SummonerData[][] =
+static const int SummonerBase[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
+
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
+
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
+
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
+
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
+
+
+	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1 },	// Construction Expert
+	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16, 1 }	// Construction Master
+};
+
+static const int SummonerThorns[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },		// None
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2 },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4 },	// Construction Apprentice
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4 },		// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7 },		// Construction Worker
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7 },		// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11 },	// Construction Expert
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11 },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
 
 
-	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16 }		// Construction Master
+	{ BARRACK_THORNS, 0, 400, 35, 15, 11, 3 }	// Construction Expert
 };
+
+static const char CivName[][] =
+{
+	"Standard Barracks",
+	"Iberia Barracks"
+};
+
+static int GetUnitCount(int civ)
+{
+	switch(civ)
+	{
+		case Thorns:
+			return sizeof(SummonerThorns);
+		
+		default:
+			return sizeof(SummonerBase);
+	}
+}
+
+static int GetData(int civ, int unit, int index)
+{
+	switch(civ)
+	{
+		case Thorns:
+			return SummonerThorns[unit][index];
+		
+		default:
+			return SummonerBase[unit][index];
+	}
+}
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
 {
@@ -6065,6 +6106,7 @@ public bool Building_Summoner(int client, int entity)
 	TrainingIn[client] = 0.0;
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
+	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
 	
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = true;
@@ -6207,7 +6249,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 		if(TrainingIn[owner])
 		{
-			if(!AtMaxSupply(owner))
+			if(!AtMaxSupply(owner) && GetSupplyLeft(owner) >= GetData(CivType[owner], TrainingIndex[owner], SupplyCost))
 			{
 				float gameTime = GetGameTime();
 				if(TrainingIn[owner] < gameTime)
@@ -6243,9 +6285,10 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						int npc = Npc_Create(GetData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
+						view_as<BarrackBody>(npc).m_iSupplyCount = GetData(CivType[owner], TrainingIndex[owner], SupplyCost);
 
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
@@ -6286,7 +6329,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						{
 							TrainingIndex[owner] = TrainingQueue[owner];
 							TrainingStartedIn[owner] = GetGameTime();
-							TrainingIn[owner] = TrainingStartedIn[owner] + float(SummonerData[TrainingQueue[owner]][TrainTime]);
+							TrainingIn[owner] = TrainingStartedIn[owner] + float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
 							TrainingQueue[owner] = -1;
 						}
 					}
@@ -6339,7 +6382,7 @@ static void CheckSummonerUpgrades(int client)
 		SupplyRate[client] += 10;
 	
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
+	MedievalUnlock[client] = (CivType[client] || HasNamedItem(client, "Medieval Crown"));
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 }
 
@@ -6364,34 +6407,34 @@ static void SummonerMenu(int client, int viewer)
 	int level = MaxSupportBuildingsAllowed(client, true);
 	
 	Menu menu = new Menu(SummonerMenuH);
-	
+
 	SetGlobalTransTarget(viewer);
-	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
-	
+	menu.SetTitle("%s\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
+
 	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	char buffer1[256];
 	if(TrainingIn[client])
 	{
-		if(AtMaxSupply(client))
+		if(AtMaxSupply(client) || GetSupplyLeft(client) < GetData(CivType[client], TrainingIndex[client], SupplyCost))
 		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)]);
 			if(i_BarricadesBuild[client])
 				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 		}
 		else if(TrainingStartedIn[client] < 0.0)
 		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)]);
 		}
 		else
 		{
 			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)],
 				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 		}
 
 		if(TrainingQueue[client] != -1)
-			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[SummonerData[TrainingQueue[client]][NPCIndex]]);
+			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[client], TrainingQueue[client], NPCIndex)]);
 		
 		menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
@@ -6402,26 +6445,29 @@ static void SummonerMenu(int client, int viewer)
 
 	char buffer2[64];
 	int options;
-	for(int i = sizeof(SummonerData) - 1; i >= 0; i--)
+	for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)
 	{
-		if(SummonerData[i][TrainLevel] > level)
+		if(GetData(CivType[client], i, TrainLevel) > level)
 			continue;
 		
-		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[SummonerData[i][NPCIndex]]);
-		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[SummonerData[i][NPCIndex]]);
+		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
 
-		if(SummonerData[i][WoodCost])
-			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, SummonerData[i][WoodCost]);
+		if(GetData(CivType[client], i, WoodCost))
+			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetData(CivType[client], i, WoodCost));
 		
-		if(SummonerData[i][FoodCost])
-			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, SummonerData[i][FoodCost]);
+		if(GetData(CivType[client], i, FoodCost))
+			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetData(CivType[client], i, FoodCost));
 		
-		if(SummonerData[i][GoldCost])
-			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, SummonerData[i][GoldCost]);
+		if(GetData(CivType[client], i, GoldCost))
+			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetData(CivType[client], i, GoldCost));
 		
 		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
 		IntToString(i, buffer2, sizeof(buffer2));
-		bool poor = (!owner || WoodAmount[client] < SummonerData[i][WoodCost]) || (FoodAmount[client] < SummonerData[i][FoodCost]) || (GoldAmount[client] < SummonerData[i][GoldCost]);
+		bool poor = (!owner ||
+			WoodAmount[client] < GetData(CivType[client], i, WoodCost) ||
+			FoodAmount[client] < GetData(CivType[client], i, FoodCost) ||
+			GoldAmount[client] < GetData(CivType[client], i, GoldCost));
 
 		menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		if(++options > 3)
@@ -6457,9 +6503,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						if(TrainingQueue[client] != -1)
 						{
-							WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
-							FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
-							GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+							WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
+							FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
+							GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
 
 							TrainingQueue[client] = -1;
 						}
@@ -6467,9 +6513,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							TrainingIn[client] = 0.0;
 
-							WoodAmount[client] += float(SummonerData[TrainingIndex[client]][WoodCost]);
-							FoodAmount[client] += float(SummonerData[TrainingIndex[client]][FoodCost]);
-							GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
+							WoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], WoodCost));
+							FoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], FoodCost));
+							GoldAmount[client] += float(GetData(CivType[client], TrainingIndex[client], GoldCost));
 						}
 					}
 					else
@@ -6478,9 +6524,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						menu.GetItem(choice, num, sizeof(num));
 						int item = StringToInt(num);
 
-						float woodcost = float(SummonerData[item][WoodCost]);
-						float foodcost = float(SummonerData[item][FoodCost]);
-						float goldcost = float(SummonerData[item][GoldCost]);
+						float woodcost = float(GetData(CivType[client], item, WoodCost));
+						float foodcost = float(GetData(CivType[client], item, FoodCost));
+						float goldcost = float(GetData(CivType[client], item, GoldCost));
 
 						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
 						{
@@ -6488,7 +6534,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							{
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
-								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (SummonerData[item][TrainTime] / 3) : SummonerData[item][TrainTime]);
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetData(CivType[client], item, TrainTime) / 3) : GetData(CivType[client], item, TrainTime));
 							}
 							else if(TrainingQueue[client] == -1)
 							{
@@ -6496,9 +6542,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 							else
 							{
-								WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
-								FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
-								GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+								WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
 
 								TrainingQueue[client] = item;
 							}
@@ -6524,6 +6570,24 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+static int GetSupplyLeft(int client)
+{
+	int userid = GetClientUserId(client);
+	int personal = i_BarricadesBuild[client] * 3 / 2;
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	{
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId == userid)
+				personal += npc.m_iSupplyCount;
+		}
+	}
+
+	return 3 - personal;
+}
+
 static bool AtMaxSupply(int client)
 {
 	int userid = GetClientUserId(client);
@@ -6538,7 +6602,7 @@ static bool AtMaxSupply(int client)
 
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
-				personal++;
+				personal += npc.m_iSupplyCount;
 		}
 	}
 

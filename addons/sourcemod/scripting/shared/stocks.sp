@@ -3060,7 +3060,6 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 		TE_ParticleInt(g_particleCritText, chargerPos);
 		TE_SendToClient(client);		
 	}
-
 }
 
 public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)

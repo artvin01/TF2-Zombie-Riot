@@ -208,7 +208,7 @@ methodmap CombinePrime < CClotBody
 		//Raid logic
 
 		Citizen_MiniBossSpawn(npc.index);
-		
+		Building_RaidSpawned(npc.index);
 		return npc;
 	}
 	

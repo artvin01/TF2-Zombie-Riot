@@ -178,7 +178,8 @@ methodmap XenoCombineDeutsch < CClotBody
 	public XenoCombineDeutsch(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoCombineDeutsch npc = view_as<XenoCombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "110000", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = XENO_COMBINE_DEUTSCH_RITTER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
