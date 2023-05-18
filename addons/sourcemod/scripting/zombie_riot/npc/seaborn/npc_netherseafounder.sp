@@ -462,11 +462,8 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 						//list.SetArray(d, lines2);
 						list.Erase(d);
 					}
-					
-					break;
 				}
-
-				if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
+				else if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
 					Overlapping(lines1, lines2, 0, 3))	// Overlapping x-axis
 				{
 					sort[0][0] = lines1[0];
@@ -511,7 +508,6 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 						//list.SetArray(d, lines2);
 						list.Erase(d);
 					}
-					break;
 				}
 			}
 
