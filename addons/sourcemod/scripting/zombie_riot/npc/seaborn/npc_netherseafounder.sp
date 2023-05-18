@@ -447,7 +447,6 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 {
 	float sort[4][2], lines2[6];
 
-	bool newLine = true;
 	int length2 = list.Length;
 	for(int d = start; d < length2; d++)	// Find dupe lines from touching tiles
 	{
@@ -467,9 +466,7 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 
 			SortCustom2D(sort, sizeof(sort), SeaFounder_Sorting);
 
-			newLine = false;
 			list.Erase(d);
-			length2--;
 
 			for(int e; e < 3; e += 2)	// Compare 1st and 2nd, 3rd and 4th
 			{
@@ -483,10 +480,11 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 					AddLineToListTest(d, list, lines2);
 				}
 			}
-			
-			d--;
+
+			return;
 		}
-		else if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
+		
+		if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
 			Overlapping(lines1, lines2, 0, 3))	// Overlapping x-axis
 		{
 			sort[0][0] = lines1[0];
@@ -501,8 +499,7 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 			SortCustom2D(sort, sizeof(sort), SeaFounder_Sorting);
 
 			newLine = false;
-			list.Erase(d--);
-			length2--;
+			list.Erase(d);
 
 			for(int i; i < 3; i += 2)
 			{
@@ -517,14 +514,11 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 				}
 			}
 
-			d--;
+			return;
 		}
 	}
 
-	if(newLine)	// Add to line list
-	{
-		list.PushArray(lines1);
-	}
+	list.PushArray(lines1);	// Add to line list
 }
 
 public int SeaFounder_Sorting(int[] elem1, int[] elem2, const int[][] array, Handle hndl)
