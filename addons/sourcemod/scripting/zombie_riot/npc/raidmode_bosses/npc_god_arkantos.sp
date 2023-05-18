@@ -413,7 +413,7 @@ public void GodArkantos_ClotThink(int iNPC)
 
 	if(f_TargetToWalkToDelay[npc.index] < gameTime)
 	{
-		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 15)
+		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
 		{
 			i_TargetToWalkTo[npc.index] = GetClosestAlly(npc.index);	
 			if(i_TargetToWalkTo[npc.index] == -1) //there was no alive ally, we will return to finding an enemy and killing them.
@@ -460,7 +460,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				ActionToTake = 1;
 				//first we try to jump to them if close enough.
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 15)
 			{
 				//We are pretty close, we will do a wirlwind to kick everyone away after a certain amount of delay so they can prepare.
 				ActionToTake = 2;
@@ -468,7 +468,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		else if(IsValidAlly(npc.index, i_TargetToWalkTo[npc.index]))
 		{
-			if(flDistanceToTarget < Pow(125.0, 2.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 15)
+			if(flDistanceToTarget < Pow(125.0, 2.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
 			{
 				//can only be above wave 15.
 				ActionToTake = -1;
@@ -508,7 +508,15 @@ public void GodArkantos_ClotThink(int iNPC)
 				}
 
 				npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 1.5;
-				npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 20.0;
+				if(npc.g_TimesSummoned == 4)
+				{
+					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
+
+				}
+				else
+				{
+					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 20.0;
+				}
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0; //lets not intiate any new ability for a second.
 				npc.m_fbRangedSpecialOn = true;
 				//just jump at them.
@@ -1391,7 +1399,10 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 		if(buffed_anyone)
 		{
 			npc.m_flArkantosBuffEffect = gameTime + 10.0;
-			f_GodArkantosBuff[npc.index] = GetGameTime() + 5.0; //the buff for arkantos himself is half the time.
+			if(!NpcStats_IsEnemySilenced(npc.index))
+			{
+				f_GodArkantosBuff[npc.index] = GetGameTime() + 5.0; //the buff for arkantos himself is half the time.
+			}
 			static int r;
 			static int g;
 			static int b ;
