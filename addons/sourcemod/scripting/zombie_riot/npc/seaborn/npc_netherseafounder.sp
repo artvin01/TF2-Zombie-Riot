@@ -460,7 +460,8 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					{
 						//lines2[6] = 1.0;	// Don't use line
 						//list.SetArray(d, lines2);
-						list.Erase(d);
+						list.Erase(d--);
+						length2--;
 					}
 				}
 				else if(Similar(lines1[1], lines1[4]) && Similar(lines1[1], lines2[1]) && Similar(lines1[4], lines2[4]) &&	// Same y-axis
@@ -506,7 +507,8 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					{
 						//lines2[6] = 1.0;	// Don't use line
 						//list.SetArray(d, lines2);
-						list.Erase(d);
+						list.Erase(d--);
+						length2--;
 					}
 				}
 			}
