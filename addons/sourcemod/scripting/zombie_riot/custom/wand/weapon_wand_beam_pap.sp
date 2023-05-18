@@ -44,14 +44,14 @@ static bool bl_sound_active[MAXTF2PLAYERS];
 //beam, 1=pap1, 2=pap2.
 
 #define BEAM_WAND_BEAM_MANA_MULTI 0.05			//By how much is the mana cost multiplied by, the mana is consumed quite rapidly due to it happening really really fast
-#define BEAM_WAND_BEAM_DAMAGE_MULTI	0.035		//by how much the damage is multiplied by, same reason as above
+#define BEAM_WAND_BEAM_DAMAGE_MULTI	0.04		//by how much the damage is multiplied by, same reason as above
 #define BEAM_WAND_BEAM_OVERDRIVE_DURATION 5.0
 #define BEAM_WAND_BEAM_OVERDRIVE_COUNT 6		//this is *mostly* visual, however it does affect the delay by making it slightly less
 #define BEAM_WAND_BEAM_OVERDRIVE_CHARGEUP 1.15	//relative to sound
 
-static int i_beam_delay[3] = { 0, 6, 6 };							//delay in ticks per each singular shot
-static float fl_beam_overdrive_dmg_multi[3] = { 0.0, 1.1, 1.2};		//by how much the damage is multiplied during overdrive. beware this thing if given the chance CAN and WILL do more damage in its duration than the orbital strike
-static float fl_beam_overdrive_cost[3] = { 0.0, 5000.0, 4000.0};	//how much mana has to be consumed WHILE dealing damage to activate the ability. this can be triggered by multiple npc's at the same time. aka shooting 1 npc slow gain, shooting 10 npc, fast gain
+static int i_beam_delay[3] = { 0, 10, 6 };							//delay in ticks per each singular shot
+static float fl_beam_overdrive_dmg_multi[3] = { 0.0, 1.2, 1.3};		//by how much the damage is multiplied during overdrive. beware this thing if given the chance CAN and WILL do more damage in its duration than the orbital strike
+static float fl_beam_overdrive_cost[3] = { 0.0, 4000.0, 3000.0};	//how much mana has to be consumed WHILE dealing damage to activate the ability. this can be triggered by multiple npc's at the same time. aka shooting 1 npc slow gain, shooting 10 npc, fast gain
 static float fl_beam_range[3] = { 0.0, 1250.0, 1500.0 };			//range of the beam wand
 static float fl_beam_overdrive_damage[MAXTF2PLAYERS];
 
@@ -62,9 +62,9 @@ static float fl_beam_overdrive_damage[MAXTF2PLAYERS];
 #define BEAM_WAND_CANNON_DMG_MULTI	1.0
 
 #define BEAM_WAND_CANNON_ABILITY_COST	34		//34 shots needed to charge ability.
-#define BEAM_WAND_CANNON_ABILITY_DMG_MULTI	7.5	//by how much the damage is multiplied for the ability
+#define BEAM_WAND_CANNON_ABILITY_DMG_MULTI	10.0	//by how much the damage is multiplied for the ability
 #define BEAM_WAND_CANNON_ABILITY_DELAY	5.0		//how long for the cannon ability to "charge" until it deals damage. in seconds. oh also if you change it, beware the sound probably won't match up
-#define BEAM_WAND_CANNON_ABILITY_RANGE	100.0	//Range of the explosion.
+#define BEAM_WAND_CANNON_ABILITY_RANGE	125.0	//Range of the explosion.
 
 
 static float fl_hud_delay[MAXTF2PLAYERS];
