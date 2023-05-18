@@ -103,6 +103,26 @@ methodmap GodArkantos < CClotBody
 				this.m_bisWalking = false;
 				this.SetPlaybackRate(2.0);
 				this.m_flReviveArkantosTime = GetGameTime(this.index) + 16.0;
+
+				switch(GetRandomInt(0,3))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know the dangers youre getting yourself into fighting me and my army at the same time!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{lightblue}God Arkantos{default}: My army will always help me back up!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{lightblue}God Arkantos{default}: Me and my army, as one, will never be defeated!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{lightblue}God Arkantos{default}: Together for Atlantis! As one and for all!");
+					}
+				}
 				
 				if(this.m_bPathing)
 				{
@@ -539,13 +559,14 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Ratio = health / maxhealth;
+			MedivalHussar npc_sound = view_as<MedivalHussar>(npc.index);
 	if(ZR_GetWaveCount()+1 <= 15)
 	{
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-
+			npc_sound.PlayMeleeWarCry();
 			GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(6.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_ARCHER,_, RoundToCeil(7.0 * MultiGlobal));
 		}
@@ -553,6 +574,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		{
 			npc.g_TimesSummoned = 2;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			npc_sound.PlayMeleeWarCry();
 			
 			GodArkantosSpawnEnemy(MEDIVAL_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_ARCHER,_, RoundToCeil(5.0 * MultiGlobal));
@@ -562,6 +584,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		{
 			npc.g_TimesSummoned = 3;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
+			npc_sound.PlayMeleeWarCry();
 			GodArkantosSpawnEnemy(MEDIVAL_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_SPEARMEN,_, RoundToCeil(5.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(5.0 * MultiGlobal));
@@ -569,6 +592,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			npc_sound.PlayMeleeWarCry();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
@@ -592,6 +616,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
 			GodArkantosSpawnEnemy(MEDIVAL_SWORDSMAN,_, RoundToCeil(6.0 * MultiGlobal));
@@ -601,6 +626,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
 			GodArkantosSpawnEnemy(MEDIVAL_LIGHT_CAV,_, RoundToCeil(5.0 * MultiGlobal));
@@ -609,6 +635,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_BRAWLER,_, RoundToCeil(6.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_LIGHT_CAV,_, RoundToCeil(5.0 * MultiGlobal));
@@ -617,6 +644,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			npc_sound.PlayMeleeWarCry();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
@@ -640,6 +668,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
 			GodArkantosSpawnEnemy(MEDIVAL_TWOHANDED_SWORDSMAN,_, RoundToCeil(6.0 * MultiGlobal));
@@ -650,6 +679,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
 			GodArkantosSpawnEnemy(MEDIVAL_KNIGHT,_, RoundToCeil(5.0 * MultiGlobal));
@@ -658,6 +688,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_LIGHT_CAV,_, RoundToCeil(12.0 * MultiGlobal));
@@ -666,6 +697,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			npc_sound.PlayMeleeWarCry();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
@@ -689,6 +721,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
 			GodArkantosSpawnEnemy(MEDIVAL_CHAMPION,75000, RoundToCeil(6.0 * MultiGlobal));
@@ -698,6 +731,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
 			GodArkantosSpawnEnemy(MEDIVAL_CHAMPION,75000, RoundToCeil(12.0 * MultiGlobal));
@@ -706,6 +740,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			npc_sound.PlayMeleeWarCry();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,50000, RoundToCeil(12.0 * MultiGlobal));
 			GodArkantosSpawnEnemy(MEDIVAL_PALADIN,100000, RoundToCeil(12.0 * MultiGlobal));
@@ -715,6 +750,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			npc_sound.PlayMeleeWarCry();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
@@ -743,6 +779,26 @@ public void GodArkantos_NPCDeath(int entity)
 	if(!npc.m_bDissapearOnDeath)
 	{
 		npc.PlayDeathSound();
+	}
+	
+	switch(GetRandomInt(0,3))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: I have failed Atlantis...");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: How was my army defeated..?");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know what you are doing!!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: We should be fighting together, not against eachother, the sea will be your doom..");
+		}
 	}
 
 	SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
