@@ -4308,10 +4308,10 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		{
 			range += 125.0;
 		}
-		/*else if(effects & VILLAGE_004)
+		else if(effects & VILLAGE_005)
 		{
 			range += 150.0;
-		}*/
+		}
 	}
 	
 	if(mounted)
@@ -4469,6 +4469,26 @@ void Building_ClearRefBuffs(int ref)
 	{
 		Village_Effects.Erase(i);
 	}
+}
+
+void Building_RaidSpawned(int entity)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+		{
+			if(Village_Flags[client] & VILLAGE_004)
+			{
+				f_CrippleDebuff[entity] = FAR_FUTURE;
+				break;
+			}
+		}
+	}
+}
+
+bool Building_NeatherseaReduced(int entity)
+{
+	return (GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
 }
 
 void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
@@ -5023,6 +5043,20 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							if(attrib != Address_Null)
 								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.25);
 						}
+						case VILLAGE_005:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.75);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.75);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.5);
+						}
 					}
 				}
 			}
@@ -5077,6 +5111,20 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
 							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.25);
+					}
+					case VILLAGE_005:
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.75);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.75);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.5);
 					}
 				}
 			}
@@ -5147,6 +5195,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							npc.m_fGunFirerate *= 0.875;
 							npc.m_fGunReload *= 0.875;
 						}
+						case VILLAGE_005:
+						{
+							npc.m_fGunFirerate *= 0.75;
+							npc.m_fGunReload *= 0.75;
+						}
 					}
 				}
 			}
@@ -5198,6 +5251,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						npc.m_fGunFirerate /= 0.875;
 						npc.m_fGunReload /= 0.875;
 					}
+					case VILLAGE_005:
+					{
+						npc.m_fGunFirerate /= 0.75;
+						npc.m_fGunReload /= 0.75;
+					}
 				}
 			}
 		}
@@ -5235,6 +5293,10 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							{
 								npc.BonusFireRate *= 0.875;
 							}
+							case VILLAGE_005:
+							{
+								npc.BonusFireRate *= 0.75;
+							}
 						}
 					}
 				}
@@ -5257,6 +5319,10 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						case VILLAGE_050:
 						{
 							npc.BonusFireRate /= 0.875;
+						}
+						case VILLAGE_005:
+						{
+							npc.BonusFireRate /= 0.75;
 						}
 					}
 				}

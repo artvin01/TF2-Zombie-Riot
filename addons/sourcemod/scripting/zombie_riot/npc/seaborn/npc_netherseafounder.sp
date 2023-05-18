@@ -590,6 +590,17 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 
 				SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
 				// 20 x 0.25 x 0.2
+ 
+/*
+				bool resist = Building_NeatherseaReduced(client);
+
+				SDKHooks_TakeDamage(client, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
+				// 120 x 0.25 x 0.2
+
+				if(!resist)
+					SeaSlider_AddNeuralDamage(client, 0, 1);
+					// 20 x 0.25 x 0.2
+				*/
 
 				int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
 				if(!IsValidEntity(entity))
@@ -646,6 +657,16 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 
 				SeaSlider_AddNeuralDamage(entity, 0, 1, false);
 				// 20 x 0.25 x 0.2
+	/*	
+				bool resist = Building_NeatherseaReduced(entity);
+
+				SDKHooks_TakeDamage(entity, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
+				// 120 x 0.25 x 0.2
+
+				if(!resist)
+					SeaSlider_AddNeuralDamage(entity, 0, 1);
+					// 20 x 0.25 x 0.2
+					*/
 
 				NervousTouching[entity] = NervousTouching[0];
 			}
