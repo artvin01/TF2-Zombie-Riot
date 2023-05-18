@@ -556,14 +556,14 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				GodArkantosSpawnEnemy(MEDIVAL_SPEARMEN,_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_SCOUT,_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(3.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(5000.0 * MultiGlobalHealth), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(5000.0 * MultiGlobalHealth), 1, true);		
 			}
 			else
 			{
 				GodArkantosSpawnEnemy(MEDIVAL_SPEARMEN,_, RoundToCeil(5.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_SCOUT,_, RoundToCeil(5.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(15000.0 * MultiGlobalHealth), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(15000.0 * MultiGlobalHealth), 1, true);		
 			}
 		}
 	}
@@ -598,15 +598,15 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			{
 				GodArkantosSpawnEnemy(MEDIVAL_PIKEMAN,_, RoundToCeil(5.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_CROSSBOW_GIANT,_, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalHealth), RoundToCeil(2.0 * MultiGlobal));
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(10000.0 * MultiGlobalHealth), RoundToCeil(2.0 * MultiGlobal), true);		
 			}
 			else
 			{
 				GodArkantosSpawnEnemy(MEDIVAL_PIKEMAN,_, RoundToCeil(15.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_CROSSBOW_GIANT,_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(15000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(15000.0 * MultiGlobalHealth), RoundToCeil(2.0 * MultiGlobal));			
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(15000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_CONSTRUCT, RoundToCeil(15000.0 * MultiGlobalHealth), RoundToCeil(2.0 * MultiGlobal), true);				
 			}
 		}
 	}
@@ -649,8 +649,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			{
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,_, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_OBUCH,_, RoundToCeil(10.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(150000.0 * MultiGlobalHealth), 1);				
+				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(5000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_ACHILLES, RoundToCeil(150000.0 * MultiGlobalHealth), 1, true);					
 			}
 		}
 	}
@@ -687,16 +687,16 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,100000, RoundToCeil(1.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_RIDDENARCHER,75000, RoundToCeil(12.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(25000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(1000000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(500000.0 * MultiGlobalHealth), 1);
+				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(1000000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(500000.0 * MultiGlobalHealth), 1, true);		
 			}
 			else
 			{
 				GodArkantosSpawnEnemy(MEDIVAL_HUSSAR,100000, RoundToCeil(2.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_RIDDENARCHER,75000, RoundToCeil(25.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(50000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(2000000.0 * MultiGlobalHealth), 1);
-				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(1000000.0 * MultiGlobalHealth), 1);				
+				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(2000000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(1000000.0 * MultiGlobalHealth), 1, true);				
 			}
 		}
 	}
@@ -739,7 +739,7 @@ public void GodArkantos_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
-void GodArkantosSpawnEnemy(int npc_id, int health = 0, int count)
+void GodArkantosSpawnEnemy(int npc_id, int health = 0, int count, bool outline = false)
 {
 	Enemy enemy;
 	enemy.Index = npc_id;
@@ -747,7 +747,8 @@ void GodArkantosSpawnEnemy(int npc_id, int health = 0, int count)
 	{
 		enemy.Health = health;
 	}
-	enemy.Is_Outlined = false;
+	enemy.Is_Outlined = outline;
+	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.
 			
 	for(int i; i<count; i++)
