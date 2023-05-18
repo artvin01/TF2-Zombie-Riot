@@ -477,7 +477,7 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 					lines2[4] = sort[e + 1][0];
 					lines2[5] = sort[e + 1][1];
 
-					AddLineToListTest(d, list, lines2);
+					AddLineToListTest(d + 1, list, lines2);
 				}
 			}
 
@@ -500,16 +500,16 @@ static void AddLineToListTest(int start, ArrayList list, const float lines1[6])
 
 			list.Erase(d);
 
-			for(int i; i < 3; i += 2)
+			for(int e; e < 3; e += 2)
 			{
-				if(!Similar(sort[i][0], sort[i + 1][0]))
+				if(!Similar(sort[e][0], sort[e + 1][0]))
 				{
-					lines2[0] = sort[i][0];
-					lines2[2] = sort[i][1];
-					lines2[3] = sort[i + 1][0];
-					lines2[5] = sort[i + 1][1];
+					lines2[0] = sort[e][0];
+					lines2[2] = sort[e][1];
+					lines2[3] = sort[e + 1][0];
+					lines2[5] = sort[e + 1][1];
 
-					AddLineToListTest(d, list, lines2);
+					AddLineToListTest(d + 1, list, lines2);
 				}
 			}
 
