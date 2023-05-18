@@ -399,6 +399,7 @@ float f_CrippleDebuff[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int g_particleCritText;
+int g_particleMissText;
 int LastHitId[MAXENTITIES];
 int DamageBits[MAXENTITIES];
 float Damage[MAXENTITIES];
@@ -408,6 +409,7 @@ int IgniteFor[MAXENTITIES];
 int IgniteId[MAXENTITIES];
 int IgniteRef[MAXENTITIES];
 float BurnDamage[MAXENTITIES];
+int i_NervousImpairmentArrowAmount[MAXENTITIES];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
@@ -2231,6 +2233,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
 		Resistance_for_building_High[entity] = 0.0;
+		i_NervousImpairmentArrowAmount[entity] = 0;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);

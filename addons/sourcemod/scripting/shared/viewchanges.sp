@@ -47,11 +47,13 @@ static const char RobotModels[][] =
 	"models/bots/engineer/bot_engineer.mdl"
 };
 
+
 static int HandIndex[11];
 static int PlayerIndex[10];
 static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
+static int TeutonModelIndex;
 
 void ViewChange_MapStart()
 {
@@ -69,15 +71,14 @@ void ViewChange_MapStart()
 	{
 		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
+
+	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 	
 	PrecacheModel(NIKO_PLAYERMODEL);
 }
 
 void ViewChange_PlayerModel(int client)
 {
-#if defined ZR
-	if(TeutonType[client] == TEUTON_NONE)
-#endif
 	{
 		if(b_IsPlayerNiko[client])
 		{
@@ -97,13 +98,21 @@ void ViewChange_PlayerModel(int client)
 			if(entity > MaxClients)	// Weapon viewmodel
 			{
 #if defined ZR
-				if(i_HealthBeforeSuit[client] == 0)
+				if(TeutonType[client] == TEUTON_NONE)
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+					if(i_HealthBeforeSuit[client] == 0)
+					{
+						SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+					}
+					else
+					{
+						SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
+					}
 				}
 				else
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", TeutonModelIndex);
+					SetEntProp(entity, Prop_Send, "m_nBody", 9);
 				}
 #else
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);

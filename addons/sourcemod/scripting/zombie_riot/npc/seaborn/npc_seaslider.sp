@@ -87,13 +87,13 @@ methodmap SeaSlider < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 		
-		npc.m_flSpeed = 275.0;	// 1.1 x 250
+		npc.m_flSpeed = 250.0;	// 1.1 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
+		SetEntityRenderColor(npc.index, 126, 126, 255, 255);
 		return npc;
 	}
 }
@@ -230,7 +230,7 @@ void SeaSlider_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 }
 
-void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
+void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage, bool sound = true)
 {
 	if(victim > MaxClients)
 	{
@@ -255,11 +255,11 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage)
 
 			bool sawrunner = b_ThisNpcIsSawrunner[attacker];
 			b_ThisNpcIsSawrunner[attacker] = true;
-			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN);
+			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 			b_ThisNpcIsSawrunner[attacker] = sawrunner;
 		}
 		
-		if(damage > 3 || !Armor_Charge[victim])
+		if(sound || !Armor_Charge[victim])
 			ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 	}
 }

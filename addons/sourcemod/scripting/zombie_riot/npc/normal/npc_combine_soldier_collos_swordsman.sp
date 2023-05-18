@@ -163,7 +163,8 @@ methodmap CombineCollos < CClotBody
 	{
 		CombineCollos npc = view_as<CombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_COLLOSS;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

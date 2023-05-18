@@ -234,11 +234,11 @@ public void SeaBrandguider_ClotThink(int iNPC)
 			{
 				if(!NpcStats_IsEnemySilenced(npc.index))
 				{
-					vecTarget = WorldSpaceCenter(npc.index);
+					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", vecTarget);
 					SeaFounder_SpawnNethersea(vecTarget);
 				}
 
-				npc.m_flNextMeleeAttack = gameTime + 2.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 	}

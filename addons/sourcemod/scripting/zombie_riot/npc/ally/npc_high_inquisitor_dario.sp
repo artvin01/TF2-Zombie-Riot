@@ -105,8 +105,8 @@ methodmap HighInquisitorDario < CClotBody
 	{
 		HighInquisitorDario npc = view_as<HighInquisitorDario>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 
 		i_NpcInternalId[npc.index] = EMPEROR_BLADE_PURSUER;
 		

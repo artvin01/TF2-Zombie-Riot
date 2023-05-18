@@ -9,8 +9,6 @@ methodmap BarrackThorns < BarrackBody
 
 		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, elite ? "1200" : "900"));
 
-		SetVariantInt(8);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcInternalId[npc.index] = BARRACK_THORNS;
 		
@@ -28,6 +26,9 @@ methodmap BarrackThorns < BarrackBody
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/player/items/demo/hwn_demo_hat.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		SetVariantInt(12);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		return npc;
 	}

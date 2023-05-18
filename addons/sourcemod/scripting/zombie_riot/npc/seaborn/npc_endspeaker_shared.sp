@@ -206,13 +206,13 @@ methodmap EndSpeaker < CClotBody
 					if(remain[b] != entity)
 					{
 						float dist = GetVectorDistance(vecTarget, vecOther, true);
-						if(dist > 160000.0)	// 400 HU
+						if(dist > 62500.0)	// 250 HU
 							continue;
 					}
 
 					this.m_hBuffs |= view_as<Remains>(remain[b]).m_iBuffType;
-					ParticleEffectAt(vecOther, "water_splash01", 3.0);
-					spawnRing_Vectors(vecOther, 800.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
+					ParticleEffectAt(vecOther, "water_bulletsplash01", 3.0);
+					spawnRing_Vectors(vecOther, 500.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
 				}
 
 				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;

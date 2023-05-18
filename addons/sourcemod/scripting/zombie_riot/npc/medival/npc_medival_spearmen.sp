@@ -170,7 +170,8 @@ methodmap MedivalSpearMan < CClotBody
 	public MedivalSpearMan(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalSpearMan npc = view_as<MedivalSpearMan>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_SPEARMEN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

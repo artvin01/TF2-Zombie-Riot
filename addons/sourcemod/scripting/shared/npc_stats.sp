@@ -3460,20 +3460,20 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						{
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 							startPosition[2] += 64;
-							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, true);
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, 1);
 							if(!Limit_Gibs)
 							{
 								startPosition[2] -= 15;
-								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, true);
+								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, 1);
 								startPosition[2] += 44;
 								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 								{
 									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, true);	
+									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, 1);	
 								}
 								else
 								{
-									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, true);		
+									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, 1);		
 								}
 							}
 							else
@@ -3488,20 +3488,20 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						{
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 							startPosition[2] += 42;
-							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, true);
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, 1);
 							if(!Limit_Gibs)
 							{
 								startPosition[2] -= 10;
-								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+								Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, 1);
 								startPosition[2] += 34;
 								if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 								{
 									npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, true);
+									Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, 1);
 								}
 								else
 								{
-									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, true);
+									Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, 1);
 								}
 							}
 							else
@@ -3560,13 +3560,13 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						{
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 							startPosition[2] += 64;
-							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, true, _, _, _, true, true);
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, true, _, _, _, 2);
 							if(!Limit_Gibs)
 							{
 								startPosition[2] -= 15;
-								Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, false, true, _, _, _, true, true);
+								Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, false, true, _, _, _, 2);
 								startPosition[2] += 44;
-								Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, false, true, _, _, _, true, true);
+								Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, false, true, _, _, _, 2);
 							}
 							else
 							{
@@ -3580,13 +3580,13 @@ public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 						{
 							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 							startPosition[2] += 42;
-							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, _, _, _, _, true, true);
+							Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, _, _, _, _, 2);
 							if(!Limit_Gibs)
 							{
 								startPosition[2] -= 10;
-								Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, _, _, _, _, _, true, true);
+								Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
 								startPosition[2] += 34;
-								Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, _, _, _, _, _, true, true);
+								Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
 							}
 							else
 							{
@@ -5730,7 +5730,7 @@ public void RequestFramesCallback(DataPack pack)
 //	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
 
 
-int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, bool xeno = false, bool nobleed = false)
+int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, int BleedType = 0, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(!IsValidEntity(prop))
@@ -5816,11 +5816,17 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	{
 		if(!metal_colour)
 		{
-			if(!xeno)
+			if(BleedType == 0)
 			{
 				int particle = ParticleEffectAt(pos, "blood_trail_red_01_goop", Random_time); //This is a permanent particle, gotta delete it manually...
 				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
+			}
+			else if(BleedType == 2)
+			{
+				int particle = ParticleEffectAt(pos, "flamethrower_rainbow_bubbles02", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 65, 65, 255, 255);				
 			}
 			else
 			{
@@ -7538,7 +7544,13 @@ public void ArrowStartTouch(int arrow, int entity)
 		if(inflictor == -1)
 			inflictor = owner;
 
+
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
+		if(i_NervousImpairmentArrowAmount[arrow] > 0)
+		{
+			SeaSlider_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
+		}
+		
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
 		if(IsValidEntity(arrow_particle))
 		{

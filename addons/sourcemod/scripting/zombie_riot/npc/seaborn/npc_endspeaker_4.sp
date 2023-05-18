@@ -17,6 +17,7 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLIONGUARD_UNBURROW");
 		
+		npc.EatBuffs();
 		npc.PlaySpawnSound();
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -114,14 +115,16 @@ public void EndSpeaker4_ClotThink(int iNPC)
 
 				if(failed)
 				{
+					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
+					
 					int entity = -1;
 					if(npc.m_hBuffs & BUFF_SPEWER)
 					{
-						npc.FireRocket(vecTarget, attack, 1200.0);
+						npc.FireRocket(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 					}
 					else
 					{
-						entity = npc.FireArrow(vecTarget, attack, 1200.0);
+						entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 					}
 
 					if(entity != -1)
@@ -129,8 +132,11 @@ public void EndSpeaker4_ClotThink(int iNPC)
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
+						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(entity, 100, 100, 255, 255);
+						
 						vecTarget = WorldSpaceCenter(entity);
-						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
+						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 					}

@@ -67,7 +67,7 @@ methodmap SeaSpewer < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		i_NpcInternalId[npc.index] = carrier ? SEASPEWER_CARRIER : (elite ? SEASPEWER_ALT : SEASPEWER);
-		npc.SetActivity("ACT_SEABORN_WALK_RANGED");	// TODO: Set anim
+		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");	// TODO: Set anim
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -175,13 +175,13 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					vecTarget = WorldSpaceCenter(enemy[i]);
+					vecTarget = PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0);
 
-					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 240.0 : 195.0, 600.0);
+					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 240.0 : 195.0, 600.0, "models/weapons/w_bugbait.mdl");
 					// 650 * 0.3
 					// 800 * 0.3
 
-					SeaSlider_AddNeuralDamage(enemy[i], npc.index, i_NpcInternalId[npc.index] == SEASPEWER_CARRIER ? 6 : (i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 5 : 4));
+					i_NervousImpairmentArrowAmount[entity] = i_NpcInternalId[npc.index] == SEASPEWER_CARRIER ? 6 : (i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 5 : 4);
 					// 650 * 0.02 * 0.3
 					// 800 * 0.02 * 0.3
 					// 650 * 0.03 * 0.3
@@ -191,8 +191,11 @@ public void SeaSpewer_ClotThink(int iNPC)
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
+						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(entity, 100, 100, 255, 255);
+
 						vecTarget = WorldSpaceCenter(entity);
-						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
+						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 					}

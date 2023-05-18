@@ -17,6 +17,7 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 
+		npc.EatBuffs();
 		npc.PlaySpawnSound();
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -82,6 +83,8 @@ public void EndSpeaker2_ClotThink(int iNPC)
 			
 			if(npc.m_flAttackHappens < gameTime)
 			{
+				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
+
 				npc.m_flAttackHappens = 0.0;
 				
 				float attack = (npc.m_bHardMode ? 229.5 : 204.0) * npc.Attack(gameTime);
@@ -91,14 +94,14 @@ public void EndSpeaker2_ClotThink(int iNPC)
 				int entity = -1;
 				if(npc.m_hBuffs & BUFF_SPEWER)
 				{
-					npc.FireRocket(vecTarget, attack, 1200.0);
+					npc.FireRocket(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 				}
 				else
 				{
-					entity = npc.FireArrow(vecTarget, attack, 1200.0);
+					entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 				}
 
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, RoundToCeil(attack * 0.6));
+				i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.6);
 				// 800 x 0.85 x 0.6 x 0.3
 				// 900 x 0.85 x 0.6 x 0.3
 
@@ -107,8 +110,11 @@ public void EndSpeaker2_ClotThink(int iNPC)
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 					
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(entity, 100, 100, 255, 255);
+					
 					vecTarget = WorldSpaceCenter(entity);
-					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 				}

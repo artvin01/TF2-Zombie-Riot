@@ -255,7 +255,8 @@ methodmap BarrackBody < CClotBody
 	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health)
 	{
 		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.575", health, true, .Ally_Collideeachother = true));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		BarrackOwner[npc.index] = client ? GetClientUserId(client) : 0;

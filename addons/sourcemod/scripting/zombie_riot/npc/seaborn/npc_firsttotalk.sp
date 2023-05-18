@@ -25,12 +25,16 @@ static const char g_MeleeAttackSounds[][] =
 };
 
 static int HitEnemies[16];
+static int LaserSprite;
+
+#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
 
 void FirstToTalk_MapStart()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_AngerSounds);
+	LaserSprite = PrecacheModel(SPRITE_SPRITE);
 }
 
 methodmap FirstToTalk < CClotBody
@@ -58,14 +62,14 @@ methodmap FirstToTalk < CClotBody
 	
 	public FirstToTalk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		FirstToTalk npc = view_as<FirstToTalk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "3150", ally, false));
+		FirstToTalk npc = view_as<FirstToTalk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
 		// 21000 x 0.15
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcInternalId[npc.index] = FIRSTTOTALK;
-		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -80,8 +84,15 @@ methodmap FirstToTalk < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
 		
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/hw2013_octo_face/hw2013_octo_face.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+		
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
@@ -126,13 +137,14 @@ public void FirstToTalk_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
+				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				int entity = npc.FireArrow(vecTarget, 90.0, 1200.0);
+				int entity = npc.FireArrow(vecTarget, 90.0, 1200.0, "models/weapons/w_bugbait.mdl");
 				// 600 x 0.15
-				SDKUnhook(entity, SDKHook_StartTouch, ArrowStartTouch);
-				SDKHook(entity, SDKHook_StartTouch, ArrowStartTouchFirstTalk);
+
+				i_NervousImpairmentArrowAmount[entity] = 36;
 				// 600 x 0.4 x 0.15
 
 				if(entity != -1)
@@ -140,8 +152,11 @@ public void FirstToTalk_ClotThink(int iNPC)
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 					
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(entity, 100, 100, 255, 255);
+					
 					vecTarget = WorldSpaceCenter(entity);
-					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "water_playerdive_bubbles", 3.0);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 				}
@@ -158,7 +173,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 				if(npc.m_flNextRangedAttack < gameTime)
 				{
 					npc.PlayAngerSound();
-					npc.SetActivity("ACT_MUDROCK_RAGE");
+					npc.SetActivity("ACT_SEABORN_FIRST_ATTACK_2");
 					b_NpcIsInvulnerable[npc.index] = true;
 					
 					vecTarget[2] += 10.0;
@@ -170,28 +185,28 @@ public void FirstToTalk_ClotThink(int iNPC)
 					pack.WriteFloat(vecTarget[2]);
 
 					CreateTimer(1.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.25, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(1.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.75, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(2.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(2.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.25, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
 
-					CreateTimer(5.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(5.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(6.5, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(7.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(8.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(8.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+					CreateTimer(3.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.5, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 
-					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 9.0, 6.0, 0.1, 1);
+					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
 
-					npc.m_flDoingAnimation = gameTime + 8.0;
-					npc.m_flNextMeleeAttack = gameTime + 10.0;
-					npc.m_flNextRangedAttack = gameTime + 40.0;
+					npc.m_flDoingAnimation = gameTime + 4.0;
+					npc.m_flNextMeleeAttack = gameTime + 6.0;
+					npc.m_flNextRangedAttack = gameTime + 35.0;
 				}
 				else
 				{
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SPEAR");
+					npc.AddGesture("ACT_SEABORN_FIRST_ATTACK_1");
 					
 					npc.m_flAttackHappens = gameTime + 0.35;
 
@@ -222,7 +237,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 			if(b_NpcIsInvulnerable[npc.index])
 			{
 				b_NpcIsInvulnerable[npc.index] = false;
-				npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
+				npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 			}
 		}
 	}
@@ -245,14 +260,17 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 
 		npc.PlayMeleeSound();
 
-		int entity = npc.FireArrow(vecPos, 90.0, 2000.0);
+		int entity = npc.FireArrow(vecPos, 90.0, 2000.0, "models/weapons/w_bugbait.mdl");
 		if(entity != -1)
 		{
 			if(IsValidEntity(f_ArrowTrailParticle[entity]))
 				RemoveEntity(f_ArrowTrailParticle[entity]);
 			
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(entity, 100, 100, 255, 255);
+			
 			vecPos = WorldSpaceCenter(entity);
-			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", 3.0);
+			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "rockettrail_bubbles", 3.0);
 			SetParent(entity, f_ArrowTrailParticle[entity]);
 			f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 		}
@@ -298,26 +316,18 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 
 		if(victim)
 		{
-			vecPos = WorldSpaceCenter(npc.index);
-			ParticleEffectAt(vecPos, "water_splash01", 3.0);
+			vecPos = WorldSpaceCenter(victim);
+			ParticleEffectAt(vecPos, "water_bulletsplash01", 3.0);
 
-			vecPos[2] += 250.0;
+			float vecPos2[3];
+			vecPos2[0] = vecPos[0];
+			vecPos2[1] = vecPos[1];
+			vecPos2[2] = vecPos[2] + 2000.0;
 
-			int entity = npc.FireArrow(vecPos, 90.0, 3000.0);
-			if(entity != -1)
-			{
-				TeleportEntity(entity, vecPos, {90.0, 0.0, 0.0}, {0.0, 0.0, -3000.0});
+			TE_SetupBeamPoints(vecPos, vecPos2, LaserSprite, 0, 0, 0, 1.0, 1.0, 1.2, 1, 1.0, {50, 50, 255, 255}, 0);
+			TE_SendToAll();
 
-				if(IsValidEntity(f_ArrowTrailParticle[entity]))
-					RemoveEntity(f_ArrowTrailParticle[entity]);
-				
-				vecPos = WorldSpaceCenter(entity);
-				f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "water_playerdive_bubbles", 3.0);
-				SetParent(entity, f_ArrowTrailParticle[entity]);
-				f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
-			}
-
-			//SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
+			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
 			// 600 x 0.15
 			
 			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
@@ -369,57 +379,6 @@ void FirstToTalk_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-}
-
-
-
-public void ArrowStartTouchFirstTalk(int arrow, int entity)
-{
-	if(entity > 0 && entity < MAXENTITIES)
-	{
-		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
-		if(ShouldNpcDealBonusDamage(entity))
-		{
-			f_ArrowDamage[arrow] *= 3.0;
-		}
-
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(owner == -1)
-			owner = arrow;
-
-		int inflictor = h_ArrowInflictorRef[arrow];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[arrow]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-
-		SeaSlider_AddNeuralDamage(entity, owner, 36);
-		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
-		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(arrow_particle))
-		{
-			DispatchKeyValue(arrow_particle, "parentname", "none");
-			AcceptEntityInput(arrow_particle, "ClearParent");
-			float f3_PositionTemp[3];
-			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-		}
-	}
-	else
-	{
-		int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
-		EmitSoundToAll(g_ArrowHitSoundMiss[GetRandomInt(0, sizeof(g_ArrowHitSoundMiss) - 1)], arrow, _, 80, _, 0.8, 100);
-		if(IsValidEntity(arrow_particle))
-		{
-			DispatchKeyValue(arrow_particle, "parentname", "none");
-			AcceptEntityInput(arrow_particle, "ClearParent");
-			float f3_PositionTemp[3];
-			GetEntPropVector(arrow_particle, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-			TeleportEntity(arrow_particle, f3_PositionTemp, NULL_VECTOR, {0.0,0.0,0.0});
-			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
-		}
-	}
-	RemoveEntity(arrow);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }

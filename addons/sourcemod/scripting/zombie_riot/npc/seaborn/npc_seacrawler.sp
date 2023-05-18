@@ -156,7 +156,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 
 public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenter(victim), "water_splash01", 3.0);
+	ParticleEffectAt(WorldSpaceCenter(victim), "water_bulletsplash01", 3.0);
 	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
 }
 

@@ -170,7 +170,8 @@ methodmap MedivalPikeman < CClotBody
 	public MedivalPikeman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalPikeman npc = view_as<MedivalPikeman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2500", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_PIKEMAN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

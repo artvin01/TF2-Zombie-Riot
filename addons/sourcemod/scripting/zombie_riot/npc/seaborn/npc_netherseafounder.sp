@@ -267,6 +267,7 @@ static ArrayList NavList;
 static Handle RenderTimer;
 static Handle DamageTimer;
 static float NervousTouching[MAXENTITIES + 1];
+static NavArea NervousLastTouch[MAXENTITIES + 1];
 static int SpreadTicks;
 
 bool SeaFounder_TouchingNethersea(int entity)
@@ -289,13 +290,17 @@ void SeaFounder_SpawnNethersea(const float pos[3])
 	if(nav != NavArea_Null)
 	{
 		if(NavList.FindValue(nav) == -1)
+		{
 			NavList.Push(nav);
+
+			TriggerTimer(RenderTimer, true);
+		}
 	}
 }
 
 public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 {
-	if(!NavList || Waves_InSetup())
+	if(!NavList || (Waves_InSetup() && !CvarNoRoundStart.BoolValue))
 	{
 		delete NavList;
 		RenderTimer = null;
@@ -303,117 +308,251 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > 8)
+	if(++SpreadTicks > 14)
 	{
-		SpreadTicks = 0;
+		SpreadTicks = (GetURandomInt() % 3) - 1;
+
+		ArrayList list = new ArrayList();
+
+		float gameTime = GetGameTime();
+		for(int entity = 1; entity < sizeof(NervousTouching); entity++)	// Prevent spreading if an entity is on it currently
+		{
+			if(NervousTouching[entity] > gameTime)
+			{
+				list.Push(NervousLastTouch[entity]);
+			}
+		}
 
 		int length = NavList.Length;
 		for(int a; a < length; a++)	// Spread creap to all tiles it touches
 		{
 			NavArea nav1 = NavList.Get(a);
 
-			for(NavDirType b; b < NUM_DIRECTIONS; b++)
+			if(list.FindValue(nav1) == -1)
 			{
-				int count = nav1.GetAdjacentCount(b);
-				for(int c; c < count; c++)
+				for(NavDirType b; b < NUM_DIRECTIONS; b++)
 				{
-					NavArea nav2 = nav1.GetAdjacentArea(b, c);
-					if(nav2 != NavArea_Null)
-						NavList.Push(nav2);
+					int count = nav1.GetAdjacentCount(b);
+					for(int c; c < count; c++)
+					{
+						NavArea nav2 = nav1.GetAdjacentArea(b, c);
+						if(nav2 != NavArea_Null)
+							NavList.Push(nav2);
+					}
 				}
 			}
 		}
+
+		delete list;
 	}
 
-	float lines1[6], lines2[6];
-	float line1[3], line2[3];
+	float lines1[7], lines2[7];
+	//float line1[3], line2[3];
 
-	ArrayList list = new ArrayList(6);
+	ArrayList list = new ArrayList(7);
 
 	int length1 = NavList.Length;
+	float corner[NUM_CORNERS][3];
+	float sort[4][2];
 	for(int a; a < length1; a++)	// Go through infected tiles
 	{
 		NavArea nav = NavList.Get(a);
 
-		for(NavCornerType b; b < NUM_CORNERS; b++)	// Go through each side of the tile
+		for(NavCornerType b = NORTH_WEST; b < NUM_CORNERS; b++)	// Go through each side of the tile
+		{
+			nav.GetCorner(corner[b], b);
+		}
+
+		for(NavCornerType b = NORTH_WEST; b < NUM_CORNERS; b++)
 		{
 			// Get the two positions for a line of the side
-			nav.GetCorner(line1, b);
-			nav.GetCorner(line2, b == SOUTH_WEST ? NORTH_WEST : b);
+			NavCornerType c = (b + view_as<NavCornerType>(1));
+			if(c == NUM_CORNERS)
+				c = NORTH_WEST;
 
 			// Sort by highest first to filter out dupe lines
-			if(line1[0] > line2[0])
+			if(corner[b][0] > corner[c][0])
 			{
-				lines1[0] = line1[0];
-				lines1[1] = line1[1];
-				lines1[2] = line1[2];
-				lines1[3] = line2[0];
-				lines1[4] = line2[1];
-				lines1[5] = line2[2];
+				lines1[0] = corner[b][0];
+				lines1[1] = corner[b][1];
+				lines1[2] = corner[b][2];
+				lines1[3] = corner[c][0];
+				lines1[4] = corner[c][1];
+				lines1[5] = corner[c][2];
 			}
 			else
 			{
-				lines1[0] = line2[0];
-				lines1[1] = line2[1];
-				lines1[2] = line2[2];
-				lines1[3] = line1[0];
-				lines1[4] = line1[1];
-				lines1[5] = line1[2];
+				lines1[0] = corner[c][0];
+				lines1[1] = corner[c][1];
+				lines1[2] = corner[c][2];
+				lines1[3] = corner[b][0];
+				lines1[4] = corner[b][1];
+				lines1[5] = corner[b][2];
 			}
 
-			bool dupe;
+			bool newLine = true;
 			int length2 = list.Length;
-			for(int c; c < length2; c++)	// Find dupe lines from touching tiles
+			for(int d; d < length2; d++)	// Find dupe lines from touching tiles
 			{
-				list.GetArray(c, lines2);
+				list.GetArray(d, lines2);
 
-				dupe = true;
-				for(int d; d < sizeof(lines1); d++)
+				if(lines1[0] == lines1[3] && lines1[0] == lines2[0] && lines1[3] == lines2[3] &&	// Same x-axis
+				 !((lines1[1] > lines2[1] && lines1[4] > lines2[4]) || (lines1[1] < lines2[1] && lines1[4] < lines2[4])))	// Overlapping y-axis
 				{
-					if(fabs(lines1[d] - lines2[d]) < 3.0)
+					sort[0][0] = lines1[1];
+					sort[0][1] = lines1[2];
+					sort[1][0] = lines2[1];
+					sort[1][1] = lines2[2];
+					sort[2][0] = lines1[4];
+					sort[2][1] = lines1[5];
+					sort[3][0] = lines2[4];
+					sort[3][1] = lines2[5];
+
+					SortCustom2D(sort, sizeof(sort), SeaFounder_Sorting);
+
+					newLine = false;
+
+					bool overriden;
+					for(int i; i < 3; i += 2)	// Compare 1st and 2nd, 3rd and 4th
 					{
-						dupe = false;
-						break;
+						if(fabs(sort[i][0] - sort[i + 1][0]) > 3.0)
+						{
+							lines2[1] = sort[i][0];
+							lines2[2] = sort[i][1];
+							lines2[4] = sort[i + 1][0];
+							lines2[5] = sort[i + 1][1];
+							lines2[6] = 0.0;
+
+							if(overriden)
+							{
+								list.PushArray(lines2);
+							}
+							else
+							{
+								list.SetArray(d, lines2);
+								overriden = true;
+							}
+						}
 					}
+
+					if(!overriden)
+					{
+						lines2[6] = 1.0;	// Don't use line
+						list.SetArray(d, lines2);
+					}
+					
+					break;
 				}
 
-				if(dupe)
+				if(lines1[1] == lines1[4] && lines1[1] == lines2[1] && lines1[4] == lines2[4] &&	// Same y-axis
+				 !((lines1[0] > lines2[0] && lines1[3] > lines2[3]) || (lines1[0] < lines2[0] && lines1[3] < lines2[3])))	// Overlapping x-axis
 				{
-					list.Erase(c--);
-					length2--;
+					sort[0][0] = lines1[0];
+					sort[0][1] = lines1[2];
+					sort[1][0] = lines2[0];
+					sort[1][1] = lines2[2];
+					sort[2][0] = lines1[3];
+					sort[2][1] = lines1[5];
+					sort[3][0] = lines2[3];
+					sort[3][1] = lines2[5];
+
+					SortCustom2D(sort, sizeof(sort), SeaFounder_Sorting);
+
+					newLine = false;
+
+					bool overriden;
+					for(int i; i < 3; i += 2)
+					{
+						if(fabs(sort[i][0] - sort[i + 1][0]) > 3.0)
+						{
+							lines2[0] = sort[i][0];
+							lines2[2] = sort[i][1];
+							lines2[3] = sort[i + 1][0];
+							lines2[5] = sort[i + 1][1];
+							lines2[6] = 0.0;
+
+							if(overriden)
+							{
+								list.PushArray(lines2);
+							}
+							else
+							{
+								list.SetArray(d, lines2);
+								overriden = true;
+							}
+						}
+					}
+
+					if(!overriden)
+					{
+						lines2[6] = 1.0;	// Don't use line
+						list.SetArray(d, lines2);
+					}
 					break;
 				}
 			}
 
-			if(!dupe)	// Add to line list
+			if(newLine)	// Add to line list
+			{
 				list.PushArray(lines1);
+			}
 		}
 	}
 
-	int sprite = PrecacheModel("materials/sprites/lgtning.vmt");
 	length1 = list.Length;
 	for(int a; a < length1; a++)
 	{
 		list.GetArray(a, lines1);
 
-		line1[0] = lines1[0];
-		line1[1] = lines1[0];
-		line1[2] = lines1[0];
-		line2[0] = lines1[0];
-		line2[1] = lines1[0];
-		line2[2] = lines1[0];
+		if(!lines1[6])
+		{
+			/*line1[0] = lines1[0];
+			line1[1] = lines1[1];
+			line1[2] = lines1[2] + 3.0;
+			line2[0] = lines1[3];
+			line2[1] = lines1[4];
+			line2[2] = lines1[5] + 3.0;*/
 
-		TE_SetupBeamPoints(line1, line2, sprite, 0, 0, 0, 4.0, 1.0, 1.0, 1, 0.0, {255, 0, 255, 255}, 0);
-		TE_SendToAll();
+			DataPack pack2 = new DataPack();
+			RequestFrames(SeaFounder_RenderFrame, 2 + (a / 16), pack2);
+			pack2.WriteFloat(lines1[0]);
+			pack2.WriteFloat(lines1[1]);
+			pack2.WriteFloat(lines1[2] + 8.0);
+			pack2.WriteFloat(lines1[3]);
+			pack2.WriteFloat(lines1[4]);
+			pack2.WriteFloat(lines1[5] + 8.0);
+		}
 	}
 
 	delete list;
 	return Plugin_Continue;
 }
 
+public int SeaFounder_Sorting(int[] elem1, int[] elem2, const int[][] array, Handle hndl)
+{
+	return elem1[0] > elem2[0] ? -1 : 1;
+}
+
+public void SeaFounder_RenderFrame(DataPack pack)
+{
+	pack.Reset();
+	float pos1[3], pos2[3];
+	pos1[0] = pack.ReadFloat();
+	pos1[1] = pack.ReadFloat();
+	pos1[2] = pack.ReadFloat();
+	pos2[0] = pack.ReadFloat();
+	pos2[1] = pack.ReadFloat();
+	pos2[2] = pack.ReadFloat();
+
+	delete pack;
+
+	TE_SetupBeamPoints(pos1, pos2, Silvester_BEAM_Laser_1, Silvester_BEAM_Laser_1, 0, 0, 4.0, 5.0/*Width*/, 5.0/*end Width*/, 0, 0.0, {35, 35, 255, 125}, 0);
+	TE_SendToAll();
+}
+
 public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 {
-	if(!NavList || Waves_InSetup())
+	if(!NavList || (Waves_InSetup() && !CvarNoRoundStart.BoolValue))
 	{
 		Zero(NervousTouching);
 		delete NavList;
@@ -429,19 +568,47 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 	{
 		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
 		{
-			pos = WorldSpaceCenter(client);
+			GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			NavArea nav = TheNavMesh.GetNavArea_Vec(pos, 25.0);
-			if(nav != NavArea_Null && NavList.FindValue(nav) != -1)
+			NervousLastTouch[client] = TheNavMesh.GetNavArea_Vec(pos, 70.0);
+			if(NervousLastTouch[client] != NavArea_Null && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
-				SDKHooks_TakeDamage(client, 0, 0, 6.0, DMG_BULLET);
+				float MaxHealth = float(SDKCall_GetMaxHealth(client));
+
+				float damageDeal;
+				
+				damageDeal = MaxHealth * 0.0025;
+
+				if(damageDeal < 2.0) //whatever is higher.
+				{
+					damageDeal = 2.0;
+				}
+
+				SDKHooks_TakeDamage(client, 0, 0, damageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 				// 120 x 0.25 x 0.2
 
-				SeaSlider_AddNeuralDamage(client, 0, 1);
+				SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
 				// 20 x 0.25 x 0.2
 
+				int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+				if(!IsValidEntity(entity))
+				{
+					float flPos[3];
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+					int particle_Sing = ParticleEffectAt(flPos, "utaunt_hands_teamcolor_blue", -1.0);
+					SetParent(client, particle_Sing);
+					i_DyingParticleIndication[client] = EntIndexToEntRef(particle_Sing);
+				}
 				NervousTouching[client] = NervousTouching[0];
+			}
+			else
+			{
+				int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+				if(IsValidEntity(entity))
+				{
+					RemoveEntity(entity);
+				}
 			}
 		}
 	}
@@ -451,12 +618,15 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
-			pos = WorldSpaceCenter(entity);
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			NavArea nav = TheNavMesh.GetNavArea_Vec(pos, 25.0);
+			NavArea nav = TheNavMesh.GetNavArea_Vec(pos, 5.0);
 			if(nav != NavArea_Null && NavList.FindValue(nav) != -1)
+			{
 				NervousTouching[entity] = NervousTouching[0];
+				NervousLastTouch[entity] = NavArea_Null;
+			}
 		}
 	}
 	
@@ -465,19 +635,45 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
-			pos = WorldSpaceCenter(entity);
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			NavArea nav = TheNavMesh.GetNavArea_Vec(pos, 25.0);
-			if(nav != NavArea_Null && NavList.FindValue(nav) != -1)
+			NervousLastTouch[entity] = TheNavMesh.GetNavArea_Vec(pos, 5.0);
+			if(NervousLastTouch[entity] != NavArea_Null && NavList.FindValue(NervousLastTouch[entity]) != -1)
 			{
-				SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET);
+				SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 				// 120 x 0.25 x 0.2
 
-				SeaSlider_AddNeuralDamage(entity, 0, 1);
+				SeaSlider_AddNeuralDamage(entity, 0, 1, false);
 				// 20 x 0.25 x 0.2
 
 				NervousTouching[entity] = NervousTouching[0];
+			}
+		}
+	}
+
+	for(int a; a < i_MaxcountBuilding; a++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		if(entity != INVALID_ENT_REFERENCE)
+		{
+			CClotBody npc = view_as<CClotBody>(entity);
+			if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+			{
+				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+
+				// Find entities touching infected tiles
+				NervousLastTouch[entity] = TheNavMesh.GetNavArea_Vec(pos, 5.0);
+				if(NervousLastTouch[entity] != NavArea_Null && NavList.FindValue(NervousLastTouch[entity]) != -1)
+				{
+					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET, _, _, pos);
+					// 120 x 0.25 x 0.2
+
+					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					// 20 x 0.25 x 0.2
+
+					NervousTouching[entity] = NervousTouching[0];
+				}
 			}
 		}
 	}

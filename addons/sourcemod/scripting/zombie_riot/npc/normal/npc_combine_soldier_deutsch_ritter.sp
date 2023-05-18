@@ -170,7 +170,8 @@ methodmap CombineDeutsch < CClotBody
 		i_NpcInternalId[npc.index] = COMBINE_DEUTSCH_RITTER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

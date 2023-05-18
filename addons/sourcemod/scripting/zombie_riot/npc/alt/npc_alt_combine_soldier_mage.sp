@@ -172,7 +172,8 @@ methodmap AltCombineMage < CClotBody
 	public AltCombineMage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
 		
 		int iActivity = npc.LookupActivity("ACT_IDLE");

@@ -69,7 +69,8 @@ static char g_PullSounds[][] = {
 static bool Silvester_BEAM_CanUse[MAXENTITIES];
 static bool Silvester_BEAM_IsUsing[MAXENTITIES];
 static int Silvester_BEAM_TicksActive[MAXENTITIES];
-static int Silvester_BEAM_Laser;
+int Silvester_BEAM_Laser;
+int Silvester_BEAM_Laser_1;
 static int Silvester_BEAM_Glow;
 static float Silvester_BEAM_CloseDPT[MAXENTITIES];
 static float Silvester_BEAM_FarDPT[MAXENTITIES];
@@ -125,6 +126,7 @@ public void RaidbossSilvester_OnMapStart()
 void Silvester_TBB_Precahce()
 {
 	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
+	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
 	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 

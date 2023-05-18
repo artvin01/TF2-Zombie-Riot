@@ -60,6 +60,7 @@ void NPC_Spawn_ClearAll()
 void Npc_Sp_Precache()
 {
 	g_particleCritText = PrecacheParticleSystem("crit_text");
+	g_particleMissText = PrecacheParticleSystem("miss_text");
 }
 
 void NPC_PluginStart()
@@ -1355,26 +1356,32 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				{
 					f_CooldownForHurtParticle[victim] = GameTime + 0.1;
 
-					if(npcBase.m_iBleedType == 1)
+					if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
 					{
 						TE_ParticleInt(g_particleImpactFlesh, damagePosition);
 						TE_SendToAll();
 					}
-					else if (npcBase.m_iBleedType == 2)
+					else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
 					{
 						damagePosition[2] -= 40.0;
 						TE_ParticleInt(g_particleImpactMetal, damagePosition);
 						TE_SendToAll();
 					}
-					else if (npcBase.m_iBleedType == 3)
+					else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
 					{
 						TE_ParticleInt(g_particleImpactRubber, damagePosition);
 						TE_SendToAll();
 					}
-					else if (npcBase.m_iBleedType == 4)
+					else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
 					{
 						//If you cant find any good blood effect, use this one and just recolour it.
 						TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+						TE_SendToAll();
+					}
+					else if (npcBase.m_iBleedType == BLEEDTYPE_SEABORN)
+					{
+						//If you cant find any good blood effect, use this one and just recolour it.
+						TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
 						TE_SendToAll();
 					}
 				}
