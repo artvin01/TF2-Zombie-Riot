@@ -78,7 +78,20 @@ methodmap UnderTides < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		npc.m_flSpeed = 1.0;
-		npc.Anger = true;
+		npc.Anger = !zr_disablerandomvillagerspawn.BoolValue;
+
+		if(!npc.Anger)
+		{
+			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			
+			npc.m_flMeleeArmor = 2.0;
+
+			npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
+			npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 15.0;
+			npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 30.0;
+
+			Citizen_MiniBossSpawn(npc.index);
+		}
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);

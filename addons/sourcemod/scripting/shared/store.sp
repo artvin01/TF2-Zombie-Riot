@@ -1284,7 +1284,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 void Store_Reset()
 {
 #if defined ZR
-	for(int c=1; c<=MaxClients; c++)
+	for(int c; c<MAXTF2PLAYERS; c++)
 	{
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
@@ -1295,7 +1295,7 @@ void Store_Reset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		for(int c=1; c<=MaxClients; c++)
+		for(int c; c<MAXTF2PLAYERS; c++)
 		{
 			item.Owned[c] = 0;
 			item.Scaled[c] = 0;
