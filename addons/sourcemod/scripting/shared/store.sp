@@ -1217,18 +1217,68 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
 					Store_ApplyAttribs(client);
 					Store_GiveAll(client, GetClientHealth(client));
-					
 					owner = GetClientOfUserId(values[3]);
 					if(owner)
 					{
-						if(Pack_A_Punch_Machine_money_limit[owner][client] < 5)
+						int HigherTechAdvancedClient;
+						int HigherTechAdvancedCount;
+						HigherTechAdvancedClient = owner;
+						HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false, true);
+						char buffer_pap[36];
+						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 						{
-							Pack_A_Punch_Machine_money_limit[owner][client] += 1;
-							CashSpent[owner] -= 400;
-							Resupplies_Supplied[owner] += 40;
-							SetDefaultHudPosition(client);
-							SetGlobalTransTarget(owner);
-							ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
+							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+							if(IsValidEntity(entity))
+							{
+								GetEntPropString(entity, Prop_Data, "m_iName", buffer_pap, sizeof(buffer_pap));
+								if(!StrContains(buffer_pap, "zr_packapunch", false))
+								{
+									int ownerTech = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+									if(IsValidClient(ownerTech) && ownerTech != owner)
+									{
+										int TechCount;
+										TechCount = MaxSupportBuildingsAllowed(ownerTech, false, true);
+										if(HigherTechAdvancedCount < TechCount)
+										{
+											HigherTechAdvancedClient = ownerTech;
+											HigherTechAdvancedCount = TechCount;
+										}
+									}
+								}
+							}
+						}
+						if(owner == HigherTechAdvancedClient || HigherTechAdvancedClient == client)
+						{
+							if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
+							{
+								Pack_A_Punch_Machine_money_limit[owner][client] += 10;
+								CashSpent[owner] -= 400;
+								Resupplies_Supplied[owner] += 40;
+								SetDefaultHudPosition(owner, _, _, _, 5.0);
+								SetGlobalTransTarget(owner);
+								ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
+							}
+						}
+						else
+						{
+							if(Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] < 50)
+							{
+								Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] += 7;
+								CashSpent[HigherTechAdvancedClient] -= 300;
+								Resupplies_Supplied[HigherTechAdvancedClient] += 30;
+								SetDefaultHudPosition(HigherTechAdvancedClient, _, _, _, 5.0);
+								SetGlobalTransTarget(HigherTechAdvancedClient);
+								ShowSyncHudText(HigherTechAdvancedClient, SyncHud_Notifaction, "%t", "Pap Machine Used Me");
+							}
+							if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
+							{
+								Pack_A_Punch_Machine_money_limit[owner][client] += 3;
+								CashSpent[owner] -= 100;
+								Resupplies_Supplied[owner] += 10;
+								SetDefaultHudPosition(owner, _, _, _, 5.0);
+								SetGlobalTransTarget(owner);
+								ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used But Another");
+							}							
 						}
 					}
 					else
@@ -2935,6 +2985,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				{
 					Menu menu2 = new Menu(Store_MenuPage);
 					menu2.SetTitle("%t", "Help Title?");
+
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
+					menu2.AddItem("-12", buffer);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Help?");
 					menu2.AddItem("-4", buffer);
@@ -2969,6 +3023,34 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				{
 					Menu menu2 = new Menu(Store_MenuPage);
 					menu2.SetTitle("%t", "Gamemode Help Explained");
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -12:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Debuff/Buff Explain 1");
+
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Show Debuffs");
+					menu2.AddItem("-53", buffer);
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Back");
+					menu2.AddItem("-1", buffer);
+					
+					menu2.Display(client, MENU_TIME_FOREVER);
+				}
+				case -53:
+				{
+					Menu menu2 = new Menu(Store_MenuPage);
+					menu2.SetTitle("%t", "Debuff/Buff Explain 2");
+
+					
+					FormatEx(buffer, sizeof(buffer), "%t", "Show Buffs");
+					menu2.AddItem("-12", buffer);
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Back");
 					menu2.AddItem("-1", buffer);
