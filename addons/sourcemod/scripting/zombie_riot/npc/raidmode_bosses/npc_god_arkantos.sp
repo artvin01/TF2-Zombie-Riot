@@ -910,14 +910,14 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 					
 					if(target > 0) 
 					{
-						float damage = 24.0;
+						float damage = 20.0;
 						if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
 						{
-							damage = 22.0; //nerf
+							damage = 18.0; //nerf
 						}
 						else if(ZR_GetWaveCount()+1 > 55)
 						{
-							damage = 19.5; //nerf
+							damage = 16.5; //nerf
 						}
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								

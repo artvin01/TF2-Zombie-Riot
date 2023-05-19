@@ -687,6 +687,14 @@
 		"nl"		"Iemand gebruikte net uw Pack-A-Punch, je krijgt hiervoor +400 krediet!" 
 		"chi"       "队友使用了你的武器工作台，你获得 400 的现金奖励"
 	}
+	"Pap Machine Used But Another"
+	{
+		"en"		"Someone used your Pack-A-Punch Machine, you gain +100 Credits!\nAnother builder has more advanced tech then you, and gained the rest."
+	}
+	"Pap Machine Used Me"
+	{
+		"en"		"A Pack-A-Punch was used that wasnt yours, but your tech is more advanced! You gain 300+ Credits."
+	}
 	"Equip Melee To Use"
 	{
 		"en"		"Equip a weapon with ammo to use this!"
@@ -1181,6 +1189,22 @@
 		"pt"		"Sobrevive contra ondas de zumbis até normalmente 60 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
 		"nl"		"Probeer om tot wel 60 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
 		"chi"       "任务目标：在一波又一波的僵尸潮中生存下来\n通过击杀僵尸获得的现金奖励购买各种强力的武器\n帮助你的队友一起撑到黎明的到来~"
+	}
+	"Debuff/Buff Explain 1"
+	{
+		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increaced Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increaced Heal/Firerate/Reload Rate.\n⍤ : 25%% Increaced Heal/Firerate/Reload Rate.\n⌃ : 25%% more dmg\n⌅ : 15 %% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increaced dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
+	}
+	"Show Debuffs"
+	{
+		"en" 		"Show Debuffs"
+	}
+	"Show Buffs"
+	{
+		"en" 		"Show Buffs"
+	}
+	"Debuff/Buff Explain 2"
+	{
+		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow, heal with armor tables.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n♨ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow\n⯯ : 40%% more dmg taken.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities, check encylcopedia."
 	}
 	"Command Help Explained"
 	{
@@ -2510,5 +2534,17 @@
 		//"it"		""
 		//"fr"		""
 	}
-	
+	"Buff/Debuff List"
+	{
+		"en"		"Buff/Debuff List"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
 }

@@ -30,7 +30,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 
-	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -276,7 +276,11 @@ public Action NearlSwordAbility_ClotDamaged(int victim, int &attacker, int &infl
 
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		damage *= 4.0; //takes 4x more dmg from raids.
+		damage *= 2.0; //if raids active, then it will take 2x dmg
+	}
+	if(EntRefToEntIndex(RaidBossActive) == attacker)
+	{
+		damage *= 2.0; //takes 2x more dmg from raids itself.
 	}
 	return Plugin_Changed;
 }

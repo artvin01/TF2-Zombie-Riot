@@ -4683,11 +4683,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
-			else if(b_BuildingIsStacked[enemy])
-			{
-				return false;
-			}
-			
 			else if(b_bBuildingIsPlaced[enemy])
 			{
 				return true;
@@ -4917,7 +4912,7 @@ stock int GetClosestTarget(int entity,
 			if(IsValidEntity(entity_close) && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
+				if(npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
 					if(CanSee)
 					{
