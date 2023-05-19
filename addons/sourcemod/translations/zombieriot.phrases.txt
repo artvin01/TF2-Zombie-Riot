@@ -1192,7 +1192,7 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increaced Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increaced attackspeed and reload speed.\n⍤ : 25%% Increaced attackspeed and reload speed.\n⌃ : 25%% more dmg\n⌅ : 15 %% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increaced dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
+		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increaced Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increaced Heal/Firerate/Reload Rate.\n⍤ : 25%% Increaced Heal/Firerate/Reload Rate.\n⌃ : 25%% more dmg\n⌅ : 15 %% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increaced dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
 	}
 	"Show Debuffs"
 	{
