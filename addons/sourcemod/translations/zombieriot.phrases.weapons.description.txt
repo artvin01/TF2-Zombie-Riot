@@ -661,21 +661,17 @@
 	
 	"Hammer Pap 1"
 	{
-		"en"	"Increased damage and bleedtime"
-		"ru"	"Увеличенный урон и время кровотечения."
-		"chi"   "增加伤害和流血时间"
+		"en"	"Increased damage"
 	}
 	"Hammer Pap 2"
 	{
-		"en"	"Increased damage and bleedtime and lower attackspeed.\nYour attacks are so strong that they cause explosions and cause aoe bleed for upto 5 targets."
+		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions."
 		"ru"	"Увеличенный урон, время кровотечения и сниженная скорость атаки.\nВаши атаки настолько сильны, что вызывают взрывы и вызывают кровотечение до 5 целей."
 		"chi"   "增加伤害和流血时间，降低攻击速度。你的攻击是如此强大，弓箭将造成Aoe的爆炸伤害和流血增加到5个目标。"
 	}
 	"Hammer Pap 3"
 	{
-		"en"	"Increased damage and bleedtime"
-		"ru"	"Увеличенный урон и время кровотечения."
-		"chi"   "增加伤害和流血时间"
+		"en"	"Increased damage"
 	}
 	
 	"Fire Axe Desc"
@@ -692,9 +688,7 @@
 	}
 	"Fire Axe Pap 2"
 	{
-		"en"	"Increased damage and attackspeed and bleedtime"
-		"ru"	"Увеличенный урон, скорость атаки и время кровотечения."
-		"chi"   "增加伤害，攻击速度和流血时间"
+		"en"	"Increased damage and attackspeed"
 	}
 	
 	"Survivalist Blade Desc"
@@ -760,9 +754,9 @@
 	
 	"Longsword Desc"
 	{
-		"en"	"Causes bleed and 5%% extra melee resistance"
-		"ru"	"Вызывает кровотечение и 5%% дополнительного сопротивления ближнему бою."
-		"chi"   "造成流血和5%%额外近战抗性"
+		"en"	"5%% extra melee resistance"
+		"ru"	"5%% дополнительного сопротивления ближнему бою."
+		"chi"   "5%%额外近战抗性"
 	}
 	"Longsword Pap 1"
 	{
@@ -1116,9 +1110,7 @@
 	
 	"Buildable Pack-a-Punch Desc"
 	{
-		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам усиление вашему оружию за кредиты.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器可以升级你的武器\n第一次购买时价格提升双倍"
+		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price.\nIf any other player with more upgrades then you exists that also has a pap, then they will get the majority of the cash."
 	}
 	
 	"Buildable Sentry Desc"
@@ -1929,5 +1921,9 @@
 	{
 		"en"	"So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot piecre multiple targets!"
 		"chi"   "所以，你想要更大的力量?\n介绍“粒子炮”\n按R在粒子束/炮之间切换\n粒子炮也有自己的鼠标右键技能\n粒子炮不能拼接多个目标!"
+	}
+	"Dragon Fury PAP 1"
+	{
+		"en"	"Increaced damage"
 	}
 }

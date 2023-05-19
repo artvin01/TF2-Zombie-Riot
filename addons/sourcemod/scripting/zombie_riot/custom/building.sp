@@ -3903,9 +3903,14 @@ static void GetBeamDrawStartPoint_Client(int client, float startPoint[3])
 	GetClientEyePosition(client, startPoint);
 }
 
+static int i_MaxSupportBuildingsAllowed[MAXTF2PLAYERS];
 
-public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
+int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat = false)
 {
+	if(GetSavedStat)
+	{
+		return i_MaxSupportBuildingsAllowed[client];
+	}
 	int maxAllowed = 1;
 	
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
@@ -3921,6 +3926,7 @@ public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 	{
 		maxAllowed = 1;
 	}
+	i_MaxSupportBuildingsAllowed[client] = maxAllowed;
 	return maxAllowed;
 }
 
