@@ -661,7 +661,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		{
 			StoreItems.GetArray(choiceIndex, item);
 			item.GetItemInfo(choiceInfo, info);
-			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, RoundToCeil(float(choicePrice) * SELL_AMOUNT), info);
+			Citizen_UpdateWeaponStats(entity, item.NPCWeapon, RoundToCeil(float(choicePrice) * SELL_AMOUNT), info, 0);
 			return view_as<bool>(choiceInfo);
 		}
 	}
@@ -3278,7 +3278,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							int entity = EntRefToEntIndex(NPCTarget[client]);
 							if(entity != INVALID_ENT_REFERENCE)
 							{
-								if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info))
+								if(Citizen_UpdateWeaponStats(entity, item.NPCWeapon, sell, info, GetClientUserId(client)))
 								{
 									CashSpent[client] += info.Cost;
 									CashSpentTotal[client] += info.Cost;
