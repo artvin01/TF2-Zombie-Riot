@@ -209,6 +209,7 @@ methodmap RaidbossNemesis < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Nemesis Arrived.");
 			}
 		}
+		b_thisNpcIsARaid[npc.index] = true;
 
 		Music_SetRaidMusic("#zombie_riot/320_now_1.mp3", 200, true, 1.0);
 		RaidModeScaling = 9999999.99;

@@ -2750,8 +2750,8 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 #if defined ZR
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		damage *= 1.35;
-	}	
+		damage *= 1.15;
+	}
 #endif
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
@@ -2911,6 +2911,11 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+			}
+			//against raids, any aoe ability should be better as they are usually alone or its only two.
+			if(b_thisNpcIsARaid[ClosestTarget])
+			{
+				damage_1 *= 1.3;
 			}
 			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
 			float GetBeforeDamage;

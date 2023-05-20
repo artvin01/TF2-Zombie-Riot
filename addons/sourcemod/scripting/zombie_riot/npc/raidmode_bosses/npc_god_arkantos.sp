@@ -235,6 +235,7 @@ methodmap GodArkantos < CClotBody
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -388,7 +389,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	if(b_ThisEntityIgnored[npc.index])
 	{
 
-		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2000;
+		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4000;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 		{

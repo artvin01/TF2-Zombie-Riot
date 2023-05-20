@@ -7390,6 +7390,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_thisNpcIsARaid[entity] = false;
 	b_StaticNPC[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	b_NPCTeleportOutOfStuck[entity] = false;
