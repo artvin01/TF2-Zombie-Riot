@@ -2257,7 +2257,7 @@ methodmap CClotBody
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		return entity;
 	}
-	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0) //No defaults, otherwise i cant even judge.
+	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -2284,6 +2284,7 @@ methodmap CClotBody
 		int entity = CreateEntityByName("tf_projectile_rocket");
 		if(IsValidEntity(entity))
 		{
+			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
@@ -7389,6 +7390,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_AttackHappensMaximum[entity] = 0.0;
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
+	b_thisNpcIsARaid[entity] = false;
 	b_StaticNPC[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	b_NPCTeleportOutOfStuck[entity] = false;

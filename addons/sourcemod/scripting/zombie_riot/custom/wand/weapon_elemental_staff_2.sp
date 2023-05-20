@@ -557,7 +557,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	//deal more damage during raids, otherwise its really weak in most cases.
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		damage *= 1.5;
+		damage *= 1.25;
 	}
 
 	if(Firstlightning)
@@ -576,6 +576,10 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 		if(IsValidEntity(enemy))
 		{
 			damage = (original_damage * (0.15 * loop));
+			if(b_thisNpcIsARaid[enemy])
+			{
+				damage *= 1.35;
+			}
 			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;

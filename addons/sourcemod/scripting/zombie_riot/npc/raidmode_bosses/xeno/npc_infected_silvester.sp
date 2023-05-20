@@ -308,6 +308,7 @@ methodmap RaidbossSilvester < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
 			}
 		}
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

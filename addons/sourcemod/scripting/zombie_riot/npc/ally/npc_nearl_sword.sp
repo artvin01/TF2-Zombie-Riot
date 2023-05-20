@@ -276,7 +276,11 @@ public Action NearlSwordAbility_ClotDamaged(int victim, int &attacker, int &infl
 
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		damage *= 4.0; //takes 4x more dmg from raids.
+		damage *= 2.0; //if raids active, then it will take 2x dmg
+	}
+	if(b_thisNpcIsARaid[attacker])
+	{
+		damage *= 2.0; //takes 2x more dmg from raids itself.
 	}
 	return Plugin_Changed;
 }

@@ -350,7 +350,7 @@ methodmap Blitzkrieg < CClotBody
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
 		i_currentwave[npc.index]=(ZR_GetWaveCount()+1);
-		
+		b_thisNpcIsARaid[npc.index] = true;
 		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
 		i_wave_life1[npc.index] = 15;
 		i_wave_life2[npc.index] = 30;
@@ -899,7 +899,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 11.5 * i_HealthScale[npc.index];
+								meleedmg = 20.5 * i_HealthScale[npc.index];
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;

@@ -240,6 +240,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_flSpeed = 290.0;
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		b_thisNpcIsARaid[npc.index] = true;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;

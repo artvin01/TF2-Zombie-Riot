@@ -290,6 +290,7 @@ methodmap TrueFusionWarrior < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
 			}
 		}
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
