@@ -597,6 +597,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(6.0 * MultiGlobal));
@@ -605,6 +606,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			
@@ -615,6 +617,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			GodArkantosSpawnEnemy(MEDIVAL_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
@@ -624,6 +627,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -648,6 +652,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -658,6 +663,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -667,6 +673,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_BRAWLER,_, RoundToCeil(6.0 * MultiGlobal));
@@ -676,6 +683,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -700,6 +708,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -711,6 +720,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -720,6 +730,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
@@ -729,6 +740,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -753,6 +765,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -763,6 +776,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -772,6 +786,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,50000, RoundToCeil(10.0 * MultiGlobal));
@@ -782,6 +797,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
