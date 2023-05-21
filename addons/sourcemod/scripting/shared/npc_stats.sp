@@ -5253,6 +5253,7 @@ public void Check_If_Stuck(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
+	PlayerInIlligalStuckArea(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
@@ -5397,6 +5398,7 @@ public void Check_If_Stuck(int iNPC)
 							SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
 							TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 							npc.SetVelocity({ 0.0, 0.0, 0.0 });
+							SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
 	#if defined ZR
 							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GameTime)
 							{
@@ -5406,7 +5408,6 @@ public void Check_If_Stuck(int iNPC)
 									wasactuallysawrunner = true;
 								}
 								b_ThisNpcIsSawrunner[npc.index] = true;
-								SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
 								if(wasactuallysawrunner)
 								{
 									b_ThisNpcIsSawrunner[npc.index] = false;
@@ -8527,4 +8528,137 @@ public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
 		}
 	}
 	return true;
+}
+
+/*
+This isnt a perfect world, map stuck spots will always exist, but we can fix this abit.
+This code will check if the player is in a stuck spot, this works in a way where it will check if the path is pathable.
+If it is not, then we will run it multiple times over a few seconds or minutes
+After that, we check if they are abusing a spot with a 90-95% duration, 
+as any less and its barely even a spot to be abused by,as it gives plenty time for npcs to hit you probably.
+
+This will save the pos of your area, then get the averages of said area
+and make the average an illigal spot, and any client in a 200 unit radius will be counted as drowning via trigger
+This will be automatically saved in a CFG file, and give us a warning, while kicking and warning the said player
+This will remove the need to instantly update maps to fix stuck spots
+*/
+#define MAX_STUCK_PAST_CHECK 64
+float f_IlligalStuck_ClientDelayCheck[MAXTF2PLAYERS];
+float f3_IlligalStuck_AveragePosClient[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK][3];
+int i2_IlligalStuck_StuckTrueFalse[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK];
+/*
+	1 is not stuck
+	2 is stuck
+	0 means not recorded yet.
+*/
+//the max should be 64 checks.
+void PlayerInIlligalStuckArea(int entity)
+{
+	int client;
+	
+	client = i_Target[entity];
+	if(client <= 0 || client > MaxClients)
+	{
+		return;
+	}
+	float GameTime = GetGameTime();
+	if(f_IlligalStuck_ClientDelayCheck[client] > GameTime)
+		return;
+
+	f_IlligalStuck_ClientDelayCheck[client] = GameTime + 1.0;
+
+	if(PF_IsPathToEntityPossible(entity, client, _))
+	{
+		//I can be pathed to.
+		PlayerIlligalResetOldestAndSort(client, 1);
+	}
+	else
+	{
+		PlayerIlligalResetOldestAndSort(client, 2);
+		//i cant be pathed to.
+	}
+	PlayerIlligalTooMuch(client);
+}
+
+/*
+	64 is then newest, 0 is the oldest.
+*/
+void PlayerIlligalResetOldestAndSort(int client, int ClientStuck)
+{
+	bool FreeSpot = false;
+	static float flMyPos[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
+	{
+		if(i2_IlligalStuck_StuckTrueFalse[client][Count] == 0)
+		{
+			FreeSpot = true;
+			break;
+		}
+		else
+		{
+			i2_IlligalStuck_StuckTrueFalse[client][Count] = ClientStuck;
+			f3_IlligalStuck_AveragePosClient[client][Count] = flMyPos;
+		}
+	}
+	if(!FreeSpot)
+	{
+		//there is no free spot left, rearange
+		for(int Count = MAX_STUCK_PAST_CHECK - 1; Count > 0; Count--)
+		{
+			i2_IlligalStuck_StuckTrueFalse[client][Count - 1] = i2_IlligalStuck_StuckTrueFalse[client][Count];
+			f3_IlligalStuck_AveragePosClient[client][Count - 1] = f3_IlligalStuck_AveragePosClient[client][Count];
+		}
+		i2_IlligalStuck_StuckTrueFalse[client][MAX_STUCK_PAST_CHECK - 1] = ClientStuck;
+		f3_IlligalStuck_AveragePosClient[client][MAX_STUCK_PAST_CHECK - 1] = flMyPos;
+		//update latest
+	}
+}
+
+void PlayerIllgalMapCheck()
+{
+	bool MapHasIlligalSpot;
+
+	/*
+	blahblahblahcode
+
+	if client is near stuck abuse area, do this
+	SDKHooks_TakeDamage(client, 0, 0, float(SDKCall_GetMaxHealth(client) / 8), DMG_DROWN); //Make him oneshot the enemy if they have the quantum armor
+											
+	*/
+}
+
+void PlayerIlligalTooMuch(int client)
+{
+	int CountIlligal;
+	for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
+	{
+		if(i2_IlligalStuck_StuckTrueFalse[client][Count] == 2)
+		{
+			CountIlligal += 1;
+		}
+	}
+	if(CountIlligal > RoundToNearest((float(MAX_STUCK_PAST_CHECK) * 0.9)))
+	{
+		float AveragePos[3];
+		int AveragePosCount;
+		for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
+		{
+			if(i2_IlligalStuck_StuckTrueFalse[client][Count] == 2)
+			{
+				AveragePosCount += 1;
+				AveragePos[0] += f3_IlligalStuck_AveragePosClient[client][Count][0];
+				AveragePos[1] += f3_IlligalStuck_AveragePosClient[client][Count][1];
+				AveragePos[2] += f3_IlligalStuck_AveragePosClient[client][Count][2];
+			}
+		}
+		AveragePos[0] /= AveragePosCount;
+		AveragePos[1] /= AveragePosCount;
+		AveragePos[2] /= AveragePosCount;
+		/*
+			Warn player, save poisition into cfg with map, slay, whatever, do it all.
+		*/
+		ForcePlayerSuicide(client);
+		PrintToChat(client, "Do not abuse NPC stuckspots.");
+	}
 }

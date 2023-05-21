@@ -256,7 +256,6 @@ public void AltCombineMage_ClotThink(int iNPC)
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_flmovedelay = GetGameTime(npc.index) + 1.5;
 				}
-				
 			}
 			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
