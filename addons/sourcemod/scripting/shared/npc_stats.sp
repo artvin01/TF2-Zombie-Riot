@@ -8623,7 +8623,8 @@ void PlayerIllgalMapCheck()
 	blahblahblahcode
 
 	if client is near stuck abuse area, do this
-	SDKHooks_TakeDamage(client, 0, 0, float(SDKCall_GetMaxHealth(client) / 8), DMG_DROWN); //Make him oneshot the enemy if they have the quantum armor
+	todo: do this in playerruncmd maybe so it can go against spam jumping, if its not too slow.
+	SDKHooks_TakeDamage(client, 0, 0, float(SDKCall_GetMaxHealth(client) / 4), DMG_DROWN);
 											
 	*/
 }
