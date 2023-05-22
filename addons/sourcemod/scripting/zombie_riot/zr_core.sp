@@ -87,7 +87,8 @@ enum
 	WEAPON_YAMATO = 17,
 	WEAPON_BATTILONS = 18,
 	WEAPON_SAGA = 19,
-	WEAPON_BEAM_PAP = 20
+	WEAPON_BEAM_PAP = 20,
+	WEAPON_MLYNAR = 21
 }
 
 ArrayList SpawnerList;
@@ -111,7 +112,7 @@ ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 //ConVar CvarEnablePrivatePlugins;
-int CurrentGame;
+int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
@@ -360,6 +361,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_yamato.sp"
 #include "zombie_riot/custom/weapon_saga.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
+#include "zombie_riot/custom/weapon_mlynar.sp"
 
 void ZR_PluginLoad()
 {
@@ -474,6 +476,8 @@ void ZR_MapStart()
 	Weapon_lantean_Wand_Map_Precache();
 	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
+	Mlynar_Map_Precache();
+	Reset_stats_Mlynar_Global();
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -604,6 +608,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
 	Reset_stats_LappLand_Singular(client);
+	Reset_stats_Mlynar_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

@@ -1588,8 +1588,7 @@ void Store_ClientDisconnect(int client)
 	Store_WeaponSwitch(client, -1);
 	
 #if defined ZR
-	if(Waves_Started())
-		Database_SaveGameData(client);
+	Database_SaveGameData(client);
 
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;
@@ -4641,7 +4640,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			DispatchSpawn(entity);
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
-			
+			i_InternalMeleeTrace[entity] = true;
 #if defined ZR
 			TF2Attrib_SetByDefIndex(entity, 1, 0.623);
 		//	TF2Attrib_SetByDefIndex(entity, 124, 1.0); //Mini sentry
@@ -4998,6 +4997,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
+		Enable_Mlynar(client, entity);
 #endif
 
 #if defined RPG

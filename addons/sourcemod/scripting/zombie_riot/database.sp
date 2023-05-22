@@ -443,7 +443,7 @@ static void Database_LocalConnected(Database db, const char[] error)
 
 static void LocalClientAuthorized(int id, int userid)
 {
-	if(Local)
+	if(Local && CurrentGame != -1)
 	{
 		Transaction tr = new Transaction();
 		
@@ -524,7 +524,7 @@ public void Database_LocalGamedata(Database db, int userid, int numQueries, DBRe
 
 void Database_SaveGameData(int client)
 {
-	if(Local)
+	if(Local && CurrentGame != -1)
 	{
 		int id = GetSteamAccountID(client);
 		if(id)

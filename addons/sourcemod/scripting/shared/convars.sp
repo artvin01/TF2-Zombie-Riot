@@ -77,6 +77,7 @@ void ConVar_PluginStart()
 	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
+	//zr_webhookadmins = CreateConVar("zr_webhookadmins", "", "Webhook channel and key (123456/abcdexf)", FCVAR_PROTECTED);
 
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!

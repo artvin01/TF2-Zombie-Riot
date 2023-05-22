@@ -2250,6 +2250,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
+		Mlynar_EntityCreated(entity);
 #endif
 
 #if defined RPG

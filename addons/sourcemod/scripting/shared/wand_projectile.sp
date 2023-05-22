@@ -73,7 +73,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
 	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 		//make rockets visible on spawn.
-
+		
 		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
 		{

@@ -5659,7 +5659,7 @@ public bool Can_I_See_Enemy_Only(int attacker, int enemy)
 	
 	AddEntityToTraceStuckCheck(enemy);
 	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_ALL, RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
 	
 	RemoveEntityToTraceStuckCheck(enemy);
 	
@@ -5683,7 +5683,7 @@ public int Can_I_See_Ally(int attacker, int ally)
 	
 	AddEntityToTraceStuckCheck(ally);
 	
-	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, MASK_ALL, RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
+	trace = TR_TraceRayFilterEx(pos_npc, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, attacker);
 	
 	RemoveEntityToTraceStuckCheck(ally);
 	
@@ -6651,7 +6651,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * extra_backoff;
 			
 		Handle trace; 
-		trace = TR_TraceRayFilterEx(botPos, vecSwingEnd, MASK_ALL, RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+		trace = TR_TraceRayFilterEx(botPos, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, 0); //If i hit a wall, i stop retreatring and accept death, for now!
 		
 		//Make sure to actually back off...
 		
@@ -8530,6 +8530,8 @@ public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
 	return true;
 }
 
+#if defined ZR
+
 /*
 This isnt a perfect world, map stuck spots will always exist, but we can fix this abit.
 This code will check if the player is in a stuck spot, this works in a way where it will check if the path is pathable.
@@ -8554,6 +8556,8 @@ int i2_IlligalStuck_StuckTrueFalse[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK];
 //the max should be 64 checks.
 void PlayerInIlligalStuckArea(int entity)
 {
+	return;
+	//PF_IsPathToVectorPossible says good even though it cant path.
 	int client;
 	
 	client = i_Target[entity];
@@ -8565,9 +8569,12 @@ void PlayerInIlligalStuckArea(int entity)
 	if(f_IlligalStuck_ClientDelayCheck[client] > GameTime)
 		return;
 
-	f_IlligalStuck_ClientDelayCheck[client] = GameTime + 1.0;
+	f_IlligalStuck_ClientDelayCheck[client] = GameTime + 0.1;
 
-	if(PF_IsPathToEntityPossible(entity, client, _))
+	static float flMyPos[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	float aaaa;
+	if(PF_IsPathToVectorPossible(entity, flMyPos, aaaa))
 	{
 		//I can be pathed to.
 		PlayerIlligalResetOldestAndSort(client, 1);
@@ -8639,6 +8646,7 @@ void PlayerIlligalTooMuch(int client)
 			CountIlligal += 1;
 		}
 	}
+	PrintToChatAll("%i",CountIlligal);
 	if(CountIlligal > RoundToNearest((float(MAX_STUCK_PAST_CHECK) * 0.9)))
 	{
 		float AveragePos[3];
@@ -8659,7 +8667,18 @@ void PlayerIlligalTooMuch(int client)
 		/*
 			Warn player, save poisition into cfg with map, slay, whatever, do it all.
 		*/
+		
 		ForcePlayerSuicide(client);
 		PrintToChat(client, "Do not abuse NPC stuckspots.");
 	}
 }
+
+static void ReportBadPosition(const float pos[3])
+{
+#if defined _discordbot_included
+	char buffer[PLATFORM_MAX_PATH];
+	zr_webhookadmins.GetString(buffer, sizeof(buffer));
+#endif
+}
+
+#endif	// ZR
