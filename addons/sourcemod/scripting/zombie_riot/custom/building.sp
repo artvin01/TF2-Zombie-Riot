@@ -1179,11 +1179,6 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 		return;
 	}
 
-	if(f_FreeplayDamageExtra != 1.0)
-	{
-		damage *= f_FreeplayDamageExtra;
-	}
-
 	int dmg = RoundFloat(damage);
 		
 	if(!Building_cannot_be_repaired[entity])
@@ -4337,7 +4332,19 @@ public Action Timer_VillageThink(Handle timer, int ref)
 			if(GetVectorDistance(pos1, pos2, true) < range)
 			{
 				allies.Push(client);
-				
+
+				if(effects & VILLAGE_002)
+				{
+					int maxarmor = MaxArmorCalculation(Armor_Level[client], client, 0.5);
+					if(Armor_Charge[client] < maxarmor)
+						Armor_Charge[client]++;
+				}
+				else if(effects & VILLAGE_001)
+				{
+					if(Armor_Charge[client] < 0)
+						Armor_Charge[client]++;
+				}
+
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(weapon > MaxClients)
 					weapons.Push(weapon);
@@ -4425,21 +4432,6 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		Village_Effects.PushArray(buff);
 		
 		UpdateBuffEffects(target, buff.IsWeapon, oldBuffs, GetBuffEffects(buff.EntityRef));
-
-		if(target <= MaxClients)
-		{
-			if(effects & VILLAGE_002)
-			{
-				int maxarmor = MaxArmorCalculation(Armor_Level[target], target, 0.5);
-				if(Armor_Charge[target] < maxarmor)
-					Armor_Charge[target]++;
-			}
-			else if(effects & VILLAGE_001)
-			{
-				if(Armor_Charge[target] < 0)
-					Armor_Charge[target]++;
-			}
-		}
 	}
 	
 	length = weapons.Length;

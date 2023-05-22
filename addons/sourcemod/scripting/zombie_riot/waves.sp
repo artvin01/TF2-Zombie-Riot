@@ -1335,9 +1335,7 @@ void Waves_Progress()
 			MultiGlobal = multi;
 
 			int postWaves = CurrentRound - length;
-
-			f_FreeplayDamageExtra = ((postWaves + 99) * 0.0075);
-			f_FreeplayDamageExtra += 1.0;
+			f_FreeplayDamageExtra = 1.0 + (postWaves * 0.0075);
 
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;
