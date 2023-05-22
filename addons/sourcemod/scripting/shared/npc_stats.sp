@@ -8558,6 +8558,7 @@ void PlayerInIlligalStuckArea(int entity)
 {
 	return;
 	//PF_IsPathToVectorPossible says good even though it cant path.
+	// a way to make it work: See destination, if the destination isnt near the client, mark?
 	int client;
 	
 	client = i_Target[entity];
