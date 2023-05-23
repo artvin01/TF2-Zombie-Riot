@@ -48,76 +48,7 @@ void OnPluginStart_Build_on_Building()
 public void Event_ObjectMoved(Handle event, const char[] name, bool dontBroadCast)
 {
 	int building=GetEventInt(event, "index");
-	if(!IsValidEntity(building))
-	{
-		return;
-	}
-	char str[32];
-	GetEntityClassname(building, str, sizeof(str));
-	if(StrEqual(str, "obj_attachment_sapper", false))
-	{
-		return;
-	}
-	if(iBuildingDependency[building])
-	{
-		float posMain[3]; 
-		GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", posMain);
-		float posStacked[3]; 
-		GetEntPropVector(iBuildingDependency[building], Prop_Data, "m_vecAbsOrigin", posStacked);
-		posStacked[2] = posMain[2];
-		static float m_vecMaxs[3];
-		static float m_vecMins[3];
-		m_vecMaxs = view_as<float>( { 19.0, 19.0, 0.0 } );
-		m_vecMins = view_as<float>( { -19.0, -19.0, -15.0 } );	
-		if(!IsSpaceOccupiedIgnorePlayers(posStacked, m_vecMins, m_vecMaxs, iBuildingDependency[building]))
-		{
-			SDKHooks_TakeDamage(iBuildingDependency[building], 0, 0, 100000.0, DMG_ACID);
-			//no valid ground, building evaporates.
-		}
-		else
-		{
-
-			if(i_WhatBuilding[building] == BuildingAmmobox)
-			{
-				posStacked[2] -= (32.0 * 0.5);
-			}
-			float Delta;
-			switch(i_WhatBuilding[iBuildingDependency[building]])
-			{
-				case BuildingAmmobox:
-				{
-					Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
-				}
-			}
-			posStacked[2] += Delta;
-
-			TeleportBuilding(iBuildingDependency[building], posStacked, NULL_VECTOR, NULL_VECTOR);
-			CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
-			buildingclot.bBuildingIsStacked = false;
-			//make npc's that target the previous building target the stacked one now.
-			for(int targ; targ<i_MaxcountNpc; targ++)
-			{
-				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-				if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
-				{
-					CClotBody npc = view_as<CClotBody>(baseboss_index);
-					if(npc.m_iTarget == building)
-					{
-						npc.m_iTarget = iBuildingDependency[building]; 
-					}
-				}
-			}
-			//the top building shouldnt have a parent anymore.
-			
-		}
-	}
-	for(int i=0; i<2048; i++)
-	{
-		if(iBuildingDependency[i] == building)
-		{
-			iBuildingDependency[i] = 0;
-		}
-	}
+	Event_ObjectMoved_Custom(building);
 }
 
 public void Event_ObjectMoved_Custom(int building)
