@@ -1042,7 +1042,8 @@ methodmap Citizen < CClotBody
 			
 			this.m_bThisEntityIgnored = false;
 			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
-			this.m_flReloadDelay = GetGameTime(this.index) + 2.4;
+			this.SetPlaybackRate(2.0);
+			this.m_flReloadDelay = GetGameTime(this.index) + 1.2;
 			
 			int glow = this.m_iTeamGlow;
 			if(glow > 0)
