@@ -302,6 +302,13 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		//We are built on "legal" ground, clear the dependency tree
 		iBuildingDependency[pThis]=0;
+		for(int i=0; i<2048; i++)
+		{
+			if(iBuildingDependency[i] == pThis)
+			{
+				iBuildingDependency[i] = 0;
+			}
+		}
 		if(IsValidClient(client))
 		{
 		//	fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
