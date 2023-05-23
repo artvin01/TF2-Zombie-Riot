@@ -277,6 +277,7 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
+float f_ClientArmorRegen[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 float f_ClientReviveDelay[MAXENTITIES];
@@ -1272,6 +1273,8 @@ public void OnMapStart()
 	PrecacheSound("weapons/shotgun/shotgun_fire7.wav");
 	PrecacheSound("#items/tf_music_upgrade_machine.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
+	PrecacheSound("physics/metal/metal_box_impact_bullet2.wav");
+	PrecacheSound("physics/metal/metal_box_impact_bullet3.wav");
 	PrecacheSound("misc/halloween/spell_overheal.wav");
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
@@ -1552,6 +1555,7 @@ public void OnClientDisconnect(int client)
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR
+	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;
 	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);

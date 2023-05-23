@@ -1174,6 +1174,10 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 	{
 		return;
 	}
+	if(damagetype == DMG_ACID)
+	{
+		return;
+	}
 	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
 	{
 		return;
@@ -4337,12 +4341,18 @@ public Action Timer_VillageThink(Handle timer, int ref)
 				{
 					int maxarmor = MaxArmorCalculation(Armor_Level[client], client, 0.5);
 					if(Armor_Charge[client] < maxarmor)
-						Armor_Charge[client]++;
+					{
+						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
+						Armor_Charge[client] += 2;
+					}
 				}
 				else if(effects & VILLAGE_001)
 				{
 					if(Armor_Charge[client] < 0)
-						Armor_Charge[client]++;
+					{
+						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
+						Armor_Charge[client] += 2;
+					}
 				}
 
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");

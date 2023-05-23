@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int iBuildingDependency[2049] = {0, ...};
+static int iBuildingDependency[MAXENTITIES] = {0, ...};
 /*
 static const float ViewHeights[] =
 {
@@ -64,46 +64,58 @@ public void Event_ObjectMoved(Handle event, const char[] name, bool dontBroadCas
 		GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", posMain);
 		float posStacked[3]; 
 		GetEntPropVector(iBuildingDependency[building], Prop_Data, "m_vecAbsOrigin", posStacked);
-
 		posStacked[2] = posMain[2];
-
-		if(i_WhatBuilding[building] == BuildingAmmobox)
+		static float m_vecMaxs[3];
+		static float m_vecMins[3];
+		m_vecMaxs = view_as<float>( { 19.0, 19.0, 0.0 } );
+		m_vecMins = view_as<float>( { -19.0, -19.0, -15.0 } );	
+		if(!IsSpaceOccupiedIgnorePlayers(posStacked, m_vecMins, m_vecMaxs, iBuildingDependency[building]))
 		{
-			posStacked[2] -= (32.0 * 0.5);
+			SDKHooks_TakeDamage(iBuildingDependency[building], 0, 0, 100000.0, DMG_ACID);
+			//no valid ground, building evaporates.
 		}
-		float Delta;
-		switch(i_WhatBuilding[iBuildingDependency[building]])
+		else
 		{
-			case BuildingAmmobox:
+
+			if(i_WhatBuilding[building] == BuildingAmmobox)
 			{
-				Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
+				posStacked[2] -= (32.0 * 0.5);
 			}
-		}
-		posStacked[2] += Delta;
-
-		TeleportBuilding(iBuildingDependency[building], posStacked, NULL_VECTOR, NULL_VECTOR);
-		CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
-		buildingclot.bBuildingIsStacked = false;
-		//make npc's that target the previous building target the stacked one now.
-		for(int targ; targ<i_MaxcountNpc; targ++)
-		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+			float Delta;
+			switch(i_WhatBuilding[iBuildingDependency[building]])
 			{
-				CClotBody npc = view_as<CClotBody>(baseboss_index);
-				if(npc.m_iTarget == building)
+				case BuildingAmmobox:
 				{
-					npc.m_iTarget = iBuildingDependency[building]; 
+					Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
 				}
 			}
-		}
-		iBuildingDependency[building]=0;
-		for(int i=0; i<2048; i++)
-		{
-			if(iBuildingDependency[i]==building)
+			posStacked[2] += Delta;
+
+			TeleportBuilding(iBuildingDependency[building], posStacked, NULL_VECTOR, NULL_VECTOR);
+			CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
+			buildingclot.bBuildingIsStacked = false;
+			//make npc's that target the previous building target the stacked one now.
+			for(int targ; targ<i_MaxcountNpc; targ++)
 			{
-				iBuildingDependency[i]=0;
+				int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+				if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+				{
+					CClotBody npc = view_as<CClotBody>(baseboss_index);
+					if(npc.m_iTarget == building)
+					{
+						npc.m_iTarget = iBuildingDependency[building]; 
+					}
+				}
 			}
+			//the top building shouldnt have a parent anymore.
+			
+		}
+	}
+	for(int i=0; i<2048; i++)
+	{
+		if(iBuildingDependency[i] == building)
+		{
+			iBuildingDependency[i] = 0;
 		}
 	}
 }
@@ -158,18 +170,14 @@ public void Event_ObjectMoved_Custom(int building)
 				}
 			}
 		}
-		
-	//	SDKHooks_TakeDamage(iBuildingDependency[building], 0, 0, 100000.0, DMG_ACID);
-		iBuildingDependency[building]=0;
-		
-		for(int i=0; i<2048; i++)
+		//the top building shouldnt have a parent anymore.
+	}
+	for(int i=0; i<2048; i++)
+	{
+		if(iBuildingDependency[i] == building)
 		{
-			if(iBuildingDependency[i]==building)
-			{
-				iBuildingDependency[i]=0;
-			}
+			iBuildingDependency[i] = 0;
 		}
-		
 	}
 }
 
@@ -294,13 +302,6 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 	{
 		//We are built on "legal" ground, clear the dependency tree
 		iBuildingDependency[pThis]=0;
-		for(int i=0; i<2048; i++)
-		{
-			if(iBuildingDependency[i]==pThis)
-			{
-				iBuildingDependency[i]=0;
-			}
-		}
 		if(IsValidClient(client))
 		{
 		//	fPos[2] -= 69.0; //This just goes to the ground entirely. and three higher so you can see the bottom of the box.
@@ -404,6 +405,24 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			DHookSetReturn(hReturn, false);
 			return MRES_ChangedOverride;
 		}
+		//before we allow this, we have to make sure the building cant be inside a wall.
+		if(IsSpaceOccupiedIgnorePlayers(fPos, m_vecMins, m_vecMaxs, pThis))
+		{
+			if(IsValidClient(client))
+			{
+				TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+				if(f_DelayBuildNotif[client] < GameTime)
+				{
+					f_DelayBuildNotif[client] = GameTime + 0.25;
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetDefaultHudPosition(client, 255, 0, 0);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+				}
+			}
+			DHookSetReturn(hReturn, false);
+			return MRES_ChangedOverride;
+		}
 		DataPack datapack=new DataPack();
 		datapack.WriteCell(EntIndexToEntRef(pThis));
 		datapack.WriteCell(EntIndexToEntRef(buildingHit));
@@ -445,9 +464,9 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 
 void OnEntityDestroyed_Build_On_Build(int entity)
 {
-	if(entity>-1 && entity<=2048 && iBuildingDependency[entity])
+	if(entity>-1 && entity<=2048)
 	{
-		if(IsValidEntity(iBuildingDependency[entity]))
+		if(iBuildingDependency[entity] && IsValidEntity(iBuildingDependency[entity]))
 		{
 			float posMain[3]; 
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posMain);
@@ -488,13 +507,12 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 			}
 	//		SDKHooks_TakeDamage(iBuildingDependency[entity], 0, 0, 100000.0, DMG_ACID);
 		}
-		iBuildingDependency[entity]=0;
-	}
-	for(int i=0; i<2048; i++)
-	{
-		if(iBuildingDependency[i]==entity)
+		for(int i=0; i<2048; i++)
 		{
-			iBuildingDependency[i]=0;
+			if(iBuildingDependency[i] == entity)
+			{
+				iBuildingDependency[i] = 0;
+			}
 		}
 	}
 }
@@ -508,13 +526,11 @@ void OnEntityCreated_Build_On_Build(int entity, const char[] classname)
 		// Add a post hook on the function.
 		dtIsPlacementPosValid.HookEntity(Hook_Post, entity, OnIsPlacementPosValidPost);
 	}
-
-	iBuildingDependency[entity]=0;
 	for(int i=0; i<2048; i++)
 	{
-		if(iBuildingDependency[i]==entity)
+		if(iBuildingDependency[i] == entity)
 		{
-			iBuildingDependency[i]=0;
+			iBuildingDependency[i] = 0;
 		}
 	}
 }
@@ -592,11 +608,19 @@ public bool TraceRayHitOnlyEnt(int entity, int contentsMask, int ent2)
 stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEnd[3], int& buildingHit, int self)
 {
 	bool foundbuilding = false;
-	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilterBuildOnBuildings);
+	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilterBuildOnBuildings, self);
 
 	if (TR_DidHit(trace))
 	{
-		if (TR_GetEntityIndex(trace) <= 0 || TR_GetEntityIndex(trace)==self)
+		int EntityHit = TR_GetEntityIndex(trace);
+
+		if (EntityHit <= 0 || EntityHit==self)
+		{
+			CloseHandle(trace);
+			return false;
+		}
+
+		if(!i_IsABuilding[EntityHit])
 		{
 			CloseHandle(trace);
 			return false;
@@ -605,9 +629,10 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 
 		TR_GetEndPosition(posEnd, trace);
 
-		if (GetVectorDistance(pos, posEnd, true) <= (distance * distance)) {
+		if (GetVectorDistance(pos, posEnd, true) <= (distance * distance))
+		{
 			foundbuilding = true;
-			buildingHit=TR_GetEntityIndex(trace);
+			buildingHit = EntityHit;
 		}
 	}
 
@@ -622,6 +647,11 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 	{
 		return false;
 	}
+	if(contentsMask==0) //Never the world or something unknown
+	{
+		return false;
+	}
+
 	if(entity>0 && entity<=MaxClients) //ingore players?
 	{
 		return false;
@@ -635,9 +665,7 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 		return false;
 	}
 	
-	char str[32];
-	GetEntityClassname(entity, str, sizeof(str));
-	if(StrContains(str, "obj_", false)>-1 && !StrEqual(str, "obj_teleporter", false)) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
+	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
 	{
 		return true;
 	}

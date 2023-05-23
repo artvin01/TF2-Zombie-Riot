@@ -997,11 +997,24 @@ public void OnPostThink(int client)
 		{
 			Format(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
 		}
-
+		bool Armor_Regenerating = false;
+		static int ArmorRegenCounter[MAXTF2PLAYERS];
+		if(f_ClientArmorRegen[client] > GetGameTime())
+		{
+			Armor_Regenerating = true;
+		}
+		if(Armor_Regenerating)
+		{
+			ArmorRegenCounter[client]++;
+			if(ArmorRegenCounter[client] > 3)
+			{
+				ArmorRegenCounter[client] = 0;
+			}
+		}
 		int armor = abs(Armor_Charge[client]);
 		for(int i=6; i>0; i--)
 		{
-			if(armor >= Armor_Max*(i*0.1666))
+			if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 			}
@@ -1563,7 +1576,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				if(Armor_Charge[victim] > 0)
 				{
 					int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
-					
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+						
+						case 2:
+							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+						
+						case 3:
+							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+					}						
 					if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
 					{
 						int damage_recieved_after_calc;
@@ -1571,7 +1594,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 						Armor_Charge[victim] = 0;
 						damage = float(damage_recieved_after_calc);
 						Replicated_Damage  = float(damage_recieved_after_calc);
-						EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
 					}
 					else
 					{
