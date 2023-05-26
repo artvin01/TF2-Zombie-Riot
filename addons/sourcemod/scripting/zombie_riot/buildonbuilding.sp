@@ -445,6 +445,7 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 			}
 	//		SDKHooks_TakeDamage(iBuildingDependency[entity], 0, 0, 100000.0, DMG_ACID);
 		}
+		iBuildingDependency[entity] = 0;
 		for(int i=0; i<2048; i++)
 		{
 			if(iBuildingDependency[i] == entity)

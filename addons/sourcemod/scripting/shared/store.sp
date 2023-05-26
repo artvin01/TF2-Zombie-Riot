@@ -4156,6 +4156,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
 	b_LeftForDead[client] = false;
+	b_StickyExtraGrenades[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -4742,6 +4743,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
 					{
 						b_LeftForDead[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
+					{
+						b_StickyExtraGrenades[client] = true;
 					}
 #endif
 					
