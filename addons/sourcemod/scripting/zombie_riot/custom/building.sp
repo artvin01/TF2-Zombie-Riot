@@ -2061,7 +2061,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
+										AddAmmoClient(client, 21 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2083,9 +2083,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
+										AddAmmoClient(client, 21 ,_,2.0);
+										AddAmmoClient(client, 14 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
-										SetAmmo(client, 14, GetAmmo(client, 14)+(AmmoData[14][1]*2));
 										//Yeah extra ammo, do i care ? no.
 										
 										for(int i; i<Ammo_MAX; i++)
@@ -2108,7 +2108,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 22, GetAmmo(client, 22)+(AmmoData[22][1]*2));
+										AddAmmoClient(client, 22 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2130,7 +2130,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 23, GetAmmo(client, 23)+(AmmoData[23][1]*2));
+										AddAmmoClient(client, 23 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2152,7 +2152,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 3, GetAmmo(client, 3)+(AmmoData[3][1]*2));
+										AddAmmoClient(client, 3 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2174,7 +2174,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+(AmmoData[Ammo_type][1]*2));
+										AddAmmoClient(client, Ammo_type ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2203,25 +2203,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(Armor_Charge[client] < Armor_Max)
 										{
 												
-											if(Extra == 50)
-												Armor_Charge[client] += 25;
-												
-											else if(Extra == 100)
-												Armor_Charge[client] += 35;
-												
-											else if(Extra == 150)
-												Armor_Charge[client] += 50;
-												
-											else if(Extra == 200)
-												Armor_Charge[client] += 75;
-												
-											else
-												Armor_Charge[client] += 25;
-														
-											if(Armor_Charge[client] >= Armor_Max)
-											{
-												Armor_Charge[client] = Armor_Max;
-											}
+											GiveArmorViaPercentage(client, 0.05, 0.5);
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
@@ -2273,25 +2255,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(Armor_Charge[client] < Armor_Max)
 						{
 								
-							if(Extra == 50)
-								Armor_Charge[client] += 75;
-								
-							else if(Extra == 100)
-								Armor_Charge[client] += 100;
-								
-							else if(Extra == 150)
-								Armor_Charge[client] += 200;
-								
-							else if(Extra == 200)
-								Armor_Charge[client] += 350;
-								
-							else
-								Armor_Charge[client] += 25;
-										
-							if(Armor_Charge[client] >= Armor_Max)
-							{
-								Armor_Charge[client] = Armor_Max;
-							}
+							GiveArmorViaPercentage(client, 0.2, 1.0);
 							
 					//		float Shave_Seconds_off = 5.0 * Extra;
 							
@@ -2340,6 +2304,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							Menu menu2 = new Menu(Building_ConfirmMountedAction);
 							menu2.SetTitle("%t", "Which perk do you desire?");
 								
+							FormatEx(buffer, sizeof(buffer), "%t", "Recycle Poire");
+							menu2.AddItem("-9", buffer);
+
 							FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
 							menu2.AddItem("-8", buffer);
 							
@@ -4130,6 +4097,19 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 					}
 					Do_Perk_Machine_Logic(owner, client, entity, 6);
+				}
+			}
+			else if(id == -9)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
+					{
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					}
+					Do_Perk_Machine_Logic(owner, client, entity, 7);
 				}
 			}
 		}

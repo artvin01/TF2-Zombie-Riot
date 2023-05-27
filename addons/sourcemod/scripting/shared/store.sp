@@ -4955,6 +4955,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
+		//QUICK REVIVE!
+		if(i_CurrentEquippedPerk[client] == 1)
+		{		
+			Address address = TF2Attrib_GetByDefIndex(entity, 8);
+			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
+			if(address != Address_Null)
+			{
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+			}
+			
+			address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
+			if(address != Address_Null)
+			{
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+			}
+		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])

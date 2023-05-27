@@ -855,12 +855,18 @@ public void OnPostThink(int client)
 			green = 0;
 			blue = 255;
 		}
-		else if(Armor_Charge[client] != Armor_Max)
+		else if(Armor_Charge[client] < Armor_Max)
 		{
 			red = Armor_Charge[client] * 255  / Armor_Max;
 			green = Armor_Charge[client] * 255  / Armor_Max;
 				
 			red = 255 - red;
+		}
+		else if(Armor_Charge[client] > Armor_Max)
+		{
+			red = 0;
+			green = 0;
+			blue = 255;
 		}
 		else
 		{

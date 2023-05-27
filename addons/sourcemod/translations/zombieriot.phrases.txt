@@ -1015,15 +1015,14 @@
 		"nl"		"Perk: Wijn van de weduwe"
 		"chi" 		"Buff: 恶魔领域"
 	}
+	"Recycle Poire"
+	{
+		"en" 		"Perk: Recycle Poiré"
+	}
 
 	"Quick Revive Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed"
-		"ru" 		"РЕАНИМАТОР! Вдвойне быстрее оживление"
-		"de"		"SCHNELLES WIEDERBELEBEN! 2-fache Wiederbelebungs-Geschwindigkeit"
-		"pt"		"RÁPIDA RESSUREIÇÃO! 2x Velocidade de Reanimação"
-		"nl"		"Snel tot leven brengen! 2x Snelheid voor het tot leven brengen"
-		"chi" 		"快速起身:两倍的复活速度"
+		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed"
 	}
 	"Juggernog Recieved"
 	{
@@ -1066,6 +1065,10 @@
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
 		"chi" 		"恶魔领域:当激活时，格挡75%的僵尸伤害并减速，对减速的僵尸额外造成35%的伤害"
+	}
+	"Recycle Poire Recieved"
+	{
+		"en" 		"RECYCLE POIRÉ! 25%% More ammo from all non shop sources, and 50%% more max armor and armor gain."
 	}
 	"Nuke Activated"
 	{

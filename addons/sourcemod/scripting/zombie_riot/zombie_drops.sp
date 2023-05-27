@@ -345,36 +345,10 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
 						{
-							int Armor_Max = 150;
-							int Extra = 0;
-								
-							Extra = Armor_Level[client_Hud];
-								
-							Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
-								
-							if(Armor_Charge[client_Hud] < Armor_Max)
-							{
-										
-								if(Extra == 50)
-									Armor_Charge[client_Hud] += 150;
-									
-								else if(Extra == 100)
-									Armor_Charge[client_Hud] += 200;
-									
-								else if(Extra == 150)
-									Armor_Charge[client_Hud] += 400;
-									
-								else if(Extra == 200)
-									Armor_Charge[client_Hud] += 800;
-									
-								else
-									Armor_Charge[client_Hud] += 50;
-											
-								if(Armor_Charge[client_Hud] >= Armor_Max)
-								{
-									Armor_Charge[client_Hud] = Armor_Max;
-								}
-							}
+							
+							//This gives 35% armor
+							GiveArmorViaPercentage(client_Hud, 0.35, 1.0);
+							
 							int ie, weapon;
 							while(TF2_GetItem(client_Hud, weapon, ie))
 							{
@@ -421,38 +395,38 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 										if(weaponindex == 211)
 										{
-											SetAmmo(client_Hud, 21, GetAmmo(client_Hud, 21)+(AmmoData[21][1]*4));
+											AddAmmoClient(client_Hud, 21 ,_,4.0);
 										}
 										else if (weaponindex == 305)
 										{
-											SetAmmo(client_Hud, 21, GetAmmo(client_Hud, 21)+(AmmoData[21][1]*4));
-											SetAmmo(client_Hud, 14, GetAmmo(client_Hud, 14)+(AmmoData[14][1]*4));
+											AddAmmoClient(client_Hud, 21 ,_,4.0);
+											AddAmmoClient(client_Hud, 14 ,_,4.0);
 											//Yeah extra ammo, do i care ? no.							
 										}
 										else if(weaponindex == 411)
 										{
-											SetAmmo(client_Hud, 22, GetAmmo(client_Hud, 22)+(AmmoData[22][1]*4));
+											AddAmmoClient(client_Hud, 22 ,_,4.0);
 										}
 										else if(weaponindex == 441 || weaponindex == 35)
 										{
-											SetAmmo(client_Hud, 23, GetAmmo(client_Hud, 23)+(AmmoData[23][1]*4));	
+											AddAmmoClient(client_Hud, 23 ,_,4.0);	
 										}
 										else if(weaponindex == 998)
 										{
-											SetAmmo(client_Hud, 3, GetAmmo(client_Hud, 3)+(AmmoData[3][1]*4));	
+											AddAmmoClient(client_Hud, 3 ,_,4.0);
 										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{
 											if(AmmoBlacklist(Ammo_type))
 											{
-												SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+												AddAmmoClient(client_Hud, Ammo_type ,_,4.0);
 											}
 										}
 										else if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 										{
 											if(AmmoBlacklist(Ammo_type))
 											{
-												SetAmmo(client_Hud, Ammo_type, GetAmmo(client_Hud, Ammo_type)+(AmmoData[Ammo_type][1]*4));
+												AddAmmoClient(client_Hud, Ammo_type ,_,4.0);
 											}
 										}
 									}
@@ -558,35 +532,8 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 							SetEntProp(client_Hud, Prop_Send, "m_iHealth", flHealth);
 							ApplyHealEvent(client_Hud, MaxHealth / 2);	// Show healing number
 
-							int Armor_Max = 150;
-							int Extra = 0;
-								
-							Extra = Armor_Level[client_Hud];
-								
-							Armor_Max = MaxArmorCalculation(Extra, client_Hud, 1.0);
-								
-							if(Armor_Charge[client_Hud] < Armor_Max)
-							{
-								if(Extra == 50)
-									Armor_Charge[client_Hud] += 150;
-									
-								else if(Extra == 100)
-									Armor_Charge[client_Hud] += 200;
-									
-								else if(Extra == 150)
-									Armor_Charge[client_Hud] += 400;
-									
-								else if(Extra == 200)
-									Armor_Charge[client_Hud] += 800;
-									
-								else
-									Armor_Charge[client_Hud] += 50;
-											
-								if(Armor_Charge[client_Hud] >= Armor_Max)
-								{
-									Armor_Charge[client_Hud] = Armor_Max;
-								}
-							}
+							//This gives 35% armor
+							GiveArmorViaPercentage(client_Hud, 0.35, 1.0);
 
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);

@@ -271,37 +271,8 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
-							int Armor_Max = 300;
-							int Extra = 0;
-						
-							Extra = Armor_Level[target];
-								
-							Armor_Max = MaxArmorCalculation(Extra, target, 1.0);
-								
-							
-								
-							if(Armor_Charge[target] < Armor_Max)
-							{
-								if(Extra == 50)
-									Armor_Charge[target] += 75 / 5;
-									
-								else if(Extra == 100)
-									Armor_Charge[target] += 100 / 5;
-									
-								else if(Extra == 150)
-									Armor_Charge[target] += 200 / 5;
-									
-								else if(Extra == 200)
-									Armor_Charge[target] += 350 / 5;
-									
-								else
-									Armor_Charge[target] += 25 / 5;
-											
-								if(Armor_Charge[target] >= Armor_Max)
-								{
-									Armor_Charge[target] = Armor_Max;
-								}
-							}
+							//This gives 35% armor
+							GiveArmorViaPercentage(target, 0.075, 1.0);
 						}
 					}
 				}
