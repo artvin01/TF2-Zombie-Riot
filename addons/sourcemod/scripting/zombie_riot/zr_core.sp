@@ -591,11 +591,12 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	Ammo_Count_Used[client] = 0;
-	
+	/*
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
-	
+	See databaseuh
+	*/
+
 }
 
 void ZR_ClientDisconnect(int client)
@@ -878,6 +879,13 @@ public Action Command_SpawnGrigori(int client, int args)
 
 public void OnClientAuthorized(int client)
 {
+	Ammo_Count_Used[client] = 0;
+	CashSpentTotal[client] = 0;
+	f_LeftForDead_Cooldown[client] = 0.0;
+	
+	if(CurrentRound)
+		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
+
 	Database_ClientAuthorized(client);
 }
 
