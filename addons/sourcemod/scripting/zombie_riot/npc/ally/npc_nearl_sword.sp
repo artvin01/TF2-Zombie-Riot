@@ -273,11 +273,12 @@ public Action NearlSwordAbility_ClotDamaged(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-
+	/*
 	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		damage *= 2.0; //if raids active, then it will take 2x dmg
 	}
+	*/
 	if(b_thisNpcIsARaid[attacker])
 	{
 		damage *= 2.0; //takes 2x more dmg from raids itself.
