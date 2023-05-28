@@ -350,7 +350,7 @@ methodmap Blitzkrieg < CClotBody
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
 		i_currentwave[npc.index]=(ZR_GetWaveCount()+1);
-		b_thisNpcIsARaid[npc.index] = true;
+		
 		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
 		i_wave_life1[npc.index] = 15;
 		i_wave_life2[npc.index] = 30;
@@ -467,16 +467,20 @@ methodmap Blitzkrieg < CClotBody
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
 		
-		//adjust the "/4.0" to adjust how hard raid scaling happens. however be warned that on high player counts/waves blitz's scaling can scale extremely highly. 
-		fl_blitzscale[npc.index] = (RaidModeScaling/4.0)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
-		if(i_currentwave[npc.index]<=60)
+		fl_blitzscale[npc.index] = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		if(i_currentwave[npc.index]<30)
 		{
-			fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
+			fl_blitzscale[npc.index] *= 2.0;	//blitz is quite weak on wave 15
 		}
-		else
+		else if(i_currentwave[npc.index]>=60)
+		{
+			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
+		}
+		if(i_currentwave[npc.index]>60)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
 		}
+		
 		npc.m_flMeleeArmor = 1.25;
 		
 		/*
@@ -930,7 +934,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 									}
 									else
 									{
-										Custom_Knockback(npc.index, target, 100.0);
+										Custom_Knockback(npc.index, target, 150.0);
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
 								}
 								
