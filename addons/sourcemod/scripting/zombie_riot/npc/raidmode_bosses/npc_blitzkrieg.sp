@@ -350,6 +350,7 @@ methodmap Blitzkrieg < CClotBody
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
 		i_currentwave[npc.index]=(ZR_GetWaveCount()+1);
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
 		i_wave_life1[npc.index] = 15;
@@ -459,6 +460,7 @@ methodmap Blitzkrieg < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = fl_move_speed[npc.index];
+		
 		
 		fl_TheFinalCountdown[npc.index] = 0.0;	//used for timer logic on blitzlight
 		fl_TheFinalCountdown2[npc.index] = 0.0;	//used for timer logic on blitzlight
