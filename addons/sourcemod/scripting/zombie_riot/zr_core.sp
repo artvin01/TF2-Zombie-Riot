@@ -53,6 +53,7 @@ public const char PerkNames[][] =
 	"Speed Cola",
 	"Deadshot Daiquiri",
 	"Widows Wine",
+	"Recycle Poire"
 };
 
 public const char PerkNames_Recieved[][] =
@@ -64,6 +65,7 @@ public const char PerkNames_Recieved[][] =
 	"Speed Cola Recieved",
 	"Deadshot Daiquiri Recieved",
 	"Widows Wine Recieved",
+	"Recycle Poire Recieved"
 };
 
 enum
@@ -87,7 +89,8 @@ enum
 	WEAPON_YAMATO = 17,
 	WEAPON_BATTILONS = 18,
 	WEAPON_SAGA = 19,
-	WEAPON_BEAM_PAP = 20
+	WEAPON_BEAM_PAP = 20,
+	WEAPON_MLYNAR = 21
 }
 
 ArrayList SpawnerList;
@@ -111,7 +114,7 @@ ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 //ConVar CvarEnablePrivatePlugins;
-int CurrentGame;
+int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
@@ -360,6 +363,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_yamato.sp"
 #include "zombie_riot/custom/weapon_saga.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
+#include "zombie_riot/custom/weapon_mlynar.sp"
 
 void ZR_PluginLoad()
 {
@@ -474,6 +478,8 @@ void ZR_MapStart()
 	Weapon_lantean_Wand_Map_Precache();
 	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
+	Mlynar_Map_Precache();
+	Reset_stats_Mlynar_Global();
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -604,6 +610,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
 	Reset_stats_LappLand_Singular(client);
+	Reset_stats_Mlynar_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -1186,21 +1193,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					int Extra = 0;
 						
 					Extra = RoundToNearest(Attributes_FindOnPlayer(client, 701));
+					int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
-					if(Extra == 50)
-						Armor_Charge[client] = 200;
-						
-					else if(Extra == 100)
-						Armor_Charge[client] = 350;
-						
-					else if(Extra == 150)
-						Armor_Charge[client] = 700;
-						
-					else if(Extra == 200)
-						Armor_Charge[client] = 1500;
-						
-					else
-						Armor_Charge[client] = 150;
+					Armor_Charge[client] = Armor_Max;
 				}
 			}
 		}
@@ -1341,27 +1336,87 @@ stock void UpdatePlayerPoints(int client)
 	PlayerPoints[client] = Points;	// Do stuff here :)
 }
 
-stock int MaxArmorCalculation(int value, int client, float multiplyier)
+stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier)
 {
+	if(ArmorLevel == -1)
+	{
+		ArmorLevel = RoundToNearest(Attributes_FindOnPlayer(client, 701));
+	}
+
 	int Armor_Max;
 	
-	if(value == 50)
+	if(ArmorLevel == 50)
 		Armor_Max = 300;
 											
-	else if(value == 100)
+	else if(ArmorLevel == 100)
 		Armor_Max = 450;
 											
-	else if(value == 150)
+	else if(ArmorLevel == 150)
 		Armor_Max = 1000;
 										
-	else if(value == 200)
+	else if(ArmorLevel == 200)
 		Armor_Max = 2000;	
 		
 	else
 		Armor_Max = 200;
+
+	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	{
+		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
+	}
 		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
+}
+
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
+{
+	int Armor_Max;
+	
+	Armor_Max = MaxArmorCalculation(_, client, MaxMulti);
+	/*
+	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	{
+		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
+	}
+	*/
+	if(Armor_Charge[client] < Armor_Max)
+	{
+		int ArmorToGive;
+
+		ArmorToGive = RoundToCeil(float(Armor_Max) * multiplyier);
+		
+		Armor_Charge[client] += ArmorToGive;
+
+		if(Armor_Charge[client] >= Armor_Max)
+		{
+			Armor_Charge[client] = Armor_Max;
+		}
+	}
+	
+}
+stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Multi = 1.0)
+{
+	int AmmoToAdd;
+	if(AmmoCount == 0)
+	{
+		AmmoToAdd = AmmoData[AmmoType][1];
+	}
+	else
+	{
+		AmmoToAdd = AmmoCount;
+	}
+	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	{
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.25);
+	}
+	if(Multi != 1.0)
+	{
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * Multi);
+	}
+
+
+	SetAmmo(client, AmmoType, GetAmmo(client, AmmoType)+(AmmoToAdd));
 }
 
 //	f_TimerTickCooldownRaid = 0.0;

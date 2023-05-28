@@ -28,7 +28,7 @@
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
 #define ZR_MAX_NPCS_ALLIED 42 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
-#define ZR_MAX_BUILDINGS 64 //cant ever have more then 64 realisticly speaking
+#define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
 #define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
@@ -277,6 +277,7 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
+float f_ClientArmorRegen[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 
 float f_ClientReviveDelay[MAXENTITIES];
@@ -460,6 +461,7 @@ int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
+bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
@@ -1232,6 +1234,7 @@ public Action Timer_Temp(Handle timer)
 		PlayTickSound(false, true);
 	}
 	NPC_SpawnNext(false, false, false);
+	PlayerIllgalMapCheck();
 #endif
 	
 	return Plugin_Continue;
@@ -1271,6 +1274,8 @@ public void OnMapStart()
 	PrecacheSound("weapons/shotgun/shotgun_fire7.wav");
 	PrecacheSound("#items/tf_music_upgrade_machine.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
+	PrecacheSound("physics/metal/metal_box_impact_bullet2.wav");
+	PrecacheSound("physics/metal/metal_box_impact_bullet3.wav");
 	PrecacheSound("misc/halloween/spell_overheal.wav");
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
@@ -1551,12 +1556,21 @@ public void OnClientDisconnect(int client)
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR
+	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;
 	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	//Needed to reset attackspeed stuff.
 	f_LeftForDead_Cooldown[client] = 0.0;
+	f_IlligalStuck_ClientDelayCheck[client] = 0.0;
+	for(int Count; Count<MAX_STUCK_PAST_CHECK; Count++)
+	{
+		f3_IlligalStuck_AveragePosClient[client][Count][0] = 0.0;
+		f3_IlligalStuck_AveragePosClient[client][Count][1] = 0.0;
+		f3_IlligalStuck_AveragePosClient[client][Count][2] = 0.0;
+		i2_IlligalStuck_StuckTrueFalse[client][Count] = 0;
+	}
 #endif
 
 	b_DisplayDamageHud[client] = false;
@@ -2241,6 +2255,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
+		Mlynar_EntityCreated(entity);
 #endif
 
 #if defined RPG

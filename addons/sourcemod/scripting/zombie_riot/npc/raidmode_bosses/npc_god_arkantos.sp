@@ -71,6 +71,7 @@ public void GodArkantos_OnMapStart()
 }
 static int i_TargetToWalkTo[MAXENTITIES];
 static float f_TargetToWalkToDelay[MAXENTITIES];
+static float f_ArkantosCantDieLimit[MAXENTITIES];
 
 methodmap GodArkantos < CClotBody
 {
@@ -109,26 +110,8 @@ methodmap GodArkantos < CClotBody
 				this.SetPlaybackRate(2.0);
 				this.m_flReviveArkantosTime = GetGameTime(this.index) + 16.0;
 
-				switch(GetRandomInt(0,3))
-				{
-					case 0:
-					{
-						CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know the dangers youre getting yourself into fighting me and my army at the same time!");
-					}
-					case 1:
-					{
-						CPrintToChatAll("{lightblue}God Arkantos{default}: My army will always help me back up!");
-					}
-					case 2:
-					{
-						CPrintToChatAll("{lightblue}God Arkantos{default}: Me and my army, as one, will never be defeated!");
-					}
-					case 3:
-					{
-						CPrintToChatAll("{lightblue}God Arkantos{default}: Together for Atlantis! As one and for all!");
-					}
-				}
-				
+				ArkantosSayWords();
+
 				if(this.m_bPathing)
 				{
 					PF_StopPathing(this.index);
@@ -200,7 +183,7 @@ methodmap GodArkantos < CClotBody
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 75.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
-				
+		f_ArkantosCantDieLimit[this.index] = GetGameTime() + 0.5;
 	}
 	public void PlayMeleeMissSound() 
 	{
@@ -263,6 +246,7 @@ methodmap GodArkantos < CClotBody
 		npc.m_flNextRangedAttackHappening = 0.0;
 		npc.g_TimesSummoned = 0;
 		npc.m_bWasSadAlready = false;
+		f_ArkantosCantDieLimit[npc.index] = 0.0;
 		
 		if(RaidModeScaling < 55)
 		{
@@ -577,7 +561,7 @@ public Action GodArkantos_ClotDamaged(int victim, int &attacker, int &inflictor,
 		}
 	}
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage);
-	if(health < 1 && (allyAlive || npc.g_TimesSummoned != 4))
+	if(health < 1 && (allyAlive || npc.g_TimesSummoned != 4 || f_ArkantosCantDieLimit[npc.index] > GetGameTime()))
 	{
 		npc.ArkantosFakeDeathState(1);
 		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
@@ -597,6 +581,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			GodArkantosSpawnEnemy(MEDIVAL_MAN_AT_ARMS,_, RoundToCeil(6.0 * MultiGlobal));
@@ -605,6 +590,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			
@@ -615,6 +601,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			ArkantosSayWords();
+			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			GodArkantosSpawnEnemy(MEDIVAL_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
@@ -624,6 +612,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -648,6 +637,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -658,6 +648,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -667,6 +658,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			ArkantosSayWords();
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_BRAWLER,_, RoundToCeil(6.0 * MultiGlobal));
@@ -676,6 +669,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -700,6 +694,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -711,6 +706,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -720,6 +716,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			ArkantosSayWords();
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,_, RoundToCeil(6.0 * MultiGlobal));
@@ -729,6 +727,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -753,6 +752,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		if(Ratio <= 0.85 && npc.g_TimesSummoned < 1)
 		{
 			npc.g_TimesSummoned = 1;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
@@ -763,6 +763,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
 			npc.g_TimesSummoned = 2;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
@@ -772,6 +773,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
 			npc.g_TimesSummoned = 3;
+			ArkantosSayWords();
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			GodArkantosSpawnEnemy(MEDIVAL_ELITE_SKIRMISHER,50000, RoundToCeil(10.0 * MultiGlobal));
@@ -782,6 +785,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			npc.g_TimesSummoned = 4;
+			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
@@ -1436,6 +1440,30 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 		else
 		{
 			npc.m_flArkantosBuffEffect = gameTime + 1.0; //Try again in a second.
+		}
+	}
+}
+
+
+void ArkantosSayWords()
+{
+	switch(GetRandomInt(0,3))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know the dangers youre getting yourself into fighting me and my army at the same time!");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: My army will always help me back up!");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: Me and my army, as one, will never be defeated!");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{lightblue}God Arkantos{default}: Together for Atlantis! As one and for all!");
 		}
 	}
 }

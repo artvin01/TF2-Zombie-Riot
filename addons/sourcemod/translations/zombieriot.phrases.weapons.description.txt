@@ -1926,4 +1926,8 @@
 	{
 		"en"	"Increaced damage"
 	}
+	"Sticky Support Grenades Desc"
+	{
+		"en"	"Your extra equipment grenades will now instantly stick on where they land instead of rolling."
+	}
 }

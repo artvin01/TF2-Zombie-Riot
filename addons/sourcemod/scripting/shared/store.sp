@@ -1588,8 +1588,7 @@ void Store_ClientDisconnect(int client)
 	Store_WeaponSwitch(client, -1);
 	
 #if defined ZR
-	if(Waves_Started())
-		Database_SaveGameData(client);
+	Database_SaveGameData(client);
 
 	CashSpent[client] = 0;
 	CashSpentTotal[client] = 0;
@@ -4157,6 +4156,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
 	b_LeftForDead[client] = false;
+	b_StickyExtraGrenades[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -4641,7 +4641,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			DispatchSpawn(entity);
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
-			
+			i_InternalMeleeTrace[entity] = true;
 #if defined ZR
 			TF2Attrib_SetByDefIndex(entity, 1, 0.623);
 		//	TF2Attrib_SetByDefIndex(entity, 124, 1.0); //Mini sentry
@@ -4743,6 +4743,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
 					{
 						b_LeftForDead[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
+					{
+						b_StickyExtraGrenades[client] = true;
 					}
 #endif
 					
@@ -4951,6 +4955,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
+		//QUICK REVIVE!
+		if(i_CurrentEquippedPerk[client] == 1)
+		{		
+			Address address = TF2Attrib_GetByDefIndex(entity, 8);
+			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
+			if(address != Address_Null)
+			{
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+			}
+			
+			address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
+			if(address != Address_Null)
+			{
+				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+			}
+		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])
@@ -4998,6 +5018,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
+		Enable_Mlynar(client, entity);
 #endif
 
 #if defined RPG

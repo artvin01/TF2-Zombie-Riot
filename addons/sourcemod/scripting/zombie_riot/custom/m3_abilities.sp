@@ -157,8 +157,13 @@ public void PlaceableTempomaryArmorGrenade(int client)
 	{
 		ability_cooldown[client] = GetGameTime() + 100.0;
 		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-		
-		int entity = CreateEntityByName("tf_projectile_pipe");
+		int entity;
+
+		if(b_StickyExtraGrenades[client])
+			entity = CreateEntityByName("tf_projectile_pipe_remote");
+		else
+			entity = CreateEntityByName("tf_projectile_pipe");
+
 		if(IsValidEntity(entity))
 		{
 			static float pos[3], ang[3], vel_2[3];
@@ -182,6 +187,9 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+			if(b_StickyExtraGrenades[client])
+				SetEntProp(entity, Prop_Send, "m_iType", 1);
+				
 			for(int i; i<4; i++)
 			{
 				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelArmor, _, i);
@@ -263,37 +271,8 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
-							int Armor_Max = 300;
-							int Extra = 0;
-						
-							Extra = Armor_Level[target];
-								
-							Armor_Max = MaxArmorCalculation(Extra, target, 1.0);
-								
-							
-								
-							if(Armor_Charge[target] < Armor_Max)
-							{
-								if(Extra == 50)
-									Armor_Charge[target] += 75 / 5;
-									
-								else if(Extra == 100)
-									Armor_Charge[target] += 100 / 5;
-									
-								else if(Extra == 150)
-									Armor_Charge[target] += 200 / 5;
-									
-								else if(Extra == 200)
-									Armor_Charge[target] += 350 / 5;
-									
-								else
-									Armor_Charge[target] += 25 / 5;
-											
-								if(Armor_Charge[target] >= Armor_Max)
-								{
-									Armor_Charge[target] = Armor_Max;
-								}
-							}
+							//This gives 35% armor
+							GiveArmorViaPercentage(target, 0.075, 1.0);
 						}
 					}
 				}
@@ -325,8 +304,12 @@ public void PlaceableTempomaryHealingGrenade(int client)
 		ability_cooldown[client] = GetGameTime() + 140.0;
 		
 		CreateTimer(140.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-		
-		int entity = CreateEntityByName("tf_projectile_pipe");
+		int entity;		
+		if(b_StickyExtraGrenades[client])
+			entity = CreateEntityByName("tf_projectile_pipe_remote");
+		else
+			entity = CreateEntityByName("tf_projectile_pipe");
+
 		if(IsValidEntity(entity))
 		{
 			static float pos[3], ang[3], vel_2[3];
@@ -350,6 +333,9 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+			if(b_StickyExtraGrenades[client])
+				SetEntProp(entity, Prop_Send, "m_iType", 1);
+
 			for(int i; i<4; i++)
 			{
 				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
@@ -757,8 +743,12 @@ public void PlaceableTempomaryRepairGrenade(int client)
 	{
 		ability_cooldown[client] = GetGameTime() + 100.0;
 		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-		
-		int entity = CreateEntityByName("tf_projectile_pipe_remote");
+		int entity;		
+		if(b_StickyExtraGrenades[client])
+			entity = CreateEntityByName("tf_projectile_pipe_remote");
+		else
+			entity = CreateEntityByName("tf_projectile_pipe");
+
 		if(IsValidEntity(entity))
 		{
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
@@ -783,7 +773,9 @@ public void PlaceableTempomaryRepairGrenade(int client)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
-			SetEntProp(entity, Prop_Send, "m_iType", 1);
+			if(b_StickyExtraGrenades[client])
+				SetEntProp(entity, Prop_Send, "m_iType", 1);
+
 			for(int i; i<4; i++)
 			{
 				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelArmor, _, i);
