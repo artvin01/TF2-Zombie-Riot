@@ -328,7 +328,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
-	npc.m_flNextThinkTime = gameTime + 0.5;
+	npc.m_flNextThinkTime = gameTime + 0.05;
 
 	//Set raid to this one incase the previous one has died or somehow vanished
 	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
@@ -359,6 +359,16 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	{
 		npc.Anger = true;
 		npc.PlayAngerSound();
+	}
+	if(npc.Anger)
+	{
+		npc.m_flRangedArmor = 0.45;
+		npc.m_flMeleeArmor = 0.5625;
+	}
+	else
+	{
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.25;
 	}
 
 	if(npc.m_flPiggyFor)
@@ -479,8 +489,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
 
 				NPCStats_RemoveAllDebuffs(ally);
-				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 2.0;
-				f_HussarBuff[ally] = GetGameTime(ally) + 2.0;
+				f_NpcImmuneToBleed[ally] = GetGameTime(ally) + 5.0;
+				f_HussarBuff[ally] = GetGameTime(ally) + 10.0;
 
 				npc.PlayBuffSound();
 			}
@@ -548,9 +558,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								{
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
-									
-									SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-								//	SDKHooks_TakeDamage(target, npc.index, npc.index, (7.25 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									if(npc.Anger)
+									{
+										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+									}
+									else
+									{
+										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);	
+									}
 									
 									npc.PlayMeleeHitSound();
 									
@@ -622,6 +637,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 						{
+							npc.m_flAttackHappens = gameTime + 0.001;
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
 							if(distance < 1000000.0 && !NpcStats_IsEnemySilenced(npc.index))	// 1000 HU
@@ -632,7 +648,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.PlayRangedSound();
 							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
-							npc.m_flNextMeleeAttack = gameTime + 2.0;
+							npc.m_flNextMeleeAttack = gameTime + 1.5;
 						}
 						/*else
 						{
@@ -679,7 +695,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							damage *= 100000.0 / distance;	// Lower damage based on distance
 						
 						damage *= 5.5;
-						
+						if(npc.Anger)
+						{
+							damage *= 2.0;
+						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 				}
@@ -798,7 +817,7 @@ public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &in
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
 		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
-			damage *= 0.8;
+			damage *= 0.5;
 			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 			damage *= 0.25;
 			f_HurtRecentlyAndRedirected[npc.index] = GetGameTime() + 0.15;

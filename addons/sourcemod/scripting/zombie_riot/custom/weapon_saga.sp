@@ -106,9 +106,16 @@ public Action Saga_Timer1(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				int amount = 1 + (WeaponCharge[client] * 7 / 2);
+				int amount = 1;
+				/*
+				 + (WeaponCharge[client] * 7 / 2);
+
 				if(amount > 1)
 					WeaponCharge[client] -= amount + 1;
+				
+				if(amount < 0)
+					amount = 1; //dont give shit.
+				*/
 				
 				CashRecievedNonWave[client] += amount;
 				CashSpent[client] -= amount;

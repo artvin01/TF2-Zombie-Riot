@@ -472,7 +472,7 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 
 				Transaction tr = new Transaction();
 					
-				char buffer[256];
+				char buffer[512];
 				FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 				tr.AddQuery(buffer);
 				
@@ -531,7 +531,7 @@ void Database_SaveGameData(int client)
 		{
 			Transaction tr = new Transaction();
 			
-			char buffer[256];
+			char buffer[512];
 			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 			tr.AddQuery(buffer);
 			
@@ -567,6 +567,7 @@ void Database_SaveGameData(int client)
 			Ammo_Count_Used[client],
 			f_LeftForDead_Cooldown[client] + 30.0,
 			id);
+			
 
 			tr.AddQuery(buffer);
 			
