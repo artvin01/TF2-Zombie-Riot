@@ -1018,6 +1018,11 @@ int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
 float fl_RangedArmor[MAXENTITIES];
 
+float fl_Extra_MeleeArmor[MAXENTITIES];
+float fl_Extra_RangedArmor[MAXENTITIES];
+float fl_Extra_Speed[MAXENTITIES];
+float fl_Extra_Damage[MAXENTITIES];
+
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
 float f_StuckOutOfBoundsCheck[MAXENTITIES];

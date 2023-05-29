@@ -1,0 +1,19 @@
+"Phrases"
+{
+	"Spearhead"
+	{
+		"en"	"Spearhead"
+	}
+	"Spearhead Desc"
+	{
+		"en"	"Spearhead Desc"
+	}
+	"Gravity Upset"
+	{
+		"en"	"Gravity Upset"
+	}
+	"Gravity Upset Desc"
+	{
+		"en"	"Gravity Upset Desc"
+	}
+}

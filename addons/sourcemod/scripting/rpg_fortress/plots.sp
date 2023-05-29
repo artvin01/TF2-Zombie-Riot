@@ -180,7 +180,7 @@ void Plots_ClientEnter(int client, const char[] name)
 			}
 			else
 			{
-				PrintCenterText(client, "This plot is owned by %N");
+				PrintCenterText(client, "This plot is owned by %N", owner);
 			}
 		}
 		else

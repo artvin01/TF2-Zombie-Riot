@@ -1332,6 +1332,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 #endif
 			damage *= fl_MeleeArmor[victim];
+			damage *= fl_Extra_MeleeArmor[victim];
 		}
 		else if(!(damagetype & DMG_SLASH))
 		{
@@ -1345,6 +1346,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 #endif
 			damage *= fl_RangedArmor[victim];
+			damage *= fl_Extra_RangedArmor[victim];
 		}
 		//No resistances towards slash as its internal.
 
@@ -2301,7 +2303,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
 			CClotBody raid = view_as<CClotBody>(raidboss);
-			if(raid.m_flMeleeArmor != 1.0)
+			if(raid.m_flMeleeArmor != 1.0 || fl_Extra_RangedArmor[raidboss] != 1.0)
 			{
 				HudOffset += 0.035;
 			}

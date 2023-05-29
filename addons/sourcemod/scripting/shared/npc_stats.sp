@@ -1036,7 +1036,7 @@ methodmap CClotBody
 	}
 	property float m_flRangedArmor
 	{
-		public get()							{ return fl_RangedArmor[this.index]; }
+		public get()				{ return fl_RangedArmor[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_RangedArmor[this.index] = TempValueForProperty; }
 	}
 	property bool m_bScalesWithWaves
@@ -1213,6 +1213,7 @@ methodmap CClotBody
 		float speed_for_return = 1.0;
 		float Gametime = GetGameTime();
 		float GametimeNpc = GetGameTime(this.index);
+		speed_for_return *= fl_Extra_Speed[this.index];
 		
 		bool Is_Boss = true;
 		if(!this.m_bThisNpcIsABoss)
@@ -7493,6 +7494,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
+	fl_Extra_MeleeArmor[entity] = 1.0;
+	fl_Extra_RangedArmor[entity] = 1.0;
+	fl_Extra_Speed[entity] = 1.0;
+	fl_Extra_Damage[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
