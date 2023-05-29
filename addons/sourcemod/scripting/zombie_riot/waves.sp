@@ -14,6 +14,10 @@ enum struct Enemy
 	int Index;
 	float Credits;
 	char Data[64];
+	float ExtraMeleeRes;
+	float ExtraRangedRes;
+	float ExtraSpeed;
+	float ExtraDamage;
 }
 
 enum struct MiniBoss
@@ -124,8 +128,6 @@ void Waves_MapStart()
 {
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
-	PrecacheSound("zombie_riot/panzer/siren.mp3", true);
-	PrecacheSound("zombie_riot/sawrunner/iliveinyourwalls.mp3", true);
 }
 
 void Waves_PlayerSpawn(int client)
@@ -158,7 +160,11 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 public Action Waves_RevoteCmd(int client, int args)
 {
-	if(Voting)
+	if(Rouge_Mode())
+	{
+		Rouge_RevoteCmd(client);
+	}
+	else if(Voting)
 	{
 		VotedFor[client] = 0;
 		Waves_CallVote(client);
@@ -168,6 +174,9 @@ public Action Waves_RevoteCmd(int client, int args)
 
 bool Waves_CallVote(int client)
 {
+	if(Rouge_Mode())
+		return Rouge_CallVote(client);
+	
 	if(Voting && !VotedFor[client])
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
@@ -352,6 +361,13 @@ void Waves_SetupVote(KeyValues map)
 	}
 	
 	StartCash = kv.GetNum("cash");
+
+	if(map && kv.GetNum("rougemode"))
+	{
+		Rouge_SetupVote(kv);
+		return;
+	}
+
 	if(!kv.JumpToKey("Waves"))
 	{
 		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "waves");
@@ -598,6 +614,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Is_Static = view_as<bool>(kv.GetNum("is_static"));
 						enemy.Friendly = view_as<bool>(kv.GetNum("friendly"));
 						enemy.Credits = kv.GetFloat("cash");
+						enemy.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
+						enemy.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
+						enemy.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
+						enemy.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						

@@ -668,6 +668,11 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Credits && MultiGlobal)
 						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobal;
+
+					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
+					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
+					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
+					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
 					
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
@@ -2243,13 +2248,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	Debuff_added = false;
 
 #if defined ZR
-	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
+	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_MeleeArmor[victim] != 1.0)
 #else
-	if(npc.m_flMeleeArmor != 1.0)
+	if(npc.m_flMeleeArmor != 1.0 || fl_Extra_MeleeArmor[victim] != 1.0)
 #endif
 	
 	{
 		float percentage = npc.m_flMeleeArmor * 100.0;
+		percentage *= fl_Extra_MeleeArmor[victim];
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -2266,13 +2272,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	
 #if defined ZR
-	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
+	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_RangedArmor[victim] != 1.0)
 #else
-	if(npc.m_flRangedArmor != 1.0)
+	if(npc.m_flRangedArmor != 1.0 || fl_Extra_RangedArmor[victim] != 1.0)
 #endif
 	
 	{
 		float percentage = npc.m_flRangedArmor * 100.0;
+		percentage *= fl_Extra_RangedArmor[victim];
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -2302,18 +2309,17 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
-			CClotBody raid = view_as<CClotBody>(raidboss);
-			if(raid.m_flMeleeArmor != 1.0 || fl_Extra_RangedArmor[raidboss] != 1.0)
+			if(fl_RangedArmor[raidboss] != 1.0 || fl_Extra_RangedArmor[raidboss] != 1.0)
 			{
 				HudOffset += 0.035;
 			}
-			else if(raid.m_flRangedArmor != 1.0)
+			else if(fl_MeleeArmor[raidboss] != 1.0 || fl_Extra_MeleeArmor[raidboss] != 1.0)
 			{
 				HudOffset += 0.035;
 			}
 			else if(Medival_Difficulty_Level != 0)
 			{
-				if(!NpcStats_IsEnemySilenced(raid.index))
+				if(!NpcStats_IsEnemySilenced(raidboss))
 				{
 					HudOffset += 0.035;
 				}

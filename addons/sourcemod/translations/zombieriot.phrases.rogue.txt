@@ -1,5 +1,9 @@
 "Phrases"
 {
+	"Vote for the starting item"
+	{
+		"en"	"Vote for the starting item"
+	}
 	"Spearhead"
 	{
 		"en"	"Spearhead"
