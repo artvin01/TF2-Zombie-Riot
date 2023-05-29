@@ -665,7 +665,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					// Happens pretty much every think update (0.1 sec)
 					if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 					{
-						npc.FaceTowards(vecTarget, 800.0);
+						npc.FaceTowards(vecTarget, 400.0);
 
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -694,7 +694,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(distance > 100000.0)	// 316 HU
 							damage *= 100000.0 / distance;	// Lower damage based on distance
 						
-						damage *= 5.5;
+						damage *= 3.5;
 						if(npc.Anger)
 						{
 							damage *= 2.0;
@@ -817,7 +817,7 @@ public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &in
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
 		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
-			damage *= 0.5;
+			damage *= 0.65;
 			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 			damage *= 0.25;
 			f_HurtRecentlyAndRedirected[npc.index] = GetGameTime() + 0.15;
