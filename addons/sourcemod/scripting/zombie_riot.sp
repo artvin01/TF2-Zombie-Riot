@@ -7,6 +7,6 @@
 #define ZR
 #define CONFIG	"configs/zombie_riot"
 
-#define UseDownloadTable
+//#define UseDownloadTable
 
 #include "shared/core.sp"   

@@ -207,10 +207,6 @@ static int CurrentCount;
 static int CurrentStage;
 static ArrayList CurrentExclude;
 
-void Rouge_PluginStart()
-{
-}
-
 bool Rouge_Mode()	// If Rouge-Like is enabled
 {
 	return InRougeMode;
@@ -224,8 +220,6 @@ void Rouge_MapStart()
 void Rouge_SetupVote(KeyValues kv)
 {
 	InRougeMode = true;
-
-	char buffer[64];
 
 	Zero(VotedFor);
 
@@ -469,7 +463,7 @@ static void DisplayHintVote()
 		if(top[0] != -1)
 		{
 			Vote vote;
-			Voting.GetString(top[0], vote);
+			Voting.GetArray(top[0], vote);
 
 			char buffer[256];
 			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %s: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
@@ -566,7 +560,7 @@ public Action Rouge_EndVote(Handle timer, float time)
 			else
 			{
 				Call_StartFunction(null, VoteFunc);
-				Call_PushArray(vote);
+				Call_PushArray(vote, sizeof(vote));
 				Call_Finish();
 			}
 		}
@@ -967,7 +961,7 @@ static void StartStage(const Stage stage)
 
 	char buffer[64];
 	int entity = -1;
-	while((entity = FindEntityByClassname("info_teleport_destination")) != -1)
+	while((entity = FindEntityByClassname(entity, "info_teleport_destination")) != -1)
 	{
 		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 		if(StrEqual(buffer, stage.Spawn, false))
@@ -1059,11 +1053,11 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 
 static void SetClientCamera(int client, const char[] name = "", const char[] skyname = "")
 {
-	if(name)
+	if(name[0])
 	{
 		char buffer[64];
 		int entity = -1;
-		while((entity = FindEntityByClassname("point_camera")) != -1)
+		while((entity = FindEntityByClassname(entity, "point_camera")) != -1)
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(StrEqual(buffer, name, false))
@@ -1086,11 +1080,11 @@ static void SetClientCamera(int client, const char[] name = "", const char[] sky
 
 static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 {
-	if(name)
+	if(name[0])
 	{
 		char buffer[64];
 		int entity = -1;
-		while((entity = FindEntityByClassname("point_camera")) != -1)
+		while((entity = FindEntityByClassname(entity, "point_camera")) != -1)
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 			if(StrEqual(buffer, name, false))

@@ -54,10 +54,10 @@ void GoldBloon_MapStart()
 {
 	for(int i; i<sizeof(SoundHit); i++)
 	{
-		PrecacheSound(SoundHit[i]);
-	//	PrecacheSoundCustom(SoundHit[i]);
+		PrecacheSoundCustom(SoundHit[i]);
 	}
-	PrecacheSound("zombie_riot/btd/popgolden.wav");
+	
+	PrecacheSoundCustom("zombie_riot/btd/popgolden.wav");
 }
 
 methodmap GoldBloon < CClotBody

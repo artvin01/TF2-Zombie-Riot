@@ -159,7 +159,6 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound("mvm/mvm_tank_end.wav");
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	PrecacheSound("mvm/mvm_tank_explode.wav");
-	PrecacheSound("zombiesurvival/beats/defaultzombiev2/10.mp3");
 	
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);

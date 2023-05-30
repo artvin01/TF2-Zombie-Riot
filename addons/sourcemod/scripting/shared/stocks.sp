@@ -4508,7 +4508,7 @@ stock int getEffectDispatchStringTableIndex(const char[] effectName){
 stock void SpawnTimer(float time)
 {
 	int timer = -1;
-	while((timer = FindEntityByClassname("team_round_timer")) != -1)
+	while((timer = FindEntityByClassname(timer, "team_round_timer")) != -1)
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(timer, "ShowInHUD");

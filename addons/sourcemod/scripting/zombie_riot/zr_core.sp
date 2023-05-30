@@ -414,6 +414,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Rouge_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
