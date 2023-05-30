@@ -113,6 +113,8 @@ enum struct Stage
 enum struct Floor
 {
 	char Name[64];
+	char Camera[64];
+	char Skyname[64];
 	int RoomCount;
 
 	ArrayList Encounters;
@@ -128,14 +130,16 @@ enum struct Floor
 		}
 
 		this.RoomCount = kv.GetNum("rooms", 1);
+		kv.GetString("camera", this.Camera, 64);
+		kv.GetString("skyname", this.Skyname, 64);
 
 		Stage stage;
 
+		this.Encounters = new ArrayList(sizeof(Stage));
 		if(kv.JumpToKey("Stages"))
 		{
 			if(kv.GotoFirstSubKey())
 			{
-				this.Encounters = new ArrayList(sizeof(Stage));
 
 				do
 				{
@@ -148,10 +152,6 @@ enum struct Floor
 			}
 
 			kv.GoBack();
-		}
-		else
-		{
-			this.Encounters = null;
 		}
 
 		if(kv.JumpToKey("Final"))
@@ -554,16 +554,20 @@ public Action Rouge_EndVote(Handle timer, float time)
 			Voting.GetArray(highest, vote);
 			delete Voting;
 			
-			if(Voting == INVALID_FUNCTION)
+			if(VoteFunc == INVALID_FUNCTION)
 			{
 				PrintToChatAll("%t", "New Artifact", vote.Name);
 
 				Format(vote.Name, sizeof(vote.Name), "%s Desc", vote.Name);
 				PrintToChatAll("%t", vote.Name);
+
+				// TODO: Give Artifact
 			}
 			else
 			{
-				
+				Call_StartFunction(null, VoteFunc);
+				Call_PushArray(vote);
+				Call_Finish();
 			}
 		}
 	}
@@ -596,7 +600,7 @@ void Rouge_BattleVictory()
 
 	// TODO: Victory stuff
 
-	NextProgress();
+	SetProgressTime(30.0, true);
 }
 
 bool Rouge_BattleLost()
@@ -644,8 +648,22 @@ static void NextProgress()
 			}
 			else
 			{
-				SetNextStage(id, stage);
+				SetNextStage(id, stage, 15.0);
 			}
+		}
+		case State_Vote:
+		{
+
+		}
+		case State_Trans:
+		{
+			Floor floor;
+			Floors.GetArray(CurrentFloor, floor);
+			
+			Stage stage;
+			floor.Encounters.GetArray(CurrentStage, stage);
+
+			StartThisStage(stage);
 		}
 		case State_Stage:
 		{
@@ -674,11 +692,14 @@ static void NextProgress()
 				else
 				{
 					Floors.GetArray(CurrentFloor, floor);
+					SetAllCamera(floor.Camera, floor.Skyname);
+
+					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if(IsClientInGame(client) && !b_IsPlayerABot[client])
+						if(!b_IsPlayerABot[client] && IsClientInGame(client))
 						{
 							SetGlobalTransTarget(client);
 							ShowHudText(client, -1, "%t", floor.Name);
@@ -698,15 +719,73 @@ static void NextProgress()
 			{
 				delete Voting;
 				Voting = new ArrayList(sizeof(Vote));
-				VoteFunc = INVALID_FUNCTION;
+				VoteFunc = Rouge_Vote_NextStage;
+
+				Floor floor;
+				Floors.GetArray(CurrentFloor, floor);
+				
+				int count = 2;
+				if(!(GetURandomInt() % 6))
+					count++;
+				
+				Stage stage;
+				for(int i; i < count; i++)
+				{
+					int id = GetRandomStage(floor, stage, false, false);
+					if(id != -1)
+					{
+						strcopy(vote.Config, sizeof(vote.Config), stage.Name);
+
+						if(stage.Hidden)
+						{
+							strcopy(vote.Name, sizeof(vote.Name), "Encounter");
+						}
+						else
+						{
+							strcopy(vote.Name, sizeof(vote.Name), stage.Name);
+						}
+
+						Voting.PushArray(vote);
+					}
+				}
+
+				if(Voting.Length)
+				{
+					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
+
+					Zero(VotedFor);
+					CreateTimer(1.0, Rouge_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					CreateTimer(20.0, Rouge_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+
+					SetProgressTime(30.0, false);
+				}
+				else	// We somehow ran out of normal rooms
+				{
+					delete Voting;
+					CurrentCount = floor.RoomCount - 1;
+					NextProgress();
+				}
 			}
 		}
 	}
 }
 
-public void Rouge_Vote_NextStage(int result)
+public void Rouge_Vote_NextStage(const Vote vote)
 {
+	Floor floor;
+	Floors.GetArray(CurrentFloor, floor);
+	
+	Stage stage;
+	int id = GetStageByName(floor, vote.Config, false, stage);
 
+	if(id == -1)
+	{
+		PrintToChatAll("STAGE \"%s\" VANISHED, REPORT BUG", vote.Config);
+		floor.Encounters.GetArray(0, stage);
+		id = 0;
+	}
+	
+	SetNextStage(id, stage);
 }
 
 static bool CallGenericVote(int client)
@@ -714,7 +793,7 @@ static bool CallGenericVote(int client)
 
 }
 
-static void SetNextStage(int id, const Stage stage)
+static void SetNextStage(int id, const Stage stage, float time = 10.0)
 {
 	CurrentCount++;
 	CurrentStage = id;
@@ -725,7 +804,7 @@ static void SetNextStage(int id, const Stage stage)
 	{
 		GameState = State_Trans;
 		SetAllCamera(stage.Camera, stage.Skyname);
-		SetProgressTime(10.0, true);
+		SetProgressTime(time, true);
 	}
 	else
 	{
@@ -733,21 +812,37 @@ static void SetNextStage(int id, const Stage stage)
 	}
 }
 
+static void StartBattle(const Stage stage)
+{
+	char buffer[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, stage.WaveSet);
+	KeyValues kv = new KeyValues("Waves");
+	kv.ImportFromFile(buffer);
+	Waves_SetupWaves(kv, false);
+	delete kv;
+
+	CreateTimer(3.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+}
+
 static void StartThisStage(const Stage stage)
 {
 	GameState = State_Stage;
 	SetAllCamera();
 
-	if(stage.WaveSet[0])
+	float time = stage.WaveSet[0] ? 0.0 : 10.0;
+	if(stage.FuncStart[0])
 	{
-		char buffer[PLATFORM_MAX_PATH];
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, stage.WaveSet);
-		KeyValues kv = new KeyValues("Waves");
-		kv.ImportFromFile(buffer);
-		Waves_SetupWaves(kv, false);
-		delete kv;
+		Call_StartFunction(null, stage.FuncStart);
+		Call_Finish(time);
+	}
 
-		CreateTimer(3.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	if(!time && stage.WaveSet[0])
+	{
+		StartBattle(stage);
+	}
+	else
+	{
+		SetProgressTime(time, false);
 	}
 
 	Waves_SetSkyName(stage.Skyname);
@@ -800,16 +895,28 @@ static void StartThisStage(const Stage stage)
 	}
 }
 
+static int GetStageByName(const Floor floor, const char[] name, bool final, Stage stage)
+{
+	ArrayList list = final ? floor.Encounters : floor.Finals;
+	if(!list)
+		list = floor.Encounters;
+	
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		list.GetArray(i, stage);
+		if(StrEqual(name, stage.Name, false))
+			return i;
+	}
+
+	return -1;
+}
+
 static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battleOnly)
 {
-	ArrayList list = final ? floor.Encounter : floor.Finals;
+	ArrayList list = final ? floor.Encounters : floor.Finals;
 	if(!list)
-	{
-		if(!final || !floor.Encounter)
-			return -1;
-		
-		list = floor.Encounter;
-	}
+		list = floor.Encounters;
 	
 	int length = list.Length;
 

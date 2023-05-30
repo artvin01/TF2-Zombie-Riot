@@ -18,6 +18,11 @@
 		"#format"	"{1:t}"
 		"en"	"{yellow}Collected Artifact{default}: {yellow}{1}"
 	}
+	"Encounter"
+	{
+		"en"	"Encounter"
+	}
+
 	"Spearhead"
 	{
 		"en"	"Spearhead"
