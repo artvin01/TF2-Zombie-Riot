@@ -88,7 +88,7 @@ void Music_EndLastmann()
 	}
 }
 
-void Music_RoundEnd(int victim, bool music)
+void Music_RoundEnd(int victim, bool music = true)
 {
 	ExcuteRelay("zr_gamelost");
 	
