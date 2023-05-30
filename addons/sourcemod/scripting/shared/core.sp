@@ -1901,10 +1901,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						if(i_CurrentEquippedPerk[client] == 1)
 						{
 							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.02, 10);
+							StartHealingTimer(target, 0.1, float(SDKCall_GetMaxHealth(target)) * 0.02, 10);
 						}
 						else
 						{
 							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.01, 10);
+							StartHealingTimer(target, 0.1, float(SDKCall_GetMaxHealth(target)) * 0.01, 10);
 						}
 						
 						SetEntityRenderMode(target, RENDER_NORMAL);
