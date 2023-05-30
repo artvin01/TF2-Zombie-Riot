@@ -32,6 +32,54 @@
 	}
 	"Gravity Upset Desc"
 	{
-		"en"	"Gravity Upset Desc"
+		"en"	"Gravity is twice as high for you, but you gain an increaced change in item drops."
+	}
+	"Pure Greed"
+	{
+		"en"	"Gravity Upset"
+	}
+	"Pure Greed Desc"
+	{
+		"en"	"On this floor you will gain +25% australium ingots, but all enemies will deal +25% more damage."
+	}
+	"Provoked Anger"
+	{
+		"en"	"Provoked Anger"
+	}
+	"Provoked Anger Desc"
+	{
+		"en"	"Anger is usually provoked, this anger can be usefull.\n-Everytime you are hurt, gain +5% extra damage for your holding weapon for 5 seconds."
+	}
+	"Grigori's Coin Purse"
+	{
+		"en"	"Grigori's Coin Purse"
+	}
+	"Grigori's Coin Purse Desc"
+	{
+		"en"	"Alot of money, yet never too much.\n-Gain More attackspeed and healspeed the more australium ingots you own."
+	}
+	"Malfunctioning Shield"
+	{
+		"en"	"Malfunctioning Shield"
+	}
+	"Malfunctioning Shield Desc"
+	{
+		"en"	"A broken shield that is still useable.\n-Every minute gain a shield that blocks once instance of damage entirely.\n-Also applies that shield upon entering a new battle."
+	}
+	"Bob's Exchange Money"
+	{
+		"en"	"Bob's Exchange Money"
+	}
+	"Bob's Exchange Money Desc"
+	{
+		"en"	"Must have left it behind.\n-Gain 12 australium ingots."
+	}
+	"Music Releasing Radio"
+	{
+		"en"	"Music Releasing Radio"
+	}
+	"Music Releasing Radio Desc"
+	{
+		"en"	"It releases music, it cant be stopped it seems.\n-All enemies will be 10%% slower."
 	}
 }
