@@ -4765,22 +4765,23 @@ stock int GetClosestTarget(int entity,
 						
 						static float distance;
 						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside)
+						static float DistancePathed;
+						if(PF_IsPathToEntityPossible(entity, i, DistancePathed))
 						{
 							if( TargetDistance ) 
 							{
-								if( distance < TargetDistance ) 
+								if( DistancePathed < TargetDistance ) 
 								{
 									ClosestTarget = i; 
-									TargetDistance = distance;		  
+									TargetDistance = DistancePathed;		  
 								}
 							} 
 							else 
 							{
 								ClosestTarget = i; 
-								TargetDistance = distance;
-							}	
-						}	
+								TargetDistance = DistancePathed;
+							}		
+						}
 					}			
 				}
 			}
@@ -4824,22 +4825,22 @@ stock int GetClosestTarget(int entity,
 							
 						static float distance;
 						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside)
+						if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 						{
 							if( TargetDistance ) 
 							{
-								if( distance < TargetDistance ) 
+								if( DistancePathed < TargetDistance ) 
 								{
-									ClosestTarget = entity_close; 
-									TargetDistance = distance;		  
+									ClosestTarget = i; 
+									TargetDistance = DistancePathed;		  
 								}
 							} 
 							else 
 							{
-								ClosestTarget = entity_close; 
-								TargetDistance = distance;
+								ClosestTarget = i; 
+								TargetDistance = DistancePathed;
 							}	
-						}	
+						}
 					}
 				}
 			}
