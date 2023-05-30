@@ -352,10 +352,9 @@ bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
 			menu.SetTitle("%t\n ", "Vote for the starting item");
 			
 			Vote vote;
-			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote")
+			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 			menu.AddItem(NULL_STRING, vote.Name);
 
-			Vote vote;
 			int length = Voting.Length;
 			for(int i; i < length; i++)
 			{
@@ -398,7 +397,7 @@ public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 						Vote vote;
 						Voting.GetArray(choice, vote);
 						FormatEx(vote.Config, sizeof(vote.Config), "%s Desc", vote.Name);
-						CPrintToChat(client, "%t: %t", name, desc);
+						CPrintToChat(client, "%t: %t", vote.Name, vote.Config);
 						Rouge_CallVote(client, true);
 						return 0;
 					}
@@ -711,9 +710,6 @@ static void NextProgress()
 			}
 			else if(CurrentCount == floor.RoomCount)	// Final Stage
 			{
-				Floor floor;
-				Floors.GetArray(CurrentFloor, floor);
-
 				Stage stage;
 				int id = GetRandomStage(floor, stage, true, false);
 				if(id == -1)
@@ -734,9 +730,6 @@ static void NextProgress()
 				VoteFunc = Rouge_Vote_NextStage;
 				strcopy(VoteTitle, sizeof(VoteTitle), "Vote for the next stage");
 
-				Floor floor;
-				Floors.GetArray(CurrentFloor, floor);
-				
 				int count = 2;
 				if(!(GetURandomInt() % 6))
 					count++;
@@ -837,7 +830,7 @@ static bool CallGenericVote(int client)
 	menu.SetTitle("%t\n ", VoteTitle);
 	
 	Vote vote;
-	Format(vote.Name, sizeof(vote.Name), "%t", "No Vote")
+	Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 	menu.AddItem(NULL_STRING, vote.Name);
 
 	int length = Voting.Length;

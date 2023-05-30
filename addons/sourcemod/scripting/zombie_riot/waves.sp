@@ -188,7 +188,7 @@ bool Waves_CallVote(int client)
 		menu.SetTitle("%t:\n ","Vote for the difficulty");
 		
 		Vote vote;
-		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote")
+		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 		menu.AddItem(NULL_STRING, vote.Name);
 		
 		int length = Voting.Length;

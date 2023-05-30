@@ -1079,7 +1079,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	LastMann = (rouge && !Waves_InSetup());
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
-	int GlobalIntencity_Reduntant = Waves_GetIntencity();
+	int GlobalIntencity_Reduntant;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
