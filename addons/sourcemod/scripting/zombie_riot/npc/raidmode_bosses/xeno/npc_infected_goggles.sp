@@ -386,7 +386,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			flPos[2] -= 70.0;
 			SDKCall_SetLocalOrigin(npc.index, flPos);
-
+			npc.SetVelocity({0.0,0.0,0.0});
+			TeleportEntity(npc.index, flPos, NULL_VECTOR, _);
 		}
 	}
 

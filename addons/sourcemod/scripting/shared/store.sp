@@ -1210,7 +1210,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					item.BuyWave[client] = -1;
 					StoreItems.SetArray(values[0], item);
 					
-					TF2_StunPlayer(client, 2.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+					TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 					
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
@@ -4078,6 +4078,26 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #if defined RPG
 	MudrockShieldUnequip(client);
 #endif
+	//stickies can stay, we delete any non spike stickies.
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(IsValidEntity(i))
+		{
+			static char classname[36];
+			GetEntityClassname(i, classname, sizeof(classname));
+			if(!StrContains(classname, "tf_projectile_pipe_remote"))
+			{
+				if(!IsEntitySpike(i))
+				{
+					if(GetEntPropEnt(i, Prop_Send, "m_hThrower") == client)
+					{
+						DoGrenadeExplodeLogic(i);
+						RemoveEntity(i);
+					}
+				}
+			}
+		}
+	}
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	int ie;

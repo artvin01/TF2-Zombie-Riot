@@ -1904,8 +1904,7 @@
 	}
 	"Spike Layer Pap 1"
 	{
-		"en"	"Faster Attackspeed, Spike limit increaces to 60, damage increaces slightly."
-		"chi"   "更快的攻击速度，尖刺限制增加到60，伤害略有增加。"
+		"en"	"Faster Attackspeed, Spike limit increaces, damage increaces slightly."
 	}
 	"Throwable Repair Grenade Desc"
 	{

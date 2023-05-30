@@ -114,6 +114,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				SetEntityModel(TripMine, TRIP_MODEL);
 				DispatchKeyValue(TripMine, "StartDisabled", "false");
 				DispatchSpawn(TripMine);
+				SetEntitySpike(TripMine, true);
 						
 				SetEntityMoveType(TripMine, MOVETYPE_NONE);
 				SetEntProp(TripMine, Prop_Data, "m_takedamage", 0);

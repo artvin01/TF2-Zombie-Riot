@@ -216,7 +216,7 @@ methodmap EndSpeaker < CClotBody
 				}
 
 				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
-				Explode_Logic_Custom(999999.9, -1, this.index, -1, vecTarget, 400.0, _, _, true, _, false, _, EndSpeaker_EatPost);
+				Explode_Logic_Custom(999999.9, -1, this.index, -1, vecTarget, 500.0, _, _, true, _, false, _, EndSpeaker_EatPost);
 				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			}
 		}

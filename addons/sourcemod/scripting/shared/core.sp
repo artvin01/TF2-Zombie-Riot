@@ -1898,6 +1898,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 							SetEntityRenderMode(entity, RENDER_NORMAL);
 							SetEntityRenderColor(entity, 255, 255, 255, 255);
 						}
+						if(i_CurrentEquippedPerk[client] == 1)
+						{
+							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.02, 10);
+						}
+						else
+						{
+							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.01, 10);
+						}
+						
 						SetEntityRenderMode(target, RENDER_NORMAL);
 						SetEntityRenderColor(target, 255, 255, 255, 255);
 						EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
@@ -2170,6 +2179,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_CustomWeaponEquipLogic[entity] = 0;
 		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
+		SetEntitySpike(entity, false);
 #if defined ZR
 		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
