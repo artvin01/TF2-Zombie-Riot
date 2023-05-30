@@ -575,11 +575,15 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NervousLastTouch[client] = TheNavMesh.GetNavArea_Vec(pos, 70.0);
 			if(NervousLastTouch[client] != NavArea_Null && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
+				bool resist = Building_NeatherseaReduced(client);
 				float MaxHealth = float(SDKCall_GetMaxHealth(client));
 
 				float damageDeal;
 				
 				damageDeal = MaxHealth * 0.0025;
+
+				if(resist)
+					damageDeal *= 0.2;
 
 				if(damageDeal < 2.0) //whatever is higher.
 				{
@@ -589,8 +593,9 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				SDKHooks_TakeDamage(client, 0, 0, damageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 				// 120 x 0.25 x 0.2
 
-				SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
-				// 20 x 0.25 x 0.2
+				if(!resist)
+					SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
+					// 20 x 0.25 x 0.2
  
 /*
 				bool resist = Building_NeatherseaReduced(client);
