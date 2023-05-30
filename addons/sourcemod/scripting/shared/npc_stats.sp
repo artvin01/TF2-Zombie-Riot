@@ -4738,7 +4738,7 @@ stock int GetClosestTarget(int entity,
 
 
 	float fldistancelimit_Inside = fldistancelimit;// * fldistancelimit;
-	float fldistancelimit_Inside_AllyNpc = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
+	float fldistancelimit_Inside_AllyNpc = fldistancelimitAllyNPC;// * fldistancelimitAllyNPC;
 	
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
@@ -4867,7 +4867,7 @@ stock int GetClosestTarget(int entity,
 						static float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
 
 						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
@@ -4920,7 +4920,7 @@ stock int GetClosestTarget(int entity,
 						static float TargetLocation[3]; 
 						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						float distance = GetVectorDistance( EntityLocation, TargetLocation ); 
 
 						if(distance < fldistancelimit_Inside_AllyNpc)
 						{
