@@ -192,6 +192,7 @@ static bool InRougeMode;
 static ArrayList Voting;
 static float VoteEndTime;
 static int VotedFor[MAXTF2PLAYERS];
+static Function VoteFunc;
 
 static ArrayList Curses;
 static ArrayList Artifacts;
@@ -228,13 +229,15 @@ void Rouge_SetupVote(KeyValues kv)
 	Zero(VotedFor);
 
 	delete Voting;
-	Voting = new ArrayList(sizeof(buffer));
+	Voting = new ArrayList(sizeof(Vote));
+	VoteFunc = INVALID_FUNCTION;
 	
+	Vote vote;
 	kv.GotoFirstSubKey(false);
 	do
 	{
-		kv.GetSectionName(buffer, sizeof(buffer));
-		Voting.PushString(buffer);
+		kv.GetSectionName(vote.Name, sizeof(vote.Name));
+		Voting.PushArray(vote);
 	}
 	while(kv.GotoNextKey(false));
 
@@ -340,7 +343,7 @@ bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
 {
 	if(Voting && (force || !VotedFor[client]))
 	{
-		if(GameState == State_Setup)
+		if(VoteFunc == INVALID_FUNCTION)
 		{
 			Menu menu = new Menu(Rouge_CallVoteH);
 			
@@ -351,12 +354,14 @@ bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
 			menu.AddItem("", "No Vote");
 			
 			char buffer[64], display[64];
+
+			Vote vote;
 			int length = Voting.Length;
 			for(int i; i < length; i++)
 			{
-				Voting.GetString(i, buffer, sizeof(buffer));
-				Format(display, sizeof(display), "%t", buffer);
-				menu.AddItem(buffer, display);
+				Voting.GetArray(i, vote);
+				Format(vote.Config, sizeof(vote.Config), "%t", vote.Name);
+				menu.AddItem(vote.Name, vote.Config);
 			}
 			
 			menu.ExitButton = false;
@@ -390,9 +395,9 @@ public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 					}
 					else
 					{
-						char name[64], desc[70];
-						Voting.GetString(choice, name, sizeof(name));
-						FormatEx(desc, sizeof(desc), "%s Desc", name);
+						Vote vote;
+						Voting.GetArray(choice, vote);
+						FormatEx(vote.Config, sizeof(vote.Config), "%s Desc", vote.Name);
 						PrintToChat(client, "%t: %t", name, desc);
 						Rouge_CallVote(client, true);
 						return 0;
@@ -464,19 +469,19 @@ static void DisplayHintVote()
 
 		if(top[0] != -1)
 		{
-			char name[64];
-			Voting.GetString(top[0], name, sizeof(name));
+			Vote vote;
+			Voting.GetString(top[0], vote);
 
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %s: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), name, votes[top[0]]);
+			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %s: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
 
 			for(int i = 1; i < sizeof(top); i++)
 			{
 				if(top[i] != -1)
 				{
-					Voting.GetString(top[i], name, sizeof(name));
+					Voting.GetArray(top[i], vote);
 
-					Format(buffer, sizeof(buffer), "%s\n%d. %s: (%d)", buffer, i + 1, name, votes[top[i]]);
+					Format(buffer, sizeof(buffer), "%s\n%d. %s: (%d)", buffer, i + 1, vote.Name, votes[top[i]]);
 				}
 			}
 
@@ -531,7 +536,6 @@ public Action Rouge_EndVote(Handle timer, float time)
 			{
 				if(IsClientInGame(client))
 				{
-					DoOverlay(client, "");
 					if(VotedFor[client] > 0 && GetClientTeam(client) == 2)
 					{
 						votes[VotedFor[client]-1]++;
@@ -548,13 +552,19 @@ public Action Rouge_EndVote(Handle timer, float time)
 			
 			Vote vote;
 			Voting.GetArray(highest, vote);
-			
 			delete Voting;
 			
-			PrintToChatAll("%t", "New Artifact", vote.Name);
+			if(Voting == INVALID_FUNCTION)
+			{
+				PrintToChatAll("%t", "New Artifact", vote.Name);
 
-			Format(vote.Name, sizeof(vote.Name), "%s Desc", vote.Name);
-			PrintToChatAll("%t", vote.Name);
+				Format(vote.Name, sizeof(vote.Name), "%s Desc", vote.Name);
+				PrintToChatAll("%t", vote.Name);
+			}
+			else
+			{
+				
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -686,10 +696,17 @@ static void NextProgress()
 			}
 			else	// Normal Stage
 			{
-
+				delete Voting;
+				Voting = new ArrayList(sizeof(Vote));
+				VoteFunc = INVALID_FUNCTION;
 			}
 		}
 	}
+}
+
+public void Rouge_Vote_NextStage(int result)
+{
+
 }
 
 static bool CallGenericVote(int client)

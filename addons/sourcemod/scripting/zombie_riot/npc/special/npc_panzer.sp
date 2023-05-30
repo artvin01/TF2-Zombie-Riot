@@ -295,18 +295,6 @@ methodmap NaziPanzer < CClotBody
 		float wave = float(ZR_GetWaveCount()+1);
 		
 		wave *= 0.1;
-		
-		if(EscapeModeMap)
-		{
-			wave = 1.7;
-			int amount_of_people = CountPlayersOnRed();
-			int health = 5000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
 	
 		npc.m_flWaveScale = wave;
 		
