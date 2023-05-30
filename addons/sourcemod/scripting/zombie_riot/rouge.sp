@@ -1156,10 +1156,10 @@ int Rouge_GetRoundScale()
 }
 
 //ROUGELIKE ITEMS
-bool b_SpearheadSquad;
+/*TODO*/bool b_SpearheadSquad;		 //should be done in store 
 bool b_ProvokedAnger;
-bool b_MalfunctionShield;
-bool b_GrigoriCoinPurse;
+/*TODO*/bool b_MalfunctionShield;
+/*TODO*/bool b_GrigoriCoinPurse;	 //should be done when the weapon is created/when a battle starts
 bool b_MusicReleasingRadio;
 
 //ROUGELIKE .sp
