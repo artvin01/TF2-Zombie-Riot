@@ -11,7 +11,11 @@
 
 	"Vote for the starting item"
 	{
-		"en"	"Vote for the starting item"
+		"en"	"Vote for the starting item:"
+	}
+	"Vote for the next stage"
+	{
+		"en"	"Vote for the next stage:"
 	}
 	"New Artifact"
 	{
@@ -23,14 +27,7 @@
 		"en"	"Encounter"
 	}
 
-	"Spearhead"
-	{
-		"en"	"Spearhead"
-	}
-	"Spearhead Desc"
-	{
-		"en"	"{green}+15% damage bonus{yellow}, {green}+50 max health{yellow}, {red}does not provide a second life"
-	}
+	// Curses
 	"Gravity Upset"
 	{
 		"en"	"Gravity Upset"
@@ -46,6 +43,16 @@
 	"Pure Greed Desc"
 	{
 		"en"	"On this floor you will gain +25% australium ingots, but all enemies will deal +25% more damage."
+	}
+	
+	// Artifacts
+	"Spearhead"
+	{
+		"en"	"Spearhead"
+	}
+	"Spearhead Desc"
+	{
+		"en"	"{green}+15% damage bonus{yellow}, {green}+50 max health{yellow}, {red}does not provide a second life"
 	}
 	"Provoked Anger"
 	{

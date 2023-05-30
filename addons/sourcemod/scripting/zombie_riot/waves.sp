@@ -80,6 +80,7 @@ enum struct Vote
 	char Name[64];
 	char Config[64];
 	int Level;
+	char Desc[256];
 }
 
 static ArrayList Rounds;
@@ -186,9 +187,10 @@ bool Waves_CallVote(int client)
 		
 		menu.SetTitle("%t:\n ","Vote for the difficulty");
 		
-		menu.AddItem("", "No Vote");
-		
 		Vote vote;
+		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote")
+		menu.AddItem(NULL_STRING, vote.Name);
+		
 		int length = Voting.Length;
 		for(int i; i<length; i++)
 		{

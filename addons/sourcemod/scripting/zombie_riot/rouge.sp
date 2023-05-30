@@ -129,7 +129,7 @@ enum struct Floor
 			LogError("\"%s\" translation does not exist", this.Name);
 		}
 
-		this.RoomCount = kv.GetNum("rooms", 1);
+		this.RoomCount = kv.GetNum("rooms", 2) - 2;
 		kv.GetString("camera", this.Camera, 64);
 		kv.GetString("skyname", this.Skyname, 64);
 
@@ -193,6 +193,7 @@ static ArrayList Voting;
 static float VoteEndTime;
 static int VotedFor[MAXTF2PLAYERS];
 static Function VoteFunc;
+static char VoteTitle[256];
 
 static ArrayList Curses;
 static ArrayList Artifacts;
@@ -335,8 +336,7 @@ void Rouge_SetupVote(KeyValues kv)
 
 void Rouge_RevoteCmd(int client)	// Waves_RevoteCmd
 {
-	VotedFor[client] = 0;
-	Rouge_CallVote(client);
+	Rouge_CallVote(client, true);
 }
 
 bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
@@ -349,11 +349,11 @@ bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
 			
 			SetGlobalTransTarget(client);
 			
-			menu.SetTitle("%t:\n ", "Vote for the starting item");
+			menu.SetTitle("%t\n ", "Vote for the starting item");
 			
-			menu.AddItem("", "No Vote");
-			
-			char buffer[64], display[64];
+			Vote vote;
+			Format(vote.Name, sizeof(vote.Name), "%t", "No Vote")
+			menu.AddItem(NULL_STRING, vote.Name);
 
 			Vote vote;
 			int length = Voting.Length;
@@ -398,7 +398,7 @@ public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 						Vote vote;
 						Voting.GetArray(choice, vote);
 						FormatEx(vote.Config, sizeof(vote.Config), "%s Desc", vote.Name);
-						PrintToChat(client, "%t: %t", name, desc);
+						CPrintToChat(client, "%t: %t", name, desc);
 						Rouge_CallVote(client, true);
 						return 0;
 					}
@@ -520,6 +520,7 @@ void Rouge_RoundEnd()
 	CurrentFloor = 0;
 	CurrentStage = -1;
 	CurrentCount = -1;
+	delete CurrentExclude;
 }
 
 public Action Rouge_EndVote(Handle timer, float time)
@@ -556,10 +557,10 @@ public Action Rouge_EndVote(Handle timer, float time)
 			
 			if(VoteFunc == INVALID_FUNCTION)
 			{
-				PrintToChatAll("%t", "New Artifact", vote.Name);
+				CPrintToChatAll("%t", "New Artifact", vote.Name);
 
 				Format(vote.Name, sizeof(vote.Name), "%s Desc", vote.Name);
-				PrintToChatAll("%t", vote.Name);
+				CPrintToChatAll("%t", vote.Name);
 
 				// TODO: Give Artifact
 			}
@@ -607,7 +608,7 @@ bool Rouge_BattleLost()
 {
 	return true;	// Return true to fail the game
 
-	//NextProgress();
+	//SetProgressTime(5.0, false);
 }
 
 static void NextProgress()
@@ -651,10 +652,6 @@ static void NextProgress()
 				SetNextStage(id, stage, 15.0);
 			}
 		}
-		case State_Vote:
-		{
-
-		}
 		case State_Trans:
 		{
 			Floor floor;
@@ -663,14 +660,14 @@ static void NextProgress()
 			Stage stage;
 			floor.Encounters.GetArray(CurrentStage, stage);
 
-			StartThisStage(stage);
+			StartStage(stage);
 		}
 		case State_Stage:
 		{
 			Floor floor;
 			Floors.GetArray(CurrentFloor, floor);
 			
-			if(CurrentCount >= floor.RoomCount)
+			if(CurrentCount > floor.RoomCount)
 			{
 				// Go to next floor
 				CurrentFloor++;
@@ -708,18 +705,34 @@ static void NextProgress()
 
 					// TODO: Curse Rolls
 
+					GameState = State_Trans;
 					SetProgressTime(7.0, false);
 				}
 			}
-			else if(CurrentCount == (floor.RoomCount - 1))	// Final Stage
+			else if(CurrentCount == floor.RoomCount)	// Final Stage
 			{
+				Floor floor;
+				Floors.GetArray(CurrentFloor, floor);
 
+				Stage stage;
+				int id = GetRandomStage(floor, stage, true, false);
+				if(id == -1)
+				{
+					// We somehow don't have a final stage
+					CurrentCount = floor.RoomCount + 1;
+					NextProgress();
+				}
+				else
+				{
+					SetNextStage(id, stage, 30.0);
+				}
 			}
 			else	// Normal Stage
 			{
 				delete Voting;
 				Voting = new ArrayList(sizeof(Vote));
 				VoteFunc = Rouge_Vote_NextStage;
+				strcopy(VoteTitle, sizeof(VoteTitle), "Vote for the next stage");
 
 				Floor floor;
 				Floors.GetArray(CurrentFloor, floor);
@@ -728,6 +741,7 @@ static void NextProgress()
 				if(!(GetURandomInt() % 6))
 					count++;
 				
+				Vote vote;
 				Stage stage;
 				for(int i; i < count; i++)
 				{
@@ -746,26 +760,28 @@ static void NextProgress()
 						}
 
 						Voting.PushArray(vote);
+
+						if(!i)
+							SetAllCamera(stage.Camera, stage.Skyname);
 					}
 				}
 
 				if(Voting.Length)
 				{
-					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
-
-					Zero(VotedFor);
-					CreateTimer(1.0, Rouge_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					CreateTimer(20.0, Rouge_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
-
-					SetProgressTime(30.0, false);
+					StartGenericVote();
+					GameState = State_Vote;
 				}
 				else	// We somehow ran out of normal rooms
 				{
 					delete Voting;
-					CurrentCount = floor.RoomCount - 1;
+					CurrentCount = floor.RoomCount;
 					NextProgress();
 				}
 			}
+		}
+		default:
+		{
+			PrintToChatAll("INVALID GAME STATE %d, REPORT BUG", GameState);
 		}
 	}
 }
@@ -784,13 +800,107 @@ public void Rouge_Vote_NextStage(const Vote vote)
 		floor.Encounters.GetArray(0, stage);
 		id = 0;
 	}
-	
+	else
+	{
+		if(!CurrentExclude)
+			CurrentExclude = new ArrayList();
+		
+		CurrentExclude.Push(id);
+	}
+
 	SetNextStage(id, stage);
+}
+
+static void StartGenericVote(float time = 20.0)
+{
+	Zero(VotedFor);
+	CreateTimer(1.0, Rouge_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+
+	VoteEndTime = GetGameTime() + time;
+	CreateTimer(time, Rouge_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+
+	SetProgressTime(time + 10.0, false);
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && GetClientMenu(client) == MenuSource_None)
+			Rouge_CallVote(client);
+	}
 }
 
 static bool CallGenericVote(int client)
 {
+	Menu menu = new Menu(Rouge_CallGenericVoteH);
+	
+	SetGlobalTransTarget(client);
+	
+	menu.SetTitle("%t\n ", VoteTitle);
+	
+	Vote vote;
+	Format(vote.Name, sizeof(vote.Name), "%t", "No Vote")
+	menu.AddItem(NULL_STRING, vote.Name);
 
+	int length = Voting.Length;
+	for(int i; i < length; i++)
+	{
+		Voting.GetArray(i, vote);
+		Format(vote.Name, sizeof(vote.Name), "%t", vote.Name);
+		menu.AddItem(vote.Config, vote.Name);
+	}
+	
+	menu.ExitButton = false;
+	menu.Display(client, MENU_TIME_FOREVER);
+	return true;
+}
+
+public int Rouge_CallGenericVoteH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			if(Voting)
+			{
+				if(VotedFor[client] != choice)
+				{
+					VotedFor[client] = choice;
+					if(VotedFor[client] == 0)
+					{
+						VotedFor[client] = -1;
+					}
+					else
+					{
+						Vote vote;
+						Voting.GetArray(choice, vote);
+						if(VoteFunc == Rouge_Vote_NextStage)
+						{
+							Floor floor;
+							Floors.GetArray(CurrentFloor, floor);
+							
+							Stage stage;
+							GetStageByName(floor, vote.Config, false, stage);
+
+							SetClientCamera(client, stage.Camera, stage.Skyname);
+							return 0;
+						}
+						else if(vote.Desc[0])
+						{
+							CPrintToChat(client, "%t", vote.Desc);
+							Rouge_CallVote(client, true);
+							return 0;
+						}
+					}
+				}
+			}
+			
+			Store_Menu(client);
+		}
+	}
+	return 0;
 }
 
 static void SetNextStage(int id, const Stage stage, float time = 10.0)
@@ -808,11 +918,24 @@ static void SetNextStage(int id, const Stage stage, float time = 10.0)
 	}
 	else
 	{
-		StartThisStage(stage);
+		StartStage(stage);
 	}
 }
 
-static void StartBattle(const Stage stage)
+static void StartThisBattle()
+{
+	delete ProgressTimer;
+
+	Floor floor;
+	Floors.GetArray(CurrentFloor, floor);
+	
+	Stage stage;
+	floor.Encounters.GetArray(CurrentStage, stage);
+
+	StartBattle(stage, 5.0);
+}
+
+static void StartBattle(const Stage stage, float time = 3.0)
 {
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, stage.WaveSet);
@@ -824,13 +947,13 @@ static void StartBattle(const Stage stage)
 	CreateTimer(3.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
-static void StartThisStage(const Stage stage)
+static void StartStage(const Stage stage)
 {
 	GameState = State_Stage;
 	SetAllCamera();
 
 	float time = stage.WaveSet[0] ? 0.0 : 10.0;
-	if(stage.FuncStart[0])
+	if(stage.FuncStart != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, stage.FuncStart);
 		Call_Finish(time);
@@ -925,7 +1048,10 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 	do
 	{
 		if(i >= length)
+		{
 			i = 0;
+			continue;
+		}
 		
 		list.GetArray(i, stage);
 		if((!battleOnly || stage.WaveSet[0]) && (final || !CurrentExclude || CurrentExclude.FindValue(i) == -1))
