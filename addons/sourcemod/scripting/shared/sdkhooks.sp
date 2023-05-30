@@ -1378,10 +1378,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(Victim_weapon))
 		{
+			OnTakeDamage_ProvokedAnger(victim, Victim_weapon);
 			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 			
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
+		}
+		if(OnTakeDamage_ShieldLogic(victim))
+		{
+			return Plugin_Handled;
 		}
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{

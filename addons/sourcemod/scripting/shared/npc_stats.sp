@@ -1188,6 +1188,10 @@ methodmap CClotBody
 		speed_for_return *= fl_Extra_Speed[this.index];
 		
 		bool Is_Boss = true;
+#if defined ZR
+		if(b_MusicReleasingRadio)
+			speed_for_return *= 0.9;
+#endif
 		if(!this.m_bThisNpcIsABoss)
 		{
 			

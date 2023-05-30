@@ -1154,3 +1154,15 @@ int Rouge_GetRoundScale()
 {
 	return Rouge_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
 }
+
+//ROUGELIKE ITEMS
+bool b_SpearheadSquad;
+bool b_ProvokedAnger;
+bool b_MalfunctionShield;
+bool b_GrigoriCoinPurse;
+bool b_MusicReleasingRadio;
+
+//ROUGELIKE .sp
+//This is only needed for items that are more then just flat stat changes.
+
+#include "rougelike/provoked_anger.sp"

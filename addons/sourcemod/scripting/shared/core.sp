@@ -431,6 +431,10 @@ float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
 
+
+
+
+
 #define ABILITY_NONE                 0          	//Nothing special.
 
 #define ABILITY_M1				(1 << 1) 
