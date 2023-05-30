@@ -4751,12 +4751,8 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, i);
-						if(Enemy_I_See != i)
-						{
+						if(!Can_I_See_Enemy_Only(entity, i))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
@@ -4815,12 +4811,8 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-						if(Enemy_I_See != entity_close)
-						{
+						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
@@ -4867,12 +4859,8 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-						if(Enemy_I_See != entity_close)
-						{
+						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
@@ -4887,19 +4875,18 @@ stock int GetClosestTarget(int entity,
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								distance = (DistancePathed * DistancePathed) * 0.65;
 								if( TargetDistance ) 
 								{
 									if( distance < TargetDistance ) 
 									{
 										ClosestTarget = entity_close; 
-										TargetDistance = distance;		  
+										TargetDistance = DistancePathed;		  
 									}
 								} 
 								else 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = distance;
+									TargetDistance = DistancePathed;
 								}
 							}
 						}	
@@ -4925,12 +4912,8 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-						if(Enemy_I_See != entity_close)
-						{
+						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
@@ -4945,19 +4928,18 @@ stock int GetClosestTarget(int entity,
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								distance = (DistancePathed * DistancePathed) * 0.65;
 								if( TargetDistance ) 
 								{
-									if( distance < TargetDistance ) 
+									if( DistancePathed < TargetDistance ) 
 									{
 										ClosestTarget = entity_close; 
-										TargetDistance = distance;		  
+										TargetDistance = DistancePathed;		  
 									}
 								} 
 								else 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = distance;
+									TargetDistance = DistancePathed;
 								}
 							}
 						}	
