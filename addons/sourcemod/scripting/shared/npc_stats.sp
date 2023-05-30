@@ -4825,19 +4825,20 @@ stock int GetClosestTarget(int entity,
 							
 						static float distance;
 						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						static float DistancePathed;
 						if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 						{
 							if( TargetDistance ) 
 							{
 								if( DistancePathed < TargetDistance ) 
 								{
-									ClosestTarget = i; 
+									ClosestTarget = entity_close; 
 									TargetDistance = DistancePathed;		  
 								}
 							} 
 							else 
 							{
-								ClosestTarget = i; 
+								ClosestTarget = entity_close; 
 								TargetDistance = DistancePathed;
 							}	
 						}
