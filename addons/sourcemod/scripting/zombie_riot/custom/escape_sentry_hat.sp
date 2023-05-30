@@ -146,38 +146,6 @@ public Action Event_player_builtobject(Handle event, const char[] name, bool don
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.bBuildingIsPlaced = true;
 	i_BeingCarried[entity] = false;
-	char classname[64];
-	
-	if (IsValidEntity(entity))
-	{
-		GetEdictClassname(entity, classname, sizeof(classname));
-		if (!strcmp(classname, "obj_sentrygun"))
-		{
-			if(EscapeMode)
-			{
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.25);
-				npc.bBuildingIsStacked = true;
-		
-				int particle = CreateEntityByName("info_particle_system");
-				DispatchSpawn(particle);
-				float flPos[3]; // original
-				float flAng[3]; // original
-				GetAttachment(owner, "partyhat", flPos, flAng);
-				
-				TeleportEntity(particle, flPos, flAng, NULL_VECTOR);
-				TeleportEntity(entity, flPos, flAng, NULL_VECTOR);
-				
-				SetParent(owner, particle, "partyhat");
-				
-				SetParent(particle, entity);
-				
-				SetEntProp(entity, Prop_Send, "m_nSolidType", 0);
-				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 0x0004);
-				
-				CreateTimer(0.5, Check_If_Owner_Dead, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-			}
-		}
-	}
 	return Plugin_Continue;
 }
 

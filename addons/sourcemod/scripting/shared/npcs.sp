@@ -1528,23 +1528,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				damage = 0.0;
 			//	return Plugin_Handled;
 			}
-			
-#if defined ZR
-			if(EscapeMode)
-			{
-				if(IsValidEntity(weapon))
-				{
-					if(!i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //make sure its not a wand.
-					{
-						char melee_classname[64];
-						GetEntityClassname(weapon, melee_classname, 64);
-						
-						if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-							damage *= 1.25;
-					}
-				}
-			}
-#endif
 
 			//NPC STUFF FOR RECORD AND ON KILL
 			LastHitId[victim] = GetClientUserId(attacker);
@@ -1576,12 +1559,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				if(i_IsABuilding[inflictor])
 				{
-#if defined ZR
-					if(EscapeMode) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
-					{
-						damage *= 4.0;
-					}
-#endif
 #if defined RPG
 					if(RpgHasSentry(attacker)) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
 					{
@@ -1604,42 +1581,35 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(npc.m_bScalesWithWaves)
 					{
 						int Wave_Count = Waves_GetRound() + 1;
-						if(!EscapeMode) //Buff in escapemode overall!
-						{
-							if(Wave_Count <= 10)
-								damage *= 0.35;
-								
-							else if(Wave_Count <= 15)
-								damage *= 1.0;
+						if(Wave_Count <= 10)
+							damage *= 0.35;
 							
-							else if(Wave_Count <= 20)
-								damage *= 1.35;
-								
-							else if(Wave_Count <= 25)
-								damage *= 2.5;
-								
-							else if(Wave_Count <= 30)
-								damage *= 5.0;
-								
-							else if(Wave_Count <= 40)
-								damage *= 7.0;
-								
-							else if(Wave_Count <= 45)
-								damage *= 20.0;
+						else if(Wave_Count <= 15)
+							damage *= 1.0;
+						
+						else if(Wave_Count <= 20)
+							damage *= 1.35;
 							
-							else if(Wave_Count <= 50)
-								damage *= 30.0;
+						else if(Wave_Count <= 25)
+							damage *= 2.5;
 							
-							else if(Wave_Count <= 60)
-								damage *= 40.0;
+						else if(Wave_Count <= 30)
+							damage *= 5.0;
 							
-							else
-								damage *= 60.0;
-						}
+						else if(Wave_Count <= 40)
+							damage *= 7.0;
+							
+						else if(Wave_Count <= 45)
+							damage *= 20.0;
+						
+						else if(Wave_Count <= 50)
+							damage *= 30.0;
+						
+						else if(Wave_Count <= 60)
+							damage *= 40.0;
+						
 						else
-						{
-							damage *= 1.5;
-						}
+							damage *= 60.0;
 					}
 				}
 #endif	// ZR
@@ -1795,9 +1765,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 									{
 										damage *= 1.25;
 									}
-									
-									if(EscapeMode)
-										damage *= 1.35;
 	#endif						
 									
 									//Latest tf2 update broke this, too lazy to fix lol

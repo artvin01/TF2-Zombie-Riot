@@ -60,10 +60,6 @@ public Action Medikit_healing(int client, int buttons)
 									else
 									{
 										int Healing_Max = 70;
-										if(EscapeMode)
-										{
-											Healing_Max = 120;
-										}
 										if(ammo_amount_left > Healing_Max)
 										{
 											ammo_amount_left = Healing_Max;
@@ -90,26 +86,14 @@ public Action Medikit_healing(int client, int buttons)
 											
 											StartHealingTimer(player_looking_at, 0.1, 1.0, ammo_amount_left);
 											Healing_done_in_total[client] += ammo_amount_left;
-											if(EscapeMode)
-											{
-												healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 16);
-											}
-											else
-											{
-												healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 5);
-											}
+											healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 5);
+											
 											int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 											ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 											ClientCommand(player_looking_at, "playgamesound items/smallmedkit1.wav");
 											f_cooldown_per_usage_global[client] = GetGameTime() + 1.0;
-											if(EscapeMode)
-											{
-												PrintHintText(client,"You Healed %N for %i HP!, you gain a %i healing cooldown.", player_looking_at, ammo_amount_left, ammo_amount_left / 16);
-											}
-											else
-											{
-												PrintHintText(client,"You Healed %N for %i HP!, you gain a %i healing cooldown.", player_looking_at, ammo_amount_left, ammo_amount_left / 5);
-											}
+											PrintHintText(client,"You Healed %N for %i HP!, you gain a %i healing cooldown.", player_looking_at, ammo_amount_left, ammo_amount_left / 5);
+											
 											Give_Assist_Points(player_looking_at, client);
 											SetAmmo(client, 21, new_ammo);
 											for(int i; i<Ammo_MAX; i++)
@@ -161,10 +145,6 @@ public Action Medikit_healing(int client, int buttons)
 							else
 							{
 								int Healing_Max = 25;
-								if(EscapeMode)
-								{
-									Healing_Max = 40;
-								}
 								if(ammo_amount_left > Healing_Max)
 								{
 									ammo_amount_left = Healing_Max;
@@ -193,23 +173,10 @@ public Action Medikit_healing(int client, int buttons)
 									Healing_done_in_total[client] += ammo_amount_left;
 									int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 									
-									if(EscapeMode)
-									{
-										healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 8);
-									}
-									else
-									{
-										healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 2);
-									}
+									healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 2);
 									
-									if(EscapeMode)
-									{
-										PrintHintText(client,"You Healed yourself for %i HP!, you gain a %i healing cooldown.", ammo_amount_left, ammo_amount_left / 8);
-									}
-									else
-									{
-										PrintHintText(client,"You Healed yourself for %i HP!, you gain a %i healing cooldown.", ammo_amount_left, ammo_amount_left / 2);
-									}
+									PrintHintText(client,"You Healed yourself for %i HP!, you gain a %i healing cooldown.", ammo_amount_left, ammo_amount_left / 2);
+									
 									f_cooldown_per_usage_global[client] = GetGameTime() + 1.0;
 									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 									SetAmmo(client, 21, new_ammo);

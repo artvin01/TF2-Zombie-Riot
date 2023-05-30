@@ -1887,16 +1887,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						PrintCenterText(client, "");
 						PrintCenterText(target, "");
 						DoOverlay(target, "");
-						if(!EscapeMode)
-						{
-							SetEntityHealth(target, 50);
-							RequestFrame(SetHealthAfterRevive, target);
-						}	
-						else
-						{
-							SetEntityHealth(target, 150);
-							RequestFrame(SetHealthAfterRevive, target);						
-						}
+						SetEntityHealth(target, 50);
+						RequestFrame(SetHealthAfterRevive, target);
 						int entity, i;
 						while(TF2U_GetWearable(target, entity, i))
 						{

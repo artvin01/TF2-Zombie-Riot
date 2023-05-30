@@ -1,8 +1,22 @@
 "Phrases"
 {
+	"Missing Rouge Translation"
+	{
+		"en"	"INVALID NAME"
+	}
+	"Missing Rouge Translation Desc"
+	{
+		"en"	"INVALID DESC"
+	}
+
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item"
+	}
+	"New Artifact"
+	{
+		"#format"	"{1:t}"
+		"en"	"{yellow}Collected Artifact{default}: {yellow}{1}"
 	}
 	"Spearhead"
 	{
@@ -10,7 +24,7 @@
 	}
 	"Spearhead Desc"
 	{
-		"en"	"Spearhead Desc"
+		"en"	"{green}+15% damage bonus{yellow}, {green}+50 max health{yellow}, {red}does not provide a second life"
 	}
 	"Gravity Upset"
 	{

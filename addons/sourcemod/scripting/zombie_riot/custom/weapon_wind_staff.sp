@@ -95,11 +95,6 @@ public void Weapon_Wind_Laser_Builder_Unused(int client, int weapon, const char[
 		Strength[client] *= 0.5; //Nerf in half as it gives 2x the dmg.
 	}
 		
-	if (EscapeMode)
-	{
-		Strength[client] *= 3.0;
-	}
-			
 	//	TBB_Ability(client);
 	RequestFrame(TBB_Ability_Wind_Staff, client);
 	
@@ -142,11 +137,6 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
 	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-		
-	if (EscapeMode)
-	{
-		Strength[client] *= 3.0;
-	}
 	
 	Strength[client] *= 0.5;
 			

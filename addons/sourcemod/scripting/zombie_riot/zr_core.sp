@@ -8,7 +8,7 @@
 #define STARTER_WEAPON_LEVEL	5
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Waves_GetRound
+#define ZR_GetWaveCount Rouge_GetRoundScale
 
 public const int AmmoData[][] =
 {
@@ -119,7 +119,6 @@ bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
-bool EscapeMode;
 int LimitNpcs;
 
 //bool RaidMode; 							//Is this raidmode?
@@ -281,6 +280,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
+#include "zombie_riot/rouge.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -416,8 +416,6 @@ void ZR_MapStart()
 {
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
-	EscapeMode = false;
-	EscapeModeForNpc = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
@@ -933,16 +931,8 @@ public Action Timer_Dieing(Handle timer, int client)
 				SetEntityCollisionGroup(client, 5);
 				PrintCenterText(client, "");
 				DoOverlay(client, "");
-				if(!EscapeMode)
-				{
-					SetEntityHealth(client, 50);
-					RequestFrame(SetHealthAfterRevive, client);
-				}	
-				else
-				{
-					SetEntityHealth(client, 150);
-					RequestFrame(SetHealthAfterRevive, client);						
-				}
+				SetEntityHealth(client, 50);
+				RequestFrame(SetHealthAfterRevive, client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -1085,7 +1075,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = !Waves_InSetup();
+	bool rouge = !Rouge_Mode();
+	LastMann = (rouge && !Waves_InSetup());
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	int GlobalIntencity_Reduntant = Waves_GetIntencity();
@@ -1220,23 +1211,30 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			NPC_Despawn_bob(bob_index);
 			Bob_Exists_Index = 0;
 		}
+
+		if(rouge)
+			rouge = !Rouge_BattleLost();
 	
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		
+		if(!rouge)
+		{
+			int entity = CreateEntityByName("game_round_win"); 
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+		}
+
 		if(killed)
 		{
-			Music_RoundEnd(killed);
-			CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
-		//	RequestFrames(Remove_All, 300);
+			Music_RoundEnd(killed, !rouge);
+			if(!rouge)
+			{
+				CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
+			//	RequestFrames(Remove_All, 300);
+			}
 		}
 	}
 }
-
-
 
 //Revival raid spam
 public void SetHealthAfterReviveRaid(int client)
@@ -1278,32 +1276,8 @@ public void SetHealthAfterRevive(int client)
 public void SetHealthAfterReviveAgain(int client)
 {
 	if(IsValidClient(client))
-	{	
-		RequestFrame(SetHealthAfterReviveAgainAgain, client);	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
-	}
-	
-}
-
-public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have to do it more then once for escape.
-{
-	if(IsValidClient(client))
-	{	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
+	{
+		SetEntityHealth(client, 50);
 	}
 }
 
@@ -1591,16 +1565,8 @@ void ReviveAll(bool raidspawned = false)
 					SetEntityCollisionGroup(client, 5);
 					if(!raidspawned)
 					{
-						if(!EscapeMode)
-						{
-							SetEntityHealth(client, 50);
-							RequestFrame(SetHealthAfterRevive, client);
-						}	
-						else
-						{
-							SetEntityHealth(client, 150);
-							RequestFrame(SetHealthAfterRevive, client);						
-						}
+						SetEntityHealth(client, 50);
+						RequestFrame(SetHealthAfterRevive, client);
 					}
 				}
 				if(raidspawned)

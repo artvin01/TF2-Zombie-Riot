@@ -3297,29 +3297,13 @@ stock void AdjustBotCount(int ExtraData = 1) //1 is the default
 	}
 
 #if defined ZR
-	if(EscapeMode)
+	if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
 	{
-		if(12 > CvarMaxBotsForKillfeed.IntValue) //12 is always for escape
-		{
-			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-		}
-		else
-		{
-			botscalculaton = 12;
-		}
-
+		botscalculaton = CvarMaxBotsForKillfeed.IntValue;
 	}
 	else
 	{
-		if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
-		{
-			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-		}
-		else
-		{
-			botscalculaton = ExtraData;
-		}
-
+		botscalculaton = ExtraData;
 	}
 	
 	if(botscalculaton < 1)
@@ -4519,4 +4503,30 @@ stock int getEffectDispatchStringTableIndex(const char[] effectName){
 		return index;
 	AddToStringTable(table, effectName);
 	return FindStringIndex(table, effectName);
+}
+
+stock void SpawnTimer(float time)
+{
+	int timer = -1;
+	while((timer = FindEntityByClassname("team_round_timer")) != -1)
+	{
+		SetVariantInt(0);
+		AcceptEntityInput(timer, "ShowInHUD");
+	}
+
+	timer = CreateEntityByName("team_round_timer");
+	DispatchKeyValue(timer, "show_in_hud", "1");
+	DispatchSpawn(timer);
+	
+	SetVariantInt(RoundToCeil(time));
+	AcceptEntityInput(timer, "SetTime");
+	AcceptEntityInput(timer, "Resume");
+	AcceptEntityInput(timer, "Enable");
+	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
+	
+	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
+	
+	Event event = CreateEvent("teamplay_update_timer", true);
+	event.Fire();
 }

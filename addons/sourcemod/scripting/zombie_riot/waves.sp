@@ -38,7 +38,6 @@ enum struct MiniBoss
 enum struct Wave
 {
 	float Delay;
-	int Intencity;
 	
 	int Count;
 	Enemy EnemyData;
@@ -91,7 +90,6 @@ static Handle WaveTimer;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
-static int WaveIntencity;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
@@ -116,11 +114,14 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return (Rounds && CurrentRound >= Rounds.Length);
+	return (!Rouge_Mode() && Rounds && CurrentRound >= Rounds.Length);
 }
 
 bool Waves_InSetup()
 {
+	if(Rouge_Mode())
+		return Rouge_InSetup();
+	
 	return (InSetup || !Waves_Started());
 }
 
@@ -504,13 +505,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
-	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier");
+	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
 	kv.GetString("complete_item", TextStoreItem, sizeof(TextStoreItem));
 	
-	if(f_ExtraDropChanceRarity < 0.01) //Incase some idiot forgot
-	{
-		f_ExtraDropChanceRarity = 1.0;
-	}
 	Enemy enemy;
 	Wave wave;
 	kv.GotoFirstSubKey();
@@ -599,7 +596,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					{
 						wave.Delay = StringToFloat(buffer);
 						wave.Count = kv.GetNum("count", 1);
-						wave.Intencity = kv.GetNum("intencity");
 						
 						enemy.Index = StringToInt(plugin);
 						if(!enemy.Index)
@@ -669,7 +665,11 @@ void Waves_RoundStart()
 	Waves_RoundEnd();
 	Freeplay_ResetAll();
 	
-	if(Voting)
+	if(Rouge_Mode())
+	{
+		Rouge_StartSetup();
+	}
+	else if(Voting)
 	{
 		float wait = zr_waitingtime.FloatValue;
 		float time = wait - 30.0;
@@ -691,18 +691,6 @@ void Waves_RoundStart()
 		CreateTimer(60.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	}
 
-	/*
-	char buffer[64];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
-	{
-		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
-		{
-			if(StrEqual(buffer, "base_boss"))
-				RemoveEntity(i);
-		}
-	}
-	*/
-	//DONT. Breaks map base_boss.
 	if(CurrentCash != StartCash)
 	{
 		Store_Reset();
@@ -723,7 +711,6 @@ void Waves_RoundEnd()
 	Cooldown = 0.0;
 	InSetup = true;
 //	InFreeplay = false;
-	WaveIntencity = 0;
 	CurrentRound = 0;
 	CurrentWave = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
@@ -834,6 +821,7 @@ void Waves_Progress()
 	int length = Rounds.Length-1;
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
+	bool rouge = Rouge_Mode();
 	static int panzer_chance;
 
 	if(CurrentRound < length)
@@ -843,7 +831,6 @@ void Waves_Progress()
 		{
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
-			WaveIntencity = wave.Intencity;
 			
 			float playercount = float(CountPlayersOnRed());
 			
@@ -1043,12 +1030,7 @@ void Waves_Progress()
 			}
 
 			if(round.Skyname[0])
-			{
-				if(!SkyNameRestore[0])
-					CvarSkyName.GetString(SkyNameRestore, sizeof(SkyNameRestore));
-				
-				CvarSkyName.SetString(round.Skyname, true);
-			}
+				Waves_SetSkyName(round.Skyname);
 
 			if(round.FogChange)
 			{
@@ -1114,7 +1096,7 @@ void Waves_Progress()
 			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
-				CPrintToChatAll("{crimson}%i Zombies have been wasted...{default} you have lost money!", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
+				CPrintToChatAll("{crimson}%d zombies have been wasted...", Zombies_Currently_Still_Ongoing - Zombies_alive_still);
 			}
 			Zombies_Currently_Still_Ongoing = 0;
 			
@@ -1122,17 +1104,17 @@ void Waves_Progress()
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(CurrentRound == 4)
+			if(!rouge && CurrentRound == 4)
 			{
 				Citizen_SpawnAtPoint("b");
 			}
-			else if(CurrentRound == 11)
+			else if(!rouge && CurrentRound == 11)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if(CurrentRound > 11 && round.Setup <= 30.0)
+			else if(rouge || (CurrentRound > 11 && round.Setup <= 30.0))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				panzer_spawn = chance;
@@ -1243,15 +1225,18 @@ void Waves_Progress()
 			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
-				Cooldown = GetGameTime() + 30.0;
-				
 				Store_RandomizeNPCStore(false);
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				ExcuteRelay("zr_victory");
 				
-				SpawnTimer(30.0);
-				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				if(!rouge)
+				{
+					Cooldown = GetGameTime() + 30.0;
+					
+					SpawnTimer(30.0);
+					CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				}
 				
 				int total = 0;
 				int[] players = new int[MaxClients];
@@ -1288,9 +1273,23 @@ void Waves_Progress()
 
 				cvarTimeScale.SetFloat(0.1);
 				CreateTimer(0.5, SetTimeBack);
-				
-				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				EmitSoundToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+
+				if(rouge)
+				{
+					Rouge_BattleVictory();
+				}
+				else
+				{
+					EmitCustomToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+
+					Menu menu = new Menu(Waves_FreeplayVote);
+					menu.SetTitle("%t","Victory Menu");
+					menu.AddItem("", "Yes");
+					menu.AddItem("", "No");
+					menu.ExitButton = false;
+					
+					menu.DisplayVote(players, total, 30);
+				}
 				
 				char_MusicString1[0] = 0;
 				char_MusicString2[0] = 0;
@@ -1300,14 +1299,6 @@ void Waves_Progress()
 				i_MusicLength2 = 1;
 
 				Citizen_SetupStart();
-
-				Menu menu = new Menu(Waves_FreeplayVote);
-				menu.SetTitle("%t","Victory Menu");
-				menu.AddItem("", "Yes");
-				menu.AddItem("", "No");
-				menu.ExitButton = false;
-				
-				menu.DisplayVote(players, total, 30);
 			}
 			else if(round.Setup > 0.0)
 			{
@@ -1339,10 +1330,7 @@ void Waves_Progress()
 			}
 		}
 		
-		if(!EscapeMode)
-		{
-			AdjustBotCount(CurrentWave + 2);
-		}
+		AdjustBotCount(CurrentWave + 2);
 	}
 	else
 	{
@@ -1387,21 +1375,13 @@ void Waves_Progress()
 			{
 				panzer_spawn = true;
 				NPC_SpawnNext(false, panzer_spawn, false);
-				
-				if(!EscapeMode)
-				{
-					AdjustBotCount(CurrentWave + 2);
-				}
+				AdjustBotCount(CurrentWave + 2);
 			}
 			else
 			{
 				panzer_spawn = false;
 				NPC_SpawnNext(false, false, false);
-				
-				if(!EscapeMode)
-				{
-					AdjustBotCount(CurrentWave + 2);
-				}
+				AdjustBotCount(CurrentWave + 2);
 			}
 			
 			if(Enemies.Empty)
@@ -1480,7 +1460,7 @@ void Waves_Progress()
 			}
 		}
 	}
-	if(CurrentRound == 0)
+	if(CurrentRound == 0 && !Rouge_Mode())
 	{
 		if(StartCash < 1500)
 			Store_RemoveSellValue();
@@ -1578,17 +1558,26 @@ void Waves_AddNextEnemy(const Enemy enemy)
 
 bool Waves_Started()
 {
+	if(Rouge_Mode())
+		return Rouge_Started();
+	
 	return (CurrentRound || CurrentWave != -1);
 }
 
 int Waves_GetRound()
 {
+	if(Rouge_Mode())
+		return Rouge_GetRound();
+	
 	return CurrentRound;
 }
 
-int Waves_GetIntencity()
+int Waves_GetWave()
 {
-	return WaveIntencity;
+	if(Rouge_Mode())
+		return Rouge_GetWave();
+	
+	return CurrentWave;
 }
 
 float GetWaveSetupCooldown()
@@ -1603,21 +1592,34 @@ public Action Waves_ProgressTimer(Handle timer)
 	return Plugin_Continue;
 }
 
-static void SpawnTimer(float time)
+void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 {
-	int timer = CreateEntityByName("team_round_timer");
-	DispatchKeyValue(timer, "show_in_hud", "1");
-	DispatchSpawn(timer);
-	
-	SetVariantInt(RoundToCeil(time));
-	AcceptEntityInput(timer, "SetTime");
-	AcceptEntityInput(timer, "Resume");
-	AcceptEntityInput(timer, "Enable");
-	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-	
-	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
-	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
-	
-	Event event = CreateEvent("teamplay_update_timer", true);
-	event.Fire();
+	if(client)
+	{
+		if(!IsFakeClient(client))
+		{
+			if(skyname[0])
+			{
+				CvarSkyName.ReplicateToClient(client, skyname);
+			}
+			else
+			{
+				char buffer[64];
+				CvarSkyName.GetString(buffer, sizeof(buffer));
+				CvarSkyName.ReplicateToClient(client, buffer);
+			}
+		}
+	}
+	else if(skyname[0])
+	{
+		if(!SkyNameRestore[0])
+			CvarSkyName.GetString(SkyNameRestore, sizeof(SkyNameRestore));
+		
+		CvarSkyName.SetString(skyname, true);
+	}
+	else if(SkyNameRestore[0])
+	{
+		CvarSkyName.SetString(SkyNameRestore, true);
+		SkyNameRestore[0] = 0;
+	}
 }

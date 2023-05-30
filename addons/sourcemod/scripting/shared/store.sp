@@ -1468,7 +1468,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					item.BuyPrice[client] = info.Cost;
 					Store_BuyClientItem(client, item, info);
 					item.Sell[client] = ItemSell(base, info.Cost);
-					item.BuyWave[client] = Waves_GetRound();
+					item.BuyWave[client] = Rouge_GetRoundScale();
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
@@ -2421,7 +2421,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
-				else if(!Waves_InSetup())
+				else if(Rouge_Mode() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
@@ -2436,7 +2436,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
-				else if(!Waves_InSetup())
+				else if(Rouge_Mode() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
@@ -2555,8 +2555,6 @@ public void MenuPage(int client, int section)
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 					}
 
-					//	bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
-
 					//We shall allow unequipping again.
 					if(item.Equipped[client])
 					{
@@ -2587,7 +2585,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
-		else if(!Waves_InSetup())
+		else if(Rouge_Mode() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
@@ -2607,7 +2605,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client]);
 		}
-		else if(!Waves_InSetup())
+		else if(Rouge_Mode() || !Waves_InSetup())
 		{
 			if(Database_IsCached(client))
 			{
@@ -3373,7 +3371,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = info.Cost;
 									Store_BuyClientItem(client, item, info);
 									item.Sell[client] = ItemSell(base, info.Cost);
-									item.BuyWave[client] = Waves_GetRound();
+									item.BuyWave[client] = Rouge_GetRoundScale();
 									item.Equipped[client] = false;
 
 									if(!item.BoughtBefore[client])
@@ -3416,7 +3414,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								Store_BuyClientItem(client, item, info);
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Waves_GetRound();
+								item.BuyWave[client] = Rouge_GetRoundScale();
 
 								if(!item.BoughtBefore[client])
 								{
@@ -3527,7 +3525,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.GetItemInfo(item.Owned[client]-1, info);
 
 								int sell = item.Sell[client];
-								if(item.BuyWave[client] == Waves_GetRound())
+								if(item.BuyWave[client] == Rouge_GetRoundScale())
 									sell = item.BuyPrice[client];
 								
 								if(sell) //make sure it even can be sold.
@@ -3794,7 +3792,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 
 #if defined ZR
-	int wave_count = Waves_GetRound() + 1;
+	int wave_count = Rouge_GetRoundScale() + 1;
 	
 	if(wave_count > 15 && wave_count < 30)
 	{
@@ -3813,16 +3811,6 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("252", 0.40);
 	}
 	
-	if(EscapeMode)	//infinite ammo stuff
-	{
-		map.SetValue("252", 0.50);
-		map.SetValue("76", 10.0); //inf ammo
-		map.SetValue("78", 10.0); //inf ammo
-		map.SetValue("112", 100.0); //inf ammo
-		map.SetValue("113", 50.0); //inf ammo
-		map.SetValue("701", 100.0); //Armor level
-		map.SetValue("258", 1.0); //Cash equals Health!!!!
-	}
 	if(i_CurrentEquippedPerk[client] == 4)
 	{
 //		map.SetValue("96", 0.1); //Cash equals Health!!!!
@@ -4460,7 +4448,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									}
 									
 #if defined ZR
-									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
+									if(info.Ammo < 3) //my man broke my shit.
 #endif
 									
 									{
@@ -5341,7 +5329,7 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool started = !Waves_InSetup();
+	bool started = (!Rouge_Mode() && !Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -5350,7 +5338,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * CurrentRound;
+	cost += item.CostPerWave * Rouge_GetRoundScale();
 	
 	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 	

@@ -258,58 +258,35 @@ public void OnPostThink(int client)
 		}
 
 #if defined ZR
-		if(!EscapeMode)
-#endif
-		{
-#if defined ZR
-			max_mana[client] = 400.0;
-			mana_regen[client] = 10.0;
+		max_mana[client] = 400.0;
+		mana_regen[client] = 10.0;
+			
+		if(LastMann)
+			mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
 				
-			if(LastMann)
-				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
-					
-			if(i_CurrentEquippedPerk[client] == 4)
-			{
-				mana_regen[client] *= 1.35;
-			}
+		if(i_CurrentEquippedPerk[client] == 4)
+		{
+			mana_regen[client] *= 1.35;
+		}
 #endif
 				
 #if defined RPG
-			max_mana[client] = 40.0;
-			mana_regen[client] = 1.0;
+		max_mana[client] = 40.0;
+		mana_regen[client] = 1.0;
 #endif
 					
-			mana_regen[client] *= Mana_Regen_Level[client];
-			max_mana[client] *= Mana_Regen_Level[client];	
-				
-			if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-			{
-				Current_Mana[client] += RoundToCeil(mana_regen[client]);
-					
-				if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
-					Current_Mana[client] = RoundToCeil(max_mana[client]);
-			}
-					
-			Mana_Hud_Delay[client] = 0.0;
-		}
-#if defined ZR
-		else
+		mana_regen[client] *= Mana_Regen_Level[client];
+		max_mana[client] *= Mana_Regen_Level[client];	
+			
+		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 		{
-			has_mage_weapon[client] = true;
-			max_mana[client] = 1200.0;
-			mana_regen[client] = 20.0;
-			if(i_CurrentEquippedPerk[client] == 4)
-			{
-				mana_regen[client] *= 1.35;
-			}
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
-					
-			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
-				Current_Mana[client] = RoundToCeil(max_mana[client]);
 				
-			Mana_Hud_Delay[client] = 0.0;
+			if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
 		}
-#endif
+					
+		Mana_Hud_Delay[client] = 0.0;
 	}
 
 #if defined ZR
@@ -1423,24 +1400,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
 			damage *= 5.0;	
-		}
-		
-		if(EscapeMode)
-		{
-			if(IsValidEntity(Victim_weapon))
-			{
-				if(!i_IsWandWeapon[Victim_weapon] && !i_IsWrench[Victim_weapon]) //Make sure its not wand.
-				{
-					char melee_classname[64];
-					GetEntityClassname(Victim_weapon, melee_classname, 64);
-					
-					if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-					{
-						Replicated_Damage *= 0.45;
-						damage *= 0.45;
-					}
-				}
-			}
 		}
 #endif
 #if defined RPG

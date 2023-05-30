@@ -415,14 +415,7 @@ public bool Building_Sentry(int client, int entity)
 	}
 	
 //	CreateTimer(0.5, Timer_DroppedBuildingWaitSentryLeveLUp, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 public bool Building_Railgun(int client, int entity)
 {
@@ -454,14 +447,7 @@ public bool Building_Railgun(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public bool Building_Mortar(int client, int entity)
@@ -496,14 +482,7 @@ public bool Building_Mortar(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public bool Building_HealingStation(int client, int entity)
@@ -541,14 +520,8 @@ public bool Building_HealingStation(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	
+	return true;
 }
 
 public Action Timer_DroppedBuildingWaitSentryLeveLUp(Handle htimer, int entref)
@@ -4202,14 +4175,7 @@ public bool Building_Village(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public Action Timer_VillageThink(Handle timer, int ref)
@@ -6118,14 +6084,7 @@ public bool Building_Summoner(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 int Building_GetFollowerEntity(int owner)

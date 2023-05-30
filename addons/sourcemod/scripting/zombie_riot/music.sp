@@ -88,7 +88,7 @@ void Music_EndLastmann()
 	}
 }
 
-void Music_RoundEnd(int victim)
+void Music_RoundEnd(int victim, bool music)
 {
 	ExcuteRelay("zr_gamelost");
 	
@@ -96,7 +96,9 @@ void Music_RoundEnd(int victim)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			SetMusicTimer(client, GetTime() + 45);
+			if(music)
+				SetMusicTimer(client, GetTime() + 45);
+			
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 			TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
@@ -107,9 +109,11 @@ void Music_RoundEnd(int victim)
 			char_MusicString2[0] = 0;
 		
 			i_MusicLength1 = 1;
-					
 			i_MusicLength2 = 1;
-			EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+
+			if(music)
+				EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+			
 			SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", victim);
 		}
 	}

@@ -14,7 +14,6 @@ enum
 int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
 int i_TeamGlow[MAXENTITIES]={-1, ...};
-bool EscapeModeMap;
 bool EscapeModeForNpc;
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
@@ -116,22 +115,6 @@ void OnMapStart_NPC_Base()
 #endif
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
-#if defined ZR
-	EscapeModeMap = false;
-	
-	char buffer[16];
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(!StrEqual(buffer, "zr_escapemode", false))
-			continue;
-		
-		EscapeModeMap = true;
-		break;
-	}
-#endif
-
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
 	
@@ -329,17 +312,6 @@ methodmap CClotBody
 		{
 			SetEntityCollisionGroup(npc, 24);
 		}
-		
-#if defined ZR
-		//Enable Harder zombies once in freeplay.
-		if(!EscapeModeForNpc)
-		{
-			if(Waves_InFreeplay())
-			{
-				EscapeModeForNpc = true;
-			}
-		}
-#endif
 
 		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
 		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);

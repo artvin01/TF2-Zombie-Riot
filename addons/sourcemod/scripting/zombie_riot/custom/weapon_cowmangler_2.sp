@@ -64,7 +64,6 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 {	
 	int client = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	
-	if(!EscapeMode)
 	{
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 40)
@@ -115,34 +114,6 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			PrintHintText(client,"%t", "Out of Laser Battery");
 		}
-	}
-	else
-	{
-		BEAM_Targets_Hit[client] = 0.0;
-			
-		Client_Shake(client, 0, 50.0, 25.0, 0.5);
-			
-		Strength[client] = 112.0;
-		
-		Strength[client] *= 4.0;
-				
-		Address address = TF2Attrib_GetByDefIndex(entity, 1);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-					
-		address = TF2Attrib_GetByDefIndex(entity, 2);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-
-		float reverse_attackspeed = 1.0;
-		
-		address = TF2Attrib_GetByDefIndex(entity, 6);
-		if(address != Address_Null)
-			reverse_attackspeed = TF2Attrib_GetValue(address);
-		
-		Strength[client] /= reverse_attackspeed;
-		
-		TBB_Ability_Mangler_2(client);
 	}
 	/*
 	SetEntPropFloat(entity, Prop_Send, "m_flChargeBeginTime", 0.0);

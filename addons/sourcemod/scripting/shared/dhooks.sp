@@ -1224,60 +1224,48 @@ public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hPa
 public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParams)
 {
 #if defined ZR
-	if(!EscapeMode)
+	for(int client=1; client<=MaxClients; client++)
 	{
-		for(int client=1; client<=MaxClients; client++)
+		if(IsClientInGame(client))
 		{
-			if(IsClientInGame(client))
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
-			}
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 		}
 	}
-	else
-#endif
+#else
 	
+	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
+	for(int client=1; client<=MaxClients; client++)
 	{
-		int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-		for(int client=1; client<=MaxClients; client++)
+		if(IsClientInGame(client) && owner != client)
 		{
-			if(IsClientInGame(client) && owner != client)
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
-			}
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
 		}	
 	}
+#endif
 	return MRES_Ignored;
 }
 
 public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hParams)
 {
 #if defined ZR
-	if(!EscapeMode)
+	for(int client=1; client<=MaxClients; client++)
 	{
-		for(int client=1; client<=MaxClients; client++)
+		if(IsClientInGame(client))
 		{
-			if(IsClientInGame(client))
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-			}
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
 		}
 	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);
 	}
-	else
-#endif
-	
+#else
+	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
+	for(int client=1; client<=MaxClients; client++)
 	{
-		int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-		for(int client=1; client<=MaxClients; client++)
+		if(IsClientInGame(client) && owner != client)
 		{
-			if(IsClientInGame(client) && owner != client)
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-			}
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
 		}
-	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);		
 	}
+#endif
 	return MRES_Ignored;
 }
 
@@ -1800,14 +1788,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	
 	int target = DHookGetParam(hParams, 1);
 	
-#if defined ZR
-	int ammo_amount_left = 9999;
-	if(!EscapeMode)
-		ammo_amount_left = GetAmmo(owner, 21);
-#else
 	int ammo_amount_left = GetAmmo(owner, 21);
-#endif
-								
 	if(ammo_amount_left > 0)
 	{
 		float HealAmmount = 20.0;
@@ -1823,10 +1804,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 
 		HealAmmount *= Attributes_FindOnPlayer(owner, 8, true, 1.0);
 		
-#if defined ZR
-		if(EscapeMode)
-			HealAmmount *= 2.0;
-#endif
 		float GameTime = GetGameTime();
 		if(f_TimeUntillNormalHeal[target] > GameTime)
 		{
