@@ -4760,27 +4760,31 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						static float TargetLocation[3]; 
-						GetClientAbsOrigin( i, TargetLocation ); 
+					//	static float TargetLocation[3]; 
+					//	GetClientAbsOrigin( i, TargetLocation ); 
 						
-						static float distance;
-						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+					//	static float distance;
+					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 						static float DistancePathed;
 						if(PF_IsPathToEntityPossible(entity, i, DistancePathed))
 						{
-							if( TargetDistance ) 
+							if(DistancePathed < fldistancelimit_Inside)
 							{
-								if( DistancePathed < TargetDistance ) 
+								if( TargetDistance ) 
+								{
+									if( DistancePathed < TargetDistance ) 
+									{
+										ClosestTarget = i; 
+										TargetDistance = DistancePathed;		  
+									}
+								} 
+								else 
 								{
 									ClosestTarget = i; 
-									TargetDistance = DistancePathed;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = i; 
-								TargetDistance = DistancePathed;
-							}		
+									TargetDistance = DistancePathed;
+								}	
+								
+							}	
 						}
 					}			
 				}
@@ -4820,27 +4824,30 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						static float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					//	static float TargetLocation[3]; 
+					//	GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-						static float distance;
-						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+					//	static float distance;
+					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 						static float DistancePathed;
 						if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 						{
-							if( TargetDistance ) 
+							if(DistancePathed < fldistancelimit_Inside)
 							{
-								if( DistancePathed < TargetDistance ) 
+								if( TargetDistance ) 
+								{
+									if( DistancePathed < TargetDistance ) 
+									{
+										ClosestTarget = entity_close; 
+										TargetDistance = DistancePathed;		  
+									}
+								} 
+								else 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = DistancePathed;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = entity_close; 
-								TargetDistance = DistancePathed;
-							}	
+									TargetDistance = DistancePathed;
+								}	
+							}
 						}
 					}
 				}
