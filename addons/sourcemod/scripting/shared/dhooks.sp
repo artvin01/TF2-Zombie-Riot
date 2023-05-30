@@ -225,7 +225,7 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 			{
 				CurrentClass[client_2] = TFClass_Scout;
 			}
-			TF2_SetPlayerClass(client_2, CurrentClass[client], false, false);
+			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false);
 		}
 	}
 	return MRES_Ignored;
