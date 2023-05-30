@@ -4735,6 +4735,9 @@ stock int GetClosestTarget(int entity,
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
+	bool HasPathfollower = false;
+
+	HasPathfollower = PF_Exists(entity);
 
 
 	float fldistancelimit_Inside = fldistancelimit * fldistancelimit;
@@ -4762,26 +4765,33 @@ stock int GetClosestTarget(int entity,
 					//	static float distance;
 					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 						static float DistancePathed;
-						if(PF_IsPathToEntityPossible(entity, i, DistancePathed))
+						if(HasPathfollower)
 						{
-							if(DistancePathed < fldistancelimit)
+							PF_IsPathToEntityPossible(entity, i, DistancePathed);
+						}
+						else
+						{
+							static float TargetLocation[3]; 
+							GetClientAbsOrigin( i, TargetLocation ); 
+							DistancePathed = GetVectorDistance( EntityLocation, TargetLocation); 
+						}
+
+						if(DistancePathed < fldistancelimit)
+						{
+							if( TargetDistance ) 
 							{
-								if( TargetDistance ) 
-								{
-									if( DistancePathed < TargetDistance ) 
-									{
-										ClosestTarget = i; 
-										TargetDistance = DistancePathed;		  
-									}
-								} 
-								else 
+								if( DistancePathed < TargetDistance ) 
 								{
 									ClosestTarget = i; 
-									TargetDistance = DistancePathed;
-								}	
-								
+									TargetDistance = DistancePathed;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = i; 
+								TargetDistance = DistancePathed;
 							}	
-						}
+						}	
 					}			
 				}
 			}
@@ -4822,24 +4832,31 @@ stock int GetClosestTarget(int entity,
 					//	static float distance;
 					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 						static float DistancePathed;
-						if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
+						if(HasPathfollower)
 						{
-							if(DistancePathed < fldistancelimit)
+							PF_IsPathToEntityPossible(entity, entity_close, DistancePathed);
+						}
+						else
+						{
+							static float TargetLocation[3]; 
+							GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+						}
+						
+						if(DistancePathed < fldistancelimit)
+						{
+							if( TargetDistance ) 
 							{
-								if( TargetDistance ) 
-								{
-									if( DistancePathed < TargetDistance ) 
-									{
-										ClosestTarget = entity_close; 
-										TargetDistance = DistancePathed;		  
-									}
-								} 
-								else 
+								if( DistancePathed < TargetDistance ) 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = DistancePathed;
-								}	
-							}
+									TargetDistance = DistancePathed;		  
+								}
+							} 
+							else 
+							{
+								ClosestTarget = entity_close; 
+								TargetDistance = DistancePathed;
+							}	
 						}
 					}
 				}
