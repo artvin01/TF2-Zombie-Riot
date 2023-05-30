@@ -2180,6 +2180,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
+		f_GodArkantosBuff[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 		i_IsWandWeapon[entity] = false;

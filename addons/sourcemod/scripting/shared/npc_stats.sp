@@ -7497,6 +7497,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
 	f_HussarBuff[entity] = 0.0;
+	f_GodArkantosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
