@@ -4737,7 +4737,7 @@ stock int GetClosestTarget(int entity,
 	}
 
 
-	float fldistancelimit_Inside = fldistancelimit * fldistancelimit;
+	float fldistancelimit_Inside = fldistancelimit;// * fldistancelimit;
 	float fldistancelimit_Inside_AllyNpc = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
 	
 	if(searcher_team != 2 && !IgnorePlayers)
