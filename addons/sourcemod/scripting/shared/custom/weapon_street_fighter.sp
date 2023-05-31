@@ -182,6 +182,10 @@ static void StreetFighter(int client, int weapon, int slot, int buttons, int CD)
 					PrintCenterText(client, "No Effect...");
 					ClientCommand(client, "playgamesound ui/message_update.wav");
 				}
+				else
+				{
+					Rouge_OnAbilityUse(client, weapon);
+				}
 
 				for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)
 				{

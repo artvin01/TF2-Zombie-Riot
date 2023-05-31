@@ -26,6 +26,7 @@ public void Weapon_Necro_FireBallSpell(int client, int weapon, bool &result, int
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rouge_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 14.0);
 				
 				Necro_Damage[client] = 1.0;

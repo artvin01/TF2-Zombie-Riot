@@ -228,6 +228,7 @@ void Rouge_SetupVote(KeyValues kv)
 	VoteFunc = INVALID_FUNCTION;
 	
 	Vote vote;
+	kv.JumpToKey("Starting");
 	kv.GotoFirstSubKey(false);
 	do
 	{
@@ -1161,9 +1162,13 @@ public void Rouge_Vote_NextStage(const Vote vote)
 //ROUGELIKE ITEMS
 bool b_SpearheadSquad;					//should be done in store 
 bool b_ProvokedAnger;
-bool b_MalfunctionShield;
+bool b_MalfunctionShield;				//shield items
 /*TODO*/bool b_GrigoriCoinPurse;	 	//should be done when the weapon is created/when a battle starts
 bool b_MusicReleasingRadio;
+bool b_WrathOfItallians; 				//see on_ability_use.sp
+bool b_HandOfElderMages; 				
+bool b_BraceletsOfAgility; 				//shield items
+bool b_ElasticFlyingCape; 				//shield items
 
 
 bool IS_MusicReleasingRadio()
@@ -1180,3 +1185,5 @@ bool IS_MusicReleasingRadio()
 
 #include "rougelike/provoked_anger.sp"
 #include "rougelike/shield_items.sp"
+#include "rougelike/on_ability_use.sp"
+#include "rougelike/hand_of_elder_mages.sp"

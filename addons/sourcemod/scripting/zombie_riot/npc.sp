@@ -1507,7 +1507,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = MedivalVillager(client, vecPos, vecAng, ally);
 		
 		case MEDIVAL_BUILDING:
-			entity = MedivalBuilding(client, vecPos, vecAng, ally);
+			entity = MedivalBuilding(client, vecPos, vecAng, ally, data);
 		
 		case MEDIVAL_CONSTRUCT:
 			entity = MedivalConstruct(client, vecPos, vecAng, ally);

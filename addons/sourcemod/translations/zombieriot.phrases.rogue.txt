@@ -26,6 +26,18 @@
 	{
 		"en"	"Encounter"
 	}
+	"cash"
+	{
+		"en"	"cash"
+	}
+	"rougemode"
+	{
+		"en"	"rougemode"
+	}
+	"Starting"
+	{
+		"en"	"Starting"
+	}
 
 	// Encounters
 	"Optional Battle Title"
@@ -122,4 +134,37 @@
 	{
 		"en"	"It releases music, it cant be stopped it seems.\n-All enemies will be 10%% slower."
 	}
+	"Wrath Of Itallians"
+	{
+		"en"	"Wrath Of Itallians"
+	}
+	"Wrath Of Itallians Desc"
+	{
+		"en"	"Its Spaghetti thats covered in chocolate.\n-Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
+	}
+	"Hand Of The Elder Mages"
+	{
+		"en"	"Hand Of The Elder Mages"
+	}
+	"Hand Of The Elder Mages Desc"
+	{
+		"en"	"It is a miniature statue of a broken hand.\n-Everytime a mage weapon hurts an enemy, reduce current cooldown of this mageweapon by 2 seconds."
+	}
+	"Bracelets of Agility"
+	{
+		"en"	"Bracelets of Agility"
+	}
+	"Bracelets of Agility Desc"
+	{
+		"en"	"Light and agile, from the far reaches of kazimierz.\n-Gain a 10%% dodge chance."
+	}
+	"Elastic Flying Cape"
+	{
+		"en"	"Elastic Flying Cape"
+	}
+	"Elastic Flying Cape Desc"
+	{
+		"en"	"A cape that surrounds you and gives extra senses.\n-Gain a 10%% dodge chance against ranged attacks."
+	}
+
 }

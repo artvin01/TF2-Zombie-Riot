@@ -203,6 +203,7 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
+		Rouge_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
 		f_MlynarAbilityActiveTime[client] = GetGameTime() + 15.0;
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", 0.0);

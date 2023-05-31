@@ -1401,6 +1401,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage *= 1.20;
 		}
+		if(Rouge_InItallianWrath(weapon))
+		{
+			damage *= 2.0;
+		}
 
 		float BaseDamageBeforeBuffs = damage;
 
@@ -1660,6 +1664,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					{
 						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 						damage = modified_damage;
+						OnTakeDamage_HandOfElderMages(attacker, weapon);
 					}
 					
 					

@@ -77,6 +77,7 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rouge_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
@@ -117,6 +118,7 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rouge_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
@@ -159,6 +161,7 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rouge_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 

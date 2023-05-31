@@ -3842,6 +3842,7 @@ void Store_ApplyAttribs(int client)
 		/*
 			TODO:
 			insert  code for extra attackspeed here.
+			This should also reduce manacost and reload speed.
 		*/
 	}
 

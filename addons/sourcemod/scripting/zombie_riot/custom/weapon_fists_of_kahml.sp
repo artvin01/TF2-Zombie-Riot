@@ -12,7 +12,7 @@ public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool 
 	
 	if(how_many_times_fisted[client] >= 3)
 	{
-		
+		Rouge_OnAbilityUse(client, weapon);
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
 				
 		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);

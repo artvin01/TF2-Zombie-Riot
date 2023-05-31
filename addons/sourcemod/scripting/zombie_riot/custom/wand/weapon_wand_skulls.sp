@@ -151,6 +151,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 
 	if(mana_cost <= Current_Mana[client] && !Skulls_PlayerHasNoSkulls(client))
 	{	
+		Rouge_OnAbilityUse(client, weapon);
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
 		
@@ -307,6 +308,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 	
 		if(mana_cost <= Current_Mana[client])
 		{
+			Rouge_OnAbilityUse(client, weapon);
 			int prop = CreateEntityByName("prop_physics_override");
 			
 			if (IsValidEntity(prop))

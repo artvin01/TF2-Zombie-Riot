@@ -1388,7 +1388,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
 		}
-		if(OnTakeDamage_ShieldLogic(victim))
+		if(OnTakeDamage_ShieldLogic(victim, damagetype))
 		{
 			return Plugin_Handled;
 		}

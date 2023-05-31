@@ -1169,6 +1169,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
+	LoadTranslations("zombieriot.phrases.rogue"); 
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
