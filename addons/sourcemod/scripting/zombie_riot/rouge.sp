@@ -992,7 +992,7 @@ static void StartStage(const Stage stage)
 
 static int GetStageByName(const Floor floor, const char[] name, bool final, Stage stage)
 {
-	ArrayList list = final ? floor.Encounters : floor.Finals;
+	ArrayList list = final ? floor.Finals : floor.Encounters;
 	if(!list)
 		list = floor.Encounters;
 	
@@ -1009,7 +1009,7 @@ static int GetStageByName(const Floor floor, const char[] name, bool final, Stag
 
 static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battleOnly)
 {
-	ArrayList list = final ? floor.Encounters : floor.Finals;
+	ArrayList list = final ? floor.Finals : floor.Encounters;
 	if(!list)
 		list = floor.Encounters;
 	
