@@ -1158,8 +1158,6 @@ public void Rouge_Vote_NextStage(const Vote vote)
 	SetNextStage(id, stage);
 }
 
-#include "rougelike/encounter_battles.sp"
-
 //ROUGELIKE ITEMS
 /*TODO*/bool b_SpearheadSquad;		 //should be done in store 
 bool b_ProvokedAnger;
@@ -1169,6 +1167,9 @@ bool b_MusicReleasingRadio;
 
 //ROUGELIKE .sp
 //This is only needed for items that are more then just flat stat changes.
+
+#include "rougelike/encounter_battles.sp"
+#include "rougelike/item_generic.sp"
 
 #include "rougelike/provoked_anger.sp"
 #include "rougelike/shield_items.sp"
