@@ -27,6 +27,34 @@
 		"en"	"Encounter"
 	}
 
+	// Encounters
+	"Optional Battle Title"
+	{
+		"en"	"Something seems off about this, should we can fight or leave right here."
+	}
+	"We can handle this"
+	{
+		"en"	"We can handle this"
+	}
+	"Better leave now"
+	{
+		"en"	"Better leave now"
+	}
+	"Enter a special battle"
+	{
+		"en"	"Enter a special battle"
+	}
+	"Leave this encounter"
+	{
+		"en"	"Leave this encounter"
+	}
+
+	// Stages
+	"Boons"
+	{
+		"en"	"Boons"
+	}
+
 	// Curses
 	"Gravity Upset"
 	{

@@ -578,7 +578,7 @@ public Action Rouge_RoundStartTimer(Handle timer)
 		{
 			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
 			{
-				NextProgress();
+				Rouge_NextProgress();
 				return Plugin_Stop;
 			}
 		}
@@ -602,9 +602,10 @@ bool Rouge_BattleLost()
 	return true;	// Return true to fail the game
 
 	//SetProgressTime(5.0, false);
+	//return false;
 }
 
-static void NextProgress()
+void Rouge_NextProgress()
 {
 	switch(GameState)
 	{
@@ -710,7 +711,7 @@ static void NextProgress()
 				{
 					// We somehow don't have a final stage
 					CurrentCount = floor.RoomCount + 1;
-					NextProgress();
+					Rouge_NextProgress();
 				}
 				else
 				{
@@ -719,10 +720,7 @@ static void NextProgress()
 			}
 			else	// Normal Stage
 			{
-				delete Voting;
-				Voting = new ArrayList(sizeof(Vote));
-				VoteFunc = Rouge_Vote_NextStage;
-				strcopy(VoteTitle, sizeof(VoteTitle), "Vote for the next stage");
+				Rouge_CreateGenericVote(Rouge_Vote_NextStage, "Vote for the next stage");
 
 				int count = 2;
 				if(!(GetURandomInt() % 6))
@@ -755,14 +753,14 @@ static void NextProgress()
 
 				if(Voting.Length)
 				{
-					StartGenericVote();
+					Rouge_StartGenericVote();
 					GameState = State_Vote;
 				}
 				else	// We somehow ran out of normal rooms
 				{
 					delete Voting;
 					CurrentCount = floor.RoomCount;
-					NextProgress();
+					Rouge_NextProgress();
 				}
 			}
 		}
@@ -773,32 +771,17 @@ static void NextProgress()
 	}
 }
 
-public void Rouge_Vote_NextStage(const Vote vote)
+ArrayList Rouge_CreateGenericVote(Function func, const char[] title)
 {
-	Floor floor;
-	Floors.GetArray(CurrentFloor, floor);
-	
-	Stage stage;
-	int id = GetStageByName(floor, vote.Config, false, stage);
+	delete Voting;
+	Voting = new ArrayList(sizeof(Vote));
+	VoteFunc = func;
+	strcopy(VoteTitle, sizeof(VoteTitle), title);
 
-	if(id == -1)
-	{
-		PrintToChatAll("STAGE \"%s\" VANISHED, REPORT BUG", vote.Config);
-		floor.Encounters.GetArray(0, stage);
-		id = 0;
-	}
-	else
-	{
-		if(!CurrentExclude)
-			CurrentExclude = new ArrayList();
-		
-		CurrentExclude.Push(id);
-	}
-
-	SetNextStage(id, stage);
+	return Voting;
 }
 
-static void StartGenericVote(float time = 20.0)
+void Rouge_StartGenericVote(float time = 20.0)
 {
 	Zero(VotedFor);
 	CreateTimer(1.0, Rouge_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -909,7 +892,7 @@ static void SetNextStage(int id, const Stage stage, float time = 10.0)
 	}
 }
 
-static void StartThisBattle()
+void Rouge_StartThisBattle(float time = 10.0)
 {
 	delete ProgressTimer;
 
@@ -919,7 +902,8 @@ static void StartThisBattle()
 	Stage stage;
 	floor.Encounters.GetArray(CurrentStage, stage);
 
-	StartBattle(stage, 5.0);
+	StartBattle(stage, time + 1.0);
+	SetProgressTime(time, true);
 }
 
 static void StartBattle(const Stage stage, float time = 3.0)
@@ -931,7 +915,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 	Waves_SetupWaves(kv, false);
 	delete kv;
 
-	CreateTimer(3.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 static void StartStage(const Stage stage)
@@ -1148,6 +1132,33 @@ int Rouge_GetRoundScale()
 {
 	return Rouge_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
 }
+
+public void Rouge_Vote_NextStage(const Vote vote)
+{
+	Floor floor;
+	Floors.GetArray(CurrentFloor, floor);
+	
+	Stage stage;
+	int id = GetStageByName(floor, vote.Config, false, stage);
+
+	if(id == -1)
+	{
+		PrintToChatAll("STAGE \"%s\" VANISHED, REPORT BUG", vote.Config);
+		floor.Encounters.GetArray(0, stage);
+		id = 0;
+	}
+	else
+	{
+		if(!CurrentExclude)
+			CurrentExclude = new ArrayList();
+		
+		CurrentExclude.Push(id);
+	}
+
+	SetNextStage(id, stage);
+}
+
+#include "rougelike/encounter_battles.sp"
 
 //ROUGELIKE ITEMS
 /*TODO*/bool b_SpearheadSquad;		 //should be done in store 
