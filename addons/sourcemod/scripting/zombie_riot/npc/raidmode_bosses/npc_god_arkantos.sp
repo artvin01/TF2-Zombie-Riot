@@ -237,7 +237,7 @@ methodmap GodArkantos < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
-		if(ZR_GetWaveCount()+1 <= 60)
+		if(ZR_GetWaveCount()+1 >= 59)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 300.0;
 		}
