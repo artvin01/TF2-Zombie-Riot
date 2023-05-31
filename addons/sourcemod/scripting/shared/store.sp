@@ -3836,6 +3836,15 @@ void Store_ApplyAttribs(int client)
 	}
 #endif	// ZR
 
+	float RougeExtraAttackspeed = 1.0;
+	if(b_GrigoriCoinPurse)
+	{
+		/*
+			TODO:
+			insert  code for extra attackspeed here.
+		*/
+	}
+
 	float value;
 	char buffer1[12];
 	if(!i_ClientHasCustomGearEquipped[client])

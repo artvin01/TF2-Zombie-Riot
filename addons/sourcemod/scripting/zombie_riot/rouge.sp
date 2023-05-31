@@ -1165,6 +1165,13 @@ bool b_MalfunctionShield;
 /*TODO*/bool b_GrigoriCoinPurse;	 	//should be done when the weapon is created/when a battle starts
 bool b_MusicReleasingRadio;
 
+
+bool IS_MusicReleasingRadio()
+{
+	return b_MusicReleasingRadio;
+}
+
+
 //ROUGELIKE .sp
 //This is only needed for items that are more then just flat stat changes.
 

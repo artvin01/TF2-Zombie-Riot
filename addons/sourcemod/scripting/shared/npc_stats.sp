@@ -1189,8 +1189,8 @@ methodmap CClotBody
 		
 		bool Is_Boss = true;
 #if defined ZR
-		//if(b_MusicReleasingRadio)
-		//	speed_for_return *= 0.9;
+		if(IS_MusicReleasingRadio())
+			speed_for_return *= 0.9;
 #endif
 		if(!this.m_bThisNpcIsABoss)
 		{
