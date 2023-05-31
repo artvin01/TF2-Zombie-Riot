@@ -3751,6 +3751,10 @@ void Store_ApplyAttribs(int client)
 	{
 		Extra_Juggernog_Hp = 100;
 	}
+	if(b_SpearheadSquad) //start with 50% extra health.
+	{
+		Extra_Juggernog_Hp += 50;
+	}
 
 	if(i_HealthBeforeSuit[client] == 0)
 	{

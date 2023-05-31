@@ -1,5 +1,6 @@
 
 //This is shield charges
+Handle GlobalShieldTimer;
 void ShieldLogic_OnMapStart()
 {
 	PrecacheSound("player/resistance_light1.wav", true);
@@ -16,10 +17,16 @@ void ShieldLogic_OnMapStart()
 	PrecacheSound("player/resistance_heavy4.wav", true);
 	PrecacheSound("weapons/medi_shield_deploy.wav", true);
 	PrecacheSound("weapons/medi_shield_retract.wav", true);
+	ShieldLogicRegen(1);
+	if (GlobalShieldTimer != INVALID_HANDLE)
+	{
+		KillTimer(GlobalShieldTimer);
+	}
+	GlobalShieldTimer = INVALID_HANDLE;
 }
 
 int i_MalfunctionShield[MAXENTITIES]; 
-void OnTakeDamage_ShieldLogic(int victim, int holding_weapon)
+bool OnTakeDamage_ShieldLogic(int victim)
 {
     if(b_MalfunctionShield)
     {
@@ -33,6 +40,31 @@ void OnTakeDamage_ShieldLogic(int victim, int holding_weapon)
     return false;
 }
 
+public void AnyShieldOnObtained()
+{
+	if (GlobalShieldTimer != INVALID_HANDLE)
+		return;
+
+	GlobalShieldTimer = CreateTimer(60.0, ShieldRegenTimer,_,TIMER_REPEAT);
+}
+public Action ShieldRegenTimer(Handle timer, int client)
+{
+	bool AnyShieldThere = false;
+	if(b_MalfunctionShield)
+	{
+		AnyShieldThere = true;
+		ShieldLogicRegen(1);
+	}
+	if(!AnyShieldThere)
+	{
+		if (GlobalShieldTimer != INVALID_HANDLE)
+		{
+			KillTimer(GlobalShieldTimer);
+		}
+		GlobalShieldTimer = INVALID_HANDLE;
+	}
+	return Plugin_Continue;
+}
 void ShieldLogicRegen(int Type)
 {
     for(int client=1; client<=MaxClients; client++)

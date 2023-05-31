@@ -1574,7 +1574,7 @@ int Waves_GetRound()
 	return CurrentRound;
 }
 
-int Waves_GetWave()
+public int Waves_GetWave()
 {
 	if(Rouge_Mode())
 		return Rouge_GetWave();

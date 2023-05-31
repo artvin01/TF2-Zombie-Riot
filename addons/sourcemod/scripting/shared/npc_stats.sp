@@ -5230,7 +5230,7 @@ public void Check_If_Stuck(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
-	PlayerInIlligalStuckArea(iNPC);
+//	PlayerInIlligalStuckArea(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
@@ -8535,9 +8535,8 @@ int i2_IlligalStuck_StuckTrueFalse[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK];
 	0 means not recorded yet.
 */
 //the max should be 64 checks.
-void PlayerInIlligalStuckArea(int entity)
+public void PlayerInIlligalStuckArea(int entity)
 {
-	return;
 	//PF_IsPathToVectorPossible says good even though it cant path.
 	// a way to make it work: See destination, if the destination isnt near the client, mark?
 	int client;
@@ -8603,21 +8602,21 @@ void PlayerIlligalResetOldestAndSort(int client, int ClientStuck)
 		//update latest
 	}
 }
-
+/*
 void PlayerIllgalMapCheck()
 {
 	bool MapHasIlligalSpot;
 
-	/*
+	
 	blahblahblahcode
 
 	if client is near stuck abuse area, do this
 	todo: do this in playerruncmd maybe so it can go against spam jumping, if its not too slow.
 	SDKHooks_TakeDamage(client, 0, 0, float(SDKCall_GetMaxHealth(client) / 4), DMG_DROWN);
 											
-	*/
+	
 }
-
+*/
 void PlayerIlligalTooMuch(int client)
 {
 	int CountIlligal;
@@ -8654,7 +8653,7 @@ void PlayerIlligalTooMuch(int client)
 		PrintToChat(client, "Do not abuse NPC stuckspots.");
 	}
 }
-
+/*
 static void ReportBadPosition(const float pos[3])
 {
 #if defined _discordbot_included
@@ -8662,5 +8661,5 @@ static void ReportBadPosition(const float pos[3])
 	zr_webhookadmins.GetString(buffer, sizeof(buffer));
 #endif
 }
-
+*/
 #endif	// ZR

@@ -1243,7 +1243,7 @@ public Action Timer_Temp(Handle timer)
 		PlayTickSound(false, true);
 	}
 	NPC_SpawnNext(false, false, false);
-	PlayerIllgalMapCheck();
+//	PlayerIllgalMapCheck();
 #endif
 	
 	return Plugin_Continue;

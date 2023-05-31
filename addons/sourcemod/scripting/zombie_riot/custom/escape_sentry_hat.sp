@@ -141,8 +141,8 @@ public Action Object_Detonated(Handle event, const char[] name, bool dontBroadca
 public Action Event_player_builtobject(Handle event, const char[] name, bool dontBroadcast)
 {
 	int entity = GetEventInt(event, "index");
-	int id = GetEventInt(event, "userid");
-	int owner = GetClientOfUserId(id);
+//	int id = GetEventInt(event, "userid");
+//	int owner = GetClientOfUserId(id);
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.bBuildingIsPlaced = true;
 	i_BeingCarried[entity] = false;

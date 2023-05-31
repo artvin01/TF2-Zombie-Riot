@@ -796,28 +796,32 @@ public void OnPostThink(int client)
 		}
 
 		bool Has_Wave_Showing = false;
-		if(f_ClientServerShowMessages[client])
+		
+		if(!Rouge_Mode())
 		{
-			Has_Wave_Showing = true; //yay :)
-			SetGlobalTransTarget(client);
-			char WaveString[64];
-			Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
-			i_WhatLevelForHudIsThisClientAt[client] -= 1;
-			Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
-			KvSetColor(hKv, "color", 0, 255, 0, 255); //green
-			KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
-			KvSetNum(hKv,   "time",  10); // how long? 
-			//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
-			CreateDialog(client, hKv, DialogType_Msg);
-			delete hKv;
-		}
-		else
-		{
-			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
+			if(f_ClientServerShowMessages[client])
 			{
-				f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
+				Has_Wave_Showing = true; //yay :)
 				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Plugin Messages Hint");
+				char WaveString[64];
+				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+				i_WhatLevelForHudIsThisClientAt[client] -= 1;
+				Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
+				KvSetColor(hKv, "color", 0, 255, 0, 255); //green
+				KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
+				KvSetNum(hKv,   "time",  10); // how long? 
+				//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
+				CreateDialog(client, hKv, DialogType_Msg);
+				delete hKv;
+			}
+			else
+			{
+				if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
+				{
+					f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
+					SetGlobalTransTarget(client);
+					PrintToChat(client,"%t", "Show Plugin Messages Hint");
+				}
 			}
 		}
 
@@ -1071,7 +1075,7 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
 					"Downs left", downsleft);	
 			}
-			if(!Has_Wave_Showing)
+			if(!Has_Wave_Showing && !Rouge_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s | %t", HudBuffer, WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);
 			}
@@ -1086,7 +1090,7 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing
 			);
 
-			if(!Has_Wave_Showing)
+			if(!Has_Wave_Showing && !Rouge_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
@@ -1097,7 +1101,7 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing
 			);
 
-			if(!Has_Wave_Showing)
+			if(!Has_Wave_Showing && !Rouge_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
@@ -1378,16 +1382,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(Victim_weapon))
 		{
-			OnTakeDamage_ProvokedAnger(victim, Victim_weapon);
+			OnTakeDamage_ProvokedAnger(Victim_weapon);
 			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 			
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
 		}
-		/*if(OnTakeDamage_ShieldLogic(victim))
+		if(OnTakeDamage_ShieldLogic(victim))
 		{
 			return Plugin_Handled;
-		}*/
+		}
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
 			damage *= 1.10;

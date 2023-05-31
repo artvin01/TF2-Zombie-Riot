@@ -1159,10 +1159,10 @@ public void Rouge_Vote_NextStage(const Vote vote)
 }
 
 //ROUGELIKE ITEMS
-/*TODO*/bool b_SpearheadSquad;		 //should be done in store 
+bool b_SpearheadSquad;					//should be done in store 
 bool b_ProvokedAnger;
 bool b_MalfunctionShield;
-/*TODO*/bool b_GrigoriCoinPurse;	 //should be done when the weapon is created/when a battle starts
+/*TODO*/bool b_GrigoriCoinPurse;	 	//should be done when the weapon is created/when a battle starts
 bool b_MusicReleasingRadio;
 
 //ROUGELIKE .sp

@@ -156,7 +156,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		}
 		TR_EnumerateEntitiesSphere(pos2, MYLNAR_RANGE_ATTACK, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Mlynar, client);
 
-		bool Hit = false;
+	//	bool Hit = false;
 		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
 			if (HitEntitiesSphereMlynar[entity_traced] > 0)
@@ -184,7 +184,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				if(Can_I_See_Enemy_Only(client, HitEntitiesSphereMlynar[entity_traced]))
 				{
 					// success
-					Hit = true;
+			//		Hit = true;
 					SDKHooks_TakeDamage(HitEntitiesSphereMlynar[entity_traced], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 100000.0), pos1);
 					EmitSoundToAll("weapons/halloween_boss/knight_axe_hit.wav", HitEntitiesSphereMlynar[entity_traced],_ ,_ ,_ ,0.75);
 				}

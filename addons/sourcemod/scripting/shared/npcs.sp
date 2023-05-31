@@ -1394,6 +1394,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
+		/*
+			Unlike buffs, rougelike items should stack multiplicatively
+		*/
+		if(b_SpearheadSquad)
+		{
+			damage *= 1.20;
+		}
 
 		float BaseDamageBeforeBuffs = damage;
 
@@ -1401,7 +1408,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			if(f_HussarBuff[attacker] > GameTime) //hussar!
 			{
-		//		damage *= 1.10;
 				damage += BaseDamageBeforeBuffs * 0.1;
 			}
 			if(f_GodArkantosBuff[victim] > GameTime) //hussar!
@@ -1411,72 +1417,58 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 		{
-	//		BaseDamageBeforeBuffs 
-	//		damage *= 1.25;
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
 		else if (f_Ocean_Buff_Weak_Buff[attacker] > GameTime) //hussar!
 		{
-		//	damage *= 1.10;
 			damage += BaseDamageBeforeBuffs * 0.1;
 		}
 		if(f_EmpowerStateOther[attacker] > GameTime) //Allow stacking.
 		{
-		//	damage *= 1.1;
 			damage += BaseDamageBeforeBuffs * 0.1;
 		}
 		if(f_EmpowerStateSelf[attacker] > GameTime) //Allow stacking.
 		{
-		//	damage *= 1.15;
 			damage += BaseDamageBeforeBuffs * 0.15;
 		}
 		if(f_BuffBannerNpcBuff[attacker] > GameTime)
 		{
-	//		damage *= 1.35;
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
 		if(f_HighTeslarDebuff[victim] > GameTime)
 		{
-	//		damage *= 1.35;
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
 		else if(f_LowTeslarDebuff[victim] > GameTime)
 		{
-	//		damage *= 1.25;
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
 		
 		if(f_HighIceDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.15;
 			damage += BaseDamageBeforeBuffs * 0.15;
 		}
 		else if(f_LowIceDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.10;
 			damage += BaseDamageBeforeBuffs * 0.10;
 		}
 		else if(f_VeryLowIceDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.05;
 			damage += BaseDamageBeforeBuffs * 0.05;
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.35;
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
 
 		if(Increaced_Overall_damage_Low[attacker] > GameTime)
 		{
-		//	damage *= 1.25;
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
 		
 		if(f_CrippleDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.4;
 			damage += BaseDamageBeforeBuffs * 0.4;
 		}
 
