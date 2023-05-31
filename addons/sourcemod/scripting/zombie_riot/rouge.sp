@@ -572,7 +572,7 @@ public Action Rouge_EndVote(Handle timer, float time)
 public Action Rouge_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
-
+// TODO: Make separate timer that excludes Voting and player checks
 	if(!Voting && !CvarNoRoundStart.BoolValue)
 	{
 		for(int client=1; client<=MaxClients; client++)
