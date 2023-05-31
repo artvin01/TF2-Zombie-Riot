@@ -53,20 +53,20 @@ bool OnTakeDamage_ShieldLogic(int victim, int damagetype)
 		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
 		chargerPos[2] += 82.0;
 		TE_ParticleInt(g_particleMissText, chargerPos);
-		TE_SendToClient(attacker);
+		TE_SendToAll();
 		return true;
 	}
 	
-    if(b_MalfunctionShield)
-    {
-        if(i_MalfunctionShield[victim] > 0)
-        {
-            ShieldBlockEffect(victim);
-            i_MalfunctionShield[victim] -= 1;
-            return true;
-        }
-    }
-    return false;
+	if(b_MalfunctionShield)
+	{
+		if(i_MalfunctionShield[victim] > 0)
+		{
+			ShieldBlockEffect(victim);
+			i_MalfunctionShield[victim] -= 1;
+			return true;
+		}
+	}
+	return false;
 }
 
 public void AnyShieldOnObtained()

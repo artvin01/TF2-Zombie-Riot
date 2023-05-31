@@ -4034,6 +4034,20 @@ void Store_ApplyAttribs(int client)
 	delete snapshot;
 	delete map;
 
+	if(b_ChickenNuggetBox) //probably needs rewriting cus idk how to do it
+	{
+		int MaxHealth = SDKCall_GetMaxHealth(client);
+
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.85);
+
+		Address address = TF2Attrib_GetByDefIndex(client, 26);
+		if(address != Address_Null)
+		{
+			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
+			TF2Attrib_SetValue(address, float(HealthToAdd));
+		}
+	}
+
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
 

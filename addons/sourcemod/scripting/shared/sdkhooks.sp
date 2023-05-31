@@ -330,8 +330,14 @@ public void OnPostThink(int client)
 				{
 					healing_Amount = 3;
 				}
+				else
+				{
+					if(b_HealthyEssence)
+						healing_Amount = RoundToCeil(float(healing_Amount) * 1.25);
+				}
 				int newHealth = flHealth + healing_Amount;
-						
+
+
 				if(newHealth >= flMaxHealthJesus)
 				{
 					healing_Amount -= newHealth - flMaxHealthJesus;
@@ -344,6 +350,7 @@ public void OnPostThink(int client)
 		}
 		if(dieingstate[client] == 0)
 		{
+			Rouge_HealingSalve(client,flHealth,flMaxHealth );
 			if(i_BadHealthRegen[client] == 1)
 			{
 				if(flHealth < flMaxHealth)

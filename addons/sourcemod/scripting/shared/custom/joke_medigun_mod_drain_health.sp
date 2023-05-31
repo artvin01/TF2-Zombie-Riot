@@ -267,6 +267,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 #if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
+
 #endif					
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
@@ -537,7 +538,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
-
+#if defined ZR					
+					if(b_HealthyEssence)
+						Healing_Value *= 1.25;
+#endif
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
 						

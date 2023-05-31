@@ -1169,13 +1169,16 @@ bool b_WrathOfItallians; 				//see on_ability_use.sp
 bool b_HandOfElderMages; 				
 bool b_BraceletsOfAgility; 				//shield items
 bool b_ElasticFlyingCape; 				//shield items
+bool b_HealingSalve; 					//see sdkhooks think and item_generic
+bool b_SteelRazor; 						//see npc.sp ontakedamage
+bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
+bool b_ChickenNuggetBox; 			 	//see store GiveAll
 
 
 bool IS_MusicReleasingRadio()
 {
 	return b_MusicReleasingRadio;
 }
-
 
 //ROUGELIKE .sp
 //This is only needed for items that are more then just flat stat changes.

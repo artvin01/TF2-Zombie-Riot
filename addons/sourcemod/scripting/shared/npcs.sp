@@ -1405,6 +1405,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage *= 2.0;
 		}
+		if(b_SteelRazor)
+		{
+			damage *= 1.15;
+		}
 
 		float BaseDamageBeforeBuffs = damage;
 

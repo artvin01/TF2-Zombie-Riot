@@ -166,5 +166,36 @@
 	{
 		"en"	"A cape that surrounds you and gives extra senses.\n-Gain a 10%% dodge chance against ranged attacks."
 	}
-
+	"Healing Salve"
+	{
+		"en"	"Healing Salve"
+	}
+	"Healing Salve Desc"
+	{
+		"en"	"Some salve for your wounds.\n-+1hp regen."
+	}
+	"Steel Razor"
+	{
+		"en"	"Steel Razor"
+	}
+	"Steel Razor Desc"
+	{
+		"en"	"Sharp and pointy.\n-+15%% dmg to enemies."
+	}
+	"Healthy Essence"
+	{
+		"en"	"Healthy Essence"
+	}
+	"Healthy Essence Desc"
+	{
+		"en"	"Being near it makes you feel better.\n-+25%% more healing from most sources."
+	}
+	"Chicken Nugget Box"
+	{
+		"en"	"Chicken Nugget Box"
+	}
+	"Chicken Nugget Box Desc"
+	{
+		"en"	"Still good and tasty as ever.\n-+15%% more health."
+	}
 }
