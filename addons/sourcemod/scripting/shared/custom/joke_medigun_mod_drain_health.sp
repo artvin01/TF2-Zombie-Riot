@@ -770,6 +770,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 
 					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 1, true, 1.0);
+					//there are some updgras that require medigun damage only!
 #if defined ZR
 					if(LastMann)	
 						flDrainRate *= 2.0;

@@ -29,13 +29,14 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		int value;
+		float value;
 
 		// +50 max health
 		map.GetValue("26", value);
-		map.SetValue("26", value + 50);
+		map.SetValue("26", value + 50.0);
 
 		//15% more building damage
+		value = 1.0;
 		map.GetValue("287", value);
 		map.SetValue("287", value * 1.15);
 	}
@@ -79,7 +80,6 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 public void Rogue_Spearhead_Weapon(int entity)
 {
 	// +15% damage bonus
-	//note doesnt work with buildings, any wewapon that doesnt have a weapon id attached, or the medigun beam, or various other weapons
 	Address address = TF2Attrib_GetByDefIndex(entity, 2);
 	if(address != Address_Null)
 		TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
@@ -87,6 +87,16 @@ public void Rogue_Spearhead_Weapon(int entity)
 	address = TF2Attrib_GetByDefIndex(entity, 410);
 	if(address != Address_Null)
 		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		address = TF2Attrib_GetByDefIndex(entity, 1);
+		if(address != Address_Null)
+			TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+	}
+	//Extra damage for mediguns.
 }
 
 public void Rogue_Research_Collect()

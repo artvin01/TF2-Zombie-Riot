@@ -1377,7 +1377,7 @@ void Rogue_GiveNamedArtifact(const char[] name)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);
-							Call_PushCell(0);
+							Call_PushCell(INVALID_HANDLE);
 							Call_Finish();
 						}
 					}
@@ -1389,7 +1389,7 @@ void Rogue_GiveNamedArtifact(const char[] name)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);
-							Call_PushCell(0);
+							Call_PushCell(INVALID_HANDLE);
 							Call_Finish();
 						}
 					}
@@ -1521,7 +1521,6 @@ bool b_HandOfElderMages;
 bool b_BraceletsOfAgility; 				//shield items
 bool b_ElasticFlyingCape; 				//shield items
 bool b_HealingSalve; 					//see sdkhooks think and item_generic
-bool b_SteelRazor; 						//see npc.sp ontakedamage
 bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
 bool b_ChickenNuggetBox; 			 	//see store GiveAll
 

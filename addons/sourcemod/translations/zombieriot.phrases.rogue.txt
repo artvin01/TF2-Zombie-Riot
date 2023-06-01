@@ -126,7 +126,7 @@
 	}
 	"Research Squad Desc"
 	{
-		"en"	"{green}Store items are 10%% off while mot in combat"
+		"en"	"{green}Store items are 10%% off while ot in combat"
 	}
 	"First Class Squad"
 	{

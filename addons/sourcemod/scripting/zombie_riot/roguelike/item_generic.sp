@@ -119,13 +119,58 @@ void Rogue_HealingSalve(int client, int &flHealth, flMaxHealth)
 	}
 }
 
-public void Rogue_Item_SteelRazor()
+public void Rogue_SteelRazor_Weapon(int entity)
 {
-	b_SteelRazor = true;
+	// +15% damage bonus
+	Address address = TF2Attrib_GetByDefIndex(entity, 2);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
+	
+	address = TF2Attrib_GetByDefIndex(entity, 410);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		address = TF2Attrib_GetByDefIndex(entity, 1);
+		if(address != Address_Null)
+			TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+	}
+	//Extra damage for mediguns.
 }
-public void Rogue_Item_SteelRazorRemove()
+
+public void Rogue_SteelRazor_Ally(int entity, StringMap map)
 {
-	b_SteelRazor = false;
+	if(map)	// Player
+	{
+		float value;
+
+		//15% more building damage
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.15);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +15% damage bonus
+			npc.m_fGunRangeBonus *= 1.15;
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// +15% damage bonus
+				npc.BonusDamageBonus *= 1.15;
+			}
+		}
+	}
 }
 
 public void Rogue_Item_HealthyEssence()

@@ -96,7 +96,7 @@ public Action ShieldRegenTimer(Handle timer, int client)
 }
 void ShieldLogicRegen(int Type)
 {
-    for(int client=1; client<=MaxClients; client++)
+    for(int client=1; client<MAXENTITIES; client++)
     {
         switch(Type)
         {
@@ -113,6 +113,8 @@ void ShieldBlockEffect(int client)
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Injured);
 	Injured[2] += 45.0;
 	TE_Particle("spell_batball_impact_red", Injured, NULL_VECTOR, NULL_VECTOR, client, _, _, _, _, _, _, _, _, _, 0.0);
+	if(client > MaxClients)
+		return;
 	switch(GetRandomInt(1,4))
 	{
 		case 1:

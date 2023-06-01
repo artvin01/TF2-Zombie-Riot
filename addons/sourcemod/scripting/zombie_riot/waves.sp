@@ -365,7 +365,7 @@ void Waves_SetupVote(KeyValues map)
 	
 	StartCash = kv.GetNum("cash");
 
-	if(map && kv.GetNum("rougemode"))
+	if(map && kv.GetNum("roguemode"))
 	{
 		Rogue_SetupVote(kv);
 		return;
@@ -413,7 +413,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		MiniBosses = null;
 	}
 	
-	if(CvarNoSpecialZombieSpawn.BoolValue)
+	if(CvarNoSpecialZombieSpawn.BoolValue || !Rogue_Mode())
 		return;
 	
 	KeyValues kv = map;
@@ -1116,7 +1116,7 @@ void Waves_Progress()
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if(rouge || (CurrentRound > 11 && round.Setup <= 30.0))
+			else if((CurrentRound > 11 && round.Setup <= 30.0))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				panzer_spawn = chance;
@@ -1131,6 +1131,11 @@ void Waves_Progress()
 				}
 			}
 			else
+			{
+				panzer_spawn = false;
+				panzer_sound = false;
+			}
+			if(rouge) //disable
 			{
 				panzer_spawn = false;
 				panzer_sound = false;
@@ -1372,8 +1377,7 @@ void Waves_Progress()
 					}
 				}
 			}
-
-			if(Freeplay_ShouldMiniBoss())
+			if(Freeplay_ShouldMiniBoss() && !rouge) //no miniboss during rougelikes.
 			{
 				panzer_spawn = true;
 				NPC_SpawnNext(false, panzer_spawn, false);

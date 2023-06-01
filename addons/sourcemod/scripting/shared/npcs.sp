@@ -1220,6 +1220,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				damage *= f_FreeplayDamageExtra;
 			}
+			if(OnTakeDamage_ShieldLogic(victim, damagetype))
+			{
+				return Plugin_Handled;
+			}
 		}
 
 		if(b_npcspawnprotection[victim])

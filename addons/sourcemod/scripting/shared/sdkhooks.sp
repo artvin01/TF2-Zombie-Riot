@@ -1684,7 +1684,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 			//	SetVariantString("TLK_DIED");
 			//	AcceptEntityInput(victim, "SpeakResponseConcept");
-				i_CurrentEquippedPerk[victim] = 0;
+				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
+				{
+					i_CurrentEquippedPerk[victim] = 0;
+				}
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
