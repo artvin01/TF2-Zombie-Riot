@@ -1107,6 +1107,8 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 	return -1;
 }
 
+int ViewCamareasTemp[MAXENTITIES];
+
 static void SetClientCamera(int client, const char[] name = "", const char[] skyname = "")
 {
 	if(name[0])
@@ -1119,7 +1121,7 @@ static void SetClientCamera(int client, const char[] name = "", const char[] sky
 			if(StrEqual(buffer, name, false))
 			{
 				Waves_SetSkyName(skyname, client);
-				SetClientViewEntity(client, entity);
+				ForceClientViewOntoEntity(client, entity);
 				return;
 			}
 		}
@@ -1146,14 +1148,14 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 			if(StrEqual(buffer, name, false))
 			{
 				Waves_SetSkyName(skyname);
+				
 
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client) && IsPlayerAlive(client))
 					{
-						Animator_ForceCameraView(client, true, entity, 10.0);
-					//	SetClientViewEntity(client, entity);
-					//	TF2_AddCondition(client, TFCond_FreezeInput);
+						ForceClientViewOntoEntity(client, entity);
+					//	Animator_ForceCameraView(client, true, entity, 10.0);
 					}
 				}
 
@@ -1170,6 +1172,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 			TF2_RemoveCondition(client, TFCond_FreezeInput);
 		}
 	}
+	ClearAllCameras();
 }
 
 static void SetProgressTime(float time, bool hud, bool waitForPlayers = false)
@@ -1506,6 +1509,46 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	}
 
 	SetNextStage(id, stage);
+}
+
+//thanks to mikusch for showing me this.
+void ForceClientViewOntoEntity(int client, int entity)
+{
+	int ViewTarget = EntRefToEntIndex(ViewCamareasTemp[entity]);
+	if(IsValidEntity(ViewTarget))
+	{
+		SetClientViewEntity(client, ViewTarget);
+		TF2_AddCondition(client, TFCond_FreezeInput);
+	}
+	else
+	{
+		float rotation[3];
+		float origin[3];
+		int viewcontrol = CreateEntityByName("prop_dynamic");
+		if (IsValidEntity(viewcontrol))
+		{
+			GetEntPropVector(entity, Prop_Send, "m_angRotation", rotation);
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", origin);
+			SetEntityModel(viewcontrol, "models/empty.mdl");
+			DispatchKeyValueVector(viewcontrol, "origin", origin);
+			DispatchKeyValueVector(viewcontrol, "angles", rotation);
+			DispatchSpawn(viewcontrol);
+			ViewCamareasTemp[entity] = EntIndexToEntRef(viewcontrol);		
+			SetClientViewEntity(client, viewcontrol);
+			TF2_AddCondition(client, TFCond_FreezeInput);
+		}
+	}
+}
+void ClearAllCameras()
+{
+	for(int i=1; i<MAXENTITIES; i++)
+	{
+		int ViewTarget = EntRefToEntIndex(ViewCamareasTemp[i]);
+		if(IsValidEntity(ViewTarget))
+		{
+			RemoveEntity(ViewTarget);
+		}
+	}
 }
 
 //ROUGELIKE ITEMS
