@@ -1151,8 +1151,9 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 				{
 					if(IsClientInGame(client) && IsPlayerAlive(client))
 					{
-						SetClientViewEntity(client, entity);
-						TF2_AddCondition(client, TFCond_FreezeInput);
+						Animator_ForceCameraView(client, true, entity, 10.0);
+					//	SetClientViewEntity(client, entity);
+					//	TF2_AddCondition(client, TFCond_FreezeInput);
 					}
 				}
 
