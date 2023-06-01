@@ -350,7 +350,7 @@ public void OnPostThink(int client)
 		}
 		if(dieingstate[client] == 0)
 		{
-			Rouge_HealingSalve(client,flHealth,flMaxHealth );
+			Rogue_HealingSalve(client,flHealth,flMaxHealth );
 			if(i_BadHealthRegen[client] == 1)
 			{
 				if(flHealth < flMaxHealth)
@@ -804,7 +804,7 @@ public void OnPostThink(int client)
 
 		bool Has_Wave_Showing = false;
 		
-		if(!Rouge_Mode())
+		if(!Rogue_Mode())
 		{
 			if(f_ClientServerShowMessages[client])
 			{
@@ -1082,7 +1082,7 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
 					"Downs left", downsleft);	
 			}
-			if(!Has_Wave_Showing && !Rouge_Mode())
+			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s | %t", HudBuffer, WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);
 			}
@@ -1097,7 +1097,7 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing
 			);
 
-			if(!Has_Wave_Showing && !Rouge_Mode())
+			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
@@ -1108,7 +1108,7 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing
 			);
 
-			if(!Has_Wave_Showing && !Rouge_Mode())
+			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}

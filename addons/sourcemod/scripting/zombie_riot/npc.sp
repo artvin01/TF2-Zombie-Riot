@@ -1720,6 +1720,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
 	}
+
+	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+	{
+		Rogue_AllySpawned(entity);
+	}
+	else
+	{
+		Rogue_EnemySpawned(entity);
+	}
 	
 	return entity;
 }	

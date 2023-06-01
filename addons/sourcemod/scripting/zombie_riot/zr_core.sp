@@ -8,7 +8,7 @@
 #define STARTER_WEAPON_LEVEL	5
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Rouge_GetRoundScale
+#define ZR_GetWaveCount Rogue_GetRoundScale
 
 public const int AmmoData[][] =
 {
@@ -280,7 +280,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
-#include "zombie_riot/rouge.sp"
+#include "zombie_riot/rogue.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -414,7 +414,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
-	Rouge_MapStart();
+	Rogue_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
@@ -442,7 +442,7 @@ void ZR_MapStart()
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
 	ShieldLogic_OnMapStart();
-	Rouge_OnAbilityUseMapStart();
+	Rogue_OnAbilityUseMapStart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -1078,8 +1078,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	bool rouge = !Rouge_Mode();
-	LastMann = (rouge && !Waves_InSetup());
+	bool rogue = !Rogue_Mode();
+	LastMann = (rogue && !Waves_InSetup());
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	int GlobalIntencity_Reduntant;
@@ -1212,13 +1212,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			Bob_Exists = false;
 			int bob_index = EntRefToEntIndex(Bob_Exists_Index);
 			NPC_Despawn_bob(bob_index);
-			Bob_Exists_Index = 0;
+			Bob_Exists_Index = -1;
 		}
 
-		if(rouge)
-			rouge = !Rouge_BattleLost();
+		if(rogue)
+			rogue = !Rogue_BattleLost();
 	
-		if(!rouge)
+		if(!rogue)
 		{
 			int entity = CreateEntityByName("game_round_win"); 
 			DispatchKeyValue(entity, "force_map_reset", "1");
@@ -1229,8 +1229,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 
 		if(killed)
 		{
-			Music_RoundEnd(killed, !rouge);
-			if(!rouge)
+			Music_RoundEnd(killed, !rogue);
+			if(!rogue)
 			{
 				CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
 			//	RequestFrames(Remove_All, 300);
@@ -1666,6 +1666,9 @@ void GiveXP(int client, int xp)
 			
 			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
 				slots++;
+			
+			if(Level[client] < 81 && !(Level[client] % 10))
+				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
 		}
 		
 		if(slots)

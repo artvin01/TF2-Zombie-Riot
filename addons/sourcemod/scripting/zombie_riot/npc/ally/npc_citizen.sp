@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #define BARNEY_MODEL	"models/barney.mdl"
+#define ALYX_MODEL	"models/alyx.mdl"
 
 enum
 {
@@ -630,6 +631,176 @@ static void Barney_GenerateSound(int type, int seed, char[] buffer, int length)
 	}
 }
 
+static void Alyx_GenerateSound(int type, int seed, char[] buffer, int length)
+{
+	switch(type)
+	{
+		case Cit_AllyDeathAnswer:
+		{
+			Format(buffer, length, "vo/npc/alyx/no0%d.wav", (seed % 3) + 1);
+		}
+		case Cit_AllyDeathQuestion:
+		{
+			switch(seed % 3)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/npc/alyx/ohgod01.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/npc/alyx/ohno_startle01.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/npc/alyx/ohno_startle03.wav");
+			}
+		}
+		case Cit_Ammo:
+		{
+			Format(buffer, length, "vo/npc/alyx/youreload0%d.wav", (seed % 2) + 1);
+		}
+		case Cit_Answer:
+		{
+			switch(seed % 7)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/k_lab/al_docsays02.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/k_lab2/al_whatdoyoumean.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_betyoudid01.wav");
+				
+				case 3:
+					strcopy(buffer, length, "vo/novaprospekt/al_enoughbs01.wav");
+				
+				case 4:
+					strcopy(buffer, length, "vo/novaprospekt/al_youbeenworking.wav");
+				
+				case 5:
+					strcopy(buffer, length, "vo/novaprospekt/al_youput01.wav");
+				
+				case 6:
+					strcopy(buffer, length, "vo/eli_lab/al_letmedo.wav");
+			}
+		}
+		case Cit_Behind:
+		{
+			Format(buffer, length, "vo/npc/alyx/watchout0%d.wav", (seed % 2) + 1);
+		}
+		case Cit_Busy:
+		{
+			strcopy(buffer, length, "vo/k_lab2/al_catchup_b.wav");
+		}
+		case Cit_CadeDeath:
+		{
+			int rand = seed % 3;
+			switch(rand)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/npc/alyx/lookout01.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/npc/alyx/lookout03.wav");
+			}
+		}
+		case Cit_DoSomething:
+		{
+			switch(seed % 3)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/k_lab/al_moveon02.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/k_lab/al_youcoming.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_takingforever.wav");
+			}
+		}
+		case Cit_Found:
+		{
+			switch(seed % 4)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/novaprospekt/al_findmyfather.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/novaprospekt/al_flyingblind.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_gladtoseeyou.wav");
+				
+				case 3:
+					strcopy(buffer, length, "vo/novaprospekt/al_letsgetout01.wav");
+			}
+		}
+		case Cit_Lost:
+		{
+			strcopy(buffer, length, "vo/trainyard/al_overhere.wav");
+		}
+		case Cit_LowHealth:
+		{
+			Format(buffer, length, "vo/npc/alyx/gasp0%d.wav", seed % 2 + 2);
+		}
+		case Cit_Hurt:
+		{
+			Format(buffer, length, "vo/npc/alyx/hurt0%d.wav", ((seed % 3) + 2) * 2);	// 4,6,8
+		}
+		case Cit_MiniBoss:
+		{
+			switch(seed % 3)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/novaprospekt/al_elevator03.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/novaprospekt/al_sealdoor02.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_uhoh_np.wav");
+			}
+		}
+		case Cit_MiniBossDead:
+		{
+			if(seed % 2)
+			{
+				strcopy(buffer, length, "vo/eli_lab/al_earnedit01.wav");
+			}
+			else
+			{
+				strcopy(buffer, length, "vo/eli_lab/al_sweet.wav");
+			}
+		}
+		case Cit_Question:
+		{
+			switch(seed % 6)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/k_lab/al_buyyoudrink03.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/k_lab2/al_wheresdoc01.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_mutter.wav");
+				
+				case 3:
+					strcopy(buffer, length, "vo/novaprospekt/al_readings01.wav");
+				
+				case 4:
+					strcopy(buffer, length, "vo/streetwar/alyx_gate/al_watchmyback.wav");
+				
+				case 5:
+					strcopy(buffer, length, "vo/eli_lab/al_thyristor02.wav");
+			}
+		}
+		default:
+		{
+			strcopy(buffer, length, "vo/null.mp3");
+		}
+	}
+}
+
 static char g_RangedAttackSounds[][] =
 {
 	"weapons/shotgun/shotgun_fire6.wav",
@@ -646,6 +817,7 @@ static char g_RangedReloadSound[][] =
 void Citizen_OnMapStart()
 {
 	PrecacheModel(BARNEY_MODEL);
+	PrecacheModel(ALYX_MODEL);
 	
 	char buffer[PLATFORM_MAX_PATH];
 	for(int i; i < Cit_MAX; i++)
@@ -659,6 +831,9 @@ void Citizen_OnMapStart()
 			PrecacheSound(buffer);
 
 			Barney_GenerateSound(i, a, buffer, sizeof(buffer));
+			PrecacheSound(buffer);
+
+			Alyx_GenerateSound(i, a, buffer, sizeof(buffer));
 			PrecacheSound(buffer);
 		}
 	}
@@ -708,13 +883,20 @@ methodmap Citizen < CClotBody
 		if(IsValidEntity(EntRefToEntIndex(ThereCanBeOnlyOne)))
 			return view_as<Citizen>(-1);
 		
-		int seed = data[0] ? -160920040 : GetURandomInt();
+		bool barney = data[0] == 'b';
+		bool alyx = data[0] == 'a';
+		
+		int seed = barney ? -160920040 : (alyx ? -50 : GetURandomInt());
 		bool female = !(seed % 2);
 		
 		char buffer[PLATFORM_MAX_PATH];
-		if(data[0])
+		if(barney)
 		{
 			strcopy(buffer, sizeof(buffer), BARNEY_MODEL);
+		}
+		else if(alyx)
+		{
+			strcopy(buffer, sizeof(buffer), ALYX_MODEL);
 		}
 		else
 		{
@@ -779,9 +961,17 @@ methodmap Citizen < CClotBody
 		public get()		{ return i_OverlordComboAttack[this.index]; }
 		public set(int value) 	{ i_OverlordComboAttack[this.index] = value; }
 	}
-	property bool m_bBarney
+	property bool m_bHero
 	{
 		public get()		{ return (this.m_iSeed < 0); }
+	}
+	property bool m_bBarney
+	{
+		public get()		{ return (this.m_iSeed == -160920040); }
+	}
+	property bool m_bAlyx
+	{
+		public get()		{ return (this.m_iSeed == -50); }
 	}
 	property bool m_bFemale
 	{
@@ -883,7 +1073,11 @@ methodmap Citizen < CClotBody
 		{
 			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
 			{
-				fl_Speed[this.index] = value * 1.1;
+				fl_Speed[this.index] = value * (this.m_bAlyx ? 1.4 : 1.1);
+			}
+			else if(this.m_bAlyx)
+			{
+				fl_Speed[this.index] = value * 1.3;
 			}
 			else
 			{
@@ -927,7 +1121,7 @@ methodmap Citizen < CClotBody
 	}
 	public void UpdateModel()
 	{
-		if(!this.m_bBarney)
+		if(!this.m_bHero)
 		{
 			int type = Cit_Unarmed;
 			
@@ -1037,13 +1231,16 @@ methodmap Citizen < CClotBody
 		}
 		else
 		{
-			if(this.m_bBarney && this.m_iGunType == Cit_None)
+			if(this.m_bHero && this.m_iGunType == Cit_None)
 				Store_FindBarneyAGun(this.index, this.m_iGunValue, CurrentCash / 3, false);
 			
 			this.m_bThisEntityIgnored = false;
-			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
-			this.SetPlaybackRate(2.0);
-			this.m_flReloadDelay = GetGameTime(this.index) + 1.2;
+			if(!this.m_bAlyx)
+			{
+				this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
+				this.SetPlaybackRate(2.0);
+				this.m_flReloadDelay = GetGameTime(this.index) + 1.2;
+			}
 			
 			int glow = this.m_iTeamGlow;
 			if(glow > 0)
@@ -1057,7 +1254,7 @@ methodmap Citizen < CClotBody
 				RemoveEntity(this.m_iWearable3);
 				
 				SetEntProp(this.index, Prop_Data, "m_iHealth", 50);
-				if(!this.m_bBarney)
+				if(!this.m_bHero)
 				{
 					SetEntityRenderColor(this.index, 255, 255, 255, 255);
 					SetEntityRenderMode(this.index, RENDER_NORMAL);
@@ -1066,11 +1263,13 @@ methodmap Citizen < CClotBody
 			else if(client)
 			{
 				this.PlaySound(Cit_Found);
-				GiveNamedItem(client, this.m_bBarney ? "Barney" : "Rebel");
+				GiveNamedItem(client, this.m_bBarney ? "Barney" : (this.m_bAlyx ? "Alyx" : "Rebel"));
 			}
 
-			if(this.m_bBarney)
+			if(this.m_bHero)
 				this.UpdateModel();
+			
+			IgnorePlayer[client] = false;
 		}
 	}
 	public bool CanTalk()
@@ -1086,6 +1285,10 @@ methodmap Citizen < CClotBody
 			
 			char buffer[PLATFORM_MAX_PATH];
 			if(this.m_bBarney)
+			{
+				Barney_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
+			}
+			else if(this.m_bAlyx)
 			{
 				Barney_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
 			}
@@ -1138,7 +1341,7 @@ methodmap Citizen < CClotBody
 	}
 }
 
-void Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
+int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
@@ -1173,8 +1376,12 @@ void Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 				
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
+
+			return entity;
 		}
 	}
+
+	return -1;
 }
 
 bool Citizen_ThatIsDowned(int entity)
@@ -1234,13 +1441,17 @@ bool Citizen_Interact(int client, int entity)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_nDowned)
-			return false;
-		
-		npc.PlaySound(Cit_Greet);
-		IgnorePlayer[client] = false;
-		Store_OpenGiftStore(client, npc.index, npc.m_iGunValue, npc.m_bBarney);
-		return true;
+		if(!npc.m_nDowned)
+		{
+			IgnorePlayer[client] = false;
+
+			if(!npc.m_bAlyx)
+			{
+				npc.PlaySound(Cit_Greet);
+				Store_OpenGiftStore(client, npc.index, npc.m_iGunValue, npc.m_bHero);
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -1353,7 +1564,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	}
 	else
 	{
-		int health = 200 + npc.m_iGunValue / 20;
+		int health = (npc.m_bAlyx ? 400 : 200) + npc.m_iGunValue / 20;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		
@@ -1366,9 +1577,12 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			npc.m_iGunClip = RoundFloat(data.Clip);
 		}
 		
-		wave = Waves_GetRound() + 1;
+		wave = Rogue_GetRoundScale() + 1;
 		if(wave > 90)
 			wave = 90;
+		
+		if(npc.m_bAlyx)
+			wave += 15;
 	}
 	
 	npc.m_fGunRangeBonus = 1.0;
@@ -1376,6 +1590,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_bFirstBlood = false;
 	npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 	npc.m_fGunDamage *= 1.0 + float(wave / 15);
+
+	Rogue_AllySpawned(npc.index);
 	
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);
@@ -1437,7 +1653,7 @@ void Citizen_SetupStart()
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
 			Citizen npc = view_as<Citizen>(i);
-			if(npc.m_bBarney && !npc.m_nDowned && IsValidEntity(i))
+			if(npc.m_bHero && !npc.m_nDowned && IsValidEntity(i))
 			{
 				int found;
 				float distance = FAR_FUTURE;
@@ -1497,7 +1713,7 @@ void Citizen_SetupStart()
 					}
 				}
 				
-				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.26, 0.34)), view_as<bool>(found)))
+				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.26, npc.m_bAlyx ? 0.4 : 0.34)), view_as<bool>(found)))
 				{
 					npc.m_iTargetAlly = found;
 					npc.m_bSeakingGeneric = true;
@@ -2605,7 +2821,7 @@ public void Citizen_ClotThink(int iNPC)
 			case Cit_Melee:
 			{
 				// TODO: Barney has an issue with ACT_IDLE_SUITCASE, same with Rebels?
-				if(combat || !npc.m_bBarney)
+				if(combat/* || !npc.m_bBarney*/)
 				{
 					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
 					

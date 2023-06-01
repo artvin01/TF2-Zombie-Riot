@@ -1468,7 +1468,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					item.BuyPrice[client] = info.Cost;
 					Store_BuyClientItem(client, item, info);
 					item.Sell[client] = ItemSell(base, info.Cost);
-					item.BuyWave[client] = Rouge_GetRoundScale();
+					item.BuyWave[client] = Rogue_GetRoundScale();
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
@@ -2421,7 +2421,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
-				else if(Rouge_Mode() || !Waves_InSetup())
+				else if(Rogue_NoDiscount() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
@@ -2436,7 +2436,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
-				else if(Rouge_Mode() || !Waves_InSetup())
+				else if(Rogue_NoDiscount() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
@@ -2585,7 +2585,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
-		else if(Rouge_Mode() || !Waves_InSetup())
+		else if(Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
@@ -2605,7 +2605,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client]);
 		}
-		else if(Rouge_Mode() || !Waves_InSetup())
+		else if(Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			if(Database_IsCached(client))
 			{
@@ -2633,6 +2633,12 @@ public void MenuPage(int client, int section)
 			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
 			menu.AddItem("-2", buffer);
+
+			if(Rogue_Mode())
+			{
+				FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
+				menu.AddItem("-24", buffer);
+			}
 		}
 	}
 	
@@ -3202,6 +3208,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					XP[client] = LevelToXp(5);
 					GiveXP(client, 0);
 				}
+				case -24:
+				{
+					Rogue_ArtifactMenu(client, 0);
+				}
 				default:
 				{
 					MenuPage(client, id);
@@ -3371,7 +3381,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = info.Cost;
 									Store_BuyClientItem(client, item, info);
 									item.Sell[client] = ItemSell(base, info.Cost);
-									item.BuyWave[client] = Rouge_GetRoundScale();
+									item.BuyWave[client] = Rogue_GetRoundScale();
 									item.Equipped[client] = false;
 
 									if(!item.BoughtBefore[client])
@@ -3414,7 +3424,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								Store_BuyClientItem(client, item, info);
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Rouge_GetRoundScale();
+								item.BuyWave[client] = Rogue_GetRoundScale();
 
 								if(!item.BoughtBefore[client])
 								{
@@ -3525,7 +3535,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.GetItemInfo(item.Owned[client]-1, info);
 
 								int sell = item.Sell[client];
-								if(item.BuyWave[client] == Rouge_GetRoundScale())
+								if(item.BuyWave[client] == Rogue_GetRoundScale())
 									sell = item.BuyPrice[client];
 								
 								if(sell) //make sure it even can be sold.
@@ -3751,10 +3761,6 @@ void Store_ApplyAttribs(int client)
 	{
 		Extra_Juggernog_Hp = 100;
 	}
-	if(b_SpearheadSquad) //start with 50% extra health.
-	{
-		Extra_Juggernog_Hp += 50;
-	}
 
 	if(i_HealthBeforeSuit[client] == 0)
 	{
@@ -3779,7 +3785,8 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 
-	TF2Attrib_SetByDefIndex(client, 201, f_DelayAttackspeedPreivous[client]);
+	/*TF2Attrib_SetByDefIndex(client, 201, */
+	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
@@ -3796,7 +3803,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 
 #if defined ZR
-	int wave_count = Rouge_GetRoundScale() + 1;
+	int wave_count = Rogue_GetRoundScale() + 1;
 	
 	if(wave_count > 15 && wave_count < 30)
 	{
@@ -3835,16 +3842,6 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("287", 1.15);
 	}
 #endif	// ZR
-
-	float RougeExtraAttackspeed = 1.0;
-	if(b_GrigoriCoinPurse)
-	{
-		/*
-			TODO:
-			insert  code for extra attackspeed here.
-			This should also reduce manacost and reload speed.
-		*/
-	}
 
 	float value;
 	char buffer1[12];
@@ -4044,7 +4041,7 @@ void Store_ApplyAttribs(int client)
 		if(address != Address_Null)
 		{
 			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
-			TF2Attrib_SetValue(address, float(HealthToAdd));
+			TF2Attrib_SetByDefIndex(address, float(HealthToAdd));
 		}
 	}
 
@@ -4830,11 +4827,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value[a]);
+									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) + info.Value[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value[a]);
+									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * info.Value[a]);
 								}
 							}
 						}
@@ -4899,11 +4896,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value2[a]);
+									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) + info.Value2[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value2[a]);
+									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * info.Value2[a]);
 								}
 							}
 						}
@@ -4942,7 +4939,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
+				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
 		//DOUBLE TAP!
@@ -4955,7 +4952,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.85);
+				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 0.85);
 			}
 		}
 		//DEADSHOT!
@@ -4968,7 +4965,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
+				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
 		//QUICK REVIVE!
@@ -4978,14 +4975,16 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(address != Address_Null)
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 1.15);
 			}
 			
-			address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
+			/*address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
 			if(address != Address_Null)
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
-			}
+				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 1.15);
+			}*/
+
+			// Note: This can stack with multi weapons :|
 		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
@@ -4993,6 +4992,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{		
 			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
 		}
+
+		Rogue_GiveItem(entity);
 #endif
 		/*
 			Attributes to Arrays Here
@@ -5357,7 +5358,7 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool started = (!Rouge_Mode() && !Waves_InSetup());
+	bool started = (!Rogue_NoDiscount() && !Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -5366,7 +5367,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * Rouge_GetRoundScale();
+	cost += item.CostPerWave * Rogue_GetRoundScale();
 	
 	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 	

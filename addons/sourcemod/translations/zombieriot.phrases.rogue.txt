@@ -17,26 +17,28 @@
 	{
 		"en"	"Vote for the next stage:"
 	}
+	"Additional Starting Ingot"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"	"Starting Australium Ingots ({1} -> {2})"
+	}
 	"New Artifact"
 	{
 		"#format"	"{1:t}"
 		"en"	"{yellow}Collected Artifact{default}: {yellow}{1}"
 	}
+	"Artifact Info"
+	{
+		"#format"	"{1:t},{2:t}"
+		"en"	"{yellow}{1}{default}: {2}"
+	}
 	"Encounter"
 	{
 		"en"	"Encounter"
 	}
-	"cash"
+	"Collected Artifacts"
 	{
-		"en"	"cash"
-	}
-	"rougemode"
-	{
-		"en"	"rougemode"
-	}
-	"Starting"
-	{
-		"en"	"Starting"
+		"en"	"Collected Artifacts"
 	}
 
 	// Encounters
@@ -86,13 +88,53 @@
 	}
 	
 	// Artifacts
-	"Spearhead"
+	"Leader Squad"
 	{
-		"en"	"Spearhead"
+		"en"	"Leader Squad"
 	}
-	"Spearhead Desc"
+	"Leader Squad Desc"
 	{
-		"en"	"{green}+15% damage bonus{yellow}, {green}+50 max health{yellow}, {red}does not provide a second life"
+		"en"	"{green}Extra Health powerup spawns at the start of a battle.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Gathering Squad"
+	{
+		"en"	"Gathering Squad"
+	}
+	"Gathering Squad Desc"
+	{
+		"en"	"{green}Extra Ammo powerup spawns at the start of a battle.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Support Squad"
+	{
+		"en"	"Support Squad"
+	}
+	"Support Squad Desc"
+	{
+		"en"	"{green}Start with +20 Australium Ignots and 500 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Spearhead Squad"
+	{
+		"en"	"Spearhead Squad"
+	}
+	"Spearhead Squad Desc"
+	{
+		"en"	"{green}Allies gain +15%% damage bonus and +50 max health"
+	}
+	"Research Squad"
+	{
+		"en"	"Research Squad"
+	}
+	"Research Squad Desc"
+	{
+		"en"	"{green}Store items are 10%% off while mot in combat"
+	}
+	"First Class Squad"
+	{
+		"en"	"First Class Squad"
+	}
+	"First Class Squad Desc"
+	{
+		"en"	"{green}Alyx joins your adventure"
 	}
 	"Provoked Anger"
 	{

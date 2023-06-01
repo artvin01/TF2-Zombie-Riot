@@ -115,13 +115,13 @@ void Waves_PluginStart()
 
 bool Waves_InFreeplay()
 {
-	return (!Rouge_Mode() && Rounds && CurrentRound >= Rounds.Length);
+	return (!Rogue_Mode() && Rounds && CurrentRound >= Rounds.Length);
 }
 
 bool Waves_InSetup()
 {
-	if(Rouge_Mode())
-		return Rouge_InSetup();
+	if(Rogue_Mode())
+		return Rogue_InSetup();
 	
 	return (InSetup || !Waves_Started());
 }
@@ -162,9 +162,9 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 public Action Waves_RevoteCmd(int client, int args)
 {
-	if(Rouge_Mode())
+	if(Rogue_Mode())
 	{
-		Rouge_RevoteCmd(client);
+		Rogue_RevoteCmd(client);
 	}
 	else if(Voting)
 	{
@@ -176,8 +176,8 @@ public Action Waves_RevoteCmd(int client, int args)
 
 bool Waves_CallVote(int client)
 {
-	if(Rouge_Mode())
-		return Rouge_CallVote(client);
+	if(Rogue_Mode())
+		return Rogue_CallVote(client);
 	
 	if(Voting && !VotedFor[client])
 	{
@@ -367,7 +367,7 @@ void Waves_SetupVote(KeyValues map)
 
 	if(map && kv.GetNum("rougemode"))
 	{
-		Rouge_SetupVote(kv);
+		Rogue_SetupVote(kv);
 		return;
 	}
 
@@ -667,9 +667,9 @@ void Waves_RoundStart()
 	Waves_RoundEnd();
 	Freeplay_ResetAll();
 	
-	if(Rouge_Mode())
+	if(Rogue_Mode())
 	{
-		Rouge_StartSetup();
+		Rogue_StartSetup();
 	}
 	else if(Voting)
 	{
@@ -823,7 +823,7 @@ void Waves_Progress()
 	int length = Rounds.Length-1;
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
-	bool rouge = Rouge_Mode();
+	bool rouge = Rogue_Mode();
 	static int panzer_chance;
 
 	if(CurrentRound < length)
@@ -1278,7 +1278,7 @@ void Waves_Progress()
 
 				if(rouge)
 				{
-					Rouge_BattleVictory();
+					Rogue_BattleVictory();
 				}
 				else
 				{
@@ -1462,7 +1462,7 @@ void Waves_Progress()
 			}
 		}
 	}
-	if(CurrentRound == 0 && !Rouge_Mode())
+	if(CurrentRound == 0 && !Rogue_Mode())
 	{
 		if(StartCash < 1500)
 			Store_RemoveSellValue();
@@ -1560,24 +1560,24 @@ void Waves_AddNextEnemy(const Enemy enemy)
 
 bool Waves_Started()
 {
-	if(Rouge_Mode())
-		return Rouge_Started();
+	if(Rogue_Mode())
+		return Rogue_Started();
 	
 	return (CurrentRound || CurrentWave != -1);
 }
 
 int Waves_GetRound()
 {
-	if(Rouge_Mode())
-		return Rouge_GetRound();
+	if(Rogue_Mode())
+		return Rogue_GetRound();
 	
 	return CurrentRound;
 }
 
 public int Waves_GetWave()
 {
-	if(Rouge_Mode())
-		return Rouge_GetWave();
+	if(Rogue_Mode())
+		return Rogue_GetWave();
 	
 	return CurrentWave;
 }

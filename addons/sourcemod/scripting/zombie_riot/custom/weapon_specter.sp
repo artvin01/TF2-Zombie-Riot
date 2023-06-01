@@ -132,7 +132,7 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
-		Rouge_OnAbilityUse(client, weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		ClientCommand(client, "playgamesound %s", SPECTER_BONEFRACTURE);
 
 		TF2_AddCondition(client, TFCond_MegaHeal, SPECTER_BONE_FRACTURE_DURATION);
@@ -210,7 +210,7 @@ public void Weapon_SpecterSurvive(int client, int weapon, bool &result, int slot
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
-		Rouge_OnAbilityUse(client, weapon);
+		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE);
 		ClientCommand(client, "playgamesound %s", SPECTER_SURVIVEUSE);

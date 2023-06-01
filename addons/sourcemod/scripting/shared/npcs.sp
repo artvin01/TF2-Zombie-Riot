@@ -1394,20 +1394,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
-		/*
-			Unlike buffs, rougelike items should stack multiplicatively
-		*/
-		if(b_SpearheadSquad)
-		{
-			damage *= 1.20;
-		}
-		if(Rouge_InItallianWrath(weapon))
+		
+		if(Rogue_InItallianWrath(weapon))
 		{
 			damage *= 2.0;
-		}
-		if(b_SteelRazor)
-		{
-			damage *= 1.15;
 		}
 
 		float BaseDamageBeforeBuffs = damage;

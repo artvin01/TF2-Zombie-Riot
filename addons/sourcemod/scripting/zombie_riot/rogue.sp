@@ -14,15 +14,15 @@ enum struct Curse
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rouge Translation");
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
 		}
 		
-		char buffer[70];
+		char buffer[64];
 		Format(buffer, sizeof(buffer), "%s Desc", this.Name);
 		if(!TranslationPhraseExists(buffer))
 		{
-			strcopy(this.Name, 64, "Missing Rouge Translation");
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", buffer);
 		}
 	}
@@ -34,8 +34,10 @@ enum struct Artifact
 	int ShopCost;
 	int DropChance;
 	Function FuncCollect;
+	Function FuncRemove;
 	Function FuncAlly;
 	Function FuncEnemy;
+	Function FuncWeapon;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -45,24 +47,30 @@ enum struct Artifact
 		kv.GetString("func_collect", this.Name, 64);
 		this.FuncCollect = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
+		kv.GetString("func_remove", this.Name, 64);
+		this.FuncRemove = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
 		kv.GetString("func_ally", this.Name, 64);
 		this.FuncAlly = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
 		kv.GetString("func_enemy", this.Name, 64);
 		this.FuncEnemy = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_weapon", this.Name, 64);
+		this.FuncWeapon = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rouge Translation");
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
 		}
 		
-		char buffer[70];
+		char buffer[64];
 		Format(buffer, sizeof(buffer), "%s Desc", this.Name);
 		if(!TranslationPhraseExists(buffer))
 		{
-			strcopy(this.Name, 64, "Missing Rouge Translation");
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", buffer);
 		}
 	}
@@ -84,7 +92,7 @@ enum struct Stage
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rouge Translation");
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
 		}
 
@@ -125,7 +133,7 @@ enum struct Floor
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rouge Translation");
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
 		}
 
@@ -187,7 +195,7 @@ enum
 	State_Stage
 }
 
-static bool InRougeMode;
+static bool InRogueMode;
 
 static ArrayList Voting;
 static float VoteEndTime;
@@ -206,20 +214,33 @@ static int CurrentFloor;
 static int CurrentCount;
 static int CurrentStage;
 static ArrayList CurrentExclude;
+static ArrayList CurrentCollection;
+static int CurrentIngots;
+static int BonusLives;
 
-bool Rouge_Mode()	// If Rouge-Like is enabled
+// Rogue Items
+bool b_LeaderSquad;
+bool b_GatheringSquad;
+bool b_ResearchSquad;
+
+bool Rogue_Mode()	// If Rogue-Like is enabled
 {
-	return InRougeMode;
+	return InRogueMode;
 }
 
-void Rouge_MapStart()
+bool Rogue_NoDiscount()
 {
-	InRougeMode = false;
+	return InRogueMode && !b_ResearchSquad;
 }
 
-void Rouge_SetupVote(KeyValues kv)
+void Rogue_MapStart()
 {
-	InRougeMode = true;
+	InRogueMode = false;
+}
+
+void Rogue_SetupVote(KeyValues kv)
+{
+	InRogueMode = true;
 
 	Zero(VotedFor);
 
@@ -237,10 +258,10 @@ void Rouge_SetupVote(KeyValues kv)
 	}
 	while(kv.GotoNextKey(false));
 
-	CreateTimer(1.0, Rouge_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 	kv.Rewind();
-	kv.JumpToKey("Rouge");
+	kv.JumpToKey("Rogue");
 
 	Floor floor;
 
@@ -260,11 +281,14 @@ void Rouge_SetupVote(KeyValues kv)
 		delete Floors;
 	}
 
+	Curses = new ArrayList(sizeof(Curse));
+	Artifacts = new ArrayList(sizeof(Artifact));
+	Floors = new ArrayList(sizeof(Floor));
+
 	if(kv.JumpToKey("Curses"))
 	{
 		if(kv.GotoFirstSubKey(false))
 		{
-			Curses = new ArrayList(sizeof(Curse));
 			Curse curse;
 			
 			do
@@ -284,7 +308,6 @@ void Rouge_SetupVote(KeyValues kv)
 	{
 		if(kv.GotoFirstSubKey())
 		{
-			Artifacts = new ArrayList(sizeof(Artifact));
 			Artifact artifact;
 			
 			do
@@ -304,8 +327,6 @@ void Rouge_SetupVote(KeyValues kv)
 	{
 		if(kv.GotoFirstSubKey())
 		{
-			Floors = new ArrayList(sizeof(Floor));
-			
 			do
 			{
 				floor.SetupKv(kv);
@@ -329,18 +350,18 @@ void Rouge_SetupVote(KeyValues kv)
 	}
 }
 
-void Rouge_RevoteCmd(int client)	// Waves_RevoteCmd
+void Rogue_RevoteCmd(int client)	// Waves_RevoteCmd
 {
-	Rouge_CallVote(client, true);
+	Rogue_CallVote(client, true);
 }
 
-bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
+bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 {
 	if(Voting && (force || !VotedFor[client]))
 	{
 		if(VoteFunc == INVALID_FUNCTION)
 		{
-			Menu menu = new Menu(Rouge_CallVoteH);
+			Menu menu = new Menu(Rogue_CallVoteH);
 			
 			SetGlobalTransTarget(client);
 			
@@ -368,7 +389,7 @@ bool Rouge_CallVote(int client, bool force = false)	// Waves_CallVote
 	return false;
 }
 
-public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
+public int Rogue_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -392,8 +413,8 @@ public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 						Vote vote;
 						Voting.GetArray(choice - 1, vote);
 						FormatEx(vote.Config, sizeof(vote.Config), "%s Desc", vote.Name);
-						CPrintToChat(client, "%t: %t", vote.Name, vote.Config);
-						Rouge_CallVote(client, true);
+						CPrintToChat(client, "%t", "Artifact Info", vote.Name, vote.Config);
+						Rogue_CallVote(client, true);
 						return 0;
 					}
 				}
@@ -405,7 +426,7 @@ public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-public Action Rouge_VoteDisplayTimer(Handle timer)
+public Action Rogue_VoteDisplayTimer(Handle timer)
 {
 	if(!Voting)
 		return Plugin_Stop;
@@ -484,9 +505,9 @@ static void DisplayHintVote()
 	}
 }
 
-void Rouge_StartSetup()	// Waves_RoundStart()
+void Rogue_StartSetup()	// Waves_RoundStart()
 {
-	Rouge_RoundEnd();
+	Rogue_RoundEnd();
 
 	float wait = 60.0;
 
@@ -498,16 +519,16 @@ void Rouge_StartSetup()	// Waves_RoundStart()
 			time = 20.0;
 		
 		VoteEndTime = GetGameTime() + time;
-		CreateTimer(time, Rouge_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 		if(wait < time)
 			wait = time;
 	}
 
-	SetProgressTime(wait, true);
+	SetProgressTime(wait, true, true);
 }
 
-void Rouge_RoundEnd()
+void Rogue_RoundEnd()
 {
 	delete ProgressTimer;
 	GameState = State_Setup;
@@ -515,9 +536,13 @@ void Rouge_RoundEnd()
 	CurrentStage = -1;
 	CurrentCount = -1;
 	delete CurrentExclude;
+	delete CurrentCollection;
+	CurrentIngots = 0;
+
+	ClearStats();
 }
 
-public Action Rouge_EndVote(Handle timer, float time)
+public Action Rogue_EndVote(Handle timer, float time)
 {
 	if(Voting)
 	{
@@ -551,12 +576,7 @@ public Action Rouge_EndVote(Handle timer, float time)
 			
 			if(VoteFunc == INVALID_FUNCTION)
 			{
-				CPrintToChatAll("%t", "New Artifact", vote.Name);
-
-				Format(vote.Name, sizeof(vote.Name), "%s Desc", vote.Name);
-				CPrintToChatAll("%t", vote.Name);
-
-				// TODO: Give Artifact
+				Rogue_GiveNamedArtifact(vote.Name);
 			}
 			else
 			{
@@ -569,27 +589,34 @@ public Action Rouge_EndVote(Handle timer, float time)
 	return Plugin_Continue;
 }
 
-public Action Rouge_RoundStartTimer(Handle timer)
+public Action Rogue_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
-// TODO: Make separate timer that excludes Voting and player checks
+	
 	if(!Voting && !CvarNoRoundStart.BoolValue)
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && IsPlayerAlive(client) && !IsFakeClient(client))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && !IsFakeClient(client))
 			{
-				Rouge_NextProgress();
+				Rogue_NextProgress();
 				return Plugin_Stop;
 			}
 		}
 	}
 
-	ProgressTimer = CreateTimer(10.0, Rouge_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(10.0, Rogue_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Stop;
 }
 
-void Rouge_BattleVictory()
+public Action Rogue_ProgressTimer(Handle timer)
+{
+	ProgressTimer = null;
+	Rogue_NextProgress();
+	return Plugin_Stop;
+}
+
+void Rogue_BattleVictory()
 {
 	Waves_RoundEnd();
 
@@ -598,15 +625,19 @@ void Rouge_BattleVictory()
 	SetProgressTime(30.0, true);
 }
 
-bool Rouge_BattleLost()
+bool Rogue_BattleLost()
 {
+	if(BonusLives > 0)
+	{
+		BonusLives--;
+		SetProgressTime(5.0, false, true);
+		return false;
+	}
+	
 	return true;	// Return true to fail the game
-
-	//SetProgressTime(5.0, false);
-	//return false;
 }
 
-void Rouge_NextProgress()
+void Rogue_NextProgress()
 {
 	switch(GameState)
 	{
@@ -615,6 +646,7 @@ void Rouge_NextProgress()
 			Store_RemoveSellValue();
 			
 			Ammo_Count_Ready = 8;
+			int highestLevel;
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) == 2)
@@ -624,6 +656,9 @@ void Rouge_NextProgress()
 						CashSpent[client] = cash;
 					
 					CashSpent[client] -= StartCash;
+
+					if(Level[client] > highestLevel)
+						highestLevel = Level[client];
 				}
 			}
 
@@ -632,6 +667,18 @@ void Rouge_NextProgress()
 			CurrentFloor = 0;
 			CurrentCount = -1;
 			delete CurrentExclude;
+
+			int startingIngots = (highestLevel + 80) / 10;
+			if(startingIngots < 8)
+			{
+				startingIngots = 8;
+			}
+			else if(startingIngots > 16)
+			{
+				startingIngots = 16;
+			}
+
+			CurrentIngots += startingIngots;
 
 			Floor floor;
 			Floors.GetArray(CurrentFloor, floor);
@@ -712,7 +759,7 @@ void Rouge_NextProgress()
 				{
 					// We somehow don't have a final stage
 					CurrentCount = floor.RoomCount + 1;
-					Rouge_NextProgress();
+					Rogue_NextProgress();
 				}
 				else
 				{
@@ -721,7 +768,7 @@ void Rouge_NextProgress()
 			}
 			else	// Normal Stage
 			{
-				Rouge_CreateGenericVote(Rouge_Vote_NextStage, "Vote for the next stage");
+				Rogue_CreateGenericVote(Rogue_Vote_NextStage, "Vote for the next stage");
 
 				int count = 2;
 				if(!(GetURandomInt() % 6))
@@ -754,14 +801,14 @@ void Rouge_NextProgress()
 
 				if(Voting.Length)
 				{
-					Rouge_StartGenericVote();
+					Rogue_StartGenericVote();
 					GameState = State_Vote;
 				}
 				else	// We somehow ran out of normal rooms
 				{
 					delete Voting;
 					CurrentCount = floor.RoomCount;
-					Rouge_NextProgress();
+					Rogue_NextProgress();
 				}
 			}
 		}
@@ -772,7 +819,7 @@ void Rouge_NextProgress()
 	}
 }
 
-ArrayList Rouge_CreateGenericVote(Function func, const char[] title)
+ArrayList Rogue_CreateGenericVote(Function func, const char[] title)
 {
 	delete Voting;
 	Voting = new ArrayList(sizeof(Vote));
@@ -782,26 +829,26 @@ ArrayList Rouge_CreateGenericVote(Function func, const char[] title)
 	return Voting;
 }
 
-void Rouge_StartGenericVote(float time = 20.0)
+void Rogue_StartGenericVote(float time = 20.0)
 {
 	Zero(VotedFor);
-	CreateTimer(1.0, Rouge_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 	VoteEndTime = GetGameTime() + time;
-	CreateTimer(time, Rouge_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	SetProgressTime(time + 10.0, false);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client) == 2 && GetClientMenu(client) == MenuSource_None)
-			Rouge_CallVote(client);
+			Rogue_CallVote(client);
 	}
 }
 
 static bool CallGenericVote(int client)
 {
-	Menu menu = new Menu(Rouge_CallGenericVoteH);
+	Menu menu = new Menu(Rogue_CallGenericVoteH);
 	
 	SetGlobalTransTarget(client);
 	
@@ -824,7 +871,7 @@ static bool CallGenericVote(int client)
 	return true;
 }
 
-public int Rouge_CallGenericVoteH(Menu menu, MenuAction action, int client, int choice)
+public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -847,7 +894,7 @@ public int Rouge_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 					{
 						Vote vote;
 						Voting.GetArray(choice - 1, vote);
-						if(VoteFunc == Rouge_Vote_NextStage)
+						if(VoteFunc == Rogue_Vote_NextStage)
 						{
 							Floor floor;
 							Floors.GetArray(CurrentFloor, floor);
@@ -861,7 +908,7 @@ public int Rouge_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 						else if(vote.Desc[0])
 						{
 							CPrintToChat(client, "%t", vote.Desc);
-							Rouge_CallVote(client, true);
+							Rogue_CallVote(client, true);
 							return 0;
 						}
 					}
@@ -893,7 +940,7 @@ static void SetNextStage(int id, const Stage stage, float time = 10.0)
 	}
 }
 
-void Rouge_StartThisBattle(float time = 10.0)
+void Rogue_StartThisBattle(float time = 10.0)
 {
 	delete ProgressTimer;
 
@@ -917,6 +964,30 @@ static void StartBattle(const Stage stage, float time = 3.0)
 	delete kv;
 
 	CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+	if(b_LeaderSquad)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				SpawnHealth(client);
+				break;
+			}
+		}
+	}
+
+	if(b_GatheringSquad)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				SpawnMaxAmmo(client);
+				break;
+			}
+		}
+	}
 }
 
 static void StartStage(const Stage stage)
@@ -1100,41 +1171,318 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 	}
 }
 
-static void SetProgressTime(float time, bool hud)
+static void SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
 	delete ProgressTimer;
-	ProgressTimer = CreateTimer(time, Rouge_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	if(hud)
 		SpawnTimer(time);
 }
 
-bool Rouge_InSetup()	// Waves_InSetup()
+void Rogue_ArtifactMenu(int client, int page)
+{
+	Menu menu = new Menu(Rogue_ArtifactMenuH);
+	
+	SetGlobalTransTarget(client);
+	
+	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Collected Artifacts");
+
+	Artifact artifact;
+	int length = CurrentCollection.Length;
+	if(length)
+	{
+		for(int i; i < length; i++)
+		{
+			int index = CurrentCollection.Get(i);
+			Artifacts.GetArray(index, artifact);
+			
+			menu.AddItem(artifact.Name, artifact.Name);
+		}
+	}
+	else
+	{
+		FormatEx(artifact.Name, sizeof(artifact.Name), "%t", "None");
+		menu.AddItem("", artifact.Name, ITEMDRAW_DISABLED);
+	}
+	
+	menu.ExitBackButton = true;
+	menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
+}
+
+public int Rogue_ArtifactMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				Store_Menu(client);
+		}
+		case MenuAction_Select:
+		{
+			char buffer[64];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			
+			if(buffer[0])
+			{
+				char desc[64];
+				FormatEx(desc, sizeof(desc), "%s Desc", buffer);
+				CPrintToChat(client, "%t", "Artifact Info", buffer, desc);
+			}
+			
+			Rogue_ArtifactMenu(client, choice);
+		}
+	}
+	return 0;
+}
+
+void Rogue_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = Artifacts.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(i, artifact);
+			if(artifact.FuncAlly != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncAlly);
+				Call_PushCell(client);
+				Call_PushCell(map);
+				Call_Finish();
+			}
+		}
+	}
+}
+
+void Rogue_GiveItem(int entity)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = Artifacts.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(i, artifact);
+			if(artifact.FuncWeapon != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncWeapon);
+				Call_PushCell(entity);
+				Call_Finish();
+			}
+		}
+	}
+}
+
+void Rogue_AllySpawned(int entity)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = Artifacts.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(i, artifact);
+			if(artifact.FuncAlly != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncAlly);
+				Call_PushCell(entity);
+				Call_PushCell(null);
+				Call_Finish();
+			}
+		}
+	}
+}
+
+void Rogue_EnemySpawned(int entity)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = Artifacts.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(i, artifact);
+			if(artifact.FuncEnemy != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncEnemy);
+				Call_PushCell(entity);
+				Call_Finish();
+			}
+		}
+	}
+}
+
+bool Rogue_HasNamedArtifact(const char[] name)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = Artifacts.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(i, artifact);
+			if(StrEqual(artifact.Name, name, false))
+				return CurrentCollection.FindValue(i) != -1;
+		}
+	}
+	return false;
+}
+
+void Rogue_GiveNamedArtifact(const char[] name)
+{
+	if(!CurrentCollection)
+		CurrentCollection = new ArrayList();
+	
+	Artifact artifact;
+	int length = Artifacts.Length;
+	for(int i; i < length; i++)
+	{
+		Artifacts.GetArray(i, artifact);
+		if(StrEqual(artifact.Name, name, false))
+		{
+			CPrintToChatAll("%t", "New Artifact", artifact.Name);
+
+			Format(artifact.Name, sizeof(artifact.Name), "%s Desc", artifact.Name);
+			CPrintToChatAll("%t", artifact.Name);
+
+			CurrentCollection.Push(i);
+
+			if(artifact.FuncCollect != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncCollect);
+				Call_Finish();
+			}
+
+			if(artifact.FuncAlly != INVALID_FUNCTION)
+			{
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client) && IsPlayerAlive(client))
+						Store_ApplyAttribs(client);
+				}
+
+				if(artifact.FuncAlly != INVALID_FUNCTION)
+				{
+					for(int a; a < i_MaxcountNpc_Allied; a++)
+					{
+						int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
+						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+						{
+							Call_StartFunction(null, artifact.FuncAlly);
+							Call_PushCell(entity);
+							Call_PushCell(null);
+							Call_Finish();
+						}
+					}
+
+					for(int a; a < i_MaxcountBuilding; a++)
+					{
+						int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+						{
+							Call_StartFunction(null, artifact.FuncAlly);
+							Call_PushCell(entity);
+							Call_PushCell(null);
+							Call_Finish();
+						}
+					}
+				}
+			}
+
+			if(artifact.FuncWeapon != INVALID_FUNCTION)
+			{
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client) && IsPlayerAlive(client))
+						Store_GiveAll(client, GetClientHealth(client));
+				}
+			}
+			return;
+		}
+	}
+
+	PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
+}
+
+void Rogue_RemoveNamedArtifact(const char[] name)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = Artifacts.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(i, artifact);
+			if(StrEqual(artifact.Name, name, false))
+			{
+				if(artifact.FuncRemove != INVALID_FUNCTION)	// Items can only be "removed" when have a func_remove
+				{
+					Call_StartFunction(null, artifact.FuncRemove);
+					Call_Finish();
+
+					CurrentCollection.Erase(i);
+				}
+				return;
+			}
+		}
+	}
+
+	PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
+}
+
+int Rogue_GetIngots()
+{
+	return CurrentIngots;
+}
+
+void Rogue_AddIngots(int amount)
+{
+	CurrentIngots += amount;
+}
+
+int Rogue_GetBonusLife()
+{
+	return BonusLives;
+}
+
+void Rogue_AddBonusLife(int amount)
+{
+	BonusLives += amount;
+}
+
+bool Rogue_InSetup()	// Waves_InSetup()
 {
 	return (GameState == State_Setup || ProgressTimer);
 }
 
-bool Rouge_Started()	// Waves_Started()
+bool Rogue_Started()	// Waves_Started()
 {
 	return GameState != State_Setup;
 }
 
-int Rouge_GetRound()	// Waves_GetRound()
+int Rogue_GetRound()	// Waves_GetRound()
 {
 	return ProgressTimer ? CurrentFloor : CurrentRound;
 }
 
-int Rouge_GetWave()	// Waves_GetWave()
+int Rogue_GetWave()	// Waves_GetWave()
 {
 	return ProgressTimer ? CurrentCount : CurrentWave;
 }
 
-int Rouge_GetRoundScale()
+int Rogue_GetRoundScale()
 {
-	return Rouge_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
+	return Rogue_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
 }
 
-public void Rouge_Vote_NextStage(const Vote vote)
+public void Rogue_Vote_NextStage(const Vote vote)
 {
 	Floor floor;
 	Floors.GetArray(CurrentFloor, floor);
@@ -1160,7 +1508,10 @@ public void Rouge_Vote_NextStage(const Vote vote)
 }
 
 //ROUGELIKE ITEMS
-bool b_SpearheadSquad;					//should be done in store 
+
+// Dear Artvin, remove these as much as you can, use func_ally, func_weapon, etc.
+// Use these if you need some custom logic that's not just stats on a player/weapon
+
 bool b_ProvokedAnger;
 bool b_MalfunctionShield;				//shield items
 /*TODO*/bool b_GrigoriCoinPurse;	 	//should be done when the weapon is created/when a battle starts
@@ -1174,6 +1525,12 @@ bool b_SteelRazor; 						//see npc.sp ontakedamage
 bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
 bool b_ChickenNuggetBox; 			 	//see store GiveAll
 
+static void ClearStats()
+{
+	b_LeaderSquad = false;
+	b_GatheringSquad = false;
+	b_ResearchSquad = false;
+}
 
 bool IS_MusicReleasingRadio()
 {
@@ -1183,10 +1540,10 @@ bool IS_MusicReleasingRadio()
 //ROUGELIKE .sp
 //This is only needed for items that are more then just flat stat changes.
 
-#include "rougelike/encounter_battles.sp"
-#include "rougelike/item_generic.sp"
+#include "roguelike/encounter_battles.sp"
+#include "roguelike/item_generic.sp"
 
-#include "rougelike/provoked_anger.sp"
-#include "rougelike/shield_items.sp"
-#include "rougelike/on_ability_use.sp"
-#include "rougelike/hand_of_elder_mages.sp"
+#include "roguelike/provoked_anger.sp"
+#include "roguelike/shield_items.sp"
+#include "roguelike/on_ability_use.sp"
+#include "roguelike/hand_of_elder_mages.sp"

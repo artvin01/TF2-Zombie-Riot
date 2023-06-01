@@ -2383,6 +2383,8 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			Call_PushCell(client);
 			Call_PushCell(entity);
 			Call_Finish(result);
+
+			Rogue_AllySpawned(entity);
 			
 			if(!result)
 			{

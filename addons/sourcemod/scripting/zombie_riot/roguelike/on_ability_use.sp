@@ -2,11 +2,11 @@
 float f_WrathOfItallians[MAXENTITIES];
 
 
-void Rouge_OnAbilityUseMapStart()
+void Rogue_OnAbilityUseMapStart()
 {
 	Zero(f_WrathOfItallians);
 }
-void Rouge_OnAbilityUse(int client, int weapon)
+void Rogue_OnAbilityUse(int client, int weapon)
 {
 	if(b_WrathOfItallians)
 	{
@@ -14,7 +14,7 @@ void Rouge_OnAbilityUse(int client, int weapon)
 	}
 }
 
-bool Rouge_InItallianWrath(int weapon)
+bool Rogue_InItallianWrath(int weapon)
 {
 	if(weapon < 0)
 		return false;
