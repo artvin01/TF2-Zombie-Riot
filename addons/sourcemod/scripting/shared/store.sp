@@ -31,6 +31,7 @@ enum struct ItemInfo
 {
 	int Cost;
 	char Desc[256];
+	char Rogue_Desc[256];
 	
 	bool HasNoClip;
 	bool SemiAuto;
@@ -98,6 +99,8 @@ enum struct ItemInfo
 	int CustomWeaponOnEquip;
 	
 #if defined ZR
+	int RougeBuildMax;
+	int RougeBuildSupportNeeded;
 	int ScrapCost;
 	int UnboxRarity;
 	bool CannotBeSavedByCookies;
@@ -130,6 +133,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
+
+		Format(buffer, sizeof(buffer), "%srogue_desc", prefix);
+		kv.GetString(buffer, this.Rogue_Desc, 256);
 		
 		Format(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
@@ -326,6 +332,12 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sscrap_cost", prefix);
 		this.ScrapCost = kv.GetNum(buffer, -1);
 
+		Format(buffer, sizeof(buffer), "%srogue_build_max", prefix);
+		this.RougeBuildMax = kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%srogue_build_support_minimum", prefix);
+		this.RougeBuildSupportNeeded = kv.GetNum(buffer, -1);
+
 		Format(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
 		this.UnboxRarity = kv.GetNum(buffer, -1);
 		
@@ -389,6 +401,7 @@ enum struct Item
 	float Cooldown2[MAXTF2PLAYERS];
 	float Cooldown3[MAXTF2PLAYERS];
 	bool BoughtBefore[MAXTF2PLAYERS];
+	int RogueBoughtRecently[MAXTF2PLAYERS];
 	
 	bool NPCSeller;
 	bool NPCSeller_First;
@@ -1156,8 +1169,8 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 
 							if(info.Desc[0])
 							{
-								StrCat(TranslateItemDescription(client, info.Desc), sizeof(info.Desc), "\n ");
-								menu.AddItem("", TranslateItemDescription(client, info.Desc), ITEMDRAW_DISABLED);
+								StrCat(TranslateItemDescription(client, info.Desc, info.Rogue_Desc), sizeof(info.Desc), "\n ");
+								menu.AddItem("", TranslateItemDescription(client, info.Desc, info.Rogue_Desc), ITEMDRAW_DISABLED);
 							}
 						}
 					}
@@ -1218,7 +1231,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					Store_ApplyAttribs(client);
 					Store_GiveAll(client, GetClientHealth(client));
 					owner = GetClientOfUserId(values[3]);
-					if(owner)
+					if(owner && !Rogue_Mode())
 					{
 						int HigherTechAdvancedClient;
 						int HigherTechAdvancedCount;
@@ -1330,7 +1343,20 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0; //you dont own the item.
 }*/
 #endif	// ZR
-
+void Store_RogueEndFightReset()
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		for(int c; c<MAXTF2PLAYERS; c++)
+		{
+			item.RogueBoughtRecently[c] = 0;
+		}
+		StoreItems.SetArray(i, item);
+	}
+}
 void Store_Reset()
 {
 #if defined ZR
@@ -1354,6 +1380,7 @@ void Store_Reset()
 			item.Cooldown2[c] = 0.0;
 			item.Cooldown3[c] = 0.0;
 			item.BoughtBefore[c] = false;
+			item.RogueBoughtRecently[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
 	}
@@ -1466,6 +1493,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
 					item.BuyPrice[client] = info.Cost;
+					item.RogueBoughtRecently[client] += 1;
 					Store_BuyClientItem(client, item, info);
 					item.Sell[client] = ItemSell(base, info.Cost);
 					item.BuyWave[client] = Rogue_GetRoundScale();
@@ -2449,7 +2477,7 @@ public void MenuPage(int client, int section)
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
 			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
-			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc));
+			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc, info.Rogue_Desc));
 			
 			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 			{
@@ -2826,25 +2854,43 @@ public void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(item.WhiteOut)
+					if(info.RougeBuildMax == -999)
 					{
-						if(item.ShouldThisCountSupportBuildings)
-						{
-							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
-						}
+						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
 					}
-					else if(!info.Cost)
+					else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
 					{
-						FormatEx(buffer, sizeof(buffer), "%s %s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						FormatEx(buffer, sizeof(buffer), "%s %s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						style = ITEMDRAW_DISABLED;
+					}
+					else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
+					{
+						FormatEx(buffer, sizeof(buffer), "%s %s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						style = ITEMDRAW_DISABLED;
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
+						if(item.WhiteOut)
+						{
+							if(item.ShouldThisCountSupportBuildings)
+							{
+								FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
+							}
+							else
+							{
+								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
+							}
+							style = ITEMDRAW_DISABLED;
+						}
+						else if(!info.Cost)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s %s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
+						}
 					}
 				}
 				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
@@ -3379,6 +3425,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									CashSpent[client] += info.Cost;
 									CashSpentTotal[client] += info.Cost;
 									item.BuyPrice[client] = info.Cost;
+									item.RogueBoughtRecently[client] += 1;
 									Store_BuyClientItem(client, item, info);
 									item.Sell[client] = ItemSell(base, info.Cost);
 									item.BuyWave[client] = Rogue_GetRoundScale();
@@ -3422,6 +3469,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
 								item.BuyPrice[client] = info.Cost;
+								item.RogueBoughtRecently[client] += 1;
 								Store_BuyClientItem(client, item, info);
 								item.Sell[client] = ItemSell(base, info.Cost);
 								item.BuyWave[client] = Rogue_GetRoundScale();
@@ -3544,6 +3592,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									CashSpentTotal[client] -= sell;
 									ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 								}
+								item.RogueBoughtRecently[client] -= 1;
 								
 								item.Owned[client] = 0;
 								if(item.Scaled[client] > 0)
@@ -5337,7 +5386,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	return buffer;
 }
 
-char[] TranslateItemDescription(int client, const char Desc[256])
+char[] TranslateItemDescription(int client, const char Desc[256], const char Rogue_Desc[256])
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
@@ -5345,13 +5394,27 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 	
 	char buffer[256]; 
 
-	if(TranslationPhraseExists(Desc))
+	if(Rogue_Mode() && Rogue_Desc[0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
+		}
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		}
 	}
 
 	return buffer;
@@ -5442,10 +5505,26 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = item.MaxCost;
 	}
-	//if(cost < original_cost_With_Sell)
-	//{
-	//	cost = original_cost_With_Sell;
-	//}
+	if(Rogue_Mode())
+	{
+		ItemInfo info;
+		if(item.GetItemInfo(0, info))
+		{
+			if(info.RougeBuildMax > 0)
+			{
+				cost = 0;			
+				if(info.RougeBuildMax <= item.RogueBoughtRecently[client])
+				{
+					cost = 999999;
+				}
+				//building under this category during rogue modes will be marked as free unless otherwise.
+			}
+			else if(info.RougeBuildMax == -999)
+			{
+				cost = 999999;
+			}
+		}
+	}
 }
 
 static int ItemSell(int base, int discount)

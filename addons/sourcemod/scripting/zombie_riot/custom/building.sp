@@ -1951,9 +1951,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					}
 			*/
 					StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
-					if(owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
+					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
-						if(owner != client)
+						if(!Rogue_Mode() && owner != client)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
@@ -2011,7 +2011,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2047,7 +2047,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2072,7 +2072,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2094,7 +2094,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2116,7 +2116,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2138,7 +2138,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2160,7 +2160,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2186,7 +2186,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-											if(owner != -1 && owner != client)
+											if(!Rogue_Mode() && owner != -1 && owner != client)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
@@ -2247,7 +2247,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
 
 						//	CashSpent[owner] -= 20;
-							if(owner != -1 && owner != client)
+							if(!Rogue_Mode() && owner != -1 && owner != client)
 							{
 								if(Armor_table_money_limit[owner][client] < 15)
 								{
@@ -4103,9 +4103,9 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
-	if(owner != -1 && owner != client)
+	if(!Rogue_Mode() && owner != -1 && owner != client)
 	{
-		if(Perk_Machine_money_limit[owner][client] < 10)
+		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;

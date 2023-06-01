@@ -1087,6 +1087,11 @@
 		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
 	}
 	
+	"Buildable Barricade Desc Rogue"
+	{
+		"en"	"You get 2 free barricades each fight, you can only place 2 at once due to this."
+	}
+	
 	"Buildable Armortable Desc"
 	{
 		"en"	"usage of this machine will give you Armour.\nFirst buy is double the price."

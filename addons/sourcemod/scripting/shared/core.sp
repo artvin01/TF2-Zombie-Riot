@@ -15,7 +15,6 @@
 #include <PathFollower_Nav>
 #include <morecolors>
 #include <tf2utils>
-#include <animator>
 #if !defined UseDownloadTable
 #include <filenetwork>
 #endif
