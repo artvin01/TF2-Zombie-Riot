@@ -866,6 +866,10 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
+	{
+		damage *= 3.0;
+	}
 
 	if(f_FreeplayDamageExtra != 1.0)
 	{
