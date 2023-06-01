@@ -4041,7 +4041,7 @@ void Store_ApplyAttribs(int client)
 		if(address != Address_Null)
 		{
 			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
-			TF2Attrib_SetByDefIndex(address, float(HealthToAdd));
+			TF2Attrib_SetByDefIndex(client, 26, float(HealthToAdd));
 		}
 	}
 

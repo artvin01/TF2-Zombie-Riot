@@ -251,7 +251,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rouge_OnAbilityUse(client, weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, MultiRageCooldown);
 			
 			weapon_id[client] = weapon;
@@ -333,7 +333,7 @@ public void ZeroDefenceRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rouge_OnAbilityUse(client, weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, FirstDefenceRageCooldown);
 			
 			weapon_id[client] = weapon;
@@ -366,7 +366,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Rouge_OnAbilityUse(client, weapon);
+			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, FinalWrathRageCooldown);
 			
 			weapon_id[client] = weapon;

@@ -26,7 +26,7 @@ public void Weapon_Calcium_FireBallSpell(int client, int weapon, bool &result, i
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Rouge_OnAbilityUse(client, weapon);
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 19.0);
 				
 				Necro_Damage[client] = 1.0;
