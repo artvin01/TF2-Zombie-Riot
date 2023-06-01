@@ -34,6 +34,10 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 		// +50 max health
 		map.GetValue("26", value);
 		map.SetValue("26", value + 50);
+
+		//15% more building damage
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.15);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{

@@ -4827,11 +4827,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) + info.Value[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib[a],TF2Attrib_GetValue(address) + info.Value[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * info.Value[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib[a],TF2Attrib_GetValue(address) * info.Value[a]);
 								}
 							}
 						}
@@ -4896,11 +4896,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) + info.Value2[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a],TF2Attrib_GetValue(address) + info.Value2[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * info.Value2[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a],TF2Attrib_GetValue(address) * info.Value2[a]);
 								}
 							}
 						}
@@ -4939,7 +4939,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 0.65);
+				TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
 		//DOUBLE TAP!
@@ -4952,7 +4952,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 0.85);
+				TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 0.85);
 			}
 		}
 		//DEADSHOT!
@@ -4965,7 +4965,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 0.65);
+				TF2Attrib_SetByDefIndex(entity, 106, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
 		//QUICK REVIVE!
@@ -4975,16 +4975,17 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(address != Address_Null)
 			{
-				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 1.15);
+				TF2Attrib_SetByDefIndex(client, 8, TF2Attrib_GetValue(address) * 1.15);
 			}
 			
-			/*address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
+			address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
 			if(address != Address_Null)
 			{
-				TF2Attrib_SetByDefIndex(address, TF2Attrib_GetValue(address) * 1.15);
-			}*/
+				TF2Attrib_SetByDefIndex(client, 8, TF2Attrib_GetValue(address) * 1.15);
+			}
 
 			// Note: This can stack with multi weapons :|
+			//double note: doesnt matter, it wont multiply, i coded specifically for that reason with mediguns!
 		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");

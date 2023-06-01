@@ -1293,7 +1293,7 @@ void Rogue_AllySpawned(int entity)
 			{
 				Call_StartFunction(null, artifact.FuncAlly);
 				Call_PushCell(entity);
-				Call_PushCell(null);
+				Call_PushCell(0);
 				Call_Finish();
 			}
 		}
@@ -1377,7 +1377,7 @@ void Rogue_GiveNamedArtifact(const char[] name)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);
-							Call_PushCell(null);
+							Call_PushCell(0);
 							Call_Finish();
 						}
 					}
@@ -1389,7 +1389,7 @@ void Rogue_GiveNamedArtifact(const char[] name)
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);
-							Call_PushCell(null);
+							Call_PushCell(0);
 							Call_Finish();
 						}
 					}
