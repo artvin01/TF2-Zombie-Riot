@@ -79,6 +79,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 public void Rogue_Spearhead_Weapon(int entity)
 {
 	// +15% damage bonus
+	//note doesnt work with buildings, any wewapon that doesnt have a weapon id attached, or the medigun beam, or various other weapons
 	Address address = TF2Attrib_GetByDefIndex(entity, 2);
 	if(address != Address_Null)
 		TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
