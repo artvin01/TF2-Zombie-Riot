@@ -390,7 +390,7 @@ public int Rouge_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 					else
 					{
 						Vote vote;
-						Voting.GetArray(choice, vote);
+						Voting.GetArray(choice - 1, vote);
 						FormatEx(vote.Config, sizeof(vote.Config), "%s Desc", vote.Name);
 						CPrintToChat(client, "%t: %t", vote.Name, vote.Config);
 						Rouge_CallVote(client, true);
@@ -846,7 +846,7 @@ public int Rouge_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 					else
 					{
 						Vote vote;
-						Voting.GetArray(choice, vote);
+						Voting.GetArray(choice - 1, vote);
 						if(VoteFunc == Rouge_Vote_NextStage)
 						{
 							Floor floor;
