@@ -1444,6 +1444,7 @@ void Rogue_RemoveNamedArtifact(const char[] name)
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
+
 }
 
 void Rogue_AddIngots(int amount)
@@ -1558,7 +1559,6 @@ void ClearAllCameras()
 
 bool b_ProvokedAnger;
 bool b_MalfunctionShield;				//shield items
-/*TODO*/bool b_GrigoriCoinPurse;	 	//should be done when the weapon is created/when a battle starts
 bool b_MusicReleasingRadio;
 bool b_WrathOfItallians; 				//see on_ability_use.sp
 bool b_HandOfElderMages; 				

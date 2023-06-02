@@ -867,6 +867,8 @@ static int GunSeller[MAXENTITIES];
 static int PerkType[MAXENTITIES];
 static float GunDamage[MAXENTITIES];
 static float GunFireRate[MAXENTITIES];
+static float GunBonusFireRate[MAXENTITIES];
+static float GunBonusReload[MAXENTITIES];
 static float GunReload[MAXENTITIES];
 static int GunClip[MAXENTITIES];
 static float GunRangeBonus[MAXENTITIES];
@@ -941,6 +943,9 @@ methodmap Citizen < CClotBody
 		npc.m_bSeakingMedic = false;
 		npc.m_bSeakingGeneric = false;
 		npc.m_iHasPerk = Cit_None;
+		GunBonusFireRate[npc.index] = 1.0;
+		GunBonusReload[npc.index] = 1.0;
+		
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1028,10 +1033,20 @@ methodmap Citizen < CClotBody
 		public get()		{ return GunFireRate[this.index]; }
 		public set(float value) 	{ GunFireRate[this.index] = value; }
 	}
+	property float m_fGunBonusFireRate
+	{
+		public get()		{ return GunBonusFireRate[this.index]; }
+		public set(float value) 	{ GunBonusFireRate[this.index] = value; }
+	}
 	property float m_fGunReload
 	{
 		public get()		{ return GunReload[this.index]; }
 		public set(float value) 	{ GunReload[this.index] = value; }
+	}
+	property float m_fGunBonusReload
+	{
+		public get()		{ return GunBonusReload[this.index]; }
+		public set(float value) 	{ GunBonusReload[this.index] = value; }
 	}
 	property int m_iGunClip
 	{
@@ -2002,7 +2017,7 @@ public void Citizen_ClotThink(int iNPC)
 							
 							npc.m_flAttackHappens = gameTime + 0.2;
 							npc.m_flReloadDelay = gameTime + 0.45;
-							npc.m_flNextMeleeAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextMeleeAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							
 							if(npc.m_flReloadDelay > npc.m_flNextMeleeAttack)
 								npc.m_flReloadDelay = npc.m_flNextMeleeAttack;
@@ -2100,7 +2115,7 @@ public void Citizen_ClotThink(int iNPC)
 							vecDirShooting[1] = eyePitch[1];
 							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 							
-							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							//add the spray
@@ -2187,7 +2202,7 @@ public void Citizen_ClotThink(int iNPC)
 								vecDirShooting[1] = eyePitch[1];
 								GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 								
-								npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 								npc.m_iAttacksTillReload--;
 								
 								float vecDir[3];
@@ -2269,7 +2284,7 @@ public void Citizen_ClotThink(int iNPC)
 								vecDirShooting[1] = eyePitch[1];
 								GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 								
-								npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 								npc.m_iAttacksTillReload--;
 								
 								float vecDir[3];
@@ -2347,7 +2362,7 @@ public void Citizen_ClotThink(int iNPC)
 							vecDirShooting[1] = eyePitch[1];
 							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 							
-							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							//add the spray
@@ -2414,7 +2429,7 @@ public void Citizen_ClotThink(int iNPC)
 							npc.m_iState = -1;
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
-							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							npc.FireRocket(vecTarget, npc.m_fGunDamage, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
@@ -2439,7 +2454,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_Pistol:
 				{
 					npc.SetActivity("ACT_RELOAD_PISTOL");
-					npc.m_flReloadDelay = gameTime + (1.4 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (1.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayPistolReloadSound();
 
 					if(npc.m_iWearable1 > 0)
@@ -2451,7 +2466,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_SMG:
 				{
 					npc.SetActivity("ACT_RELOAD_SMG1");
-					npc.m_flReloadDelay = gameTime + (2.4 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (2.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlaySMGReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2460,7 +2475,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_AR:
 				{
 					npc.SetActivity("ACT_RELOAD_AR2");
-					npc.m_flReloadDelay = gameTime + (1.6 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (1.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayARReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2469,7 +2484,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_Shotgun:
 				{
 					npc.SetActivity("ACT_RELOAD_shotgun");
-					npc.m_flReloadDelay = gameTime + (2.6 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (2.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayShotgunReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2478,7 +2493,7 @@ public void Citizen_ClotThink(int iNPC)
 				default:
 				{
 					npc.SetActivity("ACT_IDLE_ANGRY_RPG");
-					npc.m_flReloadDelay = gameTime + npc.m_fGunReload;
+					npc.m_flReloadDelay = gameTime + (npc.m_fGunReload * npc.m_fGunBonusReload);
 				}
 			}
 		}

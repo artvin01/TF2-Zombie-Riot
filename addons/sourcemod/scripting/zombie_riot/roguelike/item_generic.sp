@@ -16,13 +16,58 @@ public void Rogue_Refresh_Remove()
 	}
 }
 
-public void Rogue_Item_GrigoriCoinPurse()
+float GrigoriCoinPurseCalc()
 {
-	b_GrigoriCoinPurse = true;
+	int Ingots = Rogue_GetIngots();
+	
+	return(Pow(0.993, (float(Ingots))));
+	//at 100 ingots, we double our attackspeed minimum
 }
-public void Rogue_Item_GrigoriCoinPurseRemove()
+
+public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 {
-	b_GrigoriCoinPurse = false;
+	float Multi = GrigoriCoinPurseCalc();
+	if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +15% damage bonus
+			npc.m_fGunBonusReload *= Multi;
+			npc.m_fGunBonusFireRate *= Multi;
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				npc.BonusFireRate *= Multi;
+			}
+		}
+	}
+}
+
+public void Rogue_Item_GrigoriCoinPurse_Weapon(int entity)
+{
+	float Multi = GrigoriCoinPurseCalc();
+
+	Address address = TF2Attrib_GetByDefIndex(entity, 6);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * Multi);
+	
+	address = TF2Attrib_GetByDefIndex(entity, 97);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(address) * Multi);
+
+	address = TF2Attrib_GetByDefIndex(entity, 733);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 733, TF2Attrib_GetValue(address) * Multi);
+
+	address = TF2Attrib_GetByDefIndex(entity, 8);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(address) * (1.0 / Multi)); //invert it for this.
+
 }
 
 public void Rogue_Item_Provoked_Anger()
