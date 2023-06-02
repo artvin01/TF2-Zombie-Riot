@@ -1249,6 +1249,16 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 
 bool AllowBuildingCurrently()
 {
+	if(Rogue_Mode())
+	{
+		if(Rogue_InSetup())
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	return true;
 }
 

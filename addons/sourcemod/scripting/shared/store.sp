@@ -4095,9 +4095,24 @@ void Store_ApplyAttribs(int client)
 
 	if(b_ChickenNuggetBox) //probably needs rewriting cus idk how to do it
 	{
+		//15%% more health
 		int MaxHealth = SDKCall_GetMaxHealth(client);
 
-		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.85);
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.15);
+
+		Address address = TF2Attrib_GetByDefIndex(client, 26);
+		if(address != Address_Null)
+		{
+			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
+			TF2Attrib_SetByDefIndex(client, 26, float(HealthToAdd));
+		}
+	}
+	if(b_CrudeFlute) //probably needs rewriting cus idk how to do it
+	{
+		//3%% more health
+		int MaxHealth = SDKCall_GetMaxHealth(client);
+
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.03);
 
 		Address address = TF2Attrib_GetByDefIndex(client, 26);
 		if(address != Address_Null)

@@ -141,7 +141,7 @@
 	}
 	"Provoked Anger Desc"
 	{
-		"en"	"Anger is usually provoked, this anger can be usefull.\n-Everytime you are hurt, gain +5% extra damage for your holding weapon for 5 seconds."
+		"en"	"Anger is usually provoked, this anger can be usefull.\n- Everytime you are hurt, gain +5% extra damage for your holding weapon for 5 seconds."
 	}
 	"Grigori's Coin Purse"
 	{
@@ -149,7 +149,7 @@
 	}
 	"Grigori's Coin Purse Desc"
 	{
-		"en"	"Alot of money, yet never too much.\n-Gain More attackspeed and healspeed the more australium ingots you own."
+		"en"	"Alot of money, yet never too much.\n- Gain More attackspeed and healspeed the more australium ingots you own."
 	}
 	"Malfunctioning Shield"
 	{
@@ -157,7 +157,7 @@
 	}
 	"Malfunctioning Shield Desc"
 	{
-		"en"	"A broken shield that is still useable.\n-Every minute gain a shield that blocks once instance of damage entirely.\n-Also applies that shield upon entering a new battle."
+		"en"	"A broken shield that is still useable.\n- Every minute gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
 	}
 	"Bob's Exchange Money"
 	{
@@ -165,7 +165,7 @@
 	}
 	"Bob's Exchange Money Desc"
 	{
-		"en"	"Must have left it behind.\n-Gain 12 australium ingots."
+		"en"	"Must have left it behind.\n- Gain 12 australium ingots."
 	}
 	"Music Releasing Radio"
 	{
@@ -173,7 +173,7 @@
 	}
 	"Music Releasing Radio Desc"
 	{
-		"en"	"It releases music, it cant be stopped it seems.\n-All enemies will be 10%% slower."
+		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10%% slower."
 	}
 	"Wrath Of Itallians"
 	{
@@ -181,7 +181,7 @@
 	}
 	"Wrath Of Itallians Desc"
 	{
-		"en"	"Its Spaghetti thats covered in chocolate.\n-Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
+		"en"	"Its Spaghetti thats covered in chocolate.\n- Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
 	}
 	"Hand Of The Elder Mages"
 	{
@@ -189,7 +189,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n-Everytime a mage weapon hurts an enemy, reduce current cooldown of this mageweapon by 2 seconds."
+		"en"	"It is a miniature statue of a broken hand.\n- Everytime a mage weapon hurts an enemy, reduce current cooldown of this mageweapon by 2 seconds."
 	}
 	"Bracelets of Agility"
 	{
@@ -197,7 +197,7 @@
 	}
 	"Bracelets of Agility Desc"
 	{
-		"en"	"Light and agile, from the far reaches of kazimierz.\n-Gain a 10%% dodge chance."
+		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10%% dodge chance."
 	}
 	"Elastic Flying Cape"
 	{
@@ -205,7 +205,7 @@
 	}
 	"Elastic Flying Cape Desc"
 	{
-		"en"	"A cape that surrounds you and gives extra senses.\n-Gain a 10%% dodge chance against ranged attacks."
+		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10%% dodge chance against ranged attacks."
 	}
 	"Healing Salve"
 	{
@@ -213,7 +213,7 @@
 	}
 	"Healing Salve Desc"
 	{
-		"en"	"Some salve for your wounds.\n-+1hp regen."
+		"en"	"Some salve for your wounds.\n- +1hp regen."
 	}
 	"Steel Razor"
 	{
@@ -221,7 +221,7 @@
 	}
 	"Steel Razor Desc"
 	{
-		"en"	"Sharp and pointy.\n-+15%% dmg to enemies."
+		"en"	"Sharp and pointy.\n- +15%% dmg to enemies."
 	}
 	"Healthy Essence"
 	{
@@ -229,7 +229,7 @@
 	}
 	"Healthy Essence Desc"
 	{
-		"en"	"Being near it makes you feel better.\n-+25%% more healing from most sources."
+		"en"	"Being near it makes you feel better.\n- +25%% more healing from most sources."
 	}
 	"Chicken Nugget Box"
 	{
@@ -237,6 +237,54 @@
 	}
 	"Chicken Nugget Box Desc"
 	{
-		"en"	"Still good and tasty as ever.\n-+15%% more health."
+		"en"	"Still good and tasty as ever.\n- +15%% more health."
+	}
+	"Fizzy Drink"
+	{
+		"en"	"Fizzy Drink"
+	}
+	"Fizzy Drink Desc"
+	{
+		"en"	"Becarefull when you open it, its shook.\n- All enemies will gib no matter what."
+	}
+	"Hover Glider"
+	{
+		"en"	"Hover Glider"
+	}
+	"Hover Glider Desc"
+	{
+		"en"	"A device from old german technology.\n- You deal 30%% more damage while being in the air or in mid swim."
+	}
+	"Hand Written Letter"
+	{
+		"en"	"Hand Written Letter"
+	}
+	"Hand Written Letter Desc"
+	{
+		"en"	"Dropped letter, the languge seems to be in french, it wasnt ment for you.\n- +3 Hope, 2%% more damage."
+	}
+	"Crude Flute"
+	{
+		"en"	"Crude Flute"
+	}
+	"Crude Flute Desc"
+	{
+		"en"	"Music instrument, good for relaxing, needed in sitations like these.\n- +2 Hope, +3%% MaxHealth."
+	}
+	"Scrapped Wallet"
+	{
+		"en"	"Scrapped Wallet"
+	}
+	"Scrapped Wallet Desc"
+	{
+		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +250 Credits and 1%% more damage."
+	}
+	"Golden Coin"
+	{
+		"en"	"Golden Coin"
+	}
+	"Golden Coin Desc"
+	{
+		"en"	"A Valueable golden coin from old greek.\n- +1000 Credits and +10 Australium ingots."
 	}
 }

@@ -1429,6 +1429,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage *= 2.0;
 		}
+		OnTakeDamage_HoverGlider(client, damage);
 
 		float BaseDamageBeforeBuffs = damage;
 
@@ -1924,6 +1925,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
+	}
+	if(RogueFizzyDrink())
+	{
+		npcBase.m_bGib = true;
 	}
 	return Plugin_Changed;
 }
