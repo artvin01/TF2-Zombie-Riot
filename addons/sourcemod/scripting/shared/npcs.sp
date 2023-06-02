@@ -1429,7 +1429,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage *= 2.0;
 		}
-		OnTakeDamage_HoverGlider(client, damage);
+		OnTakeDamage_RogueItemGeneric(attacker, damage, damagetype, inflictor);
 
 		float BaseDamageBeforeBuffs = damage;
 

@@ -221,7 +221,7 @@
 	}
 	"Steel Razor Desc"
 	{
-		"en"	"Sharp and pointy.\n- +15%% dmg to enemies."
+		"en"	"Sharp and pointy.\n- +15%% more melee damage."
 	}
 	"Healthy Essence"
 	{
@@ -286,5 +286,21 @@
 	"Golden Coin Desc"
 	{
 		"en"	"A Valueable golden coin from old greek.\n- +2000 Credits and +10 Australium ingots."
+	}
+	"Nickel Injected Pack"
+	{
+		"en"	"Golden Coin"
+	}
+	"Nickel Injected Pack Desc"
+	{
+		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35% more damage at max health, the less health you have, the less damage you deal.."
+	}
+	"Spanish Specialised Gunpowder"
+	{
+		"en"	"Spanish Specialised Gunpowder"
+	}
+	"Spanish Specialised Gunpowder Desc"
+	{
+		"en"	"Gunpower created in spain, and made specifically for spanish troups.\n- +15%% more ranged damage."
 	}
 }

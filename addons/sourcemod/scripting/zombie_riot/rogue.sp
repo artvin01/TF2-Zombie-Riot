@@ -1632,6 +1632,9 @@ bool b_ChickenNuggetBox; 			 	//see store GiveAll
 bool b_FizzyDrink; 			 			//see npc.sp ontakedamage
 bool b_HoverGlider; 			 		//see npc.sp ontakedamage
 bool b_CrudeFlute; 				 		//see store GiveAll
+bool b_NickelInjectedPack; 				 //see store GiveAll
+bool b_SteelRazor; 				 		
+bool b_SpanishSpecialisedGunpowder; 	
 
 static void ClearStats()
 {

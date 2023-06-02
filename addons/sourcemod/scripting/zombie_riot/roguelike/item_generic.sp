@@ -165,56 +165,24 @@ void Rogue_HealingSalve(int client, int &flHealth, flMaxHealth)
 
 public void Rogue_SteelRazor_Weapon(int entity)
 {
-	// +15% damage bonus
-	Address address = TF2Attrib_GetByDefIndex(entity, 2);
-	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
-	
-	address = TF2Attrib_GetByDefIndex(entity, 410);
-	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	// +15% damage bonus for melee's
+	char classname[36];
+	GetEntityClassname(entity, classname, sizeof(classname));
+			
+	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 	{
-		address = TF2Attrib_GetByDefIndex(entity, 1);
+		Address address = TF2Attrib_GetByDefIndex(entity, 2);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+			TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
 	}
-	//Extra damage for mediguns.
 }
-
-public void Rogue_SteelRazor_Ally(int entity, StringMap map)
+public void Rogue_Item_SteelRazor()
 {
-	if(map)	// Player
-	{
-		float value;
-
-		//15% more building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.15);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +15% damage bonus
-			npc.m_fGunRangeBonus *= 1.15;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +15% damage bonus
-				npc.BonusDamageBonus *= 1.15;
-			}
-		}
-	}
+	b_SteelRazor = true;
+}
+public void Rogue_Item_SteelRazorRemove()
+{
+	b_SteelRazor = false;
 }
 
 public void Rogue_Item_HealthyEssence()
@@ -258,16 +226,78 @@ public void Rogue_Item_HoverGliderRemove()
 	b_HoverGlider = false;
 }
 
-void OnTakeDamage_HoverGlider(int attacker, float &damage)
+void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, int inflictor)
 {
 	if(b_HoverGlider)
 	{
 		if(attacker <= MaxClients)
 		{
-			if((GetEntityFlags(client) & FL_ONGROUND) == 0)
+			if((GetEntityFlags(attacker) & FL_ONGROUND) == 0)
 			{
 				damage *= 1.3;
 			}
+		}
+	}
+	if(b_SteelRazor)
+	{
+		if(attacker > MaxClients || inflictor > MaxClients)
+		{
+			if(b_IsAlliedNpc[attacker] || b_IsAlliedNpc[inflictor])
+			{
+				//15%% more melee dmg for all allies
+				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				{
+					damage *= 1.15;
+				}
+			}
+		}
+	}
+	if(b_SpanishSpecialisedGunpowder)
+	{
+		if(attacker > MaxClients || inflictor > MaxClients)
+		{
+			if(b_IsAlliedNpc[attacker] || b_IsAlliedNpc[inflictor])
+			{
+				//15%% more Ranged dmg for all allies
+				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				{
+
+				}
+				else
+				{
+					damage *= 1.15;
+
+				}
+			}
+		}
+	}
+	if(b_NickelInjectedPack)
+	{
+		int maxhealth;
+		if(attacker <= MaxClients)
+		{
+			maxhealth = SDKCall_GetMaxHealth(attacker);
+		}
+		else
+		{
+			maxhealth = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
+		}	
+		int health = GetEntProp(attacker, Prop_Data, "m_iHealth");	
+		float damageMulti;
+
+		damageMulti = float(health) / float(maxhealth);
+
+		damageMulti *= 1.25;
+
+		if(damageMulti > 1.0)
+		{
+			damageMulti = 1.0;
+		}
+		damageMulti += 0.35;
+
+		if(damageMulti > 1.0)
+		{
+			damage *= damageMulti;
 		}
 	}
 }
@@ -457,4 +487,64 @@ public void Rogue_Item_GoldenCoin()
 		}
 	}	
 	Rogue_AddIngots(10);
+}
+
+public void Rogue_Item_NickelInjectedPack()
+{
+	b_NickelInjectedPack = true;
+}
+
+public void Rogue_Item_NickelInjectedPackRemove()
+{
+	b_NickelInjectedPack = false;
+}
+
+
+public void Rogue_Item_SpanishSpecialisedGunpowder_Weapon(int entity)
+{
+	// +15% damage bonus for ranged
+	char classname[36];
+	GetEntityClassname(entity, classname, sizeof(classname));
+
+	Address address;
+			
+	if(TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee) //anything that isnt melee
+	{
+		address = TF2Attrib_GetByDefIndex(entity, 2);
+		if(address != Address_Null)
+			TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
+	}
+
+	address = TF2Attrib_GetByDefIndex(entity, 410);
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
+
+
+	if(!StrEqual(classname, "tf_weapon_medigun"))
+	{
+		address = TF2Attrib_GetByDefIndex(entity, 1);
+		if(address != Address_Null)
+			TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+	}
+}
+public void Rogue_Item_SpanishSpecialisedGunpowder()
+{
+	b_SpanishSpecialisedGunpowder = true;
+}
+public void Rogue_Item_SpanishSpecialisedGunpowderRemove()
+{
+	b_SpanishSpecialisedGunpowder = false;
+}
+
+public void Rogue_Item_SpanishSpecialisedGunpowder_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		//15% more building damage, usually is ranged except for 1 weapon.
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.15);
+	}
 }
