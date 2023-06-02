@@ -293,7 +293,7 @@
 	}
 	"Nickel Injected Pack Desc"
 	{
-		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35% more damage at max health, the less health you have, the less damage you deal.."
+		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35%% more damage at max health, the less health you have, the less damage you deal, decreace starts at 70%% of your max health.."
 	}
 	"Spanish Specialised Gunpowder"
 	{
