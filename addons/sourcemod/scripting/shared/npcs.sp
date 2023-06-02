@@ -35,6 +35,7 @@ enum struct SpawnerData
 	float	f_SpawnerCooldown;
 	float	f_PointScore;
 	bool	IsBaseBoss;
+	char	Name[64];
 }
 
 //todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
@@ -197,11 +198,11 @@ public Action GetClosestSpawners(Handle timer)
 								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 								if(index != -1)
 								{
-									char name[32];
-									if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+									SpawnerData Spawner;
+									SpawnerList.GetArray(index, Spawner);
 
 									//For Zr_lila_panic.
-									if(StrEqual(name, "underground"))
+									if(StrEqual(Spawner.Name, "underground"))
 									{
 										if(!b_PlayerIsInAnotherPart[client])
 										{
@@ -210,14 +211,11 @@ public Action GetClosestSpawners(Handle timer)
 									}
 									if(b_PlayerIsInAnotherPart[client])
 									{
-										if(!StrEqual(name, "underground"))
+										if(!StrEqual(Spawner.Name, "underground"))
 										{
 											continue;
 										}
 									}
-
-									SpawnerData Spawner;
-									SpawnerList.GetArray(index, Spawner);
 										
 									float inverting_score_calc;
 
@@ -256,8 +254,9 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Spawner_Indexes[32 + 1];
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
+	int maxSpawners = Rogue_Mode() ? 1 : MapSpawnersActive.IntValue;
 
-	for(int Repeats=1; Repeats<=(MapSpawnersActive.IntValue); Repeats++)
+	for(int Repeats=1; Repeats<=maxSpawners; Repeats++)
 	{
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
@@ -619,15 +618,42 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			Enemy enemy;
 			if(Waves_GetNextEnemy(enemy))
 			{
-				int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
-				if(index != -1)
+				if(enemy.Spawn[0])
 				{
+					int length = SpawnerList.Length;
+
 					SpawnerData Spawner;
-					SpawnerList.GetArray(index, Spawner);
-					Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
-					SpawnerList.SetArray(index, Spawner);
+
+					int count;
+					int[] matches = new int[length];
+					for(int i; i < length; i++)
+					{
+						SpawnerList.GetArray(i, Spawner);
+						if(StrEqual(Spawner.Name, enemy.Spawn, false))
+							matches[count++] = i;
+					}
+
+					if(count)
+					{
+						entity_Spawner = matches[GetRandomInt(0, count-1)];
+					}
+					else
+					{
+						entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+					}
 				}
-				entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+				else
+				{
+					int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+					if(index != -1)
+					{
+						SpawnerData Spawner;
+						SpawnerList.GetArray(index, Spawner);
+						Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
+						SpawnerList.SetArray(index, Spawner);
+					}
+					entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+				}
 				
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
@@ -2691,6 +2717,7 @@ void Spawner_AddToArray(int entity, bool base_boss = false) //cant use ent ref h
 			Spawner.IsBaseBoss = true;
 		}
 		Spawner.indexnumber = entity;
+		GetEntPropString(entity, Prop_Data, "m_iName", Spawner.Name, sizeof(Spawner.Name));
 		SpawnerList.PushArray(Spawner);
 	}
 }

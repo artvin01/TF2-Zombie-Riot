@@ -1360,13 +1360,30 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
-	for(int i; i < i_MaxcountSpawners; i++)
+
+	if(client)
 	{
-		int entity = i_ObjectsSpawners[i];
-		if(IsValidEntity(entity))
+		list[count++] = client;
+	}
+	else
+	{
+		for(int i; i < i_MaxcountSpawners; i++)
 		{
-			if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
-				list[count++] = entity;
+			int entity = i_ObjectsSpawners[i];
+			if(IsValidEntity(entity))
+			{
+				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+					list[count++] = entity;
+			}
+		}
+		
+		if(!count)
+		{
+			for(int target = 1; target <= MaxClients; target++)
+			{
+				if(IsClientInGame(target) && IsPlayerAlive(target))
+					list[count++] = target;
+			}
 		}
 	}
 	

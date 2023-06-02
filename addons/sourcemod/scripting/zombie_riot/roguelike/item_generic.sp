@@ -16,7 +16,7 @@ public void Rogue_Refresh_Remove()
 	}
 }
 
-float GrigoriCoinPurseCalc()
+static float GrigoriCoinPurseCalc()
 {
 	int Ingots = Rogue_GetIngots();
 	
@@ -33,7 +33,6 @@ public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
-			// +15% damage bonus
 			npc.m_fGunBonusReload *= Multi;
 			npc.m_fGunBonusFireRate *= Multi;
 		}

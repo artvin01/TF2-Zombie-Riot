@@ -82,6 +82,7 @@ enum struct Stage
 	char Camera[64];
 	char Spawn[64];
 	char Skyname[64];
+	char Relay[64];
 	bool Hidden;
 
 	Function FuncStart;
@@ -99,6 +100,7 @@ enum struct Stage
 		kv.GetString("camera", this.Camera, 64);
 		kv.GetString("spawn", this.Spawn, 64);
 		kv.GetString("skyname", this.Skyname, 64);
+		kv.GetString("relay", this.Relay, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
@@ -213,6 +215,7 @@ static Handle ProgressTimer;
 static int CurrentFloor;
 static int CurrentCount;
 static int CurrentStage;
+static bool CurrentType;
 static ArrayList CurrentExclude;
 static ArrayList CurrentCollection;
 static int CurrentIngots;
@@ -222,6 +225,20 @@ static int BonusLives;
 bool b_LeaderSquad;
 bool b_GatheringSquad;
 bool b_ResearchSquad;
+
+void Rogue_PluginStart()
+{
+	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
+}
+
+public Action Rogue_DebugGive(int client, int args)
+{
+	char buffer[64];
+	GetCmdArgString(buffer, sizeof(buffer));
+	ReplaceString(buffer, sizeof(buffer), "\"", "");
+	Rogue_GiveNamedArtifact(buffer);
+	return Plugin_Handled;
+}
 
 bool Rogue_Mode()	// If Rogue-Like is enabled
 {
@@ -623,6 +640,22 @@ void Rogue_BattleVictory()
 	// TODO: Victory stuff
 
 	SetProgressTime(30.0, true);
+	
+	Floor floor;
+	Floors.GetArray(CurrentFloor, floor);
+
+	Stage stage;
+	if(CurrentType)
+	{
+		floor.Finals.GetArray(CurrentStage, stage);
+	}
+	else
+	{
+		floor.Encounters.GetArray(CurrentStage, stage);
+	}
+	
+	if(stage.Relay[0])	// OnUser3 when victory
+		ExcuteRelay(stage.Relay, "FireUser3");
 }
 
 bool Rogue_BattleLost()
@@ -691,7 +724,7 @@ void Rogue_NextProgress()
 			}
 			else
 			{
-				SetNextStage(id, stage, 15.0);
+				SetNextStage(id, false, stage, 15.0);
 			}
 		}
 		case State_Trans:
@@ -700,7 +733,14 @@ void Rogue_NextProgress()
 			Floors.GetArray(CurrentFloor, floor);
 			
 			Stage stage;
-			floor.Encounters.GetArray(CurrentStage, stage);
+			if(CurrentType)
+			{
+				floor.Finals.GetArray(CurrentStage, stage);
+			}
+			else
+			{
+				floor.Encounters.GetArray(CurrentStage, stage);
+			}
 
 			StartStage(stage);
 		}
@@ -708,6 +748,23 @@ void Rogue_NextProgress()
 		{
 			Floor floor;
 			Floors.GetArray(CurrentFloor, floor);
+
+			Stage stage;
+
+			if(CurrentStage != -1)
+			{
+				if(CurrentType)
+				{
+					floor.Finals.GetArray(CurrentStage, stage);
+				}
+				else
+				{
+					floor.Encounters.GetArray(CurrentStage, stage);
+				}
+				
+				if(stage.Relay[0])	// OnUser2 on leave
+					ExcuteRelay(stage.Relay, "FireUser2");
+			}
 			
 			if(CurrentCount > floor.RoomCount)
 			{
@@ -747,13 +804,11 @@ void Rogue_NextProgress()
 
 					// TODO: Curse Rolls
 
-					GameState = State_Trans;
 					SetProgressTime(7.0, false);
 				}
 			}
 			else if(CurrentCount == floor.RoomCount)	// Final Stage
 			{
-				Stage stage;
 				int id = GetRandomStage(floor, stage, true, false);
 				if(id == -1)
 				{
@@ -763,7 +818,7 @@ void Rogue_NextProgress()
 				}
 				else
 				{
-					SetNextStage(id, stage, 30.0);
+					SetNextStage(id, true, stage, 30.0);
 				}
 			}
 			else	// Normal Stage
@@ -775,7 +830,6 @@ void Rogue_NextProgress()
 					count++;
 				
 				Vote vote;
-				Stage stage;
 				for(int i; i < count; i++)
 				{
 					int id = GetRandomStage(floor, stage, false, false);
@@ -921,10 +975,11 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 	return 0;
 }
 
-static void SetNextStage(int id, const Stage stage, float time = 10.0)
+static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0)
 {
 	CurrentCount++;
 	CurrentStage = id;
+	CurrentType = type;
 
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), stage.Name);
 
@@ -948,7 +1003,14 @@ void Rogue_StartThisBattle(float time = 10.0)
 	Floors.GetArray(CurrentFloor, floor);
 	
 	Stage stage;
-	floor.Encounters.GetArray(CurrentStage, stage);
+	if(CurrentType)
+	{
+		floor.Finals.GetArray(CurrentStage, stage);
+	}
+	else
+	{
+		floor.Encounters.GetArray(CurrentStage, stage);
+	}
 
 	StartBattle(stage, time + 1.0);
 	SetProgressTime(time, true);
@@ -1054,11 +1116,11 @@ static void StartStage(const Stage stage)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE)
-		{
-			// TODO: Do stuff like building refunds, etc.
 			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
-		}
 	}
+	
+	if(stage.Relay[0])	// OnUser1 when started
+		ExcuteRelay(stage.Relay, "FireUser1");
 }
 
 static int GetStageByName(const Floor floor, const char[] name, bool final, Stage stage)
@@ -1107,7 +1169,7 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 	return -1;
 }
 
-int ViewCamareasTemp[MAXENTITIES];
+static int ViewCamareasTemp[MAXENTITIES] = {-1, ...};
 
 static void SetClientCamera(int client, const char[] name = "", const char[] skyname = "")
 {
@@ -1149,7 +1211,6 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 			{
 				Waves_SetSkyName(skyname);
 				
-
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client) && IsPlayerAlive(client))
@@ -1193,7 +1254,7 @@ void Rogue_ArtifactMenu(int client, int page)
 	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Collected Artifacts");
 
 	Artifact artifact;
-	int length = CurrentCollection.Length;
+	int length = CurrentCollection ? CurrentCollection.Length : 0;
 	if(length)
 	{
 		for(int i; i < length; i++)
@@ -1509,7 +1570,7 @@ public void Rogue_Vote_NextStage(const Vote vote)
 		CurrentExclude.Push(id);
 	}
 
-	SetNextStage(id, stage);
+	SetNextStage(id, false, stage);
 }
 
 //thanks to mikusch for showing me this.
@@ -1585,6 +1646,7 @@ bool IS_MusicReleasingRadio()
 
 #include "roguelike/encounter_battles.sp"
 #include "roguelike/item_generic.sp"
+#include "roguelike/item_squads.sp"
 
 #include "roguelike/provoked_anger.sp"
 #include "roguelike/shield_items.sp"

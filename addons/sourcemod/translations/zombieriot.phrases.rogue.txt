@@ -8,7 +8,6 @@
 	{
 		"en"	"INVALID DESC"
 	}
-
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
@@ -110,7 +109,7 @@
 	}
 	"Support Squad Desc"
 	{
-		"en"	"{green}Start with +20 Australium Ignots and 500 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"en"	"{green}Start with +20 Australium Ignots and +500 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 	}
 	"Spearhead Squad"
 	{
@@ -126,7 +125,7 @@
 	}
 	"Research Squad Desc"
 	{
-		"en"	"{green}Store items are 10%% off while ot in combat"
+		"en"	"{green}Store items are 10%% off while not in combat"
 	}
 	"First Class Squad"
 	{

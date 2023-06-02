@@ -4017,6 +4017,8 @@ void Store_ApplyAttribs(int client)
 	i_BarbariansMind[client] = 0;
 	i_SoftShoes[client] = 0;
 	i_BadHealthRegen[client] = 0;
+
+	Rogue_ApplyAttribs(client, map);
 #endif
 
 #if defined RPG

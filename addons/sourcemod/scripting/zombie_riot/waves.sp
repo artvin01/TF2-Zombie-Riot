@@ -18,6 +18,7 @@ enum struct Enemy
 	float ExtraRangedRes;
 	float ExtraSpeed;
 	float ExtraDamage;
+	char Spawn[64];
 }
 
 enum struct MiniBoss
@@ -618,6 +619,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
+						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
 						
 						wave.EnemyData = enemy;
 						round.Waves.PushArray(wave);
