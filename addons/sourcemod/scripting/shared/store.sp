@@ -1356,6 +1356,17 @@ void Store_RogueEndFightReset()
 		}
 		StoreItems.SetArray(i, item);
 	}
+	ResetSentryCD();
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity) && !i_BeingCarried[entity]) //delete all buildings that arent mounted
+		{
+			RemoveEntity(entity);
+		}
+	}
+	Ammo_Count_Ready += 5;
+
 }
 void Store_Reset()
 {

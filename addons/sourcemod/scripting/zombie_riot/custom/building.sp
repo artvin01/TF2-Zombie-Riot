@@ -173,6 +173,10 @@ void Building_ClearAll()
 	Zero(Village_TierExists);
 	//RebelTimerSpawnIn = 0;
 }
+void ResetSentryCD()
+{
+	Zero(Building_Sentry_Cooldown);
+}
 
 int Building_GetClientVillageFlags(int client)
 {
@@ -1242,6 +1246,12 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 		}
 	}
 }
+
+bool AllowBuildingCurrently()
+{
+	return true;
+}
+
 /*
 void Building_PlayerRunCmd(int client, int buttons)
 {

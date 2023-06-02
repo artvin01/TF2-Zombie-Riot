@@ -110,7 +110,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 public Action OnBuildCmd(int client, const char[] command, int args)
 {
 #if defined ZR
-	if(client && GameRules_GetProp("m_bInWaitingForPlayers"))
+	if(client && (GameRules_GetProp("m_bInWaitingForPlayers") || !AllowBuildingCurrently()))
 		return Plugin_Handled;
 		
 	return Plugin_Continue;
