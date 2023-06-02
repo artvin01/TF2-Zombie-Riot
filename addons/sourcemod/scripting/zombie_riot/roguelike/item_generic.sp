@@ -387,8 +387,8 @@ public void Rogue_Item_ScrappedWallet()
 	{
 		if(IsClientInGame(client))
 		{
-			CashRecievedNonWave[client] += 250;
-			CashSpent[client] -= 250;
+			CashRecievedNonWave[client] += 500;
+			CashSpent[client] -= 500;
 		}
 	}	
 }
@@ -452,8 +452,8 @@ public void Rogue_Item_GoldenCoin()
 	{
 		if(IsClientInGame(client))
 		{
-			CashRecievedNonWave[client] += 1000;
-			CashSpent[client] -= 1000;
+			CashRecievedNonWave[client] += 2000;
+			CashSpent[client] -= 2000;
 		}
 	}	
 	Rogue_AddIngots(10);

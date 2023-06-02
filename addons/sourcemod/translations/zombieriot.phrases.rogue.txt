@@ -277,7 +277,7 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +250 Credits and 1%% more damage."
+		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Credits and 1%% more damage."
 	}
 	"Golden Coin"
 	{
@@ -285,6 +285,6 @@
 	}
 	"Golden Coin Desc"
 	{
-		"en"	"A Valueable golden coin from old greek.\n- +1000 Credits and +10 Australium ingots."
+		"en"	"A Valueable golden coin from old greek.\n- +2000 Credits and +10 Australium ingots."
 	}
 }
