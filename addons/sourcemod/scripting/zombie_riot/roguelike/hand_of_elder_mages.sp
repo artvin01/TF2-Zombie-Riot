@@ -9,3 +9,12 @@ void OnTakeDamage_HandOfElderMages(int client, int holding_weapon)
 		}	
 	}
 }
+
+void Rogue_Item_HandOfElderMages()
+{
+	b_HandOfElderMages = true;
+}
+void Rogue_Item_HandOfElderMagesRemoved()
+{
+	b_HandOfElderMages = false;
+}
