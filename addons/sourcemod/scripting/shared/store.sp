@@ -4111,7 +4111,7 @@ void Store_ApplyAttribs(int client)
 	{
 		//3%% more health
 		int MaxHealth = SDKCall_GetMaxHealth(client);
-
+		
 		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.03);
 
 		Address address = TF2Attrib_GetByDefIndex(client, 26);

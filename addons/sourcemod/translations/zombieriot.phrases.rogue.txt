@@ -289,7 +289,7 @@
 	}
 	"Nickel Injected Pack"
 	{
-		"en"	"Golden Coin"
+		"en"	"Golden Coin"	
 	}
 	"Nickel Injected Pack Desc"
 	{
