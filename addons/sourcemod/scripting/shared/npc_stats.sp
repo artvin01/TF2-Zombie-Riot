@@ -525,11 +525,11 @@ methodmap CClotBody
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.1, 1.75); //Global.
 		}
 		else
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.24, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
 			
 		}
 	
@@ -8682,7 +8682,10 @@ public void NpcStartTouch(Address pThis, int target)
 			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
 			{
 				fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
-				npc.m_iTarget = target;
+				if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
+				{
+					npc.m_iTarget = target;
+				}
 			}
 		}	
 	}
