@@ -3965,7 +3965,7 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-	//	DHookSetReturn(hReturn, true); 
+		NpcStartTouch(pThis,otherindex);
 		return MRES_Ignored;
 	}
 	 
@@ -3974,9 +3974,10 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
+	
+	NpcStartTouch(pThis,otherindex);
 
 	
-//	DHookSetReturn(hReturn, true); 
 	return MRES_Ignored;
 }
 
@@ -3991,27 +3992,26 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-	//	DHookSetReturn(hReturn, true); 
+		NpcStartTouch(pThis,otherindex);
 		return MRES_Ignored;
 	}
 	 
-	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
+	if(b_CantCollidie[otherindex])
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
+	if(b_CantCollidieAlly[otherindex])
 	{
 		if(i_IsABuilding[otherindex])
 		{
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-	//	DHookSetReturn(hReturn, true); 
 		return MRES_Ignored;
 	}
-	
-//	DHookSetReturn(hReturn, true); 
+	NpcStartTouch(pThis,otherindex);
+
 	return MRES_Ignored;
 }
 
@@ -7349,6 +7349,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Speed[entity] = 0.0;
 	i_Target[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
+	fl_GetClosestTargetTimeTouch[entity] = 0.0;
 	fl_GetClosestTargetNoResetTime[entity] = 0.0;
 	fl_NextHurtSound[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
@@ -8663,3 +8664,26 @@ static void ReportBadPosition(const float pos[3])
 }
 */
 #endif	// ZR
+
+
+float GetRandomRetargetTime()
+{
+	return GetRandomFloat(3.0, 5.0);
+}
+
+public void NpcStartTouch(Address pThis, int target)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(fl_GetClosestTargetTimeTouch[entity] < GetGameTime() && f_TimeFrozenStill[entity] < GetGameTime(npc.index))
+	{
+		if(npc.m_iTarget != target)
+		{
+			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
+			{
+				fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
+				npc.m_iTarget = target;
+			}
+		}	
+	}
+}

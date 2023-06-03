@@ -295,7 +295,7 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	if(GiantSteps_Usage[npc.index] <= GetGameTime(npc.index) && !GiantSteps_On[npc.index] && !TempOpener3[npc.index] && !GiantSteps_RepeaterOn[npc.index])
 	{
