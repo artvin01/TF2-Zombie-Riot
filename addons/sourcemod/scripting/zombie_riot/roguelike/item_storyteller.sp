@@ -1,7 +1,7 @@
 static int BrokenBlade;
 static int BladeDancer;
 static float LastFlowerHealth;
-static ArrayList LastShadowHealth;
+static ArrayStack LastShadowHealth;
 
 void Rogue_StoryTeller_Reset()
 {
@@ -143,11 +143,11 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 	{
 		if(BladeDancer && BladeDancer != entity)
 		{
-			if(IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
+			if(IsClientInGame(BladeDancer) && IsPlayerAlive(BladeDancer) && TeutonType[BladeDancer] == TEUTON_NONE && !dieingstate[BladeDancer])
 				return;
 		}
 
-		if(TeutonType[entity] != TEUTON_NONE && dieingstate[entity] < 1)
+		if(TeutonType[entity] != TEUTON_NONE && !dieingstate[entity])
 		{
 			BladeDancer = entity;
 
@@ -197,7 +197,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 		map.GetValue("26", last);
 		last += ClassHealth(WeaponClass[entity]);
 
-		map.SetValue("26", RemoveExtraHealth(LastFlowerHealth, WeaponClass[entity]));
+		map.SetValue("26", RemoveExtraHealth(WeaponClass[entity], LastFlowerHealth));
 
 		LastFlowerHealth = last;
 	}

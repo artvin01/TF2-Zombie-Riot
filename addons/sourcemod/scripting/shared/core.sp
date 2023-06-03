@@ -1930,11 +1930,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving_this[client] = target;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
-						ticks = Citizen_ReviveTicks(target, 12 * Rogue_ReviveSpeed();, client);
+						ticks = Citizen_ReviveTicks(target, 12 * Rogue_ReviveSpeed(), client);
 					}
 					else
 					{
-						ticks = Citizen_ReviveTicks(target, 6 * Rogue_ReviveSpeed();, client);
+						ticks = Citizen_ReviveTicks(target, 6 * Rogue_ReviveSpeed(), client);
 					}
 					
 					if(ticks <= 0)
