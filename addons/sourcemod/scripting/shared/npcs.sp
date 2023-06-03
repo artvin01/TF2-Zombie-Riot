@@ -630,7 +630,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						SpawnerList.GetArray(i, Spawner);
 						if(StrEqual(Spawner.Name, enemy.Spawn, false))
-							matches[count++] = i;
+							matches[count++] = Spawner.indexnumber;
 					}
 
 					if(count)

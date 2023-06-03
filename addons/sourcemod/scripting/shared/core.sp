@@ -1862,11 +1862,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					f_DisableDyingTimer[target] = GameTime + 0.15;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
-						dieingstate[target] -= 12;
+						dieingstate[target] -= 12 * Rogue_ReviveSpeed();
 					}
 					else
 					{
-						dieingstate[target] -= 6;
+						dieingstate[target] -= 6 * Rogue_ReviveSpeed();
 					}
 					
 					if(dieingstate[target] <= 0)
@@ -1930,11 +1930,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving_this[client] = target;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
-						ticks = Citizen_ReviveTicks(target, 12, client);
+						ticks = Citizen_ReviveTicks(target, 12 * Rogue_ReviveSpeed();, client);
 					}
 					else
 					{
-						ticks = Citizen_ReviveTicks(target, 6, client);
+						ticks = Citizen_ReviveTicks(target, 6 * Rogue_ReviveSpeed();, client);
 					}
 					
 					if(ticks <= 0)

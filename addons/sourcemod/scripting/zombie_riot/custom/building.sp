@@ -6555,7 +6555,7 @@ static int GetSupplyLeft(int client)
 		}
 	}
 
-	return 3 - personal;
+	return 3 + Rogue_Barracks_BonusSupply() - personal;
 }
 
 static bool AtMaxSupply(int client)
@@ -6576,7 +6576,10 @@ static bool AtMaxSupply(int client)
 		}
 	}
 
-	return (global > 9 || personal > 2);
+	int maxGlobal = 9 + Rogue_Barracks_BonusSupply();
+	int maxLocal = 2 + Rogue_Barracks_BonusSupply();
+
+	return (global > maxGlobal || personal > maxLocal);
 }
 
 void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)

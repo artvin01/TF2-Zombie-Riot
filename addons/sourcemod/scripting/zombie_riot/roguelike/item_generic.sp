@@ -436,7 +436,7 @@ public void Rogue_Item_ScrappedWallet_Weapon(int entity)
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	if(!StrContains(buffer, "tf_weapon_medigun"))
 	{
 		address = TF2Attrib_GetByDefIndex(entity, 1);
 		if(address != Address_Null)
@@ -519,8 +519,7 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Weapon(int entity)
 	if(address != Address_Null)
 		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
 
-
-	if(!StrEqual(classname, "tf_weapon_medigun"))
+	if(!StrContains(classname, "tf_weapon_medigun"))
 	{
 		address = TF2Attrib_GetByDefIndex(entity, 1);
 		if(address != Address_Null)

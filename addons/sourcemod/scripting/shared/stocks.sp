@@ -761,24 +761,29 @@ stock int GetMaxWeapons(int client)
 	return maxweps;
 }
 
-stock float RemoveExtraHealth(TFClassType class, float value)
+stock float ClassHealth(TFClassType class)
 {
 	switch(class)
 	{
 		case TFClass_Soldier:
-			return value - 200.0;
+			return 200.0;
 
 		case TFClass_Pyro, TFClass_DemoMan:
-			return value - 175.0;
+			return 175.0;
 
 		case TFClass_Heavy:
-			return value - 300.0;
+			return 300.0;
 
 		case TFClass_Medic:
-			return value - 150.0;
+			return 150.0;
 	}
 	
-	return value - 125.0;
+	return 125.0;
+}
+
+stock float RemoveExtraHealth(TFClassType class, float value)
+{
+	return value - ClassHealth(class);
 }
 
 stock float RemoveExtraSpeed(TFClassType class, float value)

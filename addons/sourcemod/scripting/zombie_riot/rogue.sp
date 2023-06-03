@@ -1641,6 +1641,9 @@ static void ClearStats()
 	b_LeaderSquad = false;
 	b_GatheringSquad = false;
 	b_ResearchSquad = false;
+
+	Rogue_Barracks_Reset();
+	Rogue_StoryTeller_Reset();
 }
 
 bool IS_MusicReleasingRadio()
@@ -1654,6 +1657,8 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/encounter_battles.sp"
 #include "roguelike/item_generic.sp"
 #include "roguelike/item_squads.sp"
+#include "roguelike/item_barracks.sp"
+#include "roguelike/item_storyteller.sp"
 
 #include "roguelike/provoked_anger.sp"
 #include "roguelike/shield_items.sp"

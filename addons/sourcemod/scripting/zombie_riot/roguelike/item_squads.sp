@@ -1,3 +1,8 @@
+public void Rogue_BonusLife_Collect()
+{
+	Rogue_AddBonusLife(1);
+}
+
 public void Rogue_LeaderSquad_Collect()
 {
 	b_LeaderSquad = true;
@@ -50,7 +55,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			npc.m_fGunRangeBonus *= 1.15;
 
 			// +50 max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") + 50;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -63,7 +68,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 				npc.BonusDamageBonus *= 1.15;
 
 				// +50 max health
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") + 50;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
@@ -88,15 +93,10 @@ public void Rogue_Spearhead_Weapon(int entity)
 	if(address != Address_Null)
 		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
 
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		address = TF2Attrib_GetByDefIndex(entity, 1);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
-	}
-	//Extra damage for mediguns.
+	address = TF2Attrib_GetByDefIndex(entity, 1);	//Extra damage for mediguns.
+	if(address != Address_Null)
+		TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+	
 }
 
 public void Rogue_Research_Collect()
@@ -108,5 +108,8 @@ public void Rogue_FirstClass_Collect()
 {
 	int entity = Citizen_SpawnAtPoint("a");
 	if(entity != -1)
+	{
+		Citizen_ReviveTicks(entity, 999, 0);
 		Citizen_GivePerk(entity, 2);
+	}
 }
