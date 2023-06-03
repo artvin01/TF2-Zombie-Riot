@@ -170,7 +170,7 @@ public void Rogue_Bladedance_Ally(int entity, StringMap map)
 	}
 }
 
-public void Rogue_Blademace_Weapon(int entity)
+public void Rogue_Bladedance_Weapon(int entity)
 {
 	if(BladeDancer == entity)
 	{
