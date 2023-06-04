@@ -189,7 +189,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- Everytime a mage weapon hurts an enemy, reduce current cooldown of this mageweapon by 2 seconds."
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' weapons on hit get 2 seconds of reduced cooldown."
 	}
 	"Bracelets of Agility"
 	{
