@@ -415,4 +415,244 @@
 	{
 		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}Players and Rebels revive speed is doubled {red}but -25% max health{yellow}."
 	}
+	"Hand of Sticks"
+	{
+		"en"	"Hand of Sticks"
+	}
+	"Hand of Sticks Desc"
+	{
+		"en"	"To the raise of shotguns against all odds.\n{green}Scout, Soldier, Pyro, and Heavy Shotgun-line weapons gain +35% melee resistance while active."
+	}
+	"Hand of Superspeed"
+	{
+		"en"	"Hand of Superspeed"
+	}
+	"Hand of Superspeed Desc"
+	{
+		"en"	"Hit and run.\n{green}Pistol-line weapons gain 0.5 seconds speed boost on hitting an enemy."
+	}
+	"Hand of Mailbox"
+	{
+		"en"	"Hand of Mailbox"
+	}
+	"Hand of Mailbox Desc"
+	{
+		"en"	"How did it get there in the first place?\n{green}Hand Grenade-line weapons gain +200% damage bonus."
+	}
+	"Hand of Quake"
+	{
+		"en"	"Hand of Quake"
+	}
+	"Hand of Quake Desc"
+	{
+		"en"	"Juke and dodge, just as long they don't shoot back.\n{green}Rocket Launcher-line weapons gain +150% jump height while active."
+	}
+	"Hand of Abandoned"
+	{
+		"en"	"Hand of Abandoned"
+	}
+	"Hand of Abandoned Desc"
+	{
+		"en"	"You can't remove, but can cripple it.\n{green}Bison-line and Pomson-line weapons gain massive damage bonus and double fire rate and clip size."
+	}
+	"Hand of Travel"
+	{
+		"en"	"Hand of Travel"
+	}
+	"Hand of Travel Desc"
+	{
+		"en"	"Backpacks are good for the long days of chaos.\n{green}Soldier backpacks gain +10 health regeneration per second."
+	}
+	"Hand of Flesh"
+	{
+		"en"	"Hand of Flesh"
+	}
+	"Hand of Flesh Desc"
+	{
+		"en"	"Flesh is what's left of you, after the chaos.\n{green}Flamethrower-line and Flaregun-line weapons inflict bleed instead of afterburn."
+	}
+	"Hand of Bloodrider"
+	{
+		"en"	"Hand of Bloodrider"
+	}
+	"Hand of Bloodrider Desc"
+	{
+		"en"	"Those who can enjoy the chaos, live on.\n{green}Grenade Launcher-line weapons gain +33% firing speed, +100% clip size, {red}but fires as a barrage{yellow}."
+	}
+	"Hand of Balls"
+	{
+		"en"	"Hand of Balls"
+	}
+	"Hand of Balls Desc"
+	{
+		"en"	"Don't make the joke.\n{green}Stickybomb Launcher-line weapons gain +6 max stickybombs {yellow}and stickybombs only detonate while looking at them."
+	}
+	"Hand of Bouncer"
+	{
+		"en"	"Hand of Bouncer"
+	}
+	"Hand of Bouncer Desc"
+	{
+		"en"	"Sehr ernst.\n{green}Minigun-line weapons deflect enemy projectiles."
+	}
+	"Hand of Trapmaster"
+	{
+		"en"	"Hand of Trapmaster"
+	}
+	"Hand of Trapmaster Desc"
+	{
+		"en"	"You need the damage now, don't you.\n{green}Builder trap weapons gain a clip size equal to maximum possible traps."
+	}
+	"Hand of Gunslinger"
+	{
+		"en"	"Hand of Gunslinger"
+	}
+	"Hand of Gunslinger Desc"
+	{
+		"en"	"Aim, or not.\n{green}Wrangler-line weapons gain +100% building damage while active."
+	}
+	"Hand of Geek"
+	{
+		"en"	"Hand of Geek"
+	}
+	"Hand of Geek Desc"
+	{
+		"en"	"It's not a war crime as long you don't get caught.\n{green}Syringe Gun-line weapons gain +3 health upon hitting an enemy."
+	}
+	"Hand of Robots"
+	{
+		"en"	"Hand of Robots"
+	}
+	"Hand of Robots Desc"
+	{
+		"en"	"What's the timeline for Mann vs. Machine with Zombie Riot?\n{green}Medigun-line weapons gain a chargeable projectile shield."
+	}
+	"Hand of Camping"
+	{
+		"en"	"Hand of Camping"
+	}
+	"Hand of Camping Desc"
+	{
+		"en"	"Gotta wait out this, it's not a win unless we survive.\n{green}Sniper Rifle-line weapons gain a chargeable focus ability."
+	}
+	"Hand of Sprees"
+	{
+		"en"	"Hand of Sprees"
+	}
+	"Hand of Sprees Desc"
+	{
+		"en"	"LOOK AT ME GO, 420, BEST WEAPON IN TF2 WOOOOO!!1!\n{green}SMG-line weapons gain a 5 seconds of mini-crits upon killing an enemy."
+	}
+	"Hand of Panic"
+	{
+		"en"	"Hand of Panic"
+	}
+	"Hand of Panic Desc"
+	{
+		"en"	"Who wouldn't freak out when the fate of everything is on you.\n{green}Revolver-line weapons gain up to +75% firing speed with low health."
+	}
+	"Hand of Scout"
+	{
+		"en"	"Hand of Scout"
+	}
+	"Hand of Scout Desc"
+	{
+		"en"	"Scout was turning into a seaborn from a Basin Sea Reaper.\n{green}Scout melee weapons gain +50% firing speed."
+	}
+	"Hand of Soldier"
+	{
+		"en"	"Hand of Soldier"
+	}
+	"Hand of Soldier Desc"
+	{
+		"en"	"Soldier was decapitated from the Phantom Knight.\n{green}Soldier melee weapons gain 5 second bleeding on hit."
+	}
+	"Hand of Pyro"
+	{
+		"en"	"Hand of Pyro"
+	}
+	"Hand of Pyro Desc"
+	{
+		"en"	"Pyro was blowen up from a Kamikaze Demo.\n{green}Pyro melee weapons gain 3 second afterburn on hit."
+	}
+	"Hand of Demoman"
+	{
+		"en"	"Hand of Demoman"
+	}
+	"Hand of Demoman Desc"
+	{
+		"en"	"Demoman was face stabbed from a x10 Spy Main.\n{green}Demoman melee weapons gain a head on kill."
+	}
+	"Hand of Heavy"
+	{
+		"en"	"Hand of Heavy"
+	}
+	"Hand of Heavy Desc"
+	{
+		"en"	"Heavy survived.\n{green}Heavy melee weapons gain a +80% ranged resistance while active."
+	}
+	"Hand of Engineer"
+	{
+		"en"	"Hand of Engineer"
+	}
+	"Hand of Engineer Desc"
+	{
+		"en"	"Engineer was xeno-infected from an unknown entity.\n{green}Engineer melee weapons gain a -200% knockback resistance while active."
+	}
+	"Hand of Medic"
+	{
+		"en"	"Hand of Medic"
+	}
+	"Hand of Medic Desc"
+	{
+		"en"	"Medic was self-infected from himself.\n{green}Medic melee weapons gain a +300% damage bonus while being healed from an ally."
+	}
+	"Hand of Sniper"
+	{
+		"en"	"Hand of Sniper"
+	}
+	"Hand of Sniper Desc"
+	{
+		"en"	"Sniper was found missing.\n{green}Sniper melee weapons gain a +150% damage bonus while below half health."
+	}
+	"Hand of Spy"
+	{
+		"en"	"Hand of Spy"
+	}
+	"Hand of Spy Desc"
+	{
+		"en"	"Spy was hanged on a wall by a Skirmisher.\n{green}Spy melee weapons always gib on kill."
+	}
+	"Hand of Thaum"
+	{
+		"en"	"Hand of Thaum"
+	}
+	"Hand of Thaum Desc"
+	{
+		"en"	"The magic is failing in the chaos, use what you can.\n{green}Frying Pan-line weapons consume no mana."
+	}
+	"Hand of Lasting"
+	{
+		"en"	"Hand of Lasting"
+	}
+	"Hand of Lasting Desc"
+	{
+		"en"	"Long lasting defense for who knows how long.\n{green}Saxxy-line and Memory Maker-line weapons gain +150% projectile lifetime."
+	}
+	"Hand of Diffusion"
+	{
+		"en"	"Hand of Diffusion"
+	}
+	"Hand of Diffusion Desc"
+	{
+		"en"	"Hit that leads into a hit that leads into a hit that leads\n{green}Freedom Staff-line and Necro Smasher-line weapons gain +50% firing speed and -50% mana cost."
+	}
+	"Hand of Flowing Death"
+	{
+		"en"	"Hand of Flowing Death"
+	}
+	"Hand of Flowing Death Desc"
+	{
+		"en"	"The flowing death that trails on, you embrace the chaos, with bones.\n{green}Bat Outta Hell-line and Prinny Machete-line weapons gain +100% max mana and mana regeneration."
+	}
 }

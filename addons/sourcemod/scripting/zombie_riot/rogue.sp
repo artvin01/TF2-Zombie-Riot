@@ -1385,7 +1385,7 @@ void Rogue_EnemySpawned(int entity)
 	}
 }
 
-bool Rogue_HasNamedArtifact(const char[] name)
+stock bool Rogue_HasNamedArtifact(const char[] name)
 {
 	if(CurrentCollection)
 	{
@@ -1477,7 +1477,7 @@ void Rogue_GiveNamedArtifact(const char[] name)
 	PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
 }
 
-void Rogue_RemoveNamedArtifact(const char[] name)
+stock void Rogue_RemoveNamedArtifact(const char[] name)
 {
 	if(CurrentCollection)
 	{
@@ -1514,7 +1514,7 @@ void Rogue_AddIngots(int amount)
 	CurrentIngots += amount;
 }
 
-int Rogue_GetBonusLife()
+stock int Rogue_GetBonusLife()
 {
 	return BonusLives;
 }
@@ -1659,6 +1659,7 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/item_squads.sp"
 #include "roguelike/item_barracks.sp"
 #include "roguelike/item_storyteller.sp"
+#include "roguelike/item_hands.sp"
 
 #include "roguelike/provoked_anger.sp"
 #include "roguelike/shield_items.sp"

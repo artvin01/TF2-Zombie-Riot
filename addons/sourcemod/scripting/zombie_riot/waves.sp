@@ -825,7 +825,7 @@ void Waves_Progress()
 	int length = Rounds.Length-1;
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
-	bool rouge = Rogue_Mode();
+	bool rogue = Rogue_Mode();
 	static int panzer_chance;
 
 	if(CurrentRound < length)
@@ -1108,11 +1108,11 @@ void Waves_Progress()
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(!rouge && CurrentRound == 4)
+			if(!rogue && CurrentRound == 4)
 			{
 				Citizen_SpawnAtPoint("b");
 			}
-			else if(!rouge && CurrentRound == 11)
+			else if(!rogue && CurrentRound == 11)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
@@ -1137,7 +1137,7 @@ void Waves_Progress()
 				panzer_spawn = false;
 				panzer_sound = false;
 			}
-			if(rouge) //disable
+			if(rogue) //disable
 			{
 				panzer_spawn = false;
 				panzer_sound = false;
@@ -1239,7 +1239,7 @@ void Waves_Progress()
 				ExcuteRelay("zr_setuptime");
 				ExcuteRelay("zr_victory");
 				
-				if(!rouge)
+				if(!rogue)
 				{
 					Cooldown = GetGameTime() + 30.0;
 					
@@ -1283,7 +1283,7 @@ void Waves_Progress()
 				cvarTimeScale.SetFloat(0.1);
 				CreateTimer(0.5, SetTimeBack);
 
-				if(rouge)
+				if(rogue)
 				{
 					Rogue_BattleVictory();
 				}
@@ -1379,7 +1379,9 @@ void Waves_Progress()
 					}
 				}
 			}
-			if(Freeplay_ShouldMiniBoss() && !rouge) //no miniboss during rougelikes.
+
+			// Note: Artvan remove this, this is freeplay code
+			if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
 			{
 				panzer_spawn = true;
 				NPC_SpawnNext(false, panzer_spawn, false);
