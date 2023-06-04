@@ -1,6 +1,86 @@
 "Phrases"
 {
 
+	"Multi Pellet"
+	{
+		"en"		"Archetype: Multi Pellet"
+	}
+	"Rapid Fire"
+	{
+		"en"		"Archetype: Rapid Fire"
+	}
+	"Single Pellet"
+	{
+		"en"		"Archetype: Single Pellet"
+	}
+	"Infinite Fire"
+	{
+		"en"		"Archetype: Infinite Fire"
+	}
+	"Trap Master"
+	{
+		"en"		"Archetype: Trap Master"
+	}
+	"Far Range"
+	{
+		"en"		"Archetype: Far Range"
+	}
+	"Explosive Mind"
+	{
+		"en"		"Archetype: Explosive Mind"
+	}
+	"Team Support"
+	{
+		"en"		"Archetype: Team Support"
+	}
+	"Debuff"
+	{
+		"en"		"Archetype: Debuff"
+	}
+	"Brawler"
+	{
+		"en"		"Archetype: Brawler"
+	}
+	"Ambusher"
+	{
+		"en"		"Archetype: Ambusher"
+	}
+	"Combatant"
+	{
+		"en"		"Archetype: Combatant"
+	}
+	"Aberration"
+	{
+		"en"		"Archetype: Aberration"
+	}
+	"Duelist"
+	{
+		"en"		"Archetype: Duelist"
+	}
+	"Lord"
+	{
+		"en"		"Archetype: Lord"
+	}
+	"Crusher"
+	{
+		"en"		"Archetype: Crusher"
+	}
+	"Summoner"
+	{
+		"en"		"Archetype: Summoner"
+	}
+	"Chain Caster"
+	{
+		"en"		"Archetype: Chain Caster"
+	}
+	"Multi Caster"
+	{
+		"en"		"Archetype: Multi Caster"
+	}
+	"Base Caster"
+	{
+		"en"		"Archetype: Base Caster"
+	}
 	"Syringe Gun Desc"
 	{
 		"en"		"Low Damage but very high bleed duration"

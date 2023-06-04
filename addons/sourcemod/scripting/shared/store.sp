@@ -27,20 +27,20 @@ static const int SlotLimits[] =
 	1	// 16
 };
 
-public const char ItemArchetype[] =
+public const char ItemArchetype[][] =
 {
 	"",	// No archetype.	
 //PRIMARY SECONDARY
 	"Multi Pellet",		// 1
 	"Rapid Fire",		// 2
 	"Infinite Fire",	// 3
-	"Trap Master",		// 4
+	"none",		// 4
 	"Single Pellet",	// 5
 	"Far Range",		// 6
 	"Trap Master",		// 7 this can include builder weapons!
 	"Explosive Mind",	// 8 Most Explosive weapons
 //SUPPORT ITEMS
-	"Team Support"		// 9
+	"Team Support",		// 9
 	"Debuff",			// 10
 //MELEE'S
 	"Brawler",			// 11 most fist melee's
@@ -2526,7 +2526,7 @@ public void MenuPage(int client, int section)
 			
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
-			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
+			Config_CreateDescription(ItemArchetype[info.WeaponArchetype], info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
 			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc, info.Rogue_Desc));
 			
 			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
@@ -4877,10 +4877,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_StickyExtraGrenades[client] = true;
 					}
+
 #endif
 					
 					if(EntityIsAWeapon)
 					{
+						i_WeaponArchetype[entity] = info.WeaponArchetype;
 						bool apply;
 						switch(info.Index)
 						{

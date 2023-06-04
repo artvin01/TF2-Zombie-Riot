@@ -965,6 +965,7 @@ float fl_Dead_Ringer_Invis[MAXENTITIES];
 float fl_Dead_Ringer[MAXENTITIES];
 bool b_Dead_Ringer_Invis_bool[MAXENTITIES];
 int i_AttacksTillMegahit[MAXENTITIES];
+int i_WeaponArchetype[MAXENTITIES];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];
@@ -2253,6 +2254,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_HasBombImplanted[entity] = false;
 		Resistance_for_building_High[entity] = 0.0;
 		i_NervousImpairmentArrowAmount[entity] = 0;
+		i_WeaponArchetype[entity] = 0;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);

@@ -211,7 +211,7 @@ stock float Config_GetDPSOfEntity(int entity)
 	return (data.Damage / data.FireRate) * onToOff;
 }
 
-void Config_CreateDescription(const char[] classname, const int[] attrib, const float[] value, int attribs, char[] buffer, int length)
+void Config_CreateDescription(const char[] Archetype, const char[] classname, const int[] attrib, const float[] value, int attribs, char[] buffer, int length)
 {
 	static WeaponData data;
 	int i;
@@ -516,6 +516,8 @@ void Config_CreateDescription(const char[] classname, const int[] attrib, const 
 
 		Format(buffer, length, "%s\nDPS: %1.f (Aproximation, might not be accurate)", buffer, damagepersecond);
 	}
+	if(Archetype[0])
+		Format(buffer, length, "%s\n%t", buffer, Archetype);
 }
 
 #if defined ZR
