@@ -655,4 +655,32 @@
 	{
 		"en"	"The flowing death that trails on, you embrace the chaos, with bones.\n{green}Bat Outta Hell-line and Prinny Machete-line weapons gain +100% max mana and mana regeneration."
 	}
+	"Forcefield Chest"
+	{
+		"en"	"Forcefield Chest"
+	}
+	"Electric Tower"
+	{
+		"en"	"Electric Tower"
+	}
+	"Tower Madness"
+	{
+		"en"	"Tower Madness"
+	}
+	"CagedBeast"
+	{
+		"en"	"CagedBeast"
+	}
+	"Elevated Presence"
+	{
+		"en"	"Elevated Presence"
+	}
+	"Shop"
+	{
+		"en"	"Shop"
+	}
+	"Boons"
+	{
+		"en"	"Boons"
+	}
 }
