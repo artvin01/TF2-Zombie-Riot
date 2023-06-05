@@ -692,4 +692,12 @@
 	{
 		"en"	"Water Fountain"
 	}
+	"Abandoned Graveyard"
+	{
+		"en"	"Abandoned Graveyard"
+	}
+	"Pure Desert"
+	{
+		"en"	"Pure Desert"
+	}
 }
