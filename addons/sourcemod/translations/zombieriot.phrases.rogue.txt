@@ -672,9 +672,9 @@
 	{
 		"en"	"Tower Madness"
 	}
-	"CagedBeast"
+	"Caged Beast"
 	{
-		"en"	"CagedBeast"
+		"en"	"Caged Beast"
 	}
 	"Elevated Presence"
 	{
@@ -687,5 +687,9 @@
 	"Boons"
 	{
 		"en"	"Boons"
+	}
+	"Water Fountain"
+	{
+		"en"	"Water Fountain"
 	}
 }
