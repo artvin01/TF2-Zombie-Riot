@@ -14,16 +14,16 @@ enum struct Curse
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 		}
 		
 		char buffer[64];
 		Format(buffer, sizeof(buffer), "%s Desc", this.Name);
 		if(!TranslationPhraseExists(buffer))
 		{
-			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", buffer);
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 		}
 	}
 }
@@ -62,16 +62,16 @@ enum struct Artifact
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 		}
 		
 		char buffer[64];
 		Format(buffer, sizeof(buffer), "%s Desc", this.Name);
 		if(!TranslationPhraseExists(buffer))
 		{
-			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", buffer);
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 		}
 	}
 }
@@ -93,8 +93,8 @@ enum struct Stage
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 		}
 
 		kv.GetString("camera", this.Camera, 64);
@@ -113,8 +113,8 @@ enum struct Stage
 			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, this.WaveSet);
 			if(!FileExists(buffer))
 			{
-				this.WaveSet[0] = 0;
 				LogError("\"%s\" wave set does not exist", this.WaveSet);
+				this.WaveSet[0] = 0;
 			}
 		}
 	}
@@ -135,8 +135,8 @@ enum struct Floor
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
 		{
-			strcopy(this.Name, 64, "Missing Rogue Translation");
 			LogError("\"%s\" translation does not exist", this.Name);
+			strcopy(this.Name, 64, "Missing Rogue Translation");
 		}
 
 		this.RoomCount = kv.GetNum("rooms", 2) - 2;

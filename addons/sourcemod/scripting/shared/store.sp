@@ -3926,14 +3926,14 @@ void Store_ApplyAttribs(int client)
 //		map.SetValue("96", 0.1); //Cash equals Health!!!!
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
-	if(TF2_GetPlayerClass(client) == TFClass_Scout) //make scout have the same capture rate!
+	/*if(TF2_GetPlayerClass(client) == TFClass_Scout) //make scout have the same capture rate!
 	{
 		map.SetValue("68", 1.0);
 	}
 	else
 	{
 		map.SetValue("68", 2.0);
-	}
+	}*/
 	
 	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
