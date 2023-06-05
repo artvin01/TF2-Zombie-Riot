@@ -1254,7 +1254,9 @@ void Waves_Progress()
 					if(IsClientInGame(i) && !IsFakeClient(i))
 					{
 						Music_Stop_All(i);
-						SendConVarValue(i, sv_cheats, "1");
+						if(!rogue)
+							SendConVarValue(i, sv_cheats, "1");
+						
 						players[total++] = i;
 
 						if(TextStoreItem[0] && PlayerPoints[i] > 500)
@@ -1280,15 +1282,11 @@ void Waves_Progress()
 					}
 				}
 
-				cvarTimeScale.SetFloat(0.1);
-				CreateTimer(0.5, SetTimeBack);
-
-				if(rogue)
+				if(!rogue)
 				{
-					Rogue_BattleVictory();
-				}
-				else
-				{
+					cvarTimeScale.SetFloat(0.1);
+					CreateTimer(0.5, SetTimeBack);
+					
 					EmitCustomToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
 					Menu menu = new Menu(Waves_FreeplayVote);
@@ -1306,6 +1304,11 @@ void Waves_Progress()
 
 				i_MusicLength1 = 1;
 				i_MusicLength2 = 1;
+
+				if(rogue)
+				{
+					Rogue_BattleVictory();
+				}
 
 				Citizen_SetupStart();
 			}

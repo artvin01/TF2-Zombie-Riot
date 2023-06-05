@@ -21,10 +21,15 @@
 		"#format"	"{1:d},{2:d}"
 		"en"	"Starting Australium Ingots ({1} -> {2})"
 	}
+	"Stage"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Stage: {1}-{2}"
+	}
 	"New Artifact"
 	{
 		"#format"	"{1:t}"
-		"en"	"{yellow}Collected Artifact{default}: {yellow}{1}"
+		"en"	"Collected Artifact: {yellow}{1}"
 	}
 	"Artifact Info"
 	{

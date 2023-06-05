@@ -1204,13 +1204,15 @@ public void OnPluginStart()
 			CurrentClass[client] = TF2_GetPlayerClass(client);
 		}
 	}
-	for( int i = 1; i <= MAXENTITIES; i++ ) 
+
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		if (IsValidEntity(i))
+		//if (IsValidEntity(i))
 		{
 			static char strClassname[64];
-			GetEntityClassname(i, strClassname, sizeof(strClassname));
-			OnEntityCreated(i,strClassname);
+			GetEntityClassname(entity, strClassname, sizeof(strClassname));
+			OnEntityCreated(entity,strClassname);
 		}
 	}
 }
@@ -2151,21 +2153,28 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	return action;
 }
 
+public void SDKHook_TeamSpawn_SpawnPost(int entity)
+{
+	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if (!IsValidEntity(i_ObjectsSpawners[i]) || i_ObjectsSpawners[i] == 0)
+		{
+			Spawner_AddToArray(entity);
+			i_ObjectsSpawners[i] = entity;
+			return;
+		}
+	}
+
+	PrintToChatAll("MAP HAS TOO MANY SPAWNERS, REPORT BUG");
+	LogError("MAP HAS TOO MANY SPAWNERS");
+}
+
 public void OnEntityCreated(int entity, const char[] classname)
 {
 #if defined ZR
 	if (!StrContains(classname, "info_player_teamspawn")) 
 	{
-		for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
-		{
-			if (!IsValidEntity(i_ObjectsSpawners[i]) || i_ObjectsSpawners[i] == 0)
-			{
-				Spawner_AddToArray(entity);
-				i_ObjectsSpawners[i] = entity;
-				i = ZR_MAX_SPAWNERS;
-			}
-		}
-		return;
+		RequestFrame(SDKHook_TeamSpawn_SpawnPost, entity);
 	}
 #endif
 	

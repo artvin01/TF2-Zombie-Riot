@@ -804,32 +804,33 @@ public void OnPostThink(int client)
 
 		bool Has_Wave_Showing = false;
 		
-		if(!Rogue_Mode())
+		if(f_ClientServerShowMessages[client])
 		{
-			if(f_ClientServerShowMessages[client])
+			Has_Wave_Showing = true; //yay :)
+			SetGlobalTransTarget(client);
+			char WaveString[64];
+			if(Rogue_Mode() && Rogue_InSetup())
 			{
-				Has_Wave_Showing = true; //yay :)
-				SetGlobalTransTarget(client);
-				char WaveString[64];
-				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
-				i_WhatLevelForHudIsThisClientAt[client] -= 1;
-				Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
-				KvSetColor(hKv, "color", 0, 255, 0, 255); //green
-				KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
-				KvSetNum(hKv,   "time",  10); // how long? 
-				//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
-				CreateDialog(client, hKv, DialogType_Msg);
-				delete hKv;
+				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Stage", Rogue_GetRound()+1, Rogue_GetWave()+1); 
 			}
 			else
 			{
-				if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
-				{
-					f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
-					SetGlobalTransTarget(client);
-					PrintToChat(client,"%t", "Show Plugin Messages Hint");
-				}
+				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
 			}
+			i_WhatLevelForHudIsThisClientAt[client] -= 1;
+			Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
+			KvSetColor(hKv, "color", 0, 255, 0, 255); //green
+			KvSetNum(hKv,   "level", i_WhatLevelForHudIsThisClientAt[client]); //im not sure..
+			KvSetNum(hKv,   "time",  10); // how long? 
+			//	CreateDialog(client, hKv, DialogType_Text); //Cool hud stuff!
+			CreateDialog(client, hKv, DialogType_Msg);
+			delete hKv;
+		}
+		else if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
+		{
+			f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
+			SetGlobalTransTarget(client);
+			PrintToChat(client,"%t", "Show Plugin Messages Hint");
 		}
 
 		int Extra = Armor_Level[client];

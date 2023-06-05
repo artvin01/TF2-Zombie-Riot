@@ -640,6 +640,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					else
 					{
 						entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+						PrintToChatAll("UNKNOWN SPAWN POINT \"%s\", REPORT BUG", enemy.Spawn);
 					}
 				}
 				else

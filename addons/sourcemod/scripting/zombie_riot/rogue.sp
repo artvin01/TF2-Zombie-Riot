@@ -127,6 +127,14 @@ enum struct Floor
 	char Skyname[64];
 	int RoomCount;
 
+	char MusicNormal[PLATFORM_MAX_PATH];
+	int TimeNormal;
+	bool CustomNormal;
+
+	char MusicCurse[PLATFORM_MAX_PATH];
+	int TimeCurse;
+	bool CustomCurse;
+
 	ArrayList Encounters;
 	ArrayList Finals;
 
@@ -142,6 +150,36 @@ enum struct Floor
 		this.RoomCount = kv.GetNum("rooms", 2) - 2;
 		kv.GetString("camera", this.Camera, 64);
 		kv.GetString("skyname", this.Skyname, 64);
+
+		kv.GetString("normal_path", this.MusicNormal, PLATFORM_MAX_PATH);
+		this.TimeNormal = kv.GetNum("normal_time");
+		this.CustomNormal = view_as<bool>(kv.GetNum("normal_download"));
+		if(this.MusicNormal[0])
+		{
+			if(this.CustomNormal)
+			{
+				PrecacheSoundCustom(this.MusicNormal);
+			}
+			else
+			{
+				PrecacheSound(this.MusicNormal);
+			}
+		}
+
+		kv.GetString("curse_path", this.MusicCurse, PLATFORM_MAX_PATH);
+		this.TimeCurse = kv.GetNum("curse_time");
+		this.CustomCurse = view_as<bool>(kv.GetNum("curse_download"));
+		if(this.MusicCurse[0])
+		{
+			if(this.CustomCurse)
+			{
+				PrecacheSoundCustom(this.MusicCurse);
+			}
+			else
+			{
+				PrecacheSound(this.MusicCurse);
+			}
+		}
 
 		Stage stage;
 
@@ -229,6 +267,7 @@ bool b_ResearchSquad;
 void Rogue_PluginStart()
 {
 	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
+	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
 }
 
 public Action Rogue_DebugGive(int client, int args)
@@ -237,6 +276,15 @@ public Action Rogue_DebugGive(int client, int args)
 	GetCmdArgString(buffer, sizeof(buffer));
 	ReplaceString(buffer, sizeof(buffer), "\"", "");
 	Rogue_GiveNamedArtifact(buffer);
+	return Plugin_Handled;
+}
+
+public Action Rogue_DebugSkip(int client, int args)
+{
+	if(!InRogueMode)
+		return Plugin_Continue;
+	
+	SetProgressTime(1.0, true);
 	return Plugin_Handled;
 }
 
@@ -257,6 +305,8 @@ void Rogue_MapStart()
 
 void Rogue_SetupVote(KeyValues kv)
 {
+	PrecacheSound("#music/ravenholm_1.mp3");
+
 	InRogueMode = true;
 
 	Zero(VotedFor);
@@ -397,7 +447,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			}
 			
 			menu.ExitButton = false;
-			menu.Display(client, MENU_TIME_FOREVER);
+			menu.Display(client, RoundToCeil(VoteEndTime - GetGameTime()));
 			return true;
 		}
 
@@ -654,6 +704,8 @@ void Rogue_BattleVictory()
 	{
 		floor.Encounters.GetArray(CurrentStage, stage);
 	}
+
+	SetFloorMusic(floor, false);
 	
 	if(stage.Relay[0])	// OnUser3 when victory
 		ExcuteRelay(stage.Relay, "FireUser3");
@@ -800,12 +852,18 @@ void Rogue_NextProgress()
 						{
 							SetGlobalTransTarget(client);
 							ShowHudText(client, -1, "%t", floor.Name);
+							Music_Stop_All(client);
 						}
 					}
 
 					// TODO: Curse Rolls
 
 					SetProgressTime(7.0, false);
+
+					//if(!CURSE_FLOOR_CHECK)
+					{
+						SetFloorMusic(floor, true);
+					}
 				}
 			}
 			else if(CurrentCount == floor.RoomCount)	// Final Stage
@@ -819,6 +877,7 @@ void Rogue_NextProgress()
 				}
 				else
 				{
+					SetFloorMusic(floor, true);
 					SetNextStage(id, true, stage, 30.0);
 				}
 			}
@@ -856,8 +915,13 @@ void Rogue_NextProgress()
 
 				if(Voting.Length)
 				{
+					SetFloorMusic(floor, true);
+
 					Rogue_StartGenericVote();
 					GameState = State_Vote;
+
+					char_MusicString2[0] = 0;
+					char_RaidMusicSpecial1[0] = 0;
 				}
 				else	// We somehow ran out of normal rooms
 				{
@@ -870,6 +934,38 @@ void Rogue_NextProgress()
 		default:
 		{
 			PrintToChatAll("INVALID GAME STATE %d, REPORT BUG", GameState);
+		}
+	}
+}
+
+static void SetFloorMusic(const Floor floor, bool stop)
+{
+	bool curse;
+	if(char_RaidMusicSpecial1[0] || !StrEqual(char_MusicString1, curse ? floor.MusicCurse : floor.MusicNormal))
+	{
+		if(stop)
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+					Music_Stop_All(client);
+			}
+		}
+
+		char_MusicString2[0] = 0;
+		char_RaidMusicSpecial1[0] = 0;
+
+		if(curse)
+		{
+			strcopy(char_MusicString1, sizeof(char_MusicString1), floor.MusicCurse);
+			i_MusicLength1 = floor.TimeCurse;
+			b_MusicCustom1 = floor.CustomCurse;
+		}
+		else
+		{
+			strcopy(char_MusicString1, sizeof(char_MusicString1), floor.MusicNormal);
+			i_MusicLength1 = floor.TimeNormal;
+			b_MusicCustom1 = floor.CustomNormal;
 		}
 	}
 }
@@ -922,7 +1018,7 @@ static bool CallGenericVote(int client)
 	}
 	
 	menu.ExitButton = false;
-	menu.Display(client, MENU_TIME_FOREVER);
+	menu.Display(client, RoundToCeil(VoteEndTime - GetGameTime()));
 	return true;
 }
 
@@ -958,9 +1054,11 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 							GetStageByName(floor, vote.Config, false, stage);
 
 							SetClientCamera(client, stage.Camera, stage.Skyname);
+
+							Rogue_CallVote(client, true);
 							return 0;
 						}
-						else if(vote.Desc[0])
+						else
 						{
 							CPrintToChat(client, "%t", vote.Desc);
 							Rogue_CallVote(client, true);
@@ -1027,6 +1125,16 @@ static void StartBattle(const Stage stage, float time = 3.0)
 	delete kv;
 
 	CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+
+	char_MusicString1[0] = 0;
+	char_MusicString2[0] = 0;
+	char_RaidMusicSpecial1[0] = 0;
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+			Music_Stop_All(client);
+	}
 
 	if(b_LeaderSquad)
 	{
@@ -1189,12 +1297,12 @@ static void SetClientCamera(int client, const char[] name = "", const char[] sky
 			}
 		}
 
-		TF2_AddCondition(client, TFCond_FreezeInput);
+		//TF2_AddCondition(client, TFCond_FreezeInput);
 	}
-	else
-	{
-		TF2_RemoveCondition(client, TFCond_FreezeInput);
-	}
+	//else
+	//{
+	//	TF2_RemoveCondition(client, TFCond_FreezeInput);
+	//}
 	
 	SetClientViewEntity(client, client);
 }
@@ -1231,7 +1339,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 		if(IsClientInGame(client))
 		{
 			SetClientViewEntity(client, client);
-			TF2_RemoveCondition(client, TFCond_FreezeInput);
+			//TF2_RemoveCondition(client, TFCond_FreezeInput);
 		}
 	}
 	ClearAllCameras();
@@ -1312,10 +1420,10 @@ void Rogue_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
 	if(CurrentCollection)
 	{
 		Artifact artifact;
-		int length = Artifacts.Length;
+		int length = CurrentCollection.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(i, artifact);
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(artifact.FuncAlly != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncAlly);
@@ -1332,10 +1440,10 @@ void Rogue_GiveItem(int entity)
 	if(CurrentCollection)
 	{
 		Artifact artifact;
-		int length = Artifacts.Length;
+		int length = CurrentCollection.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(i, artifact);
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(artifact.FuncWeapon != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncWeapon);
@@ -1351,10 +1459,10 @@ void Rogue_AllySpawned(int entity)
 	if(CurrentCollection)
 	{
 		Artifact artifact;
-		int length = Artifacts.Length;
+		int length = CurrentCollection.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(i, artifact);
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(artifact.FuncAlly != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncAlly);
@@ -1371,10 +1479,10 @@ void Rogue_EnemySpawned(int entity)
 	if(CurrentCollection)
 	{
 		Artifact artifact;
-		int length = Artifacts.Length;
+		int length = CurrentCollection.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(i, artifact);
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(artifact.FuncEnemy != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncEnemy);
@@ -1390,12 +1498,12 @@ stock bool Rogue_HasNamedArtifact(const char[] name)
 	if(CurrentCollection)
 	{
 		Artifact artifact;
-		int length = Artifacts.Length;
+		int length = CurrentCollection.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(i, artifact);
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
-				return CurrentCollection.FindValue(i) != -1;
+				return true;
 		}
 	}
 	return false;
@@ -1482,10 +1590,10 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 	if(CurrentCollection)
 	{
 		Artifact artifact;
-		int length = Artifacts.Length;
+		int length = CurrentCollection.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(i, artifact);
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
 			{
 				if(artifact.FuncRemove != INVALID_FUNCTION)	// Items can only be "removed" when have a func_remove
@@ -1498,9 +1606,9 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 				return;
 			}
 		}
-	}
 
-	PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
+		PrintToChatAll("UNKNOWN ITEM \"%s\", REPORT BUG", name);
+	}
 }
 
 int Rogue_GetIngots()
@@ -1581,7 +1689,7 @@ void ForceClientViewOntoEntity(int client, int entity)
 	if(IsValidEntity(ViewTarget))
 	{
 		SetClientViewEntity(client, ViewTarget);
-		TF2_AddCondition(client, TFCond_FreezeInput);
+		//TF2_AddCondition(client, TFCond_FreezeInput);
 	}
 	else
 	{
@@ -1598,7 +1706,7 @@ void ForceClientViewOntoEntity(int client, int entity)
 			DispatchSpawn(viewcontrol);
 			ViewCamareasTemp[entity] = EntIndexToEntRef(viewcontrol);		
 			SetClientViewEntity(client, viewcontrol);
-			TF2_AddCondition(client, TFCond_FreezeInput);
+			//TF2_AddCondition(client, TFCond_FreezeInput);
 		}
 	}
 }

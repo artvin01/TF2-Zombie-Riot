@@ -3,7 +3,7 @@ public void Rogue_BonusLife_Collect()
 	Rogue_AddBonusLife(1);
 }
 
-public void Rogue_LeaderSquad_Collect()
+public void Rogue_Leader_Collect()
 {
 	b_LeaderSquad = true;
 	Rogue_AddBonusLife(1);
