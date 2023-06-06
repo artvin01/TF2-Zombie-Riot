@@ -1540,12 +1540,47 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				
 				if((CurrentCash - CashSpent[client]) >= info.Cost)
 				{
-					CashSpent[client] += info.Cost;
-					CashSpentTotal[client] += info.Cost;
-					item.BuyPrice[client] = info.Cost;
+					if(Rogue_Mode())
+					{
+						if(info.RougeBuildMax == -999)
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+						}
+						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+						}
+						else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+						}
+					}
+					bool MoneyTake = true;
+					if(Rogue_Mode())
+					{
+						if(info.RougeBuildMax > -1)
+						{
+							MoneyTake = false;
+						}
+					}
+					
+					if(MoneyTake)
+					{
+						CashSpent[client] += info.Cost;
+						CashSpentTotal[client] += info.Cost;
+						item.BuyPrice[client] = info.Cost;
+						item.Sell[client] = ItemSell(base, info.Cost);
+					}
+					else
+					{
+						item.BuyPrice[client] = 0;
+						item.Sell[client] = 0;
+					}
 					item.RogueBoughtRecently[client] += 1;
 					Store_BuyClientItem(client, item, info);
-					item.Sell[client] = ItemSell(base, info.Cost);
 					item.BuyWave[client] = Rogue_GetRoundScale();
 					if(!item.BoughtBefore[client])
 					{
