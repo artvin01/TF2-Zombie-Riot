@@ -1,18 +1,14 @@
-public void Rogue_Vote_Encounter(const Vote vote)
+public void Rogue_Vote_BattleEncounter(const Vote vote)
 {
 	if(vote.Config[0])
-	{
 		Rogue_StartThisBattle();
-	}
-	else
-	{
-		Rogue_NextProgress();
-	}
 }
 
 public float Rogue_Encounter_OptionalBattle()
 {
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Encounter, "Optional Battle Title");
+	Rogue_SetBattleIngots(8);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Optional Battle Title");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "We can handle this");
@@ -25,7 +21,13 @@ public float Rogue_Encounter_OptionalBattle()
 	vote.Config[0] = 0;
 	list.PushArray(vote);
 
-	Rogue_StartGenericVote();
+	Rogue_StartGenericVote(20.0);
 
-	return 30.0;
+	return 25.0;
+}
+
+public float Rogue_Encounter_HardBattle()
+{
+	Rogue_SetBattleIngots(5);
+	return 0.0;
 }

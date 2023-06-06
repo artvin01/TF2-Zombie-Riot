@@ -36,6 +36,16 @@
 		"#format"	"{1:t},{2:t}"
 		"en"	"{yellow}{1}{default}: {2}"
 	}
+	"Gained Ingots"
+	{
+		"#format"	"{1:d}"
+		"en"	"{green}Gained {1} Australium Ingots!"
+	}
+	"Australium Ingots"
+	{
+		"#format"	"{1:d}"
+		"en"	"Australium Ingots: {1}"
+	}
 	"Encounter"
 	{
 		"en"	"Encounter"
@@ -48,7 +58,7 @@
 	// Encounters
 	"Optional Battle Title"
 	{
-		"en"	"Something seems off about this, should we can fight or leave right here."
+		"en"	"Something seems off about this, should we fight or leave right here."
 	}
 	"We can handle this"
 	{
@@ -65,6 +75,150 @@
 	"Leave this encounter"
 	{
 		"en"	"Leave this encounter"
+	}
+	"Shop Encounter Title"
+	{
+		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
+	}
+	"Better save up now"
+	{
+		"en"	"Better save up now"
+	}
+	"Boons Encounter Title"
+	{
+		"en"	"Some items are present before you, but you seem to be only to pick one."
+	}
+	"There's nothing here?"
+	{
+		"en"	"There's nothing here?"
+	}
+	"Lore Title"
+	{
+		"en"	"..."
+	}
+	"The Sword in the Stone"
+	{
+		"en"	"The Sword in the Stone"
+	}
+	"Sword and Stone Lore"
+	{
+		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone. He claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler. However, he has no way to pull out the sword from the stone."
+	}
+	"Sword and Stone Option 1"
+	{
+		"en"	"Might as well smash the sword into two halves"
+	}
+	"Sword and Stone Lore 1"
+	{
+		"en"	"You rack your brain to come up with a solution. In the end, you smash the sword in two. Seeing half of the sword still stuck in the stone, the knight lets out a long sigh, shakes his head, and leaves."
+	}
+	"Sword and Stone Option 2"
+	{
+		"en"	"Could use the stone as a hammer"
+	}
+	"Sword and Stone Lore 2"
+	{
+		"en"	"Taking your advice, the knight attempts to lift the sword, the stone still attached. Unable to keep his balance, he trips and falls on the ground head first, knocking himself unconscious."
+	}
+	"Sword and Stone Option 3"
+	{
+		"en"	"Doesn't look like it's necessary"
+	}
+	"Sword and Stone Lore 3"
+	{
+		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government. Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
+	}
+	"Theatrical Necessities"
+	{
+		"en"	"Theatrical Necessities"
+	}
+	"Theatrical Lore"
+	{
+		"en"	"You find a middle-aged man rambling away in front of a dressing table. He notices you and howls in your direction, asking you to deliver the prop on the table to the actress. You look at the dressing table and find a crown entwined with thorns."
+	}
+	"Theatrical Option 1"
+	{
+		"en"	"Listen to his demands"
+	}
+	"Theatrical Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
+	}
+	"Theatrical Lore 1"
+	{
+		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden. You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
+	}
+	"Theatrical Option 2"
+	{
+		"en"	"Ignore him"
+	}
+	"Theatrical Lore 2"
+	{
+		"en"	"You ignore the middle-aged man's howlings and leave."
+	}
+	"Eccentric Hunchback"
+	{
+		"en"	"Eccentric Hunchback"
+	}
+	"Eccentric Lore"
+	{
+		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh. ''You don't understand that Combine, do you? You seem to trust him, though.'' The strange woman looks at you through her helmet and scarf. ''I can tell you all about his past. Are you interested?'' She reaches out her shriveled hands, seemingly asking for something."
+	}
+	"Eccentric Option 1"
+	{
+		"en"	"I definitely want to know"
+	}
+	"Eccentric Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+	}
+	"Eccentric Lore 1"
+	{
+		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload. 'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other."
+	}
+	"Eccentric Option 2"
+	{
+		"en"	"Guess not, then"
+	}
+	"Eccentric Lore 2"
+	{
+		"en"	"This is too sketchy. Forget it."
+	}
+	"Eccentric Option 1-1"
+	{
+		"en"	"Ask about the ''Shadow''"
+	}
+	"Eccentric Lore 1-1"
+	{
+		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+	}
+	"Eccentric Option 1-2"
+	{
+		"en"	"Ask about the ''Bladedance''"
+	}
+	"Eccentric Lore 1-2"
+	{
+		"en"	"''Ah, he's locked away. Your Combine friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
+	}
+	"Eccentric Option 1-3"
+	{
+		"en"	"Ask about the ''Whiteflower''"
+	}
+	"Eccentric Lore 1-3"
+	{
+		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
+	}
+	"Eccentric Option 1-4"
+	{
+		"en"	"Ask about ''The First''"
+	}
+	"Eccentric Desc 1-4"
+	{
+		"en"	"{green}Gain 4 Australium Ingots"
+	}
+	"Eccentric Lore 1-4"
+	{
+		"en"	"''How could be so brave as to ask about him? What a reckless lunatic. For your fearlessness, I will give you your money back, but I don't want to die yet. I can't tell you anything.''"
 	}
 
 	// Stages

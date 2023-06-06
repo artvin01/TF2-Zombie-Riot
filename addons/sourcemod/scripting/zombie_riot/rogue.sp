@@ -256,8 +256,10 @@ static int CurrentStage;
 static bool CurrentType;
 static ArrayList CurrentExclude;
 static ArrayList CurrentCollection;
+static ArrayList CurrentMissed;
 static int CurrentIngots;
 static int BonusLives;
+static int BattleIngots;
 
 // Rogue Items
 bool b_LeaderSquad;
@@ -284,7 +286,7 @@ public Action Rogue_DebugSkip(int client, int args)
 	if(!InRogueMode)
 		return Plugin_Continue;
 	
-	SetProgressTime(1.0, true);
+	Rogue_SetProgressTime(1.0, true);
 	return Plugin_Handled;
 }
 
@@ -592,7 +594,7 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 			wait = time;
 	}
 
-	SetProgressTime(wait, true, true);
+	Rogue_SetProgressTime(wait, true, true);
 }
 
 void Rogue_RoundEnd()
@@ -649,6 +651,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			{
 				Call_StartFunction(null, VoteFunc);
 				Call_PushArray(vote, sizeof(vote));
+				Call_PushCell(highest);
 				Call_Finish();
 			}
 		}
@@ -688,9 +691,17 @@ void Rogue_BattleVictory()
 	Waves_RoundEnd();
 	Store_RogueEndFightReset();
 
-	// TODO: Victory stuff
+	if(BattleIngots > 0)
+	{
+		CurrentIngots += BattleIngots;
+		CPrintToChatAll("%t", "Gained Ingots", BattleIngots);
 
-	SetProgressTime(30.0, true);
+		Artifact artifact;
+		if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
+	}
+
+	Rogue_SetProgressTime(30.0, true);
 	
 	Floor floor;
 	Floors.GetArray(CurrentFloor, floor);
@@ -716,7 +727,7 @@ bool Rogue_BattleLost()
 	if(BonusLives > 0)
 	{
 		BonusLives--;
-		SetProgressTime(5.0, false, true);
+		Rogue_SetProgressTime(5.0, false, true);
 		return false;
 	}
 	
@@ -778,6 +789,16 @@ void Rogue_NextProgress()
 			else
 			{
 				SetNextStage(id, false, stage, 15.0);
+			}
+
+			SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(!b_IsPlayerABot[client] && IsClientInGame(client))
+				{
+					SetGlobalTransTarget(client);
+					ShowHudText(client, -1, "%t", floor.Name);
+				}
 			}
 		}
 		case State_Trans:
@@ -858,7 +879,7 @@ void Rogue_NextProgress()
 
 					// TODO: Curse Rolls
 
-					SetProgressTime(7.0, false);
+					Rogue_SetProgressTime(7.0, false);
 
 					//if(!CURSE_FLOOR_CHECK)
 					{
@@ -988,7 +1009,7 @@ void Rogue_StartGenericVote(float time = 20.0)
 	VoteEndTime = GetGameTime() + time;
 	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
-	SetProgressTime(time + 10.0, false);
+	Rogue_SetProgressTime(time + 10.0, false);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -999,6 +1020,9 @@ void Rogue_StartGenericVote(float time = 20.0)
 
 static bool CallGenericVote(int client)
 {
+	if(TeutonType[client] == TEUTON_WAITING)
+		return false;
+	
 	Menu menu = new Menu(Rogue_CallGenericVoteH);
 	
 	SetGlobalTransTarget(client);
@@ -1058,6 +1082,23 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 							Rogue_CallVote(client, true);
 							return 0;
 						}
+						else if(StrEqual(vote.Desc, "Artifact Config Info"))
+						{
+							FormatEx(vote.Name, sizeof(vote.Name), "%s Desc", vote.Config);
+							CPrintToChat(client, "%t", "Artifact Info", vote.Config, vote.Name);
+
+							Rogue_CallVote(client, true);
+							return 0;
+						}
+						else if(StrEqual(vote.Desc, "Artifact Info"))
+						{
+							SplitString(vote.Name, " △", vote.Name, sizeof(vote.Name));
+							FormatEx(vote.Config, sizeof(vote.Config), "%s Desc", vote.Name);
+							CPrintToChat(client, "%t", "Artifact Info", vote.Name, vote.Config);
+
+							Rogue_CallVote(client, true);
+							return 0;
+						}
 						else
 						{
 							CPrintToChat(client, "%t", vote.Desc);
@@ -1086,7 +1127,7 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 	{
 		GameState = State_Trans;
 		SetAllCamera(stage.Camera, stage.Skyname);
-		SetProgressTime(time, true);
+		Rogue_SetProgressTime(time, true);
 	}
 	else
 	{
@@ -1112,7 +1153,7 @@ void Rogue_StartThisBattle(float time = 10.0)
 	}
 
 	StartBattle(stage, time + 1.0);
-	SetProgressTime(time, true);
+	Rogue_SetProgressTime(time, true);
 }
 
 static void StartBattle(const Stage stage, float time = 3.0)
@@ -1164,6 +1205,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 static void StartStage(const Stage stage)
 {
 	GameState = State_Stage;
+	BattleIngots = 3;
 	SetAllCamera();
 
 	float time = stage.WaveSet[0] ? 0.0 : 10.0;
@@ -1179,7 +1221,7 @@ static void StartStage(const Stage stage)
 	}
 	else
 	{
-		SetProgressTime(time, false);
+		Rogue_SetProgressTime(time, false);
 	}
 
 	Waves_SetSkyName(stage.Skyname);
@@ -1224,7 +1266,7 @@ static void StartStage(const Stage stage)
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE)
+		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
 			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
 	}
 	
@@ -1345,7 +1387,7 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 	ClearAllCameras();
 }
 
-static void SetProgressTime(float time, bool hud, bool waitForPlayers = false)
+void Rogue_SetProgressTime(float time, bool hud, bool waitForPlayers = false)
 {
 	delete ProgressTimer;
 	ProgressTimer = CreateTimer(time, waitForPlayers ? Rogue_RoundStartTimer : Rogue_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -1493,6 +1535,53 @@ void Rogue_EnemySpawned(int entity)
 	}
 }
 
+int Rogue_GetRandomArtfiact(Artifact artifact, bool blacklist, int forcePrice = -1)
+{
+	if(!CurrentMissed)
+		CurrentMissed = new ArrayList();
+	
+	ArrayList list = new ArrayList();
+
+	int length = Artifacts.Length;
+	for(int i; i < length; i++)
+	{
+		Artifacts.GetArray(i, artifact);
+		if(forcePrice == -1)
+		{
+			if(artifact.DropChance &&	// Can drop
+				(!CurrentCollection || CurrentCollection.FindValue(i) == -1) &&	// Not collected
+				(!blacklist || !CurrentMissed || CurrentMissed.FindValue(i) == -1))	// Not blacklisted
+			{
+				for(int a; a < artifact.DropChance; a++)
+				{
+					list.Push(i);
+				}
+			}
+		}
+		else if(artifact.ShopCost == forcePrice &&	// In price
+			(!CurrentCollection || CurrentCollection.FindValue(i) == -1) &&	// Not collected
+			(!blacklist || !CurrentMissed || CurrentMissed.FindValue(i) == -1))	// Not blacklisted
+		{
+			list.Push(i);
+		}
+	}
+
+	int found = -1;
+	length = list.Length;
+
+	if(length)
+	{
+		found = list.Get(GetURandomInt() % length);
+		Artifacts.GetArray(found, artifact);
+
+		if(blacklist)
+			CurrentMissed.Push(found);
+	}
+
+	delete list;
+	return found;
+}
+
 stock bool Rogue_HasNamedArtifact(const char[] name)
 {
 	if(CurrentCollection)
@@ -1614,12 +1703,16 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
-
 }
 
 void Rogue_AddIngots(int amount)
 {
 	CurrentIngots += amount;
+}
+
+void Rogue_SetBattleIngots(int amount)
+{
+	BattleIngots = amount;
 }
 
 stock int Rogue_GetBonusLife()
@@ -1763,6 +1856,7 @@ bool IS_MusicReleasingRadio()
 //This is only needed for items that are more then just flat stat changes.
 
 #include "roguelike/encounter_battles.sp"
+#include "roguelike/encounter_items.sp"
 #include "roguelike/item_generic.sp"
 #include "roguelike/item_squads.sp"
 #include "roguelike/item_barracks.sp"

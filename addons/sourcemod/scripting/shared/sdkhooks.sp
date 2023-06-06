@@ -1067,12 +1067,25 @@ public void OnPostThink(int client)
 
 			downsleft -= i_AmountDowned[client];
 
-			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-			"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-			PerkNames[i_CurrentEquippedPerk[client]],
-			"Zombies Left", Zombies_Currently_Still_Ongoing
-			);
+			if(Rogue_Mode() && Rogue_InSetup())
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
+				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+				PerkNames[i_CurrentEquippedPerk[client]],
+				"Australium Ingots", Rogue_GetIngots()
+				);
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
+				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+				PerkNames[i_CurrentEquippedPerk[client]],
+				"Zombies Left", Zombies_Currently_Still_Ongoing
+				);
+				
+			}
 
 			if(f_LeftForDead_Cooldown[client] > GameTime)
 			{

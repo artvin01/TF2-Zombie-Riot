@@ -2290,7 +2290,7 @@
 	"Downs left"
 	{
 		"#format"	"{1:d}"
-		"en"		"Downs left : {1}"
+		"en"		"Downs Left: {1}"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -2304,7 +2304,7 @@
 	"Down Cooldown"
 	{
 		"#format"	"{1:.1f}"
-		"en"		"Down Cooldown : {1}"
+		"en"		"Down Cooldown: {1}"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
