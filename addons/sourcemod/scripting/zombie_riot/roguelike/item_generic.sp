@@ -305,7 +305,14 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 
 public void Rogue_Item_HandWrittenLetter()
 {
-	//Give +3 hope
+	CurrentCash += 750;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			CashRecievedNonWave[client] += 750;
+		}
+	}	
 }
 public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 {
@@ -366,7 +373,14 @@ public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 public void Rogue_Item_CrudeFlute()
 {
 	b_CrudeFlute = true;
-	//Give +2 hope
+	CurrentCash += 500;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			CashRecievedNonWave[client] += 500;
+		}
+	}	
 }
 public void Rogue_Item_CrudeFluteRemove()
 {
@@ -413,12 +427,12 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 
 public void Rogue_Item_ScrappedWallet()
 {
+	CurrentCash += 500;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
 			CashRecievedNonWave[client] += 500;
-			CashSpent[client] -= 500;
 		}
 	}	
 }

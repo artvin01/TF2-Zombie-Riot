@@ -8,6 +8,10 @@
 	{
 		"en"	"INVALID DESC"
 	}
+	"Allies Amongst Chaos"
+	{
+		"en"	"Allies Amongst Chaos"
+	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
@@ -420,7 +424,7 @@
 	}
 	"Hand Written Letter Desc"
 	{
-		"en"	"Dropped letter, the languge seems to be in french, it wasnt ment for you.\n- +3 Hope, 2%% more damage."
+		"en"	"Dropped letter, the languge seems to be in french, it wasnt ment for you.\n- +750 Cash, 2%% more damage."
 	}
 	"Crude Flute"
 	{
@@ -428,7 +432,7 @@
 	}
 	"Crude Flute Desc"
 	{
-		"en"	"Music instrument, good for relaxing, needed in sitations like these.\n- +2 Hope, +3%% MaxHealth."
+		"en"	"Music instrument, good for relaxing, needed in sitations like these.\n- +500 Cash, +3%% MaxHealth."
 	}
 	"Scrapped Wallet"
 	{

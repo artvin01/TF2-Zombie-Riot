@@ -848,6 +848,11 @@ void Waves_Progress()
 			
 			float playercount = float(CountPlayersOnRed());
 			
+			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
+			{
+				playercount = 0.70;
+			}
+
 			float multi = Pow(1.08, playercount);
 
 			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%

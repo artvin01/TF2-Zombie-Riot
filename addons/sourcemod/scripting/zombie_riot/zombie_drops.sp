@@ -86,6 +86,10 @@ public void DropPowerupChance(int entity)
 				SpawnMoney(entity); //Dont care.)
 		}
 	}
+	if(Rogue_Mode())
+	{
+		return;
+	}
 	i_KilledThisMany_Nuke += 1;
 	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
 	{

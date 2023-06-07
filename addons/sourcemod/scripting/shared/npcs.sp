@@ -1398,6 +1398,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage *= fl_RangedArmor[victim];
 			damage *= fl_Extra_RangedArmor[victim];
 		}
+		damage *= fl_Extra_Damage[attacker];
+
 		//No resistances towards slash as its internal.
 
 		if(damagePosition[0] != 0.0) //If there is no pos, then dont.
