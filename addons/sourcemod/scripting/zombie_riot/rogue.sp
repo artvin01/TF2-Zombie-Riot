@@ -82,7 +82,6 @@ enum struct Stage
 	char Camera[64];
 	char Spawn[64];
 	char Skyname[64];
-	char Relay[64];
 	bool Hidden;
 
 	Function FuncStart;
@@ -100,7 +99,6 @@ enum struct Stage
 		kv.GetString("camera", this.Camera, 64);
 		kv.GetString("spawn", this.Spawn, 64);
 		kv.GetString("skyname", this.Skyname, 64);
-		kv.GetString("relay", this.Relay, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
@@ -723,9 +721,6 @@ void Rogue_BattleVictory()
 	}
 
 	SetFloorMusic(floor, false);
-	
-	if(stage.Relay[0])	// OnUser3 when victory
-		ExcuteRelay(stage.Relay, "FireUser3");
 }
 
 bool Rogue_BattleLost()
@@ -758,9 +753,6 @@ bool Rogue_BattleLost()
 		{
 			floor.Encounters.GetArray(CurrentStage, stage);
 		}
-
-		if(stage.Relay[0])	// OnUser3 when victory
-			ExcuteRelay(stage.Relay, "FireUser3");
 
 		BonusLives--;
 		return false;
@@ -870,9 +862,6 @@ void Rogue_NextProgress()
 				{
 					floor.Encounters.GetArray(CurrentStage, stage);
 				}
-				
-				if(stage.Relay[0])	// OnUser2 on leave
-					ExcuteRelay(stage.Relay, "FireUser2");
 			}
 			
 			if(CurrentCount > floor.RoomCount)
@@ -1339,9 +1328,6 @@ static void StartStage(const Stage stage)
 		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
 			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
 	}
-	
-	if(stage.Relay[0])	// OnUser1 when started
-		ExcuteRelay(stage.Relay, "FireUser1");
 }
 
 static void TeleportToSpawn()

@@ -40,6 +40,9 @@ enum struct Wave
 {
 	float Delay;
 	
+	char RelayName[64];
+	char RelayFire[64];
+
 	int Count;
 	Enemy EnemyData;
 }
@@ -600,6 +603,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 					{
 						wave.Delay = StringToFloat(buffer);
 						wave.Count = kv.GetNum("count", 1);
+
+						kv.GetString("relayname", wave.RelayName, sizeof(wave.RelayName));
+						kv.GetString("relayfire", wave.RelayFire, sizeof(wave.RelayFire));
 						
 						enemy.Index = StringToInt(plugin);
 						if(!enemy.Index)
@@ -836,6 +842,9 @@ void Waves_Progress()
 		{
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
+
+			if(wave.RelayName[0])
+				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
 			float playercount = float(CountPlayersOnRed());
 			
