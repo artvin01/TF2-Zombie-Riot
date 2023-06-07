@@ -57,6 +57,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
+	NPC_RoundStart();
 	Waves_RoundStart();
 #endif
 
@@ -150,7 +151,6 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			TeutonType[client_check] = 0;
 	}
 	
-	NPC_RoundEnd();
 	Store_Reset();
 	Waves_RoundEnd();
 	Escape_RoundEnd();

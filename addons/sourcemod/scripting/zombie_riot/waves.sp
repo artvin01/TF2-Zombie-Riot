@@ -82,6 +82,7 @@ enum struct Vote
 	char Config[64];
 	int Level;
 	char Desc[256];
+	char Append[16];
 }
 
 static ArrayList Rounds;
@@ -1343,6 +1344,10 @@ void Waves_Progress()
 		}
 		
 		AdjustBotCount(CurrentWave + 2);
+	}
+	else if(Rogue_Mode())
+	{
+		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
 	}
 	else
 	{

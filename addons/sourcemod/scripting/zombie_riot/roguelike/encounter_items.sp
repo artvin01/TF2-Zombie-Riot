@@ -41,7 +41,7 @@ public float Rogue_Encounter_Shop()
 	}
 
 	StartShopVote();
-	return 25.0;
+	return 35.0;
 }
 static void StartShopVote()
 {
@@ -60,7 +60,8 @@ static void StartShopVote()
 
 		if(ingots >= cost)
 		{
-			FormatEx(vote.Name, sizeof(vote.Name), "%s △%d%s", artifact.Name, cost, sale ? " {$}" : "");
+			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+			Format(vote.Append, sizeof(vote.Append), " △%d%s", cost, sale ? " {$}" : "");
 			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
 			IntToString(i, vote.Config, sizeof(vote.Config));
 			list.PushArray(vote);
@@ -68,11 +69,12 @@ static void StartShopVote()
 	}
 
 	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+	vote.Append[0] = 0;
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
 
-	Rogue_StartGenericVote(20.0);
+	Rogue_StartGenericVote(30.0);
 }
 public void Rogue_Vote_ShopEncounter(const Vote vote)
 {
@@ -96,7 +98,7 @@ public void Rogue_Vote_ShopEncounter(const Vote vote)
 		}
 
 		StartShopVote();
-		Rogue_SetProgressTime(25.0, false);
+		Rogue_SetProgressTime(35.0, false);
 	}
 	else
 	{

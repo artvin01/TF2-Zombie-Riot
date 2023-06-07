@@ -1344,6 +1344,7 @@ public void OnMapEnd()
 	Store_RandomizeNPCStore(true);
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
+	NPC_MapEnd();
 #endif
 
 #if defined RPG

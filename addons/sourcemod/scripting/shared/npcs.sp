@@ -80,10 +80,24 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-void NPC_RoundEnd()
+void NPC_MapEnd()
 {
 	delete SpawnerList;
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
+}
+
+void NPC_RoundStart()
+{
+	// Artvin TODO: Check whenever a teamspawn is deleted and remove from SpawnerList and other arrays
+
+	delete SpawnerList;
+	SpawnerList = new ArrayList(sizeof(SpawnerData));
+
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+	{
+		OnEntityCreated(entity, "info_player_teamspawn");
+	}
 }
 #endif
 

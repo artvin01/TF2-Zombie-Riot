@@ -242,6 +242,7 @@ static float VoteEndTime;
 static int VotedFor[MAXTF2PLAYERS];
 static Function VoteFunc;
 static char VoteTitle[256];
+static char StartingItem[64];
 
 static ArrayList Curses;
 static ArrayList Artifacts;
@@ -444,7 +445,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			for(int i; i < length; i++)
 			{
 				Voting.GetArray(i, vote);
-				Format(vote.Config, sizeof(vote.Config), "%t", vote.Name);
+				Format(vote.Config, sizeof(vote.Config), "%t%s", vote.Name, vote.Append);
 				menu.AddItem(vote.Name, vote.Config);
 			}
 			
@@ -593,6 +594,10 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 		if(wait < time)
 			wait = time;
 	}
+	else if(StartingItem[0])
+	{
+		Rogue_GiveNamedArtifact(StartingItem);
+	}
 
 	Rogue_SetProgressTime(wait, true, true);
 }
@@ -646,6 +651,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			if(VoteFunc == INVALID_FUNCTION)
 			{
 				Rogue_GiveNamedArtifact(vote.Name);
+				strcopy(StartingItem, sizeof(StartingItem), vote.Name);
 			}
 			else
 			{
@@ -724,10 +730,39 @@ void Rogue_BattleVictory()
 
 bool Rogue_BattleLost()
 {
-	if(BonusLives > 0)
+	if(BonusLives > 0)	// TODO: Flag when it's a boss stage
 	{
-		BonusLives--;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 10);
+			}
+		}
+
+		Waves_RoundEnd();
+		Store_RogueEndFightReset();
+
 		Rogue_SetProgressTime(5.0, false, true);
+		
+		Floor floor;
+		Floors.GetArray(CurrentFloor, floor);
+
+		Stage stage;
+		if(CurrentType)
+		{
+			floor.Finals.GetArray(CurrentStage, stage);
+		}
+		else
+		{
+			floor.Encounters.GetArray(CurrentStage, stage);
+		}
+
+		if(stage.Relay[0])	// OnUser3 when victory
+			ExcuteRelay(stage.Relay, "FireUser3");
+
+		BonusLives--;
 		return false;
 	}
 	
@@ -849,6 +884,19 @@ void Rogue_NextProgress()
 
 				if(CurrentFloor >= Floors.Length)	// All the floors are done
 				{
+					for(int client = 1; client <= MaxClients; client++)
+					{
+						if(!b_IsPlayerABot[client] && IsClientInGame(client))
+						{
+							Music_Stop_All(client);
+							SetMusicTimer(client, GetTime() + 33);
+						}
+					}
+
+					char_MusicString1[0] = 0;
+					char_MusicString2[0] = 0;
+					char_RaidMusicSpecial1[0] = 0;
+
 					CurrentFloor = 0;
 
 					EmitCustomToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
@@ -861,10 +909,15 @@ void Rogue_NextProgress()
 				}
 				else
 				{
+					TeleportToSpawn();
+
 					Floors.GetArray(CurrentFloor, floor);
 					SetAllCamera(floor.Camera, floor.Skyname);
 
 					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
+
+					// TODO: Curse Rolls
+					bool cursed;
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
@@ -874,16 +927,23 @@ void Rogue_NextProgress()
 							SetGlobalTransTarget(client);
 							ShowHudText(client, -1, "%t", floor.Name);
 							Music_Stop_All(client);
+							SetMusicTimer(client, cursed ? 0 : (GetTime() + 7));
 						}
 					}
 
-					// TODO: Curse Rolls
-
 					Rogue_SetProgressTime(7.0, false);
 
-					//if(!CURSE_FLOOR_CHECK)
+					if(cursed)
 					{
-						SetFloorMusic(floor, true);
+						strcopy(char_MusicString1, sizeof(char_MusicString1), "#music/ravenholm_1.mp3");
+						char_MusicString2[0] = 0;
+						char_RaidMusicSpecial1[0] = 0;
+						i_MusicLength1 = 30;
+						b_MusicCustom1 = false;
+					}
+					else
+					{
+						SetFloorMusic(floor, false);
 					}
 				}
 			}
@@ -898,6 +958,8 @@ void Rogue_NextProgress()
 				}
 				else
 				{
+					TeleportToSpawn();
+					
 					SetFloorMusic(floor, true);
 					SetNextStage(id, true, stage, 30.0);
 				}
@@ -936,6 +998,8 @@ void Rogue_NextProgress()
 
 				if(Voting.Length)
 				{
+					TeleportToSpawn();
+					
 					SetFloorMusic(floor, true);
 
 					Rogue_StartGenericVote();
@@ -969,7 +1033,10 @@ static void SetFloorMusic(const Floor floor, bool stop)
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
+				{
 					Music_Stop_All(client);
+					SetMusicTimer(client, GetTime() + 1);
+				}
 			}
 		}
 
@@ -1037,10 +1104,10 @@ static bool CallGenericVote(int client)
 	for(int i; i < length; i++)
 	{
 		Voting.GetArray(i, vote);
-		Format(vote.Name, sizeof(vote.Name), "%t", vote.Name);
+		Format(vote.Name, sizeof(vote.Name), "%t%s", vote.Name, vote.Append);
 		menu.AddItem(vote.Config, vote.Name);
 	}
-	
+
 	menu.ExitButton = false;
 	menu.Display(client, RoundToCeil(VoteEndTime - GetGameTime()));
 	return true;
@@ -1167,15 +1234,18 @@ static void StartBattle(const Stage stage, float time = 3.0)
 
 	CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 
-	char_MusicString1[0] = 0;
-	char_MusicString2[0] = 0;
-	char_RaidMusicSpecial1[0] = 0;
-
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
+		{
 			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 3);
+		}
 	}
+
+	char_MusicString1[0] = 0;
+	char_MusicString2[0] = 0;
+	char_RaidMusicSpecial1[0] = 0;
 
 	if(b_LeaderSquad)
 	{
@@ -1272,6 +1342,51 @@ static void StartStage(const Stage stage)
 	
 	if(stage.Relay[0])	// OnUser1 when started
 		ExcuteRelay(stage.Relay, "FireUser1");
+}
+
+static void TeleportToSpawn()
+{
+	float pos[3], ang[3];
+
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(IsValidEntity(i_ObjectsSpawners[i]))
+		{
+			if(GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == 2)
+			{
+				GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+				GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
+				break;
+			}
+		}
+	}
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+			TeleportEntity(client, pos, ang, NULL_VECTOR);
+	}
+	
+	for(int i; i < i_MaxcountNpc; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+	}
+	
+	for(int i; i < i_MaxcountNpc_Allied; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+	}
+
+	for(int i; i < i_MaxcountBuilding; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
+		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
+			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+	}
 }
 
 static int GetStageByName(const Floor floor, const char[] name, bool final, Stage stage)
