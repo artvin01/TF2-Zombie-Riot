@@ -269,6 +269,7 @@ void Rogue_PluginStart()
 {
 	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
 	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
+	RegAdminCmd("zr_setstage", Rogue_DebugSet, ADMFLAG_ROOT);
 }
 
 public Action Rogue_DebugGive(int client, int args)
@@ -286,6 +287,47 @@ public Action Rogue_DebugSkip(int client, int args)
 		return Plugin_Continue;
 	
 	Rogue_SetProgressTime(1.0, true);
+	return Plugin_Handled;
+}
+
+public Action Rogue_DebugSet(int client, int args)
+{
+	if(!InRogueMode)
+		return Plugin_Continue;
+	
+	if(args == 2)
+	{
+		int index = GetCmdArgInt(1);
+
+		Floor floor;
+		Floors.GetArray(index, floor);
+		CurrentFloor = index;
+
+		GetCmdArg(2, floor.Name, sizeof(floor.Name));
+		
+		Stage stage;
+		index = GetStageByName(floor, floor.Name, false, stage);
+		if(index == -1)
+		{
+			index = GetStageByName(floor, floor.Name, true, stage);
+			if(index == -1)
+			{
+				ReplyToCommand(client, "Unknown stage \"%s\"", floor.Name);
+			}
+			else
+			{
+				SetNextStage(index, true, stage);
+			}
+		}
+		else
+		{
+			SetNextStage(index, false, stage);
+		}
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: zr_setstage <floor number> <stage name>");
+	}
 	return Plugin_Handled;
 }
 
