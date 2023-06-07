@@ -1305,7 +1305,7 @@ methodmap Citizen < CClotBody
 			}
 			else if(this.m_bAlyx)
 			{
-				Barney_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
+				Alyx_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
 			}
 			else
 			{
