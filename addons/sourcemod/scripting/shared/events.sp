@@ -154,6 +154,7 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Store_Reset();
 	Waves_RoundEnd();
 	Escape_RoundEnd();
+	Rogue_RoundEnd();
 	CurrentGame = 0;
 }
 #endif
