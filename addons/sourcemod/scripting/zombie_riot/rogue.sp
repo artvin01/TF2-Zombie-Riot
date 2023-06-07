@@ -1385,7 +1385,7 @@ static void TeleportToSpawn()
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
-			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9, DMG_ACID);
 	}
 }
 
