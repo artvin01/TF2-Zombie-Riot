@@ -31,7 +31,7 @@
 #define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64
 #define ZR_MAX_BREAKBLES 32
-#define ZR_MAX_SPAWNERS 32 //cant ever have more then 32, if your map does, then what thed fuck are you doing ?
+#define ZR_MAX_SPAWNERS 128
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #if defined ZR
@@ -430,6 +430,10 @@ float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
 float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
+
+
+
+
 
 #define ABILITY_NONE                 0          	//Nothing special.
 
@@ -893,6 +897,7 @@ float fl_NextMeleeAttack[MAXENTITIES];
 float fl_Speed[MAXENTITIES];
 int i_Target[MAXENTITIES];
 float fl_GetClosestTargetTime[MAXENTITIES];
+float fl_GetClosestTargetTimeTouch[MAXENTITIES];
 float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
@@ -960,6 +965,7 @@ float fl_Dead_Ringer_Invis[MAXENTITIES];
 float fl_Dead_Ringer[MAXENTITIES];
 bool b_Dead_Ringer_Invis_bool[MAXENTITIES];
 int i_AttacksTillMegahit[MAXENTITIES];
+int i_WeaponArchetype[MAXENTITIES];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];
@@ -1017,6 +1023,11 @@ float f_CreditsOnKill[MAXENTITIES];
 int i_InSafeZone[MAXENTITIES];
 float fl_MeleeArmor[MAXENTITIES];
 float fl_RangedArmor[MAXENTITIES];
+
+float fl_Extra_MeleeArmor[MAXENTITIES];
+float fl_Extra_RangedArmor[MAXENTITIES];
+float fl_Extra_Speed[MAXENTITIES];
+float fl_Extra_Damage[MAXENTITIES];
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1160,6 +1171,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
 	LoadTranslations("zombieriot.phrases.icons"); 
+	LoadTranslations("zombieriot.phrases.rogue"); 
 	LoadTranslations("common.phrases");
 	
 	DHook_Setup();
@@ -1192,13 +1204,15 @@ public void OnPluginStart()
 			CurrentClass[client] = TF2_GetPlayerClass(client);
 		}
 	}
-	for( int i = 1; i <= MAXENTITIES; i++ ) 
+
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		if (IsValidEntity(i))
+		//if (IsValidEntity(i))
 		{
 			static char strClassname[64];
-			GetEntityClassname(i, strClassname, sizeof(strClassname));
-			OnEntityCreated(i,strClassname);
+			GetEntityClassname(entity, strClassname, sizeof(strClassname));
+			OnEntityCreated(entity,strClassname);
 		}
 	}
 }
@@ -1234,7 +1248,7 @@ public Action Timer_Temp(Handle timer)
 		PlayTickSound(false, true);
 	}
 	NPC_SpawnNext(false, false, false);
-	PlayerIllgalMapCheck();
+//	PlayerIllgalMapCheck();
 #endif
 	
 	return Plugin_Continue;
@@ -1330,6 +1344,7 @@ public void OnMapEnd()
 	Store_RandomizeNPCStore(true);
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
+	NPC_MapEnd();
 #endif
 
 #if defined RPG
@@ -1852,11 +1867,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					f_DisableDyingTimer[target] = GameTime + 0.15;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
-						dieingstate[target] -= 12;
+						dieingstate[target] -= 12 * Rogue_ReviveSpeed();
 					}
 					else
 					{
-						dieingstate[target] -= 6;
+						dieingstate[target] -= 6 * Rogue_ReviveSpeed();
 					}
 					
 					if(dieingstate[target] <= 0)
@@ -1882,16 +1897,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						PrintCenterText(client, "");
 						PrintCenterText(target, "");
 						DoOverlay(target, "");
-						if(!EscapeMode)
-						{
-							SetEntityHealth(target, 50);
-							RequestFrame(SetHealthAfterRevive, target);
-						}	
-						else
-						{
-							SetEntityHealth(target, 150);
-							RequestFrame(SetHealthAfterRevive, target);						
-						}
+						SetEntityHealth(target, 50);
+						RequestFrame(SetHealthAfterRevive, target);
 						int entity, i;
 						while(TF2U_GetWearable(target, entity, i))
 						{
@@ -1939,11 +1946,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving_this[client] = target;
 					if(i_CurrentEquippedPerk[client] == 1)
 					{
-						ticks = Citizen_ReviveTicks(target, 12, client);
+						ticks = Citizen_ReviveTicks(target, 12 * Rogue_ReviveSpeed(), client);
 					}
 					else
 					{
-						ticks = Citizen_ReviveTicks(target, 6, client);
+						ticks = Citizen_ReviveTicks(target, 6 * Rogue_ReviveSpeed(), client);
 					}
 					
 					if(ticks <= 0)
@@ -2158,21 +2165,28 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	return action;
 }
 
+public void SDKHook_TeamSpawn_SpawnPost(int entity)
+{
+	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if (!IsValidEntity(i_ObjectsSpawners[i]) || i_ObjectsSpawners[i] == 0)
+		{
+			Spawner_AddToArray(entity);
+			i_ObjectsSpawners[i] = entity;
+			return;
+		}
+	}
+
+	PrintToChatAll("MAP HAS TOO MANY SPAWNERS, REPORT BUG");
+	LogError("MAP HAS TOO MANY SPAWNERS");
+}
+
 public void OnEntityCreated(int entity, const char[] classname)
 {
 #if defined ZR
 	if (!StrContains(classname, "info_player_teamspawn")) 
 	{
-		for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
-		{
-			if (!IsValidEntity(i_ObjectsSpawners[i]) || i_ObjectsSpawners[i] == 0)
-			{
-				Spawner_AddToArray(entity);
-				i_ObjectsSpawners[i] = entity;
-				i = ZR_MAX_SPAWNERS;
-			}
-		}
-		return;
+		RequestFrame(SDKHook_TeamSpawn_SpawnPost, entity);
 	}
 #endif
 	
@@ -2263,6 +2277,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_HasBombImplanted[entity] = false;
 		Resistance_for_building_High[entity] = 0.0;
 		i_NervousImpairmentArrowAmount[entity] = 0;
+		i_WeaponArchetype[entity] = 0;
 		
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);

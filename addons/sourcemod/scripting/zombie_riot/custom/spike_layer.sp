@@ -110,11 +110,6 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 				
 		Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
-		if (EscapeMode)
-		{
-			Calculate_HP_Spikes *= 3.0;
-		}
-		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;
 			
@@ -207,11 +202,6 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
 		Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-		
-		if (EscapeMode)
-		{
-			Calculate_HP_Spikes *= 3.0;
-		}
 		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;

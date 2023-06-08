@@ -27,10 +27,45 @@ static const int SlotLimits[] =
 	1	// 16
 };
 
+public const char ItemArchetype[][] =
+{
+	"",	// No archetype.	
+//PRIMARY SECONDARY
+	"Multi Pellet",		// 1
+	"Rapid Fire",		// 2
+	"Infinite Fire",	// 3
+	"none",		// 4
+	"Single Pellet",	// 5
+	"Far Range",		// 6
+	"Trap Master",		// 7 this can include builder weapons!
+	"Explosive Mind",	// 8 Most Explosive weapons
+//SUPPORT ITEMS
+	"Team Support",		// 9
+	"Debuff",			// 10
+//MELEE'S
+	"Brawler",			// 11 most fist melee's
+	"Ambusher",			// 12 spy backstab weapons
+	"Combatant",		// 13 Longsword any melee that has no special abilities, mostly
+//	"Martial Artist",	// ?? Weapons with heavy skill usage such as judgement of iberia
+//	edit: Too general, cant.
+	"Aberration",		// 14 Melee weapons that summon things, currenly only fusion blade
+	"Duelist",			// 15 Melee weapons that exell at taking down/fighting single targets, see ark due to parry
+	"Lord",				// 16 Any melee that heavily has ranged attacks, see Lappland melee as the only one currently
+	"Crusher",			// 17 Any melee that has very good aoe, see judgement of ibera or final hammer pap
+
+	
+//MAGE WEAPONS
+	"Summoner",			// 18
+	"Chain Caster",		// 19
+	"Multi Caster",		// 20
+	"Base Caster",		// 21
+};
+
 enum struct ItemInfo
 {
 	int Cost;
 	char Desc[256];
+	char Rogue_Desc[256];
 	
 	bool HasNoClip;
 	bool SemiAuto;
@@ -94,10 +129,14 @@ enum struct ItemInfo
 
 	int SpecialAttribRules;
 	int SpecialAttribRules_2;
+
+	int WeaponArchetype;
 	
 	int CustomWeaponOnEquip;
 	
 #if defined ZR
+	int RougeBuildMax;
+	int RougeBuildSupportNeeded;
 	int ScrapCost;
 	int UnboxRarity;
 	bool CannotBeSavedByCookies;
@@ -130,6 +169,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
+
+		Format(buffer, sizeof(buffer), "%srogue_desc", prefix);
+		kv.GetString(buffer, this.Rogue_Desc, 256);
 		
 		Format(buffer, sizeof(buffer), "%sclassname", prefix);
 		kv.GetString(buffer, this.Classname, 36);
@@ -310,6 +352,9 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sattributes_check_2", prefix);
 		this.SpecialAttribRules_2			= kv.GetNum(buffer);
 
+		Format(buffer, sizeof(buffer), "%sweapon_archetype", prefix);
+		this.WeaponArchetype			= kv.GetNum(buffer, 0);
+
 #if defined ZR
 		Format(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -325,6 +370,12 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sscrap_cost", prefix);
 		this.ScrapCost = kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%srogue_build_max", prefix);
+		this.RougeBuildMax = kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%srogue_build_support_minimum", prefix);
+		this.RougeBuildSupportNeeded = kv.GetNum(buffer, -1);
 
 		Format(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
 		this.UnboxRarity = kv.GetNum(buffer, -1);
@@ -389,6 +440,7 @@ enum struct Item
 	float Cooldown2[MAXTF2PLAYERS];
 	float Cooldown3[MAXTF2PLAYERS];
 	bool BoughtBefore[MAXTF2PLAYERS];
+	int RogueBoughtRecently[MAXTF2PLAYERS];
 	
 	bool NPCSeller;
 	bool NPCSeller_First;
@@ -1156,8 +1208,8 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 
 							if(info.Desc[0])
 							{
-								StrCat(TranslateItemDescription(client, info.Desc), sizeof(info.Desc), "\n ");
-								menu.AddItem("", TranslateItemDescription(client, info.Desc), ITEMDRAW_DISABLED);
+								StrCat(TranslateItemDescription(client, info.Desc, info.Rogue_Desc), sizeof(info.Desc), "\n ");
+								menu.AddItem("", TranslateItemDescription(client, info.Desc, info.Rogue_Desc), ITEMDRAW_DISABLED);
 							}
 						}
 					}
@@ -1218,7 +1270,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					Store_ApplyAttribs(client);
 					Store_GiveAll(client, GetClientHealth(client));
 					owner = GetClientOfUserId(values[3]);
-					if(owner)
+					if(owner && !Rogue_Mode())
 					{
 						int HigherTechAdvancedClient;
 						int HigherTechAdvancedCount;
@@ -1330,7 +1382,31 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0; //you dont own the item.
 }*/
 #endif	// ZR
+void Store_RogueEndFightReset()
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		for(int c; c<MAXTF2PLAYERS; c++)
+		{
+			item.RogueBoughtRecently[c] = 0;
+		}
+		StoreItems.SetArray(i, item);
+	}
+	ResetSentryCD();
+	/*for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity) && !i_BeingCarried[entity]) //delete all buildings that arent mounted
+		{
+			RemoveEntity(entity);
+		}
+	}*/
+	Ammo_Count_Ready += 5;
 
+}
 void Store_Reset()
 {
 #if defined ZR
@@ -1354,6 +1430,7 @@ void Store_Reset()
 			item.Cooldown2[c] = 0.0;
 			item.Cooldown3[c] = 0.0;
 			item.BoughtBefore[c] = false;
+			item.RogueBoughtRecently[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
 	}
@@ -1461,14 +1538,50 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				if(info.Cost > 0 && free)
 					return;
 				
-				if((CurrentCash - CashSpent[client]) >= info.Cost)
+				if(CurrentCash >= info.Cost && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
-					CashSpent[client] += info.Cost;
-					CashSpentTotal[client] += info.Cost;
-					item.BuyPrice[client] = info.Cost;
+					if(Rogue_Mode())
+					{
+						if(info.RougeBuildMax == -999)
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+						}
+						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+						}
+						else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
+						{
+							SetGlobalTransTarget(client);
+							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+						}
+					}
+					bool MoneyTake = true;
+					if(Rogue_Mode())
+					{
+						if(info.RougeBuildMax > -1)
+						{
+							MoneyTake = false;
+						}
+					}
+					
+					if(MoneyTake)
+					{
+						CashSpent[client] += info.Cost;
+						CashSpentTotal[client] += info.Cost;
+						item.BuyPrice[client] = info.Cost;
+						item.Sell[client] = ItemSell(base, info.Cost);
+					}
+					else
+					{
+						item.BuyPrice[client] = 0;
+						item.Sell[client] = 0;
+					}
+					item.RogueBoughtRecently[client] += 1;
 					Store_BuyClientItem(client, item, info);
-					item.Sell[client] = ItemSell(base, info.Cost);
-					item.BuyWave[client] = Waves_GetRound();
+					item.BuyWave[client] = Rogue_GetRoundScale();
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
@@ -2421,7 +2534,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
-				else if(!Waves_InSetup())
+				else if(Rogue_NoDiscount() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
@@ -2436,7 +2549,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
-				else if(!Waves_InSetup())
+				else if(Rogue_NoDiscount() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
@@ -2448,8 +2561,8 @@ public void MenuPage(int client, int section)
 			
 
 			//		, TranslateItemName(client, item.Name) , item.PackCost > 0 ? "<Packable>" : ""
-			Config_CreateDescription(info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
-			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc));
+			Config_CreateDescription(ItemArchetype[info.WeaponArchetype], info.Classname, info.Attrib, info.Value, info.Attribs, buffer, sizeof(buffer));
+			menu.SetTitle("%s\n%s\n ", buffer, TranslateItemDescription(client, info.Desc, info.Rogue_Desc));
 			
 			if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 			{
@@ -2555,8 +2668,6 @@ public void MenuPage(int client, int section)
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 					}
 
-					//	bool levelPerk = (!info.Classname[0] && !info.Cost && !Waves_InSetup());
-
 					//We shall allow unequipping again.
 					if(item.Equipped[client])
 					{
@@ -2587,7 +2698,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
-		else if(!Waves_InSetup())
+		else if(Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
@@ -2607,7 +2718,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client]);
 		}
-		else if(!Waves_InSetup())
+		else if(Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			if(Database_IsCached(client))
 			{
@@ -2635,6 +2746,12 @@ public void MenuPage(int client, int section)
 			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
 			menu.AddItem("-2", buffer);
+
+			if(Rogue_Mode())
+			{
+				FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
+				menu.AddItem("-24", buffer);
+			}
 		}
 	}
 	
@@ -2822,25 +2939,43 @@ public void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(item.WhiteOut)
+					if(info.RougeBuildMax == -999)
 					{
-						if(item.ShouldThisCountSupportBuildings)
-						{
-							FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
-						}
+						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
 					}
-					else if(!info.Cost)
+					else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
 					{
-						FormatEx(buffer, sizeof(buffer), "%s %s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						FormatEx(buffer, sizeof(buffer), "%s %s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						style = ITEMDRAW_DISABLED;
+					}
+					else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
+					{
+						FormatEx(buffer, sizeof(buffer), "%s %s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						style = ITEMDRAW_DISABLED;
 					}
 					else
 					{
-						FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
+						if(item.WhiteOut)
+						{
+							if(item.ShouldThisCountSupportBuildings)
+							{
+								FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
+							}
+							else
+							{
+								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
+							}
+							style = ITEMDRAW_DISABLED;
+						}
+						else if(!info.Cost)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s %s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [$%d] %s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
+						}
 					}
 				}
 				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
@@ -3204,6 +3339,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					XP[client] = LevelToXp(5);
 					GiveXP(client, 0);
 				}
+				case -24:
+				{
+					Rogue_ArtifactMenu(client, 0);
+				}
 				default:
 				{
 					MenuPage(client, id);
@@ -3371,9 +3510,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									CashSpent[client] += info.Cost;
 									CashSpentTotal[client] += info.Cost;
 									item.BuyPrice[client] = info.Cost;
+									item.RogueBoughtRecently[client] += 1;
 									Store_BuyClientItem(client, item, info);
 									item.Sell[client] = ItemSell(base, info.Cost);
-									item.BuyWave[client] = Waves_GetRound();
+									item.BuyWave[client] = Rogue_GetRoundScale();
 									item.Equipped[client] = false;
 
 									if(!item.BoughtBefore[client])
@@ -3414,9 +3554,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								CashSpent[client] += info.Cost;
 								CashSpentTotal[client] += info.Cost;
 								item.BuyPrice[client] = info.Cost;
+								item.RogueBoughtRecently[client] += 1;
 								Store_BuyClientItem(client, item, info);
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Waves_GetRound();
+								item.BuyWave[client] = Rogue_GetRoundScale();
 
 								if(!item.BoughtBefore[client])
 								{
@@ -3527,7 +3668,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.GetItemInfo(item.Owned[client]-1, info);
 
 								int sell = item.Sell[client];
-								if(item.BuyWave[client] == Waves_GetRound())
+								if(item.BuyWave[client] == Rogue_GetRoundScale())
 									sell = item.BuyPrice[client];
 								
 								if(sell) //make sure it even can be sold.
@@ -3536,6 +3677,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									CashSpentTotal[client] -= sell;
 									ClientCommand(client, "playgamesound \"mvm/mvm_money_pickup.wav\"");
 								}
+								item.RogueBoughtRecently[client] -= 1;
 								
 								item.Owned[client] = 0;
 								if(item.Scaled[client] > 0)
@@ -3777,7 +3919,8 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 
-	TF2Attrib_SetByDefIndex(client, 201, f_DelayAttackspeedPreivous[client]);
+	/*TF2Attrib_SetByDefIndex(client, 201, */
+	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
@@ -3794,7 +3937,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 
 #if defined ZR
-	int wave_count = Waves_GetRound() + 1;
+	int wave_count = Rogue_GetRoundScale() + 1;
 	
 	if(wave_count > 15 && wave_count < 30)
 	{
@@ -3813,29 +3956,19 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("252", 0.40);
 	}
 	
-	if(EscapeMode)	//infinite ammo stuff
-	{
-		map.SetValue("252", 0.50);
-		map.SetValue("76", 10.0); //inf ammo
-		map.SetValue("78", 10.0); //inf ammo
-		map.SetValue("112", 100.0); //inf ammo
-		map.SetValue("113", 50.0); //inf ammo
-		map.SetValue("701", 100.0); //Armor level
-		map.SetValue("258", 1.0); //Cash equals Health!!!!
-	}
 	if(i_CurrentEquippedPerk[client] == 4)
 	{
 //		map.SetValue("96", 0.1); //Cash equals Health!!!!
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
-	if(TF2_GetPlayerClass(client) == TFClass_Scout) //make scout have the same capture rate!
+	/*if(TF2_GetPlayerClass(client) == TFClass_Scout) //make scout have the same capture rate!
 	{
 		map.SetValue("68", 1.0);
 	}
 	else
 	{
 		map.SetValue("68", 2.0);
-	}
+	}*/
 	
 	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
@@ -3958,6 +4091,8 @@ void Store_ApplyAttribs(int client)
 	i_BarbariansMind[client] = 0;
 	i_SoftShoes[client] = 0;
 	i_BadHealthRegen[client] = 0;
+
+	Rogue_ApplyAttribs(client, map);
 #endif
 
 #if defined RPG
@@ -4031,6 +4166,35 @@ void Store_ApplyAttribs(int client)
 	
 	delete snapshot;
 	delete map;
+
+	if(b_ChickenNuggetBox) //probably needs rewriting cus idk how to do it
+	{
+		//15%% more health
+		int MaxHealth = SDKCall_GetMaxHealth(client);
+
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.15);
+
+		Address address = TF2Attrib_GetByDefIndex(client, 26);
+		if(address != Address_Null)
+		{
+			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
+			TF2Attrib_SetByDefIndex(client, 26, float(HealthToAdd));
+		}
+	}
+	if(b_CrudeFlute) //probably needs rewriting cus idk how to do it
+	{
+		//3%% more health
+		int MaxHealth = SDKCall_GetMaxHealth(client);
+		
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.03);
+
+		Address address = TF2Attrib_GetByDefIndex(client, 26);
+		if(address != Address_Null)
+		{
+			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
+			TF2Attrib_SetByDefIndex(client, 26, float(HealthToAdd));
+		}
+	}
 
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
@@ -4480,7 +4644,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									}
 									
 #if defined ZR
-									if(!EscapeMode || info.Ammo < 3) //my man broke my shit.
+									if(info.Ammo < 3) //my man broke my shit.
 #endif
 									
 									{
@@ -4768,10 +4932,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_StickyExtraGrenades[client] = true;
 					}
+
 #endif
 					
 					if(EntityIsAWeapon)
 					{
+						i_WeaponArchetype[entity] = info.WeaponArchetype;
 						bool apply;
 						switch(info.Index)
 						{
@@ -4834,11 +5000,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib[a],TF2Attrib_GetValue(address) + info.Value[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib[a],TF2Attrib_GetValue(address) * info.Value[a]);
 								}
 							}
 						}
@@ -4903,11 +5069,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) + info.Value2[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a],TF2Attrib_GetValue(address) + info.Value2[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * info.Value2[a]);
+									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a],TF2Attrib_GetValue(address) * info.Value2[a]);
 								}
 							}
 						}
@@ -4946,7 +5112,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
+				TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
 		//DOUBLE TAP!
@@ -4959,7 +5125,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.85);
+				TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 0.85);
 			}
 		}
 		//DEADSHOT!
@@ -4972,7 +5138,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			}
 			else
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 0.65);
+				TF2Attrib_SetByDefIndex(entity, 106, TF2Attrib_GetValue(address) * 0.65);
 			}
 		}
 		//QUICK REVIVE!
@@ -4982,14 +5148,17 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(address != Address_Null)
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+				TF2Attrib_SetByDefIndex(client, 8, TF2Attrib_GetValue(address) * 1.15);
 			}
 			
 			address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
 			if(address != Address_Null)
 			{
-				TF2Attrib_SetValue(address, TF2Attrib_GetValue(address) * 1.15);
+				TF2Attrib_SetByDefIndex(client, 8, TF2Attrib_GetValue(address) * 1.15);
 			}
+
+			// Note: This can stack with multi weapons :|
+			//double note: doesnt matter, it wont multiply, i coded specifically for that reason with mediguns!
 		}
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
@@ -4997,6 +5166,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{		
 			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
 		}
+
+		Rogue_GiveItem(entity);
 #endif
 		/*
 			Attributes to Arrays Here
@@ -5339,7 +5510,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 	return buffer;
 }
 
-char[] TranslateItemDescription(int client, const char Desc[256])
+char[] TranslateItemDescription(int client, const char Desc[256], const char Rogue_Desc[256])
 {
 	static int ServerLang = -1;
 	if(ServerLang == -1)
@@ -5347,13 +5518,27 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 	
 	char buffer[256]; 
 
-	if(TranslationPhraseExists(Desc))
+	if(Rogue_Mode() && Rogue_Desc[0])
 	{
-		FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Rogue_Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Rogue_Desc, client);
+		}
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		if(TranslationPhraseExists(Desc))
+		{
+			FormatEx(buffer, sizeof(buffer), "%T", Desc, client);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "%s", Desc, client);
+		}
 	}
 
 	return buffer;
@@ -5361,7 +5546,7 @@ char[] TranslateItemDescription(int client, const char Desc[256])
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool started = !Waves_InSetup();
+	bool started = (!Rogue_NoDiscount() && !Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -5370,7 +5555,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * CurrentRound;
+	cost += item.CostPerWave * Rogue_GetRoundScale();
 	
 	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 	
@@ -5444,10 +5629,26 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = item.MaxCost;
 	}
-	//if(cost < original_cost_With_Sell)
-	//{
-	//	cost = original_cost_With_Sell;
-	//}
+	if(Rogue_Mode())
+	{
+		ItemInfo info;
+		if(item.GetItemInfo(0, info))
+		{
+			if(info.RougeBuildMax > 0)
+			{
+				cost = 0;			
+				if(info.RougeBuildMax <= item.RogueBoughtRecently[client])
+				{
+					cost = 999999;
+				}
+				//building under this category during rogue modes will be marked as free unless otherwise.
+			}
+			else if(info.RougeBuildMax == -999)
+			{
+				cost = 999999;
+			}
+		}
+	}
 }
 
 static int ItemSell(int base, int discount)

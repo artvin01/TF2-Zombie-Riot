@@ -1507,7 +1507,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = MedivalVillager(client, vecPos, vecAng, ally);
 		
 		case MEDIVAL_BUILDING:
-			entity = MedivalBuilding(client, vecPos, vecAng, ally);
+			entity = MedivalBuilding(client, vecPos, vecAng, ally, data);
 		
 		case MEDIVAL_CONSTRUCT:
 			entity = MedivalConstruct(client, vecPos, vecAng, ally);
@@ -1719,6 +1719,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
+	}
+
+	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+	{
+		Rogue_AllySpawned(entity);
+	}
+	else
+	{
+		Rogue_EnemySpawned(entity);
 	}
 	
 	return entity;

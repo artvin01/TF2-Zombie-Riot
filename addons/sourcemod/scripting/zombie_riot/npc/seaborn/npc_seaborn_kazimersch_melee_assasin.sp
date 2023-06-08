@@ -225,9 +225,9 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 				npc.m_flExtraDamage += 2.5;
 			}
 
-			if(npc.m_flExtraDamage > 250.0)
+			if(npc.m_flExtraDamage > 100.0)
 			{
-				npc.m_flExtraDamage = 250.0;
+				npc.m_flExtraDamage = 100.0;
 				npc.m_flSpeed = 300.0;
 			}
 			int colour_red = RoundToFloor(npc.m_flExtraDamage * 0.5);
@@ -235,6 +235,10 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 			{
 				SetEntityRenderColor(npc.m_iWearable1, colour_red, 65, 65, 255);
 			}
+		}
+		else
+		{
+			npc.m_flSpeed = 300.0;
 		}
 	}
 	else

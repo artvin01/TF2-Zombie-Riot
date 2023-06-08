@@ -670,6 +670,8 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 			damage *= 1.65;
 		}
 	}
+	
+	damage -= Rogue_Barracks_FlatArmor();
 
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))

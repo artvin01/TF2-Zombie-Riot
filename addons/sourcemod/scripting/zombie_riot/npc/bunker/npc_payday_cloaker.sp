@@ -268,7 +268,7 @@ public void Payday_Cloaker_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	//Self Heal
 	if(i_AmountOfTimesICanHeal[npc.index] <= i_MaxAmountOfTimesICanHeal && CloakerBonusAmount[npc.index] >= 10999.0)

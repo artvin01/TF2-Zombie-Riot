@@ -258,58 +258,35 @@ public void OnPostThink(int client)
 		}
 
 #if defined ZR
-		if(!EscapeMode)
-#endif
-		{
-#if defined ZR
-			max_mana[client] = 400.0;
-			mana_regen[client] = 10.0;
+		max_mana[client] = 400.0;
+		mana_regen[client] = 10.0;
+			
+		if(LastMann)
+			mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
 				
-			if(LastMann)
-				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
-					
-			if(i_CurrentEquippedPerk[client] == 4)
-			{
-				mana_regen[client] *= 1.35;
-			}
+		if(i_CurrentEquippedPerk[client] == 4)
+		{
+			mana_regen[client] *= 1.35;
+		}
 #endif
 				
 #if defined RPG
-			max_mana[client] = 40.0;
-			mana_regen[client] = 1.0;
+		max_mana[client] = 40.0;
+		mana_regen[client] = 1.0;
 #endif
 					
-			mana_regen[client] *= Mana_Regen_Level[client];
-			max_mana[client] *= Mana_Regen_Level[client];	
-				
-			if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-			{
-				Current_Mana[client] += RoundToCeil(mana_regen[client]);
-					
-				if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
-					Current_Mana[client] = RoundToCeil(max_mana[client]);
-			}
-					
-			Mana_Hud_Delay[client] = 0.0;
-		}
-#if defined ZR
-		else
+		mana_regen[client] *= Mana_Regen_Level[client];
+		max_mana[client] *= Mana_Regen_Level[client];	
+			
+		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 		{
-			has_mage_weapon[client] = true;
-			max_mana[client] = 1200.0;
-			mana_regen[client] = 20.0;
-			if(i_CurrentEquippedPerk[client] == 4)
-			{
-				mana_regen[client] *= 1.35;
-			}
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
-					
-			if(Current_Mana[client] > RoundToCeil(max_mana[client]))
-				Current_Mana[client] = RoundToCeil(max_mana[client]);
 				
-			Mana_Hud_Delay[client] = 0.0;
+			if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+				Current_Mana[client] = RoundToCeil(max_mana[client]);
 		}
-#endif
+					
+		Mana_Hud_Delay[client] = 0.0;
 	}
 
 #if defined ZR
@@ -353,8 +330,14 @@ public void OnPostThink(int client)
 				{
 					healing_Amount = 3;
 				}
+				else
+				{
+					if(b_HealthyEssence)
+						healing_Amount = RoundToCeil(float(healing_Amount) * 1.25);
+				}
 				int newHealth = flHealth + healing_Amount;
-						
+
+
 				if(newHealth >= flMaxHealthJesus)
 				{
 					healing_Amount -= newHealth - flMaxHealthJesus;
@@ -367,6 +350,7 @@ public void OnPostThink(int client)
 		}
 		if(dieingstate[client] == 0)
 		{
+			Rogue_HealingSalve(client,flHealth,flMaxHealth );
 			if(i_BadHealthRegen[client] == 1)
 			{
 				if(flHealth < flMaxHealth)
@@ -819,12 +803,20 @@ public void OnPostThink(int client)
 		}
 
 		bool Has_Wave_Showing = false;
+		
 		if(f_ClientServerShowMessages[client])
 		{
 			Has_Wave_Showing = true; //yay :)
 			SetGlobalTransTarget(client);
 			char WaveString[64];
-			Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+			if(Rogue_Mode() && Rogue_InSetup())
+			{
+				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Stage", Rogue_GetRound()+1, Rogue_GetWave()+1); 
+			}
+			else
+			{
+				Format(WaveString, sizeof(WaveString), "%s | %t", WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1); 
+			}
 			i_WhatLevelForHudIsThisClientAt[client] -= 1;
 			Handle hKv = CreateKeyValues("Stuff", "title", WaveString);
 			KvSetColor(hKv, "color", 0, 255, 0, 255); //green
@@ -834,14 +826,11 @@ public void OnPostThink(int client)
 			CreateDialog(client, hKv, DialogType_Msg);
 			delete hKv;
 		}
-		else
+		else if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
 		{
-			if(f_ShowHudDelayForServerMessage[client] < GetGameTime())
-			{
-				f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
-				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Plugin Messages Hint");
-			}
+			f_ShowHudDelayForServerMessage[client] = GameTime + 300.0;
+			SetGlobalTransTarget(client);
+			PrintToChat(client,"%t", "Show Plugin Messages Hint");
 		}
 
 		int Extra = Armor_Level[client];
@@ -1078,12 +1067,25 @@ public void OnPostThink(int client)
 
 			downsleft -= i_AmountDowned[client];
 
-			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
-			"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
-			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
-			PerkNames[i_CurrentEquippedPerk[client]],
-			"Zombies Left", Zombies_Currently_Still_Ongoing
-			);
+			if(Rogue_Mode() && Rogue_InSetup())
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
+				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+				PerkNames[i_CurrentEquippedPerk[client]],
+				"Australium Ingots", Rogue_GetIngots()
+				);
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t\n%t", HudBuffer,
+				"Credits_Menu", CurrentCash-CashSpent[client], (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+				"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
+				PerkNames[i_CurrentEquippedPerk[client]],
+				"Zombies Left", Zombies_Currently_Still_Ongoing
+				);
+				
+			}
 
 			if(f_LeftForDead_Cooldown[client] > GameTime)
 			{
@@ -1094,7 +1096,7 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
 					"Downs left", downsleft);	
 			}
-			if(!Has_Wave_Showing)
+			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s\n%s | %t", HudBuffer, WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);
 			}
@@ -1109,7 +1111,7 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing
 			);
 
-			if(!Has_Wave_Showing)
+			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
@@ -1120,7 +1122,7 @@ public void OnPostThink(int client)
 				"Zombies Left", Zombies_Currently_Still_Ongoing
 			);
 
-			if(!Has_Wave_Showing)
+			if(!Has_Wave_Showing && !Rogue_Mode())
 			{
 				Format(HudBuffer, sizeof(HudBuffer), "%s%s | %t",HudBuffer,WhatDifficultySetting, "Wave", CurrentRound+1, CurrentWave+1);		
 			}
@@ -1401,10 +1403,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 		if(IsValidEntity(Victim_weapon))
 		{
+			OnTakeDamage_ProvokedAnger(Victim_weapon);
 			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
 			
 			damage = modified_damage;
 			Replicated_Damage = modified_damage;
+		}
+		if(OnTakeDamage_ShieldLogic(victim, damagetype))
+		{
+			return Plugin_Handled;
 		}
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
@@ -1414,6 +1421,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= 0.90;
 		}
+		damage *= fl_Extra_Damage[attacker];
 		
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 		//It will just return the same damage if nothing is done.
@@ -1422,24 +1430,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			Replicated_Damage *= 5.0; //when a raid is alive, make quantum armor 8x as bad at tanking.
 			damage *= 5.0;	
-		}
-		
-		if(EscapeMode)
-		{
-			if(IsValidEntity(Victim_weapon))
-			{
-				if(!i_IsWandWeapon[Victim_weapon] && !i_IsWrench[Victim_weapon]) //Make sure its not wand.
-				{
-					char melee_classname[64];
-					GetEntityClassname(Victim_weapon, melee_classname, 64);
-					
-					if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-					{
-						Replicated_Damage *= 0.45;
-						damage *= 0.45;
-					}
-				}
-			}
 		}
 #endif
 #if defined RPG
@@ -1708,11 +1698,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 			//	SetVariantString("TLK_DIED");
 			//	AcceptEntityInput(victim, "SpeakResponseConcept");
-				i_CurrentEquippedPerk[victim] = 0;
+				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
+				{
+					i_CurrentEquippedPerk[victim] = 0;
+				}
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
-					dieingstate[victim] = 250;
+					dieingstate[victim] = 250 / Rogue_ReviveSpeed();
 				}
 				else
 				{

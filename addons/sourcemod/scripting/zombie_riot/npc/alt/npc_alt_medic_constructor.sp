@@ -335,7 +335,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 			}
 			npc.m_flSpeed = 400.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
 		
 		int PrimaryThreatIndex = npc.m_iTarget;

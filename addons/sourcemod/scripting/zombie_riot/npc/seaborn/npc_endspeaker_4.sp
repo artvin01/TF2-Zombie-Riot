@@ -199,6 +199,24 @@ void EndSpeaker4_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
 	SDKUnhook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
 }

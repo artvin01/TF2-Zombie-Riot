@@ -116,6 +116,7 @@ public void Weapon_Shoot_Arrow_Ability(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;
@@ -145,6 +146,7 @@ public void Weapon_Shoot_Arrow_Ability_Weaker(int client, int weapon, bool crit,
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;
@@ -174,6 +176,7 @@ public void Weapon_Shoot_Arrow_Ability_Weakest(int client, int weapon, bool crit
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 15.0);
 		Client_To_Weapon[client] = weapon;
 		Arrows_Damage[client] = 50.0;

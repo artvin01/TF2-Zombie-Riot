@@ -173,6 +173,10 @@ void Building_ClearAll()
 	Zero(Village_TierExists);
 	//RebelTimerSpawnIn = 0;
 }
+void ResetSentryCD()
+{
+	Zero(Building_Sentry_Cooldown);
+}
 
 int Building_GetClientVillageFlags(int client)
 {
@@ -415,14 +419,7 @@ public bool Building_Sentry(int client, int entity)
 	}
 	
 //	CreateTimer(0.5, Timer_DroppedBuildingWaitSentryLeveLUp, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 public bool Building_Railgun(int client, int entity)
 {
@@ -454,14 +451,7 @@ public bool Building_Railgun(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public bool Building_Mortar(int client, int entity)
@@ -496,14 +486,7 @@ public bool Building_Mortar(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public bool Building_HealingStation(int client, int entity)
@@ -541,14 +524,8 @@ public bool Building_HealingStation(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	
+	return true;
 }
 
 public Action Timer_DroppedBuildingWaitSentryLeveLUp(Handle htimer, int entref)
@@ -892,6 +869,10 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage = 0.0;
 		return Plugin_Handled;
+	}
+	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
+	{
+		damage *= 3.0;
 	}
 
 	if(f_FreeplayDamageExtra != 1.0)
@@ -1265,6 +1246,20 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 		}
 	}
 }
+
+bool AllowBuildingCurrently()
+{
+	if(Rogue_Mode())
+	{
+		if(Rogue_InSetup())
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 /*
 void Building_PlayerRunCmd(int client, int buttons)
 {
@@ -1974,9 +1969,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					}
 			*/
 					StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
-					if(owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
+					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
-						if(owner != client)
+						if(!Rogue_Mode() && owner != client)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
@@ -2034,7 +2029,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2070,7 +2065,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2095,7 +2090,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2117,7 +2112,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2139,7 +2134,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2161,7 +2156,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2183,7 +2178,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2209,7 +2204,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-											if(owner != -1 && owner != client)
+											if(!Rogue_Mode() && owner != -1 && owner != client)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
@@ -2270,7 +2265,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
 
 						//	CashSpent[owner] -= 20;
-							if(owner != -1 && owner != client)
+							if(!Rogue_Mode() && owner != -1 && owner != client)
 							{
 								if(Armor_table_money_limit[owner][client] < 15)
 								{
@@ -2410,6 +2405,8 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			Call_PushCell(client);
 			Call_PushCell(entity);
 			Call_Finish(result);
+
+			Rogue_AllySpawned(entity);
 			
 			if(!result)
 			{
@@ -4124,9 +4121,9 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
-	if(owner != -1 && owner != client)
+	if(!Rogue_Mode() && owner != -1 && owner != client)
 	{
-		if(Perk_Machine_money_limit[owner][client] < 10)
+		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;
@@ -4202,14 +4199,7 @@ public bool Building_Village(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public Action Timer_VillageThink(Handle timer, int ref)
@@ -4470,12 +4460,12 @@ void Building_RaidSpawned(int entity)
 		}
 	}
 }
-
+/*
 bool Building_NeatherseaReduced(int entity)
 {
 	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
 }
-
+*/
 void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
 {
 	if(camo || regrow)
@@ -6118,14 +6108,7 @@ public bool Building_Summoner(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 int Building_GetFollowerEntity(int owner)
@@ -6224,9 +6207,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 	
 	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
 	{
-		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
-		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
+		// 1 Supply = 1 Food/Wood Every 3 Seconds
+		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 17.5 : 35.0);
+		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 12.5 : 25.0);
 
 		// 1 Supply = 1 Gold Every 150 Seconds
 		if(MedievalUnlock[owner])
@@ -6570,7 +6553,7 @@ static int GetSupplyLeft(int client)
 		}
 	}
 
-	return 3 - personal;
+	return 3 + Rogue_Barracks_BonusSupply() - personal;
 }
 
 static bool AtMaxSupply(int client)
@@ -6591,7 +6574,10 @@ static bool AtMaxSupply(int client)
 		}
 	}
 
-	return (global > 9 || personal > 2);
+	int maxGlobal = 9 + Rogue_Barracks_BonusSupply();
+	int maxLocal = 2 + Rogue_Barracks_BonusSupply();
+
+	return (global > maxGlobal || personal > maxLocal);
 }
 
 void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)

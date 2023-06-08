@@ -137,10 +137,15 @@ void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", int del
 	PrecacheSound(sound);
 
 #if defined UseDownloadTable
-	char buffer[PLATFORM_MAX_PATH];
-	FormatEx(buffer, sizeof(buffer), "sound/%s", sound);
-	ReplaceString(buffer, sizeof(buffer), "#", "");
-	AddFileToDownloadsTable(buffer);
+	if(delay < 9999999) //stop warnings.
+	{
+		char buffer[PLATFORM_MAX_PATH];
+		FormatEx(buffer, sizeof(buffer), "sound/%s", sound);
+		ReplaceString(buffer, sizeof(buffer), "#", "");
+		AddFileToDownloadsTable(buffer);
+
+		altsound[0] = 0; //stop warnings.
+	}
 
 #else
 	if(altsound[0])

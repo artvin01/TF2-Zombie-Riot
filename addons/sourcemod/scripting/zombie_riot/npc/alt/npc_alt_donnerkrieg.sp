@@ -280,7 +280,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	if(bl_nightmare_stage2[npc.index] && bl_nightmare_stage1[npc.index] && bl_nightmare_stage3[npc.index] && fl_nightmare_anim_timer[npc.index] <GetGameTime(npc.index))
 	{

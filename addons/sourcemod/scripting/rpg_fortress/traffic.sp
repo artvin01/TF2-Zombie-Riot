@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // To disable Major Update Traffic Handling, comment out below line
-#define TRAFFIC_TICKET	"Chapter 2 Pass"
+//#define TRAFFIC_TICKET	"Chapter 2 Pass"
 #define TRAFFIC_LEVEL	30
 #define TRAFFIC_TIME	1800.0	// 30 mins
 

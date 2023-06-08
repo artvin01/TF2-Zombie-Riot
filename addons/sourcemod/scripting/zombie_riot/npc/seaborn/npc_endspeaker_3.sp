@@ -214,6 +214,24 @@ void EndSpeaker3_NPCDeath(int entity)
 	
 	npc.PlayDeathSound();
 
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+
 	float pos[3], angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);

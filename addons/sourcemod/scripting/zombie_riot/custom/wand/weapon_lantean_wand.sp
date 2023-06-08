@@ -282,6 +282,7 @@ public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 30.0);
 		
 				particle_type[client]="scorchshot_trail_crit_red";
@@ -368,6 +369,7 @@ public void Weapon_lantean_Wand_pap_m2(int client, int weapon, bool crit, int sl
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 30.0);
 		
 				particle_type[client]="scorchshot_trail_crit_blue";
@@ -455,6 +457,7 @@ public void Weapon_lantean_Wand_pap_3_m2(int client, int weapon, bool crit, int 
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 30.0);
 		
 				particle_type[client]="scorchshot_trail_crit_blue";

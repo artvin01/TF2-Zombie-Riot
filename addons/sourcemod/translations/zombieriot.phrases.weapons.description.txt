@@ -1,6 +1,86 @@
 "Phrases"
 {
 
+	"Multi Pellet"
+	{
+		"en"		"Archetype: Multi Pellet"
+	}
+	"Rapid Fire"
+	{
+		"en"		"Archetype: Rapid Fire"
+	}
+	"Single Pellet"
+	{
+		"en"		"Archetype: Single Pellet"
+	}
+	"Infinite Fire"
+	{
+		"en"		"Archetype: Infinite Fire"
+	}
+	"Trap Master"
+	{
+		"en"		"Archetype: Trap Master"
+	}
+	"Far Range"
+	{
+		"en"		"Archetype: Far Range"
+	}
+	"Explosive Mind"
+	{
+		"en"		"Archetype: Explosive Mind"
+	}
+	"Team Support"
+	{
+		"en"		"Archetype: Team Support"
+	}
+	"Debuff"
+	{
+		"en"		"Archetype: Debuff"
+	}
+	"Brawler"
+	{
+		"en"		"Archetype: Brawler"
+	}
+	"Ambusher"
+	{
+		"en"		"Archetype: Ambusher"
+	}
+	"Combatant"
+	{
+		"en"		"Archetype: Combatant"
+	}
+	"Aberration"
+	{
+		"en"		"Archetype: Aberration"
+	}
+	"Duelist"
+	{
+		"en"		"Archetype: Duelist"
+	}
+	"Lord"
+	{
+		"en"		"Archetype: Lord"
+	}
+	"Crusher"
+	{
+		"en"		"Archetype: Crusher"
+	}
+	"Summoner"
+	{
+		"en"		"Archetype: Summoner"
+	}
+	"Chain Caster"
+	{
+		"en"		"Archetype: Chain Caster"
+	}
+	"Multi Caster"
+	{
+		"en"		"Archetype: Multi Caster"
+	}
+	"Base Caster"
+	{
+		"en"		"Archetype: Base Caster"
+	}
 	"Syringe Gun Desc"
 	{
 		"en"		"Low Damage but very high bleed duration"
@@ -257,9 +337,7 @@
 	
 	"Marksman Rifle Pap 1"
 	{
-		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan."
-		"ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные мгновенные попадания."
-		"chi"       "增加伤害和攻击速度，子弹类型改变。"
+		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.\nArchetype changes to ''Explosive Mind''"
 	}
 	
 	"Quad Launcher Desc"
@@ -490,9 +568,7 @@
 	}
 	"SMG Pap 4"
 	{
-		"en"	"Increased damage and attackspeed, Removes clip, infinite clip size."
-		"ru"	"Увеличенный урон и скорость атаки, удаление обоймы, бесконечный размер обоймы."
-		"chi"   "增加伤害和攻击速度，无限子弹。"
+		"en"	"Increased damage and attackspeed, Removes clip, infinite clip size.\nArchetype changes to ''Infinite Fire''"
 	}
 	"SMG Pap 5"
 	{
@@ -641,7 +717,7 @@
 	}
 	"Knife Pap 2"
 	{
-		"en"	"Tiny Backstab dmg, Increased damage, gain additional Short Effects via [M1]."
+		"en"	"No Backstab, Increased damage, gain additional Short Effects via [M1].\nArchetype changes to ''Combatant''"
 		"ru"	"Крошечный удар в спину, увеличенный урон, получение доп. коротких эффектов на [М1]."
 		"chi"   "增加少量的背刺伤害，增加普攻伤害，通过攻击获得额外的短效果"
 	}
@@ -665,9 +741,7 @@
 	}
 	"Hammer Pap 2"
 	{
-		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions."
-		"ru"	"Увеличенный урон, время кровотечения и сниженная скорость атаки.\nВаши атаки настолько сильны, что вызывают взрывы и вызывают кровотечение до 5 целей."
-		"chi"   "增加伤害和流血时间，降低攻击速度。你的攻击是如此强大，弓箭将造成Aoe的爆炸伤害和流血增加到5个目标。"
+		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\nArchetype changes to ''Crusher''"
 	}
 	"Hammer Pap 3"
 	{
@@ -748,7 +822,7 @@
 	}
 	"Fractured Ark Pap 3"
 	{
-		"en"	"Abilities change.\nEach attack silences the enemies for 5 seconds.\nAttacks give charges, melee gives 2x more.\nRanged attacks if melee didnt hit.\nHomes onto enemy that you looked at.\nAbility 2x dmg and ability duration and AOE silence."
+		"en"	"Abilities change.\nEach attack silences the enemies for 5 seconds.\nAttacks give charges, melee gives 2x more.\nRanged attacks if melee didnt hit.\nHomes onto enemy that you looked at.\nAbility 2x dmg and ability duration and AOE silence.\nArchetype changes to ''Lord''"
 		"chi"   "能力的改变。每次攻击使敌人沉默5秒。攻击能充能，近战多充能2倍。如果近战没有命中，远程攻击。你所看到的敌人。2倍伤害，持续时间和AOE沉默。"
 	}
 	
@@ -907,9 +981,7 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time."
-		"ru"	"Значительно увеличенный урон.\nВаша способность изменяется на двойную заряженную, случайную атаку, многоударную цепную атаку молнией.\nВаша атака также будет цепной по 4 врагам, но атаковать в 3 раза медленнее, каждая атака будет сильно замедлять врага на короткое время."
-		"chi"   "大量增加伤害。你的技能充能速度+2倍，随机目标，多击闪电连锁攻击。\n你的攻击也会连锁4个敌人，但攻击速度会慢3倍，每次攻击都会在短时间内严重减缓敌人的速度。"
+		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time.\nArchetype changes to ''Chain Caster''"
 	}
 	
 	"Beam Wand Desc"
@@ -1085,6 +1157,11 @@
 		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
 		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 4 баррикады."
 		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
+	}
+	
+	"Buildable Barricade Desc Rogue"
+	{
+		"en"	"You get 2 free barricades each fight, you can only place 2 at once due to this."
 	}
 	
 	"Buildable Armortable Desc"
@@ -1619,8 +1696,7 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nSparing ''fusion warrior'' might give you extra strength..."
-		"chi"   "M2技能改变。在你面前放一把巨大的剑，造成伤害。\n击晕范围内所有敌人。你会得到大buff。无伤害的敌人集中剑给你2x伤害。\n“核聚变战士”属性可能会给你额外的力量……"
+		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration''"
 	}
 
 	
@@ -1849,7 +1925,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once"
+		"en"	"Attacks slower but hits two targets at once.\nArchetype changes to ''Crusher''"
 		"chi"   "攻击速度较慢，但能同时击中两个目标"
 	}
 	"Specter Pap 2a"
@@ -1884,8 +1960,7 @@
 	}
 	"Yamato_Desc"
 	{
-		"en"	"Gain a portion of the son's of sparda's POWER\nEach time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist"
-		"chi"   "获得一部分斯巴达之子的力量\n每次你造成伤害你获得“动机”，它用作能量来源你的能力\nR:切换“召唤剑”和“螺旋剑”\ n按住鼠标右键向你的敌人发射你的召唤剑!你会失去10%%的近战伤害抗性"
+		"en"	"Each time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist\nArchetype changes to ''Duelist''"
 	}
 	"Preaching Sword Desc"
 	{

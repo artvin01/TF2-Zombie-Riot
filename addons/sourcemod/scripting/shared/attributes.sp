@@ -186,15 +186,14 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			
 			SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", cloak);
 		}
-		*/
-		/*
+		
 		if(Attributes_FindOnWeapon(client, weapon, 540))	// add head on hit
 			SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-		
-		value = Attributes_FindOnWeapon(client, weapon, 877);	// speed_boost_on_hit_enemy
+		*/
+		float value = Attributes_FindOnWeapon(client, weapon, 877);	// speed_boost_on_hit_enemy
 		if(value)
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);
-		
+		/*
 		if(Attributes_FindOnWeapon(client, weapon, 2067))	// attack_minicrits_and_consumes_burning
 		{
 			int ticks = NPC_Extinguish(victim);
@@ -222,16 +221,18 @@ void Attributes_OnKill(int client, int weapon)
 	value = Attributes_FindOnPlayer(client, 296);	// sapper kills collect crits
 	if(value)
 		SetEntProp(client, Prop_Send, "m_iRevengeCrits", GetEntProp(client, Prop_Send, "m_iRevengeCrits")+RoundFloat(value));
-	
-	if(Attributes_FindOnPlayer(client, 387))	// rage on kill
+	*/
+
+	value = Attributes_FindOnPlayer(client, 387);	// rage on kill
+	if(value)
 	{
-		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter")+34.0;
+		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter") + value;
 		if(rage > 100.0)
 			rage = 100.0;
 		
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
 	}
-	*/
+	
 //	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	/*
 	if(Attributes_FindOnWeapon(client, weapon, 30))	// fists have radial buff
@@ -315,14 +316,14 @@ void Attributes_OnKill(int client, int weapon)
 	
 	if(Attributes_FindOnWeapon(client, weapon, 409))	// kill forces attacker to laugh
 		TF2_StunPlayer(client, 2.0, 1.0, TF_STUNFLAGS_NORMALBONK);
-
+*/
 	value = Attributes_FindOnWeapon(client, weapon, 613);	// minicritboost on kill
 	if(value)
 		TF2_AddCondition(client, TFCond_MiniCritOnKill, value);
 
 	if(Attributes_FindOnWeapon(client, weapon, 644) || Attributes_FindOnWeapon(client, weapon, 807))	// clipsize increase on kill, add_head_on_kill
 		SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-
+/*
 	value = Attributes_FindOnWeapon(client, weapon, 736);	// speed_boost_on_kill
 	if(value)
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);
