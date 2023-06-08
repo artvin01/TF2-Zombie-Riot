@@ -1456,7 +1456,7 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 		}
 		
 		list.GetArray(i, stage);
-		if((!battleOnly || stage.WaveSet[0]) && (final || !CurrentExclude || CurrentExclude.FindValue(i) == -1))
+		if((!battleOnly || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION)) && (final || !CurrentExclude || CurrentExclude.FindValue(i) == -1))
 			return i;
 
 		i++;

@@ -330,3 +330,38 @@ public void Rogue_Vote_EccentricItem(const Vote vote, int index)
 		}
 	}
 }
+
+public float Rogue_Encounter_ForcefieldChest()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_ForcefieldChest, "Forcefield Chest Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Unknown Artifact");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Unknown Artifact Desc");
+	list.PushArray(vote);
+
+	Artifact artifact;
+	if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		list.PushArray(vote);
+	}
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
+{
+	if(index)
+	{
+		Rogue_GiveNamedArtifact(vote.Name);
+	}
+	else
+	{
+		Artifact artifact;
+		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+			Rogue_GiveNamedArtifact(vote.Name);
+	}
+}

@@ -100,10 +100,6 @@
 	{
 		"en"	"..."
 	}
-	"The Sword in the Stone"
-	{
-		"en"	"The Sword in the Stone"
-	}
 	"Sword and Stone Lore"
 	{
 		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone. He claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler. However, he has no way to pull out the sword from the stone."
@@ -132,10 +128,6 @@
 	{
 		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government. Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
 	}
-	"Theatrical Necessities"
-	{
-		"en"	"Theatrical Necessities"
-	}
 	"Theatrical Lore"
 	{
 		"en"	"You find a middle-aged man rambling away in front of a dressing table. He notices you and howls in your direction, asking you to deliver the prop on the table to the actress. You look at the dressing table and find a crown entwined with thorns."
@@ -159,10 +151,6 @@
 	"Theatrical Lore 2"
 	{
 		"en"	"You ignore the middle-aged man's howlings and leave."
-	}
-	"Eccentric Hunchback"
-	{
-		"en"	"Eccentric Hunchback"
 	}
 	"Eccentric Lore"
 	{
@@ -224,11 +212,83 @@
 	{
 		"en"	"''How could be so brave as to ask about him? What a reckless lunatic. For your fearlessness, I will give you your money back, but I don't want to die yet. I can't tell you anything.''"
 	}
+	"Forcefield Chest Title"
+	{
+		"en"	"An item rests on the table in front of you, something else is in the distance. Take what's on the table and go or try to find out what's over there?"
+	}
+	"Unknown Artifact"
+	{
+		"en"	"Unknown Artifact"
+	}
+	"Unknown Artifact Desc"
+	{
+		"en"	"{yellow}Receive an unknown artifact{default}"
+	}
+	"Crimson Troupe Title"
+	{
+		"en"	"A knight appears in the distance, from thin air. A spotlight appears on him as he stands on a stage, preparing for a show."
+	}
+	"Let's check out this show"
+	{
+		"en"	"Let's check out this show"
+	}
 
 	// Stages
+	"Forcefield Chest"
+	{
+		"en"	"Forcefield Chest"
+	}
+	"Electric Tower"
+	{
+		"en"	"Electric Tower"
+	}
+	"Tower Madness"
+	{
+		"en"	"Tower Madness"
+	}
+	"Caged Beast"
+	{
+		"en"	"Caged Beast"
+	}
+	"Elevated Presence"
+	{
+		"en"	"Elevated Presence"
+	}
+	"Shop"
+	{
+		"en"	"Shop"
+	}
 	"Boons"
 	{
 		"en"	"Boons"
+	}
+	"Water Fountain"
+	{
+		"en"	"Water Fountain"
+	}
+	"Abandoned Graveyard"
+	{
+		"en"	"Abandoned Graveyard"
+	}
+	"Pure Desert"
+	{
+		"en"	"Pure Desert"
+	}
+	"The Sword in the Stone"
+	{
+		"en"	"The Sword in the Stone"
+	}
+	"Theatrical Necessities"
+	{
+		"en"	"Theatrical Necessities"
+	}
+	"Eccentric Hunchback"
+	{
+		"en"	"Eccentric Hunchback"
+	}
+	"Crimson Troupe"
+	{
+		"en"	"Crimson Troupe"
 	}
 
 	// Curses
@@ -817,45 +877,5 @@
 	"Hand of Flowing Death Desc"
 	{
 		"en"	"The flowing death that trails on, you embrace the chaos, with bones.\n{green}Bat Outta Hell-line and Prinny Machete-line weapons gain +100% max mana and mana regeneration."
-	}
-	"Forcefield Chest"
-	{
-		"en"	"Forcefield Chest"
-	}
-	"Electric Tower"
-	{
-		"en"	"Electric Tower"
-	}
-	"Tower Madness"
-	{
-		"en"	"Tower Madness"
-	}
-	"Caged Beast"
-	{
-		"en"	"Caged Beast"
-	}
-	"Elevated Presence"
-	{
-		"en"	"Elevated Presence"
-	}
-	"Shop"
-	{
-		"en"	"Shop"
-	}
-	"Boons"
-	{
-		"en"	"Boons"
-	}
-	"Water Fountain"
-	{
-		"en"	"Water Fountain"
-	}
-	"Abandoned Graveyard"
-	{
-		"en"	"Abandoned Graveyard"
-	}
-	"Pure Desert"
-	{
-		"en"	"Pure Desert"
 	}
 }
