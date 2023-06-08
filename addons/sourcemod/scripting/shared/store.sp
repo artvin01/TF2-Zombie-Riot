@@ -1538,7 +1538,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				if(info.Cost > 0 && free)
 					return;
 				
-				if((CurrentCash - CashSpent[client]) >= info.Cost)
+				if(CurrentCash >= info.Cost && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())
 					{

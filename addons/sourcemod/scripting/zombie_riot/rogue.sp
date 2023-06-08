@@ -1456,7 +1456,7 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 		}
 		
 		list.GetArray(i, stage);
-		if((!battleOnly || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION)) && (final || !CurrentExclude || CurrentExclude.FindValue(i) == -1))
+		if((!battleOnly || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION)) && (final || !CurrentExclude || CurrentExclude.FindString(stage.Name) == -1))
 			return i;
 
 		i++;
@@ -1913,9 +1913,9 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	else
 	{
 		if(!CurrentExclude)
-			CurrentExclude = new ArrayList();
+			CurrentExclude = new ArrayList(sizeof(stage.Name));
 		
-		CurrentExclude.Push(id);
+		CurrentExclude.PushString(stage.Name);
 	}
 
 	SetNextStage(id, false, stage);

@@ -214,7 +214,7 @@
 	}
 	"Forcefield Chest Title"
 	{
-		"en"	"An item rests on the table in front of you, something else is in the distance. Take what's on the table and go or try to find out what's over there?"
+		"en"	"An item rests on the table in front of you, something else is in the distance.\nTake what's on the table and go or try to find out what's over there?"
 	}
 	"Unknown Artifact"
 	{
@@ -226,11 +226,55 @@
 	}
 	"Crimson Troupe Title"
 	{
-		"en"	"A knight appears in the distance, from thin air. A spotlight appears on him as he stands on a stage, preparing for a show."
+		"en"	"A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
 	}
 	"Let's check out this show"
 	{
 		"en"	"Let's check out this show"
+	}
+	"Camp Title"
+	{
+		"en"	"You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
+	}
+	"Camp Option"
+	{
+		"en"	"Drift into slumber"
+	}
+	"Camp Desc"
+	{
+		"en"	"{green}Fully heal allies and gain 30 ammo supplies"
+	}
+	"Camp Lore"
+	{
+		"en"	"By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
+	}
+	"Coffin of Evil Lore"
+	{
+		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources. In the center of the room is a massive coffin with many gems and jewels affixed. Just as you are about to inspect the coffin, you hear a voice from inside it. It seems to be asking for your help to open the coffin."
+	}
+	"Coffin of Evil Option 1"
+	{
+		"en"	"We can't stand idly by when someone's asking for help"
+	}
+	"Coffin of Evil Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
+	}
+	"Coffin of Evil Lore 1"
+	{
+		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking man climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
+	}
+	"Coffin of Evil Option 2"
+	{
+		"en"	"Looks way too sketchy"
+	}
+	"Coffin of Evil Desc 2"
+	{
+		"en"	"{green}Gain 4 Australium Ingots"
+	}
+	"Coffin of Evil Lore 2"
+	{
+		"en"	"In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
 	}
 
 	// Stages
@@ -289,6 +333,14 @@
 	"Crimson Troupe"
 	{
 		"en"	"Crimson Troupe"
+	}
+	"Camp"
+	{
+		"en"	"Camp"
+	}
+	"Coffin of Evil"
+	{
+		"en"	"Coffin of Evil"
 	}
 
 	// Curses

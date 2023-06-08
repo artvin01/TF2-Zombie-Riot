@@ -226,13 +226,54 @@ methodmap EndSpeaker < CClotBody
 			SDKHooks_TakeDamage(remain[i], 0, 0, 99999999.9, DMG_DROWN);
 		}
 
+		vecTarget = WorldSpaceCenter(this.index);
+		vecTarget[2] += 80.0;
+
 		if(this.m_hBuffs & BUFF_FOUNDER)
+		{
 			this.m_flRangedArmor *= 0.4;
+
+			this.m_iWearable1 = ParticleEffectAt(vecTarget, "powerup_icon_resist", -1.0);
+			SetParent(npc.index, npc.m_iWearable1);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_nhBuffs & BUFF_PREDATOR)
+		{
+			this.m_iWearable2 = ParticleEffectAt(vecTarget, "powerup_icon_reflect", -1.0);
+			SetParent(npc.index, npc.m_iWearable2);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_nhBuffs & BUFF_BRANDGUIDER)
+		{
+			this.m_iWearable3 = ParticleEffectAt(vecTarget, "powerup_icon_king", -1.0);
+			SetParent(npc.index, npc.m_iWearable3);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_nhBuffs & BUFF_SPEWER)
+		{
+			this.m_iWearable4 = ParticleEffectAt(vecTarget, "powerup_icon_precision", -1.0);
+			SetParent(npc.index, npc.m_iWearable4);
+			vecTarget[2] += 20.0;
+		}
 
 		if(this.m_hBuffs & BUFF_SWARMCALLER)
 		{
 			b_CannotBeSlowed[this.index] = true;
 			this.m_bThisNpcIsABoss = true;
+
+			this.m_iWearable5 = ParticleEffectAt(vecTarget, "powerup_icon_agility", -1.0);
+			SetParent(npc.index, npc.m_iWearable5);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_hBuffs & BUFF_REEFBREAKER)
+		{
+			this.m_iWearable6 = ParticleEffectAt(vecTarget, "powerup_icon_strength", -1.0);
+			SetParent(npc.index, npc.m_iWearable6);
+			vecTarget[2] += 20.0;
 		}
 	}
 

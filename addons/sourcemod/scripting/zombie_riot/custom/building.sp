@@ -1253,10 +1253,8 @@ bool AllowBuildingCurrently()
 	{
 		if(Rogue_InSetup())
 		{
-			return true;
+			return false;
 		}
-		
-		return false;
 	}
 	
 	return true;

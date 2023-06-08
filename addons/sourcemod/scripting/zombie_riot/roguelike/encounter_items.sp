@@ -365,3 +365,71 @@ public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
 			Rogue_GiveNamedArtifact(vote.Name);
 	}
 }
+
+public float Rogue_Encounter_Camp()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Camp, "Camp Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Camp Option");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Camp Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_Camp(const Vote vote, int index)
+{
+	Ammo_Count_Ready += 30;
+	PrintToChatAll("%t", "Camp Lore");
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+			StartHealingTimer(client, 0.1, 10.0, 250, false);
+	}
+	
+	for(int i; i < i_MaxcountNpc_Allied; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			StartHealingTimer(entity, 0.1, 10.0, 250, false);
+	}
+}
+
+public float Rogue_Encounter_CoffinOfEvil()
+{
+	PrintToChatAll("%t", "Coffin of Evil Lore");
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_CoffinOfEvil, "Lore Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Coffin of Evil Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Coffin of Evil Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Coffin of Evil Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Coffin of Evil Desc 2");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_CoffinOfEvil(const Vote vote, int index)
+{
+	if(index)
+	{
+		PrintToChatAll("%t", "Coffin of Evil Lore 2");
+
+		Rogue_AddIngots(4);
+	}
+	else
+	{
+		PrintToChatAll("%t", "Coffin of Evil Lore 1");
+
+		Ammo_Count_Ready -= 30;
+		Rogue_GiveNamedArtifact("Proof of Friendship");
+	}
+}
