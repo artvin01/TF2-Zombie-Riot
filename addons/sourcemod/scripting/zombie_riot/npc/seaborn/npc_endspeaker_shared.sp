@@ -234,28 +234,28 @@ methodmap EndSpeaker < CClotBody
 			this.m_flRangedArmor *= 0.4;
 
 			this.m_iWearable1 = ParticleEffectAt(vecTarget, "powerup_icon_resist", -1.0);
-			SetParent(npc.index, npc.m_iWearable1);
+			SetParent(this.index, this.m_iWearable1);
 			vecTarget[2] += 20.0;
 		}
 
-		if(this.m_nhBuffs & BUFF_PREDATOR)
+		if(this.m_hBuffs & BUFF_PREDATOR)
 		{
 			this.m_iWearable2 = ParticleEffectAt(vecTarget, "powerup_icon_reflect", -1.0);
-			SetParent(npc.index, npc.m_iWearable2);
+			SetParent(this.index, this.m_iWearable2);
 			vecTarget[2] += 20.0;
 		}
 
-		if(this.m_nhBuffs & BUFF_BRANDGUIDER)
+		if(this.m_hBuffs & BUFF_BRANDGUIDER)
 		{
 			this.m_iWearable3 = ParticleEffectAt(vecTarget, "powerup_icon_king", -1.0);
-			SetParent(npc.index, npc.m_iWearable3);
+			SetParent(this.index, this.m_iWearable3);
 			vecTarget[2] += 20.0;
 		}
 
-		if(this.m_nhBuffs & BUFF_SPEWER)
+		if(this.m_hBuffs & BUFF_SPEWER)
 		{
 			this.m_iWearable4 = ParticleEffectAt(vecTarget, "powerup_icon_precision", -1.0);
-			SetParent(npc.index, npc.m_iWearable4);
+			SetParent(this.index, this.m_iWearable4);
 			vecTarget[2] += 20.0;
 		}
 
@@ -265,14 +265,14 @@ methodmap EndSpeaker < CClotBody
 			this.m_bThisNpcIsABoss = true;
 
 			this.m_iWearable5 = ParticleEffectAt(vecTarget, "powerup_icon_agility", -1.0);
-			SetParent(npc.index, npc.m_iWearable5);
+			SetParent(this.index, this.m_iWearable5);
 			vecTarget[2] += 20.0;
 		}
 
 		if(this.m_hBuffs & BUFF_REEFBREAKER)
 		{
 			this.m_iWearable6 = ParticleEffectAt(vecTarget, "powerup_icon_strength", -1.0);
-			SetParent(npc.index, npc.m_iWearable6);
+			SetParent(this.index, this.m_iWearable6);
 			vecTarget[2] += 20.0;
 		}
 	}

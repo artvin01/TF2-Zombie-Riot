@@ -4460,12 +4460,12 @@ void Building_RaidSpawned(int entity)
 		}
 	}
 }
-/*
+
 bool Building_NeatherseaReduced(int entity)
 {
 	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
 }
-*/
+
 void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
 {
 	if(camo || regrow)
