@@ -74,11 +74,6 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				
 			Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 			
-			if (EscapeMode)
-			{
-				Calculate_HP_Spikes *= 3.0;
-			}
-			
 			if (Bonus_damage <= 1.0)
 				Bonus_damage = 1.0;
 				
@@ -114,6 +109,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				SetEntityModel(TripMine, TRIP_MODEL);
 				DispatchKeyValue(TripMine, "StartDisabled", "false");
 				DispatchSpawn(TripMine);
+				SetEntitySpike(TripMine, true);
 						
 				SetEntityMoveType(TripMine, MOVETYPE_NONE);
 				SetEntProp(TripMine, Prop_Data, "m_takedamage", 0);

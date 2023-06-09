@@ -39,6 +39,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 5.0);
 				
 				float damage = 65.0;

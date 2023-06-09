@@ -101,6 +101,7 @@ public void Event_ObjectMoved_Custom(int building)
 				}
 			}
 		}
+		IsBuildingNotFloating(iBuildingDependency[building]);
 		//the top building shouldnt have a parent anymore.
 	}
 	for(int i=0; i<2048; i++)
@@ -444,6 +445,7 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 				}
 			}
 	//		SDKHooks_TakeDamage(iBuildingDependency[entity], 0, 0, 100000.0, DMG_ACID);
+			IsBuildingNotFloating(iBuildingDependency[entity]);
 		}
 		iBuildingDependency[entity] = 0;
 		for(int i=0; i<2048; i++)
@@ -609,4 +611,18 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask)
 		return true;
 	}
 	return false;
+}
+
+void IsBuildingNotFloating(int building)
+{
+	static float m_vecMaxs[3];
+	static float m_vecMins[3];
+	m_vecMaxs = view_as<float>( { 20.0, 20.0, 1.0 } );
+	m_vecMins = view_as<float>( { -20.0, -20.0, -5.0 } );	
+	float endPos2[3];
+	GetEntPropVector(building, Prop_Send, "m_vecOrigin", endPos2);
+	if(!IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
+	{
+		SDKHooks_TakeDamage(building, 0, 0, 100000.0, DMG_ACID);
+	}
 }

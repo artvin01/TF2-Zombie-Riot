@@ -166,6 +166,8 @@ public void PlaceableTempomaryArmorGrenade(int client)
 
 		if(IsValidEntity(entity))
 		{
+			SetEntitySpike(entity, true);
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			static float pos[3], ang[3], vel_2[3];
 			GetClientEyeAngles(client, ang);
 			GetClientEyePosition(client, pos);	
@@ -312,6 +314,8 @@ public void PlaceableTempomaryHealingGrenade(int client)
 
 		if(IsValidEntity(entity))
 		{
+			SetEntitySpike(entity, true);
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			static float pos[3], ang[3], vel_2[3];
 			GetClientEyeAngles(client, ang);
 			GetClientEyePosition(client, pos);	
@@ -751,6 +755,8 @@ public void PlaceableTempomaryRepairGrenade(int client)
 
 		if(IsValidEntity(entity))
 		{
+			
+			SetEntitySpike(entity, true);
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			static float pos[3], ang[3], vel_2[3];
 			GetClientEyeAngles(client, ang);

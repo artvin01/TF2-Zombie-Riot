@@ -8,14 +8,14 @@
 #define STARTER_WEAPON_LEVEL	5
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Waves_GetRound
+#define ZR_GetWaveCount Rogue_GetRoundScale
 
 public const int AmmoData[][] =
 {
 	// Price, Ammo
 	{ 0, 0 },			//N/A
 	{ 0, 0 },			//Primary
-	{ 0, 99999 },		//Secondary
+	{ 0, 4222 },		//Secondary
 	{ 10, 500 },		//Metal
 	{ 0, 0 },			//Ball
 	{ 0, 0 },			//Food
@@ -119,7 +119,6 @@ bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
-bool EscapeMode;
 int LimitNpcs;
 
 //bool RaidMode; 							//Is this raidmode?
@@ -281,6 +280,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
+#include "zombie_riot/rogue.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -402,6 +402,7 @@ void ZR_PluginStart()
 	OnPluginStart_Glitched_Weapon();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
+	Rogue_PluginStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -414,10 +415,9 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Rogue_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
-	EscapeMode = false;
-	EscapeModeForNpc = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
@@ -442,6 +442,8 @@ void ZR_MapStart()
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
+	ShieldLogic_OnMapStart();
+	Rogue_OnAbilityUseMapStart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -591,11 +593,12 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	Ammo_Count_Used[client] = 0;
-	
+	/*
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
-	
+	See databaseuh
+	*/
+
 }
 
 void ZR_ClientDisconnect(int client)
@@ -878,6 +881,13 @@ public Action Command_SpawnGrigori(int client, int args)
 
 public void OnClientAuthorized(int client)
 {
+	Ammo_Count_Used[client] = 0;
+	CashSpentTotal[client] = 0;
+	f_LeftForDead_Cooldown[client] = 0.0;
+	
+	if(CurrentRound)
+		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
+
 	Database_ClientAuthorized(client);
 }
 
@@ -925,16 +935,8 @@ public Action Timer_Dieing(Handle timer, int client)
 				SetEntityCollisionGroup(client, 5);
 				PrintCenterText(client, "");
 				DoOverlay(client, "");
-				if(!EscapeMode)
-				{
-					SetEntityHealth(client, 50);
-					RequestFrame(SetHealthAfterRevive, client);
-				}	
-				else
-				{
-					SetEntityHealth(client, 150);
-					RequestFrame(SetHealthAfterRevive, client);						
-				}
+				SetEntityHealth(client, 50);
+				RequestFrame(SetHealthAfterRevive, client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -1060,7 +1062,8 @@ void CheckAlivePlayersforward(int killed=0)
 
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 {
-	if(!Waves_Started() || GameRules_GetRoundState() != RoundState_RoundRunning)
+	bool rogue = Rogue_Mode();
+	if(!Waves_Started() || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
 	{
 		LastMann = false;
 		CurrentPlayers = 0;
@@ -1077,10 +1080,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = !Waves_InSetup();
+	LastMann = (!rogue && !Waves_InSetup());
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
-	int GlobalIntencity_Reduntant = Waves_GetIntencity();
+	int GlobalIntencity_Reduntant;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -1117,7 +1120,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
+	if(rogue || (LastMann && !GlobalIntencity_Reduntant)) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
@@ -1210,25 +1213,32 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			Bob_Exists = false;
 			int bob_index = EntRefToEntIndex(Bob_Exists_Index);
 			NPC_Despawn_bob(bob_index);
-			Bob_Exists_Index = 0;
+			Bob_Exists_Index = -1;
 		}
+
+		if(rogue)
+			rogue = !Rogue_BattleLost();
 	
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		
+		if(!rogue)
+		{
+			int entity = CreateEntityByName("game_round_win"); 
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+		}
+
 		if(killed)
 		{
-			Music_RoundEnd(killed);
-			CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
-		//	RequestFrames(Remove_All, 300);
+			Music_RoundEnd(killed, !rogue);
+			if(!rogue)
+			{
+				CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
+			//	RequestFrames(Remove_All, 300);
+			}
 		}
 	}
 }
-
-
 
 //Revival raid spam
 public void SetHealthAfterReviveRaid(int client)
@@ -1270,32 +1280,8 @@ public void SetHealthAfterRevive(int client)
 public void SetHealthAfterReviveAgain(int client)
 {
 	if(IsValidClient(client))
-	{	
-		RequestFrame(SetHealthAfterReviveAgainAgain, client);	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
-	}
-	
-}
-
-public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have to do it more then once for escape.
-{
-	if(IsValidClient(client))
-	{	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
+	{
+		SetEntityHealth(client, 50);
 	}
 }
 
@@ -1583,16 +1569,8 @@ void ReviveAll(bool raidspawned = false)
 					SetEntityCollisionGroup(client, 5);
 					if(!raidspawned)
 					{
-						if(!EscapeMode)
-						{
-							SetEntityHealth(client, 50);
-							RequestFrame(SetHealthAfterRevive, client);
-						}	
-						else
-						{
-							SetEntityHealth(client, 150);
-							RequestFrame(SetHealthAfterRevive, client);						
-						}
+						SetEntityHealth(client, 50);
+						RequestFrame(SetHealthAfterRevive, client);
 					}
 				}
 				if(raidspawned)
@@ -1689,6 +1667,9 @@ void GiveXP(int client, int xp)
 			
 			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
 				slots++;
+			
+			if(Level[client] < 81 && !(Level[client] % 10))
+				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
 		}
 		
 		if(slots)

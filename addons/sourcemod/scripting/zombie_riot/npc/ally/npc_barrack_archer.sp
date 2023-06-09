@@ -63,7 +63,7 @@ public void BarrackArcher_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_CUSTOM_IDLE_BOW", "ACT_CUSTOM_WALK_BOW", 160000.0);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_CUSTOM_IDLE_BOW", "ACT_CUSTOM_WALK_BOW", 160000.0);
 	}
 }
 

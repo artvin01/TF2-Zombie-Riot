@@ -159,7 +159,6 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound("mvm/mvm_tank_end.wav");
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	PrecacheSound("mvm/mvm_tank_explode.wav");
-	PrecacheSound("zombiesurvival/beats/defaultzombiev2/10.mp3");
 	
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
@@ -586,7 +585,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		}
 		*/
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	int closest = npc.m_iTarget;
 	int PrimaryThreatIndex = npc.m_iTarget;

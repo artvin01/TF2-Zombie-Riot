@@ -237,6 +237,10 @@ methodmap GodArkantos < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		if(ZR_GetWaveCount()+1 >= 59)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 300.0;
+		}
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 
@@ -794,7 +798,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				GodArkantosSpawnEnemy(MEDIVAL_RIDDENARCHER,75000, RoundToCeil(10.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(25000.0 * MultiGlobalHealth), 1);
 				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(7500000.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(300000.0 * MultiGlobalHealth), 1, true);		
+				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(150000.0 * MultiGlobalHealth), 1, true);		
 			}
 			else
 			{
@@ -803,7 +807,7 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 				GodArkantosSpawnEnemy(MEDIVAL_RIDDENARCHER,75000, RoundToCeil(20.0 * MultiGlobal));
 				GodArkantosSpawnEnemy(MEDIVAL_MONK,RoundToCeil(50000.0 * MultiGlobalHealth), 1);
 				GodArkantosSpawnEnemy(MEDIVAL_SON_OF_OSIRIS, RoundToCeil(1500000.0 * MultiGlobalHealth), 1, true);		
-				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(500000.0 * MultiGlobalHealth), 1, true);				
+				GodArkantosSpawnEnemy(MEDIVAL_VILLAGER, RoundToCeil(250000.0 * MultiGlobalHealth), 1, true);				
 			}
 		}
 	}
@@ -890,7 +894,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.

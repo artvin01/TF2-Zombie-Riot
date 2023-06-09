@@ -800,6 +800,10 @@
 		"nl"		"U hebt het maximale spijkers berijkt! Pak spijkers op met M2 of wacht tot ze worden opgebruikt!"
 		"chi"       "你已达到钉刺的最大使用次数，按下鼠标右键将它回收或等待它消耗殆尽。"
 	}
+	"Spike Limit Reached Global"
+	{
+		"en" 		"There are too many Spikes on the map! Placement Failed."
+	}
 	"Threw Grenade"
 	{
 		"en" 		"You just threw your grenade, you will have it back in 15 seconds!"
@@ -1022,7 +1026,7 @@
 
 	"Quick Revive Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed"
+		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed and 2x Health on revive"
 	}
 	"Juggernog Recieved"
 	{
@@ -2290,7 +2294,7 @@
 	"Downs left"
 	{
 		"#format"	"{1:d}"
-		"en"		"Downs left : {1}"
+		"en"		"Downs Left: {1}"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -2304,7 +2308,7 @@
 	"Down Cooldown"
 	{
 		"#format"	"{1:.1f}"
-		"en"		"Down Cooldown : {1}"
+		"en"		"Down Cooldown: {1}"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

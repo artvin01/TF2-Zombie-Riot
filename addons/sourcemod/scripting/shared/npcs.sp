@@ -35,6 +35,7 @@ enum struct SpawnerData
 	float	f_SpawnerCooldown;
 	float	f_PointScore;
 	bool	IsBaseBoss;
+	char	Name[64];
 }
 
 //todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
@@ -79,10 +80,24 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-void NPC_RoundEnd()
+void NPC_MapEnd()
 {
 	delete SpawnerList;
 	SpawnerList = new ArrayList(sizeof(SpawnerData));
+}
+
+void NPC_RoundStart()
+{
+	// Artvin TODO: Check whenever a teamspawn is deleted and remove from SpawnerList and other arrays
+
+	delete SpawnerList;
+	SpawnerList = new ArrayList(sizeof(SpawnerData));
+
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
+	{
+		OnEntityCreated(entity, "info_player_teamspawn");
+	}
 }
 #endif
 
@@ -197,11 +212,11 @@ public Action GetClosestSpawners(Handle timer)
 								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
 								if(index != -1)
 								{
-									char name[32];
-									if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
+									SpawnerData Spawner;
+									SpawnerList.GetArray(index, Spawner);
 
 									//For Zr_lila_panic.
-									if(StrEqual(name, "underground"))
+									if(StrEqual(Spawner.Name, "underground"))
 									{
 										if(!b_PlayerIsInAnotherPart[client])
 										{
@@ -210,14 +225,11 @@ public Action GetClosestSpawners(Handle timer)
 									}
 									if(b_PlayerIsInAnotherPart[client])
 									{
-										if(!StrEqual(name, "underground"))
+										if(!StrEqual(Spawner.Name, "underground"))
 										{
 											continue;
 										}
 									}
-
-									SpawnerData Spawner;
-									SpawnerList.GetArray(index, Spawner);
 										
 									float inverting_score_calc;
 
@@ -256,8 +268,9 @@ public Action GetClosestSpawners(Handle timer)
 	int i_Spawner_Indexes[32 + 1];
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
+	int maxSpawners = Rogue_Mode() ? 1 : MapSpawnersActive.IntValue;
 
-	for(int Repeats=1; Repeats<=(MapSpawnersActive.IntValue); Repeats++)
+	for(int Repeats=1; Repeats<=maxSpawners; Repeats++)
 	{
 		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 		{
@@ -619,15 +632,43 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			Enemy enemy;
 			if(Waves_GetNextEnemy(enemy))
 			{
-				int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
-				if(index != -1)
+				if(enemy.Spawn[0])
 				{
+					int length = SpawnerList.Length;
+
 					SpawnerData Spawner;
-					SpawnerList.GetArray(index, Spawner);
-					Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
-					SpawnerList.SetArray(index, Spawner);
+
+					int count;
+					int[] matches = new int[length];
+					for(int i; i < length; i++)
+					{
+						SpawnerList.GetArray(i, Spawner);
+						if(StrEqual(Spawner.Name, enemy.Spawn, false))
+							matches[count++] = Spawner.indexnumber;
+					}
+
+					if(count)
+					{
+						entity_Spawner = matches[GetRandomInt(0, count-1)];
+					}
+					else
+					{
+						entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+						PrintToChatAll("UNKNOWN SPAWN POINT \"%s\", REPORT BUG", enemy.Spawn);
+					}
 				}
-				entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+				else
+				{
+					int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+					if(index != -1)
+					{
+						SpawnerData Spawner;
+						SpawnerList.GetArray(index, Spawner);
+						Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
+						SpawnerList.SetArray(index, Spawner);
+					}
+					entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
+				}
 				
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
@@ -668,6 +709,11 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Credits && MultiGlobal)
 						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobal;
+
+					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
+					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
+					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
+					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
 					
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
@@ -1215,6 +1261,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				damage *= f_FreeplayDamageExtra;
 			}
+			if(OnTakeDamage_ShieldLogic(victim, damagetype))
+			{
+				return Plugin_Handled;
+			}
 		}
 
 		if(b_npcspawnprotection[victim])
@@ -1332,6 +1382,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 #endif
 			damage *= fl_MeleeArmor[victim];
+			damage *= fl_Extra_MeleeArmor[victim];
 		}
 		else if(!(damagetype & DMG_SLASH))
 		{
@@ -1345,7 +1396,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 #endif
 			damage *= fl_RangedArmor[victim];
+			damage *= fl_Extra_RangedArmor[victim];
 		}
+		damage *= fl_Extra_Damage[attacker];
+
 		//No resistances towards slash as its internal.
 
 		if(damagePosition[0] != 0.0) //If there is no pos, then dont.
@@ -1387,6 +1441,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 		}
+		
+		if(Rogue_InItallianWrath(weapon))
+		{
+			damage *= 2.0;
+		}
+		OnTakeDamage_RogueItemGeneric(attacker, damage, damagetype, inflictor);
 
 		float BaseDamageBeforeBuffs = damage;
 
@@ -1394,7 +1454,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			if(f_HussarBuff[attacker] > GameTime) //hussar!
 			{
-		//		damage *= 1.10;
 				damage += BaseDamageBeforeBuffs * 0.1;
 			}
 			if(f_GodArkantosBuff[victim] > GameTime) //hussar!
@@ -1404,72 +1463,58 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime) //hussar!
 		{
-	//		BaseDamageBeforeBuffs 
-	//		damage *= 1.25;
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
 		else if (f_Ocean_Buff_Weak_Buff[attacker] > GameTime) //hussar!
 		{
-		//	damage *= 1.10;
 			damage += BaseDamageBeforeBuffs * 0.1;
 		}
 		if(f_EmpowerStateOther[attacker] > GameTime) //Allow stacking.
 		{
-		//	damage *= 1.1;
 			damage += BaseDamageBeforeBuffs * 0.1;
 		}
 		if(f_EmpowerStateSelf[attacker] > GameTime) //Allow stacking.
 		{
-		//	damage *= 1.15;
 			damage += BaseDamageBeforeBuffs * 0.15;
 		}
 		if(f_BuffBannerNpcBuff[attacker] > GameTime)
 		{
-	//		damage *= 1.35;
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
 		if(f_HighTeslarDebuff[victim] > GameTime)
 		{
-	//		damage *= 1.35;
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
 		else if(f_LowTeslarDebuff[victim] > GameTime)
 		{
-	//		damage *= 1.25;
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
 		
 		if(f_HighIceDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.15;
 			damage += BaseDamageBeforeBuffs * 0.15;
 		}
 		else if(f_LowIceDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.10;
 			damage += BaseDamageBeforeBuffs * 0.10;
 		}
 		else if(f_VeryLowIceDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.05;
 			damage += BaseDamageBeforeBuffs * 0.05;
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.35;
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
 
 		if(Increaced_Overall_damage_Low[attacker] > GameTime)
 		{
-		//	damage *= 1.25;
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
 		
 		if(f_CrippleDebuff[victim] > GameTime)
 		{
-		//	damage *= 1.4;
 			damage += BaseDamageBeforeBuffs * 0.4;
 		}
 
@@ -1521,23 +1566,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				damage = 0.0;
 			//	return Plugin_Handled;
 			}
-			
-#if defined ZR
-			if(EscapeMode)
-			{
-				if(IsValidEntity(weapon))
-				{
-					if(!i_IsWandWeapon[weapon] && !i_IsWrench[weapon]) //make sure its not a wand.
-					{
-						char melee_classname[64];
-						GetEntityClassname(weapon, melee_classname, 64);
-						
-						if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-							damage *= 1.25;
-					}
-				}
-			}
-#endif
 
 			//NPC STUFF FOR RECORD AND ON KILL
 			LastHitId[victim] = GetClientUserId(attacker);
@@ -1569,12 +1597,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				if(i_IsABuilding[inflictor])
 				{
-#if defined ZR
-					if(EscapeMode) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
-					{
-						damage *= 4.0;
-					}
-#endif
 #if defined RPG
 					if(RpgHasSentry(attacker)) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
 					{
@@ -1597,42 +1619,35 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(npc.m_bScalesWithWaves)
 					{
 						int Wave_Count = Waves_GetRound() + 1;
-						if(!EscapeMode) //Buff in escapemode overall!
-						{
-							if(Wave_Count <= 10)
-								damage *= 0.35;
-								
-							else if(Wave_Count <= 15)
-								damage *= 1.0;
+						if(Wave_Count <= 10)
+							damage *= 0.35;
 							
-							else if(Wave_Count <= 20)
-								damage *= 1.35;
-								
-							else if(Wave_Count <= 25)
-								damage *= 2.5;
-								
-							else if(Wave_Count <= 30)
-								damage *= 5.0;
-								
-							else if(Wave_Count <= 40)
-								damage *= 7.0;
-								
-							else if(Wave_Count <= 45)
-								damage *= 20.0;
+						else if(Wave_Count <= 15)
+							damage *= 1.0;
+						
+						else if(Wave_Count <= 20)
+							damage *= 1.35;
 							
-							else if(Wave_Count <= 50)
-								damage *= 30.0;
+						else if(Wave_Count <= 25)
+							damage *= 2.5;
 							
-							else if(Wave_Count <= 60)
-								damage *= 40.0;
+						else if(Wave_Count <= 30)
+							damage *= 5.0;
 							
-							else
-								damage *= 60.0;
-						}
+						else if(Wave_Count <= 40)
+							damage *= 7.0;
+							
+						else if(Wave_Count <= 45)
+							damage *= 20.0;
+						
+						else if(Wave_Count <= 50)
+							damage *= 30.0;
+						
+						else if(Wave_Count <= 60)
+							damage *= 40.0;
+						
 						else
-						{
-							damage *= 1.5;
-						}
+							damage *= 60.0;
 					}
 				}
 #endif	// ZR
@@ -1691,6 +1706,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					{
 						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 						damage = modified_damage;
+						OnTakeDamage_HandOfElderMages(attacker, weapon);
 					}
 					
 					
@@ -1788,9 +1804,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 									{
 										damage *= 1.25;
 									}
-									
-									if(EscapeMode)
-										damage *= 1.35;
 	#endif						
 									
 									//Latest tf2 update broke this, too lazy to fix lol
@@ -1929,6 +1942,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
+	}
+	if(RogueFizzyDrink())
+	{
+		npcBase.m_bGib = true;
 	}
 	return Plugin_Changed;
 }
@@ -2241,13 +2258,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	Debuff_added = false;
 
 #if defined ZR
-	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
+	if(npc.m_flMeleeArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_MeleeArmor[victim] != 1.0)
 #else
-	if(npc.m_flMeleeArmor != 1.0)
+	if(npc.m_flMeleeArmor != 1.0 || fl_Extra_MeleeArmor[victim] != 1.0)
 #endif
 	
 	{
 		float percentage = npc.m_flMeleeArmor * 100.0;
+		percentage *= fl_Extra_MeleeArmor[victim];
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -2264,13 +2282,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	
 #if defined ZR
-	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)))
+	if(npc.m_flRangedArmor != 1.0 || (Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim)) || fl_Extra_RangedArmor[victim] != 1.0)
 #else
-	if(npc.m_flRangedArmor != 1.0)
+	if(npc.m_flRangedArmor != 1.0 || fl_Extra_RangedArmor[victim] != 1.0)
 #endif
 	
 	{
 		float percentage = npc.m_flRangedArmor * 100.0;
+		percentage *= fl_Extra_RangedArmor[victim];
 		
 #if defined ZR
 		if(!NpcStats_IsEnemySilenced(victim))
@@ -2300,18 +2319,17 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 			int raidboss = EntRefToEntIndex(RaidBossActive);
 			//We have to check if the raidboss has any debuffs.
-			CClotBody raid = view_as<CClotBody>(raidboss);
-			if(raid.m_flMeleeArmor != 1.0)
+			if(fl_RangedArmor[raidboss] != 1.0 || fl_Extra_RangedArmor[raidboss] != 1.0)
 			{
 				HudOffset += 0.035;
 			}
-			else if(raid.m_flRangedArmor != 1.0)
+			else if(fl_MeleeArmor[raidboss] != 1.0 || fl_Extra_MeleeArmor[raidboss] != 1.0)
 			{
 				HudOffset += 0.035;
 			}
 			else if(Medival_Difficulty_Level != 0)
 			{
-				if(!NpcStats_IsEnemySilenced(raid.index))
+				if(!NpcStats_IsEnemySilenced(raidboss))
 				{
 					HudOffset += 0.035;
 				}
@@ -2721,6 +2739,7 @@ void Spawner_AddToArray(int entity, bool base_boss = false) //cant use ent ref h
 			Spawner.IsBaseBoss = true;
 		}
 		Spawner.indexnumber = entity;
+		GetEntPropString(entity, Prop_Data, "m_iName", Spawner.Name, sizeof(Spawner.Name));
 		SpawnerList.PushArray(Spawner);
 	}
 }

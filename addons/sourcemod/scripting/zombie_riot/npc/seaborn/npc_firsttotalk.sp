@@ -198,7 +198,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 					CreateTimer(4.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
 					CreateTimer(4.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 
-					spawnRing_Vectors(vecTarget, 650.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
+					spawnRing_Vectors(vecTarget, 325.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
 
 					npc.m_flDoingAnimation = gameTime + 4.0;
 					npc.m_flNextMeleeAttack = gameTime + 6.0;
@@ -292,7 +292,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 		//spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
 
 		Zero(HitEnemies);
-		TR_EnumerateEntitiesSphere(vecPos, 325.0, PARTITION_NON_STATIC_EDICTS, FirstToTalk_EnumerateEntitiesInRange, npc.index);
+		TR_EnumerateEntitiesSphere(vecPos, 325.0 * 0.75, PARTITION_NON_STATIC_EDICTS, FirstToTalk_EnumerateEntitiesInRange, npc.index);
 
 		// Hits the target with the highest armor within range
 

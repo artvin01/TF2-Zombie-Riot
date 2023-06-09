@@ -14,7 +14,6 @@ enum
 int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
 int i_TeamGlow[MAXENTITIES]={-1, ...};
-bool EscapeModeMap;
 bool EscapeModeForNpc;
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
@@ -116,22 +115,6 @@ void OnMapStart_NPC_Base()
 #endif
 	for (int i = 0; i < (sizeof(g_RobotStepSound));   i++) { PrecacheSound(g_RobotStepSound[i]);   }
 	
-#if defined ZR
-	EscapeModeMap = false;
-	
-	char buffer[16];
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-		if(!StrEqual(buffer, "zr_escapemode", false))
-			continue;
-		
-		EscapeModeMap = true;
-		break;
-	}
-#endif
-
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
 	
@@ -329,17 +312,6 @@ methodmap CClotBody
 		{
 			SetEntityCollisionGroup(npc, 24);
 		}
-		
-#if defined ZR
-		//Enable Harder zombies once in freeplay.
-		if(!EscapeModeForNpc)
-		{
-			if(Waves_InFreeplay())
-			{
-				EscapeModeForNpc = true;
-			}
-		}
-#endif
 
 		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
 		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);
@@ -553,11 +525,11 @@ methodmap CClotBody
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.1, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.1, 1.75); //Global.
 		}
 		else
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, CreatePathfinderIndex.GetSolidMask(), 100.0, 0.24, 1.75); //Global.
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
 			
 		}
 	
@@ -1036,7 +1008,7 @@ methodmap CClotBody
 	}
 	property float m_flRangedArmor
 	{
-		public get()							{ return fl_RangedArmor[this.index]; }
+		public get()				{ return fl_RangedArmor[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_RangedArmor[this.index] = TempValueForProperty; }
 	}
 	property bool m_bScalesWithWaves
@@ -1213,8 +1185,13 @@ methodmap CClotBody
 		float speed_for_return = 1.0;
 		float Gametime = GetGameTime();
 		float GametimeNpc = GetGameTime(this.index);
+		speed_for_return *= fl_Extra_Speed[this.index];
 		
 		bool Is_Boss = true;
+#if defined ZR
+		if(IS_MusicReleasingRadio())
+			speed_for_return *= 0.9;
+#endif
 		if(!this.m_bThisNpcIsABoss)
 		{
 			
@@ -3988,7 +3965,7 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-	//	DHookSetReturn(hReturn, true); 
+		NpcStartTouch(pThis,otherindex);
 		return MRES_Ignored;
 	}
 	 
@@ -3997,9 +3974,10 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
+	
+	NpcStartTouch(pThis,otherindex);
 
 	
-//	DHookSetReturn(hReturn, true); 
 	return MRES_Ignored;
 }
 
@@ -4014,27 +3992,26 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-	//	DHookSetReturn(hReturn, true); 
+		NpcStartTouch(pThis,otherindex);
 		return MRES_Ignored;
 	}
 	 
-	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
+	if(b_CantCollidie[otherindex])
 	{
 		DHookSetReturn(hReturn, false); 
 		return MRES_Supercede;
 	}
-	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
+	if(b_CantCollidieAlly[otherindex])
 	{
 		if(i_IsABuilding[otherindex])
 		{
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
-	//	DHookSetReturn(hReturn, true); 
 		return MRES_Ignored;
 	}
-	
-//	DHookSetReturn(hReturn, true); 
+	NpcStartTouch(pThis,otherindex);
+
 	return MRES_Ignored;
 }
 
@@ -4735,6 +4712,9 @@ stock int GetClosestTarget(int entity,
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
+	bool HasPathfollower = false;
+
+	HasPathfollower = PF_Exists(entity);
 
 
 	float fldistancelimit_Inside = fldistancelimit * fldistancelimit;
@@ -4751,34 +4731,42 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, i);
-						if(Enemy_I_See != i)
-						{
+						if(!Can_I_See_Enemy_Only(entity, i))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						static float TargetLocation[3]; 
-						GetClientAbsOrigin( i, TargetLocation ); 
+					//	static float TargetLocation[3]; 
+					//	GetClientAbsOrigin( i, TargetLocation ); 
 						
-						static float distance;
-						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside)
+					//	static float distance;
+					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						static float DistancePathed;
+						if(HasPathfollower)
+						{
+							PF_IsPathToEntityPossible(entity, i, DistancePathed);
+						}
+						else
+						{
+							static float TargetLocation[3]; 
+							GetClientAbsOrigin( i, TargetLocation ); 
+							DistancePathed = GetVectorDistance( EntityLocation, TargetLocation); 
+						}
+
+						if(DistancePathed < fldistancelimit)
 						{
 							if( TargetDistance ) 
 							{
-								if( distance < TargetDistance ) 
+								if( DistancePathed < TargetDistance ) 
 								{
 									ClosestTarget = i; 
-									TargetDistance = distance;		  
+									TargetDistance = DistancePathed;		  
 								}
 							} 
 							else 
 							{
 								ClosestTarget = i; 
-								TargetDistance = distance;
+								TargetDistance = DistancePathed;
 							}	
 						}	
 					}			
@@ -4810,36 +4798,43 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-						if(Enemy_I_See != entity_close)
-						{
+						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						static float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+					//	static float TargetLocation[3]; 
+					//	GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 							
-						static float distance;
-						distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						if(distance < fldistancelimit_Inside)
+					//	static float distance;
+					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+						static float DistancePathed;
+						if(HasPathfollower)
+						{
+							PF_IsPathToEntityPossible(entity, entity_close, DistancePathed);
+						}
+						else
+						{
+							static float TargetLocation[3]; 
+							GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+						}
+						
+						if(DistancePathed < fldistancelimit)
 						{
 							if( TargetDistance ) 
 							{
-								if( distance < TargetDistance ) 
+								if( DistancePathed < TargetDistance ) 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = distance;		  
+									TargetDistance = DistancePathed;		  
 								}
 							} 
 							else 
 							{
 								ClosestTarget = entity_close; 
-								TargetDistance = distance;
+								TargetDistance = DistancePathed;
 							}	
-						}	
+						}
 					}
 				}
 			}
@@ -4858,12 +4853,8 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-						if(Enemy_I_See != entity_close)
-						{
+						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
@@ -4878,19 +4869,18 @@ stock int GetClosestTarget(int entity,
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								distance = (DistancePathed * DistancePathed) * 0.65;
 								if( TargetDistance ) 
 								{
-									if( distance < TargetDistance ) 
+									if( DistancePathed < TargetDistance ) 
 									{
 										ClosestTarget = entity_close; 
-										TargetDistance = distance;		  
+										TargetDistance = DistancePathed;		  
 									}
 								} 
 								else 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = distance;
+									TargetDistance = DistancePathed;
 								}
 							}
 						}	
@@ -4916,12 +4906,8 @@ stock int GetClosestTarget(int entity,
 				{
 					if(CanSee)
 					{
-						static int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(entity, entity_close);
-						if(Enemy_I_See != entity_close)
-						{
+						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
-						}
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
@@ -4936,19 +4922,18 @@ stock int GetClosestTarget(int entity,
 							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
 							{
 								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								distance = (DistancePathed * DistancePathed) * 0.65;
 								if( TargetDistance ) 
 								{
-									if( distance < TargetDistance ) 
+									if( DistancePathed < TargetDistance ) 
 									{
 										ClosestTarget = entity_close; 
-										TargetDistance = distance;		  
+										TargetDistance = DistancePathed;		  
 									}
 								} 
 								else 
 								{
 									ClosestTarget = entity_close; 
-									TargetDistance = distance;
+									TargetDistance = DistancePathed;
 								}
 							}
 						}	
@@ -5016,7 +5001,7 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayers, entity);
+	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -5253,7 +5238,7 @@ public void Check_If_Stuck(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
-	PlayerInIlligalStuckArea(iNPC);
+//	PlayerInIlligalStuckArea(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
@@ -7372,6 +7357,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Speed[entity] = 0.0;
 	i_Target[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
+	fl_GetClosestTargetTimeTouch[entity] = 0.0;
 	fl_GetClosestTargetNoResetTime[entity] = 0.0;
 	fl_NextHurtSound[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
@@ -7493,10 +7479,15 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
+	fl_Extra_MeleeArmor[entity] = 1.0;
+	fl_Extra_RangedArmor[entity] = 1.0;
+	fl_Extra_Speed[entity] = 1.0;
+	fl_Extra_Damage[entity] = 1.0;
 	f_PickThisDirectionForabit[entity] = 0.0;
 	b_ScalesWithWaves[entity] = false;
 	b_PernellBuff[entity] = false;
 	f_HussarBuff[entity] = 0.0;
+	f_GodArkantosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
@@ -8554,9 +8545,8 @@ int i2_IlligalStuck_StuckTrueFalse[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK];
 	0 means not recorded yet.
 */
 //the max should be 64 checks.
-void PlayerInIlligalStuckArea(int entity)
+public void PlayerInIlligalStuckArea(int entity)
 {
-	return;
 	//PF_IsPathToVectorPossible says good even though it cant path.
 	// a way to make it work: See destination, if the destination isnt near the client, mark?
 	int client;
@@ -8622,21 +8612,21 @@ void PlayerIlligalResetOldestAndSort(int client, int ClientStuck)
 		//update latest
 	}
 }
-
+/*
 void PlayerIllgalMapCheck()
 {
 	bool MapHasIlligalSpot;
 
-	/*
+	
 	blahblahblahcode
 
 	if client is near stuck abuse area, do this
 	todo: do this in playerruncmd maybe so it can go against spam jumping, if its not too slow.
 	SDKHooks_TakeDamage(client, 0, 0, float(SDKCall_GetMaxHealth(client) / 4), DMG_DROWN);
 											
-	*/
+	
 }
-
+*/
 void PlayerIlligalTooMuch(int client)
 {
 	int CountIlligal;
@@ -8673,7 +8663,7 @@ void PlayerIlligalTooMuch(int client)
 		PrintToChat(client, "Do not abuse NPC stuckspots.");
 	}
 }
-
+/*
 static void ReportBadPosition(const float pos[3])
 {
 #if defined _discordbot_included
@@ -8681,5 +8671,31 @@ static void ReportBadPosition(const float pos[3])
 	zr_webhookadmins.GetString(buffer, sizeof(buffer));
 #endif
 }
-
+*/
 #endif	// ZR
+
+
+float GetRandomRetargetTime()
+{
+	return GetRandomFloat(3.0, 5.0);
+}
+
+public void NpcStartTouch(Address pThis, int target)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(fl_GetClosestTargetTimeTouch[entity] < GetGameTime() && f_TimeFrozenStill[entity] < GetGameTime(npc.index))
+	{
+		if(npc.m_iTarget != target)
+		{
+			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
+			{
+				fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
+				if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
+				{
+					npc.m_iTarget = target;
+				}
+			}
+		}	
+	}
+}

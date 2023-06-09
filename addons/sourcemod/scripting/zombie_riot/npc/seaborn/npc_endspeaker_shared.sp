@@ -216,7 +216,7 @@ methodmap EndSpeaker < CClotBody
 				}
 
 				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
-				Explode_Logic_Custom(999999.9, -1, this.index, -1, vecTarget, 400.0, _, _, true, _, false, _, EndSpeaker_EatPost);
+				Explode_Logic_Custom(999999.9, -1, this.index, -1, vecTarget, 500.0, _, _, true, _, false, _, EndSpeaker_EatPost);
 				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			}
 		}
@@ -226,13 +226,54 @@ methodmap EndSpeaker < CClotBody
 			SDKHooks_TakeDamage(remain[i], 0, 0, 99999999.9, DMG_DROWN);
 		}
 
+		vecTarget = WorldSpaceCenter(this.index);
+		vecTarget[2] += 80.0;
+
 		if(this.m_hBuffs & BUFF_FOUNDER)
+		{
 			this.m_flRangedArmor *= 0.4;
+
+			this.m_iWearable1 = ParticleEffectAt(vecTarget, "powerup_icon_resist", -1.0);
+			SetParent(this.index, this.m_iWearable1);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_hBuffs & BUFF_PREDATOR)
+		{
+			this.m_iWearable2 = ParticleEffectAt(vecTarget, "powerup_icon_reflect", -1.0);
+			SetParent(this.index, this.m_iWearable2);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_hBuffs & BUFF_BRANDGUIDER)
+		{
+			this.m_iWearable3 = ParticleEffectAt(vecTarget, "powerup_icon_king", -1.0);
+			SetParent(this.index, this.m_iWearable3);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_hBuffs & BUFF_SPEWER)
+		{
+			this.m_iWearable4 = ParticleEffectAt(vecTarget, "powerup_icon_precision", -1.0);
+			SetParent(this.index, this.m_iWearable4);
+			vecTarget[2] += 20.0;
+		}
 
 		if(this.m_hBuffs & BUFF_SWARMCALLER)
 		{
 			b_CannotBeSlowed[this.index] = true;
 			this.m_bThisNpcIsABoss = true;
+
+			this.m_iWearable5 = ParticleEffectAt(vecTarget, "powerup_icon_agility", -1.0);
+			SetParent(this.index, this.m_iWearable5);
+			vecTarget[2] += 20.0;
+		}
+
+		if(this.m_hBuffs & BUFF_REEFBREAKER)
+		{
+			this.m_iWearable6 = ParticleEffectAt(vecTarget, "powerup_icon_strength", -1.0);
+			SetParent(this.index, this.m_iWearable6);
+			vecTarget[2] += 20.0;
 		}
 	}
 

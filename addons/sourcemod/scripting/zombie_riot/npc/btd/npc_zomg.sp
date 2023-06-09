@@ -69,7 +69,7 @@ void Zomg_MapStart()
 {
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
-		PrecacheSound(SoundZomgPop[i]);
+		PrecacheSoundCustom(SoundZomgPop[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");

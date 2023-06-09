@@ -34,12 +34,9 @@ static const char g_IdleMusic[] = "#infected_riot/tank/onebadtank.mp3";
 
 public void L4D2_Tank_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_SpawnSounds));	   i++) { PrecacheSound(g_SpawnSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_DeathSounds));   i++) { PrecacheSound(g_DeathSounds[i]);   }
 
 	PrecacheSoundCustom("#infected_riot/tank/onebadtank.mp3");
 	PrecacheSoundCustom("infected_riot/tank/tank_dead.mp3");
@@ -279,7 +276,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		
 		for(int client=1; client<=MaxClients; client++)
 		{

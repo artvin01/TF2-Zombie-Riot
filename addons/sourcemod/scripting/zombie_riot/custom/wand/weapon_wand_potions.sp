@@ -106,6 +106,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
+		Rogue_OnAbilityUse(client, weapon);
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);

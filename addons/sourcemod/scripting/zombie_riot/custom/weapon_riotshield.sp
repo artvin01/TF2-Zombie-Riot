@@ -38,7 +38,6 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-
 		static float hullMin[3]; hullMin = view_as<float>({-RIOT_MAX_BOUNDS, -RIOT_MAX_BOUNDS, -RIOT_MAX_BOUNDS});
 		static float hullMax[3]; hullMax = view_as<float>({RIOT_MAX_BOUNDS, RIOT_MAX_BOUNDS, RIOT_MAX_BOUNDS});
 
@@ -131,6 +130,7 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 		if(find)
 		{
+			Rogue_OnAbilityUse(client, weapon);
 			//Boom! Do effects and buff weapon!
 
 			float Original_Atackspeed = 1.0;

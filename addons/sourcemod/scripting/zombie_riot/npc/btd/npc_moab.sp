@@ -71,11 +71,12 @@ void Moab_MapStart()
 {
 	for(int i; i<sizeof(SoundMoabHit); i++)
 	{
-		PrecacheSound(SoundMoabHit[i]);
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
+	
 	for(int i; i<sizeof(SoundMoabPop); i++)
 	{
-		PrecacheSound(SoundMoabHit[i]);
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");

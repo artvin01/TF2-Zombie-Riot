@@ -86,6 +86,10 @@ public void DropPowerupChance(int entity)
 				SpawnMoney(entity); //Dont care.)
 		}
 	}
+	if(Rogue_Mode())
+	{
+		return;
+	}
 	i_KilledThisMany_Nuke += 1;
 	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
 	{
@@ -93,10 +97,8 @@ public void DropPowerupChance(int entity)
 		{
 			if(i_AllowNuke)
 			{
-				if(!EscapeMode)
-				{
-					i_AllowNuke = false;
-				}
+				i_AllowNuke = false;
+				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
@@ -120,10 +122,8 @@ public void DropPowerupChance(int entity)
 		{
 			if(i_AllowMaxammo)
 			{
-				if(!EscapeMode)
-				{
-					i_AllowMaxammo = false;
-				}
+				i_AllowMaxammo = false;
+				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
@@ -147,10 +147,8 @@ public void DropPowerupChance(int entity)
 		{
 			if(i_AllowHealth)
 			{
-				if(!EscapeMode)
-				{
-					i_AllowHealth = false;
-				}
+				i_AllowHealth = false;
+				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
@@ -174,10 +172,8 @@ public void DropPowerupChance(int entity)
 		{
 			if(i_AllowMoney)
 			{
-				if(!EscapeMode)
-				{
-					i_AllowMoney = false;
-				}
+				i_AllowMoney = false;
+				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;

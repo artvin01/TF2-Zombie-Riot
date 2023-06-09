@@ -161,7 +161,7 @@ methodmap MedivalBuilding < CClotBody
 		
 	}
 	
-	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
@@ -171,6 +171,11 @@ methodmap MedivalBuilding < CClotBody
 		
 //		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 //		if(iActivity > 0) npc.StartActivity(iActivity);
+		if(data[0])
+		{
+			i_AttacksTillMegahit[npc.index] = StringToInt(data);
+
+		}
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.25");

@@ -228,17 +228,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		if(EscapeMode)
-		{
-			int amount_of_people = CountPlayersOnRed();
-			int health = 25000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		
 		npc.m_iAttacksTillReload = 6;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_fbGunout = false;
@@ -261,7 +250,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flHalf_Life_Regen = false;
 		
-		if(!EscapeMode)
+		if(!Rogue_Mode())
 		{
 			npc.m_flSpeed = 330.0;
 		}
@@ -340,12 +329,12 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(EscapeMode)
+	if(Rogue_Mode())
 	{
 		if(Allies_Alive != 0)
 		{
@@ -441,7 +430,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = true;
-				if(EscapeMode)
+				if(Rogue_Mode())
 				{
 					if(!npc.Anger)
 						npc.m_flSpeed = 310.0;
@@ -473,7 +462,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay_gun = true;
 					
-				if(EscapeMode)
+				if(Rogue_Mode())
 				{
 					if(!npc.Anger)
 						npc.m_flSpeed = 310.0;
@@ -583,7 +572,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 			vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 			NormalizeVector(vecDir, vecDir);
-			if(EscapeMode)
+			if(Rogue_Mode())
 			{
 				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceCenter(npc.index), vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			}
@@ -609,7 +598,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 				npc.m_iAttacksTillReload = 6;
 				npc.PlayRangedReloadSound();
 			}
-			if(EscapeMode)
+			if(Rogue_Mode())
 			{
 				npc.FireRocket(vPredictedPos, 30.0, 900.0);
 			}
@@ -789,7 +778,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 		npc.m_flHalf_Life_Regen = false;
 		
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-		if(EscapeMode)
+		if(Rogue_Mode())
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ));
 			CreateTimer(0.1, XenoSpyMainBoss_Set_Spymain_HP, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);

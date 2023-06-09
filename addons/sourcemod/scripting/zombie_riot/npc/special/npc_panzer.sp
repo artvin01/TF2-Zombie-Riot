@@ -295,18 +295,6 @@ methodmap NaziPanzer < CClotBody
 		float wave = float(ZR_GetWaveCount()+1);
 		
 		wave *= 0.1;
-		
-		if(EscapeModeMap)
-		{
-			wave = 1.7;
-			int amount_of_people = CountPlayersOnRed();
-			int health = 5000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
 	
 		npc.m_flWaveScale = wave;
 		
@@ -459,7 +447,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		//PluginBot_NormalJump(npc.index);
 	}
 	
