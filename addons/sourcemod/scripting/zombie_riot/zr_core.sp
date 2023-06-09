@@ -15,7 +15,7 @@ public const int AmmoData[][] =
 	// Price, Ammo
 	{ 0, 0 },			//N/A
 	{ 0, 0 },			//Primary
-	{ 0, 99999 },		//Secondary
+	{ 0, 4222 },		//Secondary
 	{ 10, 500 },		//Metal
 	{ 0, 0 },			//Ball
 	{ 0, 0 },			//Food

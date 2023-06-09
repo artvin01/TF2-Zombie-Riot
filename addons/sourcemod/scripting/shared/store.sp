@@ -4642,22 +4642,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 										f_SemiAutoStats_ReloadTime[entity] = info.SemiAutoStats_ReloadTime;
 	
 									}
-									
-#if defined ZR
-									if(info.Ammo < 3) //my man broke my shit.
-#endif
-									
+									if(info.Ammo != 3 && info.Ammo != 0) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
-									
-#if defined ZR
-									else if(info.Ammo == 24 || info.Ammo == 6)
-									{
-										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);	
-									}
-#endif
-									
 								}
 							}
 						}

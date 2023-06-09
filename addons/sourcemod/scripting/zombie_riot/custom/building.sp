@@ -6207,9 +6207,9 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 	
 	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
 	{
-		// 1 Supply = 1 Food/Wood Every 3 Seconds
-		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 17.5 : 35.0);
-		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 12.5 : 25.0);
+		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
+		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
+		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
 
 		// 1 Supply = 1 Gold Every 150 Seconds
 		if(MedievalUnlock[owner])
