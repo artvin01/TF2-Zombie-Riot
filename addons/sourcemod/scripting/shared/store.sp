@@ -2939,17 +2939,17 @@ public void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(info.RougeBuildMax == -999)
+					if(Rogue_Mode() && info.RougeBuildMax == -999)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
 					}
-					else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
+					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
 					{
 						FormatEx(buffer, sizeof(buffer), "%s %s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
 					}
-					else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
+					else if(Rogue_Mode() && info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
 					{
 						FormatEx(buffer, sizeof(buffer), "%s %s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
