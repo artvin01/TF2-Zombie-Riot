@@ -418,7 +418,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		MiniBosses = null;
 	}
 	
-	if(CvarNoSpecialZombieSpawn.BoolValue || !Rogue_Mode())
+	if(CvarNoSpecialZombieSpawn.BoolValue || Rogue_Mode())
 		return;
 	
 	KeyValues kv = map;
@@ -1127,7 +1127,7 @@ void Waves_Progress()
 			{
 				Citizen_SpawnAtPoint("b");
 			}
-			else if(!rogue && CurrentRound == 11)
+			else if(CurrentRound == 11)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
@@ -1152,6 +1152,7 @@ void Waves_Progress()
 				panzer_spawn = false;
 				panzer_sound = false;
 			}
+
 			if(rogue) //disable
 			{
 				panzer_spawn = false;

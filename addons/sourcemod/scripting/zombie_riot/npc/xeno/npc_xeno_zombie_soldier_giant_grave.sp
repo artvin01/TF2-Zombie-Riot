@@ -345,7 +345,7 @@ public void XenoSoldierGiant_ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_THROW");
 				npc.m_flAttackHappens_2 = GetGameTime(npc.index) + 1.0;
 				npc.PlayRangedSound();
-				npc.FireRocket(vecTarget, 20.0, 300.0);
+				npc.FireRocket(vecTarget, 20.0, 900.0);
 			}
 			else
 			{

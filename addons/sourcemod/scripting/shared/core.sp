@@ -2279,6 +2279,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		
+		fl_Extra_MeleeArmor[entity] 	= 1.0;
+		fl_Extra_RangedArmor[entity] 	= 1.0;
+		fl_Extra_Speed[entity] 			= 1.0;
+		fl_Extra_Damage[entity] 		= 1.0;
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
