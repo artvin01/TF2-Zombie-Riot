@@ -342,6 +342,46 @@
 	{
 		"en"	"Coffin of Evil"
 	}
+	"Xeno Shaft"
+	{
+		"en"	"Xeno Shaft"
+	}
+	"Stultifera Navis"
+	{
+		"en"	"Stultifera Navis"
+	}
+	"Wake Up Call"
+	{
+		"en"	"Wake Up Call"
+	}
+	"Wake Up Call!"
+	{
+		"en"	"Wake Up Call ⚠"
+	}
+	"Shoot The Messager"
+	{
+		"en"	"Shoot The Messager"
+	}
+	"Shoot The Messager!"
+	{
+		"en"	"Shoot The Messager ⚠"
+	}
+	"Flanking Tactics"
+	{
+		"en"	"Flanking Tactics"
+	}
+	"Flanking Tactics!"
+	{
+		"en"	"Flanking Tactics ⚠"
+	}
+	"Phone Service"
+	{
+		"en"	"Phone Service"
+	}
+	"Phone Service!"
+	{
+		"en"	"Phone Service ⚠"
+	}
 
 	// Curses
 	"Gravity Upset"
