@@ -53,3 +53,47 @@ public float Rogue_Encounter_CrimsonTroupe()
 
 	return 25.0;
 }
+
+public float Rogue_Encounter_XenoShaft()	// TODO
+{
+	Rogue_SetBattleIngots(5);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Crimson Troupe Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Let's check out this show");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	vote.Config[0] = 1;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+public float Rogue_Encounter_Stultifera()	// TODO
+{
+	Rogue_SetBattleIngots(7);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Crimson Troupe Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Let's check out this show");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	vote.Config[0] = 1;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}

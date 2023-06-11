@@ -83,6 +83,7 @@ enum struct Stage
 	char Spawn[64];
 	char Skyname[64];
 	bool Hidden;
+	bool Repeat;
 
 	Function FuncStart;
 	char WaveSet[PLATFORM_MAX_PATH];
@@ -100,6 +101,7 @@ enum struct Stage
 		kv.GetString("spawn", this.Spawn, 64);
 		kv.GetString("skyname", this.Skyname, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
+		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
 		this.FuncStart = this.WaveSet[0] ? GetFunctionByName(null, this.WaveSet) : INVALID_FUNCTION;
@@ -1309,7 +1311,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 static void StartStage(const Stage stage)
 {
 	GameState = State_Stage;
-	BattleIngots = 3;
+	BattleIngots = CurrentFloor > 1 ? 4 : 3;
 	SetAllCamera();
 
 	float time = stage.WaveSet[0] ? 0.0 : 10.0;
@@ -1910,7 +1912,7 @@ public void Rogue_Vote_NextStage(const Vote vote)
 		floor.Encounters.GetArray(0, stage);
 		id = 0;
 	}
-	else
+	else if(stage.Repeat)
 	{
 		if(!CurrentExclude)
 			CurrentExclude = new ArrayList(sizeof(stage.Name));
