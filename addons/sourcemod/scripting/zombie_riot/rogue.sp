@@ -741,15 +741,18 @@ void Rogue_BattleVictory()
 
 	if(BattleIngots > 0)
 	{
-		CurrentIngots += BattleIngots;
-		CPrintToChatAll("%t", "Gained Ingots", BattleIngots);
-
 		if((GetURandomInt() % 8) < BattleIngots)
 		{
 			Artifact artifact;
 			if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
 		}
+
+		if(Rogue_HasFriendship())
+			BattleIngots += BattleIngots > 4 ? 2 : 1;
+		
+		CurrentIngots += BattleIngots;
+		CPrintToChatAll("%t", "Gained Ingots", BattleIngots);
 	}
 
 	Rogue_SetProgressTime(30.0, true);

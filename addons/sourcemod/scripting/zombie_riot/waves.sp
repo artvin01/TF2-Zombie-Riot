@@ -1435,6 +1435,8 @@ void Waves_Progress()
 				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
 			}
 			
+			char_RaidMusicSpecial1[0] = 0;
+			
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;

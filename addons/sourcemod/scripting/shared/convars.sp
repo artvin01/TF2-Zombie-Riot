@@ -83,7 +83,7 @@ void ConVar_PluginStart()
 	//CHECK npcs.sp FOR THIS ONE!
 	#endif
 
-	zr_downloadconfig = CreateConVar("zr_minibossconfig", "downloads", "Downloads config zr/ .cfg already included");
+	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
 	
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
