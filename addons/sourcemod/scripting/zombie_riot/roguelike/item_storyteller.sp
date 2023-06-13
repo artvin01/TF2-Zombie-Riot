@@ -2,6 +2,7 @@ static int BrokenBlade;
 static int BladeDancer;
 static float LastFlowerHealth;
 static ArrayStack LastShadowHealth;
+static bool Friendship;
 
 void Rogue_StoryTeller_Reset()
 {
@@ -9,6 +10,12 @@ void Rogue_StoryTeller_Reset()
 	BladeDancer = 0;
 	LastFlowerHealth = 1000.0;
 	delete LastShadowHealth;
+	Friendship = false;
+}
+
+bool Rogue_HasFriendship()
+{
+	return Friendship;
 }
 
 int Rogue_ReviveSpeed()
@@ -278,4 +285,9 @@ public void Rogue_LeftNatator_Enemy(int entity)
 {
 	fl_Extra_MeleeArmor[entity] *= 1.15;
 	fl_Extra_RangedArmor[entity] *= 0.95;
+}
+
+public void Rogue_ProofOfFriendship_Collect()
+{
+	Friendship = true;
 }

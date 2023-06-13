@@ -550,6 +550,10 @@ public Action GodArkantos_ClotDamaged(int victim, int &attacker, int &inflictor,
 		
 	GodArkantos npc = view_as<GodArkantos>(victim);
 
+	if(npc.m_flReviveArkantosTime > GetGameTime(npc.index))
+	{
+		return Plugin_Handled;
+	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -881,7 +885,10 @@ void GodArkantosSpawnEnemy(int npc_id, int health = 0, int count, bool outline =
 	enemy.Is_Outlined = outline;
 	enemy.Is_Immune_To_Nuke = true;
 	//do not bother outlining.
-			
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;		
 	for(int i; i<count; i++)
 	{
 		Waves_AddNextEnemy(enemy);

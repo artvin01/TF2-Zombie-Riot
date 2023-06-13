@@ -1537,25 +1537,22 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 
 				if(info.Cost > 0 && free)
 					return;
-				
-				if(CurrentCash >= info.Cost && (CurrentCash - CashSpent[client]) >= info.Cost)
+					
+				if(CurrentCash >= base && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())
 					{
 						if(info.RougeBuildMax == -999)
 						{
-							SetGlobalTransTarget(client);
-							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+							break;
 						}
 						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
 						{
-							SetGlobalTransTarget(client);
-							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+							break;
 						}
 						else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
 						{
-							SetGlobalTransTarget(client);
-							PrintToChat(client, "%t", "Could Not Buy Item", TranslateItemName(client, name, ""));
+							break;
 						}
 					}
 					bool MoneyTake = true;
@@ -4642,7 +4639,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 										f_SemiAutoStats_ReloadTime[entity] = info.SemiAutoStats_ReloadTime;
 	
 									}
-									if(info.Ammo != 3 && info.Ammo != 0) //my man broke my shit.
+									if(info.Ammo) //my man broke my shit.
 									{
 										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}

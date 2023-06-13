@@ -359,6 +359,10 @@ public Action StalkerFather_Timer(Handle timer)
 	enemy.Health = 66666666;
 	enemy.Is_Immune_To_Nuke = true;
 	enemy.Is_Static = true;
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;	
 	Waves_AddNextEnemy(enemy);
 	return Plugin_Stop;
 }

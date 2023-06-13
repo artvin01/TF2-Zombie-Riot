@@ -66,15 +66,19 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 	if(!enabled)
 	{
-		enabled = kv;
-		if(!enabled.JumpToKey("Default"))
+		zr_downloadconfig.GetString(buffer, sizeof(buffer));
+		if(buffer[0])
 		{
-			zr_downloadconfig.GetString(buffer, sizeof(buffer));
 			BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, buffer);
 
 			enabled = new KeyValues("Packages");
 			enabled.ImportFromFile(buffer);
 			RequestFrame(DeleteHandle, enabled);
+		}
+		else
+		{
+			enabled = kv;
+			enabled.JumpToKey("Default");
 		}
 	}
 

@@ -463,6 +463,10 @@ public void StalkerCombine_ClotThink(int iNPC)
 							enemy.Health = 666666;
 							enemy.Is_Immune_To_Nuke = true;
 							enemy.Is_Static = true;
+							enemy.ExtraMeleeRes = 1.0;
+							enemy.ExtraRangedRes = 1.0;
+							enemy.ExtraSpeed = 1.0;
+							enemy.ExtraDamage = 1.0;		
 							Waves_AddNextEnemy(enemy);
 
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
