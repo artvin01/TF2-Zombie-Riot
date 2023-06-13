@@ -125,7 +125,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 
-	if(Waves_InSetup())
+	if(!npc.m_iSurrender && Waves_InSetup())
 	{
 		for(int i; i < 9; i++)
 		{
