@@ -208,8 +208,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 	  	//DEFAULTS
 		
-		//if(WaitingInQueue[client])
-		//	TeutonType[client] = TEUTON_WAITING;
+		if(WaitingInQueue[client])
+			TeutonType[client] = TEUTON_WAITING;
 
 		if(i_ClientHasCustomGearEquipped[client])
 		{

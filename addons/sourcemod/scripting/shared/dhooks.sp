@@ -948,7 +948,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = false;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
+		ChangeClientTeam(Compensator, view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	}
 	
@@ -1020,7 +1020,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	}
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
+		ChangeClientTeam(Compensator, view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	} 
 	return MRES_Ignored;
@@ -1378,12 +1378,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	DoOverlay(client, "");
 	WeaponClass[client] = TFClass_Unknown;
-/*	
+	
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 #endif
-*/	
+	
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	

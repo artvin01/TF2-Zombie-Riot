@@ -35,8 +35,8 @@
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #if defined ZR
-#define MAX_PLAYER_COUNT			24
-#define MAX_PLAYER_COUNT_STRING		"24"
+#define MAX_PLAYER_COUNT			16
+#define MAX_PLAYER_COUNT_STRING		"16"
 
 //This is for spectating
 #define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 16, rest is for killfeed bots
@@ -1800,11 +1800,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #if defined ZR
 		if(dieingstate[client] == 0)
 		{
-			/*if(WaitingInQueue[client])
+			if(WaitingInQueue[client])
 			{
 				Queue_Menu(client);
 			}
-			else */if(b_HoldingInspectWeapon[client])
+			else if(b_HoldingInspectWeapon[client])
 			{
 				Store_OpenItemPage(client);
 			}

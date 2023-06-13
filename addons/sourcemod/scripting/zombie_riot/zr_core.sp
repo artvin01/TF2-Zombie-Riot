@@ -222,7 +222,7 @@ int Healing_done_in_total[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
 int i_PlayerDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
-//bool WaitingInQueue[MAXTF2PLAYERS];
+bool WaitingInQueue[MAXTF2PLAYERS];
 
 int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
 int i_Healing_station_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
@@ -276,7 +276,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/freeplay.sp"
 #include "zombie_riot/item_gift_rpg.sp"
 #include "zombie_riot/music.sp"
-//#include "zombie_riot/queue.sp"
+#include "zombie_riot/queue.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -572,7 +572,7 @@ void ZR_MapStart()
 
 void ZR_ClientPutInServer(int client)
 {
-	//Queue_PutInServer(client);
+	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
@@ -607,7 +607,7 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
-	//Queue_ClientDisconnect(client);
+	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -666,7 +666,7 @@ public Action Command_AFK(int client, int args)
 	{
 	//	DestroyDispenser(client);
 		b_HasBeenHereSinceStartOfWave[client] = false;
-		//WaitingInQueue[client] = true;
+		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
 	}
 	return Plugin_Handled;
@@ -866,7 +866,7 @@ public Action Command_AFKKnight(int client, int args)
 	if(client)
 	{
 		DestroyDispenser(client);
-		//WaitingInQueue[client] = true;
+		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 2);
 	}
 	return Plugin_Handled;
@@ -1293,10 +1293,11 @@ public void NPC_SpawnNextRequestFrame(bool force)
 	NPC_SpawnNext(false, false, false);
 }
 
-/*public void TF2_OnWaitingForPlayersEnd()
+public void TF2_OnWaitingForPlayersEnd()
 {
 	Queue_WaitingForPlayersEnd();
-}*/
+}
+
 
 stock void UpdatePlayerPoints(int client)
 {

@@ -94,11 +94,11 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 		{
 			ChangeClientTeam(client, view_as<int>(TFTeam_Blue));
 		}
-//#if defined ZR
-//		else if(Queue_JoinTeam(client))
-//#else
+#if defined ZR
+		else if(Queue_JoinTeam(client))
+#else
 		else
-//#endif
+#endif
 		{
 			ChangeClientTeam(client, view_as<int>(TFTeam_Red));
 			ShowVGUIPanel(client, "class_red");
