@@ -84,7 +84,7 @@ methodmap SeaBrandguider < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaBrandguider_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaBrandguider_ClotThink);
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
@@ -250,7 +250,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaBrandguider_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaBrandguider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -276,7 +276,7 @@ void SeaBrandguider_NPCDeath(int entity)
 	if(i_NpcInternalId[npc.index] == SEABRANDGUIDER_CARRIER)
 		Remains_SpawnDrop(pos, Buff_Brandguider);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaBrandguider_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaBrandguider_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

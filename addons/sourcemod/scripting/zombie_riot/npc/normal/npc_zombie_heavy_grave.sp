@@ -151,7 +151,7 @@ methodmap Heavy < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Heavy_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Heavy_ClotThink);		
 		
 
@@ -310,7 +310,7 @@ public void Heavy_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Heavy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Heavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Heavy npc = view_as<Heavy>(victim);
 		
@@ -334,7 +334,7 @@ public void Heavy_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Heavy_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Heavy_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable1))

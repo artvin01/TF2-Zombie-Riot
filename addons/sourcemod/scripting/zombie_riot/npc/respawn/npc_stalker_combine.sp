@@ -209,7 +209,7 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = NOTHING;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, StalkerCombine_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -584,7 +584,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	}
 }
 
-public Action StalkerCombine_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(damage > 999999.9)
 		return Plugin_Continue;
@@ -670,7 +670,7 @@ void StalkerCombine_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, StalkerCombine_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, StalkerCombine_ClotThink);
 
 	for(gib = 0; gib < 9; gib++)

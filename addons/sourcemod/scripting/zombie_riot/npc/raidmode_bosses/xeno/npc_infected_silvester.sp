@@ -343,7 +343,7 @@ methodmap RaidbossSilvester < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, RaidbossSilvester_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		
 		int skin = 1;
@@ -1087,7 +1087,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 }
 
 	
-public Action RaidbossSilvester_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1138,7 +1138,7 @@ public void RaidbossSilvester_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossSilvester_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");

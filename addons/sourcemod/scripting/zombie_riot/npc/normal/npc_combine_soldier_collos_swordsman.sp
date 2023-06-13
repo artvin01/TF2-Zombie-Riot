@@ -190,7 +190,7 @@ methodmap CombineCollos < CClotBody
 			npc.m_flSpeed = 260.0;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineCollos_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineCollos_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -431,7 +431,7 @@ public void CombineCollos_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CombineCollos_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombineCollos_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -462,7 +462,7 @@ public void CombineCollos_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineCollos_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineCollos_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

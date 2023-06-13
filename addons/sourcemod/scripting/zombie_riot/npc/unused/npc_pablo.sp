@@ -272,7 +272,7 @@ methodmap PabloGonzalos < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, PabloGonzalos_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, PabloGonzalos_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, PabloGonzalos_ClotDamaged_Post);
 		

@@ -157,7 +157,7 @@ methodmap SawRunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
 		npc.m_bDoSpawnGesture = true;
@@ -390,7 +390,7 @@ public void SawRunner_ClotThink(int iNPC)
 	npc.PlayMusicSound();
 }
 
-public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SawRunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -402,6 +402,7 @@ public Action SawRunner_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	
 	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
+		damage = 0.0;
 		return Plugin_Handled;
 	}
 	
@@ -422,7 +423,7 @@ public void SawRunner_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SawRunner_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
 	Music_Stop_All_Sawrunner(entity);

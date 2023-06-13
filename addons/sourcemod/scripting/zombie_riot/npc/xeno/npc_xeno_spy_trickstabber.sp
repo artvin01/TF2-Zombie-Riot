@@ -188,7 +188,7 @@ methodmap XenoSpyTrickstabber < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSpyTrickstabber_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSpyTrickstabber_ClotThink);	
 		
 		
@@ -375,7 +375,7 @@ public void XenoSpyTrickstabber_ClotThink(int iNPC)
 }
 
 
-public Action XenoSpyTrickstabber_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSpyTrickstabber_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoSpyTrickstabber npc = view_as<XenoSpyTrickstabber>(victim);
 		
@@ -400,7 +400,7 @@ public void XenoSpyTrickstabber_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSpyTrickstabber_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSpyTrickstabber_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable1))

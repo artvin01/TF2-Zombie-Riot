@@ -349,7 +349,7 @@ methodmap TheGambler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, TheGambler_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, TheGambler_ClotThink);		
 		
 		npc.m_iAttacksTillReload = 6;
@@ -1240,7 +1240,7 @@ public void TheGambler_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action TheGambler_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TheGambler_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1270,7 +1270,7 @@ public void TheGambler_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TheGambler_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, TheGambler_ClotThink);		
 	
 	if(IsValidEntity(npc.m_iWearable1))

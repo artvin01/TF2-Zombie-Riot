@@ -168,7 +168,7 @@ methodmap L4D2_Tank < CClotBody
 		npc.m_iNpcStepVariation = 5; //5 is tank
 
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, L4D2_Tank_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, L4D2_Tank_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, L4D2_Tank_ClotDamagedPost);
 		
@@ -607,7 +607,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 }
 
 
-public Action L4D2_Tank_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action L4D2_Tank_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -618,6 +618,7 @@ public Action L4D2_Tank_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	
 	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
+		damage = 0.0;
 		return Plugin_Handled;
 	}
 	
@@ -676,7 +677,7 @@ public void L4D2_Tank_NPCDeath(int entity)
 	
 	i_GrabbedThis[npc.index] = -1;
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, L4D2_Tank_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, L4D2_Tank_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, L4D2_Tank_ClotDamagedPost);
 		

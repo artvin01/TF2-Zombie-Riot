@@ -166,7 +166,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSonOfOsiris_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalSonOfOsiris_ClotThink);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
@@ -361,7 +361,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action MedivalSonOfOsiris_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSonOfOsiris_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -388,7 +388,7 @@ public void MedivalSonOfOsiris_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSonOfOsiris_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalSonOfOsiris_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

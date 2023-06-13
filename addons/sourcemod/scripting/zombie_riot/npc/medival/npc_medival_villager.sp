@@ -201,7 +201,7 @@ methodmap MedivalVillager < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalVillager_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
 		i_ClosestAllyCD[npc.index] = 0.0;
 
@@ -815,7 +815,7 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 	}
 }
 
-public Action MedivalVillager_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalVillager_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -842,7 +842,7 @@ public void MedivalVillager_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalVillager_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalVillager_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

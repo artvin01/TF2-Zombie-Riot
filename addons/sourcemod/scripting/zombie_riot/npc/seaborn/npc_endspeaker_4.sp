@@ -24,7 +24,7 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
 		
 		npc.m_flSpeed = 325.0;	// 0.8 + 0.5 x 250
@@ -217,6 +217,6 @@ void EndSpeaker4_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
 }

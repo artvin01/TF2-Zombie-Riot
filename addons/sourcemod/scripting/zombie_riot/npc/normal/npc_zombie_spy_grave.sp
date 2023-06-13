@@ -150,7 +150,7 @@ methodmap Spy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Spy_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Spy_ClotThink);
 		
 		npc.m_flSpeed = 350.0;
@@ -312,7 +312,7 @@ public void Spy_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Spy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Spy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Spy npc = view_as<Spy>(victim);
 		
@@ -336,7 +336,7 @@ public void Spy_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Spy_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Spy_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))

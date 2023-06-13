@@ -919,7 +919,7 @@ methodmap Citizen < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
 		
 		int glow = npc.m_iTeamGlow;
@@ -3150,7 +3150,7 @@ static bool RunFromNPC(int entity)
 		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_movedelay[entity]));
 }
 
-public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(damage > 9999999.0)
 		return Plugin_Continue;
@@ -3213,6 +3213,7 @@ public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, flo
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 		npc.PlaySound(Cit_Hurt);
 	}
+	damage = 0.0;
 	return Plugin_Handled;
 }
 
@@ -3220,7 +3221,7 @@ public void Citizen_NPCDeath(int entity)
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
 	PF_StopPathing(npc.index);

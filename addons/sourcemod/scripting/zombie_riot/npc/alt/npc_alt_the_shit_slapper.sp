@@ -148,7 +148,7 @@ methodmap The_Shit_Slapper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, The_Shit_Slapper_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);		
 		
 		i_slap[npc.index]=0;
@@ -329,7 +329,7 @@ public void The_Shit_Slapper_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, The_Shit_Slapper_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, The_Shit_Slapper_ClotThink);	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

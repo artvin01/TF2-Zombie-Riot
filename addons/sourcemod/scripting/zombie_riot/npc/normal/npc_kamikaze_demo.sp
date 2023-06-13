@@ -86,7 +86,7 @@ methodmap Kamikaze < CClotBody
 		npc.StartPathing();
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Kamikaze_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Kamikaze_ClotThink);
 		
 		int skin = 5;
@@ -242,7 +242,7 @@ public void Kamikaze_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Kamikaze_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Kamikaze_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -263,7 +263,7 @@ public void Kamikaze_NPCDeath(int entity)
 {
 	Kamikaze npc = view_as<Kamikaze>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Kamikaze_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Kamikaze_ClotThink);
 	
 	if(!NpcStats_IsEnemySilenced(entity))

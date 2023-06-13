@@ -99,7 +99,7 @@ methodmap SeaReaper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaReaper_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaReaper_ClotThink);
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
@@ -257,7 +257,7 @@ public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int we
 	// 500 x 0.2 x 0.15
 }
 
-public Action SeaReaper_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaReaper_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -277,6 +277,6 @@ void SeaReaper_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaReaper_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaReaper_ClotThink);
 }

@@ -176,7 +176,7 @@ methodmap MedivalMonk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalMonk_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 
 		npc.m_iState = 0;
@@ -559,7 +559,7 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 	}
 }
 
-public Action MedivalMonk_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalMonk_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -586,7 +586,7 @@ public void MedivalMonk_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalMonk_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

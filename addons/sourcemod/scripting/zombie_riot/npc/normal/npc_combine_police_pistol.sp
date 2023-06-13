@@ -164,7 +164,7 @@ methodmap Combine_Police_Pistol < CClotBody
 			npc.m_flSpeed = 270.0;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Combine_Police_Pistol_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, Combine_Police_Pistol_ClotThink);
 		
 		npc.m_flNextRangedAttack = 0.0;
@@ -428,7 +428,7 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 
 
 
-public Action Combine_Police_Pistol_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombinePolicePistol_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -455,7 +455,7 @@ public void CombinePolicePistol_NPCDeath(int entity)
 {
 	Combine_Police_Pistol npc = view_as<Combine_Police_Pistol>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Combine_Police_Pistol_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Combine_Police_Pistol_ClotThink);
 		
 	if(!npc.m_bGib)

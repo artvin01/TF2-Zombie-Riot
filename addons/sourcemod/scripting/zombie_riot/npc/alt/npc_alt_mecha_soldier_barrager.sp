@@ -165,7 +165,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MechaSoldier_Barrager_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MechaSoldier_Barrager_ClotThink);
 		
 		//IDLE
@@ -375,7 +375,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 }
 
 
-public Action MechaSoldier_Barrager_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MechaSoldier_Barrager_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	MechaSoldier_Barrager npc = view_as<MechaSoldier_Barrager>(victim);
 		
@@ -399,7 +399,7 @@ public void MechaSoldier_Barrager_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MechaSoldier_Barrager_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MechaSoldier_Barrager_ClotThink);
 		
 	

@@ -161,7 +161,7 @@ methodmap Schwertkrieg < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Schwertkrieg_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 			
 		
@@ -475,7 +475,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Schwertkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(victim);
 		
@@ -498,7 +498,7 @@ public void Schwertkrieg_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Schwertkrieg_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

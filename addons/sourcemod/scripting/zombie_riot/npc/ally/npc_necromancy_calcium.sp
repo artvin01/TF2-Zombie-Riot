@@ -197,7 +197,7 @@ methodmap NecroCalcium < CClotBody
 		}
 		npc.m_flExtraDamage = damage_multiplier;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NecroCalcium_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 		
 		npc.m_bThisEntityIgnored = true;
@@ -374,11 +374,13 @@ public void NecroCalcium_ClotThink(int iNPC)
 	}
 }
 
-public Action NecroCalcium_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NecroCalcium_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if (damage < 9999999.0)	//So they can be slayed.
+	{
+		damage = 0.0;
 		return Plugin_Handled;
-		
+	}
 	else
 		return Plugin_Continue;
 }
@@ -389,7 +391,7 @@ public void NecroCalcium_NPCDeath(int entity)
 	NecroCalcium npc = view_as<NecroCalcium>(entity);
 //	npc.PlayDeathSound();
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NecroCalcium_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	if(IsValidEntity(npc.m_iWearable2))

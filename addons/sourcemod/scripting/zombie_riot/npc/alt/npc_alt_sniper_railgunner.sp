@@ -151,7 +151,7 @@ methodmap Sniper_railgunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Sniper_railgunner_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Sniper_railgunner_ClotThink);
 		
 		//IDLE
@@ -366,7 +366,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Sniper_railgunner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Sniper_railgunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(victim);
 		
@@ -401,7 +401,7 @@ public void Sniper_railgunner_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Sniper_railgunner_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Sniper_railgunner_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Sniper_railgunner_ClotDamaged_Post);	
 	

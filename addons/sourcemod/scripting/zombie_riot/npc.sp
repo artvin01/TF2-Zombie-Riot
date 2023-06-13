@@ -2496,6 +2496,678 @@ public void NPCDeath(int entity)
 		CurrentCash += GiveMoney;
 	}
 }
+public Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	switch(i_NpcInternalId[victim])
+	{
+		case HEADCRAB_ZOMBIE:
+			HeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FORTIFIED_HEADCRAB_ZOMBIE:
+			FortifiedHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FASTZOMBIE:
+			FastZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FORTIFIED_FASTZOMBIE:
+			FortifiedFastZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case TORSOLESS_HEADCRAB_ZOMBIE:
+			TorsolessHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FORTIFIED_GIANT_POISON_ZOMBIE:
+			FortifiedGiantPoisonZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case POISON_ZOMBIE:
+			PoisonZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FORTIFIED_POISON_ZOMBIE:
+			FortifiedPoisonZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FATHER_GRIGORI:
+			FatherGrigori_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_POLICE_PISTOL:
+			CombinePolicePistol_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_POLICE_SMG:
+			CombinePoliceSmg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_AR2:
+			CombineSoldierAr2_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_SHOTGUN:
+			CombineSoldierShotgun_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_SWORDSMAN:
+			CombineSwordsman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_ELITE:
+			CombineElite_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_GIANT_SWORDSMAN:
+			CombineGaint_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_DDT:
+			CombineDDT_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_SOLDIER_COLLOSS:
+			CombineCollos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_OVERLORD:
+			CombineOverlord_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SCOUT_ZOMBIE:
+			Scout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ENGINEER_ZOMBIE:
+			Engineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case HEAVY_ZOMBIE:
+			Heavy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FLYINGARMOR_ZOMBIE:
+			FlyingArmor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FLYINGARMOR_TINY_ZOMBIE:
+			FlyingArmorTiny_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case KAMIKAZE_DEMO:
+			Kamikaze_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIC_HEALER:
+			MedicHealer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case HEAVY_ZOMBIE_GIANT:
+			HeavyGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SPY_FACESTABBER:
+			Spy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SOLDIER_ROCKET_ZOMBIE:
+			Soldier_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SOLDIER_ZOMBIE_MINION:
+			SoldierMinion_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SOLDIER_ZOMBIE_BOSS:
+			SoldierGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SPY_THIEF:
+			SpyThief_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SPY_TRICKSTABBER:
+			SpyTrickstabber_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SPY_HALF_CLOACKED:
+			SpyCloaked_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SNIPER_MAIN:
+			SniperMain_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case DEMO_MAIN:
+			DemoMain_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BATTLE_MEDIC_MAIN:
+			MedicMain_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case GIANT_PYRO_MAIN:
+			PyroGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case COMBINE_DEUTSCH_RITTER:
+			CombineDeutsch_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_COMBINE_DEUTSCH_RITTER:
+			Alt_CombineDeutsch_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SPY_MAIN_BOSS:
+			SpyMainBoss_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_HEADCRAB_ZOMBIE:
+			XenoHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FORTIFIED_HEADCRAB_ZOMBIE:
+			XenoFortifiedHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FASTZOMBIE:
+			XenoFastZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FORTIFIED_FASTZOMBIE:
+			XenoFortifiedFastZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_TORSOLESS_HEADCRAB_ZOMBIE:
+			XenoTorsolessHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FORTIFIED_GIANT_POISON_ZOMBIE:
+			XenoFortifiedGiantPoisonZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_POISON_ZOMBIE:
+			XenoPoisonZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FORTIFIED_POISON_ZOMBIE:
+			XenoFortifiedPoisonZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FATHER_GRIGORI:
+			XenoFatherGrigori_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_POLICE_PISTOL:
+			XenoCombinePolicePistol_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_POLICE_SMG:
+			XenoCombinePoliceSmg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_AR2:
+			XenoCombineSoldierAr2_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_SHOTGUN:
+			XenoCombineSoldierShotgun_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_SWORDSMAN:
+			XenoCombineSwordsman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_ELITE:
+			XenoCombineElite_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_GIANT_SWORDSMAN:
+			XenoCombineGaint_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_DDT:
+			XenoCombineDDT_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_SOLDIER_COLLOSS:
+			XenoCombineCollos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_OVERLORD:
+			XenoCombineOverlord_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SCOUT_ZOMBIE:
+			XenoScout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_ENGINEER_ZOMBIE:
+			XenoEngineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_HEAVY_ZOMBIE:
+			XenoHeavy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FLYINGARMOR_ZOMBIE:
+			XenoFlyingArmor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_FLYINGARMOR_TINY_ZOMBIE:
+			XenoFlyingArmorTiny_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_KAMIKAZE_DEMO:
+			XenoKamikaze_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_MEDIC_HEALER:
+			XenoMedicHealer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_HEAVY_ZOMBIE_GIANT:
+			XenoHeavyGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SPY_FACESTABBER:
+			XenoSpy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SOLDIER_ROCKET_ZOMBIE:
+			XenoSoldier_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SOLDIER_ZOMBIE_MINION:
+			XenoSoldierMinion_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SOLDIER_ZOMBIE_BOSS:
+			XenoSoldierGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SPY_THIEF:
+			XenoSpyThief_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SPY_TRICKSTABBER:
+			XenoSpyTrickstabber_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SPY_HALF_CLOACKED:
+			XenoSpyCloaked_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SNIPER_MAIN:
+			XenoSniperMain_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_DEMO_MAIN:
+			XenoDemoMain_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_BATTLE_MEDIC_MAIN:
+			XenoMedicMain_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_GIANT_PYRO_MAIN:
+			XenoPyroGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_COMBINE_DEUTSCH_RITTER:
+			XenoCombineDeutsch_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_SPY_MAIN_BOSS:
+			XenoSpyMainBoss_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case NAZI_PANZER:
+			NaziPanzer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BOB_THE_GOD_OF_GODS:
+			BobTheGod_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case NECRO_COMBINE:
+			NecroCombine_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case NECRO_CALCIUM:
+			NecroCalcium_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case CURED_FATHER_GRIGORI:
+			CuredFatherGrigori_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_COMBINE_MAGE:
+			AltCombineMage_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_BLOON:
+			Bloon_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_MOAB:
+			Moab_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_BFB:
+			Bfb_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_ZOMG:
+			Zomg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_DDT:
+			DDT_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_BAD:
+			Bad_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MEDIC_APPRENTICE_MAGE:
+			AltMedicApprenticeMage_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SAWRUNNER:
+			SawRunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case RAIDMODE_TRUE_FUSION_WARRIOR:
+			TrueFusionWarrior_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MEDIC_CHARGER:
+			AltMedicCharger_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MEDIC_BERSERKER:
+			AltMedicBerseker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_MILITIA:
+			MedivalMilitia_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_ARCHER:
+			MedivalArcher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_MAN_AT_ARMS:
+			MedivalManAtArms_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SKIRMISHER:
+			MedivalSkirmisher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SWORDSMAN:
+			MedivalSwordsman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_TWOHANDED_SWORDSMAN:
+			MedivalTwoHandedSwordsman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_CROSSBOW_MAN:
+			MedivalCrossbowMan_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SPEARMEN:
+			MedivalSpearMan_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_HANDCANNONEER:
+			MedivalHandCannoneer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_ELITE_SKIRMISHER:
+			MedivalEliteSkirmisher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case RAIDMODE_BLITZKRIEG:
+			Blitzkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_PIKEMAN:
+			MedivalPikeman_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MEDIC_SUPPERIOR_MAGE:
+			NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case CITIZEN:
+			Citizen_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_EAGLE_SCOUT:
+			MedivalEagleScout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SAMURAI:
+			MedivalSamurai_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case THEADDICTION:
+			Addicition_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case THEDOCTOR:
+	//		Doctor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case BOOKSIMON:
+	//		Simon_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_KAHMLSTEIN:
+			Kahmlstein_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case L4D2_TANK:
+			L4D2_Tank_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_SNIPER_RAILGUNNER:
+			Sniper_railgunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BTD_GOLDBLOON:
+			GoldBloon_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case BTD_BLOONARIUS:
+	//		Bloonarius_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case MEDIVAL_RAM:
+	//		MedivalRam_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_SOLDIER_BARRAGER:
+			Soldier_Barrager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_The_Shit_Slapper:
+			The_Shit_Slapper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BONEZONE_BASICBONES:
+			BasicBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MECHA_ENGINEER:
+			Mecha_Engineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MECHA_HEAVY:
+			Mecha_Heavy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MECHA_HEAVYGIANT:
+			Mecha_HeavyGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MECHA_PYROGIANT:
+			Mecha_PyroGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MECHA_SCOUT:
+			Mecha_Scout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_DONNERKRIEG:
+			Donnerkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_SCHWERTKRIEG:
+			Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case PHANTOM_KNIGHT:
+			PhantomKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MEDIC_HEALER_3:
+			Alt_Medic_Constructor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case THE_GAMBLER:
+			TheGambler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case PABLO_GONZALES:
+			Pablo_Gonzales_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case DOKTOR_MEDICK:
+			Doktor_Medick_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case KAPTAIN_HEAVY:
+			Eternal_Kaptain_Heavy_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BOOTY_EXECUTIONIER:
+			BootyExecutioner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SANDVICH_SLAYER:
+			SandvichSlayer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case PAYDAYCLOAKER:
+			Payday_Cloaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_KAHML_VTWO:
+			BunkerKahml_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case TRUE_ZEROFUSE:
+			TrueZerofuse_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_BOT_SOLDIER:
+			BunkerBotSoldier_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_BOT_SNIPER:
+			BunkerBotSniper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_SKELETON:
+			BunkerSkeleton_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_SMALL_SKELETON:
+			BunkerSkeletonSmall_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_KING_SKELETON:
+			BunkerSkeletonKing_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BUNKER_HEADLESSHORSE:
+			BunkerHeadlessHorse_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SCOUT:
+			MedivalScout_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_VILLAGER:
+			MedivalVillager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_BUILDING:
+			MedivalBuilding_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_CONSTRUCT:
+			MedivalConstruct_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_CHAMPION:
+			MedivalChampion_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_LIGHT_CAV:
+			MedivalLightCav_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_HUSSAR:
+			MedivalHussar_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_KNIGHT:
+			MedivalKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_OBUCH:
+			MedivalObuch_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_MONK:
+			MedivalMonk_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_MILITIA:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_ARCHER:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_MAN_AT_ARMS:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_HALB:
+			MedivalHalb_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_BRAWLER:
+			MedivalBrawler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_LONGBOWMEN:
+			MedivalLongbowmen_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_ARBALEST:
+			MedivalArbalest_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_ELITE_LONGBOWMEN:
+			MedivalEliteLongbowmen_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_CROSSBOW:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_SWORDSMAN:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_ARBELAST:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_TWOHANDED:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_LONGBOW:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_CHAMPION:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_MONK:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_HUSSAR:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_CAVALARY:
+			MedivalCavalary_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_PALADIN:
+			MedivalPaladin_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_CROSSBOW_GIANT:
+			MedivalCrossbowGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SWORDSMAN_GIANT:
+			MedivalSwordsmanGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_EAGLE_WARRIOR:
+			MedivalEagleWarrior_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_RIDDENARCHER:
+			MedivalRiddenArcher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_EAGLE_GIANT:
+			MedivalEagleGiant_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_SON_OF_OSIRIS:
+			MedivalSonOfOsiris_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case MEDIVAL_ACHILLES:
+			MedivalAchilles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case MEDIVAL_TREBUCHET:
+	//		MedivalTrebuchet_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_IKUNAGAE:
+			Ikunagae_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ALT_MECHASOLDIER_BARRAGER:
+			MechaSoldier_Barrager_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case NEARL_SWORD:
+			NearlSwordAbility_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case STALKER_COMBINE:
+			StalkerCombine_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case STALKER_FATHER:
+			StalkerFather_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case STALKER_GOGGLES:
+			StalkerGoggles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_RAIDBOSS_SILVESTER:
+			RaidbossSilvester_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_RAIDBOSS_BLUE_GOGGLES:
+			RaidbossBlueGoggles_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_RAIDBOSS_SUPERSILVESTER:
+			RaidbossSilvester_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case XENO_RAIDBOSS_NEMESIS:
+			RaidbossNemesis_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEARUNNER, SEARUNNER_ALT:
+			SeaRunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEASLIDER, SEASLIDER_ALT:
+			SeaSlider_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEASPITTER, SEASPITTER_ALT:
+			SeaSpitter_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEAREAPER, SEAREAPER_ALT:
+			SeaReaper_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEACRAWLER, SEACRAWLER_ALT:
+			SeaCrawler_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEAPIERCER, SEAPIERCER_ALT:
+			SeaPiercer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case FIRSTTOTALK:
+			FirstToTalk_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case UNDERTIDES:
+	//		UnderTides_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABORN_KAZIMIERZ_KNIGHT:
+			KazimierzKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABORN_KAZIMIERZ_KNIGHT_ARCHER:
+			KazimierzKnightArcher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABORN_KAZIMIERZ_BESERKER:
+			KazimierzBeserker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABORN_KAZIMIERZ_LONGARCHER:
+			KazimierzLongArcher_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+	//	case REMAINS:
+	//		Remains_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ENDSPEAKER_1:
+			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ENDSPEAKER_2:
+			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ENDSPEAKER_3:
+			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case ENDSPEAKER_4:
+			EndSpeaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEAFOUNDER, SEAFOUNDER_ALT, SEAFOUNDER_CARRIER:
+			SeaFounder_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEAPREDATOR, SEAPREDATOR_ALT, SEAPREDATOR_CARRIER:
+			SeaPredator_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABRANDGUIDER, SEABRANDGUIDER_ALT, SEABRANDGUIDER_CARRIER:
+			SeaBrandguider_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABORN_KAZIMIERZ_ASSASIN_MELEE:
+			KazimierzKnightAssasin_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEASPEWER, SEASPEWER_ALT, SEASPEWER_CARRIER:
+			SeaSpewer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEASWARMCALLER, SEASWARMCALLER_ALT, SEASWARMCALLER_CARRIER:
+			SeaSwarmcaller_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEAREEFBREAKER, SEAREEFBREAKER_ALT, SEAREEFBREAKER_CARRIER:
+			SeaReefbreaker_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case BARRACK_THORNS:
+			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RAIDMODE_GOD_ARKANTOS:
+			GodArkantos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	}
+	return Plugin_Changed;
+}
 
 //NORMAL
 

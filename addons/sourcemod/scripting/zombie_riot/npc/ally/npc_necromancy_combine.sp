@@ -197,7 +197,7 @@ methodmap NecroCombine < CClotBody
 		
 		npc.m_flExtraDamage = damage_multiplier;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NecroCombine_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NecroCombine_ClotThink);
 		
 
@@ -377,11 +377,13 @@ public void NecroCombine_ClotThink(int iNPC)
 	}
 }
 
-public Action NecroCombine_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NecroCombine_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if (damage < 9999999.0)	//So they can be slayed.
+	{
+		damage = 0.0;
 		return Plugin_Handled;
-		
+	}
 	else
 		return Plugin_Continue;
 }
@@ -391,7 +393,7 @@ public void NecroCombine_NPCDeath(int entity)
 	NecroCombine npc = view_as<NecroCombine>(entity);
 //	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NecroCombine_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NecroCombine_ClotThink);
 		
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.

@@ -127,7 +127,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Alt_Medic_Constructor_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Alt_Medic_Constructor_ClotThink);
 		
 		
@@ -441,7 +441,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Alt_Medic_Constructor_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Alt_Medic_Constructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(victim);
 		
@@ -465,7 +465,7 @@ public void Alt_Medic_Constructor_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Alt_Medic_Constructor_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Alt_Medic_Constructor_ClotThink);
 	
 	Is_a_Medic[npc.index] = false;

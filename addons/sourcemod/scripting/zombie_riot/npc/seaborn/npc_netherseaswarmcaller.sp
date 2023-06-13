@@ -64,7 +64,7 @@ methodmap SeaSwarmcaller < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSwarmcaller_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaSwarmcaller_ClotThink);
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
@@ -182,7 +182,7 @@ public void SeaSwarmcaller_ExplodePost(int attacker, int victim, float damage, i
 	// 140 x 0.1 x 0.15
 }
 
-public Action SeaSwarmcaller_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaSwarmcaller_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -210,7 +210,7 @@ void SeaSwarmcaller_NPCDeath(int entity)
 		Remains_SpawnDrop(pos, Buff_Swarmcaller);
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSwarmcaller_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaSwarmcaller_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

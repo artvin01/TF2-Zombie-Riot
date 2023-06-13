@@ -185,7 +185,7 @@ methodmap BunkerHeadlessHorse < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerHeadlessHorse_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerHeadlessHorse_ClotThink);
 		
 		npc.StartPathing();
@@ -393,7 +393,6 @@ public void BunkerHeadlessHorse_NPCDeath(int entity)
 	BunkerHeadlessHorse npc = view_as<BunkerHeadlessHorse>(entity);
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
 	npc.PlayDeathScream();
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BunkerHeadlessHorse_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BunkerHeadlessHorse_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");

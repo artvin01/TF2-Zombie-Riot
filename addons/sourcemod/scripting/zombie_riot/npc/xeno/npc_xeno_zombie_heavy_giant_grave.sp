@@ -149,7 +149,7 @@ methodmap XenoHeavyGiant < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoHeavyGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoHeavyGiant_ClotThink);
 		
 		
@@ -316,7 +316,7 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoHeavyGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoHeavyGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoHeavyGiant npc = view_as<XenoHeavyGiant>(victim);
 		
@@ -359,7 +359,7 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 			}
 		}
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoHeavyGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoHeavyGiant_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -181,7 +181,7 @@ methodmap CombineGaint < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineGaint_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineGaint_ClotThink);
 		
 
@@ -412,7 +412,7 @@ public void CombineGaint_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CombineGaint_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombineGaint_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -443,7 +443,7 @@ public void CombineGaint_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineGaint_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineGaint_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

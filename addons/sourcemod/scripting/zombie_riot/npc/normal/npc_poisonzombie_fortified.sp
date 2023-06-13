@@ -139,7 +139,7 @@ methodmap FortifiedPoisonZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedPoisonZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);		
 		
 		
@@ -348,7 +348,7 @@ public void FortifiedPoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FortifiedPoisonZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FortifiedPoisonZombie_ClotThink);	
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

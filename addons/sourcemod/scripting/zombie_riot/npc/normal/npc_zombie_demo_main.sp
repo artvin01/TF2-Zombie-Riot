@@ -98,7 +98,7 @@ methodmap DemoMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, DemoMain_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
 		
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -284,7 +284,7 @@ public void DemoMain_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DemoMain_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DemoMain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -304,7 +304,7 @@ public void DemoMain_NPCDeath(int entity)
 {
 	DemoMain npc = view_as<DemoMain>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, DemoMain_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -552,7 +552,7 @@ methodmap TrueZerofuse < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueZerofuse_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, TrueZerofuse_ClotDamaged_Post);
 		SDKHook(npc.index, SDKHook_Think, TrueZerofuse_ClotThink);
 		
@@ -1314,7 +1314,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 	}
 }
 
-public Action TrueZerofuse_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TrueZerofuse_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	TrueZerofuse npc = view_as<TrueZerofuse>(victim);
 		
@@ -1341,7 +1341,7 @@ public void TrueZerofuse_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueZerofuse_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, TrueZerofuse_ClotDamaged_Post);
 	SDKUnhook(npc.index, SDKHook_Think, TrueZerofuse_ClotThink);
 	

@@ -408,7 +408,7 @@ methodmap Blitzkrieg < CClotBody
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;	// used for extra rocket spam along side blitz's current rockets
 		
 		SDKHook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
+		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -973,7 +973,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1310,7 +1310,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 	Blitzkrieg npc = view_as<Blitzkrieg>(entity);
 	npc.PlayDeathSound();
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
+	
 //	Music_RoundEnd(entity);
 	
 	int closest = npc.m_iTarget;

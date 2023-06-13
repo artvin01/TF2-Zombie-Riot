@@ -193,7 +193,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, RaidbossBlueGoggles_ClotDamaged);
+		
 
 		/*
 			Cosmetics
@@ -793,7 +793,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 }
 
 	
-public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -836,7 +836,7 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossBlueGoggles_ClotDamaged);
+	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
 	//add 2 seconds so if its close, they dont lose to timer.

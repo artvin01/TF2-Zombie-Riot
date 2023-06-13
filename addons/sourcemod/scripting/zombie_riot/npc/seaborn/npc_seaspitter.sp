@@ -83,7 +83,7 @@ methodmap SeaSpitter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSpitter_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 		
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
@@ -209,7 +209,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaSpitter_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaSpitter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -229,6 +229,6 @@ void SeaSpitter_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSpitter_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 }

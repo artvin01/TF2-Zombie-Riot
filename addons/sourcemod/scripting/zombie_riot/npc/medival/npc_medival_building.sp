@@ -205,7 +205,7 @@ methodmap MedivalBuilding < CClotBody
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalBuilding_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
@@ -477,7 +477,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	}
 }
 
-public Action MedivalBuilding_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalBuilding_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -501,7 +501,7 @@ public void MedivalBuilding_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalBuilding_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

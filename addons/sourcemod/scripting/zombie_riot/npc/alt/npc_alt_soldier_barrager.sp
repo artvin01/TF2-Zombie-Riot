@@ -163,7 +163,7 @@ methodmap Soldier_Barrager < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Soldier_Barrager_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Soldier_Barrager_ClotThink);
 		
 		//IDLE
@@ -391,7 +391,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 }
 
 
-public Action Soldier_Barrager_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Soldier_Barrager_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Soldier_Barrager npc = view_as<Soldier_Barrager>(victim);
 		
@@ -415,7 +415,7 @@ public void Soldier_Barrager_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Soldier_Barrager_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Soldier_Barrager_ClotThink);
 		
 	

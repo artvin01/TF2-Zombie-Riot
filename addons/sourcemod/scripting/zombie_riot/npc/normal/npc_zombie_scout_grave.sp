@@ -151,7 +151,7 @@ methodmap Scout < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Scout_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Scout_ClotThink);
 		
 		npc.m_flSpeed = 300.0;
@@ -315,7 +315,7 @@ public void Scout_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Scout_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Scout_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Scout npc = view_as<Scout>(victim);
 		
@@ -339,7 +339,7 @@ public void Scout_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Scout_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Scout_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))

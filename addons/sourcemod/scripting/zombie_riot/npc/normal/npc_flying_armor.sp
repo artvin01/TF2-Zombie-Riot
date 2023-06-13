@@ -186,7 +186,7 @@ methodmap FlyingArmor < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FlyingArmor_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, FlyingArmor_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -366,7 +366,7 @@ public void FlyingArmor_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action FlyingArmor_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FlyingArmor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -415,7 +415,7 @@ public void FlyingArmor_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FlyingArmor_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FlyingArmor_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

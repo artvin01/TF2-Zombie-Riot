@@ -122,7 +122,7 @@ methodmap AltMedicApprenticeMage < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, AltMedicApprenticeMage_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, AltMedicApprenticeMage_ClotThink);
 			
 		
@@ -288,7 +288,7 @@ public void AltMedicApprenticeMage_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AltMedicApprenticeMage_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AltMedicApprenticeMage_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	AltMedicApprenticeMage npc = view_as<AltMedicApprenticeMage>(victim);
 		
@@ -315,7 +315,7 @@ public void AltMedicApprenticeMage_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, AltMedicApprenticeMage_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, AltMedicApprenticeMage_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

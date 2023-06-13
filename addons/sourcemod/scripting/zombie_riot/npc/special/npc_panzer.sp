@@ -273,7 +273,7 @@ methodmap NaziPanzer < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;		
 
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NaziPanzer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
@@ -748,7 +748,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 }
 
 
-public Action NaziPanzer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NaziPanzer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -759,6 +759,7 @@ public Action NaziPanzer_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	
 	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
+		damage = 0.0;
 		return Plugin_Handled;
 	}
 	
@@ -826,7 +827,7 @@ public void NaziPanzer_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NaziPanzer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		

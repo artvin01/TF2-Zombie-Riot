@@ -89,7 +89,7 @@ methodmap XenoKamikaze < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoKamikaze_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoKamikaze_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -256,7 +256,7 @@ public void XenoKamikaze_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoKamikaze_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoKamikaze_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -276,7 +276,7 @@ public void XenoKamikaze_NPCDeath(int entity)
 {
 	XenoKamikaze npc = view_as<XenoKamikaze>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoKamikaze_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoKamikaze_ClotThink);
 
 	if(!NpcStats_IsEnemySilenced(entity))

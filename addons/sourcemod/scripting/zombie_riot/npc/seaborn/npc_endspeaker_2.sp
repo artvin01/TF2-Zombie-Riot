@@ -25,7 +25,7 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		npc.m_bDissapearOnDeath = true;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, EndSpeaker2_ClotThink);
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
@@ -192,7 +192,7 @@ void EndSpeaker2_NPCDeath(int entity)
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	npc.SetSpawn(pos, angles);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, EndSpeaker2_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");

@@ -247,7 +247,7 @@ methodmap SandvichSlayer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SandvichSlayer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SandvichSlayer_ClotThink);
 		
 		fl_AbilityManagement_Timer[npc.index] = GetGameTime(npc.index) + fl_AbilityManagement_FirstTimer;
@@ -627,7 +627,7 @@ public void SandvichSlayer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SandvichSlayer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SandvichSlayer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	SandvichSlayer npc = view_as<SandvichSlayer>(victim);
 		
@@ -664,7 +664,7 @@ public void SandvichSlayer_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SandvichSlayer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SandvichSlayer_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

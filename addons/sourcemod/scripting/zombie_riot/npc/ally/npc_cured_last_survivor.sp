@@ -315,7 +315,7 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CuredFatherGrigori_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
@@ -676,11 +676,13 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CuredFatherGrigori_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CuredFatherGrigori_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if (damage < 9999999.0)	//So they can be slayed.
+	{
+		damage = 0.0;
 		return Plugin_Handled;
-		
+	}
 	else
 		return Plugin_Continue;
 }
@@ -690,7 +692,7 @@ public void CuredFatherGrigori_NPCDeath(int entity)
 	CuredFatherGrigori npc = view_as<CuredFatherGrigori>(entity);
 //	npc.PlayDeathSound(); He cant die.
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CuredFatherGrigori_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

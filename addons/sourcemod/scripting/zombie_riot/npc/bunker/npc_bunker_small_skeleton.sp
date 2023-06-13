@@ -152,7 +152,7 @@ methodmap BunkerSkeletonSmall < CClotBody
 		//IDLE
 		npc.m_flSpeed = 300.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerSkeletonSmall_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerSkeletonSmall_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
@@ -333,7 +333,6 @@ public void BunkerSkeletonSmall_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BunkerSkeletonSmall_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BunkerSkeletonSmall_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

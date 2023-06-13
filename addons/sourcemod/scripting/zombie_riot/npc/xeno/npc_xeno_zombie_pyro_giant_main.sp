@@ -144,7 +144,7 @@ methodmap XenoPyroGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoPyroGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoPyroGiant_ClotThink);
 		
 		
@@ -341,7 +341,7 @@ public void XenoPyroGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoPyroGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoPyroGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoPyroGiant npc = view_as<XenoPyroGiant>(victim);
 		
@@ -365,7 +365,7 @@ public void XenoPyroGiant_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoPyroGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoPyroGiant_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

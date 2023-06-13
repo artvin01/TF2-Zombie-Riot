@@ -184,7 +184,7 @@ methodmap MedivalHussar < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalHussar_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
 
 		npc.m_iState = 0;
@@ -547,7 +547,7 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 	}
 }
 
-public Action MedivalHussar_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalHussar_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -574,7 +574,7 @@ public void MedivalHussar_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalHussar_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalHussar_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

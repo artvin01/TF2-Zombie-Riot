@@ -273,7 +273,7 @@ methodmap GodArkantos < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, GodArkantos_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, GodArkantos_OnTakeDamagePost);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
@@ -542,7 +542,7 @@ public void GodArkantos_ClotThink(int iNPC)
 
 }
 	
-public Action GodArkantos_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -552,6 +552,7 @@ public Action GodArkantos_ClotDamaged(int victim, int &attacker, int &inflictor,
 
 	if(npc.m_flReviveArkantosTime > GetGameTime(npc.index))
 	{
+		damage = 0.0;
 		return Plugin_Handled;
 	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -573,6 +574,7 @@ public Action GodArkantos_ClotDamaged(int victim, int &attacker, int &inflictor,
 	{
 		npc.ArkantosFakeDeathState(1);
 		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+		damage = 0.0;
 		return Plugin_Handled;
 	}
 	return Plugin_Changed;
@@ -846,7 +848,7 @@ public void GodArkantos_NPCDeath(int entity)
 	}
 
 	SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, GodArkantos_ClotDamaged);
+	
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	

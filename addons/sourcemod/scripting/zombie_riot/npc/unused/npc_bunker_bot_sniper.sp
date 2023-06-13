@@ -150,7 +150,7 @@ methodmap BunkerBotSniper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOTSOUNDS;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerBotSniper_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerBotSniper_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BunkerBotSniper_ClotDamaged_Post);
 		
@@ -403,7 +403,7 @@ public void BunkerBotSniper_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action BunkerBotSniper_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BunkerBotSniper_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	BunkerBotSniper npc = view_as<BunkerBotSniper>(victim);
 	
@@ -438,7 +438,7 @@ public void BunkerBotSniper_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BunkerBotSniper_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, BunkerBotSniper_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, BunkerBotSniper_ClotDamaged_Post);	
 	

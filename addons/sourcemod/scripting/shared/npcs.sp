@@ -1216,6 +1216,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	//they dont take drown dmg ever.
+	bool WeaponWasValid = false;
 
 	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	{
@@ -1704,6 +1705,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 					if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 					{
+						WeaponWasValid = true;
 						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 						damage = modified_damage;
 						OnTakeDamage_HandOfElderMages(attacker, weapon);
@@ -1924,8 +1926,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			
 		}	//Remove annoying instakill taunts
-			
 	}
+
+	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(WeaponWasValid)
+	{
+		float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+		damage = modified_damage;
+	}
+
 	npcBase.m_vecpunchforce(damageForce, true);
 	npcBase.m_bGib = false;
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
@@ -2797,10 +2806,6 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_Yamato(attacker, damagetype);
 		}
-		case WEAPON_SAGA:
-		{
-			Saga_OnTakeDamage(victim, attacker, damage, weapon);
-		}
 		case WEAPON_BEAM_PAP:
 		{
 			Npc_OnTakeDamage_BeamWand_Pap(attacker, damagetype);
@@ -2824,7 +2829,19 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 
 	return damage;
 }
-
+stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+{
+#if defined ZR
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_SAGA:
+		{
+			Saga_OnTakeDamage(victim, attacker, damage, weapon);
+		}
+	}
+#endif
+	return damage;
+}
 /*
 public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
 {

@@ -136,7 +136,7 @@ methodmap Zomg < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Zomg_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Zomg_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Zomg_ClotThink);
 		
@@ -264,7 +264,7 @@ public void Zomg_ClotThink(int iNPC)
 	}
 }
 
-public Action Zomg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Zomg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -287,7 +287,7 @@ public void Zomg_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Zomg_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Zomg_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Zomg_ClotThink);
 	
 	float pos[3], angles[3];

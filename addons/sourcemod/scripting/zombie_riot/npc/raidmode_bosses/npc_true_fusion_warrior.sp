@@ -323,7 +323,7 @@ methodmap TrueFusionWarrior < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
+		
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -936,7 +936,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 	
-public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1066,7 +1066,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
+	
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	

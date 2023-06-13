@@ -145,7 +145,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedHeadcrabZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
 		//IDLE
 		npc.m_flSpeed = 140.0;
@@ -327,7 +327,6 @@ public void FortifiedHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FortifiedHeadcrabZombie_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
 	
 }

@@ -394,7 +394,7 @@ methodmap EndSpeakerSmall < EndSpeaker
 	}
 }
 
-public Action EndSpeaker_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;

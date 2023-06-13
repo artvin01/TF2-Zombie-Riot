@@ -193,7 +193,7 @@ methodmap NPC_ALT_MEDIC_SUPPERIOR_MAGE < CClotBody
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
@@ -461,7 +461,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -501,7 +501,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -172,7 +172,7 @@ methodmap MedivalRiddenArcher < CClotBody
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalRiddenArcher_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalRiddenArcher_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -348,7 +348,7 @@ public void HandleAnimEventMedival_RiddenArcher(int entity, int event)
 	
 }
 
-public Action MedivalRiddenArcher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalRiddenArcher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -375,7 +375,7 @@ public void MedivalRiddenArcher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalRiddenArcher_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalRiddenArcher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

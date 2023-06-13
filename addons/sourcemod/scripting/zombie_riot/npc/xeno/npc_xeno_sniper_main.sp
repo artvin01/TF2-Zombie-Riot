@@ -148,7 +148,7 @@ methodmap XenoSniperMain < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSniperMain_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSniperMain_ClotThink);	
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoSniperMain_ClotDamagedPost);
 		
@@ -454,7 +454,7 @@ public void XenoSniperMain_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoSniperMain_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSniperMain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoSniperMain npc = view_as<XenoSniperMain>(victim);
 		
@@ -490,7 +490,7 @@ public void XenoSniperMain_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSniperMain_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSniperMain_ClotThink);	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoSniperMain_ClotDamagedPost);	
 	if(IsValidEntity(npc.m_iWearable1))

@@ -142,7 +142,7 @@ methodmap Bad < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bad_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bad_ClotThink);
 		
@@ -269,7 +269,7 @@ public void Bad_ClotThink(int iNPC)
 	}
 }
 
-public Action Bad_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Bad_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -292,7 +292,7 @@ public void Bad_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bad_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Bad_ClotThink);
 	
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");

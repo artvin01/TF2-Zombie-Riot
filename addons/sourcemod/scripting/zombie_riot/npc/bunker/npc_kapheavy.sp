@@ -219,7 +219,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Eternal_Kaptain_Heavy_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Eternal_Kaptain_Heavy_ClotThink);		
 
 		npc.m_flSpeed = Kaptain_MaxSpeed;
@@ -571,7 +571,7 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Eternal_Kaptain_Heavy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Eternal_Kaptain_Heavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Eternal_Kaptain_Heavy npc = view_as<Eternal_Kaptain_Heavy>(victim);
 		
@@ -627,7 +627,7 @@ public void Eternal_Kaptain_Heavy_NPCDeath(int entity)
 		KapheavyHasDied = true;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Eternal_Kaptain_Heavy_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Eternal_Kaptain_Heavy_ClotThink);	
 	//if(IsValidEntity(npc.m_iWearable1))
 		//RemoveEntity(npc.m_iWearable1);

@@ -186,7 +186,7 @@ methodmap RaidbossNemesis < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, RaidbossNemesis_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
@@ -894,7 +894,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 }
 
 	
-public Action RaidbossNemesis_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action RaidbossNemesis_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -999,7 +999,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	i_GrabbedThis[npc.index] = -1;
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossNemesis_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossNemesis_ClotDamaged);
+	
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

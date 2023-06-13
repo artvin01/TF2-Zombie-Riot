@@ -199,7 +199,7 @@ methodmap XenoFortifiedFastZombie < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFortifiedFastZombie_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoFortifiedFastZombie_ClotThink);
 		
 		
@@ -373,7 +373,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoFortifiedFastZombie_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoFortifiedFastZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -417,7 +417,7 @@ public void XenoFortifiedFastZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFortifiedFastZombie_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoFortifiedFastZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");

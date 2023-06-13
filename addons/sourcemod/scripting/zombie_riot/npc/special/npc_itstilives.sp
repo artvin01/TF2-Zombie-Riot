@@ -92,7 +92,7 @@ methodmap Itstilives < CClotBody
 	}
 }
 
-public Action Itstilives_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Itstilives_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(damage > 99999.9)
 		return Plugin_Continue;
@@ -127,6 +127,7 @@ public Action Itstilives_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		if(GlobalHealth < 1)
 		{
 			CleanNPCs();
+			damage = 0.0;
 			return Plugin_Handled;
 		}
 		
@@ -211,7 +212,7 @@ static void CollectNPC(int entity, bool lead)
 	if(!CollectedSounds[entity])
 		CollectedSounds[entity] = new ArrayStack(ByteCountToCells(PLATFORM_MAX_PATH));
 	
-	SDKHook(npc.index, SDKHook_OnTakeDamage, Itstilives_ClotDamaged);
+	
 	npc.m_bDissapearOnDeath = true;
 	npc.m_bStaticNPC = true;
 	
@@ -271,7 +272,6 @@ static void CleanNPCs()
 	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
 	{
 		SetEntityRenderMode(entity, RENDER_NORMAL);
-		SDKUnhook(entity, SDKHook_OnTakeDamage, Itstilives_ClotDamaged);
 		
 		if(CollectedSounds[entity])
 		{

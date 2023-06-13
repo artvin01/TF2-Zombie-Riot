@@ -184,7 +184,7 @@ methodmap BunkerHeadlessHorse < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.m_flDoSpawnGesture = GetGameTime() + 2.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerHeadlessHorse_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerHeadlessHorse_ClotThink);
 		
 		npc.StartPathing();

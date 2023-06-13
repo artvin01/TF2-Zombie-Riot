@@ -197,7 +197,7 @@ methodmap FastZombie < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FastZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FastZombie_FastZombieThink);
 		
 		//IDLE
@@ -393,7 +393,7 @@ public void FastZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FastZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FastZombie_FastZombieThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

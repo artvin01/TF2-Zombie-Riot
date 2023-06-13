@@ -123,7 +123,7 @@ methodmap HighInquisitorDario < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HighInquisitorDario_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, HighInquisitorDario_ClotThink);
 
 		npc.m_iState = 0;
@@ -391,7 +391,7 @@ public void HighInquisitorDario_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action HighInquisitorDario_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HighInquisitorDario_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -436,7 +436,7 @@ public void HighInquisitorDario_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, HighInquisitorDario_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, HighInquisitorDario_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

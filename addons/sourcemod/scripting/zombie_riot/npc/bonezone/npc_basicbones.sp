@@ -166,7 +166,7 @@ methodmap BasicBones < CClotBody
 			npc.m_flSpeed = 200.0;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BasicBones_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BasicBones_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
@@ -356,7 +356,6 @@ public void BasicBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BasicBones_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BasicBones_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
