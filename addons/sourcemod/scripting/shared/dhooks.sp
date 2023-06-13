@@ -1378,12 +1378,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	DoOverlay(client, "");
 	WeaponClass[client] = TFClass_Unknown;
-	
+/*	
 #if defined ZR
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 #endif
-	
+*/	
 	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
