@@ -264,7 +264,5 @@ void MedivalRam_NPCDeath(int entity)
 		{
 			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
 		}
-		
-		Zombies_Currently_Still_Ongoing += 6;
 	}
 }
