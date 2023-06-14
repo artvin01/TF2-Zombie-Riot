@@ -99,7 +99,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 							failed = false;
 
 							if(ShouldNpcDealBonusDamage(target))
-								attack *= 4.0;
+								attack *= 10.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 							if(target <= MaxClients)

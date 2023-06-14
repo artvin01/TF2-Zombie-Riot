@@ -277,7 +277,10 @@ enum
 	SEAREEFBREAKER_ALT,
 	SEAREEFBREAKER_CARRIER,
 	BARRACK_THORNS	= 242,
-	RAIDMODE_GOD_ARKANTOS = 243
+	RAIDMODE_GOD_ARKANTOS = 243,
+	SEABORN_SCOUT	= 244,
+	SEABORN_SOLDIER	= 245,
+	CITIZEN_RUNNER	= 246
 }
 
 public const char NPC_Names[][] =
@@ -546,7 +549,10 @@ public const char NPC_Names[][] =
 	"Nourished Reefbreaker",
 	"Regressed Reefbreaker",
 	"Thorns",
-	"God Arkantos"
+	"God Arkantos",
+	"Seaborn Scout",
+	"Seaborn Soldier",
+	"Citizen"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -810,7 +816,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"",
-	"npc_god_arkantos"
+	"npc_god_arkantos",
+	"npc_seaborn_scout",
+	"npc_seaborn_soldier",
+	"npc_citizen_runner"
 };
 
 void NPC_MapStart()
@@ -1715,6 +1724,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case RAIDMODE_GOD_ARKANTOS:
 			entity = GodArkantos(client, vecPos, vecAng, ally);
+		
+		case SEABORN_SCOUT:
+			entity = SeabornScout(client, vecPos, vecAng, ally);
+		
+		case SEABORN_SOLDIER:
+			entity = SeabornSoldier(client, vecPos, vecAng, ally);
+		
+		case CITIZEN_RUNNER:
+			entity = CitizenRunner(client, vecPos, vecAng);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2420,6 +2438,15 @@ public void NPCDeath(int entity)
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_NPCDeath(entity);
 
+		case SEABORN_SCOUT:
+			SeabornScout_NPCDeath(entity);
+
+		case SEABORN_SOLDIER:
+			SeabornSoldier_NPCDeath(entity);
+
+		case CITIZEN_RUNNER:
+			CitizenRunner_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -2496,21 +2523,13 @@ public void NPCDeath(int entity)
 		CurrentCash += GiveMoney;
 	}
 }
-public Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+
+Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	switch(i_NpcInternalId[victim])
 	{
-		case HEADCRAB_ZOMBIE:
-			HeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case FORTIFIED_HEADCRAB_ZOMBIE:
-			FortifiedHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case FASTZOMBIE:
-			FastZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case FORTIFIED_FASTZOMBIE:
-			FortifiedFastZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		case HEADCRAB_ZOMBIE, FORTIFIED_HEADCRAB_ZOMBIE, FASTZOMBIE, FORTIFIED_FASTZOMBIE:
+			Generic_OnTakeDamage(victim, attacker);
 		
 		case TORSOLESS_HEADCRAB_ZOMBIE:
 			TorsolessHeadcrabZombie_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -3165,6 +3184,9 @@ public Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor,
 
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case SEABORN_SCOUT, SEABORN_SOLDIER:
+			Generic_OnTakeDamage(victim, attacker);
 	}
 	return Plugin_Changed;
 }
@@ -3413,3 +3435,6 @@ public Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor,
 #include "zombie_riot/npc/seaborn/npc_netherseaspewer.sp"
 #include "zombie_riot/npc/seaborn/npc_netherseaswarmcaller.sp"
 #include "zombie_riot/npc/seaborn/npc_netherseareefbreaker.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_scout.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_soldier.sp"
+#include "zombie_riot/npc/seaborn/npc_citizen_runner.sp"

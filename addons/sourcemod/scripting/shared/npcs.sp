@@ -1979,6 +1979,20 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	*/
 }
 
+void Generic_OnTakeDamage(int victim, int attacker)
+{
+	if(attacker > 0)
+	{
+		CClotBody npc = view_as<CClotBody>(victim);
+		float gameTime = GetGameTime(npc.index);
+
+		if(npc.m_flHeadshotCooldown < gameTime)
+		{
+			npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+		}
+	}
+}
 
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];

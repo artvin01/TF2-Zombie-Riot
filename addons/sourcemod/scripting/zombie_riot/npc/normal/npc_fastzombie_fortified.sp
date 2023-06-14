@@ -364,29 +364,6 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action FortifiedFastZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	FortifiedFastZombie npc = view_as<FortifiedFastZombie>(victim);
-	
-	
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.PlayHurtSound();
-		
-	}
-	return Plugin_Changed;
-}
-
 public void FortifiedFastZombie_NPCDeath(int entity)
 {
 	FortifiedFastZombie npc = view_as<FortifiedFastZombie>(entity);
