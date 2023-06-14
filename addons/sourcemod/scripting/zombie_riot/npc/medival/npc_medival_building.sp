@@ -371,7 +371,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 55000);
 						fl_Extra_Damage[spawn_index] = 1.35;
 					}
-				}
+				}	
 			}
 			else
 			{
