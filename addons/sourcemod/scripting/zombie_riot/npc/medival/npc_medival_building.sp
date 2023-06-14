@@ -286,7 +286,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			//emercency stop. 
 			float IncreaceSpawnRates = 6.5;
 
-			IncreaceSpawnRates *= (Pow(f_PlayerScalingBuilding, 1.14));
+			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
 			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
 			{
