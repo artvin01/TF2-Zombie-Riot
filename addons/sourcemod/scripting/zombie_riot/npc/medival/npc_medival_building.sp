@@ -286,7 +286,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			//emercency stop. 
 			float IncreaceSpawnRates = 6.5;
 
-			IncreaceSpawnRates *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
+			IncreaceSpawnRates *= (Pow(f_PlayerScalingBuilding, 1.14));
 
 			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
 			{
@@ -296,6 +296,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				AproxRandomSpaceToWalkTo[2] += 10.0;
 
 				int EnemyToSpawn = MEDIVAL_MILITIA;
+				bool Construct = false;
 
 				if(b_IsAlliedNpc[iNPC])
 				{
@@ -347,7 +348,8 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				else if(i_currentwave[iNPC] >= 60)
 				{
 					EnemyToSpawn = MEDIVAL_CONSTRUCT;
-					IncreaceSpawnRates *= 0.15; //Swarm.
+					IncreaceSpawnRates *= 0.70; //Swarm.
+					Construct = true;
 				}
 
 				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
@@ -362,6 +364,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 					else
 					{
 						AllyIsBoundToVillage[spawn_index] = true;
+					}
+					if(Construct)
+					{
+						SetEntProp(spawn_index, Prop_Data, "m_iHealth", 55000);
+						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 55000);
+						fl_Extra_Damage[spawn_index] = 1.35;
 					}
 				}
 			}
