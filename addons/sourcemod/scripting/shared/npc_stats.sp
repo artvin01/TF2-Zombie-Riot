@@ -5567,7 +5567,7 @@ float f3_KnockbackToTake[MAXENTITIES][3];
 
 stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
-	if(enemy > 0)
+	if(enemy > 0 && !b_NoKnockbackFromSources[enemy])
 	{							
 		float vAngles[3], vDirection[3];
 										
@@ -7504,6 +7504,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
+	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;

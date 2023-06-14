@@ -919,6 +919,7 @@ float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
 bool b_thisNpcIsARaid[MAXENTITIES]; //This is used for scaling.
+bool b_NoKnockbackFromSources[MAXENTITIES]; //This is used for scaling.
 bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
