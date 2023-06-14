@@ -58,7 +58,7 @@ methodmap MedivalRam < CClotBody
 				Garrison[npc.index] = GetIndexByPluginName(data);
 			
 			if(Garrison[npc.index] && !ally)
-				Zombies_Currently_Still_Ongoing += 4;
+				Zombies_Currently_Still_Ongoing += 6;
 		}
 		else
 		{

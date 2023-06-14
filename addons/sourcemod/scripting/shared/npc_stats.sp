@@ -4008,6 +4008,7 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
+		NpcStartTouch(pThis,otherindex);
 		return MRES_Ignored;
 	}
 	NpcStartTouch(pThis,otherindex);
@@ -5563,7 +5564,7 @@ public void Check_If_Stuck(int iNPC)
 
 stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
-	if(enemy <= MaxClients || work_on_entity)
+	if(enemy > 0)
 	{							
 		float vAngles[3], vDirection[3];
 										
@@ -5576,7 +5577,7 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
-		if(!ignore_attribute && !work_on_entity)
+		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
 			float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
 			
@@ -5601,8 +5602,22 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			{
 				vDirection[i] += newVel[i];
 			}
-		}												
-		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
+		}		
+		if(!b_NpcHasDied[enemy])	
+		{
+			//it was an npc.
+			PrintToChatAll("test");
+			CClotBody npc = view_as<CClotBody>(enemy);
+			float Jump_1_frame[3];
+			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+			Jump_1_frame[2] += 20.0;	
+			SetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+			npc.SetVelocity(vDirection);
+		}		
+		else
+		{
+			TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
+		}						
 	}
 }
 

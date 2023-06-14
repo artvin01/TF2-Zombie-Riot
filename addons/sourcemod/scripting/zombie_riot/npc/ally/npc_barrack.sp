@@ -659,15 +659,15 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	{
 		if(CurrentPlayers == 1)
 		{
-			damage *= 0.85;
+			damage *= 0.65;
 		}
 		else if(CurrentPlayers <= 4)
 		{
-			damage *= 1.25;
+			damage *= 0.6;
 		}
 		else
 		{
-			damage *= 1.65;
+			damage *= 0.75;
 		}
 	}
 	

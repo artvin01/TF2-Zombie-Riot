@@ -321,6 +321,18 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = gameTime + 0.04;
 	npc.Update();
+
+	if(RaidModeTime < GetGameTime())
+	{
+		int entity = CreateEntityByName("game_round_win"); //You loose.
+		DispatchKeyValue(entity, "force_map_reset", "1");
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "RoundWin");
+		Music_RoundEnd(entity);
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+	}
 	
 	int time = GetTime();
 	if(i_PlayMusicSound < time)
@@ -424,6 +436,10 @@ public void Bloonarius_ClotThink(int iNPC)
 			//enemy.Is_Static = !npc.m_bElite;
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
 			
+			enemy.ExtraMeleeRes = 1.0;
+			enemy.ExtraRangedRes = 1.0;
+			enemy.ExtraSpeed = 1.0;
+			enemy.ExtraDamage = 1.0;	
 			for(int i; i<count; i++)
 			{
 				Waves_AddNextEnemy(enemy);
@@ -437,6 +453,10 @@ public void Bloonarius_ClotThink(int iNPC)
 				enemy.Data[0] = 0;
 				
 				count = SpawnMulti(ZombieLowCount[tier], players, false);
+				enemy.ExtraMeleeRes = 1.0;
+				enemy.ExtraRangedRes = 1.0;
+				enemy.ExtraSpeed = 1.0;
+				enemy.ExtraDamage = 1.0;	
 				
 				for(int i; i < count; i++)
 				{

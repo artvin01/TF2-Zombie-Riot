@@ -928,6 +928,11 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				npc.m_bPathing = false;
 			}
 		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}	
 	if  (!npc.m_bInKame)
 	{
 		npc.StartPathing();
