@@ -5563,6 +5563,8 @@ public void Check_If_Stuck(int iNPC)
 	
 }
 
+float f3_KnockbackToTake[MAXENTITIES][3];
+
 stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
 	if(enemy > 0)
@@ -5606,19 +5608,30 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		}		
 		if(!b_NpcHasDied[enemy])	
 		{
-			//it was an npc.
-			CClotBody npc = view_as<CClotBody>(enemy);
-			float Jump_1_frame[3];
-			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-			Jump_1_frame[2] += 20.0;	
-			SetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-			npc.SetVelocity(vDirection);
+			f3_KnockbackToTake[enemy] = vDirection;
+			//it needs to be on think, otherwise it wont work sometimes.
+			SDKUnhook(enemy, SDKHook_Think, NpcJumpThink); //incase another one was in progress.
+			SDKHook(enemy, SDKHook_Think, NpcJumpThink);
 		}		
 		else
 		{
 			TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
 		}						
 	}
+}
+//it needs to be on think, otherwise it wont work sometimes.
+public void NpcJumpThink(int iNPC)
+{	
+	if(IsValidEntity(iNPC) && !b_NpcHasDied[iNPC])
+	{
+		CClotBody npc = view_as<CClotBody>(iNPC);
+		float Jump_1_frame[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+		Jump_1_frame[2] += 20.0;	
+		SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+		npc.SetVelocity(f3_KnockbackToTake[iNPC]);
+	}
+	SDKUnhook(iNPC, SDKHook_Think, NpcJumpThink);
 }
 
 int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
