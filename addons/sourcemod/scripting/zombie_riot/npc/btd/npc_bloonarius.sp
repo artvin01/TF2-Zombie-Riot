@@ -331,7 +331,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 	}
 	
 	int time = GetTime();
