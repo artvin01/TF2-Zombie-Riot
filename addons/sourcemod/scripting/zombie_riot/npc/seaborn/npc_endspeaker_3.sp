@@ -132,7 +132,7 @@ public void EndSpeaker3_ClotThink(int iNPC)
 						if(target > 0)
 						{
 							if(ShouldNpcDealBonusDamage(target))
-								attack *= 4.0;
+								attack *= 10.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 						}

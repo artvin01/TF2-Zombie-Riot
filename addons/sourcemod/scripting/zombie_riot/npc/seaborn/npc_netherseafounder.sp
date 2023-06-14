@@ -275,6 +275,11 @@ bool SeaFounder_TouchingNethersea(int entity)
 	return NervousTouching[entity] > GetGameTime();
 }
 
+void SeaFounder_ClearnNethersea()
+{
+	delete NavList;
+}
+
 void SeaFounder_SpawnNethersea(const float pos[3])
 {
 	if(!NavList)
@@ -329,7 +334,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > 14)
+	if(++SpreadTicks > 4)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -561,7 +566,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	NervousTouching[0] = GetGameTime() + 1.0;
+	NervousTouching[0] = GetGameTime() + 0.5;
 	
 	float pos[3];
 

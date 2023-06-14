@@ -303,23 +303,6 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-
-public Action FortifiedHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(victim);
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	return Plugin_Changed;
-}
-
 public void FortifiedHeadcrabZombie_NPCDeath(int entity)
 {
 	FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(entity);

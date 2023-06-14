@@ -245,7 +245,7 @@ public void UnderTides_ClotThink(int iNPC)
 			npc.AddGesture("ACT_CHARGE_END");
 			npc.PlaySpecialSound();
 			npc.PlaySpecialSound();
-			npc.m_flNextRangedSpecialAttack = gameTime + 45.0;
+			npc.m_flNextRangedSpecialAttack = gameTime + 30.0;
 			npc.m_flNextMeleeAttack = gameTime + 6.0;
 
 			ParticleEffectAt(WorldSpaceCenter(npc.index), "hammer_bell_ring_shockwave2", 4.0);
@@ -270,8 +270,8 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				npc.AddGesture("ACT_CHARGE_END");
 				npc.PlayRangedSound();
-				npc.m_flNextRangedAttack = gameTime + 17.5;
-				npc.m_flNextMeleeAttack = gameTime + 6.0;
+				npc.m_flNextRangedAttack = gameTime + 12.0;
+				npc.m_flNextMeleeAttack = gameTime + 4.5;
 			}
 			else
 			{
