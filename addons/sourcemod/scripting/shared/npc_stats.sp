@@ -5607,7 +5607,6 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		if(!b_NpcHasDied[enemy])	
 		{
 			//it was an npc.
-			PrintToChatAll("test");
 			CClotBody npc = view_as<CClotBody>(enemy);
 			float Jump_1_frame[3];
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
