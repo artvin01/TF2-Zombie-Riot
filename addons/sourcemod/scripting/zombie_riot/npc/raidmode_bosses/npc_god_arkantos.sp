@@ -946,22 +946,26 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 						
 						// Hit sound
 						npc.PlayMeleeHitSound();
+						bool Knocked = false;
 						
 						if(IsValidClient(target))
 						{
 							if (IsInvuln(target))
 							{
-								Custom_Knockback(npc.index, target, 700.0, true);
+								Knocked = true;
+								Custom_Knockback(npc.index, target, 900.0, true);
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 							else
 							{
-								Custom_Knockback(npc.index, target, 350.0, true);
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 						}
+									
+						if(!Knocked)
+							Custom_Knockback(npc.index, target, 350.0); 
 					} 
 				}
 				delete swingTrace;

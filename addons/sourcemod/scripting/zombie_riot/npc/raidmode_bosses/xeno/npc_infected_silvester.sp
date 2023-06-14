@@ -1235,21 +1235,26 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 						// Hit sound
 						npc.PlayMeleeHitSound();
 						
+						bool Knocked = false;
+									
 						if(IsValidClient(target))
 						{
 							if (IsInvuln(target))
 							{
+								Knocked = true;
 								Custom_Knockback(npc.index, target, 900.0, true);
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 							else
 							{
-								Custom_Knockback(npc.index, target, 650.0); 
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 						}
+									
+						if(!Knocked)
+							Custom_Knockback(npc.index, target, 650.0); 
 					} 
 				}
 				delete swingTrace;

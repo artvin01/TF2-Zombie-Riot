@@ -904,7 +904,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 20.5 * i_HealthScale[npc.index];
+								meleedmg = 22.5 * i_HealthScale[npc.index];
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -917,7 +917,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 									
 									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 									{
-										Bonus_damage = 1.5;
+										Bonus_damage = 1.3;
 									}
 									meleedmg *= Bonus_damage;	//Blitz does 50% less damage to players who hold a melee. blitz also takes base melee damage and not 50% extra
 									
@@ -925,21 +925,26 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 								
 								npc.PlayMeleeHitSound();		
-								if(IsValidClient(target))	//This makes the target take extra knockback if he is ubered.
+								bool Knocked = false;
+									
+								if(IsValidClient(target))
 								{
-									if(IsInvuln(target))
+									if (IsInvuln(target))
 									{
-										Custom_Knockback(npc.index, target, 450.0);
+										Knocked = true;
+										Custom_Knockback(npc.index, target, 900.0, true);
 										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
 									else
 									{
-										Custom_Knockback(npc.index, target, 150.0);
 										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
 								}
+									
+								if(!Knocked)
+									Custom_Knockback(npc.index, target, 650.0); 
 								
 							
 								// Hit sound

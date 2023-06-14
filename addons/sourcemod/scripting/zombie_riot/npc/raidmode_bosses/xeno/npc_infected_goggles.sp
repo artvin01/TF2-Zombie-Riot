@@ -570,22 +570,26 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 									
 									npc.PlayMeleeHitSound();
 									
-									if(target > MaxClients)
+									bool Knocked = false;
+									
+									if(IsValidClient(target))
 									{
-
+										if (IsInvuln(target))
+										{
+											Knocked = true;
+											Custom_Knockback(npc.index, target, 750.0, true);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
+										else
+										{
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
 									}
-									else if(IsInvuln(target))
-									{
-										Custom_Knockback(npc.index, target, 750.0, true, true);
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
-									else
-									{
-										Custom_Knockback(npc.index, target, 400.0, _, true); 
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
+									
+									if(!Knocked)
+										Custom_Knockback(npc.index, target, 550.0); 
 
 									npc.m_flSwitchCooldown = 0.0;
 								} 

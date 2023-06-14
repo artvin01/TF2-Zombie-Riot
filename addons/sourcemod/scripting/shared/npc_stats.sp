@@ -3926,6 +3926,8 @@ public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hRetur
 	//ALWAYS YES, WHY??????
 	
 //	DHookSetReturn(hReturn, true); 
+
+	NpcStartTouch(pThis,otherindex);
 	return MRES_Ignored;
 }
 public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle hReturn, Handle hParams)   
@@ -3951,6 +3953,7 @@ public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle
 	}
 	
 //	DHookSetReturn(hReturn, true); 
+	NpcStartTouch(pThis,otherindex);
 	return MRES_Ignored;
 }
 
@@ -3976,8 +3979,6 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 	}
 	
 	NpcStartTouch(pThis,otherindex);
-
-	
 	return MRES_Ignored;
 }
 
@@ -5590,7 +5591,7 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		
 		ScaleVector(vDirection, knockback);
 		
-		if(!override)
+		if(!override && enemy <= MaxClients)
 		{
 			float newVel[3];
 			
