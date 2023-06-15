@@ -674,6 +674,7 @@ Handle g_hShouldCollideWithAllyEnemy;
 Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
 Handle g_hShouldCollideWithAllyIngoreBuilding;
 Handle g_hGetSolidMask;
+Handle g_hGetSolidMaskAlly;
 Handle g_hStartActivity;
 Handle g_hGetActivity;
 Handle g_hIsActivity;
@@ -2533,6 +2534,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
+			b_NoKnockbackFromSources[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)

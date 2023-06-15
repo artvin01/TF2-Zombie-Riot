@@ -405,7 +405,11 @@ methodmap CClotBody
 		list.Push(DHookRaw(g_hIsActivity,		  true, pBody));
 
 		//Collide with the correct stuff
-		list.Push(DHookRaw(g_hGetSolidMask,		true, pBody));
+		if(!Ally)
+			list.Push(DHookRaw(g_hGetSolidMask,		true, pBody));
+		else
+			list.Push(DHookRaw(g_hGetSolidMaskAlly,		true, pBody));
+
 		
 		//Allow jumping
 	//	list.Push(DHookRaw(g_hStartActivity,		true, pBody));
@@ -529,8 +533,10 @@ methodmap CClotBody
 		}
 		else
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
-			
+			if(!Ally)
+				CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
+			else
+				CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY|MASK_PLAYERSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
 		}
 	
 		return view_as<CClotBody>(npc);
@@ -2720,6 +2726,11 @@ methodmap CClotBody
 		//0x202400B L4D2
 		return (MASK_NPCSOLID);
 	}
+	public int GetSolidMaskAlly()
+	{
+		//0x202400B L4D2
+		return (MASK_NPCSOLID|MASK_PLAYERSOLID);
+	}
 	
 	public void RestartMainSequence()
 	{
@@ -3137,6 +3148,7 @@ public void NPC_Base_InitGamedata()
 	DHookAddParam(g_hShouldCollideWithAllyIngoreBuilding, HookParamType_CBaseEntity);
 	
 	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+	g_hGetSolidMaskAlly		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
 	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
 	
 	g_hGetHullWidthGiant		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth_ISGIANT);
@@ -4994,7 +5006,15 @@ stock bool CheckForSee(int client)
 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	}
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -5003,7 +5023,15 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+	}
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -6447,6 +6475,11 @@ public MRESReturn ILocomotion_GetRunSpeed(Address pThis, Handle hReturn, Handle 
 }
 
 public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
+	return MRES_Supercede; 
+}
+public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle hParams)			  
 { 
 	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
 	return MRES_Supercede; 
@@ -8286,7 +8319,16 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 {
 	int ref;
-	Handle hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+	
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+	}
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
 	if(ref < 0) //It hit nothing, good!
