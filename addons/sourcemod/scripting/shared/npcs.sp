@@ -820,8 +820,10 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 #endif
 
 
-void NPC_Ignite(int entity, int client, float duration, int weapon)
+void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 {
+	bool wasBurning = view_as<bool>(IgniteFor[entity]);
+
 	IgniteFor[entity] += RoundToCeil(duration*2.0);
 	if(IgniteFor[entity] > 20)
 		IgniteFor[entity] = 20;
@@ -829,25 +831,30 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	
 	float value = 8.0;
 	bool validWeapon = false;
 	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
 		validWeapon = true;
-		value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+		value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
 			
-		value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 	}
-			
-	if(value > BurnDamage[client]) //Dont override if damage is lower.
+
+	if(wasBurning && value > BurnDamage[entity]) //Dont override if damage is lower.
 	{
-		IgniteId[entity] = GetClientUserId(client);
+		BurnDamage[entity] = value;
+		IgniteId[entity] = EntIndexToEntRef(attacker);
+
 		if(validWeapon)
 		{
 			IgniteRef[entity] = EntIndexToEntRef(weapon);
+		}
+		else
+		{
+			IgniteRef[entity] = -1;
 		}
 	}
 }
@@ -859,22 +866,22 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	{
 		if(!b_NpcHasDied[entity])
 		{
-			int client = GetClientOfUserId(IgniteId[entity]);
-			if(client && IsClientInGame(client))
+			int attacker = EntRefToEntIndex(IgniteId[entity]);
+			if(attacker != INVALID_ENT_REFERENCE)
 			{
 				IgniteFor[entity]--;
 				
 				float pos[3], ang[3];
-				GetClientEyeAngles(client, ang);
+				GetClientEyeAngles(attacker, ang);
 				int weapon = EntRefToEntIndex(IgniteRef[entity]);
 				float value = 8.0;
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
 					
-					value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+					value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-					value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 				}
 				else
 				{
@@ -896,7 +903,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					BurnDamage[entity] = value;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
-				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 				
 				//Setting burn dmg to slash cus i want it to work with melee!!!
 				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.

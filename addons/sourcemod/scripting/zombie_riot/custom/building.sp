@@ -1139,7 +1139,7 @@ int Building_GetBuildingRepair(int entity)
 	return Building_Repair_Health[entity];
 }
 
-void Building_SetBuildingRepair(int entity, int health)
+stock void Building_SetBuildingRepair(int entity, int health)
 {
 	Building_Repair_Health[entity] = health;
 }

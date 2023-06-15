@@ -3,36 +3,32 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/soldier_paincrticialdeath01.mp3",
-	"vo/soldier_paincrticialdeath02.mp3",
-	"vo/soldier_paincrticialdeath03.mp3"
+	"vo/pyro_paincrticialdeath01.mp3",
+	"vo/pyro_paincrticialdeath02.mp3",
+	"vo/pyro_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/soldier_painsharp01.mp3",
-	"vo/soldier_painsharp02.mp3",
-	"vo/soldier_painsharp03.mp3",
-	"vo/soldier_painsharp04.mp3",
-	"vo/soldier_painsharp05.mp3",
-	"vo/soldier_painsharp06.mp3",
-	"vo/soldier_painsharp07.mp3",
-	"vo/soldier_painsharp08.mp3"
+	"vo/pyro_painsharp01.mp3",
+	"vo/pyro_painsharp02.mp3",
+	"vo/pyro_painsharp03.mp3",
+	"vo/pyro_painsharp04.mp3",
+	"vo/pyro_painsharp05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/soldier_taunts19.mp3",
-	"vo/taunts/soldier_taunts20.mp3",
-	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3"
+	"vo/taunts/pyro_taunts01.mp3",
+	"vo/taunts/pyro_taunts02.mp3",
+	"vo/taunts/pyro_taunts03.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/blade_slice_2.wav",
-	"weapons/blade_slice_3.wav",
-	"weapons/blade_slice_4.wav"
+	"weapons/axe_hit_flesh1.wav",
+	"weapons/axe_hit_flesh2.wav",
+	"weapons/axe_hit_flesh3.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
@@ -40,7 +36,7 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/machete_swing.wav"
 };
 
-methodmap SeabornSoldier < CClotBody
+methodmap SeabornPyro < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -67,9 +63,9 @@ methodmap SeabornSoldier < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornPyro(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
+		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -80,23 +76,24 @@ methodmap SeabornSoldier < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornSoldier_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SeabornPyro_ClotThink);
 		
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rift_fire_axe/c_rift_fire_axe.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/sbox2014_sole_mate/sbox2014_sole_mate.mdl");
 
 		return npc;
 	}
 }
 
-public void SeabornSoldier_ClotThink(int iNPC)
+public void SeabornPyro_ClotThink(int iNPC)
 {
-	SeabornSoldier npc = view_as<SeabornSoldier>(iNPC);
+	SeabornPyro npc = view_as<SeabornPyro>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -156,40 +153,20 @@ public void SeabornSoldier_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 22);
-
-						if(!NpcStats_IsEnemySilenced(npc.index) && !IsValidEnemy(npc.index, target))	// Killed target, spawn 3 copies
+						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-							SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-							
-							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
-
-							fl_Extra_Speed[npc.index] *= 1.25;
-							fl_Extra_Damage[npc.index] *= 1.1;
-
-							for(int i; i < 3; i++)
+							if(target > MaxClients)
 							{
-								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, ally);
-								if(entity > MaxClients)
-								{
-									if(!ally)
-										Zombies_Currently_Still_Ongoing += 3;
-									
-									SetEntProp(entity, Prop_Data, "m_iHealth", health);
-									SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-									
-									fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-									fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-									fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-									fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-								}
+								NPC_Ignite(target, npc.index, 5.0, -1);
+							}
+							else
+							{
+								TF2_AddCondition(target, TFCond_Gas, 1.5);
 							}
 						}
+						
+						npc.PlayMeleeHitSound();
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB);
 					}
 				}
 
@@ -221,14 +198,30 @@ public void SeabornSoldier_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornSoldier_NPCDeath(int entity)
+void SeabornPyro_NPCDeath(int entity)
 {
-	SeabornSoldier npc = view_as<SeabornSoldier>(entity);
+	SeabornPyro npc = view_as<SeabornPyro>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSoldier_ClotThink);
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		float startPosition[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
+		startPosition[2] += 45;
+
+		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
+
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(startPosition[0]);
+		pack_boom.WriteFloat(startPosition[1]);
+		pack_boom.WriteFloat(startPosition[2]);
+		pack_boom.WriteCell(1);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+	}
+	
+	SDKUnhook(npc.index, SDKHook_Think, SeabornPyro_ClotThink);
 }

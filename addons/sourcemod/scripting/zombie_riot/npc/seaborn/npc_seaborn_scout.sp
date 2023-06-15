@@ -88,8 +88,6 @@ methodmap SeabornScout < CClotBody
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		return npc;
 	}
