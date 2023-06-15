@@ -19,6 +19,8 @@ methodmap CitizenRunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 
+		npc.m_bDissapearOnDeath = true;
+
 		SDKHook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
 		
 		npc.m_flSpeed = 241.5;
@@ -45,7 +47,6 @@ public void CitizenRunner_ClotThink(int iNPC)
 
 	if(Waves_InSetup())
 	{
-		npc.m_bDissapearOnDeath = true;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);
 		return;
 	}
@@ -81,6 +82,8 @@ public void CitizenRunner_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
+
+		npc.SetActivity("ACT_COVER_LOW");
 	}
 }
 

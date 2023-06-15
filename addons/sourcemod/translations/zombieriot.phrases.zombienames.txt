@@ -1397,4 +1397,16 @@
 	{
 		"en"		"God Arkantos"
 	}
+	"Seaborn Scout"
+	{
+		"en"		"Seaborn Scout"
+	}
+	"Seaborn Soldier"
+	{
+		"en"		"Seaborn Soldier"
+	}
+	"Citizen"
+	{
+		"en"		"Citizen"
+	}
 }

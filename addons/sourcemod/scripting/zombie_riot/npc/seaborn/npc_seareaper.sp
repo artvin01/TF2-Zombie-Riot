@@ -99,7 +99,6 @@ methodmap SeaReaper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
 		SDKHook(npc.index, SDKHook_Think, SeaReaper_ClotThink);
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
@@ -130,14 +129,15 @@ public void SeaReaper_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
+		npc.m_blPlayHurtAnimation = false;
+
 		if(npc.Anger)
 		{
 			npc.PlayHurtSound();
-			npc.m_blPlayHurtAnimation = false;
 		}
 		else
 		{
-			if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") - 300) < GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+			if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") - 300) > GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 			{
 				npc.AddGesture("ACT_FASTZOMBIE_FRENZY");
 				npc.SetActivity("ACT_RUN");
