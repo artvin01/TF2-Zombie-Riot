@@ -5385,8 +5385,6 @@ public void Check_If_Stuck(int iNPC)
 							SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
 							TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 							npc.SetVelocity({ 0.0, 0.0, 0.0 });
-							SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
-	#if defined ZR
 							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GameTime)
 							{
 								bool wasactuallysawrunner = false;
@@ -5395,13 +5393,14 @@ public void Check_If_Stuck(int iNPC)
 									wasactuallysawrunner = true;
 								}
 								b_ThisNpcIsSawrunner[npc.index] = true;
+								SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
 								if(wasactuallysawrunner)
 								{
 									b_ThisNpcIsSawrunner[npc.index] = false;
 								}
 							}
 							f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GameTime + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
-	#endif
+							//make this work in rpg too.
 						}
 						else
 						{
