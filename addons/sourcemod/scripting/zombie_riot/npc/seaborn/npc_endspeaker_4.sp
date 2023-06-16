@@ -17,7 +17,7 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLIONGUARD_UNBURROW");
 		
-		npc.EatBuffs();
+		npc.EatBuffs(vecPos);
 		npc.PlaySpawnSound();
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

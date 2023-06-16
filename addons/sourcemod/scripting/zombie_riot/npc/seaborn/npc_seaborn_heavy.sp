@@ -3,44 +3,43 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/soldier_paincrticialdeath01.mp3",
-	"vo/soldier_paincrticialdeath02.mp3",
-	"vo/soldier_paincrticialdeath03.mp3"
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/soldier_painsharp01.mp3",
-	"vo/soldier_painsharp02.mp3",
-	"vo/soldier_painsharp03.mp3",
-	"vo/soldier_painsharp04.mp3",
-	"vo/soldier_painsharp05.mp3",
-	"vo/soldier_painsharp06.mp3",
-	"vo/soldier_painsharp07.mp3",
-	"vo/soldier_painsharp08.mp3"
+	"vo/heavy_painsharp01.mp3",
+	"vo/heavy_painsharp02.mp3",
+	"vo/heavy_painsharp03.mp3",
+	"vo/heavy_painsharp04.mp3",
+	"vo/heavy_painsharp05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/soldier_taunts19.mp3",
-	"vo/taunts/soldier_taunts20.mp3",
-	"vo/taunts/soldier_taunts21.mp3",
-	"vo/taunts/soldier_taunts18.mp3"
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
+	"vo/taunts/heavy_taunts19.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/blade_slice_2.wav",
-	"weapons/blade_slice_3.wav",
-	"weapons/blade_slice_4.wav"
+	"weapons/boxing_gloves_hit1.wav",
+	"weapons/boxing_gloves_hit2.wav",
+	"weapons/boxing_gloves_hit3.wav",
+	"weapons/boxing_gloves_hit4.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/machete_swing.wav"
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav"
 };
 
-methodmap SeabornSoldier < CClotBody
+methodmap SeabornHeavy < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -67,11 +66,11 @@ methodmap SeabornSoldier < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornHeavy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
+		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6000", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
+		i_NpcInternalId[npc.index] = SEABORN_HEAVY;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -80,25 +79,25 @@ methodmap SeabornSoldier < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornSoldier_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SeabornHeavy_ClotThink);
 		
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_flMeleeArmor = 0.9;
+		npc.m_flRangedArmor = 0.9;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl");
 
 		return npc;
 	}
 }
 
-public void SeabornSoldier_ClotThink(int iNPC)
+public void SeabornHeavy_ClotThink(int iNPC)
 {
-	SeabornSoldier npc = view_as<SeabornSoldier>(iNPC);
+	SeabornHeavy npc = view_as<SeabornHeavy>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -159,39 +158,8 @@ public void SeabornSoldier_ClotThink(int iNPC)
 					if(target > 0)
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 22);
-
-						if(!NpcStats_IsEnemySilenced(npc.index) && !IsValidEnemy(npc.index, target))	// Killed target, spawn 3 copies
-						{
-							int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-							SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-							
-							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
-
-							fl_Extra_Speed[npc.index] *= 1.25;
-							fl_Extra_Damage[npc.index] *= 1.1;
-
-							for(int i; i < 3; i++)
-							{
-								int entity = Npc_Create(SEABORN_SOLDIER, -1, pos, ang, ally);
-								if(entity > MaxClients)
-								{
-									if(!ally)
-										Zombies_Currently_Still_Ongoing += 3;
-									
-									SetEntProp(entity, Prop_Data, "m_iHealth", health);
-									SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-									
-									fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
-									fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-									fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-									fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
-								}
-							}
-						}
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
+						SeaSlider_AddNeuralDamage(target, npc.index, 10);
 					}
 				}
 
@@ -210,8 +178,8 @@ public void SeabornSoldier_ClotThink(int iNPC)
 
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.95;
+				npc.m_flAttackHappens = gameTime + 0.25;
+				npc.m_flNextMeleeAttack = gameTime + 0.45;
 			}
 		}
 	}
@@ -223,14 +191,45 @@ public void SeabornSoldier_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornSoldier_NPCDeath(int entity)
+void SeabornHeavy_OnTakeDamage(int victim, int attacker, int damagetype)
 {
-	SeabornSoldier npc = view_as<SeabornSoldier>(entity);
+	if(attacker > 0)
+	{
+		SeabornHeavy npc = view_as<SeabornHeavy>(victim);
+		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+
+			if(damagetype & DMG_CLUB)
+			{
+				npc.m_flMeleeArmor -= 0.05;
+				if(npc.m_flMeleeArmor < 0.05)
+					npc.m_flMeleeArmor = 0.05;
+				
+				npc.m_flRangedArmor += 0.05;
+				if(npc.m_flRangedArmor > 1.5)
+					npc.m_flRangedArmor = 1.5;
+			}
+			else if(!(damagetype & DMG_SLASH))
+			{
+				npc.m_flRangedArmor -= 0.05;
+				if(npc.m_flRangedArmor < 0.05)
+					npc.m_flRangedArmor = 0.05;
+				
+				npc.m_flMeleeArmor += 0.05;
+				if(npc.m_flMeleeArmor > 1.5)
+					npc.m_flMeleeArmor = 1.5;
+			}
+		}
+	}
+}
+
+void SeabornHeavy_NPCDeath(int entity)
+{
+	SeabornHeavy npc = view_as<SeabornHeavy>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSoldier_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, SeabornHeavy_ClotThink);
 }

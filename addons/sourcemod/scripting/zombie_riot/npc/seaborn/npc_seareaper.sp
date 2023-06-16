@@ -118,7 +118,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	SeaReaper npc = view_as<SeaReaper>(iNPC);
 	
 	if(npc.Anger)
-		SDKHooks_TakeDamage(npc.index, 0, 0, float(GetURandomInt() % 2) + 2.0, DMG_DROWN);
+		SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 9000.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

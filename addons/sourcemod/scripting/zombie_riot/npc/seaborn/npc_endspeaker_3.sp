@@ -17,7 +17,7 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLION_BURROW_OUT");
 		
-		npc.EatBuffs();
+		npc.EatBuffs(vecPos);
 		npc.PlaySpawnSound();
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
