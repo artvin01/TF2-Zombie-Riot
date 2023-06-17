@@ -159,7 +159,7 @@ methodmap CorruptedSpyMinion < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CorruptedSpyMinion_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CorruptedSpyMinion_ClotThink);
 		
 		//IDLE
@@ -330,16 +330,13 @@ public void CorruptedSpyMinion_ClotThink(int iNPC)
 	}
 }
 
-public Action CorruptedSpyMinion_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CorruptedSpyMinion_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	CorruptedSpyMinion npc = view_as<CorruptedSpyMinion>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-	/*
-	if(npc.m_flCannotBeHurt > GetGameTime())
-		return Plugin_Handled;
-	*/	
+		
 	if (npc.m_flHeadshotCooldown < GetGameTime())
 	{
 		npc.m_flHeadshotCooldown = GetGameTime() + DEFAULT_HURTDELAY;
@@ -389,6 +386,6 @@ public void CorruptedSpyMinion_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CorruptedSpyMinion_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CorruptedSpyMinion_ClotThink);
 }

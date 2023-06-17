@@ -243,7 +243,7 @@ methodmap FatherGrigori < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FatherGrigori_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
@@ -801,7 +801,7 @@ public void FatherGrigori_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FatherGrigori_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
 	if(IsValidEntity(npc.m_iWearable1))

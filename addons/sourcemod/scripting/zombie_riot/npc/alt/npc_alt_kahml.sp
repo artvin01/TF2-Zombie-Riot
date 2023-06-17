@@ -247,7 +247,7 @@ methodmap Kahmlstein < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Kahmlstein_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Kahmlstein_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
@@ -882,7 +882,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Kahmlstein_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Kahmlstein_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Kahmlstein npc = view_as<Kahmlstein>(victim);
 		
@@ -906,7 +906,7 @@ public void Kahmlstein_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Kahmlstein_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Kahmlstein_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))	//used for all weps

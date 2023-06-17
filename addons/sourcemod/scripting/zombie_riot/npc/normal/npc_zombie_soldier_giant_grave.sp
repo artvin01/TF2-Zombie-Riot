@@ -165,7 +165,7 @@ methodmap SoldierGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SoldierGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SoldierGiant_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SoldierGiant_ClotDamaged_Post);
 		
@@ -358,7 +358,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SoldierGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SoldierGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	SoldierGiant npc = view_as<SoldierGiant>(victim);
 		
@@ -412,7 +412,7 @@ public void SoldierGiant_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SoldierGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SoldierGiant_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SoldierGiant_ClotDamaged_Post);
 	

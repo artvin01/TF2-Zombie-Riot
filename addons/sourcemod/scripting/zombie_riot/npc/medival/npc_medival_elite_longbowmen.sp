@@ -172,7 +172,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalEliteLongbowmen_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalEliteLongbowmen_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -359,7 +359,7 @@ public void HandleAnimEventMedivalEliteLongbowmen(int entity, int event)
 	
 }
 
-public Action MedivalEliteLongbowmen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalEliteLongbowmen_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -386,7 +386,7 @@ public void MedivalEliteLongbowmen_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalEliteLongbowmen_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalEliteLongbowmen_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

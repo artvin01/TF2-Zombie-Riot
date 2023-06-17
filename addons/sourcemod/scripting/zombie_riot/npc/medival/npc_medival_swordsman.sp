@@ -186,7 +186,7 @@ methodmap MedivalSwordsman < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSwordsman_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalSwordsman_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -371,7 +371,7 @@ public void MedivalSwordsman_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedivalSwordsman_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSwordsman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -398,7 +398,7 @@ public void MedivalSwordsman_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSwordsman_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalSwordsman_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

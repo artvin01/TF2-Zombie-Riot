@@ -180,7 +180,7 @@ methodmap MedivalSamurai < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSamurai_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);
 		
@@ -396,7 +396,7 @@ public void MedivalSamurai_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedivalSamurai_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSamurai_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	MedivalSamurai npc = view_as<MedivalSamurai>(victim);
 		
@@ -436,7 +436,7 @@ public void MedivalSamurai_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSamurai_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);	
 	

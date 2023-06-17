@@ -947,6 +947,8 @@ void Waves_Progress()
 		}
 		else
 		{
+			SeaFounder_ClearnNethersea();
+			
 			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 			CurrentCash += round.Cash;
 			if(round.Cash)
@@ -1426,6 +1428,8 @@ void Waves_Progress()
 		}
 		else
 		{
+			SeaFounder_ClearnNethersea();
+
 			int postWaves = CurrentRound - length;
 			Freeplay_OnEndWave(postWaves, round.Cash);
 			CurrentCash += round.Cash;

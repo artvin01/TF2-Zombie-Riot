@@ -197,7 +197,7 @@ methodmap FastZombie < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FastZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FastZombie_FastZombieThink);
 		
 		//IDLE
@@ -363,29 +363,6 @@ public void FastZombie_FastZombieThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action FastZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	FastZombie npc = view_as<FastZombie>(victim);
-	
-	
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.PlayHurtSound();
-		
-	}
-	return Plugin_Changed;
-}
-
 public void FastZombie_NPCDeath(int entity)
 {
 	FastZombie npc = view_as<FastZombie>(entity);
@@ -393,7 +370,7 @@ public void FastZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FastZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FastZombie_FastZombieThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

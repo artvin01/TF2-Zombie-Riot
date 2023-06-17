@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
 #include <tf2_stocks>
 #include <sdkhooks>
 #include <collisionhook>
@@ -19,6 +18,7 @@
 #include <filenetwork>
 #endif
 #include <queue>
+
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
 #define CHAR_PARTEMPTY	"▒"
@@ -35,8 +35,8 @@
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
 #if defined ZR
-#define MAX_PLAYER_COUNT			12
-#define MAX_PLAYER_COUNT_STRING		"12"
+#define MAX_PLAYER_COUNT			16
+#define MAX_PLAYER_COUNT_STRING		"16"
 
 //This is for spectating
 #define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 16, rest is for killfeed bots
@@ -674,6 +674,7 @@ Handle g_hShouldCollideWithAllyEnemy;
 Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
 Handle g_hShouldCollideWithAllyIngoreBuilding;
 Handle g_hGetSolidMask;
+Handle g_hGetSolidMaskAlly;
 Handle g_hStartActivity;
 Handle g_hGetActivity;
 Handle g_hIsActivity;
@@ -919,6 +920,7 @@ float fl_AttackHappensMaximum[MAXENTITIES];
 bool b_AttackHappenswillhappen[MAXENTITIES];
 bool b_thisNpcIsABoss[MAXENTITIES];
 bool b_thisNpcIsARaid[MAXENTITIES]; //This is used for scaling.
+bool b_NoKnockbackFromSources[MAXENTITIES]; //This is used for scaling.
 bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
@@ -2208,6 +2210,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_HussarBuff[entity] = 0.0;
 		f_GodArkantosBuff[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
+		b_NoKnockbackFromSources[entity] = false;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
@@ -2531,6 +2534,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_BuildingHasDied[entity] = false;
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
+			b_NoKnockbackFromSources[entity] = true;
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)

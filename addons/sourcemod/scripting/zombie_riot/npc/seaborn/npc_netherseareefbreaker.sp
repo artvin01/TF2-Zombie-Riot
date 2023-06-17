@@ -84,7 +84,7 @@ methodmap SeaReefbreaker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaReefbreaker_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
 		
 		npc.m_flSpeed = 300.0;	// 1.2 x 250
@@ -353,7 +353,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaReefbreaker_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaReefbreaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -381,7 +381,7 @@ void SeaReefbreaker_NPCDeath(int entity)
 		Remains_SpawnDrop(pos, Buff_Reefbreaker);
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaReefbreaker_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

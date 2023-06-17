@@ -2162,4 +2162,8 @@
 		"en"	"Preaching Sword"
 		"chi"   "传道之剑"
 	}
+	"Ranged Lego Layer"
+	{
+		"en"	"Ranged Lego Layer"
+	}
 }

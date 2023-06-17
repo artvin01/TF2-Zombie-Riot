@@ -78,7 +78,7 @@ methodmap SeaRunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaRunner_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 		
 		npc.m_flSpeed = 330.0;	// 1.9 x 250
@@ -196,7 +196,7 @@ public void SeaRunner_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaRunner_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaRunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -216,7 +216,7 @@ void SeaRunner_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaRunner_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 }
 

@@ -164,7 +164,7 @@ methodmap XenoSoldierGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSoldierGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSoldierGiant_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoSoldierGiant_ClotDamagedPost);
 		
@@ -363,7 +363,7 @@ public void XenoSoldierGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoSoldierGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSoldierGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoSoldierGiant npc = view_as<XenoSoldierGiant>(victim);
 		
@@ -415,7 +415,7 @@ public void XenoSoldierGiant_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSoldierGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSoldierGiant_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoSoldierGiant_ClotDamagedPost);
 	if(IsValidEntity(npc.m_iWearable1))

@@ -1136,12 +1136,38 @@ public Action Building_Set_HP_Elevator(Handle dashHud, int ref)
 
 int Building_GetBuildingRepair(int entity)
 {
-	return Building_Repair_Health[entity];
+	return Building_cannot_be_repaired[entity] ? 0 : Building_Repair_Health[entity];
 }
 
 void Building_SetBuildingRepair(int entity, int health)
 {
-	Building_Repair_Health[entity] = health;
+	if(!Building_cannot_be_repaired[entity])
+	{
+		int damage = Building_Repair_Health[entity] - health;
+		Building_Repair_Health[entity] = health;
+
+		if(Building_Repair_Health[entity] > 0)
+		{
+			int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+			progress += 1; //so it goes to 100 :)
+			if(progress > 100)
+			{
+				progress = 100;
+			}
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
+		}
+		else
+		{
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+			Building_cannot_be_repaired[entity] = true;
+		}
+
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(IsValidClient(client))
+		{
+			i_BarricadeHasBeenDamaged[client] += damage;
+		}
+	}
 }
 
 public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
@@ -1376,7 +1402,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 							}
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;
-							h_Pickup_Building[client] = CreateDataTimer(1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+							h_Pickup_Building[client] = CreateDataTimer(b_ThisEntityIgnored[entity] ? 0.0 : 1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
 							pack.WriteCell(client);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(GetClientUserId(client));

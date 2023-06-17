@@ -327,7 +327,7 @@ methodmap BootyExecutioner < CClotBody
 				fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 			}
 		}
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BootyExecutioner_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, BootyExecutioner_ClotThink);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -775,7 +775,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action BootyExecutioner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BootyExecutioner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	BootyExecutioner npc = view_as<BootyExecutioner>(victim);
 	
@@ -811,7 +811,7 @@ public void BootyExecutioner_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BootyExecutioner_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, BootyExecutioner_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

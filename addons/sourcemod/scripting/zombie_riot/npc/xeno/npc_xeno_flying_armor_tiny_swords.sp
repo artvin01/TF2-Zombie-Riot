@@ -195,7 +195,7 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFlyingArmorTiny_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoFlyingArmorTiny_ClotThink);
 		
 
@@ -382,21 +382,14 @@ public void XenoFlyingArmorTiny_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoFlyingArmorTiny_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoFlyingArmorTiny_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	XenoFlyingArmorTiny npc = view_as<XenoFlyingArmorTiny>(victim);
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	/*
-	if(npc.m_flCannotBeHurt > GetGameTime(npc.index))
-		return Plugin_Handled;
-	*/
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -414,7 +407,7 @@ public void XenoFlyingArmorTiny_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFlyingArmorTiny_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoFlyingArmorTiny_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

@@ -461,7 +461,7 @@ methodmap Bloon < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bloon_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bloon_ClotThink);
 		
@@ -603,7 +603,7 @@ public void Bloon_ClotThink(int iNPC)
 	}
 }
 
-public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -703,7 +703,7 @@ public void Bloon_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bloon_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Bloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;

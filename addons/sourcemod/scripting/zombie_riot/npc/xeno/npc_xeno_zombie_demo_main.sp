@@ -100,7 +100,7 @@ methodmap XenoDemoMain < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoDemoMain_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoDemoMain_ClotThink);				
 		
 		
@@ -300,7 +300,7 @@ public void XenoDemoMain_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoDemoMain_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoDemoMain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -320,7 +320,7 @@ public void XenoDemoMain_NPCDeath(int entity)
 {
 	XenoDemoMain npc = view_as<XenoDemoMain>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoDemoMain_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoDemoMain_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))

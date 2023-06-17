@@ -164,7 +164,7 @@ methodmap CombinePrime < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		npc.m_bCanIMove = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombinePrime_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombinePrime_ClotThink);
 	
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -387,7 +387,7 @@ public void CombinePrime_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CombinePrime_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombinePrime_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -416,7 +416,7 @@ public void CombinePrime_NPCDeath(int entity)
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombinePrime_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombinePrime_ClotThink);
 	
 	Citizen_MiniBossDeath(entity);

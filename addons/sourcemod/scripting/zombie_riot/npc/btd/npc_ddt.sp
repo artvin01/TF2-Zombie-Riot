@@ -150,7 +150,7 @@ methodmap DDT < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, DDT_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, DDT_ClotThink);
 		
@@ -283,7 +283,7 @@ public void DDT_ClotThink(int iNPC)
 	}
 }
 
-public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -325,7 +325,7 @@ public void DDT_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, DDT_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, DDT_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");

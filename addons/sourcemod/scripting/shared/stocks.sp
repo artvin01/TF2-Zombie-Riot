@@ -2748,10 +2748,8 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 {
 
 	float damage_reduction = 1.0;
-	bool weapon_valid = false;
 	if(IsValidEntity(weapon))
 	{
-		weapon_valid = true;
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
@@ -2910,9 +2908,16 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 					return;
 				}
 			}
-			if(client && weapon_valid && ignite)
+			if(ignite)
 			{
-				NPC_Ignite(ClosestTarget, client, 5.0, weapon);
+				if(ClosestTarget > MaxClients)
+				{
+					NPC_Ignite(ClosestTarget, entityToEvaluateFrom, 5.0, weapon);
+				}
+				else
+				{
+					TF2_AddCondition(ClosestTarget, TFCond_Gas, 1.5);
+				}
 			}
 			static float damage_1;
 			damage_1 = damage;

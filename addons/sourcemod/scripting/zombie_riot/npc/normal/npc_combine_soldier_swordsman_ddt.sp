@@ -185,7 +185,7 @@ methodmap CombineDDT < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineDDT_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineDDT_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -358,7 +358,7 @@ public void CombineDDT_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CombineDDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombineDDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -387,7 +387,7 @@ public void CombineDDT_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineDDT_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineDDT_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

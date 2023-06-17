@@ -193,7 +193,7 @@ methodmap CombineSoldierAr2 < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSoldierAr2_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineSoldierAr2_ClotThink);
 		
 		if(EscapeModeForNpc)
@@ -505,7 +505,7 @@ public void CombineSoldierAr2_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineSoldierAr2_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierAr2_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

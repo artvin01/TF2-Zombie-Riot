@@ -147,7 +147,7 @@ methodmap Soldier < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Soldier_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Soldier_ClotThink);
 		
 		//IDLE
@@ -299,7 +299,7 @@ public void Soldier_ClotThink(int iNPC)
 }
 
 
-public Action Soldier_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Soldier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Soldier npc = view_as<Soldier>(victim);
 		
@@ -323,7 +323,7 @@ public void Soldier_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Soldier_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Soldier_ClotThink);
 		
 	

@@ -287,7 +287,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CorruptedSpyRaid_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CorruptedSpyRaid_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, CorruptedSpyRaid_ClotDamaged_Post);
 		
@@ -688,7 +688,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 }
 
 
-public Action CorruptedSpyRaid_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CorruptedSpyRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -854,7 +854,7 @@ public void CorruptedSpyRaid_NPCDeath(int entity)
 	
 	Music_Stop_All_Cspy(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CorruptedSpyRaid_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CorruptedSpyRaid_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, CorruptedSpyRaid_ClotDamaged_Post);
 	if(IsValidEntity(npc.m_iWearable1))

@@ -208,7 +208,7 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoCombineOverlord_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 		
 		npc.m_bDissapearOnDeath = true;
@@ -589,7 +589,7 @@ public Action XenoCombineOverlord_Timer_Combo_Attack(Handle Debuff_lightning_hud
 	return Plugin_Stop;
 }
 
-public Action XenoCombineOverlord_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoCombineOverlord_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -655,7 +655,7 @@ public void XenoCombineOverlord_NPCDeath(int entity)
 
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoCombineOverlord_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoCombineOverlord_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

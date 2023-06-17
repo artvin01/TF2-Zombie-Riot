@@ -192,7 +192,7 @@ methodmap XenoCombineCollos < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoCombineCollos_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoCombineCollos_ClotThink);
 
 		npc.m_iState = 0;
@@ -440,7 +440,7 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoCombineCollos_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoCombineCollos_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -470,7 +470,7 @@ public void XenoCombineCollos_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoCombineCollos_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoCombineCollos_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))

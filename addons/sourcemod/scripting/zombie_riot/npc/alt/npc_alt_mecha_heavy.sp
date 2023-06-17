@@ -151,7 +151,7 @@ methodmap Mecha_Heavy < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Mecha_Heavy_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Mecha_Heavy_ClotThink);		
 		
 
@@ -310,7 +310,7 @@ public void Mecha_Heavy_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Mecha_Heavy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Mecha_Heavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Mecha_Heavy npc = view_as<Mecha_Heavy>(victim);
 		
@@ -334,7 +334,7 @@ public void Mecha_Heavy_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Mecha_Heavy_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Mecha_Heavy_ClotThink);	
 }
 

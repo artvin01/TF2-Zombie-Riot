@@ -143,10 +143,10 @@ methodmap XenoSpy < CClotBody
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;		
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSpy_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSpy_ClotThink);		
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -322,7 +322,7 @@ public void XenoSpy_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoSpy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSpy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoSpy npc = view_as<XenoSpy>(victim);
 		
@@ -346,7 +346,7 @@ public void XenoSpy_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSpy_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSpy_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable2))

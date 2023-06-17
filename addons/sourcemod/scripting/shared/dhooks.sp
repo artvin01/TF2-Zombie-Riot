@@ -26,6 +26,7 @@ static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
+static int TeamBeforeChange;											//dont move buildings	
 
 static bool b_LagCompNPC;
 
@@ -933,6 +934,7 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_BlockInteral = false;
 	b_LagCompNPC_OnlyAllies = false;
 }
+
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
@@ -948,7 +950,9 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = false;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
+		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
+		
 		return MRES_Ignored;
 	}
 	
@@ -1020,7 +1024,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	}
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Red)); //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TeamBeforeChange)); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	} 
 	return MRES_Ignored;

@@ -155,7 +155,7 @@ methodmap HeadcrabZombie < CClotBody
 			npc.m_flSpeed = 200.0;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeadcrabZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, HeadcrabZombie_ClotThink);
 		
 		
@@ -306,24 +306,6 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-
-public Action HeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-
-	HeadcrabZombie npc = view_as<HeadcrabZombie>(victim);
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-//	
-	return Plugin_Changed;
-}
-
 public void HeadcrabZombie_NPCDeath(int entity)
 {
 	HeadcrabZombie npc = view_as<HeadcrabZombie>(entity);
@@ -331,7 +313,6 @@ public void HeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, HeadcrabZombie_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, HeadcrabZombie_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

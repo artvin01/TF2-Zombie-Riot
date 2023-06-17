@@ -234,7 +234,7 @@ methodmap BobTheGod < CClotBody
 		npc.m_bThisEntityIgnored = true;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BobTheGod_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, BobTheGod_ClotThink);
 		
 		SDKHook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
@@ -1816,11 +1816,13 @@ public Action BobTheGod_Owner_Hurt(int victim, int &attacker, int &inflictor, fl
 }
 
 
-public Action BobTheGod_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BobTheGod_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if (damage < 9999999.0)	//So they can be slayed.
+	{
+		damage = 0.0;
 		return Plugin_Handled;
-		
+	}
 	else
 		return Plugin_Continue;
 }
@@ -1835,7 +1837,7 @@ public void BobTheGod_NPCDeath(int entity)
 	//	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 		SDKUnhook(client, SDKHook_OnTakeDamageAlive, BobTheGod_Owner_Hurt);
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BobTheGod_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, BobTheGod_ClotThink);
 	PF_StopPathing(npc.index);
 	npc.m_bPathing = false;

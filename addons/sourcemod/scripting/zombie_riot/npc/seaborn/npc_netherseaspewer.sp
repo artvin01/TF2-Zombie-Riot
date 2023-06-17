@@ -73,7 +73,7 @@ methodmap SeaSpewer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSpewer_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaSpewer_ClotThink);
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
@@ -325,7 +325,7 @@ static void AddToList(int data, int &pos, int[] list, int count)
 	}
 }
 
-public Action SeaSpewer_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaSpewer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -353,7 +353,7 @@ void SeaSpewer_NPCDeath(int entity)
 		Remains_SpawnDrop(pos, Buff_Spewer);
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSpewer_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaSpewer_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

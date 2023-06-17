@@ -84,7 +84,7 @@ methodmap SeaSlider < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 		
 		npc.m_flSpeed = 250.0;	// 1.1 x 250
@@ -206,7 +206,7 @@ public void SeaSlider_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaSlider_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaSlider_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -226,40 +226,71 @@ void SeaSlider_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaSlider_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 }
 
 void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage, bool sound = true)
 {
-	if(victim > MaxClients)
+	if(victim <= MaxClients)
 	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health > 0)
+		if(Armor_Charge[victim] < 1 && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
 		{
-			health -= damage * 5;
-			if(health < 0)
-				health = 0;
+			Armor_Charge[victim] -= damage;
+			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+			{
+				Armor_Charge[victim] = 0;
+
+				TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+
+				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+				b_ThisNpcIsSawrunner[attacker] = true;
+				SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+				b_ThisNpcIsSawrunner[attacker] = sawrunner;
+			}
 			
-			Building_SetBuildingRepair(victim, health);
+			if(sound || !Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 		}
 	}
-	else if(Armor_Charge[victim] < 1 && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
+	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		Armor_Charge[victim] -= damage;
-		if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+		if(i_NpcInternalId[victim] == CITIZEN)	// Rebels
 		{
-			Armor_Charge[victim] = 0;
+			Citizen npc = view_as<Citizen>(victim);
+			
+			npc.m_iArmorErosion += damage * 50;
+			if(npc.m_iArmorErosion > npc.m_iGunValue)
+			{
+				npc.m_iArmorErosion = 0;
 
-			TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+				FreezeNpcInTime(victim, 5.0);
 
-			bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-			b_ThisNpcIsSawrunner[attacker] = true;
-			SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-			b_ThisNpcIsSawrunner[attacker] = sawrunner;
+				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+				b_ThisNpcIsSawrunner[attacker] = true;
+				SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+				b_ThisNpcIsSawrunner[attacker] = sawrunner;
+			}
 		}
-		
-		if(sound || !Armor_Charge[victim])
-			ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
+		else if(view_as<BarrackBody>(victim).OwnerUserId)	// Barracks Unit
+		{
+			int health = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+			if(health > 0)
+			{
+				health -= damage;
+				if(health < 1)
+					health = 1;
+				
+				SetEntProp(victim, Prop_Data, "m_iMaxHealth", health);
+			}
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		int health = Building_GetBuildingRepair(victim);
+		if(health < 1)
+		{
+			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+		}
 	}
 }

@@ -183,7 +183,7 @@ methodmap AltCombineMage < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, AltCombineMage_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, AltCombineMage_ClotThink);
 		
 		npc.m_fbGunout = false;
@@ -435,7 +435,7 @@ public void AltCombineMage_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, AltCombineMage_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, AltCombineMage_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))

@@ -174,7 +174,7 @@ methodmap Payday_Cloaker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Payday_Cloaker_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Payday_Cloaker_ClotThink);
 		
 		//IDLE
@@ -475,7 +475,7 @@ public void Payday_Cloaker_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Payday_Cloaker_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Payday_Cloaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Payday_Cloaker npc = view_as<Payday_Cloaker>(victim);
 	
@@ -502,7 +502,7 @@ public void Payday_Cloaker_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Payday_Cloaker_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Payday_Cloaker_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

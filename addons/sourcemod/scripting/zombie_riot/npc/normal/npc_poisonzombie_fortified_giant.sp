@@ -141,7 +141,7 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedGiantPoisonZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FortifiedGiantPoisonZombie_ClotThink);		
 		
 		//IDLE
@@ -339,7 +339,7 @@ public void FortifiedGiantPoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FortifiedGiantPoisonZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FortifiedGiantPoisonZombie_ClotThink);		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

@@ -145,7 +145,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FortifiedHeadcrabZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
 		//IDLE
 		npc.m_flSpeed = 140.0;
@@ -303,23 +303,6 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-
-public Action FortifiedHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	//Valid attackers only.
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
-	FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(victim);
-	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	return Plugin_Changed;
-}
-
 public void FortifiedHeadcrabZombie_NPCDeath(int entity)
 {
 	FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(entity);
@@ -327,7 +310,6 @@ public void FortifiedHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FortifiedHeadcrabZombie_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, FortifiedHeadcrabZombie_ClotThink);
 	
 }

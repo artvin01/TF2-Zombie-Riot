@@ -185,7 +185,7 @@ methodmap Ikunagae < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Ikunagae_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Ikunagae_ClotThink);				
 		
 		
@@ -486,7 +486,7 @@ public void Ikunagae_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Ikunagae_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Ikunagae_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -511,7 +511,7 @@ public void Ikunagae_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_Think, Scaramouche_TBB_Tick);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Ikunagae_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Ikunagae_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))

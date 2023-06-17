@@ -255,7 +255,7 @@ methodmap Vader < CClotBody
 		
 		npc.m_flPlayMusicSound = 0.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Vader_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Vader_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Vader_ClotDamaged_Post);
 
@@ -519,7 +519,7 @@ public void Vader_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Vader_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Vader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -587,7 +587,7 @@ public void Vader_NPCDeath(int entity)
 	
 	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Vader_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Vader_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Vader_ClotDamaged_Post);
 	RaidBossActive = INVALID_ENT_REFERENCE;

@@ -75,7 +75,7 @@ methodmap SeaFounder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaFounder_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
 		
 		npc.m_flSpeed = 250.0;	// 1.0 x 250
@@ -221,7 +221,7 @@ public void SeaFounder_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaFounder_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaFounder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -250,7 +250,7 @@ void SeaFounder_NPCDeath(int entity)
 	if(i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER)
 		Remains_SpawnDrop(pos, Buff_Founder);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaFounder_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
@@ -273,6 +273,11 @@ static int SpreadTicks;
 bool SeaFounder_TouchingNethersea(int entity)
 {
 	return NervousTouching[entity] > GetGameTime();
+}
+
+void SeaFounder_ClearnNethersea()
+{
+	delete NavList;
 }
 
 void SeaFounder_SpawnNethersea(const float pos[3])
@@ -329,7 +334,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > 14)
+	if(++SpreadTicks > 4)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -561,7 +566,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	NervousTouching[0] = GetGameTime() + 1.0;
+	NervousTouching[0] = GetGameTime() + 0.5;
 	
 	float pos[3];
 

@@ -295,7 +295,7 @@ methodmap Pablo_Gonzales < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Pablo_Gonzales_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Pablo_Gonzales_ClotDamaged_Post);
 		SDKHook(npc.index, SDKHook_Think, Pablo_Gonzales_ClotThink);
 		
@@ -961,7 +961,7 @@ public void Pablo_Gonzales_ClotDamaged_Post(int iNPC, int attacker, int inflicto
 	}*/
 }
 
-public Action Pablo_Gonzales_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Pablo_Gonzales_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Pablo_Gonzales npc = view_as<Pablo_Gonzales>(victim);
 		
@@ -995,7 +995,7 @@ public void Pablo_Gonzales_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Pablo_Gonzales_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Pablo_Gonzales_ClotDamaged_Post);
 	SDKUnhook(npc.index, SDKHook_Think, Pablo_Gonzales_ClotThink);
 	

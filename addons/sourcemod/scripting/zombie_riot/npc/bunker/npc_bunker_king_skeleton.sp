@@ -169,7 +169,7 @@ methodmap BunkerSkeletonKing < CClotBody
 		//SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		//SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerSkeletonKing_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerSkeletonKing_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BunkerSkeletonKing_ClotDamaged_Post);
 		
@@ -431,7 +431,6 @@ public void BunkerSkeletonKing_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BunkerSkeletonKing_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_OnTakeDamagePost, BunkerSkeletonKing_ClotDamaged_Post);
 	SDKUnhook(entity, SDKHook_Think, BunkerSkeletonKing_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))

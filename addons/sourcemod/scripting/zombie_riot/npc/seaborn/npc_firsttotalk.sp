@@ -75,7 +75,7 @@ methodmap FirstToTalk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FirstToTalk_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
 		
 		npc.m_flSpeed = 200.0;	// 0.8 x 250
@@ -356,7 +356,7 @@ public bool FirstToTalk_EnumerateEntitiesInRange(int victim, int attacker)
 	return true;
 }
 
-public Action FirstToTalk_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FirstToTalk_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -374,7 +374,7 @@ void FirstToTalk_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FirstToTalk_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

@@ -205,7 +205,7 @@ methodmap MedivalBuilding < CClotBody
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalBuilding_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 
 		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
@@ -286,7 +286,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			//emercency stop. 
 			float IncreaceSpawnRates = 6.5;
 
-			IncreaceSpawnRates *= (1.0 - ((f_PlayerScalingBuilding - 1.0) * 7.0 / 110.0));
+			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
 			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
 			{
@@ -296,6 +296,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				AproxRandomSpaceToWalkTo[2] += 10.0;
 
 				int EnemyToSpawn = MEDIVAL_MILITIA;
+				bool Construct = false;
 
 				if(b_IsAlliedNpc[iNPC])
 				{
@@ -347,7 +348,8 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				else if(i_currentwave[iNPC] >= 60)
 				{
 					EnemyToSpawn = MEDIVAL_CONSTRUCT;
-					IncreaceSpawnRates *= 0.15; //Swarm.
+					IncreaceSpawnRates *= 0.70; //Swarm.
+					Construct = true;
 				}
 
 				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
@@ -363,7 +365,13 @@ public void MedivalBuilding_ClotThink(int iNPC)
 					{
 						AllyIsBoundToVillage[spawn_index] = true;
 					}
-				}
+					if(Construct)
+					{
+						SetEntProp(spawn_index, Prop_Data, "m_iHealth", 55000);
+						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 55000);
+						fl_Extra_Damage[spawn_index] = 1.35;
+					}
+				}	
 			}
 			else
 			{
@@ -477,7 +485,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	}
 }
 
-public Action MedivalBuilding_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalBuilding_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -501,7 +509,7 @@ public void MedivalBuilding_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalBuilding_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -877,6 +877,7 @@ static float TalkTurnPos[MAXENTITIES][3];
 static float TalkTurningFor[MAXENTITIES];
 static float HealingCooldown[MAXENTITIES];
 static bool IgnorePlayer[MAXTF2PLAYERS];
+static int ArmorErosion[MAXENTITIES];
 
 methodmap Citizen < CClotBody
 {
@@ -919,7 +920,7 @@ methodmap Citizen < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
 		
 		int glow = npc.m_iTeamGlow;
@@ -943,6 +944,7 @@ methodmap Citizen < CClotBody
 		npc.m_bSeakingMedic = false;
 		npc.m_bSeakingGeneric = false;
 		npc.m_iHasPerk = Cit_None;
+		npc.m_iArmorErosion = 0;
 		GunBonusFireRate[npc.index] = 1.0;
 		GunBonusReload[npc.index] = 1.0;
 		
@@ -1077,6 +1079,11 @@ methodmap Citizen < CClotBody
 	{
 		public get()		{ return HasPerk[this.index]; }
 		public set(int value) 	{ HasPerk[this.index] = value; }
+	}
+	property int m_iArmorErosion
+	{
+		public get()		{ return ArmorErosion[this.index]; }
+		public set(int value) 	{ ArmorErosion[this.index] = value; }
 	}
 	property float m_flSpeed
 	{
@@ -2577,7 +2584,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_sentrygun")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
@@ -2623,6 +2630,77 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
 			walkStatus = 5;	// Run to ally (activity handled)
+			npc.m_iHasPerk = npc.m_iGunType;
+		}
+	}
+
+	if(!walkStatus && npc.m_bGetClosestTargetTimeAlly && npc.m_iArmorErosion > 0)
+	{
+		distance = 100000000.0;
+		int entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+		{
+			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
+			{
+				vecTarget = WorldSpaceCenter(entity);
+				float dist = GetVectorDistance(vecTarget, vecMe, true);
+				if(dist < distance)
+				{
+					distance = dist;
+					npc.m_iTargetAlly = entity;
+					npc.m_bSeakingGeneric = true;
+				}
+			}
+		}
+		
+		entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		{
+			if(HealingCooldown[entity] < gameTime)
+			{
+				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(!StrContains(buffer, "zr_armortable"))
+				{
+					vecTarget = WorldSpaceCenter(entity);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						npc.m_iTargetAlly = entity;
+						npc.m_bSeakingGeneric = true;
+					}
+				}
+			}
+		}
+		
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
+			{
+				entity = EntRefToEntIndex(Building_Mounted[client]);
+				if(IsValidEntity(entity))
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+					if(!StrContains(buffer, "zr_armortable"))
+					{
+						vecTarget = WorldSpaceCenter(client);
+						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						if(dist < distance)
+						{
+							distance = dist;
+							npc.m_iTargetAlly = client;
+							npc.m_bSeakingGeneric = true;
+						}
+					}
+				}
+			}
+		}
+
+		if(npc.m_bSeakingGeneric)
+		{
+			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			walkStatus = 5;	// Run to ally (activity handled)
+			npc.m_iArmorErosion = 0;
 		}
 	}
 
@@ -2752,6 +2830,7 @@ public void Citizen_ClotThink(int iNPC)
 		case 4:	// Walk up to our ally
 		{
 			npc.m_bAllowBackWalking = false;
+			npc.m_flidle_talk = FAR_FUTURE;
 
 			switch(npc.m_iGunType)
 			{
@@ -3150,77 +3229,81 @@ static bool RunFromNPC(int entity)
 		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_movedelay[entity]));
 }
 
-public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(damage > 9999999.0)
-		return Plugin_Continue;
-	
-	Citizen npc = view_as<Citizen>(victim);
-	if(npc.m_nDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
-		return Plugin_Handled;
-	
-	if(npc.m_iGunValue > 10000)
+	if(damage < 9999999.0)
 	{
-		damage *= 0.75;
-	}
-	else if(npc.m_iGunValue > 7500)
-	{
-		damage *= 0.8;
-	}
-	else if(npc.m_iGunValue > 5000)
-	{
-		damage *= 0.85;
-	}
-	else if(npc.m_iGunValue > 2500)
-	{
-		damage *= 0.9;
-	}
-	
-	if(npc.m_iGunType == Cit_Melee)
-	{
-		damage *= 0.8;
-		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		Citizen npc = view_as<Citizen>(victim);
+		if(npc.m_nDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		{
-			if(npc.m_iGunValue > 10000)
+			damage = 0.0;
+		}
+		else
+		{
+			int value = npc.m_iGunValue - npc.m_iArmorErosion;
+			if(value > 10000)
 			{
-				damage *= 0.65;
+				damage *= 0.75;
 			}
-			else if(npc.m_iGunValue > 7500)
-			{
-				damage *= 0.7;
-			}
-			else if(npc.m_iGunValue > 5000)
+			else if(value > 7500)
 			{
 				damage *= 0.8;
 			}
-			else if(npc.m_iGunValue > 2500)
+			else if(value > 5000)
+			{
+				damage *= 0.85;
+			}
+			else if(value > 2500)
 			{
 				damage *= 0.9;
 			}
+			
+			if(npc.m_iGunType == Cit_Melee)
+			{
+				damage *= 0.8;
+				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				{
+					if(npc.m_iGunValue > 10000)
+					{
+						damage *= 0.65;
+					}
+					else if(npc.m_iGunValue > 7500)
+					{
+						damage *= 0.7;
+					}
+					else if(npc.m_iGunValue > 5000)
+					{
+						damage *= 0.8;
+					}
+					else if(npc.m_iGunValue > 2500)
+					{
+						damage *= 0.9;
+					}
+				}
+			}
+
+			if(npc.m_iHasPerk == Cit_Melee) //overall abit more.
+				damage *= 0.9;
+
+			int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
+			if(health < 1)
+			{
+				npc.SetDowned(1);
+				damage = 0.0;
+			}
+			else
+			{
+				npc.PlaySound(Cit_Hurt);
+			}
 		}
 	}
-
-	if(npc.m_iHasPerk == Cit_Melee) //overall abit more.
-		damage *= 0.9;
-
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage);
-	if(health < 1)
-	{
-		npc.SetDowned(1);
-	}
-	else
-	{
-		SetEntProp(victim, Prop_Data, "m_iHealth", health);
-		npc.PlaySound(Cit_Hurt);
-	}
-	return Plugin_Handled;
 }
 
 public void Citizen_NPCDeath(int entity)
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
 	PF_StopPathing(npc.index);

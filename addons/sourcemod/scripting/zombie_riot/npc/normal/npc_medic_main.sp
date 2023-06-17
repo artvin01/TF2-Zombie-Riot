@@ -125,7 +125,7 @@ methodmap MedicMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedicMain_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedicMain_ClotThink);
 			
 		
@@ -300,7 +300,7 @@ public void MedicMain_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedicMain_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedicMain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	MedicMain npc = view_as<MedicMain>(victim);
 		
@@ -324,7 +324,7 @@ public void MedicMain_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedicMain_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedicMain_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

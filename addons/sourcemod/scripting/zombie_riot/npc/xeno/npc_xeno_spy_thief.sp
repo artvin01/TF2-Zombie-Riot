@@ -151,7 +151,7 @@ methodmap XenoSpyThief < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoSpyThief_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoSpyThief_ClotThink);	
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -345,7 +345,7 @@ public void XenoSpyThief_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoSpyThief_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoSpyThief_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoSpyThief npc = view_as<XenoSpyThief>(victim);
 		
@@ -370,7 +370,7 @@ public void XenoSpyThief_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoSpyThief_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoSpyThief_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable1))

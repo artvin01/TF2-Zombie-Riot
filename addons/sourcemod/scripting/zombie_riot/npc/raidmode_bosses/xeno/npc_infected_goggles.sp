@@ -193,7 +193,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, RaidbossBlueGoggles_ClotDamaged);
+		
 
 		/*
 			Cosmetics
@@ -247,7 +247,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0);
+		npc.m_flPiggyCooldown = FAR_FUTURE;//GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0);
 		npc.m_flPiggyFor = 0.0;
 		npc.m_flMeleeArmor = 1.25;
 
@@ -570,22 +570,26 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 									
 									npc.PlayMeleeHitSound();
 									
-									if(target > MaxClients)
+									bool Knocked = false;
+									
+									if(IsValidClient(target))
 									{
-
+										if (IsInvuln(target))
+										{
+											Knocked = true;
+											Custom_Knockback(npc.index, target, 750.0, true);
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
+										else
+										{
+											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+										}
 									}
-									else if(IsInvuln(target))
-									{
-										Custom_Knockback(npc.index, target, 750.0, true, true);
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
-									else
-									{
-										Custom_Knockback(npc.index, target, 400.0, _, true); 
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
+									
+									if(!Knocked)
+										Custom_Knockback(npc.index, target, 550.0); 
 
 									npc.m_flSwitchCooldown = 0.0;
 								} 
@@ -793,7 +797,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 }
 
 	
-public Action RaidbossBlueGoggles_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -836,7 +840,7 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, RaidbossBlueGoggles_ClotDamaged);
+	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
 	//add 2 seconds so if its close, they dont lose to timer.

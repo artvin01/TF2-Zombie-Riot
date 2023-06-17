@@ -168,7 +168,7 @@ methodmap MedivalHandCannoneer < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalHandCannoneer_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -335,7 +335,7 @@ public void HandleAnimEventMedival_HandCannoneer(int entity, int event)
 	
 }
 
-public Action MedivalHandCannoneer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalHandCannoneer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -362,7 +362,7 @@ public void MedivalHandCannoneer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalHandCannoneer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalHandCannoneer_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -138,7 +138,7 @@ methodmap PoisonZombie < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, PoisonZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -338,7 +338,7 @@ public void PoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, PoisonZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");

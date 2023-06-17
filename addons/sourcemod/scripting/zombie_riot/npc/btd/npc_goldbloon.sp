@@ -179,7 +179,7 @@ methodmap GoldBloon < CClotBody
 			npc.m_iSprite = sprite;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, GoldBloon_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, GoldBloon_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -280,7 +280,7 @@ public void GoldBloon_ClotThink(int iNPC)
 	}
 }
 
-public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GoldBloon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(damage < (9 + (LastGoldBloon * 2)))
 		return Plugin_Handled;
@@ -395,7 +395,7 @@ public void GoldBloon_NPCDeath(int entity)
 {
 	GoldBloon npc = view_as<GoldBloon>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, GoldBloon_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, GoldBloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;

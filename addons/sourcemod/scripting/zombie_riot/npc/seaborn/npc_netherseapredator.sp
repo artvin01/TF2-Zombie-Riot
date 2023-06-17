@@ -76,7 +76,7 @@ methodmap SeaPredator < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaPredator_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaPredator_ClotThink);
 		
 		npc.m_flSpeed = 250.0;	// 1.0 x 250
@@ -231,7 +231,7 @@ public void SeaPredator_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaPredator_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaPredator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -283,7 +283,7 @@ void SeaPredator_NPCDeath(int entity)
 		Remains_SpawnDrop(pos, Buff_Predator);
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaPredator_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaPredator_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

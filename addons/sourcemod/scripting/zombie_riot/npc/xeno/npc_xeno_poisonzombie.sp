@@ -138,7 +138,7 @@ methodmap XenoPoisonZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoPoisonZombie_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoPoisonZombie_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -312,7 +312,7 @@ public void XenoPoisonZombie_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoPoisonZombie_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoPoisonZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -379,7 +379,7 @@ public void XenoPoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoPoisonZombie_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoPoisonZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");

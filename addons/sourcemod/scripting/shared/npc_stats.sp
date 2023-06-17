@@ -405,7 +405,11 @@ methodmap CClotBody
 		list.Push(DHookRaw(g_hIsActivity,		  true, pBody));
 
 		//Collide with the correct stuff
-		list.Push(DHookRaw(g_hGetSolidMask,		true, pBody));
+		if(!Ally)
+			list.Push(DHookRaw(g_hGetSolidMask,		true, pBody));
+		else
+			list.Push(DHookRaw(g_hGetSolidMaskAlly,		true, pBody));
+
 		
 		//Allow jumping
 	//	list.Push(DHookRaw(g_hStartActivity,		true, pBody));
@@ -529,8 +533,10 @@ methodmap CClotBody
 		}
 		else
 		{
-			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
-			
+			if(!Ally)
+				CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
+			else
+				CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY|MASK_PLAYERSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
 		}
 	
 		return view_as<CClotBody>(npc);
@@ -2720,6 +2726,11 @@ methodmap CClotBody
 		//0x202400B L4D2
 		return (MASK_NPCSOLID);
 	}
+	public int GetSolidMaskAlly()
+	{
+		//0x202400B L4D2
+		return (MASK_NPCSOLID|MASK_PLAYERSOLID);
+	}
 	
 	public void RestartMainSequence()
 	{
@@ -3137,6 +3148,7 @@ public void NPC_Base_InitGamedata()
 	DHookAddParam(g_hShouldCollideWithAllyIngoreBuilding, HookParamType_CBaseEntity);
 	
 	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+	g_hGetSolidMaskAlly		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
 	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
 	
 	g_hGetHullWidthGiant		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth_ISGIANT);
@@ -3926,6 +3938,8 @@ public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hRetur
 	//ALWAYS YES, WHY??????
 	
 //	DHookSetReturn(hReturn, true); 
+
+	NpcStartTouch(pThis,otherindex);
 	return MRES_Ignored;
 }
 public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle hReturn, Handle hParams)   
@@ -3951,6 +3965,7 @@ public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle
 	}
 	
 //	DHookSetReturn(hReturn, true); 
+	NpcStartTouch(pThis,otherindex);
 	return MRES_Ignored;
 }
 
@@ -3976,8 +3991,6 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hRetu
 	}
 	
 	NpcStartTouch(pThis,otherindex);
-
-	
 	return MRES_Ignored;
 }
 
@@ -4008,6 +4021,7 @@ public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis
 			DHookSetReturn(hReturn, false); 
 			return MRES_Supercede;
 		}
+		NpcStartTouch(pThis,otherindex);
 		return MRES_Ignored;
 	}
 	NpcStartTouch(pThis,otherindex);
@@ -4992,7 +5006,15 @@ stock bool CheckForSee(int client)
 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	}
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -5001,7 +5023,15 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	Handle hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly, entity);
+	}
 	bool bHit = TR_DidHit(hTrace);
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
@@ -5383,8 +5413,6 @@ public void Check_If_Stuck(int iNPC)
 							SDKCall_SetLocalOrigin(iNPC, flMyPos_2);	
 							TeleportEntity(iNPC, flMyPos_2, NULL_VECTOR, { 0.0, 0.0, 0.0 }); //Reset their speed
 							npc.SetVelocity({ 0.0, 0.0, 0.0 });
-							SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
-	#if defined ZR
 							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GameTime)
 							{
 								bool wasactuallysawrunner = false;
@@ -5393,13 +5421,14 @@ public void Check_If_Stuck(int iNPC)
 									wasactuallysawrunner = true;
 								}
 								b_ThisNpcIsSawrunner[npc.index] = true;
+								SDKHooks_TakeDamage(Hit_player, iNPC, iNPC, float(SDKCall_GetMaxHealth(Hit_player) / 8), DMG_DROWN);
 								if(wasactuallysawrunner)
 								{
 									b_ThisNpcIsSawrunner[npc.index] = false;
 								}
 							}
 							f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GameTime + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
-	#endif
+							//make this work in rpg too.
 						}
 						else
 						{
@@ -5561,9 +5590,11 @@ public void Check_If_Stuck(int iNPC)
 	
 }
 
+float f3_KnockbackToTake[MAXENTITIES][3];
+
 stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
 {
-	if(enemy <= MaxClients || work_on_entity)
+	if(enemy > 0 && !b_NoKnockbackFromSources[enemy])
 	{							
 		float vAngles[3], vDirection[3];
 										
@@ -5576,7 +5607,7 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
-		if(!ignore_attribute && !work_on_entity)
+		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
 			float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
 			
@@ -5589,7 +5620,7 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		
 		ScaleVector(vDirection, knockback);
 		
-		if(!override)
+		if(!override && enemy <= MaxClients)
 		{
 			float newVel[3];
 			
@@ -5601,9 +5632,33 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			{
 				vDirection[i] += newVel[i];
 			}
-		}												
-		TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
+		}		
+		if(!b_NpcHasDied[enemy])	
+		{
+			f3_KnockbackToTake[enemy] = vDirection;
+			//it needs to be on think, otherwise it wont work sometimes.
+			SDKUnhook(enemy, SDKHook_Think, NpcJumpThink); //incase another one was in progress.
+			SDKHook(enemy, SDKHook_Think, NpcJumpThink);
+		}		
+		else
+		{
+			TeleportEntity(enemy, NULL_VECTOR, NULL_VECTOR, vDirection); 
+		}						
 	}
+}
+//it needs to be on think, otherwise it wont work sometimes.
+public void NpcJumpThink(int iNPC)
+{	
+	if(IsValidEntity(iNPC) && !b_NpcHasDied[iNPC])
+	{
+		CClotBody npc = view_as<CClotBody>(iNPC);
+		float Jump_1_frame[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+		Jump_1_frame[2] += 20.0;	
+		SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+		npc.SetVelocity(f3_KnockbackToTake[iNPC]);
+	}
+	SDKUnhook(iNPC, SDKHook_Think, NpcJumpThink);
 }
 
 int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
@@ -6420,6 +6475,11 @@ public MRESReturn ILocomotion_GetRunSpeed(Address pThis, Handle hReturn, Handle 
 }
 
 public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
+	return MRES_Supercede; 
+}
+public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle hParams)			  
 { 
 	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
 	return MRES_Supercede; 
@@ -7476,6 +7536,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
+	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
 	fl_RangedArmor[entity] = 1.0;
@@ -8258,7 +8319,16 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 {
 	int ref;
-	Handle hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+	
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+	}
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
 	if(ref < 0) //It hit nothing, good!

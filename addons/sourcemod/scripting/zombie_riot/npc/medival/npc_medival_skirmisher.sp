@@ -168,7 +168,7 @@ methodmap MedivalSkirmisher < CClotBody
 		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSkirmisher_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 
 
@@ -368,7 +368,7 @@ public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 	
 }
 
-public Action MedivalSkirmisher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSkirmisher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -395,7 +395,7 @@ public void MedivalSkirmisher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSkirmisher_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

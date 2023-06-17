@@ -150,7 +150,7 @@ methodmap SoldierMinion < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SoldierMinion_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SoldierMinion_ClotThink);
 		
 		//IDLE
@@ -317,16 +317,13 @@ public void SoldierMinion_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SoldierMinion_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SoldierMinion_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	SoldierMinion npc = view_as<SoldierMinion>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-	/*
-	if(npc.m_flCannotBeHurt > GetGameTime(npc.index))
-		return Plugin_Handled;
-	*/	
+		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -345,7 +342,7 @@ public void SoldierMinion_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SoldierMinion_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SoldierMinion_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

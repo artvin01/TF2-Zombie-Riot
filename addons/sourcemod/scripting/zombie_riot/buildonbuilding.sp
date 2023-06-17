@@ -621,6 +621,11 @@ void IsBuildingNotFloating(int building)
 	m_vecMins = view_as<float>( { -20.0, -20.0, -5.0 } );	
 	float endPos2[3];
 	GetEntPropVector(building, Prop_Send, "m_vecOrigin", endPos2);
+
+	if(i_WhatBuilding[building] == BuildingAmmobox)
+	{
+		endPos2[2] -= (32.0 * 0.5); //ammoboxes are flying beacuse their model is.
+	}
 	if(!IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
 	{
 		SDKHooks_TakeDamage(building, 0, 0, 100000.0, DMG_ACID);

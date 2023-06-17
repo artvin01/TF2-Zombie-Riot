@@ -1,0 +1,141 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+methodmap CitizenRunner < CClotBody
+{
+	public CitizenRunner(int client, float vecPos[3], float vecAng[3])
+	{
+		char buffer[PLATFORM_MAX_PATH];
+
+		int seed = GetURandomInt();
+		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
+
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false));
+		
+		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
+		npc.SetActivity("ACT_RUN_PROTECTED");
+		
+		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+
+		npc.m_bDissapearOnDeath = true;
+
+		SDKHook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
+		
+		npc.m_flSpeed = 241.5;
+		npc.m_flGetClosestTargetTime = 0.0;
+		return npc;
+	}
+}
+
+public void CitizenRunner_ClotThink(int iNPC)
+{
+	CitizenRunner npc = view_as<CitizenRunner>(iNPC);
+
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(Waves_InSetup())
+	{
+		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);
+		return;
+	}
+
+	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget))
+		npc.m_iTarget = 0;
+	
+	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		npc.m_iTarget = GetClosestAllyPlayer(npc.index);
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+	}
+	
+	if(npc.m_iTarget > 0)
+	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
+		if(distance < 10000.0)
+		{
+			npc.StopPathing();
+
+			npc.SetActivity("ACT_COVER_LOW");
+		}
+		else
+		{
+			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.StartPathing();
+
+			npc.SetActivity("ACT_RUN_PROTECTED");
+		}
+	}
+	else
+	{
+		npc.StopPathing();
+
+		npc.SetActivity("ACT_COVER_LOW");
+	}
+}
+
+void CitizenRunner_NPCDeath(int entit)
+{
+	CitizenRunner npc = view_as<CitizenRunner>(entit);
+	SDKUnhook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
+	
+	if(!Waves_InSetup())
+	{
+		float pos[3], angles[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+
+		int entity = Npc_Create(SEAPREDATOR_ALT, -1, pos, angles, false);
+		if(entity > MaxClients)
+		{
+			Zombies_Currently_Still_Ongoing++;
+			
+			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 10;
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+			
+			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.5;
+		}
+
+		int entity_death = CreateEntityByName("prop_dynamic_override");
+		if(IsValidEntity(entity_death))
+		{
+			TeleportEntity(entity_death, pos, angles, NULL_VECTOR);
+			
+			char model[PLATFORM_MAX_PATH];
+			GetEntPropString(npc.index, Prop_Data, "m_ModelName", model, sizeof(model));
+			DispatchKeyValue(entity_death, "model", model);
+			
+			DispatchSpawn(entity_death);
+			
+			SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+			SetEntityCollisionGroup(entity_death, 2);
+			SetVariantString("hunter_cit_tackle_di");
+			AcceptEntityInput(entity_death, "SetAnimation");
+			
+			SetVariantString("OnAnimationDone !self:Kill::0:1,0,1");
+			AcceptEntityInput(entity_death, "AddOutput");
+		}
+	}
+}
+
+public void CitizenRunner_PostDeath(const char[] output, int caller, int activator, float delay)
+{
+	RemoveEntity(caller);
+}

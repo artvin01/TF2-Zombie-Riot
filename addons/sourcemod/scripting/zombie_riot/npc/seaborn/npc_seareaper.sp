@@ -99,7 +99,6 @@ methodmap SeaReaper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaReaper_TakeDamage);
 		SDKHook(npc.index, SDKHook_Think, SeaReaper_ClotThink);
 		
 		npc.m_flSpeed = 75.0;	// 0.3 x 250
@@ -119,7 +118,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	SeaReaper npc = view_as<SeaReaper>(iNPC);
 	
 	if(npc.Anger)
-		SDKHooks_TakeDamage(npc.index, 0, 0, float(GetURandomInt() % 2) + 2.0, DMG_DROWN);
+		SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 9000.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -130,14 +129,15 @@ public void SeaReaper_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
+		npc.m_blPlayHurtAnimation = false;
+
 		if(npc.Anger)
 		{
 			npc.PlayHurtSound();
-			npc.m_blPlayHurtAnimation = false;
 		}
 		else
 		{
-			if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") - 300) < GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+			if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") - 300) > GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 			{
 				npc.AddGesture("ACT_FASTZOMBIE_FRENZY");
 				npc.SetActivity("ACT_RUN");
@@ -257,7 +257,7 @@ public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int we
 	// 500 x 0.2 x 0.15
 }
 
-public Action SeaReaper_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaReaper_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -277,6 +277,6 @@ void SeaReaper_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaReaper_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaReaper_ClotThink);
 }

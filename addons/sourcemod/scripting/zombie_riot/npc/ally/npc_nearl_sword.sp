@@ -162,6 +162,7 @@ methodmap NearlSwordAbility < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
+		b_NoKnockbackFromSources[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -170,7 +171,7 @@ methodmap NearlSwordAbility < CClotBody
 	//	i_NpcIsABuilding[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NearlSwordAbility_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NearlSwordAbility_ClotThink);
 
 		npc.m_iState = 0;
@@ -260,7 +261,7 @@ public int NearlSword_HealthHud(NearlSwordAbility npc)
 }
 
 
-public Action NearlSwordAbility_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NearlSwordAbility_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -294,7 +295,7 @@ public void NearlSwordAbility_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NearlSwordAbility_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NearlSwordAbility_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

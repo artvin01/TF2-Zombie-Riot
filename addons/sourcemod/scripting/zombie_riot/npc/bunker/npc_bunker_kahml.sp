@@ -303,7 +303,7 @@ methodmap BunkerKahml < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerKahml_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerKahml_ClotThink);
 		
 		fl_AbilityManagement_Timer[npc.index] = gameTime + fl_AbilityFirstUsageTimer;
@@ -1092,7 +1092,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 	}
 }
 
-public Action BunkerKahml_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BunkerKahml_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	BunkerKahml npc = view_as<BunkerKahml>(victim);
 	
@@ -1120,7 +1120,7 @@ public void BunkerKahml_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BunkerKahml_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, BunkerKahml_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

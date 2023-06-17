@@ -183,7 +183,7 @@ methodmap SpyCloaked < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SpyCloaked_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SpyCloaked_ClotThink);		
 		
 		npc.m_iAttacksTillReload = 6;
@@ -467,7 +467,7 @@ public void SpyCloaked_ClotThink(int iNPC)
 }
 
 
-public Action SpyCloaked_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SpyCloaked_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -493,7 +493,7 @@ public void SpyCloaked_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SpyCloaked_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SpyCloaked_ClotThink);		
 		
 	if(IsValidEntity(npc.m_iWearable1))

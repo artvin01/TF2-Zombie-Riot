@@ -126,7 +126,7 @@ methodmap XenoMedicHealer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoMedicHealer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoMedicHealer_ClotThink);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -452,7 +452,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoMedicHealer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoMedicHealer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoMedicHealer npc = view_as<XenoMedicHealer>(victim);
 		
@@ -476,7 +476,7 @@ public void XenoMedicHealer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoMedicHealer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoMedicHealer_ClotThink);
 		
 	Is_a_Medic[npc.index] = false;

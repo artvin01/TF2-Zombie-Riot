@@ -282,7 +282,7 @@ methodmap BarrackBody < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BarrackBody_ClotDamaged);
+		
 		
 
 		int particle = CreateEntityByName("info_particle_system");
@@ -645,7 +645,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 	}
 }
 
-public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -659,15 +659,15 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 	{
 		if(CurrentPlayers == 1)
 		{
-			damage *= 0.85;
+			damage *= 0.65;
 		}
 		else if(CurrentPlayers <= 4)
 		{
-			damage *= 1.25;
+			damage *= 0.6;
 		}
 		else
 		{
-			damage *= 1.65;
+			damage *= 0.75;
 		}
 	}
 	
@@ -787,7 +787,7 @@ void BarrackBody_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BarrackBody_ClotDamaged);
+	
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

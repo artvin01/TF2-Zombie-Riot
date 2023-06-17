@@ -162,7 +162,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalCrossbowGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalCrossbowGiant_ClotThink);
 	
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -345,7 +345,7 @@ public void HandleAnimEventMedival_GiantCrossbowMan(int entity, int event)
 	
 }
 
-public Action MedivalCrossbowGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalCrossbowGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -372,7 +372,7 @@ public void MedivalCrossbowGiant_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalCrossbowGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalCrossbowGiant_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

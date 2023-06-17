@@ -323,7 +323,7 @@ methodmap TrueFusionWarrior < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
+		
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -896,22 +896,26 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
+									bool Knocked = false;
 									
 									if(IsValidClient(target))
 									{
 										if (IsInvuln(target))
 										{
+											Knocked = true;
 											Custom_Knockback(npc.index, target, 900.0, true);
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
 										else
 										{
-											Custom_Knockback(npc.index, target, 650.0); 
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
 									}
+									
+									if(!Knocked)
+										Custom_Knockback(npc.index, target, 650.0); 
 								} 
 							}
 						delete swingTrace;
@@ -928,6 +932,11 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				npc.m_bPathing = false;
 			}
 		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}	
 	if  (!npc.m_bInKame)
 	{
 		npc.StartPathing();
@@ -936,7 +945,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 	
-public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1066,7 +1075,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
+	
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	

@@ -820,8 +820,10 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 #endif
 
 
-void NPC_Ignite(int entity, int client, float duration, int weapon)
+void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 {
+	bool wasBurning = view_as<bool>(IgniteFor[entity]);
+
 	IgniteFor[entity] += RoundToCeil(duration*2.0);
 	if(IgniteFor[entity] > 20)
 		IgniteFor[entity] = 20;
@@ -829,25 +831,30 @@ void NPC_Ignite(int entity, int client, float duration, int weapon)
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
-	
 	float value = 8.0;
 	bool validWeapon = false;
 	if(weapon > MaxClients && IsValidEntity(weapon))
 	{
 		validWeapon = true;
-		value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+		value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
 			
-		value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-		value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 	}
-			
-	if(value > BurnDamage[client]) //Dont override if damage is lower.
+
+	if(wasBurning && value > BurnDamage[entity]) //Dont override if damage is lower.
 	{
-		IgniteId[entity] = GetClientUserId(client);
+		BurnDamage[entity] = value;
+		IgniteId[entity] = EntIndexToEntRef(attacker);
+
 		if(validWeapon)
 		{
 			IgniteRef[entity] = EntIndexToEntRef(weapon);
+		}
+		else
+		{
+			IgniteRef[entity] = -1;
 		}
 	}
 }
@@ -859,22 +866,22 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 	{
 		if(!b_NpcHasDied[entity])
 		{
-			int client = GetClientOfUserId(IgniteId[entity]);
-			if(client && IsClientInGame(client))
+			int attacker = EntRefToEntIndex(IgniteId[entity]);
+			if(attacker != INVALID_ENT_REFERENCE)
 			{
 				IgniteFor[entity]--;
 				
 				float pos[3], ang[3];
-				GetClientEyeAngles(client, ang);
+				GetClientEyeAngles(attacker, ang);
 				int weapon = EntRefToEntIndex(IgniteRef[entity]);
 				float value = 8.0;
 				if(weapon > MaxClients && IsValidEntity(weapon))
 				{
-					value *= Attributes_FindOnWeapon(client, weapon, 2, true, 1.0);	  //For normal weapons
+					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
 					
-					value *= Attributes_FindOnWeapon(client, weapon, 410, true, 1.0); //For wand
+					value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
-					value *= Attributes_FindOnWeapon(client, weapon, 71, true, 1.0); //For wand
+					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 				}
 				else
 				{
@@ -896,7 +903,7 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 					BurnDamage[entity] = value;
 				}
 				//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
-				SDKHooks_TakeDamage(entity, client, client, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_SLASH, weapon, ang, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 				
 				//Setting burn dmg to slash cus i want it to work with melee!!!
 				//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
@@ -1216,6 +1223,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	*/
 	//they dont take drown dmg ever.
+	bool WeaponWasValid = false;
 
 	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	{
@@ -1704,6 +1712,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 					if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 					{
+						WeaponWasValid = true;
 						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 						damage = modified_damage;
 						OnTakeDamage_HandOfElderMages(attacker, weapon);
@@ -1924,8 +1933,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			
 		}	//Remove annoying instakill taunts
-			
 	}
+
+	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(WeaponWasValid)
+	{
+		float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+		damage = modified_damage;
+	}
+
 	npcBase.m_vecpunchforce(damageForce, true);
 	npcBase.m_bGib = false;
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
@@ -1970,6 +1986,20 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	*/
 }
 
+void Generic_OnTakeDamage(int victim, int attacker)
+{
+	if(attacker > 0)
+	{
+		CClotBody npc = view_as<CClotBody>(victim);
+		float gameTime = GetGameTime(npc.index);
+
+		if(npc.m_flHeadshotCooldown < gameTime)
+		{
+			npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+		}
+	}
+}
 
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
@@ -2797,10 +2827,6 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_Yamato(attacker, damagetype);
 		}
-		case WEAPON_SAGA:
-		{
-			Saga_OnTakeDamage(victim, attacker, damage, weapon);
-		}
 		case WEAPON_BEAM_PAP:
 		{
 			Npc_OnTakeDamage_BeamWand_Pap(attacker, damagetype);
@@ -2824,7 +2850,19 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 
 	return damage;
 }
-
+stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+{
+#if defined ZR
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_SAGA:
+		{
+			Saga_OnTakeDamage(victim, attacker, damage, weapon);
+		}
+	}
+#endif
+	return damage;
+}
 /*
 public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
 {

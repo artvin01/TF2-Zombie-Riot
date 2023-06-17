@@ -190,7 +190,7 @@ methodmap CombineSoldierShotgun < CClotBody
 
 		npc.m_fbGunout = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSoldierShotgun_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -375,7 +375,7 @@ public void CombineSoldierShotgun_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineSoldierShotgun_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

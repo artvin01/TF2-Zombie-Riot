@@ -143,7 +143,7 @@ methodmap Moab < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Moab_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Moab_ClotThink);
 		
@@ -270,7 +270,7 @@ public void Moab_ClotThink(int iNPC)
 	}
 }
 
-public Action Moab_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Moab_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -293,7 +293,7 @@ public void Moab_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Moab_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Moab_ClotThink);
 	
 	float pos[3], angles[3];

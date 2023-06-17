@@ -195,7 +195,7 @@ methodmap Donnerkrieg < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Donnerkrieg_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
 		
@@ -489,7 +489,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Donnerkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(victim);
 		
@@ -517,7 +517,7 @@ public void Donnerkrieg_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Donnerkrieg_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

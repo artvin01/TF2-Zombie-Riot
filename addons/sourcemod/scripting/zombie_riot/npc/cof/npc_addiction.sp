@@ -96,7 +96,7 @@ methodmap Addicition < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Addicition_ClotThink);
 		
 		npc.m_bisWalking = false;
@@ -484,7 +484,7 @@ public void Addicition_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 	
-public Action Addicition_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Addicition_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 //	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
 //		return Plugin_Handled;
@@ -497,7 +497,7 @@ public void Addicition_NPCDeath(int entity)
 {
 	Addicition npc = view_as<Addicition>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Addicition_ClotThink);
 	
 	PF_StopPathing(npc.index);

@@ -17,14 +17,14 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLIONGUARD_UNBURROW");
 		
-		npc.EatBuffs();
+		npc.EatBuffs(vecPos);
 		npc.PlaySpawnSound();
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
 		
 		npc.m_flSpeed = 325.0;	// 0.8 + 0.5 x 250
@@ -99,7 +99,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 							failed = false;
 
 							if(ShouldNpcDealBonusDamage(target))
-								attack *= 4.0;
+								attack *= 10.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 							if(target <= MaxClients)
@@ -217,6 +217,6 @@ void EndSpeaker4_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, EndSpeaker_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, EndSpeaker4_ClotThink);
 }

@@ -37,7 +37,7 @@ methodmap StalkerFather < StalkerShared
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, StalkerFather_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, StalkerFather_ClotThink);
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -272,10 +272,13 @@ public void StalkerFather_ClotThink(int iNPC)
 	npc.PlayMusicSound();
 }
 
-public Action StalkerFather_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker > 0 && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+	{
+		damage = 0.0;
 		return Plugin_Handled;
+	}
 	
 	if(damage > 999999.9)
 		return Plugin_Continue;
@@ -326,7 +329,7 @@ void StalkerFather_NPCDeath(int entity)
 {
 	StalkerFather npc = view_as<StalkerFather>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, StalkerFather_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, StalkerFather_ClotThink);
 
 	for(int i; i < 9; i++)

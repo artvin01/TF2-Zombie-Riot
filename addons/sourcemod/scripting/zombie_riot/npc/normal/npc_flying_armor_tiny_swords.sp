@@ -186,7 +186,7 @@ methodmap FlyingArmorTiny < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FlyingArmorTiny_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, FlyingArmorTiny_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -366,21 +366,13 @@ public void FlyingArmorTiny_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action FlyingArmorTiny_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FlyingArmorTiny_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	FlyingArmorTiny npc = view_as<FlyingArmorTiny>(victim);
-	/*
-	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
-		return Plugin_Continue;
-	*/
-	/*
-	if(npc.m_flCannotBeHurt > GetGameTime(npc.index))
-		return Plugin_Handled;
-	*/
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -399,7 +391,7 @@ public void FlyingArmorTiny_NPCDeath(int entity)
 	}
 
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FlyingArmorTiny_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FlyingArmorTiny_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

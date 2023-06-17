@@ -280,8 +280,8 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon)
 	}
 	else if(RoundToFloor(damage) >= GetEntProp(victim, Prop_Data, "m_iHealth"))
 	{
-		damage = 0.0;
-		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+		damage = float(GetEntProp(victim, Prop_Data, "m_iHealth") - 1);
+
 		SagaCrippled[victim] = TF2Attrib_GetByDefIndex(weapon, 861) == Address_Null ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);

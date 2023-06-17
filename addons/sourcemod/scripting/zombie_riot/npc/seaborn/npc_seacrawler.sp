@@ -70,7 +70,7 @@ methodmap SeaCrawler < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SeaCrawler_TakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, SeaCrawler_ClotThink);
 		
 		npc.m_flSpeed = 100.0;	// 0.4 x 250
@@ -160,7 +160,7 @@ public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int w
 	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
 }
 
-public Action SeaCrawler_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SeaCrawler_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
@@ -180,6 +180,6 @@ void SeaCrawler_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SeaCrawler_TakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SeaCrawler_ClotThink);
 }

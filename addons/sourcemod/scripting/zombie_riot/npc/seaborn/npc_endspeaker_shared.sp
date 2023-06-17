@@ -155,7 +155,7 @@ methodmap EndSpeaker < CClotBody
 
 		return multi;
 	}
-	public void EatBuffs()
+	public void EatBuffs(const float vecMe[3])
 	{
 		this.m_hBuffs = 0;
 		this.m_iAttackStack = 0;
@@ -226,7 +226,7 @@ methodmap EndSpeaker < CClotBody
 			SDKHooks_TakeDamage(remain[i], 0, 0, 99999999.9, DMG_DROWN);
 		}
 
-		vecTarget = WorldSpaceCenter(this.index);
+		vecTarget = vecMe;
 		vecTarget[2] += 80.0;
 
 		if(this.m_hBuffs & BUFF_FOUNDER)
@@ -394,7 +394,7 @@ methodmap EndSpeakerSmall < EndSpeaker
 	}
 }
 
-public Action EndSpeaker_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;

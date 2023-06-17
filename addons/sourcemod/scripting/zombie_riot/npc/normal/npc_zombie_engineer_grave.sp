@@ -150,7 +150,7 @@ methodmap Engineer < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Engineer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Engineer_ClotThink);
 		
 		//IDLE
@@ -321,7 +321,7 @@ public void Engineer_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Engineer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Engineer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Engineer npc = view_as<Engineer>(victim);
 		
@@ -345,7 +345,7 @@ public void Engineer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Engineer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Engineer_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))
