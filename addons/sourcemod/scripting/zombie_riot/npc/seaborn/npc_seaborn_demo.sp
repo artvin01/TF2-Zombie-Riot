@@ -109,7 +109,6 @@ public void SeabornDemo_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
 
 						if(!NpcStats_IsEnemySilenced(npc.index))
@@ -149,8 +148,6 @@ public void SeabornDemo_ClotThink(int iNPC)
 void SeabornDemo_NPCDeath(int entity)
 {
 	SeabornDemo npc = view_as<SeabornDemo>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

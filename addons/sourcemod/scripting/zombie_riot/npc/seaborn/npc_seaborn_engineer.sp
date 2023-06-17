@@ -126,7 +126,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTargetAlly) && i_IsABuilding[npc.m_iTargetAlly])
 		{
-			if(!npc.m_iTarget && b_bBuildingIsPlaced[enemy])
+			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
 			{
 				ParticleEffectAt(WorldSpaceCenter(npc.index), "water_bulletsplash01", 3.0);
 				ParticleEffectAt(WorldSpaceCenter(npc.m_iTargetAlly), "water_bulletsplash01", 3.0);
@@ -146,7 +146,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			}
 			else
 			{
-				b_ThisEntityIgnored[entity] = false;
+				b_ThisEntityIgnored[npc.m_iTargetAlly] = false;
 			}
 		}
 		
@@ -167,8 +167,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 			if(entity != INVALID_ENT_REFERENCE)
 			{
-				CClotBody npc = view_as<CClotBody>(entity);
-				if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+				CClotBody building = view_as<CClotBody>(entity);
+				if(!building.bBuildingIsStacked && building.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
 					b_ThisEntityIgnored[entity] = true;
 

@@ -98,7 +98,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTargetAlly && !IsValidAlly(npc.m_iTargetAlly))
+	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
 		npc.m_iTargetAlly = 0;
 	
 	if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < gameTime)

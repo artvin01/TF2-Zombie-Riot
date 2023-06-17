@@ -278,9 +278,16 @@ enum
 	SEAREEFBREAKER_CARRIER,
 	BARRACK_THORNS	= 242,
 	RAIDMODE_GOD_ARKANTOS = 243,
-	SEABORN_SCOUT	= 244,
-	SEABORN_SOLDIER	= 245,
-	CITIZEN_RUNNER	= 246
+	SEABORN_SCOUT		= 244,
+	SEABORN_SOLDIER		= 245,
+	CITIZEN_RUNNER		= 246,
+	SEABORN_PYRO		= 247,
+	SEABORN_DEMO		= 248,
+	SEABORN_HEAVY		= 249,
+	SEABORN_ENGINEER	= 250,
+	SEABORN_MEDIC		= 251,
+	SEABORN_SNIPER		= 252,
+	SEABORN_SPY		= 253
 }
 
 public const char NPC_Names[][] =
@@ -552,7 +559,14 @@ public const char NPC_Names[][] =
 	"God Arkantos",
 	"Seaborn Scout",
 	"Seaborn Soldier",
-	"Citizen"
+	"Citizen",
+	"Seaborn Pyro",
+	"Seaborn Demoman",
+	"Seaborn Heavy",
+	"Seaborn Engineer",
+	"Seaborn Medic",
+	"Seaborn Sniper",
+	"Seaborn Spy"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -819,7 +833,14 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_god_arkantos",
 	"npc_seaborn_scout",
 	"npc_seaborn_soldier",
-	"npc_citizen_runner"
+	"npc_citizen_runner",
+	"npc_seaborn_pyro",
+	"npc_seaborn_demo",
+	"npc_seaborn_heavy",
+	"npc_seaborn_engineer",
+	"npc_seaborn_medic",
+	"npc_seaborn_sniper",
+	"npc_seaborn_spy"
 };
 
 void NPC_MapStart()
@@ -1733,6 +1754,21 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case CITIZEN_RUNNER:
 			entity = CitizenRunner(client, vecPos, vecAng);
+		
+		case SEABORN_PYRO:
+			entity = SeabornPyro(client, vecPos, vecAng, ally);
+		
+		case SEABORN_DEMO:
+			entity = SeabornDemo(client, vecPos, vecAng, ally);
+		
+		case SEABORN_HEAVY:
+			entity = SeabornHeavy(client, vecPos, vecAng, ally);
+		
+		case SEABORN_ENGINEER:
+			entity = SeabornEngineer(client, vecPos, vecAng, ally);
+		
+		case SEABORN_MEDIC:
+			entity = SeabornMedic(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2446,6 +2482,21 @@ public void NPCDeath(int entity)
 
 		case CITIZEN_RUNNER:
 			CitizenRunner_NPCDeath(entity);
+
+		case SEABORN_PYRO:
+			SeabornPyro_NPCDeath(entity);
+
+		case SEABORN_DEMO:
+			SeabornDemo_NPCDeath(entity);
+
+		case SEABORN_HEAVY:
+			SeabornHeavy_NPCDeath(entity);
+
+		case SEABORN_ENGINEER:
+			SeabornEngineer_NPCDeath(entity);
+
+		case SEABORN_MEDIC:
+			SeabornMedic_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3185,8 +3236,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case SEABORN_SCOUT, SEABORN_SOLDIER:
+		case SEABORN_SCOUT, SEABORN_SOLDIER, SEABORN_PYRO, SEABORN_DEMO, SEABORN_ENGINEER, SEABORN_MEDIC:
 			Generic_OnTakeDamage(victim, attacker);
+		
+		case SEABORN_HEAVY:
+			SeabornHeavy_OnTakeDamage(victim, attacker, damagetype);
 	}
 	return Plugin_Changed;
 }
@@ -3438,3 +3492,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_scout.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_soldier.sp"
 #include "zombie_riot/npc/seaborn/npc_citizen_runner.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_pyro.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_demo.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_heavy.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_engineer.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_medic.sp"
