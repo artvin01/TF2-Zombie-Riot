@@ -874,6 +874,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= 3.0;
 	}
+	damage *= fl_Extra_Damage[attacker];
 
 	if(f_FreeplayDamageExtra != 1.0)
 	{

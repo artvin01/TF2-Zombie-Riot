@@ -1017,6 +1017,10 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 		static float ThrowPos[3]; 
 		int TargetToLungeTo = GetClosestTarget(npc.index,_,_,_,_,_,_,true); //only visible targets!
 		float Range = 150.0;
+
+		if(LastMann)
+			Range = 85.0; //nerf range alot so the lastman can actuall dodge.
+		
 		if(IsValidEnemy(npc.index,TargetToLungeTo))
 		{
 			static float enemypos[3]; 
@@ -1296,7 +1300,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 							// apply velocity
 							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);   
 						}
-						else
+						else if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop))
 						{
 							float damage = 50.0;
 							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
