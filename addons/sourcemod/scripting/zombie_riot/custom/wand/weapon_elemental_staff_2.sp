@@ -395,6 +395,11 @@ public Action Timer_Management_Passanger(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+bool Passanger_HasCharge(int client)
+{
+	return h_TimerPassangerManagement[client] != INVALID_HANDLE;
+}
+
 void Passanger_ChargeReduced(int client, float time)
 {
 	if(h_TimerPassangerManagement[client] != INVALID_HANDLE)
