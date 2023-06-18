@@ -1239,8 +1239,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 
 #if defined ZR
-		//teutons should not steal.
-		if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		//should not steal.
+		if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE && Saga_IsChargeWeapon(victim, weapon))
 		{
 			damage = 0.0;
 			return Plugin_Handled;

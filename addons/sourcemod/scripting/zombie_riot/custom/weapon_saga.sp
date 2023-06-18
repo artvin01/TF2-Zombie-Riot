@@ -48,6 +48,24 @@ void Saga_DeadEffects(int victim, int attacker, int weapon)
 		Saga_ChargeReduction(attacker, weapon, SagaCrippled[victim]);
 }
 
+bool Saga_IsChargeWeapon(int client, int weapon)
+{
+	if(Passanger_HasCharge(client))
+		return true;
+	
+	if(WeaponTimer[client] && EntRefToEntIndex(WeaponRef[client]) == weapon)
+		return true;
+	
+	for(int i = 1; i < 4; i++)
+	{
+		float cooldown = Ability_Check_Cooldown(client, i, weapon);
+		if(cooldown > 0.0)
+			return true;
+	}
+
+	return false;
+}
+
 void Saga_ChargeReduction(int client, int weapon, float time)
 {
 	Passanger_ChargeReduced(client, time);
