@@ -2166,4 +2166,60 @@
 	{
 		"en"	"Ranged Lego Layer"
 	}
+	"Ranged Lego Layer"
+	{
+		"en"	"Ranged Lego Layer"
+	}
+	"The Enforcer"
+	{
+		"en"	"The Enforcer"
+	}
+	"The Enforcer S1"
+	{
+		"en"	"The Enforcer S1"
+	}
+	"The Enforcer S2"
+	{
+		"en"	"The Enforcer S2"
+	}
+	"The Enforcer S3"
+	{
+		"en"	"The Enforcer S3"
+	}
+	"The Enforcer Lv 4"
+	{
+		"en"	"The Enforcer S4"
+	}
+	"The Enforcer S5"
+	{
+		"en"	"The Enforcer S5"
+	}
+	"The Enforcer S6"
+	{
+		"en"	"The Enforcer S6"
+	}
+	"The Enforcer S7"
+	{
+		"en"	"The Enforcer S7"
+	}
+	"The Enforcer Mastery 1"
+	{
+		"en"	"The Enforcer Mastery 1"
+	}
+	"The Enforcer Mastery 2"
+	{
+		"en"	"The Enforcer Mastery 2"
+	}
+	"The Enforcer Mastery 3"
+	{
+		"en"	"The Enforcer Mastery 3"
+	}
+	"The Enforcer Mastery 4"
+	{
+		"en"	"The Enforcer Mastery 4"
+	}
+	"The Enforcer Mastery 5"
+	{
+		"en"	"The Enforcer Mastery 5"
+	}
 }
