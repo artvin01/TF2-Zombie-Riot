@@ -364,6 +364,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_saga.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
 #include "zombie_riot/custom/weapon_mlynar.sp"
+#include "zombie_riot/custom/weapon_enforcer.sp"
 
 void ZR_PluginLoad()
 {
