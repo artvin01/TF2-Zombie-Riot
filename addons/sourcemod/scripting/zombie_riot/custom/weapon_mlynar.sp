@@ -20,6 +20,7 @@ int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXTF2PLAYERS];
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static int i_RefWeaponDelete[MAXTF2PLAYERS];
 
 //This will be used to tone down damage over time/on kill
 static float f_MlynarDmgAfterAbility[MAXTF2PLAYERS];
@@ -61,6 +62,7 @@ void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 	f_MlynarDmgAfterAbility[client] = 1.0;
 	f_MlynarAbilityActiveTime[client] = 0.0;
 	b_MlynarResetStats[client] = false;
+	Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
 }
 public void Weapon_MlynarAttack(int client, int weapon, bool &result, int slot)
 {
@@ -210,7 +212,6 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
 		f_MlynarAbilityActiveTime[client] = GetGameTime() + 15.0;
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", 0.0);
 		b_MlynarResetStats[client] = true;
 		float flPos[3];
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
@@ -218,6 +219,12 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 		SetParent(client, particle_Sing);
 		EmitSoundToAll("items/powerup_pickup_knockout.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
+		int weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword");
+		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
+		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
+		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
+		SDKHook(client, SDKHook_PreThink, Mlynar_Think);
 	}
 	else
 	{
@@ -302,7 +309,6 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				//Give power overtime.
 				if(f_MlynarAbilityActiveTime[client] < GetGameTime())
 				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", 99999.9);
 					if(b_MlynarResetStats[client])
 					{
 						f_MlynarDmgMultiPassive[client] = 1.0;
@@ -440,7 +446,7 @@ public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker,
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
 
-	float damageModif = 30.0;
+	float damageModif = 15.0;
 		
 	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
 	if(address != Address_Null)
@@ -463,10 +469,29 @@ public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker,
 		f_AniSoundSpam[victim] = GetGameTime() + 0.2;
 		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
 	}
+	static float Entity_Position[3];
+	Entity_Position = WorldSpaceCenter(attacker);
 
-	SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_SLASH, weapon, _, _);
+	SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, _, Entity_Position);
 		
 	return damage;
 }
 
-
+public void Mlynar_Think(int client)
+{
+	if(GetGameTime() > f_MlynarAbilityActiveTime[client])
+	{
+		Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
+		//We are Done, kill think.
+		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
+		if(IsValidEntity(TemomaryGun))
+		{
+			TF2_RemoveItem(client, TemomaryGun);
+			FakeClientCommand(client, "use tf_weapon_sword");
+		}
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
+		return;
+	}	
+}

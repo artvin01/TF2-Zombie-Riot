@@ -5593,20 +5593,20 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		if(attacker <= MaxClients)	
 		{
 			GetClientEyeAngles(attacker, vAngles);
+			if(vAngles[0] < -40.0) //if they look up too much, we set it.
+			{
+				vAngles[0] = -40.0;
+			}
+			else if(vAngles[0] > -5.0) //if they look down too much, we set it.
+			{
+				vAngles[0] = -5.0;
+			}
 		}
 		else
 		{
-			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles); 
+			vAngles[0] = -45.0;
 		}
 		
-		if(vAngles[0] < -40.0) //if they look up too much, we set it.
-		{
-			vAngles[0] = -40.0;
-		}
-		else if(vAngles[0] > -5.0) //if they look down too much, we set it.
-		{
-			vAngles[0] = -5.0;
-		}
 										
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);

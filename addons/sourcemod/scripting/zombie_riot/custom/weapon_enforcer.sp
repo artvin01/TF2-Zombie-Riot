@@ -5,7 +5,7 @@
 #define ENFORCER_MAX_RANGE		200
 #define ENFORCER_MAX_BOUNDS		45.0
 #define ENFORCER_WEIGHT_PER_HEALTH	1000	// Every X health is 1 weight level for the enemy
-#define ENFORCER_KNOCKBACK		1000.0	// Knockback when push level and enemy weight is the same
+#define ENFORCER_KNOCKBACK		750.0	// Knockback when push level and enemy weight is the same
 #define ENFORCER_STUN_RATIO		0.00125	// Knockback converted into stun duration
 /*
 	1 : light
@@ -88,7 +88,7 @@ public void Weapon_Enforcer_M2_Weight80(int client, int weapon, bool crit, int s
 static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pushforcemulti)
 {
 	float cooldown = Ability_Check_Cooldown(client, slot);
-	if(cooldown > 0.0)
+	if(cooldown > 0.0 && !CvarInfiniteCash.BoolValue)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -137,19 +137,42 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 			}
 			
 			int weight = i_NpcWeight[EnemiesHit[i]];
-			
+			if(weight <= 0)
+			{
+				weight = 1;
+			}
 			if(weight >= 999)
 			{
 				continue;
 			}
 			
-			float knockback = ENFORCER_KNOCKBACK / float(weight);
+			float knockback = ENFORCER_KNOCKBACK;
+
+			switch(weight)
+			{
+				case 2:
+				{
+					knockback *= 0.75;
+				}
+				case 3:
+				{
+					knockback *= 0.55;
+				}
+				case 4:
+				{
+					knockback *= 0.35;
+				}
+				case 5:
+				{
+					knockback *= 0.25;
+				}
+			}
 
 			knockback *= pushforcemulti; //here we do math depending on how much extra pushforce they got.
 
 			if(b_thisNpcIsABoss[EnemiesHit[i]])
 			{
-				knockback *= 0.5; //They take half knockback
+				knockback *= 0.65; //They take half knockback
 			}
 
 			if(knockback < (ENFORCER_KNOCKBACK * pushforcemulti * 0.25))
