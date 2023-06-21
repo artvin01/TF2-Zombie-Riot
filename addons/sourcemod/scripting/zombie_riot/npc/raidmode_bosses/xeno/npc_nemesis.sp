@@ -282,17 +282,17 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		if(!NpcStats_IsEnemySilenced(npc.index))
 		{
-			npc.m_flMeleeArmor = 0.625;
-			npc.m_flRangedArmor = 0.5;
+			npc.m_flMeleeArmor = 0.25;
+			npc.m_flRangedArmor = 0.25;
 		}
 		else
 		{
-			npc.m_flMeleeArmor = 0.9375;
-			npc.m_flRangedArmor = 0.75;
+			npc.m_flMeleeArmor = 0.30;
+			npc.m_flRangedArmor = 0.30;
 		}
 		//silence doesnt completly delete it, but moreso, nerf it.
 
-		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4000;
+		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3500;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 		{
@@ -672,7 +672,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		if(f_NemesisHitBoxStart[npc.index] < gameTime && f_NemesisHitBoxEnd[npc.index] > gameTime)
 		{
-			Nemesis_AreaAttack(npc.index, 1500.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0});
+			Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0});
 		}
 
 		if(npc.m_flAttackHappens < gameTime)
@@ -1504,7 +1504,7 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 			CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
 			int InfectionCount = 20;
-			StartBleedingTimer_Against_Client(victim, entity, 25.0, InfectionCount);
+			StartBleedingTimer_Against_Client(victim, entity, 100.0, InfectionCount);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));

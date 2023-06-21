@@ -4707,6 +4707,8 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 	return false;
 }
 
+int GetClosestTarget_EnemiesToCollect[MAXENTITIES];
+int GetClosestTarget_Enemy_Type[MAXENTITIES];
 
 stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
@@ -4719,8 +4721,6 @@ stock int GetClosestTarget(int entity,
 	   float fldistancelimitAllyNPC = 350.0,
 	   bool IgnorePlayers = false)
 {
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 	if(EntityLocation[2] == 0.0)
 	{
@@ -4730,10 +4730,16 @@ stock int GetClosestTarget(int entity,
 
 	HasPathfollower = PF_Exists(entity);
 
-
-	float fldistancelimit_Inside = fldistancelimit * fldistancelimit;
-	float fldistancelimit_Inside_AllyNpc = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
+	Zero(GetClosestTarget_EnemiesToCollect);
+	Zero(GetClosestTarget_Enemy_Type);
+	/*
+		1: player
+		2: player enemy npc
+		3: player ally npc
+		4: buildings
+	*/
 	
+
 	if(searcher_team != 2 && !IgnorePlayers)
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
@@ -4750,39 +4756,7 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-					//	static float TargetLocation[3]; 
-					//	GetClientAbsOrigin( i, TargetLocation ); 
-						
-					//	static float distance;
-					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						static float DistancePathed;
-						if(HasPathfollower)
-						{
-							PF_IsPathToEntityPossible(entity, i, DistancePathed);
-						}
-						else
-						{
-							static float TargetLocation[3]; 
-							GetClientAbsOrigin( i, TargetLocation ); 
-							DistancePathed = GetVectorDistance( EntityLocation, TargetLocation); 
-						}
-
-						if(DistancePathed < fldistancelimit)
-						{
-							if( TargetDistance ) 
-							{
-								if( DistancePathed < TargetDistance ) 
-								{
-									ClosestTarget = i; 
-									TargetDistance = DistancePathed;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = i; 
-								TargetDistance = DistancePathed;
-							}	
-						}	
+						GetClosestTarget_AddTarget(i, 1);
 					}			
 				}
 			}
@@ -4817,38 +4791,7 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-					//	static float TargetLocation[3]; 
-					//	GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-							
-					//	static float distance;
-					//	distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-						static float DistancePathed;
-						if(HasPathfollower)
-						{
-							PF_IsPathToEntityPossible(entity, entity_close, DistancePathed);
-						}
-						else
-						{
-							static float TargetLocation[3]; 
-							GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-						}
-						
-						if(DistancePathed < fldistancelimit)
-						{
-							if( TargetDistance ) 
-							{
-								if( DistancePathed < TargetDistance ) 
-								{
-									ClosestTarget = entity_close; 
-									TargetDistance = DistancePathed;		  
-								}
-							} 
-							else 
-							{
-								ClosestTarget = entity_close; 
-								TargetDistance = DistancePathed;
-							}	
-						}
+						GetClosestTarget_AddTarget(entity_close, 2);
 					}
 				}
 			}
@@ -4872,32 +4815,7 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						static float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-
-						if(distance < fldistancelimit_Inside_AllyNpc)
-						{
-							static float DistancePathed;
-							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
-							{
-								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								if( TargetDistance ) 
-								{
-									if( DistancePathed < TargetDistance ) 
-									{
-										ClosestTarget = entity_close; 
-										TargetDistance = DistancePathed;		  
-									}
-								} 
-								else 
-								{
-									ClosestTarget = entity_close; 
-									TargetDistance = DistancePathed;
-								}
-							}
-						}	
+						GetClosestTarget_AddTarget(entity_close, 3);
 					}
 				}
 			}
@@ -4905,7 +4823,8 @@ stock int GetClosestTarget(int entity,
 	}
 	
 #if defined ZR
-	if(searcher_team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings)
+	CClotBody npcSearch = view_as<CClotBody>(entity);
+	if(searcher_team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings && (npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget])) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && searcher_team != 2)
 #endif
@@ -4925,38 +4844,111 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						static float TargetLocation[3]; 
-						GetEntPropVector( entity_close, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-							
-						float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-
-						if(distance < fldistancelimit_Inside_AllyNpc)
-						{
-							static float DistancePathed;
-							if(PF_IsPathToEntityPossible(entity, entity_close, DistancePathed))
-							{
-								//the entity could be elevated, and thus cause the npc to walk in place all the time, bad....
-								if( TargetDistance ) 
-								{
-									if( DistancePathed < TargetDistance ) 
-									{
-										ClosestTarget = entity_close; 
-										TargetDistance = DistancePathed;		  
-									}
-								} 
-								else 
-								{
-									ClosestTarget = entity_close; 
-									TargetDistance = DistancePathed;
-								}
-							}
-						}	
+						GetClosestTarget_AddTarget(entity_close, 4);
 					}
 				}
 			}
 		}
 	}
-	return ClosestTarget; 
+	return GetClosestTarget_Internal(entity, HasPathfollower, fldistancelimit, fldistancelimitAllyNPC, EntityLocation);
+}
+
+void GetClosestTarget_AddTarget(int entity, int type)
+{
+	for (int i = 0; i < MAXENTITIES; i++)
+	{
+		if (GetClosestTarget_EnemiesToCollect[i] == 0)
+		{
+			GetClosestTarget_EnemiesToCollect[i] = entity;
+			GetClosestTarget_Enemy_Type[i] = type;
+			i = MAXENTITIES; //same as break;
+		}
+	}	
+}
+
+int GetClosestTarget_Internal(int entity, bool HasPathfollower, float fldistancelimit, float fldistancelimitAllyNPC, float EntityLocation[3])
+{
+	int ClosestTarget = -1; 
+	float TargetDistance = 0.0;
+	int target;
+	for (int i = 0; i < MAXENTITIES; i++)
+	{
+		if (GetClosestTarget_EnemiesToCollect[i] == 0)
+		{
+			break; //none left.
+		}
+		target = GetClosestTarget_EnemiesToCollect[i];
+		/*
+		static float TargetLocation[3]; 
+		GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+						
+		static float distance;
+		distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+		*/
+			
+		static float DistancePathed;
+		if(HasPathfollower)
+		{
+			PF_IsPathToEntityPossible(entity, target, DistancePathed);
+		}
+		else
+		{
+			static float TargetLocation[3]; 
+			GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+			DistancePathed = GetVectorDistance( EntityLocation, TargetLocation); 
+		}
+
+
+		/*
+			1: player
+			2: player enemy npc
+			3: player ally npc
+			4: buildings
+		*/
+
+		float distance_limit;
+		switch(GetClosestTarget_Enemy_Type[target])
+		{
+			case 1:
+			{
+				distance_limit = fldistancelimit;
+			}
+			case 2:
+			{
+				distance_limit = fldistancelimit;
+			}
+			case 3:
+			{
+				distance_limit = fldistancelimitAllyNPC;
+			}
+			case 4:
+			{
+				distance_limit = fldistancelimitAllyNPC;
+			}
+			default:
+			{
+				distance_limit = 9999999.9;
+			}
+		}
+
+		if(DistancePathed < distance_limit)
+		{
+			if( TargetDistance ) 
+			{
+				if( DistancePathed < TargetDistance ) 
+				{
+					ClosestTarget = target; 
+					TargetDistance = DistancePathed;		  
+				}
+			}
+			else 
+			{
+				ClosestTarget = target; 
+				TargetDistance = DistancePathed;
+			}
+		}
+	}	
+	return ClosestTarget;
 }
 
 stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
@@ -8763,7 +8755,7 @@ static void ReportBadPosition(const float pos[3])
 
 float GetRandomRetargetTime()
 {
-	return GetRandomFloat(3.0, 5.0);
+	return GetRandomFloat(3.0, 4.0);
 }
 
 public void NpcStartTouch(Address pThis, int target)
@@ -8780,8 +8772,14 @@ public void NpcStartTouch(Address pThis, int target)
 				if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
 				{
 					npc.m_iTarget = target;
+					npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 				}
 			}
-		}	
+			//not valid enemy somehow, we dont do anything.
+		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
+		}
 	}
 }

@@ -2056,4 +2056,8 @@
 	{
 		"en"	"Push level increased to 80"
 	}
+	"Mlynar Sword Desc"
+	{
+		"en"	"Gain 45% damage resistance\nGain 50% less knockback\nYou cannot attack normally and reflect damage onto enemies depending on your damage\nYou charge damage by standing around, standing near enemies, and being hurt, all with their own charge meter.\nWeapon has no damage falloff with more enemies hit."
+	}
 }
