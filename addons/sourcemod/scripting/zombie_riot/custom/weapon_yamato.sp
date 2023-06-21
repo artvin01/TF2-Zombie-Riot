@@ -15,6 +15,9 @@ static int g_particleImpactTornado;
 static bool b_ATTACK[MAXTF2PLAYERS+1];
 static bool b_can_Attack[MAXTF2PLAYERS+1];
 
+static float fl_trace_delay[MAXTF2PLAYERS+1];
+static float fl_last_known_loc[MAXTF2PLAYERS+1][3];
+
 static int i_Yamato_Combo[MAXTF2PLAYERS+1];
 
 static float fl_Yamato_Motivation[MAXTF2PLAYERS+1];
@@ -81,6 +84,7 @@ public void Npc_OnTakeDamage_Yamato(int client, int damagetype)
 
 void Reset_stats_Yamato_Global()	//happens on mapchange!
 {
+	Zero(fl_trace_delay);
 	Zero(TimerYamatoManagement);
 	Zero(f_Yamatohuddelay); //Only needs to get reset on map change, not disconnect.
 	Zero(i_Yamato_Rainsword_Count);
@@ -299,20 +303,27 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
 
 	float angles[3];
 	float UserLoc[3];
-	
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client);
+	float LookatVec[3];
 	
 	GetClientEyePosition(client, UserLoc);
 	GetClientEyeAngles(client, angles);
 	
-	float LookatVec[3];
-	
-	Handle test = TR_TraceRayFilterEx(UserLoc, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-	TR_GetEndPosition(LookatVec, test);
-	CloseHandle(test);
-	
-	FinishLagCompensation_Base_boss();
+	if(fl_trace_delay[client]<=GetGameTime())
+	{
+		float test_vec[3];
+		fl_trace_delay[client] = GetGameTime() + 0.1;
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+		
+		Handle test = TR_TraceRayFilterEx(UserLoc, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+		TR_GetEndPosition(test_vec, test);
+		CloseHandle(test);
+		
+		fl_last_known_loc[client]= test_vec;
+		
+		FinishLagCompensation_Base_boss();
+	}
+	LookatVec = fl_last_known_loc[client];
 	float distance = 120.0;
 	
 	float tempAngles[3], endLoc[3], Direction[3];
