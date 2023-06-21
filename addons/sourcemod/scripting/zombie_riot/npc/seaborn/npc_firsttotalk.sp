@@ -69,6 +69,7 @@ methodmap FirstToTalk < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcInternalId[npc.index] = FIRSTTOTALK;
+		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

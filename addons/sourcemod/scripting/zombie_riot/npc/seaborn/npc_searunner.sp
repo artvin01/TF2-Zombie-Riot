@@ -72,6 +72,7 @@ methodmap SeaRunner < CClotBody
 		// 4000 x 0.15
 
 		i_NpcInternalId[npc.index] = data[0] ? SEARUNNER_ALT : SEARUNNER;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

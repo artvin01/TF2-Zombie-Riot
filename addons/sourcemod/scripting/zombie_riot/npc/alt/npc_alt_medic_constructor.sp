@@ -114,6 +114,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "3500", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_HEALER_3;	//3 being the 3rd stage of alt waves.
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

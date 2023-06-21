@@ -136,6 +136,7 @@ methodmap Mecha_Scout < CClotBody
 		Mecha_Scout npc = view_as<Mecha_Scout>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.0", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_SCOUT;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

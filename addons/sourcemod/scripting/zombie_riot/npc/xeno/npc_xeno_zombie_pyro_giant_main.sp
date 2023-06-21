@@ -136,6 +136,7 @@ methodmap XenoPyroGiant < CClotBody
 		
 		
 		i_NpcInternalId[npc.index] = XENO_GIANT_PYRO_MAIN;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

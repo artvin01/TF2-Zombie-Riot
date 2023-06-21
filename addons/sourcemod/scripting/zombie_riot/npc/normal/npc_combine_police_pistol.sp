@@ -140,6 +140,7 @@ methodmap Combine_Police_Pistol < CClotBody
 		Combine_Police_Pistol npc = view_as<Combine_Police_Pistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "550", ally, false));
 		
 		i_NpcInternalId[npc.index] = COMBINE_POLICE_PISTOL;
+		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -68,6 +68,7 @@ methodmap SeabornPyro < CClotBody
 		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_PYRO;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

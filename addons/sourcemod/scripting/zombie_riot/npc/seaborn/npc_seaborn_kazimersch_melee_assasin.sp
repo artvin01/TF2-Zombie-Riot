@@ -114,6 +114,7 @@ methodmap KazimierzKnightAssasin < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_ASSASIN_MELEE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

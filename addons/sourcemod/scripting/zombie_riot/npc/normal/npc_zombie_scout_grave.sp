@@ -136,6 +136,7 @@ methodmap Scout < CClotBody
 		Scout npc = view_as<Scout>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = SCOUT_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

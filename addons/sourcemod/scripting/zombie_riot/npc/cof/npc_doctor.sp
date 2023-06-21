@@ -86,6 +86,7 @@ methodmap Doctor < CClotBody
 	{
 		Doctor npc = view_as<Doctor>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/doctor_purnell.mdl", "1.15", data[0] == 'f' ? "200000" : "30000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEDOCTOR;
+		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");

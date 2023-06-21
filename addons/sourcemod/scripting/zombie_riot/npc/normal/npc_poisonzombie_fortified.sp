@@ -129,6 +129,7 @@ methodmap FortifiedPoisonZombie < CClotBody
 		FortifiedPoisonZombie npc = view_as<FortifiedPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_POISON_ZOMBIE;
+		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -181,6 +181,7 @@ methodmap XenoCombineElite < CClotBody
 		XenoCombineElite npc = view_as<XenoCombineElite>(CClotBody(vecPos, vecAng, "models/combine_super_soldier.mdl", "1.15", "1750", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_ELITE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

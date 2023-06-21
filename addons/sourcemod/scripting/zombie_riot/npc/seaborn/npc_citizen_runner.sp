@@ -13,6 +13,7 @@ methodmap CitizenRunner < CClotBody
 		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false));
 		
 		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

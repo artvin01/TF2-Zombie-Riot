@@ -305,6 +305,7 @@ methodmap CuredFatherGrigori < CClotBody
 		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", true, true, false));
 		
 		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
+		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

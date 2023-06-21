@@ -136,6 +136,7 @@ methodmap Engineer < CClotBody
 		Engineer npc = view_as<Engineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = ENGINEER_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

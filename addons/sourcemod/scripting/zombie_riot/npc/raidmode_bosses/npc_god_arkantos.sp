@@ -202,6 +202,7 @@ methodmap GodArkantos < CClotBody
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_GOD_ARKANTOS;
+		i_NpcWeight[npc.index] = 4;
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

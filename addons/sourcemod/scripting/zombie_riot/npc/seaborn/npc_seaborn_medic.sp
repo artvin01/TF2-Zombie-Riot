@@ -48,6 +48,7 @@ methodmap SeabornMedic < CClotBody
 		SeabornMedic npc = view_as<SeabornMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_MEDIC;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_SWIM_LOSERSTATE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

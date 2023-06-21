@@ -16,6 +16,7 @@ methodmap MedivalTrebuchet < CClotBody
 	{
 		MedivalTrebuchet npc = view_as<MedivalTrebuchet>(CClotBody(vecPos, vecAng, NPCModel, "1.35", "5000", ally));
 		i_NpcInternalId[npc.index] = MEDIVAL_TREBUCHET;
+		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

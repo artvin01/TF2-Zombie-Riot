@@ -10,6 +10,7 @@ methodmap BarrackArbelast < BarrackBody
 		BarrackArbelast npc = view_as<BarrackArbelast>(BarrackBody(client, vecPos, vecAng, "250"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARBELAST;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArbelast_ClotThink);
 

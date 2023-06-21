@@ -88,6 +88,7 @@ methodmap Addicition < CClotBody
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEADDICTION;
+		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");

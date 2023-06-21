@@ -179,6 +179,7 @@ methodmap RaidbossNemesis < CClotBody
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 
 		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_NEMESIS;
+		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

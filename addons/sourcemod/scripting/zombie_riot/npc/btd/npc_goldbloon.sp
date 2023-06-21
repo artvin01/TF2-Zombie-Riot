@@ -137,6 +137,7 @@ methodmap GoldBloon < CClotBody
 		GoldBloon npc = view_as<GoldBloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally, false, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_GOLDBLOON;
+		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_iBleedType = SpriteNumber() ? BLEEDTYPE_METAL : BLEEDTYPE_RUBBER;

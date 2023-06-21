@@ -5597,13 +5597,25 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy])
 	{							
 		float vAngles[3], vDirection[3];
-										
-		GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles); 
-										
-		if(vAngles[0] > -45.0)
+
+		if(attacker <= MaxClients)	
 		{
-			vAngles[0] = -45.0;
+			GetClientEyeAngles(attacker, vAngles);
 		}
+		else
+		{
+			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles); 
+		}
+		
+		if(vAngles[0] < -40.0) //if they look up too much, we set it.
+		{
+			vAngles[0] = -40.0;
+		}
+		else if(vAngles[0] > -5.0) //if they look down too much, we set it.
+		{
+			vAngles[0] = -5.0;
+		}
+										
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
@@ -5654,7 +5666,10 @@ public void NpcJumpThink(int iNPC)
 		CClotBody npc = view_as<CClotBody>(iNPC);
 		float Jump_1_frame[3];
 		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-		Jump_1_frame[2] += 20.0;	
+
+		if (npc.IsOnGround())
+			Jump_1_frame[2] += 20.0;	
+
 		SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 		npc.SetVelocity(f3_KnockbackToTake[iNPC]);
 	}
@@ -7456,6 +7471,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_ReloadDelay[entity] = 0.0;
 	fl_InJump[entity] = 0.0;
 	fl_DoingAnimation[entity] = 0.0;
+	i_NpcWeight[entity] = 0;
 	fl_NextRangedBarrage_Spam[entity] = 0.0;
 	fl_NextRangedBarrage_Singular[entity] = 0.0;
 	b_CannotBeHeadshot[entity] = false;

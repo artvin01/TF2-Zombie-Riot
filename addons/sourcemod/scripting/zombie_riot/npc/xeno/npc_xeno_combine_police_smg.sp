@@ -170,6 +170,7 @@ methodmap XenoCombinePoliceSmg < CClotBody
 		XenoCombinePoliceSmg npc = view_as<XenoCombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "900", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_POLICE_SMG;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

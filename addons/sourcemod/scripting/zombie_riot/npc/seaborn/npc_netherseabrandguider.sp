@@ -78,6 +78,7 @@ methodmap SeaBrandguider < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		i_NpcInternalId[npc.index] = carrier ? SEABRANDGUIDER_CARRIER : (elite ? SEABRANDGUIDER_ALT : SEABRANDGUIDER);
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

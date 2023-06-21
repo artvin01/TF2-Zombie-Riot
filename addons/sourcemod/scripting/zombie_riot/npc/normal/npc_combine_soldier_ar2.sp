@@ -171,6 +171,7 @@ methodmap CombineSoldierAr2 < CClotBody
 		CombineSoldierAr2 npc = view_as<CombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_AR2;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

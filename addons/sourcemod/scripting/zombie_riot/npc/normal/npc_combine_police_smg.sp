@@ -170,6 +170,7 @@ methodmap CombinePoliceSmg < CClotBody
 		CombinePoliceSmg npc = view_as<CombinePoliceSmg>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "700", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_POLICE_SMG;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

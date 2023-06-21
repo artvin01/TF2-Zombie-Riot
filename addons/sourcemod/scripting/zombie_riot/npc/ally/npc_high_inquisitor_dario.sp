@@ -109,6 +109,7 @@ methodmap HighInquisitorDario < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");		
 
 		i_NpcInternalId[npc.index] = EMPEROR_BLADE_PURSUER;
+		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

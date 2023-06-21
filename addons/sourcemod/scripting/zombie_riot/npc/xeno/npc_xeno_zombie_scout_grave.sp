@@ -141,6 +141,7 @@ methodmap XenoScout < CClotBody
 		
 		
 		i_NpcInternalId[npc.index] = XENO_SCOUT_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

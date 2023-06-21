@@ -74,6 +74,7 @@ methodmap Simon < CClotBody
 		
 		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.15", data[0] == 'f' ? "300000" : "200000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = BOOKSIMON;
+		i_NpcWeight[npc.index] = 3;
 		
 		int body = EntRefToEntIndex(SimonRagdollRef);
 		if(body > MaxClients)

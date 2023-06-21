@@ -139,6 +139,7 @@ methodmap Sniper_railgunner < CClotBody
 		Sniper_railgunner npc = view_as<Sniper_railgunner>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SNIPER_RAILGUNNER;
+		i_NpcWeight[npc.index] = 1;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -10,6 +10,7 @@ methodmap BarrackLongbow < BarrackBody
 		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_LONGBOW;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackLongbow_ClotThink);
 

@@ -169,6 +169,7 @@ methodmap SpyCloaked < CClotBody
 		SpyCloaked npc = view_as<SpyCloaked>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "18000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_HALF_CLOACKED;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

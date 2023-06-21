@@ -147,6 +147,7 @@ methodmap XenoSoldierMinion < CClotBody
 		
 		
 		i_NpcInternalId[npc.index] = XENO_SOLDIER_ZOMBIE_MINION;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

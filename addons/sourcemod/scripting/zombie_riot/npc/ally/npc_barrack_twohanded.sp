@@ -10,6 +10,7 @@ methodmap BarrackTwoHanded < BarrackBody
 		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_TWOHANDED;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackTwoHanded_ClotThink);
 

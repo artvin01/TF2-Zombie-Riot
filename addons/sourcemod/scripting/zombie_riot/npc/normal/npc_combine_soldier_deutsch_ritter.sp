@@ -168,6 +168,7 @@ methodmap CombineDeutsch < CClotBody
 		CombineDeutsch npc = view_as<CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_DEUTSCH_RITTER;
+		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		SetVariantInt(1);
