@@ -5607,9 +5607,9 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles); 
 		}
 		
-		if(vAngles[0] < -25.0) //if they look up too much, we set it.
+		if(vAngles[0] < -40.0) //if they look up too much, we set it.
 		{
-			vAngles[0] = -25.0;
+			vAngles[0] = -40.0;
 		}
 		else if(vAngles[0] > -5.0) //if they look down too much, we set it.
 		{
