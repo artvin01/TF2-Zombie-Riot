@@ -185,6 +185,7 @@ methodmap Donnerkrieg < CClotBody
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_DONNERKRIEG;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

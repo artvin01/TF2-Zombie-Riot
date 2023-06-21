@@ -133,6 +133,7 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 		FortifiedHeadcrabZombie npc = view_as<FortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "500", ally, false));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_HEADCRAB_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

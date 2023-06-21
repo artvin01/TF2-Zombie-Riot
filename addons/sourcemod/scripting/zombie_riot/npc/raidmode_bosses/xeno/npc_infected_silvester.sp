@@ -510,6 +510,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
 			i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
+			i_NpcWeight[npc.index] = 4;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
 

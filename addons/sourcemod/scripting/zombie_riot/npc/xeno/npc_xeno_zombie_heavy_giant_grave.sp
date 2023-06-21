@@ -138,6 +138,7 @@ methodmap XenoHeavyGiant < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		i_NpcInternalId[npc.index] = XENO_HEAVY_ZOMBIE_GIANT;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

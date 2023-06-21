@@ -10,6 +10,7 @@ methodmap BarrackMilitia < BarrackBody
 		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_MILITIA;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackMilitia_ClotThink);
 

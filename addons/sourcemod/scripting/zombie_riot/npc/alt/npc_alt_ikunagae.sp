@@ -176,6 +176,7 @@ methodmap Ikunagae < CClotBody
 		
 		
 		i_NpcInternalId[npc.index] = ALT_IKUNAGAE;
+		i_NpcWeight[npc.index] = 3;
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

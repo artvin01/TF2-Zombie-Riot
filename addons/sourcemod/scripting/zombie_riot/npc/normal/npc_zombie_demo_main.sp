@@ -84,6 +84,7 @@ methodmap DemoMain < CClotBody
 		DemoMain npc = view_as<DemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = DEMO_MAIN;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

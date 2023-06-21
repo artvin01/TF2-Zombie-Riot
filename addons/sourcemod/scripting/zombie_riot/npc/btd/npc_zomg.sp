@@ -116,6 +116,7 @@ methodmap Zomg < CClotBody
 		Zomg npc = view_as<Zomg>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/zomg.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_ZOMG;
+		i_NpcWeight[npc.index] = 4;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

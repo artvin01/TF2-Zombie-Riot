@@ -135,6 +135,7 @@ methodmap Spy < CClotBody
 		Spy npc = view_as<Spy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "4000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_FACESTABBER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

@@ -129,6 +129,7 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 		FortifiedGiantPoisonZombie npc = view_as<FortifiedGiantPoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "3000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = FORTIFIED_GIANT_POISON_ZOMBIE;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

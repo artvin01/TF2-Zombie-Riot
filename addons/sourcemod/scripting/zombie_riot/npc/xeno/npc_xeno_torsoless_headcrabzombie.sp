@@ -139,6 +139,7 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	
 		i_NpcInternalId[npc.index] = XENO_TORSOLESS_HEADCRAB_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

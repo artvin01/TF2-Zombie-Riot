@@ -14,6 +14,7 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		EndSpeaker3 npc = view_as<EndSpeaker3>(CClotBody(vecPos, vecAng, "models/antlion.mdl", "1.15", health, ally, false));
 		
 		i_NpcInternalId[npc.index] = ENDSPEAKER_3;
+		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLION_BURROW_OUT");
 		

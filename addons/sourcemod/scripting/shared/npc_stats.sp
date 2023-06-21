@@ -7471,6 +7471,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_ReloadDelay[entity] = 0.0;
 	fl_InJump[entity] = 0.0;
 	fl_DoingAnimation[entity] = 0.0;
+	i_NpcWeight[entity] = 0;
 	fl_NextRangedBarrage_Spam[entity] = 0.0;
 	fl_NextRangedBarrage_Singular[entity] = 0.0;
 	b_CannotBeHeadshot[entity] = false;

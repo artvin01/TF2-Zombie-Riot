@@ -46,6 +46,7 @@ methodmap MedivalRam < CClotBody
 	{
 		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.8", "30000", ally, false, true));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
+		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

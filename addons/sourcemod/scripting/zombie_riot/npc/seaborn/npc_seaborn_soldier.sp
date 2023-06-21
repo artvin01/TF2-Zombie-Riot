@@ -72,6 +72,7 @@ methodmap SeabornSoldier < CClotBody
 		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

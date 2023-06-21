@@ -101,6 +101,7 @@ methodmap AltMedicCharger < CClotBody
 		
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_CHARGER;
+		i_NpcWeight[npc.index] = 1;
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

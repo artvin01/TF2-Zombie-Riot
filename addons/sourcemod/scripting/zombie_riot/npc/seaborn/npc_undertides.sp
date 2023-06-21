@@ -66,6 +66,7 @@ methodmap UnderTides < CClotBody
 		// 100,000 x 0.15
 
 		i_NpcInternalId[npc.index] = UNDERTIDES;
+		i_NpcWeight[npc.index] = 999;
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

@@ -134,6 +134,7 @@ methodmap SpyThief < CClotBody
 		SpyThief npc = view_as<SpyThief>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "7500", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_THIEF;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

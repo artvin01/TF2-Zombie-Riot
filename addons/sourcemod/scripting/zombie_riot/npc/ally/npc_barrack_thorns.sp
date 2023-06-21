@@ -11,6 +11,7 @@ methodmap BarrackThorns < BarrackBody
 
 
 		i_NpcInternalId[npc.index] = BARRACK_THORNS;
+		i_NpcWeight[npc.index] = 2;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackThorns_ClotThink);
 

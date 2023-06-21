@@ -113,6 +113,7 @@ methodmap BFB < CClotBody
 		BFB npc = view_as<BFB>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bfb.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BFB;
+		i_NpcWeight[npc.index] = 3;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

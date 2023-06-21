@@ -149,6 +149,7 @@ methodmap Schwertkrieg < CClotBody
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SCHWERTKRIEG;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

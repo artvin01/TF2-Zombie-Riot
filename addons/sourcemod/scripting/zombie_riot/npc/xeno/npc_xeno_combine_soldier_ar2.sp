@@ -170,6 +170,7 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_AR2;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

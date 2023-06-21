@@ -129,6 +129,7 @@ methodmap Mecha_PyroGiant < CClotBody
 		Mecha_PyroGiant npc = view_as<Mecha_PyroGiant>(CClotBody(vecPos, vecAng, "models/bots/pyro/bot_pyro.mdl", "1.5", "75000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_PYROGIANT;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

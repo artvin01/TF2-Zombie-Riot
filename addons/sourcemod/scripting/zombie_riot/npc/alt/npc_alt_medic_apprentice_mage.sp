@@ -112,6 +112,7 @@ methodmap AltMedicApprenticeMage < CClotBody
 		AltMedicApprenticeMage npc = view_as<AltMedicApprenticeMage>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_APPRENTICE_MAGE;
+		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

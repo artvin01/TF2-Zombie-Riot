@@ -181,6 +181,7 @@ methodmap XenoCombineSwordsman < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_SWORDSMAN;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

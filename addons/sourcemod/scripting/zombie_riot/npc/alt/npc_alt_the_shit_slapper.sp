@@ -138,6 +138,7 @@ methodmap The_Shit_Slapper < CClotBody
 		The_Shit_Slapper npc = view_as<The_Shit_Slapper>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "4.5", "500", ally, false));
 		
 		i_NpcInternalId[npc.index] = ALT_The_Shit_Slapper;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

@@ -147,6 +147,7 @@ methodmap PhantomKnight < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!
 		i_NpcInternalId[npc.index] = PHANTOM_KNIGHT;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

@@ -24,6 +24,7 @@ methodmap SeabornDemo < CClotBody
 		SeabornDemo npc = view_as<SeabornDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "750", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_DEMO;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

@@ -122,6 +122,7 @@ methodmap Bad < CClotBody
 		Bad npc = view_as<Bad>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BAD;
+		i_NpcWeight[npc.index] = 5;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

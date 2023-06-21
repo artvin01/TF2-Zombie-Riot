@@ -77,6 +77,7 @@ methodmap SeaSpitter < CClotBody
 		}
 		
 		i_NpcInternalId[npc.index] = data[0] ? SEASPITTER_ALT : SEASPITTER;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

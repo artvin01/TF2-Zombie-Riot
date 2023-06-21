@@ -133,6 +133,7 @@ methodmap HeavyGiant < CClotBody
 		HeavyGiant npc = view_as<HeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = HEAVY_ZOMBIE_GIANT;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

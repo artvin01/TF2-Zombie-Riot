@@ -136,6 +136,7 @@ methodmap Mecha_Heavy < CClotBody
 		Mecha_Heavy npc = view_as<Mecha_Heavy>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.0", "5000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_HEAVY;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

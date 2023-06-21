@@ -170,6 +170,7 @@ methodmap SpyTrickstabber < CClotBody
 		SpyTrickstabber npc = view_as<SpyTrickstabber>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_TRICKSTABBER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

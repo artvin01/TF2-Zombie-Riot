@@ -155,6 +155,7 @@ methodmap L4D2_Tank < CClotBody
 		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
 		
 		i_NpcInternalId[npc.index] = L4D2_TANK;
+		i_NpcWeight[npc.index] = 4;
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);

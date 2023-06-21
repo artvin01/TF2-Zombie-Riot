@@ -132,6 +132,7 @@ methodmap AltMedicBerseker < CClotBody
 		AltMedicBerseker npc = view_as<AltMedicBerseker>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.00", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_BERSERKER;
+		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

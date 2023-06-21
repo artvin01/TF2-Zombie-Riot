@@ -14,6 +14,7 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 		EndSpeaker2 npc = view_as<EndSpeaker2>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.5", health, ally, false));
 		
 		i_NpcInternalId[npc.index] = ENDSPEAKER_2;
+		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 

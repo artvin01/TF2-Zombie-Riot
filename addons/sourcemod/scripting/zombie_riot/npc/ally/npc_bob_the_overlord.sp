@@ -210,6 +210,7 @@ methodmap BobTheGod < CClotBody
 		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", true, true));
 		
 		i_NpcInternalId[npc.index] = BOB_THE_GOD_OF_GODS;
+		i_NpcWeight[npc.index] = 999;
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

@@ -137,6 +137,7 @@ methodmap SniperMain < CClotBody
 		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
 		i_NpcInternalId[npc.index] = SNIPER_MAIN;
+		i_NpcWeight[npc.index] = 1;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

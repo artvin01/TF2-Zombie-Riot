@@ -269,6 +269,7 @@ methodmap TrueFusionWarrior < CClotBody
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

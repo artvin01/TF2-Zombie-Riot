@@ -120,6 +120,7 @@ methodmap NearlSwordAbility < CClotBody
 		NearlSwordAbility npc = view_as<NearlSwordAbility>(CClotBody(vecPos, vecAng, "models/weapons/w_models/w_drg_ball.mdl", "1.0", "100", ally));
 		
 		i_NpcInternalId[npc.index] = NEARL_SWORD;
+		i_NpcWeight[npc.index] = 999;
 		
 //		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

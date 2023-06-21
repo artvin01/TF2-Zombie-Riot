@@ -133,6 +133,7 @@ methodmap Mecha_Engineer < CClotBody
 		Mecha_Engineer npc = view_as<Mecha_Engineer>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.0", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MECHA_ENGINEER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

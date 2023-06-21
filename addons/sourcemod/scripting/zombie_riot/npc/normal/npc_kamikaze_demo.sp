@@ -70,6 +70,7 @@ methodmap Kamikaze < CClotBody
 		Kamikaze npc = view_as<Kamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		
 		i_NpcInternalId[npc.index] = KAMIKAZE_DEMO;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

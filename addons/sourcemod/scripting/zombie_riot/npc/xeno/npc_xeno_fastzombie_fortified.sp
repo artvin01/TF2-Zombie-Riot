@@ -184,6 +184,7 @@ methodmap XenoFortifiedFastZombie < CClotBody
 		XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "400", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FORTIFIED_FASTZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

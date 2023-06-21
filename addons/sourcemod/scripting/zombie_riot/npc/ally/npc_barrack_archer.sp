@@ -11,6 +11,7 @@ methodmap BarrackArcher < BarrackBody
 		BarrackArcher npc = view_as<BarrackArcher>(BarrackBody(client, vecPos, vecAng, "110"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARCHER;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArcher_ClotThink);
 

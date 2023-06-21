@@ -7,7 +7,16 @@
 #define ENFORCER_WEIGHT_PER_HEALTH	1000	// Every X health is 1 weight level for the enemy
 #define ENFORCER_KNOCKBACK		1500.0	// Knockback when push level and enemy weight is the same
 #define ENFORCER_STUN_RATIO		0.00125	// Knockback converted into stun duration
+/*
+	1 : light
+	2 : medium
+	3 : heavy (bosses and giants)
+	4 : very heavy (slow enemies)
+	5 : extreme heavy (some raids and ememies)
+	6 : unused
 
+	999: un-moveable
+*/
 static int EnemiesHit[ENFORCER_MAX_TARGETS];
 
 public void Weapon_Enforcer_M2_Weight2(int client, int weapon, bool crit, int slot)

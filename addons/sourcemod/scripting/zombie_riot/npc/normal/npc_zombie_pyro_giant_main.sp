@@ -129,6 +129,7 @@ methodmap PyroGiant < CClotBody
 		PyroGiant npc = view_as<PyroGiant>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.5", "75000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = GIANT_PYRO_MAIN;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

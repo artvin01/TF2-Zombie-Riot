@@ -153,6 +153,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_SON_OF_OSIRIS;
+		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

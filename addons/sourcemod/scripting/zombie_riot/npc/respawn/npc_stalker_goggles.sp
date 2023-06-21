@@ -44,6 +44,7 @@ methodmap StalkerGoggles < StalkerShared
 		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "46664666", ally));
 		
 		i_NpcInternalId[npc.index] = STALKER_GOGGLES;
+		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);

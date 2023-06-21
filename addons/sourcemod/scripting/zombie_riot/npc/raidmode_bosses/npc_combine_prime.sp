@@ -149,6 +149,7 @@ methodmap CombinePrime < CClotBody
 		CombinePrime npc = view_as<CombinePrime>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

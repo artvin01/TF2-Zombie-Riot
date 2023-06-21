@@ -174,6 +174,7 @@ methodmap NecroCalcium < CClotBody
 		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", true, true));
 		
 		i_NpcInternalId[npc.index] = NECRO_CALCIUM;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

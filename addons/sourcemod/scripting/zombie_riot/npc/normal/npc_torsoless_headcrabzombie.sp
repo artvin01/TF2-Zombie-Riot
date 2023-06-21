@@ -135,6 +135,7 @@ methodmap TorsolessHeadcrabZombie < CClotBody
 		TorsolessHeadcrabZombie npc = view_as<TorsolessHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic_torso.mdl", "1.15", "250", ally, false));
 		
 		i_NpcInternalId[npc.index] = TORSOLESS_HEADCRAB_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

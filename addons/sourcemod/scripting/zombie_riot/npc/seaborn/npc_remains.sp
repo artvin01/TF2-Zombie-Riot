@@ -45,6 +45,7 @@ methodmap Remains < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 2);
 
 		i_NpcInternalId[npc.index] = REMAINS;
+		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		

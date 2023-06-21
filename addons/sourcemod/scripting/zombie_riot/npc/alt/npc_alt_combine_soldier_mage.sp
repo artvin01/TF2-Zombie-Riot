@@ -175,6 +175,7 @@ methodmap AltCombineMage < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
+		i_NpcWeight[npc.index] = 1;
 		
 		int iActivity = npc.LookupActivity("ACT_IDLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

@@ -87,6 +87,7 @@ methodmap KazimierzKnightArcher < CClotBody
 		}
 
 		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_KNIGHT_ARCHER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

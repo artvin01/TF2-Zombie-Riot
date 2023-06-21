@@ -177,6 +177,7 @@ methodmap Alt_CombineDeutsch < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = ALT_COMBINE_DEUTSCH_RITTER;
+		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);

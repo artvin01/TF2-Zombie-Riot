@@ -71,6 +71,7 @@ methodmap SeabornHeavy < CClotBody
 		SeabornHeavy npc = view_as<SeabornHeavy>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_HEAVY;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

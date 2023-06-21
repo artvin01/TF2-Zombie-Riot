@@ -151,6 +151,7 @@ methodmap SoldierGiant < CClotBody
 		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_BOSS;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

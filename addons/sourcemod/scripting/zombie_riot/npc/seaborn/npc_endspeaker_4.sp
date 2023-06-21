@@ -14,6 +14,7 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		EndSpeaker4 npc = view_as<EndSpeaker4>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.15", health, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ENDSPEAKER_4;
+		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN");
 		npc.AddGesture("ACT_ANTLIONGUARD_UNBURROW");
 		

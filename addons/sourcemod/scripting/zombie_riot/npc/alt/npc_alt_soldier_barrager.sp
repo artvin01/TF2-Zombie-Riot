@@ -148,6 +148,7 @@ methodmap Soldier_Barrager < CClotBody
 		Soldier_Barrager npc = view_as<Soldier_Barrager>(CClotBody(vecPos, vecAng, "models/player/Soldier.mdl", "1.0", "2000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SOLDIER_BARRAGER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
