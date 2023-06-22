@@ -285,11 +285,11 @@ public void MedivalMonk_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					SetGoalEntity(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -324,11 +324,11 @@ public void MedivalMonk_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index]);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					SetGoalEntity(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					PF_SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
+					SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -357,7 +357,7 @@ public void MedivalMonk_ClotThink(int iNPC)
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+					SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
 					PF_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{

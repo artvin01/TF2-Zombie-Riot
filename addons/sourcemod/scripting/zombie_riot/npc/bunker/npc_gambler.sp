@@ -775,11 +775,11 @@ public void TheGambler_ClotThink(int iNPC)
 			
 			//TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			//TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}//REMIND ME TO REDO THE GUNS THIS IS THE MOST UGILIEST WAY DOING THIS BUT IT WORKS STILL THANK YOU!!!
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 1425000 && npc.m_flReloadDelay < GetGameTime(npc.index) && Archers_Anhilation[npc.index])
 		{//Archer

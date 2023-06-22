@@ -2680,7 +2680,7 @@ methodmap CClotBody
 					}
 					else
 					{
-						PF_SetGoalVector(this.index, vecGoal);
+						SetGoalEntity(this.index, vecGoal);
 						SDKCall(g_hClearStuckStatus, this.GetLocomotionInterface(), "Un-Stuck");//  Sauce code :)
 					}
 				}

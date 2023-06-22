@@ -486,9 +486,9 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{	
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		} else {
-			PF_SetGoalEntity(npc.index, closest);
+			SetGoalEntity(npc.index, closest);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget > 40000 && flDistanceToTarget < 90000 && npc.m_flReloadDelay < GetGameTime() && !npc.Anger)
 		{

@@ -846,11 +846,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
 		}
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");

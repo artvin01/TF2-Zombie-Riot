@@ -599,9 +599,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, closest);
+				SetGoalEntity(npc.index, closest);
 			}
 			
 			

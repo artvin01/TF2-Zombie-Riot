@@ -200,7 +200,7 @@ public void StartChicken_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+		SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
 		PF_StartPathing(iNPC);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];

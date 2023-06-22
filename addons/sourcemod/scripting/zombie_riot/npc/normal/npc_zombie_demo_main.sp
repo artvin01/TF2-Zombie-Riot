@@ -206,11 +206,11 @@ public void DemoMain_ClotThink(int iNPC)
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 			}
 			else 
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 			

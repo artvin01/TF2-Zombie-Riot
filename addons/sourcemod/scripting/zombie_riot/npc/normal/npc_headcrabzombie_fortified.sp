@@ -219,11 +219,11 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			SetGoalEntity(npc.index, closest);
 		}
 		npc.StartPathing();
 		

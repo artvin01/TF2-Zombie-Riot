@@ -270,9 +270,9 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 				
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < 160000)
@@ -292,7 +292,7 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 						
 						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 						
-						PF_SetGoalVector(npc.index, vBackoffPos);
+						SetGoalEntity(npc.index, vBackoffPos);
 					}
 				}
 				else

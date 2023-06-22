@@ -128,9 +128,9 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		float Speed = 1500.0;
 		int PreviousProjectile;
 		EmitSoundToAll("misc/ks_tier_04.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
-		DataPack pack2 = new DataPack();
-		pack2.WriteCell(GetClientUserId(client));
-		RequestFrames(CancelSoundEarlyMlynar, 40, pack2);
+		DataPack pack3 = new DataPack();
+		pack3.WriteCell(GetClientUserId(client));
+		RequestFrames(CancelSoundEarlyMlynar, 40, pack3);
 
 		for(int repeat; repeat <= MaxRepeats; repeat ++)
 		{

@@ -309,7 +309,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		if(IsValidEntity(EntRefToEntIndex(i_IWantToThrowHim[npc.index])))
 		{
 			I_Wanna_Throw_ally = true;
-			PF_SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
+			SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
 			vecTarget = WorldSpaceCenter(EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
 			flDistanceToTarget  = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
@@ -327,11 +327,11 @@ public void L4D2_Tank_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 		//		PrintToChatAll("cutoff");
-				PF_SetGoalVector(npc.index, vPredictedPos);	
+				SetGoalEntity(npc.index, vPredictedPos);	
 			}
 			else
 			{
-				PF_SetGoalEntity(npc.index, closest);
+				SetGoalEntity(npc.index, closest);
 			}
 		}
 		if(b_ThrowPlayerImmenent[npc.index])

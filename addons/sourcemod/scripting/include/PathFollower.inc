@@ -64,14 +64,14 @@ native bool PF_Exists(int bot_entidx);
 
 
 // Set the PathFollower's goal to a vector coordinate
-native void PF_SetGoalVector(int bot_entidx, const float vec[3]);
+native void SetGoalEntity(int bot_entidx, const float vec[3]);
 // Get the PathFollower's goal to a float array
 native void PF_GetGoalVector(int bot_entidx, float out[3]);
 
 // Set the PathFollower's goal to an entity
 // - The goal entity must be a CBaseCombatCharacter-derived entity class
 // - You can call PF_IsEntityACombatCharacter to determine ahead of time whether a goal entity is valid
-native void PF_SetGoalEntity(int bot_entidx, int goal_entidx);
+native void SetGoalEntity(int bot_entidx, int goal_entidx);
 
 // You can change a PathFollower's goal as many times as you want
 // You can also switch between vector and entity goals without limitation
@@ -84,7 +84,7 @@ native void PF_SetGoalEntity(int bot_entidx, int goal_entidx);
 native bool PF_IsPathToVectorPossible(int bot_entidx, const float vec[3], float &length = -1.0);
 // Determine whether it would hypothetically be possible to build a path to the given entity
 // - Returns true if the path can be constructed, false if it's not possible
-// - The goal entity needs to be a combat character (same situation as with PF_SetGoalEntity)
+// - The goal entity needs to be a combat character (same situation as with SetGoalEntity)
 // - The paths length to the tested entity is returned as a param (length)
 native bool PF_IsPathToEntityPossible(int bot_entidx, int goal_entidx, float &length = -1.0);
 

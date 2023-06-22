@@ -218,9 +218,9 @@ public void KazimierzLongArcher_ClotThink(int iNPC)
 				
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < (800.0*800.0))

@@ -246,9 +246,9 @@ public void XenoSoldier_ClotThink(int iNPC)
 				
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			if(npc.m_flReloadIn && npc.m_flReloadIn<GetGameTime(npc.index))

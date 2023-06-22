@@ -266,11 +266,11 @@ public void GodKingRaidriar_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())//Predict their pos.
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(!b_CanIParryNow[npc.index])
 		{

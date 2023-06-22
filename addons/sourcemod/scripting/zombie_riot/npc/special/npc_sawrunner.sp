@@ -276,7 +276,7 @@ public void SawRunner_ClotThink(int iNPC)
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			SetGoalEntity(npc.index, PrimaryThreatIndex);
 			
 			//Target close enough to hit
 			if((flDistanceToTarget < 12500 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)

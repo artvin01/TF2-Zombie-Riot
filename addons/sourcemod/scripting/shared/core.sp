@@ -10,9 +10,8 @@
 #include <tf_econ_data>
 #include <tf2attributes>
 #include <lambda>
-#include <PathFollower>
-#include <PathFollower_Nav>
 #include <morecolors>
+#include <cbasenpc>
 #include <tf2utils>
 #if !defined UseDownloadTable
 #include <filenetwork>
@@ -147,25 +146,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define SENTRY_BLUEPRINT	"models/buildables/sentry1_blueprint.mdl"
 
 native any FuncToVal(Function bruh);
-
-enum
-{
-	EF_BONEMERGE			= 0x001,	// Performs bone merge on client side
-	EF_BRIGHTLIGHT 			= 0x002,	// DLIGHT centered at entity origin
-	EF_DIMLIGHT 			= 0x004,	// player flashlight
-	EF_NOINTERP				= 0x008,	// don't interpolate the next frame
-	EF_NOSHADOW				= 0x010,	// Don't cast no shadow
-	EF_NODRAW				= 0x020,	// don't draw entity
-	EF_NORECEIVESHADOW		= 0x040,	// Don't receive no shadow
-	EF_BONEMERGE_FASTCULL	= 0x080,	// For use with EF_BONEMERGE. If this is set, then it places this ent's origin at its
-										// parent and uses the parent's bbox + the max extents of the aiment.
-										// Otherwise, it sets up the parent's bones every frame to figure out where to place
-										// the aiment, which is inefficient because it'll setup the parent's bones even if
-										// the parent is not in the PVS.
-	EF_ITEM_BLINK			= 0x100,	// blink an item so that the user notices it.
-	EF_PARENT_ANIMATES		= 0x200,	// always assume that the parent entity is animating
-	EF_MAX_BITS = 10
-};
 
 enum
 {
@@ -747,9 +727,6 @@ enum
 
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
-//
-#define EF_BONEMERGE		(1 << 0)
-#define EF_PARENT_ANIMATES	(1 << 9)
 
 #define	SHAKE_START					0			// Starts the screen shake for all players within the radius.
 #define	SHAKE_STOP					1			// Stops the screen shake for all players within the radius.

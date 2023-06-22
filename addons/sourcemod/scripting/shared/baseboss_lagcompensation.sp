@@ -1,9 +1,5 @@
 #pragma semicolon 1
 
-#include <sourcemod>
-#include <dhooks>
-#include <CBaseAnimatingOverlay>
-
 #pragma newdecls required
 
 #define MAXTF2PLAYERS	36

@@ -478,12 +478,12 @@ public void BobTheGod_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget > 170)
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			else
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 			}
 			
 			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 200 && flDistanceToTarget < 1000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget > 100))
@@ -760,7 +760,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				PF_SetGoalEntity(npc.index, client);
+				SetGoalEntity(npc.index, client);
 				if (!npc.m_bmovedelay_run)
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_RUN");
@@ -780,7 +780,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				PF_SetGoalEntity(npc.index, client);
+				SetGoalEntity(npc.index, client);
 				if (!npc.m_bmovedelay_walk)
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_WALK");
@@ -988,7 +988,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		npc.StartPathing();
 		npc.m_fbGunout = false;
 		
-		PF_SetGoalVector(npc.index, vecPos);
+		SetGoalEntity(npc.index, vecPos);
 		
 		
 		
@@ -1264,7 +1264,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_bmovedelay_walk = false;
 			npc.m_bmovedelay = false;
 					
-			PF_SetGoalEntity(npc.index, client);
+			SetGoalEntity(npc.index, client);
 			
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I am coming !");

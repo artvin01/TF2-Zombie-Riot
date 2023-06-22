@@ -270,12 +270,12 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(distance > 29000.0)
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				else
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					SetGoalEntity(npc.index, vPredictedPos);
 				}
 				npc.StartPathing();
 			}
@@ -359,11 +359,11 @@ public void Addicition_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		
 		if(npc.m_bLostHalfHealth)

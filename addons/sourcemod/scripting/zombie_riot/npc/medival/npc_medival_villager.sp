@@ -403,7 +403,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+					SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
 					PF_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
@@ -418,7 +418,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			{
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(buildingentity), WorldSpaceCenter(npc.index), true);
 				
-				PF_SetGoalEntity(npc.index, buildingentity);
+				SetGoalEntity(npc.index, buildingentity);
 				PF_StartPathing(iNPC);
 				//Walk to building.
 				if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, buildingentity))
@@ -485,7 +485,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					{
 						float AproxRandomSpaceToWalkTo[3];
 						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-						PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+						SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
 						PF_StartPathing(iNPC);
 						//Walk to building.
 						if(npc.m_iChanged_WalkCycle != 4) 	
@@ -512,7 +512,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				
 				if(IsValidEnemy(npc.index,npc.m_iTarget))
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					SetGoalEntity(npc.index, npc.m_iTarget);
 					PF_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
@@ -664,7 +664,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-				PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+				SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
 				PF_StartPathing(iNPC);
 				//Walk to building.
 				if(npc.m_iChanged_WalkCycle != 4) 	
@@ -694,11 +694,11 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					SetGoalEntity(npc.index, vPredictedPos);
 				}
 				else
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				PF_StartPathing(iNPC);
 				//Walk to building.

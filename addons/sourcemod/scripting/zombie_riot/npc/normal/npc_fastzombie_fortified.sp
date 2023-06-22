@@ -288,11 +288,11 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else 
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(flDistanceToTarget < 10000)

@@ -215,11 +215,11 @@ public void BunkerBotSoldier_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime() && flDistanceToTarget < 302500 && npc.m_flReloadDelay < GetGameTime())
 		{

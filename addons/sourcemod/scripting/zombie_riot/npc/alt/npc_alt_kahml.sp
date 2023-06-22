@@ -734,11 +734,11 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(!b_kahml_annihilation[npc.index])

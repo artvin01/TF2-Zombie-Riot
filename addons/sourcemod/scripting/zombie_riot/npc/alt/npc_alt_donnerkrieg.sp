@@ -330,9 +330,9 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 					
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					SetGoalEntity(npc.index, vPredictedPos);
 				} else {
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				if(bl_nightmare_stage2[npc.index] && bl_nightmare_stage1[npc.index] && !bl_nightmare_stage3[npc.index])
 				{
@@ -431,7 +431,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						{
 							vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 						
-							PF_SetGoalVector(npc.index, vBackoffPos);
+							SetGoalEntity(npc.index, vBackoffPos);
 						}
 					}	
 				}

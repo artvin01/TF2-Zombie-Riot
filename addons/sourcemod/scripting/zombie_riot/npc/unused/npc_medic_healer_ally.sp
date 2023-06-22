@@ -394,7 +394,7 @@ public void ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAllyNotFullHealth(npc.index, PrimaryThreatIndex))
 		{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				SetGoalEntity(npc.index, PrimaryThreatIndex);
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -460,7 +460,7 @@ public void ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(flDistanceToTarget > 90000) //300 units
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
+				SetGoalEntity(npc.index, npc.m_iTargetAlly);	
 				PF_StartPathing(npc.index);
 				npc.m_bPathing = true;
 				npc.m_flGetClosestTargetTime = 0.0;
@@ -525,9 +525,9 @@ public void ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 					
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					SetGoalEntity(npc.index, vPredictedPos);
 				} else {
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				
 				//Target close enough to hit

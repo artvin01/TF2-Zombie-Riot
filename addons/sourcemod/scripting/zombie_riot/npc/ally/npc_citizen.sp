@@ -2786,7 +2786,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			SetGoalEntity(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2823,7 +2823,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 
-			PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2868,7 +2868,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 			
-			PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2879,7 +2879,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = false;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			SetGoalEntity(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2890,7 +2890,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			SetGoalEntity(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2902,12 +2902,12 @@ public void Citizen_ClotThink(int iNPC)
 			
 			if(distance > 29000.0)
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				SetGoalEntity(npc.index, npc.m_iTarget);
 			}
 			else
 			{
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vecTarget);
+				SetGoalEntity(npc.index, vecTarget);
 			}
 			
 			if(!npc.m_bPathing)

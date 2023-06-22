@@ -500,7 +500,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(flDistanceToTarget < canRetreat)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vecTarget);
+				SetGoalEntity(npc.index, vecTarget);
 				
 				npc.StartPathing();
 				pathed = true;
@@ -517,14 +517,14 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				//Predict their pos.
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
-				PF_SetGoalVector(npc.index, vecTarget);
+				SetGoalEntity(npc.index, vecTarget);
 
 				npc.StartPathing();
 				pathed = true;
 			}
 			else
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTargetRally);
+				SetGoalEntity(npc.index, npc.m_iTargetRally);
 
 				npc.StartPathing();
 				pathed = true;
@@ -599,7 +599,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
 				{
-					PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+					SetGoalEntity(npc.index, f3_SpawnPosition[npc.index]);
 					npc.StartPathing();
 					pathed = true;
 				}

@@ -478,7 +478,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		PF_SetGoalEntity(npc.index, npc.m_iTarget);
+		SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
 		
 		if(npc.m_flNextMeleeAttack < gameTime)
