@@ -69,7 +69,7 @@ methodmap SeaFounder < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		i_NpcInternalId[npc.index] = carrier ? SEAFOUNDER_CARRIER : (elite ? SEAFOUNDER_ALT : SEAFOUNDER);
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

@@ -1798,7 +1798,6 @@
 	{
 		"en"		"Good! Now Navigate to ''weapons'' and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
 		"ru"		"Отлично! Теперь перейдите к оружию и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
-		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nТеперь перейдите к оружию и купите любое оружие, какое захотите.\nОткройте чат и введите «/store» для повторного открытия магазина, если он был закрыт!"
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
 		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"

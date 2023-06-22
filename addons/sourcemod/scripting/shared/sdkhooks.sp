@@ -1970,6 +1970,14 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		case WEAPON_OCEAN, WEAPON_SPECTER:
+		{
+			//return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
+		}
+		case WEAPON_GLADIIA:
+		{
+			//return Gladiia_OnTakeDamageSelf(victim, attacker, damage);
+		}
 	}
 	return damage;
 }

@@ -982,7 +982,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
-	if(attacker <= 0)
+	if(attacker <= 0 || attacker > MaxClients)
 		return Plugin_Continue;
 		
 	Blitzkrieg npc = view_as<Blitzkrieg>(victim);

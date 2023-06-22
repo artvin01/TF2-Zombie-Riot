@@ -76,7 +76,7 @@ methodmap SeaPiercer < CClotBody
 		// 12500 x 0.15
 
 		i_NpcInternalId[npc.index] = data[0] ? SEAPIERCER_ALT : SEAPIERCER;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

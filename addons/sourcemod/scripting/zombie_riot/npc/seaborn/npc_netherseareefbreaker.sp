@@ -78,7 +78,7 @@ methodmap SeaReefbreaker < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		i_NpcInternalId[npc.index] = carrier ? SEAREEFBREAKER_CARRIER : (elite ? SEAREEFBREAKER_ALT : SEAREEFBREAKER);
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
