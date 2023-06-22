@@ -65,11 +65,11 @@ public void EndSpeaker1_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
-			SetGoalEntity(npc.index, vecTarget);
+			NPC_SetGoalEntity(npc.index, vecTarget);
 		}
 		else 
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
 		npc.StartPathing();

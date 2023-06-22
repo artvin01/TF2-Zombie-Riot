@@ -297,11 +297,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					SetGoalEntity(npc.index, vPredictedPos);
+					NPC_SetGoalEntity(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					SetGoalEntity(npc.index, npc.m_iTarget);
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -310,11 +310,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
 				}
-				PF_StartPathing(npc.index); //Charge at them!
+				NPC_StartPathing(npc.index); //Charge at them!
 			}
 			else
 			{
-				PF_StopPathing(iNPC);
+				NPC_StopPathing(iNPC);
 				npc.m_iTarget = GetClosestTarget(npc.index); //Find new target instantly.
 			}
 		}
@@ -336,11 +336,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index]);
-					SetGoalEntity(npc.index, vPredictedPos);
+					NPC_SetGoalEntity(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
+					NPC_SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -349,7 +349,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
 				}
-				PF_StartPathing(npc.index); //Charge at them!
+				NPC_StartPathing(npc.index); //Charge at them!
 			}
 			else
 			{
@@ -362,15 +362,15 @@ public void MedivalHussar_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RIDER_IDLE");
-						PF_StopPathing(iNPC);
+						NPC_StopPathing(iNPC);
 					}
 				}
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
-					PF_StartPathing(iNPC);
+					NPC_SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
+					NPC_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;

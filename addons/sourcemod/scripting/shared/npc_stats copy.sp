@@ -1921,7 +1921,7 @@ methodmap CClotBody
 	{
 		if(!CvarDisableThink.BoolValue)
 		{
-			PF_StartPathing(this.index);
+			NPC_StartPathing(this.index);
 			this.m_bPathing = true;
 		}
 	}
@@ -1929,7 +1929,7 @@ methodmap CClotBody
 	{
 		if(this.m_bPathing)
 		{
-			PF_StopPathing(this.index);
+			NPC_StopPathing(this.index);
 			this.m_bPathing = false;
 		}
 	}
@@ -2663,9 +2663,9 @@ methodmap CClotBody
 			
 			if(bYes) 
 			{
-				NavArea RandomArea = PickRandomArea();	
+				CNavArea RandomArea = PickRandomArea();	
 			
-				if(RandomArea == NavArea_Null) 
+				if(RandomArea == NULL_AREA) 
 				{
 				
 				}
@@ -2680,7 +2680,7 @@ methodmap CClotBody
 					}
 					else
 					{
-						SetGoalEntity(this.index, vecGoal);
+						NPC_SetGoalEntity(this.index, vecGoal);
 						SDKCall(g_hClearStuckStatus, this.GetLocomotionInterface(), "Un-Stuck");//  Sauce code :)
 					}
 				}
@@ -2690,8 +2690,8 @@ methodmap CClotBody
 			
 			else 
 			{
-				NavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(this.index), true);
-				if(area == NavArea_Null)
+				CNavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(this.index), true);
+				if(area == NULL_AREA)
 					return;
 			
 				float center[3]; area.GetCenter(center); center[2] += 18.0;
@@ -4162,12 +4162,12 @@ public void InitNavGamedata()
 	delete hConf;
 }
 
-stock NavArea PickRandomArea()
+stock CNavArea PickRandomArea()
 {
 	int iAreaCount = LoadFromAddress(navarea_count, NumberType_Int32);
 	
 	//Pick a random goal area
-	return view_as<NavArea>(LoadFromAddress(TheNavAreas + view_as<Address>(4 * GetRandomInt(0, iAreaCount - 1)), NumberType_Int32));
+	return view_as<CNavArea>(LoadFromAddress(TheNavAreas + view_as<Address>(4 * GetRandomInt(0, iAreaCount - 1)), NumberType_Int32));
 }
 
 public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
@@ -4423,7 +4423,7 @@ public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, 
 	return !(entity == iExclude);
 }
 
-public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area, float length)
+public float PluginBot_PathCost(int bot_entidx, CNavArea area, CNavArea from_area, float length)
 {
 	float dist;
 	if (length != 0.0) 
@@ -4553,7 +4553,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 
 public void PluginBot_PathSuccess(int bot_entidx, Address path)
 {
-	PF_StopPathing(bot_entidx);
+	NPC_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = true;
 	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
@@ -4561,7 +4561,7 @@ public void PluginBot_PathSuccess(int bot_entidx, Address path)
 
 public void PluginBot_MoveToSuccess(int bot_entidx, Address path)
 {
-	PF_StopPathing(bot_entidx);
+	NPC_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = false;
 	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
@@ -4569,7 +4569,7 @@ public void PluginBot_MoveToSuccess(int bot_entidx, Address path)
 
 public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureType type)
 {
-	PF_StopPathing(bot_entidx);
+	NPC_StopPathing(bot_entidx);
 	view_as<CClotBody>(bot_entidx).m_bPathing = false;
 	
 	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
@@ -6609,10 +6609,10 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	}
 	
 
-	NavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
 	
 	
-	if (leadArea == NavArea_Null || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
+	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
 	{
 		// would fall off a cliff
 		return subjectPos;	
@@ -6970,10 +6970,10 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	}
 	
 
-	NavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
 	
 	
-	if (leadArea == NavArea_Null || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
+	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
 	{
 		// would fall off a cliff
 		return subjectPos;	
@@ -8351,8 +8351,8 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 float Calculate_PointValueClosestTargetNpc(int npc, float Npc_Vector[3], float Target_Vector[3])
 {
 	//If we return anything thats in the exact 
-	NavArea NpcArea = TheNavMesh.GetNearestNavArea_Vec( Npc_Vector );
-	NavArea TargetArea = TheNavMesh.GetNearestNavArea_Vec( Target_Vector );
+	CNavArea NpcArea = TheNavMesh.GetNearestNavArea_Vec( Npc_Vector );
+	CNavArea TargetArea = TheNavMesh.GetNearestNavArea_Vec( Target_Vector );
 
 	if(NpcArea == TargetArea)
 	{

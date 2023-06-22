@@ -114,7 +114,7 @@ methodmap GodArkantos < CClotBody
 
 				if(this.m_bPathing)
 				{
-					PF_StopPathing(this.index);
+					NPC_StopPathing(this.index);
 					this.m_bPathing = false;
 				}
 			}
@@ -428,11 +428,11 @@ public void GodArkantos_ClotThink(int iNPC)
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			NPC_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
 		}
 
 		if(npc.m_flNextRangedAttackHappening > GetGameTime(npc.index))
@@ -486,7 +486,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				if(npc.m_iChanged_WalkCycle != 8) 	

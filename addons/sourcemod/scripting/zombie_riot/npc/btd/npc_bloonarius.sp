@@ -409,7 +409,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		
 		npc.m_flNextThinkTime = gameTime + 2.0;
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		
 		//if(npc.m_bElite)
@@ -478,7 +478,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		SetGoalEntity(npc.index, npc.m_iTarget);
+		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
 		
 		if(npc.m_flNextMeleeAttack < gameTime)
@@ -516,7 +516,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
 }

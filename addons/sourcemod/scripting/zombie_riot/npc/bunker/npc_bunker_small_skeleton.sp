@@ -232,11 +232,11 @@ public void BunkerSkeletonSmall_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen) //Target close enough to hit
 		{
@@ -300,7 +300,7 @@ public void BunkerSkeletonSmall_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

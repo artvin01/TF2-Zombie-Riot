@@ -64,14 +64,14 @@ native bool PF_Exists(int bot_entidx);
 
 
 // Set the PathFollower's goal to a vector coordinate
-native void SetGoalEntity(int bot_entidx, const float vec[3]);
+native void NPC_SetGoalEntity(int bot_entidx, const float vec[3]);
 // Get the PathFollower's goal to a float array
 native void PF_GetGoalVector(int bot_entidx, float out[3]);
 
 // Set the PathFollower's goal to an entity
 // - The goal entity must be a CBaseCombatCharacter-derived entity class
 // - You can call PF_IsEntityACombatCharacter to determine ahead of time whether a goal entity is valid
-native void SetGoalEntity(int bot_entidx, int goal_entidx);
+native void NPC_SetGoalEntity(int bot_entidx, int goal_entidx);
 
 // You can change a PathFollower's goal as many times as you want
 // You can also switch between vector and entity goals without limitation
@@ -84,14 +84,14 @@ native void SetGoalEntity(int bot_entidx, int goal_entidx);
 native bool PF_IsPathToVectorPossible(int bot_entidx, const float vec[3], float &length = -1.0);
 // Determine whether it would hypothetically be possible to build a path to the given entity
 // - Returns true if the path can be constructed, false if it's not possible
-// - The goal entity needs to be a combat character (same situation as with SetGoalEntity)
+// - The goal entity needs to be a combat character (same situation as with NPC_SetGoalEntity)
 // - The paths length to the tested entity is returned as a param (length)
 native bool PF_IsPathToEntityPossible(int bot_entidx, int goal_entidx, float &length = -1.0);
 
 // Start doing path computations and updates
-native void PF_StartPathing(int bot_entidx);
+native void NPC_StartPathing(int bot_entidx);
 // Stop doing path computations and updates
-native void PF_StopPathing(int bot_entidx);
+native void NPC_StopPathing(int bot_entidx);
 
 // Ask for the coordinates of a path segment beyond the immediate goal segment
 // - The num parameter determines which segment to get: 0 => current goal segment, 1 => the one after that, etc
@@ -113,7 +113,7 @@ native bool PF_IsEntityACombatCharacter(int entidx);
 // Update an entitys last known area
 native void PF_UpdateLastKnownArea(int entidx);
 // Get an entitys last known area
-native NavArea PF_GetLastKnownArea(int entidx);
+native CNavArea PF_GetLastKnownArea(int entidx);
 
 // Return true if this locomotor could potentially move along the line given.
 // - If false is returned, fraction of walkable ray is returned in 'fraction'
@@ -167,7 +167,7 @@ typeset PFCallback
 	// - The NextBot implementation of this function handles "prop_door*", "func_door*", and breakable "func_brush" entities
 	
 	
-	function float(int bot_entidx, NavArea area, NavArea from_area, float length);
+	function float(int bot_entidx, CNavArea area, CNavArea from_area, float length);
 	// GetPathCost
 	// User-provided path cost functor
 	// - If this forward isn't implemented, the PathFollower will use a default cost functor based on ShortestPathCost

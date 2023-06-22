@@ -74,7 +74,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			npc.StartPathing();
 
 			npc.SetActivity("ACT_RUN_PROTECTED");

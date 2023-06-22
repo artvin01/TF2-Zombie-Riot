@@ -330,9 +330,9 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 					
-					SetGoalEntity(npc.index, vPredictedPos);
+					NPC_SetGoalEntity(npc.index, vPredictedPos);
 				} else {
-					SetGoalEntity(npc.index, PrimaryThreatIndex);
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				if(bl_nightmare_stage2[npc.index] && bl_nightmare_stage1[npc.index] && !bl_nightmare_stage3[npc.index])
 				{
@@ -431,7 +431,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 						{
 							vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 						
-							SetGoalEntity(npc.index, vBackoffPos);
+							NPC_SetGoalEntity(npc.index, vBackoffPos);
 						}
 					}	
 				}
@@ -451,7 +451,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
@@ -459,7 +459,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -467,7 +467,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	
 	if(bl_nightmare_stage3[npc.index])
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

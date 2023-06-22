@@ -124,11 +124,11 @@ public void CombineTurtle_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

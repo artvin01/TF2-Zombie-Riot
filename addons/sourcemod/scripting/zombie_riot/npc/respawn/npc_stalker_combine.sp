@@ -37,8 +37,8 @@ methodmap StalkerShared < CClotBody
 
 		for(int i; i < 6; i++)
 		{
-			NavArea RandomArea = PickRandomArea();
-			if(RandomArea != NavArea_Null)
+			CNavArea RandomArea = PickRandomArea();
+			if(RandomArea != NULL_AREA)
 			{
 				RandomArea.GetCenter(pos);
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
@@ -445,11 +445,11 @@ public void StalkerCombine_ClotThink(int iNPC)
 					if(distance < npc.GetLeadRadius()) 
 					{
 						LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
-						SetGoalEntity(npc.index, LastKnownPos);
+						NPC_SetGoalEntity(npc.index, LastKnownPos);
 					}
 					else
 					{
-						SetGoalEntity(npc.index, npc.m_iTarget);
+						NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 					}
 				}
 				case 1:
@@ -563,7 +563,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 					npc.PickRandomPos(LastKnownPos);
 
 				npc.StartPathing();
-				SetGoalEntity(npc.index, LastKnownPos);
+				NPC_SetGoalEntity(npc.index, LastKnownPos);
 			}
 			case 1:
 			{

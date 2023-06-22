@@ -106,7 +106,7 @@ methodmap ArkSlugInfused < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugInfused_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlugInfused_ClotThink);
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		
 		return npc;
@@ -188,11 +188,11 @@ public void ArkSlugInfused_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

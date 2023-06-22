@@ -353,7 +353,7 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 		}
@@ -363,7 +363,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flSpeed = npc.m_bInjured ? 200.0 : 220.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -373,7 +373,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flSpeed = npc.m_bInjured ? 220.0 : 240.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -386,7 +386,7 @@ public void Simon_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 			
 			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			SetGoalEntity(npc.index, vBackoffPos);
+			NPC_SetGoalEntity(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -401,7 +401,7 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
@@ -453,7 +453,7 @@ public void Simon_ClotThink(int iNPC)
 				}
 				
 				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				SetGoalEntity(npc.index, TargetLocation);
+				NPC_SetGoalEntity(npc.index, TargetLocation);
 				
 				if(!npc.m_bPathing)
 					npc.StartPathing();
@@ -476,7 +476,7 @@ public void Simon_ClotThink(int iNPC)
 				if(npc.m_iTarget)
 				{
 					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-					SetGoalEntity(npc.index, vBackoffPos);
+					NPC_SetGoalEntity(npc.index, vBackoffPos);
 					
 					if(!npc.m_bPathing)
 						npc.StartPathing();
@@ -502,7 +502,7 @@ public void Simon_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Simon_ClotThink);
 	
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
 	if(!npc.m_bRanAway)

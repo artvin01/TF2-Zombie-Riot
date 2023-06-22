@@ -419,13 +419,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 		npc.AddGesture("PANZER_STAGGER_2");
 		npc.m_flSpeed = 0.0;
 		npc.m_bLostHalfHealthAnim = true;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
 	if(npc.m_flStandStill > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;		
 	}
 	else
@@ -465,11 +465,11 @@ public void NaziPanzer_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 	//		PrintToChatAll("cutoff");
-			SetGoalEntity(npc.index, vPredictedPos);	
+			NPC_SetGoalEntity(npc.index, vPredictedPos);	
 		}
 		else
 		{
-			SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		
 		npc.StartPathing();
@@ -740,7 +740,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

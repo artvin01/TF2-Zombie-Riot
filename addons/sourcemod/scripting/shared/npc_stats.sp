@@ -44,6 +44,7 @@ static float fl_rocket_particle_radius[MAXENTITIES];
 
 
 static ConVar flTurnRate;
+static PathFollower pPath[ZR_MAX_NPCS];
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -445,7 +446,7 @@ methodmap CClotBody < CBaseCombatCharacter
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
-		this.SetDefaultStats(); // we'll use this so we can set all the default stuff we need!
+		npc.SetDefaultStats(); // we'll use this so we can set all the default stuff we need!
 
 		if(IsRaidBoss)
 		{
@@ -1621,7 +1622,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			return;
 			
 		SDKCall(g_hSetPoseParameter, this.index, pStudioHdr, iParameter, value);
-	}	
+	}	*/
 	public int FindAttachment(const char[] pAttachmentName)
 	{
 		Address pStudioHdr = this.GetModelPtr();
@@ -1629,7 +1630,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			return -1;
 			
 		return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
-	}*/
+	}
 	public void DispatchParticleEffect(int entity, const char[] strParticle, float flStartPos[3], float vecAngles[3], float flEndPos[3], 
 									   int iAttachmentPointIndex = 0, ParticleAttachment_t iAttachType = PATTACH_CUSTOMORIGIN, bool bResetAllParticlesOnEntity = false, float colour[3] = {0.0,0.0,0.0})
 	{
@@ -1746,7 +1747,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
 	public float GetGroundSpeed()	{ return this.GetLocomotionInterface().GetGroundSpeed(); }
-	public float GetPoseParameter(int iParameter)	{ return view_as<CBaseAnimating>(view_as<int>(this)).GetPoseParameter(iParameter);	}						  }
+	public float GetPoseParameter(int iParameter)	{ return this.GetPoseParameter(iParameter);	}
 	public int SelectWeightedSequence(any activity, int curSequence) { return view_as<CBaseAnimating>(view_as<int>(this)).SelectWeightedSequence(activity); }
 	
 	public bool GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3]) { return view_as<CBaseAnimating>(view_as<int>(this)).GetAttachment(view_as<CBaseAnimating>(view_as<int>(this)).LookupAttachment(szName), absOrigin, absAngles); }
@@ -1758,7 +1759,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void SetOrigin(const float vec[3])											
 	{
 		SetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin",vec);
-	
 	}	
 	
 	public void SetSequence(int iSequence)	{ SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); }
@@ -2150,12 +2150,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
-	//	vecSwingStart[0] += vecForward[0] * 64;
-	//	vecSwingStart[1] += vecForward[1] * 64;
-	//	vecSwingStart[2] += vecForward[2] * 64;
-	// 	this isnt needed anymore 
-
-
 		
 		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
@@ -2218,50 +2212,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return entity;
 	}
-	/*
-	public void FireBolt(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "" , float model_scale = 1.0) //No defaults, otherwise i cant even judge.
-	{
-		float vecForward[3], vecSwingStart[3], vecAngles[3];
-		this.GetVectors(vecForward, vecSwingStart, vecAngles);
-
-		vecSwingStart = GetAbsOrigin(this.index);
-		vecSwingStart[2] += 54.0;
-
-		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
-
-	//	vecSwingStart[0] += vecForward[0] * 64;
-	//	vecSwingStart[1] += vecForward[1] * 64;
-	//	vecSwingStart[2] += vecForward[2] * 64;
-	// 	this isnt needed anymore 
-
-
-		
-		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
-		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
-
-		int entity = CreateEntityByName("tf_projectile_energy_ball");
-		if(IsValidEntity(entity))
-		{
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
-			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
-			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
-			DispatchSpawn(entity);
-			if(rocket_model[0])
-			{
-				SetEntityModel(entity, rocket_model);
-			}
-			if(model_scale != 1.0)
-			{
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
-			}
-			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
-			SetEntityCollisionGroup(entity, 19); //our savior
-		}
-	}
-	*/
 	property int m_iActivity
 	{
 		public get()							{ return i_Activity[this.index]; }
@@ -2279,27 +2229,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_PoseMoveY[this.index]; }
 		public set(int TempValueForProperty) 	{ i_PoseMoveY[this.index] = TempValueForProperty; }
 	}
-	/*
-	
-		property int m_iActivity
-	{
-		public get()              { return this.ExtractStringValueAsInt("m_iActivity"); }
-		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iActivity", buff, true); }
-	}
-	
-	property int m_iPoseMoveX 
-	{
-		public get()              { return this.ExtractStringValueAsInt("m_iPoseMoveX"); }
-		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveX", buff, true); }
-	}
-	
-	property int m_iPoseMoveY
-	{
-		public get()              { return this.ExtractStringValueAsInt("m_iPoseMoveY"); }
-		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveY", buff, true); }
-	}
-	*/
-
 	//Begin an animation activity, return false if we cant do that right now.
 	public bool StartActivity(int iActivity, int flags = 0, bool Reset_Sequence_Info = true)
 	{
@@ -2401,9 +2330,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			if(bYes) 
 			{
-				NavArea RandomArea = PickRandomArea();	
+				CNavArea RandomArea = PickRandomArea();	
 			
-				if(RandomArea == NavArea_Null) 
+				if(RandomArea == NULL_AREA) 
 				{
 				
 				}
@@ -2418,7 +2347,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					}
 					else
 					{
-						SetGoalEntity(this.index, vecGoal);
+						NPC_StartPathing(this.index, vecGoal);
 						SDKCall(g_hClearStuckStatus, this.GetLocomotionInterface(), "Un-Stuck");//  Sauce code :)
 					}
 				}
@@ -2428,8 +2357,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			else 
 			{
-				NavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(this.index), true);
-				if(area == NavArea_Null)
+				CNavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(this.index), true);
+				if(area == NULL_AREA)
 					return;
 			
 				float center[3]; area.GetCenter(center); center[2] += 18.0;
@@ -2847,32 +2776,6 @@ public void NPC_Base_InitGamedata()
 	{
 		PrintToServer("Failed to retrieve ILocomotion::IsOnGround offset from SF2 gamedata!");
 	}
-	
-	g_hGetFrictionSideways = DHookCreateEx(hConf, "ILocomotion::GetFrictionSideways",HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetFrictionSideways);
-	g_hGetStepHeight	   = DHookCreateEx(hConf, "ILocomotion::GetStepHeight",	  HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetStepHeight);	
-	g_hGetGravity		  = DHookCreateEx(hConf, "ILocomotion::GetGravity",		 HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetGravity);	
-	g_hGetRunSpeed		 = DHookCreateEx(hConf, "ILocomotion::GetRunSpeed",		HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetRunSpeed);
-	g_hGetGroundNormal	 = DHookCreateEx(hConf, "ILocomotion::GetGroundNormal",	HookType_Raw, ReturnType_VectorPtr, ThisPointer_Address, ILocomotion_GetGroundNormal);
-	g_hGetMaxAcceleration  = DHookCreateEx(hConf, "ILocomotion::GetMaxAcceleration", HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetMaxAcceleration);
-	
-	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-	g_hGetSolidMaskAlly		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
-	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
-	
-	g_hGetHullWidthGiant		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth_ISGIANT);
-	g_hGetHullHeightGiant	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight_ISGIANT);
-	g_hGetStandHullHeightGiant  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight_ISGIANT);
-	
-	
-	
-	g_hGetHullWidth		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth);
-	g_hGetHullHeight	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight);
-	g_hGetStandHullHeight  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight);
-/*	
-	g_hGetHullWidthSmall		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidthSmall);
-	g_hGetHullHeightSmall	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeightSmall);
-	g_hGetStandHullHeightSmall  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeightSmall);
-*/
 
 	g_hIsActivity   = DHookCreateEx(hConf, "IBody::IsActivity",   HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_IsActivity);
 	DHookAddParam(g_hIsActivity, HookParamType_Int);
@@ -2880,16 +2783,6 @@ public void NPC_Base_InitGamedata()
 	g_hStartActivity = DHookCreateEx(hConf, "IBody::StartActivity", HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_StartActivity);
 	DHookAddParam(g_hStartActivity, HookParamType_Int);
 	DHookAddParam(g_hStartActivity, HookParamType_Int);
-
-	g_hEvent_Killed = DHookCreateEx(hConf, "CTFBaseBoss::Event_Killed", HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, CTFBaseBoss_Event_Killed);
-	DHookAddParam(g_hEvent_Killed, HookParamType_Int); //( const CTakeDamageInfo &info )
-	
-//	g_hAlwaysTransmit = DynamicHook.FromConf(hConf, "CTFBaseBoss::UpdateTransmitState()");
-	
-	g_hEvent_Ragdoll = DHookCreateEx(hConf, "CBaseCombatCharacter::BecomeRagdoll", HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, CTFBaseBoss_Ragdoll);
-	
-	DHookAddParam(g_hEvent_Ragdoll, HookParamType_Int); //( const CTakeDamageInfo &info )
-	DHookAddParam(g_hEvent_Ragdoll, HookParamType_VectorPtr); //( const vector )
 
 	Address iAddr = GameConfGetAddress(hConf, "GetAnimationEvent");
 	if(iAddr == Address_Null) SetFailState("Can't find GetAnimationEvent address for patch.");
@@ -2900,6 +2793,8 @@ public void NPC_Base_InitGamedata()
 	
 	HookIdMap = new StringMap();
 	HookListMap = new StringMap();
+
+	for (int i = 0; i < MAX_NPCS; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
 }
 
 Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
@@ -2914,7 +2809,7 @@ Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType 
 	return DHookCreate(iOffset, hooktype, returntype, thistype, callback);
 }
 
-//Ragdoll.CBaseCombatCharacter_EventKilled
+//Ragdoll
 public Action CBaseCombatCharacter_EventKilled(int pThis, int &iAttacker, int &iInflictor, float &flDamage, int &iDamagetype, int &iWeapon, float vecDamageForce[3], float vecDamagePosition[3], int iDamagecustom)
 {	
 //	CreateTimer(5.0, Check_Emergency_Reload, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);
@@ -3641,7 +3536,7 @@ public bool ShouldCollideAllyInvince(CBaseNPC_Locomotion loco, int otherindex)
 	return true;
 }
 
-public MRESReturn ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
+public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -3662,10 +3557,9 @@ public MRESReturn ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 	return true;
 }
 
-public MRESReturn ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int otherindex)
+public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int otherindex)
 { 
-	int otherindex = DHookGetParam(hParams, 1);
-	
+
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		if(b_ThisEntityIgnored[otherindex])
@@ -3691,36 +3585,25 @@ public MRESReturn ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int
 	return true;
 }
 
-//2 * m_vecMaxs
-public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
-public MRESReturn IBody_GetHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
-public MRESReturn IBody_GetStandHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)
+
+void NPC_StartPathing(int entity)
 {
-	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
-	if(b_NpcResizedForCrouch[entity])
-	{
-		DHookSetReturn(hReturn, 41.0);
-	}
-	else
-	{
-		DHookSetReturn(hReturn, 120.0);
-	}
-	return MRES_Supercede; 
+	view_as<CClotBody>(entity).StartPathing();
 }
-public MRESReturn IBody_GetHullWidth(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 48.0); return MRES_Supercede; }
-public MRESReturn IBody_GetHullHeight(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 82.0); return MRES_Supercede; }
-public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle hParams)
+
+void NPC_StopPathing(int entity)
 {
-	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
-	if(b_NpcResizedForCrouch[entity])
-	{
-		DHookSetReturn(hReturn, 41.0);
-	}
-	else
-	{
-		DHookSetReturn(hReturn, 82.0);
-	}
-	return MRES_Supercede; 
+	view_as<CClotBody>(entity).StopPathing();
+}
+
+void NPC_SetGoalVector(int entity, const float vec[3])
+{
+	view_as<CClotBody>(entity).SetGoalVector(vec);
+}
+
+void NPC_SetGoalEntity(int entity, int target)
+{
+	view_as<CClotBody>(entity).SetGoalEntity(target);
 }
 
 stock bool IsLengthGreaterThan(float vector[3], float length)
@@ -3760,7 +3643,7 @@ stock float[] WorldSpaceCenter(int entity)
 	return vecPos;
 }
 
-stock NavArea PickRandomArea()
+stock CNavArea PickRandomArea()
 {
 	int iAreaCount = TheNavMesh.GetNavAreaCount();
 	
@@ -3779,6 +3662,8 @@ public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 
 public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, TraverseWhenType when)
 {
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+	
 	if(other_entidx == 0) {
 		return false;
 	}
@@ -4021,7 +3906,7 @@ public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, 
 	return !(entity == iExclude);
 }
 
-public float PluginBot_PathCost(int bot_entidx, NavArea area, NavArea from_area, float length)
+public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadder ladder, int iElevator, float length)
 {
 	float dist;
 	if (length != 0.0) 
@@ -4300,9 +4185,6 @@ stock int GetClosestTarget(int entity,
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
-	bool HasPathfollower = false;
-
-	HasPathfollower = PF_Exists(entity);
 
 	Zero(GetClosestTarget_EnemiesToCollect);
 	Zero(GetClosestTarget_Enemy_Type);
@@ -4424,7 +4306,7 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-	return GetClosestTarget_Internal(entity, HasPathfollower, fldistancelimit, fldistancelimitAllyNPC, EntityLocation);
+	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation);
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)
@@ -4440,7 +4322,7 @@ void GetClosestTarget_AddTarget(int entity, int type)
 	}	
 }
 
-int GetClosestTarget_Internal(int entity, bool HasPathfollower, float fldistancelimit, float fldistancelimitAllyNPC, float EntityLocation[3])
+int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, float EntityLocation[3])
 {
 	int ClosestTarget = -1; 
 	float TargetDistance = 0.0;
@@ -4461,16 +4343,8 @@ int GetClosestTarget_Internal(int entity, bool HasPathfollower, float fldistance
 		*/
 			
 		static float DistancePathed;
-		if(HasPathfollower)
-		{
-			PF_IsPathToEntityPossible(entity, target, DistancePathed);
-		}
-		else
-		{
-			static float TargetLocation[3]; 
-			GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-			DistancePathed = GetVectorDistance( EntityLocation, TargetLocation); 
-		}
+
+		IsPathToEntityPossible(entity, target, DistancePathed);
 
 
 		/*
@@ -6173,7 +6047,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	if (GetVectorLength(lead, true) > 36.0)
 	{
 		float fraction;
-		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
+		if(view_as<CClotBody>(npc).GetLocomotionInterface().IsPotentiallyTraversable(botPos, subjectPos, IMMEDIATELY, fraction))
 		{
 			// tried to lead through an unwalkable area - clip to walkable space
 			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
@@ -6183,10 +6057,10 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	}
 	
 
-	NavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
 	
 	
-	if (leadArea == NavArea_Null || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
+	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
 	{
 		// would fall off a cliff
 		return subjectPos;	
@@ -6534,7 +6408,7 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	if (GetVectorLength(lead, true) > 36.0)
 	{
 		float fraction;
-		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
+		if(view_as<CClotBody>(npc).GetLocomotionInterface().IsPotentiallyTraversable(botPos, subjectPos, IMMEDIATELY, fraction))
 		{
 			// tried to lead through an unwalkable area - clip to walkable space
 			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
@@ -6544,10 +6418,10 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	}
 	
 
-	NavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
 	
 	
-	if (leadArea == NavArea_Null || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
+	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
 	{
 		// would fall off a cliff
 		return subjectPos;	
@@ -6838,7 +6712,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 				
 				if(!b_NpcHasDied[entity])
 				{
-					if(!PF_IsPathToEntityPossible(entity, i, _))
+					if(!IsPathToEntityPossible(entity, i, _))
 					{
 						continue;
 					}
@@ -7916,8 +7790,8 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 float Calculate_PointValueClosestTargetNpc(int npc, float Npc_Vector[3], float Target_Vector[3])
 {
 	//If we return anything thats in the exact 
-	NavArea NpcArea = TheNavMesh.GetNearestNavArea_Vec( Npc_Vector );
-	NavArea TargetArea = TheNavMesh.GetNearestNavArea_Vec( Target_Vector );
+	CNavArea NpcArea = TheNavMesh.GetNearestNavArea_Vec( Npc_Vector );
+	CNavArea TargetArea = TheNavMesh.GetNearestNavArea_Vec( Target_Vector );
 
 	if(NpcArea == TargetArea)
 	{
@@ -8190,6 +8064,7 @@ int i2_IlligalStuck_StuckTrueFalse[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK];
 //the max should be 64 checks.
 public void PlayerInIlligalStuckArea(int entity)
 {
+	/*
 	//PF_IsPathToVectorPossible says good even though it cant path.
 	// a way to make it work: See destination, if the destination isnt near the client, mark?
 	int client;
@@ -8219,6 +8094,7 @@ public void PlayerInIlligalStuckArea(int entity)
 		//i cant be pathed to.
 	}
 	PlayerIlligalTooMuch(client);
+	*/
 }
 
 /*
@@ -8347,4 +8223,34 @@ public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
 			npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 		}
 	}
+}
+
+
+bool IsPathToEntityPossible(int entity, int goalentity, float &distancepathed)
+{
+	distancepathed = 1.0;
+	return true;
+	/*
+	static float GoalPos[3], StartPos[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", StartPos);
+
+	GetEntPropVector(goalentity, Prop_Data, "m_vecAbsOrigin", GoalPos);
+
+	// Find Navs
+	CNavArea startArea = TheNavMesh.GetNavArea(StartPos);
+	CNavArea GoalArea = TheNavMesh.GetNavArea(GoalPos);
+
+	if(!CNavMesh.BuildPath(
+	startArea		,//	CNavArea startArea, 
+	GoalArea		,//	CNavArea goalArea, 
+	GoalPos		,//	const float goalPos[3], 
+	_		,//	NavPathCostFunctor costFunc = INVALID_FUNCTION,
+	_		//	CNavArea &closestArea = NULL_AREA, 
+	_		,//	float maxPathLength = 0.0,
+	_		,//	int teamID = TEAM_ANY,
+	false	))	//	bool ignoreNavBlockers = false);
+		return false;
+
+	return true;
+	*/
 }

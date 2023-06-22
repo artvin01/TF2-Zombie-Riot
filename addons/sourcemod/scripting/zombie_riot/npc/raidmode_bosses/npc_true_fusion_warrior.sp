@@ -532,7 +532,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				npc.m_flNextThinkTime = 0.0;
 				npc.FaceTowards(vecTarget, 100.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.SetActivity("ACT_MP_CROUCH_MELEE");
 				npc.m_bInKame = false;
@@ -599,9 +599,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				SetGoalEntity(npc.index, closest);
+				NPC_SetGoalEntity(npc.index, closest);
 			}
 			
 			
@@ -623,7 +623,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			if(npc.m_bInKame)
 			{
 				npc.FaceTowards(vecTarget, 800.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
 			}
@@ -929,7 +929,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					}
 				}
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 		}

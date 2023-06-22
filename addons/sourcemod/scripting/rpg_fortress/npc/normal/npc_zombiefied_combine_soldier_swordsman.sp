@@ -156,7 +156,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -321,11 +321,11 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -411,7 +411,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				else
@@ -438,7 +438,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + 7.5;
 
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}

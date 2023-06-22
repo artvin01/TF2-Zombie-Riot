@@ -157,28 +157,19 @@ public void UnderTides_ClotThink(int iNPC)
 		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
 		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
 
-		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
-			return;	//Retry.
-		
 		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
 		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 		delete ToGroundTrace;
 
-		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
-			return;
-
-		NavArea area = TheNavMesh.GetNearestNavArea_Vec(AproxRandomSpaceToWalkTo, true);
-		if(area == NavArea_Null)
+		CNavArea area = TheNavMesh.GetNearestCNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+		if(area == NULL_AREA)
 			return;
 		
 		area.GetCenter(AproxRandomSpaceToWalkTo);
 
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 
-		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
-			return;
-		
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
 

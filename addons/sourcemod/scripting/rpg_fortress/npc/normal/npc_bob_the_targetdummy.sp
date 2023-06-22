@@ -74,7 +74,7 @@ methodmap BobTheTargetDummy < CClotBody
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 255, 200, 255);
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 
 		npc.RemovePather(npc.index);

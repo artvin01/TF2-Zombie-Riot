@@ -349,11 +349,11 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						if(distance < npc.GetLeadRadius()) 
 						{
 							LastKnownPos = PredictSubjectPosition(npc, npc.m_iTarget);
-							SetGoalEntity(npc.index, LastKnownPos);
+							NPC_SetGoalEntity(npc.index, LastKnownPos);
 						}
 						else
 						{
-							SetGoalEntity(npc.index, npc.m_iTarget);
+							NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 						}
 
 						if(state)
@@ -415,7 +415,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					npc.PickRandomPos(LastKnownPos);
 
 				npc.StartPathing();
-				SetGoalEntity(npc.index, LastKnownPos);
+				NPC_SetGoalEntity(npc.index, LastKnownPos);
 			}
 			case 1:
 			{

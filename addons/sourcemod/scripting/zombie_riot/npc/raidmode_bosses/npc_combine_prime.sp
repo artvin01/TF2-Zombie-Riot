@@ -255,7 +255,7 @@ public void CombinePrime_ClotThink(int iNPC)
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -318,11 +318,11 @@ public void CombinePrime_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 		

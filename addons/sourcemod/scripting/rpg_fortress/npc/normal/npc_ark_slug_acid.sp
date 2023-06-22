@@ -106,7 +106,7 @@ methodmap ArkSlugAcid < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugAcid_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlugAcid_ClotThink);
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
 		i_NoEntityFoundCount[npc.index] = 6;
@@ -229,11 +229,11 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -288,7 +288,7 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.0 : 1.5);
 					
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}

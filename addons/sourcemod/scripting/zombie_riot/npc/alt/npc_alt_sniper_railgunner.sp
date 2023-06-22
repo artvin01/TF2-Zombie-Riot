@@ -260,9 +260,9 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 				
 				
 				
-				SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < 1562500)	//1250 range
@@ -282,7 +282,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 						
 						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 						
-						SetGoalEntity(npc.index, vBackoffPos);
+						NPC_SetGoalEntity(npc.index, vBackoffPos);
 					}
 				}
 				else
@@ -343,7 +343,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
 							npc.PlayRangedReloadSound();
 						}
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
 					else
@@ -359,7 +359,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

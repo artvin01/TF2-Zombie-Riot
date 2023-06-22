@@ -254,7 +254,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 	if(npc.m_flReloadDelay > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;		
 	}
 	else
@@ -310,9 +310,9 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalEntity(npc.index, vPredictedPos);
 			} else {
-				SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 25000 && flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -473,7 +473,7 @@ public void CombineSoldierAr2_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

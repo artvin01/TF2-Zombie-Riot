@@ -1204,7 +1204,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				PF_StopPathing(this.index);
+				NPC_StopPathing(this.index);
 				this.m_bPathing = false;
 			}
 			
@@ -1230,7 +1230,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				PF_StopPathing(this.index);
+				NPC_StopPathing(this.index);
 				this.m_bPathing = false;
 			}
 			
@@ -1866,7 +1866,7 @@ public void Citizen_ClotThink(int iNPC)
 
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 		return;
@@ -2786,7 +2786,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			SetGoalEntity(npc.index, vecTarget);
+			NPC_SetGoalEntity(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2823,7 +2823,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 
-			SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2868,7 +2868,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 			
-			SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2879,7 +2879,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = false;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			SetGoalEntity(npc.index, vecTarget);
+			NPC_SetGoalEntity(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2890,7 +2890,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			SetGoalEntity(npc.index, vecTarget);
+			NPC_SetGoalEntity(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2902,12 +2902,12 @@ public void Citizen_ClotThink(int iNPC)
 			
 			if(distance > 29000.0)
 			{
-				SetGoalEntity(npc.index, npc.m_iTarget);
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			}
 			else
 			{
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
-				SetGoalEntity(npc.index, vecTarget);
+				NPC_SetGoalEntity(npc.index, vecTarget);
 			}
 			
 			if(!npc.m_bPathing)
@@ -2917,7 +2917,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 		}
@@ -3307,7 +3307,7 @@ public void Citizen_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);

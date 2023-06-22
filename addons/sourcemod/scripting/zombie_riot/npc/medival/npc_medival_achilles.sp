@@ -340,11 +340,11 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalEntity(npc.index, vPredictedPos);
 		}
 		else
 		{
-			SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -449,7 +449,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 
 					if(npc.m_iChanged_WalkCycle != 7) 	
 					{
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 						npc.m_flSpeed = 0.0;
 						npc.m_bisWalking = false;
@@ -498,7 +498,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 						npc.m_flDoingAnimation = gameTime + 2.0;
 						if(npc.m_iChanged_WalkCycle != 7) 	
 						{
-							PF_StopPathing(npc.index);
+							NPC_StopPathing(npc.index);
 							npc.m_bPathing = false;
 							npc.m_flSpeed = 0.0;
 							npc.m_bisWalking = false;
@@ -515,7 +515,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

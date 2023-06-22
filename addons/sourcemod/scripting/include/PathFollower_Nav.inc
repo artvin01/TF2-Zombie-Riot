@@ -10,9 +10,9 @@
 #define TEAM_ANY     -2
 
 
-enum NavArea
+enum CNavArea
 {
-	NavArea_Null = 0x00000000,
+	NULL_AREA = 0x00000000,
 };
 
 enum NavCornerType
@@ -99,7 +99,7 @@ enum TFNavAttributeType
 	/* bit 31: unused */
 };
 
-methodmap NavArea
+methodmap CNavArea
 {
 	//Return this area's unique ID
 	public native int GetID();
@@ -117,7 +117,7 @@ methodmap NavArea
 	public native float GetCostSoFar();
 	
 	//Return height change between edges of adjacent nav areas (not actual underlying ground)
-	public native float ComputeAdjacentConnectionHeightChange(NavArea destinationArea);
+	public native float ComputeAdjacentConnectionHeightChange(CNavArea destinationArea);
 
 	//Returns true if the given CNavArea has this attribute flag set.
 	public native bool HasAttributes(NavAttributeType bits);
@@ -190,7 +190,7 @@ methodmap NavArea
 	public native int GetAdjacentCount(NavDirType dir);
 
 	//Return the i'th adjacent area in the given direction
-	public native NavArea GetAdjacentArea(NavDirType dir, int i);
+	public native CNavArea GetAdjacentArea(NavDirType dir, int i);
 };
 
 
@@ -201,14 +201,14 @@ enum NavMesh
 
 methodmap NavMesh
 {
-	public native NavArea GetNavArea_Vec(const float pos[3], float beneathLimit = 120.0);
+	public native CNavArea GetNavArea_Vec(const float pos[3], float beneathLimit = 120.0);
 	
-	public native NavArea GetNearestNavArea_Vec(const float pos[3], bool anyZ = false, float maxDist = 10000.0, bool checkLOS = false, bool checkGround = true, int team = TEAM_ANY);
+	public native CNavArea GetNearestNavArea_Vec(const float pos[3], bool anyZ = false, float maxDist = 10000.0, bool checkLOS = false, bool checkGround = true, int team = TEAM_ANY);
 	
-//	public native int CollectSurroundingAreas(int nearbyAreasMax, NavArea[] nearbyAreas, NavArea startArea, float travelDistanceLimit = 1500.0, float maxStepUpLimit = 18.0, float maxDropDownLimit = 100.0);
+//	public native int CollectSurroundingAreas(int nearbyAreasMax, CNavArea[] nearbyAreas, CNavArea startArea, float travelDistanceLimit = 1500.0, float maxStepUpLimit = 18.0, float maxDropDownLimit = 100.0);
 };
 /*
-stock float GetCombatIntensity(NavArea area)
+stock float GetCombatIntensity(CNavArea area)
 {
    	Address Area = view_as<Address>(area);
    	
@@ -219,12 +219,12 @@ stock float GetCombatIntensity(NavArea area)
 	return Max(m_timestamp - ((GetGameTime() - m_startTime) * tf_nav_combat_decay_rate), 0.0);
 }
 
-stock bool IsInCombat(NavArea area)
+stock bool IsInCombat(CNavArea area)
 {
 	return GetCombatIntensity(area) > 0.01;
 }
 */
-stock bool HasTFAttributes(NavArea area, TFNavAttributeType bits)
+stock bool HasTFAttributes(CNavArea area, TFNavAttributeType bits)
 {
 	TFNavAttributeType attributes = view_as<TFNavAttributeType>(LoadFromAddress(view_as<Address>(area) + view_as<Address>(0x1C0), NumberType_Int32));
 	
@@ -243,9 +243,9 @@ float delta_z = area.ComputeAdjacentConnectionHeightChange(destArea);
 
 
 float pos[3];
-NavArea area = TheNavMesh.GetNavArea_Vec(pos);
+CNavArea area = TheNavMesh.GetNavArea_Vec(pos);
 
 float pos[3];
-NavArea area = TheNavMesh.GetNearestNavArea_Vec(pos);
+CNavArea area = TheNavMesh.GetNearestNavArea_Vec(pos);
 
 */
