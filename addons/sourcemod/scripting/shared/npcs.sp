@@ -1963,10 +1963,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = true;
 	}
+
 	return Plugin_Changed;
 }
 
-public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
 	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	
@@ -1984,6 +1985,8 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
+	if(GetEntProp(victim, Prop_Data, "m_iHealth") <= 0)
+		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
 
 void Generic_OnTakeDamage(int victim, int attacker)

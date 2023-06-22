@@ -218,6 +218,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int npc = baseNPC.GetEntity();
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
+		DispatchKeyValue(npc, "model",	 model);
 		view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
@@ -262,10 +263,11 @@ methodmap CClotBody < CBaseCombatCharacter
 				return MRES_Supercede; 
 			}
 		*/
-		baseNPC.flAcceleration = 5000.0;
+		baseNPC.flAcceleration = 3000.0;
 		baseNPC.flJumpHeight = 250.0;
 		//baseNPC.flRunSpeed = 300.0; //TODO: Change to our runspeed logic.
 		baseNPC.flFrictionSideways = 3.0;
+		baseNPC.flMaxYawRate = 225.0;
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
@@ -378,6 +380,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		
 		SDKHook(npc, SDKHook_Think, NpcBaseThink);
+		SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
@@ -2239,10 +2242,14 @@ methodmap CClotBody < CBaseCombatCharacter
 	public int LookupActivity(const char[] activity)
 	{
 		Address pStudioHdr = this.GetModelPtr();
+		PrintToChatAll("LookupActivity1");
 		if(pStudioHdr == Address_Null)
 			return -1;
-			
-		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
+		
+		PrintToChatAll("LookupActivity2");
+		int value = SDKCall(g_hLookupActivity, pStudioHdr, activity);
+		PrintToChatAll("%d", value);
+		return value;
 	}
 	public int LookupSequence(const char[] sequence)
 	{
@@ -2303,18 +2310,19 @@ methodmap CClotBody < CBaseCombatCharacter
 		//Run and StuckMonitor
 		if(this.m_flNextRunTime < GetGameTime())
 		{
-			this.m_flNextRunTime = GetGameTime() + 0.1; //Only update every 0.1 seconds, we really dont need more, 
+			this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
 			this.GetLocomotionInterface().Run();
 		}
 		
 		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
+		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
 
-		//if(!npc.m_bAllowBackWalking)
-		//	this.FaceTowards(vec, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+	//	if(!this.m_bAllowBackWalking)
+	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
 		
 		if(this.m_bPathing)
-			this.GetPathFollower().Update(this.GetBot());
-		
+			this.GetPathFollower().Update(this.GetBot());		
+
 		/*
 		
 		SDKCall(g_hStuckMonitor, this.GetLocomotionInterface());
@@ -2683,13 +2691,12 @@ public void NPC_Base_InitGamedata()
 
 
 //Ragdoll
-public Action CBaseCombatCharacter_EventKilled(int pThis, int &iAttacker, int &iInflictor, float &flDamage, int &iDamagetype, int &iWeapon, float vecDamageForce[3], float vecDamagePosition[3], int iDamagecustom)
+public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int iInflictor, float flDamage, int iDamagetype, int iWeapon, const float vecDamageForce[3], const float vecDamagePosition[3])
 {	
 //	CreateTimer(5.0, Check_Emergency_Reload, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);
-
+	PrintToChatAll("DIE");
 	if(!b_NpcHasDied[pThis])
 	{
-
 		int client = GetClientOfUserId(LastHitId[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
@@ -2731,6 +2738,7 @@ public Action CBaseCombatCharacter_EventKilled(int pThis, int &iAttacker, int &i
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
+		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
@@ -2778,6 +2786,7 @@ public Action CBaseCombatCharacter_EventKilled(int pThis, int &iAttacker, int &i
 		{
 			if(!npc.m_bGib)
 			{
+				MakeEntityRagdollNpc(npc.index);
 		//		SDKCall(g_hCBaseCombatCharacter_Event_Killed,   pThis, CTakeDamageInfo);
 			}
 			else
@@ -3078,8 +3087,8 @@ public Action CBaseCombatCharacter_EventKilled(int pThis, int &iAttacker, int &i
 	{	
 		SetNpcToDeadViaGib(pThis);
 	}
-	return Plugin_Continue;
 }
+
 public void SetNpcToDeadViaGib(int pThis)
 {
 #if defined ZR
@@ -3160,27 +3169,6 @@ public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
 //	models/Gibs/HGIBS_spine.mdl
 //	models/Gibs/HGIBS_rib.mdl
 //	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
-*/
-/*
-public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)  
-{
-	CClotBody npc = view_as<CClotBody>(pThis);
-	float Push[3];
-	npc.m_vecpunchforce(Push, false);
-	ScaleVector(Push, 2.0);
-	if(Push[0] == 0.0 || Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
-	{
-		Push[0] = 1.0;
-		Push[1] = 1.0;
-		Push[2] = 1.0;
-	}
-	DHookSetParamVector(hParams, 2, view_as<float>(Push));
-//	RequestFrames(Kill_Npc, 5, EntIndexToEntRef(pThis));		
-	//Play Ragdolls correctly.
-		
-	DHookSetReturn(hReturn, true);
-	return MRES_ChangedOverride;
-}
 */
 
 public void Kill_Npc(int ref)
@@ -4569,7 +4557,10 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 }
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
-
+public void NpcBaseThinkPost(int iNPC)
+{
+	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
+}
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -8119,6 +8110,24 @@ bool IsPathToEntityPossible(int entity, int goalentity, float &distancepathed)
 
 	return true;
 	*/
+}
+
+public void MakeEntityRagdollNpc(int pThis)  
+{
+	/*
+	CClotBody npc = view_as<CClotBody>(pThis);
+	float Push[3];
+	npc.m_vecpunchforce(Push, false);
+	ScaleVector(Push, 2.0);
+	if(Push[0] == 0.0 || Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
+	{
+		Push[0] = 1.0;
+		Push[1] = 1.0;
+		Push[2] = 1.0;
+	}
+	*/
+	//todo, fix ragoll pushforce
+	AcceptEntityInput(pThis, "BecomeRagdoll");
 }
 
 

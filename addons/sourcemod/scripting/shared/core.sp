@@ -2130,7 +2130,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
-		PrintToChatAll("%s",classname);
 		i_CustomWeaponEquipLogic[entity] = 0;
 		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;

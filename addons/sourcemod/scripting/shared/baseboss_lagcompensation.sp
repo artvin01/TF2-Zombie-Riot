@@ -420,7 +420,7 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 			if(overlay.IsValid())
 			{
-				int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
+				int layerCount = overlay.GetNumAnimOverlays();
 				LayerRecord layer, recordsLayerRecord, prevRecordsLayerRecord;
 				restore.m_layerRecords = new ArrayList(sizeof(LayerRecord));
 				for(int i; i<layerCount; i++)
@@ -549,7 +549,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 							CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 							if(overlay.IsValid())
 							{
-								int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
+								int layerCount = overlay.GetNumAnimOverlays();
 								for(int i; i<layerCount; i++)
 								{
 									restore.m_layerRecords.GetArray(i, layer);
@@ -640,19 +640,28 @@ void LagCompensationThink_Forward()
 					record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 					GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
-				//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", record.m_vecMinsPreScaled);
-				//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", record.m_vecMaxsPreScaled);
+
 					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 					{
 						record.m_layerRecords = new ArrayList(sizeof(LayerRecord));
-						int layerCount = GetEntPropArraySize(entity, Prop_Data, "m_AnimOverlay");
+						int layerCount = overlay.GetNumAnimOverlays();
 						for(int i = 0; i < layerCount; i++)
 						{
+							PrintToServer("8.5");
+							CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
+							
+							PrintToServer("9");
 							layer.m_cycle = overlay.GetLayerCycle(i);
-							layer.m_order = overlay.GetAnimOverlay(i).m_nOrder;
+							PrintToServer("9.1 = %x", overlayLayer);
+							PrintToServer("9.15 = %d", overlayLayer.IsAlive());
+							layer.m_order = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
+							PrintToServer("9.2");
 							layer.m_sequence = overlay.GetLayerSequence(i);
+							PrintToServer("9.3");
 							layer.m_weight = overlay.GetLayerWeight(i);
+							PrintToServer("9.4");
 							record.m_layerRecords.PushArray(layer);
+							PrintToServer("10");
 						}
 						record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 						record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
@@ -662,6 +671,7 @@ void LagCompensationThink_Forward()
 			}
 		}
 	}
+	PrintToServer("12");
 }
 
 /* public/mathlib/vector.h#L1153 */
