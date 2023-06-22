@@ -797,7 +797,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 								}
 								else if(ShouldNpcDealBonusDamage(target))
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 19.5*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0*fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
 								
 								}
 								else
