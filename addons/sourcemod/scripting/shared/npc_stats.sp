@@ -4824,7 +4824,7 @@ stock int GetClosestTarget(int entity,
 	
 #if defined ZR
 	CClotBody npcSearch = view_as<CClotBody>(entity);
-	if(searcher_team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings && (npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget])) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
+	if(searcher_team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings && ((npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && searcher_team != 2)
 #endif
