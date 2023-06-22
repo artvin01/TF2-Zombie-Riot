@@ -326,7 +326,7 @@ public Action Cosmic_Heat_Tick(int client)
 				}
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 				int pitch = 25+Heat;
-				EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_OVERHEAT_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.125, pitch);
+				EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_OVERHEAT_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.25, pitch);
 			}
 			Cosmic_Terror_Hud_Delay[client]=GetGameTime()+0.5;
 		}
@@ -690,7 +690,7 @@ void Cosmic_Terror_FullCharge(int client)
 	{
 		EmitSoundToAll(SND_WELD_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.15, SNDPITCH_NORMAL, -1, Cosmic_BeamLoc[client]);
 		int pitch = 25+100-Heat;
-		EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.125, pitch);
+		EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.15, pitch);
 		Cosmic_Terror_Sound_Tick[client]=0;
 	}
 	else
