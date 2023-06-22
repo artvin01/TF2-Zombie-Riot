@@ -9,7 +9,7 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		// 10000 x 0.4 x 0.3
 
 		i_NpcInternalId[npc.index] = ENDSPEAKER_1;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

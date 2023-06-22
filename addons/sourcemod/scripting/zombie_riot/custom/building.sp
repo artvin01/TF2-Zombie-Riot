@@ -2390,14 +2390,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				}
 				case 8:
 				{
-					if(Is_Reload_Button)
+					if(Is_Reload_Button && owner != -1)
 					{
 						VillageUpgradeMenu(owner, client);
 					}
 				}
 				case 9:
 				{
-					if(Is_Reload_Button)
+					if(Is_Reload_Button && owner != -1)
 					{
 						OpenSummonerMenu(owner, client);
 					}

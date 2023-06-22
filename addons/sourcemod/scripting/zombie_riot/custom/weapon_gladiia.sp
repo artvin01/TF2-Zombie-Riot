@@ -7,17 +7,85 @@
 #define ENFORCER_WEIGHT_PER_HEALTH	1000	// Every X health is 1 weight level for the enemy
 #define ENFORCER_KNOCKBACK		750.0	// Knockback when push level and enemy weight is the same
 #define ENFORCER_STUN_RATIO		0.00125	// Knockback converted into stun duration
-/*
-	1 : light
-	2 : medium
-	3 : heavy (bosses and giants)
-	4 : very heavy (slow enemies)
-	5 : extreme heavy (some raids and ememies)
-	6 : unused
 
-	999: un-moveable
-*/
 static int EnemiesHit[ENFORCER_MAX_TARGETS];
+static int EliteLevel[MAXTF2PLAYERS]
+
+void Gladiia_Enable(int client, int weapon)
+{
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_GLADIIA:
+		{
+			WeaponRef[client] = EntIndexToEntRef(weapon);
+			delete WeaponTimer[client];
+
+			Address address = TF2Attrib_GetByDefIndex(weapon, 861);
+			if(address == Address_Null)
+			{
+				// Elite 0 Special 1
+				WeaponTimer[client] = CreateTimer(3.5, Saga_Timer1, client, TIMER_REPEAT);
+			}
+			else if(!TF2Attrib_GetValue(address))
+			{
+				// Elite 1 Special 2
+				WeaponTimer[client] = CreateTimer(1.0, Saga_Timer2, client, TIMER_REPEAT);
+			}
+			else
+			{
+				// Elite 1 Special 3
+				WeaponTimer[client] = CreateTimer(1.0, Saga_Timer3, client, TIMER_REPEAT);
+			}
+		}
+	}
+}
+
+void Gladiia_OnTakeDamageEnemy(int victim, int attacker, float &damage)
+{
+	if(i_NpcWeight[victim] < 4 && EliteLevel[attacker] > 1)
+	{
+		// When attacking enemies with weight <= 3, deal 136% (+6%) damage
+		damage *= 1.36;
+	}
+}
+
+float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage)
+{
+	switch(EliteLevel[victim])
+	{
+		case 1:
+		{
+			if(i_BleedType[attacker] == BLEEDTYPE_SEABORN)
+				return damage * 0.85;
+		}
+		case 2:
+		{
+			if(i_BleedType[attacker] == BLEEDTYPE_SEABORN)
+				return damage * 0.75;
+		}
+		case 3:
+		{
+			return damage * 0.7;
+		}
+	}
+
+	return damage;
+}
+
+float Gladiia_OnTakeDamageAlly(int victim, int attacker, float damage)
+{
+	if(EliteLevel[victim])	// Being two fishes are we?
+		return damage;
+	
+	int highest;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(EliteLevel[client] > EliteLevel[highest])
+			highest = client;
+	}
+
+	return Gladiia_OnTakeDamageSelf(client, attacker, damage);
+}
 
 public void Weapon_Enforcer_M2_Weight2(int client, int weapon, bool crit, int slot)
 {

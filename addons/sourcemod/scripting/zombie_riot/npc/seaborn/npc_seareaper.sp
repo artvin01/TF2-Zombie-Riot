@@ -93,7 +93,7 @@ methodmap SeaReaper < CClotBody
 		}
 
 		i_NpcInternalId[npc.index] = data[0] ? SEAREAPER_ALT : SEAREAPER;
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

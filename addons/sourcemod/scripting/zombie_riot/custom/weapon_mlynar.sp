@@ -2,8 +2,9 @@
 #pragma newdecls required
 
 #define MYLNAR_RANGE_AGGRO_GAIN 100.0
-#define MYLNAR_RANGE_ATTACK 250.0
-#define MYLNAR_MAX_CHARGE_TIME 50.0
+#define MYLNAR_RANGE_ATTACK 300.0
+#define MYLNAR_MAX_CHARGE_TIME 65.0
+#define MLYNAR_MAX_ENEMIES_HIT 7
 
 #define MYLNAR_MAXANGLEPITCH	90.0
 #define MYLNAR_MAXANGLEYAW		90.0
@@ -18,6 +19,8 @@ static bool b_MlynarResetStats[MAXTF2PLAYERS];
 int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXTF2PLAYERS];
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static int i_RefWeaponDelete[MAXTF2PLAYERS];
 
 //This will be used to tone down damage over time/on kill
 static float f_MlynarDmgAfterAbility[MAXTF2PLAYERS];
@@ -34,6 +37,8 @@ void Mlynar_Map_Precache() //Anything that needs to be precaced like sounds or s
 	}
 	Zero(f_MlynarAbilityActiveTime);
 	Zero(b_MlynarResetStats);
+	Zero(f_AniSoundSpam);
+	PrecacheSound("items/powerup_pickup_knockout.wav");
 }
 
 void Reset_stats_Mlynar_Global()
@@ -57,6 +62,7 @@ void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 	f_MlynarDmgAfterAbility[client] = 1.0;
 	f_MlynarAbilityActiveTime[client] = 0.0;
 	b_MlynarResetStats[client] = false;
+	Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
 }
 public void Weapon_MlynarAttack(int client, int weapon, bool &result, int slot)
 {
@@ -128,7 +134,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		ang2[0] = fixAngle(ang2[0]);
 		ang2[1] = fixAngle(ang2[1]);
 		
-		float damage = 65.0;
+		float damage = 125.0;
 		
 		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
 		if(address != Address_Null)
@@ -157,7 +163,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		TR_EnumerateEntitiesSphere(pos2, MYLNAR_RANGE_ATTACK, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Mlynar, client);
 
 	//	bool Hit = false;
-		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+		for (int entity_traced = 0; entity_traced < MLYNAR_MAX_ENEMIES_HIT; entity_traced++)
 		{
 			if (HitEntitiesSphereMlynar[entity_traced] > 0)
 			{
@@ -206,8 +212,19 @@ public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME);
 		f_MlynarAbilityActiveTime[client] = GetGameTime() + 15.0;
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", 0.0);
 		b_MlynarResetStats[client] = true;
+		float flPos[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+		int particle_Sing = ParticleEffectAt(flPos, "utaunt_spirit_magical_base", 15.0);
+		SetParent(client, particle_Sing);
+		EmitSoundToAll("items/powerup_pickup_knockout.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		MakePlayerGiveResponseVoice(client, 1); //haha!
+		int weapon_new = Store_GiveSpecificItem(client, "Mlynar's Greatsword");
+		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
+		ViewChange_Switch(client, weapon_new, "tf_weapon_sword");
+		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
+		SDKHook(client, SDKHook_PreThink, Mlynar_Think);
 	}
 	else
 	{
@@ -292,7 +309,6 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				//Give power overtime.
 				if(f_MlynarAbilityActiveTime[client] < GetGameTime())
 				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", 99999.9);
 					if(b_MlynarResetStats[client])
 					{
 						f_MlynarDmgMultiPassive[client] = 1.0;
@@ -321,21 +337,22 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 					{
 						if (HitEntitiesSphereMlynar[entity_traced] > 0)
 						{
+							int entityindex = HitEntitiesSphereMlynar[entity_traced];
 							//do not get power from the same enemy more then 5 times. unless its a boss or raid, then allow more.
-							if(b_thisNpcIsARaid[entity_traced])
+							if(b_thisNpcIsARaid[entityindex])
 							{
 								//There is no limit to how often you can gather power from a raid.
-								GatherPower += 5;
+								GatherPower += 10;
 							}
-							else if (b_thisNpcIsABoss[entity_traced] && i_MlynarMaxDamageGetFromSameEnemy[entity_traced] < 400)
+							else if (b_thisNpcIsABoss[entityindex] && i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 400)
 							{
-								i_MlynarMaxDamageGetFromSameEnemy[entity_traced] += 1;
+								i_MlynarMaxDamageGetFromSameEnemy[entityindex] += 1;
+								GatherPower += 4;
+							}
+							else if(i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 100)
+							{
+								i_MlynarMaxDamageGetFromSameEnemy[entityindex] += 1;
 								GatherPower += 2;
-							}
-							else if(i_MlynarMaxDamageGetFromSameEnemy[entity_traced] < 100)
-							{
-								i_MlynarMaxDamageGetFromSameEnemy[entity_traced] += 1;
-								GatherPower += 1;
 							}
 						}
 						else
@@ -344,9 +361,9 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 					if(GatherPower > 0)
 					{
 						//we can gather power from upto 5 enemies at once, the more the faster.
-						if(GatherPower > 5)
+						if(GatherPower > 10)
 						{
-							GatherPower = 5;
+							GatherPower = 10;
 						}
 						f_MlynarDmgMultiAgressiveClose[client] += (0.0015 * float(GatherPower));
 						if(f_MlynarDmgMultiAgressiveClose[client] > 3.0)
@@ -357,10 +374,10 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 					//if the client was hurt by an enemy presumeably, then give extra power.
 					if(f_MlynarHurtDuration[client] > GetGameTime())
 					{
-						f_MlynarDmgMultiHurt[client] += 0.005;
+						f_MlynarDmgMultiHurt[client] += 0.01;
 						if(IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During raids, give power 2x as fast.
 						{
-							f_MlynarDmgMultiHurt[client] += 0.005;
+							f_MlynarDmgMultiHurt[client] += 0.01;
 						}
 						if(f_MlynarDmgMultiHurt[client] > 3.0)
 						{
@@ -374,11 +391,11 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 					float cooldown = Ability_Check_Cooldown(client, 2);
 					if(cooldown > 0.0)
 					{
-						PrintHintText(client,"Unbrilliant Glory [%.1f/%.1f]\nPower Gain: [%.1f％|%.1f％|%.1f％]", cooldown, MYLNAR_MAX_CHARGE_TIME, (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
+						PrintHintText(client,"Unbrilliant Glory [%.1f/%.1f]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", cooldown, MYLNAR_MAX_CHARGE_TIME, (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 					}
 					else
 					{
-						PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％|%.1f％|%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
+						PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
 					}
 					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 					f_MlynarHudDelay[client] = GetGameTime() + 0.5;
@@ -426,9 +443,55 @@ public bool TraceEntityEnumerator_Mlynar(int entity, int filterentity)
 
 public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
-	f_MlynarHurtDuration[victim] = GetGameTime() + 0.5;
+	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
+
+	float damageModif = 15.0;
+		
+	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
+	if(address != Address_Null)
+		damageModif *= TF2Attrib_GetValue(address);
+
+	address = TF2Attrib_GetByDefIndex(weapon, 2);
+	if(address != Address_Null)
+		damageModif *= TF2Attrib_GetValue(address);	
+			
+	address = TF2Attrib_GetByDefIndex(weapon, 476);
+	if(address != Address_Null)
+		damageModif *= TF2Attrib_GetValue(address);	
+
+	damageModif *= f_MlynarDmgMultiPassive[victim];
+	damageModif *= f_MlynarDmgMultiAgressiveClose[victim];
+	damageModif *= f_MlynarDmgMultiHurt[victim];
+
+	if(f_AniSoundSpam[victim] < GetGameTime())
+	{
+		f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+	}
+	static float Entity_Position[3];
+	Entity_Position = WorldSpaceCenter(attacker);
+
+	SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, _, Entity_Position);
+		
 	return damage;
 }
 
-
+public void Mlynar_Think(int client)
+{
+	if(GetGameTime() > f_MlynarAbilityActiveTime[client])
+	{
+		Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
+		//We are Done, kill think.
+		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
+		if(IsValidEntity(TemomaryGun))
+		{
+			TF2_RemoveItem(client, TemomaryGun);
+			FakeClientCommand(client, "use tf_weapon_sword");
+		}
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
+		return;
+	}	
+}

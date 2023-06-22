@@ -2006,54 +2006,58 @@
 	}
 	"The Enforcer Desc"
 	{
-		"en"	"Doubles damage falloff but grants an ability that stuns and knockbacks 2 targets, more knockback is dealt with less enemy max health."
+		"en"	"Doubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
 	}
 	"The Enforcer Pap 1"
 	{
-		"en"	"Push level increased to 3 and can hit up to 3 targets"
+		"en"	"Increased ability knockback by +5%% and can hit up to 3 targets"
 	}
 	"The Enforcer Pap 2"
 	{
-		"en"	"Push level increased to 5 and can hit up to 5 targets"
+		"en"	"Increased ability knockback by +5%% and can hit up to 5 targets"
 	}
 	"The Enforcer Pap 3"
 	{
-		"en"	"Push level increased to 8 and can hit up to 8 targets"
+		"en"	"Increased ability knockback by +10%% and can hit up to 8 targets"
 	}
 	"The Enforcer Pap 4"
 	{
-		"en"	"Push level increased to 12 and can hit up to 10 targets"
+		"en"	"Increased ability knockback by +10%% and can hit up to 10 targets"
 	}
 	"The Enforcer Pap 5"
 	{
-		"en"	"Push level increased to 17"
+		"en"	"Increased ability knockback by +20%%"
 	}
 	"The Enforcer Pap 6"
 	{
-		"en"	"Push level increased to 23"
+		"en"	"Increased ability knockback by +25%%"
 	}
 	"The Enforcer Pap 7"
 	{
-		"en"	"Push level increased to 30"
+		"en"	"Increased ability knockback by +25%%"
 	}
 	"The Enforcer Pap 8"
 	{
-		"en"	"Push level increased to 38"
+		"en"	"Increased ability knockback by +50%%"
 	}
 	"The Enforcer Pap 9"
 	{
-		"en"	"Push level increased to 47"
+		"en"	"Increased ability knockback by +50%%"
 	}
 	"The Enforcer Pap 10"
 	{
-		"en"	"Push level increased to 57"
+		"en"	"Increased ability knockback by +50%%"
 	}
 	"The Enforcer Pap 11"
 	{
-		"en"	"Push level increased to 68"
+		"en"	"Increased ability knockback by +50%%"
 	}
 	"The Enforcer Pap 12"
 	{
-		"en"	"Push level increased to 80"
+		"en"	"Increased ability knockback by +100%%"
+	}
+	"Mlynar Sword Desc"
+	{
+		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
 	}
 }
