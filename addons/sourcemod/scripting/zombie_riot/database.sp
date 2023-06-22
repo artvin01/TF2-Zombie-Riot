@@ -320,10 +320,10 @@ void Database_SaveLoadout(int client, const char[] name)
 			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
 			tr.AddQuery(buffer);
 			
-			int owned, scale, equip, sell;
-			for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell, buffer, sizeof(buffer)); i++)
+			int owned, scale, equip, sell, hidden;
+			for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell, buffer, sizeof(buffer), hidden); i++)
 			{
-				if(owned/* && equip*/)
+				if(owned/* && equip*/&& !hidden)
 				{
 					Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_LOADOUT ... " (steamid, item, loadout) VALUES ('%d', '%s', '%s')", id, buffer, name);
 					tr.AddQuery(buffer);
@@ -535,11 +535,14 @@ void Database_SaveGameData(int client)
 			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GAMEDATA ... " WHERE steamid = %d;", id);
 			tr.AddQuery(buffer);
 			
-			int owned, scale, equip, sell;
-			for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell); i++)
+			int owned, scale, equip, sell, hidden;
+			for(int i; Store_GetNextItem(client, i, owned, scale, equip, sell,_,_, hidden); i++)
 			{
-				Local.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, level, scale, equip, sell) VALUES ('%d', '%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip, sell);
-				tr.AddQuery(buffer);
+				if(!hidden)
+				{
+					Local.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GAMEDATA ... " (steamid, item, level, scale, equip, sell) VALUES ('%d', '%d', '%d', '%d', '%d', '%d')", id, i, owned, scale, equip, sell);
+					tr.AddQuery(buffer);
+				}
 			}
 
 			FormatEx(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_AMMO ... " WHERE steamid = %d;", id);

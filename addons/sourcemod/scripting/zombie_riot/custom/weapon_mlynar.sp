@@ -39,6 +39,7 @@ void Mlynar_Map_Precache() //Anything that needs to be precaced like sounds or s
 	Zero(b_MlynarResetStats);
 	Zero(f_AniSoundSpam);
 	PrecacheSound("items/powerup_pickup_knockout.wav");
+	PrecacheSound("misc/ks_tier_04.wav");
 }
 
 void Reset_stats_Mlynar_Global()
@@ -62,7 +63,7 @@ void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 	f_MlynarDmgAfterAbility[client] = 1.0;
 	f_MlynarAbilityActiveTime[client] = 0.0;
 	b_MlynarResetStats[client] = false;
-	Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
+//	Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
 }
 public void Weapon_MlynarAttack(int client, int weapon, bool &result, int slot)
 {
@@ -91,6 +92,20 @@ public void Mylnar_DeleteLaserAndParticle(DataPack pack)
 	}
 	delete pack;
 }
+
+public void CancelSoundEarlyMlynar(DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(IsValidClient(client))
+	{
+		StopSound(client, SNDCHAN_AUTO, "misc/ks_tier_04.wav");
+		StopSound(client, SNDCHAN_AUTO, "misc/ks_tier_04.wav");
+		StopSound(client, SNDCHAN_AUTO, "misc/ks_tier_04.wav");
+		StopSound(client, SNDCHAN_AUTO, "misc/ks_tier_04.wav");
+	}
+	delete pack;
+}
 public void Weapon_MlynarAttack_Internal(DataPack pack)
 {
 	pack.Reset();
@@ -112,6 +127,11 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		int MaxRepeats = 4;
 		float Speed = 1500.0;
 		int PreviousProjectile;
+		EmitSoundToAll("misc/ks_tier_04.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		DataPack pack2 = new DataPack();
+		pack2.WriteCell(GetClientUserId(client));
+		RequestFrames(CancelSoundEarlyMlynar, 40, pack2);
+
 		for(int repeat; repeat <= MaxRepeats; repeat ++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, Speed, 99999.9, 0.0, -1, weapon, "", AngEffect);
@@ -134,7 +154,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		ang2[0] = fixAngle(ang2[0]);
 		ang2[1] = fixAngle(ang2[1]);
 		
-		float damage = 125.0;
+		float damage = 250.0;
 		
 		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
 		if(address != Address_Null)
@@ -487,10 +507,11 @@ public void Mlynar_Think(int client)
 		if(IsValidEntity(TemomaryGun))
 		{
 			TF2_RemoveItem(client, TemomaryGun);
-			FakeClientCommand(client, "use tf_weapon_sword");
 		}
+		FakeClientCommand(client, "use tf_weapon_sword");
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
+		FakeClientCommand(client, "use tf_weapon_sword");
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
 		return;
 	}	
