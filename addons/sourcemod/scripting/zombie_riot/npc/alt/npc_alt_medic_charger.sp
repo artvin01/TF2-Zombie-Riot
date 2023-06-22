@@ -246,7 +246,7 @@ public void AltMedicCharger_ClotThink(int iNPC)
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
-				NPC_SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
 			{

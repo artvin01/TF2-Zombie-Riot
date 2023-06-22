@@ -749,7 +749,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-				NPC_SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} 
 			else 
 			{
@@ -1104,7 +1104,7 @@ void Nemesis_TryDodgeAttack(int entity)
 					float vecTarget[3]; vecTarget = WorldSpaceCenter(ref);
 					npc.FaceTowards(vecTarget);
 				}
-				NPC_SetGoalEntity(npc.index, PosToDodgeTo);
+				NPC_SetGoalVector(npc.index, PosToDodgeTo);
 				npc.StartPathing();
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.55;
 				fl_StopDodge[npc.index] = GetGameTime(npc.index) + 0.5;

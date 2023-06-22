@@ -241,7 +241,7 @@ public void Soldier_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}

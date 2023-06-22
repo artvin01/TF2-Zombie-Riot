@@ -276,7 +276,7 @@ methodmap CClotBody
 						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						bool Ally_Collideeachother = false)
 	{
-		int npc = CreateEntityByName("base_boss");
+		int npc = CreateEntityByName("base_npc");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
 		DispatchKeyValue(npc,	   "model",	  model);
@@ -3663,7 +3663,7 @@ public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
 		{
 			if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 			{
-				if(StrEqual(buffer, "base_boss"))
+				if(StrEqual(buffer, "base_npc"))
 				{
 					GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer))
 					if(!StrContains(this_plugin_name, buffer))
@@ -6267,7 +6267,7 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			static char class[12];
 			GetEntityClassname(TR_GetEntityIndex(trace), class, sizeof(class));
 			
-			if(StrContains(class, "base_boss") && StrContains(class, "obj_")) //if its the world, then do this.
+			if(StrContains(class, "base_npc") && StrContains(class, "obj_")) //if its the world, then do this.
 			{
 				CreateParticle("impact_concrete", endpos, vecNormal);
 			}
@@ -7579,7 +7579,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 public void Raidboss_Clean_Everyone()
 {
 	int base_boss;
-	while((base_boss=FindEntityByClassname(base_boss, "base_boss")) != -1)
+	while((base_boss=FindEntityByClassname(base_boss, "base_npc")) != -1)
 	{
 		if(IsValidEntity(base_boss))
 		{
@@ -8126,7 +8126,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 	{
 		static char classname[MAX_ENTITY_CLASSNAME_LENGTH];
 		GetEntityClassname(entity, classname, sizeof(classname));
-		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_boss") == 0) || (strcmp(classname, "func_breakable") == 0))
+		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_npc") == 0) || (strcmp(classname, "func_breakable") == 0))
 		{
 			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
 			{

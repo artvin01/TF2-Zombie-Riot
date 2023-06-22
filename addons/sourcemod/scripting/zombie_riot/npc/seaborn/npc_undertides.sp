@@ -162,7 +162,7 @@ public void UnderTides_ClotThink(int iNPC)
 		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 		delete ToGroundTrace;
 
-		CNavArea area = TheNavMesh.GetNearestCNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+		CNavArea area = TheNavMesh.GetNearestNavArea(AproxRandomSpaceToWalkTo, true);
 		if(area == NULL_AREA)
 			return;
 		

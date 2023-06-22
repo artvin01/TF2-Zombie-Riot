@@ -483,7 +483,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			else
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				NPC_SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			
 			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 200 && flDistanceToTarget < 1000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget > 100))
@@ -988,7 +988,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		npc.StartPathing();
 		npc.m_fbGunout = false;
 		
-		NPC_SetGoalEntity(npc.index, vecPos);
+		NPC_SetGoalVector(npc.index, vecPos);
 		
 		
 		

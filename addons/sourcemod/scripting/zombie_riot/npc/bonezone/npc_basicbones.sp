@@ -246,7 +246,7 @@ public void BasicBones_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 	//		PrintToChatAll("cutoff");
-			NPC_SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{

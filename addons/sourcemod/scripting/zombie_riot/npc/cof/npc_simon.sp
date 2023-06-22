@@ -386,7 +386,7 @@ public void Simon_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 			
 			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			NPC_SetGoalEntity(npc.index, vBackoffPos);
+			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -453,7 +453,7 @@ public void Simon_ClotThink(int iNPC)
 				}
 				
 				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				NPC_SetGoalEntity(npc.index, TargetLocation);
+				NPC_SetGoalVector(npc.index, TargetLocation);
 				
 				if(!npc.m_bPathing)
 					npc.StartPathing();
@@ -476,7 +476,7 @@ public void Simon_ClotThink(int iNPC)
 				if(npc.m_iTarget)
 				{
 					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-					NPC_SetGoalEntity(npc.index, vBackoffPos);
+					NPC_SetGoalVector(npc.index, vBackoffPos);
 					
 					if(!npc.m_bPathing)
 						npc.StartPathing();

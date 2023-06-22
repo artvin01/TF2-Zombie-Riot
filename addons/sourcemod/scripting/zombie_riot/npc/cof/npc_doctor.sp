@@ -378,7 +378,7 @@ public void Doctor_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
 			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			NPC_SetGoalEntity(npc.index, vBackoffPos);
+			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();

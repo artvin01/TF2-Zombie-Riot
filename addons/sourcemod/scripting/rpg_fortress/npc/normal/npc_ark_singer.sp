@@ -223,7 +223,7 @@ public void ArkSinger_ClotThink(int iNPC)
 
 			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+			while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
 			{
 				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
 				{
@@ -271,7 +271,7 @@ public void ArkSinger_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			NPC_SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{

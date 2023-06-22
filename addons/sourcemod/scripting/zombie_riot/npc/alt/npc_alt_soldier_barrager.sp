@@ -285,7 +285,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalEntity(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
@@ -336,7 +336,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 					
 					vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 					
-					NPC_SetGoalEntity(npc.index, vBackoffPos);
+					NPC_SetGoalVector(npc.index, vBackoffPos);
 				}
 			}
 			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)

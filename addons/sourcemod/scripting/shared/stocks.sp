@@ -1843,7 +1843,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	{
 		return false;
 	}
-	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "base_boss"))) //include baseboss so it goesthru
+	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "base_npc"))) //include baseboss so it goesthru
 	{
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		{
@@ -1864,12 +1864,12 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(!StrEqual(class, "base_boss"))
+	if(!StrEqual(class, "base_npc"))
 	{
 		return false;
 	}
 	
-	if(entity != iExclude && StrEqual(class, "base_boss"))
+	if(entity != iExclude && StrEqual(class, "base_npc"))
 	{
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		{
@@ -1890,7 +1890,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
 	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while ((i = FindEntityByClassname(i, "base_npc")) != -1)
 	{
 		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
@@ -2372,7 +2372,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "base_boss")) return true;
+	if(StrEqual(class, "base_npc")) return true;
 	
 	return !(entity == data);
 }

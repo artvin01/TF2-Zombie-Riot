@@ -455,7 +455,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 			npc.m_iTargetRally = 0;
 
 			int entity = MaxClients + 1;
-			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+			while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
 			{
 				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 				{
@@ -500,7 +500,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(flDistanceToTarget < canRetreat)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-				NPC_SetGoalEntity(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();
 				pathed = true;
@@ -517,7 +517,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				//Predict their pos.
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
-				NPC_SetGoalEntity(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();
 				pathed = true;
@@ -592,7 +592,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
 				{
-					NPC_SetGoalEntity(npc.index, f3_SpawnPosition[npc.index]);
+					NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 					npc.StartPathing();
 					pathed = true;
 				}

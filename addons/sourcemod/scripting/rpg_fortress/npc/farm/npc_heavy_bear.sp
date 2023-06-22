@@ -171,7 +171,7 @@ public void FarmBear_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		NPC_SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
+		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 		NPC_StartPathing(iNPC);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];

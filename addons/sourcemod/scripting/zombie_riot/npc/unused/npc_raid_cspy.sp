@@ -486,7 +486,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{	
-			NPC_SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} else {
 			NPC_SetGoalEntity(npc.index, closest);
 		}

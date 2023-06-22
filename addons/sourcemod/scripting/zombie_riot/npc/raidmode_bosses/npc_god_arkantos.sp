@@ -428,7 +428,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{

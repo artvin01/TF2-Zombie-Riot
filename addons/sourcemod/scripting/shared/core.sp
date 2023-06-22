@@ -576,14 +576,10 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
 
-StringMap HookIdMap;
-StringMap HookListMap;
-
 //Handle g_hSDKIsClimbingOrJumping;
 //SDKCalls
 Handle g_hUpdateCollisionBox;
 Handle g_hMyNextBotPointer;
-Handle g_hGetLocomotionInterface;
 Handle g_hGetIntentionInterface;
 Handle g_hGetBodyInterface;
 //Handle g_hGetVisionInterface;
@@ -600,11 +596,9 @@ Handle g_hGetVelocity;
 Handle g_hSetVelocity;
 Handle g_hStudioFrameAdvance;
 Handle g_hJump;
-Handle g_hSDKIsOnGround;
 //DynamicHook g_hAlwaysTransmit;
 // Handle g_hJumpAcrossGap;
 Handle g_hDispatchAnimEvents;
-Handle g_hGetMaxAcceleration;
 Handle g_hGetGroundSpeed;
 Handle g_hGetVectors;
 Handle g_hGetGroundMotionVector;
@@ -616,12 +610,6 @@ Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
-Handle g_hAddGesture;
-Handle g_hAddGestureSequence;
-Handle g_hRemoveGesture;
-Handle g_hRestartGesture;
-Handle g_hRestartSequence;
-Handle g_hIsPlayingGesture;
 Handle g_hFindBodygroupByName;
 Handle g_hSetBodyGroup;
 Handle g_hSelectWeightedSequence;
@@ -631,8 +619,6 @@ Handle g_hLookupBone;
 Handle g_hGetBonePosition;
 #endif
 //Death
-Handle g_hNextBotCombatCharacter_Event_Killed;
-Handle g_hCBaseCombatCharacter_Event_Killed;
 
 //PluginBot SDKCalls
 Handle g_hGetEntity;
@@ -640,34 +626,7 @@ Handle g_hGetBot;
 
 //DHooks
 //Handle g_hGetCurrencyValue;
-Handle g_hEvent_Killed;
 Handle g_hEvent_Ragdoll;
-Handle g_hHandleAnimEvent;
-Handle g_hGetFrictionSideways;
-Handle g_hGetStepHeight;
-Handle g_hGetGravity;
-Handle g_hGetRunSpeed;
-Handle g_hGetGroundNormal;
-Handle g_hShouldCollideWithAlly;
-Handle g_hShouldCollideWithAllyInvince;
-Handle g_hShouldCollideWithAllyEnemy;
-Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
-Handle g_hShouldCollideWithAllyIngoreBuilding;
-Handle g_hGetSolidMask;
-Handle g_hGetSolidMaskAlly;
-Handle g_hStartActivity;
-Handle g_hGetActivity;
-Handle g_hIsActivity;
-Handle g_hGetHullWidth;
-Handle g_hGetHullHeight;
-Handle g_hGetStandHullHeight;
-Handle g_hGetHullWidthGiant;
-Handle g_hGetHullHeightGiant;
-Handle g_hGetStandHullHeightGiant;
-
-//NavAreas
-Address navarea_count;
-
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 
@@ -719,7 +678,7 @@ enum
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_209.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
-#define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
+#define DEFAULT_UPDATE_DELAY_FLOAT -0.02 //Make it 0 for now
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
 
@@ -1251,7 +1210,7 @@ public void OnPluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(!StrContains(buffer, "base_boss"))
+			if(!StrContains(buffer, "base_npc"))
 				RemoveEntity(i);
 		}
 	}
@@ -2171,6 +2130,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		PrintToChatAll("%s",classname);
 		i_CustomWeaponEquipLogic[entity] = 0;
 		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
@@ -2343,7 +2303,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnWrenchCreated(entity);
 		}
-		else if(!StrContains(classname, "base_boss"))
+		else if(!StrContains(classname, "base_npc"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
@@ -2851,8 +2811,6 @@ public void OnEntityDestroyed(int entity)
 #if defined ZR
 	OnEntityDestroyed_Build_On_Build(entity);
 #endif
-
-	NPC_Base_OnEntityDestroyed();
 }
 
 public void RemoveNpcThingsAgain(int entity)

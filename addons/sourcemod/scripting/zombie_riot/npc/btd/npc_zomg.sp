@@ -198,7 +198,7 @@ public void Zomg_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalEntity(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{

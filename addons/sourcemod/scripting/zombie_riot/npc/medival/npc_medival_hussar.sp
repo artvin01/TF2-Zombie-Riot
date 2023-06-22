@@ -297,7 +297,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					NPC_SetGoalEntity(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
 				{
@@ -336,7 +336,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index]);
-					NPC_SetGoalEntity(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
 				{
@@ -369,7 +369,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					NPC_SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
+					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 					NPC_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{

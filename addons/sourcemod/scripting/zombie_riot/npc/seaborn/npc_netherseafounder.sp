@@ -152,7 +152,7 @@ public void SeaFounder_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			NPC_SetGoalEntity(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
@@ -292,7 +292,7 @@ void SeaFounder_SpawnNethersea(const float pos[3])
 	if(!RenderTimer)
 		RenderTimer = CreateTimer(4.0, SeaFounder_RenderTimer, _, TIMER_REPEAT);
 
-	CNavArea nav = TheNavMesh.GetCNavArea_Vec(pos, 30.0);
+	CNavArea nav = TheNavMesh.GetNavArea(pos, 30.0);
 	if(nav != NULL_AREA)
 	{
 		if(NavList.FindValue(nav) == -1)
@@ -386,7 +386,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 
 		for(NavCornerType b = NORTH_WEST; b < NUM_CORNERS; b++)	// Go through each side of the tile
 		{
-			nav.GetCorner(corner[b], b);
+			nav.GetCorner(b, corner[b]);
 		}
 
 		for(NavCornerType b = NORTH_WEST; b < NUM_CORNERS; b++)
@@ -578,7 +578,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			NervousLastTouch[client] = TheNavMesh.GetCNavArea(pos, 70.0);
+			NervousLastTouch[client] = TheNavMesh.GetNavArea(pos, 70.0);
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
 				bool resist = Building_NeatherseaReduced(client);
@@ -644,7 +644,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			CNavArea nav = TheNavMesh.GetCNavArea(pos, 5.0);
+			CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
 			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
 				NervousTouching[entity] = NervousTouching[0];
@@ -661,7 +661,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			NervousLastTouch[entity] = TheNavMesh.GetCNavArea(pos, 5.0);
+			NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
 			if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
 			{
 				SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
@@ -696,7 +696,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 				// Find entities touching infected tiles
-				NervousLastTouch[entity] = TheNavMesh.GetCNavArea_Vec(pos, 5.0);
+				NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
 				if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
 				{
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET, _, _, pos);

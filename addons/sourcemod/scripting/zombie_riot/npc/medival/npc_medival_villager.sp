@@ -403,7 +403,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					NPC_SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
+					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 					NPC_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
@@ -485,7 +485,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					{
 						float AproxRandomSpaceToWalkTo[3];
 						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-						NPC_SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
+						NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 						NPC_StartPathing(iNPC);
 						//Walk to building.
 						if(npc.m_iChanged_WalkCycle != 4) 	
@@ -550,7 +550,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 				delete ToGroundTrace;
 
-				CNavArea area = TheNavMesh.GetNearestNavArea_Vec(AproxRandomSpaceToWalkTo, true);
+				CNavArea area = TheNavMesh.GetNearestNavArea(AproxRandomSpaceToWalkTo, true);
 				if(area == NULL_AREA)
 					return;
 					
@@ -653,7 +653,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-				NPC_SetGoalEntity(iNPC, AproxRandomSpaceToWalkTo);
+				NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 				NPC_StartPathing(iNPC);
 				//Walk to building.
 				if(npc.m_iChanged_WalkCycle != 4) 	
@@ -683,7 +683,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 
-					NPC_SetGoalEntity(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else
 				{

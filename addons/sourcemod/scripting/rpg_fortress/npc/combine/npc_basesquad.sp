@@ -700,7 +700,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 				if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
 				{
 					vecTarget = PredictSubjectPosition(npc, npc.m_iTargetWalk);
-					NPC_SetGoalEntity(npc.index, vecTarget);
+					NPC_SetGoalVector(npc.index, vecTarget);
 				}
 				else
 				{
@@ -727,7 +727,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 		}
 		else if(GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) > 8000.0)	// 90 HU
 		{
-			NPC_SetGoalEntity(npc.index, f3_SpawnPosition[npc.index]);
+			NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 			npc.StartPathing();
 		}
 		else

@@ -565,7 +565,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
 			{
-				NPC_SetGoalEntity(npc.index, f3_SpawnPosition[npc.index]);
+				NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
