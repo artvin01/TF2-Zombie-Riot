@@ -62,7 +62,7 @@ void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 	f_MlynarDmgAfterAbility[client] = 1.0;
 	f_MlynarAbilityActiveTime[client] = 0.0;
 	b_MlynarResetStats[client] = false;
-	Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
+//	Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
 }
 public void Weapon_MlynarAttack(int client, int weapon, bool &result, int slot)
 {
@@ -487,10 +487,11 @@ public void Mlynar_Think(int client)
 		if(IsValidEntity(TemomaryGun))
 		{
 			TF2_RemoveItem(client, TemomaryGun);
-			FakeClientCommand(client, "use tf_weapon_sword");
 		}
+		FakeClientCommand(client, "use tf_weapon_sword");
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
+		FakeClientCommand(client, "use tf_weapon_sword");
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
 		return;
 	}	

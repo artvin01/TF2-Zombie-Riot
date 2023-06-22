@@ -1708,7 +1708,7 @@ void Store_ClientDisconnect(int client)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client])
+		if((item.Owned[client] || item.Scaled[client] || item.Equipped[client]) && !item.Hidden)
 		{
 			item.Owned[client] = 0;
 			item.Scaled[client] = 0;
@@ -2224,7 +2224,7 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 }
 
 #if defined ZR
-bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, int &sell, char[] buffer="", int size=0)
+bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped, int &sell, char[] buffer="", int size=0, int &hidden = 0)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -2237,6 +2237,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 			scale = item.Scaled[client];
 			equipped = item.Equipped[client];
 			sell = item.Sell[client];
+			hidden = item.Hidden;
 			
 			if(size)
 			{
