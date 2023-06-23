@@ -26,6 +26,7 @@ static Handle g_hSDKUpdateBlocked;
 static Handle g_hImpulse;
 
 static Handle SDKGetShootSound;
+static Handle SDKBecomeRagdollOnClient;
 
 static DynamicHook g_hDHookItemIterateAttribute;
 static int g_iCEconItem_m_Item;
@@ -201,7 +202,14 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
 	if((SDKGetShootSound = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFWeaponBaseMelee::GetShootSound");
-
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::BecomeRagdollOnClient");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	SDKBecomeRagdollOnClient = EndPrepSDKCall();
+	if(!SDKBecomeRagdollOnClient)
+		LogError("[Gamedata] Could not find CBaseAnimating::BecomeRagdollOnClient");
+	
 	delete gamedata;
 	
 	Handle hConf = LoadGameConfigFile("tf2.pets");
@@ -405,6 +413,11 @@ void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float ang
 	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
 }
 #endif
+
+void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
+{
+	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
+}
 
 void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {

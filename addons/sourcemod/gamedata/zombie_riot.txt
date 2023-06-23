@@ -988,6 +988,11 @@
 				"windows"	"337"
 				"linux"		"343"
 			}
+			"CBaseAnimating::BecomeRagdollOnClient"
+			{
+				"windows"	"205"
+				"linux"		"206"
+			}
 		}
 	}
 }

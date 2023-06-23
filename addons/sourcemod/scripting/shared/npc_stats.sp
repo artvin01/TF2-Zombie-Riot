@@ -244,6 +244,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
 
+		SetEntityModel(npc,model);
+
 #if defined RPG
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMinDist", 1600.0);
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 2000.0);
@@ -8157,7 +8159,7 @@ bool IsPathToEntityPossible(int entity, int goalentity, float &distancepathed)
 
 public void MakeEntityRagdollNpc(int pThis)  
 {
-	/*
+
 	CClotBody npc = view_as<CClotBody>(pThis);
 	float Push[3];
 	npc.m_vecpunchforce(Push, false);
@@ -8168,9 +8170,8 @@ public void MakeEntityRagdollNpc(int pThis)
 		Push[1] = 1.0;
 		Push[2] = 1.0;
 	}
-	*/
-	//todo, fix ragoll pushforce
-	AcceptEntityInput(pThis, "BecomeRagdoll");
+
+	SDKCall_BecomeRagdollOnClient(pThis, Push);
 }
 
 
