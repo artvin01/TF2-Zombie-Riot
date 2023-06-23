@@ -44,7 +44,6 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 
-static ConVar flTurnRate;
 static PathFollower pPath[MAXENTITIES];
 
 static int g_sModelIndexBloodDrop;
@@ -333,6 +332,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		static float m_vecMins[3];
 		if(isGiant)
 		{
+			b_IsGiant[npc] = true;
 			b_BoundingBoxVariant[npc] = 1;
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
@@ -361,6 +361,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		//Fix collisions
 		baseNPC.SetBodyMaxs(m_vecMaxs);
 		baseNPC.SetBodyMins(m_vecMins);
+		SetEntPropVector(npc, Prop_Data, "m_vecMaxs", m_vecMaxs);
+		SetEntPropVector(npc, Prop_Data, "m_vecMins", m_vecMins);
 		
 		//Fixed wierd clientside issue or something
 		static float m_vecMaxsNothing[3];
@@ -1585,6 +1587,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			view_as<CBaseCombatCharacter>(this).AddGesture(view_as<Activity>(activity), duration, autokill);
 		}
+		
+		//int layer = this.FindGestureLayer(view_as<Activity>(activity));
+		//if(layer != -1)
+		//	this.SetLayerPlaybackRate(layer, 0.5);
 	}
 	public void RemoveGesture(const char[] anim)
 	{
@@ -1704,7 +1710,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		this.MyNextBotPointer().NotifyPathDestruction(pPath[this.index]);
 		pPath[this.index].Destroy();
-		pPath[this.index] = null;
+		pPath[this.index] = view_as<PathFollower>(0);
 		this.m_bPathing = false;
 	}
 	public void StartPathing()
@@ -1713,8 +1719,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			this.m_bPathing = true;
 
-			// TODO: Is this needed?
-			this.GetPathFollower().SetMinLookAheadDistance(0.0);
+			this.GetPathFollower().SetMinLookAheadDistance(15.0);
 		}
 	}
 	public void StopPathing()
@@ -1728,7 +1733,17 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(f_DelayComputingOfPath[this.index] < GetGameTime())
 		{
-			f_DelayComputingOfPath[this.index] = GetGameTime() + 0.25;
+			float AddComputingDelay = 0.3;
+
+			if(b_thisNpcIsARaid[this.index])
+			{
+				AddComputingDelay = 0.1;
+			}
+			else if(b_thisNpcIsABoss[this.index])
+			{
+				AddComputingDelay = 0.2;
+			}
+			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
 			this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
 		}
 	}
@@ -1736,20 +1751,41 @@ methodmap CClotBody < CBaseCombatCharacter
 	{	
 		if(f_DelayComputingOfPath[this.index] < GetGameTime())
 		{
-			f_DelayComputingOfPath[this.index] = GetGameTime() + 0.25;
+			float AddComputingDelay = 0.3;
+
+			if(b_thisNpcIsARaid[this.index])
+			{
+				AddComputingDelay = 0.1;
+			}
+			else if(b_thisNpcIsABoss[this.index])
+			{
+				AddComputingDelay = 0.2;
+			}
+			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
 			this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
 		}
 	}
 	public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
 	{
 		//Sad!
+		float flPrevValue = this.GetBaseNPC().flMaxYawRate;
+		
+		this.GetBaseNPC().flMaxYawRate = turnrate;
+		this.GetLocomotionInterface().FaceTowards(vecGoal);
+		this.GetBaseNPC().flMaxYawRate = flPrevValue;
+	}
+	/*
+
+		public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
+	{
+		//Sad!
 		float flPrevValue = flTurnRate.FloatValue;
 		
 		flTurnRate.FloatValue = turnrate;
-		this.GetLocomotionInterface().FaceTowards(vecGoal);
+		SDKCall(g_hFaceTowards, this.GetLocomotionInterface(), vecGoal);
 		flTurnRate.FloatValue = flPrevValue;
 	}
-		
+	*/		
 	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
 	public float GetGroundSpeed()	{ return this.GetLocomotionInterface().GetGroundSpeed(); }
 	public float GetPoseParameter(int iParameter)	{ return this.GetPoseParameter(iParameter);	}
@@ -2309,15 +2345,27 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 			
 		}
+
 		if(this.m_bisWalking) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
-			if (m_flGroundSpeed != 0.0) {
+			if(m_flGroundSpeed != 0.0)
+			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
 				PlaybackSpeed *= this.m_bisGiantWalkCycle;
 				if(PlaybackSpeed > 2.0)
 					PlaybackSpeed = 2.0;
-				this.SetPlaybackRate(PlaybackSpeed);
+				
+				if(this.m_iActivity)
+				{
+					int layer = this.FindGestureLayer(view_as<Activity>(this.m_iActivity));
+					if(layer != -1)
+						this.SetLayerPlaybackRate(layer, PlaybackSpeed);
+				}
+				else
+				{
+					this.SetPlaybackRate(PlaybackSpeed);
+				}
 			}
 		}
 		
@@ -2421,12 +2469,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	//return the bot's collision mask
 	public int GetSolidMask()
 	{
-		//0x202400B L4D2
+		//What to collide with
 		return (MASK_NPCSOLID);
 	}
 	public int GetSolidMaskAlly()
 	{
-		//0x202400B L4D2
+		//What to collide with
 		return (MASK_NPCSOLID|MASK_PLAYERSOLID);
 	}
 	
@@ -2458,7 +2506,6 @@ methodmap CClotBody < CBaseCombatCharacter
 
 public void NPC_Base_InitGamedata()
 {
-	flTurnRate = FindConVar("tf_base_boss_max_turn_rate");
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
 	
@@ -2691,7 +2738,9 @@ public void NPC_Base_InitGamedata()
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
 
-	
+	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+	g_hGetSolidMaskAlly		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
+
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "LookupSequence");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
@@ -2709,8 +2758,6 @@ public void NPC_Base_InitGamedata()
 //Ragdoll
 public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int iInflictor, float flDamage, int iDamagetype, int iWeapon, const float vecDamageForce[3], const float vecDamagePosition[3])
 {	
-//	CreateTimer(5.0, Check_Emergency_Reload, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);
-	PrintToChatAll("DIE");
 	if(!b_NpcHasDied[pThis])
 	{
 		int client = GetClientOfUserId(LastHitId[pThis]);
