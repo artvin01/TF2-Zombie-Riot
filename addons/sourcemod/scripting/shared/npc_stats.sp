@@ -39,6 +39,7 @@ static int g_rocket_particle;
 static int i_rocket_particle[MAXENTITIES];
 static float fl_rocket_particle_dmg[MAXENTITIES];
 static float fl_rocket_particle_radius[MAXENTITIES];
+static float f_DelayComputingOfPath[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -1717,11 +1718,19 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void SetGoalEntity(int target)
 	{
-		this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+		if(f_DelayComputingOfPath[this.index] < GetGameTime())
+		{
+			f_DelayComputingOfPath[this.index] = GetGameTime() + 0.25;
+			this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+		}
 	}
 	public void SetGoalVector(const float vec[3])
-	{
-		this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
+	{	
+		if(f_DelayComputingOfPath[this.index] < GetGameTime())
+		{
+			f_DelayComputingOfPath[this.index] = GetGameTime() + 0.25;
+			this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
+		}
 	}
 	public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
 	{
@@ -6834,6 +6843,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
+	f_DelayComputingOfPath[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
