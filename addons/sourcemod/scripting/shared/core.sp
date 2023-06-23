@@ -193,6 +193,8 @@ Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 //MUST BE HERE!
+StringMap HookListMap;
+StringMap HookIdMap;
 
 bool DoingLagCompensation;
 
@@ -623,7 +625,8 @@ Handle g_hGetBonePosition;
 //PluginBot SDKCalls
 Handle g_hGetEntity;
 Handle g_hGetBot;
-
+Handle g_hGetSolidMask;
+Handle g_hGetSolidMaskAlly;
 //DHooks
 //Handle g_hGetCurrencyValue;
 Handle g_hEvent_Ragdoll;
@@ -2810,6 +2813,7 @@ public void OnEntityDestroyed(int entity)
 #if defined ZR
 	OnEntityDestroyed_Build_On_Build(entity);
 #endif
+	NPC_Base_OnEntityDestroyed();
 }
 
 public void RemoveNpcThingsAgain(int entity)

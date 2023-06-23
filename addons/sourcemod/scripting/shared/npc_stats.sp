@@ -314,7 +314,32 @@ methodmap CClotBody < CBaseCombatCharacter
 		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 		
 		//so map makers can choose between NPCs and Clients
-		DHookEntity(g_hEvent_Ragdoll,  false, npc);
+
+		ArrayList list = new ArrayList();
+		
+		if(!Ally)
+			list.Push(DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody())));
+		else
+			list.Push(DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody())));
+
+		char buffer[12];
+		int id = list.Length;
+		for(int i; i<id; i++)
+		{
+			int hook = list.Get(i);
+			IntToString(hook, buffer, sizeof(buffer));
+			int value = 0;
+			if(HookListMap.GetValue(buffer, value))
+			{
+		//		LogError("Duplicate raw hook found %d", hook); Yeah we get it, just dont do this.		
+			}
+			
+			HookListMap.SetValue(buffer, value+1);
+		}
+		
+		IntToString(EntIndexToEntRef(npc), buffer, sizeof(buffer));
+		HookIdMap.SetValue(buffer, list);
+
 		SetEntityFlags(npc, FL_NPC);
 		
 		//Don't ResolvePlayerCollisions.
@@ -2558,16 +2583,6 @@ public void NPC_Base_InitGamedata()
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
-
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetIntentionInterface");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hGetIntentionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetIntentionInterface!");
-	
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetBodyInterface");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if((g_hGetBodyInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetBodyInterface!");
 /*		
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetVisionInterface");
@@ -2752,6 +2767,9 @@ public void NPC_Base_InitGamedata()
 	DHookAddParam(g_hEvent_Ragdoll, HookParamType_Int); //( const CTakeDamageInfo &info )
 	DHookAddParam(g_hEvent_Ragdoll, HookParamType_VectorPtr); //( const vector )
 
+	HookListMap = new StringMap();
+	HookIdMap = new StringMap();
+	
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
 }
 
@@ -5850,54 +5868,15 @@ bool SetTeleportEndPoint(int client, float Position[3])
 	return true;
 }
 
-public MRESReturn ILocomotion_GetRunSpeed(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetRunSpeed()); 
-	return MRES_Supercede; 
-}
 
 public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
+	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMask()); 
 	return MRES_Supercede; 
 }
 public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
-	return MRES_Supercede; 
-}
-
-public MRESReturn IBody_GetActivity(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-	#if defined DEBUG_ANIMATION
-	PrintToServer("IBody_GetActivity");	
-	#endif
-	
-	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetActivity()); 
-	return MRES_Supercede; 
-}
-
-public MRESReturn IBody_IsActivity(Address pThis, Handle hReturn, Handle hParams)			  
-{
-	int iActivity = DHookGetParam(hParams, 1);
-	
-	#if defined DEBUG_ANIMATION
-	PrintToServer("IBody_IsActivity %i", iActivity);	
-	#endif
-
-	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).IsActivity(iActivity));
-	return MRES_Supercede; 
-}
-
-public MRESReturn IBody_StartActivity(Address pThis, Handle hReturn, Handle hParams)			 
-{ 
-	int iActivity = DHookGetParam(hParams, 1);
-	int fFlags	= DHookGetParam(hParams, 2);
-	
-	PrintToServer("IBody_StartActivity %i %i", iActivity, fFlags);	
-	
-	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).StartActivity(iActivity, fFlags)); 
-	
+	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly()); 
 	return MRES_Supercede; 
 }
 
@@ -8213,4 +8192,63 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 		
 	DHookSetReturn(hReturn, true);
 	return MRES_ChangedOverride;
+}
+
+
+
+void NPC_Base_OnEntityDestroyed()
+{
+	RequestFrame(DHookCleanIds);
+}
+
+public void DHookCleanIds()
+{
+	StringMapSnapshot snap = HookIdMap.Snapshot();
+	if(snap)
+	{
+		char buffer[12];
+		int length2 = snap.Length;
+		for(int a; a<length2; a++)
+		{
+			snap.GetKey(a, buffer, sizeof(buffer));
+			if(EntRefToEntIndex(StringToInt(buffer)) <= MaxClients)
+			{
+				ArrayList list;
+				
+				HookIdMap.GetValue(buffer, list);
+				HookIdMap.Remove(buffer);
+				
+				if(list)
+				{
+					int length = list.Length;
+					for(int i; i<length; i++)
+					{
+						int id2 = list.Get(i);
+						if(id2 != INVALID_HOOK_ID)
+						{
+							int value = 1;
+							IntToString(id2, buffer, sizeof(buffer));
+							if(HookListMap.GetValue(buffer, value) && value > 1)
+							{
+								HookListMap.SetValue(buffer, value-1);
+						//		LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
+							}
+							else
+							{
+								if(!DHookRemoveHookID(id2))
+								{
+							//			LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
+								}
+								
+								HookListMap.Remove(buffer);
+							}
+						}
+					}
+					
+					delete list;
+				}
+			}
+		}
+		delete snap;
+	}
 }
