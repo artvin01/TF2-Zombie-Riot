@@ -217,6 +217,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 
 		int npc = baseNPC.GetEntity();
+
+		if(!pPath[npc])
+			pPath[npc] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
 		DispatchKeyValue(npc, "model",	 model);
@@ -1698,7 +1702,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void RemovePather(int entity)
 	{
-		this.GetPathFollower().Invalidate();
+		this.MyNextBotPointer().NotifyPathDestruction(pPath[this.index]);
+		pPath[this.index].Destroy();
+		pPath[this.index] = null;
 		this.m_bPathing = false;
 	}
 	public void StartPathing()
@@ -1706,6 +1712,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(!CvarDisableThink.BoolValue)
 		{
 			this.m_bPathing = true;
+
+			// TODO: Is this needed?
 			this.GetPathFollower().SetMinLookAheadDistance(0.0);
 		}
 	}
@@ -2695,9 +2703,8 @@ public void NPC_Base_InitGamedata()
 	DHookAddParam(g_hEvent_Ragdoll, HookParamType_Int); //( const CTakeDamageInfo &info )
 	DHookAddParam(g_hEvent_Ragdoll, HookParamType_VectorPtr); //( const vector )
 
-	for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
 }
-
 
 //Ragdoll
 public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int iInflictor, float flDamage, int iDamagetype, int iWeapon, const float vecDamageForce[3], const float vecDamagePosition[3])
