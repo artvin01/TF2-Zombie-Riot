@@ -248,7 +248,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchSpawn(npc); //Do this at the end :)
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
-		npcstats.SetSequence(1);
+		npcstats.SetSequence(0);
 		//FIX: This fixes lookup activity not working.
 
 #if defined RPG
