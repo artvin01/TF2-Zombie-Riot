@@ -434,7 +434,8 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 					restore.m_layerRecords.PushArray(layer);
 
 					bool interpolated = false;
-					if(interpolationAllowed)
+					if(interpolationAllowed &&
+						i < record.m_layerRecords.Length && i < prevRecordsLayerRecord.m_layerRecords.Length)	// TODO: Duct tape fix, find out of bounds array happens
 					{
 						record.m_layerRecords.GetArray(i, recordsLayerRecord);
 						prevRecord.m_layerRecords.GetArray(i, prevRecordsLayerRecord);
