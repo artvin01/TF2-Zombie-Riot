@@ -142,6 +142,7 @@ methodmap HeadcrabZombie < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
