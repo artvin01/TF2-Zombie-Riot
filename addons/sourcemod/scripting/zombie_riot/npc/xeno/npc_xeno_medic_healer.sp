@@ -266,12 +266,10 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 					if(flDistanceToTarget < 62500)
 					{
 						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;	
 					}
 					else
 					{
 						npc.StartPathing();
-						npc.m_bPathing = false;		
 					}
 					if(!npc.m_bnew_target)
 					{
@@ -302,8 +300,8 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 				{
 					if(IsValidEntity(npc.m_iWearable4))
 						RemoveEntity(npc.m_iWearable4);
+
 					npc.StartPathing();
-					npc.m_bPathing = false;		
 					npc.m_bnew_target = false;					
 				}
 		}

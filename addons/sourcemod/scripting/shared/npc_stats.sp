@@ -248,7 +248,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchSpawn(npc); //Do this at the end :)
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
-		npcstats.StartActivity(1);
+		npcstats.SetSequence(1);
 		//FIX: This fixes lookup activity not working.
 
 #if defined RPG
@@ -1764,9 +1764,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
 		}
 	}
-	public void SetGoalVector(const float vec[3])
+	public void SetGoalVector(const float vec[3], bool ignoretime = false)
 	{	
-		if(f_DelayComputingOfPath[this.index] < GetGameTime())
+		if(f_DelayComputingOfPath[this.index] < GetGameTime() || ignoretime)
 		{
 			float AddComputingDelay = 0.3;
 
@@ -3368,9 +3368,9 @@ void NPC_StopPathing(int entity)
 	view_as<CClotBody>(entity).StopPathing();
 }
 
-void NPC_SetGoalVector(int entity, const float vec[3])
+void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
 {
-	view_as<CClotBody>(entity).SetGoalVector(vec);
+	view_as<CClotBody>(entity).SetGoalVector(vec, ignore_time);
 }
 
 void NPC_SetGoalEntity(int entity, int target)
@@ -3417,10 +3417,10 @@ stock float[] WorldSpaceCenter(int entity)
 
 stock CNavArea PickRandomArea()
 {
-	int iAreaCount = TheNavMesh.GetNavAreaCount();
+	int iAreaCount = TheNavAreas.Length;
 	
 	//Pick a random goal area
-	return view_as<CNavArea>(LoadFromAddress(TheNavMesh.Address + view_as<Address>(4 * GetRandomInt(0, iAreaCount - 1)), NumberType_Int32));
+	return TheNavAreas.Get(GetURandomInt() % iAreaCount);
 }
 
 public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
@@ -3436,7 +3436,8 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 {
 	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 	
-	if(other_entidx == 0) {
+	if(other_entidx <= 0) 
+	{
 		return false;
 	}
 
@@ -4076,7 +4077,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 {
 	int ClosestTarget = -1; 
 
-	if(b_NpcHasDied[entity] && !UseVectorDistance)
+	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
 		CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 100.0);

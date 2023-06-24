@@ -251,12 +251,10 @@ public void MedicHealer_ClotThink(int iNPC)
 					if(flDistanceToTarget < 62500)
 					{
 						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;	
 					}
 					else
 					{
-						npc.StartPathing();
-						npc.m_bPathing = false;		
+						npc.StartPathing();	
 					}
 					if(!npc.m_bnew_target)
 					{
@@ -289,7 +287,7 @@ public void MedicHealer_ClotThink(int iNPC)
 						RemoveEntity(npc.m_iWearable4);
 						
 					npc.StartPathing();
-					npc.m_bPathing = false;		
+
 					npc.m_bnew_target = false;					
 				}
 		}
