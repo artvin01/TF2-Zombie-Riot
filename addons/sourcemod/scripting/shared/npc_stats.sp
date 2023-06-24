@@ -1584,6 +1584,24 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iFreezeWearable
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_FreezeWearable[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_FreezeWearable[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_FreezeWearable[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	
 	public int GetTeam()  { return GetEntProp(this.index, Prop_Send, "m_iTeamNum"); }
 	
@@ -1907,7 +1925,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	const char[] model,
 	const char[] anim = "",
 	int skin = 0,
-	float model_size = 1.0)
+	float model_size = 1.0,
+	float offset = 0.0)
 	{
 		int item = CreateEntityByName("prop_dynamic");
 		DispatchKeyValue(item, "model", model);
@@ -1928,7 +1947,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 
-		TeleportEntity(item, GetAbsOrigin(this.index), eyePitch, NULL_VECTOR);
+		float VecOrigin[3];
+		VecOrigin = GetAbsOrigin(this.index);
+		VecOrigin[2] += offset;
+
+		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		
 
 		if(!StrEqual(anim, ""))
 		{
@@ -2383,7 +2407,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
 		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
 
-		if(f_TimeFrozenStill[this.index])
+		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
 		{
 			// Was frozen before, reset layers
 			int layerCount = this.GetNumAnimOverlays();
@@ -2391,6 +2415,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
 			}
+
+			if(IsValidEntity(view_as<CClotBody>(this.index).m_iFreezeWearable))
+				RemoveEntity(view_as<CClotBody>(this.index).m_iFreezeWearable);
 
 			f_TimeFrozenStill[this.index] = 0.0;
 		}
@@ -2694,6 +2721,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iTextEntity3);
 		if(IsValidEntity(npc.m_iTextEntity4))
 			RemoveEntity(npc.m_iTextEntity4);
+		if(IsValidEntity(npc.m_iFreezeWearable))
+			RemoveEntity(npc.m_iFreezeWearable);
 		
 #if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
@@ -3967,7 +3996,7 @@ int GetClosestTarget_Enemy_Type[MAXENTITIES];
 
 stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
-  float fldistancelimit = 999999.9,
+  float fldistancelimit = 99999.9,
    bool camoDetection=false,
     bool onlyPlayers = false,
 	 int ingore_client = -1, 
@@ -4136,7 +4165,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		static float targetPos[MAXENTITIES][3];
 		for(int i; i < MAXENTITIES; i++)
 		{
-			if(!GetClosestTarget_EnemiesToCollect[i])
+			if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 				break;
 			
 			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
@@ -4150,7 +4179,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		}
 
 		float maxDistance = fldistancelimit > fldistancelimitAllyNPC ? fldistancelimit : fldistancelimitAllyNPC;
-		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, maxDistance, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
+		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, _, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
@@ -4163,7 +4192,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			// Find if any targets are standing on here
 			for(int a; a < MAXENTITIES; a++)
 			{
-				if(!GetClosestTarget_EnemiesToCollect[a])
+				if(GetClosestTarget_EnemiesToCollect[a] <= 0)
 					break;
 				
 				if(targetNav[a] == area)
@@ -4190,7 +4219,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 			for(int i; i < MAXENTITIES; i++)
 			{
-				if(!GetClosestTarget_EnemiesToCollect[i])
+				if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 					break;
 				
 				if(targetNav[i] != closeNav)	// In this close nav
@@ -6737,6 +6766,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
+	i_FreezeWearable[entity] = -1;
 	f3_SpawnPosition[entity][0] = 0.0;
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
@@ -7493,10 +7523,14 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 		TimeSinceLastStunSubtract = 0.0;
 	}
 
+	view_as<CClotBody>(npc).Update();
+	
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun;
+
+	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
 
 	view_as<CClotBody>(npc).SetPlaybackRate(0.0);
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
@@ -7776,6 +7810,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(b_HasBombImplanted[npc.index])
 	{
 		Format(HealthText, sizeof(HealthText), "!");
+	}
+	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "?");
 	}
 #endif
 

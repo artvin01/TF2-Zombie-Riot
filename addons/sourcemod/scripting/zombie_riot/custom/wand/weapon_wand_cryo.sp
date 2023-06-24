@@ -67,6 +67,12 @@ void Wand_Cryo_Precache()
 	PrecacheSound(SOUND_WAND_CRYO_FREEZE);
 	PrecacheSound(SOUND_WAND_CRYO_SHATTER);
 	PrecacheModel(COLLISION_DETECTION_MODEL_BIG);
+	PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
+}
+
+bool IsZombieFrozen(int entity)
+{
+	return Cryo_Frozen[entity];
 }
 
 void ResetFreeze(int entity)
@@ -224,7 +230,10 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 			if (Cryo_FreezeLevel[victim] >= maxHealth * damageRequiredForFreeze)
 			{
 				Cryo_SlowType_Zombie[victim] = Cryo_SlowType[entity];
-				Cryo_FreezeZombie(victim);
+				if(Health_After_Hurt > 0)
+				{
+					Cryo_FreezeZombie(victim);
+				}
 			}
 		}
 	}
@@ -423,7 +432,10 @@ public void Cryo_Touch(int entity, int other)
 				if (Cryo_FreezeLevel[target] >= maxHealth * damageRequiredForFreeze)
 				{
 					Cryo_SlowType_Zombie[target] = Cryo_SlowType[entity];
-					Cryo_FreezeZombie(target);
+					if(Health_After_Hurt > 0)
+					{
+						Cryo_FreezeZombie(target);
+					}
 				}
 			}
 			
@@ -566,6 +578,26 @@ public void Cryo_FreezeZombie(int zombie)
 
 	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
 	FreezeNpcInTime(zombie, FreezeDuration);
+	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
+	{
+		float offsetToHeight = 40.0;
+		if(b_IsGiant[zombie])
+		{
+			offsetToHeight = 55.0;
+		}
+		ZNPC.m_iFreezeWearable = ZNPC.EquipItemSeperate("partyhat", "models/props_moonbase/moon_gravel_crystal_blue.mdl",_,_,_,offsetToHeight);
+		if(b_IsGiant[zombie])
+		{
+			SetVariantString("3.6");
+		}
+		else
+		{
+			SetVariantString("2.85");
+		}
+		AcceptEntityInput(ZNPC.m_iFreezeWearable, "SetModelScale");
+		SetEntityRenderMode(ZNPC.m_iFreezeWearable, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iFreezeWearable, 65, 65, 185, 65);
+	}
 
 	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
 	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);

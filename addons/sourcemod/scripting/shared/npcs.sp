@@ -1500,15 +1500,24 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		if(f_HighIceDebuff[victim] > GameTime)
 		{
-			damage += BaseDamageBeforeBuffs * 0.15;
+			if(IsZombieFrozen(victim))
+				damage += BaseDamageBeforeBuffs * 0.30;
+			else
+				damage += BaseDamageBeforeBuffs * 0.15;
 		}
 		else if(f_LowIceDebuff[victim] > GameTime)
 		{
-			damage += BaseDamageBeforeBuffs * 0.10;
+			if(IsZombieFrozen(victim))
+				damage += BaseDamageBeforeBuffs * 0.20;
+			else
+				damage += BaseDamageBeforeBuffs * 0.10;
 		}
 		else if(f_VeryLowIceDebuff[victim] > GameTime)
 		{
-			damage += BaseDamageBeforeBuffs * 0.05;
+			if(IsZombieFrozen(victim))
+				damage += BaseDamageBeforeBuffs * 0.10;
+			else
+				damage += BaseDamageBeforeBuffs * 0.5;
 		}
 		
 		if(f_WidowsWineDebuff[victim] > GameTime)
