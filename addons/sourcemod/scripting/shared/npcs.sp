@@ -1982,10 +1982,12 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
+		GiveRageOnDamage(inflictor, damage);
 		Calculate_And_Display_hp(inflictor, victim, damage, false);
 	}
 	else if(attacker > 0 && attacker <= MaxClients)
 	{
+		GiveRageOnDamage(attacker, damage);
 		Calculate_And_Display_hp(attacker, victim, damage, false);	
 	}
 	/*
@@ -2023,6 +2025,17 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
 
+void GiveRageOnDamage(int client, float damage)
+{
+	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
+	{
+		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter") + (damage * 0.05);
+		if(rage > 100.0)
+			rage = 100.0;
+			
+		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
+	}
+}
 void Generic_OnTakeDamage(int victim, int attacker)
 {
 	if(attacker > 0)

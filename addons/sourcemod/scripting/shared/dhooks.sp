@@ -78,7 +78,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-	DHook_CreateDetour(gamedata, "HandleRageGain", DHook_HandleRageGainPre, DHook_HandleRageGainPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
@@ -1724,28 +1723,6 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	#else
 	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
 	#endif
-	return MRES_Ignored;
-}
-
-public MRESReturn DHook_HandleRageGainPre(DHookParam param)
-{
-	if(!param.IsNull(1))
-		TF2_SetPlayerClass(param.Get(1), TFClass_Soldier, false, false);
-	
-	return MRES_Ignored;
-}
-
-public MRESReturn DHook_HandleRageGainPost(DHookParam param)
-{
-	if(!param.IsNull(1))
-	{
-		int client = param.Get(1);
-		#if defined NoSendProxyClass
-		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
-		#else
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
-		#endif
-	}
 	return MRES_Ignored;
 }
 

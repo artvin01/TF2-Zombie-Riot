@@ -4179,7 +4179,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		}
 
 		float maxDistance = fldistancelimit > fldistancelimitAllyNPC ? fldistancelimit : fldistancelimitAllyNPC;
-		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, _, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
+		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, 99999.9, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
