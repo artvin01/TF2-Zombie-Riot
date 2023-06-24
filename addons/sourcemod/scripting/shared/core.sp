@@ -608,7 +608,6 @@ Handle g_hGetSolidMask;
 Handle g_hGetSolidMaskAlly;
 //DHooks
 //Handle g_hGetCurrencyValue;
-Handle g_hEvent_Ragdoll;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 

@@ -2524,21 +2524,17 @@ public void NPC_Base_InitGamedata()
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
 	
-	GameData gamedata = LoadGameConfigFile("tf2.pets");
+	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	// thanks to Dysphie#4094 on discord for help
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
 
 //	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
 	
-	delete gamedata;
-	
-	Handle hConf = LoadGameConfigFile("tf2.pets");
-	
 	//SDKCalls
 	//This call is used to get an entitys center position
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::WorldSpaceCenter");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::WorldSpaceCenter");
 	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
 	if ((g_hSDKWorldSpaceCenter = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::WorldSpaceCenter offset!");
 	
@@ -2551,7 +2547,7 @@ public void NPC_Base_InitGamedata()
 	
 	//CBaseAnimating::ResetSequenceInfo( );
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
 	if ((g_hResetSequenceInfo = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::ResetSequenceInfo signature!"); 
 	
 
@@ -2563,29 +2559,17 @@ public void NPC_Base_InitGamedata()
 	*/
 	
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
 	
 
 	//CBaseEntity::GetVectors(Vector*, Vector*, Vector*) 
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::GetVectors");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::GetVectors");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-
-	/*
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::IsClimbingOrJumping");
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
-	g_hSDKIsClimbingOrJumping = EndPrepSDKCall();
-	if (g_hSDKIsClimbingOrJumping == null)
-	{
-		PrintToServer("Failed to retrieve ILocomotion::IsClimbingOrJumping offset from SF2 gamedata!");
-	}
-	*/
-	//-----------------------------------------------------------------------------
 	
 	//-----------------------------------------------------------------------------
 	// Purpose: Looks up an activity by name.
@@ -2594,29 +2578,27 @@ public void NPC_Base_InitGamedata()
 	//-----------------------------------------------------------------------------
 	//int LookupActivity( CStudioHdr *pstudiohdr, const char *label )
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "LookupActivity");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupActivity");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
 
-	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-	g_hGetSolidMaskAlly		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
+	g_hGetSolidMask		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+	g_hGetSolidMaskAlly		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
 
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "LookupSequence");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupSequence");
 
-	g_hEvent_Ragdoll = DHookCreateEx(hConf, "CBaseCombatCharacter::BecomeRagdoll", HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, CTFBaseBoss_Ragdoll);
-	DHookAddParam(g_hEvent_Ragdoll, HookParamType_Int); //( const CTakeDamageInfo &info )
-	DHookAddParam(g_hEvent_Ragdoll, HookParamType_VectorPtr); //( const vector )
-
 	HookListMap = new StringMap();
 	HookIdMap = new StringMap();
+
+	delete gamedata;
 	
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
 }
@@ -8049,15 +8031,6 @@ public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
 			npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 		}
 	}
-}
-
-static float PathPossibleCost;
-
-public float PathPossible_Cost(CNavArea area, CNavArea fromArea, CNavLadder ladder, int elevator, float length)
-{
-	float cost = Path_Cost(area, fromArea, ladder, elevator, length);
-	PathPossibleCost += cost;
-	return cost;
 }
 
 public void MakeEntityRagdollNpc(int pThis)  
