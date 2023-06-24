@@ -193,6 +193,8 @@ Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 //MUST BE HERE!
+StringMap HookListMap;
+StringMap HookIdMap;
 
 bool DoingLagCompensation;
 
@@ -579,9 +581,6 @@ bool g_GottenAddressesForLagComp;
 //Handle g_hSDKIsClimbingOrJumping;
 //SDKCalls
 Handle g_hUpdateCollisionBox;
-Handle g_hMyNextBotPointer;
-Handle g_hGetIntentionInterface;
-Handle g_hGetBodyInterface;
 //Handle g_hGetVisionInterface;
 //Handle g_hGetPrimaryKnownThreat;
 //Handle g_hAddKnownEntity;
@@ -589,30 +588,14 @@ Handle g_hGetBodyInterface;
 //Handle g_hGetKnown;
 //Handle g_hUpdatePosition;
 //Handle g_hUpdateVisibilityStatus;
-Handle g_hRun;
-Handle g_hApproach;
-Handle g_hFaceTowards;
-Handle g_hGetVelocity;
-Handle g_hSetVelocity;
-Handle g_hStudioFrameAdvance;
-Handle g_hJump;
 //DynamicHook g_hAlwaysTransmit;
 // Handle g_hJumpAcrossGap;
-Handle g_hDispatchAnimEvents;
-Handle g_hGetGroundSpeed;
 Handle g_hGetVectors;
-Handle g_hGetGroundMotionVector;
-Handle g_hLookupPoseParameter;
-Handle g_hSetPoseParameter;
-Handle g_hGetPoseParameter;
 Handle g_hLookupActivity;
 Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
-Handle g_hFindBodygroupByName;
-Handle g_hSetBodyGroup;
-Handle g_hSelectWeightedSequence;
 Handle g_hResetSequenceInfo;
 #if defined ZR
 Handle g_hLookupBone;
@@ -621,12 +604,10 @@ Handle g_hGetBonePosition;
 //Death
 
 //PluginBot SDKCalls
-Handle g_hGetEntity;
-Handle g_hGetBot;
-
+Handle g_hGetSolidMask;
+Handle g_hGetSolidMaskAlly;
 //DHooks
 //Handle g_hGetCurrencyValue;
-Handle g_hEvent_Ragdoll;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 
@@ -2591,7 +2572,7 @@ public void Check_For_Team_Npc(int entity)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
+			SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2637,7 +2618,7 @@ public void Check_For_Team_Npc(int entity)
 			
 			else
 			{
-				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+				SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);	
 			}
 			
 			
@@ -2677,7 +2658,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
+			SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2723,7 +2704,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 			
 			else
 			{
-				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+				SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);	
 			}
 			
 			npcstats.bCantCollidie = true;
@@ -2810,6 +2791,7 @@ public void OnEntityDestroyed(int entity)
 #if defined ZR
 	OnEntityDestroyed_Build_On_Build(entity);
 #endif
+	NPC_Base_OnEntityDestroyed();
 }
 
 public void RemoveNpcThingsAgain(int entity)

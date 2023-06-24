@@ -508,7 +508,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 		
 			//Body pitch
 	//		if(flDistanceToTarget < Pow(110.0,2.0))
@@ -929,8 +929,6 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					}
 				}
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
 			}
 		}
 		else

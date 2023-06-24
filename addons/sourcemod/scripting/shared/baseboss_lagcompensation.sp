@@ -647,21 +647,13 @@ void LagCompensationThink_Forward()
 						int layerCount = overlay.GetNumAnimOverlays();
 						for(int i = 0; i < layerCount; i++)
 						{
-							PrintToServer("8.5");
 							CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
 							
-							PrintToServer("9");
 							layer.m_cycle = overlay.GetLayerCycle(i);
-							PrintToServer("9.1 = %x", overlayLayer);
-							PrintToServer("9.15 = %d", overlayLayer.IsAlive());
 							layer.m_order = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
-							PrintToServer("9.2");
 							layer.m_sequence = overlay.GetLayerSequence(i);
-							PrintToServer("9.3");
 							layer.m_weight = overlay.GetLayerWeight(i);
-							PrintToServer("9.4");
 							record.m_layerRecords.PushArray(layer);
-							PrintToServer("10");
 						}
 						record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 						record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
@@ -671,7 +663,6 @@ void LagCompensationThink_Forward()
 			}
 		}
 	}
-	PrintToServer("12");
 }
 
 /* public/mathlib/vector.h#L1153 */

@@ -4,39 +4,10 @@
 	{
 		"Signatures"
 		{
-			"CBaseAnimating::LookupBone"
-			{
-				// string aBipHead, function down
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x69\x03\x00\x00\x00\x75\x2A\x83\xBE\x98\x04\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0\x74\x2A\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x8B\x86\x98\x04\x00\x00\x85\xC0\x74\x2A\x83\x38\x00\x74\x2A\xFF\x75\x08\x50\xE8\x2A\x2A\x2A\x2A\x83\xC4\x08\x5E"
-				"linux"		""
-			}
-			"CBaseAnimating::GetBonePosition"
-			{
-				// string  aBipHandR ; "bip_hand_r", go to connecting function, grab 1st call, and hope.
-				"windows"	"\x55\x8B\xEC\x83\xEC\x30\x56\x8B\xF1\x80\xBE\x69\x03\x00\x00\x00"
-				"linux"		""
-			}
-		
-			"CBaseEntity::DispatchUpdateTransmitState"
-			{
-				// string aMerasmusSpawn ; "merasmus_spawn"
-				// has 5 calls, go up 2 functions, single call.
-				"windows"	"\x80\xB9\x74\x01\x00\x00\x00\x8B\x41\x18"
-				"linux"		""
-			}
 			"CBasePlayer::SnapEyeAngles"
 			{
-				// string "Usage:  setang pitch yaw <roll optional"
-				//Very short CALL
-				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x88\x0B\x00\x00"
-				"linux"		""
-			}
-			"CBaseEntity::SetAbsVelocity"
-			{
-				// string "TRAIN(%s): Blocked by %s\n"
-				// inside a very tall block, bottom call, this call is modearetly sized and has no strings.
-				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x56\x8B\x75\x08\x57\x8B\xF9\xF3\x0F\x10\x06"
-				"linux"		""
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\xD9\x00\xD9\x99\x58\x0A\x00\x00"	// OUTDATED
+				"linux"		"@_ZN11CBasePlayer13SnapEyeAnglesERK6QAngle"
 			}
 			"CTFNavMesh::ComputeBlockedArea"
 			{
@@ -170,8 +141,7 @@
 			{
 				"library"	"server"
 				"linux"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
-				"windows"	"\xFF\xB1\x6C\x04\x00\x00"
-				//i will slap you batfox >:(
+				"windows"	"\x55\x8B\xEC\x56\x57\x8B\x7D\x08\x8B\xF1\x8B\x06\x3B\x07\x74\x2A\x80\xBE\x40\xFA\xFF\xFF\x00"
 				// If this crashes, I probably grabbed the wrong thing. This is what was previously here:
 				//"\xFF\xB1\x40\x04\x00\x00" //Suspiciously small.
 			}
@@ -285,56 +255,6 @@
 				"linux"		"@_ZN14CWeaponMedigun19AllowedToHealTargetEP11CBaseEntity"
 				"windows"	"\x55\x8B\xEC\x53\x8B\xD9\x57\x8B\x93\x10\x02\x00\x00\x85\xD2\x0F\x84\x73\x01\x2A\x2A"
 			}
-			"PathFollower::Avoid"
-			{
-				"library"	"server"
-				"linux"		""
-				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x18\x01\x00\x00\x56\x8B\x35\x2A\x2A\x2A\x2A"
-			}
-			"CTFPlayer::SpeakConceptIfAllowed()"
-			{
-				// unique string xref "disguiseclass:%s"
-				"library"	"server"
-				"linux"		"@_ZN9CTFPlayer21SpeakConceptIfAllowedEiPKcPcjP16IRecipientFilter"
-				"windows"	"\x55\x8B\xEC\x81\xEC\xE8\x00\x00\x00\x53\x8B\xD9\x89\x5D\xFC"
-			}
-			"CTFPlayer::ManageRegularWeapons()"
-			{
-				// semi-unique xref "PlayerLoadoutUpdated"
-				"library"		"server"
-				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
-				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x53\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
-			}
-			// CTFPlayer::ManageRegularWeapons has unique string "ManageRegularWeapons" and the only xref is GiveDefaultItems
-            "CTFPlayer::GiveDefaultItems"
-            {
-                "library"   "server"
-                "linux"     "@_ZN9CTFPlayer16GiveDefaultItemsEv"
-                // sub_104D4220:
-                "windows"   "\x56\x57\x8B\xF9\xFF\xB7\x40\x22\x00\x00\xE8\x2A\x2A\x2A\x2A\x83\xC4\x04"
-            }
-			"CTFWeaponBaseMelee::GetShootSound"
-			{
-				// "Weapon_Slap.OpenHand", last function in the end
-				"library"		"server"
-				"linux"			"@_ZNK7CTFSlap13GetShootSoundEi"
-				"windows"		"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
-			}
-			"CTFWeaponBaseMelee::GetSwingRange"
-			{
-				// string is_a_sword, only once.
-				"library"		"server"
-				"linux"			""
-				"windows"		"\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x85\xF6\x74\x2A\x8B\x16\x8B\xCE\x8B\x92\x48\x01\x00\x00\xFF\xD2\x84\xC0\x74\x2A\x6A\x11"
-			}
-			"CTFWeaponBaseMelee::Smack"
-			{
-				// string melee_cleave_attack, only once.
-				"library"		"server"
-				"linux"			""
-				"windows"		"\x55\x8B\xEC\x83\xEC\x74\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x89\x75\xF8"
-			}
-
 		}
 		"Functions"
 		{
@@ -441,13 +361,6 @@
 						"type"	"int"
 					}
 				}
-			}
-			"CBaseGrenade::Detonate"
-			{
-				"offset"	"CBaseGrenade::Detonate"
-				"hooktype"	"entity"
-				"return"	"void"
-				"this"		"entity"
 			}
 			"CTFBaseBoss::BossThink"
            	{
@@ -635,12 +548,12 @@
 				}
 			}
 			"CTFParticleCannon::FireChargedShot"
-            {
-				   "offset"    	"CTFParticleCannon::FireChargedShot"
-				   "hooktype"    "entity"
-				   "return"    	"void"
-				   "this"        "entity"
-            }
+            		{
+                		"offset"    	"CTFParticleCannon::FireChargedShot"
+                		"hooktype"    	"entity"
+               	 		"return"    	"void"
+                		"this"        	"entity"
+            		}
 			"CBaseCombatWeapon::FinishReload()"
 			{
 				"signature"		"CBaseCombatWeapon::FinishReload()"
@@ -751,71 +664,6 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
-			"CBasePlayer::EquipWearable" 
-			{
-				"offset" 		"CBasePlayer::EquipWearable"
-				"hooktype" 		"entity"
-				"return" 		"void"
-				"this" 			"entity"
-			}
-			"CTFWeaponBaseMelee::Smack"
-			{
-				"signature"		"CTFWeaponBaseMelee::Smack"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
-			}
-			"CTFPlayer::SpeakConceptIfAllowed()" 
-			{
-				"signature"		"CTFPlayer::SpeakConceptIfAllowed()"
-				"callconv"		"thiscall"
-				"return"		"bool"
-				"this"			"entity"
-				"arguments"
-				{
-					"iConcept"
-					{
-						"type"	"int"
-					}
-					"modifiers"
-					{
-						"type"	"charptr"
-					}
-					"pszOutResponseChosen"
-					{
-						"type"	"charptr"
-					}
-					"bufsize"
-					{
-						"type"	"int"
-					}
-					"IRecipientFilter"
-					{
-						"type"	"int"
-					}
-				}
-			}
-			"CTFPlayer::ManageRegularWeapons()"
-			{
-				"signature"		"CTFPlayer::ManageRegularWeapons()"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
-				"arguments"
-				{
-					"class_data"
-					{
-						"type"	"int"
-					}
-				}
-			}
-			"CTFPlayer::GiveDefaultItems"
-            {
-				"signature"		"CTFPlayer::GiveDefaultItems"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
-            }
 			"CWeaponMedigun::AllowedToHealTarget()"
 			{
 				"signature"		"CWeaponMedigun::AllowedToHealTarget()"
@@ -837,25 +685,13 @@
 				"return"		"void"
 				"this"			"entity"
 			}
-			"CBaseEntity::UpdateTransmitState()"
-			{
-				"offset"		"CBaseEntity::UpdateTransmitState()"
-				"hooktype"		"entity"
-				"return"		"void"
-				"this"			"entity"
-			}
 		}
 		"Offsets"
 		{
 			"CTFWrench::Smack()" 
 			{
-				"windows" 	"470"
-				"linux" 	"477"
-			}
-			"CBaseObject::StartUpgrading()" 
-			{
-				"windows" 	"382"
-				"linux" 	"384"
+				"windows" 	"469"
+				"linux" 	"476"
 			}
 			"CTFGrenadePipebombProjectile::PipebombTouch" 
 			{
@@ -939,18 +775,13 @@
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"491"
-				"linux"		"498"
+				"windows"	"490"
+				"linux"		"497"
 			}
 			"CBaseGrenade::Explode"
 			{
 				"linux"		"236"
 				"windows"	"235"
-			}
-			"CBaseGrenade::Detonate"
-			{
-				"linux"		"237"
-				"windows"	"236"
 			}
 			"CTFBaseRocket::Explode"
 			{
@@ -976,17 +807,6 @@
 			{
 				"windows"	"272"
 				"linux"		"278"
-			}
-			//CBaseEntity is arbitrary.
-			"CBaseEntity::UpdateTransmitState()"
-			{
-				"windows"	"21"
-				"linux"		"22"
-			}
-			"CTFWeaponBaseMelee::GetShootSound"
-			{
-				"windows"	"337"
-				"linux"		"343"
 			}
 		}
 	}

@@ -2660,6 +2660,8 @@ public void NPC_CheckDead(int entity)
 	{
 		if(!b_NpcHasDied[entity])
 		{
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.RemovePather(entity);
 			b_NpcHasDied[entity] = true;
 			
 #if defined ZR
