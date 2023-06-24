@@ -272,11 +272,11 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 			*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 		{
@@ -324,7 +324,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 				
 				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 				
-				PF_SetGoalVector(npc.index, vBackoffPos);
+				NPC_SetGoalVector(npc.index, vBackoffPos);
 			}
 		}
 		else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
@@ -367,7 +367,7 @@ public void MechaSoldier_Barrager_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

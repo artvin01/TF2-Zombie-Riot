@@ -114,7 +114,7 @@ void RPG_PluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(StrEqual(buffer, "base_boss"))
+			if(StrEqual(buffer, "base_npc"))
 			{
 				NPC_Despawn(i);
 				continue;

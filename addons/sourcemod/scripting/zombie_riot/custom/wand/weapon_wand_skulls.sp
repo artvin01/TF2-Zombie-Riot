@@ -1007,7 +1007,7 @@ public bool Skull_DontHitSkulls(any entity, any contentsMask) //Borrowed from Ap
 	{
 		char entname[255];
 		GetEntityClassname(entity, entname, 255);
-		hit = StrContains(entname, "base_boss") == -1;
+		hit = StrContains(entname, "base_npc") == -1;
 	}
 	
 	return hit;

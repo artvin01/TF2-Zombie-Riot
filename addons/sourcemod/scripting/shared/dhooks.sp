@@ -1120,15 +1120,7 @@ public MRESReturn LagCompensationThink(Address manager)
 	LagCompensationThink_Forward();
 	#endif
 	return MRES_Ignored;
-//	return MRES_Supercede;
 }
-/*
-public void FinishLagCompensationResetValues()
-{
-	b_LagCompAlliedPlayers = false; //Do it here.
-}
-*/
-
 public void FinishLagCompMoveBack()
 {
 	b_LagCompAlliedPlayers = false;

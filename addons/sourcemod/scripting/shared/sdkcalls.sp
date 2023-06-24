@@ -26,6 +26,7 @@ static Handle g_hSDKUpdateBlocked;
 static Handle g_hImpulse;
 
 static Handle SDKGetShootSound;
+static Handle SDKBecomeRagdollOnClient;
 
 static DynamicHook g_hDHookItemIterateAttribute;
 static int g_iCEconItem_m_Item;
@@ -201,57 +202,37 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
 	PrepSDKCall_SetReturnInfo(SDKType_String, SDKPass_Pointer);
 	if((SDKGetShootSound = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFWeaponBaseMelee::GetShootSound");
-
-	delete gamedata;
 	
-	Handle hConf = LoadGameConfigFile("tf2.pets");
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::BecomeRagdollOnClient");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	SDKBecomeRagdollOnClient = EndPrepSDKCall();
+	if(!SDKBecomeRagdollOnClient)
+		LogError("[Gamedata] Could not find CBaseAnimating::BecomeRagdollOnClient");
+
 
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetAttachment");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::GetAttachment");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//iAttachment
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absOrigin
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absAngles
 	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetAttachment");
 	
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "Studio_FindAttachment");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "Studio_FindAttachment");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//pAttachmentName
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hStudio_FindAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for Studio_FindAttachment");
 	
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::GetVectors");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::GetVectors");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 	
-	delete hConf;
-	/*
-	Handle ZConf = LoadGameConfigFile("zombie_riot");
-	
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(ZConf, SDKConf_Signature, "CTFPlayer::PlaySpecificSequence");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
-	g_hSDKPlaySpecificSequence = EndPrepSDKCall();
-	if (g_hSDKPlaySpecificSequence == null)
-		LogMessage("Failed to create call: CTFPlayer::PlaySpecificSequence!");
-		
-	//void				DoAnimationEvent( PlayerAnimEvent_t event, int mData = 0 );
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(ZConf, SDKConf_Virtual, "CTFPlayerAnimState::DoAnimationEvent");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue); //event is probably int?
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue); //int.
-	g_hDoAnimationEvent = EndPrepSDKCall();
-	if(!g_hDoAnimationEvent)
-		LogError("[Gamedata] Could not find CTFPlayerAnimState::DoAnimationEvent");
-		
-	//Gotten PlaySpecificSequence from https://github.com/redsunservers/VSH-Rewrite/blob/f2bff50693115f469c9558a7eb03a60b5f3a8a59/addons/sourcemod/gamedata/vsh.txt
-	
-	delete ZConf;
-	*/
+	delete gamedata;
 }
 
 void SDKCall_EquipWearable(int client, int entity)
@@ -405,6 +386,11 @@ void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float ang
 	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
 }
 #endif
+
+void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
+{
+	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
+}
 
 void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {

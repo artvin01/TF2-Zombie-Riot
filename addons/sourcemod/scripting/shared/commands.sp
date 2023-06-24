@@ -81,7 +81,6 @@ public Action OnNavCommand(int client, const char[] command, int args)
 	if(!client && !StrContains(command, "nav", false))
 	{
 		PrintToServer("[ZR] Reloaded Nav Gamedata");
-		InitNavGamedata();
 	}
 	return Plugin_Continue;
 }

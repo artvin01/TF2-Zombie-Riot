@@ -36,11 +36,6 @@ IF you wish to see the plugin in action/or just are interrested in playing this 
 Main Server:
 (American)
 74.91.119.154:27017 ( steam://connect/74.91.119.154:27017 )
-
-Sub Servers that also host the gamemode:
-
-(Chinese)
-1.12.64.247:27015 ( steam://connect/1.12.64.247:27015 ) 
  
 ## cvar's
 
@@ -95,10 +90,9 @@ global zr can be a shared database across multiple servers, local one should sta
 
 ### Dependencies
 
-Sourcemod 1.12
-1.11 Compiler (didnt test 1.12 compiler.)
+Sourcemod 1.12 Is a Must.
 
-WINDOWS SERVER IS A MUST DUE TO PATHFOLLOWER!!
+For both linux and Windows, not all linux gamedata might be here.
 
 The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot to run:
 
@@ -107,9 +101,9 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/SlidyBat/CollisionHook) THIS IS A GAMEDATA FIX FOR...
 - [CollisionHook](https://github.com/Adrianilloo/Collisionhook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
-- [PathFollower](https://github.com/Pelipoika/PathFollower) THERE IS A PATHFOLLOWER DLL HERE ALREADY AVAIABLE, the one in that repo thats compiled is outdated, but the sourcecode is updated, if you dont know how to compile use the one in this repo, if youre scared, compile that one.
+- [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC) 
 - [lambda](https://github.com/Batfoxkid/lambda)
-- [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264)
+- [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://github.com/Batfoxkid/File-Network)
 
@@ -127,14 +121,13 @@ Current coders that in anyway actively helped, in order of how much:
 - [Artvin](https://github.com/artvin01)
 - [Batfoxkid](https://github.com/Batfoxkid)
 - [Mikusch](https://github.com/Mikusch) (Gamedata assistance and more, a savior.)
+- [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us, plus CBaseNpc!)
+- [Mentrillum](https://github.com/Mentrillum) (Assitance in converting from Pathfollower to CBaseNpc!)
 - [Suza](https://github.com/Zabaniya001/)
 - [Alex](https://github.com/JustAlex14)
 - [Spookmaster](https://github.com/SupremeSpookmaster)
-- [Kenzzer](https://github.com/Kenzzer) (Got gamedata and make an extention edit for us)
 - [Pelipoika](https://github.com/Pelipoika) (Npc base code that we heavily edited, thank you SO much for publishing it all.)
 - [backwards] (backwards#8236) on discord. (Helped with sdkcall lag compensation.)
-
-Currently zr_nospecial is 1 by default, i will release the models needed to make this work later.
 
 Alot of code is borrowed/just takes from other plugins i or friends made, often with permission,
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
@@ -150,5 +143,6 @@ I just got windows gamedata.
 To edit the nav live, do sm_nav_edit_mode 
 BEWARE, THIS SETS sv_cheats TO 1, Do it again to disable, you must also run sm_rcon for any nav command
 (Zr will hide that sv_cheats got set and other stuff, and will also hide it from players, i will in the future code an anti cheat in zr to prevent this)
+The server WILL crashwhen editing, beware, no idea how to fix it, too lazy.
 
 Just dont announce that youll do it.

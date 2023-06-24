@@ -147,7 +147,7 @@ methodmap ArkSinger < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 200, 200, 255);
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		return npc;
 	}
@@ -212,7 +212,7 @@ public void ArkSinger_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = gameTime + 0.9;
 			npc.m_flNextRangedAttackHappening = 0.0;
 			npc.m_bisWalking = false;
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 
 			f_SingerBuffedFor[npc.index] = gameTime + (npc.m_iOverlordComboAttack * 0.25);
@@ -223,7 +223,7 @@ public void ArkSinger_ClotThink(int iNPC)
 
 			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+			while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
 			{
 				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
 				{
@@ -271,11 +271,11 @@ public void ArkSinger_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -328,7 +328,7 @@ public void ArkSinger_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.5 : 2.0);
 
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}

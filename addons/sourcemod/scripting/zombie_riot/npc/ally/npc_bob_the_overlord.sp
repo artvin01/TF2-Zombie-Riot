@@ -438,7 +438,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		{
 			//Stop chasing dead target.
 			npc.m_iTarget = 0;
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.PlayIdleSound();
 		}
@@ -471,19 +471,19 @@ public void BobTheGod_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 				npc.FaceTowards(vecTarget, 1000.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
 			
 			if(flDistanceToTarget > 170)
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			else
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			
 			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 200 && flDistanceToTarget < 1000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget > 100))
@@ -594,7 +594,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 2000.0);
 					if(!npc.m_fbRangedSpecialOn)
 					{
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
@@ -648,7 +648,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				}
 				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < 100 && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.m_fbGunout = false;
 					//Look at target so we hit.
@@ -740,7 +740,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	{
 		if (npc.m_flDoingSpecial < GetGameTime(npc.index) && npc.m_iState == 1)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_iState = 0;
 			int iActivity = npc.LookupActivity("ACT_RUN");
@@ -760,7 +760,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				PF_SetGoalEntity(npc.index, client);
+				NPC_SetGoalEntity(npc.index, client);
 				if (!npc.m_bmovedelay_run)
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_RUN");
@@ -780,7 +780,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				PF_SetGoalEntity(npc.index, client);
+				NPC_SetGoalEntity(npc.index, client);
 				if (!npc.m_bmovedelay_walk)
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_WALK");
@@ -802,7 +802,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bmovedelay_walk = false;
 				npc.m_bmovedelay = false;
 				npc.m_bmovedelay_run = false;
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
@@ -811,7 +811,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bmovedelay_walk = false;
 				npc.m_bmovedelay = false;
 				npc.m_bmovedelay_run = false;
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_iState = 2;
 				int iActivity_melee = npc.LookupActivity("ACT_IDLE");
@@ -988,7 +988,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		npc.StartPathing();
 		npc.m_fbGunout = false;
 		
-		PF_SetGoalVector(npc.index, vecPos);
+		NPC_SetGoalVector(npc.index, vecPos);
 		
 		
 		
@@ -1264,7 +1264,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_bmovedelay_walk = false;
 			npc.m_bmovedelay = false;
 					
-			PF_SetGoalEntity(npc.index, client);
+			NPC_SetGoalEntity(npc.index, client);
 			
 			SetGlobalTransTarget(client);
 			PrintHintText(client, "%t %t","Bob The Second:", "I am coming !");
@@ -1840,7 +1840,7 @@ public void BobTheGod_NPCDeath(int entity)
 	}
 	
 	SDKUnhook(npc.index, SDKHook_Think, BobTheGod_ClotThink);
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	Has_a_bob[client] = 0;
 	/*

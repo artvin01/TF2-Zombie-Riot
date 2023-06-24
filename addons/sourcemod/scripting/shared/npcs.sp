@@ -118,7 +118,7 @@ public Action NPC_OnCreatePre(char[] classname)
 {
 	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
 	{
-		strcopy(classname, 64, "base_boss");
+		strcopy(classname, 64, "base_npc");
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
@@ -1963,10 +1963,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = true;
 	}
+
 	return Plugin_Changed;
 }
 
-public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
 	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	
@@ -1984,6 +1985,33 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+
+	Event event = CreateEvent("npc_hurt");
+	if(event) 
+	{
+		event.SetInt("entindex", victim);
+		event.SetInt("health", health);
+		event.SetInt("damageamount", RoundToFloor(damage));
+		event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+
+		if(attacker > 0 && attacker <= MaxClients)
+		{
+			event.SetInt("attacker_player", GetClientUserId(attacker));
+			event.SetInt("weaponid", 0);
+		}
+		else 
+		{
+			event.SetInt("attacker_player", 0);
+			event.SetInt("weaponid", 0);
+		}
+
+		event.Fire();
+	}
+
+	if(health <= 0)
+		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
 
 void Generic_OnTakeDamage(int victim, int attacker)
@@ -2632,6 +2660,8 @@ public void NPC_CheckDead(int entity)
 	{
 		if(!b_NpcHasDied[entity])
 		{
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.RemovePather(entity);
 			b_NpcHasDied[entity] = true;
 			
 #if defined ZR

@@ -242,11 +242,11 @@ public void GoldBloon_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, npc.m_iTarget));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, npc.m_iTarget));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		
 		npc.StartPathing();

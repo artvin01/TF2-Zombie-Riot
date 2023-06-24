@@ -204,7 +204,7 @@ public void Addicition_ClotThink(int iNPC)
 	{
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 		return;
@@ -246,7 +246,7 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}
@@ -260,7 +260,7 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}
@@ -270,12 +270,12 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(distance > 29000.0)
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				else
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				npc.StartPathing();
 			}
@@ -286,7 +286,7 @@ public void Addicition_ClotThink(int iNPC)
 	
 	if(npc.m_bPathing)
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
 	
@@ -359,11 +359,11 @@ public void Addicition_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		
 		if(npc.m_bLostHalfHealth)
@@ -402,7 +402,7 @@ public void Addicition_ClotThink(int iNPC)
 						npc.SetActivity("ACT_LIGHTNING");
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 3;
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
 					npc.PlayLightningSound();
@@ -477,7 +477,7 @@ public void Addicition_ClotThink(int iNPC)
 	}
 	else
 	{
-//		PF_StopPathing(npc.index);
+//		NPC_StopPathing(npc.index);
 //		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
@@ -501,7 +501,7 @@ public void Addicition_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, Addicition_ClotThink);
 	
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
 	npc.PlayDeathSound();

@@ -162,7 +162,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				{
 					static char buffer[64];
 					GetEntityClassname(target, buffer, sizeof(buffer));
-					if(!StrContains(buffer, "base_boss", true))
+					if(!StrContains(buffer, "base_npc", true))
 					{
 						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
 						if(drains && !team)

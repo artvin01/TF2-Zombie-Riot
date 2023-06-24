@@ -166,7 +166,7 @@ methodmap CorruptedSpyMinion < CClotBody
 		npc.m_flSpeed = 330.0;
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		PF_StartPathing(npc.index);
+		NPC_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		
 		return npc;
@@ -232,9 +232,9 @@ public void CorruptedSpyMinion_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -300,18 +300,18 @@ public void CorruptedSpyMinion_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime() + 0.44;
 					}
 				}
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			else
 			{
-				PF_StartPathing(npc.index);
+				NPC_StartPathing(npc.index);
 				npc.m_bPathing = true;
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

@@ -241,7 +241,7 @@ public void MedicHealer_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -250,13 +250,11 @@ public void MedicHealer_ClotThink(int iNPC)
 				{
 					if(flDistanceToTarget < 62500)
 					{
-						PF_StopPathing(npc.index);
-						npc.m_bPathing = false;	
+						NPC_StopPathing(npc.index);
 					}
 					else
 					{
-						npc.StartPathing();
-						npc.m_bPathing = false;		
+						npc.StartPathing();	
 					}
 					if(!npc.m_bnew_target)
 					{
@@ -289,7 +287,7 @@ public void MedicHealer_ClotThink(int iNPC)
 						RemoveEntity(npc.m_iWearable4);
 						
 					npc.StartPathing();
-					npc.m_bPathing = false;		
+
 					npc.m_bnew_target = false;					
 				}
 		}
@@ -308,7 +306,7 @@ public void MedicHealer_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);
 				
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.StopHealing();
 			npc.Healing = false;
@@ -357,9 +355,9 @@ public void MedicHealer_ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 					
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				} else {
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				
 				//Target close enough to hit
@@ -427,7 +425,7 @@ public void MedicHealer_ClotThink(int iNPC)
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);

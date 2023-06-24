@@ -113,7 +113,7 @@ public void FarmBear_ClotThink(int iNPC)
 
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;	
 		}
 	}
@@ -142,9 +142,9 @@ public void FarmBear_ClotThink(int iNPC)
 	if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 	{
 		//Pick a random goal area
-	//	NavArea RandomArea = PickRandomArea();	
+	//	CNavArea RandomArea = PickRandomArea();	
 			
-	//	if(RandomArea == NavArea_Null) 
+	//	if(RandomArea == NULL_AREA) 
 	//		return;
 
 		float AproxRandomSpaceToWalkTo[3];
@@ -171,8 +171,8 @@ public void FarmBear_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-		PF_StartPathing(iNPC);
+		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+		NPC_StartPathing(iNPC);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
 		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];

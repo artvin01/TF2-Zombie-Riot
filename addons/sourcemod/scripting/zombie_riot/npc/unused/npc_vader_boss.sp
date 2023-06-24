@@ -389,9 +389,9 @@ public void Vader_ClotThink(int iNPC)
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 62500 || npc.m_fbRangedSpecialOn)
@@ -453,7 +453,7 @@ public void Vader_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime() || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
+				NPC_StartPathing(npc.index);
 				npc.m_bPathing = true;
 				if(npc.m_flNextMeleeAttack < GetGameTime())
 				{
@@ -505,13 +505,13 @@ public void Vader_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
+				NPC_StartPathing(npc.index);
 				npc.m_bPathing = true;
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

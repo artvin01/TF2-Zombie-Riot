@@ -39,12 +39,11 @@ static int g_rocket_particle;
 static int i_rocket_particle[MAXENTITIES];
 static float fl_rocket_particle_dmg[MAXENTITIES];
 static float fl_rocket_particle_radius[MAXENTITIES];
-static float f_DelayComputingOfPath[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 
-static PathFollower pPath[MAXENTITIES];
+static ConVar flTurnRate;
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -140,19 +139,9 @@ void OnMapStart_NPC_Base()
 	Zero(b_NpcResizedForCrouch);
 	Zero(b_PlayerIsInAnotherPart);
 	
-	NPC_MapStart();
-}
-
-Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
-{
-	int iOffset = GameConfGetOffset(gc, key);
-	if(iOffset == -1)
-	{
-		SetFailState("Failed to get offset of %s", key);
-		return null;
-	}
+	InitNavGamedata();
 	
-	return DHookCreate(iOffset, hooktype, returntype, thistype, callback);
+	NPC_MapStart();
 }
 
 public Action NPCStats_StartTouch(const char[] output, int entity, int caller, float delay)
@@ -195,7 +184,85 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 	return Plugin_Continue;
 }
 
-methodmap CClotBody < CBaseCombatCharacter
+
+void NPC_Base_OnEntityDestroyed()
+{
+	RequestFrame(DHookCleanIds);
+}
+
+public void DHookCleanIds()
+{
+	StringMapSnapshot snap = HookIdMap.Snapshot();
+	if(snap)
+	{
+		char buffer[12];
+		int length2 = snap.Length;
+		for(int a; a<length2; a++)
+		{
+			snap.GetKey(a, buffer, sizeof(buffer));
+			if(EntRefToEntIndex(StringToInt(buffer)) <= MaxClients)
+			{
+				ArrayList list;
+				
+				HookIdMap.GetValue(buffer, list);
+				HookIdMap.Remove(buffer);
+				
+				if(list)
+				{
+					/*
+					static const char HookName[][] =
+					{
+						"g_hGetStepHeight",
+						"g_hGetGravity",
+						"g_hShouldCollideWith",
+						"g_hGetMaxAcceleration",
+						"g_hGetFrictionSideways",
+						"g_hGetRunSpeed",
+						"g_hGetGroundNormal",
+						"g_hGetHullWidth",
+						"g_hGetHullHeight",
+						"g_hGetStandHullHeight",
+						"g_hGetActivity",
+						"g_hIsActivity",
+						"g_hGetSolidMask",
+						"g_hStartActivity"
+					};
+					*/
+					int length = list.Length;
+					for(int i; i<length; i++)
+					{
+						int id2 = list.Get(i);
+						if(id2 != INVALID_HOOK_ID)
+						{
+							int value = 1;
+							IntToString(id2, buffer, sizeof(buffer));
+							if(HookListMap.GetValue(buffer, value) && value > 1)
+							{
+								HookListMap.SetValue(buffer, value-1);
+						//		LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
+							}
+							else
+							{
+								if(!DHookRemoveHookID(id2))
+								{
+							//			LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
+								}
+								
+								HookListMap.Remove(buffer);
+							}
+						}
+					}
+					
+					delete list;
+				}
+			}
+		}
+		delete snap;
+	}
+}
+
+
+methodmap CClotBody
 {
 	public CClotBody(float vecPos[3], float vecAng[3],
 						const char[] model,
@@ -209,27 +276,13 @@ methodmap CClotBody < CBaseCombatCharacter
 						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						bool Ally_Collideeachother = false)
 	{
-
-		
-		
-		CBaseNPC baseNPC = CBaseNPC();
-		if(baseNPC == INVALID_NPC)
-		{
-			return view_as<CClotBody>(-1);
-		}
-
-		int npc = baseNPC.GetEntity();
-
-		if(!pPath[npc])
-			pPath[npc] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
-
+		int npc = CreateEntityByName("base_npc");
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
-		DispatchKeyValue(npc, "model",	 model);
-		view_as<CBaseCombatCharacter>(npc).SetModel(model);
+		DispatchKeyValue(npc,	   "model",	  model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
-
+		
 		if(Ally)
 		{
 			b_IsAlliedNpc[npc] = true;
@@ -246,32 +299,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
-		CClotBody npcstats = view_as<CClotBody>(npc);
-
-
-		//FIX: This fixes lookup activity not working.
-		npcstats.StartActivity(0);
-		npcstats.SetSequence(0);
-		npcstats.SetPlaybackRate(1.0);
-		npcstats.SetCycle(0.0);
-		npcstats.ResetSequenceInfo();
-		//FIX: This fixes lookup activity not working.
 
 #if defined RPG
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMinDist", 1600.0);
 		SetEntPropFloat(npc, Prop_Send, "m_fadeMaxDist", 2000.0);
 #endif
-
-		baseNPC.flStepSize = 17.0;
-		baseNPC.flGravity = 800.0; //SEE Npc Base Think Function to change it.
-		baseNPC.flAcceleration = 3000.0;
-		baseNPC.flJumpHeight = 250.0;
-		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
-		baseNPC.flFrictionSideways = 3.0;
-		baseNPC.flMaxYawRate = 225.0;
-		baseNPC.flDeathDropHeight = 9999.9;
-
-		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
 		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
 		//potentially newly added ? or might not get set ?
@@ -280,6 +312,17 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			SetEntityCollisionGroup(npc, 24);
 		}
+
+		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
+		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);
+		if(pLocomotion < view_as<Address>(0x10000))
+			PrintToServer("Invalid pLocomotion %x", pLocomotion);
+		
+		ArrayList list = new ArrayList();
+//		g_hAlwaysTransmit.HookEntity(Hook_Pre, npc, DHook_AlwaysTransmit);	
+		
+		list.Push(DHookRaw(g_hGetStepHeight,	   true, pLocomotion));
+		list.Push(DHookRaw(g_hGetGravity,		  true, pLocomotion));
 		
 		if(!Ally)
 		{
@@ -289,37 +332,91 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(IgnoreBuildings)
 #endif
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
 			}
 			else
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion);
 			}
 		}
 		else
 		{
 			if(Ally_Invince)
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
 			}
+			/*
+			else if (Ally_Collideeachother)
+			{
+				b_CollidesWithEachother[npc] = true;
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyIngoreBuilding,   false, pLocomotion);
+			}
+			*/
 			else
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
+				h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
 			}
 		}
-
-		locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
-		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 		
-		//so map makers can choose between NPCs and Clients
-
-		ArrayList list = new ArrayList();
 		
-		if(!Ally)
-			list.Push(DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody())));
+		
+	//	We already delete this! there is no need!
+	//	This also might not even work out, because it can be changed.
+	//	list.Push(h_NpcCollissionHookType[npc]);
+	//	and putting it here as a "safety measure" actually causes a leak!!!
+	//	not like we could have known this.
+		list.Push(DHookRaw(g_hGetMaxAcceleration,  true, pLocomotion));
+		list.Push(DHookRaw(g_hGetFrictionSideways, true, pLocomotion));
+		list.Push(DHookRaw(g_hGetRunSpeed,		 true, pLocomotion));
+		
+		//if(bGroundNormal)
+		list.Push(DHookRaw(g_hGetGroundNormal, true, pLocomotion));
+		
+		//TOP GET AUTO DELETED
+		
+		//BOTTOM DO NOT, BEACUSE ITS TO AN ADRESS?
+		Address pBody = SDKCall(g_hGetBodyInterface, pNB);
+		//if(pBody < view_as<Address>(0x10000))
+		//	ThrowError("Invalid pBody %x", pBody); //what the fuck. This shit gets called 90% of the time.......................
+		
+		//cant use custom bounding boxes here, just use the normal ones!
+		if(!isGiant)
+		{
+			list.Push(DHookRaw(g_hGetHullWidth,		true, pBody));
+			list.Push(DHookRaw(g_hGetHullHeight,	   true, pBody));
+			list.Push(DHookRaw(g_hGetStandHullHeight,  true, pBody));
+		}
+		/*
+		else if (Ally_Collideeachother)
+		{
+			list.Push(DHookRaw(g_hGetHullWidthSmall,		true, pBody));
+			list.Push(DHookRaw(g_hGetHullHeightSmall,	   true, pBody));
+			list.Push(DHookRaw(g_hGetStandHullHeightSmall,  true, pBody));
+		}
+		*/
 		else
-			list.Push(DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody())));
+		{
+			b_IsGiant[npc] = true;
+			list.Push(DHookRaw(g_hGetHullWidthGiant,		true, pBody));
+			list.Push(DHookRaw(g_hGetHullHeightGiant,	   true, pBody));
+			list.Push(DHookRaw(g_hGetStandHullHeightGiant,  true, pBody));			
+		}
+		list.Push(DHookRaw(g_hGetActivity,		 true, pBody));
+		list.Push(DHookRaw(g_hIsActivity,		  true, pBody));
 
+		//Collide with the correct stuff
+		if(!Ally)
+			list.Push(DHookRaw(g_hGetSolidMask,		true, pBody));
+		else
+			list.Push(DHookRaw(g_hGetSolidMaskAlly,		true, pBody));
+
+		
+		//Allow jumping
+	//	list.Push(DHookRaw(g_hStartActivity,		true, pBody));
+		
+		//Don't drop money.
+		//DHookEntity(g_hGetCurrencyValue, true, npc);
+		
 		char buffer[12];
 		int id = list.Length;
 		for(int i; i<id; i++)
@@ -337,7 +434,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		IntToString(EntIndexToEntRef(npc), buffer, sizeof(buffer));
 		HookIdMap.SetValue(buffer, list);
-
+		
+		
+		//Ragdoll, hopefully
+		DHookEntity(g_hEvent_Killed,	 false, npc);
+		
+		//Animevents 
+		DHookEntity(g_hHandleAnimEvent,  true, npc);
+		DHookEntity(g_hEvent_Ragdoll,  false, npc);
+		
+		//so map makers can choose between NPCs and Clients
 		SetEntityFlags(npc, FL_NPC);
 		
 		//Don't ResolvePlayerCollisions.
@@ -355,11 +461,17 @@ methodmap CClotBody < CBaseCombatCharacter
 		static float m_vecMins[3];
 		if(isGiant)
 		{
-			b_IsGiant[npc] = true;
 			b_BoundingBoxVariant[npc] = 1;
 			m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 			m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}			
+		}	
+		/*
+		else if (Ally_Collideeachother)
+		{
+			m_vecMaxs = view_as<float>( { 8.0, 8.0, 56.0 } );
+			m_vecMins = view_as<float>( { -8.0, -8.0, 0.0 } );	
+		}		
+		*/
 		else
 		{
 			m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
@@ -382,9 +494,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		//Fix collisions
-		baseNPC.SetBodyMaxs(m_vecMaxs);
-		baseNPC.SetBodyMins(m_vecMins);
+		SetEntPropVector(npc, Prop_Send, "m_vecMaxs", m_vecMaxs);
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxs", m_vecMaxs);
+		
+		SetEntPropVector(npc, Prop_Send, "m_vecMins", m_vecMins);
 		SetEntPropVector(npc, Prop_Data, "m_vecMins", m_vecMins);
 		
 		//Fixed wierd clientside issue or something
@@ -397,10 +510,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntPropVector(npc, Prop_Send, "m_vecMinsPreScaled", m_vecMinsNothing);
 		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
 
-
 #if defined ZR
 		if(Ally && !Ally_Collideeachother)
 		{
+			CClotBody npcstats = view_as<CClotBody>(npc);
 			npcstats.m_iTeamGlow = TF2_CreateGlow(npc);
 			
 			SetVariantColor(view_as<int>({184, 56, 59, 200}));
@@ -408,19 +521,22 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 #endif
 		
-		SDKHook(npc, SDKHook_Think, NpcBaseThink);
-		SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
+		SDKHook(npc, SDKHook_Think, Check_If_Stuck);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
-		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
+		CClotBody CreatePathfinderIndex = view_as<CClotBody>(npc);
 
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
+			CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 1000.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.1, 1.75); //Global.
 		}
 		else
 		{
-
+			if(!Ally)
+				CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
+			else
+				CreatePathfinderIndex.CreatePather(16.0, CreatePathfinderIndex.GetMaxJumpHeight(), 500.0, MASK_NPCSOLID_BRUSHONLY|MASK_PLAYERSOLID_BRUSHONLY /*CreatePathfinderIndex.GetSolidMask()*/, 100.0, 0.24, 1.75); //Global.
 		}
 	
 		return view_as<CClotBody>(npc);
@@ -1104,11 +1220,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return = 0.0;
 			return speed_for_return;
 		}
-		if (this.m_bFrozen && !b_CannotBeSlowed[this.index])
-		{
-			speed_for_return = 0.0;
-			return speed_for_return;
-		}	
 		if(b_PernellBuff[this.index])
 		{
 			speed_for_return *= 1.15;
@@ -1237,7 +1348,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 3.0;
 		}	
-#endif				
+#endif			
+		if (this.m_bFrozen && !b_CannotBeSlowed[this.index])
+		{
+			speed_for_return = 0.01;
+		}		
 
 		return speed_for_return;
 	}
@@ -1569,88 +1684,29 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	public float GetMaxJumpHeight() { return 250.0; }
+	public float GetLeadRadius()	{ return 90000.0; }
+	
+	public Address GetLocomotionInterface() { return SDKCall(g_hGetLocomotionInterface, SDKCall(g_hMyNextBotPointer, this.index)); }
+	
+	public Address GetIntentionInterface()  { return SDKCall(g_hGetIntentionInterface,  SDKCall(g_hMyNextBotPointer, this.index)); }
+	public Address GetBodyInterface()	   { return SDKCall(g_hGetBodyInterface,	   SDKCall(g_hMyNextBotPointer, this.index)); }
+	
 	
 	public int GetTeam()  { return GetEntProp(this.index, Prop_Send, "m_iTeamNum"); }
 	
-	public PathFollower GetPathFollower()
+	public Address GetModelPtr()
 	{
-		return pPath[this.index];
-	}
-	public INextBot GetBot()
+		return view_as<Address>(GetEntData(this.index, FindDataMapInfo(this.index, "m_flFadeScale") + 28));
+	}	
+	public void SetPoseParameter(int iParameter, float value)
 	{
-		return this.MyNextBotPointer();
-	}
-	public CBaseNPC GetBaseNPC()
-	{
-		return TheNPCs.FindNPCByEntIndex(this.index);
-	}
-	public CBaseNPC_Locomotion GetLocomotion()
-	{
-		return this.GetBaseNPC().GetLocomotion();
-	}
-	public CBaseNPC_Locomotion GetLocomotionInterface()
-	{
-		return this.GetBaseNPC().GetLocomotion();
-	}
-	public bool IsOnGround()
-	{
-		return this.GetLocomotionInterface().IsOnGround();
-	}
-	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true)
-	{
-		int activity = this.LookupActivity(anim);
-		if(activity < 0)
+		Address pStudioHdr = this.GetModelPtr();
+		if(pStudioHdr == Address_Null)
 			return;
-		
-		if(cancel_animation)
-		{
-			view_as<CBaseCombatCharacter>(this).RestartGesture(view_as<Activity>(activity), true, autokill);
-		}
-		else
-		{
-			view_as<CBaseCombatCharacter>(this).AddGesture(view_as<Activity>(activity), duration, autokill);
-		}
-		
-		int layer = this.FindGestureLayer(view_as<Activity>(activity));
-		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, 0.5);
-	}
-	public void RemoveGesture(const char[] anim)
-	{
-		int activity = this.LookupActivity(anim);
-		if(activity < 0)
-			return;
-		
-		int layer = this.FindGestureLayer(view_as<Activity>(activity));
-		if(layer != -1)
-			this.FastRemoveLayer(layer);
-	}
-	public void AddActivityViaSequence(const char[] anim)
-	{
-		int iSequence = this.LookupSequence(anim);
-		if(iSequence < 0)
-			return;
-		
-		this.ResetSequence(iSequence);
-
-		int layer = this.FindGestureLayerBySequence(iSequence);
-		if(layer != -1)
-		{
-			CAnimationLayer alayer = this.GetAnimOverlay(layer);
-			alayer.m_flPlaybackRate = 1.0;
-			alayer.m_flCycle = 0.0;
-		}
-	
-		this.ResetSequenceInfo();	
-	}
-	public void AddGestureViaSequence(const char[] anim, bool cancel_animation = true)
-	{
-		int iSequence = this.LookupSequence(anim);
-		if(iSequence < 0)
-			return;
-		
-		this.AddGestureSequence(iSequence);
-	}
+			
+		SDKCall(g_hSetPoseParameter, this.index, pStudioHdr, iParameter, value);
+	}	
 	public int FindAttachment(const char[] pAttachmentName)
 	{
 		Address pStudioHdr = this.GetModelPtr();
@@ -1703,6 +1759,79 @@ methodmap CClotBody < CBaseCombatCharacter
 		TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", flEndPos[2]);
 		TE_SendToAll();
 	}
+	public int LookupPoseParameter(const char[] szName)
+	{
+		Address pStudioHdr = this.GetModelPtr();
+		if(pStudioHdr == Address_Null)
+			return -1;
+			
+		return SDKCall(g_hLookupPoseParameter, this.index, pStudioHdr, szName);
+	}	
+	public int LookupActivity(const char[] activity)
+	{
+		Address pStudioHdr = this.GetModelPtr();
+		if(pStudioHdr == Address_Null)
+			return -1;
+			
+		return SDKCall(g_hLookupActivity, pStudioHdr, activity);
+	}
+	public int LookupSequence(const char[] sequence)
+	{
+		Address pStudioHdr = this.GetModelPtr();
+		if(pStudioHdr == Address_Null)
+			return -1;
+			
+		return SDKCall(g_hLookupSequence, pStudioHdr, sequence);
+	}
+	public void AddGesture(const char[] anim, bool cancel_animation = true)
+	{
+		int iSequence;
+		iSequence = this.LookupActivity(anim);
+
+		if(iSequence < 0)
+			return;
+			
+		if(cancel_animation)
+		{
+			SDKCall(g_hRestartGesture, this.index, iSequence, true, true); //This is better, it just restarts the sequence instead, if its there or already playing, basically like below but better
+		}
+		else
+		{
+			SDKCall(g_hAddGesture, this.index, iSequence, true);
+		}
+	}
+	public void AddGestureViaSequence(const char[] anim, bool cancel_animation = true)
+	{
+		int iSequence;
+		iSequence = this.LookupSequence(anim);
+
+		if(iSequence < 0)
+			return;
+			
+		SDKCall(g_hAddGestureSequence, this.index, iSequence, true);
+	}
+	public void AddActivityViaSequence(const char[] anim)
+	{
+		int iSequence;
+		iSequence = this.LookupSequence(anim);
+
+		if(iSequence < 0)
+			return;
+		
+		SDKCall(g_hRestartSequence, this.index, iSequence);
+		this.SetPlaybackRate(1.0);
+		this.SetCycle(0.0);
+	
+		this.ResetSequenceInfo();	
+	}
+	public void RemoveGesture(const char[] anim)
+	{
+		int iSequence = this.LookupActivity(anim);
+		if(iSequence < 0)
+			return;
+			
+		SDKCall(g_hRemoveGesture, this.index, iSequence);
+	}
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
 		if(Is_sequence)
@@ -1729,113 +1858,123 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	public bool IsPlayingGesture(const char[] anim)
+	{
+		int iSequence = this.LookupActivity(anim);
+		if(iSequence < 0)
+			return;
+		
+		SDKCall(g_hIsPlayingGesture, this.index, iSequence);
+	}
+	public bool IsOnGround()
+	{
+		return SDKCall(g_hSDKIsOnGround, this.GetLocomotionInterface());
+	}
+	public void SetDefaultStats()
+	{
+		//npc got his stats by plugins.
+		this.m_bThisNpcGotDefaultStats_INVERTED = true;
+	}
+	/*
+	public bool IsClimbingOrJumping()
+	{
+		if (g_hSDKIsClimbingOrJumping != null)
+			return SDKCall(g_hSDKIsClimbingOrJumping, this.GetLocomotionInterface());
+		return false;
+	}
+	*/
+	public void CreatePather(float flStep, float flJump, float flDrop, int iSolid, float flAhead, float flRePath, float flHull)
+	{
+		PF_Create(this.index, flStep, flJump, flDrop, 0.6, iSolid, flAhead, flRePath, flHull);
+		PF_EnableCallback(this.index, PFCB_Approach,			PluginBot_Approach);
+		PF_EnableCallback(this.index, PFCB_IsEntityTraversable, PluginBot_IsEntityTraversable);
+		PF_EnableCallback(this.index, PFCB_GetPathCost,		 PluginBot_PathCost);
+	//	PF_EnableCallback(this.index, PFCB_ClimbUpToLedge, 		PluginBot_NormalJump);
+	//	PF_EnableCallback(this.index, PFCB_PathSuccess,			PluginBot_PathSuccess);
+		if(b_CollidesWithEachother[this.index])
+		{
+			PF_EnableCallback(this.index, PFCB_OnMoveToSuccess,	 PluginBot_MoveToSuccess);
+			PF_EnableCallback(this.index, PFCB_PathFailed,		  PluginBot_MoveToFailure);
+			PF_EnableCallback(this.index, PFCB_OnMoveToFailure,	 PluginBot_MoveToFailure);
+		}
+		
+		PF_EnableCallback(this.index, PFCB_OnActorEmoted, PluginBot_OnActorEmoted);
+		
+		this.SetDefaultStats(); // we'll use this so we can set all the default stuff we need!
+	}	
 	public void RemovePather(int entity)
 	{
-		this.MyNextBotPointer().NotifyPathDestruction(pPath[this.index]);
-		pPath[this.index].Destroy();
-		pPath[this.index] = view_as<PathFollower>(0);
-		this.m_bPathing = false;
+		PF_DisableCallback(entity, PFCB_Approach);
+		PF_DisableCallback(entity, PFCB_IsEntityTraversable);
+		PF_DisableCallback(entity, PFCB_GetPathCost);
+	//	PF_DisableCallback(entity, PFCB_ClimbUpToLedge);
+		if(b_CollidesWithEachother[entity])
+		{
+			PF_DisableCallback(entity, PFCB_OnMoveToSuccess);
+			PF_DisableCallback(entity, PFCB_PathFailed);
+			PF_DisableCallback(entity, PFCB_OnMoveToFailure);
+		}
+		PF_DisableCallback(entity, PFCB_OnActorEmoted);
+		PF_Destroy(entity);
 	}
 	public void StartPathing()
 	{
 		if(!CvarDisableThink.BoolValue)
 		{
+			NPC_StartPathing(this.index);
 			this.m_bPathing = true;
-
-			this.GetPathFollower().SetMinLookAheadDistance(250.0);
 		}
 	}
 	public void StopPathing()
 	{
-		this.GetPathFollower().Invalidate();
-		this.GetLocomotion().Stop();
-
-		this.m_bPathing = false;
-	}
-	public void SetGoalEntity(int target)
-	{
-		if(f_DelayComputingOfPath[this.index] < GetGameTime())
+		if(this.m_bPathing)
 		{
-			float AddComputingDelay = 0.3;
-
-			if(b_thisNpcIsARaid[this.index])
-			{
-				AddComputingDelay = 0.1;
-			}
-			else if(b_thisNpcIsABoss[this.index])
-			{
-				AddComputingDelay = 0.2;
-			}
-			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
-			this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+			NPC_StopPathing(this.index);
+			this.m_bPathing = false;
 		}
 	}
-	public void SetGoalVector(const float vec[3], bool ignoretime = false)
-	{	
-		if(f_DelayComputingOfPath[this.index] < GetGameTime() || ignoretime)
-		{
-			float AddComputingDelay = 0.3;
-
-			if(b_thisNpcIsARaid[this.index])
-			{
-				AddComputingDelay = 0.1;
-			}
-			else if(b_thisNpcIsABoss[this.index])
-			{
-				AddComputingDelay = 0.2;
-			}
-			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
-			this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
-		}
-	}
-	public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
+	public void FaceTowards(const float vecGoal[3] , const float turnrate = 250.0)
 	{
-		//Sad!
-		float flPrevValue = this.GetBaseNPC().flMaxYawRate;
 		
-		this.GetBaseNPC().flMaxYawRate = turnrate;
-		this.GetLocomotionInterface().FaceTowards(vecGoal);
-		this.GetBaseNPC().flMaxYawRate = flPrevValue;
-	}
-	/*
-
-		public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
-	{
 		//Sad!
 		float flPrevValue = flTurnRate.FloatValue;
 		
 		flTurnRate.FloatValue = turnrate;
 		SDKCall(g_hFaceTowards, this.GetLocomotionInterface(), vecGoal);
 		flTurnRate.FloatValue = flPrevValue;
-	}
-	*/		
-	public float GetMaxJumpHeight()	{ return this.GetLocomotionInterface().GetMaxJumpHeight(); }
-	public float GetGroundSpeed()	{ return this.GetLocomotionInterface().GetGroundSpeed(); }
-	public int SelectWeightedSequence(any activity) { return view_as<CBaseAnimating>(view_as<int>(this)).SelectWeightedSequence(activity); }
+	}	
+		
+	public float GetGroundSpeed()									{ return SDKCall(g_hGetGroundSpeed, this.GetLocomotionInterface()); }
+	public float GetPoseParameter(int iParameter)					{ return SDKCall(g_hGetPoseParameter, this.index, iParameter);									   }
+	public int FindBodygroupByName(const char[] name)				{ return SDKCall(g_hFindBodygroupByName, this.index, name);										  }
+	public int SelectWeightedSequence(int activity, int curSequence) { return SDKCall(g_hSelectWeightedSequence, this.index, this.GetModelPtr(), activity, curSequence); }
 	
-	public bool GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3]) { return view_as<CBaseAnimating>(view_as<int>(this)).GetAttachment(view_as<CBaseAnimating>(view_as<int>(this)).LookupAttachment(szName), absOrigin, absAngles); }
-	public void Approach(const float vecGoal[3])										   { this.GetLocomotionInterface().Approach(vecGoal, 0.1);						}
-	public void Jump()																	 { this.GetLocomotionInterface().Jump();										  }
-	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }	
-	public void SetVelocity(const float vec[3])											{ this.GetLocomotionInterface().SetVelocity(vec);							  }	
+	public void GetAttachment(const char[] szName, float absOrigin[3], float absAngles[3]) { SDKCall(g_hGetAttachment, this.index, this.FindAttachment(szName), absOrigin, absAngles); }
+	public void SetBodygroup(int iGroup, int iValue)									   { SDKCall(g_hSetBodyGroup, this.index, iGroup, iValue);									 }
+	public void Approach(const float vecGoal[3])										   { SDKCall(g_hApproach, this.GetLocomotionInterface(), vecGoal, 0.1);						}
+	public void Jump()																	 { SDKCall(g_hJump, this.GetLocomotionInterface());										  }
+	// public void JumpAcrossGap(const float landingGoal[3], const float landingForward[3])   { SDKCall(g_hJumpAcrossGap, this.GetLocomotionInterface(), landingGoal, landingForward);	}
+	public void GetVelocity(float vecOut[3])											   { SDKCall(g_hGetVelocity, this.GetLocomotionInterface(), vecOut);						   }	
+	public void SetVelocity(const float vec[3])											{ SDKCall(g_hSetVelocity, this.GetLocomotionInterface(), vec);							  }	
 	
 	public void SetOrigin(const float vec[3])											
 	{
 		SetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin",vec);
+	
 	}	
 	
 	public void SetSequence(int iSequence)	{ SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); }
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
 	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
 	
-	public void GetVectors(float pForward[3], float pRight[3], float pUp[3]) { view_as<CBaseEntity>(this).GetVectors(pForward, pRight, pUp); }
+	public void GetVectors(float pForward[3], float pRight[3], float pUp[3]) { SDKCall(g_hGetVectors, this.index, pForward, pRight, pUp); }
 	
-	public void GetGroundMotionVector(float vecMotion[3])					{ this.GetLocomotionInterface().GetGroundMotionVector(vecMotion); }
-	public float GetLeadRadius()	{ return 90000.0/*this.GetPathFollower().GetLeadRadius()*/; }
+	public void GetGroundMotionVector(float vecMotion[3])					{ SDKCall(g_hGetGroundMotionVector, this.GetLocomotionInterface(), vecMotion); }
+	
 	public void UpdateCollisionBox() { SDKCall(g_hUpdateCollisionBox,  this.index); }
 	public void ResetSequenceInfo()  { SDKCall(g_hResetSequenceInfo,  this.index); }
-	public void StudioFrameAdvance() { view_as<CBaseAnimating>(view_as<int>(this)).StudioFrameAdvance(); }
-	public void DispatchAnimEvents() { view_as<CBaseAnimating>(view_as<int>(this)).DispatchAnimEvents(view_as<CBaseAnimating>(view_as<int>(this))); }
+	public void StudioFrameAdvance() { SDKCall(g_hStudioFrameAdvance, this.index); }
+	public void DispatchAnimEvents() { SDKCall(g_hDispatchAnimEvents, this.index, this.index); }
 	
 	public int EquipItem(
 	const char[] attachment,
@@ -1860,6 +1999,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);
+	//	SetEntProp(item, Prop_Send, "m_nNextThinkTick", 9999999);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 	
 		if(anim[0])
@@ -1883,6 +2023,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		}	
 		
 		SetEntityCollisionGroup(item, 1);
+		/*
+		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		{
+			b_Is_Blue_Npc[item] = true; //make sure they dont collide with stuff
+		}
+		else if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_IsAlliedNpc[item] = true; //make sure they dont collide with stuff
+		}
+		*/
 		return item;
 	}
 
@@ -1907,7 +2057,9 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		DispatchSpawn(item);
 		
+	//	SetEntProp(item, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);
+	//	SetEntProp(item, Prop_Send, "m_nNextThinkTick", 9999999);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
@@ -1927,7 +2079,21 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
+/*
+		SetVariantString(attachment);
+		AcceptEntityInput(item, "SetParentAttachmentMaintainOffset"); 			
+*/		
 		SetEntityCollisionGroup(item, 1);
+		/*
+		if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue))
+		{
+			b_Is_Blue_Npc[item] = true; //make sure they dont collide with stuff
+		}
+		else if(GetEntProp(this.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
+		{
+			b_IsAlliedNpc[item] = true; //make sure they dont collide with stuff
+		}
+		*/
 		return item;
 	}
 	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
@@ -1966,6 +2132,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * vecSwingMaxs[1];
 		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * vecSwingMaxs[2];
 		
+	//	TE_SetupBeamPoints(vecSwingStart, vecSwingEnd, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+	//	TE_SendToAll();
+		
 #if defined ZR
 		bool ingore_buildings = false;
 		if(Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)))
@@ -1977,6 +2146,18 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		/*
+		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		{
+			delete trace;
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+			if ( TR_GetFraction(trace) < 1.0)
+			{
+				// This is the point on the actual surface (the hull could have hit space)
+				TR_GetEndPosition(vecSwingEnd, trace);	
+			}
+		}
+		*/
 		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
@@ -1989,6 +2170,20 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		// See if we hit anything.
 		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, BulletAndMeleeTrace, this.index );
+		/*
+		if ( TR_GetFraction(trace) >= 1.0 || TR_GetEntityIndex(trace) == 0)
+		{
+			delete trace;
+			
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, ( MASK_SOLID | CONTENTS_SOLID ), BulletAndMeleeTrace, this.index );
+			if ( TR_GetFraction(trace) < 1.0)
+			{
+				// This is the point on the actual surface (the hull could have hit space)
+				TR_GetEndPosition(vecSwingEnd, trace);	
+			}
+			
+		}
+		*/
 		return (TR_GetFraction(trace) < 1.0);
 	}
 	public void GetPositionInfront(float DistanceOffsetInfront, float vecSwingEnd[3], float ang[3])
@@ -2027,6 +2222,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			TeleportEntity(entity, absorigin, eyePitch, NULL_VECTOR, true);
 			SetEntProp(entity, Prop_Send, "m_fEffects", EF_PARENT_ANIMATES);
 			SetEntityMoveType(entity, MOVETYPE_NONE);
+		//	SetEntProp(entity, Prop_Send, "m_nNextThinkTick", 9999999);
 			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1.0);
 			
 			b_ThisEntityIgnored[entity] = true;
@@ -2057,6 +2253,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
+	//	vecSwingStart[0] += vecForward[0] * 64;
+	//	vecSwingStart[1] += vecForward[1] * 64;
+	//	vecSwingStart[2] += vecForward[2] * 64;
+	// 	this isnt needed anymore 
+
 
 		
 		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
@@ -2086,6 +2287,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
 			}
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
@@ -2213,6 +2415,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 		GetVectorAngles(vecAngles, vecAngles);
 
+	//	vecSwingStart[0] += vecForward[0] * 64;
+	//	vecSwingStart[1] += vecForward[1] * 64;
+	//	vecSwingStart[2] += vecForward[2] * 64;
+	// 	this isnt needed anymore 
+
+
 		
 		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
@@ -2275,6 +2483,50 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return entity;
 	}
+	/*
+	public void FireBolt(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "" , float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+	{
+		float vecForward[3], vecSwingStart[3], vecAngles[3];
+		this.GetVectors(vecForward, vecSwingStart, vecAngles);
+
+		vecSwingStart = GetAbsOrigin(this.index);
+		vecSwingStart[2] += 54.0;
+
+		MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+
+	//	vecSwingStart[0] += vecForward[0] * 64;
+	//	vecSwingStart[1] += vecForward[1] * 64;
+	//	vecSwingStart[2] += vecForward[2] * 64;
+	// 	this isnt needed anymore 
+
+
+		
+		vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
+		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
+		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+
+		int entity = CreateEntityByName("tf_projectile_energy_ball");
+		if(IsValidEntity(entity))
+		{
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
+			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
+			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
+			DispatchSpawn(entity);
+			if(rocket_model[0])
+			{
+				SetEntityModel(entity, rocket_model);
+			}
+			if(model_scale != 1.0)
+			{
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
+			}
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
+			SetEntityCollisionGroup(entity, 19); //our savior
+		}
+	}
+	*/
 	property int m_iActivity
 	{
 		public get()							{ return i_Activity[this.index]; }
@@ -2292,10 +2544,31 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_PoseMoveY[this.index]; }
 		public set(int TempValueForProperty) 	{ i_PoseMoveY[this.index] = TempValueForProperty; }
 	}
+	/*
+	
+		property int m_iActivity
+	{
+		public get()              { return this.ExtractStringValueAsInt("m_iActivity"); }
+		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iActivity", buff, true); }
+	}
+	
+	property int m_iPoseMoveX 
+	{
+		public get()              { return this.ExtractStringValueAsInt("m_iPoseMoveX"); }
+		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveX", buff, true); }
+	}
+	
+	property int m_iPoseMoveY
+	{
+		public get()              { return this.ExtractStringValueAsInt("m_iPoseMoveY"); }
+		public set(int iActivity) { char buff[8]; IntToString(iActivity, buff, sizeof(buff)); SetCustomKeyValue(this.index, "m_iPoseMoveY", buff, true); }
+	}
+	*/
+
 	//Begin an animation activity, return false if we cant do that right now.
 	public bool StartActivity(int iActivity, int flags = 0, bool Reset_Sequence_Info = true)
 	{
-		int nSequence = this.SelectWeightedSequence(iActivity);
+		int nSequence = this.SelectWeightedSequence(iActivity, GetEntProp(this.index, Prop_Send, "m_nSequence"));
 		if (nSequence == 0) 
 			return false;
 		
@@ -2313,24 +2586,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		return true;
 	}
-		
-	public int LookupActivity(const char[] activity)
-	{
-		Address pStudioHdr = this.GetModelPtr();
-		if(pStudioHdr == Address_Null)
-			return -1;
-		
-		int value = SDKCall(g_hLookupActivity, pStudioHdr, activity);
-		return value;
-	}
-	public int LookupSequence(const char[] sequence)
-	{
-		Address pStudioHdr = this.GetModelPtr();
-		if(pStudioHdr == Address_Null)
-			return -1;
-			
-		return SDKCall(g_hLookupSequence, pStudioHdr, sequence);
-	}
+	
 	public void Update()
 	{
 		
@@ -2363,32 +2619,15 @@ methodmap CClotBody < CBaseCombatCharacter
 				this.SetPoseParameter(this.m_iPoseMoveY, GetVectorDotProduct(vecMotion, vecRight));
 			}
 			
-		}		
-		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
-		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
-
-		if(f_TimeFrozenStill[this.index])
-		{
-			// Was frozen before, reset layers
-			int layerCount = this.GetNumAnimOverlays();
-			for(int i; i < layerCount; i++)
-			{
-				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
-			}
-
-			f_TimeFrozenStill[this.index] = 0.0;
 		}
-
 		if(this.m_bisWalking) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
-			if(m_flGroundSpeed != 0.0)
-			{
+			if (m_flGroundSpeed != 0.0) {
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
 				PlaybackSpeed *= this.m_bisGiantWalkCycle;
 				if(PlaybackSpeed > 2.0)
 					PlaybackSpeed = 2.0;
-				
 				this.SetPlaybackRate(PlaybackSpeed);
 			}
 		}
@@ -2399,16 +2638,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		//Run and StuckMonitor
 		if(this.m_flNextRunTime < GetGameTime())
 		{
-			this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
-			this.GetLocomotionInterface().Run();
+			this.m_flNextRunTime = GetGameTime() + 0.1; //Only update every 0.1 seconds, we really dont need more, 
+			SDKCall(g_hRun,          this.GetLocomotionInterface());	
 		}
-
-	//	if(!this.m_bAllowBackWalking)
-	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
 		
-		if(this.m_bPathing)
-			this.GetPathFollower().Update(this.GetBot());		
-
 		/*
 		
 		SDKCall(g_hStuckMonitor, this.GetLocomotionInterface());
@@ -2447,7 +2680,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					}
 					else
 					{
-						NPC_StartPathing(this.index, vecGoal);
+						NPC_SetGoalEntity(this.index, vecGoal);
 						SDKCall(g_hClearStuckStatus, this.GetLocomotionInterface(), "Un-Stuck");//  Sauce code :)
 					}
 				}
@@ -2490,12 +2723,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	//return the bot's collision mask
 	public int GetSolidMask()
 	{
-		//What to collide with
+		//0x202400B L4D2
 		return (MASK_NPCSOLID);
 	}
 	public int GetSolidMaskAlly()
 	{
-		//What to collide with
+		//0x202400B L4D2
 		return (MASK_NPCSOLID|MASK_PLAYERSOLID);
 	}
 	
@@ -2523,40 +2756,64 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 }
 
+enum ActivityType 
+{ 
+	MOTION_CONTROLLED_XY	= 0x0001,	// XY position and orientation of the bot is driven by the animation.
+	MOTION_CONTROLLED_Z		= 0x0002,	// Z position of the bot is driven by the animation.
+	ACTIVITY_UNINTERRUPTIBLE= 0x0004,	// activity can't be changed until animation finishes
+	ACTIVITY_TRANSITORY		= 0x0008,	// a short animation that takes over from the underlying animation momentarily, resuming it upon completion
+	ENTINDEX_PLAYBACK_RATE	= 0x0010,	// played back at different rates based on entindex
+};
+
+
 //Trash below!
+
 
 public void NPC_Base_InitGamedata()
 {
+	flTurnRate = FindConVar("tf_base_boss_max_turn_rate");
 	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
 	
 	
-	GameData gamedata = LoadGameConfigFile("zombie_riot");
+	GameData gamedata = LoadGameConfigFile("tf2.pets");
 	
 	// thanks to Dysphie#4094 on discord for help
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
 
 //	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
 	
+	delete gamedata;
+	
+	Handle hConf = LoadGameConfigFile("tf2.pets");
+	
 	//SDKCalls
 	//This call is used to get an entitys center position
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::WorldSpaceCenter");
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::WorldSpaceCenter");
 	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
 	if ((g_hSDKWorldSpaceCenter = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::WorldSpaceCenter offset!");
 	
 	//=========================================================
 	// StudioFrameAdvance - advance the animation frame up some interval (default 0.1) into the future
 	//=========================================================
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::StudioFrameAdvance");
+	if ((g_hStudioFrameAdvance = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::StudioFrameAdvance offset!"); 	
 
 
 //	CBaseAnimatingOverlay::StudioFrameAdvance()
 	
 	//CBaseAnimating::ResetSequenceInfo( );
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
 	if ((g_hResetSequenceInfo = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::ResetSequenceInfo signature!"); 
 	
-
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::MyNextBotPointer");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if ((g_hMyNextBotPointer = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseEntity::MyNextBotPointer offset!"); 
+	
 	/*
 	void CBaseAnimating::RefreshCollisionBounds( void )
 	{
@@ -2565,17 +2822,224 @@ public void NPC_Base_InitGamedata()
 	*/
 	
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
 	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetLocomotionInterface");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hGetLocomotionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetLocomotionInterface!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetIntentionInterface");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hGetIntentionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetIntentionInterface!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetBodyInterface");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hGetBodyInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetBodyInterface!");
+/*		
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBot::GetVisionInterface");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hGetVisionInterface = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBot::GetVisionInterface!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "IVision::GetPrimaryKnownThreat");
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hGetPrimaryKnownThreat = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for IVision::GetPrimaryKnownThreat!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "IVision::GetKnown");
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);	//CBaseEntity - Entity to check for
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//CKnownEntity
+	if((g_hGetKnown = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for IVision::GetKnown!");
 
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "IVision::AddKnownEntity");
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	if((g_hAddKnownEntity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for IVision::AddKnownEntity!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CKnownEntity::GetEntity");
+	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
+	if((g_hGetKnownEntity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CKnownEntity::GetEntity!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CKnownEntity::UpdatePosition");
+	if((g_hUpdatePosition = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CKnownEntity::UpdatePosition!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CKnownEntity::UpdateVisibilityStatus");
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);	//bool visible now
+	if((g_hUpdateVisibilityStatus = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CKnownEntity::UpdateVisibilityStatus!");
+*/
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::Run");
+	if((g_hRun = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::Run!");
+
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::Approach");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	if((g_hApproach = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::Approach!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::FaceTowards");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	if((g_hFaceTowards = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::FaceTowards!");
+
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::Jump");
+	if((g_hJump = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::Jump!");
+/*	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::JumpAcrossGap");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	if((g_hJumpAcrossGap = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::JumpAcrossGap!");
+	*/
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::GetVelocity");
+	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
+	if((g_hGetVelocity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::GetVelocity!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::SetVelocity");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	if((g_hSetVelocity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::SetVelocity!");
+	
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseAnimating::DispatchAnimEvents");
+	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer);
+	if ((g_hDispatchAnimEvents = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::DispatchAnimEvents offset!"); 
+	
+	//ILocomotion::GetGroundSpeed() 
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::GetGroundSpeed");
+	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
+	if((g_hGetGroundSpeed = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::GetGroundSpeed!");
+	
+	//ILocomotion::GetGroundMotionVector() 
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::GetGroundMotionVector");
+	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
+	if((g_hGetGroundMotionVector = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for ILocomotion::GetGroundMotionVector!");
+	
 	//CBaseEntity::GetVectors(Vector*, Vector*, Vector*) 
 	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::GetVectors");
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "CBaseEntity::GetVectors");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
+
+	//CBaseAnimating::GetPoseParameter(int iParameter)
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetPoseParameter");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
+	if((g_hGetPoseParameter = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetPoseParameter");
+	
+	//CBaseAnimating::FindBodygroupByName(const char* name)
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::FindBodygroupByName");
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hFindBodygroupByName = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::FindBodygroupByName");
+	
+	//CBaseAnimating::SetBodygroup( int iGroup, int iValue )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::SetBodygroup");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hSetBodyGroup = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::SetBodygroup");
+	
+	//int SelectWeightedSequence( CStudioHdr *pstudiohdr, int activity, int curSequence );
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "SelectWeightedSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pstudiohdr
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//activity
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//curSequence
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return sequence
+	if((g_hSelectWeightedSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for SelectWeightedSequence");
+	
+	//SetPoseParameter( CStudioHdr *pStudioHdr, int iParameter, float flValue );
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::SetPoseParameter");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_Float, SDKPass_Plain);
+	if((g_hSetPoseParameter = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::SetPoseParameter");
+	
+	//LookupPoseParameter( CStudioHdr *pStudioHdr, const char *szName );
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::LookupPoseParameter");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hLookupPoseParameter = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::LookupPoseParameter");
+	
+	//CBaseAnimatingOverlay::AddGesture( Activity activity, bool autokill )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::AddGesture");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain); 
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hAddGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGesture");
+
+	//CBaseAnimatingOverlay::AddGesture( Activity activity, bool autokill )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::AddGestureSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain); 
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hAddGestureSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::AddGestureSequence");
+
+	//CBaseAnimatingOverlay::RemoveGesture( Activity activity )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RemoveGesture");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+	if((g_hRemoveGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RemoveGesture");
+
+
+	//CBaseAnimatingOverlay::ResetSequence( int sequence? )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::ResetSequence");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hRestartSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::ResetSequence");
+		
+	//( Activity activity, bool addifmissing /*=true*/, bool autokill /*=true*/ )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::RestartGesture");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);	
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hRestartGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::RestartGesture");
+	
+	
+	//CBaseAnimatingOverlay::IsPlayingGesture( Activity activity )
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimatingOverlay::IsPlayingGesture");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_Plain);
+	if((g_hIsPlayingGesture = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimatingOverlay::IsPlayingGesture");
+	/*
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::IsClimbingOrJumping");
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
+	g_hSDKIsClimbingOrJumping = EndPrepSDKCall();
+	if (g_hSDKIsClimbingOrJumping == null)
+	{
+		PrintToServer("Failed to retrieve ILocomotion::IsClimbingOrJumping offset from SF2 gamedata!");
+	}
+	*/
+	//-----------------------------------------------------------------------------
 	
 	//-----------------------------------------------------------------------------
 	// Purpose: Looks up an activity by name.
@@ -2584,36 +3048,175 @@ public void NPC_Base_InitGamedata()
 	//-----------------------------------------------------------------------------
 	//int LookupActivity( CStudioHdr *pstudiohdr, const char *label )
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupActivity");
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "LookupActivity");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
 
-	g_hGetSolidMask		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-	g_hGetSolidMaskAlly		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
-
+	
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "LookupSequence");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupSequence");
-
-	HookListMap = new StringMap();
-	HookIdMap = new StringMap();
-
-	delete gamedata;
 	
-	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	
+	//-----------------------------------------------------------------------------
+	// Purpose: lookup attachment by name
+	//-----------------------------------------------------------------------------
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "Studio_FindAttachment");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//pAttachmentName
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
+	if((g_hStudio_FindAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for Studio_FindAttachment");
+	
+	//-----------------------------------------------------------------------------
+	// Purpose: Returns the world location and world angles of an attachment
+	// Input  : attachment name
+	// Output :	location and angles
+	//-----------------------------------------------------------------------------
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseAnimating::GetAttachment");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//iAttachment
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absOrigin
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absAngles
+	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetAttachment");
+	
+	//PluginBot SDKCalls
+	//Get NextBot pointer
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBotComponent::GetBot");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	if((g_hGetBot = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBotComponent::GetBot!");
+	
+	//Get NextBot entity index
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "INextBotComponent::GetEntity");
+	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
+	if((g_hGetEntity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for INextBotComponent::GetEntity!");
+	
+	//
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "NextBotCombatCharacter::Event_Killed");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer);
+	if((g_hNextBotCombatCharacter_Event_Killed = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for NextBotCombatCharacter::Event_Killed!");
+
+	//Get NextBot entity index
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Signature, "CBaseCombatCharacter::Event_Killed");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Pointer);
+	if((g_hCBaseCombatCharacter_Event_Killed = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseCombatCharacter::Event_Killed!");
+	
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(hConf, SDKConf_Virtual, "ILocomotion::IsOnGround");
+	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
+	g_hSDKIsOnGround = EndPrepSDKCall();
+	if (g_hSDKIsOnGround == null)
+	{
+		PrintToServer("Failed to retrieve ILocomotion::IsOnGround offset from SF2 gamedata!");
+	}
+	
+	//DHooks
+	g_hHandleAnimEvent = DHookCreateEx(hConf, "CBaseAnimating::HandleAnimEvent",  HookType_Entity, ReturnType_Void,   ThisPointer_CBaseEntity, CBaseAnimating_HandleAnimEvent);
+	DHookAddParam(g_hHandleAnimEvent, HookParamType_ObjectPtr);
+	
+	g_hGetFrictionSideways = DHookCreateEx(hConf, "ILocomotion::GetFrictionSideways",HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetFrictionSideways);
+	g_hGetStepHeight	   = DHookCreateEx(hConf, "ILocomotion::GetStepHeight",	  HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetStepHeight);	
+	g_hGetGravity		  = DHookCreateEx(hConf, "ILocomotion::GetGravity",		 HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetGravity);	
+	g_hGetRunSpeed		 = DHookCreateEx(hConf, "ILocomotion::GetRunSpeed",		HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetRunSpeed);
+	g_hGetGroundNormal	 = DHookCreateEx(hConf, "ILocomotion::GetGroundNormal",	HookType_Raw, ReturnType_VectorPtr, ThisPointer_Address, ILocomotion_GetGroundNormal);
+	g_hGetMaxAcceleration  = DHookCreateEx(hConf, "ILocomotion::GetMaxAcceleration", HookType_Raw, ReturnType_Float,	 ThisPointer_Address, ILocomotion_GetMaxAcceleration);
+	
+	g_hShouldCollideWithAlly = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAlly);
+	DHookAddParam(g_hShouldCollideWithAlly, HookParamType_CBaseEntity);
+	
+	g_hShouldCollideWithAllyInvince = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAllyInvince);
+	DHookAddParam(g_hShouldCollideWithAllyInvince, HookParamType_CBaseEntity);
+	
+	g_hShouldCollideWithAllyEnemy = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemy);
+	DHookAddParam(g_hShouldCollideWithAllyEnemy, HookParamType_CBaseEntity);
+
+	g_hShouldCollideWithAllyEnemyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithEnemyIngoreBuilding);
+	DHookAddParam(g_hShouldCollideWithAllyEnemyIngoreBuilding, HookParamType_CBaseEntity);
+
+
+	g_hShouldCollideWithAllyIngoreBuilding = DHookCreateEx(hConf, "ILocomotion::ShouldCollideWith",  HookType_Raw, ReturnType_Bool, ThisPointer_Address, ILocomotion_ShouldCollideWithAllyOnlyIngoreBuilding);
+	DHookAddParam(g_hShouldCollideWithAllyIngoreBuilding, HookParamType_CBaseEntity);
+	
+	g_hGetSolidMask		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+	g_hGetSolidMaskAlly		= DHookCreateEx(hConf, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
+	g_hGetActivity		 = DHookCreateEx(hConf, "IBody::GetActivity",		HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetActivity);
+	
+	g_hGetHullWidthGiant		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth_ISGIANT);
+	g_hGetHullHeightGiant	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight_ISGIANT);
+	g_hGetStandHullHeightGiant  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight_ISGIANT);
+	
+	
+	
+	g_hGetHullWidth		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidth);
+	g_hGetHullHeight	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeight);
+	g_hGetStandHullHeight  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeight);
+/*	
+	g_hGetHullWidthSmall		= DHookCreateEx(hConf, "IBody::GetHullWidth",	   HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullWidthSmall);
+	g_hGetHullHeightSmall	   = DHookCreateEx(hConf, "IBody::GetHullHeight",	  HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetHullHeightSmall);
+	g_hGetStandHullHeightSmall  = DHookCreateEx(hConf, "IBody::GetStandHullHeight", HookType_Raw, ReturnType_Float, ThisPointer_Address, IBody_GetStandHullHeightSmall);
+*/
+
+	g_hIsActivity   = DHookCreateEx(hConf, "IBody::IsActivity",   HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_IsActivity);
+	DHookAddParam(g_hIsActivity, HookParamType_Int);
+	
+	g_hStartActivity = DHookCreateEx(hConf, "IBody::StartActivity", HookType_Raw, ReturnType_Bool, ThisPointer_Address, IBody_StartActivity);
+	DHookAddParam(g_hStartActivity, HookParamType_Int);
+	DHookAddParam(g_hStartActivity, HookParamType_Int);
+
+	g_hEvent_Killed = DHookCreateEx(hConf, "CTFBaseBoss::Event_Killed", HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, CTFBaseBoss_Event_Killed);
+	DHookAddParam(g_hEvent_Killed, HookParamType_Int); //( const CTakeDamageInfo &info )
+	
+//	g_hAlwaysTransmit = DynamicHook.FromConf(hConf, "CTFBaseBoss::UpdateTransmitState()");
+	
+	g_hEvent_Ragdoll = DHookCreateEx(hConf, "CBaseCombatCharacter::BecomeRagdoll", HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity, CTFBaseBoss_Ragdoll);
+	
+	DHookAddParam(g_hEvent_Ragdoll, HookParamType_Int); //( const CTakeDamageInfo &info )
+	DHookAddParam(g_hEvent_Ragdoll, HookParamType_VectorPtr); //( const vector )
+
+	Address iAddr = GameConfGetAddress(hConf, "GetAnimationEvent");
+	if(iAddr == Address_Null) SetFailState("Can't find GetAnimationEvent address for patch.");
+	
+	StoreToAddress(iAddr += view_as<Address>(131), 9999, NumberType_Int16);
+	
+	delete hConf;
+	
+	HookIdMap = new StringMap();
+	HookListMap = new StringMap();
 }
 
-//Ragdoll
-public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int iInflictor, float flDamage, int iDamagetype, int iWeapon, const float vecDamageForce[3], const float vecDamagePosition[3])
+Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
+{
+	int iOffset = GameConfGetOffset(gc, key);
+	if(iOffset == -1)
+	{
+		SetFailState("Failed to get offset of %s", key);
+		return null;
+	}
+	
+	return DHookCreate(iOffset, hooktype, returntype, thistype, callback);
+}
+
+//Ragdoll.
+public MRESReturn CTFBaseBoss_Event_Killed(int pThis, Handle hParams)
 {	
+//	CreateTimer(5.0, Check_Emergency_Reload, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);
+	
+	Address CTakeDamageInfo = DHookGetParam(hParams, 1);
+	
+	CTakeDamageInfo -= view_as<Address>(16*4);
 	if(!b_NpcHasDied[pThis])
 	{
+
 		int client = GetClientOfUserId(LastHitId[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
@@ -2654,8 +3257,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		}
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
-		SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
-		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
+		SDKUnhook(pThis, SDKHook_Think, Check_If_Stuck);
 #if defined ZR
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
@@ -2698,13 +3300,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			return MRES_Supercede;
 		#else
 		*/
-	// SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
+		SDKCall(g_hNextBotCombatCharacter_Event_Killed, pThis, CTakeDamageInfo);
 		if(!npc.m_bDissapearOnDeath)
 		{
 			if(!npc.m_bGib)
 			{
-				MakeEntityRagdollNpc(npc.index);
-		//		SDKCall(g_hCBaseCombatCharacter_Event_Killed,   pThis, CTakeDamageInfo);
+				SDKCall(g_hCBaseCombatCharacter_Event_Killed,   pThis, CTakeDamageInfo);
 			}
 			else
 			{
@@ -3004,8 +3605,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	{	
 		SetNpcToDeadViaGib(pThis);
 	}
+	return MRES_Supercede;
 }
-
 public void SetNpcToDeadViaGib(int pThis)
 {
 #if defined ZR
@@ -3087,6 +3688,27 @@ public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
 //	models/Gibs/HGIBS_rib.mdl
 //	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
 */
+
+public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)  
+{
+	CClotBody npc = view_as<CClotBody>(pThis);
+	float Push[3];
+	npc.m_vecpunchforce(Push, false);
+	ScaleVector(Push, 2.0);
+	if(Push[0] == 0.0 || Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
+	{
+		Push[0] = 1.0;
+		Push[1] = 1.0;
+		Push[2] = 1.0;
+	}
+	DHookSetParamVector(hParams, 2, view_as<float>(Push));
+//	RequestFrames(Kill_Npc, 5, EntIndexToEntRef(pThis));		
+	//Play Ragdolls correctly.
+		
+	DHookSetReturn(hReturn, true);
+	return MRES_ChangedOverride;
+}
+
 
 public void Kill_Npc(int ref)
 {
@@ -3277,112 +3899,203 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
-public bool ShouldCollideAlly(CBaseNPC_Locomotion loco, int otherindex)
-{ 
-	if(otherindex > 0 && otherindex <= MaxClients)
+public MRESReturn ILocomotion_GetGroundNormal(Address pThis, Handle hReturn, Handle hParams)	 { DHookSetReturnVector(hReturn,	view_as<float>( { 0.0, 0.0, 1.0 } ));  return MRES_Supercede; }
+public MRESReturn ILocomotion_GetStepHeight(Address pThis, Handle hReturn, Handle hParams)	   { DHookSetReturn(hReturn, 17.0);	return MRES_Supercede; }
+public MRESReturn ILocomotion_GetMaxAcceleration(Address pThis, Handle hReturn, Handle hParams)  { DHookSetReturn(hReturn, 5000.0); return MRES_Supercede; }
+public MRESReturn ILocomotion_GetFrictionSideways(Address pThis, Handle hReturn, Handle hParams) { DHookSetReturn(hReturn, 3.0);	return MRES_Supercede; }
+public MRESReturn ILocomotion_GetGravity(Address pThis, Handle hReturn, Handle hParams)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(Npc_Is_Targeted_In_Air(entity) || b_NoGravity[entity])
 	{
-		return false;
-	}	
-	 
-	if(b_CantCollidieAlly[otherindex])
-	{
-		return false;
+		DHookSetReturn(hReturn, 0.0); //We want no gravity
 	}
-
-	NpcStartTouch(loco,otherindex);
-	return true;
+	else
+	{
+		DHookSetReturn(hReturn, 800.0); 
+	}
+	return MRES_Supercede; 
 }
 
-public bool ShouldCollideAllyInvince(CBaseNPC_Locomotion loco, int otherindex)
+public MRESReturn ILocomotion_ShouldCollideWithAlly(Address pThis, Handle hReturn, Handle hParams)   
 { 
-
+	int otherindex = DHookGetParam(hParams, 1);
+	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
-		return false;
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede; 
 	}	
-
-	if(b_CantCollidie[otherindex])
+	 //OPTIMISEEEEEEEEE!!!!!!!!
+	 
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
 	{
-		return false;
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
 	}
-	if(b_CantCollidieAlly[otherindex]) 
+
+	//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/server/NextBot/NextBotLocomotionInterface.h#L152
+	//ALWAYS YES, WHY??????
+	
+//	DHookSetReturn(hReturn, true); 
+
+	NpcStartTouch(pThis,otherindex);
+	return MRES_Ignored;
+}
+public MRESReturn ILocomotion_ShouldCollideWithAllyInvince(Address pThis, Handle hReturn, Handle hParams)   
+{ 
+	int otherindex = DHookGetParam(hParams, 1);
+	
+	if(otherindex > 0 && otherindex <= MaxClients)
 	{
-		return false;
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede; 
+	}	
+	 //OPTIMISEEEEEEEEE!!!!!!!!
+	 
+	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
+	}
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
 	}
 	
-	NpcStartTouch(loco,otherindex);
-	return true;
+//	DHookSetReturn(hReturn, true); 
+	NpcStartTouch(pThis,otherindex);
+	return MRES_Ignored;
 }
 
-public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
+public MRESReturn ILocomotion_ShouldCollideWithEnemy(Address pThis, Handle hReturn, Handle hParams)   
 { 
+	int otherindex = DHookGetParam(hParams, 1);
+	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		if(b_ThisEntityIgnored[otherindex])
 		{
-			return false;
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
 		}
-		NpcStartTouch(loco,otherindex);
-		return true;
+		NpcStartTouch(pThis,otherindex);
+		return MRES_Ignored;
 	}
 	 
 	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 	{
-		return false;
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
 	}
 	
-	NpcStartTouch(loco,otherindex);
-	return true;
+	NpcStartTouch(pThis,otherindex);
+	return MRES_Ignored;
 }
 
-public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int otherindex)
+public MRESReturn ILocomotion_ShouldCollideWithEnemyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
 { 
-
+	int otherindex = DHookGetParam(hParams, 1);
+	
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		if(b_ThisEntityIgnored[otherindex])
 		{
-			return false;
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
 		}
-		NpcStartTouch(loco,otherindex);
-		return true;
+		NpcStartTouch(pThis,otherindex);
+		return MRES_Ignored;
 	}
 	 
 	if(b_CantCollidie[otherindex])
 	{
-		return false;
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
 	}
 	if(b_CantCollidieAlly[otherindex])
 	{
 		if(i_IsABuilding[otherindex])
 		{
-			return false;
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
 		}
+		NpcStartTouch(pThis,otherindex);
+		return MRES_Ignored;
 	}
-	NpcStartTouch(loco,otherindex);
-	return true;
+	NpcStartTouch(pThis,otherindex);
+
+	return MRES_Ignored;
 }
 
+public MRESReturn ILocomotion_ShouldCollideWithAllyOnlyIngoreBuilding(Address pThis, Handle hReturn, Handle hParams)   
+{ 
+	int otherindex = DHookGetParam(hParams, 1);
+	
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede; 
+	}
 
-void NPC_StartPathing(int entity)
+	if(b_CollidesWithEachother[otherindex]) //no change in performance..., almost.
+	{
+		return MRES_Ignored;
+	}
+
+	if(b_CantCollidieAlly[otherindex]) //no change in performance..., almost.
+	{
+		if(i_IsABuilding[otherindex])
+		{
+			DHookSetReturn(hReturn, false); 
+			return MRES_Supercede;
+		}
+		DHookSetReturn(hReturn, false); 
+		return MRES_Supercede;
+	}
+	
+//	DHookSetReturn(hReturn, true); 
+	return MRES_Ignored;
+}
+//2 * m_vecMaxs
+public MRESReturn IBody_GetHullWidth_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 60.0); return MRES_Supercede; }
+public MRESReturn IBody_GetHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 120.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeight_ISGIANT(Address pThis, Handle hReturn, Handle hParams)
 {
-	view_as<CClotBody>(entity).StartPathing();
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(b_NpcResizedForCrouch[entity])
+	{
+		DHookSetReturn(hReturn, 41.0);
+	}
+	else
+	{
+		DHookSetReturn(hReturn, 120.0);
+	}
+	return MRES_Supercede; 
+}
+public MRESReturn IBody_GetHullWidth(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 48.0); return MRES_Supercede; }
+public MRESReturn IBody_GetHullHeight(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 82.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeight(Address pThis, Handle hReturn, Handle hParams)
+{
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
+	if(b_NpcResizedForCrouch[entity])
+	{
+		DHookSetReturn(hReturn, 41.0);
+	}
+	else
+	{
+		DHookSetReturn(hReturn, 82.0);
+	}
+	return MRES_Supercede; 
 }
 
-void NPC_StopPathing(int entity)
-{
-	view_as<CClotBody>(entity).StopPathing();
-}
+public MRESReturn IBody_GetHullWidthSmall(Address pThis, Handle hReturn, Handle hParams)			  { DHookSetReturn(hReturn, 16.0); return MRES_Supercede; }
+public MRESReturn IBody_GetHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)			 { DHookSetReturn(hReturn, 56.0); return MRES_Supercede; }
+public MRESReturn IBody_GetStandHullHeightSmall(Address pThis, Handle hReturn, Handle hParams)		{ DHookSetReturn(hReturn, 56.0); return MRES_Supercede; }
 
-void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
-{
-	view_as<CClotBody>(entity).SetGoalVector(vec, ignore_time);
-}
-
-void NPC_SetGoalEntity(int entity, int target)
-{
-	view_as<CClotBody>(entity).SetGoalEntity(target);
-}
+//npc.m_bISGIANT
+//BOUNDING BOX FOR ENEMY TO RESPECT
 
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
@@ -3421,12 +4134,40 @@ stock float[] WorldSpaceCenter(int entity)
 	return vecPos;
 }
 
+public void InitNavGamedata()
+{
+	Handle hConf = LoadGameConfigFile("tf2.pets");
+
+	navarea_count = GameConfGetAddress(hConf, "navarea_count");
+	//PrintToServer("[CClotBody] Found \"navarea_count\" @ 0x%X", navarea_count);
+	
+	/*if(LoadFromAddress(navarea_count, NumberType_Int32) <= 0)
+	{
+		char buffer[64];
+		GetCurrentMap(buffer, sizeof(buffer));
+		for(int i; ; i++)
+		{
+			LogError("No Nav Mesh for %s", buffer);
+			PrintToServer("No Nav Mesh for %s", buffer);
+		}
+
+		SetFailState("Missing nav mesh");
+		return;
+	}*/
+	
+	//TheNavAreas is nicely above navarea_count
+	TheNavAreas = view_as<Address>(LoadFromAddress(navarea_count + view_as<Address>(0x4), NumberType_Int32));
+	//PrintToServer("[CClotBody] Found \"TheNavAreas\" @ 0x%X", TheNavAreas);
+	
+	delete hConf;
+}
+
 stock CNavArea PickRandomArea()
 {
-	int iAreaCount = TheNavAreas.Length;
+	int iAreaCount = LoadFromAddress(navarea_count, NumberType_Int32);
 	
 	//Pick a random goal area
-	return TheNavAreas.Get(GetURandomInt() % iAreaCount);
+	return view_as<CNavArea>(LoadFromAddress(TheNavAreas + view_as<Address>(4 * GetRandomInt(0, iAreaCount - 1)), NumberType_Int32));
 }
 
 public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
@@ -3438,78 +4179,81 @@ public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 }
 
 
-public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, TraverseWhenType when)
+public bool PluginBot_IsEntityTraversable(int bot_entidx, int other_entidx, TraverseWhenType when)
 {
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
-	
-	if(other_entidx <= 0) 
-	{
+	if(other_entidx == 0) {
 		return false;
 	}
-
+	
 	if(b_IsAlliedNpc[bot_entidx]) //ally!
 	{
+		if(b_ThisEntityIgnored[bot_entidx] && b_ThisEntityIgnored[other_entidx])
+		{
+			return true; //yep! 
+		}
+		if(other_entidx > 0 && other_entidx <= MaxClients) 
+		{
+			return true; //Yep, is a player.
+		}	
 		if(b_CollidesWithEachother[bot_entidx])
 		{
 			if(b_CollidesWithEachother[other_entidx])
 			{
-				return false; //Incase allies collide with eachother, then we try to make them avoid eachother.
+				return false; //nope!
 			}
 		}
+		if(!b_IsAlliedNpc[other_entidx])
+		{
+			return false; //nope!
+		}	
 		if(i_IsABuilding[other_entidx])
 		{
-			return true;
+			return true; //yep!
 		}	
-		if(other_entidx > 0 && other_entidx <= MaxClients)
-		{
-			return true;
-		}
-		if(b_CantCollidie[other_entidx])
-		{
-			return true;
-		}	
-
-	}
-	else //Enemy!
-	{
-		if(i_IsABuilding[other_entidx])
-		{
-			return true;
-		}	
-		if(other_entidx > 0 && other_entidx <= MaxClients)
-		{
-			return true;
-		}
 		if(b_CantCollidieAlly[other_entidx])
 		{
-			return true;
-		}	
+			return true; //yep!
+		}
+	}
+	else
+	{
+		if(b_CantCollidie[other_entidx])
+		{
+			return true; //yep!
+		}
+		if(other_entidx > 0 && other_entidx <= MaxClients) 
+		{
+			return true; //Yep, is a player.
+		}
 	}
 	
-	return false; //we let them through, we dont want them to just try to avoid everything!
-
+	if(when == IMMEDIATELY) {
+		return false;
+	}
+	
+	return false;
 }
 static int i_PluginBot_ApproachDelay[MAXENTITIES];
 
-public int Action_CommandApproach(NextBotAction action, int actor, const float pos[3], float range)
+public void PluginBot_Approach(int bot_entidx, const float vec[3])
 {
-	CClotBody npc = view_as<CClotBody>(actor);
-	npc.Approach(pos);
-	if(i_PluginBot_ApproachDelay[actor] >= 1)
+	
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	npc.Approach(vec);
+	if(i_PluginBot_ApproachDelay[bot_entidx] >= 1)
 	{
-		i_PluginBot_ApproachDelay[actor] = 0;
+		i_PluginBot_ApproachDelay[bot_entidx] = 0;
 
 		//gets called every frame! bad! delay abit.
 		//Default value is 250.
 		if(!npc.m_bAllowBackWalking)
-			npc.FaceTowards(pos, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+			npc.FaceTowards(vec, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
 	}
 	else
 	{
-		i_PluginBot_ApproachDelay[actor]++;
+		i_PluginBot_ApproachDelay[bot_entidx]++;
 	}
-	
-	return 0;
+		
 }
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
@@ -3679,7 +4423,7 @@ public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, 
 	return !(entity == iExclude);
 }
 
-public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadder ladder, int iElevator, float length)
+public float PluginBot_PathCost(int bot_entidx, CNavArea area, CNavArea from_area, float length)
 {
 	float dist;
 	if (length != 0.0) 
@@ -3805,6 +4549,30 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		return true;
 	}
 	return false;
+}
+
+public void PluginBot_PathSuccess(int bot_entidx, Address path)
+{
+	NPC_StopPathing(bot_entidx);
+	view_as<CClotBody>(bot_entidx).m_bPathing = true;
+	
+	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
+}
+
+public void PluginBot_MoveToSuccess(int bot_entidx, Address path)
+{
+	NPC_StopPathing(bot_entidx);
+	view_as<CClotBody>(bot_entidx).m_bPathing = false;
+	
+	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
+}
+
+public void PluginBot_MoveToFailure(int bot_entidx, Address path, MoveToFailureType type)
+{
+	NPC_StopPathing(bot_entidx);
+	view_as<CClotBody>(bot_entidx).m_bPathing = false;
+	
+	//view_as<CClotBody>(bot_entidx).m_flNextTargetTime = GetGameTime() + GetRandomFloat(1.0, 4.0);
 }
 
 stock bool IsEntityAlive(int index)
@@ -3951,14 +4719,16 @@ stock int GetClosestTarget(int entity,
 	 float EntityLocation[3] = {0.0,0.0,0.0},
 	  bool CanSee = false,
 	   float fldistancelimitAllyNPC = 350.0,
-	   bool IgnorePlayers = false,
-	   bool UseVectorDistance = false)
+	   bool IgnorePlayers = false)
 {
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 	if(EntityLocation[2] == 0.0)
 	{
 		GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 	}
+	bool HasPathfollower = false;
+
+	HasPathfollower = PF_Exists(entity);
 
 	Zero(GetClosestTarget_EnemiesToCollect);
 	Zero(GetClosestTarget_Enemy_Type);
@@ -4080,7 +4850,7 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance);
+	return GetClosestTarget_Internal(entity, HasPathfollower, fldistancelimit, fldistancelimitAllyNPC, EntityLocation);
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)
@@ -4096,180 +4866,88 @@ void GetClosestTarget_AddTarget(int entity, int type)
 	}	
 }
 
-int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance)
+int GetClosestTarget_Internal(int entity, bool HasPathfollower, float fldistancelimit, float fldistancelimitAllyNPC, float EntityLocation[3])
 {
 	int ClosestTarget = -1; 
-
-	if(!b_NpcHasDied[entity] && !UseVectorDistance)
+	float TargetDistance = 0.0;
+	int target;
+	for (int i = 0; i < MAXENTITIES; i++)
 	{
-		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
-		CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 100.0);
-		if(area == NULL_AREA)
+		if (GetClosestTarget_EnemiesToCollect[i] == 0)
 		{
-			area = TheNavMesh.GetNearestNavArea(EntityLocation, _, _, _, _, _);
+			break; //none left.
 		}
-
-		static CNavArea targetNav[MAXENTITIES];
-		static float targetPos[MAXENTITIES][3];
-		for(int i; i < MAXENTITIES; i++)
-		{
-			if(!GetClosestTarget_EnemiesToCollect[i])
-				break;
-			
-			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
-			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
-
-			if(NavAreaUnder == NULL_AREA)
-			{
-				NavAreaUnder = TheNavMesh.GetNearestNavArea(targetPos[i], _, _, _, _, _);
-			}
-			targetNav[i] = NavAreaUnder;
-		}
-
-		float maxDistance = fldistancelimit > fldistancelimitAllyNPC ? fldistancelimit : fldistancelimitAllyNPC;
-		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, maxDistance, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
-		
-		CNavArea closeNav = NULL_AREA;
-		float closeDist = maxDistance;
-		
-		int length = iterator.Count();
-		for(int i; i < length; i++)
-		{
-			area = iterator.Get(i);
-			
-			// Find if any targets are standing on here
-			for(int a; a < MAXENTITIES; a++)
-			{
-				if(!GetClosestTarget_EnemiesToCollect[a])
-					break;
-				
-				if(targetNav[a] == area)
-				{
-					// See if it's the closest nav
-					float dist = area.GetCostSoFar();
-					if(dist < closeDist)
-					{
-						closeNav = area;
-						closeDist = dist;
-					}
-					break;
-				}
-			}
-		}
-
-		delete iterator;
-
-		if(closeNav != NULL_AREA)
-		{
-			closeDist = FAR_FUTURE;
-			float minDistance1 = fldistancelimit * fldistancelimit;
-			float minDistance2 = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
-
-			for(int i; i < MAXENTITIES; i++)
-			{
-				if(!GetClosestTarget_EnemiesToCollect[i])
-					break;
-				
-				if(targetNav[i] != closeNav)	// In this close nav
-					continue;
-				
-				float dist = GetVectorDistance(targetPos[i], EntityLocation, true);
-				if(dist > closeDist)	// Closest entity
-					continue;
-
-				if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
-				{
-					if(dist > minDistance2)
-						continue;
-				}
-				else if(dist > minDistance1)
-				{
-					continue;
-				}
-
-				closeDist = dist;
-				ClosestTarget = GetClosestTarget_EnemiesToCollect[i];
-			}
-		}
-	}
-	else
-	{
-		float TargetDistance = 0.0;
-		int target;
+		target = GetClosestTarget_EnemiesToCollect[i];
+		/*
 		static float TargetLocation[3]; 
-		for (int i = 0; i < MAXENTITIES; i++)
+		GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+						
+		static float distance;
+		distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+		*/
+			
+		static float DistancePathed;
+		if(HasPathfollower)
 		{
-			if (GetClosestTarget_EnemiesToCollect[i] == 0)
-			{
-				break; //none left.
-			}
-			target = GetClosestTarget_EnemiesToCollect[i];
-			/*
+			PF_IsPathToEntityPossible(entity, target, DistancePathed);
+		}
+		else
+		{
 			static float TargetLocation[3]; 
-			GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-							
-			static float distance;
-			distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
-			*/
+			GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+			DistancePathed = GetVectorDistance( EntityLocation, TargetLocation); 
+		}
 
-			GetEntPropVector( target, Prop_Data, "m_vecOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
-			float distanceVector = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 
-			/*
-				1: player
-				2: player enemy npc
-				3: player ally npc
-				4: buildings
-			*/
+		/*
+			1: player
+			2: player enemy npc
+			3: player ally npc
+			4: buildings
+		*/
 
-			float distance_limit;
-			switch(GetClosestTarget_Enemy_Type[target])
+		float distance_limit;
+		switch(GetClosestTarget_Enemy_Type[target])
+		{
+			case 1:
 			{
-				case 1:
-				{
-					distance_limit = fldistancelimit;
-				}
-				case 2:
-				{
-					distance_limit = fldistancelimit;
-				}
-				case 3:
-				{
-					distance_limit = fldistancelimitAllyNPC;
-				}
-				case 4:
-				{
-					distance_limit = fldistancelimitAllyNPC;
-				}
-				default:
-				{
-					distance_limit = 99999.9;
-				}
+				distance_limit = fldistancelimit;
 			}
-
-			distance_limit *= distance_limit;
-
-			if(distanceVector < distance_limit)
+			case 2:
 			{
-				if( TargetDistance ) 
-				{
-					if( distanceVector < TargetDistance ) 
-					{
-						ClosestTarget = target; 
-						TargetDistance = distanceVector;		  
-					}
-				}
-				else 
+				distance_limit = fldistancelimit;
+			}
+			case 3:
+			{
+				distance_limit = fldistancelimitAllyNPC;
+			}
+			case 4:
+			{
+				distance_limit = fldistancelimitAllyNPC;
+			}
+			default:
+			{
+				distance_limit = 9999999.9;
+			}
+		}
+
+		if(DistancePathed < distance_limit)
+		{
+			if( TargetDistance ) 
+			{
+				if( DistancePathed < TargetDistance ) 
 				{
 					ClosestTarget = target; 
-					TargetDistance = distanceVector;
+					TargetDistance = DistancePathed;		  
 				}
 			}
-		}		
-	}
-
-
-
+			else 
+			{
+				ClosestTarget = target; 
+				TargetDistance = DistancePathed;
+			}
+		}
+	}	
 	return ClosestTarget;
 }
 
@@ -4570,15 +5248,12 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 }
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
-public void NpcBaseThinkPost(int iNPC)
-{
-	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
-}
-public void NpcBaseThink(int iNPC)
+
+public void Check_If_Stuck(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
-	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+	//Reuse this think for text huds.
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
@@ -4929,7 +5604,6 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		}
 		else
 		{
-			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles);
 			vAngles[0] = -45.0;
 		}
 		
@@ -5801,15 +6475,54 @@ bool SetTeleportEndPoint(int client, float Position[3])
 	return true;
 }
 
+public MRESReturn ILocomotion_GetRunSpeed(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetRunSpeed()); 
+	return MRES_Supercede; 
+}
 
 public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMask()); 
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
 	return MRES_Supercede; 
 }
 public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly()); 
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetSolidMask()); 
+	return MRES_Supercede; 
+}
+
+public MRESReturn IBody_GetActivity(Address pThis, Handle hReturn, Handle hParams)			  
+{ 
+	#if defined DEBUG_ANIMATION
+	PrintToServer("IBody_GetActivity");	
+	#endif
+	
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).GetActivity()); 
+	return MRES_Supercede; 
+}
+
+public MRESReturn IBody_IsActivity(Address pThis, Handle hReturn, Handle hParams)			  
+{
+	int iActivity = DHookGetParam(hParams, 1);
+	
+	#if defined DEBUG_ANIMATION
+	PrintToServer("IBody_IsActivity %i", iActivity);	
+	#endif
+
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).IsActivity(iActivity));
+	return MRES_Supercede; 
+}
+
+public MRESReturn IBody_StartActivity(Address pThis, Handle hReturn, Handle hParams)			 
+{ 
+	int iActivity = DHookGetParam(hParams, 1);
+	int fFlags	= DHookGetParam(hParams, 2);
+	
+	PrintToServer("IBody_StartActivity %i %i", iActivity, fFlags);	
+	
+	DHookSetReturn(hReturn, view_as<CClotBody>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis))).StartActivity(iActivity, fFlags)); 
+	
 	return MRES_Supercede; 
 }
 
@@ -5824,9 +6537,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	botPos[2] += 1.0;
 	subjectPos[2] += 1.0;
 #if defined ZR
-	//do not predict if in air
-	//do not predict if its a building, waste of resources.
-	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject])
+	if(Npc_Is_Targeted_In_Air(npc.index)) //Logic breaks when they are under this effect.
 	{
 		return subjectPos;
 	}
@@ -5888,7 +6599,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	if (GetVectorLength(lead, true) > 36.0)
 	{
 		float fraction;
-		if(view_as<CClotBody>(npc).GetLocomotionInterface().IsPotentiallyTraversable(botPos, subjectPos, IMMEDIATELY, fraction))
+		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
 		{
 			// tried to lead through an unwalkable area - clip to walkable space
 			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
@@ -5898,7 +6609,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	}
 	
 
-	CNavArea leadArea = TheNavMesh.GetNearestNavArea( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
 	
 	
 	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
@@ -6249,7 +6960,7 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	if (GetVectorLength(lead, true) > 36.0)
 	{
 		float fraction;
-		if(view_as<CClotBody>(npc).GetLocomotionInterface().IsPotentiallyTraversable(botPos, subjectPos, IMMEDIATELY, fraction))
+		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
 		{
 			// tried to lead through an unwalkable area - clip to walkable space
 			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
@@ -6259,7 +6970,7 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 	}
 	
 
-	CNavArea leadArea = TheNavMesh.GetNearestNavArea( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea_Vec( pathTarget );
 	
 	
 	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
@@ -6551,6 +7262,13 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 				GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				
+				if(!b_NpcHasDied[entity])
+				{
+					if(!PF_IsPathToEntityPossible(entity, i, _))
+					{
+						continue;
+					}
+				}
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 				if( distance < limitsquared )
 				{
@@ -6811,7 +7529,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
-	f_DelayComputingOfPath[entity] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
@@ -7006,24 +7723,33 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 {
 	if(IsValidEntity(npc))
 	{
-		switch(CollisionType)
+		Address pNB =		 SDKCall(g_hMyNextBotPointer,	   npc);
+		Address pLocomotion = SDKCall(g_hGetLocomotionInterface, pNB);
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[npc]))
 		{
-			case 1:
+			PrintToChatAll("FAILED HOOK REMOVAL");
+		}
+		else
+		{
+			switch(CollisionType)
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
-			}
-			case 2:
-			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
-			}
-			case 3:
-			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
-			}
-			case 4:
-			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
-			}
+				case 1:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemyIngoreBuilding,   false, pLocomotion);
+				}
+				case 2:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyEnemy,   false, pLocomotion);
+				}
+				case 3:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAllyInvince,   false, pLocomotion);
+				}
+				case 4:
+				{
+					h_NpcCollissionHookType[npc] = DHookRaw(g_hShouldCollideWithAlly,   false, pLocomotion);
+				}
+			}	
 		}
 	}
 }
@@ -7078,12 +7804,6 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 		startPos = GetAbsOrigin(npc);
 		startPos[2] += 25.0;		
 	}
-
-	if(b_IsGiant[npc])
-	{
-		sizeMultiplier = 1.25;
-	}
-
 	static float testPos[3];
 	bool found = false;
 
@@ -7448,13 +8168,6 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun;
-
-	view_as<CClotBody>(npc).SetPlaybackRate(0.0);
-	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
-	for(int i; i < layerCount; i++)
-	{
-		view_as<CClotBody>(npc).SetLayerPlaybackRate(i, 0.0);
-	}
 }
 
 void NpcStats_SilenceEnemy(int enemy, float duration)
@@ -7912,7 +8625,6 @@ int i2_IlligalStuck_StuckTrueFalse[MAXTF2PLAYERS][MAX_STUCK_PAST_CHECK];
 //the max should be 64 checks.
 public void PlayerInIlligalStuckArea(int entity)
 {
-	/*
 	//PF_IsPathToVectorPossible says good even though it cant path.
 	// a way to make it work: See destination, if the destination isnt near the client, mark?
 	int client;
@@ -7942,7 +8654,6 @@ public void PlayerInIlligalStuckArea(int entity)
 		//i cant be pathed to.
 	}
 	PlayerIlligalTooMuch(client);
-	*/
 }
 
 /*
@@ -8047,9 +8758,9 @@ float GetRandomRetargetTime()
 	return GetRandomFloat(3.0, 4.0);
 }
 
-public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
+public void NpcStartTouch(Address pThis, int target)
 {
-	int entity = pThis.GetBot().GetNextBotCombatCharacter();
+	int entity = view_as<int>(SDKCall(g_hGetEntity, SDKCall(g_hGetBot, pThis)));
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(fl_GetClosestTargetTimeTouch[entity] < GetGameTime() && f_TimeFrozenStill[entity] < GetGameTime(npc.index))
 	{
@@ -8070,101 +8781,5 @@ public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
 		{
 			npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
 		}
-	}
-}
-
-public void MakeEntityRagdollNpc(int pThis)  
-{
-	CClotBody npc = view_as<CClotBody>(pThis);
-	float Push[3];
-	npc.m_vecpunchforce(Push, false);
-	ScaleVector(Push, 2.0);
-	if(Push[0] == 0.0 || Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
-	{
-		Push[0] = 1.0;
-		Push[1] = 1.0;
-		Push[2] = 1.0;
-	}
-
-	SDKCall_BecomeRagdollOnClient(pThis, Push);
-}
-
-
-public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)  
-{
-	CClotBody npc = view_as<CClotBody>(pThis);
-	float Push[3];
-	npc.m_vecpunchforce(Push, false);
-	ScaleVector(Push, 2.0);
-	if(Push[0] == 0.0 || Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
-	{
-		Push[0] = 1.0;
-		Push[1] = 1.0;
-		Push[2] = 1.0;
-	}
-	DHookSetParamVector(hParams, 2, view_as<float>(Push));
-//	RequestFrames(Kill_Npc, 5, EntIndexToEntRef(pThis));		
-	//Play Ragdolls correctly.
-		
-	DHookSetReturn(hReturn, true);
-	return MRES_ChangedOverride;
-}
-
-
-
-void NPC_Base_OnEntityDestroyed()
-{
-	RequestFrame(DHookCleanIds);
-}
-
-public void DHookCleanIds()
-{
-	StringMapSnapshot snap = HookIdMap.Snapshot();
-	if(snap)
-	{
-		char buffer[12];
-		int length2 = snap.Length;
-		for(int a; a<length2; a++)
-		{
-			snap.GetKey(a, buffer, sizeof(buffer));
-			if(EntRefToEntIndex(StringToInt(buffer)) <= MaxClients)
-			{
-				ArrayList list;
-				
-				HookIdMap.GetValue(buffer, list);
-				HookIdMap.Remove(buffer);
-				
-				if(list)
-				{
-					int length = list.Length;
-					for(int i; i<length; i++)
-					{
-						int id2 = list.Get(i);
-						if(id2 != INVALID_HOOK_ID)
-						{
-							int value = 1;
-							IntToString(id2, buffer, sizeof(buffer));
-							if(HookListMap.GetValue(buffer, value) && value > 1)
-							{
-								HookListMap.SetValue(buffer, value-1);
-						//		LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
-							}
-							else
-							{
-								if(!DHookRemoveHookID(id2))
-								{
-							//			LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
-								}
-								
-								HookListMap.Remove(buffer);
-							}
-						}
-					}
-					
-					delete list;
-				}
-			}
-		}
-		delete snap;
 	}
 }

@@ -154,6 +154,11 @@
 				"linux"		"@_ZN11CTFBaseBoss9BossThinkEv" 
 				"windows"	"\x55\x8B\xEC\x81\xEC\xA4\x05\x00\x00"
 			}
+			"LookupActivity" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupActivity
+			{
+				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x53"
+				"linux"		"@_Z14LookupActivityP10CStudioHdrPKc"
+			}
 			"CBaseEntity::SetAbsOrigin" // String models/airboat.mdl, look up, first call
 			{
 				"library"	"server"
@@ -212,6 +217,11 @@
 				"linux"		"@_ZN15CTFPlayerShared8DisguiseEiiP9CTFPlayerb"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x24\x56\x57\x8B\xF9\x8B\x8F\x90\x01\x00\x00"
 			}
+			"Studio_FindAttachment" //int ( const CStudioHdr *pStudioHdr, const char *pAttachmentName ) <- "alt-origin"
+			{
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF\x74\x2A\x8B\xCF"
+				"linux"		"@_Z21Studio_FindAttachmentPK10CStudioHdrPKc"
+			}
 			"CBaseCombatWeapon::WeaponSound" //CBaseCombatWeapon::WeaponSound(WeaponSound_t, float)
 			{
 				// void CBaseCombatWeapon::WeaponSound( WeaponSound_t sound_type, float soundtime /* = 0.0f */ ) There is alot to this.
@@ -222,6 +232,11 @@
 				//then find the function where its called 3 times.
 				"linux"		""
 				"windows"	"\x55\x8B\xEC\x81\xEC\xC4\x00\x00\x00\x56\x8B\xF1\x80\xBE\x34\x06\x00\x00\x00"
+			}
+			"LookupSequence" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupSequence
+			{
+				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x75\x2A\x33\xC0\x5E\x5D\xC3\x8B\xCE\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A\x53"
+				"linux"		"@_Z14LookupSequenceP10CStudioHdrPKc"
 			}
 			"CTFGameRules::CalcPlayerScore" //CBaseCombatWeapon::WeaponSound(WeaponSound_t, float)
 			{
@@ -334,10 +349,44 @@
 				"linux"			""
 				"windows"		"\x55\x8B\xEC\x83\xEC\x74\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x89\x75\xF8"
 			}
+			"NextBotGroundLocomotion::UpdateGroundConstraint" //Has alot of strings, no need for instructions.
+			{
+				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x28\x01\x00\x00\xA1\x2A\x2A\x2A\x2A"
+				"linux"		"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
+			}
+			"CBaseAnimating::ResetSequenceInfo" //( )
+			{
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x83\xBE\xD8\x03\x00\x00\xFF"
+				"linux"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
+			}			
+			"Studio_FindAttachment" //int ( const CStudioHdr *pStudioHdr, const char *pAttachmentName ) <- "alt-origin"
+			{
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF\x74\x2A\x8B\xCF"
+				"linux"		"@_Z21Studio_FindAttachmentPK10CStudioHdrPKc"
+			}
+			"CBaseAnimating::GetAttachment"
+			// bool ( int iAttachment, Vector &absOrigin, QAngle &absAngles )
+			// aVehicleDriverE ; "vehicle_driver_eyes"
+			// 4 calls, get the 2nd one
+			{
+				"windows"	"\x55\x8B\xEC\x8B\x01\x8D\x55\xD0\x83\xEC\x30\x8B\x80\x5C\x03\x00\x00\x53\x52\xFF\x75\x08\xFF\xD0\xFF\x75\x10"
+				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
+			}
 
 		}
 		"Functions"
 		{
+			"NextBotGroundLocomotion::UpdateGroundConstraint"
+			{
+				"signature"	"NextBotGroundLocomotion::UpdateGroundConstraint"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"address"
+				"arguments"
+				{
+				
+				}
+			}
 			"FX_FireBullets()"
 			{
 				"signature"		"FX_FireBullets()"
@@ -847,6 +896,11 @@
 		}
 		"Offsets"
 		{
+			"CBaseEntity::WorldSpaceCenter"		
+			{		
+				"windows"	"155"		
+				"linux"		"156"
+			}
 			"CTFWrench::Smack()" 
 			{
 				"windows" 	"470"
@@ -987,6 +1041,21 @@
 			{
 				"windows"	"337"
 				"linux"		"343"
+			}
+			"CBaseAnimating::RefreshCollisionBounds"
+			{
+				"windows"	"218"
+				"linux"		"219"
+			}
+			"IBody::GetSolidMask"
+			{
+				"windows"	"81"
+				"linux"		"82"
+			}
+			"CBaseAnimating::BecomeRagdollOnClient"
+			{
+				"windows"	"205"
+				"linux"		"206"
 			}
 		}
 	}

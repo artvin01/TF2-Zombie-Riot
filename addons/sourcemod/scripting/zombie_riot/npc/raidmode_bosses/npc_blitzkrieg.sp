@@ -683,9 +683,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 			
@@ -789,8 +789,15 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							
 							if(Tele_Check > 120.0)
 							{
-								TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-								npc.PlayTeleportSound();
+								bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+								if(Succeed)
+								{
+									npc.PlayTeleportSound();
+								}
+								else
+								{
+									npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+								}
 							}
 						}
 					}
@@ -970,7 +977,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

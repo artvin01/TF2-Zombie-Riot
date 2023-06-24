@@ -217,7 +217,7 @@ methodmap MedivalBuilding < CClotBody
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 
 		return npc;
 	}
