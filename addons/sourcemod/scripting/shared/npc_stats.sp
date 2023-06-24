@@ -24,6 +24,10 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+float f3_AvoidOverrideMin[MAXENTITIES][3];
+float f3_AvoidOverrideMax[MAXENTITIES][3];
+float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
+float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
 #endif
 
 #if defined RPG
@@ -264,10 +268,10 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		baseNPC.flStepSize = 17.0;
 		baseNPC.flGravity = 800.0; //SEE Npc Base Think Function to change it.
-		baseNPC.flAcceleration = 3000.0;
+		baseNPC.flAcceleration = 6000.0;
 		baseNPC.flJumpHeight = 250.0;
 		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
-		baseNPC.flFrictionSideways = 3.0;
+		baseNPC.flFrictionSideways = 5.0;
 		baseNPC.flMaxYawRate = 225.0;
 		baseNPC.flDeathDropHeight = 9999.9;
 
@@ -382,6 +386,21 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		//Fix collisions
+		static float m_vecMaxs_Body[3];
+		static float m_vecMins_Body[3];
+
+		m_vecMaxs_Body[0] = m_vecMaxs[0] * 2.0;
+		m_vecMaxs_Body[1] = m_vecMaxs[1] * 2.0;
+		m_vecMaxs_Body[2] = m_vecMaxs[2] * 2.0;
+
+		m_vecMins_Body[0] = m_vecMins[0] * 2.0;
+		m_vecMins_Body[1] = m_vecMins[1] * 2.0;
+		m_vecMins_Body[2] = m_vecMins[2] * 2.0;
+
+		f3_AvoidOverrideMin[npc] = m_vecMins_Body;
+		f3_AvoidOverrideMax[npc] = m_vecMaxs_Body;
+		f3_AvoidOverrideMinNorm[npc] = m_vecMins;
+		f3_AvoidOverrideMaxNorm[npc] = m_vecMaxs;
 		baseNPC.SetBodyMaxs(m_vecMaxs);
 		baseNPC.SetBodyMins(m_vecMins);
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxs", m_vecMaxs);
@@ -417,10 +436,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-		}
-		else
-		{
-
 		}
 	
 		return view_as<CClotBody>(npc);
@@ -2406,8 +2421,15 @@ methodmap CClotBody < CBaseCombatCharacter
 	//	if(!this.m_bAllowBackWalking)
 	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
 		
+		//increace the size of the avoid box by 2x
+		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
+		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);
+
 		if(this.m_bPathing)
-			this.GetPathFollower().Update(this.GetBot());		
+			this.GetPathFollower().Update(this.GetBot());	
+
+		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
+		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
 
 		/*
 		
