@@ -4933,7 +4933,32 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			vAngles[0] = -45.0;
 		}
 		
-										
+		if(enemy <= MaxClients)	
+		{
+
+
+			if (!(GetEntityFlags(enemy) & FL_ONGROUND))
+			{
+				knockback *= 0.5; //Dont do as much knockback if they are in the air
+				if(attacker > MaxClients)	
+				{
+					vAngles[0] = -30.0;
+				}
+			}
+		}
+		else
+		{
+			CClotBody npc = view_as<CClotBody>(enemy);
+			if (!npc.IsOnGround())
+			{
+				knockback *= 0.5; //Dont do as much knockback if they are in the air
+				if(attacker > MaxClients)	
+				{
+					vAngles[0] = -30.0;
+				}
+			}
+		}	
+		//dont knock enemies up that high if they are already in the air.									
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
@@ -4947,7 +4972,8 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 #if defined ZR
 		knockback *= 0.75; //oops, too much knockback now!
 #endif
-		
+
+
 		ScaleVector(vDirection, knockback);
 		
 		if(!override && enemy <= MaxClients)
