@@ -266,29 +266,6 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				/*
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				
-				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
 			
 			if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 			{
@@ -336,7 +313,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 					
 					vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 					
-					NPC_SetGoalVector(npc.index, vBackoffPos);
+					NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				}
 			}
 			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
@@ -379,6 +356,30 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
+			}
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius())
+			{
+				
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				/*
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+				
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
+				*/
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else
+			{
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	}
 	else
