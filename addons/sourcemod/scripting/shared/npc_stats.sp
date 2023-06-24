@@ -1742,7 +1742,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			this.m_bPathing = true;
 
-			this.GetPathFollower().SetMinLookAheadDistance(0.0/*50.0*/);
+			this.GetPathFollower().SetMinLookAheadDistance(250.0);
 		}
 	}
 	public void StopPathing()
@@ -3456,20 +3456,37 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 				return false; //Incase allies collide with eachother, then we try to make them avoid eachother.
 			}
 		}
-		if(!b_IsAlliedNpc[other_entidx])
+		if(i_IsABuilding[other_entidx])
 		{
-			return false; //We try to avoid enemies, even if we are fighting them, makes for cool fighting scenes!
+			return true;
 		}	
+		if(other_entidx > 0 && other_entidx <= MaxClients)
+		{
+			return true;
+		}
+		if(b_CantCollidie[other_entidx])
+		{
+			return true;
+		}	
+
 	}
 	else //Enemy!
 	{
-		if(b_IsAlliedNpc[other_entidx])
+		if(i_IsABuilding[other_entidx])
 		{
-			return false; //We try to avoid enemies, even if we are fighting them, makes for cool fighting scenes!
+			return true;
+		}	
+		if(other_entidx > 0 && other_entidx <= MaxClients)
+		{
+			return true;
+		}
+		if(b_CantCollidieAlly[other_entidx])
+		{
+			return true;
 		}	
 	}
 	
-	return true; //we let them through, we dont want them to just try to avoid everything!
+	return false; //we let them through, we dont want them to just try to avoid everything!
 
 }
 static int i_PluginBot_ApproachDelay[MAXENTITIES];
@@ -4087,6 +4104,10 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	{
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
 		CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 100.0);
+		if(area == NULL_AREA)
+		{
+			area = TheNavMesh.GetNearestNavArea(EntityLocation, _, _, _, _, _);
+		}
 
 		static CNavArea targetNav[MAXENTITIES];
 		static float targetPos[MAXENTITIES][3];
@@ -4096,7 +4117,13 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				break;
 			
 			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
-			targetNav[i] = TheNavMesh.GetNavArea(targetPos[i], 100.0);
+			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
+
+			if(NavAreaUnder == NULL_AREA)
+			{
+				NavAreaUnder = TheNavMesh.GetNearestNavArea(targetPos[i], _, _, _, _, _);
+			}
+			targetNav[i] = NavAreaUnder;
 		}
 
 		float maxDistance = fldistancelimit > fldistancelimitAllyNPC ? fldistancelimit : fldistancelimitAllyNPC;
@@ -7051,6 +7078,12 @@ bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool
 		startPos = GetAbsOrigin(npc);
 		startPos[2] += 25.0;		
 	}
+
+	if(b_IsGiant[npc])
+	{
+		sizeMultiplier = 1.25;
+	}
+
 	static float testPos[3];
 	bool found = false;
 

@@ -789,8 +789,15 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							
 							if(Tele_Check > 120.0)
 							{
-								TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-								npc.PlayTeleportSound();
+								bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+								if(Succeed)
+								{
+									npc.PlayTeleportSound();
+								}
+								else
+								{
+									npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+								}
 							}
 						}
 					}

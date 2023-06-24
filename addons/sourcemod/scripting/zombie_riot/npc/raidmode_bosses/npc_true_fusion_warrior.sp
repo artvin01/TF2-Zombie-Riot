@@ -819,10 +819,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 6.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						
-						if(Tele_Check > 120)
+						if(Tele_Check > 120.0)
 						{
-							TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-							npc.PlayTeleportSound();
+							bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+							if(Succeed)
+							{
+								npc.PlayTeleportSound();
+							}
+							else
+							{
+								npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+							}
 						}
 					}
 				}
@@ -834,10 +841,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget);
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 5.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-						if(Tele_Check > 120)
+						if(Tele_Check > 120.0)
 						{
-							TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-							npc.PlayTeleportSound();
+							bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+							if(Succeed)
+							{
+								npc.PlayTeleportSound();
+							}
+							else
+							{
+								npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+							}
 						}
 					}
 				}
