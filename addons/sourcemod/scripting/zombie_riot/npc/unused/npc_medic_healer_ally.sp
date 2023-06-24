@@ -297,7 +297,7 @@ methodmap Clot < CClotBody
 		npc.m_bFUCKYOU_move_anim = false;
 		
 		npc.m_bnew_target = false;
-		PF_StartPathing(npc.index);
+		NPC_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		
 		int skin = 0;
@@ -312,7 +312,7 @@ methodmap Clot < CClotBody
 		AcceptEntityInput(npc.m_ihat2, "SetModelScale");
 		
 		SetEntProp(npc.Weapon, Prop_Send, "m_nSkin", 1);
-		PF_StartPathing(npc.index);
+		NPC_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		
 		return npc;
@@ -394,7 +394,7 @@ public void ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAllyNotFullHealth(npc.index, PrimaryThreatIndex))
 		{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -403,12 +403,12 @@ public void ClotThink(int iNPC)
 				{
 					if(flDistanceToTarget < 62500)
 					{
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;	
 					}
 					else
 					{
-						PF_StartPathing(npc.index);
+						NPC_StartPathing(npc.index);
 						npc.m_bPathing = false;		
 					}
 					if(!npc.m_bnew_target)
@@ -431,7 +431,7 @@ public void ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_ilaser))
 						RemoveEntity(npc.m_ilaser);
 						
-					PF_StartPathing(npc.index);
+					NPC_StartPathing(npc.index);
 					npc.m_bPathing = true;		
 					npc.m_bnew_target = false;					
 				}
@@ -460,8 +460,8 @@ public void ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(flDistanceToTarget > 90000) //300 units
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
-				PF_StartPathing(npc.index);
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
+				NPC_StartPathing(npc.index);
 				npc.m_bPathing = true;
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestAlly(npc.index);			
@@ -469,7 +469,7 @@ public void ClotThink(int iNPC)
 			}
 			else
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestAlly(npc.index);	
@@ -479,7 +479,7 @@ public void ClotThink(int iNPC)
 		else
 		{
 			npc.m_bGetClosestTargetTimeAlly = false;
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestAlly(npc.index);	
@@ -525,9 +525,9 @@ public void ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 					
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				} else {
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				
 				//Target close enough to hit
@@ -589,13 +589,13 @@ public void ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StartPathing(npc.index);
+					NPC_StartPathing(npc.index);
 					npc.m_bPathing = true;
 				}
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
@@ -754,7 +754,7 @@ stock int GetClosestAlly(int entity)
 	int ClosestTarget = 0; 
 
 		int i = MaxClients + 1;
-		while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+		while ((i = FindEntityByClassname(i, "base_npc")) != -1)
 		{
 			if (GetEntProp(entity, Prop_Send, "m_iTeamNum")==GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
 			{
@@ -788,7 +788,7 @@ stock bool IsValidAllyNotFullHealth(int index, int ally)
 	{
 		static char strClassname[16];
 		GetEntityClassname(ally, strClassname, sizeof(strClassname));
-		if(StrEqual(strClassname, "base_boss"))
+		if(StrEqual(strClassname, "base_npc"))
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
 			{

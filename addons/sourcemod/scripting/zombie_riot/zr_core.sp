@@ -653,7 +653,7 @@ public Action OnReloadCommand(int args)
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
 		{
-			if(!StrContains(path, "base_boss"))
+			if(!StrContains(path, "base_npc"))
 				RemoveEntity(i);
 		}
 	}
@@ -1588,7 +1588,7 @@ void ReviveAll(bool raidspawned = false)
 	}
 	
 	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
 	{
 		if(i_NpcInternalId[entity] == CITIZEN)
 		{

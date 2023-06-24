@@ -258,7 +258,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	if(npc.m_flStandStill > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;		
 	}
 	else
@@ -309,7 +309,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		if(IsValidEntity(EntRefToEntIndex(i_IWantToThrowHim[npc.index])))
 		{
 			I_Wanna_Throw_ally = true;
-			PF_SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
+			NPC_SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
 			vecTarget = WorldSpaceCenter(EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
 			flDistanceToTarget  = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
@@ -327,11 +327,11 @@ public void L4D2_Tank_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 		//		PrintToChatAll("cutoff");
-				PF_SetGoalVector(npc.index, vPredictedPos);	
+				NPC_SetGoalVector(npc.index, vPredictedPos);	
 			}
 			else
 			{
-				PF_SetGoalEntity(npc.index, closest);
+				NPC_SetGoalEntity(npc.index, closest);
 			}
 		}
 		if(b_ThrowPlayerImmenent[npc.index])
@@ -598,7 +598,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -793,7 +793,7 @@ public Action contact_throw_tank(int client)
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			{
 				GetEntityClassname(entity, classname, sizeof(classname));
-				if (!StrContains(classname, "base_boss", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+				if (!StrContains(classname, "base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(125.0, 2.0))
@@ -860,7 +860,7 @@ public Action contact_throw_tank_entity(int client)
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			{
 				GetEntityClassname(entity, classname, sizeof(classname));
-				if (!StrContains(classname, "base_boss", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+				if (!StrContains(classname, "base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(125.0, 2.0))

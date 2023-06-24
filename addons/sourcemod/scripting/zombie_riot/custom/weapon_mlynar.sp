@@ -19,6 +19,7 @@ static bool b_MlynarResetStats[MAXTF2PLAYERS];
 int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXTF2PLAYERS];
+static float f_MlynarReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int i_RefWeaponDelete[MAXTF2PLAYERS];
 
@@ -35,6 +36,7 @@ void Mlynar_Map_Precache() //Anything that needs to be precaced like sounds or s
 		f_MlynarDmgMultiHurt[i] = 1.0;
 		f_MlynarDmgAfterAbility[i] = 1.0;
 	}
+	Zero2(f_MlynarReflectCooldown);
 	Zero(f_MlynarAbilityActiveTime);
 	Zero(b_MlynarResetStats);
 	Zero(f_AniSoundSpam);
@@ -49,6 +51,11 @@ void Reset_stats_Mlynar_Global()
 void Mlynar_EntityCreated(int entity) 
 {
 	i_MlynarMaxDamageGetFromSameEnemy[entity] = 0;
+	for(int i=1; i<=MaxClients; i++)
+	{
+		f_MlynarReflectCooldown[i][entity] = 0.0;
+	}
+
 }
 void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 {
@@ -128,9 +135,9 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		float Speed = 1500.0;
 		int PreviousProjectile;
 		EmitSoundToAll("misc/ks_tier_04.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
-		DataPack pack2 = new DataPack();
-		pack2.WriteCell(GetClientUserId(client));
-		RequestFrames(CancelSoundEarlyMlynar, 40, pack2);
+		DataPack pack3 = new DataPack();
+		pack3.WriteCell(GetClientUserId(client));
+		RequestFrames(CancelSoundEarlyMlynar, 40, pack3);
 
 		for(int repeat; repeat <= MaxRepeats; repeat ++)
 		{
@@ -465,34 +472,38 @@ public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker,
 {
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
-
-	float damageModif = 15.0;
-		
-	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		damageModif *= TF2Attrib_GetValue(address);
-
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damageModif *= TF2Attrib_GetValue(address);	
-			
-	address = TF2Attrib_GetByDefIndex(weapon, 476);
-	if(address != Address_Null)
-		damageModif *= TF2Attrib_GetValue(address);	
-
-	damageModif *= f_MlynarDmgMultiPassive[victim];
-	damageModif *= f_MlynarDmgMultiAgressiveClose[victim];
-	damageModif *= f_MlynarDmgMultiHurt[victim];
-
-	if(f_AniSoundSpam[victim] < GetGameTime())
+	if(f_MlynarReflectCooldown[victim][attacker] < GetGameTime())
 	{
-		f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-		ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
-	}
-	static float Entity_Position[3];
-	Entity_Position = WorldSpaceCenter(attacker);
+		f_MlynarReflectCooldown[victim][attacker] = GetGameTime() + 0.35;
 
-	SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, _, Entity_Position);
+		float damageModif = 15.0;
+			
+		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
+		if(address != Address_Null)
+			damageModif *= TF2Attrib_GetValue(address);
+
+		address = TF2Attrib_GetByDefIndex(weapon, 2);
+		if(address != Address_Null)
+			damageModif *= TF2Attrib_GetValue(address);	
+				
+		address = TF2Attrib_GetByDefIndex(weapon, 476);
+		if(address != Address_Null)
+			damageModif *= TF2Attrib_GetValue(address);	
+
+		damageModif *= f_MlynarDmgMultiPassive[victim];
+		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];
+		damageModif *= f_MlynarDmgMultiHurt[victim];
+
+		if(f_AniSoundSpam[victim] < GetGameTime())
+		{
+			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+		}
+		static float Entity_Position[3];
+		Entity_Position = WorldSpaceCenter(attacker);
+
+		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, _, Entity_Position);
+	}
 		
 	return damage;
 }

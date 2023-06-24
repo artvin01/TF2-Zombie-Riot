@@ -376,7 +376,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.m_iMiniLivesLost++;
 		
 		int entity = -1;
-		while((entity=FindEntityByClassname(entity, "base_boss")) != -1)
+		while((entity=FindEntityByClassname(entity, "base_npc")) != -1)
 		{
 			if(entity != npc.index && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[entity] && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
@@ -409,7 +409,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		
 		npc.m_flNextThinkTime = gameTime + 2.0;
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		
 		//if(npc.m_bElite)
@@ -478,7 +478,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		PF_SetGoalEntity(npc.index, npc.m_iTarget);
+		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
 		
 		if(npc.m_flNextMeleeAttack < gameTime)
@@ -516,7 +516,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
 }

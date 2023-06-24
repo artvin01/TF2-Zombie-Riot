@@ -455,7 +455,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 			npc.m_iTargetRally = 0;
 
 			int entity = MaxClients + 1;
-			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+			while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
 			{
 				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 				{
@@ -500,7 +500,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(flDistanceToTarget < canRetreat)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();
 				pathed = true;
@@ -517,14 +517,14 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				//Predict their pos.
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
-				PF_SetGoalVector(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();
 				pathed = true;
 			}
 			else
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTargetRally);
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetRally);
 
 				npc.StartPathing();
 				pathed = true;
@@ -565,30 +565,23 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 						vecTarget[1] += GetRandomFloat(-300.0, 300.0);
 					}
 					vecTarget[2] += 50.0;
-					if(PF_IsPathToVectorPossible(iNPC, vecTarget))
-					{
-						Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-						TR_GetEndPosition(vecTarget, trace);
-						delete trace;
-
-						if(PF_IsPathToVectorPossible(iNPC, vecTarget))
-						{
-							vecTarget[2] += 18.0;
-							static float hullcheckmaxs[3];
-							static float hullcheckmins[3];
+					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					TR_GetEndPosition(vecTarget, trace);
+					delete trace;
+					vecTarget[2] += 18.0;
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
 							
-							hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-							hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
-							if(!IsSpaceOccupiedRTSBuilding(vecTarget, hullcheckmins, hullcheckmaxs, npc.index))
+					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+					hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+					if(!IsSpaceOccupiedRTSBuilding(vecTarget, hullcheckmins, hullcheckmaxs, npc.index))
+					{
+						if(!IsPointHazard(vecTarget))
+						{
+							if(GetVectorDistance(originalVec, vecTarget, true) <= (npc.m_iTargetAlly <= MaxClients ? (100.0 * 100.0) : (350.0 * 350.0)) && GetVectorDistance(originalVec, vecTarget, true) > (30.0 * 30.0))
 							{
-								if(!IsPointHazard(vecTarget))
-								{
-									if(GetVectorDistance(originalVec, vecTarget, true) <= (npc.m_iTargetAlly <= MaxClients ? (100.0 * 100.0) : (350.0 * 350.0)) && GetVectorDistance(originalVec, vecTarget, true) > (30.0 * 30.0))
-									{
-										npc.m_flComeToMe = gameTime + 10.0;
-										f3_SpawnPosition[npc.index] = vecTarget;
-									}
-								}
+								npc.m_flComeToMe = gameTime + 10.0;
+								f3_SpawnPosition[npc.index] = vecTarget;
 							}
 						}
 					}
@@ -599,7 +592,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			{
 				if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
 				{
-					PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+					NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 					npc.StartPathing();
 					pathed = true;
 				}
@@ -630,7 +623,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(idleAnim[0])
 				npc.SetActivity(idleAnim);
 			
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 	}

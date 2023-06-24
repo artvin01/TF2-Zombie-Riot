@@ -301,7 +301,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable3);
 		
 		// Play funny animation intro
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
@@ -401,11 +401,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius()) 
 		{
 			vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
 		int tier = (Waves_GetRound() / 15);

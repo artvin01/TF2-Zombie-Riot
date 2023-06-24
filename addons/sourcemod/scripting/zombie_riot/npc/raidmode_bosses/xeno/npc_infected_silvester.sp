@@ -482,7 +482,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
@@ -499,7 +499,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
 		{
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			PF_StartPathing(npc.index);
+			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;
 			npc.m_flSpeed = 330.0;
 			npc.m_iInKame = 0;
@@ -553,7 +553,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
 			npc.FaceTowards(vecTarget, 100.0);
 		}
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
 	}
@@ -561,7 +561,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		PF_StartPathing(npc.index);
+		NPC_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
@@ -569,7 +569,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	/*
 	if(npc.m_flNextRangedAttackHappening && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		PF_StartPathing(npc.index);
+		NPC_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
@@ -604,7 +604,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	if(npc.m_flReloadDelay && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		PF_StartPathing(npc.index);
+		NPC_StartPathing(npc.index);
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
@@ -846,11 +846,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_TargetToWalkTo[npc.index]);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
+			NPC_SetGoalEntity(npc.index, i_TargetToWalkTo[npc.index]);
 		}
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -965,7 +965,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
 			{
 		//		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
-		//		PF_StopPathing(npc.index);
+		//		NPC_StopPathing(npc.index);
 		//		npc.m_bPathing = false;
 		//		npc.m_flSpeed = 0.0;
 				npc.FaceTowards(vecTarget, 99999.9);
@@ -1009,7 +1009,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
 				npc.m_flReloadDelay = GetGameTime(npc.index) + 3.0;
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
 				float pos[3];
@@ -1354,7 +1354,7 @@ public Action contact_throw_Silvester_entity(int client)
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			{
 				GetEntityClassname(entity, classname, sizeof(classname));
-				if (!StrContains(classname, "base_boss", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+				if (!StrContains(classname, "base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(125.0, 2.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))

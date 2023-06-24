@@ -181,7 +181,7 @@ methodmap NearlSwordAbility < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.25;
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 
 		NearlSword_HealthHud(npc);
 		b_DoNotUnStuck[npc.index] = true;

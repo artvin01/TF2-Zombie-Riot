@@ -10,9 +10,8 @@
 #include <tf_econ_data>
 #include <tf2attributes>
 #include <lambda>
-#include <PathFollower>
-#include <PathFollower_Nav>
 #include <morecolors>
+#include <cbasenpc>
 #include <tf2utils>
 #if !defined UseDownloadTable
 #include <filenetwork>
@@ -25,7 +24,7 @@
 #define CHAR_EMPTY	"░"
 
 #define NPC_HARD_LIMIT 42 
-#define ZR_MAX_NPCS (NPC_HARD_LIMIT*2)
+#define ZR_MAX_NPCS (NPC_HARD_LIMIT*4)
 #define ZR_MAX_NPCS_ALLIED 42 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
@@ -150,25 +149,6 @@ native any FuncToVal(Function bruh);
 
 enum
 {
-	EF_BONEMERGE			= 0x001,	// Performs bone merge on client side
-	EF_BRIGHTLIGHT 			= 0x002,	// DLIGHT centered at entity origin
-	EF_DIMLIGHT 			= 0x004,	// player flashlight
-	EF_NOINTERP				= 0x008,	// don't interpolate the next frame
-	EF_NOSHADOW				= 0x010,	// Don't cast no shadow
-	EF_NODRAW				= 0x020,	// don't draw entity
-	EF_NORECEIVESHADOW		= 0x040,	// Don't receive no shadow
-	EF_BONEMERGE_FASTCULL	= 0x080,	// For use with EF_BONEMERGE. If this is set, then it places this ent's origin at its
-										// parent and uses the parent's bbox + the max extents of the aiment.
-										// Otherwise, it sets up the parent's bones every frame to figure out where to place
-										// the aiment, which is inefficient because it'll setup the parent's bones even if
-										// the parent is not in the PVS.
-	EF_ITEM_BLINK			= 0x100,	// blink an item so that the user notices it.
-	EF_PARENT_ANIMATES		= 0x200,	// always assume that the parent entity is animating
-	EF_MAX_BITS = 10
-};
-
-enum
-{
 	Ammo_Metal = 3,		// 3	Metal
 	Ammo_Jar = 6,		// 6	Jar
 	Ammo_Pistol,		// 7	Pistol
@@ -213,6 +193,8 @@ Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 //MUST BE HERE!
+StringMap HookListMap;
+StringMap HookIdMap;
 
 bool DoingLagCompensation;
 
@@ -596,16 +578,9 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool g_GottenAddressesForLagComp;
 
-StringMap HookIdMap;
-StringMap HookListMap;
-
 //Handle g_hSDKIsClimbingOrJumping;
 //SDKCalls
 Handle g_hUpdateCollisionBox;
-Handle g_hMyNextBotPointer;
-Handle g_hGetLocomotionInterface;
-Handle g_hGetIntentionInterface;
-Handle g_hGetBodyInterface;
 //Handle g_hGetVisionInterface;
 //Handle g_hGetPrimaryKnownThreat;
 //Handle g_hAddKnownEntity;
@@ -613,82 +588,26 @@ Handle g_hGetBodyInterface;
 //Handle g_hGetKnown;
 //Handle g_hUpdatePosition;
 //Handle g_hUpdateVisibilityStatus;
-Handle g_hRun;
-Handle g_hApproach;
-Handle g_hFaceTowards;
-Handle g_hGetVelocity;
-Handle g_hSetVelocity;
-Handle g_hStudioFrameAdvance;
-Handle g_hJump;
-Handle g_hSDKIsOnGround;
 //DynamicHook g_hAlwaysTransmit;
 // Handle g_hJumpAcrossGap;
-Handle g_hDispatchAnimEvents;
-Handle g_hGetMaxAcceleration;
-Handle g_hGetGroundSpeed;
 Handle g_hGetVectors;
-Handle g_hGetGroundMotionVector;
-Handle g_hLookupPoseParameter;
-Handle g_hSetPoseParameter;
-Handle g_hGetPoseParameter;
 Handle g_hLookupActivity;
 Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
-Handle g_hAddGesture;
-Handle g_hAddGestureSequence;
-Handle g_hRemoveGesture;
-Handle g_hRestartGesture;
-Handle g_hRestartSequence;
-Handle g_hIsPlayingGesture;
-Handle g_hFindBodygroupByName;
-Handle g_hSetBodyGroup;
-Handle g_hSelectWeightedSequence;
 Handle g_hResetSequenceInfo;
 #if defined ZR
 Handle g_hLookupBone;
 Handle g_hGetBonePosition;
 #endif
 //Death
-Handle g_hNextBotCombatCharacter_Event_Killed;
-Handle g_hCBaseCombatCharacter_Event_Killed;
 
 //PluginBot SDKCalls
-Handle g_hGetEntity;
-Handle g_hGetBot;
-
-//DHooks
-//Handle g_hGetCurrencyValue;
-Handle g_hEvent_Killed;
-Handle g_hEvent_Ragdoll;
-Handle g_hHandleAnimEvent;
-Handle g_hGetFrictionSideways;
-Handle g_hGetStepHeight;
-Handle g_hGetGravity;
-Handle g_hGetRunSpeed;
-Handle g_hGetGroundNormal;
-Handle g_hShouldCollideWithAlly;
-Handle g_hShouldCollideWithAllyInvince;
-Handle g_hShouldCollideWithAllyEnemy;
-Handle g_hShouldCollideWithAllyEnemyIngoreBuilding;
-Handle g_hShouldCollideWithAllyIngoreBuilding;
 Handle g_hGetSolidMask;
 Handle g_hGetSolidMaskAlly;
-Handle g_hStartActivity;
-Handle g_hGetActivity;
-Handle g_hIsActivity;
-Handle g_hGetHullWidth;
-Handle g_hGetHullHeight;
-Handle g_hGetStandHullHeight;
-Handle g_hGetHullWidthGiant;
-Handle g_hGetHullHeightGiant;
-Handle g_hGetStandHullHeightGiant;
-
-//NavAreas
-Address TheNavAreas;
-Address navarea_count;
-
+//DHooks
+//Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
 DynamicHook g_DHookMedigunPrimary; 
 
@@ -740,16 +659,13 @@ enum
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_209.mdl"
 //#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
 
-#define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
+#define DEFAULT_UPDATE_DELAY_FLOAT -0.02 //Make it 0 for now
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
 
 
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
-//
-#define EF_BONEMERGE		(1 << 0)
-#define EF_PARENT_ANIMATES	(1 << 9)
 
 #define	SHAKE_START					0			// Starts the screen shake for all players within the radius.
 #define	SHAKE_STOP					1			// Stops the screen shake for all players within the radius.
@@ -1275,7 +1191,7 @@ public void OnPluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(!StrContains(buffer, "base_boss"))
+			if(!StrContains(buffer, "base_npc"))
 				RemoveEntity(i);
 		}
 	}
@@ -2367,7 +2283,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnWrenchCreated(entity);
 		}
-		else if(!StrContains(classname, "base_boss"))
+		else if(!StrContains(classname, "base_npc"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
@@ -2656,7 +2572,7 @@ public void Check_For_Team_Npc(int entity)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
+			SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2702,7 +2618,7 @@ public void Check_For_Team_Npc(int entity)
 			
 			else
 			{
-				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+				SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);	
 			}
 			
 			
@@ -2742,7 +2658,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);
+			SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2788,7 +2704,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 			
 			else
 			{
-				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+				SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);	
 			}
 			
 			npcstats.bCantCollidie = true;
@@ -2875,7 +2791,6 @@ public void OnEntityDestroyed(int entity)
 #if defined ZR
 	OnEntityDestroyed_Build_On_Build(entity);
 #endif
-
 	NPC_Base_OnEntityDestroyed();
 }
 
