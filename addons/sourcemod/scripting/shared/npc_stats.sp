@@ -1742,7 +1742,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			this.m_bPathing = true;
 
-			this.GetPathFollower().SetMinLookAheadDistance(50.0);
+			this.GetPathFollower().SetMinLookAheadDistance(0.0/*50.0*/);
 		}
 	}
 	public void StopPathing()
