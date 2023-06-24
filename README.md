@@ -36,11 +36,6 @@ IF you wish to see the plugin in action/or just are interrested in playing this 
 Main Server:
 (American)
 74.91.119.154:27017 ( steam://connect/74.91.119.154:27017 )
-
-Sub Servers that also host the gamemode:
-
-(Chinese)
-1.12.64.247:27015 ( steam://connect/1.12.64.247:27015 ) 
  
 ## cvar's
 
