@@ -1762,6 +1762,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void StopPathing()
 	{
+		f_DelayComputingOfPath[this.index] = 0.0; //find new target instantly.
 		this.GetPathFollower().Invalidate();
 		this.GetLocomotion().Stop();
 
