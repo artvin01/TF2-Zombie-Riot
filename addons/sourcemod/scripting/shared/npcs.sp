@@ -1985,7 +1985,32 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") <= 0)
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+
+	Event event = CreateEvent("npc_hurt");
+	if(event) 
+	{
+		event.SetInt("entindex", victim);
+		event.SetInt("health", health);
+		event.SetInt("damageamount", RoundToFloor(damage));
+		event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+
+		if(attacker > 0 && attacker <= MaxClients)
+		{
+			event.SetInt("attacker_player", GetClientUserId(attacker));
+			event.SetInt("weaponid", 0);
+		}
+		else 
+		{
+			event.SetInt("attacker_player", 0);
+			event.SetInt("weaponid", 0);
+		}
+
+		event.Fire();
+	}
+
+	if(health <= 0)
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
 
