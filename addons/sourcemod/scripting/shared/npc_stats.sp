@@ -7805,15 +7805,15 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 #if defined ZR
 	if(Saga_EnemyDoomed(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "#");
+		Format(HealthText, sizeof(HealthText), "%s#",HealthText);
 	}
 	if(b_HasBombImplanted[npc.index])
 	{
-		Format(HealthText, sizeof(HealthText), "!");
+		Format(HealthText, sizeof(HealthText), "%s!",HealthText);
 	}
 	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "?");
+		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
 	}
 #endif
 
