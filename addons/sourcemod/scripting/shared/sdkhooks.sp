@@ -1331,6 +1331,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(f_ImmuneToFalldamage[victim] > GameTime)
 		{
 			damage = 0.0;
+		}
 		return Plugin_Changed;
 	}
 
