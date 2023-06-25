@@ -91,7 +91,8 @@ enum
 	WEAPON_SAGA = 19,
 	WEAPON_BEAM_PAP = 20,
 	WEAPON_MLYNAR = 21,
-	WEAPON_GLADIIA = 22
+	WEAPON_GLADIIA = 22,
+	WEAPON_SPIKELAYER = 23,
 }
 
 ArrayList SpawnerList;
@@ -616,6 +617,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Survival_Singular(client);
 	Reset_stats_LappLand_Singular(client);
 	Reset_stats_Mlynar_Singular(client);
+	Reset_stats_SpikeLayer_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -627,6 +629,24 @@ void ZR_ClientDisconnect(int client)
 	i_ExtraPlayerPoints[client] = 0;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
+	
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity)) //delete all buildings that arent mounted
+		{
+			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
+			{
+				static char classname[64];
+				GetEntityClassname(entity, classname, sizeof(classname));
+				if(!StrContains(classname, "obj_sentrygun"))
+				{
+					//sometimes this building does not vanish upon being used, we must destroy it manually.
+					RemoveEntity(entity);
+				}
+			}
+		}
+	}
 }
 
 public any Native_GetWaveCounts(Handle plugin, int numParams)

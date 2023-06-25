@@ -58,9 +58,13 @@ public bool Spike_ShouldCollide(int client, int collisiongroup, int contentsmask
 
 static int Spike_Health[MAXENTITIES]={0, ...};
 static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
+static int Spikes_AliveCap[MAXPLAYERS+1]={30, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
+Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
+
 
 bool IsEntitySpike(int entity)
 {
@@ -72,9 +76,19 @@ void SetEntitySpike(int entity, bool set)
 	Is_Spike[entity] = set;
 }
 
+void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
+{
+	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerSpikeLayerManagement[client]);
+	}	
+	h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+}
+
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
 {
-	if(Spikes_AliveGlobal > MAXSPIKESALLOWED)
+	Spikes_AliveCap[client] = 30;
+	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
 	{
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -167,7 +181,8 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 
 public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classname, bool &result)
 {
-	if(Spikes_AliveGlobal > MAXSPIKESALLOWED)
+	Spikes_AliveCap[client] = 40;
+	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
 	{
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -413,6 +428,90 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 						}
 						RemoveEntity(entity);
 					}
+				}
+			}
+		}
+	}
+}
+
+public void Enable_SpikeLayer(int client, int weapon) 
+{
+	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER) 
+		{
+			//Is the weapon it again?
+			//Yes?
+			KillTimer(h_TimerSpikeLayerManagement[client]);
+			h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+			DataPack pack;
+			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)
+	{
+		DataPack pack;
+		h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+public Action Timer_Management_SpikeLayer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	if(IsValidClient(client))
+	{
+		if (IsClientInGame(client))
+		{
+			if (IsPlayerAlive(client))
+			{
+				SpikeLayer_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
+			}
+			else
+				Kill_Timer_SpikeLayer(client);
+		}
+		else
+			Kill_Timer_SpikeLayer(client);
+	}
+	else
+		Kill_Timer_SpikeLayer(client);
+		
+	return Plugin_Continue;
+}
+
+public void Kill_Timer_SpikeLayer(int client)
+{
+	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerSpikeLayerManagement[client]);
+		h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+	}
+}
+
+
+public void SpikeLayer_Cooldown_Logic(int client, int weapon)
+{
+	if (!IsValidMulti(client))
+		return;
+		
+	if(IsValidEntity(weapon))
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)
+		{
+			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+			{
+				if(f_SpikeLayerHudDelay[client] < GetGameTime())
+				{
+					PrintHintText(client,"Spikes Layed [%i/%i]\nSpike Global Limit[%i/%i]",Spikes_Alive[client],Spikes_AliveCap[client],Spikes_AliveGlobal,MAXSPIKESALLOWED);	
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					f_SpikeLayerHudDelay[client] = GetGameTime() + 0.5;
 				}
 			}
 		}

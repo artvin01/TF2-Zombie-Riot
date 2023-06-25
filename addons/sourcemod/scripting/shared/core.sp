@@ -1392,6 +1392,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	{
 		dieingstate[targets[target]] = anim_index;
 	}
+	return Plugin_Handled;
 }
 
 public Action Command_ToggleCheats(int client, int args)

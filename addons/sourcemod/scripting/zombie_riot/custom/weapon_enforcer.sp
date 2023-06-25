@@ -196,6 +196,7 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 			i_SemiAutoWeapon_AmmoCount[weapon] -= ammo;
 
 			Rogue_OnAbilityUse(client, weapon);
+			ShowClientManualAmmoCount(client, weapon);
 		}
 		else
 		{

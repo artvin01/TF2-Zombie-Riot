@@ -500,12 +500,26 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(medigun_mode == 0)
-					PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
-				else if(medigun_mode == 1)
-					PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
-				else if(medigun_mode == 2)
-					PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
+				if(IsValidEntity(healTarget) && healTarget>MaxClients)
+				{
+					int healthbuilding = GetEntProp(healTarget, Prop_Data, "m_iHealth");
+					if(medigun_mode == 0)
+						PrintHintText(owner,"[Heal Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
+					else if(medigun_mode == 1)
+						PrintHintText(owner,"[Damage Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
+					else if(medigun_mode == 2)
+						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
+				}
+				else
+				{
+					if(medigun_mode == 0)
+						PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
+					else if(medigun_mode == 1)
+						PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
+					else if(medigun_mode == 2)
+						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
+					
+				}
 						
 				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
