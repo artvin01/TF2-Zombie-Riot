@@ -130,12 +130,6 @@
 				"linux"		"@_ZN9CTFPlayer5TauntE8taunts_ti"
 				"windows"	"\x55\x8B\xEC\x81\xEC\xD4\x00\x00\x00\x53\x56\x57\x8B\xF9\xE8"
 			}
-			"HandleRageGain"
-			{
-				"library"	"server"
-				"linux"		"@_Z14HandleRageGainP9CTFPlayerjff"
-				"windows"	"\x55\x8B\xEC\x56\x8B\x75\x08\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x53"
-			}
 			"CBaseEntity::SetLocalOrigin" // String aBadSetlocalori,   Bad SetLocalOrigin(%f,%f,%f) on %s\n
 			{
 				"library"	"server"
@@ -371,8 +365,7 @@
 			{
 				"windows"	"\x55\x8B\xEC\x8B\x01\x8D\x55\xD0\x83\xEC\x30\x8B\x80\x5C\x03\x00\x00\x53\x52\xFF\x75\x08\xFF\xD0\xFF\x75\x10"
 				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
-			}
-
+			}	
 		}
 		"Functions"
 		{
@@ -654,32 +647,6 @@
 					"int"
 					{
 						"type"	"int"
-					}
-				}
-			}
-			"HandleRageGain"
-			{
-				"signature"	"HandleRageGain"
-				"callconv"	"cdecl"
-				"return"	"void"
-				"this"		"ignore"
-				"arguments"
-				{
-					"pPlayer"
-					{
-						"type"	"cbaseentity"
-					}
-					"iRequiredBuffFlags"
-					{
-						"type"	"int"
-					}
-					"flDamage"
-					{
-						"type"	"float"
-					}
-					"fInverseRageGainScale"
-					{
-						"type"	"float"
 					}
 				}
 			}

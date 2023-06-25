@@ -299,11 +299,19 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 	{
 		damage *= 0.15;
+
+		damagePosition[2] += 50.0;
+		npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+		damagePosition[2] -= 50.0;
 	}
 	else
 	{
 		damage *= 0.15;
 		npc.PlayLeadSound();
+
+		damagePosition[2] += 50.0;
+		npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+		damagePosition[2] -= 50.0;
 	}
 	return Plugin_Changed;
 }

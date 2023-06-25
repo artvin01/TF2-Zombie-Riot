@@ -245,7 +245,8 @@ public void MedivalEliteSkirmisher_ClotThink(int iNPC)
 			if(npc.m_flJumpStartTime < GetGameTime(npc.index))
 			{
 				npc.m_flSpeed = 170.0;
-				AcceptEntityInput(npc.m_iWearable1, "Enable");
+				if(IsValidEntity(npc.m_iWearable1))
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
 			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
@@ -350,7 +351,8 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			if(IsValidEntity(npc.m_iWearable1))
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				

@@ -24,6 +24,10 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+float f3_AvoidOverrideMin[MAXENTITIES][3];
+float f3_AvoidOverrideMax[MAXENTITIES][3];
+float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
+float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
 #endif
 
 #if defined RPG
@@ -264,10 +268,10 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		baseNPC.flStepSize = 17.0;
 		baseNPC.flGravity = 800.0; //SEE Npc Base Think Function to change it.
-		baseNPC.flAcceleration = 3000.0;
+		baseNPC.flAcceleration = 6000.0;
 		baseNPC.flJumpHeight = 250.0;
 		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
-		baseNPC.flFrictionSideways = 3.0;
+		baseNPC.flFrictionSideways = 5.0;
 		baseNPC.flMaxYawRate = 225.0;
 		baseNPC.flDeathDropHeight = 9999.9;
 
@@ -382,6 +386,21 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		//Fix collisions
+		static float m_vecMaxs_Body[3];
+		static float m_vecMins_Body[3];
+
+		m_vecMaxs_Body[0] = m_vecMaxs[0] * 2.0;
+		m_vecMaxs_Body[1] = m_vecMaxs[1] * 2.0;
+		m_vecMaxs_Body[2] = m_vecMaxs[2] * 2.0;
+
+		m_vecMins_Body[0] = m_vecMins[0] * 2.0;
+		m_vecMins_Body[1] = m_vecMins[1] * 2.0;
+		m_vecMins_Body[2] = m_vecMins[2] * 2.0;
+
+		f3_AvoidOverrideMin[npc] = m_vecMins_Body;
+		f3_AvoidOverrideMax[npc] = m_vecMaxs_Body;
+		f3_AvoidOverrideMinNorm[npc] = m_vecMins;
+		f3_AvoidOverrideMaxNorm[npc] = m_vecMaxs;
 		baseNPC.SetBodyMaxs(m_vecMaxs);
 		baseNPC.SetBodyMins(m_vecMins);
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxs", m_vecMaxs);
@@ -417,10 +436,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-		}
-		else
-		{
-
 		}
 	
 		return view_as<CClotBody>(npc);
@@ -1569,6 +1584,24 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property int m_iFreezeWearable
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_FreezeWearable[this.index]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_FreezeWearable[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_FreezeWearable[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	
 	public int GetTeam()  { return GetEntProp(this.index, Prop_Send, "m_iTeamNum"); }
 	
@@ -1742,11 +1775,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			this.m_bPathing = true;
 
-			this.GetPathFollower().SetMinLookAheadDistance(250.0);
+			this.GetPathFollower().SetMinLookAheadDistance(100.0);
 		}
 	}
 	public void StopPathing()
 	{
+		f_DelayComputingOfPath[this.index] = 0.0; //find new target instantly.
 		this.GetPathFollower().Invalidate();
 		this.GetLocomotion().Stop();
 
@@ -1891,7 +1925,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	const char[] model,
 	const char[] anim = "",
 	int skin = 0,
-	float model_size = 1.0)
+	float model_size = 1.0,
+	float offset = 0.0)
 	{
 		int item = CreateEntityByName("prop_dynamic");
 		DispatchKeyValue(item, "model", model);
@@ -1912,7 +1947,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		float eyePitch[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
 
-		TeleportEntity(item, GetAbsOrigin(this.index), eyePitch, NULL_VECTOR);
+		float VecOrigin[3];
+		VecOrigin = GetAbsOrigin(this.index);
+		VecOrigin[2] += offset;
+
+		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		
 
 		if(!StrEqual(anim, ""))
 		{
@@ -2367,7 +2407,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
 		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
 
-		if(f_TimeFrozenStill[this.index])
+		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
 		{
 			// Was frozen before, reset layers
 			int layerCount = this.GetNumAnimOverlays();
@@ -2375,6 +2415,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
 			}
+
+			if(IsValidEntity(view_as<CClotBody>(this.index).m_iFreezeWearable))
+				RemoveEntity(view_as<CClotBody>(this.index).m_iFreezeWearable);
 
 			f_TimeFrozenStill[this.index] = 0.0;
 		}
@@ -2406,8 +2449,15 @@ methodmap CClotBody < CBaseCombatCharacter
 	//	if(!this.m_bAllowBackWalking)
 	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
 		
+		//increace the size of the avoid box by 2x
+		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
+		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);
+
 		if(this.m_bPathing)
-			this.GetPathFollower().Update(this.GetBot());		
+			this.GetPathFollower().Update(this.GetBot());	
+
+		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
+		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
 
 		/*
 		
@@ -2671,6 +2721,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iTextEntity3);
 		if(IsValidEntity(npc.m_iTextEntity4))
 			RemoveEntity(npc.m_iTextEntity4);
+		if(IsValidEntity(npc.m_iFreezeWearable))
+			RemoveEntity(npc.m_iFreezeWearable);
 		
 #if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
@@ -3381,7 +3433,16 @@ void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
 
 void NPC_SetGoalEntity(int entity, int target)
 {
-	view_as<CClotBody>(entity).SetGoalEntity(target);
+	if(i_IsABuilding[target])
+	{
+		//broken on targetting buildings...?
+		float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+		view_as<CClotBody>(entity).SetGoalVector(pos, false);
+	}
+	else
+	{
+		view_as<CClotBody>(entity).SetGoalEntity(target);
+	}
 }
 
 stock bool IsLengthGreaterThan(float vector[3], float length)
@@ -3944,7 +4005,7 @@ int GetClosestTarget_Enemy_Type[MAXENTITIES];
 
 stock int GetClosestTarget(int entity,
  bool IgnoreBuildings = false,
-  float fldistancelimit = 999999.9,
+  float fldistancelimit = 99999.9,
    bool camoDetection=false,
     bool onlyPlayers = false,
 	 int ingore_client = -1, 
@@ -4113,9 +4174,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		static float targetPos[MAXENTITIES][3];
 		for(int i; i < MAXENTITIES; i++)
 		{
-			if(!GetClosestTarget_EnemiesToCollect[i])
+			if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 				break;
-			
+
 			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
 			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
 
@@ -4127,7 +4188,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		}
 
 		float maxDistance = fldistancelimit > fldistancelimitAllyNPC ? fldistancelimit : fldistancelimitAllyNPC;
-		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, maxDistance, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
+		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, 99999.9, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
@@ -4135,21 +4196,36 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		int length = iterator.Count();
 		for(int i; i < length; i++)
 		{
-			area = iterator.Get(i);
+			CNavArea area2 = iterator.Get(i);
+			float dist = -5.5;
 			
 			// Find if any targets are standing on here
 			for(int a; a < MAXENTITIES; a++)
 			{
-				if(!GetClosestTarget_EnemiesToCollect[a])
+				if(GetClosestTarget_EnemiesToCollect[a] <= 0)
 					break;
 				
-				if(targetNav[a] == area)
+				if(targetNav[a] == area2)
 				{
 					// See if it's the closest nav
-					float dist = area.GetCostSoFar();
+					if(dist == -5.5)
+						dist = area2.GetCostSoFar();
+					
+					if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
+					{
+						if(dist > fldistancelimitAllyNPC)
+						{
+							continue;
+						}
+					}
+					else if(dist > fldistancelimit)
+					{
+						continue;
+					}
+
 					if(dist < closeDist)
 					{
-						closeNav = area;
+						closeNav = area2;
 						closeDist = dist;
 					}
 					break;
@@ -4162,12 +4238,12 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		if(closeNav != NULL_AREA)
 		{
 			closeDist = FAR_FUTURE;
-			float minDistance1 = fldistancelimit * fldistancelimit;
-			float minDistance2 = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
+			//float minDistance1 = fldistancelimit * fldistancelimit;
+			//float minDistance2 = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
 
 			for(int i; i < MAXENTITIES; i++)
 			{
-				if(!GetClosestTarget_EnemiesToCollect[i])
+				if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 					break;
 				
 				if(targetNav[i] != closeNav)	// In this close nav
@@ -4177,7 +4253,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				if(dist > closeDist)	// Closest entity
 					continue;
 
-				if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
+				/*if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
 				{
 					if(dist > minDistance2)
 						continue;
@@ -4185,7 +4261,10 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				else if(dist > minDistance1)
 				{
 					continue;
-				}
+				}*/
+				//todo: readd distance limit eventually.
+				// Note: Currently will target NPCs & Buildings with in the same nav as players
+				// TODO: Make a better distance check so it doesn't stall out if a solo NPC is in the closest nav
 
 				closeDist = dist;
 				ClosestTarget = GetClosestTarget_EnemiesToCollect[i];
@@ -4933,7 +5012,32 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			vAngles[0] = -45.0;
 		}
 		
-										
+		if(enemy <= MaxClients)	
+		{
+
+
+			if (!(GetEntityFlags(enemy) & FL_ONGROUND))
+			{
+				knockback *= 0.5; //Dont do as much knockback if they are in the air
+				if(attacker > MaxClients)	
+				{
+					vAngles[0] = -30.0;
+				}
+			}
+		}
+		else
+		{
+			CClotBody npc = view_as<CClotBody>(enemy);
+			if (!npc.IsOnGround())
+			{
+				knockback *= 0.5; //Dont do as much knockback if they are in the air
+				if(attacker > MaxClients)	
+				{
+					vAngles[0] = -30.0;
+				}
+			}
+		}	
+		//dont knock enemies up that high if they are already in the air.									
 										
 		GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 			
@@ -4947,7 +5051,8 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 #if defined ZR
 		knockback *= 0.75; //oops, too much knockback now!
 #endif
-		
+
+
 		ScaleVector(vDirection, knockback);
 		
 		if(!override && enemy <= MaxClients)
@@ -6688,6 +6793,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Wearable[entity][4] = -1;
 	i_Wearable[entity][5] = -1;
 	i_Wearable[entity][6] = -1;
+	i_FreezeWearable[entity] = -1;
 	f3_SpawnPosition[entity][0] = 0.0;
 	f3_SpawnPosition[entity][1] = 0.0;
 	f3_SpawnPosition[entity][2] = 0.0;
@@ -7444,10 +7550,14 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 		TimeSinceLastStunSubtract = 0.0;
 	}
 
+	view_as<CClotBody>(npc).Update();
+	
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
 	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun;
+
+	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
 
 	view_as<CClotBody>(npc).SetPlaybackRate(0.0);
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
@@ -7722,11 +7832,15 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 #if defined ZR
 	if(Saga_EnemyDoomed(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "#");
+		Format(HealthText, sizeof(HealthText), "%s#",HealthText);
 	}
 	if(b_HasBombImplanted[npc.index])
 	{
-		Format(HealthText, sizeof(HealthText), "!");
+		Format(HealthText, sizeof(HealthText), "%s!",HealthText);
+	}
+	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
 	}
 #endif
 

@@ -2276,6 +2276,7 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 	{
 		if(!ResetStore)
 		{
+			CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
 			bool OneSuperSale = true;
 			SortIntegers(indexes, amount, Sort_Random);
 			for(int i; i<GrigoriMaxSells && i<amount; i++) //amount of items to sell
@@ -2283,8 +2284,13 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 				StoreItems.GetArray(indexes[i], item);
 				if(OneSuperSale)
 				{
+					CPrintToChatAll("{green}%s [$$]{default}",item.Name);
 					item.NPCSeller_First = true;
 					OneSuperSale = false;
+				}
+				else
+				{
+					CPrintToChatAll("{palegreen}%s [$]{default}",item.Name);
 				}
 				item.NPCSeller = true;
 				StoreItems.SetArray(indexes[i], item);
@@ -5196,6 +5202,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
 		Enable_Mlynar(client, entity);
+		Enable_SpikeLayer(client, entity);
 #endif
 
 #if defined RPG

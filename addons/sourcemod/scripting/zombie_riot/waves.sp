@@ -1023,6 +1023,8 @@ void Waves_Progress()
 			{
 				GrigoriMaxSells = round.GrigoriMaxSellsItems;
 			}
+
+			bool refreshNPCStore;
 			if(round.SpawnGrigori)
 			{
 				for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
@@ -1036,7 +1038,7 @@ void Waves_Progress()
 					}
 				}
 				Spawn_Cured_Grigori();
-				Store_RandomizeNPCStore(false);
+				refreshNPCStore = true;
 			}
 			
 			// Above is the round that just ended
@@ -1188,8 +1190,9 @@ void Waves_Progress()
 			}
 			if(round.Custom_Refresh_Npc_Store)
 			{
-				PrintToChatAll("%t", "Grigori Store Refresh");
-				Store_RandomizeNPCStore(false); // Refresh me !!!
+				//PrintToChatAll("%t", "Grigori Store Refresh");
+				//Store_RandomizeNPCStore(false); // Refresh me !!!
+				refreshNPCStore = true;
 			}
 			if(round.medival_difficulty != 0)
 			{
@@ -1252,7 +1255,7 @@ void Waves_Progress()
 			//MUSIC LOGIC
 			if(CurrentRound == length)
 			{
-				Store_RandomizeNPCStore(false);
+				refreshNPCStore = true;
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				ExcuteRelay("zr_victory");
@@ -1334,7 +1337,7 @@ void Waves_Progress()
 			{
 				Cooldown = GetGameTime() + round.Setup;
 				
-				Store_RandomizeNPCStore(false);
+				refreshNPCStore = true;
 				InSetup = true;
 				ExcuteRelay("zr_setuptime");
 				
@@ -1354,10 +1357,16 @@ void Waves_Progress()
 			}
 			else
 			{
+				if(refreshNPCStore)
+					Store_RandomizeNPCStore(false);
+				
 				Waves_Progress();
 				NPC_SpawnNext(false, panzer_spawn, panzer_sound);
 				return;
 			}
+
+			if(refreshNPCStore)
+				Store_RandomizeNPCStore(false);
 		}
 		
 		AdjustBotCount(CurrentWave + 2);

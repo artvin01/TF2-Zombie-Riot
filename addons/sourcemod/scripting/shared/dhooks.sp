@@ -52,6 +52,7 @@ void DHook_Setup()
 	
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
+//	DHook_CreateDetour(gamedata, "PathFollower::Avoid", PathFollowerAvoidPre, PathFollowerAvoidPost);
 	
 //	DHook_CreateDetour(gamedata, "CTFPlayer::DropAmmoPack", DHook_DropAmmoPackPre);
 //dont use, causes crashes.
@@ -77,7 +78,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-	DHook_CreateDetour(gamedata, "HandleRageGain", DHook_HandleRageGainPre, DHook_HandleRageGainPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
@@ -95,7 +95,6 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 //	DHook_CreateDetour(gamedata, "CTFPlayer::GiveDefaultItems", DHookGiveDefaultItems_Pre, DHookGiveDefaultItems_Post);
-//	DHook_CreateDetour(gamedata, "PathFollower::Avoid", _, PathFollowerAvoid);
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -1727,28 +1726,6 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	return MRES_Ignored;
 }
 
-public MRESReturn DHook_HandleRageGainPre(DHookParam param)
-{
-	if(!param.IsNull(1))
-		TF2_SetPlayerClass(param.Get(1), TFClass_Soldier, false, false);
-	
-	return MRES_Ignored;
-}
-
-public MRESReturn DHook_HandleRageGainPost(DHookParam param)
-{
-	if(!param.IsNull(1))
-	{
-		int client = param.Get(1);
-		#if defined NoSendProxyClass
-		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
-		#else
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
-		#endif
-	}
-	return MRES_Ignored;
-}
-
 // g_bWarnedAboutMaxplayersInMVM
 /*
 public MRESReturn PreClientUpdatePre(Handle hParams)
@@ -2002,38 +1979,12 @@ public MRESReturn FX_FireBullets_Post(DHookParam hParams)
 
     return MRES_Ignored;
 }
+
 /*
 ( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
 */
+
 /*
-public MRESReturn PathFollowerAvoid(DHookReturn Hreturn, DHookParam param)
-{
-	PrintToChatAll("PathFollowerAvoid");
-	
-	float goalPos[3];
-	DHookGetParamVector(param, 2, goalPos);
-	PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
-
-	int bot = DHookGetParam(param, 1);
-	int entity = view_as<int>(SDKCall(g_hGetEntity, bot));
-	if(entity > MaxClients)
-	{
-		float goalPos[3];
-		DHookGetParamVector(param, 2, goalPos);
-		PrintToChatAll("%f,%f,%f,", goalPos[0], goalPos[1], goalPos[2]);
-		
-		float forwardVec[3];
-		float leftVec[3];
-		DHookGetParamVector(param, 3, forwardVec);
-		DHookGetParamVector(param, 4, leftVec);
-		
-		DHookSetReturnVector(Hreturn, goalPos);
-		return MRES_Supercede;
-	}
-	
-	return MRES_Ignored;
-}
-
 public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
 {
 	PrintToChatAll("%f DHookGiveDefaultItems_Pre::%d", GetEngineTime(), CurrentClass[client]);

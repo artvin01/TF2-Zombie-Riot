@@ -152,10 +152,10 @@ void Building_MapStart()
 }
 
 //static int RebelTimerSpawnIn;
-static int Building_Repair_Health[MAXENTITIES]={0, ...};
+int Building_Repair_Health[MAXENTITIES]={0, ...};
 static int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
-static int Building_Max_Health[MAXENTITIES]={0, ...};
+int Building_Max_Health[MAXENTITIES]={0, ...};
 
 
 static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
@@ -3122,7 +3122,13 @@ public bool BuildingCustomCommand(int client)
 					{
 						Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-						StartHealingTimer(client, 0.1, 1.0, 30);
+						int HealAmmount = 1;
+						int HealTime = 30;
+						if(IsValidClient(client))
+						{
+							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(client, 8, true, 1.0, true));
+						}
+						StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
 					}
 					else
 					{

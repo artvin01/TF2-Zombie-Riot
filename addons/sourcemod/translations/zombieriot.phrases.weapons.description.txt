@@ -943,8 +943,7 @@
 	
 	"Cryo Staff Desc"
 	{
-		"en"	"M1 sprays an icy mist like a flamethrower, and will freeze enemies at a certain damage threshold. M2 triggers a small shockwave at your location\n which deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage."
-		"chi"   "M1像火焰喷射器一样喷射冰雾，并将敌人冻结在一定的伤害阈值。\nM2在你的位置触发一个小冲击波，对冰冻僵尸造成大量增加的伤害。并冻结敌人，如果造成足够的伤害。"
+		"en"	"Will freeze enemies with enough dmg.\nM2 triggers a shockwave at your location\nWhich deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage, if frozen, damage buff is 2x as effective."
 	}
 	"Cryo Staff Pap 1"
 	{

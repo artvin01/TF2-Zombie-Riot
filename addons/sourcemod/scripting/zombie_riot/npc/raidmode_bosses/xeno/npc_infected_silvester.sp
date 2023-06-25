@@ -551,7 +551,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		if(i_TargetToWalkTo[npc.index] != -1)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
-			npc.FaceTowards(vecTarget, 100.0);
+			npc.FaceTowards(vecTarget, 80.0);
 		}
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
