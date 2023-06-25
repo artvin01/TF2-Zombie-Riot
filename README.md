@@ -45,8 +45,8 @@ Main Server:
 "zr_noroundstart" = "0" ( def. "0" )
  - Makes it so waves refuse to start
  
-"zr_nospecial" = "1" ( def. "1" )
- - No Panzer will spawn or anything alike
+"zr_nospecial" = "0" ( def. "0" )
+ - No Panzer will spawn or anything alike, good incase you hate this stuff
  
 "zr_privateplugins" = "0" ( def. "0" )
  - Enable private plugins, set this to zero.
