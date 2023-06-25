@@ -650,12 +650,24 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		case Bloon_Black:
 		{
 			if(hot)
+			{
 				damage *= 0.15;
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
+			}
 		}
 		case Bloon_White:
 		{
 			if(cold)
+			{
 				damage *= 0.15;
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
+			}
 		}
 		case Bloon_Purple:
 		{
@@ -663,6 +675,10 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 			{
 				damage *= 0.1;
 				npc.PlayPurpleSound();
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_fire_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
 			}
 		}
 		case Bloon_Lead:
@@ -671,12 +687,22 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 			{
 				damage *= 0.15;
 				npc.PlayLeadSound();
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
 			}
 		}
 		case Bloon_Zebra:
 		{
 			if(hot || cold)
+			{
 				damage *= 0.15;
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
+			}
 		}
 		case Bloon_Ceramic:
 		{

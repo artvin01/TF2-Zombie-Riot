@@ -2276,7 +2276,7 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 	{
 		if(!ResetStore)
 		{
-			CPrintToChatAll("{green}Father Grigori{default}: My child, im offering new wares!");
+			CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
 			bool OneSuperSale = true;
 			SortIntegers(indexes, amount, Sort_Random);
 			for(int i; i<GrigoriMaxSells && i<amount; i++) //amount of items to sell
