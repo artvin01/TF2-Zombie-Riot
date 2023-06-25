@@ -1281,7 +1281,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.5;
 		}
 	}
-	
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
@@ -1300,7 +1299,41 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
+#endif
 	
+	if(damagetype & DMG_FALL)
+	{
+			
+#if defined RPG
+		damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
+#endif
+			
+#if defined ZR
+		Replicated_Damage *= 0.65; //Reduce falldmg by passive overall
+		damage *= 0.65;
+		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		{
+			Replicated_Damage *= 0.2;
+			damage *= 0.2;			
+		}
+		else if(i_SoftShoes[victim] == 1)
+#else
+		if(i_SoftShoes[victim] == 1)
+#endif
+		{
+				
+#if defined ZR
+			Replicated_Damage *= 0.65;
+#endif
+				
+			damage *= 0.65;
+		}
+		if(f_ImmuneToFalldamage[victim] > GameTime)
+		{
+			damage = 0.0;
+		return Plugin_Changed;
+	}
+
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	if(dieingstate[victim] > 0)
 	{
@@ -1320,7 +1353,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(victim == attacker)
 			return Plugin_Handled;
 	}
-#endif
 	
 	if(attacker <= MaxClients && attacker > 0)	
 		return Plugin_Handled;	
@@ -1478,40 +1510,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.85;
 		}
 #endif
-		
-		if(damagetype & DMG_FALL)
-		{
-			
-#if defined RPG
-			damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
-#endif
-			
-#if defined ZR
-			Replicated_Damage *= 0.65; //Reduce falldmg by passive overall
-			damage *= 0.65;
-			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-			{
-				Replicated_Damage *= 0.2;
-				damage *= 0.2;			
-			}
-			else if(i_SoftShoes[victim] == 1)
-#endif
-			
-			if(i_SoftShoes[victim] == 1)
-			{
-				
-#if defined ZR
-				Replicated_Damage *= 0.65;
-#endif
-				
-				damage *= 0.65;
-			}
-			if(f_ImmuneToFalldamage[victim] > GameTime)
-			{
-				damage = 0.0;
-			}
-		}
-		else
 		{
 			
 #if defined ZR

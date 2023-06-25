@@ -3433,7 +3433,16 @@ void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
 
 void NPC_SetGoalEntity(int entity, int target)
 {
-	view_as<CClotBody>(entity).SetGoalEntity(target);
+	if(i_IsABuilding[target])
+	{
+		//broken on targetting buildings...?
+		float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+		view_as<CClotBody>(entity).SetGoalVector(pos, false);
+	}
+	else
+	{
+		view_as<CClotBody>(entity).SetGoalEntity(target);
+	}
 }
 
 stock bool IsLengthGreaterThan(float vector[3], float length)
@@ -4167,7 +4176,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		{
 			if(GetClosestTarget_EnemiesToCollect[i] <= 0)
 				break;
-			
+
 			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
 			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
 
@@ -4187,7 +4196,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		int length = iterator.Count();
 		for(int i; i < length; i++)
 		{
-			area = iterator.Get(i);
+			CNavArea area2 = iterator.Get(i);
+			float dist = -5.5;
 			
 			// Find if any targets are standing on here
 			for(int a; a < MAXENTITIES; a++)
@@ -4195,13 +4205,27 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				if(GetClosestTarget_EnemiesToCollect[a] <= 0)
 					break;
 				
-				if(targetNav[a] == area)
+				if(targetNav[a] == area2)
 				{
 					// See if it's the closest nav
-					float dist = area.GetCostSoFar();
+					if(dist == -5.5)
+						dist = area2.GetCostSoFar();
+					
+					if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
+					{
+						if(dist > fldistancelimitAllyNPC)
+						{
+							continue;
+						}
+					}
+					else if(dist > fldistancelimit)
+					{
+						continue;
+					}
+
 					if(dist < closeDist)
 					{
-						closeNav = area;
+						closeNav = area2;
 						closeDist = dist;
 					}
 					break;
@@ -4214,8 +4238,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		if(closeNav != NULL_AREA)
 		{
 			closeDist = FAR_FUTURE;
-			float minDistance1 = fldistancelimit * fldistancelimit;
-			float minDistance2 = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
+			//float minDistance1 = fldistancelimit * fldistancelimit;
+			//float minDistance2 = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
 
 			for(int i; i < MAXENTITIES; i++)
 			{
@@ -4229,7 +4253,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				if(dist > closeDist)	// Closest entity
 					continue;
 
-				if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
+				/*if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
 				{
 					if(dist > minDistance2)
 						continue;
@@ -4237,7 +4261,10 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				else if(dist > minDistance1)
 				{
 					continue;
-				}
+				}*/
+				//todo: readd distance limit eventually.
+				// Note: Currently will target NPCs & Buildings with in the same nav as players
+				// TODO: Make a better distance check so it doesn't stall out if a solo NPC is in the closest nav
 
 				closeDist = dist;
 				ClosestTarget = GetClosestTarget_EnemiesToCollect[i];
