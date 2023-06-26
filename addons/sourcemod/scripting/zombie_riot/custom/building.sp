@@ -95,6 +95,7 @@ static int Village_Flags[MAXTF2PLAYERS];
 static bool Village_ForceUpdate[MAXTF2PLAYERS];
 static ArrayList Village_Effects;
 static int Village_TierExists[3];
+static float f_VillageRingVectorCooldown[MAXENTITIES];
 
 //static int gLaser1;
 
@@ -149,6 +150,7 @@ void Building_MapStart()
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
+	Zero(f_VillageRingVectorCooldown);
 }
 
 //static int RebelTimerSpawnIn;
@@ -4840,7 +4842,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	else
 	{
 		GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos);
-		pos[2] += 10.0;
+		pos[2] += 15.0;
 	}
 
 	float range = 600.0;
@@ -4860,7 +4862,11 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(mounted)
 		range *= 0.55;
 	
-	spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 3.0, 6.0, 0.1, 1);
+	if(f_VillageRingVectorCooldown[i_HasSentryGunAlive[client]] < GetGameTime())
+	{
+		f_VillageRingVectorCooldown[i_HasSentryGunAlive[client]] = GetGameTime() + 3.0;
+		spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 3.0, 6.0, 0.1, 1);
+	}
 	
 	menu.Pagination = 0;
 	menu.ExitButton = true;
