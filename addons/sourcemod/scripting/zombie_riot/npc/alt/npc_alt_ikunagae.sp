@@ -1196,7 +1196,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	SDKHook(client, SDKHook_Think, Ikunagae_TBB_Tick);
 	
 }
-public Action Ikunagae_TBB_Timer(Handle timer, int client)
+static Action Ikunagae_TBB_Timer(Handle timer, int client)
 {
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
@@ -1212,12 +1212,12 @@ public Action Ikunagae_TBB_Timer(Handle timer, int client)
 	return Plugin_Continue;
 }
 
-public bool Ikunagae_BEAM_TraceWallsOnly(int entity, int contentsMask)
+static bool Ikunagae_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
 
-public bool Ikunagae_BEAM_TraceUsers(int entity, int contentsMask, int client)
+static bool Ikunagae_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
@@ -1258,7 +1258,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 	startPoint[2] += actualBeamOffset[2];
 }
 
-public Action Ikunagae_TBB_Tick(int client)
+static Action Ikunagae_TBB_Tick(int client)
 {
 	static int tickCountClient[MAXENTITIES];
 	if(!IsValidEntity(client) || !Ikunagae_BEAM_IsUsing[client])
