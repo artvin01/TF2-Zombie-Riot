@@ -113,6 +113,15 @@ static bool b_allies[MAXENTITIES];
 static bool b_lowplayercount[MAXENTITIES];
 static int i_currentwave[MAXENTITIES];
 
+//Blit'z item drop relate stuff
+
+bool b_Schwertkrieg_Alive= false;
+bool b_Donnerkrieg_Alive = false;
+bool b_Valid_Wave = false;
+bool b_Begin_Dialogue = false;
+bool b_was_talking = false;
+float g_f_blitz_dialogue_timesincehasbeenhurt;
+
   ///////////////////////
  ///BlitzLight Floats///
 ///////////////////////
@@ -307,6 +316,11 @@ methodmap Blitzkrieg < CClotBody
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		
+
+		b_was_talking = false;
+		b_Valid_Wave = false;
+		b_Begin_Dialogue = false;
+		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 			
@@ -481,6 +495,10 @@ methodmap Blitzkrieg < CClotBody
 		if(i_currentwave[npc.index]>60)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
+		}
+		if(i_currentwave[npc.index]==60)
+		{
+			b_Valid_Wave = true;
 		}
 		
 		npc.m_flMeleeArmor = 1.25;
@@ -1275,20 +1293,20 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		int spawn_index;
 		heck= maxhealth;
 		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
-		spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-		Zombies_Currently_Still_Ongoing += 1;
-		if(spawn_index > MaxClients)	//Currently always spawns.
-		{
-		
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-		}
 		if(i_currentwave[npc.index]==45)	//Only spwans if the wave is 45.
 		{
 			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 			Zombies_Currently_Still_Ongoing += 1;
 			if(spawn_index > MaxClients)
 			{
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
+			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			Zombies_Currently_Still_Ongoing += 1;
+			if(spawn_index > MaxClients)
+			{
+			
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
@@ -1325,6 +1343,28 @@ public void Blitzkrieg_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 	
 //	Music_RoundEnd(entity);
+	
+	
+	if(b_Valid_Wave && b_Donnerkrieg_Alive && b_Schwertkrieg_Alive)
+	{
+		b_was_talking = false;
+		b_Begin_Dialogue = true;
+		g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+		ReviveAll(true);
+		
+		RaidModeTime += 60.0;
+
+		StopSound(npc.index,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+
+		int i = MaxClients + 1;
+		while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
+		{
+			RemoveEntity(i);
+		}
+	}
 	
 	int closest = npc.m_iTarget;
 	

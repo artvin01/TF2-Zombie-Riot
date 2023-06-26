@@ -156,7 +156,7 @@ methodmap Schwertkrieg < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+		b_Schwertkrieg_Alive = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -226,6 +226,22 @@ public void Schwertkrieg_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 	
+	if(b_was_talking)
+	{
+		if(RaidModeTime < GetGameTime())
+		{
+			int entity = CreateEntityByName("game_round_win"); //You loose.
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+			Music_RoundEnd(entity);
+			RaidBossActive = INVALID_ENT_REFERENCE;
+			SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
+		}
+		npc.m_flSpeed = Schwertkrieg_Speed*1.25;
+	}
+	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -254,6 +270,62 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	
+	if(b_Begin_Dialogue)	//Schwertkrieg is mute,
+	{
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+		if(!b_Donnerkrieg_Alive)
+		{
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false; //Make allied NOT npcs ignore him.
+			CPrintToChatAll("{crimson}Donnerkrieg{default}: Why....");
+			b_Begin_Dialogue = false;
+			b_was_talking = true;
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			
+			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth*1.5));
+			
+			//sets the minnion to a "raidboss"
+			
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			
+			b_thisNpcIsARaid[npc.index] = true;
+			
+			RaidModeScaling = 69.0;
+			
+			npc.m_bThisNpcIsABoss = true;
+		
+			RaidModeTime = GetGameTime(npc.index) + 100.0;
+			
+			SetVariantInt(1);
+			AcceptEntityInput(npc.index, "SetBodyGroup");
+	
+			SetVariantColor(view_as<int>({89, 8, 12, 175}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%t", "Schwertkrieg has been enraged...");
+				}
+			}
+		}
+		npc.m_flNextThinkTime = 0.0;
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.SetActivity("ACT_MP_CROUCH_MELEE");
+		npc.m_bisWalking = false;
+		if(GetGameTime() > g_f_blitz_dialogue_timesincehasbeenhurt)
+		{
+			npc.m_bDissapearOnDeath = true;	
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}	
+		return; //He is trying to help.
+	}
+	
 	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && !TempOpener[npc.index])
 	{
 		npc.m_flSpeed = 0.0;
@@ -423,6 +495,11 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg= 175.0;
+								if(b_was_talking)
+								{
+									meleedmg = 225.0;
+								}
+								
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -489,6 +566,32 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
+	if(b_Begin_Dialogue)
+	{
+		if(IsValidClient(attacker))
+		{
+			if(TeutonType[attacker] != TEUTON_NONE)
+			{
+				return Plugin_Handled;
+			}
+		}
+		else //Ignore any atacker that isnt a player, they might ruin this, like grigori.
+		{
+			return Plugin_Handled;
+		}
+		if(g_f_blitz_dialogue_timesincehasbeenhurt< GetGameTime()+2.5)
+		{
+			if(!b_was_talking)
+			{
+				f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: Oi, why are you attacking my friend, stop it please");
+			}
+			
+		}
+			
+	}
+	g_f_blitz_dialogue_timesincehasbeenhurt= GetGameTime() + 20.0;
+	
 	return Plugin_Changed;
 }
 
@@ -499,6 +602,11 @@ public void Schwertkrieg_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	
+	b_Schwertkrieg_Alive = false;
+	b_thisNpcIsARaid[npc.index] = false;
+			
+	npc.m_bThisNpcIsABoss = false;
 	
 	SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
@@ -585,7 +693,13 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, TELEPORT_STRIKE_Smite_Radius * 1.4,_,0.8, true);
+		float radius = TELEPORT_STRIKE_Smite_Radius;
+		if(b_was_talking)
+		{
+			damage *= 2;
+			radius *= 1.5;
+		}
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, radius * 1.4,_,0.8, true);
 		
 		return Plugin_Stop;
 	}
