@@ -1409,4 +1409,59 @@
 	{
 		"en"		"Citizen"
 	}
+	"Barracks Railgunner"
+	{
+		"en"		"Railgunner"
+	}
+	"Barracks Basic Mage"
+	{
+		"en"		"Basic Medic Mage"
+	}
+	"Barracks Intermediate Mage"
+	{
+		"en"		"Intermediate Medic Mage"
+	}
+	"Barracks Ikunagae"
+	{
+		"en"		"Iku Nagae"
+		
+		
+		"de"		"Iku Nagae"
+	}
+	"Barracks SchwertKrieg"
+	{
+		"en"		"Schwertkrieg"
+		"ru"		"Шверткриг"
+		"nl"		"Schwertkrieg"
+	}
+	"Barracks Donnerkrieg"
+	{
+		"en"		"Donnerkrieg"
+		"ru"		"Доннеркриг"
+		"nl"		"Donnerkrieg"
+	}
+	"Barracks Holy Knight"
+	{
+		"en"		"Holy Knight"
+		"ru"		"Священный рыцарь"
+		"pt"		"Cavaleiro Santo"
+		"nl"		"Heilige Ridder"
+	}
+	"Barracks Mecha Barrager"
+	{
+		"en"		"Mecha Soldier Barrager"
+		"de"		"Machine Soldat Spammer"
+	}
+	"Barracks Barrager"
+	{
+		"en"		"Barrager"
+	}
+	"Barracks Berserker"
+	{
+		"en"		"Berserker"
+	}
+	"Barracks Crossbow Medic"
+	{
+		"en"		"Medic Crossbowman"
+	}
 }

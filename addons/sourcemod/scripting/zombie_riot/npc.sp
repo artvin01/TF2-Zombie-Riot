@@ -287,7 +287,19 @@ enum
 	SEABORN_ENGINEER	= 250,
 	SEABORN_MEDIC		= 251,
 	SEABORN_SNIPER		= 252,
-	SEABORN_SPY		= 253
+	SEABORN_SPY		= 253,
+	ALT_BARRACKS_SCHWERTKRIEG = 254,	//warp
+	ALT_BARRACK_IKUNAGAE = 255,
+	ALT_BARRACK_RAILGUNNER = 256,
+	ALT_BARRACK_BASIC_MAGE = 257,
+	ALT_BARRACK_INTERMEDIATE_MAGE = 258,
+	ALT_BARRACK_DONNERKRIEG = 259,
+	ALT_BARRACKS_HOLY_KNIGHT = 260,
+	ALT_BARRACK_MECHA_BARRAGER = 261,
+	ALT_BARRACK_BARRAGER = 262,
+	ALT_BARRACKS_BERSERKER = 263,
+	ALT_BARRACKS_CROSSBOW_MEDIC = 264
+	
 }
 
 public const char NPC_Names[][] =
@@ -566,7 +578,18 @@ public const char NPC_Names[][] =
 	"Seaborn Engineer",
 	"Seaborn Medic",
 	"Seaborn Sniper",
-	"Seaborn Spy"
+	"Seaborn Spy",
+	"Barracks SchwertKrieg",	//warp
+	"Barracks Ikunagae",
+	"Barracks Railgunner",
+	"Barracks Basic Mage",
+	"Barracks Intermediate Mage",
+	"Barracks Donnerkrieg",
+	"Barracks Holy Knight",
+	"Barracks Mecha Barrager",
+	"Barracks Barrager",
+	"Barracks Berserker",
+	"Barracks Crossbow Medic"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -840,7 +863,19 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_seaborn_engineer",
 	"npc_seaborn_medic",
 	"npc_seaborn_sniper",
-	"npc_seaborn_spy"
+	"npc_seaborn_spy",
+	
+	"",	//schwert	//warp
+	"",	//Iku
+	"",	//Railgunner
+	"",	//Basic Mage
+	"",	//Intermediate mage
+	"",	//Donnerkrieg
+	"",	//Holy Knights
+	"",	//mecha barragers
+	"",	//Barrager
+	"",	//Bereserker
+	""	//Medic Crossbowman
 };
 
 void NPC_MapStart()
@@ -1040,6 +1075,19 @@ void NPC_MapStart()
 	EndSpeaker_MapStart();
 	Remain_MapStart();
 	KazimierzKnightAssasin_OnMapStart_NPC();
+	
+	//Alt Barracks	//warp
+	Barrack_Alt_Ikunagae_MapStart();
+	Barrack_Alt_Shwertkrieg_MapStart();
+	Barrack_Railgunner_MapStart();
+	Barrack_Alt_Basic_Mage_MapStart();
+	Barrack_Alt_Intermediate_Mage_MapStart();
+	Barrack_Alt_Donnerkrieg_MapStart();
+	Barrack_Alt_Holy_Knight_MapStart();
+	Barrack_Alt_Mecha_Barrager_MapStart();
+	Barrack_Alt_Barrager_MapStart();
+	Barrack_Alt_Berserker_MapStart();
+	Barrack_Alt_Crossbowmedic_MapStart();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1769,7 +1817,40 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case SEABORN_MEDIC:
 			entity = SeabornMedic(client, vecPos, vecAng, ally);
+		
+		case ALT_BARRACKS_SCHWERTKRIEG:	//warp
+			entity = Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACK_IKUNAGAE:
+			entity = Barrack_Alt_Ikunagae(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACK_RAILGUNNER:
+			entity = Barrack_Alt_Raigunner(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACK_BASIC_MAGE:
+			entity = Barrack_Alt_Basic_Mage(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACK_INTERMEDIATE_MAGE:
+			entity = Barrack_Alt_Intermediate_Mage(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACK_DONNERKRIEG:
+			entity = Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, ally);
 
+		case ALT_BARRACKS_HOLY_KNIGHT:
+			entity = Barrack_Alt_Holy_Knight(client, vecPos, vecAng, ally);
+		
+		case ALT_BARRACK_MECHA_BARRAGER:
+			entity = Barrack_Alt_Mecha_Barrager(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACK_BARRAGER:
+			entity = Barrack_Alt_Barrager(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACKS_BERSERKER:
+			entity = Barrack_Alt_Berserker(client, vecPos, vecAng, ally);
+			
+		case ALT_BARRACKS_CROSSBOW_MEDIC:
+			entity = Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
+			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2497,6 +2578,39 @@ public void NPCDeath(int entity)
 
 		case SEABORN_MEDIC:
 			SeabornMedic_NPCDeath(entity);
+			
+		case ALT_BARRACKS_SCHWERTKRIEG:	//warp
+			Barrack_Alt_Shwertkrieg_NPCDeath(entity);
+			
+		case ALT_BARRACK_IKUNAGAE:
+			Barrack_Alt_Ikunagae_NPCDeath(entity);
+			
+		case ALT_BARRACK_RAILGUNNER:
+			Barrack_Alt_Raigunner_NPCDeath(entity);
+			
+		case ALT_BARRACK_BASIC_MAGE:
+			Barrack_Alt_Basic_Mage_NPCDeath(entity);
+			
+		case ALT_BARRACK_INTERMEDIATE_MAGE:
+			Barrack_Alt_Intermediate_Mage_NPCDeath(entity);
+			
+		case ALT_BARRACK_DONNERKRIEG:
+			Barrack_Alt_Donnerkrieg_NPCDeath(entity);
+			
+		case ALT_BARRACKS_HOLY_KNIGHT:
+			Barrack_Alt_Holy_Knight_NPCDeath(entity);
+		
+		case ALT_BARRACK_MECHA_BARRAGER:
+			Barrack_Alt_Mecha_Barrager_NPCDeath(entity);
+		
+		case ALT_BARRACK_BARRAGER:
+			Barrack_Alt_Barrager_NPCDeath(entity);
+		
+		case ALT_BARRACKS_BERSERKER:
+			Barrack_Alt_Berserker_NPCDeath(entity);
+			
+		case ALT_BARRACKS_CROSSBOW_MEDIC:
+			Barrack_Alt_Crossbowmedic_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3455,6 +3569,21 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 #include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
+
+
+//ALT barrack Npc's	//warp
+
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_basic_mage.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_iku_nagae.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_intermediate_mage.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_railgunner.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_schwertkrieg.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_donnerkrieg.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_holy_knight.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_mecha_barrager.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_barrager.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
 
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"

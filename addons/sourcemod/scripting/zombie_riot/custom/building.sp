@@ -6064,6 +6064,7 @@ enum
 {
 	Default = 0,
 	Thorns = 1,
+	Alternative = 2,
 	Civ_number_2
 }
 
@@ -6126,10 +6127,33 @@ static const int SummonerThorns[][] =
 	{ BARRACK_THORNS, 0, 400, 35, 15, 11, 3 }	// Construction Expert
 };
 
+static const int SummonerAlternative[][] =
+{
+	// NPC Index, 						Wood, 	Food, 	Gold, 	Time, Level, Supply
+	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 1, 1 },		// None
+
+	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7, 2, 1 },		// Construction Novice
+	{ ALT_BARRACK_INTERMEDIATE_MAGE ,	10, 	50, 	0, 		6, 4, 1 },	// Construction Apprentice
+
+	{ ALT_BARRACKS_CROSSBOW_MEDIC, 		50, 	25, 	2, 		8, 4, 1 },	// Construction Apprentice
+	{ ALT_BARRACK_BARRAGER,				75,		50, 	1, 		7, 7, 1 },	// Construction Worker
+
+	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1 },	// Construction Worker
+	{ ALT_BARRACKS_BERSERKER, 			25, 	25, 	0, 		3, 11, 1 },	// Construction Expert
+
+	{ ALT_BARRACKS_HOLY_KNIGHT, 		350, 	125, 	0,		7, 11, 1 },	// Construction Expert
+	{ ALT_BARRACK_IKUNAGAE , 			125,	350,	0,		7, 16, 1 },	// Construction Master
+
+
+	{ ALT_BARRACK_DONNERKRIEG, 			175, 	450, 	25, 	12, 11, 1 },	// Construction Expert
+	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	20, 	13, 16, 1 }	// Construction Master
+};
+
 static const char CivName[][] =
 {
 	"Standard Barracks",
-	"Iberia Barracks"
+	"Iberia Barracks",
+	"Blitzkrieg's Army"
 };
 
 static int GetUnitCount(int civ)
@@ -6138,6 +6162,9 @@ static int GetUnitCount(int civ)
 	{
 		case Thorns:
 			return sizeof(SummonerThorns);
+			
+		case Alternative:
+			return sizeof(SummonerAlternative);
 		
 		default:
 			return sizeof(SummonerBase);
@@ -6150,6 +6177,9 @@ static int GetData(int civ, int unit, int index)
 	{
 		case Thorns:
 			return SummonerThorns[unit][index];
+			
+		case Alternative:
+			return SummonerAlternative[unit][index];
 		
 		default:
 			return SummonerBase[unit][index];
@@ -6191,6 +6221,7 @@ public bool Building_Summoner(int client, int entity)
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
 	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
+	CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
 	
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = true;
