@@ -717,17 +717,6 @@ public Action CH_PassFilter(int ent1, int ent2, bool &result)
 
 public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
-	if(b_IsInUpdateGroundConstraintLogic)
-	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
-		{
-			return false;
-		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2])
-		{
-			return false;
-		}
-	}
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
 		return false;
