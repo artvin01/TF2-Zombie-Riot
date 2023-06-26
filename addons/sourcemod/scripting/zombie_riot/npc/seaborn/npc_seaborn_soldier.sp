@@ -72,7 +72,7 @@ methodmap SeabornSoldier < CClotBody
 		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -166,7 +166,11 @@ public void SeabornSoldier_ClotThink(int iNPC)
 						if(!NpcStats_IsEnemySilenced(npc.index) && !IsValidEnemy(npc.index, target))	// Killed target, spawn 3 copies
 						{
 							int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-							SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+
+							bool regrow = true;
+							Building_CamoOrRegrowBlocker(npc.index, _, regrow);
+							if(regrow)
+								SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 							
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);

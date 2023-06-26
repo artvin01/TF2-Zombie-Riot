@@ -210,7 +210,10 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(!KazimierzMeleeAssasinRange(npc, 500.0))
+		bool camo = true;
+		Building_CamoOrRegrowBlocker(npc.index, camo);
+
+		if(camo && !KazimierzMeleeAssasinRange(npc, 500.0))
 		{
 			float SelfPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);

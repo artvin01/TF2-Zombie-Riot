@@ -3,40 +3,43 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3"
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] =
 {
-	"vo/pyro_painsharp01.mp3",
-	"vo/pyro_painsharp02.mp3",
-	"vo/pyro_painsharp03.mp3",
-	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3"
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/taunts/pyro_taunts01.mp3",
-	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3"
+	"vo/spy_laughshort01.mp3",
+	"vo/spy_laughshort02.mp3",
+	"vo/spy_laughshort03.mp3",
+	"vo/spy_laughshort04.mp3",
+	"vo/spy_laughshort05.mp3",
+	"vo/spy_laughshort06.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/axe_hit_flesh1.wav",
-	"weapons/axe_hit_flesh2.wav",
-	"weapons/axe_hit_flesh3.wav"
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/machete_swing.wav"
+	"weapons/knife_swing.wav"
 };
 
-methodmap SeabornPyro < CClotBody
+methodmap SeabornSpy < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -44,7 +47,7 @@ methodmap SeabornPyro < CClotBody
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 6.0);
 	}
 	public void PlayHurtSound()
 	{
@@ -63,11 +66,11 @@ methodmap SeabornPyro < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornPyro(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSpy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1500", ally));
+		SeabornSpy npc = view_as<SeabornSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_PYRO;
+		i_NpcInternalId[npc.index] = SEABORN_SPY;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
@@ -77,27 +80,27 @@ methodmap SeabornPyro < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornPyro_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SeabornSpy_ClotThink);
 		
-		npc.m_bDissapearOnDeath = true;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 320.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rift_fire_axe/c_rift_fire_axe.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/sbox2014_sole_mate/sbox2014_sole_mate.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_knife/c_knife.mdl");
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 
 		return npc;
 	}
 }
 
-public void SeabornPyro_ClotThink(int iNPC)
+public void SeabornSpy_ClotThink(int iNPC)
 {
-	SeabornPyro npc = view_as<SeabornPyro>(iNPC);
+	SeabornSpy npc = view_as<SeabornSpy>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -117,6 +120,37 @@ public void SeabornPyro_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_flNextRangedAttack < gameTime)
+	{
+		int alpha = 255;
+
+		bool camo = true;
+		Building_CamoOrRegrowBlocker(npc.index, camo);
+		if(camo)
+		{
+			npc.m_bCamo = false;
+		}
+		else
+		{
+			alpha = RoundFloat((npc.m_flNextRangedAttack - gameTime) * 200.0);
+			if(NpcStats_IsEnemySilenced(npc.index))
+			{
+				if(alpha < 50)
+				{
+					alpha = 50;
+					npc.m_bCamo = false;
+				}
+			}
+			else if(alpha < 0)
+			{
+				alpha = 0;
+				npc.m_bCamo = true;
+			}
+		}
+		
+		SetEntityRenderColor(npc.index, 155, 155, 255, alpha);
+	}
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
@@ -157,20 +191,16 @@ public void SeabornPyro_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						if(!NpcStats_IsEnemySilenced(npc.index))
-						{
-							if(target > MaxClients)
-							{
-								NPC_Ignite(target, npc.index, 5.0, -1);
-							}
-							else
-							{
-								TF2_AddCondition(target, TFCond_Gas, 1.5);
-							}
-						}
-						
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bCamo ? 300.0 : 100.0, DMG_CLUB);
+						
+						if(npc.m_flNextRangedAttack < gameTime)
+						{
+							SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+							npc.m_bCamo = false;
+						}
+
+						npc.m_flNextRangedAttack = gameTime + 4.0;
 					}
 				}
 
@@ -202,33 +232,14 @@ public void SeabornPyro_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornPyro_NPCDeath(int entity)
+void SeabornSpy_NPCDeath(int entity)
 {
-	SeabornPyro npc = view_as<SeabornPyro>(entity);
+	SeabornSpy npc = view_as<SeabornSpy>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		float startPosition[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
-		startPosition[2] += 45;
-
-		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
-
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(startPosition[0]);
-		pack_boom.WriteFloat(startPosition[1]);
-		pack_boom.WriteFloat(startPosition[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornPyro_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, SeabornSpy_ClotThink);
 }

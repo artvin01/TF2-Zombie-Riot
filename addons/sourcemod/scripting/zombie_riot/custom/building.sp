@@ -4499,19 +4499,58 @@ bool Building_NeatherseaReduced(int entity)
 	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
 }
 
-void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
+void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow = false)
 {
 	if(camo || regrow)
 	{
-		for(int client = 1; client <= MaxClients; client++)
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 		{
-			if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+			static float pos1[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(camo && (Village_Flags[client] & VILLAGE_020) && !(GetURandomInt() % 5))
-					camo = false;
-				
-				if(regrow && (Village_Flags[client] & VILLAGE_010) && !(GetURandomInt() % 5))
-					regrow = false;
+				if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+				{
+					static float pos2[3];
+					bool mounted = (Building_Mounted[client] == i_HasSentryGunAlive[client]);
+					if(mounted)
+					{
+						GetClientEyePosition(client, pos2);
+					}
+					else
+					{
+						GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos2);
+					}
+
+					float range = 600.0;
+					
+					if(Village_Flags[client] & VILLAGE_100)
+						range += 120.0;
+					
+					if(Village_Flags[client] & VILLAGE_500)
+					{
+						range += 125.0;
+					}
+					else if(Village_Flags[client] & VILLAGE_005)
+					{
+						range += 150.0;
+					}
+					
+					if(mounted)
+						range *= 0.55;
+					
+					range = range * range;
+
+					if(GetVectorDistance(pos1, pos2, true) < range)
+					{
+						if(camo && (Village_Flags[client] & VILLAGE_020))
+							camo = false;
+						
+						if(regrow && (Village_Flags[client] & VILLAGE_010))
+							regrow = false;
+					}
+				}
 			}
 		}
 	}
@@ -4708,8 +4747,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 		if(tier)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Radar Scanner", ""), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Provides a stackable 50% to remove", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
+			menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
@@ -4723,15 +4762,15 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$750]%s", TranslateItemName(viewer, "Radar Scanner", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || cash < 750) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
+		menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$250]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || cash < 250) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Prevents non-boss enemies from", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gaining health in influence radius.\n ", ITEMDRAW_DISABLED);
 	}
 	
 	if(Village_Flags[client] & VILLAGE_005)
@@ -4791,6 +4830,37 @@ static void VillageUpgradeMenu(int client, int viewer)
 		menu.AddItem("", "Heals a point of armor erosion every.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
+
+	float pos[3];
+	bool mounted = (Building_Mounted[client] == i_HasSentryGunAlive[client]);
+	if(mounted)
+	{
+		GetClientEyePosition(client, pos);
+	}
+	else
+	{
+		GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 10.0;
+	}
+
+	float range = 600.0;
+	
+	if(Village_Flags[client] & VILLAGE_100)
+		range += 120.0;
+	
+	if(Village_Flags[client] & VILLAGE_500)
+	{
+		range += 125.0;
+	}
+	else if(Village_Flags[client] & VILLAGE_005)
+	{
+		range += 150.0;
+	}
+	
+	if(mounted)
+		range *= 0.55;
+	
+	spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 3.0, 6.0, 0.1, 1);
 	
 	menu.Pagination = 0;
 	menu.ExitButton = true;

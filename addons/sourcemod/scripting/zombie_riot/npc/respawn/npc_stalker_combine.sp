@@ -256,7 +256,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		}
 		
 		i_PlayMusicSound = 0;
-		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		FreezeNpcInTime(npc.index, 0.5);
 		return;
 	}
 	

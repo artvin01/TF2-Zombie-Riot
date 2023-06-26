@@ -140,9 +140,7 @@ methodmap DDT < CClotBody
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
-		bool camo = true;
-		Building_CamoOrRegrowBlocker(camo, camo);
-		npc.m_bCamo = camo;
+		npc.m_bCamo = true;
 		
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
@@ -155,11 +153,8 @@ methodmap DDT < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, DDT_ClotThink);
 		
-		if(camo)
-		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 60);
-		}
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
 		
 		npc.StartPathing();
 		
@@ -198,6 +193,23 @@ public void DDT_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	bool camo = !NpcStats_IsEnemySilenced(npc.index);
+	Building_CamoOrRegrowBlocker(npc.index, camo);
+
+	if(npc.m_bCamo)
+	{
+		if(!camo)
+		{
+			npc.m_bCamo = false;
+			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+		}
+	}
+	else if(camo)
+	{
+		npc.m_bCamo = true;
+		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
+	}
 
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -320,12 +332,6 @@ public void DDT_ClotDamagedPost(int victim, int attacker, int inflictor, float d
 {
 	DDT npc = view_as<DDT>(victim);
 	npc.UpdateBloonOnDamage();
-
-	if(npc.m_bCamo && NpcStats_IsEnemySilenced(npc.index))
-	{
-		npc.m_bCamo = false;
-		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-	}
 }
 
 public void DDT_NPCDeath(int entity)

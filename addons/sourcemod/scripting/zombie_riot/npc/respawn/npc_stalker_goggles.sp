@@ -137,7 +137,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		i_PlayMusicSound = 0;
 		npc.m_bPlayingSniper = false;
 		b_NpcIsInvulnerable[npc.index] = true;
-		FreezeNpcInTime(npc.index, DEFAULT_UPDATE_DELAY_FLOAT);
+		FreezeNpcInTime(npc.index, 0.5);
 		return;
 	}
 

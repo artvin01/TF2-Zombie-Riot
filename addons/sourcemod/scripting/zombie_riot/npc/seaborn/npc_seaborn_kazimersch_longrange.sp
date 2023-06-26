@@ -121,6 +121,7 @@ methodmap KazimierzLongArcher < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bCamo = true;
 		
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
@@ -178,6 +179,33 @@ public void KazimierzLongArcher_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	bool camo = true;
+	Building_CamoOrRegrowBlocker(npc.index, camo);
+
+	if(npc.m_bCamo)
+	{
+		if(!camo)
+		{
+			npc.m_bCamo = false;
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1500.0);
+			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 3000.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1500.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 3000.0);
+			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1500.0);
+			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 3000.0);
+		}
+	}
+	else if(camo)
+	{
+		npc.m_bCamo = true;
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 500.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 500.0);
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{

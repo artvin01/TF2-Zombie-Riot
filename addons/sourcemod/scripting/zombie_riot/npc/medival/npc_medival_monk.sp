@@ -649,11 +649,16 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
 				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS)
 				{
-					static float pos2[3];
-					GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+					bool regrow = true;
+					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
+					if(regrow)
 					{
-						SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+						static float pos2[3];
+						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+						{
+							SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+						}
 					}
 				}
 			}
