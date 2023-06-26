@@ -2059,4 +2059,48 @@
 	{
 		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
 	}
+	"Barracks Railgunner Desc"
+	{
+		"en"	"A long ranged Sniper unit, fragile!"
+	}
+	"Barracks Basic Mage Desc"
+	{
+		"en"	"A magic medic, fragile, but deadly!"
+	}
+	"Barracks Intermediate Mage Desc"
+	{
+		"en"	"A stronger variant of the basic mage, just as deadly, but just as fragile!"
+	}
+	"Barracks Ikunagae Desc"
+	{
+		"en"		"A machine capable of manupulating energy, fragile, but deadly!"
+	}
+	"Barracks SchwertKrieg Desc"
+	{
+		"en"		"A melee medic, can teleport to targets, Heals outside of combat"
+	}
+	"Barracks Donnerkrieg Desc"
+	{
+		"en"		"Can shoot a powerfull Laser, imobile while laser is active, fragile!"
+	}
+	"Barracks Holy Knight Desc"
+	{
+		"en"		"A combine warrior, has a ranged attack"
+	}
+	"Barracks Mecha Barrager Desc"
+	{
+		"en"		"A mechanical Soldier with an explosive Bison"
+	}
+	"Barracks Barrager Desc"
+	{
+		"en"		"An upgraded variant of the barrager"
+	}
+	"Barracks Berserker Desc"
+	{
+		"en"		"A medic that gets stronger the closer to death it is"
+	}
+	"Barracks Crossbow Medic Desc"
+	{
+		"en"		"A medic with a long ranged crusaders crossbow... fragile!"
+	}
 }

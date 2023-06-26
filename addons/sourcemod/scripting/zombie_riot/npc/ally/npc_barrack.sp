@@ -16,7 +16,7 @@ static const char g_HurtSounds[][] =
 	"npc/metropolice/pain3.wav",
 	"npc/metropolice/pain4.wav",
 };
-
+	
 static const char g_IdleSounds[][] =
 {
 	"npc/metropolice/vo/affirmative.wav",
@@ -188,7 +188,8 @@ methodmap BarrackBody < CClotBody
 		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-
+	
+	
 	property float BonusFireRate
 	{
 		public get()
@@ -252,7 +253,7 @@ methodmap BarrackBody < CClotBody
 		}
 	}
 	
-	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health, char[] modelpath = COMBINE_CUSTOM_MODEL)
+	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health, char[] modelpath = COMBINE_CUSTOM_MODEL, int steptype = STEPTYPE_COMBINE_METRO)
 	{
 		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, "0.575", health, true, .Ally_Collideeachother = true));
 		SetVariantInt(1);
@@ -268,7 +269,7 @@ methodmap BarrackBody < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+		npc.m_iNpcStepVariation = steptype;
 
 		npc.m_iState = 0;
 		npc.m_iChanged_WalkCycle = 0;
@@ -476,7 +477,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 	return client;
 }
 
-void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true)
+void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true, bool sound=true)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
@@ -628,13 +629,16 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		}
 	}
 
-	if(npc.m_iTarget > 0)
+	if(sound)
 	{
-		npc.PlayIdleAlertSound();
-	}
-	else
-	{
-		npc.PlayIdleSound();
+		if(npc.m_iTarget > 0)
+		{
+			npc.PlayIdleAlertSound();
+		}
+		else
+		{
+			npc.PlayIdleSound();
+		}
 	}
 }
 
