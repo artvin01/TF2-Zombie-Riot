@@ -83,6 +83,7 @@ void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
 		KillTimer(h_TimerSpikeLayerManagement[client]);
 	}	
 	h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+	f_SpikeLayerHudDelay[client] = 0.0;
 }
 
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)

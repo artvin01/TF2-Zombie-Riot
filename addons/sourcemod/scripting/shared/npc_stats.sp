@@ -273,7 +273,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
 		baseNPC.flFrictionSideways = 5.0;
 		baseNPC.flMaxYawRate = 225.0;
-		baseNPC.flDeathDropHeight = 9999.9;
+		baseNPC.flDeathDropHeight = 2000.0;
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
@@ -4187,7 +4187,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		}
 
 		float maxDistance = fldistancelimit > fldistancelimitAllyNPC ? fldistancelimit : fldistancelimitAllyNPC;
-		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, 99999.9, baseNPC.flStepSize, baseNPC.flDeathDropHeight);
+		SurroundingAreasCollector iterator = TheNavMesh.CollectSurroundingAreas(area, 99999.9, 2000.0/*baseNPC.flStepSize*/, baseNPC.flDeathDropHeight);
 		
 		CNavArea closeNav = NULL_AREA;
 		float closeDist = maxDistance;
