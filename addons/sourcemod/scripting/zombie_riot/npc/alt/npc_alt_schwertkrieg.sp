@@ -209,7 +209,7 @@ methodmap Schwertkrieg < CClotBody
 		TELEPORT_STRIKEActive[npc.index] = false;
 		TempOpener[npc.index] = false;
 		
-		npc.m_flRangedArmor = 1.5;
+		npc.m_flMeleeArmor = 1.5;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
@@ -246,7 +246,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-	npc.m_flRangedArmor = 1.5;
+	npc.m_flMeleeArmor = 1.5;
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
