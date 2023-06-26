@@ -392,6 +392,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		m_vecMaxs_Body[0] = m_vecMaxs[0] * 2.0;
 		m_vecMaxs_Body[1] = m_vecMaxs[1] * 2.0;
 		m_vecMaxs_Body[2] = m_vecMaxs[2] * 1.15;
+		//we dont want to fake super tall.
 
 		m_vecMins_Body[0] = m_vecMins[0] * 2.0;
 		m_vecMins_Body[1] = m_vecMins[1] * 2.0;
