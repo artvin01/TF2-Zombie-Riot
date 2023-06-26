@@ -161,17 +161,6 @@ void SDKCall_Setup()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
 	g_hSDKUpdateBlocked = EndPrepSDKCall();
 	
-	/*
-	// void CBaseCombatWeapon::WeaponSound( WeaponSound_t sound_type, float soundtime )
-	StartPrepSDKCall(cbas);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseCombatWeapon::WeaponSound");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
-	g_hWeaponSound = EndPrepSDKCall();
-	if(!g_hWeaponSound)
-		LogError("[Gamedata] Could not find CBaseCombatWeapon::WeaponSound");
-	*/
-	
 #if defined ZR
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
