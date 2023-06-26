@@ -391,11 +391,11 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		m_vecMaxs_Body[0] = m_vecMaxs[0] * 2.0;
 		m_vecMaxs_Body[1] = m_vecMaxs[1] * 2.0;
-		m_vecMaxs_Body[2] = m_vecMaxs[2] * 2.0;
+		m_vecMaxs_Body[2] = m_vecMaxs[2] * 1.15;
 
 		m_vecMins_Body[0] = m_vecMins[0] * 2.0;
 		m_vecMins_Body[1] = m_vecMins[1] * 2.0;
-		m_vecMins_Body[2] = m_vecMins[2] * 2.0;
+		m_vecMins_Body[2] = m_vecMins[2] * 1.15;
 
 		f3_AvoidOverrideMin[npc] = m_vecMins_Body;
 		f3_AvoidOverrideMax[npc] = m_vecMaxs_Body;
