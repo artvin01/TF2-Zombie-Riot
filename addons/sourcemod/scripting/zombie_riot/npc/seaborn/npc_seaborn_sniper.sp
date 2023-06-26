@@ -1,14 +1,42 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_IdleAlertedSounds[][] =
+static const char g_DeathSounds[][] =
 {
-	"weapons/demo_charge_windup1.wav",
-	"weapons/demo_charge_windup2.wav",
-	"weapons/demo_charge_windup3.wav"
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3"
 };
 
-methodmap SeabornDemo < CClotBody
+static const char g_HurtSounds[][] =
+{
+	"vo/sniper_painsharp01.mp3",
+	"vo/sniper_painsharp02.mp3",
+	"vo/sniper_painsharp03.mp3",
+	"vo/sniper_painsharp04.mp3"
+};
+
+static const char g_IdleAlertedSounds[][] =
+{
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3"
+};
+
+static const char g_MeleeHitSounds[][] =
+{
+	"weapons/cbar_hitbod1.wav",
+	"weapons/cbar_hitbod2.wav",
+	"weapons/cbar_hitbod3.wav"
+};
+
+static const char g_MeleeAttackSounds[][] =
+{
+	"weapons/machete_swing.wav"
+};
+
+methodmap SeabornSniper < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -16,14 +44,30 @@ methodmap SeabornDemo < CClotBody
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 3.0);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+	}
+	public void PlayHurtSound()
+	{
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayDeathSound() 
+	{
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayMeleeSound()
+ 	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+	}
+	public void PlayMeleeHitSound()
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public SeabornDemo(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSniper(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornDemo npc = view_as<SeabornDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "750", ally));
+		SeabornSniper npc = view_as<SeabornSniper>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_DEMO;
+		i_NpcInternalId[npc.index] = SEABORN_SNIPER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
@@ -33,10 +77,9 @@ methodmap SeabornDemo < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornDemo_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SeabornSniper_ClotThink);
 		
-		npc.m_bDissapearOnDeath = true;
-		npc.m_flSpeed = 406.56;
+		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -44,15 +87,15 @@ methodmap SeabornDemo < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_caber/c_caber.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_breadmonster/c_breadmonster.mdl");
 
 		return npc;
 	}
 }
 
-public void SeabornDemo_ClotThink(int iNPC)
+public void SeabornSniper_ClotThink(int iNPC)
 {
-	SeabornDemo npc = view_as<SeabornDemo>(iNPC);
+	SeabornSniper npc = view_as<SeabornSniper>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -64,6 +107,7 @@ public void SeabornDemo_ClotThink(int iNPC)
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
@@ -111,12 +155,21 @@ public void SeabornDemo_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
-
+						npc.PlayMeleeHitSound();
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB);
+						
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							LastHitId[npc.index] = 0;
-							SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.0, DMG_CLUB);
+							NpcStats_SilenceEnemy(npc.index, 20.0);
+
+							if(target > MaxClients)
+							{
+								f_WidowsWineDebuff[target] = GetGameTime() + 5.0;
+							}
+							else
+							{
+								TF2_AddCondition(target, TFCond_Jarated, 5.0);
+							}
 						}
 					}
 				}
@@ -133,6 +186,8 @@ public void SeabornDemo_ClotThink(int iNPC)
 				npc.m_iTarget = target;
 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+
+				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 0.95;
@@ -147,34 +202,14 @@ public void SeabornDemo_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornDemo_NPCDeath(int entity)
+void SeabornSniper_NPCDeath(int entity)
 {
-	SeabornDemo npc = view_as<SeabornDemo>(entity);
+	SeabornSniper npc = view_as<SeabornSniper>(entity);
+	if(!npc.m_bGib)
+		npc.PlayDeathSound();
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
-		float startPosition[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
-		startPosition[2] += 45;
-
-		Explode_Logic_Custom(75.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0, SeabornDemo_ExplodePost);
-
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(startPosition[0]);
-		pack_boom.WriteFloat(startPosition[1]);
-		pack_boom.WriteFloat(startPosition[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornDemo_ClotThink);
-}
-
-public void SeabornDemo_ExplodePost(int attacker, int victim, float damage, int weapon)
-{
-	ParticleEffectAt(WorldSpaceCenter(victim), "water_bulletsplash01", 3.0);
-	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage * 2.0));
+	SDKUnhook(npc.index, SDKHook_Think, SeabornSniper_ClotThink);
 }

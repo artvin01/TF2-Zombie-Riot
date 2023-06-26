@@ -1295,7 +1295,26 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Continue;	
 		}
 	}
-		
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+	if(dieingstate[victim] > 0)
+	{
+		if(flHealth < 1)
+		{
+			if(!(damagetype & DMG_DROWN))
+			{
+				SDKHooks_TakeDamage(victim, victim, victim, 9999.0, DMG_DROWN, _, _, _, true);
+			}
+			damage = 9999.0;
+			return Plugin_Continue;	
+		}
+		return Plugin_Handled;
+	}
+	else
+	{
+		if(victim == attacker)
+			return Plugin_Handled;
+	}
+			
 #if defined ZR
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
@@ -1333,26 +1352,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage = 0.0;
 		}
 		return Plugin_Changed;
-	}
-
-	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-	if(dieingstate[victim] > 0)
-	{
-		if(flHealth < 1)
-		{
-			if(!(damagetype & DMG_DROWN))
-			{
-				SDKHooks_TakeDamage(victim, victim, victim, 9999.0, DMG_DROWN, _, _, _, true);
-			}
-			damage = 9999.0;
-			return Plugin_Continue;	
-		}
-		return Plugin_Handled;
-	}
-	else
-	{
-		if(victim == attacker)
-			return Plugin_Handled;
 	}
 	
 	if(attacker <= MaxClients && attacker > 0)	

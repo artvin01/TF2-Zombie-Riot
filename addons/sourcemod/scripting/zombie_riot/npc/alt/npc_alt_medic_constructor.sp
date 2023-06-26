@@ -268,7 +268,10 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 						npc.Healing = true;
 						npc.m_bnew_target = true;
 					}
-					if(!NpcStats_IsEnemySilenced(npc.index))
+					
+					bool regrow = true;
+					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
+					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
 					{
 						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);

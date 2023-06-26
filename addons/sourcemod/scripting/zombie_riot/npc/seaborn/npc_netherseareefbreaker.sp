@@ -118,13 +118,21 @@ methodmap SeaReefbreaker < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
+		
 		if(elite)
 		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 255);
+		}
+		else
+		{
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 		}
 
 		return npc;
@@ -205,9 +213,12 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
+	bool camo = SeaFounder_TouchingNethersea(npc.index);
+	Building_CamoOrRegrowBlocker(npc.index, camo);
+
 	if(npc.m_bCamo)
 	{
-		if(!SeaFounder_TouchingNethersea(npc.index))
+		if(!camo)
 		{
 			npc.m_bCamo = false;
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1500.0);
@@ -222,7 +233,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 			SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 3000.0);
 		}
 	}
-	else if(SeaFounder_TouchingNethersea(npc.index))
+	else if(camo)
 	{
 		npc.m_bCamo = true;
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 150.0);

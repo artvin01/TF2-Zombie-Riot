@@ -1113,10 +1113,6 @@ void Waves_Progress()
 				}
 			}
 			
-			
-		//	Zombies_Currently_Still_Ongoing -= 1; //one zombieis always still aliv
-			
-			
 			if(Zombies_Currently_Still_Ongoing > 0 && (Zombies_Currently_Still_Ongoing - Zombies_alive_still) > 0)
 			{
 				CPrintToChatAll("{crimson}%d zombies have been wasted...", Zombies_Currently_Still_Ongoing - Zombies_alive_still);

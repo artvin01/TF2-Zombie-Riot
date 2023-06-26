@@ -109,6 +109,22 @@ static const char BloonSprites[][] =
 	"ceramic"
 };
 
+static const int BloonRegrowRate[] =
+{
+	10,
+	10,
+	10,
+	10,
+	10,
+	20,
+	20,
+	20,
+	40,
+	40,
+	80,
+	160
+};
+
 static int GetBloonTypeOfData(const char[] data, bool &camo, bool &fortified, bool &regrow)
 {
 	int type;
@@ -203,7 +219,7 @@ void Bloon_MapStart()
 
 static int BType[MAXENTITIES];
 static bool Regrow[MAXENTITIES];
-//static bool Camo[MAXENTITIES];
+static bool WasCamo[MAXENTITIES];
 static int TypeOg[MAXENTITIES];
 static int Sprite[MAXENTITIES];
 
@@ -242,17 +258,17 @@ methodmap Bloon < CClotBody
 			Regrow[this.index] = value;
 		}
 	}
-	/*property bool m_bCamo
+	property bool m_bOriginalCamo
 	{
 		public get()
 		{
-			return Camo[this.index];
+			return WasCamo[this.index];
 		}
 		public set(bool value)
 		{
-			Camo[this.index] = value;
+			WasCamo[this.index] = value;
 		}
-	}*/
+	}
 	property bool m_bFortified
 	{
 		public get()
@@ -340,7 +356,7 @@ methodmap Bloon < CClotBody
 			DispatchKeyValue(sprite, "rendermode", "7");
 			
 			if(this.m_bCamo)
-				DispatchKeyValue(sprite, "renderamt", "45");
+				DispatchKeyValue(sprite, "renderamt", "40");
 			
 			DispatchSpawn(sprite);
 			ActivateEntity(sprite);
@@ -433,7 +449,6 @@ methodmap Bloon < CClotBody
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
-		Building_CamoOrRegrowBlocker(camo, regrow);
 		
 		char buffer[7];
 		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
@@ -449,6 +464,7 @@ methodmap Bloon < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bCamo = camo;
+		npc.m_bOriginalCamo = camo;
 		npc.m_bFortified = fortified;
 		npc.m_bRegrow = regrow;
 		npc.m_iType = type;
@@ -505,17 +521,39 @@ public void Bloon_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
-	if(npc.m_bRegrow && !NpcStats_IsEnemySilenced(npc.index))
+	bool silenced = NpcStats_IsEnemySilenced(npc.index);
+	bool camo = npc.m_bOriginalCamo && !silenced;
+	bool regrow = npc.m_bRegrow && !silenced;
+	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
+
+	if(regrow)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 		if(health < maxhealth)
 		{
-			health += 3 + (npc.m_iOriginalType * 4);
+			health += BloonRegrowRate[npc.m_iOriginalType];
 			if(health > maxhealth)
 				health = maxhealth;
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			npc.UpdateBloonOnDamage();
+		}
+	}
+	
+	if(npc.m_bOriginalCamo)
+	{
+		if(npc.m_bCamo)
+		{
+			if(!camo)
+			{
+				npc.m_bCamo = false;
+				npc.UpdateBloonOnDamage();
+			}
+		}
+		else if(camo)
+		{
+			npc.m_bCamo = true;
 			npc.UpdateBloonOnDamage();
 		}
 	}
@@ -716,12 +754,6 @@ public void Bloon_ClotDamagedPost(int victim, int attacker, int inflictor, float
 {
 	Bloon npc = view_as<Bloon>(victim);
 	npc.UpdateBloonOnDamage();
-
-	if(npc.m_bCamo && NpcStats_IsEnemySilenced(npc.index))
-	{
-		npc.m_bCamo = false;
-		npc.UpdateBloonInfo();
-	}
 }
 
 public void Bloon_NPCDeath(int entity)
@@ -730,7 +762,6 @@ public void Bloon_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-	
 	SDKUnhook(npc.index, SDKHook_Think, Bloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;

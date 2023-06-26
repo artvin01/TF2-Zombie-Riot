@@ -358,9 +358,25 @@ public void MedivalVillager_ClotThink(int iNPC)
 		}
 		else if(healthbuilding < RoundToCeil(float(Maxhealthbuilding) * f_RandomTolerance[npc.index]) || b_AlreadyReparing[npc.index])
 		{
-			b_AlreadyReparing[npc.index] = true;
 			//Go repair!
-			Behavior = 2;
+			if(!b_AlreadyReparing[npc.index])
+			{
+				bool regrow = true;
+				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
+				if(regrow)
+				{
+					b_AlreadyReparing[npc.index] = true;
+					Behavior = 2;
+				}
+				else
+				{
+					Behavior = 0;
+				}
+			}
+			else
+			{
+				Behavior = 2;
+			}
 		}
 		else
 		{
@@ -632,22 +648,32 @@ public void MedivalVillager_ClotThink(int iNPC)
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
 				}
-				int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
-				int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
-				int AddHealth = Maxhealthbuilding / 1000;
 
-				if(AddHealth < 1)
+				bool regrow = true;
+				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
+				if(regrow)
 				{
-					AddHealth = 1;
+					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
+					int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
+					int AddHealth = Maxhealthbuilding / 1000;
+
+					if(AddHealth < 1)
+					{
+						AddHealth = 1;
+					}
+					healthbuilding += AddHealth;
+					if(healthbuilding > Maxhealthbuilding)
+					{
+						b_AlreadyReparing[npc.index] = false;
+						Maxhealthbuilding = healthbuilding;
+					}
+					SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
+					npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
 				}
-				healthbuilding += AddHealth;
-				if(healthbuilding > Maxhealthbuilding)
+				else
 				{
 					b_AlreadyReparing[npc.index] = false;
-					Maxhealthbuilding = healthbuilding;
 				}
-				SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
-				npc.FaceTowards(WorldSpaceCenter(buildingentity), 15000.0);
 			}
 			else
 			{
