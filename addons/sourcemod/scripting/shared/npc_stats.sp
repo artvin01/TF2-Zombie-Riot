@@ -24,7 +24,7 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
-bool b_DelayThinkForFrame[MAXENTITIES];
+float f_DelayThinkForFrame[MAXENTITIES];
 float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
 float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
@@ -251,7 +251,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
-		b_DelayThinkForFrame[npc] = true;
+		f_DelayThinkForFrame[npc] = GetGameTime() + 0.1;
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
 
@@ -2379,9 +2379,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		
 
-		if(b_DelayThinkForFrame[this.index])
+		if(f_DelayThinkForFrame[this.index] > GetGameTime())
 		{
-			b_DelayThinkForFrame[this.index] = false;
 			return;
 			//need this delay, it isnt fast enough sometimes.
 		}
