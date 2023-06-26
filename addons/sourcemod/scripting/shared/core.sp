@@ -1479,6 +1479,8 @@ public void OnClientPutInServer(int client)
 	DHook_HookClient(client);
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
+	
+	AdjustBotCount();
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
 	WeaponClass[client] = TFClass_Unknown;

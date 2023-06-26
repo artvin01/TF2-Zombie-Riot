@@ -24,6 +24,7 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+bool b_DelayThinkForFrame[MAXENTITIES];
 float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
 float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
@@ -250,6 +251,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
+		b_DelayThinkForFrame[npc] = true;
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
 
@@ -2376,6 +2378,13 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void Update()
 	{
 		
+
+		if(b_DelayThinkForFrame[this.index])
+		{
+			b_DelayThinkForFrame[this.index] = false;
+			return;
+			//need this delay, it isnt fast enough sometimes.
+		}
 		if (this.m_iPoseMoveX < 0) {
 			this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
 		}

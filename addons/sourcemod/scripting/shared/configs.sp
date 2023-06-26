@@ -117,14 +117,13 @@ void Configs_ConfigsExecuted()
 	
 	ConVar_Enable();
 	
-	AdjustBotCount();
-	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 			OnClientPutInServer(client);
 	}
 }
+
 
 stock float Config_GetDPSOfEntity(int entity)
 {
