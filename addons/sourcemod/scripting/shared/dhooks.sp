@@ -90,7 +90,6 @@ void DHook_Setup()
 #endif
 
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-	DHook_CreateDetour(gamedata, "FX_FireBullets()", FX_FireBullets_Pre, FX_FireBullets_Post);
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
@@ -1950,34 +1949,6 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	
 	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
-}
-/*
- void FX_FireBullets( CTFWeaponBase *pWpn,
- int iPlayer,
-  const Vector &vecOrigin,
-    const QAngle &vecAngles,
-	  int iWeapon,
-	   int iMode,
-	    int iSeed,
-		 float flSpread,
-		  float flDamage  = -1.0f ,
-		   bool bCritical  = false )
-*/
-public MRESReturn FX_FireBullets_Pre(DHookParam hParams)
-{
-//	PrintToChatAll("shot");
- //   int Weapon = DHookGetParam(hParams, 1); // I'm sorry methodmap Gods, but the server I uploaded it on doesn't like it so i have to do this :pepega:
- //   int Client = DHookGetParam(hParams, 2);
-
-	//Future use for special guns ?
-
-    return MRES_Ignored;
-}
-
-public MRESReturn FX_FireBullets_Post(DHookParam hParams)
-{
-
-    return MRES_Ignored;
 }
 
 /*
