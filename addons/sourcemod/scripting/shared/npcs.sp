@@ -118,7 +118,7 @@ public Action NPC_OnCreatePre(char[] classname)
 {
 	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
 	{
-		strcopy(classname, 64, "base_npc");
+		strcopy(classname, 64, "zr_base_npc");
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;

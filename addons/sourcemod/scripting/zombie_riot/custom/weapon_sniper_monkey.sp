@@ -29,7 +29,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			int targets[3];
 			int healths[3];
 			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_npc")) != -1)
+			while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 			{
 				if(i != victim && !b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 				{
@@ -219,7 +219,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		float distance;
 		int target = -1;
 		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_npc")) != -1)
+		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
 			if(!b_NpcHasDied[i] && b_NpcForcepowerupspawn[i] != 2 && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 			{
@@ -265,7 +265,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		int target = MaxClients + 1;
-		while((target = FindEntityByClassname(target, "base_npc")) != -1)
+		while((target = FindEntityByClassname(target, "zr_base_npc")) != -1)
 		{
 			if(!b_NpcHasDied[target] && b_NpcForcepowerupspawn[target] != 2 && GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
 				break;

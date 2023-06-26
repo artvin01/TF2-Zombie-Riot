@@ -134,7 +134,7 @@ public Action Event_SS2_OnHatTouch(int entity, int other)
 {
 	char other_classname[32];
 	GetEntityClassname(other, other_classname, sizeof(other_classname));
-	if ((StrContains(other_classname, "base_npc") != -1 || StrContains(other_classname, "func_breakable") != -1) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(other, Prop_Send, "m_iTeamNum")))	{
+	if ((StrContains(other_classname, "zr_base_npc") != -1 || StrContains(other_classname, "func_breakable") != -1) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(other, Prop_Send, "m_iTeamNum")))	{
 		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], 2048, -1);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)

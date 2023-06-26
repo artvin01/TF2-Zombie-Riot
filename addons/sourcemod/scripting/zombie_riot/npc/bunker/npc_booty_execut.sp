@@ -953,7 +953,7 @@ public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int c
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (!StrContains(classname, "base_npc", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (!StrContains(classname, "zr_base_npc", true) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= MAXENTITIES; i++)
 				{

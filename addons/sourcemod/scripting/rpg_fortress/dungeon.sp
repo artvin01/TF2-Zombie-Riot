@@ -1368,7 +1368,7 @@ static void CleanDungeon(const char[] name, bool victory)
 			}
 
 			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_npc")) != -1)
+			while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 			{
 				if(StrEqual(InDungeon[i], name))
 					NPC_Despawn(i);
@@ -1444,7 +1444,7 @@ public Action Dungeon_Timer(Handle timer)
 
 				int alive;
 				int entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(StrEqual(InDungeon[entity], name) && GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 						alive++;

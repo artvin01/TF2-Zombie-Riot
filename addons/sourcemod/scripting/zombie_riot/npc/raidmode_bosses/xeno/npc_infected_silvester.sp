@@ -1354,7 +1354,7 @@ public Action contact_throw_Silvester_entity(int client)
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			{
 				GetEntityClassname(entity, classname, sizeof(classname));
-				if (!StrContains(classname, "base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
+				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
 					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(125.0, 2.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))

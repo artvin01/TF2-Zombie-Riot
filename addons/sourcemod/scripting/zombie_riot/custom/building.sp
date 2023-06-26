@@ -1650,7 +1650,7 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 		}
-		else if(StrEqual(buffer, "base_npc"))
+		else if(StrEqual(buffer, "zr_base_npc"))
 		{
 			if(b_IsAlliedNpc[entity])
 			{
@@ -1936,7 +1936,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				buildingType = 6;
 			}
 		}
-		else if(Is_Reload_Button && StrEqual(buffer, "base_npc"))
+		else if(Is_Reload_Button && StrEqual(buffer, "zr_base_npc"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
 			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
@@ -3879,7 +3879,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
@@ -4368,7 +4368,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	
 	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_npc")) != -1)
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
 		{
@@ -4903,7 +4903,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					}
 					int count;
 					int i = MaxClients + 1;
-					while((i = FindEntityByClassname(i, "base_npc")) != -1)
+					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
@@ -4920,7 +4920,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 
 					int count;
 					int i = MaxClients + 1;
-					while((i = FindEntityByClassname(i, "base_npc")) != -1)
+					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
@@ -4937,7 +4937,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 
 					int count;
 					int i = MaxClients + 1;
-					while((i = FindEntityByClassname(i, "base_npc")) != -1)
+					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
@@ -6683,7 +6683,7 @@ static int GetSupplyLeft(int client)
 	int userid = GetClientUserId(client);
 	int personal = i_BarricadesBuild[client] * 3 / 2;
 	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 		{
@@ -6702,7 +6702,7 @@ static bool AtMaxSupply(int client)
 	int personal = i_BarricadesBuild[client] * 3 / 2;
 	int global;
 	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 		{
