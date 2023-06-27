@@ -300,9 +300,12 @@ public void Schwertkrieg_ClotThink(int iNPC)
 			
 			SetVariantInt(1);
 			AcceptEntityInput(npc.index, "SetBodyGroup");
-	
-			SetVariantColor(view_as<int>({89, 8, 12, 175}));
-			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
+			if(IsValidEntity(npc.m_iTeamGlow))
+			{
+				SetVariantColor(view_as<int>({89, 8, 12, 175}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");	
+			}
 			
 			for(int client_check=1; client_check<=MaxClients; client_check++)
 			{

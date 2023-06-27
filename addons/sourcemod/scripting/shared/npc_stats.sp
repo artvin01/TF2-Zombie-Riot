@@ -48,7 +48,7 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 
-static PathFollower pPath[MAXENTITIES];
+//static PathFollower pPath[MAXENTITIES];
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -214,18 +214,8 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool Ally_Collideeachother = false)
 	{
 
-		
-		
-		CBaseNPC baseNPC = CBaseNPC();
-		if(baseNPC == INVALID_NPC)
-		{
-			return view_as<CClotBody>(-1);
-		}
-
-		int npc = baseNPC.GetEntity();
-
-		if(!pPath[npc])
-			pPath[npc] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+		int npc = CreateEntityByName("zr_base_npc");
+		CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
 
 		DispatchKeyValueVector(npc, "origin",	 vecPos);
 		DispatchKeyValueVector(npc, "angles",	 vecAng);
@@ -252,7 +242,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		DispatchSpawn(npc); //Do this at the end :)
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
-
+	
 		//FIX: This fixes lookup activity not working.
 		npcstats.StartActivity(0);
 		npcstats.SetSequence(0);
@@ -1608,7 +1598,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 	public PathFollower GetPathFollower()
 	{
-		return pPath[this.index];
+		return view_as<PathFollower>(this.GetProp(Prop_Data, "zr_pPath"));
 	}
 	public INextBot GetBot()
 	{
@@ -1765,10 +1755,14 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void RemovePather(int entity)
 	{
+		return;
+		/*
+		body.GetPathFollower().Destroy();
 		this.MyNextBotPointer().NotifyPathDestruction(pPath[this.index]);
 		pPath[this.index].Destroy();
 		pPath[this.index] = view_as<PathFollower>(0);
 		this.m_bPathing = false;
+		*/
 	}
 	public void StartPathing()
 	{
@@ -2375,7 +2369,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void Update()
 	{
-		
 		if (this.m_iPoseMoveX < 0) {
 			this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
 		}
@@ -2596,13 +2589,7 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetReturnInfo(SDKType_Vector, SDKPass_ByRef);
 	if ((g_hSDKWorldSpaceCenter = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::WorldSpaceCenter offset!");
 	
-	//=========================================================
-	// StudioFrameAdvance - advance the animation frame up some interval (default 0.1) into the future
-	//=========================================================
 
-
-//	CBaseAnimatingOverlay::StudioFrameAdvance()
-	
 	//CBaseAnimating::ResetSequenceInfo( );
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::ResetSequenceInfo");
@@ -2615,7 +2602,6 @@ public void NPC_Base_InitGamedata()
 		CollisionProp()->RefreshScaledCollisionBounds();
 	}
 	*/
-	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
@@ -2657,8 +2643,26 @@ public void NPC_Base_InitGamedata()
 	HookIdMap = new StringMap();
 
 	delete gamedata;
-	
+
+	CEntityFactory EntityFactory = new CEntityFactory("zr_base_npc", OnCreate, OnDestroy);
+	EntityFactory.DeriveFromNPC();
+	EntityFactory.BeginDataMapDesc()
+		.DefineIntField("zr_pPath")
+	.EndDataMapDesc(); 
+
+	EntityFactory.Install();
+
 	//for (int i = 0; i < MAXENTITIES; i++) pPath[i] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+}
+
+static void OnCreate(CClotBody body)
+{
+	body.SetProp(Prop_Data, "zr_pPath", view_as<int>(PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors)));
+}
+
+static void OnDestroy(CClotBody body)
+{
+	body.GetPathFollower().Destroy();
 }
 
 //Ragdoll
@@ -3115,7 +3119,7 @@ public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
 		{
 			if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 			{
-				if(StrEqual(buffer, "base_npc"))
+				if(StrEqual(buffer, "zr_base_npc"))
 				{
 					GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer))
 					if(!StrContains(this_plugin_name, buffer))
@@ -5699,7 +5703,7 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 			static char class[12];
 			GetEntityClassname(TR_GetEntityIndex(trace), class, sizeof(class));
 			
-			if(StrContains(class, "base_npc") && StrContains(class, "obj_")) //if its the world, then do this.
+			if(StrContains(class, "zr_base_npc") && StrContains(class, "obj_")) //if its the world, then do this.
 			{
 				CreateParticle("impact_concrete", endpos, vecNormal);
 			}
@@ -6970,7 +6974,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 public void Raidboss_Clean_Everyone()
 {
 	int base_boss;
-	while((base_boss=FindEntityByClassname(base_boss, "base_npc")) != -1)
+	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 	{
 		if(IsValidEntity(base_boss))
 		{
@@ -7522,7 +7526,7 @@ bool Resize_TracePlayersAndBuildings(int entity, int contentsMask)
 	{
 		static char classname[MAX_ENTITY_CLASSNAME_LENGTH];
 		GetEntityClassname(entity, classname, sizeof(classname));
-		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "base_npc") == 0) || (strcmp(classname, "func_breakable") == 0))
+		if ((StrContains(classname, "obj_") == 0) || (strcmp(classname, "prop_dynamic") == 0) || (strcmp(classname, "func_door") == 0) || (strcmp(classname, "func_physbox") == 0) || (strcmp(classname, "zr_base_npc") == 0) || (strcmp(classname, "func_breakable") == 0))
 		{
 			if(!b_ThisEntityIgnored[entity] && ResizeMyTeam != GetEntProp(entity, Prop_Data, "m_iTeamNum"))
 			{

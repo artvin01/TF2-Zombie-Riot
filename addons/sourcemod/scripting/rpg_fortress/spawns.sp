@@ -244,7 +244,7 @@ void Spawns_DisableZone(const char[] name)
 	}
 	
 	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_npc")) != -1)
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(list.FindValue(hFromSpawnerIndex[i]) != -1)
 			NPC_Despawn(i);
@@ -274,7 +274,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 	if(!start)
 	{
 		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_npc")) != -1)
+		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
 			if(hFromSpawnerIndex[i] == pos)
 			{

@@ -1688,7 +1688,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 void Citizen_SetupStart()
 {
 	int i = -1;
-	while((i = FindEntityByClassname(i, "base_npc")) != -1)
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
@@ -1700,7 +1700,7 @@ void Citizen_SetupStart()
 				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 				float vecTarget[3];
 				int entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7)
 					{
@@ -1952,7 +1952,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		//distance = 100000000.0;
 		int entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
 			if((i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7) ||
 				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS &&
@@ -2569,7 +2569,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		distance = 100000000.0;
 		int entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
 			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
 			{
@@ -2639,7 +2639,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		distance = 100000000.0;
 		int entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
 			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
 			{
@@ -2744,7 +2744,7 @@ public void Citizen_ClotThink(int iNPC)
 
 				int entity = MaxClients + 1;
 				float vecTarget2[3];
-				while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN)
 					{

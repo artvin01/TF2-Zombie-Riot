@@ -355,7 +355,7 @@ public void Trip_TrackPlanted(int client)
 									int targ = TR_GetEntityIndex(Trace);
 									char other_classname[32];
 									GetEntityClassname(targ, other_classname, sizeof(other_classname));
-									if ((StrContains(other_classname, "base_npc") != -1) && (GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
+									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
 									{
 										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client], DMG_BLAST, -1);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);

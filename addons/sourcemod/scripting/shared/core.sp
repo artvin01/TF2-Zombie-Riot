@@ -1193,7 +1193,7 @@ public void OnPluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
-			if(!StrContains(buffer, "base_npc"))
+			if(!StrContains(buffer, "zr_base_npc"))
 				RemoveEntity(i);
 		}
 	}
@@ -1479,6 +1479,8 @@ public void OnClientPutInServer(int client)
 	DHook_HookClient(client);
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
+	
+	AdjustBotCount();
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
 	WeaponClass[client] = TFClass_Unknown;
@@ -2317,7 +2319,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnWrenchCreated(entity);
 		}
-		else if(!StrContains(classname, "base_npc"))
+		else if(!StrContains(classname, "zr_base_npc"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
 			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);

@@ -223,7 +223,7 @@ public void ArkSinger_ClotThink(int iNPC)
 
 			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "base_npc")) != -1)
+			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
 				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
 				{

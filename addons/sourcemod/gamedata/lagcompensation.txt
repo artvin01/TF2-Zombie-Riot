@@ -22,13 +22,13 @@
 			"CLagCompensationManager::FinishLagCompensation"
 			{
 				"library"	"server"
-				"linux"		"" //sorry i hate sigs
+				"linux"		"@_ZN23CLagCompensationManager21FinishLagCompensationEP11CBasePlayer" //sorry i hate sigs
 				"windows"	"\x55\x8B\xEC\x83\xEC\x38\xA1\x2A\x2A\x2A\x2A\x53" // 55 8B EC 83 EC 38 A1 ? ? ? ? 53 
 			}
 			"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
 			{
 				"library"	"server"
-				"linux"		"" //sorry i hate sigs
+				"linux"		"@_ZN23CLagCompensationManager26FrameUpdatePostEntityThinkEv" //sorry i hate sigs
 				"windows"	"\x55\x8B\xEC\x83\xEC\x34\xA1\x2A\x2A\x2A\x2A\x53\x8B\xD9"
 			}
 		}

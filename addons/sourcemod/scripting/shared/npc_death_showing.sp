@@ -6,7 +6,7 @@ void NPC_Killed_Show_Hud(int player, int entity, int weapon, char[] npcname, int
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
 		char buffer[64];
-		if(GetEntityClassname(entity, buffer, sizeof(buffer)) && StrEqual(buffer, "base_npc"))
+		if(GetEntityClassname(entity, buffer, sizeof(buffer)) && StrEqual(buffer, "zr_base_npc"))
 		{
 			for(int bot=1; bot<=MaxClients; bot++)
 			{
