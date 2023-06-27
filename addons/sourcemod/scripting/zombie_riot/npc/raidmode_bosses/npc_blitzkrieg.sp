@@ -179,6 +179,12 @@ public void Blitzkrieg_OnMapStart()
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
 	
+	bool b_Schwertkrieg_Alive= false;	//I SWEAR I KNOW WHAT IM DOING
+	bool b_Donnerkrieg_Alive = false;
+	bool b_Valid_Wave = false;
+	bool b_Begin_Dialogue = false;
+	bool b_was_talking = false;
+	
 	
 }
 

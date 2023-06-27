@@ -326,7 +326,7 @@ public Action Cosmic_Heat_Tick(int client)
 				}
 				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 				int pitch = 25+Heat;
-				EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_OVERHEAT_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.25, pitch);
+				EmitSoundToClient(client, SND_CLIENT_COSMIC_TERROR_OVERHEAT_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.5, pitch);
 			}
 			Cosmic_Terror_Hud_Delay[client]=GetGameTime()+0.5;
 		}
