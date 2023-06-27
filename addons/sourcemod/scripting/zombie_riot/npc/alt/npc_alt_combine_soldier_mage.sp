@@ -177,7 +177,7 @@ methodmap AltCombineMage < CClotBody
 		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
 		i_NpcWeight[npc.index] = 1;
 		
-		int iActivity = npc.LookupActivity("ACT_IDLE");
+		int iActivity = npc.LookupActivity("ACT_IDLE_ANGRY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -249,24 +249,6 @@ public void AltCombineMage_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				if (npc.m_flmovedelay < GetGameTime(npc.index))
-				{
-					int iActivity_melee = npc.LookupActivity("ACT_RUN");
-					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_flmovedelay = GetGameTime(npc.index) + 1.5;
-				}
-			}
-			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY");
-				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				npc.m_flmovedelay = 0.0;
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
-				
 			
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
