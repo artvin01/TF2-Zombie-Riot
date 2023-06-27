@@ -4865,6 +4865,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	int BuildingAlive = i_HasSentryGunAlive[client];
 	if(IsValidEntity(BuildingAlive))
 	{
+		BuildingAlive = EntRefToEntIndex(BuildingAlive);
 		if(f_VillageRingVectorCooldown[BuildingAlive] < GetGameTime())
 		{
 			f_VillageRingVectorCooldown[BuildingAlive] = GetGameTime() + 3.0;
