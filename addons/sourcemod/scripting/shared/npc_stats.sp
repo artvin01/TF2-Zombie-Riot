@@ -240,6 +240,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
+	
+	//	return view_as<CClotBody>(npc);
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
 	
@@ -1608,13 +1610,13 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		return TheNPCs.FindNPCByEntIndex(this.index);
 	}
-	public CBaseNPC_Locomotion GetLocomotion()
+	public ILocomotion GetLocomotion()
 	{
-		return this.GetBaseNPC().GetLocomotion();
+		return this.MyNextBotPointer().GetLocomotionInterface();
 	}
-	public CBaseNPC_Locomotion GetLocomotionInterface()
+	public ILocomotion GetLocomotionInterface()
 	{
-		return this.GetBaseNPC().GetLocomotion();
+		return this.MyNextBotPointer().GetLocomotionInterface();
 	}
 	public bool IsOnGround()
 	{
@@ -1846,7 +1848,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void Approach(const float vecGoal[3])										   { this.GetLocomotionInterface().Approach(vecGoal, 0.1);						}
 	public void Jump()																	 { this.GetLocomotionInterface().Jump();										  }
 	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }	
-	public void SetVelocity(const float vec[3])											{ this.GetLocomotionInterface().SetVelocity(vec);							  }	
+	public void SetVelocity(const float vec[3])	
+	{
+		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
+		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
+		locomotion.SetVelocity(vec);							  
+	}	
 	
 	public void SetOrigin(const float vec[3])											
 	{
@@ -4169,6 +4176,16 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
+		if(baseNPC == INVALID_NPC)
+		{
+			PrintToChatAll("PANIC PANIC!!!!!");
+			PrintToChatAll("PANIC PANIC!!!!!");
+			PrintToChatAll("PANIC PANIC!!!!!");
+			PrintToChatAll("PANIC PANIC!!!!!");
+			return -1;
+		}
+		PrintToServer("%b", baseNPC);
+		
 		CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 100.0);
 		if(area == NULL_AREA)
 		{
@@ -7126,23 +7143,25 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 {
 	if(IsValidEntity(npc))
 	{
+		CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
+		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 		switch(CollisionType)
 		{
 			case 1:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
 			}
 			case 2:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
 			}
 			case 3:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
 			}
 			case 4:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
 			}
 		}
 	}
