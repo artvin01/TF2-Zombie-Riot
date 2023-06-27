@@ -4862,10 +4862,14 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(mounted)
 		range *= 0.55;
 	
-	if(f_VillageRingVectorCooldown[i_HasSentryGunAlive[client]] < GetGameTime())
+	int BuildingAlive = i_HasSentryGunAlive[client];
+	if(IsValidEntity(BuildingAlive))
 	{
-		f_VillageRingVectorCooldown[i_HasSentryGunAlive[client]] = GetGameTime() + 3.0;
-		spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 3.0, 6.0, 0.1, 1);
+		if(f_VillageRingVectorCooldown[BuildingAlive] < GetGameTime())
+		{
+			f_VillageRingVectorCooldown[BuildingAlive] = GetGameTime() + 3.0;
+			spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 3.0, 6.0, 0.1, 1);
+		}
 	}
 	
 	menu.Pagination = 0;
