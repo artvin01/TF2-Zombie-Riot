@@ -240,7 +240,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
-	
+
 	//	return view_as<CClotBody>(npc);
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
@@ -4178,13 +4178,9 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
 		if(baseNPC == INVALID_NPC)
 		{
-			PrintToChatAll("PANIC PANIC!!!!!");
-			PrintToChatAll("PANIC PANIC!!!!!");
-			PrintToChatAll("PANIC PANIC!!!!!");
-			PrintToChatAll("PANIC PANIC!!!!!");
+			PrintToServer("FAILED NPC.");
 			return -1;
 		}
-		PrintToServer("%b", baseNPC);
 		
 		CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 100.0);
 		if(area == NULL_AREA)

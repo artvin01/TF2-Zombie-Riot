@@ -76,12 +76,6 @@
 				"linux"		"@_ZN16CObjectSentrygun10FindTargetEv"
 				"windows"	"\x55\x8B\xEC\x81\xEC\xC8\x00\x00\x00\x56\x57\x8B\xF9"
 			}
-			"CTFPlayer::PlaySpecificSequence"
-			{
-				"library"	"server"
-				"linux"		"@_ZN9CTFPlayer20PlaySpecificSequenceEPKc"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x30\x53\x56\x8B\x75\x08\x57\x56\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xD8\x83\xFB\xFF\x74\x2A\x8B\x35\x2A\x2A\x2A\x2A\x8B\xCE\x8B\x16\xFF\x52\x2A\x8B\x8F\x2A\x2A\x2A\x2A\x53\x6A\x13\x8B\x01\xFF\x50"
-			}
 			"CTFPlayer::CanAirDash"
 			{
 				"library"	"server"
@@ -106,12 +100,6 @@
 				"linux"		"@_ZN9CTFPlayer10GetMaxAmmoEii"
 				"windows"	"\x55\x8B\xEC\x8B\x45\x0C\x56\x57\x8B\xF9\x83\xF8\xFF\x75\x2A\xFF\xB7\x2A\x2A\x2A\x2A\xEB\x01\x50\xE8"
 			}
-			"CTFPlayer::IsPlayerClass"
-			{
-				"library"	"server"
-				"linux"		"@_ZNK9CTFPlayer13IsPlayerClassEi"
-				"windows"	"\x55\x8B\xEC\x8D\x81\x0C\x21\x00\x00"
-			}
 			"CTFPlayer::RegenThink"
 			{
 				"library"	"server"
@@ -124,12 +112,6 @@
 				"linux"		"@_ZN9CTFPlayer31RemoveAllOwnedEntitiesFromWorldEb"
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\xE8\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A"
 			}
-			"CTFPlayer::Taunt"
-			{
-				"library"	"server"
-				"linux"		"@_ZN9CTFPlayer5TauntE8taunts_ti"
-				"windows"	"\x55\x8B\xEC\x81\xEC\xD4\x00\x00\x00\x53\x56\x57\x8B\xF9\xE8"
-			}
 			"CBaseEntity::SetLocalOrigin" // String aBadSetlocalori,   Bad SetLocalOrigin(%f,%f,%f) on %s\n
 			{
 				"library"	"server"
@@ -141,12 +123,6 @@
 				"library"	"server"
 				"linux"		"@_ZN11CBaseEntity14SetLocalAnglesERK6QAngle" 
 				"windows"	"\x55\x8B\xEC\xF3\x0F\x10\x0D\x2A\x2A\x2A\x2A\x83\xEC\x10\x0F\x28\xC1\x0F\x57\x05\x2A\x2A\x2A\x2A\x56\x8B\x75\x08\x57\x8B\xF9\xF3\x0F\x10\x16\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x56\x04\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\xF3\x0F\x10\x56\x08\x0F\x2F\xD0\x0F\x86\x2A\x2A\x2A\x2A\x0F\x2F\xCA\x0F\x86\x2A\x2A\x2A\x2A\x8B\x06\x89\x45\xF0\xF3\x0F\x10\x45\xF0\x0F\x2E\x87\x24\x03\x00\x00"
-			}
-			"CTFBaseBoss::BossThink" // "damage"
-			{
-				"library"	"server"
-				"linux"		"@_ZN11CTFBaseBoss9BossThinkEv" 
-				"windows"	"\x55\x8B\xEC\x81\xEC\xA4\x05\x00\x00"
 			}
 			"LookupActivity" //int ( CStudioHdr *pstudiohdr, const char *label ) "spew_bars_context" NOTE: NOT CBaseAnimating::LookupActivity
 			{
@@ -205,12 +181,6 @@
 				"linux"		"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x04\x0B\x00\x00\x00"
 			}
-			"CTFPlayerShared::Disguise" // offset aModDisguiseCon
-			{
-				"library"	"server"
-				"linux"		"@_ZN15CTFPlayerShared8DisguiseEiiP9CTFPlayerb"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x24\x56\x57\x8B\xF9\x8B\x8F\x90\x01\x00\x00"
-			}
 			"Studio_FindAttachment" //int ( const CStudioHdr *pStudioHdr, const char *pAttachmentName ) <- "alt-origin"
 			{
 				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\x7D\x08\x85\xFF\x74\x2A\x8B\xCF"
@@ -251,12 +221,6 @@
 				"linux"		"@_ZN11CBaseObject16FinishedBuildingEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x6C\x56\x57\x6A\x01"
 			}
-			"CTFGCServerSystem::PreClientUpdate"
-			{
-				//aSettingSvVisib string, there is only one, easy check
-				"linux"		"@_ZN17CTFGCServerSystem15PreClientUpdateEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x8B\xD9\x57\x89\x5D\xF4\xE8\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
-			}	
 			// search string: "CreatePlayerBot: Unable to create bot"
 			"NextBotCreatePlayerBot<CTFBot>"
 			{
@@ -302,27 +266,12 @@
 				"linux"			"@_ZN9CTFPlayer20ManageRegularWeaponsEP19TFPlayerClassData_t"
 				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x53\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 			}
-			// CTFPlayer::ManageRegularWeapons has unique string "ManageRegularWeapons" and the only xref is GiveDefaultItems
-            "CTFPlayer::GiveDefaultItems"
-            {
-                "library"   "server"
-                "linux"     "@_ZN9CTFPlayer16GiveDefaultItemsEv"
-                // sub_104D4220:
-                "windows"   "\x56\x57\x8B\xF9\xFF\xB7\x40\x22\x00\x00\xE8\x2A\x2A\x2A\x2A\x83\xC4\x04"
-            }
 			"CTFWeaponBaseMelee::GetShootSound"
 			{
 				// "Weapon_Slap.OpenHand", last function in the end
 				"library"		"server"
 				"linux"			"@_ZNK18CTFWeaponBaseMelee13GetShootSoundEi"
 				"windows"		"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
-			}
-			"CTFWeaponBaseMelee::GetSwingRange"
-			{
-				// string is_a_sword, only once.
-				"library"		"server"
-				"linux"			"@_ZN18CTFWeaponBaseMelee13GetSwingRangeEv"
-				"windows"		"\x56\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x8B\xF0\x85\xF6\x74\x2A\x8B\x16\x8B\xCE\x8B\x92\x48\x01\x00\x00\xFF\xD2\x84\xC0\x74\x2A\x6A\x11"
 			}
 			"CTFWeaponBaseMelee::Smack"
 			{
@@ -428,13 +377,6 @@
 				"return"	"void"
 				"this"		"entity"
 			}
-			"CTFBaseBoss::BossThink"
-           	{
-              	 	"signature"    	"CTFBaseBoss::BossThink"
-               		"callconv"    	"thiscall"
-               		"return"    	"void"
-              		"this"        	"entity"
-           	}
 			"CObjectSentrygun::Fire"
 			{
 				"signature"	"CObjectSentrygun::Fire"
@@ -460,13 +402,6 @@
 			{
 				"offset"	"CGameRules::FrameUpdatePostEntityThink"
 				"hooktype"	"gamerules"
-				"return"	"void"
-				"this"		"ignore"
-			}
-			"CTFPlayerShared::Disguise"
-			{
-				"signature"	"CTFPlayerShared::Disguise"
-				"callconv"	"thiscall"
 				"return"	"void"
 				"this"		"ignore"
 			}
@@ -762,13 +697,6 @@
 					}
 				}
 			}
-			"CTFPlayer::GiveDefaultItems"
-            {
-				"signature"		"CTFPlayer::GiveDefaultItems"
-				"callconv"		"thiscall"
-				"return"		"void"
-				"this"			"entity"
-            }
 			"CWeaponMedigun::AllowedToHealTarget()"
 			{
 				"signature"		"CWeaponMedigun::AllowedToHealTarget()"
