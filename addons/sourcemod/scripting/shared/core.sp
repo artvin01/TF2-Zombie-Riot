@@ -517,8 +517,10 @@ bool b_CannotBeStunned[MAXENTITIES];
 bool b_CannotBeKnockedUp[MAXENTITIES];
 bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
+bool b_IsInUpdateGroundConstraintLogic;
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
+int h_NpcCollissionHookType[MAXENTITIES];
 #define EP_GENERIC                  		0          					// Nothing special.
 #define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
@@ -566,6 +568,7 @@ int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];
 bool b_ThisEntityIgnoredEntirelyFromAllCollisions[MAXENTITIES];
+bool b_ThisEntityIsAProjectileForUpdateContraints[MAXENTITIES];
 bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
@@ -2189,6 +2192,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		b_RocketBoomEffect[entity] = false;
 		b_IsAlliedNpc[entity] = false;
+		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;
 		i_WandIdNumber[entity] = -1;
@@ -2206,6 +2210,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ForceCollisionWithProjectile[entity] = false;
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
+		h_NpcCollissionHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		f_BuffBannerNpcBuff[entity] = 0.0;
@@ -2338,7 +2343,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_syringe"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2347,7 +2352,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_flare"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2356,7 +2361,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_healing_bolt"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2367,7 +2372,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		
 		else if(!StrContains(classname, "tf_projectile_pipe_remote"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2378,7 +2383,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_arrow"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2398,14 +2403,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "prop_physics_override"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
@@ -2418,7 +2423,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
@@ -2426,14 +2431,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			b_Is_Player_Projectile[entity] = true; //Pretend its a player projectile for now.
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_pipe"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
@@ -2450,7 +2455,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
 		{
-			
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
@@ -2808,6 +2813,14 @@ public void OnEntityDestroyed(int entity)
 			
 			RemoveNpcThingsAgain(entity);
 			IsCustomTfGrenadeProjectile(entity, 0.0);
+			
+			if(h_NpcCollissionHookType[entity] != 0)
+			{
+				if(!DHookRemoveHookID(h_NpcCollissionHookType[entity]))
+				{
+					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+				}
+			}
 		}
 	}
 	
@@ -3091,6 +3104,7 @@ static void MapStartResetAll()
 	Zero(f_OneShotProtectionTimer);
 	CleanAllNpcArray();
 	Zero(f_ClientServerShowMessages);
+	Zero(h_NpcCollissionHookType);
 	Zero2(i_StickyToNpcCount);
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);

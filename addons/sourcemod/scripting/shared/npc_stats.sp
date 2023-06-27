@@ -2578,7 +2578,11 @@ public void NPC_Base_InitGamedata()
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	// thanks to Dysphie#4094 on discord for help
+	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
 
+//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
+	
+	//SDKCalls
 	//This call is used to get an entitys center position
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::WorldSpaceCenter");
@@ -3585,6 +3589,10 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
 	else if(!b_NpcHasDied[entity])
 	{
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
@@ -3633,6 +3641,10 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 	}
 #endif
 	if(i_IsABuilding[entity])
+	{
+		return false;
+	}
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
@@ -3692,6 +3704,10 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 	}
 #endif
 
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
 	
 	else if(i_IsABuilding[entity])
 	{
@@ -3717,8 +3733,12 @@ public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMas
 public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, any iExclude)
 {
 
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
 	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		return false;
 		
 	
@@ -4474,7 +4494,11 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return false;
 	}
-
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
+	
 	if(!b_NpcHasDied[entity])
 	{
 		return false;
@@ -4516,6 +4540,11 @@ public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
 	}
 
 	if(entity > 0 && entity <= MaxClients) 
+	{
+		return false;
+	}
+
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
 	}
@@ -4578,6 +4607,10 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return false;
 	}
 
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	{
+		return false;
+	}
 	
 	if(b_is_a_brush[entity])
 	{
@@ -7115,6 +7148,18 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 	}
 }
 
+
+public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = true;
+	return MRES_Ignored;
+}
+
+public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
+{
+	b_IsInUpdateGroundConstraintLogic = false;
+	return MRES_Ignored;
+}
 
 /*
 public MRESReturn Dhook_ResolveCollision_Pre()
