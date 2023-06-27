@@ -6139,9 +6139,9 @@ static const int SummonerAlternative[][] =
 	{ ALT_BARRACK_BARRAGER,				75,		50, 	1, 		7, 7, 1 },	// Construction Worker
 
 	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1 },	// Construction Worker
-	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		3, 11, 1 },	// Construction Expert
+	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		7, 11, 1 },	// Construction Expert
 
-	{ ALT_BARRACKS_BERSERKER, 			200, 	200, 	0,		7, 11, 1 },	// Construction Expert
+	{ ALT_BARRACKS_BERSERKER, 			200, 	200, 	0,		3, 11, 1 },	// Construction Expert
 	{ ALT_BARRACK_IKUNAGAE , 			125,	300,	0,		7, 16, 1 },	// Construction Master
 
 
