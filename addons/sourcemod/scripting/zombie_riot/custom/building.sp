@@ -6516,6 +6516,7 @@ static void SummonerMenu(int client, int viewer)
 	}
 
 	bool owner = client == viewer;
+	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);
 	int level = MaxSupportBuildingsAllowed(client, true);
 	
 	Menu menu = new Menu(SummonerMenuH);
@@ -6576,7 +6577,7 @@ static void SummonerMenu(int client, int viewer)
 		
 		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
 		IntToString(i, buffer2, sizeof(buffer2));
-		bool poor = (!owner ||
+		bool poor = (!alive ||
 			WoodAmount[client] < GetData(CivType[client], i, WoodCost) ||
 			FoodAmount[client] < GetData(CivType[client], i, FoodCost) ||
 			GoldAmount[client] < GetData(CivType[client], i, GoldCost));
@@ -6718,7 +6719,7 @@ static bool AtMaxSupply(int client)
 		}
 	}
 
-	int maxGlobal = 9 + Rogue_Barracks_BonusSupply();
+	int maxGlobal = 15 + Rogue_Barracks_BonusSupply();
 	int maxLocal = 2 + Rogue_Barracks_BonusSupply();
 
 	return (global > maxGlobal || personal > maxLocal);

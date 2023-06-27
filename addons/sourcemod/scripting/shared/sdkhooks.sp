@@ -1351,11 +1351,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage = 0.0;
 		}
-		return Plugin_Changed;
 	}
-	
-	if(attacker <= MaxClients && attacker > 0)	
+	else if(attacker <= MaxClients && attacker > 0)
+	{
 		return Plugin_Handled;	
+	}
 		
 
 #if defined RPG	
