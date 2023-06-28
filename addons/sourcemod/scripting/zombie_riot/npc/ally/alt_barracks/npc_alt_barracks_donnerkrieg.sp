@@ -385,6 +385,9 @@ static Action Ikunagae_TBB_Timer(Handle timer, int client)
 	
 	Ikunagae_BEAM_TicksActive[client] = 0;
 	
+	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+	if(iActivity > 0) npc.StartActivity(iActivity);
+	
 	//StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	//StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	//StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
