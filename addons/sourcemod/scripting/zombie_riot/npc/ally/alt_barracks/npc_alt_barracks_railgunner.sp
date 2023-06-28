@@ -82,8 +82,16 @@ methodmap Barrack_Alt_Raigunner < BarrackBody
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		
-		SetVariantInt(1);
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		
+		
 		
 		i_overcharge[npc.index] = 0;
 		
@@ -130,7 +138,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						{
 							i_overcharge[npc.index]=0;
 							npc.PlayMeleeSound();
-							npc.FireParticleRocket(vecTarget, 2600.0 * npc.BonusDamageBonus , speed+100.0 , 100.0 , "spell_fireball_small_red", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, 2600.0 * npc.BonusDamageBonus , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (3.5 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							npc.ALT_Play_Railgunner_Shoot();
@@ -153,7 +161,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 200000.0, _,false);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
 	}
 }
 

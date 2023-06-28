@@ -53,6 +53,7 @@ static float fl_nightmare_anim_timer[MAXENTITIES];
 
 static int i_AmountProjectiles[MAXENTITIES];
 
+static bool b_health_stripped[MAXENTITIES];
 
 static bool NightmareCannon_BEAM_CanUse[MAXENTITIES];
 static bool NightmareCannon_BEAM_IsUsing[MAXENTITIES];
@@ -212,6 +213,7 @@ methodmap Donnerkrieg < CClotBody
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
 		
+		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
 		
@@ -311,6 +313,14 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	}
 	if(b_Begin_Dialogue)
 	{
+		
+		if(!b_health_stripped[npc.index])
+		{
+			b_health_stripped[npc.index] = true;
+			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth/50.0));
+		}
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		if(!b_Schwertkrieg_Alive)
 		{

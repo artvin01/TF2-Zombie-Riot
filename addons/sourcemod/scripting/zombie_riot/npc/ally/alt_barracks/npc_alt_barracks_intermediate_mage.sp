@@ -86,6 +86,14 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		
 		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
@@ -107,7 +115,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < 200000.0)
+			if(flDistanceToTarget < 400000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -141,7 +149,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 100000.0, _, false);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 300000.0, _, false);
 	}
 }
 

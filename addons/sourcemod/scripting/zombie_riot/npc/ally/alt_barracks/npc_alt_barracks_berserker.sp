@@ -115,6 +115,12 @@ methodmap Barrack_Alt_Berserker < BarrackBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 7, 255, 255, 255);
 		
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
@@ -147,8 +153,8 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 					
-					float damage = (1750.0*npc.BonusDamageBonus) * (1.0+(1-(Health/MaxHealth))*2);
-					float speed = (0.25*npc.BonusFireRate) * (Health / MaxHealth);
+					float damage = (1500.0*npc.BonusDamageBonus) * (1.0+(1-(Health/MaxHealth))*2);
+					float speed = (0.25*npc.BonusFireRate) * (Health / MaxHealth)+0.1;
 					//Play attack ani
 					
 					if (!npc.m_flAttackHappenswillhappen)

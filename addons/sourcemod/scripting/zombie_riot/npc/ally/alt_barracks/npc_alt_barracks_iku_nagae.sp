@@ -101,7 +101,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 	}
 	public Barrack_Alt_Ikunagae(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(BarrackBody(client, vecPos, vecAng, "410", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(BarrackBody(client, vecPos, vecAng, "450", "models/player/medic.mdl", STEPTYPE_NORMAL));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACK_IKUNAGAE;
 		i_NpcWeight[npc.index] = 1;
@@ -154,6 +154,15 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 7, 255, 255, 255);
+		
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		
 		i_laser_throttle[npc.index] = 0;
@@ -227,8 +236,8 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			else
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 100000.0, _, false);
-				if(flDistanceToTarget < 202500 && npc.m_flNextMeleeAttack < GameTime)
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
+				if(flDistanceToTarget < 300000 && npc.m_flNextMeleeAttack < GameTime)
 				{
 					npc.PlayPullSound();
 					npc.m_flNextMeleeAttack = GameTime + 1.5 * npc.BonusFireRate;
@@ -240,21 +249,26 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 
 				npc.StartPathing();
 			}
-			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
-			{	
-				npc.m_iAmountProjectiles += 1;
-				npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
-				npc.PlayRangedSound();
-						
-				float flPos[3]; // original
-				float flAng[3]; // original
-				GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+			int Enemy_I_See;		
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
+				{	
+					npc.m_iAmountProjectiles += 1;
+					npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
+					npc.PlayRangedSound();
 							
-				npc.FireParticleRocket(vecTarget, 1250.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-				if (npc.m_iAmountProjectiles >= 10)
-				{
-					npc.m_iAmountProjectiles = 0;
-					npc.m_flNextRangedBarrage_Spam = GameTime + 15.0 * npc.BonusFireRate;
+					float flPos[3]; // original
+					float flAng[3]; // original
+					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+								
+					npc.FireParticleRocket(vecTarget, 1250.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					if (npc.m_iAmountProjectiles >= 10)
+					{
+						npc.m_iAmountProjectiles = 0;
+						npc.m_flNextRangedBarrage_Spam = GameTime + 15.0 * npc.BonusFireRate;
+					}
 				}
 			}
 		}
@@ -287,7 +301,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_CanUse[client] = true;
 	Ikunagae_BEAM_CloseDPT[client] = 12500.0* npc.BonusDamageBonus;	//what the fuck
 	Ikunagae_BEAM_FarDPT[client] = 2500.0* npc.BonusDamageBonus;
-	Ikunagae_BEAM_MaxDistance[client] = 500;
+	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
 	Ikunagae_BEAM_ChargeUpTime[client] = 12;
