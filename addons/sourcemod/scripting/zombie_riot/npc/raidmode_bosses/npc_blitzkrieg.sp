@@ -179,13 +179,11 @@ public void Blitzkrieg_OnMapStart()
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
 	
-	bool b_Schwertkrieg_Alive= false;	//I SWEAR I KNOW WHAT IM DOING
-	bool b_Donnerkrieg_Alive = false;
-	bool b_Valid_Wave = false;
-	bool b_Begin_Dialogue = false;
-	bool b_was_talking = false;
-	
-	
+	b_Schwertkrieg_Alive= false;	//I SWEAR I KNOW WHAT IM DOING
+	b_Donnerkrieg_Alive = false;
+	b_Valid_Wave = false;
+	b_Begin_Dialogue = false;
+	b_was_talking = false;
 }
 
 //static float fl_PlayMusicSound[MAXENTITIES];
