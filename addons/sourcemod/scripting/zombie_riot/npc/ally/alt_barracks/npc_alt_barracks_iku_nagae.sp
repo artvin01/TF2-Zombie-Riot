@@ -236,8 +236,8 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			else
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 100000.0, _, false);
-				if(flDistanceToTarget < 202500 && npc.m_flNextMeleeAttack < GameTime)
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
+				if(flDistanceToTarget < 300000 && npc.m_flNextMeleeAttack < GameTime)
 				{
 					npc.PlayPullSound();
 					npc.m_flNextMeleeAttack = GameTime + 1.5 * npc.BonusFireRate;
@@ -301,7 +301,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_CanUse[client] = true;
 	Ikunagae_BEAM_CloseDPT[client] = 12500.0* npc.BonusDamageBonus;	//what the fuck
 	Ikunagae_BEAM_FarDPT[client] = 2500.0* npc.BonusDamageBonus;
-	Ikunagae_BEAM_MaxDistance[client] = 500;
+	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
 	Ikunagae_BEAM_ChargeUpTime[client] = 12;
