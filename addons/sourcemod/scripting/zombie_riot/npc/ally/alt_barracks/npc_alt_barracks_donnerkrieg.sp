@@ -197,9 +197,11 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					int iActivity = npc.LookupActivity("ACT_GRAPPLE_PULL_IDLE");
+					if(iActivity > 0) npc.StartActivity(iActivity);
 					Normal_Attack_BEAM_Iku_Ability(npc.index);
 					b_cannon_active[npc.index] = true;
-					fl_cannon_recharge[npc.index] = GameTime + 30.0;
+					fl_cannon_recharge[npc.index] = GameTime + 30.0*npc.BonusFireRate;
 				}
 			}
 			
