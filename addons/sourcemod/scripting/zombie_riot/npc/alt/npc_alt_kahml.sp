@@ -723,12 +723,18 @@ public void Kahmlstein_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget);
 				npc.m_flNextTeleport = GetGameTime(npc.index) + 11.0;
 				float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-			
 				if(Tele_Check > 120.0)
 				{
-					i_kahml_dash_charge[npc.index]--;
-					TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-					npc.PlayTeleportSound();
+					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+					if(Succeed)
+					{
+						i_kahml_dash_charge[npc.index]--;
+						npc.PlayTeleportSound();
+					}
+					else
+					{
+						npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+					}
 				}
 			}
 		}
