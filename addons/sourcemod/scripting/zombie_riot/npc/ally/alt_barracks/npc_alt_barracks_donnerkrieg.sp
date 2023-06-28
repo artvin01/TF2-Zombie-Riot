@@ -193,9 +193,14 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget < 250000 && fl_cannon_recharge[npc.index]<GameTime)
 			{
-				Normal_Attack_BEAM_Iku_Ability(npc.index);
-				b_cannon_active[npc.index] = true;
-				fl_cannon_recharge[npc.index] = GameTime + 30.0;
+				int Enemy_I_See;		
+				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				if(IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					Normal_Attack_BEAM_Iku_Ability(npc.index);
+					b_cannon_active[npc.index] = true;
+					fl_cannon_recharge[npc.index] = GameTime + 30.0;
+				}
 			}
 			
 			if(flDistanceToTarget < 100000 || npc.m_flAttackHappenswillhappen)
