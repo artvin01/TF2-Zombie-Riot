@@ -2081,7 +2081,7 @@
 	}
 	"Barracks Donnerkrieg Desc"
 	{
-		"en"		"Can shoot a powerfull Laser, imobile while laser is active, fragile!"
+		"en"		"Can shoot a powerful Laser, immobile while laser is active, fragile!"
 	}
 	"Barracks Holy Knight Desc"
 	{

@@ -104,14 +104,14 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 	}
 	public Barrack_Alt_Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(BarrackBody(client, vecPos, vecAng, "600", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(BarrackBody(client, vecPos, vecAng, "650", "models/player/medic.mdl", STEPTYPE_NORMAL));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACK_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Donnerkrieg_ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 250.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -135,6 +135,14 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		
+		
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		b_cannon_active[npc.index] = false;
 		fl_cannon_recharge[npc.index] = GetGameTime(npc.index) + 10.0;
@@ -221,21 +229,26 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 			}
-			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
-			{	
-				npc.m_iAmountProjectiles += 1;
-				npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
-				npc.PlayRangedSound();
-						
-				float flPos[3]; // original
-				float flAng[3]; // original
-				GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+			int Enemy_I_See;		
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
+				{	
+					npc.m_iAmountProjectiles += 1;
+					npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
+					npc.PlayRangedSound();
 							
-				npc.FireParticleRocket(vecTarget, 1250.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-				if (npc.m_iAmountProjectiles >= 10)
-				{
-					npc.m_iAmountProjectiles = 0;
-					npc.m_flNextRangedBarrage_Spam = GameTime + 15.0 * npc.BonusFireRate;
+					float flPos[3]; // original
+					float flAng[3]; // original
+					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+								
+					npc.FireParticleRocket(vecTarget, 1250.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					if (npc.m_iAmountProjectiles >= 10)
+					{
+						npc.m_iAmountProjectiles = 0;
+						npc.m_flNextRangedBarrage_Spam = GameTime + 15.0 * npc.BonusFireRate;
+					}
 				}
 			}
 		}
@@ -257,7 +270,7 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 			
 		}
 		if(!b_cannon_active[npc.index])
-			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE", 100000.0, _, false);
+			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE", 100000.0, _, false);
 	}
 }
 
@@ -274,8 +287,8 @@ static void Primary_Attack_BEAM_Iku_Ability(int client)
 	{
 		Ikunagae_BEAM_BuildingHit[building] = false;
 	}
-			
-	Barrack_Alt_Ikunagae npc = view_as<Barrack_Alt_Ikunagae>(client);
+	
+	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(client);
 	
 	Ikunagae_BEAM_IsUsing[client] = false;
 	Ikunagae_BEAM_TicksActive[client] = 0;
@@ -438,8 +451,13 @@ static Action Ikunagae_TBB_Tick(int client)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
 		
-			npc.FaceTowards(vecTarget, 20000.0);
-			npc.FaceTowards(vecTarget, 20000.0);
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.FaceTowards(vecTarget, 20000.0);
+				npc.FaceTowards(vecTarget, 20000.0);
+			}
 		}
 		
 

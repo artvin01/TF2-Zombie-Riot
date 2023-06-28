@@ -26,7 +26,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 	}
 	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1000"));
+		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1250"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACKS_HOLY_KNIGHT;
 		i_NpcWeight[npc.index] = 2;
@@ -70,6 +70,13 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 		SetEntityRenderColor(npc.m_iWearable1, 100, 150, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 50, 125, 150, 255);
+		
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		

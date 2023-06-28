@@ -84,14 +84,14 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	}
 	public Barrack_Alt_Shwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1500", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1750", "models/player/medic.mdl", STEPTYPE_NORMAL));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACKS_SCHWERTKRIEG;
 		i_NpcWeight[npc.index] = 2;
 		
 		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Shwertkrieg_ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 350.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -129,6 +129,14 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 7, 255, 255, 255);*/
 		
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		fl_self_heal_timer[npc.index] = GetGameTime(npc.index) + 1.0;
@@ -248,7 +256,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 				fl_self_heal_timer[npc.index] = GameTime + 1.0;
 			}
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 7500.0, _, false);
+		BarrackBody_ThinkMove(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 7500.0, _, false);
 	}
 }
 
