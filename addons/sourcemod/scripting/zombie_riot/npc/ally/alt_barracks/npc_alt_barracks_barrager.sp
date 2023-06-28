@@ -189,13 +189,17 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 					{
 						if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && i_ammo_count[npc.index] >=0)
 						{
+							npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
+							float flPos[3]; // original
+							float flAng[3]; // original
+							GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 							//Play attack anim
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 							vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0);
 							npc.FaceTowards(vecTarget, 20000.0);
 							npc.PlayRangedSound();
 							//npc.FireRocket(vecTarget, 500.0 * npc.BonusDamageBonus, 1200.0, _, _, _, _, GetClientOfUserId(npc.OwnerUserId));
-							npc.FireParticleRocket(vecTarget, 500.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, 500.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, true, flPos,_, GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + 0.45* npc.BonusFireRate;
 							npc.m_flReloadIn = GameTime + 1.25* npc.BonusFireRate;
 							i_ammo_count[npc.index]--;
