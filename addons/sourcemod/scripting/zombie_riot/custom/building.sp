@@ -6077,7 +6077,8 @@ static const char CommandName[][] =
 {
 	"Command: Defensive",
 	"Command: Aggressive",
-	"Command: Retreat"
+	"Command: Retreat",
+	"Command: Guard Area"
 };
 
 /*
@@ -6129,7 +6130,7 @@ static const int SummonerThorns[][] =
 	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
 
 
-	{ BARRACK_THORNS, 0, 400, 35, 15, 11, 3 }	// Construction Expert
+	{ BARRACK_THORNS, 0, 0, 0, 0, 11, 3 }	// Construction Expert
 };
 
 static const int SummonerAlternative[][] =
@@ -6226,7 +6227,9 @@ public bool Building_Summoner(int client, int entity)
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
 	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
-	CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
+
+	if(CivType[client] == Default)
+		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
 	
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = true;
@@ -6676,6 +6679,27 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				if(++CommandMode[client] >= sizeof(CommandName))
 					CommandMode[client] = 0;
+
+				if(CommandMode[client] == 3)
+				{
+					float StartOrigin[3], Angles[3], vecPos[3];
+					GetClientEyeAngles(client, Angles);
+					GetClientEyePosition(client, StartOrigin);
+					Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+					if (TR_DidHit(TraceRay))
+						TR_GetEndPosition(vecPos, TraceRay);
+							
+					delete TraceRay;
+					
+					CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+					f3_SpawnPosition[client] = vecPos;
+				}
+				else
+				{
+					f3_SpawnPosition[client][0] = 0.0;
+					f3_SpawnPosition[client][1] = 0.0;
+					f3_SpawnPosition[client][2] = 0.0;
+				}
 				
 				SummonerMenu(client, client);
 			}

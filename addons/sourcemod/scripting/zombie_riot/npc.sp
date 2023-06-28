@@ -1088,6 +1088,7 @@ void NPC_MapStart()
 	Barrack_Alt_Barrager_MapStart();
 	Barrack_Alt_Berserker_MapStart();
 	Barrack_Alt_Crossbowmedic_MapStart();
+	Barracks_Thorns();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
