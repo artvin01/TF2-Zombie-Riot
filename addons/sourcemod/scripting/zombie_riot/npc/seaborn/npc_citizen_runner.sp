@@ -1,10 +1,20 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool CitizenHasDied;
+
+bool CitizenRunner_WasKilled()
+{
+	return CitizenHasDied;
+}
+
 methodmap CitizenRunner < CClotBody
 {
-	public CitizenRunner(int client, float vecPos[3], float vecAng[3])
+	public CitizenRunner(int client, float vecPos[3], float vecAng[3], const char[] data)
 	{
+		if(data[0])
+			CitizenHasDied = false;
+		
 		char buffer[PLATFORM_MAX_PATH];
 
 		int seed = GetURandomInt();
@@ -95,11 +105,15 @@ void CitizenRunner_NPCDeath(int entit)
 	
 	if(!Waves_InSetup())
 	{
+		CitizenHasDied = true;
+
 		float pos[3], angles[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 
-		int entity = Npc_Create(SEAPREDATOR_ALT, -1, pos, angles, false);
+		static const int RandomInfection[] = { SEAPREDATOR_ALT, SEAPREDATOR_ALT, SEAFOUNDER_ALT, SEASPEWER_ALT, SEASWARMCALLER_ALT };
+
+		int entity = Npc_Create(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, false);
 		if(entity > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;
@@ -112,8 +126,10 @@ void CitizenRunner_NPCDeath(int entit)
 			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
 			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
 			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.5;
-		}
 
+			FreezeNpcInTime(entity, 1.5);
+		}
+/*
 		int entity_death = CreateEntityByName("prop_dynamic_override");
 		if(IsValidEntity(entity_death))
 		{
@@ -133,6 +149,7 @@ void CitizenRunner_NPCDeath(int entit)
 			SetVariantString("OnAnimationDone !self:Kill::0:1,0,1");
 			AcceptEntityInput(entity_death, "AddOutput");
 		}
+*/
 	}
 }
 

@@ -4869,7 +4869,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		if(f_VillageRingVectorCooldown[BuildingAlive] < GetGameTime())
 		{
 			f_VillageRingVectorCooldown[BuildingAlive] = GetGameTime() + 3.0;
-			spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 3.0, 6.0, 0.1, 1);
+			spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 3.0, 6.0, 0.1, 1);
 		}
 	}
 	
@@ -6147,7 +6147,7 @@ static const int SummonerAlternative[][] =
 	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1 },	// Construction Worker
 	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		7, 11, 1 },	// Construction Expert
 
-	{ ALT_BARRACKS_BERSERKER, 			200, 	200, 	0,		3, 11, 1 },	// Construction Expert
+	{ ALT_BARRACKS_BERSERKER, 			50, 	100, 	0,		3, 11, 1 },	// Construction Expert	//these ones are meant to be spammed into oblivion
 	{ ALT_BARRACK_IKUNAGAE , 			125,	300,	0,		7, 16, 1 },	// Construction Master
 
 

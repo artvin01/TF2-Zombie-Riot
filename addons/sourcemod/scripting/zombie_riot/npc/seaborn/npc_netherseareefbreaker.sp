@@ -223,8 +223,6 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 			npc.m_bCamo = false;
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1500.0);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 3000.0);
-			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1500.0);
-			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 3000.0);
 			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1500.0);
 			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 3000.0);
 			SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 1500.0);
@@ -238,8 +236,6 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		npc.m_bCamo = true;
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 150.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 300.0);
-		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 150.0);
-		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 300.0);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 150.0);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 300.0);
 		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 150.0);

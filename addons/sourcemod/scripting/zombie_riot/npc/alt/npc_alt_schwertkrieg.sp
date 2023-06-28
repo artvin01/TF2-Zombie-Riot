@@ -35,6 +35,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+static bool b_health_stripped[MAXENTITIES];
 
 static float TELEPORT_STRIKE_Usage[MAXENTITIES];
 static bool TELEPORT_STRIKE_Activate[MAXENTITIES];
@@ -162,6 +163,7 @@ methodmap Schwertkrieg < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		b_health_stripped[npc.index] = false;
 		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 			
@@ -273,6 +275,13 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	
 	if(b_Begin_Dialogue)	//Schwertkrieg is mute,
 	{
+		if(!b_health_stripped[npc.index])
+		{
+			b_health_stripped[npc.index] = true;
+			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth/50.0));
+		}
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		if(!b_Donnerkrieg_Alive)
 		{

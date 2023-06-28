@@ -191,7 +191,7 @@ methodmap XenoCombineOverlord < CClotBody
 	public XenoCombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
-		SetVariantInt(1);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = XENO_COMBINE_OVERLORD;
 		i_NpcWeight[npc.index] = 3;
@@ -269,7 +269,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 {
 	XenoCombineOverlord npc = view_as<XenoCombineOverlord>(iNPC);
 	
-	SetVariantInt(1);
+	SetVariantInt(3);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
