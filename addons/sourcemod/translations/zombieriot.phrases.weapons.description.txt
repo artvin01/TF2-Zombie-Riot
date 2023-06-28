@@ -853,9 +853,7 @@
 	
 	"Speed Fists Of Speed Desc"
 	{
-		"en"	"Insert Metal Gear Revengeance Reference."
-		"ru"	"Вставьте отсылку к Metal Gear Revengeance."
-		"chi"   "插入《合金装备复仇》参考。"
+		"en"	"Attack incredibly fast, cause bleed for 8 seconds on attack."
 	}
 	"Speed Fists Of Speed Pap 1"
 	{

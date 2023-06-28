@@ -117,6 +117,7 @@ enum
 	Command_Defensive = 0,
 	Command_Aggressive,
 	Command_Retreat,
+	Command_HoldPosBarracks,
 	Command_DefensivePlayer,
 	Command_RetreatPlayer,
 	Command_HoldPos,
@@ -128,6 +129,7 @@ static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
+static bool b_WalkToPosition[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -426,7 +428,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 		if(client)
 		{
 			command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
-			if(command == Command_HoldPos)
+			if(command == Command_HoldPos || command == Command_HoldPosBarracks)
 			{
 				npc.m_iTargetAlly = npc.index;
 			}
@@ -490,6 +492,11 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 
 		float myPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
+
+		if(f3_SpawnPosition[client][0] && (command == Command_HoldPosBarracks ||command == Command_HoldPos))
+		{
+			f3_SpawnPosition[npc.index] = f3_SpawnPosition[client];
+		}
 		
 		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
 
@@ -497,7 +504,15 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			float flDistanceToTarget;
+			if(command == Command_HoldPosBarracks)
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
+			}
+			else
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			}
 			if(flDistanceToTarget < canRetreat)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
@@ -513,7 +528,15 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			float flDistanceToTarget;
+			if(command == Command_HoldPosBarracks)
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
+			}
+			else
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			}
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				//Predict their pos.
@@ -534,7 +557,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		
 		if(!pathed && npc.m_iTargetAlly > 0 && command != Command_Aggressive)
 		{
-			if(command != Command_HoldPos)
+			if(command != Command_HoldPos && command != Command_HoldPosBarracks)
 			{
 				float vecTarget[3];
 				if(npc.m_iTargetAlly <= MaxClients && f3_SpawnPosition[npc.index][0] && npc.m_flComeToMe >= (gameTime + 0.6))
@@ -591,7 +614,16 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			
 			if(f3_SpawnPosition[npc.index][0])
 			{
-				if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
+				if(command == Command_HoldPosBarracks && !pathed)
+				{
+					if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (50.0 * 50.0))
+					{
+						NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+						npc.StartPathing();
+						pathed = true;
+					}
+				}
+				else if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
 				{
 					NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 					npc.StartPathing();
@@ -626,6 +658,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
+			b_WalkToPosition[npc.index] = false;
 		}
 	}
 
@@ -704,8 +737,9 @@ static void ShowMenu(int client, int entity)
 	menu.AddItem(num, "Defend Barrack", npc.CmdOverride == Command_Defensive ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Defend Me", npc.CmdOverride == Command_DefensivePlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Retreat to Barrack", npc.CmdOverride == Command_Retreat ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Retreat to Me", npc.CmdOverride == Command_RetreatPlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Hold Position\n ", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Retreat to Me\n ", npc.CmdOverride == Command_RetreatPlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Hold Position", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Walk to Position\n ",ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Sacrifice");
 
 	menu.Pagination = 0;
@@ -740,22 +774,37 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					case 1:
 					{
 						npc.CmdOverride = Command_Aggressive;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 2:
 					{
 						npc.CmdOverride = Command_Defensive;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 3:
 					{
 						npc.CmdOverride = Command_DefensivePlayer;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 4:
 					{
 						npc.CmdOverride = Command_Retreat;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 5:
 					{
 						npc.CmdOverride = Command_RetreatPlayer;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 6:
 					{
@@ -763,6 +812,23 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 						npc.CmdOverride = Command_HoldPos;
 					}
 					case 7:
+					{
+						float StartOrigin[3], Angles[3], vecPos[3];
+						GetClientEyeAngles(client, Angles);
+						GetClientEyePosition(client, StartOrigin);
+						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+						if (TR_DidHit(TraceRay))
+							TR_GetEndPosition(vecPos, TraceRay);
+							
+						delete TraceRay;
+						
+						npc.FaceTowards(vecPos, 10000.0);
+						CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+						f3_SpawnPosition[npc.index] = vecPos;
+						b_WalkToPosition[npc.index] = true;
+						npc.CmdOverride = Command_HoldPos;
+					}
+					case 8:
 					{
 						SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9);
 						return 0;

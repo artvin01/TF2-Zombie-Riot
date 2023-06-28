@@ -1088,6 +1088,7 @@ void NPC_MapStart()
 	Barrack_Alt_Barrager_MapStart();
 	Barrack_Alt_Berserker_MapStart();
 	Barrack_Alt_Crossbowmedic_MapStart();
+	Barracks_Thorns();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1801,7 +1802,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = SeabornSoldier(client, vecPos, vecAng, ally);
 		
 		case CITIZEN_RUNNER:
-			entity = CitizenRunner(client, vecPos, vecAng);
+			entity = CitizenRunner(client, vecPos, vecAng, data);
 		
 		case SEABORN_PYRO:
 			entity = SeabornPyro(client, vecPos, vecAng, ally);
