@@ -240,6 +240,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
+
+	//	return view_as<CClotBody>(npc);
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
 	
@@ -1608,13 +1610,13 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		return TheNPCs.FindNPCByEntIndex(this.index);
 	}
-	public CBaseNPC_Locomotion GetLocomotion()
+	public ILocomotion GetLocomotion()
 	{
-		return this.GetBaseNPC().GetLocomotion();
+		return this.MyNextBotPointer().GetLocomotionInterface();
 	}
-	public CBaseNPC_Locomotion GetLocomotionInterface()
+	public ILocomotion GetLocomotionInterface()
 	{
-		return this.GetBaseNPC().GetLocomotion();
+		return this.MyNextBotPointer().GetLocomotionInterface();
 	}
 	public bool IsOnGround()
 	{
@@ -1846,7 +1848,12 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void Approach(const float vecGoal[3])										   { this.GetLocomotionInterface().Approach(vecGoal, 0.1);						}
 	public void Jump()																	 { this.GetLocomotionInterface().Jump();										  }
 	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }	
-	public void SetVelocity(const float vec[3])											{ this.GetLocomotionInterface().SetVelocity(vec);							  }	
+	public void SetVelocity(const float vec[3])	
+	{
+		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
+		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
+		locomotion.SetVelocity(vec);							  
+	}	
 	
 	public void SetOrigin(const float vec[3])											
 	{
@@ -2127,7 +2134,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			See_Projectile_Team(entity);
 		}
 	}
-	public void FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE)
+	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE)
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -2160,6 +2167,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			fl_rocket_particle_dmg[entity] = rocket_damage;
 			fl_rocket_particle_radius[entity] = damage_radius;
 			b_rocket_particle_from_blue_npc[entity] = FromBlueNpc;
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
@@ -2196,7 +2204,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 			SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			return entity;
 		}
+		return -1;
 	}
 	public void FireGrenade(float vecTarget[3], float grenadespeed = 800.0, float damage, char[] model)
 	{
@@ -4169,6 +4179,12 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
+		if(baseNPC == INVALID_NPC)
+		{
+			PrintToServer("FAILED NPC.");
+			return -1;
+		}
+		
 		CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 100.0);
 		if(area == NULL_AREA)
 		{
@@ -7126,23 +7142,25 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 {
 	if(IsValidEntity(npc))
 	{
+		CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
+		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 		switch(CollisionType)
 		{
 			case 1:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
 			}
 			case 2:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
 			}
 			case 3:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
 			}
 			case 4:
 			{
-				view_as<CClotBody>(npc).GetLocomotionInterface().SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
 			}
 		}
 	}

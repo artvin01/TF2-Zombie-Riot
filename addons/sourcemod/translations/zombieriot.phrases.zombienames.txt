@@ -1405,6 +1405,34 @@
 	{
 		"en"		"Seaborn Soldier"
 	}
+	"Seaborn Pyro"
+	{
+		"en"		"Seaborn Pyro"
+	}
+	"Seaborn Demoman"
+	{
+		"en"		"Seaborn Demoman"
+	}
+	"Seaborn Heavy"
+	{
+		"en"		"Seaborn Heavy"
+	}
+	"Seaborn Engineer"
+	{
+		"en"		"Seaborn Engineer"
+	}
+	"Seaborn Medic"
+	{
+		"en"		"Seaborn Medic"
+	}
+	"Seaborn Sniper"
+	{
+		"en"		"Seaborn Sniper"
+	}
+	"Seaborn Spy"
+	{
+		"en"		"Seaborn Spy"
+	}
 	"Citizen"
 	{
 		"en"		"Citizen"

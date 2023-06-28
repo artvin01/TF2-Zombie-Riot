@@ -178,7 +178,7 @@ methodmap CombineOverlord < CClotBody
 	public CombineOverlord(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "35000", ally));
-		SetVariantInt(1);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD;
 		i_NpcWeight[npc.index] = 3;
@@ -234,7 +234,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 {
 	CombineOverlord npc = view_as<CombineOverlord>(iNPC);
 	
-	SetVariantInt(1);
+	SetVariantInt(3);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
