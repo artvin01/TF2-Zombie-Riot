@@ -2319,12 +2319,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			OnWrenchCreated(entity);
 		}
+		/*
 		else if(!StrContains(classname, "zr_base_npc"))
 		{
-			Hook_DHook_UpdateTransmitState(entity);
-			SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
+		//	SDKHook(entity, SDKHook_SpawnPost, Check_For_Team_Npc);
 		//	Check_For_Team_Npc(EntIndexToEntRef(entity)); //Dont delay ?
 		}
+		*/
 		else if(!StrContains(classname, "tf_weapon_compound_bow"))
 		{
 			b_IsABow[entity] = true;

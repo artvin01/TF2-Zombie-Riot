@@ -240,6 +240,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
 		DispatchSpawn(npc); //Do this at the end :)
+		Hook_DHook_UpdateTransmitState(npc);
+		Check_For_Team_Npc(npc);
 
 	//	return view_as<CClotBody>(npc);
 		CClotBody npcstats = view_as<CClotBody>(npc);
@@ -336,13 +338,8 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		SetEntityFlags(npc, FL_NPC);
 		
-		//Don't ResolvePlayerCollisions.
-		SetEntData(npc, FindSendPropInfo("CTFBaseBoss", "m_lastHealthPercentage") + 28, false, 4, true);
-		
 		SetEntProp(npc, Prop_Data, "m_nSolidType", 2); 
-		
-		
-		
+
 		//Don't bleed.
 		SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
 		
@@ -378,6 +375,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		
 		//Fix collisions
+		
 		static float m_vecMaxs_Body[3];
 		static float m_vecMins_Body[3];
 
@@ -408,6 +406,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntPropVector(npc, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxsNothing);
 		SetEntPropVector(npc, Prop_Send, "m_vecMinsPreScaled", m_vecMinsNothing);
 		SetEntPropVector(npc, Prop_Data, "m_vecMinsPreScaled", m_vecMinsNothing);
+		
 
 
 #if defined ZR
