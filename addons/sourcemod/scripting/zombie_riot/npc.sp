@@ -1818,6 +1818,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case SEABORN_MEDIC:
 			entity = SeabornMedic(client, vecPos, vecAng, ally);
 		
+		case SEABORN_SNIPER:
+			entity = SeabornSniper(client, vecPos, vecAng, ally);
+		
+		case SEABORN_SPY:
+			entity = SeabornSpy(client, vecPos, vecAng, ally);
+		
 		case ALT_BARRACKS_SCHWERTKRIEG:	//warp
 			entity = Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, ally);
 			
@@ -2578,6 +2584,12 @@ public void NPCDeath(int entity)
 
 		case SEABORN_MEDIC:
 			SeabornMedic_NPCDeath(entity);
+
+		case SEABORN_SNIPER:
+			SeabornSniper_NPCDeath(entity);
+
+		case SEABORN_SPY:
+			SeabornSpy_NPCDeath(entity);
 			
 		case ALT_BARRACKS_SCHWERTKRIEG:	//warp
 			Barrack_Alt_Shwertkrieg_NPCDeath(entity);
@@ -3350,7 +3362,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case RAIDMODE_GOD_ARKANTOS:
 			GodArkantos_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case SEABORN_SCOUT, SEABORN_SOLDIER, SEABORN_PYRO, SEABORN_DEMO, SEABORN_ENGINEER, SEABORN_MEDIC:
+		case SEABORN_SCOUT, SEABORN_SOLDIER, SEABORN_PYRO, SEABORN_DEMO, SEABORN_ENGINEER, SEABORN_MEDIC, SEABORN_SNIPER, SEABORN_SPY:
 			Generic_OnTakeDamage(victim, attacker);
 		
 		case SEABORN_HEAVY:
@@ -3626,3 +3638,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_heavy.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_engineer.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_medic.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_sniper.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_spy.sp"

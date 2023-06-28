@@ -53,6 +53,7 @@ methodmap Remains < CClotBody
 		npc.m_iStepNoiseType = 0;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisEntityIgnored = true;
+		npc.m_iBuffType = type;
 		
 		SDKHook(npc.index, SDKHook_Think, Remains_ClotThink);
 		return npc;

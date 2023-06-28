@@ -155,7 +155,7 @@ methodmap EndSpeaker < CClotBody
 
 		return multi;
 	}
-	public void EatBuffs(const float vecMe[3])
+	public void EatBuffs()
 	{
 		this.m_hBuffs = 0;
 		this.m_iAttackStack = 0;
@@ -226,7 +226,7 @@ methodmap EndSpeaker < CClotBody
 			SDKHooks_TakeDamage(remain[i], 0, 0, 99999999.9, DMG_DROWN);
 		}
 
-		vecTarget = vecMe;
+		vecTarget = WorldSpaceCenter(this.index);
 		vecTarget[2] += 80.0;
 
 		if(this.m_hBuffs & BUFF_FOUNDER)
