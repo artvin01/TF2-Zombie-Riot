@@ -133,7 +133,6 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);

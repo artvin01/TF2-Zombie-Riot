@@ -181,19 +181,24 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				fl_idle_timer[npc.index] = 2.5 + GameTime;
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GameTime)
+				int Enemy_I_See;		
+				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && i_ammo_count[npc.index] >=0)
+					if(npc.m_flNextMeleeAttack < GameTime)
 					{
-						//Play attack anim
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.PlayRangedSound();
-						npc.FireParticleRocket(vecTarget, 100.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
-						npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
-						npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
-						i_ammo_count[npc.index]--;
+						if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && i_ammo_count[npc.index] >=0)
+						{
+							//Play attack anim
+							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+							vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
+							npc.FaceTowards(vecTarget, 20000.0);
+							npc.PlayRangedSound();
+							npc.FireParticleRocket(vecTarget, 100.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
+							npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
+							npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
+							i_ammo_count[npc.index]--;
+						}
 					}
 				}
 			}

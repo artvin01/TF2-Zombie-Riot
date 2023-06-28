@@ -108,7 +108,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		
 		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Ikunagae_ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 250.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -189,7 +189,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 9999.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 275.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 9999.0, _, false);
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -236,7 +236,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			else
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
 				if(flDistanceToTarget < 300000 && npc.m_flNextMeleeAttack < GameTime)
 				{
 					npc.PlayPullSound();
@@ -274,6 +274,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 		}
 		else
 		{
+			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
 			npc.PlayIdleSound();
 		}
 	}
