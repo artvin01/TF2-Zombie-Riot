@@ -339,7 +339,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_FarDPT[client] = 2500.0* npc.BonusDamageBonus;
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 5;
-	Ikunagae_BEAM_ColorHex[client] = ParseColor("9e4149");
+	Ikunagae_BEAM_ColorHex[client] = ParseColor("c22b2b");
 	Ikunagae_BEAM_ChargeUpTime[client] = 50;
 	Ikunagae_BEAM_CloseBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_FarBuildingDPT[client] = 0.0;
@@ -431,7 +431,7 @@ static Action Ikunagae_TBB_Tick(int client)
 	i_laser_throttle[client] = 0;
 
 	Ikunagae_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(Ikunagae_BEAM_BeamRadius[client]);
+	float diameter = float(Ikunagae_BEAM_BeamRadius[client]*2);
 	int r = GetR(Ikunagae_BEAM_ColorHex[client]);
 	int g = GetG(Ikunagae_BEAM_ColorHex[client]);
 	int b = GetB(Ikunagae_BEAM_ColorHex[client]);
