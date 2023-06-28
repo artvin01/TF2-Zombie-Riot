@@ -319,7 +319,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 			b_health_stripped[npc.index] = true;
 			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 		
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth/100.0));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth/50.0));
 		}
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		if(!b_Schwertkrieg_Alive)
