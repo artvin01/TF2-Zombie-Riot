@@ -311,7 +311,7 @@
 	
 	"The Pomson 7000 Desc"
 	{
-		"en"		"Rapid fire laser gun!"
+		"en"		"Rapid fire laser gun!\nTurns to Primary!"
 		"ru"		"Скорострельная лазерная пушка!"
 		"chi"       "快速激光枪!"
 	}
