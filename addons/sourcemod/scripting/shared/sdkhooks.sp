@@ -1420,13 +1420,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		difficulty_math = 1.0 - difficulty_math;
 		
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
+		Replicated_Damage *= difficulty_math + 1.0;
 	}
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0)
 	{
 		damage *= f_FreeplayDamageExtra;
+		Replicated_Damage *= f_FreeplayDamageExtra;
 	}
-	
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(!b_ThisNpcIsSawrunner[attacker])
 #endif
@@ -1455,6 +1456,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(f_HussarBuff[victim] > GameTime) //hussar!
 		{
 			damage *= 0.90;
+		}
+		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+		{
+			damage *= 0.5; //half the damage when small.
 		}
 		damage *= fl_Extra_Damage[attacker];
 		
@@ -1608,29 +1613,21 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					{
 						damage *= 0.9;
 						Replicated_Damage *= 0.9;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					case 2:
 					{
 						damage *= 0.85;
 						Replicated_Damage *= 0.85;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					case 3:
 					{
 						damage *= 0.8;
 						Replicated_Damage *= 0.80;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					case 4:
 					{
 						damage *= 0.75;
 						Replicated_Damage *= 0.75;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					default:
 					{

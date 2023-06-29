@@ -720,7 +720,7 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 
 //	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],_,_,false);
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],2.2,_,false);
 	
 	return Plugin_Continue;
 }

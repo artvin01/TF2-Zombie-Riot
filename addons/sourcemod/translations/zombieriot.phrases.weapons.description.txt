@@ -1816,9 +1816,7 @@
 	}
 	"Alchemist Potion Pap 9"
 	{
-		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow.\nBosses will instead remove this debuff after a few seconds."
-		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление.\nБоссы будут снимать этот эффект через несколько секунд."
-		"chi"   "M2现在可以收缩敌人，造成永久debuff和减速。\nboss会在几秒后移除这个debuff。"
+		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
 	}
 
 	"Crusader Desc"

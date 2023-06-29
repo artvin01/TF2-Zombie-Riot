@@ -1497,6 +1497,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage += BaseDamageBeforeBuffs * 0.25;
 		}
+		if(f_PotionShrinkEffect[victim] > GameTime)
+		{
+			damage += BaseDamageBeforeBuffs * 0.35;
+		}
 		
 		if(f_HighIceDebuff[victim] > GameTime)
 		{
@@ -1546,6 +1550,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				damage *= 0.75;
 			}
+		}
+		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+		{
+			damage *= 0.5; //half the damage when small.
 		}
 		if(f_BattilonsNpcBuff[victim] > GameTime)
 		{
@@ -2232,6 +2240,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s↓", Debuff_Adder);
 	}
+	if(f_PotionShrinkEffect[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s▼", Debuff_Adder);
+	}
 	if(NpcStats_IsEnemySilenced(victim))
 	{
 		Debuff_added = true;
@@ -2574,6 +2588,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	else if(f_EmpowerStateOther[npc] > GameTime)
 		return true;
 	else if(f_HussarBuff[npc] > GameTime)
+		return true;
+	else if(f_PotionShrinkEffect[npc] > GameTime)
 		return true;
 	else if(f_GodArkantosBuff[npc] > GameTime)
 		return true;

@@ -1139,6 +1139,10 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				speed_for_return *= 0.35;
 			}
+			if(f_PotionShrinkEffect[this.index] > Gametime)
+			{
+				speed_for_return *= 0.35;
+			}
 			if(f_PassangerDebuff[this.index] > Gametime)
 			{
 				speed_for_return *= 0.20;
@@ -6954,6 +6958,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
+	f_PotionShrinkEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_MeleeArmor[entity] = 1.0; //yeppers.
@@ -7631,6 +7636,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_WidowsWineDebuff[enemy] = 0.0;
 	f_CrippleDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
+	f_PotionShrinkEffect[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }
