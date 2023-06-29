@@ -166,8 +166,10 @@ methodmap CombineSwordsman < CClotBody
 	public CombineSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		CombineSwordsman npc = view_as<CombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SWORDSMAN;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -182,7 +184,7 @@ methodmap CombineSwordsman < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSwordsman_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineSwordsman_ClotThink);
 
 		npc.m_iState = 0;
@@ -251,7 +253,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -279,9 +281,9 @@ public void CombineSwordsman_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget < 22500 || npc.m_fbRangedSpecialOn)
@@ -293,7 +295,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.4;
 					npc.m_fbRangedSpecialOn = true;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
@@ -414,7 +416,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -422,7 +424,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CombineSwordsman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -430,8 +432,11 @@ public Action CombineSwordsman_ClotDamaged(int victim, int &attacker, int &infli
 		
 	CombineSwordsman npc = view_as<CombineSwordsman>(victim);
 	
-	if(npc.m_fbRangedSpecialOn)
-		damage *= 0.15;
+	if(!NpcStats_IsEnemySilenced(victim))
+	{
+		if(npc.m_fbRangedSpecialOn)
+			damage *= 0.15;
+	}
 	
 	/*
 	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
@@ -456,7 +461,7 @@ public void CombineSwordsman_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineSwordsman_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineSwordsman_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -10,10 +10,11 @@ methodmap BarrackArbelast < BarrackBody
 		BarrackArbelast npc = view_as<BarrackArbelast>(BarrackBody(client, vecPos, vecAng, "250"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARBELAST;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArbelast_ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 250.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
 		SetVariantString("0.4");
@@ -33,9 +34,10 @@ methodmap BarrackArbelast < BarrackBody
 public void BarrackArbelast_ClotThink(int iNPC)
 {
 	BarrackArbelast npc = view_as<BarrackArbelast>(iNPC);
-	if(BarrackBody_ThinkStart(npc.index))
+	float GameTime = GetGameTime(iNPC);
+	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		BarrackBody_ThinkTarget(npc.index, true);
+		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -49,7 +51,7 @@ public void BarrackArbelast_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
@@ -58,14 +60,14 @@ public void BarrackArbelast_ClotThink(int iNPC)
 						
 			//			npc.PlayMeleeSound();
 			//			npc.FireArrow(vecTarget, 25.0, 1200.0);
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (2.0 * npc.BonusFireRate);
-						npc.m_flReloadDelay = GetGameTime(npc.index) + (0.6 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}
 				}
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 180000.0);
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_CUSTOM_IDLE_CROSSBOW", "ACT_CUSTOM_WALK_CROSSBOW", 180000.0);
 	}
 }
 

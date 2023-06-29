@@ -172,17 +172,19 @@ methodmap AltCombineMage < CClotBody
 	public AltCombineMage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		AltCombineMage npc = view_as<AltCombineMage>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "200", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
+		i_NpcWeight[npc.index] = 1;
 		
-		int iActivity = npc.LookupActivity("ACT_IDLE");
+		int iActivity = npc.LookupActivity("ACT_IDLE_ANGRY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, AltCombineMage_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, AltCombineMage_ClotThink);
 		
 		npc.m_fbGunout = false;
@@ -239,7 +241,7 @@ public void AltCombineMage_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -247,25 +249,6 @@ public void AltCombineMage_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				if (npc.m_flmovedelay < GetGameTime(npc.index))
-				{
-					int iActivity_melee = npc.LookupActivity("ACT_RUN");
-					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-					npc.m_flmovedelay = GetGameTime(npc.index) + 1.5;
-				}
-				
-			}
-			else if (npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				int iActivity_melee = npc.LookupActivity("ACT_IDLE_ANGRY");
-				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
-				npc.m_flmovedelay = 0.0;
-				PF_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
-				
 			
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -286,9 +269,9 @@ public void AltCombineMage_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 14400 && flDistanceToTarget < 250000)
 			{
@@ -398,7 +381,7 @@ public void AltCombineMage_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -435,7 +418,7 @@ public void AltCombineMage_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, AltCombineMage_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, AltCombineMage_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))

@@ -5,7 +5,7 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Smite_Damage[MAXPLAYERS+1]={0.0, ...};
 static float Damage_Reduction[MAXPLAYERS+1]={0.0, ...};
 static int Smite_Cost = 250;
-static float Smite_BaseDMG = 225.0;
+static float Smite_BaseDMG = 200.0;
 static float Smite_DMGMult = 7.5;
 static float Smite_ChargeTime = 0.99;
 static float Smite_ChargeSpan = 0.33;
@@ -37,7 +37,8 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
-				Ability_Apply_Cooldown(client, slot, 15.0);
+				Rogue_OnAbilityUse(client, weapon);
+				Ability_Apply_Cooldown(client, slot, 20.0);
 				
 				float damage = Smite_BaseDMG;
 				

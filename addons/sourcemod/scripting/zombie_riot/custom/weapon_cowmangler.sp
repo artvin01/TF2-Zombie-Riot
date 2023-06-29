@@ -46,14 +46,7 @@ void Mangler_MapStart()
 
 public void Weapon_Mangler(int client, int weapon, const char[] classname, bool &result)
 {
-	if(!EscapeMode)
 	{
-		
-		float Energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
-		
-		Energy -= 5.0;
-		
-		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", Energy);
 		
 		int new_ammo = GetAmmo(client, 23);
 		if(new_ammo >= 10)
@@ -85,23 +78,6 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			PrintHintText(client,"You ran out of Laser Battery!");
 		}
-	}
-	else
-	{
-		BEAM_Targets_Hit[client] = 0.0;
-		
-		Strength[client] = 112.0;
-				
-		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-					
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
-			
-		TBB_Ability_Mangler_1(client);
-//		RequestFrame(TBB_Ability_Mangler_1, client);
 	}
 }
 

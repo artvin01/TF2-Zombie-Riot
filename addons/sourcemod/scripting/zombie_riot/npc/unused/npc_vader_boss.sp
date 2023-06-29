@@ -255,7 +255,7 @@ methodmap Vader < CClotBody
 		
 		npc.m_flPlayMusicSound = 0.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Vader_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Vader_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Vader_ClotDamaged_Post);
 
@@ -389,9 +389,9 @@ public void Vader_ClotThink(int iNPC)
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	
 			if(npc.m_flNextRangedSpecialAttack < GetGameTime() && flDistanceToTarget < 62500 || npc.m_fbRangedSpecialOn)
@@ -453,7 +453,7 @@ public void Vader_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime() || npc.m_flAttackHappenswillhappen)
 			{
-				PF_StartPathing(npc.index);
+				NPC_StartPathing(npc.index);
 				npc.m_bPathing = true;
 				if(npc.m_flNextMeleeAttack < GetGameTime())
 				{
@@ -505,13 +505,13 @@ public void Vader_ClotThink(int iNPC)
 			}
 			if (npc.m_flReloadDelay < GetGameTime())
 			{
-				PF_StartPathing(npc.index);
+				NPC_StartPathing(npc.index);
 				npc.m_bPathing = true;
 			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -519,7 +519,7 @@ public void Vader_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Vader_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Vader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -587,7 +587,7 @@ public void Vader_NPCDeath(int entity)
 	
 	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Vader_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Vader_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Vader_ClotDamaged_Post);
 	RaidBossActive = INVALID_ENT_REFERENCE;

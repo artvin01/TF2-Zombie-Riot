@@ -3,7 +3,6 @@
 
 static float Strength[MAXTF2PLAYERS];
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
-static float Damage_Reduction[MAXENTITIES]={0.0, ...};
 static float Damage_Tornado[MAXENTITIES]={0.0, ...};
 static float Duration_Tornado[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
@@ -96,11 +95,6 @@ public void Weapon_Wind_Laser_Builder_Unused(int client, int weapon, const char[
 		Strength[client] *= 0.5; //Nerf in half as it gives 2x the dmg.
 	}
 		
-	if (EscapeMode)
-	{
-		Strength[client] *= 3.0;
-	}
-			
 	//	TBB_Ability(client);
 	RequestFrame(TBB_Ability_Wind_Staff, client);
 	
@@ -143,11 +137,6 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
 				
 	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
-		
-	if (EscapeMode)
-	{
-		Strength[client] *= 3.0;
-	}
 	
 	Strength[client] *= 0.5;
 			
@@ -529,7 +518,7 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	
 	Projectile_To_Client[iCarrier] = client;
 	Damage_Projectile[iCarrier] = damage;
-	Projectile_To_Weapon[iCarrier] = weapon;
+	Projectile_To_Weapon[iCarrier] = EntIndexToEntRef(weapon);
 	float position[3];
 	
 	GetEntPropVector(iCarrier, Prop_Data, "m_vecAbsOrigin", position);
@@ -667,20 +656,24 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	*/
 	
-	TORNADO_Radius[client] = 150.0;
+	TORNADO_Radius[client] = 215.0;
 	
-	float damage = 50.0;
-	Address address = TF2Attrib_GetByDefIndex(Projectile_To_Weapon[iCarrier], 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	int weapon = EntRefToEntIndex(Projectile_To_Weapon[iCarrier]);
+	if(IsValidEntity(weapon))
+	{
+		float damage = 65.0;
+		Address address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+			
+		Damage_Tornado[iCarrier] = damage;
+		Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
 		
-	Damage_Tornado[iCarrier] = damage;
-	Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
-	
-	TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
-	TE_SendToAll(0.0);
-	
-	CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
+		TE_SendToAll(0.0);
+		
+		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+	}
 }
 
 public Action Timer_Tornado_Think(Handle timer, int iCarrier)
@@ -722,36 +715,12 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 		return Plugin_Stop;
 	}
 	
-	float flCarrierPos[3], targPos[3];
+	float flCarrierPos[3];//, targPos[3];
 	GetEntPropVector(iCarrier, Prop_Send, "m_vecOrigin", flCarrierPos);
+
+//	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Damage_Reduction[iCarrier] = 1.0;
-					
-	for(int targ; targ<i_MaxcountNpc; targ++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index))
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(client, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(flCarrierPos, targPos) <= TORNADO_Radius[client])
-					{
-						float distance_1 = GetVectorDistance(flCarrierPos, targPos);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, Damage_Tornado[iCarrier], TORNADO_Radius[client]+1.0);				
-						damage_1 /= Damage_Reduction[iCarrier];
-						
-						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, {0.0, 0.0, 50000.0}, flCarrierPos);
-						
-						Damage_Reduction[iCarrier] *= EXPLOSION_AOE_DAMAGE_FALLOFF;
-						//use blast cus it does its own calculations for that ahahahah im evil (you scare me sometime man)
-					}
-				}
-			}
-		}
-	}
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],2.2,_,false);
 	
 	return Plugin_Continue;
 }

@@ -114,6 +114,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.0", "3500", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_MEDIC_HEALER_3;	//3 being the 3rd stage of alt waves.
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -127,7 +128,7 @@ methodmap Alt_Medic_Constructor < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Alt_Medic_Constructor_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Alt_Medic_Constructor_ClotThink);
 		
 		
@@ -245,7 +246,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -254,13 +255,11 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 				{
 					if(flDistanceToTarget < 62500)
 					{
-						PF_StopPathing(npc.index);
-						npc.m_bPathing = false;	
+						NPC_StopPathing(npc.index);
 					}
 					else
 					{
-						npc.StartPathing();
-						npc.m_bPathing = false;		
+						npc.StartPathing();		
 					}
 					if(!npc.m_bnew_target)
 					{
@@ -269,10 +268,23 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 						npc.Healing = true;
 						npc.m_bnew_target = true;
 					}
-					SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 60);
-					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+					
+					bool regrow = true;
+					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
+					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
 					{
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
+						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 60);
+						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+						{
+							SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+						}
+					}
+					else
+					{
+						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 					}
 					
 					npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 2000.0);
@@ -283,7 +295,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 						RemoveEntity(npc.m_iWearable4);
 						
 					npc.StartPathing();
-					npc.m_bPathing = false;		
+
 					npc.m_bnew_target = false;					
 				}
 		}
@@ -303,7 +315,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);
 				
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.StopHealing();
 			npc.Healing = false;
@@ -325,7 +337,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 			}
 			npc.m_flSpeed = 400.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
 		
 		int PrimaryThreatIndex = npc.m_iTarget;
@@ -352,9 +364,9 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 					
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				} else {
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				
 				//Target close enough to hit
@@ -422,7 +434,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
@@ -431,7 +443,7 @@ public void Alt_Medic_Constructor_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Alt_Medic_Constructor_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Alt_Medic_Constructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Alt_Medic_Constructor npc = view_as<Alt_Medic_Constructor>(victim);
 		
@@ -455,7 +467,7 @@ public void Alt_Medic_Constructor_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Alt_Medic_Constructor_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Alt_Medic_Constructor_ClotThink);
 	
 	Is_a_Medic[npc.index] = false;

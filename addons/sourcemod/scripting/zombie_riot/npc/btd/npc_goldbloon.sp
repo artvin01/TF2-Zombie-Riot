@@ -50,6 +50,16 @@ static int SpriteNumber()
 	}
 }
 
+void GoldBloon_MapStart()
+{
+	for(int i; i<sizeof(SoundHit); i++)
+	{
+		PrecacheSoundCustom(SoundHit[i]);
+	}
+	
+	PrecacheSoundCustom("zombie_riot/btd/popgolden.wav");
+}
+
 methodmap GoldBloon < CClotBody
 {
 	property int m_iSprite
@@ -66,23 +76,21 @@ methodmap GoldBloon < CClotBody
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
-		EmitSoundToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayPurpleSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundPurple) - 1);
-		EmitSoundToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundHit) - 1);
-		EmitSoundToAll(SoundHit[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-		EmitSoundToAll(SoundHit[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundHit[sound], this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 1.0);
-		EmitSoundToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll("zombie_riot/btd/popgolden.wav", this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public GoldBloon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
@@ -129,6 +137,7 @@ methodmap GoldBloon < CClotBody
 		GoldBloon npc = view_as<GoldBloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally, false, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_GOLDBLOON;
+		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_iBleedType = SpriteNumber() ? BLEEDTYPE_METAL : BLEEDTYPE_RUBBER;
@@ -171,7 +180,7 @@ methodmap GoldBloon < CClotBody
 			npc.m_iSprite = sprite;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, GoldBloon_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, GoldBloon_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -215,7 +224,7 @@ public void GoldBloon_ClotThink(int iNPC)
 				}
 			}
 			
-			if(alive < total / 2)
+			if(alive < (total / 2))
 			{
 				SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9, DMG_SLASH);
 				return;
@@ -233,11 +242,11 @@ public void GoldBloon_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, npc.m_iTarget));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, npc.m_iTarget));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		
 		npc.StartPathing();
@@ -272,7 +281,7 @@ public void GoldBloon_ClotThink(int iNPC)
 	}
 }
 
-public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GoldBloon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(damage < (9 + (LastGoldBloon * 2)))
 		return Plugin_Handled;
@@ -331,7 +340,7 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	
 	if(LastGoldBloon > 6)
 	{
-		if(magic)
+		if(magic && !NpcStats_IsEnemySilenced(npc.index))
 		{
 			npc.PlayPurpleSound();
 			return Plugin_Handled;
@@ -358,24 +367,27 @@ public Action GoldBloon_ClotDamaged(int victim, int &attacker, int &inflictor, f
 	}
 	
 	npc.PlayHitSound();
-	
-	int target = (GetURandomInt() % 2) ? GetClosestAlly(npc.index) : 0;
-	if(target < 1)
-	{
-		target = GetClosestTarget(npc.index, true, _, npc.m_bCamo, true, npc.m_iTarget);
-		if(target > 0)
-		{
-			npc.m_iTarget = target;
-		}
-		else
-		{
-			target = attacker;
-		}
-	}
-	
 	npc.m_flNextRangedAttack = gameTime + 1.0;
-	PluginBot_Jump(npc.index, WorldSpaceCenter(target));
 	
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		int target = (GetURandomInt() % 2) ? GetClosestAlly(npc.index) : 0;
+		if(target < 1)
+		{
+			target = GetClosestTarget(npc.index, true, _, npc.m_bCamo, true, npc.m_iTarget);
+			if(target > 0)
+			{
+				npc.m_iTarget = target;
+			}
+			else
+			{
+				target = attacker;
+			}
+		}
+		
+		PluginBot_Jump(npc.index, WorldSpaceCenter(target));
+	}
+
 	SetEntProp(victim, Prop_Data, "m_iHealth", health - 1);
 	return Plugin_Handled;
 }
@@ -384,7 +396,7 @@ public void GoldBloon_NPCDeath(int entity)
 {
 	GoldBloon npc = view_as<GoldBloon>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, GoldBloon_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, GoldBloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;

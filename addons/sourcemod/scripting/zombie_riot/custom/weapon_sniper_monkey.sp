@@ -20,12 +20,16 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 		
 		if(SmartBounce)
 		{
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				damage *= 1.5;
+			}
 			float pos[3];
 			
 			int targets[3];
 			int healths[3];
 			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_boss")) != -1)
+			while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 			{
 				if(i != victim && !b_NpcHasDied[i] && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 				{
@@ -74,7 +78,10 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			LastHitTarget = victim;
 			
 			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 4);
-			
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				damage *= 1.5;
+			}			
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
 		}
@@ -84,23 +91,20 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 
 float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration;
+	float duration = 6.0;
 	switch(i_NpcInternalId[victim])
 	{
 		case BTD_MOAB:
 		{
-			duration = 6.0;
+			duration = 12.0;
 		}
 		case BTD_BFB:
 		{
-			duration = 3.0;
+			duration = 9.0;
 		}
 		case BTD_BLOON, BTD_GOLDBLOON, BTD_BAD:
 		{
-		}
-		default:
-		{
-			duration = 1.5;
+			duration = 5.0;
 		}
 	}
 	
@@ -113,13 +117,13 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 		if(duration > f_MaimDebuff[victim])
 			f_MaimDebuff[victim] = duration;
 	}
-	
+
 	return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
 
 float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration = 1.5;
+	float duration = 6.0;
 	switch(i_NpcInternalId[victim])
 	{
 		case BTD_BLOON, BTD_GOLDBLOON:
@@ -215,7 +219,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		float distance;
 		int target = -1;
 		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
 			if(!b_NpcHasDied[i] && b_NpcForcepowerupspawn[i] != 2 && GetEntProp(i, Prop_Send, "m_iTeamNum") != 2)
 			{
@@ -234,7 +238,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		{
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_advanced_friend.wav");
-			Ability_Apply_Cooldown(client, slot, 300.0);
+			Ability_Apply_Cooldown(client, slot, 150.0);
 		}
 		else
 		{
@@ -261,7 +265,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		int target = MaxClients + 1;
-		while((target = FindEntityByClassname(target, "base_boss")) != -1)
+		while((target = FindEntityByClassname(target, "zr_base_npc")) != -1)
 		{
 			if(!b_NpcHasDied[target] && b_NpcForcepowerupspawn[target] != 2 && GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
 				break;
@@ -271,7 +275,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		{
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_expert_friend.wav");
-			Ability_Apply_Cooldown(client, slot, 240.0);
+			Ability_Apply_Cooldown(client, slot, 120.0);
 		}
 		else
 		{

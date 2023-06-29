@@ -16,7 +16,7 @@ public void Quantum_Repeater_Main_Attack(int client, int weapon, bool crit)
 {
 	float damage = float(CashSpentTotal[client]);
 	damage = Pow(damage, 1.15);
-	damage = damage / 220.0;
+	damage = damage / 120.0;
 			
 	float speed = 3500.0;
 	
@@ -70,6 +70,6 @@ public void Quantum_Fists_Main_Attack(int client, int weapon, bool crit)
 {
 	float damageMulti = float(CashSpentTotal[client]);
 	damageMulti = Pow(damageMulti, 1.15);
-	damageMulti = damageMulti / 1550.0;
+	damageMulti = damageMulti / 850.0;
 	TF2Attrib_SetByDefIndex(weapon, 2, damageMulti);
 }

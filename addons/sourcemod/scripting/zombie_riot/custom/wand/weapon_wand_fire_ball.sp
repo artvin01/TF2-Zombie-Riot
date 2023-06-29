@@ -28,6 +28,7 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 5.0);
 				
 				TF2Attrib_SetByDefIndex(client, 698, 0.0);
@@ -85,6 +86,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 10.0);
 				
 				TF2Attrib_SetByDefIndex(client, 698, 0.0);
@@ -109,7 +111,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 					
 				delay_hud[client] = 0.0;
 
-				i_FireBallsToThrow[client] = 5;
+				i_FireBallsToThrow[client] = 3;
 				CreateTimer(0.2, FireMultipleFireBalls, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 
 			}

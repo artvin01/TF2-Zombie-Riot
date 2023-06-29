@@ -133,6 +133,7 @@ methodmap HeavyGiant < CClotBody
 		HeavyGiant npc = view_as<HeavyGiant>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "15000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = HEAVY_ZOMBIE_GIANT;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -145,7 +146,7 @@ methodmap HeavyGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeavyGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, HeavyGiant_ClotThink);
 		
 		//IDLE
@@ -200,7 +201,7 @@ public void HeavyGiant_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -227,9 +228,9 @@ public void HeavyGiant_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 
@@ -293,7 +294,7 @@ public void HeavyGiant_ClotThink(int iNPC)
 		}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -301,7 +302,7 @@ public void HeavyGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action HeavyGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HeavyGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	HeavyGiant npc = view_as<HeavyGiant>(victim);
 		
@@ -325,7 +326,7 @@ public void HeavyGiant_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, HeavyGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, HeavyGiant_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

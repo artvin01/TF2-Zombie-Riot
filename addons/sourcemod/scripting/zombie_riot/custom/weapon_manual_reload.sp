@@ -143,14 +143,25 @@ void Reload_Me(int client)
 					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + Reload_Rate);
 					SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Reload_Rate);
 							
+					ShowClientManualAmmoCount(client, entity);
 					TF2Attrib_SetByDefIndex(entity, 821, 0.0);
 					
-					PrintHintText(client, "[%i/%i]", i_SemiAutoStats_MaxAmmo[entity], i_SemiAutoWeapon_AmmoCount[entity]);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 				}
 			}
 		}	
 	}
+}
+
+void ShowClientManualAmmoCount(int client, int weapon)
+{
+	char buffer[128];
+	for(int i; i < i_SemiAutoWeapon_AmmoCount[weapon]; i++)
+	{
+		buffer[i] = '|';
+	}
+
+	PrintHintText(client, buffer);
+	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 }
 /*
 DataPack pack = new DataPack();

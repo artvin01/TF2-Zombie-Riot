@@ -73,33 +73,12 @@ static int MoabHealth(bool fortified)
 
 void Bad_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
-	char buffer[256];
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
-		PrecacheSound(SoundZomgPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundZomgPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundZomgPop[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bad.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/baddamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/badstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bad/badstandarddiffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbreinforceddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbreinforceddiffuse.vtf");
-	#endif
 }
 
 methodmap Bad < CClotBody
@@ -118,12 +97,12 @@ methodmap Bad < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 2.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundZomgPop) - 1);
-		EmitSoundToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundZomgPop[sound], this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public int UpdateBloonOnDamage()
 	{
@@ -143,6 +122,7 @@ methodmap Bad < CClotBody
 		Bad npc = view_as<Bad>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BAD;
+		i_NpcWeight[npc.index] = 5;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -163,7 +143,7 @@ methodmap Bad < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bad_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bad_ClotThink);
 		
@@ -224,11 +204,11 @@ public void Bad_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -283,14 +263,14 @@ public void Bad_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action Bad_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Bad_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -313,7 +293,7 @@ public void Bad_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bad_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Bad_ClotThink);
 	
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");

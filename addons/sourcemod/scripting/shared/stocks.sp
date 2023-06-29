@@ -1,5 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
+//#pragma dynamic    131072
+//Allah This plugin has so much we need to do this.
 
 enum ParticleAttachment_t {
 	PATTACH_ABSORIGIN = 0,
@@ -9,6 +11,23 @@ enum ParticleAttachment_t {
 	PATTACH_POINT_FOLLOW,
 	PATTACH_WORLDORIGIN,
 	PATTACH_ROOTBONE_FOLLOW
+};
+
+enum SolidFlags_t
+{
+	FSOLID_CUSTOMRAYTEST		= 0x0001,	// Ignore solid type + always call into the entity for ray tests
+	FSOLID_CUSTOMBOXTEST		= 0x0002,	// Ignore solid type + always call into the entity for swept box tests
+	FSOLID_NOT_SOLID			= 0x0004,	// Are we currently not solid?
+	FSOLID_TRIGGER				= 0x0008,	// This is something may be collideable but fires touch functions
+											// even when it's not collideable (when the FSOLID_NOT_SOLID flag is set)
+	FSOLID_NOT_STANDABLE		= 0x0010,	// You can't stand on this
+	FSOLID_VOLUME_CONTENTS		= 0x0020,	// Contains volumetric contents (like water)
+	FSOLID_FORCE_WORLD_ALIGNED	= 0x0040,	// Forces the collision rep to be world-aligned even if it's SOLID_BSP or SOLID_VPHYSICS
+	FSOLID_USE_TRIGGER_BOUNDS	= 0x0080,	// Uses a special trigger bounds separate from the normal OBB
+	FSOLID_ROOT_PARENT_ALIGNED	= 0x0100,	// Collisions are defined in root parent's local coordinate space
+	FSOLID_TRIGGER_TOUCH_DEBRIS	= 0x0200,	// This trigger will touch debris objects
+
+	FSOLID_MAX_BITS	= 10
 };
 
 stock int abs(int x)
@@ -74,8 +93,8 @@ stock int GivePropAttachment(int entity, const char[] model)
 		SetVariantString("head");
 		AcceptEntityInput(prop, "SetParentAttachmentMaintainOffset"); 
 
-		SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
-		SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2000.0);
+		SetEntPropFloat(prop, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
+		SetEntPropFloat(prop, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
 
 	}
 	return prop;
@@ -742,24 +761,29 @@ stock int GetMaxWeapons(int client)
 	return maxweps;
 }
 
-stock float RemoveExtraHealth(TFClassType class, float value)
+stock float ClassHealth(TFClassType class)
 {
 	switch(class)
 	{
 		case TFClass_Soldier:
-			return value - 200.0;
+			return 200.0;
 
 		case TFClass_Pyro, TFClass_DemoMan:
-			return value - 175.0;
+			return 175.0;
 
 		case TFClass_Heavy:
-			return value - 300.0;
+			return 300.0;
 
 		case TFClass_Medic:
-			return value - 150.0;
+			return 150.0;
 	}
 	
-	return value - 125.0;
+	return 125.0;
+}
+
+stock float RemoveExtraHealth(TFClassType class, float value)
+{
+	return value - ClassHealth(class);
 }
 
 stock float RemoveExtraSpeed(TFClassType class, float value)
@@ -785,7 +809,7 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 			return value / 300.0;
 	}
 }
-/*
+
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
 	DataPack pack = new DataPack();
@@ -798,14 +822,17 @@ void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 public void RequestFramesCallback(DataPack pack)
 {
 	pack.Reset();
-	RequestFrameCallback func = view_as<RequestFrameCallback>(pack.ReadFunction());
+	Function func = pack.ReadFunction();
 	any data = pack.ReadCell();
 
 	int frames = pack.ReadCell();
-	if(frames < 2)
+	if(frames < 1)
 	{
-		RequestFrame(func, data);
 		delete pack;
+		
+		Call_StartFunction(null, func);
+		Call_PushCell(data);
+		Call_Finish();
 	}
 	else
 	{
@@ -814,7 +841,7 @@ public void RequestFramesCallback(DataPack pack)
 		RequestFrame(RequestFramesCallback, pack);
 	}
 }
-*/
+
 /*
 int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
 {
@@ -877,22 +904,25 @@ stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", co
 	
 	if (szAttachment[0] != '\0') // Use at least a 0.01 second delay between SetParent and SetParentAttachment inputs.
 	{
-		SetVariantString(szAttachment); // "head"
+		if (szAttachment[0]) // do i even have anything?
+		{
+			SetVariantString(szAttachment); // "head"
 
-		if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
-		{
-			if(!maintain_anyways)
+			if (maintain_anyways || !AreVectorsEqual(vOffsets, view_as<float>({0.0,0.0,0.0}))) // NULL_VECTOR
 			{
-				float vPos[3];
-				GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
-				AddVectors(vPos, vOffsets, vPos);
-				TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+				if(!maintain_anyways)
+				{
+					float vPos[3];
+					GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
+					AddVectors(vPos, vOffsets, vPos);
+					TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+				}
+				AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
 			}
-			AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
-		}
-		else
-		{
-			AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
+			else
+			{
+				AcceptEntityInput(iChild, "SetParentAttachment", iParent, iChild);
+			}
 		}
 	}
 }
@@ -927,10 +957,8 @@ stock bool AreVectorsEqual(const float vVec1[3], const float vVec2[3])
 public Action Timer_RemoveEntity(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity>MaxClients)
+	if(IsValidEntity(entity))
 	{
-		
-		TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); // send it away first in case it feels like dying dramatically
 		RemoveEntity(entity);
 	}
 	return Plugin_Stop;
@@ -964,6 +992,7 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 		AcceptEntityInput(entity, "DisableMotion");
 	return Plugin_Stop;
 }
+
 void StartBleedingTimer_Against_Client(int client, int entity, float damage, int amount)
 {
 	BleedAmountCountStack[client] += 1;
@@ -999,7 +1028,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pos = WorldSpaceCenter(client);
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
 	if(bleed_count < 1)
@@ -1013,19 +1042,21 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-
 void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
 {
-	BleedAmountCountStack[entity] += 1;
-	DataPack pack;
-	CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(entity));
-	pack.WriteCell(entity);
-	pack.WriteCell(EntIndexToEntRef(weapon));
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(damagetype);
-	pack.WriteFloat(damage);
-	pack.WriteCell(amount);
+	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
+	{
+		BleedAmountCountStack[entity] += 1;
+		DataPack pack;
+		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(entity));
+		pack.WriteCell(entity);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(damagetype);
+		pack.WriteFloat(damage);
+		pack.WriteCell(amount);
+	}
 }
 
 public Action Timer_Bleeding(Handle timer, DataPack pack)
@@ -1079,100 +1110,147 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void StartHealingTimer(int client, float delay, int health, int amount=0, bool maxhealth=true)
+void StartHealingTimer(int entity, float delay, float health, int amount=0, bool maxhealth=true)
 {
 	DataPack pack;
 	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(client));
-	pack.WriteCell(health);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	if(b_HealthyEssence) //see rouge.sp
+	{
+		health *= 1.25;
+	}
+	pack.WriteFloat(health);
 	pack.WriteCell(maxhealth);
 	pack.WriteCell(amount);
 }
 
+static float f_IncrementalSmallHeal[MAXENTITIES];
+
 public Action Timer_Healing(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	
-	bool IsAnEntity = false;
-	
-	if(IsValidEntity(client))
-	{
-		if(client <= MAXENTITIES && client > MaxClients)
-		{
-			IsAnEntity = true;
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	
-	if(!IsAnEntity)
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(entity <= MaxClients)
 	{
 		
 #if defined ZR
-		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client) || dieingstate[client] > 0)
+		if(entity < 1 || !IsClientInGame(entity) || !IsPlayerAlive(entity) || dieingstate[entity] > 0)
 #else
-		if(!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+		if(entity < 1 || !IsClientInGame(entity) || !IsPlayerAlive(entity))
 #endif
 		
 		{
 			return Plugin_Stop;
 		}
 	}
-	int current;
-	if(!IsAnEntity)
+	else if(!IsValidEntity(entity))
 	{
-		current = GetClientHealth(client);
+		return Plugin_Stop;
+	}
+
+	int lastHealth;
+	if(entity > MaxClients)
+	{
+		lastHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 	}
 	else
 	{
-		current = GetEntProp(client, Prop_Data, "m_iHealth");
+		lastHealth = GetClientHealth(entity);
 	}
+
+	// Our Current Health + Leftover Float Health + New Health Gained
+	float newHealth = float(lastHealth) + f_IncrementalSmallHeal[entity] + pack.ReadFloat();
 	
-	int health = pack.ReadCell();
-	if(pack.ReadCell())
+	if(pack.ReadCell() && newHealth > 0.0)	// Max Health Cap
 	{
-		int maxhealth;
-		if(!IsAnEntity)
+		float maxHealth;
+		if(entity > MaxClients)
 		{
-			maxhealth = SDKCall_GetMaxHealth(client);
+			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 		}
 		else
 		{
-			maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+			maxHealth = float(SDKCall_GetMaxHealth(entity));
 		}
 		
-		if(current > maxhealth)
-		{
-			health = 0;
-		}
-		else if(current+health > maxhealth)
-		{
-			health = maxhealth-current;
-		}
+		if(newHealth > maxHealth)
+			newHealth = maxHealth;
 	}
 
-	current += health;
-	if(current < 1)
+	if(newHealth >= 1.0)
 	{
-		if(!IsAnEntity)
-		{
-			ForcePlayerSuicide(client);
-		}
-	}
-	else if(current)
-	{
-		SetEntProp(client, Prop_Data, "m_iHealth", current);
-		if(!IsAnEntity)
-		{
-			if(health>1 || health<-1)
-				ApplyHealEvent(client, client, health);
-		}
-	}
+		float maxHealth;
 
-	current = pack.ReadCell();
+		if(entity > MaxClients)
+		{
+			maxHealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		}
+		else
+		{
+			maxHealth = float(SDKCall_GetMaxHealth(entity));
+		}
+		//TARGET HEAL
+		if(lastHealth < maxHealth)
+		{
+			if(newHealth >= maxHealth)
+			{
+				newHealth = maxHealth;
+			}
+
+			int setHealth = RoundToFloor(newHealth);	// Health to set
+
+			f_IncrementalSmallHeal[entity] = newHealth - float(setHealth);	// New extra health
+			
+			if(entity > MaxClients)
+			{
+				SetEntProp(entity, Prop_Data, "m_iHealth", setHealth);
+			}
+			else
+			{
+				SetEntityHealth(entity, setHealth);
+
+				int difference = setHealth - lastHealth;
+				if(difference != -1)
+					ApplyHealEvent(entity, difference);	// Show healing number
+			}
+		}
+	}
+	else
+	{
+		SDKHooks_TakeDamage(entity, 0, 0, 100.0 - newHealth);
+	}
+	
+	/*
+	int i_TargetHealAmount;
+	//The healing is less then 1 ? Do own logic.
+					
+	if (healing_Amount <= 1.0)
+	{
+		f_IncrementalSmallHeal[healTarget] += healing_Amount;
+						
+		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+		{
+			f_IncrementalSmallHeal[healTarget] -= 1.0;
+			i_TargetHealAmount = 1;
+		}
+	}
+	else
+	{
+		i_TargetHealAmount = RoundToFloor(healing_Amount);
+						
+		float Decimal_healing = FloatFraction(healing_Amount);
+						
+		f_IncrementalSmallHeal[healTarget] += Decimal_healing;
+						
+		if(f_IncrementalSmallHeal[healTarget] >= 1.0)
+		{
+			f_IncrementalSmallHeal[healTarget] -= 1.0;
+			i_TargetHealAmount += 1;
+		}
+	}
+	*/
+
+	int current = pack.ReadCell();
 	if(current < 2)
 		return Plugin_Stop;
 
@@ -1181,16 +1259,56 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void ApplyHealEvent(int patient, int healer, int amount)
+//doing this litterally every heal spams it, so we make a 0.5 second delay, and thus, will stack it, and then show it all at once.
+Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static int i_HealsDone_Event[MAXENTITIES]={0, ...};
+
+stock void ApplyHealEvent(int entindex, int amount)
 {
-	Event event = CreateEvent("player_healed", true);
-
-	event.SetInt("patient", patient);
-	event.SetInt("healer", healer);
-	event.SetInt("heals", amount);
-
-	event.Fire();
+	if(IsValidClient(entindex))
+	{
+		i_HealsDone_Event[entindex] += amount;
+		if (h_Timer_HealEventApply[entindex] == INVALID_HANDLE)
+		{
+			DataPack pack;
+			h_Timer_HealEventApply[entindex] = CreateDataTimer(0.5, Timer_HealEventApply, pack, _);
+			pack.WriteCell(entindex);
+			pack.WriteCell(EntIndexToEntRef(entindex));
+		}
+	}
 }
+
+public Action Timer_HealEventApply(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int clientOriginalIndex = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
+
+	if (!IsValidMulti(client))
+	{
+		ApplyHealEvent_TimerDeleter(clientOriginalIndex);
+		return Plugin_Continue;
+	}
+
+	Event event = CreateEvent("player_healonhit", true);
+	event.SetInt("entindex", client);
+	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
+	event.Fire();
+
+	ApplyHealEvent_TimerDeleter(clientOriginalIndex);
+	return Plugin_Continue;
+}
+
+void ApplyHealEvent_TimerDeleter(int client) //This is on disconnect/connect
+{
+	if (h_Timer_HealEventApply[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_Timer_HealEventApply[client]);
+	}	
+	i_HealsDone_Event[client] = 0;
+	h_Timer_HealEventApply[client] = INVALID_HANDLE;
+}
+
 
 public bool Trace_DontHitEntity(int entity, int mask, any data)
 {
@@ -1458,6 +1576,12 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 
 stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
 {
+	//allow settings for the sick who cant handle screenshake.
+	//can cause headaches.
+	if(!b_HudScreenShake[client])
+	{
+		return false;
+	}
 	if (command == SHAKE_STOP) {
 		amplitude = 0.0;
 	}
@@ -1712,7 +1836,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	{
 		return false;
 	}
-	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "base_boss"))) //include baseboss so it goesthru
+	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		{
@@ -1733,12 +1857,12 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	char class[64];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(!StrEqual(class, "base_boss"))
+	if(!StrEqual(class, "zr_base_npc"))
 	{
 		return false;
 	}
 	
-	if(entity != iExclude && StrEqual(class, "base_boss"))
+	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
 		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
 		{
@@ -1759,7 +1883,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	float TargetDistance = 0.0; 
 	int ClosestTarget = -1; 
 	int i = MaxClients + 1;
-	while ((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
@@ -2241,7 +2365,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	static char class[12];
 	GetEntityClassname(entity, class, sizeof(class));
 	
-	if(StrEqual(class, "base_boss")) return true;
+	if(StrEqual(class, "zr_base_npc")) return true;
 	
 	return !(entity == data);
 }
@@ -2410,21 +2534,25 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 
 int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
+	if(owner_projectile == 0)
+	{
+		return -1; //I dont exist?
+	}
+	else if(owner_projectile < 1)
+	{
+		return -1; //I dont exist?
+	}
 	if(other_entity == 0)
 	{
 		return 0;
 	}
-	else if(GetEntProp(owner_projectile, Prop_Send, "m_iTeamNum") != GetEntProp(other_entity, Prop_Send, "m_iTeamNum"))
+	else if(other_entity < 1)
 	{
-		char other_classname[32];
-		GetEntityClassname(other_entity, other_classname, sizeof(other_classname));
-		if (StrContains(other_classname, "base_boss") != -1 || StrContains(other_classname, "func_breakable") != -1 || StrContains(other_classname, "prop_dynamic") != -1)
-		{
-			if(GetEntProp(other_entity, Prop_Data, "m_iHealth") > 0) //make sure to check.
-			{
-				return other_entity;				
-			}
-		}
+		return -1;
+	}
+	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
+	{
+		return other_entity;
 	}
 	return -1;
 }
@@ -2594,9 +2722,7 @@ stock int HasNamedItem(int client, const char[] name)
 	return amount;
 }
 
-
-//TODO: Better detection that doesnt make large enemies have better suriveability
-//idea: Fire a trace to all nearby enemies, and use that distance different to dertermine falloff.
+int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
 int client,
@@ -2609,49 +2735,39 @@ float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
 bool FromBlueNpc = false,
 int maxtargetshit = 10,
 bool ignite = false,
-float dmg_against_entity_multiplier = 3.0)
+float dmg_against_entity_multiplier = 3.0,
+Function FunctionToCallOnHit = INVALID_FUNCTION,
+Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 {
+
 	float damage_reduction = 1.0;
-	int Closest_npc = 0;
-	int TargetsHit = 1; //This will not exeed 10 ever, beacuse at that point your damage is nothing.
-	//It also already hits 1 target!
-	//maxtargetshit
-	bool weapon_valid = false;
 	if(IsValidEntity(weapon))
 	{
-		weapon_valid = true;
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
 	}
-	for( int i = 1; i < MAXENTITIES; i++ ) 
+	//this should make explosives during raids more usefull.
+#if defined ZR
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
-		b_WasAlreadyCalculatedToBeClosest[i] = false;
+		damage *= 1.15;
 	}
-
+#endif
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
 		if(spawnLoc[0] == 0.0)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
-			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
-		}
-		else
-		{
-			Closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity);
 		}
 	}
 	else //only nerf blue npc radius!
 	{
-		explosionRadius *= 0.65;
+		explosionRadius *= 0.75;
 		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 		} 
-
-		Closest_npc = GetClosestTarget(entity, _, _, true, _, _, spawnLoc);
 	}
-	
-	float VicLoc[3];
 	
 	int damage_flags = 0;
 	int custom_flags = 0;
@@ -2663,240 +2779,242 @@ float dmg_against_entity_multiplier = 3.0)
 	{
 		damage_flags |= DMG_CLUB;
 	}
+	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_PLASMA_DAMAGE))
+	{
+		damage_flags |= DMG_PLASMA;
+	}
+	else if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_DROWN_DAMAGE))
+	{
+		damage_flags |= DMG_DROWN;
+	}
 	else
 	{
 		damage_flags |= DMG_BLAST;
 	}
+
 	if((i_ExplosiveProjectileHexArray[entity] & EP_GIBS_REGARDLESS))
 	{
 		custom_flags |= ZR_DAMAGE_GIB_REGARDLESS;
+	}
+	if((i_ExplosiveProjectileHexArray[entity] & EP_IS_ICE_DAMAGE))
+	{
+		custom_flags |= ZR_DAMAGE_ICE;
 	}
 	
 	if((i_ExplosiveProjectileHexArray[entity] & EP_NO_KNOCKBACK))
 	{
 		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
 	}
-	
-	if(IsValidEntity(Closest_npc))
+	int entityToEvaluateFrom = 0;
+
+	if(IsValidEntity(client))
 	{
-		VicLoc = WorldSpaceCenter(Closest_npc);
-		float explosion_radius_temp = explosionRadius;
-		if(i_NpcIsABuilding[Closest_npc])
+		entityToEvaluateFrom = client;
+	}
+	else
+	{
+		entityToEvaluateFrom = entity;
+	}
+	if(entityToEvaluateFrom < 1)
+	{
+		//something went wrong, evacuate.
+		LogError("something went wrong, entity was : [%i] | Client if any: [%i]",entityToEvaluateFrom, client);
+		return;
+	}
+
+	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom);
+	/*
+	This trace does not filter on what is hit first, thats kinda bad, it filters by what entity number is smaller.
+	solution: Trace all entities, get all their distances, and do a rating, with this we get what entity is the closest
+	and then  do the rest from there
+	downside: still no solution to the fucking distance checks, but it is still 10x better then doing 4k checks all the time
+	*/
+
+	//This will sort the entity in order, first entity is the first to be hit there etc.
+	static float distance[MAXENTITIES];
+	static float VicPos[MAXENTITIES][3];
+
+	if(FromBlueNpc) //Npcs do not have damage falloff, dodge.
+	{
+		maxtargetshit = 20; //we do not care.
+	}
+	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	{
+		if(!HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
+			break;
+		
+		VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = WorldSpaceCenter(HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]);
+		distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] = GetVectorDistance(VicPos[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]], spawnLoc, true);
+		//Save their distances.
+	}
+	//do another check, this time we only need the amount of entities we actually hit.
+	//Im lazy and dumb, i dont know a better way.
+	for (int repeatloop = 0; repeatloop <= maxtargetshit; repeatloop++)
+	{
+		int ClosestTarget;
+		float ClosestDistance;
+		int indexTraced;
+		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
-			explosion_radius_temp *= 2.0;
+			if (HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom])
+			{
+				if( ClosestDistance ) 
+				{
+					if( distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]] < ClosestDistance ) 
+					{
+						indexTraced = entity_traced;
+						ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
+						ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];  
+					}
+				} 
+				else 
+				{
+					indexTraced = entity_traced;
+					ClosestTarget = HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]; 
+					ClosestDistance = distance[HitEntitiesSphereExplosionTrace[entity_traced][entityToEvaluateFrom]];
+				}	
+			}
+			else
+			{
+				break;
+			}
 		}
-		float distance_1 = GetVectorDistance(VicLoc, spawnLoc);
-		if (distance_1 <= explosion_radius_temp)
-		{			
-			float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
-			
-
-			if(damage_1 > damage)
+		/*
+		We will filter out each entity and them damage them accordingly.
+		*/
+		if(IsValidEntity(ClosestTarget))
+		{	
+			static float vicpos[3];
+			vicpos = VicPos[ClosestTarget];
+			//if its a blue npc, then we want to do a trace to see if we even hit them.
+			if(FromBlueNpc)
 			{
-				damage_1 = damage;
-			}	
-			
-			if(weapon_valid && ignite)
-			{
-				NPC_Ignite(Closest_npc, client, 5.0, weapon);
+				Handle trace; 
+				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);
+				int Traced_Target;
+									
+				Traced_Target = TR_GetEntityIndex(trace);
+				delete trace;
+									
+				if(Traced_Target != ClosestTarget)
+				{	
+					return;
+				}
 			}
-
-			if(FromBlueNpc && !IsValidClient(Closest_npc))
+			if(ignite)
 			{
-				damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
+				if(ClosestTarget > MaxClients)
+				{
+					NPC_Ignite(ClosestTarget, entityToEvaluateFrom, 5.0, weapon);
+				}
+				else
+				{
+					TF2_AddCondition(ClosestTarget, TFCond_Gas, 1.5);
+				}
 			}
-			SDKHooks_TakeDamage(Closest_npc, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-			
+			static float damage_1;
+			damage_1 = damage;
+
+			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			{
+				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
+			}
+			//against raids, any aoe ability should be better as they are usually alone or its only two.
+			if(b_thisNpcIsARaid[ClosestTarget])
+			{
+				damage_1 *= 1.3;
+			}
+			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
+			float GetBeforeDamage;
+			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, FunctionToCallBeforeHit);
+				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(ClosestTarget);
+				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushCell(weapon);
+				Call_Finish(GetBeforeDamage);
+			}
+			if(damage > 0)
+			{
+				//npcs do not take damage from drown damage, so what we will do instead
+				//is to make it do slash damage, slash damage ignores most resistances like drown does.
+				if(ClosestTarget > MaxClients)
+				{
+					if((damage_flags & DMG_DROWN))
+					{
+						damage_flags &= ~DMG_DROWN;
+						damage_flags |= DMG_SLASH; 
+					}
+				}
+				damage_1 += GetBeforeDamage;
+				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+			}
+			if(FunctionToCallOnHit != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, FunctionToCallOnHit);
+				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(ClosestTarget);
+				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushCell(weapon);
+				Call_Finish();
+			}
+			//i want owner entity and hit entity
 			if(!FromBlueNpc) //Npcs do not have damage falloff, dodge.
 			{
 				damage_reduction *= ExplosionDmgMultihitFalloff;
 			}
-		//	b_WasAlreadyCalculatedToBeClosest[Closest_npc] = true; //First target hit/closest might want special stuff idk
 		}
-		
-		if(!FromBlueNpc)
-		{
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)  //Loop as often as there can be even be max NPC's.
-			{
-				if(TargetsHit >= maxtargetshit)
-				{
-					break;
-				}
-				int new_closest_npc = GetClosestTarget_BaseBoss_Pos(spawnLoc, entity); //alotta loops :)
-				if (IsValidEntity(new_closest_npc)) //Make sure its valid bla bla bla
-				{
-					if(Closest_npc != new_closest_npc) //Double check JUST to be sure.
-					{
-						//Damage Calculations
-						VicLoc = WorldSpaceCenter(new_closest_npc);		
-						distance_1 = GetVectorDistance(VicLoc, spawnLoc);	
-						explosion_radius_temp = explosionRadius;
-						if(i_NpcIsABuilding[new_closest_npc])
-						{
-							explosion_radius_temp *= 2.0;
-						}
+		HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom] = false; //we will need to filter them out entirely now, we did dmg, and thus, its done!
 
-						if (distance_1 <= explosion_radius_temp)
-						{
-							float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosion_radius_temp + 1.0);
-								
-							if(damage_1 > damage)
-							{
-								damage_1 = damage;
-							}	
-							if(weapon_valid && ignite)
-							{
-								NPC_Ignite(Closest_npc, client, 5.0, weapon);
-							}	
-							if(FromBlueNpc)
-							{
-								damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-							}						
-							SDKHooks_TakeDamage(new_closest_npc, client, client, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-							
-							damage_reduction *= ExplosionDmgMultihitFalloff;
-							TargetsHit += 1;
-						}
-						//Damage Calculations
-					}
-				}
-			}
+		indexTraced++;
+		for(; indexTraced < MAXENTITIES; indexTraced++)
+		{
+			HitEntitiesSphereExplosionTrace[indexTraced - 1][entityToEvaluateFrom] = HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom];
+			
+			if(!HitEntitiesSphereExplosionTrace[indexTraced][entityToEvaluateFrom])
+				break;
 		}
-		else //Gotta loop through all here, oopsie!
-		{
-			for( int i = 1; i <= MaxClients; i++ ) 
-			{
-				if(TargetsHit >= maxtargetshit)
-				{
-					break;
-				}
-				if (IsValidClient(i))
-				{
-					CClotBody npc = view_as<CClotBody>(i);
-					if (GetEntProp(i, Prop_Send, "m_iTeamNum")!=GetEntProp(entity, Prop_Send, "m_iTeamNum") && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
-					{
-						VicLoc = WorldSpaceCenter(i);
-						distance_1 = GetVectorDistance(VicLoc, spawnLoc);						
-						if (distance_1 <= explosionRadius)
-						{
-							Handle trace; 
-							trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, i);
-							int Traced_Target;
-								
-							Traced_Target = TR_GetEntityIndex(trace);
-							delete trace;
-								
-							if(Traced_Target == i)
-							{
-								float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-								
-								if(damage_1 > damage)
-								{
-									damage_1 = damage;
-								}
-								//Dont give 3x dmg to players lmao
-								SDKHooks_TakeDamage(i, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-								TargetsHit += 1;
-							}
-						}
-					}
-				}
-			}
-			for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
-			{
-				int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
-				if(IsValidEntity(entity_close) && entity_close != client)
-				{
-			//		if(searcher_team != 2)
-					{
-						CClotBody npc = view_as<CClotBody>(entity_close);
-						if(!npc.m_bThisEntityIgnored && GetEntProp(entity_close, Prop_Data, "m_iHealth") > 0) //Check if dead or even targetable
-						{
-							VicLoc = WorldSpaceCenter(entity_close);	
-							distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
-							if (distance_1 <= explosionRadius)
-							{
-								Handle trace; 
-								trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, entity_close);
-								int Traced_Target;
-								
-								Traced_Target = TR_GetEntityIndex(trace);
-								delete trace;
-								
-								if(Traced_Target == entity_close)
-								{
-									float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-																				
-									if(damage_1 > damage)
-									{
-										damage_1 = damage;
-									}
-								//	if(FromBlueNpc)
-								//	{
-								//		damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-								//	}
-							
-									SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-									TargetsHit += 1;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-#if defined ZR
-			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
-			{
-				int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-				if(IsValidEntity(entity_close) && entity_close != client)
-				{
-				//	if(searcher_team != 2)
-					{
-						CClotBody npc = view_as<CClotBody>(entity_close);
-						if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
-						{	
-							if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-							{
-								VicLoc = WorldSpaceCenter(entity_close);	
-								distance_1 = GetVectorDistance(VicLoc, spawnLoc);					
-								if (distance_1 <= explosionRadius)
-								{
-									Handle trace; 
-									trace = TR_TraceRayFilterEx(spawnLoc, VicLoc, ( MASK_SHOT | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, entity_close);
-									int Traced_Target;
-									
-									Traced_Target = TR_GetEntityIndex(trace);
-									delete trace;
-									
-									if(Traced_Target == entity_close)
-									{
-										float damage_1 = Custom_Explosive_Logic(client, distance_1, explosion_range_dmg_falloff, damage, explosionRadius + 1.0);
-																					
-										if(damage_1 > damage)
-										{
-											damage_1 = damage;
-										}
-										if(FromBlueNpc)
-										{
-											damage_1 *= dmg_against_entity_multiplier; //enemy is an npc, and i am an npc.
-										}
+	
+		ClosestTarget = false;
+		ClosestDistance = 0.0;
+		indexTraced = 0;
+	}
+}
 
-										SDKHooks_TakeDamage(entity_close, client, client, damage_1, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, VicLoc, explosionRadius), VicLoc, _, custom_flags);
-										TargetsHit += 1;
-									}
-								}
-							}
-						}
-					}
-				}
+//#define PARTITION_SOLID_EDICTS        (1 << 1) /**< every edict_t that isn't SOLID_TRIGGER or SOLID_NOT (and static props) */
+//#define PARTITION_TRIGGER_EDICTS      (1 << 2) /**< every edict_t that IS SOLID_TRIGGER */
+//#define PARTITION_NON_STATIC_EDICTS   (1 << 5) /**< everything in solid & trigger except the static props, includes SOLID_NOTs */
+//#define PARTITION_STATIC_PROPS        (1 << 7)
+
+void DoExlosionTraceCheck(const float pos1[3], float radius, int entity)
+{
+	for(int i=0; i < MAXENTITIES; i++)
+	{
+		HitEntitiesSphereExplosionTrace[i][entity] = false;
+	}
+	TR_EnumerateEntitiesSphere(pos1, radius, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_EnumerateEntitiesInRange, entity);
+	//It does all needed logic here.
+}
+
+public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filterentity)
+{
+	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
+	{
+		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
+		for(int i=0; i < MAXENTITIES; i++)
+		{
+			if(!HitEntitiesSphereExplosionTrace[i][filterentity])
+			{
+				HitEntitiesSphereExplosionTrace[i][filterentity] = entity;
+				break;
 			}
-#endif	// ZR
-			
 		}
 	}
-	
+	//always keep going!
+	return true;
 }
+
 stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0}, int ParticleIndex = -1)
 {
 	float chargerPos[3];
@@ -2954,7 +3072,6 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 		TE_ParticleInt(g_particleCritText, chargerPos);
 		TE_SendToClient(client);		
 	}
-
 }
 
 public bool HitOnlyTargetOrWorld(int entity, int contentsMask, any iExclude)
@@ -3187,29 +3304,13 @@ stock void AdjustBotCount(int ExtraData = 1) //1 is the default
 	}
 
 #if defined ZR
-	if(EscapeMode)
+	if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
 	{
-		if(12 > CvarMaxBotsForKillfeed.IntValue) //12 is always for escape
-		{
-			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-		}
-		else
-		{
-			botscalculaton = 12;
-		}
-
+		botscalculaton = CvarMaxBotsForKillfeed.IntValue;
 	}
 	else
 	{
-		if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
-		{
-			botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-		}
-		else
-		{
-			botscalculaton = ExtraData;
-		}
-
+		botscalculaton = ExtraData;
 	}
 	
 	if(botscalculaton < 1)
@@ -3264,7 +3365,9 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 	{
 		DispatchKeyValue(worldtext, "targetname", "rpg_fortress");
 		DispatchKeyValue(worldtext, "message", format);
-		DispatchKeyValueInt(worldtext, "textsize", textSize);
+		char intstring[8];
+		IntToString(textSize, intstring, sizeof(intstring));
+		DispatchKeyValue(worldtext, "textsize", intstring);
 
 		char sColor[32];
 		Format(sColor, sizeof(sColor), " %d %d %d %d ", colour[0], colour[1], colour[2], colour[3]);
@@ -3520,9 +3623,11 @@ stock void spawnRing_Vectors(float center[3],
 			 int speed,
 			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
+	float Center_Internal[3];
+	Center_Internal = center;
+	Center_Internal[0] += modif_X;
+	Center_Internal[1] += modif_Y;
+	Center_Internal[2] += modif_Z;
 			
 	int ICE_INT = PrecacheModel(sprite);
 		
@@ -3537,7 +3642,7 @@ stock void spawnRing_Vectors(float center[3],
 		endRange = range + 0.5;
 	}
 	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SetupBeamRingPoint(Center_Internal, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
 
@@ -3610,6 +3715,7 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3], float Be
 // Thank you miku:)
 // https://github.com/Mikusch/PropHunt/blob/985808f13d8738945a2c9980db0b75865a20c99c/addons/sourcemod/scripting/prophunt.sp#L332
 
+#if defined ZR
 static bool HazardResult;
 
 bool IsPointHazard(const float pos1[3])
@@ -3618,7 +3724,6 @@ bool IsPointHazard(const float pos1[3])
 	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
 	return HazardResult;
 }
-
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
 	char classname[16];
@@ -3626,7 +3731,7 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
-			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_PLAYERSOLID, entity);
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
 			bool didHit = TR_DidHit(trace);
 			delete trace;
 			
@@ -3641,15 +3746,43 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 	return true;
 }
 
+bool IsPointNoBuild(const float pos1[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
+	return HazardResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int client)
+{
+	char classname[16];
+	if(GetEntityClassname(entity, classname, sizeof(classname)) && (!StrContains(classname, "trigger_hurt") ||!StrContains(classname, "func_nobuild")))
+	{
+		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
+		{
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
+			{
+				HazardResult = true;
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}
+#endif	// ZR
+
 stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
 {
 
 	float HudY = 0.75;
 	float HudX = -1.0;
-#if defined ZR
 	HudX += f_NotifHudOffsetY[client];
 	HudY += f_NotifHudOffsetX[client];
-#endif
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 
@@ -3756,9 +3889,9 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 	return iBeam;
 }
 
+#if defined ZR
 //bool identified if it went above max health or not.
 
-static float f_IncrementalSmallHeal[MAXENTITIES];
 //No need to delele it, its just 1 ho difference, wow so huge.
 int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0)
 {
@@ -3806,10 +3939,601 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 
 	if(newHealth != flHealth) //Make sure to only set hp when it is actually being overridden.
 	{
-		if((flMaxHealth * MaxHealthOverMulti) > newHealth)
+		if(RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti) >= newHealth) //allow 1 tick of overheal.
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);	
 		}
 	}
 	return i_TargetHealAmount;
+}
+
+static const char g_ScoutDownedResponse[][] = {
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
+};
+
+static const char g_SoldierDownedResponse[][] = {
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3",
+	"vo/soldier_paincrticialdeath04.mp3",
+};
+
+static const char g_SniperDownedResponse[][] = {
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/sniper_paincrticialdeath04.mp3",
+};
+
+static const char g_DemomanDownedResponse[][] = {
+	"vo/demoman_paincrticialdeath01.mp3",
+	"vo/demoman_paincrticialdeath02.mp3",
+	"vo/demoman_paincrticialdeath03.mp3",
+	"vo/demoman_paincrticialdeath04.mp3",
+	"vo/demoman_paincrticialdeath05.mp3",
+};
+
+static const char g_MedicDownedResponse[][] = {
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
+	"vo/medic_paincrticialdeath04.mp3",
+};
+
+static const char g_PyroDownedResponse[][] = {
+	"vo/pyro_paincrticialdeath01.mp3",
+	"vo/pyro_paincrticialdeath02.mp3",
+	"vo/pyro_paincrticialdeath03.mp3",
+};
+static const char g_HeavyDownedResponse[][] = {
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
+};
+
+static const char g_SpyDownedResponse[][] = {
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
+};
+
+static const char g_EngineerDownedResponse[][] = {
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3",
+	"vo/engineer_paincrticialdeath04.mp3",
+	"vo/engineer_paincrticialdeath05.mp3",
+	"vo/engineer_paincrticialdeath06.mp3",
+};
+
+//revive!
+
+static const char g_ScoutReviveResponse[][] = {
+	"vo/scout_mvm_resurrect01.mp3",
+	"vo/scout_mvm_resurrect02.mp3",
+	"vo/scout_mvm_resurrect03.mp3",
+	"vo/scout_mvm_resurrect04.mp3",
+	"vo/scout_mvm_resurrect05.mp3",
+	"vo/scout_mvm_resurrect06.mp3",
+	"vo/scout_mvm_resurrect07.mp3",
+	"vo/scout_mvm_resurrect08.mp3",
+};
+
+static const char g_SoldierReviveResponse[][] = {
+	"vo/soldier_mvm_resurrect01.mp3",
+	"vo/soldier_mvm_resurrect02.mp3",
+	"vo/soldier_mvm_resurrect03.mp3",
+	"vo/soldier_mvm_resurrect04.mp3",
+	"vo/soldier_mvm_resurrect05.mp3",
+	"vo/soldier_mvm_resurrect06.mp3",
+};
+
+static const char g_SniperReviveResponse[][] = {
+	"vo/sniper_mvm_resurrect01.mp3",
+	"vo/sniper_mvm_resurrect02.mp3",
+	"vo/sniper_mvm_resurrect03.mp3",
+	"vo/sniper_mvm_resurrect04.mp3",
+};
+
+static const char g_DemomanReviveResponse[][] = {
+	"vo/demoman_mvm_resurrect01.mp3",
+	"vo/demoman_mvm_resurrect02.mp3",
+	"vo/demoman_mvm_resurrect03.mp3",
+	"vo/demoman_mvm_resurrect04.mp3",
+	"vo/demoman_mvm_resurrect05.mp3",
+	"vo/demoman_mvm_resurrect06.mp3",
+	"vo/demoman_mvm_resurrect07.mp3",
+	"vo/demoman_mvm_resurrect08.mp3",
+	"vo/demoman_mvm_resurrect09.mp3",
+	"vo/demoman_mvm_resurrect10.mp3",
+	"vo/demoman_mvm_resurrect11.mp3",
+};
+
+static const char g_MedicReviveResponse[][] = {
+	"vo/medic_mvm_resurrect01.mp3",
+	"vo/medic_mvm_resurrect02.mp3",
+	"vo/medic_mvm_resurrect03.mp3",
+};
+
+static const char g_PyroReviveResponse[][] = {
+	"vo/pyro_laughhappy01.mp3",
+};
+static const char g_HeavyReviveResponse[][] = {
+	"vo/heavy_mvm_resurrect01.mp3",
+	"vo/heavy_mvm_resurrect02.mp3",
+	"vo/heavy_mvm_resurrect03.mp3",
+	"vo/heavy_mvm_resurrect04.mp3",
+	"vo/heavy_mvm_resurrect05.mp3",
+	"vo/heavy_mvm_resurrect06.mp3",
+	"vo/heavy_mvm_resurrect07.mp3",
+};
+
+static const char g_SpyReviveResponse[][] = {
+	"vo/spy_mvm_resurrect01.mp3",
+	"vo/spy_mvm_resurrect02.mp3",
+	"vo/spy_mvm_resurrect03.mp3",
+	"vo/spy_mvm_resurrect04.mp3",
+	"vo/spy_mvm_resurrect05.mp3",
+	"vo/spy_mvm_resurrect06.mp3",
+	"vo/spy_mvm_resurrect07.mp3",
+	"vo/spy_mvm_resurrect08.mp3",
+	"vo/spy_mvm_resurrect09.mp3",
+};
+
+static const char g_EngineerReviveResponse[][] = {
+	"vo/engineer_mvm_resurrect01.mp3",
+	"vo/engineer_mvm_resurrect02.mp3",
+	"vo/engineer_mvm_resurrect03.mp3",
+};
+
+
+//Saga Ability!
+
+static const char g_ScoutSagaResponse[][] = {
+	"vo/scout_stunballhit01.mp3",
+	"vo/scout_stunballhit02.mp3",
+	"vo/scout_stunballhit04.mp3",
+	"vo/scout_stunballhit05.mp3",
+	"vo/scout_stunballhit07.mp3",
+	"vo/scout_stunballhit09.mp3",
+	"vo/scout_stunballhit11.mp3",
+	"vo/scout_stunballhit12.mp3",
+	"vo/scout_stunballhit15.mp3",
+};
+
+static const char g_SoldierSagaResponse[][] = {
+	"vo/taunts/soldier_taunts14.mp3",
+	"vo/taunts/soldier_taunts17.mp3",
+	"vo/soldier_specialcompleted02.mp3",
+	"vo/soldier_specialcompleted05.mp3",
+};
+
+static const char g_SniperSagaResponse[][] = {
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_cheers08.mp3",
+	"vo/sniper_cheers02.mp3",
+	"vo/sniper_cheers03.mp3",
+	"vo/sniper_cheers01.mp3",
+};
+
+static const char g_DemomanSagaResponse[][] = {
+	"vo/demoman_battlecry01.mp3",
+	"vo/demoman_battlecry03.mp3",
+	"vo/demoman_battlecry04.mp3",
+	"vo/demoman_battlecry07.mp3",
+};
+
+static const char g_MedicSagaResponse[][] = {
+	"vo/medic_battlecry04.mp3",
+	"vo/medic_battlecry05.mp3",
+	"vo/medic_battlecry02.mp3",
+};
+
+static const char g_PyroSagaResponse[][] = {
+	"vo/pyro_battlecry01.mp3",
+	"vo/pyro_battlecry02.mp3",
+};
+static const char g_HeavySagaResponse[][] = {
+	"vo/heavy_battlecry06.mp3",
+	"vo/heavy_battlecry05.mp3",
+	"vo/heavy_battlecry04.mp3",
+	"vo/heavy_battlecry03.mp3",
+	"vo/heavy_battlecry01.mp3",
+};
+
+static const char g_SpySagaResponse[][] = {
+	"vo/spy_stabtaunt04.mp3",
+	"vo/spy_stabtaunt05.mp3",
+	"vo/spy_stabtaunt06.mp3",
+	"vo/spy_stabtaunt08.mp3",
+	"vo/spy_stabtaunt12.mp3",
+	"vo/spy_stabtaunt12.mp3",
+};
+
+static const char g_EngineerSagaResponse[][] = {
+	"vo/engineer_battlecry01.mp3",
+	"vo/engineer_battlecry03.mp3",
+	"vo/engineer_battlecry04.mp3",
+};
+
+
+#define VOICERESPONSESOUNDAREA 90
+void PrecachePlayerGiveGiveResponseVoice()
+{
+	PrecacheSound("vo/taunts/scout_taunts06.mp3");
+	PrecacheSound("vo/taunts/soldier_taunts17.mp3");
+	PrecacheSound("vo/taunts/sniper_taunts22.mp3");
+	PrecacheSound("vo/taunts/demoman_taunts11.mp3");
+	PrecacheSound("vo/taunts/medic_taunts13.mp3");
+	PrecacheSound("vo/pyro_laughevil01.mp3");
+	PrecacheSound("vo/taunts/heavy_taunts16.mp3");
+	PrecacheSound("vo/taunts/spy_taunts12.mp3");
+	PrecacheSound("vo/taunts/engineer_taunts04.mp3");
+
+	for (int i = 0; i < (sizeof(g_ScoutDownedResponse));	   i++) { PrecacheSound(g_ScoutDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SoldierDownedResponse));	   i++) { PrecacheSound(g_SoldierDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SniperDownedResponse));	   i++) { PrecacheSound(g_SniperDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_DemomanDownedResponse));	   i++) { PrecacheSound(g_DemomanDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_PyroDownedResponse));	   i++) { PrecacheSound(g_PyroDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_HeavyDownedResponse));	   i++) { PrecacheSound(g_HeavyDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SpyDownedResponse));	   i++) { PrecacheSound(g_SpyDownedResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_EngineerDownedResponse));	   i++) { PrecacheSound(g_EngineerDownedResponse[i]);	   }
+
+
+	for (int i = 0; i < (sizeof(g_ScoutReviveResponse));	   i++) { PrecacheSound(g_ScoutReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SoldierReviveResponse));	   i++) { PrecacheSound(g_SoldierReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SniperReviveResponse));	   i++) { PrecacheSound(g_SniperReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_DemomanReviveResponse));	   i++) { PrecacheSound(g_DemomanReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_PyroReviveResponse));	   i++) { PrecacheSound(g_PyroReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_HeavyReviveResponse));	   i++) { PrecacheSound(g_HeavyReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SpyReviveResponse));	   i++) { PrecacheSound(g_SpyReviveResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_EngineerReviveResponse));	   i++) { PrecacheSound(g_EngineerReviveResponse[i]);	   }
+
+
+	for (int i = 0; i < (sizeof(g_ScoutSagaResponse));	   i++) { PrecacheSound(g_ScoutSagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SoldierSagaResponse));	   i++) { PrecacheSound(g_SoldierSagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SniperSagaResponse));	   i++) { PrecacheSound(g_SniperSagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_DemomanSagaResponse));	   i++) { PrecacheSound(g_DemomanSagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_PyroSagaResponse));	   i++) { PrecacheSound(g_PyroSagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_HeavySagaResponse));	   i++) { PrecacheSound(g_HeavySagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_SpySagaResponse));	   i++) { PrecacheSound(g_SpySagaResponse[i]);	   }
+	for (int i = 0; i < (sizeof(g_EngineerSagaResponse));	   i++) { PrecacheSound(g_EngineerSagaResponse[i]);	   }
+}
+
+
+void MakePlayerGiveResponseVoice(int client, int status)
+{
+	if(b_IsPlayerNiko[client])
+		return;
+	
+	int ClassShown = view_as<int>(CurrentClass[client]);
+
+	switch(status)
+	{	
+		case 1: //Irene cocky talk
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll("vo/taunts/scout_taunts06.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll("vo/taunts/sniper_taunts22.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll("vo/taunts/soldier_taunts17.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll("vo/taunts/demoman_taunts11.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll("vo/taunts/medic_taunts13.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll("vo/taunts/heavy_taunts16.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll("vo/pyro_laughevil01.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll("vo/taunts/spy_taunts12.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll("vo/taunts/engineer_taunts04.mp3", client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+		case 2: //downed, help!
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll(g_ScoutDownedResponse[GetRandomInt(0, sizeof(g_ScoutDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll(g_SniperDownedResponse[GetRandomInt(0, sizeof(g_SniperDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll(g_SoldierDownedResponse[GetRandomInt(0, sizeof(g_SoldierDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll(g_DemomanDownedResponse[GetRandomInt(0, sizeof(g_DemomanDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll(g_MedicDownedResponse[GetRandomInt(0, sizeof(g_MedicDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll(g_HeavyDownedResponse[GetRandomInt(0, sizeof(g_HeavyDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll(g_PyroDownedResponse[GetRandomInt(0, sizeof(g_PyroDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll(g_SpyDownedResponse[GetRandomInt(0, sizeof(g_SpyDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll(g_EngineerDownedResponse[GetRandomInt(0, sizeof(g_EngineerDownedResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+		case 3: //back from the dead!
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll(g_ScoutReviveResponse[GetRandomInt(0, sizeof(g_ScoutReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll(g_SniperReviveResponse[GetRandomInt(0, sizeof(g_SniperReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll(g_SoldierReviveResponse[GetRandomInt(0, sizeof(g_SoldierReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll(g_DemomanReviveResponse[GetRandomInt(0, sizeof(g_DemomanReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll(g_MedicReviveResponse[GetRandomInt(0, sizeof(g_MedicReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll(g_HeavyReviveResponse[GetRandomInt(0, sizeof(g_HeavyReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll(g_PyroReviveResponse[GetRandomInt(0, sizeof(g_PyroReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll(g_SpyReviveResponse[GetRandomInt(0, sizeof(g_SpyReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll(g_EngineerReviveResponse[GetRandomInt(0, sizeof(g_EngineerReviveResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+		case 4: //Saga Scream!
+		{
+			switch(ClassShown)
+			{
+				case 1:
+				{
+					EmitSoundToAll(g_ScoutSagaResponse[GetRandomInt(0, sizeof(g_ScoutSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 2:
+				{
+					EmitSoundToAll(g_SniperSagaResponse[GetRandomInt(0, sizeof(g_SniperSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 3:
+				{
+					EmitSoundToAll(g_SoldierSagaResponse[GetRandomInt(0, sizeof(g_SoldierSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 4:
+				{
+					EmitSoundToAll(g_DemomanSagaResponse[GetRandomInt(0, sizeof(g_DemomanSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 5:
+				{
+					EmitSoundToAll(g_MedicSagaResponse[GetRandomInt(0, sizeof(g_MedicSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 6:
+				{
+					EmitSoundToAll(g_HeavySagaResponse[GetRandomInt(0, sizeof(g_HeavySagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 7:
+				{
+					EmitSoundToAll(g_PyroSagaResponse[GetRandomInt(0, sizeof(g_PyroSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 8:
+				{
+					EmitSoundToAll(g_SpySagaResponse[GetRandomInt(0, sizeof(g_SpySagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+				case 9:
+				{
+					EmitSoundToAll(g_EngineerSagaResponse[GetRandomInt(0, sizeof(g_EngineerSagaResponse) - 1)], client, SNDCHAN_VOICE, VOICERESPONSESOUNDAREA, _, 1.0);
+				}
+			}
+		}
+	}
+}
+
+void KillDyingGlowEffect(int client)
+{
+	int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+	if(entity > MaxClients)
+		RemoveEntity(entity);
+}
+#endif	// ZR
+
+enum g_Collision_Group
+{
+    COLLISION_GROUP_NONE  = 0,
+    COLLISION_GROUP_DEBRIS,            // Collides with nothing but world and static stuff
+    COLLISION_GROUP_DEBRIS_TRIGGER,        // Same as debris, but hits triggers
+    COLLISION_GROUP_INTERACTIVE_DEBRIS,    // Collides with everything except other interactive debris or debris
+    COLLISION_GROUP_INTERACTIVE,        // Collides with everything except interactive debris or debris    Can be hit by bullets, explosions, players, projectiles, melee
+    COLLISION_GROUP_PLAYER,            // Can be hit by bullets, explosions, players, projectiles, melee
+    COLLISION_GROUP_BREAKABLE_GLASS,
+    COLLISION_GROUP_VEHICLE,
+    COLLISION_GROUP_PLAYER_MOVEMENT,    // For HL2, same as Collision_Group_Player, for TF2, this filters out other players and CBaseObjects
+
+    COLLISION_GROUP_NPC,        // Generic NPC group
+    COLLISION_GROUP_IN_VEHICLE,    // for any entity inside a vehicle    Can be hit by explosions. Melee unknown.
+    COLLISION_GROUP_WEAPON,        // for any weapons that need collision detection
+    COLLISION_GROUP_VEHICLE_CLIP,    // vehicle clip brush to restrict vehicle movement
+    COLLISION_GROUP_PROJECTILE,    // Projectiles!
+    COLLISION_GROUP_DOOR_BLOCKER,    // Blocks entities not permitted to get near moving doors
+    COLLISION_GROUP_PASSABLE_DOOR,    // ** sarysa TF2 note: Must be scripted, not passable on physics prop (Doors that the player shouldn't collide with)
+    COLLISION_GROUP_DISSOLVING,    // Things that are dissolving are in this group
+    COLLISION_GROUP_PUSHAWAY,    // ** sarysa TF2 note: I could swear the collision detection is better for this than NONE. (Nonsolid on client and server, pushaway in player code) // Can be hit by bullets, explosions, projectiles, melee
+    COLLISION_GROUP_NPC_ACTOR,        // Used so NPCs in scripts ignore the player.
+    COLLISION_GROUP_NPC_SCRIPTED = 19,    // Used for NPCs in scripts that should not collide with each other.
+
+    LAST_SHARED_COLLISION_GROUP,
+
+    TF_COLLISIONGROUP_GRENADE = 20,
+    TFCOLLISION_GROUP_OBJECT,
+    TFCOLLISION_GROUP_OBJECT_SOLIDTOPLAYERMOVEMENT,
+    TFCOLLISION_GROUP_COMBATOBJECT,
+    TFCOLLISION_GROUP_ROCKETS,        // Solid to players, but not player movement. ensures touch calls are originating from rocket
+    TFCOLLISION_GROUP_RESPAWNROOMS,
+    TFCOLLISION_GROUP_TANK,
+    TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS
+	
+};
+
+float f_HitmarkerSameFrame[MAXTF2PLAYERS];
+
+void DoClientHitmarker(int client)
+{
+	if(b_HudHitMarker[client] && f_HitmarkerSameFrame[client] != GetGameTime())
+	{
+		EmitCustomToClient(client, "zombiesurvival/hm.mp3", _, _, 90, _, 0.75, 100);
+		SetHudTextParams(-1.0, -1.0, 0.01, 125, 125, 125, 65);
+		ShowHudText(client, 10, "X"); //we use 10
+		f_HitmarkerSameFrame[client] = GetGameTime();	
+	}
+}
+
+
+/*
+	taken from 
+	https://github.com/Daisreich/customguns-tf/blob/4b7b0eed2b2847052e11e7cb015b4ad05df5b2d6/scripting/include/customguns/stocks.inc#L503
+
+*/
+
+stock void UTIL_ImpactTrace(int  client , const float start[3], int iDamageType, const char[] pCustomImpactName = "Impact")
+{
+	if(TR_GetEntityIndex() == -1 || TR_GetFraction() == 1.0)
+	{ 
+		//+check sky
+		return;
+	}
+	float origin[3]; TR_GetEndPosition(origin);
+
+	TE_SetupEffectDispatch(origin, start, NULL_VECTOR, NULL_VECTOR, 0, 0.0, 1.0, 0, 0,
+		getEffectDispatchStringTableIndex(pCustomImpactName), 0, iDamageType, TR_GetHitGroup(), TR_GetEntityIndex(), 0, 0.0, false,
+		NULL_VECTOR, NULL_VECTOR, false, 0, NULL_VECTOR);
+	TE_SendToAll();
+}
+
+
+stock void TE_SetupEffectDispatch(const float origin[3], const float start[3], const float angles[3], const float normal[3],
+	int flags, float magnitude, float scale, int attachmentIndex, int surfaceProp, int effectName, int material, int damageType,
+	int hitbox, int entindex, int color, float radius, bool customColors, const float customColor1[3], const float customColor2[3],
+	bool controlPoint1, int cp1ParticleAttachment, const float cp1Offset[3])
+{
+	TE_Start("EffectDispatch");
+	TE_WriteFloat("m_vOrigin[0]", origin[0]);
+	TE_WriteFloat("m_vOrigin[1]", origin[1]);
+	TE_WriteFloat("m_vOrigin[2]", origin[2]);
+	TE_WriteFloat("m_vStart[0]", start[0]);
+	TE_WriteFloat("m_vStart[1]", start[1]);
+	TE_WriteFloat("m_vStart[2]", start[2]);
+	TE_WriteVector("m_vAngles", angles);
+	TE_WriteVector("m_vNormal", normal);
+	TE_WriteNum("m_fFlags", flags);
+	TE_WriteFloat("m_flMagnitude", magnitude);
+	TE_WriteFloat("m_flScale", scale);
+	TE_WriteNum("m_nAttachmentIndex", attachmentIndex);
+	TE_WriteNum("m_nSurfaceProp", surfaceProp);
+	TE_WriteNum("m_iEffectName", effectName);
+	TE_WriteNum("m_nMaterial", material);
+	TE_WriteNum("m_nDamageType", damageType);
+	TE_WriteNum("m_nHitBox", hitbox);
+	TE_WriteNum("entindex", entindex);
+	TE_WriteNum("m_nColor", color);
+	TE_WriteFloat("m_flRadius", radius);
+	TE_WriteNum("m_bCustomColors", customColors);
+	//TE_WriteVector("m_CustomColors.m_vecColor1", customColor1);
+	//TE_WriteVector("m_CustomColors.m_vecColor2", customColor2);
+	TE_WriteNum("m_bControlPoint1", controlPoint1);
+	TE_WriteNum("m_ControlPoint1.m_eParticleAttachment", cp1ParticleAttachment);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[0]", cp1Offset[0]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[1]", cp1Offset[1]);
+	TE_WriteFloat("m_ControlPoint1.m_vecOffset[2]", cp1Offset[2]);
+}
+
+stock int getEffectDispatchStringTableIndex(const char[] effectName){
+	static int table = INVALID_STRING_TABLE;
+	if(table == INVALID_STRING_TABLE){
+		table = FindStringTable("EffectDispatch");
+	}
+	int index;
+	if( (index = FindStringIndex(table, effectName)) != INVALID_STRING_INDEX)
+		return index;
+	AddToStringTable(table, effectName);
+	return FindStringIndex(table, effectName);
+}
+
+stock void SpawnTimer(float time)
+{
+	int timer = -1;
+	while((timer = FindEntityByClassname(timer, "team_round_timer")) != -1)
+	{
+		SetVariantInt(0);
+		AcceptEntityInput(timer, "ShowInHUD");
+	}
+
+	timer = CreateEntityByName("team_round_timer");
+	DispatchKeyValue(timer, "show_in_hud", "1");
+	DispatchSpawn(timer);
+	
+	SetVariantInt(RoundToCeil(time));
+	AcceptEntityInput(timer, "SetTime");
+	AcceptEntityInput(timer, "Resume");
+	AcceptEntityInput(timer, "Enable");
+	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
+	
+	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
+	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
+	
+	Event event = CreateEvent("teamplay_update_timer", true);
+	event.Fire();
 }

@@ -162,7 +162,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 				{
 					static char buffer[64];
 					GetEntityClassname(target, buffer, sizeof(buffer));
-					if(!StrContains(buffer, "base_boss", true))
+					if(!StrContains(buffer, "zr_base_npc", true))
 					{
 						bool team = GetEntProp(owner, Prop_Send, "m_iTeamNum")==GetEntProp(target, Prop_Send, "m_iTeamNum");
 						if(drains && !team)
@@ -263,10 +263,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
 #if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
+
 #endif					
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
@@ -499,12 +500,26 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(medigun_mode == 0)
-					PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
-				else if(medigun_mode == 1)
-					PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
-				else if(medigun_mode == 2)
-					PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
+				if(IsValidEntity(healTarget) && healTarget>MaxClients)
+				{
+					int healthbuilding = GetEntProp(healTarget, Prop_Data, "m_iHealth");
+					if(medigun_mode == 0)
+						PrintHintText(owner,"[Heal Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
+					else if(medigun_mode == 1)
+						PrintHintText(owner,"[Damage Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
+					else if(medigun_mode == 2)
+						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
+				}
+				else
+				{
+					if(medigun_mode == 0)
+						PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
+					else if(medigun_mode == 1)
+						PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
+					else if(medigun_mode == 2)
+						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
+					
+				}
 						
 				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
@@ -536,8 +551,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						Is_Allied_Npc = true;
 					}
 					
-					float Healing_Value = Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
-
+					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+#if defined ZR					
+					if(b_HealthyEssence)
+						Healing_Value *= 1.25;
+#endif
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
 						
@@ -665,6 +683,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							newHealth = flMaxHealth;
 						}
 						
+						ApplyHealEvent(healTarget, i_TargetHealAmount);
 						SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
 						new_ammo -= i_TargetHealAmount;
 #if defined ZR
@@ -697,6 +716,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							i_SelfHealAmount -= newHealth - flMaxHealth;
 							newHealth = flMaxHealth;
 						}
+						ApplyHealEvent(owner, i_SelfHealAmount);
 						
 						SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
 						new_ammo -= i_SelfHealAmount;
@@ -763,7 +783,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_FindOnPlayer(owner, 8, true, 1.0, true);
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 1, true, 1.0);
+					//there are some updgras that require medigun damage only!
 #if defined ZR
 					if(LastMann)	
 						flDrainRate *= 2.0;
@@ -790,9 +812,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 				}
 				
-				if (flChargeLevel==1.0) {
+				if (flChargeLevel==1.0) 
+				{
 					SetEntProp(medigun, Prop_Send, "m_bChargeRelease", 1);
 				}
+				new_ammo -= 6;
+
 				SetAmmo(owner, 22, new_ammo);
 				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
 				if(medigun_hud_delay[owner] < GetGameTime())
@@ -815,7 +840,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.4;
+					float heatrefresh = 0.05;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -840,7 +865,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.3;
+					float heatrefresh = 0.05;
 					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
 					if(address != Address_Null)
 						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
@@ -853,6 +878,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
+				
 				}
 			}
 			else 
@@ -896,7 +922,7 @@ public void GB_On_Reload(int client, int weapon, bool crit) {
 	}
 	PrintHintText(client,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-						
+	SetEntProp(weapon, Prop_Send, "m_bChargeRelease", 1);
 	gb_medigun_on_reload[client] = true;
 }
 #if defined ZR
@@ -908,7 +934,7 @@ public void GB_Check_Ball(int client, int weapon, bool crit)
 		return;
 	}
 	
-	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.03;
+	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.06;
 						
 	if (flChargeLevel >= 1.0) 
 	{

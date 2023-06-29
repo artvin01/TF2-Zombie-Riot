@@ -73,6 +73,7 @@ methodmap XenoKamikaze < CClotBody
 		XenoKamikaze npc = view_as<XenoKamikaze>(CClotBody(vecPos, vecAng, "models/player/demo.mdl" , "1.0", "700", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_KAMIKAZE_DEMO;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -89,7 +90,7 @@ methodmap XenoKamikaze < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoKamikaze_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoKamikaze_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -157,7 +158,7 @@ public void XenoKamikaze_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -173,11 +174,11 @@ public void XenoKamikaze_ClotThink(int iNPC)
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 			
@@ -248,7 +249,7 @@ public void XenoKamikaze_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -256,7 +257,7 @@ public void XenoKamikaze_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoKamikaze_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoKamikaze_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -276,12 +277,21 @@ public void XenoKamikaze_NPCDeath(int entity)
 {
 	XenoKamikaze npc = view_as<XenoKamikaze>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoKamikaze_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoKamikaze_ClotThink);
-	float startPosition[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
-	startPosition[2] += 45;
-	makeexplosion(entity, entity, startPosition, "", 65, 125, _, _, true);
+
+	if(!NpcStats_IsEnemySilenced(entity))
+	{
+		float startPosition[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
+		startPosition[2] += 45;
+		makeexplosion(entity, entity, startPosition, "", 65, 125, _, _, true);
+	}
+	else
+	{
+		npc.m_bDissapearOnDeath = false;
+	}
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

@@ -170,6 +170,7 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		XenoCombineSoldierAr2 npc = view_as<XenoCombineSoldierAr2>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_AR2;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -185,7 +186,7 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoCombineSoldierAr2_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoCombineSoldierAr2_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -251,13 +252,13 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	if(npc.m_flReloadDelay > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;		
 	}
 	else
@@ -312,9 +313,9 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 25000 && flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -477,7 +478,7 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -485,7 +486,7 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoCombineSoldierAr2_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoCombineSoldierAr2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -510,7 +511,7 @@ public void XenoCombineSoldierAr2_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoCombineSoldierAr2_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoCombineSoldierAr2_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

@@ -184,6 +184,7 @@ methodmap XenoFortifiedFastZombie < CClotBody
 		XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "400", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FORTIFIED_FASTZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -199,7 +200,7 @@ methodmap XenoFortifiedFastZombie < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFortifiedFastZombie_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoFortifiedFastZombie_ClotThink);
 		
 		
@@ -249,7 +250,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -283,7 +284,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 		}
 		if(npc.m_flInJump > GetGameTime(npc.index))
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.FaceTowards(vecTarget, 1000.0);
 			
@@ -296,11 +297,11 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(flDistanceToTarget < 10000)
@@ -354,7 +355,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 				delete swingTrace;
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 			}
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 		else
@@ -365,7 +366,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -373,7 +374,7 @@ public void XenoFortifiedFastZombie_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoFortifiedFastZombie_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoFortifiedFastZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -381,15 +382,17 @@ public Action XenoFortifiedFastZombie_ClotDamaged(int victim, int &attacker, int
 		
 	XenoFortifiedFastZombie npc = view_as<XenoFortifiedFastZombie>(victim);
 	
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		npc.bXenoInfectedSpecialHurt = true;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		damage = 0.0;
-		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", attacker, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5);
-		return Plugin_Changed;
+		if(!npc.bXenoInfectedSpecialHurt)
+		{
+			npc.bXenoInfectedSpecialHurt = true;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
+			damage = 0.0;
+			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", attacker, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5);
+			return Plugin_Changed;
+		}
 	}
 	
 	/*
@@ -415,7 +418,7 @@ public void XenoFortifiedFastZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFortifiedFastZombie_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoFortifiedFastZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");

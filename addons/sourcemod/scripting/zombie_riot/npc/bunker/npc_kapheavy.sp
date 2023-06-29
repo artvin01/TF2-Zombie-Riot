@@ -219,7 +219,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Eternal_Kaptain_Heavy_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Eternal_Kaptain_Heavy_ClotThink);		
 
 		npc.m_flSpeed = Kaptain_MaxSpeed;
@@ -295,7 +295,7 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	if(GiantSteps_Usage[npc.index] <= GetGameTime(npc.index) && !GiantSteps_On[npc.index] && !TempOpener3[npc.index] && !GiantSteps_RepeaterOn[npc.index])
 	{
@@ -458,11 +458,11 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
@@ -563,7 +563,7 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -571,7 +571,7 @@ public void Eternal_Kaptain_Heavy_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Eternal_Kaptain_Heavy_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Eternal_Kaptain_Heavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Eternal_Kaptain_Heavy npc = view_as<Eternal_Kaptain_Heavy>(victim);
 		
@@ -627,7 +627,7 @@ public void Eternal_Kaptain_Heavy_NPCDeath(int entity)
 		KapheavyHasDied = true;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Eternal_Kaptain_Heavy_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Eternal_Kaptain_Heavy_ClotThink);	
 	//if(IsValidEntity(npc.m_iWearable1))
 		//RemoveEntity(npc.m_iWearable1);

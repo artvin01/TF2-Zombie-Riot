@@ -45,7 +45,7 @@
 
 #define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 
-#define BUILDINGCOLLISIONNUMBER	27
+#define BUILDINGCOLLISIONNUMBER	24
 
 #define MAX_REBELS_ALLOWED 4
 
@@ -95,6 +95,7 @@ static int Village_Flags[MAXTF2PLAYERS];
 static bool Village_ForceUpdate[MAXTF2PLAYERS];
 static ArrayList Village_Effects;
 static int Village_TierExists[3];
+static float f_VillageRingVectorCooldown[MAXENTITIES];
 
 //static int gLaser1;
 
@@ -115,10 +116,10 @@ void Building_MapStart()
 //	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 //	SyncHud_Notifaction = CreateHudSynchronizer();
 	PrecacheModel(CUSTOM_SENTRYGUN_MODEL); //MORTAR MODEL AND RAILGUN MODEL!!!
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.vvd"); 			//ADD TO DOWNLOADS!
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.mdl");
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx80.vtx");
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx90.vtx");
+//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.vvd"); 			//ADD TO DOWNLOADS!
 	
 	PrecacheSound(MORTAR_SHOT);
 	PrecacheSound(MORTAR_BOOM); 
@@ -149,13 +150,14 @@ void Building_MapStart()
 	
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
+	Zero(f_VillageRingVectorCooldown);
 }
 
 //static int RebelTimerSpawnIn;
-static int Building_Repair_Health[MAXENTITIES]={0, ...};
+int Building_Repair_Health[MAXENTITIES]={0, ...};
 static int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
-static int Building_Max_Health[MAXENTITIES]={0, ...};
+int Building_Max_Health[MAXENTITIES]={0, ...};
 
 
 static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
@@ -172,6 +174,10 @@ void Building_ClearAll()
 	Zero(Building_Sentry_Cooldown);
 	Zero(Village_TierExists);
 	//RebelTimerSpawnIn = 0;
+}
+void ResetSentryCD()
+{
+	Zero(Building_Sentry_Cooldown);
 }
 
 int Building_GetClientVillageFlags(int client)
@@ -394,8 +400,8 @@ public bool Building_Sentry(int client, int entity)
 	i_WhatBuilding[entity] = BuildingSentrygun;
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = false;
-//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_DroppedBuildingWaitSentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -415,14 +421,7 @@ public bool Building_Sentry(int client, int entity)
 	}
 	
 //	CreateTimer(0.5, Timer_DroppedBuildingWaitSentryLeveLUp, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 public bool Building_Railgun(int client, int entity)
 {
@@ -436,6 +435,8 @@ public bool Building_Railgun(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -452,14 +453,7 @@ public bool Building_Railgun(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public bool Building_Mortar(int client, int entity)
@@ -474,6 +468,10 @@ public bool Building_Mortar(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -490,14 +488,7 @@ public bool Building_Mortar(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public bool Building_HealingStation(int client, int entity)
@@ -518,6 +509,8 @@ public bool Building_HealingStation(int client, int entity)
 	//This is so low because it has to update the animation very often, this is needed.
 	//i dont want to use an sdkhook for this as i already have this here, and i dont think buildings have think, and it wouldnt be needed here
 	//anyways as i have to reuse whats in there anyways.
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -533,14 +526,8 @@ public bool Building_HealingStation(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	
+	return true;
 }
 
 public Action Timer_DroppedBuildingWaitSentryLeveLUp(Handle htimer, int entref)
@@ -609,8 +596,8 @@ public bool Building_DispenserWall(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_barricade");
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -641,8 +628,8 @@ public bool Building_DispenserElevator(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_elevator");
 	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
@@ -682,8 +669,8 @@ public bool Building_AmmoBox(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_ammobox");
@@ -723,8 +710,8 @@ public bool Building_ArmorTable(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -768,9 +755,8 @@ public bool Building_PerkMachine(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
-	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -812,8 +798,8 @@ public bool Building_PackAPunch(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199);
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 200);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
 	SetEntProp(entity, Prop_Send, "m_bCarried", true);
 //	SetEntProp(entity, Prop_Send, "m_iAmmoMetal", 300);
 
@@ -886,6 +872,24 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
+	{
+		damage *= 3.0;
+	}
+	damage *= fl_Extra_Damage[attacker];
+
+	if(f_FreeplayDamageExtra != 1.0)
+	{
+		damage *= f_FreeplayDamageExtra;
+	}
+	if(f_PotionShrinkEffect[attacker] > GetGameTime() || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GetGameTime()))
+	{
+		damage *= 0.5; //half the damage when small.
+	}
+	if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+	{
+		damage *= 1.10;
+	}
 	
 	if(b_thisNpcIsABoss[attacker])
 	{
@@ -903,18 +907,13 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage *= 3.0; //OTHERWISE EXPLOSIVES ARE EXTREAMLY WEAK!!
 	}
 	*/
-	/*
+	
 	if(Resistance_for_building_High[entity] > GetGameTime())
 	{
-		damage *= 0.15;
+		damage *= 0.75;
 		return Plugin_Changed;
 	}
-	else if(Resistance_for_building_Low[entity] > GetGameTime())
-	{
-		damage *= 0.30;
-		return Plugin_Changed;
-	}
-	*/
+	
 
 	damagePosition[2] -= 40.0;
 	TE_ParticleInt(g_particleImpactMetal, damagePosition);
@@ -1146,44 +1145,99 @@ public Action Building_Set_HP_Elevator(Handle dashHud, int ref)
 }
 */
 
-public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+int Building_GetBuildingRepair(int entity)
 {
-	if(damagetype != DMG_CRUSH)
+	return Building_cannot_be_repaired[entity] ? 0 : Building_Repair_Health[entity];
+}
+
+void Building_SetBuildingRepair(int entity, int health)
+{
+	if(!Building_cannot_be_repaired[entity])
 	{
-		int dmg = RoundFloat(damage);
-		
-		if(!Building_cannot_be_repaired[entity])
+		int damage = Building_Repair_Health[entity] - health;
+		Building_Repair_Health[entity] = health;
+
+		if(Building_Repair_Health[entity] > 0)
 		{
-			Building_Repair_Health[entity] -= dmg;
-			if(Building_Repair_Health[entity] > 0)
+			int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+			progress += 1; //so it goes to 100 :)
+			if(progress > 100)
 			{
-				dmg = 0;
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", Building_Repair_Health[entity] * 200 / GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+				progress = 100;
 			}
-			else
-			{
-				dmg += Building_Repair_Health[entity];
-				SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
-				Building_cannot_be_repaired[entity] = true;
-			}
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
 		}
-		
-		if(dmg)
+		else
 		{
-			int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
-			if(health < 1)
-				health = 1;
-			
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+			Building_cannot_be_repaired[entity] = true;
 		}
+
 		int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 		if(IsValidClient(client))
 		{
-			i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
+			i_BarricadeHasBeenDamaged[client] += damage;
 		}
 	}
+}
 
+public void Building_TakeDamagePost(int entity, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
+{
+	if(damagetype == DMG_CRUSH)
+	{
+		damage = 0.0;
+		return;
+	}
+	if(i_BeingCarried[entity])
+	{
+		return;
+	}
+	if(damagetype == DMG_ACID)
+	{
+		return;
+	}
+	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
+	{
+		return;
+	}
 
+	int dmg = RoundFloat(damage);
+		
+	if(!Building_cannot_be_repaired[entity])
+	{
+		Building_Repair_Health[entity] -= dmg;
+		if(Building_Repair_Health[entity] > 0)
+		{
+			dmg = 0;
+			int progress = Building_Repair_Health[entity] * 100 / GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+			progress += 1; //so it goes to 100 :)
+			if(progress > 100)
+			{
+				progress = 100;
+			}
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress);
+		}
+		else
+		{
+			dmg += Building_Repair_Health[entity];
+			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
+			Building_cannot_be_repaired[entity] = true;
+		}
+	}
+	
+	if(dmg)
+	{
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
+		if(health < 1)
+			health = 1;
+		
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	}
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	if(IsValidClient(client))
+	{
+		i_BarricadeHasBeenDamaged[client] += RoundToCeil(damage);
+	}
 }
 
 /*
@@ -1229,6 +1283,20 @@ void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 		}
 	}
 }
+
+bool AllowBuildingCurrently()
+{
+	if(Rogue_Mode())
+	{
+		if(Rogue_InSetup())
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 /*
 void Building_PlayerRunCmd(int client, int buttons)
 {
@@ -1345,7 +1413,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 							}
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;
-							h_Pickup_Building[client] = CreateDataTimer(1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+							h_Pickup_Building[client] = CreateDataTimer(b_ThisEntityIgnored[entity] ? 0.0 : 1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
 							pack.WriteCell(client);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(GetClientUserId(client));
@@ -1370,6 +1438,10 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 
 	if(IsValidClient(client))
 	{
+		if(TF2_IsPlayerInCondition(client,TFCond_Taunting)) //prevent people that taunt from picking up buildings due to npc targetting issues
+		{
+			return Plugin_Handled;
+		}
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
@@ -1379,7 +1451,6 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 				static char buffer[64];
 				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
 				{
-					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
 					SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.1);
 					CClotBody npc = view_as<CClotBody>(entity);
 					npc.bBuildingIsPlaced = false;
@@ -1422,7 +1493,8 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						Spawn_Buildable(client);
 						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
 					}	
-				}			
+					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
+				}	
 			}
 		}
 	}
@@ -1590,7 +1662,7 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 		}
-		else if(StrEqual(buffer, "base_boss"))
+		else if(StrEqual(buffer, "zr_base_npc"))
 		{
 			if(b_IsAlliedNpc[entity])
 			{
@@ -1876,7 +1948,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				buildingType = 6;
 			}
 		}
-		else if(Is_Reload_Button && StrEqual(buffer, "base_boss"))
+		else if(Is_Reload_Button && StrEqual(buffer, "zr_base_npc"))
 		{
 			buildingType = Citizen_BuildingInteract(entity);
 			int temp_owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
@@ -1937,10 +2009,10 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						}
 					}
 			*/
-					StartHealingTimer(client, 0.1, HealAmmount, HealTime);
-					if(owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
+					StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
+					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
-						if(owner != client)
+						if(!Rogue_Mode() && owner != client)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
@@ -1998,7 +2070,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
 
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2025,7 +2097,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
+										AddAmmoClient(client, 21 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2034,7 +2106,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2047,9 +2119,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 21, GetAmmo(client, 21)+(AmmoData[21][1]*2));
+										AddAmmoClient(client, 21 ,_,2.0);
+										AddAmmoClient(client, 14 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
-										SetAmmo(client, 14, GetAmmo(client, 14)+(AmmoData[14][1]*2));
 										//Yeah extra ammo, do i care ? no.
 										
 										for(int i; i<Ammo_MAX; i++)
@@ -2059,7 +2131,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2072,7 +2144,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 22, GetAmmo(client, 22)+(AmmoData[22][1]*2));
+										AddAmmoClient(client, 22 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2081,7 +2153,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2094,7 +2166,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 23, GetAmmo(client, 23)+(AmmoData[23][1]*2));
+										AddAmmoClient(client, 23 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2103,7 +2175,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2116,7 +2188,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, 3, GetAmmo(client, 3)+(AmmoData[3][1]*2));
+										AddAmmoClient(client, 3 ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2125,7 +2197,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2138,7 +2210,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+(AmmoData[Ammo_type][1]*2));
+										AddAmmoClient(client, Ammo_type ,_,2.0);
 										Ammo_Count_Used[client] += 1;
 										for(int i; i<Ammo_MAX; i++)
 										{
@@ -2147,7 +2219,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 										i_State[entity] = -1;
 										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(owner != -1 && owner != client)
+										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
 											CashSpent[owner] -= 20;
@@ -2167,31 +2239,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(Armor_Charge[client] < Armor_Max)
 										{
 												
-											if(Extra == 50)
-												Armor_Charge[client] += 25;
-												
-											else if(Extra == 100)
-												Armor_Charge[client] += 35;
-												
-											else if(Extra == 150)
-												Armor_Charge[client] += 50;
-												
-											else if(Extra == 200)
-												Armor_Charge[client] += 75;
-												
-											else
-												Armor_Charge[client] += 25;
-														
-											if(Armor_Charge[client] >= Armor_Max)
-											{
-												Armor_Charge[client] = Armor_Max;
-											}
+											GiveArmorViaPercentage(client, 0.05, 0.5);
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-											if(owner != -1 && owner != client)
+											if(!Rogue_Mode() && owner != -1 && owner != client)
 											{
 												Resupplies_Supplied[owner] += 2;
 												CashSpent[owner] -= 20;
@@ -2237,25 +2291,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(Armor_Charge[client] < Armor_Max)
 						{
 								
-							if(Extra == 50)
-								Armor_Charge[client] += 75;
-								
-							else if(Extra == 100)
-								Armor_Charge[client] += 100;
-								
-							else if(Extra == 150)
-								Armor_Charge[client] += 200;
-								
-							else if(Extra == 200)
-								Armor_Charge[client] += 350;
-								
-							else
-								Armor_Charge[client] += 25;
-										
-							if(Armor_Charge[client] >= Armor_Max)
-							{
-								Armor_Charge[client] = Armor_Max;
-							}
+							GiveArmorViaPercentage(client, 0.2, 1.0);
 							
 					//		float Shave_Seconds_off = 5.0 * Extra;
 							
@@ -2270,7 +2306,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
 
 						//	CashSpent[owner] -= 20;
-							if(owner != -1 && owner != client)
+							if(!Rogue_Mode() && owner != -1 && owner != client)
 							{
 								if(Armor_table_money_limit[owner][client] < 15)
 								{
@@ -2304,6 +2340,9 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							Menu menu2 = new Menu(Building_ConfirmMountedAction);
 							menu2.SetTitle("%t", "Which perk do you desire?");
 								
+							FormatEx(buffer, sizeof(buffer), "%t", "Recycle Poire");
+							menu2.AddItem("-9", buffer);
+
 							FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
 							menu2.AddItem("-8", buffer);
 							
@@ -2365,14 +2404,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				}
 				case 8:
 				{
-					if(Is_Reload_Button)
+					if(Is_Reload_Button && owner != -1)
 					{
 						VillageUpgradeMenu(owner, client);
 					}
 				}
 				case 9:
 				{
-					if(Is_Reload_Button)
+					if(Is_Reload_Button && owner != -1)
 					{
 						OpenSummonerMenu(owner, client);
 					}
@@ -2407,6 +2446,8 @@ public Action Building_CheckTimer(Handle timer, int ref)
 			Call_PushCell(client);
 			Call_PushCell(entity);
 			Call_Finish(result);
+
+			Rogue_AllySpawned(entity);
 			
 			if(!result)
 			{
@@ -3095,7 +3136,13 @@ public bool BuildingCustomCommand(int client)
 					{
 						Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-						StartHealingTimer(client, 0.1, 1, 30);
+						int HealAmmount = 1;
+						int HealTime = 30;
+						if(IsValidClient(client))
+						{
+							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(client, 8, true, 1.0, true));
+						}
+						StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
 					}
 					else
 					{
@@ -3124,7 +3171,7 @@ public bool BuildingCustomCommand(int client)
 								{
 									Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-									StartHealingTimer(client, 0.1, 1, 30);
+									StartHealingTimer(client, 0.1, 1.0, 30);
 								}
 								else
 								{
@@ -3150,7 +3197,7 @@ public bool BuildingCustomCommand(int client)
 					if(f_BuildingIsNotReady[client] < GetGameTime())
 					{
 						//Ammo_Count_Used[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 120.0;
+						f_BuildingIsNotReady[client] = GetGameTime() + 90.0;
 						
 						if(Village_Flags[client] & VILLAGE_050)
 						{
@@ -3844,7 +3891,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "base_boss", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
 				{
@@ -3866,9 +3913,14 @@ static void GetBeamDrawStartPoint_Client(int client, float startPoint[3])
 	GetClientEyePosition(client, startPoint);
 }
 
+static int i_MaxSupportBuildingsAllowed[MAXTF2PLAYERS];
 
-public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
+int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat = false)
 {
+	if(GetSavedStat)
+	{
+		return i_MaxSupportBuildingsAllowed[client];
+	}
 	int maxAllowed = 1;
 	
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
@@ -3884,13 +3936,14 @@ public int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 	{
 		maxAllowed = 1;
 	}
+	i_MaxSupportBuildingsAllowed[client] = maxAllowed;
 	return maxAllowed;
 }
 
 
 public int MaxBarricadesAllowed(int client)
 {
-	int maxAllowed = 3;
+	int maxAllowed = 4;
 	
  //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
@@ -4090,6 +4143,19 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 					Do_Perk_Machine_Logic(owner, client, entity, 6);
 				}
 			}
+			else if(id == -9)
+			{
+				int entity = EntRefToEntIndex(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = -1;
+					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
+					{
+						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+					}
+					Do_Perk_Machine_Logic(owner, client, entity, 7);
+				}
+			}
 		}
 	}
 	return 0;
@@ -4097,14 +4163,14 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
-	TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_SOUND, 0);
+	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	Building_Collect_Cooldown[entity][client] = GetGameTime() + 40.0;
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
-	if(owner != -1 && owner != client)
+	if(!Rogue_Mode() && owner != -1 && owner != client)
 	{
-		if(Perk_Machine_money_limit[owner][client] < 10)
+		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
 			CashSpent[owner] -= 80;
 			Perk_Machine_money_limit[owner][client] += 2;
@@ -4180,14 +4246,7 @@ public bool Building_Village(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 public Action Timer_VillageThink(Handle timer, int ref)
@@ -4271,7 +4330,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		{
 			range += 125.0;
 		}
-		else if(effects & VILLAGE_004)
+		else if(effects & VILLAGE_005)
 		{
 			range += 150.0;
 		}
@@ -4294,7 +4353,25 @@ public Action Timer_VillageThink(Handle timer, int ref)
 			if(GetVectorDistance(pos1, pos2, true) < range)
 			{
 				allies.Push(client);
-				
+
+				if(effects & VILLAGE_002)
+				{
+					int maxarmor = MaxArmorCalculation(Armor_Level[client], client, 0.5);
+					if(Armor_Charge[client] < maxarmor)
+					{
+						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
+						Armor_Charge[client] += 2;
+					}
+				}
+				else if(effects & VILLAGE_001)
+				{
+					if(Armor_Charge[client] < 0)
+					{
+						f_ClientArmorRegen[client] = GetGameTime() + 0.7;
+						Armor_Charge[client] += 2;
+					}
+				}
+
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(weapon > MaxClients)
 					weapons.Push(weapon);
@@ -4303,7 +4380,7 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	}
 	
 	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(GetEntProp(i, Prop_Send, "m_iTeamNum") == 2)
 		{
@@ -4416,123 +4493,81 @@ void Building_ClearRefBuffs(int ref)
 	}
 }
 
-float Building_GetDiscount()
+void Building_RaidSpawned(int entity)
 {
-	int extra;
-	bool found;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
 		{
-			if(Village_Flags[client] & VILLAGE_001)
-				found = true;
-			
-			if(Village_Flags[client] & VILLAGE_002)
-				extra++;
+			if(Village_Flags[client] & VILLAGE_004)
+			{
+				f_CrippleDebuff[entity] = FAR_FUTURE;
+				break;
+			}
 		}
 	}
-	
-	if(!found)
-		return 1.0;
-	
-	if(extra > 3)
-		extra = 3;
-	
-	return 0.98 - (extra * 0.01);
 }
 
-void Building_CamoOrRegrowBlocker(bool &camo, bool &regrow)
+bool Building_NeatherseaReduced(int entity)
+{
+	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
+}
+
+void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow = false)
 {
 	if(camo || regrow)
 	{
-		for(int client = 1; client <= MaxClients; client++)
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != 2)
 		{
-			if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+			static float pos1[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(camo && (Village_Flags[client] & VILLAGE_010) && (GetURandomInt() % 2))
-					camo = false;
-				
-				if(regrow && (Village_Flags[client] & VILLAGE_020) && !(GetURandomInt() % 5))
-					regrow = false;
+				if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
+				{
+					static float pos2[3];
+					bool mounted = (Building_Mounted[client] == i_HasSentryGunAlive[client]);
+					if(mounted)
+					{
+						GetClientEyePosition(client, pos2);
+					}
+					else
+					{
+						GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos2);
+					}
+
+					float range = 600.0;
+					
+					if(Village_Flags[client] & VILLAGE_100)
+						range += 120.0;
+					
+					if(Village_Flags[client] & VILLAGE_500)
+					{
+						range += 125.0;
+					}
+					else if(Village_Flags[client] & VILLAGE_005)
+					{
+						range += 150.0;
+					}
+					
+					if(mounted)
+						range *= 0.55;
+					
+					range = range * range;
+
+					if(GetVectorDistance(pos1, pos2, true) < range)
+					{
+						if(camo && (Village_Flags[client] & VILLAGE_020))
+							camo = false;
+						
+						if(regrow && (Village_Flags[client] & VILLAGE_010))
+							regrow = false;
+					}
+				}
 			}
 		}
 	}
-}
-/*
-float Building_GetCashOnKillMulti(int client)
-{
-	if(GetBuffEffects(EntIndexToEntRef(client)) & VILLAGE_003)
-		return 1.15;
-	
-	return 1.0;
-}
-*/
-stock int Building_GetCashOnWave(int current)
-{
-	/*
-	int popCash;
-	int extras;
-	int farms;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
-		{
-			if(Village_Flags[client] & VILLAGE_003)
-			{
-				i_ExtraPlayerPoints[client] += 50;
-				popCash++;
-			}
-			
-			if(Village_Flags[client] & VILLAGE_300 || Village_Flags[client] & VILLAGE_400 || Village_Flags[client] & VILLAGE_500)//VILLAGE_004)
-			{
-				i_ExtraPlayerPoints[client] += 10;
-				extras++;
-			}
-			
-			if(Village_Flags[client] & VILLAGE_005)
-			{
-				i_ExtraPlayerPoints[client] += 200; //Alot of free points.
-				farms++;
-			}
-		}
-	}
-	
-	if(extras)
-	{
-		if(RebelTimerSpawnIn >= 3)
-		{
-			RebelTimerSpawnIn = 0;
-			int count;
-			
-			int i = MaxClients + 1;
-			while((i = FindEntityByClassname(i, "base_boss")) != -1)
-			{
-				if(i_NpcInternalId[i] == CITIZEN)
-					count++;
-			}
-			
-			for(i = 0; i < extras && count < MAX_REBELS_ALLOWED; i++) //Do not allow more then this many npcs
-			{
-				Citizen_SpawnAtPoint();
-				count++;
-			}
-		}
-		else
-		{
-			RebelTimerSpawnIn += 1;
-		}
-	}
-	
-	if(popCash > 3)
-		popCash = 3;
-	
-	int red = CountPlayersOnRed();
-	if(!red)
-		red = 1;
-	
-	return (current * popCash / 6) + (farms * (Waves_InFreeplay() ? (extras > 1 ? 575 : 500) : (extras > 1 ? 2760 : 2400)) / red);
-	*/
-	return 0;
 }
 
 static void VillageCheckItems(int client)
@@ -4663,7 +4698,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		if(tier)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Jungle Drums", ""), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Increases attack speed and reloadspeed of all", ITEMDRAW_DISABLED);
 			menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
 		}
 		else
@@ -4680,7 +4715,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [$1500]%s", TranslateItemName(viewer, "Jungle Drums", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || cash < 1500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies in the radius by 5% and healrate by 8%.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
@@ -4695,7 +4730,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(Village_Flags[client] & VILLAGE_050)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Homeland Defense", ""), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
 		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
@@ -4704,30 +4739,30 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Call To Arms", ""), ITEMDRAW_DISABLED);
 			menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$15000]", TranslateItemName(viewer, "Homeland Defense", ""));
-			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 15000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Ability now increases attack speed by 100%", ITEMDRAW_DISABLED);
+			FormatEx(buffer, sizeof(buffer), "%s [$10000]", TranslateItemName(viewer, "Homeland Defense", ""));
+			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 10000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_030)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$8000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 8000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies +50% attack speed for a short time.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_020)
 	{
 		if(tier)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Radar Scanner", ""), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Provides a stackable 50% to remove", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
+			menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
@@ -4741,77 +4776,115 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		FormatEx(buffer, sizeof(buffer), "%s [$750]%s", TranslateItemName(viewer, "Radar Scanner", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || cash < 750) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Camo properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
+		menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$250]", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "%s [$250]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || cash < 250) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a stackable 20% to remove", ITEMDRAW_DISABLED);
-		menu.AddItem("", "Regrow properties from spawning bloons.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Prevents non-boss enemies from", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gaining health in influence radius.\n ", ITEMDRAW_DISABLED);
 	}
-	/*
+	
 	if(Village_Flags[client] & VILLAGE_005)
 	{
-		menu.AddItem("", TranslateItemName(viewer, "Monkeyopolis"), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Provides extra $2400 for each passive", ITEMDRAW_DISABLED);
-		menu.AddItem("", "round that's split among other players.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_004)
 	{
 		if(Village_TierExists[1] == 5)
 		{
-			menu.AddItem("", TranslateItemName(viewer, "Monkey City"), ITEMDRAW_DISABLED);
-			menu.AddItem("", "Increases influence radius, cash generation from other Monkeyopolis,", ITEMDRAW_DISABLED);
-			menu.AddItem("", "and spawns a Rebel every 10 round up to 6 Rebels at once.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Iberia Anti-Raid", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Causes Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$12000]", TranslateItemName(viewer, "Monkeyopolis"));
-			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || cash < 12000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Provides extra $2400 for each passive", ITEMDRAW_DISABLED);
-			menu.AddItem("", "round that's split among other players.\n ", ITEMDRAW_DISABLED);
+			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [$30000]");
+			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || cash < 30000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
+			menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$3000]", TranslateItemName(viewer, "Monkey City"));
-		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || cash < 3000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Increases influence radius, cash generation from other Monkeyopolis,", ITEMDRAW_DISABLED);
-		menu.AddItem("", "and spawns a Rebel every 10 round up to 6 Rebels at once.\n ", ITEMDRAW_DISABLED);
+		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [$30000]");
+		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || cash < 30000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Spawned in Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)
 	{
 		if(tier)
 		{
-			menu.AddItem("", TranslateItemName(viewer, "Monkey Commerce"), ITEMDRAW_DISABLED);
-			menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
-			menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Armor Aid", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Gain a point of armor every half second.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "to all players with armor in range.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$9000]%s", TranslateItemName(viewer, "Monkey Town"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
+			FormatEx(buffer, sizeof(buffer), "Little Handy [$9000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || cash < 9000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "All players within the radius of the Monkey Town get extra cash per", ITEMDRAW_DISABLED);
-			menu.AddItem("", "kill and a stackable (up to 3) increase in cash gained on wave end.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Reduces the damage caused by nethersea brands", ITEMDRAW_DISABLED);
+			menu.AddItem("", "by 80% to all allies with in range.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_001)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(viewer, "Monkey Commerce"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "An additional 1% discount that can stack with", ITEMDRAW_DISABLED);
-		menu.AddItem("", "up to 2 other Villages with this upgrade.\n ", ITEMDRAW_DISABLED);
+		FormatEx(buffer, sizeof(buffer), "Armor Aid [$2000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 2000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem("", "Gain a point of armor every half.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$1000]", TranslateItemName(viewer, "Monkey Business"), Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
+		FormatEx(buffer, sizeof(buffer), "Wandering Aid [$1000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Provides a global 2% discount", ITEMDRAW_DISABLED);
-		menu.AddItem("", "on items in the main store.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Heals a point of armor erosion every.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
-	*/
+
+	float pos[3];
+	bool mounted = (Building_Mounted[client] == i_HasSentryGunAlive[client]);
+	if(mounted)
+	{
+		GetClientEyePosition(client, pos);
+	}
+	else
+	{
+		GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 15.0;
+	}
+
+	float range = 600.0;
+	
+	if(Village_Flags[client] & VILLAGE_100)
+		range += 120.0;
+	
+	if(Village_Flags[client] & VILLAGE_500)
+	{
+		range += 125.0;
+	}
+	else if(Village_Flags[client] & VILLAGE_005)
+	{
+		range += 150.0;
+	}
+	
+	if(mounted)
+		range *= 0.55;
+	
+	int BuildingAlive = i_HasSentryGunAlive[client];
+	if(IsValidEntity(BuildingAlive))
+	{
+		BuildingAlive = EntRefToEntIndex(BuildingAlive);
+		if(f_VillageRingVectorCooldown[BuildingAlive] < GetGameTime())
+		{
+			f_VillageRingVectorCooldown[BuildingAlive] = GetGameTime() + 3.0;
+			spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 3.0, 6.0, 0.1, 1);
+		}
+	}
+	
 	menu.Pagination = 0;
 	menu.ExitButton = true;
 	menu.Display(viewer, MENU_TIME_FOREVER);
@@ -4845,10 +4918,9 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 						f_BuildingIsNotReady[client] = 0.0; 
 						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
-
 					int count;
 					int i = MaxClients + 1;
-					while((i = FindEntityByClassname(i, "base_boss")) != -1)
+					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
@@ -4865,7 +4937,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 
 					int count;
 					int i = MaxClients + 1;
-					while((i = FindEntityByClassname(i, "base_boss")) != -1)
+					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
@@ -4882,7 +4954,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 
 					int count;
 					int i = MaxClients + 1;
-					while((i = FindEntityByClassname(i, "base_boss")) != -1)
+					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 					{
 						if(i_NpcInternalId[i] == CITIZEN)
 							count++;
@@ -4907,16 +4979,16 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_050:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
-					CashSpent[client] += 15000;
-					CashSpentTotal[client] += 15000;
+					CashSpent[client] += 10000;
+					CashSpentTotal[client] += 10000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 5;
 				}
 				case VILLAGE_040:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
-					CashSpent[client] += 8000;
-					CashSpentTotal[client] += 8000;
+					CashSpent[client] += 5000;
+					CashSpentTotal[client] += 5000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 4;
 				}
@@ -4944,15 +5016,15 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_005:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 5);
-					CashSpent[client] += 12000;
-					CashSpentTotal[client] += 12000;
+					CashSpent[client] += 30000;
+					CashSpentTotal[client] += 30000;
 					Village_TierExists[2] = 5;
 				}
 				case VILLAGE_004:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 4);
-					CashSpent[client] += 3000;
-					CashSpentTotal[client] += 3000;
+					CashSpent[client] += 30000;
+					CashSpentTotal[client] += 30000;
 					Village_TierExists[2] = 4;
 				}
 				case VILLAGE_003:
@@ -4965,8 +5037,8 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_002:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 2);
-					CashSpent[client] += 1000;
-					CashSpentTotal[client] += 1000;
+					CashSpent[client] += 2000;
+					CashSpentTotal[client] += 2000;
 					Village_TierExists[2] = 2;
 				}
 				case VILLAGE_001:
@@ -5038,11 +5110,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.97);
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.95);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 							if(attrib != Address_Null)
-								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.97);
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.95);
 							
 							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 							if(attrib != Address_Null)
@@ -5059,6 +5131,20 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 								TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(attrib) * 1.1);
 						}
 						case VILLAGE_040, VILLAGE_050:
+						{
+							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) * 0.875);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) * 0.875);
+							
+							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+							if(attrib != Address_Null)
+								TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) * 1.25);
+						}
+						case VILLAGE_005:
 						{
 							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 							if(attrib != Address_Null)
@@ -5093,11 +5179,11 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.97);
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.95);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
 						if(attrib != Address_Null)
-							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.97);
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.95);
 						
 						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
 						if(attrib != Address_Null)
@@ -5114,6 +5200,20 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(attrib) / 1.1);
 					}
 					case VILLAGE_040, VILLAGE_050:	// 1.0 * 1.5 / 1.5
+					{
+						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(attrib) / 0.875);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(attrib) / 0.875);
+						
+						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
+						if(attrib != Address_Null)
+							TF2Attrib_SetByDefIndex(entity, 8, TF2Attrib_GetValue(attrib) / 1.25);
+					}
+					case VILLAGE_005:
 					{
 						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
 						if(attrib != Address_Null)
@@ -5188,10 +5288,15 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040:
 						{
-							npc.m_fGunFirerate *= 0.75;
-							npc.m_fGunReload *= 0.75;
+							npc.m_fGunFirerate *= 0.875;
+							npc.m_fGunReload *= 0.875;
 						}
 						case VILLAGE_050:
+						{
+							npc.m_fGunFirerate *= 0.875;
+							npc.m_fGunReload *= 0.875;
+						}
+						case VILLAGE_005:
 						{
 							npc.m_fGunFirerate *= 0.75;
 							npc.m_fGunReload *= 0.75;
@@ -5239,10 +5344,15 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_040:
 					{
-						npc.m_fGunFirerate /= 0.75;
-						npc.m_fGunReload /= 0.75;
+						npc.m_fGunFirerate /= 0.875;
+						npc.m_fGunReload /= 0.875;
 					}
 					case VILLAGE_050:
+					{
+						npc.m_fGunFirerate /= 0.875;
+						npc.m_fGunReload /= 0.875;
+					}
+					case VILLAGE_005:
 					{
 						npc.m_fGunFirerate /= 0.75;
 						npc.m_fGunReload /= 0.75;
@@ -5278,9 +5388,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							}
 							case VILLAGE_040:
 							{
-								npc.BonusFireRate *= 0.75;
+								npc.BonusFireRate *= 0.875;
 							}
 							case VILLAGE_050:
+							{
+								npc.BonusFireRate *= 0.875;
+							}
+							case VILLAGE_005:
 							{
 								npc.BonusFireRate *= 0.75;
 							}
@@ -5301,9 +5415,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_040:
 						{
-							npc.BonusFireRate /= 0.75;
+							npc.BonusFireRate /= 0.875;
 						}
 						case VILLAGE_050:
+						{
+							npc.BonusFireRate /= 0.875;
+						}
+						case VILLAGE_005:
 						{
 							npc.BonusFireRate /= 0.75;
 						}
@@ -5425,6 +5543,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5466,6 +5586,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5497,6 +5619,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5550,6 +5674,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5583,6 +5709,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
@@ -5643,6 +5771,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5676,6 +5806,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5735,6 +5867,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5766,6 +5900,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5820,6 +5956,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop1, 1);
 					AcceptEntityInput(prop1, "DisableShadow");
 					AcceptEntityInput(prop1, "DisableCollision");
+					SetEntityMoveType(prop1, MOVETYPE_NONE);
+					SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][0] = EntIndexToEntRef(prop1);
 					Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
@@ -5855,6 +5993,8 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 					SetEntityCollisionGroup(prop2, 1);
 					AcceptEntityInput(prop2, "DisableShadow");
 					AcceptEntityInput(prop2, "DisableCollision");
+					SetEntityMoveType(prop2, MOVETYPE_NONE);
+					SetEntProp(prop2, Prop_Data, "m_nNextThinkTick", -1.0);
 					Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop2);
 					Building_Hidden_Prop_To_Building[prop2] = EntIndexToEntRef(Building_Index);
 					SetEntityRenderMode(prop2, RENDER_TRANSCOLOR);
@@ -5924,6 +6064,7 @@ static int CommandMode[MAXTF2PLAYERS];
 static bool FinalBuilder[MAXTF2PLAYERS];
 static bool MedievalUnlock[MAXTF2PLAYERS];
 static bool GlassBuilder[MAXTF2PLAYERS];
+static int CivType[MAXTF2PLAYERS];
 
 enum
 {
@@ -5932,14 +6073,24 @@ enum
 	FoodCost,
 	GoldCost,
 	TrainTime,
-	TrainLevel
+	TrainLevel,
+	SupplyCost
+}
+
+enum
+{
+	Default = 0,
+	Thorns = 1,
+	Alternative = 2,
+	Civ_number_2
 }
 
 static const char CommandName[][] =
 {
 	"Command: Defensive",
 	"Command: Aggressive",
-	"Command: Retreat"
+	"Command: Retreat",
+	"Command: Guard Area"
 };
 
 /*
@@ -5951,27 +6102,107 @@ static const char CommandName[][] =
 	Cosmic Repair Handling book - 20.5/s
 */
 
-static const int SummonerData[][] =
+static const int SummonerBase[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
+
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
+
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
+
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
+
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
+
+
+	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1 },	// Construction Expert
+	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16, 1 }	// Construction Master
+};
+
+static const int SummonerThorns[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1 },		// None
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2 },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4 },	// Construction Apprentice
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4 },		// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7 },		// Construction Worker
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7 },		// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11 },	// Construction Expert
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11 },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16 },	// Construction Master
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
 
 
-	{ BARRACK_MONK, 210, 0, 50, 12, 11 },		// Construction Worker
-	{ BARRACK_HUSSAR, 0, 400, 100, 15, 16 }		// Construction Master
+	{ BARRACK_THORNS, 0, 0, 0, 0, 11, 3 }	// Construction Expert
 };
+
+static const int SummonerAlternative[][] =
+{
+	// NPC Index, 						Wood, 	Food, 	Gold, 	Time, Level, Supply
+	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 1, 1 },		// None
+
+	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7, 2, 1 },		// Construction Novice
+	{ ALT_BARRACK_INTERMEDIATE_MAGE ,	10, 	50, 	0, 		6, 4, 1 },	// Construction Apprentice
+
+	{ ALT_BARRACKS_CROSSBOW_MEDIC, 		50, 	25, 	2, 		8, 4, 1 },	// Construction Apprentice
+	{ ALT_BARRACK_BARRAGER,				75,		50, 	1, 		7, 7, 1 },	// Construction Worker
+
+	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1 },	// Construction Worker
+	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		7, 11, 1 },	// Construction Expert
+
+	{ ALT_BARRACKS_BERSERKER, 			50, 	100, 	0,		3, 11, 1 },	// Construction Expert	//these ones are meant to be spammed into oblivion
+	{ ALT_BARRACK_IKUNAGAE , 			125,	300,	0,		7, 16, 1 },	// Construction Master
+
+
+	{ ALT_BARRACK_DONNERKRIEG, 			175, 	350, 	15, 	12, 11, 1 },	// Construction Expert
+	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	10, 	13, 16, 1 }	// Construction Master
+};
+
+static const char CivName[][] =
+{
+	"Standard Barracks",
+	"Iberia Barracks",
+	"Blitzkrieg's Army"
+};
+
+static int GetUnitCount(int civ)
+{
+	switch(civ)
+	{
+		case Thorns:
+			return sizeof(SummonerThorns);
+			
+		case Alternative:
+			return sizeof(SummonerAlternative);
+		
+		default:
+			return sizeof(SummonerBase);
+	}
+}
+
+static int GetData(int civ, int unit, int index)
+{
+	switch(civ)
+	{
+		case Thorns:
+			return SummonerThorns[unit][index];
+			
+		case Alternative:
+			return SummonerAlternative[unit][index];
+		
+		default:
+			return SummonerBase[unit][index];
+	}
+}
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
 {
@@ -6007,6 +6238,10 @@ public bool Building_Summoner(int client, int entity)
 	TrainingIn[client] = 0.0;
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
+	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
+
+	if(CivType[client] == Default)
+		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
 	
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
 	b_SentryIsCustom[entity] = true;
@@ -6018,6 +6253,9 @@ public bool Building_Summoner(int client, int entity)
 	pack.WriteCell(entity);
 	i_WhatBuilding[entity] = BuildingSummoner;
 	
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 100);
+	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", 612); //512 is max shown, then + 100 to have a nice number, abuse overflow :)
+
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.15);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -6030,14 +6268,7 @@ public bool Building_Summoner(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	
-	if(!EscapeMode)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return true;
 }
 
 int Building_GetFollowerEntity(int owner)
@@ -6146,7 +6377,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 		if(TrainingIn[owner])
 		{
-			if(!AtMaxSupply(owner))
+			if(!AtMaxSupply(owner) && GetSupplyLeft(owner) >= GetData(CivType[owner], TrainingIndex[owner], SupplyCost))
 			{
 				float gameTime = GetGameTime();
 				if(TrainingIn[owner] < gameTime)
@@ -6182,21 +6413,51 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(SummonerData[TrainingIndex[owner]][NPCIndex], owner, pos, ang, true);
+						int npc = Npc_Create(GetData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
+						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
+						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
+						view_as<BarrackBody>(npc).m_iSupplyCount = GetData(CivType[owner], TrainingIndex[owner], SupplyCost);
+
 						if(npc > MaxClients && FinalBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusDamageBonus = 1.3;
+							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.5;
 						}
 						if(npc > MaxClients && GlassBuilder[owner])
 						{
-							view_as<BarrackBody>(npc).BonusDamageBonus = 1.15;
+							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.15;
+						}
+
+						//double tap
+						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 3)
+						{
+							view_as<BarrackBody>(npc).BonusFireRate *= 0.85;
+						}
+						if(npc > MaxClients && FinalBuilder[owner])
+						{
+							view_as<BarrackBody>(npc).BonusFireRate *= 0.75;
+						}
+						//juggernog
+						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 2)
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.3));
+						}
+						if(npc > MaxClients && FinalBuilder[owner])
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.65));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.65));
+						}
+						if(npc > MaxClients && GlassBuilder[owner])
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 0.8));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 0.8));
 						}
 
 						if(TrainingQueue[owner] != -1)
 						{
 							TrainingIndex[owner] = TrainingQueue[owner];
 							TrainingStartedIn[owner] = GetGameTime();
-							TrainingIn[owner] = TrainingStartedIn[owner] + float(SummonerData[TrainingQueue[owner]][TrainTime]);
+							TrainingIn[owner] = TrainingStartedIn[owner] + float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
 							TrainingQueue[owner] = -1;
 						}
 					}
@@ -6206,14 +6467,16 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						TrainingStartedIn[owner] = -1.0;
 					}
 				}
+				/*
 				else
 				{
 					int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
 					int current = required - RoundToCeil((TrainingIn[owner] - gameTime) * 2.0);
 					
-					SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
-					SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
+				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
+				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
 				}
+				*/
 			}
 		}
 
@@ -6247,7 +6510,7 @@ static void CheckSummonerUpgrades(int client)
 		SupplyRate[client] += 10;
 	
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = view_as<bool>(HasNamedItem(client, "Medieval Crown"));
+	MedievalUnlock[client] = (CivType[client] || HasNamedItem(client, "Medieval Crown"));
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 }
 
@@ -6269,37 +6532,38 @@ static void SummonerMenu(int client, int viewer)
 	}
 
 	bool owner = client == viewer;
+	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);
 	int level = MaxSupportBuildingsAllowed(client, true);
 	
 	Menu menu = new Menu(SummonerMenuH);
-	
+
 	SetGlobalTransTarget(viewer);
-	menu.SetTitle("%t\n \n%s\n \n$%d £%d ¥%d\n ", "TF2: Zombie Riot", TranslateItemName(viewer, "Buildable Barracks", ""), RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
-	
+	menu.SetTitle("%s\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
+
 	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	char buffer1[256];
 	if(TrainingIn[client])
 	{
-		if(AtMaxSupply(client))
+		if(AtMaxSupply(client) || GetSupplyLeft(client) < GetData(CivType[client], TrainingIndex[client], SupplyCost))
 		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)]);
 			if(i_BarricadesBuild[client])
 				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 		}
 		else if(TrainingStartedIn[client] < 0.0)
 		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]]);
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)]);
 		}
 		else
 		{
 			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[SummonerData[TrainingIndex[client]][NPCIndex]],
+			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)],
 				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 		}
 
 		if(TrainingQueue[client] != -1)
-			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[SummonerData[TrainingQueue[client]][NPCIndex]]);
+			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[client], TrainingQueue[client], NPCIndex)]);
 		
 		menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
@@ -6310,26 +6574,29 @@ static void SummonerMenu(int client, int viewer)
 
 	char buffer2[64];
 	int options;
-	for(int i = sizeof(SummonerData) - 1; i >= 0; i--)
+	for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)
 	{
-		if(SummonerData[i][TrainLevel] > level)
+		if(GetData(CivType[client], i, TrainLevel) > level)
 			continue;
 		
-		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[SummonerData[i][NPCIndex]]);
-		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[SummonerData[i][NPCIndex]]);
+		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
 
-		if(SummonerData[i][WoodCost])
-			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, SummonerData[i][WoodCost]);
+		if(GetData(CivType[client], i, WoodCost))
+			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetData(CivType[client], i, WoodCost));
 		
-		if(SummonerData[i][FoodCost])
-			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, SummonerData[i][FoodCost]);
+		if(GetData(CivType[client], i, FoodCost))
+			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetData(CivType[client], i, FoodCost));
 		
-		if(SummonerData[i][GoldCost])
-			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, SummonerData[i][GoldCost]);
+		if(GetData(CivType[client], i, GoldCost))
+			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetData(CivType[client], i, GoldCost));
 		
 		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
 		IntToString(i, buffer2, sizeof(buffer2));
-		bool poor = (!owner || WoodAmount[client] < SummonerData[i][WoodCost]) || (FoodAmount[client] < SummonerData[i][FoodCost]) || (GoldAmount[client] < SummonerData[i][GoldCost]);
+		bool poor = (!alive ||
+			WoodAmount[client] < GetData(CivType[client], i, WoodCost) ||
+			FoodAmount[client] < GetData(CivType[client], i, FoodCost) ||
+			GoldAmount[client] < GetData(CivType[client], i, GoldCost));
 
 		menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		if(++options > 3)
@@ -6365,9 +6632,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						if(TrainingQueue[client] != -1)
 						{
-							WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
-							FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
-							GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+							WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
+							FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
+							GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
 
 							TrainingQueue[client] = -1;
 						}
@@ -6375,9 +6642,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							TrainingIn[client] = 0.0;
 
-							WoodAmount[client] += float(SummonerData[TrainingIndex[client]][WoodCost]);
-							FoodAmount[client] += float(SummonerData[TrainingIndex[client]][FoodCost]);
-							GoldAmount[client] += float(SummonerData[TrainingIndex[client]][GoldCost]);
+							WoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], WoodCost));
+							FoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], FoodCost));
+							GoldAmount[client] += float(GetData(CivType[client], TrainingIndex[client], GoldCost));
 						}
 					}
 					else
@@ -6386,9 +6653,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						menu.GetItem(choice, num, sizeof(num));
 						int item = StringToInt(num);
 
-						float woodcost = float(SummonerData[item][WoodCost]);
-						float foodcost = float(SummonerData[item][FoodCost]);
-						float goldcost = float(SummonerData[item][GoldCost]);
+						float woodcost = float(GetData(CivType[client], item, WoodCost));
+						float foodcost = float(GetData(CivType[client], item, FoodCost));
+						float goldcost = float(GetData(CivType[client], item, GoldCost));
 
 						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
 						{
@@ -6396,7 +6663,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							{
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
-								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (SummonerData[item][TrainTime] / 3) : SummonerData[item][TrainTime]);
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetData(CivType[client], item, TrainTime) / 3) : GetData(CivType[client], item, TrainTime));
 							}
 							else if(TrainingQueue[client] == -1)
 							{
@@ -6404,9 +6671,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 							else
 							{
-								WoodAmount[client] += float(SummonerData[TrainingQueue[client]][WoodCost]);
-								FoodAmount[client] += float(SummonerData[TrainingQueue[client]][FoodCost]);
-								GoldAmount[client] += float(SummonerData[TrainingQueue[client]][GoldCost]);
+								WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
 
 								TrainingQueue[client] = item;
 							}
@@ -6424,6 +6691,27 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				if(++CommandMode[client] >= sizeof(CommandName))
 					CommandMode[client] = 0;
+
+				if(CommandMode[client] == 3)
+				{
+					float StartOrigin[3], Angles[3], vecPos[3];
+					GetClientEyeAngles(client, Angles);
+					GetClientEyePosition(client, StartOrigin);
+					Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+					if (TR_DidHit(TraceRay))
+						TR_GetEndPosition(vecPos, TraceRay);
+							
+					delete TraceRay;
+					
+					CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+					f3_SpawnPosition[client] = vecPos;
+				}
+				else
+				{
+					f3_SpawnPosition[client][0] = 0.0;
+					f3_SpawnPosition[client][1] = 0.0;
+					f3_SpawnPosition[client][2] = 0.0;
+				}
 				
 				SummonerMenu(client, client);
 			}
@@ -6432,13 +6720,31 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
+static int GetSupplyLeft(int client)
+{
+	int userid = GetClientUserId(client);
+	int personal = i_BarricadesBuild[client] * 3 / 2;
+	int entity = MaxClients + 1;
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId == userid)
+				personal += npc.m_iSupplyCount;
+		}
+	}
+
+	return 3 + Rogue_Barracks_BonusSupply() - personal;
+}
+
 static bool AtMaxSupply(int client)
 {
 	int userid = GetClientUserId(client);
-	int personal = i_BarricadesBuild[client];
+	int personal = i_BarricadesBuild[client] * 3 / 2;
 	int global;
 	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 		{
@@ -6446,9 +6752,28 @@ static bool AtMaxSupply(int client)
 
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
-				personal++;
+				personal += npc.m_iSupplyCount;
 		}
 	}
 
-	return (global > 9 || personal > 2);
+	int maxGlobal = 15 + Rogue_Barracks_BonusSupply();
+	int maxLocal = 2 + Rogue_Barracks_BonusSupply();
+
+	return (global > maxGlobal || personal > maxLocal);
+}
+
+void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)
+{
+	int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+	int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+
+	TeleportEntity(entity,origin,angles,velocity);
+	if(IsValidEntity(prop1))
+	{
+		TeleportEntity(prop1,origin,angles,velocity);
+	}
+	if(IsValidEntity(prop2))
+	{
+		TeleportEntity(prop2,origin,angles,velocity);
+	}
 }

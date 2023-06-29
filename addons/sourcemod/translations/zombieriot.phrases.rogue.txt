@@ -1,0 +1,785 @@
+"Phrases"
+{
+	"Missing Rogue Translation"
+	{
+		"en"	"INVALID NAME"
+	}
+	"Missing Rogue Translation Desc"
+	{
+		"en"	"INVALID DESC"
+	}
+	"Allies Amongst Chaos"
+	{
+		"en"	"Allies Amongst Chaos"
+	}
+	"Vote for the starting item"
+	{
+		"en"	"Vote for the starting item:"
+	}
+	"Vote for the next stage"
+	{
+		"en"	"Vote for the next stage:"
+	}
+	"Additional Starting Ingot"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"	"Starting Australium Ingots ({1} -> {2})"
+	}
+	"Stage"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"Stage: {1}-{2}"
+	}
+	"New Artifact"
+	{
+		"#format"	"{1:t}"
+		"en"	"Collected Artifact: {yellow}{1}"
+	}
+	"Artifact Info"
+	{
+		"#format"	"{1:t},{2:t}"
+		"en"	"{yellow}{1}{default}: {2}"
+	}
+	"Gained Ingots"
+	{
+		"#format"	"{1:d}"
+		"en"	"{green}Gained {1} Australium Ingots!"
+	}
+	"Australium Ingots"
+	{
+		"#format"	"{1:d}"
+		"en"	"Australium Ingots: {1}"
+	}
+	"Encounter"
+	{
+		"en"	"Encounter"
+	}
+	"Collected Artifacts"
+	{
+		"en"	"Collected Artifacts"
+	}
+
+	// Encounters
+	"Optional Battle Title"
+	{
+		"en"	"Something seems off about this, should we fight or leave right here."
+	}
+	"We can handle this"
+	{
+		"en"	"We can handle this"
+	}
+	"Better leave now"
+	{
+		"en"	"Better leave now"
+	}
+	"Enter a special battle"
+	{
+		"en"	"Enter a special battle"
+	}
+	"Leave this encounter"
+	{
+		"en"	"Leave this encounter"
+	}
+	"Shop Encounter Title"
+	{
+		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
+	}
+	"Better save up now"
+	{
+		"en"	"Better save up now"
+	}
+	"Boons Encounter Title"
+	{
+		"en"	"Some items are present before you, but you seem to be only to pick one."
+	}
+	"There's nothing here?"
+	{
+		"en"	"There's nothing here?"
+	}
+	"Lore Title"
+	{
+		"en"	"..."
+	}
+	"Sword and Stone Lore"
+	{
+		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone. He claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler. However, he has no way to pull out the sword from the stone."
+	}
+	"Sword and Stone Option 1"
+	{
+		"en"	"Might as well smash the sword into two halves"
+	}
+	"Sword and Stone Lore 1"
+	{
+		"en"	"You rack your brain to come up with a solution. In the end, you smash the sword in two. Seeing half of the sword still stuck in the stone, the knight lets out a long sigh, shakes his head, and leaves."
+	}
+	"Sword and Stone Option 2"
+	{
+		"en"	"Could use the stone as a hammer"
+	}
+	"Sword and Stone Lore 2"
+	{
+		"en"	"Taking your advice, the knight attempts to lift the sword, the stone still attached. Unable to keep his balance, he trips and falls on the ground head first, knocking himself unconscious."
+	}
+	"Sword and Stone Option 3"
+	{
+		"en"	"Doesn't look like it's necessary"
+	}
+	"Sword and Stone Lore 3"
+	{
+		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government. Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
+	}
+	"Theatrical Lore"
+	{
+		"en"	"You find a middle-aged man rambling away in front of a dressing table. He notices you and howls in your direction, asking you to deliver the prop on the table to the actress. You look at the dressing table and find a crown entwined with thorns."
+	}
+	"Theatrical Option 1"
+	{
+		"en"	"Listen to his demands"
+	}
+	"Theatrical Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
+	}
+	"Theatrical Lore 1"
+	{
+		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden. You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
+	}
+	"Theatrical Option 2"
+	{
+		"en"	"Ignore him"
+	}
+	"Theatrical Lore 2"
+	{
+		"en"	"You ignore the middle-aged man's howlings and leave."
+	}
+	"Eccentric Lore"
+	{
+		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh. ''You don't understand that Combine, do you? You seem to trust him, though.'' The strange woman looks at you through her helmet and scarf. ''I can tell you all about his past. Are you interested?'' She reaches out her shriveled hands, seemingly asking for something."
+	}
+	"Eccentric Option 1"
+	{
+		"en"	"I definitely want to know"
+	}
+	"Eccentric Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+	}
+	"Eccentric Lore 1"
+	{
+		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload. 'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other."
+	}
+	"Eccentric Option 2"
+	{
+		"en"	"Guess not, then"
+	}
+	"Eccentric Lore 2"
+	{
+		"en"	"This is too sketchy. Forget it."
+	}
+	"Eccentric Option 1-1"
+	{
+		"en"	"Ask about the ''Shadow''"
+	}
+	"Eccentric Lore 1-1"
+	{
+		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+	}
+	"Eccentric Option 1-2"
+	{
+		"en"	"Ask about the ''Bladedance''"
+	}
+	"Eccentric Lore 1-2"
+	{
+		"en"	"''Ah, he's locked away. Your Combine friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
+	}
+	"Eccentric Option 1-3"
+	{
+		"en"	"Ask about the ''Whiteflower''"
+	}
+	"Eccentric Lore 1-3"
+	{
+		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
+	}
+	"Eccentric Option 1-4"
+	{
+		"en"	"Ask about ''The First''"
+	}
+	"Eccentric Desc 1-4"
+	{
+		"en"	"{green}Gain 4 Australium Ingots"
+	}
+	"Eccentric Lore 1-4"
+	{
+		"en"	"''How could be so brave as to ask about him? What a reckless lunatic. For your fearlessness, I will give you your money back, but I don't want to die yet. I can't tell you anything.''"
+	}
+	"Forcefield Chest Title"
+	{
+		"en"	"An item rests on the table in front of you, something else is in the distance.\nTake what's on the table and go or try to find out what's over there?"
+	}
+	"Unknown Artifact"
+	{
+		"en"	"Unknown Artifact"
+	}
+	"Unknown Artifact Desc"
+	{
+		"en"	"{yellow}Receive an unknown artifact{default}"
+	}
+	"Crimson Troupe Title"
+	{
+		"en"	"A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
+	}
+	"Let's check out this show"
+	{
+		"en"	"Let's check out this show"
+	}
+	"Camp Title"
+	{
+		"en"	"You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
+	}
+	"Camp Option"
+	{
+		"en"	"Drift into slumber"
+	}
+	"Camp Desc"
+	{
+		"en"	"{green}Fully heal allies and gain 30 ammo supplies"
+	}
+	"Camp Lore"
+	{
+		"en"	"By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
+	}
+	"Coffin of Evil Lore"
+	{
+		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources. In the center of the room is a massive coffin with many gems and jewels affixed. Just as you are about to inspect the coffin, you hear a voice from inside it. It seems to be asking for your help to open the coffin."
+	}
+	"Coffin of Evil Option 1"
+	{
+		"en"	"We can't stand idly by when someone's asking for help"
+	}
+	"Coffin of Evil Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
+	}
+	"Coffin of Evil Lore 1"
+	{
+		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
+	}
+	"Coffin of Evil Option 2"
+	{
+		"en"	"Looks way too sketchy"
+	}
+	"Coffin of Evil Desc 2"
+	{
+		"en"	"{green}Gain 4 Australium Ingots"
+	}
+	"Coffin of Evil Lore 2"
+	{
+		"en"	"In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
+	}
+	"Eye for an Eye Lore"
+	{
+		"en"	"A refined, well-dressed Combine stands before you. He politely asks if you know of an innocent man who was once wrongfully punished because of him. You ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here. The man promises a sizable reward if you lend him your help."
+	}
+	"Eye for an Eye Option 1"
+	{
+		"en"	"This story sounds familiar"
+	}
+	"Eye for an Eye Desc 1"
+	{
+		"en"	"{green}Gain 20 Australium Ingots"
+	}
+	"Eye for an Eye Lore 1"
+	{
+		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
+	}
+	"Eye for an Eye Option 2"
+	{
+		"en"	"Lead the way"
+	}
+	"Eye for an Eye Desc 2"
+	{
+		"en"	"{green}Gain 1500 credits {red}but lose 20 ammo supplies"
+	}
+	"Eye for an Eye Lore 2"
+	{
+		"en"	"He gives you his thanks and explains the whole story to you on your way there. However, in the end, he implores you not to ask the Medievalists what happened thereafter."
+	}
+	"Eye for an Eye Option 3"
+	{
+		"en"	"Stay alert"
+	}
+	"Eye for an Eye Desc 3"
+	{
+		"en"	"{green}Gain 30 ammo supplies"
+	}
+	"Eye for an Eye Lore 3"
+	{
+		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
+	}
+
+	// Stages
+	"Forcefield Chest"
+	{
+		"en"	"Forcefield Chest"
+	}
+	"Electric Tower"
+	{
+		"en"	"Electric Tower"
+	}
+	"Tower Madness"
+	{
+		"en"	"Tower Madness"
+	}
+	"Caged Beast"
+	{
+		"en"	"Caged Beast"
+	}
+	"Elevated Presence"
+	{
+		"en"	"Elevated Presence"
+	}
+	"Shop"
+	{
+		"en"	"Shop"
+	}
+	"Boons"
+	{
+		"en"	"Boons"
+	}
+	"Water Fountain"
+	{
+		"en"	"Water Fountain"
+	}
+	"Abandoned Graveyard"
+	{
+		"en"	"Abandoned Graveyard"
+	}
+	"Pure Desert"
+	{
+		"en"	"Pure Desert"
+	}
+	"The Sword in the Stone"
+	{
+		"en"	"The Sword in the Stone"
+	}
+	"Theatrical Necessities"
+	{
+		"en"	"Theatrical Necessities"
+	}
+	"Eccentric Hunchback"
+	{
+		"en"	"Eccentric Hunchback"
+	}
+	"Crimson Troupe"
+	{
+		"en"	"Crimson Troupe"
+	}
+	"Camp"
+	{
+		"en"	"Camp"
+	}
+	"Coffin of Evil"
+	{
+		"en"	"Coffin of Evil"
+	}
+	"Xeno Shaft"
+	{
+		"en"	"Xeno Shaft"
+	}
+	"Stultifera Navis"
+	{
+		"en"	"Stultifera Navis"
+	}
+	"Wake Up Call"
+	{
+		"en"	"Wake Up Call"
+	}
+	"Wake Up Call!"
+	{
+		"en"	"Wake Up Call ⚠"
+	}
+	"Shoot The Messager"
+	{
+		"en"	"Shoot The Messager"
+	}
+	"Shoot The Messager!"
+	{
+		"en"	"Shoot The Messager ⚠"
+	}
+	"Flanking Tactics"
+	{
+		"en"	"Flanking Tactics"
+	}
+	"Flanking Tactics!"
+	{
+		"en"	"Flanking Tactics ⚠"
+	}
+	"Phone Service"
+	{
+		"en"	"Phone Service"
+	}
+	"Phone Service!"
+	{
+		"en"	"Phone Service ⚠"
+	}
+	"Eye for an Eye"
+	{
+		"en"	"Eye for an Eye"
+	}
+
+	// Curses
+	"Gravity Upset"
+	{
+		"en"	"Gravity Upset"
+	}
+	"Gravity Upset Desc"
+	{
+		"en"	"Gravity is twice as high for you, but you gain an increaced change in item drops."
+	}
+	"Pure Greed"
+	{
+		"en"	"Gravity Upset"
+	}
+	"Pure Greed Desc"
+	{
+		"en"	"On this floor you will gain +25% australium ingots, but all enemies will deal +25% more damage."
+	}
+	
+	// Artifacts
+	"Leader Squad"
+	{
+		"en"	"Leader Squad"
+	}
+	"Leader Squad Desc"
+	{
+		"en"	"{green}Extra Health powerup spawns at the start of a battle.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Gathering Squad"
+	{
+		"en"	"Gathering Squad"
+	}
+	"Gathering Squad Desc"
+	{
+		"en"	"{green}Extra Ammo powerup spawns at the start of a battle.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Support Squad"
+	{
+		"en"	"Support Squad"
+	}
+	"Support Squad Desc"
+	{
+		"en"	"{green}Start with +20 Australium Ignots and +500 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Spearhead Squad"
+	{
+		"en"	"Spearhead Squad"
+	}
+	"Spearhead Squad Desc"
+	{
+		"en"	"{green}Allies gain +15%% damage bonus and +50 max health"
+	}
+	"Research Squad"
+	{
+		"en"	"Research Squad"
+	}
+	"Research Squad Desc"
+	{
+		"en"	"{green}Store items are 10%% off while not in combat"
+	}
+	"First Class Squad"
+	{
+		"en"	"First Class Squad"
+	}
+	"First Class Squad Desc"
+	{
+		"en"	"{green}Alyx joins your adventure"
+	}
+	"Provoked Anger"
+	{
+		"en"	"Provoked Anger"
+	}
+	"Provoked Anger Desc"
+	{
+		"en"	"Anger is usually provoked, this anger can be usefull.\n- Everytime you are hurt, gain +5% extra damage for your holding weapon for 5 seconds."
+	}
+	"Grigori's Coin Purse"
+	{
+		"en"	"Grigori's Coin Purse"
+	}
+	"Grigori's Coin Purse Desc"
+	{
+		"en"	"Alot of money, yet never too much.\n- Gain More attackspeed and healspeed the more australium ingots you own."
+	}
+	"Malfunctioning Shield"
+	{
+		"en"	"Malfunctioning Shield"
+	}
+	"Malfunctioning Shield Desc"
+	{
+		"en"	"A broken shield that is still useable.\n- Every minute gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
+	}
+	"Bob's Exchange Money"
+	{
+		"en"	"Bob's Exchange Money"
+	}
+	"Bob's Exchange Money Desc"
+	{
+		"en"	"Must have left it behind.\n- Gain 12 australium ingots."
+	}
+	"Music Releasing Radio"
+	{
+		"en"	"Music Releasing Radio"
+	}
+	"Music Releasing Radio Desc"
+	{
+		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10%% slower."
+	}
+	"Wrath Of Itallians"
+	{
+		"en"	"Wrath Of Itallians"
+	}
+	"Wrath Of Itallians Desc"
+	{
+		"en"	"Its Spaghetti thats covered in chocolate.\n- Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
+	}
+	"Hand Of The Elder Mages"
+	{
+		"en"	"Hand Of The Elder Mages"
+	}
+	"Hand Of The Elder Mages Desc"
+	{
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' weapons on hit get 2 seconds of reduced cooldown."
+	}
+	"Bracelets of Agility"
+	{
+		"en"	"Bracelets of Agility"
+	}
+	"Bracelets of Agility Desc"
+	{
+		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10%% dodge chance."
+	}
+	"Elastic Flying Cape"
+	{
+		"en"	"Elastic Flying Cape"
+	}
+	"Elastic Flying Cape Desc"
+	{
+		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10%% dodge chance against ranged attacks."
+	}
+	"Healing Salve"
+	{
+		"en"	"Healing Salve"
+	}
+	"Healing Salve Desc"
+	{
+		"en"	"Some salve for your wounds.\n- +1hp regen."
+	}
+	"Steel Razor"
+	{
+		"en"	"Steel Razor"
+	}
+	"Steel Razor Desc"
+	{
+		"en"	"Sharp and pointy.\n- +15%% more melee damage."
+	}
+	"Healthy Essence"
+	{
+		"en"	"Healthy Essence"
+	}
+	"Healthy Essence Desc"
+	{
+		"en"	"Being near it makes you feel better.\n- +25%% more healing from most sources."
+	}
+	"Chicken Nugget Box"
+	{
+		"en"	"Chicken Nugget Box"
+	}
+	"Chicken Nugget Box Desc"
+	{
+		"en"	"Still good and tasty as ever.\n- +15%% more health."
+	}
+	"Fizzy Drink"
+	{
+		"en"	"Fizzy Drink"
+	}
+	"Fizzy Drink Desc"
+	{
+		"en"	"Becarefull when you open it, its shook.\n- All enemies will gib no matter what."
+	}
+	"Hover Glider"
+	{
+		"en"	"Hover Glider"
+	}
+	"Hover Glider Desc"
+	{
+		"en"	"A device from old german technology.\n- You deal 30%% more damage while being in the air or in mid swim."
+	}
+	"Hand Written Letter"
+	{
+		"en"	"Hand Written Letter"
+	}
+	"Hand Written Letter Desc"
+	{
+		"en"	"Dropped letter, the languge seems to be in french, it wasnt ment for you.\n- +750 Cash, 2%% more damage."
+	}
+	"Crude Flute"
+	{
+		"en"	"Crude Flute"
+	}
+	"Crude Flute Desc"
+	{
+		"en"	"Music instrument, good for relaxing, needed in sitations like these.\n- +500 Cash, +3%% MaxHealth."
+	}
+	"Scrapped Wallet"
+	{
+		"en"	"Scrapped Wallet"
+	}
+	"Scrapped Wallet Desc"
+	{
+		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Credits and 1%% more damage."
+	}
+	"Golden Coin"
+	{
+		"en"	"Golden Coin"
+	}
+	"Golden Coin Desc"
+	{
+		"en"	"A Valueable golden coin from old greek.\n- +2000 Credits and +10 Australium ingots."
+	}
+	"Nickel Injected Pack"
+	{
+		"en"	"Golden Coin"	
+	}
+	"Nickel Injected Pack Desc"
+	{
+		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35%% more damage at max health, the less health you have, the less damage you deal, decreace starts at 70%% of your max health.."
+	}
+	"Spanish Specialised Gunpowder"
+	{
+		"en"	"Spanish Specialised Gunpowder"
+	}
+	"Spanish Specialised Gunpowder Desc"
+	{
+		"en"	"Gunpower created in spain, and made specifically for spanish troups.\n- +15%% more ranged damage."
+	}
+	"Supply Depot"
+	{
+		"en"	"Supply Depot"
+	}
+	"Supply Depot Desc"
+	{
+		"en"	"''You must contruct additional supply depots.''\n{green}+1 supply for Barracks, +1 maximum allies."
+	}
+	"Gambesons"
+	{
+		"en"	"Gambesons"
+	}
+	"Gambesons Desc"
+	{
+		"en"	"A mediveal armor plate, the balance seems off.\n{green}Barrack Units receive a flat 10 damage reduction."
+	}
+	"Neosteal Plating"
+	{
+		"en"	"Neosteal Plating"
+	}
+	"Neosteal Plating Desc"
+	{
+		"en"	"A space building armor plate, the balance seems off.\n{green}Barrack Units receive a flat 20 damage reduction."
+	}
+	"Thumb Ring"
+	{
+		"en"	"Thumb Ring"
+	}
+	"Thumb Ring Desc"
+	{
+		"en"	"Mediveal technology that somehow made you 100%% accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 15%% faster."
+	}
+	"Blademace"
+	{
+		"en"	"''Blademace''"
+	}
+	"Blademace Desc"
+	{
+		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15% movement speed{yellow}."
+	}
+	"Brokenblade"
+	{
+		"en"	"''Brokenblade''"
+	}
+	"Brokenblade Desc"
+	{
+		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -25% max health{yellow}."
+	}
+	"Bladedance"
+	{
+		"en"	"''Bladedance''"
+	}
+	"Bladedance Desc"
+	{
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}One player at a time will receive +100% max health and +100% damage bonus."
+	}
+	"Whiteflower"
+	{
+		"en"	"''Whiteflower''"
+	}
+	"Whiteflower Desc"
+	{
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}Allies will swap max health with another ally."
+	}
+	"Shadow"
+	{
+		"en"	"''Shadow''"
+	}
+	"Shadow Desc"
+	{
+		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}Non-player allies will use the same max health from players."
+	}
+	"Right Eye of the Natator"
+	{
+		"en"	"''Right Eye of the Natator''"
+	}
+	"Right Eye of the Natator Desc"
+	{
+		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +15%% ranged damage {red}but -5%% melee damage{yellow}."
+	}
+	"Left Eye of the Natator"
+	{
+		"en"	"''Left Eye of the Natator''"
+	}
+	"Left Eye of the Natator Desc"
+	{
+		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +15%% melee damage {red}but -5%% ranged damage{yellow}."
+	}
+	"End of Times"
+	{
+		"en"	"''End of Times''"
+	}
+	"End of Times Desc"
+	{
+		"en"	"As long as a new cycle has not been reached, there is still time to fix your mistakes.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+	}
+	"Bedrock"
+	{
+		"en"	"''Bedrock''"
+	}
+	"Bedrock Desc"
+	{
+		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15% movement speed{yellow}."
+	}
+	"Wavebreaker"
+	{
+		"en"	"''Wavebreaker''"
+	}
+	"Wavebreaker Desc"
+	{
+		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}Players and Rebels revive speed is doubled {red}but -25% max health{yellow}."
+	}
+	"Proof of Friendship"
+	{
+		"en"	"Proof of Friendship"
+	}
+	"Proof of Friendship Desc"
+	{
+		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from battles, doubled on Elite battles."
+	}
+}

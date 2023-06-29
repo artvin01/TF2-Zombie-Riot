@@ -182,6 +182,10 @@ static void StreetFighter(int client, int weapon, int slot, int buttons, int CD)
 					PrintCenterText(client, "No Effect...");
 					ClientCommand(client, "playgamesound ui/message_update.wav");
 				}
+				else
+				{
+					Rogue_OnAbilityUse(client, weapon);
+				}
 
 				for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)
 				{
@@ -464,7 +468,7 @@ public Action SF_Random(int client, int entity, int first, int second, int third
 			PrintCenterText(client, "Random!");
 			ApplyTempAttrib(entity, 2, GetURandomFloat() * 6.0);
 			cooldown += GetURandomFloat() - 0.5;
-			StartHealingTimer(client, GetURandomFloat(), GetURandomInt() % 2, GetURandomInt() % 50);
+			StartHealingTimer(client, GetURandomFloat(), 2.0, GetURandomInt() % 50);
 		}
 
 		ClientCommand(client, "playgamesound ui/killsound_percussion.wav");
@@ -509,12 +513,12 @@ public Action SF_Leach(int client, int entity, int first, int second, int third,
 		if(stale)
 		{
 			PrintCenterText(client, "Health...");
-			StartHealingTimer(client, 0.5, 1, 2);
+			StartHealingTimer(client, 0.5, 1.0, 2);
 		}
 		else
 		{
 			PrintCenterText(client, "Health!");
-			StartHealingTimer(client, 0.1, 1, 50, false);
+			StartHealingTimer(client, 0.1, 1.0, 50, false);
 		}
 
 		cooldown += 1.0;

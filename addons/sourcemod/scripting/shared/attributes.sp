@@ -30,6 +30,7 @@ int Attributes_Airdashes(int client)
 
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
+	/*
 	if(GetClientTeam(client) == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 251);	// speed buff ally
@@ -37,29 +38,37 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
 	}
 	else
+	*/
 	{
+		if(weapon < 1)
+		{
+			return;
+		}
+
 		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
 		{
-			float value = Attributes_FindOnWeapon(client, weapon, 16) +
-				Attributes_FindOnWeapon(client, weapon, 98) +
-				Attributes_FindOnWeapon(client, weapon, 110) +
-				Attributes_FindOnWeapon(client, weapon, 111);	// add_onhit_addhealth
-				
-			if(value)
-				StartHealingTimer(client, 0.1, value > 0 ? 1 : -1, value > 0 ? RoundFloat(value) : RoundFloat(-value));
-			
-			value = Attributes_FindOnWeapon(client, weapon, 19);	//  tmp dmgbuff on hit
-			if(value)
-				TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
-
+			float value;
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-			{				
-				value = Attributes_FindOnWeapon(client, weapon, 149);	// bleeding duration
+			{
+
+				value = Attributes_FindOnWeapon(client, weapon, 16) +
+					Attributes_FindOnWeapon(client, weapon, 98) +
+					Attributes_FindOnWeapon(client, weapon, 110) +
+					Attributes_FindOnWeapon(client, weapon, 111);	// add_onhit_addhealth
+					
+				if(value)
+					StartHealingTimer(client, 0.1, value > 0 ? 1.0 : -1.0, value > 0 ? RoundFloat(value) : RoundFloat(-value));
+/*		
+				value = Attributes_FindOnWeapon(client, weapon, 19);	//  tmp dmgbuff on hit
+				if(value)
+					TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
+*/
+				value = float(i_BleedDurationWeapon[weapon]);	// bleeding duration
 				if(value)
 					StartBleedingTimer(victim, client, Attributes_FindOnWeapon(client, weapon, 2, true, 1.0)*4.0, RoundFloat(value*2.0), weapon, damagetype);
 
 					
-				value = Attributes_FindOnWeapon(client, weapon, 208);	// Set DamageType Ignite
+				value = float(i_BurnDurationWeapon[weapon]);	// Set DamageType Ignite
 
 				int itemdefindex = 0;
 				if(IsValidEntity(weapon))
@@ -77,85 +86,88 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						
 					NPC_Ignite(victim, client, value, weapon);
 				}	
-			}
-			value = Attributes_FindOnWeapon(client, weapon, 638);	// Extinquisher
-			if(value)
-			{
-				if(value == 1.0)
-				{
-					if(IgniteFor[victim] > 0)
-					{
-						damage *= 1.5;
-						DisplayCritAboveNpc(victim, client, true);
-					}
-				}
-				//dont actually extinquish, just give them more damage.
-			}
-			if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged) && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //No infinite uber chain.
-			{
-				value = Attributes_FindOnWeapon(client, weapon, 17);	// add uber charge on hit
+				value = float(i_ExtinquisherWeapon[weapon]);	// Extinquisher
 				if(value)
 				{
-					ArrayList list = new ArrayList();
-					
-					int entity, i;
-					while(TF2_GetItem(client, entity, i))
+					if(value == 1.0)
 					{
-						if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-							list.Push(entity);
-					}
-
-					int length = list.Length;
-					if(length)
-					{
-						value /= float(length);
-						float extra;
-						for(i = length - 1; i >= 0; i--)
+						if(IgniteFor[victim] > 0)
 						{
-							entity = list.Get(i);
-							float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-							if(Attributes_FindOnWeapon(client, entity, 2046) == 4.0)
-							{
-								uber -= value + extra;
-							}
-							else
-							{
-								uber += value + extra;
-							}
-								
-							if(uber > 1.0)
-							{
-								extra = uber - 1.0;
-								uber = 1.0;
-							}
-							else if(uber < 0.0)
-							{
-								extra = -uber;
-								uber = 0.0;
-							}
-							else
-							{
-								extra = 0.0;
-							}
-								
-							SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
+							damage *= 1.5;
+							DisplayCritAboveNpc(victim, client, true);
 						}
 					}
-					
-					delete list;
+					//dont actually extinquish, just give them more damage.
 				}
-			}
-			
-			if(Attributes_FindOnWeapon(client, weapon, 368))	// rage on Hit
-			{
-				if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
+				value = f_UberOnHitWeapon[weapon];
+				if(value)
 				{
-					float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter")+0.5;
-					if(rage > 100.0)
-						rage = 100.0;
-					
-					SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
+					if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
+					{
+						// add uber charge on hit
+						
+						ArrayList list = new ArrayList();
+							
+						int entity, i;
+						while(TF2_GetItem(client, entity, i))
+						{
+							if(b_IsAMedigun[entity])	//if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+								list.Push(entity);
+						}
+
+						int length = list.Length;
+						if(length)
+						{
+							value /= float(length);
+							float extra;
+							for(i = length - 1; i >= 0; i--)
+							{
+								entity = list.Get(i);
+								float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+								if(Attributes_FindOnWeapon(client, entity, 2046) == 4.0)
+								{
+									uber -= value + extra;
+								}
+								else
+								{
+									uber += value + extra;
+								}
+									
+								if(uber > 1.0)
+								{
+									extra = uber - 1.0;
+									uber = 1.0;
+								}
+								else if(uber < 0.0)
+								{
+									extra = -uber;
+									uber = 0.0;
+								}
+								else
+								{
+									extra = 0.0;
+								}
+									
+								SetEntPropFloat(entity, Prop_Send, "m_flChargeLevel", uber);
+							}
+						}
+						delete list;
+					}
 				}
+			
+/*			
+				if(Attributes_FindOnWeapon(client, weapon, 368))	// rage on Hit
+				{
+					if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
+					{
+						float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter")+0.5;
+						if(rage > 100.0)
+							rage = 100.0;
+						
+						SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
+					}
+				}
+*/
 			}
 		}
 		/*
@@ -174,15 +186,14 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			
 			SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", cloak);
 		}
-		*/
-		/*
+		
 		if(Attributes_FindOnWeapon(client, weapon, 540))	// add head on hit
 			SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-		
-		value = Attributes_FindOnWeapon(client, weapon, 877);	// speed_boost_on_hit_enemy
+		*/
+		float value = Attributes_FindOnWeapon(client, weapon, 877);	// speed_boost_on_hit_enemy
 		if(value)
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);
-		
+		/*
 		if(Attributes_FindOnWeapon(client, weapon, 2067))	// attack_minicrits_and_consumes_burning
 		{
 			int ticks = NPC_Extinguish(victim);
@@ -210,16 +221,18 @@ void Attributes_OnKill(int client, int weapon)
 	value = Attributes_FindOnPlayer(client, 296);	// sapper kills collect crits
 	if(value)
 		SetEntProp(client, Prop_Send, "m_iRevengeCrits", GetEntProp(client, Prop_Send, "m_iRevengeCrits")+RoundFloat(value));
-	
-	if(Attributes_FindOnPlayer(client, 387))	// rage on kill
+	*/
+
+	value = Attributes_FindOnPlayer(client, 387);	// rage on kill
+	if(value)
 	{
-		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter")+34.0;
+		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter") + value;
 		if(rage > 100.0)
 			rage = 100.0;
 		
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
 	}
-	*/
+	
 //	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	/*
 	if(Attributes_FindOnWeapon(client, weapon, 30))	// fists have radial buff
@@ -279,21 +292,7 @@ void Attributes_OnKill(int client, int weapon)
 	{
 		value = Attributes_FindOnWeapon(client, weapon, 180);	// heal on kill
 		if(value)
-			StartHealingTimer(client, 0.1, value > 0 ? 1 : -1, value > 0 ? RoundFloat(value) : RoundFloat(-value));
-		
-#if defined ZR
-		if(EscapeMode)
-		{
-			if(!i_IsWandWeapon[weapon])
-			{
-				char melee_classname[64];
-				GetEntityClassname(weapon, melee_classname, 64);
-					
-				if (TFWeaponSlot_Melee == TF2_GetClassnameSlot(melee_classname))
-					StartHealingTimer(client, 0.1, 1, 5, true);
-			}
-		}
-#endif
+			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
 		
 	}
 	/*
@@ -317,14 +316,14 @@ void Attributes_OnKill(int client, int weapon)
 	
 	if(Attributes_FindOnWeapon(client, weapon, 409))	// kill forces attacker to laugh
 		TF2_StunPlayer(client, 2.0, 1.0, TF_STUNFLAGS_NORMALBONK);
-
+*/
 	value = Attributes_FindOnWeapon(client, weapon, 613);	// minicritboost on kill
 	if(value)
 		TF2_AddCondition(client, TFCond_MiniCritOnKill, value);
 
 	if(Attributes_FindOnWeapon(client, weapon, 644) || Attributes_FindOnWeapon(client, weapon, 807))	// clipsize increase on kill, add_head_on_kill
 		SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-
+/*
 	value = Attributes_FindOnWeapon(client, weapon, 736);	// speed_boost_on_kill
 	if(value)
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);

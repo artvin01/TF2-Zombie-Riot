@@ -552,7 +552,7 @@ methodmap TrueZerofuse < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueZerofuse_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, TrueZerofuse_ClotDamaged_Post);
 		SDKHook(npc.index, SDKHook_Think, TrueZerofuse_ClotThink);
 		
@@ -961,7 +961,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		}
 		if(npc.m_flInJump > GetGameTime(npc.index) && !b_WrathRage[npc.index] && !b_ForceWrath[npc.index])
 		{
-			//PF_StopPathing(npc.index);
+			//NPC_StopPathing(npc.index);
 			//npc.m_bPathing = false;
 			npc.FaceTowards(vecTarget, 10000.0);
 			return;
@@ -981,11 +981,11 @@ public void TrueZerofuse_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 352000 && npc.m_flReloadDelay < GetGameTime(npc.index) && b_RocketGunUsage[npc.index] && !b_Stun[npc.index])
 		{
@@ -1005,7 +1005,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 				{
 					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 650.0);
 				}
-				//PF_StopPathing(npc.index);
+				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
 				if(b_AbilityWrathRage[npc.index])//If he is in wrath buff ruins his main gimick then if it was the same speed
@@ -1242,7 +1242,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -1314,7 +1314,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 	}
 }
 
-public Action TrueZerofuse_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TrueZerofuse_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	TrueZerofuse npc = view_as<TrueZerofuse>(victim);
 		
@@ -1341,7 +1341,7 @@ public void TrueZerofuse_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueZerofuse_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, TrueZerofuse_ClotDamaged_Post);
 	SDKUnhook(npc.index, SDKHook_Think, TrueZerofuse_ClotThink);
 	

@@ -137,6 +137,7 @@ methodmap SniperMain < CClotBody
 		SniperMain npc = view_as<SniperMain>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "20000", ally));
 		
 		i_NpcInternalId[npc.index] = SNIPER_MAIN;
+		i_NpcWeight[npc.index] = 1;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -151,7 +152,7 @@ methodmap SniperMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SniperMain_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SniperMain_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SniperMain_ClotDamaged_Post);
 		
@@ -227,7 +228,7 @@ public void SniperMain_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -269,9 +270,9 @@ public void SniperMain_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -359,9 +360,9 @@ public void SniperMain_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			
@@ -378,7 +379,7 @@ public void SniperMain_ClotThink(int iNPC)
 				}
 				else
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(vecTarget, 10000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.2;
@@ -433,7 +434,7 @@ public void SniperMain_ClotThink(int iNPC)
 	else
 	{
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -441,7 +442,7 @@ public void SniperMain_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SniperMain_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SniperMain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	SniperMain npc = view_as<SniperMain>(victim);
 		
@@ -460,11 +461,13 @@ public Action SniperMain_ClotDamaged(int victim, int &attacker, int &inflictor, 
 public void SniperMain_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	SniperMain npc = view_as<SniperMain>(victim);
-
-	if(15000 >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		npc.Anger = true; //	>:(
-		npc.m_flSpeed = 330.0;
+		if(15000 >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
+		{
+			npc.Anger = true; //	>:(
+			npc.m_flSpeed = 330.0;
+		}
 	}
 }
 
@@ -476,7 +479,7 @@ public void SniperMain_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SniperMain_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SniperMain_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SniperMain_ClotDamaged_Post);	
 	

@@ -32,7 +32,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 
-	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -56,7 +56,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
+
 	"npc/metropolice/vo/pickupthecan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -166,8 +166,10 @@ methodmap MedivalKnight < CClotBody
 	public MedivalKnight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalKnight npc = view_as<MedivalKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "5000", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_KNIGHT;
+		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -181,7 +183,7 @@ methodmap MedivalKnight < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalKnight_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalKnight_ClotThink);
 
 		npc.m_iState = 0;
@@ -306,11 +308,11 @@ public void MedivalKnight_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -373,7 +375,7 @@ public void MedivalKnight_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -381,7 +383,7 @@ public void MedivalKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action MedivalKnight_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -408,7 +410,7 @@ public void MedivalKnight_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalKnight_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalKnight_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

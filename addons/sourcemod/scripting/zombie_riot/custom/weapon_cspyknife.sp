@@ -5,7 +5,7 @@ static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float fl_IncreaseAttackSpeed[MAXPLAYERS+1]={0.0, ...};
 static float fl_IncreaseDamage[MAXPLAYERS+1]={1.0, ...};
-static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
+//static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
 
 #define TheTimerForCoolDown 1.0
 #define SlowStunTimer 0.88
@@ -21,15 +21,15 @@ static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
 
 //Third Pap Stuff
 #define CooldownTimer_Pap 1.55
-#define MinicritTimer_Pap 0.88
-#define SpeedBuffTimer_Pap 0.55
+#define MinicritTimer_Pap 2.0
+#define SpeedBuffTimer_Pap 1.0
 #define SlowStunTimer_Pap 0.88
 
 #define LessDamageMultiplier_Pap 0.70
-#define DamageMultiplier_Pap 1.75
+#define DamageMultiplier_Pap 2.2
 #define TakeMoreDamageMultiplier_Pap 1.15
 #define IncreaseAttackSpeed_Pap 0.28
-#define DecreaseAttackSpeed_Pap 1.35
+#define DecreaseAttackSpeed_Pap 1.55
 #define SlownessAmount_Pap 0.55
 
 #define ResetAttackSpeedTimer 1.22
@@ -49,7 +49,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 	{
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, TheTimerForCoolDown);
+		//	Ability_Apply_Cooldown(client, slot, TheTimerForCoolDown);
 			weapon_id[client] = EntIndexToEntRef(weapon);
 			
 			switch(GetRandomInt(1,8))
@@ -61,13 +61,13 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					if(address != Address_Null)
 					fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 					TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed);*/
-					ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed);
+					ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed, 0.1);
 					//CreateTimer(0.88, Reset_ToNormalAttackSpeed, client, TIMER_FLAG_NO_MAPCHANGE);
 					//PrintToChat(client, "AttackSpeed bonus")
 				}
 				case 2:
 				{
-					TF2_AddCondition(client, TFCond_CritCola, MinicritTimer, 0);
+					TF2_AddCondition(client, TFCond_CritCola, 0.44, 0);
 					//PrintToChat(client, "Minicrits")
 				}
 				case 3:
@@ -99,12 +99,13 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 				}
 				case 6:
 				{
-					fl_IncreaseDamageTaken[client] = 1.0;
+					/*fl_IncreaseDamageTaken[client] = 1.0;
 					Address address = TF2Attrib_GetByDefIndex(weapon, 412);
 					if(address != Address_Null)
 					fl_IncreaseDamageTaken[client] = TF2Attrib_GetValue(address);
 					TF2Attrib_SetByDefIndex(weapon, 412, fl_IncreaseDamageTaken[client] * TakeMoreDamageMultiplier);
-					CreateTimer(0.88, Reset_TakeMoreDmg, client, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(0.88, Reset_TakeMoreDmg, client, TIMER_FLAG_NO_MAPCHANGE);*/
+					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, MinicritTimer, 0);
 					//PrintToChat(client, "Take More Dmg")
 				}
 				case 7:
@@ -123,7 +124,7 @@ public void Weapon_CspyKnife_Pap(int client, int weapon, bool crit, int slot)
 	{
 		if(Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			Ability_Apply_Cooldown(client, slot, CooldownTimer_Pap);
+		//	Ability_Apply_Cooldown(client, slot, CooldownTimer_Pap);
 			weapon_id[client] = EntIndexToEntRef(weapon);
 			
 			switch(GetRandomInt(1, 13))
@@ -229,7 +230,7 @@ public Action MoreAttackSpeed(Handle cut_timer, int client)
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
 		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed_Pap);*/
-		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap);
+		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap, 0.1);
 		//CreateTimer(ResetLessAttackSpeedTimer, Reset_ToNormalAttackSpeed_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "More Attack Speed works!")
 	}
@@ -274,9 +275,10 @@ public Action TakeMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
 	{
-		int weapon = EntRefToEntIndex(weapon_id[client]);
-		ApplyTempAttrib(weapon, 412, TakeMoreDamageMultiplier_Pap, ResetTakeMoreDmgTimer);
+		//int weapon = EntRefToEntIndex(weapon_id[client]);
+		//ApplyTempAttrib(weapon, 412, TakeMoreDamageMultiplier_Pap, ResetTakeMoreDmgTimer);
 		//PrintToChat(client, "More Attack Damage works!")
+		TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.44, 0);
 	}
 	return Plugin_Handled;
 }
@@ -386,7 +388,7 @@ public Action Reset_fl_DecreaseDamage_Pap(Handle cut_timer, int client)
 	}
 	return Plugin_Handled;
 }
-*/
+
 public Action Reset_TakeMoreDmg(Handle cut_timer, int client)
 {
 	if(IsValidClient(client))
@@ -399,4 +401,4 @@ public Action Reset_TakeMoreDmg(Handle cut_timer, int client)
 		//PrintToChat(client, "Reset Take More Dmg")
 	}
 	return Plugin_Handled;
-}
+}*/

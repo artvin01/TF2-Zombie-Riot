@@ -35,11 +35,18 @@ static char g_MeleeMissSounds[][] =
 	"weapons/cbar_miss1.wav",
 };
 
-public void Addiction_OnMapStart_NPC()
+void Addiction_OnMapStart_NPC()
 {
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_PassiveSounds));	   i++) { PrecacheSoundCustom(g_PassiveSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_ThunderSounds));	   i++) { PrecacheSoundCustom(g_ThunderSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));	   i++) { PrecacheSound(g_MeleeMissSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	   i++) { PrecacheSound(g_MeleeHitSounds[i]);	   }
+	PrecacheSoundCustom("cof/addiction/death.mp3");
+
+	PrecacheModel("models/zombie_riot/aom/david_monster.mdl");
 }
+
 methodmap Addicition < CClotBody
 {
 	public void PlayIdleSound()
@@ -48,7 +55,7 @@ methodmap Addicition < CClotBody
 			return;
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + 3.5;
-		EmitSoundToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
+		EmitCustomToAll(g_PassiveSounds[GetRandomInt(0, sizeof(g_PassiveSounds) - 1)], this.index);
 	}
 	public void PlayHurtSound()
 	{
@@ -57,7 +64,7 @@ methodmap Addicition < CClotBody
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -70,30 +77,18 @@ methodmap Addicition < CClotBody
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("cof/addiction/death.mp3");
-		EmitSoundToAll("cof/addiction/death.mp3");
-	}
-	public void PlayIntroSound()
-	{
-		EmitSoundToAll("cof/simon/Intro.mp3");
-		EmitSoundToAll("cof/simon/Intro.mp3");
-	}
-	public void PlayAttackSound()
-	{
-		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		EmitSoundToAll("cof/simon/attack.mp3", this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll("cof/addiction/death.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayLightningSound()
 	{
-		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_ThunderSounds[GetRandomInt(0, sizeof(g_ThunderSounds) - 1)], this.index, SNDCHAN_AUTO, 120, _, 3.0);
 	}
 	
 	public Addicition(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Addicition npc = view_as<Addicition>(CClotBody(vecPos, vecAng, "models/zombie_riot/aom/david_monster.mdl", "1.15", data[0] == 'f' ? "250000" : "10000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = THEADDICTION;
+		i_NpcWeight[npc.index] = 3;
 		
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
@@ -102,7 +97,7 @@ methodmap Addicition < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Addicition_ClotThink);
 		
 		npc.m_bisWalking = false;
@@ -209,7 +204,7 @@ public void Addicition_ClotThink(int iNPC)
 	{
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 		return;
@@ -251,7 +246,7 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}
@@ -265,7 +260,7 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(npc.m_bPathing)
 				{
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}
@@ -275,12 +270,12 @@ public void Addicition_ClotThink(int iNPC)
 				
 				if(distance > 29000.0)
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				else
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				npc.StartPathing();
 			}
@@ -291,7 +286,7 @@ public void Addicition_ClotThink(int iNPC)
 	
 	if(npc.m_bPathing)
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
 	
@@ -352,7 +347,7 @@ public void Addicition_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -364,11 +359,11 @@ public void Addicition_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		
 		if(npc.m_bLostHalfHealth)
@@ -407,7 +402,7 @@ public void Addicition_ClotThink(int iNPC)
 						npc.SetActivity("ACT_LIGHTNING");
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 3;
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
 					npc.PlayLightningSound();
@@ -439,7 +434,7 @@ public void Addicition_ClotThink(int iNPC)
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.PlayAttackSound();
+					//npc.PlayAttackSound();
 					npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.43;
 					npc.m_flAttackHappenswillhappen = true;
@@ -482,7 +477,7 @@ public void Addicition_ClotThink(int iNPC)
 	}
 	else
 	{
-//		PF_StopPathing(npc.index);
+//		NPC_StopPathing(npc.index);
 //		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
@@ -490,7 +485,7 @@ public void Addicition_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 	
-public Action Addicition_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Addicition_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 //	if(damage < 9999999.0 && view_as<Addicition>(victim).m_flRangedSpecialDelay == 1.0)
 //		return Plugin_Handled;
@@ -503,10 +498,10 @@ public void Addicition_NPCDeath(int entity)
 {
 	Addicition npc = view_as<Addicition>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Addicition_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Addicition_ClotThink);
 	
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
 	npc.PlayDeathSound();

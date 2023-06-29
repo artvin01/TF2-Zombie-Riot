@@ -194,17 +194,22 @@
 		"ru"		"Ур. {1} ({2} / {3})"
 		"pt"		"Nv. {1} ({2} / {3})"
 	}
+	"XP Loading"
+	{
+		"en"		"Loading your levels..."
+		"chi"       "加载你的等级中..."
+	}
 	"Store Discount"
 	{
-		"en"		"-10% Off Shipping With No Zombies"
-		"it"		"-10% meno dal negozio quando non ci sono Zombie"
-		"ru"		"Скидка -10% на покупки при отсутствии зомби"
-		"pl"		"-10% przeceny na zakupy podczas przerwy pomiędzy rundami"
-		"es"		"10% de descuento mientras no hay Zombies"
-		"fr"		"Réduction de 10% Sans les Zombies"
-		"de"		"-10% verkaufs angebot wenn keine untoten hier sind"
-		"pt"		"10% de desconto quando não há zumbis vivos"
-		"nl"		"-10% korting op winkelvoorraden als er geen zombies aanwezig zijn"
+		"en"		"-10%% Off Shipping With No Zombies"
+		"it"		"-10%% meno dal negozio quando non ci sono Zombie"
+		"ru"		"Скидка -10%% на покупки при отсутствии зомби"
+		"pl"		"-10%% przeceny na zakupy podczas przerwy pomiędzy rundami"
+		"es"		"10%% de descuento mientras no hay Zombies"
+		"fr"		"Réduction de 10%% Sans les Zombies"
+		"de"		"-10%% verkaufs angebot wenn keine untoten hier sind"
+		"pt"		"10%% de desconto quando não há zumbis vivos"
+		"nl"		"-10%% korting op winkelvoorraden als er geen zombies aanwezig zijn"
 		"chi"       "休息回合商城折扣10%%~"
 	}
 	"Equip"
@@ -682,6 +687,14 @@
 		"nl"		"Iemand gebruikte net uw Pack-A-Punch, je krijgt hiervoor +400 krediet!" 
 		"chi"       "队友使用了你的武器工作台，你获得 400 的现金奖励"
 	}
+	"Pap Machine Used But Another"
+	{
+		"en"		"Someone used your Pack-A-Punch Machine, you gain +100 Credits!\nAnother builder has more advanced tech then you, and gained the rest."
+	}
+	"Pap Machine Used Me"
+	{
+		"en"		"A Pack-A-Punch was used that wasnt yours, but your tech is more advanced! You gain 300+ Credits."
+	}
 	"Equip Melee To Use"
 	{
 		"en"		"Equip a weapon with ammo to use this!"
@@ -786,6 +799,10 @@
 		"pt"		"Você chegou no seu limite de espinhos! pegue alguns espinhos com M2 ou espere ate que eles sejam destruidos!"
 		"nl"		"U hebt het maximale spijkers berijkt! Pak spijkers op met M2 of wacht tot ze worden opgebruikt!"
 		"chi"       "你已达到钉刺的最大使用次数，按下鼠标右键将它回收或等待它消耗殆尽。"
+	}
+	"Spike Limit Reached Global"
+	{
+		"en" 		"There are too many Spikes on the map! Placement Failed."
 	}
 	"Threw Grenade"
 	{
@@ -1002,15 +1019,14 @@
 		"nl"		"Perk: Wijn van de weduwe"
 		"chi" 		"Buff: 恶魔领域"
 	}
+	"Recycle Poire"
+	{
+		"en" 		"Perk: Recycle Poiré"
+	}
 
 	"Quick Revive Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed"
-		"ru" 		"РЕАНИМАТОР! Вдвойне быстрее оживление"
-		"de"		"SCHNELLES WIEDERBELEBEN! 2-fache Wiederbelebungs-Geschwindigkeit"
-		"pt"		"RÁPIDA RESSUREIÇÃO! 2x Velocidade de Reanimação"
-		"nl"		"Snel tot leven brengen! 2x Snelheid voor het tot leven brengen"
-		"chi" 		"快速起身:两倍的复活速度"
+		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed and 2x Health on revive"
 	}
 	"Juggernog Recieved"
 	{
@@ -1039,11 +1055,11 @@
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.35x Extra Headshot and backstab damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.35x доп. урона от выстрела в голову и удар в спину"
-		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.35-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.35x Dano extra com tiros na cabeça e facas nas costas"
-		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.35x Meer Hoofdschotschade en Rugstekingschade"
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
+		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x доп. урона от выстрела в голову и удар в спину"
+		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
+		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.25x Meer Hoofdschotschade en Rugstekingschade"
 		"chi" 		"死亡宣告:射击精准度提升，爆头、背刺伤害提升"
 	}
 	"Widows Wine Recieved"
@@ -1053,6 +1069,10 @@
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
 		"chi" 		"恶魔领域:当激活时，格挡75%的僵尸伤害并减速，对减速的僵尸额外造成35%的伤害"
+	}
+	"Recycle Poire Recieved"
+	{
+		"en" 		"RECYCLE POIRÉ! 25%% More ammo from all non shop sources, and 50%% more max armor and armor gain."
 	}
 	"Nuke Activated"
 	{
@@ -1072,14 +1092,20 @@
 		"nl"		"Extra Ammunitie"
 		"chi"       "弹药补给已到达"
 	}
+	"Max Health Activated"
+	{
+		"en" 		"Extra Health!"
+		"chi"       "额外的血量!"
+	}
+	"Max Money Activated"
+	{
+		"en" 		"Extra Cash!"
+		"chi"       "额外的现金!"
+	}
 	"Help?"
 	{
-		"en" 		"Help?"
-		"ru" 		"Помощь?"
-		"de"		"Hilfe?"
-		"pt"		"Ajuda?"
-		"nl"		"Hulp?"
-		"chi"       "帮助"
+		"en" 		"Help/FAQ"
+		"chi"       "帮助/问题"
 	}
 	"Help Title?"
 	{
@@ -1171,6 +1197,22 @@
 		"nl"		"Probeer om tot wel 60 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
 		"chi"       "任务目标：在一波又一波的僵尸潮中生存下来\n通过击杀僵尸获得的现金奖励购买各种强力的武器\n帮助你的队友一起撑到黎明的到来~"
 	}
+	"Debuff/Buff Explain 1"
+	{
+		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increaced Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increaced Heal/Firerate/Reload Rate.\n⍤ : 25%% Increaced Heal/Firerate/Reload Rate.\n⌃ : 25%% more dmg\n⌅ : 15 %% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increaced dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
+	}
+	"Show Debuffs"
+	{
+		"en" 		"Show Debuffs"
+	}
+	"Show Buffs"
+	{
+		"en" 		"Show Buffs"
+	}
+	"Debuff/Buff Explain 2"
+	{
+		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n♨ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow\n⯯ : 40%% more dmg taken.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities.\n▼ : 35%% more dmg taken, 65%% slower, 50%% less dmg delt."
+	}
 	"Command Help Explained"
 	{
 		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
@@ -1200,12 +1242,8 @@
 	}
 	"Special Zombies Explained"
 	{
-		"en" 		"Panzer Soldat: Guaranteed spawn at wave 12 and then it has a low chance to come, increases every wave."
-		"ru" 		"Панцер-солдат: Гарантированно появляется на 12-й волне, а затем у него низкий шанс прийти снова, увеличивающийся с каждой волной."
-		"de"		"Panzer-Soldat: erscheint Garantiert an runde 12, dann hat es eine kleine Chance zu kommen, wird höher jede runde."
-		"pt"		"Panzer Soldat: Garantido aparecer na onda 12 e então ele tem uma pequena chance de aparecer, aumenta a cada onda."
-		"nl"		"Panzer Soldaat: Gegarandeert om op golf 12 te spawnen en kan verder nog met een kleine kans terugkomen, kans verhoogt elke volgende golf!"
-		"chi"       "特级感染变异僵尸，有一定几率在第12波尸潮中出现。\n特级感染变异僵尸拥有更高的生命值、更高的伤害、更快的速度!"
+		"en" 		"These are mini-bosses that spawn randomly after wave 12."
+		"chi"       "这些是12波后随机生成的小boss。"
 	}
 	"Revival Zombies Explained"
 	{
@@ -1355,6 +1393,7 @@
 		"de"		"Du bist tot oder gelangweilt, versuch mal diese Mini-Spiele um Zeit zu töten."
 		"pt"		"Você está morto(a) ou entediado(a), tente alguns minigames para passar o tempo."
 		"nl"		"Je bent momenteel dood of je verveelt je? Probeer wat Minigames uit om tijd te doden."
+		"chi"       "如果你觉得无聊，可以试试这些小游戏来打发时间。"
 	}
 	"Idlemine"
 	{
@@ -1362,6 +1401,7 @@
 		"ru" 		"Ленивая шахта"
 		"de"		"Leerlauf meiner"
 		"pt"		"Farm afk"
+		"chi"       "挂机"
 	}
 	"Healing Station Tooltip"
 	{
@@ -1403,12 +1443,14 @@
 		"en" 		"Pong"
 		"ru" 		"Понг"
 		"pt"		"Pong"
+		"chi"       "乒乓球"
 	}
 	"Tetris"
 	{
 		"en" 		"Tetris"
 		"ru" 		"Тетрис"
 		"pt"		"Tetris"
+		"chi"       "俄罗斯方块"
 	}
 	"Snake"
 	{
@@ -1417,12 +1459,14 @@
 		"de"		"Schlange"
 		"pt"		"Jogo da Cobra"
 		"nl"		"Slang"
+		"chi"       "贪吃蛇"
 	}
 	"Solitaire"
 	{
 		"en" 		"Solitaire"
 		"ru" 		"Пасьянс"
 		"pt"		"Paciência"
+		"chi"       "纸牌"
 	}
 	"Connect 4"
 	{
@@ -1466,7 +1510,7 @@
 		"de"		"Sie sind gestorben!\nHelfen sie ihr Team durch Angriffe auf die Gegnern.\nSie können nicht sterben in diesen zustand und werden wiederbelebt nächste runde."
 		"pt"		"Você morreu!\nAjude seu time ao atacar os inimigos.\nVocê não pode morrer neste estado e renascerá na próxima onda."
 		"nl"		"U bent dood!\nHelp uw teamgenoten door de vijand aan te vallen.\nIn deze vorm kan je niet dood gaan en zal je bij de volgende golf weer tot leven komen."
-		"chi"       "你已死亡！\n攻击敌人来减轻你队友的压力\n你将会在下一波重生！"
+		"chi"       "你已死亡!\n攻击敌人来减轻你队友的压力\n你将会在下一波重生！"
 	}
 	"You Wait Teuton"
 	{
@@ -1589,6 +1633,7 @@
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 		"pt"		"Seu Inventário foi atualizado com seu estado anterior."
 		"nl"		"uw loadout is geupdate naar de vorige versie."
+		"chi"       "您的装备已恢复退出服务器时的状态。"
 	}
 	"Could Not Buy Item"
 	{
@@ -1704,9 +1749,9 @@
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitely.\nThe further you go, the harder it gets.\n"
 		"ru"		"Зомби побеждены!\nПерейти в режим свободной игры..?\nСвободный режим игры бесконечен.\nЧем дальше, тем сложнее.\n"
-		"chi"       "恭喜你击败了所有僵尸！\n是否进行自由模式？\n"
 		"pt"		"Os zumbis foram derrotados!\nAvançar para Modo Livre..?\nModo Livre irá continuar indefinidamente.\nO quão longe você for, mais dificil ficará.\n"
 		"nl"		"Gefeliciteerd! De zombies zijn verslagen!\nWil je naar Freeplay gaan?..\nFreeplay zal oneindig worden gespeeld.\nHoe verder je raakt, hoe moeilijker het wordt.\n" 
+		"chi"       "僵尸被打败了!\n是否进行自由回合…?\n自由回合无缘无尽。回合越靠后，就越难\n"
 	}
 	"M3 Ability Is Back"
 	{		
@@ -1751,10 +1796,8 @@
 	}
 	"tutorial_2"
 	{
-		"en"		"Good! Now Navigate to weapons and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
-		"en"		"Good! You can also Open the store with %%+showscores%% when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want.\nOpen chat and type ''/store'' to open the store again if it got closed!"
+		"en"		"Good! Now Navigate to ''weapons'' and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
 		"ru"		"Отлично! Теперь перейдите к оружию и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
-		"ru"		"Отлично! Вы также можете открыть магазин клавишей %%+showscores%%, когда закончите обучение.\nТеперь перейдите к оружию и купите любое оружие, какое захотите.\nОткройте чат и введите «/store» для повторного открытия магазина, если он был закрыт!"
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
 		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
@@ -1825,11 +1868,8 @@
 	}
 	"Save New"
 	{
-		"en"		"Enter name in chatbox to create a new loadout"
-		"ru"		"Введите имя в поле чата, чтобы создать новое снаряжение"
-		"pt"		"Digite no chat o nome do Loadout que você quer criar"
-		"nl"		"Typ een naam in de chatbox om een nieuwe loudout te creëren"
-		"chi"       "在聊天框中输入名称以创建新的预设值"
+		"en"		"Enter name in chatbox to create a new loadout\nIt will save your current bought items with the name you give.\nYou can rebuy said loadout if you have enough cash."
+		"chi"       "在聊天框中输入名字创建一个新的预设\n这将保存您当前购买的物品。如果你有足够的现金，你可以一件购买。"
 	}
 	"Invalid Name"
 	{
@@ -1846,6 +1886,36 @@
 		"ru"		"Ячеек: {1}"
 		"pt"		"Vagas para Loadout: {1}"
 		"nl"		"{1} Loadout Slot(en)"
+	}
+	"All Weapons Unlocked"
+	{
+		"en"		"{pink}All weapons and upgrades are unlocked to buy!"
+		"chi"       "{pink}所有武器和升级都可以解锁购买!"
+	}
+	"Starter Mode"
+	{
+		"en"		"Welcome to TF2: Zombie Riot!\nAdvanced weapons will unlock at Level 5"
+		"chi"       "欢迎来到TF2:僵尸暴动!高级武器将在5级解锁"
+	}
+	"Skip Starter"
+	{
+		"en"		"Skip starter weapons and unlock advanced weapons"
+		"chi"       "跳过初级武器并解锁高级武器"
+	}
+	"Skip Starter Confirm"
+	{
+		"en"		"You will be set to Level 5 and have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
+		"chi"       "你将被设置为5级，并可以使用先进的武器\n你熟悉购买和生存的基本知识吗?\n如若你不了解玩法，请误跳过新手教程!"
+	}
+	"Skip Starter Yes"
+	{
+		"en"		"Yes, set me to Level 5"
+		"chi"       "是的，设置到5级(慎重)"
+	}
+	"nothing"
+	{
+		"en" 		"Example Text!"
+		"chi"       "示例文本!"
 	}
 	"At Weapon Limit"
 	{
@@ -1885,7 +1955,7 @@
 		"ru"	"Наличка азартного игрока"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"赌徒的现金"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1898,7 +1968,7 @@
 		"ru"		"Думаешь, ты можешь так легко забежать сюда для безопасности? Только не в мною смену."
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"你以为你能轻易跑到这里安全吗?对我来说不是。"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1911,7 +1981,7 @@
 		"ru"		"Давай посмотрим, сможешь ли ты справиться со мной."
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"看看你能不能应付我。"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1924,7 +1994,7 @@
 		"ru"		"Давай посмотрим, как долго ты сможешь продержаться с нами обоими."
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"看看你和我们俩能坚持多久。"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1937,7 +2007,7 @@
 		"ru"		"Настройки"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"设置"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1950,7 +2020,7 @@
 		"ru"		"Страница настроек"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"设置页面"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1963,7 +2033,7 @@
 		"ru"		"Интерфейс брони"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"装甲Hud设置"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1976,7 +2046,7 @@
 		"ru"		"Интерфейс угроз"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"伤害Hud设置"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -1989,7 +2059,7 @@
 		"ru"		"Интерфейс оружия"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"武器Hud设置"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2002,7 +2072,7 @@
 		"ru"		"Интерфейс уведомл."
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"通知Hud设置"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2016,7 +2086,7 @@
 		"ru"		"Смещ. интерф. брони\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"装甲Hud偏移量\nX轴:{1}\nY轴:{2}"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2030,7 +2100,7 @@
 		"ru"		"Смещ. интерф. угроз\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"伤害Hud偏移量\nX轴:{1}\nY轴:{2}"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2044,7 +2114,7 @@
 		"ru"		"Смещ. интерф. оруж.\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"武器Hud偏移量\nX轴:{1}\nY轴:{2}"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2058,7 +2128,7 @@
 		"ru"		"Смещ. интерф. увед.\nПо верт.:{1}\nПо гориз.:{2}"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"通知Hud偏移量\nX轴:{1}\nY轴:{2}"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2071,7 +2141,7 @@
 		"ru"		"Интерф. вверх"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"向上移动Hud"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2084,7 +2154,7 @@
 		"ru"		"Интерф. вниз"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"向下移动Hud"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2097,7 +2167,7 @@
 		"ru"		"Интерф. влево"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"向左移动Hud"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2110,7 +2180,7 @@
 		"ru"		"Интерф. вправо"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"向右移动Hud"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2123,7 +2193,7 @@
 		"ru"		"По умолч."
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"重置为默认值"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2136,7 +2206,7 @@
 		"ru"		"Отметить постройку для удаления."
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"标记要删除的建筑物。"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2149,7 +2219,7 @@
 		"ru"		"Удалить текущую отмеченную постройку?"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"删除当前标记的建筑物?"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
@@ -2162,10 +2232,325 @@
 		"ru"		"Меню доп. снаряж. строителя"
 		//"pt"		""
 		//"nl"		""
-		//"chi"		""
+		"chi"		"建造者额外装备菜单"
 		//"pl"		""
 		//"es"		""
 		//"it"		""
 		//"fr"		""
+	}
+	"Final_wave_message"
+	{
+		"en"		"This is the final wave, Prepare."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"这是最后一波，准备。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Silvester Shares His Power"
+	{
+		"en"		"Silvester shares his power with you..."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"希尔维斯特和你分享他的力量…"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Opened store via command"
+	{
+		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"在未来，使用TAB/计分板按钮，它将打开商店没有任何命令!"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Invulnerable Npc"
+	{
+		"en"		"Invulnerable!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"免疫伤害!"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Downs left"
+	{
+		"#format"	"{1:d}"
+		"en"		"Downs Left: {1}"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"剩余回合:{1}"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Down Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Down Cooldown: {1}"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"冷却时间:{1}"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"Low Health Shake"
+	{
+		"en"		"Low Health Shake"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"低生命值屏幕效果"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"Weapon Screen Shake"
+	{
+		"en"		"Weapon Screen Shake"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"武器射击屏幕晃动"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Hit Marker"
+	{
+		"en"		"Hit Marker"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"攻击标记"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"You have been Infected by Nemesis"
+	{
+		"en"		"You have been Infected by Nemesis!\nDo not get close to allies."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"你被复仇女神感染了!不要与队友走得太近。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}	
+	"Xeno_Wave_1"
+	{
+		"en"		"Eradicate all the xeno infected\nFind the cause behind this."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"消灭所有被感染的异种人，找出背后的原因。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_2"
+	{
+		"en"		"Silvester and Goggles didnt attack you for no reason."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"西尔维斯特和护目镜不是无缘无故攻击你的。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_3"
+	{
+		"en"		"They tried to warn you and prevent you from certain doom."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"他们试图警告你，让你免于厄运。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Xeno_Wave_4"
+	{
+		"en"		"Prove them wrong, kill the remaining few infected."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"证明他们是错的，杀死剩下的几个感染者。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Skull Servant Launch Failure"
+	{
+		"en"		"This attack requires you to summon at least one skull!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"此攻击需要你召唤至少一个骷髅!"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Skull Servant Summoned"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"You have summoned {1}/{2} Skull Servant(s)."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"你已经召唤了{1}/{2}骷髅仆人."
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Npc Stuck Spot Warning"
+	{
+		"en"		"Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"离开npc卡住的区域。如果你待在里面，每0.5秒你就会收到这条信息。"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Show Plugin Messages Hint"
+	{
+		"en"		"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"如果您希望以更好的方式查看回合波数计数器，请在控制台中输入“cl_showpluginmessages 1”!"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Show Grigori Mute Hint Message"
+	{
+		"en"		"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"如果你希望Grigori说话的时候不会把你的游戏音量调成半静音，那就在控制台输入“snd_ducktovolume 1”吧!"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Redirect to different ZR server"
+	{
+		"en"		"Redirect to different ZR server"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"跳转到不同的僵尸暴动服务器"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Server is full, what would you like to do:"
+	{
+		"en"		"Server is full, what would you like to do:"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"服务器幸存者团队已满，您想做什么:"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Wait for the next map"
+	{
+		"en"		"Wait for the next map"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"等待下一张地图"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Wait for an open slot"
+	{
+		"en"		"Wait for an open slot"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		"chi"		"等待空位"
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Buff/Debuff List"
+	{
+		"en"		"Buff/Debuff List"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
 	}
 }

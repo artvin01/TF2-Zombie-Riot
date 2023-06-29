@@ -244,7 +244,7 @@ void Spawns_DisableZone(const char[] name)
 	}
 	
 	int i = MaxClients + 1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(list.FindValue(hFromSpawnerIndex[i]) != -1)
 			NPC_Despawn(i);
@@ -274,7 +274,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 	if(!start)
 	{
 		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "base_boss")) != -1)
+		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
 			if(hFromSpawnerIndex[i] == pos)
 			{
@@ -435,16 +435,20 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 		{
 			if(client == target || Party_IsClientMember(client, target))
 			{
-				if(XP[entity] > 0 && (Level[client] - 5) < Level[entity] && (Level[client] + 5) > Level[entity] && GetLevelCap(Tier[client]) != Level[client])
-					GiveXP(client, XP[entity]);
-				
+				if(XP[entity] > 0)
+				{
+					int level = XpToLevel(XP[client]);	// -2, -1, 0, +1, +2
+					if((level - 3) < Level[entity] && (level + 3) > Level[entity])
+						GiveXP(client, XP[entity]);
+				}
+
 				if(i_CreditsOnKill[entity])
 				{
-					if(i_CreditsOnKill[entity] > 199)
+					if(i_CreditsOnKill[entity] > 49)
 					{
 						TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
 					}
-					else if(i_CreditsOnKill[entity] > 49)
+					else if(i_CreditsOnKill[entity] > 14)
 					{
 						if(GetURandomInt() % 2)
 							TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);

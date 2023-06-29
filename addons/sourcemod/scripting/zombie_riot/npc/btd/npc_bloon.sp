@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define FORCE_BLOON_ENABLED
+#define FORCE_BLOON_ENABLED
 
 enum
 {
@@ -109,6 +109,22 @@ static const char BloonSprites[][] =
 	"ceramic"
 };
 
+static const int BloonRegrowRate[] =
+{
+	10,
+	10,
+	10,
+	10,
+	10,
+	20,
+	20,
+	20,
+	40,
+	40,
+	80,
+	160
+};
+
 static int GetBloonTypeOfData(const char[] data, bool &camo, bool &fortified, bool &regrow)
 {
 	int type;
@@ -154,37 +170,26 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
 	char buffer[256];
 	for(int i; i<sizeof(SoundCeramicHit); i++)
 	{
-		PrecacheSound(SoundCeramicHit[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundCeramicHit[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundCeramicHit[i]);
 	}
 	for (int i = 0; i < (sizeof(SoundCeramicPop));   i++)
 	{
-		PrecacheSound(SoundCeramicPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundCeramicPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundCeramicPop[i]);
 	}
 	for(int i; i<sizeof(SoundLead); i++)
 	{
-		PrecacheSound(SoundLead[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundLead[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundLead[i]);
 	}
 	for(int i; i<sizeof(SoundPop); i++)
 	{
-		PrecacheSound(SoundPop[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundPop[i]);
 	}
 	for(int i; i<sizeof(SoundPurple); i++)
 	{
-		PrecacheSound(SoundPurple[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundPurple[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundPurple[i]);
 	}
 	
 	static const char Properties[][] = { "", "f", "fg", "g" };
@@ -197,10 +202,6 @@ void Bloon_MapStart()
 		{
 			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%s.vmt", BloonSprites[i], Properties[a]);
 			PrecacheModel(buffer);
-			AddFileToDownloadsTable(buffer);
-			
-			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%s.vtf", BloonSprites[i], Properties[a]);
-			AddFileToDownloadsTable(buffer);
 		}
 	}
 	
@@ -210,24 +211,15 @@ void Bloon_MapStart()
 		{
 			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%d%s.vmt", BloonSprites[Bloon_Ceramic], a, Properties[i]);
 			PrecacheModel(buffer);
-			AddFileToDownloadsTable(buffer);
-			
-			FormatEx(buffer, sizeof(buffer), "materials/zombie_riot/btd/%s%d%s.vtf", BloonSprites[Bloon_Ceramic], a, Properties[i]);
-			AddFileToDownloadsTable(buffer);
 		}
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bloons_hitbox.vvd");
-	#endif
 }
 
 static int BType[MAXENTITIES];
 static bool Regrow[MAXENTITIES];
-//static bool Camo[MAXENTITIES];
+static bool WasCamo[MAXENTITIES];
 static int TypeOg[MAXENTITIES];
 static int Sprite[MAXENTITIES];
 
@@ -266,17 +258,17 @@ methodmap Bloon < CClotBody
 			Regrow[this.index] = value;
 		}
 	}
-	/*property bool m_bCamo
+	property bool m_bOriginalCamo
 	{
 		public get()
 		{
-			return Camo[this.index];
+			return WasCamo[this.index];
 		}
 		public set(bool value)
 		{
-			Camo[this.index] = value;
+			WasCamo[this.index] = value;
 		}
-	}*/
+	}
 	property bool m_bFortified
 	{
 		public get()
@@ -302,33 +294,29 @@ methodmap Bloon < CClotBody
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
-		EmitSoundToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayPurpleSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundPurple) - 1);
-		EmitSoundToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundPurple[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundCeramicHit) - 1);
-		EmitSoundToAll(SoundCeramicHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundCeramicHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		if(this.m_iType == Bloon_Ceramic)
 		{
 			int sound = GetRandomInt(0, sizeof(SoundCeramicPop) - 1);
-			EmitSoundToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitCustomToAll(SoundCeramicPop[sound], this.index, SNDCHAN_AUTO, 80, _, 3.0);
 		}
 		else
 		{
 			int sound = GetRandomInt(0, sizeof(SoundPop) - 1);
-			EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
-			EmitSoundToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitCustomToAll(SoundPop[sound], this.index, SNDCHAN_AUTO, 80, _, 3.0);
 		}
 	}
 	public int UpdateBloonInfo()
@@ -368,7 +356,7 @@ methodmap Bloon < CClotBody
 			DispatchKeyValue(sprite, "rendermode", "7");
 			
 			if(this.m_bCamo)
-				DispatchKeyValue(sprite, "renderamt", "45");
+				DispatchKeyValue(sprite, "renderamt", "40");
 			
 			DispatchSpawn(sprite);
 			ActivateEntity(sprite);
@@ -461,7 +449,6 @@ methodmap Bloon < CClotBody
 	{
 		bool camo, regrow, fortified;
 		int type = GetBloonTypeOfData(data, camo, fortified, regrow);
-		Building_CamoOrRegrowBlocker(camo, regrow);
 		
 		char buffer[7];
 		IntToString(Bloon_Health(fortified, type), buffer, sizeof(buffer));
@@ -469,6 +456,7 @@ methodmap Bloon < CClotBody
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
 		i_NpcInternalId[npc.index] = BTD_BLOON;
+		i_NpcWeight[npc.index] = 1;
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
 		npc.m_iStepNoiseType = NOTHING;	
@@ -476,6 +464,7 @@ methodmap Bloon < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bCamo = camo;
+		npc.m_bOriginalCamo = camo;
 		npc.m_bFortified = fortified;
 		npc.m_bRegrow = regrow;
 		npc.m_iType = type;
@@ -489,7 +478,7 @@ methodmap Bloon < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bloon_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bloon_ClotThink);
 		
@@ -532,17 +521,39 @@ public void Bloon_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
-	if(npc.m_bRegrow)
+	bool silenced = NpcStats_IsEnemySilenced(npc.index);
+	bool camo = npc.m_bOriginalCamo && !silenced;
+	bool regrow = npc.m_bRegrow && !silenced;
+	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
+
+	if(regrow)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 		if(health < maxhealth)
 		{
-			health += 3 + (npc.m_iOriginalType * 4);
+			health += BloonRegrowRate[npc.m_iOriginalType];
 			if(health > maxhealth)
 				health = maxhealth;
 			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			npc.UpdateBloonOnDamage();
+		}
+	}
+	
+	if(npc.m_bOriginalCamo)
+	{
+		if(npc.m_bCamo)
+		{
+			if(!camo)
+			{
+				npc.m_bCamo = false;
+				npc.UpdateBloonOnDamage();
+			}
+		}
+		else if(camo)
+		{
+			npc.m_bCamo = true;
 			npc.UpdateBloonOnDamage();
 		}
 	}
@@ -560,11 +571,11 @@ public void Bloon_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -624,14 +635,14 @@ public void Bloon_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -677,19 +688,35 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 		case Bloon_Black:
 		{
 			if(hot)
+			{
 				damage *= 0.15;
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
+			}
 		}
 		case Bloon_White:
 		{
 			if(cold)
+			{
 				damage *= 0.15;
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
+			}
 		}
 		case Bloon_Purple:
 		{
-			if(magic)
+			if(magic && !NpcStats_IsEnemySilenced(npc.index))
 			{
 				damage *= 0.1;
 				npc.PlayPurpleSound();
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_fire_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
 			}
 		}
 		case Bloon_Lead:
@@ -698,12 +725,22 @@ public Action Bloon_ClotDamaged(int victim, int &attacker, int &inflictor, float
 			{
 				damage *= 0.15;
 				npc.PlayLeadSound();
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
 			}
 		}
 		case Bloon_Zebra:
 		{
 			if(hot || cold)
+			{
 				damage *= 0.15;
+
+				damagePosition[2] += 30.0;
+				npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+				damagePosition[2] -= 30.0;
+			}
 		}
 		case Bloon_Ceramic:
 		{
@@ -725,7 +762,6 @@ public void Bloon_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bloon_ClotDamaged);
 	SDKUnhook(npc.index, SDKHook_Think, Bloon_ClotThink);
 	
 	int sprite = npc.m_iSprite;

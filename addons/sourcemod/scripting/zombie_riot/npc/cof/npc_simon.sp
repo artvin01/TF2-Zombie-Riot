@@ -11,6 +11,18 @@ static char g_HurtSounds[][] =
 static bool SimonHasDied;
 static int SimonRagdollRef = INVALID_ENT_REFERENCE;
 
+void Simon_MapStart()
+{
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+
+	PrecacheSoundCustom("cof/simon/passive.mp3");
+	PrecacheSoundCustom("cof/simon/death7.mp3");
+	PrecacheSoundCustom("cof/simon/intro.mp3");
+	PrecacheSoundCustom("cof/simon/reload.mp3");
+	PrecacheSoundCustom("cof/simon/shoot.mp3");
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
+}
+
 methodmap Simon < CClotBody
 {
 	public void PlayIdleSound()
@@ -19,7 +31,7 @@ methodmap Simon < CClotBody
 			return;
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + 18.0;
-		EmitSoundToAll("cof/simon/passive.mp3", this.index);
+		EmitCustomToAll("cof/simon/passive.mp3", this.index);
 	}
 	public void PlayHurtSound()
 	{
@@ -27,30 +39,27 @@ methodmap Simon < CClotBody
 			return;
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE);
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll("cof/simon/death7.mp3");
-		EmitSoundToAll("cof/simon/death7.mp3");
+		EmitCustomToAll("cof/simon/death7.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayIntroSound()
 	{
-		EmitSoundToAll("cof/simon/Intro.mp3");
-		EmitSoundToAll("cof/simon/Intro.mp3");
+		EmitCustomToAll("cof/simon/intro.mp3", _, _, _, _, 2.0);
 	}
 	public void PlayReloadSound()
 	{
-		EmitSoundToAll("cof/simon/reload.mp3", this.index);
-		EmitSoundToAll("cof/simon/reload.mp3", this.index);
+		EmitCustomToAll("cof/simon/reload.mp3", this.index, _, _, _, 2.0);
 	}
 	public void PlayShootSound()
 	{
-		EmitSoundToAll("cof/simon/shoot.mp3", this.index);
+		EmitCustomToAll("cof/simon/shoot.mp3", this.index);
 	}
 	public void PlayBuffSound(int entity)
 	{
-		EmitSoundToAll("cof/purnell/buff.mp3", entity);
+		EmitCustomToAll("cof/purnell/buff.mp3", entity);
 	}
 	
 	public Simon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
@@ -65,6 +74,7 @@ methodmap Simon < CClotBody
 		
 		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.15", data[0] == 'f' ? "300000" : "200000", ally, false, false, true));
 		i_NpcInternalId[npc.index] = BOOKSIMON;
+		i_NpcWeight[npc.index] = 3;
 		
 		int body = EntRefToEntIndex(SimonRagdollRef);
 		if(body > MaxClients)
@@ -343,7 +353,7 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 		}
@@ -353,7 +363,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flSpeed = npc.m_bInjured ? 200.0 : 220.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -363,7 +373,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flSpeed = npc.m_bInjured ? 220.0 : 240.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -376,7 +386,7 @@ public void Simon_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 			
 			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vBackoffPos);
+			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -391,7 +401,7 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 			
@@ -443,7 +453,7 @@ public void Simon_ClotThink(int iNPC)
 				}
 				
 				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				PF_SetGoalVector(npc.index, TargetLocation);
+				NPC_SetGoalVector(npc.index, TargetLocation);
 				
 				if(!npc.m_bPathing)
 					npc.StartPathing();
@@ -466,7 +476,7 @@ public void Simon_ClotThink(int iNPC)
 				if(npc.m_iTarget)
 				{
 					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vBackoffPos);
+					NPC_SetGoalVector(npc.index, vBackoffPos);
 					
 					if(!npc.m_bPathing)
 						npc.StartPathing();
@@ -492,7 +502,7 @@ public void Simon_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Simon_ClotThink);
 	
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
 	if(!npc.m_bRanAway)

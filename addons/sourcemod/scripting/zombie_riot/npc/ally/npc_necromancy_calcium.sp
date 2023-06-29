@@ -174,6 +174,7 @@ methodmap NecroCalcium < CClotBody
 		NecroCalcium npc = view_as<NecroCalcium>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", "0.8", "1250", true, true));
 		
 		i_NpcInternalId[npc.index] = NECRO_CALCIUM;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -197,7 +198,7 @@ methodmap NecroCalcium < CClotBody
 		}
 		npc.m_flExtraDamage = damage_multiplier;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NecroCalcium_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 		
 		npc.m_bThisEntityIgnored = true;
@@ -295,10 +296,10 @@ public void NecroCalcium_ClotThink(int iNPC)
 					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 					TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 					*/
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				} else {
 					
-					PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 				}
 				
 				//Target close enough to hit
@@ -361,7 +362,7 @@ public void NecroCalcium_ClotThink(int iNPC)
 		}
 		else
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index, _, _, false);
@@ -374,11 +375,13 @@ public void NecroCalcium_ClotThink(int iNPC)
 	}
 }
 
-public Action NecroCalcium_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NecroCalcium_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if (damage < 9999999.0)	//So they can be slayed.
+	{
+		damage = 0.0;
 		return Plugin_Handled;
-		
+	}
 	else
 		return Plugin_Continue;
 }
@@ -389,7 +392,7 @@ public void NecroCalcium_NPCDeath(int entity)
 	NecroCalcium npc = view_as<NecroCalcium>(entity);
 //	npc.PlayDeathSound();
 
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NecroCalcium_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	if(IsValidEntity(npc.m_iWearable2))

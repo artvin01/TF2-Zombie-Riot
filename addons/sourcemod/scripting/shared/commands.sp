@@ -1,6 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#if defined ZR
+float f_MedicCallIngore[MAXTF2PLAYERS];
+bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
+#endif
+
 void Commands_PluginStart()
 {
 	AddCommandListener(OnNavCommand);
@@ -24,8 +29,8 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	kv.GetSectionName(buffer, sizeof(buffer));
 	if(StrEqual(buffer, "+inspect_server", false))
 	{
-		
 #if defined ZR
+		b_HoldingInspectWeapon[client] = true;
 		if(GetClientButtons(client) & IN_SCORE)
 		{
 			Store_OpenItemPage(client);
@@ -37,11 +42,37 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 #endif
 
 #if defined RPG
-		TextStore_Inpsect(client);
+		TextStore_Inspect(client);
 #endif
 
 		return Plugin_Handled;
 	}
+#if defined ZR
+	else if(StrEqual(buffer, "-inspect_server", false))
+	{
+		b_HoldingInspectWeapon[client] = false;
+	}
+	//Medic E call, its really really delayed it is NOT the same as voicemenu 0 0, this is way faster.
+	else if(StrEqual(buffer, "+helpme_server", false))
+	{
+		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
+		f_MedicCallIngore[client] = GetGameTime() + 1.0;
+		bool has_been_done = BuildingCustomCommand(client);
+		if(has_been_done)
+		{
+			return Plugin_Handled;
+		}
+	}
+#endif
+	
+//	HINT: there is a - version, which is detected when letting go of the button, its basically a fancy onclientruncmd, although it shouldnt be used really.
+
+	if(StrEqual(buffer, "+use_action_slot_item_server", false))
+	{
+		BuilderMenu(client);
+		//This is an extra slot, incase you want to use it for anything.
+	}
+	
 	return Plugin_Continue;
 }
 
@@ -50,7 +81,6 @@ public Action OnNavCommand(int client, const char[] command, int args)
 	if(!client && !StrContains(command, "nav", false))
 	{
 		PrintToServer("[ZR] Reloaded Nav Gamedata");
-		InitNavGamedata();
 	}
 	return Plugin_Continue;
 }
@@ -79,7 +109,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 public Action OnBuildCmd(int client, const char[] command, int args)
 {
 #if defined ZR
-	if(client && GameRules_GetProp("m_bInWaitingForPlayers"))
+	if(client && (GameRules_GetProp("m_bInWaitingForPlayers") || !AllowBuildingCurrently()))
 		return Plugin_Handled;
 		
 	return Plugin_Continue;
@@ -140,10 +170,13 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 			GetCmdArg(2, arg, sizeof(arg));
 			if(arg[0] == '0')
 			{
-				bool has_been_done = BuildingCustomCommand(client);
-				if(has_been_done)
+				if(f_MedicCallIngore[client] < GetGameTime())
 				{
-					return Plugin_Handled;
+					bool has_been_done = BuildingCustomCommand(client);
+					if(has_been_done)
+					{
+						return Plugin_Handled;
+					}
 				}
 			}
 		}

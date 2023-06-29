@@ -132,7 +132,7 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, ExplosiveHeadcrabZombie_OnTakeDamagePost);
 		SDKHook(npc.index, SDKHook_Think, ExplosiveHeadcrabZombie_ClotThink);
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -158,7 +158,7 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 	}
 	
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -248,11 +248,11 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -355,7 +355,7 @@ public void ExplosiveHeadcrabZombie_OnTakeDamagePost(int victim, int attacker, i
 
 			if(npc.m_bPathing) //Halt!
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;	
 			}
 

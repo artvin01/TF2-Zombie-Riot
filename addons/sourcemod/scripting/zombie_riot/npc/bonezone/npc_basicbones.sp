@@ -166,7 +166,7 @@ methodmap BasicBones < CClotBody
 			npc.m_flSpeed = 200.0;
 		}
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BasicBones_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BasicBones_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
@@ -246,11 +246,11 @@ public void BasicBones_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 	//		PrintToChatAll("cutoff");
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		
 		//Target close enough to hit
@@ -323,7 +323,7 @@ public void BasicBones_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -356,7 +356,6 @@ public void BasicBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BasicBones_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BasicBones_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

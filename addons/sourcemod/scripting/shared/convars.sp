@@ -59,6 +59,7 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
 	ConVar_Add("sv_visiblemaxplayers", MAX_PLAYER_COUNT_STRING_SLOTS);
 //	ConVar_Add("tf_bot_quota", ); dooesnt do anything anyways.
+	ConVar_Add("mp_waitingforplayers_time", "0.0");
 	
 	#if defined ZR
 	ConVar_Add("mp_disable_respawn_times", "1.0");
@@ -75,15 +76,22 @@ void ConVar_PluginStart()
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
 	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
-	
+	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
+	//zr_webhookadmins = CreateConVar("zr_webhookadmins", "", "Webhook channel and key (123456/abcdexf)", FCVAR_PROTECTED);
+
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
 	#endif
+
+	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
 	
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
 	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);
+	CvarKickPlayersAt = CreateConVar("zr_kickplayersat", "", "If the server is full, Do reroute or kick", FCVAR_DONTRECORD);
+	CvarRerouteToIpAfk = CreateConVar("zr_rerouteipafk", "", "If the server is full, reroute", FCVAR_DONTRECORD);
 	
 	AutoExecConfig(true, "zombie_riot");
 	

@@ -84,6 +84,7 @@ methodmap DemoMain < CClotBody
 		DemoMain npc = view_as<DemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = DEMO_MAIN;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -98,7 +99,7 @@ methodmap DemoMain < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, DemoMain_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
 		
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -167,7 +168,7 @@ public void DemoMain_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -205,11 +206,11 @@ public void DemoMain_ClotThink(int iNPC)
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 			
@@ -276,7 +277,7 @@ public void DemoMain_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -284,7 +285,7 @@ public void DemoMain_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DemoMain_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DemoMain_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -304,7 +305,7 @@ public void DemoMain_NPCDeath(int entity)
 {
 	DemoMain npc = view_as<DemoMain>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, DemoMain_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, DemoMain_ClotThink);		
 		
 	if(IsValidEntity(npc.m_iWearable1))

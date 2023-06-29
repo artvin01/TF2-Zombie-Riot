@@ -16,7 +16,7 @@ static const char g_HurtSounds[][] =
 	"npc/metropolice/pain3.wav",
 	"npc/metropolice/pain4.wav",
 };
-
+	
 static const char g_IdleSounds[][] =
 {
 	"npc/metropolice/vo/affirmative.wav",
@@ -35,7 +35,7 @@ static const char g_IdleSounds[][] =
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 
-	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -117,6 +117,7 @@ enum
 	Command_Defensive = 0,
 	Command_Aggressive,
 	Command_Retreat,
+	Command_HoldPosBarracks,
 	Command_DefensivePlayer,
 	Command_RetreatPlayer,
 	Command_HoldPos,
@@ -127,6 +128,8 @@ static int BarrackOwner[MAXENTITIES];
 static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
+static int SupplyCount[MAXENTITIES];
+static bool b_WalkToPosition[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -187,7 +190,8 @@ methodmap BarrackBody < CClotBody
 		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-
+	
+	
 	property float BonusFireRate
 	{
 		public get()
@@ -221,6 +225,17 @@ methodmap BarrackBody < CClotBody
 			CommandOverride[view_as<int>(this)] = value;
 		}
 	}
+	property int m_iSupplyCount
+	{
+		public get()
+		{
+			return SupplyCount[view_as<int>(this)];
+		}
+		public set(int value)
+		{
+			SupplyCount[view_as<int>(this)] = value;
+		}
+	}
 	property int m_iTargetRally
 	{
 		public get()
@@ -240,10 +255,11 @@ methodmap BarrackBody < CClotBody
 		}
 	}
 	
-	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health)
+	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL, int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575")
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.575", health, true, .Ally_Collideeachother = true));
-		
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, true, .Ally_Collideeachother = true));
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		BarrackOwner[npc.index] = client ? GetClientUserId(client) : 0;
@@ -255,7 +271,7 @@ methodmap BarrackBody < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+		npc.m_iNpcStepVariation = steptype;
 
 		npc.m_iState = 0;
 		npc.m_iChanged_WalkCycle = 0;
@@ -269,14 +285,15 @@ methodmap BarrackBody < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BarrackBody_ClotDamaged);
 		
+		
+
 		int particle = CreateEntityByName("info_particle_system");
 		if(particle != -1)
 		{
 			float vecPos2[3];
 			vecPos2 = vecPos;
-			vecPos2[2] += 50.0;
+			vecPos2[2] += 70.0;
 			TeleportEntity(particle, vecPos2, NULL_VECTOR, NULL_VECTOR);
 			DispatchKeyValue(particle, "targetname", "tf2particle");
 			DispatchKeyValue(particle, "effect_name", "powerup_icon_strength_red");
@@ -293,12 +310,67 @@ methodmap BarrackBody < CClotBody
 			SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
 			SDKHook(particle, SDKHook_SetTransmit, BarrackBody_Transmit);
 			
-			npc.m_iWearable6 = particle;
+			npc.m_iWearable7 = particle;
 		}
-		
+
+		int Textentity = BarrackBody_HealthHud(npc);
+		BarrackOwner[Textentity] = client;
 		npc.StartPathing();
 		return npc;
 	}
+}
+
+public int BarrackBody_HealthHud(BarrackBody npc)
+{
+	char HealthText[32];
+	int HealthColour[4];
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	for(int i=0; i<10; i++)
+	{
+		if(Health >= MaxHealth*(i*0.1))
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+		}
+		else
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[2] = 0;
+	if(Health <= MaxHealth)
+	{
+		HealthColour[0] = Health * 255  / MaxHealth;
+		HealthColour[1] = Health * 255  / MaxHealth;
+		
+		HealthColour[0] = 255 - HealthColour[0];
+	}
+	else
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 0;
+		HealthColour[2] = 255;
+	}	
+	HealthColour[3] = 255;
+
+	if(IsValidEntity(npc.m_iWearable6))
+	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(npc.m_iWearable6,     "color", sColor);
+		DispatchKeyValue(npc.m_iWearable6, "message", HealthText);
+	}
+	else
+	{
+		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,50.0}, 13, HealthColour, npc.index);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
+		DispatchKeyValue(TextEntity, "font", "1");
+		npc.m_iWearable6 = TextEntity;	
+	}
+	return npc.m_iWearable6;
 }
 
 public Action BarrackBody_Transmit(int entity, int client)
@@ -309,13 +381,13 @@ public Action BarrackBody_Transmit(int entity, int client)
 	return Plugin_Handled;
 }
 
-bool BarrackBody_ThinkStart(int iNPC)
+bool BarrackBody_ThinkStart(int iNPC, float GameTime)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 		return false;
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 	
@@ -325,20 +397,23 @@ bool BarrackBody_ThinkStart(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 		return false;
+		
+	BarrackBody_HealthHud(npc);
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
 }
 
-int BarrackBody_ThinkTarget(int iNPC, bool camo)
+int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
 	int client = GetClientOfUserId(npc.OwnerUserId);
-	bool newTarget = npc.m_flGetClosestTargetTime < GetGameTime(npc.index);
+	bool newTarget = npc.m_flGetClosestTargetTime < GameTime;
 
 	if(!newTarget)
 		newTarget = !IsValidEnemy(npc.index, npc.m_iTarget);
@@ -353,7 +428,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 		if(client)
 		{
 			command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride;
-			if(command == Command_HoldPos)
+			if(command == Command_HoldPos || command == Command_HoldPosBarracks)
 			{
 				npc.m_iTargetAlly = npc.index;
 			}
@@ -383,7 +458,7 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 			npc.m_iTargetRally = 0;
 
 			int entity = MaxClients + 1;
-			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
 				if(BarrackOwner[entity] == BarrackOwner[npc.index] && GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
 				{
@@ -399,12 +474,12 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo)
 				npc.m_iTargetRally = npc.m_iTarget;
 		}
 
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GameTime + 1.0;
 	}
 	return client;
 }
 
-void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true)
+void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", const char[] moveAnim = "", float canRetreat = 0.0, bool move = true, bool sound=true)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
@@ -417,6 +492,11 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 
 		float myPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
+
+		if(f3_SpawnPosition[client][0] && (command == Command_HoldPosBarracks ||command == Command_HoldPos))
+		{
+			f3_SpawnPosition[npc.index] = f3_SpawnPosition[client];
+		}
 		
 		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
 
@@ -424,11 +504,19 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			float flDistanceToTarget;
+			if(command == Command_HoldPosBarracks)
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
+			}
+			else
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			}
 			if(flDistanceToTarget < canRetreat)
 			{
 				vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 				
 				npc.StartPathing();
 				pathed = true;
@@ -440,19 +528,27 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			float flDistanceToTarget;
+			if(command == Command_HoldPosBarracks)
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
+			}
+			else
+			{
+				flDistanceToTarget = GetVectorDistance(vecTarget, myPos, true);
+			}
 			if(flDistanceToTarget < npc.GetLeadRadius())
 			{
 				//Predict their pos.
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTargetRally);
-				PF_SetGoalVector(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 
 				npc.StartPathing();
 				pathed = true;
 			}
 			else
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTargetRally);
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetRally);
 
 				npc.StartPathing();
 				pathed = true;
@@ -461,7 +557,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		
 		if(!pathed && npc.m_iTargetAlly > 0 && command != Command_Aggressive)
 		{
-			if(command != Command_HoldPos)
+			if(command != Command_HoldPos && command != Command_HoldPosBarracks)
 			{
 				float vecTarget[3];
 				if(npc.m_iTargetAlly <= MaxClients && f3_SpawnPosition[npc.index][0] && npc.m_flComeToMe >= (gameTime + 0.6))
@@ -493,30 +589,23 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 						vecTarget[1] += GetRandomFloat(-300.0, 300.0);
 					}
 					vecTarget[2] += 50.0;
-					if(PF_IsPathToVectorPossible(iNPC, vecTarget))
-					{
-						Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-						TR_GetEndPosition(vecTarget, trace);
-						delete trace;
-
-						if(PF_IsPathToVectorPossible(iNPC, vecTarget))
-						{
-							vecTarget[2] += 18.0;
-							static float hullcheckmaxs[3];
-							static float hullcheckmins[3];
+					Handle trace = TR_TraceRayFilterEx(vecTarget, view_as<float>({90.0, 0.0, 0.0}), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					TR_GetEndPosition(vecTarget, trace);
+					delete trace;
+					vecTarget[2] += 18.0;
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
 							
-							hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-							hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
-							if(!IsSpaceOccupiedRTSBuilding(vecTarget, hullcheckmins, hullcheckmaxs, npc.index))
+					hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+					hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
+					if(!IsSpaceOccupiedRTSBuilding(vecTarget, hullcheckmins, hullcheckmaxs, npc.index))
+					{
+						if(!IsPointHazard(vecTarget))
+						{
+							if(GetVectorDistance(originalVec, vecTarget, true) <= (npc.m_iTargetAlly <= MaxClients ? (100.0 * 100.0) : (350.0 * 350.0)) && GetVectorDistance(originalVec, vecTarget, true) > (30.0 * 30.0))
 							{
-								if(!IsPointHazard(vecTarget))
-								{
-									if(GetVectorDistance(originalVec, vecTarget, true) <= (npc.m_iTargetAlly <= MaxClients ? (100.0 * 100.0) : (350.0 * 350.0)) && GetVectorDistance(originalVec, vecTarget, true) > (30.0 * 30.0))
-									{
-										npc.m_flComeToMe = gameTime + 10.0;
-										f3_SpawnPosition[npc.index] = vecTarget;
-									}
-								}
+								npc.m_flComeToMe = gameTime + 10.0;
+								f3_SpawnPosition[npc.index] = vecTarget;
 							}
 						}
 					}
@@ -525,9 +614,18 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			
 			if(f3_SpawnPosition[npc.index][0])
 			{
-				if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
+				if(command == Command_HoldPosBarracks && !pathed)
 				{
-					PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+					if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (50.0 * 50.0))
+					{
+						NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+						npc.StartPathing();
+						pathed = true;
+					}
+				}
+				else if(GetVectorDistance(f3_SpawnPosition[npc.index], myPos, true) > (25.0 * 25.0))
+				{
+					NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 					npc.StartPathing();
 					pathed = true;
 				}
@@ -558,22 +656,26 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			if(idleAnim[0])
 				npc.SetActivity(idleAnim);
 			
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
+			b_WalkToPosition[npc.index] = false;
 		}
 	}
 
-	if(npc.m_iTarget > 0)
+	if(sound)
 	{
-		npc.PlayIdleAlertSound();
-	}
-	else
-	{
-		npc.PlayIdleSound();
+		if(npc.m_iTarget > 0)
+		{
+			npc.PlayIdleAlertSound();
+		}
+		else
+		{
+			npc.PlayIdleSound();
+		}
 	}
 }
 
-public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker < 1)
@@ -583,6 +685,23 @@ public Action BarrackBody_ClotDamaged(int victim, int &attacker, int &inflictor,
 	{
 		damage *= 0.5;
 	}
+	else if(damagetype & (DMG_CLUB)) //They take no knockback
+	{
+		if(CurrentPlayers == 1)
+		{
+			damage *= 0.65;
+		}
+		else if(CurrentPlayers <= 4)
+		{
+			damage *= 0.6;
+		}
+		else
+		{
+			damage *= 0.75;
+		}
+	}
+	
+	damage -= Rogue_Barracks_FlatArmor();
 
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -618,9 +737,10 @@ static void ShowMenu(int client, int entity)
 	menu.AddItem(num, "Defend Barrack", npc.CmdOverride == Command_Defensive ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Defend Me", npc.CmdOverride == Command_DefensivePlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Retreat to Barrack", npc.CmdOverride == Command_Retreat ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Retreat to Me", npc.CmdOverride == Command_RetreatPlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Hold Position\n ", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Sacrifice");
+	menu.AddItem(num, "Retreat to Me\n ", npc.CmdOverride == Command_RetreatPlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Hold Position", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Walk to Position\n ");
+	menu.AddItem(num, "Sacrifice\n ", npc.m_iSupplyCount < 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.Pagination = 0;
 	menu.ExitButton = true;
@@ -654,22 +774,37 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					case 1:
 					{
 						npc.CmdOverride = Command_Aggressive;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 2:
 					{
 						npc.CmdOverride = Command_Defensive;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 3:
 					{
 						npc.CmdOverride = Command_DefensivePlayer;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 4:
 					{
 						npc.CmdOverride = Command_Retreat;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 5:
 					{
 						npc.CmdOverride = Command_RetreatPlayer;
+						f3_SpawnPosition[npc.index][0] = 0.0;
+						f3_SpawnPosition[npc.index][1] = 0.0;
+						f3_SpawnPosition[npc.index][2] = 0.0;
 					}
 					case 6:
 					{
@@ -677,6 +812,23 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 						npc.CmdOverride = Command_HoldPos;
 					}
 					case 7:
+					{
+						float StartOrigin[3], Angles[3], vecPos[3];
+						GetClientEyeAngles(client, Angles);
+						GetClientEyePosition(client, StartOrigin);
+						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+						if (TR_DidHit(TraceRay))
+							TR_GetEndPosition(vecPos, TraceRay);
+							
+						delete TraceRay;
+						
+						npc.FaceTowards(vecPos, 10000.0);
+						CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+						f3_SpawnPosition[npc.index] = vecPos;
+						b_WalkToPosition[npc.index] = true;
+						npc.CmdOverride = Command_HoldPos;
+					}
+					case 8:
 					{
 						SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9);
 						return 0;
@@ -698,7 +850,7 @@ void BarrackBody_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BarrackBody_ClotDamaged);
+	
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -717,4 +869,7 @@ void BarrackBody_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }

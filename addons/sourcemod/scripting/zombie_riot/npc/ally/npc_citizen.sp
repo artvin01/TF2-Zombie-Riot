@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #define BARNEY_MODEL	"models/barney.mdl"
+#define ALYX_MODEL	"models/alyx.mdl"
 
 enum
 {
@@ -62,7 +63,7 @@ static const float BaseRange[] =
 	1000.0
 };
 
-static void Citizen_GenerateModel(int seed, bool female, int group, char[] buffer, int length)
+void Citizen_GenerateModel(int seed, bool female, int group, char[] buffer, int length)
 {
 	if(female)
 	{
@@ -630,6 +631,176 @@ static void Barney_GenerateSound(int type, int seed, char[] buffer, int length)
 	}
 }
 
+static void Alyx_GenerateSound(int type, int seed, char[] buffer, int length)
+{
+	switch(type)
+	{
+		case Cit_AllyDeathAnswer:
+		{
+			Format(buffer, length, "vo/npc/alyx/no0%d.wav", (seed % 3) + 1);
+		}
+		case Cit_AllyDeathQuestion:
+		{
+			switch(seed % 3)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/npc/alyx/ohgod01.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/npc/alyx/ohno_startle01.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/npc/alyx/ohno_startle03.wav");
+			}
+		}
+		case Cit_Ammo:
+		{
+			Format(buffer, length, "vo/npc/alyx/youreload0%d.wav", (seed % 2) + 1);
+		}
+		case Cit_Answer:
+		{
+			switch(seed % 7)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/k_lab/al_docsays02.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/k_lab2/al_whatdoyoumean.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_betyoudid01.wav");
+				
+				case 3:
+					strcopy(buffer, length, "vo/novaprospekt/al_enoughbs01.wav");
+				
+				case 4:
+					strcopy(buffer, length, "vo/novaprospekt/al_youbeenworking.wav");
+				
+				case 5:
+					strcopy(buffer, length, "vo/novaprospekt/al_youput01.wav");
+				
+				case 6:
+					strcopy(buffer, length, "vo/eli_lab/al_letmedo.wav");
+			}
+		}
+		case Cit_Behind:
+		{
+			Format(buffer, length, "vo/npc/alyx/watchout0%d.wav", (seed % 2) + 1);
+		}
+		case Cit_Busy:
+		{
+			strcopy(buffer, length, "vo/k_lab2/al_catchup_b.wav");
+		}
+		case Cit_CadeDeath:
+		{
+			int rand = seed % 3;
+			switch(rand)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/npc/alyx/lookout01.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/npc/alyx/lookout03.wav");
+			}
+		}
+		case Cit_DoSomething:
+		{
+			switch(seed % 3)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/k_lab/al_moveon02.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/k_lab/al_youcoming.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_takingforever.wav");
+			}
+		}
+		case Cit_Found:
+		{
+			switch(seed % 4)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/novaprospekt/al_findmyfather.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/novaprospekt/al_flyingblind.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_gladtoseeyou.wav");
+				
+				case 3:
+					strcopy(buffer, length, "vo/novaprospekt/al_letsgetout01.wav");
+			}
+		}
+		case Cit_Lost:
+		{
+			strcopy(buffer, length, "vo/trainyard/al_overhere.wav");
+		}
+		case Cit_LowHealth:
+		{
+			Format(buffer, length, "vo/npc/alyx/gasp0%d.wav", seed % 2 + 2);
+		}
+		case Cit_Hurt:
+		{
+			Format(buffer, length, "vo/npc/alyx/hurt0%d.wav", ((seed % 3) + 2) * 2);	// 4,6,8
+		}
+		case Cit_MiniBoss:
+		{
+			switch(seed % 3)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/novaprospekt/al_elevator03.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/novaprospekt/al_sealdoor02.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_uhoh_np.wav");
+			}
+		}
+		case Cit_MiniBossDead:
+		{
+			if(seed % 2)
+			{
+				strcopy(buffer, length, "vo/eli_lab/al_earnedit01.wav");
+			}
+			else
+			{
+				strcopy(buffer, length, "vo/eli_lab/al_sweet.wav");
+			}
+		}
+		case Cit_Question:
+		{
+			switch(seed % 6)
+			{
+				case 0:
+					strcopy(buffer, length, "vo/k_lab/al_buyyoudrink03.wav");
+				
+				case 1:
+					strcopy(buffer, length, "vo/k_lab2/al_wheresdoc01.wav");
+				
+				case 2:
+					strcopy(buffer, length, "vo/novaprospekt/al_mutter.wav");
+				
+				case 3:
+					strcopy(buffer, length, "vo/novaprospekt/al_readings01.wav");
+				
+				case 4:
+					strcopy(buffer, length, "vo/streetwar/alyx_gate/al_watchmyback.wav");
+				
+				case 5:
+					strcopy(buffer, length, "vo/eli_lab/al_thyristor02.wav");
+			}
+		}
+		default:
+		{
+			strcopy(buffer, length, "vo/null.mp3");
+		}
+	}
+}
+
 static char g_RangedAttackSounds[][] =
 {
 	"weapons/shotgun/shotgun_fire6.wav",
@@ -646,6 +817,7 @@ static char g_RangedReloadSound[][] =
 void Citizen_OnMapStart()
 {
 	PrecacheModel(BARNEY_MODEL);
+	PrecacheModel(ALYX_MODEL);
 	
 	char buffer[PLATFORM_MAX_PATH];
 	for(int i; i < Cit_MAX; i++)
@@ -659,6 +831,9 @@ void Citizen_OnMapStart()
 			PrecacheSound(buffer);
 
 			Barney_GenerateSound(i, a, buffer, sizeof(buffer));
+			PrecacheSound(buffer);
+
+			Alyx_GenerateSound(i, a, buffer, sizeof(buffer));
 			PrecacheSound(buffer);
 		}
 	}
@@ -681,16 +856,19 @@ void Citizen_OnMapStart()
 
 static int ThereCanBeOnlyOne = -1;
 static bool FirstBlood[MAXENTITIES];
-static bool IsDowned[MAXENTITIES];
+static int IsDowned[MAXENTITIES];
 static bool SeakingMedic[MAXENTITIES];
 static bool SeakingGeneric[MAXENTITIES];
 static int HasPerk[MAXENTITIES];
 static int ReviveTime[MAXENTITIES];
 static int GunType[MAXENTITIES];
 static int GunValue[MAXENTITIES];
+static int GunSeller[MAXENTITIES];
 static int PerkType[MAXENTITIES];
 static float GunDamage[MAXENTITIES];
 static float GunFireRate[MAXENTITIES];
+static float GunBonusFireRate[MAXENTITIES];
+static float GunBonusReload[MAXENTITIES];
 static float GunReload[MAXENTITIES];
 static int GunClip[MAXENTITIES];
 static float GunRangeBonus[MAXENTITIES];
@@ -699,6 +877,7 @@ static float TalkTurnPos[MAXENTITIES][3];
 static float TalkTurningFor[MAXENTITIES];
 static float HealingCooldown[MAXENTITIES];
 static bool IgnorePlayer[MAXTF2PLAYERS];
+static int ArmorErosion[MAXENTITIES];
 
 methodmap Citizen < CClotBody
 {
@@ -707,13 +886,20 @@ methodmap Citizen < CClotBody
 		if(IsValidEntity(EntRefToEntIndex(ThereCanBeOnlyOne)))
 			return view_as<Citizen>(-1);
 		
-		int seed = data[0] ? -160920040 : GetURandomInt();
+		bool barney = data[0] == 'b';
+		bool alyx = data[0] == 'a';
+		
+		int seed = barney ? -160920040 : (alyx ? -50 : GetURandomInt());
 		bool female = !(seed % 2);
 		
 		char buffer[PLATFORM_MAX_PATH];
-		if(data[0])
+		if(barney)
 		{
 			strcopy(buffer, sizeof(buffer), BARNEY_MODEL);
+		}
+		else if(alyx)
+		{
+			strcopy(buffer, sizeof(buffer), ALYX_MODEL);
 		}
 		else
 		{
@@ -722,6 +908,7 @@ methodmap Citizen < CClotBody
 		
 		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", true, true));
 		i_NpcInternalId[npc.index] = CITIZEN;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -734,7 +921,7 @@ methodmap Citizen < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Citizen_ClotThink);
 		
 		int glow = npc.m_iTeamGlow;
@@ -743,12 +930,13 @@ methodmap Citizen < CClotBody
 		
 		npc.m_iSeed = seed;
 		
-		npc.m_bDowned = true;
+		npc.m_nDowned = 1;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_iReviveTicks = 0;
 		npc.m_bFirstBlood = false;
 		npc.m_iGunType = Cit_None;
 		npc.m_iGunValue = 0;
+		npc.m_iGunSeller = 0;
 		npc.m_iBuildingType = -1;
 		npc.m_iWearable1 = -1;
 		npc.m_iWearable2 = -1;
@@ -757,6 +945,10 @@ methodmap Citizen < CClotBody
 		npc.m_bSeakingMedic = false;
 		npc.m_bSeakingGeneric = false;
 		npc.m_iHasPerk = Cit_None;
+		npc.m_iArmorErosion = 0;
+		GunBonusFireRate[npc.index] = 1.0;
+		GunBonusReload[npc.index] = 1.0;
+		
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -777,19 +969,27 @@ methodmap Citizen < CClotBody
 		public get()		{ return i_OverlordComboAttack[this.index]; }
 		public set(int value) 	{ i_OverlordComboAttack[this.index] = value; }
 	}
-	property bool m_bBarney
+	property bool m_bHero
 	{
 		public get()		{ return (this.m_iSeed < 0); }
+	}
+	property bool m_bBarney
+	{
+		public get()		{ return (this.m_iSeed == -160920040); }
+	}
+	property bool m_bAlyx
+	{
+		public get()		{ return (this.m_iSeed == -50); }
 	}
 	property bool m_bFemale
 	{
 		public get()		{ return !(this.m_iSeed % 2); }
 	}
 	
-	property bool m_bDowned
+	property int m_nDowned
 	{
 		public get()		{ return IsDowned[this.index]; }
-		public set(bool value) 	{ IsDowned[this.index] = value; }
+		public set(int value) 	{ IsDowned[this.index] = value; }
 	}
 	property int m_iReviveTicks
 	{
@@ -816,6 +1016,11 @@ methodmap Citizen < CClotBody
 		public get()		{ return GunValue[this.index]; }
 		public set(int value) 	{ GunValue[this.index] = value; }
 	}
+	property int m_iGunSeller
+	{
+		public get()		{ return GunSeller[this.index]; }
+		public set(int value) 	{ GunSeller[this.index] = value; }
+	}
 	property bool m_bFirstBlood
 	{
 		public get()		{ return FirstBlood[this.index]; }
@@ -831,10 +1036,20 @@ methodmap Citizen < CClotBody
 		public get()		{ return GunFireRate[this.index]; }
 		public set(float value) 	{ GunFireRate[this.index] = value; }
 	}
+	property float m_fGunBonusFireRate
+	{
+		public get()		{ return GunBonusFireRate[this.index]; }
+		public set(float value) 	{ GunBonusFireRate[this.index] = value; }
+	}
 	property float m_fGunReload
 	{
 		public get()		{ return GunReload[this.index]; }
 		public set(float value) 	{ GunReload[this.index] = value; }
+	}
+	property float m_fGunBonusReload
+	{
+		public get()		{ return GunBonusReload[this.index]; }
+		public set(float value) 	{ GunBonusReload[this.index] = value; }
 	}
 	property int m_iGunClip
 	{
@@ -866,6 +1081,11 @@ methodmap Citizen < CClotBody
 		public get()		{ return HasPerk[this.index]; }
 		public set(int value) 	{ HasPerk[this.index] = value; }
 	}
+	property int m_iArmorErosion
+	{
+		public get()		{ return ArmorErosion[this.index]; }
+		public set(int value) 	{ ArmorErosion[this.index] = value; }
+	}
 	property float m_flSpeed
 	{
 		public get()
@@ -876,7 +1096,11 @@ methodmap Citizen < CClotBody
 		{
 			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
 			{
-				fl_Speed[this.index] = value * 1.1;
+				fl_Speed[this.index] = value * (this.m_bAlyx ? 1.4 : 1.1);
+			}
+			else if(this.m_bAlyx)
+			{
+				fl_Speed[this.index] = value * 1.3;
 			}
 			else
 			{
@@ -920,7 +1144,7 @@ methodmap Citizen < CClotBody
 	}
 	public void UpdateModel()
 	{
-		if(!this.m_bBarney)
+		if(!this.m_bHero)
 		{
 			int type = Cit_Unarmed;
 			
@@ -966,12 +1190,37 @@ methodmap Citizen < CClotBody
 			this.StartActivity(activity);
 		}
 	}
-	public void SetDowned(bool state, int client = 0)
+	public void SetDowned(int state, int client = 0)
 	{
-		this.m_bDowned = state;
+		this.m_nDowned = state;
 		this.UpdateCollision(state || this.m_bCamo);
 		
-		if(this.m_bDowned)
+		if(this.m_nDowned == 2)
+		{
+			this.m_iHasPerk = Cit_None;
+			this.m_bThisEntityIgnored = true;
+			this.m_iReviveTicks = 99999;
+			this.SetActivity("ACT_BUSY_SIT_GROUND");
+			
+			if(this.m_bPathing)
+			{
+				NPC_StopPathing(this.index);
+				this.m_bPathing = false;
+			}
+			
+			int glow = this.m_iTeamGlow;
+			if(glow > 0)
+				AcceptEntityInput(glow, "Disable");
+			
+			if(this.m_iWearable1 > 0)
+				AcceptEntityInput(this.m_iWearable1, "Disable");
+			
+			if(this.m_iWearable3 > 0)
+				RemoveEntity(this.m_iWearable3);
+			
+			SetEntityRenderMode(this.index, RENDER_NONE);
+		}
+		else if(this.m_nDowned)
 		{
 			this.m_iHasPerk = Cit_None;
 			this.m_bThisEntityIgnored = true;
@@ -981,7 +1230,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				PF_StopPathing(this.index);
+				NPC_StopPathing(this.index);
 				this.m_bPathing = false;
 			}
 			
@@ -1000,17 +1249,21 @@ methodmap Citizen < CClotBody
 			SetVariantColor(view_as<int>({0, 255, 0, 255}));
 			AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
 			
-			SetEntityRenderMode(this.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(this.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(this.index, 255, 255, 255, 125);
 		}
 		else
 		{
-			if(this.m_bBarney && this.m_iGunType == Cit_None)
+			if(this.m_bHero && this.m_iGunType == Cit_None)
 				Store_FindBarneyAGun(this.index, this.m_iGunValue, CurrentCash / 3, false);
 			
 			this.m_bThisEntityIgnored = false;
-			this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
-			this.m_flReloadDelay = GetGameTime(this.index) + 2.4;
+			if(!this.m_bAlyx)
+			{
+				this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
+				this.SetPlaybackRate(2.0);
+				this.m_flReloadDelay = GetGameTime(this.index) + 1.2;
+			}
 			
 			int glow = this.m_iTeamGlow;
 			if(glow > 0)
@@ -1024,7 +1277,7 @@ methodmap Citizen < CClotBody
 				RemoveEntity(this.m_iWearable3);
 				
 				SetEntProp(this.index, Prop_Data, "m_iHealth", 50);
-				if(!this.m_bBarney)
+				if(!this.m_bHero)
 				{
 					SetEntityRenderColor(this.index, 255, 255, 255, 255);
 					SetEntityRenderMode(this.index, RENDER_NORMAL);
@@ -1033,11 +1286,13 @@ methodmap Citizen < CClotBody
 			else if(client)
 			{
 				this.PlaySound(Cit_Found);
-				GiveNamedItem(client, this.m_bBarney ? "Barney" : "Rebel");
+				GiveNamedItem(client, this.m_bBarney ? "Barney" : (this.m_bAlyx ? "Alyx" : "Rebel"));
 			}
 
-			if(this.m_bBarney)
+			if(this.m_bHero)
 				this.UpdateModel();
+			
+			IgnorePlayer[client] = false;
 		}
 	}
 	public bool CanTalk()
@@ -1055,6 +1310,10 @@ methodmap Citizen < CClotBody
 			if(this.m_bBarney)
 			{
 				Barney_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
+			}
+			else if(this.m_bAlyx)
+			{
+				Alyx_GenerateSound(type, GetURandomInt(), buffer, sizeof(buffer));
 			}
 			else
 			{
@@ -1105,17 +1364,34 @@ methodmap Citizen < CClotBody
 	}
 }
 
-void Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
+int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
-	for(int i; i < i_MaxcountSpawners; i++)
+
+	if(client)
 	{
-		int entity = i_ObjectsSpawners[i];
-		if(IsValidEntity(entity))
+		list[count++] = client;
+	}
+	else
+	{
+		for(int i; i < i_MaxcountSpawners; i++)
 		{
-			if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
-				list[count++] = entity;
+			int entity = i_ObjectsSpawners[i];
+			if(IsValidEntity(entity))
+			{
+				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+					list[count++] = entity;
+			}
+		}
+		
+		if(!count)
+		{
+			for(int target = 1; target <= MaxClients; target++)
+			{
+				if(IsClientInGame(target) && IsPlayerAlive(target))
+					list[count++] = target;
+			}
 		}
 	}
 	
@@ -1140,13 +1416,17 @@ void Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 				
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
+
+			return entity;
 		}
 	}
+
+	return -1;
 }
 
 bool Citizen_ThatIsDowned(int entity)
 {
-	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_bDowned);
+	return (i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_nDowned);
 }
 
 int Citizen_ReviveTicks(int entity, int amount, int client)
@@ -1154,7 +1434,7 @@ int Citizen_ReviveTicks(int entity, int amount, int client)
 	Citizen npc = view_as<Citizen>(entity);
 	npc.m_iReviveTicks -= amount;
 	if(npc.m_iReviveTicks < 1)
-		npc.SetDowned(false, client);
+		npc.SetDowned(0, client);
 	
 	return npc.m_iReviveTicks;
 }
@@ -1165,7 +1445,11 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_bDowned)
+		if(npc.m_nDowned == 2)
+		{
+			return 0;
+		}
+		else if(npc.m_nDowned == 1)
 		{
 			SetGlobalTransTarget(client);
 			PrintCenterText(client, "%t", "Revive Teammate tooltip");
@@ -1183,7 +1467,7 @@ int Citizen_BuildingInteract(int entity)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_bDowned)
+		if(npc.m_nDowned)
 			return 0;
 		
 		return npc.m_iBuildingType;
@@ -1197,13 +1481,17 @@ bool Citizen_Interact(int client, int entity)
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
-		if(npc.m_bDowned)
-			return false;
-		
-		npc.PlaySound(Cit_Greet);
-		IgnorePlayer[client] = false;
-		Store_OpenGiftStore(client, npc.index, npc.m_iGunValue, npc.m_bBarney);
-		return true;
+		if(!npc.m_nDowned)
+		{
+			IgnorePlayer[client] = false;
+
+			if(!npc.m_bAlyx)
+			{
+				npc.PlaySound(Cit_Greet);
+				Store_OpenGiftStore(client, npc.index, npc.m_iGunValue, npc.m_bHero);
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -1259,14 +1547,20 @@ bool Citizen_GivePerk(int entity, int type)
 			npc.m_iWearable2 = -1;
 		}
 	}
+	if(IsValidEntity(npc.m_iWearable2))
+	{
+		SDKUnhook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmit);
+		SDKHook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmitCitizen);
+	}
 	return true;
 }
 
-bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo info)
+
+bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo info, int userid)
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	if(npc.m_bDowned)
+	if(npc.m_nDowned || type <= Cit_None)
 		return false;
 	
 	if(type > 9)
@@ -1274,6 +1568,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	
 	npc.m_iGunType = type;
 	npc.m_iGunValue = sell;
+	npc.m_iGunSeller = userid;
 	
 	Building_ClearRefBuffs(EntIndexToEntRef(entity));
 	
@@ -1309,7 +1604,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	}
 	else
 	{
-		int health = 200 + npc.m_iGunValue / 20;
+		int health = (npc.m_bAlyx ? 400 : 200) + npc.m_iGunValue / 20;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		
@@ -1322,9 +1617,12 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 			npc.m_iGunClip = RoundFloat(data.Clip);
 		}
 		
-		wave = Waves_GetRound() + 1;
+		wave = Rogue_GetRoundScale() + 1;
 		if(wave > 90)
 			wave = 90;
+		
+		if(npc.m_bAlyx)
+			wave += 15;
 	}
 	
 	npc.m_fGunRangeBonus = 1.0;
@@ -1332,6 +1630,8 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_bFirstBlood = false;
 	npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 	npc.m_fGunDamage *= 1.0 + float(wave / 15);
+
+	Rogue_AllySpawned(npc.index);
 	
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);
@@ -1388,19 +1688,19 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 void Citizen_SetupStart()
 {
 	int i = -1;
-	while((i = FindEntityByClassname(i, "base_boss")) != -1)
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
 		if(i_NpcInternalId[i] == CITIZEN)
 		{
 			Citizen npc = view_as<Citizen>(i);
-			if(npc.m_bBarney && !npc.m_bDowned && IsValidEntity(i))
+			if(npc.m_bHero && !npc.m_nDowned && IsValidEntity(i))
 			{
 				int found;
 				float distance = FAR_FUTURE;
 				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 				float vecTarget[3];
 				int entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7)
 					{
@@ -1453,7 +1753,7 @@ void Citizen_SetupStart()
 					}
 				}
 				
-				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(0.26, 0.34)), view_as<bool>(found)))
+				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.26, npc.m_bAlyx ? 0.4 : 0.34)), view_as<bool>(found)))
 				{
 					npc.m_iTargetAlly = found;
 					npc.m_bSeakingGeneric = true;
@@ -1474,22 +1774,35 @@ public void Citizen_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.04;
 	npc.Update();
 	
-	if(npc.m_bDowned)
+	if(npc.m_nDowned)
 	{
-		if(npc.m_flidle_talk == FAR_FUTURE)
+		npc.m_iTargetAlly = 0;
+		npc.m_bSeakingMedic = false;
+		npc.m_bSeakingGeneric = false;
+		npc.m_bGetClosestTargetTimeAlly = true;
+		
+		if(npc.m_nDowned != 2)
 		{
-			npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
-		}
-		else if(npc.m_flidle_talk < gameTime)
-		{
-			npc.PlaySound(Cit_Lost);
-			npc.m_flidle_talk = FAR_FUTURE;
+			if(npc.m_flidle_talk == FAR_FUTURE)
+			{
+				npc.m_flidle_talk = gameTime + 30.0 + (float(npc.m_iSeed) / 214748364.7);
+			}
+			else if(npc.m_flidle_talk < gameTime)
+			{
+				npc.PlaySound(Cit_Lost);
+				npc.m_flidle_talk = FAR_FUTURE;
+			}
 		}
 		return;
 	}
 
 	if(npc.m_flAttackHappens)
 	{
+		npc.m_iTargetAlly = 0;
+		npc.m_bSeakingMedic = false;
+		npc.m_bSeakingGeneric = false;
+		npc.m_bGetClosestTargetTimeAlly = true;
+		
 		if(npc.m_iGunType != Cit_Melee)
 		{
 			npc.m_flAttackHappens = 0.0;
@@ -1511,7 +1824,7 @@ public void Citizen_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_fGunDamage, DMG_SLASH, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.m_iGunSeller), npc.m_fGunDamage, DMG_SLASH, -1, _, vecHit);
 						
 						//Did we kill them?
 						if(GetEntProp(target, Prop_Data, "m_iHealth") < 1)
@@ -1546,9 +1859,14 @@ public void Citizen_ClotThink(int iNPC)
 
 	if(npc.m_flReloadDelay > gameTime)
 	{
+		npc.m_iTargetAlly = 0;
+		npc.m_bSeakingMedic = false;
+		npc.m_bSeakingGeneric = false;
+		npc.m_bGetClosestTargetTimeAlly = true;
+
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 		}
 		return;
@@ -1634,7 +1952,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		//distance = 100000000.0;
 		int entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
 			if((i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 7) ||
 				i_NpcInternalId[entity] == BOB_THE_GOD_OF_GODS &&
@@ -1697,7 +2015,8 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flidle_talk = FAR_FUTURE;
 		vecTarget = WorldSpaceCenter(npc.m_iTarget);
 		distance = GetVectorDistance(vecTarget, vecMe, true);
-		if(i_NpcInternalId[npc.m_iTarget] == SAWRUNNER && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
+		//todo, rewrite npcs so itdoes this code outside of this, i filtered out invinceable enemies.
+		if(RunFromNPC(npc.m_iTarget) && view_as<SawRunner>(npc.m_iTarget).m_iTarget == npc.index && distance < 250000.0)
 		{
 			walkStatus = 69;	// Sawrunner spotted us
 		}
@@ -1723,7 +2042,7 @@ public void Citizen_ClotThink(int iNPC)
 							
 							npc.m_flAttackHappens = gameTime + 0.2;
 							npc.m_flReloadDelay = gameTime + 0.45;
-							npc.m_flNextMeleeAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextMeleeAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							
 							if(npc.m_flReloadDelay > npc.m_flNextMeleeAttack)
 								npc.m_flReloadDelay = npc.m_flNextMeleeAttack;
@@ -1821,7 +2140,7 @@ public void Citizen_ClotThink(int iNPC)
 							vecDirShooting[1] = eyePitch[1];
 							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 							
-							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							//add the spray
@@ -1830,7 +2149,7 @@ public void Citizen_ClotThink(int iNPC)
 							vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 							vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 							NormalizeVector(vecDir, vecDir);
-							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
+							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _, "muzzle");
 							npc.PlayPistolSound();
 							
 							if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -1908,7 +2227,7 @@ public void Citizen_ClotThink(int iNPC)
 								vecDirShooting[1] = eyePitch[1];
 								GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 								
-								npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 								npc.m_iAttacksTillReload--;
 								
 								float vecDir[3];
@@ -1916,7 +2235,7 @@ public void Citizen_ClotThink(int iNPC)
 								vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 								vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 								NormalizeVector(vecDir, vecDir);
-								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlaySMGSound();
 								
 								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -1990,7 +2309,7 @@ public void Citizen_ClotThink(int iNPC)
 								vecDirShooting[1] = eyePitch[1];
 								GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 								
-								npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+								npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 								npc.m_iAttacksTillReload--;
 								
 								float vecDir[3];
@@ -1998,7 +2317,7 @@ public void Citizen_ClotThink(int iNPC)
 								vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 								vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 								NormalizeVector(vecDir, vecDir);
-								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
+								FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 								npc.PlayARSound();
 								
 								if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -2068,7 +2387,7 @@ public void Citizen_ClotThink(int iNPC)
 							vecDirShooting[1] = eyePitch[1];
 							GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 							
-							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							//add the spray
@@ -2077,7 +2396,7 @@ public void Citizen_ClotThink(int iNPC)
 							vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 							vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 							NormalizeVector(vecDir, vecDir);
-							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", npc.index, _ , "muzzle");
+							FireBullet(npc.index, npc.m_iWearable1, npc_pos, vecDir, npc.m_fGunDamage, 9000.0, DMG_SLASH, "bullet_tracer01_red", GetClientOfUserId(npc.m_iGunSeller), _ , "muzzle");
 							npc.PlayShotgunSound();
 							
 							if((npc.m_bBarney || !npc.m_bFirstBlood) && npc.CanTalk() && GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") < 1)
@@ -2135,10 +2454,10 @@ public void Citizen_ClotThink(int iNPC)
 							npc.m_iState = -1;
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_RPG");
 
-							npc.m_flNextRangedAttack = gameTime + npc.m_fGunFirerate;
+							npc.m_flNextRangedAttack = gameTime + (npc.m_fGunFirerate * npc.m_fGunBonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							npc.FireRocket(vecTarget, npc.m_fGunDamage, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE); //WAAY TOO OP
+							npc.FireRocket(vecTarget, npc.m_fGunDamage, 1100.0, _, _, EP_DEALS_SLASH_DAMAGE, _, GetClientOfUserId(npc.m_iGunSeller));
 							npc.PlayRPGSound();
 						}
 					}
@@ -2160,7 +2479,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_Pistol:
 				{
 					npc.SetActivity("ACT_RELOAD_PISTOL");
-					npc.m_flReloadDelay = gameTime + (1.4 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (1.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayPistolReloadSound();
 
 					if(npc.m_iWearable1 > 0)
@@ -2172,7 +2491,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_SMG:
 				{
 					npc.SetActivity("ACT_RELOAD_SMG1");
-					npc.m_flReloadDelay = gameTime + (2.4 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (2.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlaySMGReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2181,7 +2500,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_AR:
 				{
 					npc.SetActivity("ACT_RELOAD_AR2");
-					npc.m_flReloadDelay = gameTime + (1.6 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (1.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayARReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2190,7 +2509,7 @@ public void Citizen_ClotThink(int iNPC)
 				case Cit_Shotgun:
 				{
 					npc.SetActivity("ACT_RELOAD_shotgun");
-					npc.m_flReloadDelay = gameTime + (2.6 * npc.m_fGunReload);
+					npc.m_flReloadDelay = gameTime + (2.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayShotgunReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2199,7 +2518,7 @@ public void Citizen_ClotThink(int iNPC)
 				default:
 				{
 					npc.SetActivity("ACT_IDLE_ANGRY_RPG");
-					npc.m_flReloadDelay = gameTime + npc.m_fGunReload;
+					npc.m_flReloadDelay = gameTime + (npc.m_fGunReload * npc.m_fGunBonusReload);
 				}
 			}
 		}
@@ -2250,7 +2569,7 @@ public void Citizen_ClotThink(int iNPC)
 	{
 		distance = 100000000.0;
 		int entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
 			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 5 && HealingCooldown[entity] < gameTime)
 			{
@@ -2266,7 +2585,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_sentrygun")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
@@ -2312,6 +2631,77 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
 			walkStatus = 5;	// Run to ally (activity handled)
+			npc.m_iHasPerk = npc.m_iGunType;
+		}
+	}
+
+	if(!walkStatus && npc.m_bGetClosestTargetTimeAlly && npc.m_iArmorErosion > 0)
+	{
+		distance = 100000000.0;
+		int entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+		{
+			if(i_NpcInternalId[entity] == CITIZEN && view_as<Citizen>(entity).m_iBuildingType == 1 && HealingCooldown[entity] < gameTime)
+			{
+				vecTarget = WorldSpaceCenter(entity);
+				float dist = GetVectorDistance(vecTarget, vecMe, true);
+				if(dist < distance)
+				{
+					distance = dist;
+					npc.m_iTargetAlly = entity;
+					npc.m_bSeakingGeneric = true;
+				}
+			}
+		}
+		
+		entity = MaxClients + 1;
+		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		{
+			if(HealingCooldown[entity] < gameTime)
+			{
+				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(!StrContains(buffer, "zr_armortable"))
+				{
+					vecTarget = WorldSpaceCenter(entity);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						npc.m_iTargetAlly = entity;
+						npc.m_bSeakingGeneric = true;
+					}
+				}
+			}
+		}
+		
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
+			{
+				entity = EntRefToEntIndex(Building_Mounted[client]);
+				if(IsValidEntity(entity))
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+					if(!StrContains(buffer, "zr_armortable"))
+					{
+						vecTarget = WorldSpaceCenter(client);
+						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						if(dist < distance)
+						{
+							distance = dist;
+							npc.m_iTargetAlly = client;
+							npc.m_bSeakingGeneric = true;
+						}
+					}
+				}
+			}
+		}
+
+		if(npc.m_bSeakingGeneric)
+		{
+			vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
+			walkStatus = 5;	// Run to ally (activity handled)
+			npc.m_iArmorErosion = 0;
 		}
 	}
 
@@ -2354,7 +2744,7 @@ public void Citizen_ClotThink(int iNPC)
 
 				int entity = MaxClients + 1;
 				float vecTarget2[3];
-				while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+				while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 				{
 					if(i_NpcInternalId[entity] == CITIZEN)
 					{
@@ -2396,7 +2786,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2433,7 +2823,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 
-			PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2441,6 +2831,7 @@ public void Citizen_ClotThink(int iNPC)
 		case 4:	// Walk up to our ally
 		{
 			npc.m_bAllowBackWalking = false;
+			npc.m_flidle_talk = FAR_FUTURE;
 
 			switch(npc.m_iGunType)
 			{
@@ -2477,7 +2868,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 			
-			PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2488,7 +2879,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = false;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2499,7 +2890,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			
 			vecTarget = BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget);
-			PF_SetGoalVector(npc.index, vecTarget);
+			NPC_SetGoalVector(npc.index, vecTarget);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2511,12 +2902,12 @@ public void Citizen_ClotThink(int iNPC)
 			
 			if(distance > 29000.0)
 			{
-				PF_SetGoalEntity(npc.index, npc.m_iTarget);
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			}
 			else
 			{
 				vecTarget = PredictSubjectPosition(npc, npc.m_iTarget);
-				PF_SetGoalVector(npc.index, vecTarget);
+				NPC_SetGoalVector(npc.index, vecTarget);
 			}
 			
 			if(!npc.m_bPathing)
@@ -2526,7 +2917,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			if(npc.m_bPathing)
 			{
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
 		}
@@ -2542,7 +2933,7 @@ public void Citizen_ClotThink(int iNPC)
 			case Cit_Melee:
 			{
 				// TODO: Barney has an issue with ACT_IDLE_SUITCASE, same with Rebels?
-				if(combat || !npc.m_bBarney)
+				if(combat/* || !npc.m_bBarney*/)
 				{
 					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
 					
@@ -2832,80 +3223,91 @@ void Citizen_PlayerDeath(int client)
 	}
 }
 
-public Action Citizen_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static bool RunFromNPC(int entity)
 {
-	if(damage > 9999999.0)
-		return Plugin_Continue;
-	
-	Citizen npc = view_as<Citizen>(victim);
-	if(npc.m_bDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
-		return Plugin_Handled;
-	
-	if(npc.m_iGunValue > 10000)
+	return (i_NpcInternalId[entity] == SAWRUNNER ||
+		(i_NpcInternalId[entity] == STALKER_COMBINE && b_StaticNPC[entity]) ||
+		(i_NpcInternalId[entity] == STALKER_FATHER && b_StaticNPC[entity] && !b_movedelay[entity]));
+}
+
+stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(damage < 9999999.0)
 	{
-		damage *= 0.75;
-	}
-	else if(npc.m_iGunValue > 7500)
-	{
-		damage *= 0.8;
-	}
-	else if(npc.m_iGunValue > 5000)
-	{
-		damage *= 0.85;
-	}
-	else if(npc.m_iGunValue > 2500)
-	{
-		damage *= 0.9;
-	}
-	
-	if(npc.m_iGunType == Cit_Melee)
-	{
-		damage *= 0.8;
-		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		Citizen npc = view_as<Citizen>(victim);
+		if(npc.m_nDowned || (attacker > 0 && GetEntProp(victim, Prop_Send, "m_iTeamNum") == GetEntProp(attacker, Prop_Send, "m_iTeamNum")))
 		{
-			if(npc.m_iGunValue > 10000)
+			damage = 0.0;
+		}
+		else
+		{
+			int value = npc.m_iGunValue - npc.m_iArmorErosion;
+			if(value > 10000)
 			{
-				damage *= 0.65;
+				damage *= 0.75;
 			}
-			else if(npc.m_iGunValue > 7500)
-			{
-				damage *= 0.7;
-			}
-			else if(npc.m_iGunValue > 5000)
+			else if(value > 7500)
 			{
 				damage *= 0.8;
 			}
-			else if(npc.m_iGunValue > 2500)
+			else if(value > 5000)
+			{
+				damage *= 0.85;
+			}
+			else if(value > 2500)
 			{
 				damage *= 0.9;
 			}
+			
+			if(npc.m_iGunType == Cit_Melee)
+			{
+				damage *= 0.8;
+				if(damagetype & (DMG_CLUB|DMG_SLASH))
+				{
+					if(npc.m_iGunValue > 10000)
+					{
+						damage *= 0.65;
+					}
+					else if(npc.m_iGunValue > 7500)
+					{
+						damage *= 0.7;
+					}
+					else if(npc.m_iGunValue > 5000)
+					{
+						damage *= 0.8;
+					}
+					else if(npc.m_iGunValue > 2500)
+					{
+						damage *= 0.9;
+					}
+				}
+			}
+
+			if(npc.m_iHasPerk == Cit_Melee) //overall abit more.
+				damage *= 0.9;
+
+			int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
+			if(health < 1)
+			{
+				npc.SetDowned(1);
+				damage = 0.0;
+			}
+			else
+			{
+				npc.PlaySound(Cit_Hurt);
+			}
 		}
 	}
-
-	if(npc.m_iHasPerk == Cit_Melee) //overall abit more.
-		damage *= 0.9;
-
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToFloor(damage);
-	if(health < 1)
-	{
-		npc.SetDowned(true);
-	}
-	else
-	{
-		SetEntProp(victim, Prop_Data, "m_iHealth", health);
-		npc.PlaySound(Cit_Hurt);
-	}
-	return Plugin_Handled;
 }
 
 public void Citizen_NPCDeath(int entity)
 {
 	Citizen npc = view_as<Citizen>(entity);
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Citizen_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
-	PF_StopPathing(npc.index);
+	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;
 	
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);

@@ -228,7 +228,7 @@
 		"de"		"Aresenals Tripminschicht"
 		"pt"		"Camada de Minas do Aresenal"
 		"nl"		"Aresenal's Explosieve Valmijn legger"
-		//"chi"       "安森尔"
+		"chi"       "兵厂三聚氰胺层"
 	}
 	"Heavy Charge Builder Laser"
 	{
@@ -273,6 +273,7 @@
 		"de"		"Terrorisar Bomben Implantiertes Scharfschützengewehr"
 		"pt"		"Rifle Implantador de Bombas Aterrorizante"
 		"nl"		"Terrorizerende bomplantende Scherpshuttergeweer"
+		"chi"       "恐怖炸弹狙击步枪"
 	}
 	"Rampager Automatic Rifle"
 	{
@@ -2023,13 +2024,13 @@
 	{
 	     "en"       "Bigger Radius"
 		 "ru"       "Увеличенный радиус"
-	     "chi"       "加大影响范围"
+	     "chi"      "加大影响范围"
 	}
 	"Jungle Drums"
 	{
 	     "en"       "Jungle Drums"
 		 "ru"       "Барабаны джунглей"
-	     "chi"       "加快范围内攻击速度"
+	     "chi"      "加快范围内攻击速度"
 	}
 	"Grow Blocker"
 	{
@@ -2077,35 +2078,148 @@
 	{
 		"en"       "Judgement Of Iberia"
 		"ru"       "Суд Иберии"
+		"chi"      "伊比利亚的判决"
 	}
 	"Tornado-Blitz"
 	{
 		"en"		"Tornado-Blitz"
 		"ru"		"Торнадо-Блиц"
+		"chi"       "龙卷风突袭"
 	}
 	"Cosmic Terror"
 	{
 		"en"		"Cosmic Terror"
 		"ru"		"Космический террор"
+		"chi"       "宇宙恐怖"
 	}
 	"Passanger's Device"
 	{
 		"en"	"Passanger's Device"
 		"ru"	"Пассажирское устройство"
+		"chi"   "乘客设备"
 	}
 	"Alchemist Potion"
 	{
 		"en"	"Alchemist Potion"
 		"ru"	"Зелье алхимика"
+		"chi"   "炼金术士药水"
 	}
-	"Builder Extra Gear"
+	"Press your action slot (h) to access an extra menu!"
 	{
-		"en"	"Builder Extra Gear"
-		"ru"	"Доп. снаряж. строителя"
+		"en"	"Press your action slot (h) to access an extra menu!"
 	}
 	"Buildable Barracks"
 	{
 		"en"	"Buildable Barracks"
 		"ru"	"Возведение казармы"
+		"chi"   "可建造兵营"
+	}
+	"Nearl Silvester Spear"
+	{
+		"en"	"Nearl Silvester Spear"
+		"chi"   "西尔维斯特矛"
+	}
+	"Lapplands Sword"
+	{
+		"en"	"Lapplands Sword"
+	}
+	"Lantean Staff"
+	{
+		"en" 	"Lantean Staff"
+	}
+	"Chainblade"
+	{
+		"en"	"Chainblade"
+		"chi"   "链刃"
+	}
+	"Skilled Chainblade"
+	{
+		"en"	"Skilled Chainblade"
+		"chi"   "精通链刃"
+	}
+	"Elite Chainblade"
+	{
+		"en"	"Elite Chainblade"
+		"chi"   "精英链刃"
+	}
+	"Elite Skilled Chainblade"
+	{
+		"en"	"Elite Skilled Chainblade"
+		"chi"   "精英技能链刃"
+	}
+	"Unchained Blade"
+	{
+		"en"	"Unchained Blade"
+		"chi"   "无链之刃"
+	}
+	"Elite Unchained Blade"
+	{
+		"en"	"Elite Unchained Blade"
+		"chi"   "精英无链之刃"
+	}
+	"Preaching Sword"
+	{
+		"en"	"Preaching Sword"
+		"chi"   "传道之剑"
+	}
+	"Ranged Lego Layer"
+	{
+		"en"	"Ranged Lego Layer"
+	}
+	"Ranged Lego Layer"
+	{
+		"en"	"Ranged Lego Layer"
+	}
+	"The Enforcer"
+	{
+		"en"	"The Enforcer"
+	}
+	"The Enforcer S1"
+	{
+		"en"	"The Enforcer S1"
+	}
+	"The Enforcer S2"
+	{
+		"en"	"The Enforcer S2"
+	}
+	"The Enforcer S3"
+	{
+		"en"	"The Enforcer S3"
+	}
+	"The Enforcer Lv 4"
+	{
+		"en"	"The Enforcer S4"
+	}
+	"The Enforcer S5"
+	{
+		"en"	"The Enforcer S5"
+	}
+	"The Enforcer S6"
+	{
+		"en"	"The Enforcer S6"
+	}
+	"The Enforcer S7"
+	{
+		"en"	"The Enforcer S7"
+	}
+	"The Enforcer Mastery 1"
+	{
+		"en"	"The Enforcer Mastery 1"
+	}
+	"The Enforcer Mastery 2"
+	{
+		"en"	"The Enforcer Mastery 2"
+	}
+	"The Enforcer Mastery 3"
+	{
+		"en"	"The Enforcer Mastery 3"
+	}
+	"The Enforcer Mastery 4"
+	{
+		"en"	"The Enforcer Mastery 4"
+	}
+	"The Enforcer Mastery 5"
+	{
+		"en"	"The Enforcer Mastery 5"
 	}
 }

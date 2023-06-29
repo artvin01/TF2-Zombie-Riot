@@ -31,6 +31,25 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	b_GameOnGoing = true;
 	
 	LastMann = false;
+	Ammo_Count_Ready = 0;
+	Zero(Ammo_Count_Used);
+	Zero2(Armor_table_money_limit);
+	Zero2(i_Healing_station_money_limit);
+	Zero2(Perk_Machine_money_limit);
+	Zero2(Pack_A_Punch_Machine_money_limit);
+	Zero(Healing_done_in_total);
+	Zero(Damage_dealt_in_total);
+	Zero(Resupplies_Supplied);
+	Zero(i_BarricadeHasBeenDamaged);
+	Zero(i_ExtraPlayerPoints);
+	CurrentGibCount = 0;
+	for(int client=1; client<=MaxClients; client++)
+	{
+		for(int i; i<Ammo_MAX; i++)
+		{
+			CurrentAmmo[client][i] = CurrentAmmo[0][i];
+		}	
+	}
 	
 	if(RoundStartTime > GetGameTime())
 		return;
@@ -38,13 +57,15 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
+	NPC_RoundStart();
 	Waves_RoundStart();
 #endif
 
 #if defined RPG
 	Zones_ResetAll();
-	ServerCommand("mp_waitingforplayers_cancel 1");
 #endif
+	
+	ServerCommand("mp_waitingforplayers_cancel 1");
 }
 
 #if defined ZR
@@ -65,6 +86,28 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			OnAutoTeam(client, name, 0);
 		}
 	}
+#if defined ZR
+	//Ty to Keldra#1114 on discord to pointing this out.
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(client)
+	{	
+		/*
+		TFTeam_Unassigned = 0,
+		TFTeam_Spectator = 1,
+		TFTeam_Red = 2,
+		TFTeam_Blue = 3
+		*/
+		int team = event.GetInt("team");
+		switch(team)
+		{
+			case 0,1: //either team ? kill dispenser!
+			{
+				DestroyDispenser(client);
+			}
+		}
+	}
+#endif
+
 	
 	if(event.GetBool("silent"))
 		return Plugin_Continue;
@@ -86,7 +129,7 @@ public Action OnPlayerConnect(Event event, const char[] name, bool dontBroadcast
 public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
 	Store_RandomizeNPCStore(true);
-	
+	f_FreeplayDamageExtra = 1.0;
 	b_GameOnGoing = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -108,22 +151,22 @@ public void OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			TeutonType[client_check] = 0;
 	}
 	
-	NPC_RoundEnd();
 	Store_Reset();
 	Waves_RoundEnd();
 	Escape_RoundEnd();
+	Rogue_RoundEnd();
 	CurrentGame = 0;
 }
 #endif
 
 public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		
 #if defined RPG
-		TextStore_DespoitBackpack(client, false);
+		TextStore_DepositBackpack(client, false, Level[client] < 5);
 #endif
 
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
@@ -131,7 +174,13 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		SetVariantString("");
 	  	AcceptEntityInput(client, "SetCustomModel");
 	  	
-	  	if(b_IsPlayerNiko[client])
+	  	
+		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
+		ViewChange_DeleteHands(client);
+		ViewChange_UpdateHands(client, CurrentClass[client]);
+		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+
+		if(b_IsPlayerNiko[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
@@ -139,10 +188,17 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
 			}
 		}
-	  	
-		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
-		ViewChange_DeleteHands(client);
-		ViewChange_UpdateHands(client, CurrentClass[client]);
+		/*
+		else
+		{
+			int entity = MaxClients+1;
+			while(TF2_GetWearable(client, entity))
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+			}
+		}
+		*/
+		//doesnt work, can cause client crashes?
 		
 #if defined ZR
 		//DEFAULTS
@@ -193,6 +249,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
+		//	SetEntProp(client, Prop_Send, "m_nBody", 1);
+			SetVariantInt(1);
+			AcceptEntityInput(client, "SetBodyGroup");
+			//apply model correctly.
+
 
 	   		ViewChange_Switch(client, weapon_index);
 
@@ -349,10 +410,20 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			SetAmmo(client, i, CurrentAmmo[client][i]);
 		}
 		UpdateLevelAbovePlayerText(client);
-#endif
 
+		RequestFrame(UpdateHealthFrame, userid);
+#endif
 	}
 }
+
+#if defined RPG
+public void UpdateHealthFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+}
+#endif
 
 #if defined ZR
 public Action OnTeutonHealth(int client, int &health)
@@ -373,7 +444,25 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
+		
+#if defined ZR
+		Waves_PlayerSpawn(client);
+#endif
+
 		Thirdperson_PlayerSpawn(client);
+
+		// Resets the hand/arm pos for melee weapons 
+		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
+		//come out from behind and it litterally looks like a dick
+		//Im unsure why this happens, something with the hothand probably as it looks like that.
+		CClotBody npc = view_as<CClotBody>(client);
+		int index = npc.LookupPoseParameter("r_hand_grip");
+		if(index >= 0)
+			npc.SetPoseParameter(index, 0.0);
+		
+		index = npc.LookupPoseParameter("r_arm");
+		if(index >= 0)
+			npc.SetPoseParameter(index, 0.0);
 	}
 }
 
@@ -382,7 +471,7 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if(client)
 	{
-		
+		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
 #if defined ZR
 		Escape_DropItem(client);
 		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
@@ -398,15 +487,17 @@ public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 		//Incase they die, do suit!
 		i_HealthBeforeSuit[client] = 0;
+		i_ClientHasCustomGearEquipped[client] = false;
 		CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 		//
 
 		Citizen_PlayerDeath(client);
 		Bob_player_killed(event, name, dontBroadcast);
+		Skulls_PlayerKilled(client);
 #endif
 
 #if defined RPG
-		TextStore_DespoitBackpack(client, true);
+		TextStore_DepositBackpack(client, true);
 		UpdateLevelAbovePlayerText(client, true);
 #endif
 

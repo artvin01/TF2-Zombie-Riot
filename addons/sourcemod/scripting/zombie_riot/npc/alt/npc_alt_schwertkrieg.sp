@@ -35,6 +35,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+static bool b_health_stripped[MAXENTITIES];
 
 static float TELEPORT_STRIKE_Usage[MAXENTITIES];
 static bool TELEPORT_STRIKE_Activate[MAXENTITIES];
@@ -44,7 +45,7 @@ static bool TELEPORT_STRIKEActive[MAXENTITIES];
 static float animation_timer[MAXENTITIES];
 
 
-static float TELEPORT_STRIKE_Smite_BaseDMG = 300.0; //Base damage of the effect
+static float TELEPORT_STRIKE_Smite_BaseDMG = 1500.0; //Base damage of the effect
 static float TELEPORT_STRIKE_Smite_Radius = 500.0;//Radius of the effect
 static float TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
 static float TELEPORT_STRIKE_Smite_ChargeSpan = 0.66;
@@ -149,19 +150,21 @@ methodmap Schwertkrieg < CClotBody
 		Schwertkrieg npc = view_as<Schwertkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SCHWERTKRIEG;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+		b_Schwertkrieg_Alive = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Schwertkrieg_ClotDamaged);
+		b_health_stripped[npc.index] = false;
+		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 			
 		
@@ -184,9 +187,10 @@ methodmap Schwertkrieg < CClotBody
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
-					
+		
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,15.0});
+		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0});
+		npc.GetAttachment("root", flPos, flAng);
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
 		SetVariantString("1.0");
@@ -207,7 +211,7 @@ methodmap Schwertkrieg < CClotBody
 		TELEPORT_STRIKEActive[npc.index] = false;
 		TempOpener[npc.index] = false;
 		
-		npc.m_flRangedArmor = 1.5;
+		npc.m_flMeleeArmor = 1.5;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
@@ -223,6 +227,22 @@ methodmap Schwertkrieg < CClotBody
 public void Schwertkrieg_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
+	
+	if(b_was_talking)
+	{
+		if(RaidModeTime < GetGameTime())
+		{
+			int entity = CreateEntityByName("game_round_win"); //You loose.
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+			Music_RoundEnd(entity);
+			RaidBossActive = INVALID_ENT_REFERENCE;
+			SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
+		}
+		npc.m_flSpeed = Schwertkrieg_Speed*1.25;
+	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -244,14 +264,80 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-	npc.m_flRangedArmor = 1.5;
+	npc.m_flMeleeArmor = 1.5;
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	
+	if(b_Begin_Dialogue)	//Schwertkrieg is mute,
+	{
+		if(!b_health_stripped[npc.index])
+		{
+			b_health_stripped[npc.index] = true;
+			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth/50.0));
+		}
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+		if(!b_Donnerkrieg_Alive)
+		{
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false; //Make allied NOT npcs ignore him.
+			CPrintToChatAll("{crimson}Donnerkrieg{default}: Why....");
+			b_Begin_Dialogue = false;
+			b_was_talking = true;
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			
+			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(MaxHealth*1.5));
+			
+			//sets the minnion to a "raidboss"
+			
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			
+			b_thisNpcIsARaid[npc.index] = true;
+			
+			RaidModeScaling = 69.0;
+			
+			npc.m_bThisNpcIsABoss = true;
+		
+			RaidModeTime = GetGameTime(npc.index) + 100.0;
+			
+			SetVariantInt(1);
+			AcceptEntityInput(npc.index, "SetBodyGroup");
+
+			if(IsValidEntity(npc.m_iTeamGlow))
+			{
+				SetVariantColor(view_as<int>({89, 8, 12, 175}));
+				AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");	
+			}
+			
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%t", "Schwertkrieg has been enraged...");
+				}
+			}
+		}
+		npc.m_flNextThinkTime = 0.0;
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.SetActivity("ACT_MP_CROUCH_MELEE");
+		npc.m_bisWalking = false;
+		if(GetGameTime() > g_f_blitz_dialogue_timesincehasbeenhurt)
+		{
+			npc.m_bDissapearOnDeath = true;	
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}	
+		return; //He is trying to help.
+	}
+	
 	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && !TempOpener[npc.index])
 	{
 		npc.m_flSpeed = 0.0;
@@ -270,8 +356,8 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		//	EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 		//}
 		EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
-		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
-		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
+		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
+		TELEPORT_STRIKE_spawnRing_Vectors(vEnd, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
 	}
 	if(TELEPORT_STRIKE_Usage[npc.index] <= GetGameTime(npc.index) && !TELEPORT_STRIKEActive[npc.index] && TempOpener[npc.index])
 	{
@@ -304,9 +390,9 @@ public void Schwertkrieg_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			float vOrigin[3];
 			float vEnd[3];
@@ -321,9 +407,9 @@ public void Schwertkrieg_ClotThink(int iNPC)
 				if(TELEPORT_STRIKE_TeleportUsage[npc.index])
 				{
 					int color[4];
-					color[0] = 0;
-					color[1] = 255;
-					color[2] = 120;
+					color[0] = 145;
+					color[1] = 47;
+					color[2] = 47;
 					color[3] = 255;
 			
 					int SPRITE_INT = PrecacheModel("materials/sprites/laserbeam.vmt", false);
@@ -374,9 +460,9 @@ public void Schwertkrieg_ClotThink(int iNPC)
 					WritePackFloat(pack, vEnd[2]);
 					WritePackFloat(pack, TELEPORT_STRIKE_Smite_BaseDMG);
 				
-					TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 0, 120, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
+					TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
 					//TELEPORT_STRIKE_spawnBeam(320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 4.0, 0.1, 1, 1.0);
-					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
+					TELEPORT_STRIKE_spawnRing_Vectors(vEnd, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, TELEPORT_STRIKE_Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 					
 					//npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 					TELEPORT_STRIKEActive[npc.index] = false;
@@ -421,6 +507,11 @@ public void Schwertkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg= 175.0;
+								if(b_was_talking)
+								{
+									meleedmg = 225.0;
+								}
+								
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -466,7 +557,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -474,7 +565,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Schwertkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(victim);
 		
@@ -487,6 +578,32 @@ public Action Schwertkrieg_ClotDamaged(int victim, int &attacker, int &inflictor
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
+	if(b_Begin_Dialogue)
+	{
+		if(IsValidClient(attacker))
+		{
+			if(TeutonType[attacker] != TEUTON_NONE)
+			{
+				return Plugin_Handled;
+			}
+		}
+		else //Ignore any atacker that isnt a player, they might ruin this, like grigori.
+		{
+			return Plugin_Handled;
+		}
+		if(g_f_blitz_dialogue_timesincehasbeenhurt< GetGameTime()+2.5)
+		{
+			if(!b_was_talking)
+			{
+				f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: Oi, why are you attacking my friend, stop it please");
+			}
+			
+		}
+			
+	}
+	g_f_blitz_dialogue_timesincehasbeenhurt= GetGameTime() + 20.0;
+	
 	return Plugin_Changed;
 }
 
@@ -497,7 +614,12 @@ public void Schwertkrieg_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Schwertkrieg_ClotDamaged);
+	
+	b_Schwertkrieg_Alive = false;
+	b_thisNpcIsARaid[npc.index] = false;
+			
+	npc.m_bThisNpcIsABoss = false;
+	
 	SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
@@ -545,16 +667,16 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 5; sequential++)
 		{
-			TELEPORT_STRIKE_spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.4, 1, (TELEPORT_STRIKE_Smite_Radius * 5.0)/float(sequential));
+			TELEPORT_STRIKE_spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.4, 1, (TELEPORT_STRIKE_Smite_Radius * 5.0)/float(sequential));
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
 		//secondLoc[2] = 9999.0;
 		secondLoc[2] = 1500.0;
 		
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
-		TELEPORT_STRIKE_spawnBeam(0.8, 255, 255, 120, 200, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/laserbeam.vmt", 16.0, 16.2, _, 5.0, secondLoc, spawnLoc);	
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);	
+		TELEPORT_STRIKE_spawnBeam(0.8, 145, 47, 47, 255, "materials/sprites/lgtning.vmt", 10.0, 10.2, _, 5.0, secondLoc, spawnLoc);
 		EmitAmbientSound(TELEPORT_STRIKE_HIT, spawnLoc, _, 240);
 		EmitAmbientSound(TELEPORT_STRIKE_HIT, spawnLoc, _, 240);
 		
@@ -583,14 +705,20 @@ public Action TELEPORT_STRIKE_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		
-		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, TELEPORT_STRIKE_Smite_Radius * 1.4,_,0.8, true);
+		float radius = TELEPORT_STRIKE_Smite_Radius;
+		if(b_was_talking)
+		{
+			damage *= 2;
+			radius *= 1.5;
+		}
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, radius * 1.4,_,0.8, true);
 		
 		return Plugin_Stop;
 	}
 	else
 	{
 		
-		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		TELEPORT_STRIKE_spawnRing_Vectors(spawnLoc, TELEPORT_STRIKE_Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, 0.33, 6.0, 0.1, 1, 1.0);
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 		EmitAmbientSound(TELEPORT_STRIKE_EXPLOSION, spawnLoc, _, 120, _, _, GetRandomInt(80, 110));
 		

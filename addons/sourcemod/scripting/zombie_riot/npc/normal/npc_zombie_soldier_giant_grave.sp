@@ -151,6 +151,7 @@ methodmap SoldierGiant < CClotBody
 		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_BOSS;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -165,7 +166,7 @@ methodmap SoldierGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SoldierGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SoldierGiant_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SoldierGiant_ClotDamaged_Post);
 		
@@ -247,7 +248,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -274,9 +275,9 @@ public void SoldierGiant_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 			
@@ -350,7 +351,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -358,7 +359,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SoldierGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SoldierGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	SoldierGiant npc = view_as<SoldierGiant>(victim);
 		
@@ -377,24 +378,27 @@ public Action SoldierGiant_ClotDamaged(int victim, int &attacker, int &inflictor
 public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	SoldierGiant npc = view_as<SoldierGiant>(victim);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	
-	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		npc.g_TimesSummoned++;
-		maxhealth /= 7;
-		for(int i; i<1; i++)
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		
+		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-			if(spawn_index > MaxClients)
+			npc.g_TimesSummoned++;
+			maxhealth /= 7;
+			for(int i; i<1; i++)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				
+				int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				if(spawn_index > MaxClients)
+				{
+					Zombies_Currently_Still_Ongoing += 1;
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				}
 			}
 		}
 	}
@@ -409,7 +413,7 @@ public void SoldierGiant_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SoldierGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SoldierGiant_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SoldierGiant_ClotDamaged_Post);
 	

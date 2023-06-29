@@ -234,6 +234,7 @@ methodmap XenoFatherGrigori < CClotBody
 		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FATHER_GRIGORI;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -248,7 +249,7 @@ methodmap XenoFatherGrigori < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFatherGrigori_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
 		
@@ -362,7 +363,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -378,11 +379,11 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		npc.StartPathing();
 		
@@ -564,7 +565,7 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -783,7 +784,7 @@ public void XenoFatherGrigori_IOC_Invoke(int ref, int enemy)
 	}
 }
 
-public Action XenoFatherGrigori_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoFatherGrigori_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -834,7 +835,7 @@ public void XenoFatherGrigori_NPCDeath(int entity)
 	}
 	
 	SDKUnhook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFatherGrigori_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
 	
 	if(IsValidEntity(npc.m_iWearable1))

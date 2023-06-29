@@ -18,18 +18,19 @@ static float Cryo_M2_Damage_Pap = 550.0; //M2 base damage (Pack-a-Punch)
 static float Cryo_M2_FreezeMult_Pap = 3.0;	//Amount to multiply damage dealt by M2 to frozen zombies (Pack-a-Punch)
 static float Cryo_M2_Damage_Pap2 = 650.0; //M2 base damage (Pack-a-Punch Tier 2)
 static float Cryo_M2_FreezeMult_Pap2 = 4.0;	//Amount to multiply damage dealt by M2 to frozen zombies (Pack-a-Punch Tier 2)
-static int Cryo_M2_Cost = 250;	//M2 Cost
+static int Cryo_M2_Cost = 100;	//M2 Cost
 static float Cryo_M2_Radius = 400.0;
 static float Cryo_M2_Radius_Pap = 500.0;
 static float Cryo_M2_Radius_Pap2 = 600.0;
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
-static float Cryo_M2_Cooldown = 10.0;	//M2 Cooldown
-static float Cryo_M2_Falloff = 0.7;	//Amount to multiply damage dealt by M2 for each zombie it hits, like explosives
+static float Cryo_M2_Cooldown = 15.0;	//M2 Cooldown
 
-static float Cryo_FreezeRequirement = 0.25; //% of target's max health M1 must do in order to trigger the freeze
-static float Cryo_FreezeDuration = 2.0; //Duration to freeze zombies when the threshold is surpassed
-static float Cryo_SlowDuration = 5.0; //Duration to slow zombies when they are unfrozen
+static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
+static float Cryo_FreezeDuration = 1.5; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_FreezeDuration_Pap1 = 2.0; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_FreezeDuration_Pap2 = 2.5; //Duration to freeze zombies when the threshold is surpassed
+static float Cryo_SlowDuration = 8.0; //Duration to slow zombies when they are unfrozen
 static int Cryo_SlowType[MAXENTITIES] = {0, ...}; //Type of slow applied by the projectile, 0: None, 1: Weak Teslar Slow, 2: Strong Teslar Slow
 static int Cryo_SlowType_Zombie[MAXENTITIES] = {0, ...};	//^Ditto, but applied to zombies when they get frozen
 
@@ -66,12 +67,19 @@ void Wand_Cryo_Precache()
 	PrecacheSound(SOUND_WAND_CRYO_FREEZE);
 	PrecacheSound(SOUND_WAND_CRYO_SHATTER);
 	PrecacheModel(COLLISION_DETECTION_MODEL_BIG);
+	PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
+}
+
+bool IsZombieFrozen(int entity)
+{
+	return Cryo_Frozen[entity];
 }
 
 void ResetFreeze(int entity)
 {
 	Cryo_FreezeLevel[entity] = 0.0;
 }
+
 public void Wand_Cryo_Burst_ClearAll()
 {
 	Zero(ability_cooldown);
@@ -116,6 +124,7 @@ public void Cryo_CheckBurst(int client, int weapon, bool &result, int slot, floa
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Cryo_ActivateBurst(client, weapon, result, slot, damage, freezemult, mana_cost, radius);
 			}
 			else
@@ -156,57 +165,19 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	
 	delay_hud[client] = 0.0;
 	
-	float UserLoc[3], VicLoc[3];
+	float UserLoc[3];
 	GetClientAbsOrigin(client, UserLoc);
 	//int particle = ParticleEffectAt(UserLoc, "bombinomicon_burningdebris", 4.0);
 	ParticleEffectAt(UserLoc, "xms_snowburst", 4.0);
 	ParticleEffectAt(UserLoc, "xms_snowburst_child01", 4.0);
 	ParticleEffectAt(UserLoc, "xms_snowburst_child02", 4.0);
 //	particle = ParticleEffectAt(UserLoc, "xms_snowburst_child03", 4.0);
-	
-	float TestDMG = damage;
-	static float angles[3];
-	GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
-	float vecForward[3];
-	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		
 	//We check twice, we first want to prioritise frozen targets!
-	bool entityWasTargetedAlready[2048];
-	for(int loop = 1; loop<3; loop++)
-	{
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-		{
-			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(target) && !b_NpcHasDied[target])
-			{
-				if(!Cryo_Frozen[target] && loop == 1 || entityWasTargetedAlready[target])
-				{
-					continue;
-				}
-				entityWasTargetedAlready[target] = true;
-				static float Entity_Position[3];
-				VicLoc = WorldSpaceCenter(target);
-				
-				if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(radius, 2.0))
-				{
-					
-					if (Cryo_Frozen[target])
-					{
-						CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
-						EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, target);
-						SDKHooks_TakeDamage(target, weapon, client, TestDMG * freezemult, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 100000.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
-					}
-					else
-					{
-						SDKHooks_TakeDamage(target, weapon, client, TestDMG, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 100000.0), Entity_Position, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
-					}
-						
-					TestDMG *= Cryo_M2_Falloff;
-				}
-			}
-		}
-	}
-	Zero(entityWasTargetedAlready);
+	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
+	i_ExplosiveProjectileHexArray[weapon] |= EP_IS_ICE_DAMAGE;
+
+	Explode_Logic_Custom(damage, client, client, weapon, UserLoc, radius, _, _, false, _, _, _, CryoWandHitM2, CryoWandHitM2Pre);
 	
 	spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, 0.33, 12.0, 6.1, 1, radius * 2.0);
 	spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 22.5, "materials/sprites/laserbeam.vmt", 150, 200, 255, 200, 1, 0.33, 12.0, 6.1, 1, radius * 2.0);
@@ -215,6 +186,57 @@ public void Cryo_ActivateBurst(int client, int weapon, bool &result, int slot, f
 	EmitSoundToAll(SOUND_WAND_CRYO_M2, client);
 	EmitSoundToAll(SOUND_WAND_CRYO_M2_3, client);
 	EmitSoundToAll(SOUND_WAND_CRYO_M2_2, client, _, 80);
+}
+
+float f_HealthBeforeHurt[MAXENTITIES];
+
+void CryoWandHitM2Pre(int entity, int victim, float damage, int weapon)
+{
+	if (!Cryo_Frozen[victim])
+	{
+		f_HealthBeforeHurt[victim] = float(GetEntProp(victim, Prop_Data, "m_iHealth"));
+	}
+}
+
+void CryoWandHitM2(int entity, int victim, float damage, int weapon)
+{
+	if (Cryo_Frozen[victim])
+	{
+		float UserLoc[3], VicLoc[3];
+		GetClientAbsOrigin(entity, UserLoc);
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", VicLoc);
+		CreateTimer(0.1, Cryo_Unfreeze, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		EmitSoundToAll(SOUND_WAND_CRYO_SHATTER, victim);
+		SDKHooks_TakeDamage(victim, weapon, entity, damage * Cryo_M2_FreezeMult_Pap2, DMG_PLASMA, -1, CalculateExplosiveDamageForce(UserLoc, VicLoc, 1500.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
+	}
+	else
+	{
+		if (!Cryo_Slowed[victim])
+		{
+			float Health_After_Hurt = float(GetEntProp(victim, Prop_Data, "m_iHealth"));
+
+			Cryo_FreezeLevel[victim] += (f_HealthBeforeHurt[victim] - Health_After_Hurt);
+			float maxHealth = float(GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
+			float damageRequiredForFreeze = Cryo_FreezeRequirement;
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				damageRequiredForFreeze *= 0.05; //Reduce way further so its good against raids.
+			}
+			else if(b_thisNpcIsABoss[victim])
+			{
+				damageRequiredForFreeze *= 0.25; //Reduce way further so its good against bosses.
+			}
+
+			if (Cryo_FreezeLevel[victim] >= maxHealth * damageRequiredForFreeze)
+			{
+				Cryo_SlowType_Zombie[victim] = Cryo_SlowType[entity];
+				if(Health_After_Hurt > 0)
+				{
+					Cryo_FreezeZombie(victim);
+				}
+			}
+		}
+	}
 }
 
 static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
@@ -388,29 +410,32 @@ public void Cryo_Touch(int entity, int other)
 					RemoveEntity(particle);
 				}
 				RemoveEntity(entity);
-				
 			}
 
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 0.0), VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
 			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			
-			if (!Cryo_Frozen[target] && !Cryo_Slowed[target] && HasEntProp(target, Prop_Data, "m_iMaxHealth"))
+			if (!Cryo_Frozen[target] && !Cryo_Slowed[target])
 			{
 				Cryo_FreezeLevel[target] += (Health_Before_Hurt - Health_After_Hurt);
 				float maxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
 				float damageRequiredForFreeze = Cryo_FreezeRequirement;
 				if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 				{
-					if(target == EntRefToEntIndex(RaidBossActive))
-					{
-						damageRequiredForFreeze *= 0.15; //Reduce way further so its good against raids.
-					}
+					damageRequiredForFreeze *= 0.05; //Reduce way further so its good against raids.
+				}
+				else if(b_thisNpcIsABoss[target])
+				{
+					damageRequiredForFreeze *= 0.25; //Reduce way further so its good against bosses.
 				}
 				if (Cryo_FreezeLevel[target] >= maxHealth * damageRequiredForFreeze)
 				{
 					Cryo_SlowType_Zombie[target] = Cryo_SlowType[entity];
-					Cryo_FreezeZombie(target);
+					if(Health_After_Hurt > 0)
+					{
+						Cryo_FreezeZombie(target);
+					}
 				}
 			}
 			
@@ -528,22 +553,54 @@ public void Cryo_FreezeZombie(int zombie)
 	ZNPC.m_bFrozen = true;
 	Cryo_Frozen[zombie] = true;
 	Cryo_FreezeLevel[zombie] = 0.0;
+	float FreezeDuration;
 
-	float FreezeDuration = Cryo_FreezeDuration;
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	switch (Cryo_SlowType_Zombie[zombie])
 	{
-		if(zombie == EntRefToEntIndex(RaidBossActive))
+		case 0:
 		{
-			FreezeDuration *= 0.5; //Cut in half agianst raids.
+			FreezeDuration = Cryo_FreezeDuration;
+		}
+		case 1:
+		{
+			FreezeDuration = Cryo_FreezeDuration_Pap1;
+		}
+		case 2:
+		{
+			FreezeDuration = Cryo_FreezeDuration_Pap2;
 		}
 	}
 
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		FreezeDuration *= 0.75; //Less duration against raids.
+	}
+
+	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
+	FreezeNpcInTime(zombie, FreezeDuration);
+	if (!IsValidEntity(ZNPC.m_iFreezeWearable))
+	{
+		float offsetToHeight = 40.0;
+		if(b_IsGiant[zombie])
+		{
+			offsetToHeight = 55.0;
+		}
+		ZNPC.m_iFreezeWearable = ZNPC.EquipItemSeperate("partyhat", "models/props_moonbase/moon_gravel_crystal_blue.mdl",_,_,_,offsetToHeight);
+		if(b_IsGiant[zombie])
+		{
+			SetVariantString("3.6");
+		}
+		else
+		{
+			SetVariantString("2.85");
+		}
+		AcceptEntityInput(ZNPC.m_iFreezeWearable, "SetModelScale");
+		SetEntityRenderMode(ZNPC.m_iFreezeWearable, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(ZNPC.m_iFreezeWearable, 65, 65, 185, 65);
+	}
 
 	SetEntityRenderMode(zombie, RENDER_TRANSCOLOR, false, 1, false, true);
 	SetEntityRenderColor(zombie, 0, 0, 255, 255, false, false, true);
-	CreateTimer(FreezeDuration, Cryo_Unfreeze, EntIndexToEntRef(zombie), TIMER_FLAG_NO_MAPCHANGE);
-	FreezeNpcInTime(zombie, FreezeDuration);
-
 	float position[3];
 	GetEntPropVector(zombie, Prop_Data, "m_vecAbsOrigin", position);
 	switch (Cryo_SlowType_Zombie[zombie])

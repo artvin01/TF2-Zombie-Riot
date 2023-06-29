@@ -163,7 +163,7 @@ public Action Event_Wand_Black_Fire_OnHatTouch(int entity, int other)
 {
 	char other_classname[32];
 	GetEntityClassname(other, other_classname, sizeof(other_classname));
-	if ((StrContains(other_classname, "base_boss") != -1 || StrContains(other_classname, "func_breakable") != -1) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(other, Prop_Send, "m_iTeamNum")))	{
+	if ((StrContains(other_classname, "zr_base_npc") != -1 || StrContains(other_classname, "func_breakable") != -1) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(other, Prop_Send, "m_iTeamNum")))	{
 		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], 2048, -1);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		NPC_Ignite(other, Projectile_To_Client[entity], 3.0, Projectile_To_Weapon[entity]);

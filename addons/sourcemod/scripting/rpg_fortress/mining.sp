@@ -105,13 +105,14 @@ enum struct MineEnum
 		{
 			int entity = EntRefToEntIndex(this.EntRef);
 			if(entity != -1)
+			{
 				RemoveEntity(entity);
 
-			int text = EntRefToEntIndex(i_TextEntity[entity][0]);
-			if(text != -1)
-				RemoveEntity(text);
-
-			
+				int text = EntRefToEntIndex(i_TextEntity[entity][0]);
+				if(text != -1)
+					RemoveEntity(text);
+			}
+						
 			this.EntRef = INVALID_ENT_REFERENCE;
 		}
 	}
@@ -134,13 +135,12 @@ enum struct MineEnum
 			int entity = CreateEntityByName("prop_dynamic_override");
 			if(IsValidEntity(entity))
 			{
-				char buffer[255];
-				Format(buffer,sizeof(buffer),this.Model);
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
-				DispatchKeyValue(entity, "model", buffer);
+				DispatchKeyValue(entity, "model", this.Model);
+				DispatchKeyValueFloat(entity, "modelscale", this.Scale);
 				DispatchKeyValue(entity, "solid", "6");
-				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
-				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 2400.0);				
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);				
 				DispatchSpawn(entity);
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
@@ -327,7 +327,7 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 			if(index != -1)
 			{
 				int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-				PlayCustomWeaponSoundFromPlayerCorrectly(target, client, weapon, Item_Index, "tf_weapon_club");	
+				PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
 				static MineEnum mine;
 				MineList.GetArray(index, mine);
 
@@ -364,6 +364,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 						f_clientMinedThisSpot[client] = GetGameTime() + 5.0; //You cannot mine the exact same spot after 5 seconds.
 						f_clientMinedThisSpotPos[client] = f_positionhit;
 					}
+					
+					DoClientHitmarker(client);
 
 					bool Rare_hit = false;
 					if(f_clientFoundRareRockSpot[client] > GetGameTime())

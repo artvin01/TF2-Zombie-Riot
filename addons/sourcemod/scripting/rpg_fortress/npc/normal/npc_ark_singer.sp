@@ -76,8 +76,24 @@ methodmap ArkSinger < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[rand], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 	}
-	public void PlayRangedSpecialAttackSecondarySound()
+	public void PlayRangedSpecialAttackSecondarySound(const float pos[3])
 	{
+		int numClients;
+		int[] clients = new int[MaxClients];
+
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				static float pos2[3];
+				GetClientEyePosition(i, pos2);
+				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
+				{
+					clients[numClients++] = i;
+				}
+			}
+		}
+
 		int rand = GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1);
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
@@ -111,6 +127,7 @@ methodmap ArkSinger < CClotBody
 		SDKHook(npc.index, SDKHook_Think, ArkSinger_ClotThink);
 
 		npc.Anger = false;
+		npc.m_bmovedelay = true;
 		npc.m_iOverlordComboAttack = 0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -130,7 +147,7 @@ methodmap ArkSinger < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 200, 200, 255);
 
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		return npc;
 	}
@@ -154,7 +171,7 @@ public void ArkSinger_ClotThink(int iNPC)
 		return;
 	}
 
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -189,13 +206,13 @@ public void ArkSinger_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			
-			npc.PlayRangedSpecialAttackSecondarySound();
+			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
 			npc.AddGesture("ACT_METROPOLICE_POINT");
 			
 			npc.m_flDoingAnimation = gameTime + 0.9;
 			npc.m_flNextRangedAttackHappening = 0.0;
 			npc.m_bisWalking = false;
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 
 			f_SingerBuffedFor[npc.index] = gameTime + (npc.m_iOverlordComboAttack * 0.25);
@@ -206,7 +223,7 @@ public void ArkSinger_ClotThink(int iNPC)
 
 			int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 			int entity = -1;
-			while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+			while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 			{
 				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
 				{
@@ -233,13 +250,13 @@ public void ArkSinger_ClotThink(int iNPC)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 800.0);
-				npc.FireRocket(vPredictedPos, 250.0, 800.0, "models/effects/combineball.mdl");
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0);
+				npc.FireRocket(vPredictedPos, 250.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 				// Scarlet Singer (50% dmg)
 
 				if(npc.m_iTarget <= MaxClients)
-					Stats_AddNeuralDamage(npc.m_iTarget, npc.index, 40);	// (20% -> 5%)
+					Stats_AddNeuralDamage(npc.m_iTarget, npc.index, 50);	// (20% of dmg)
 			}
 		}
 	}
@@ -254,11 +271,11 @@ public void ArkSinger_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -311,7 +328,7 @@ public void ArkSinger_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.5 : 2.0);
 
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}
@@ -337,6 +354,15 @@ public Action ArkSinger_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			npc.m_iOverlordComboAttack++;
 	}
 
+	if(npc.m_bmovedelay)
+	{
+		npc.flXenoInfectedSpecialHurtTime = gameTime + 0.1;
+		npc.m_bmovedelay = false;
+	}
+
+	if(!b_NpcIsInADungeon[victim] && npc.flXenoInfectedSpecialHurtTime > gameTime)
+		damage = 0.0;
+	
 	return Plugin_Changed;
 }
 

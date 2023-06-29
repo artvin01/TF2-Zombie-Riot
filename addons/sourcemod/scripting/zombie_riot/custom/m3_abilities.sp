@@ -6,6 +6,7 @@ static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
 static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
+static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 static int g_BeamIndex_heal = -1;
@@ -21,6 +22,7 @@ static char gLaser1;
 
 #define SOUND_HEAL_BEAM			"items/medshot4.wav"
 #define SOUND_ARMOR_BEAM			"physics/metal/metal_box_strain1.wav"
+#define SOUND_REPAIR_BEAM			"physics/metal/metal_box_strain2.wav"
 
 #define SOUND_DASH			"npc/roller/mine/rmine_explode_shock1.wav"
 
@@ -38,12 +40,14 @@ public void M3_Abilities_Precache()
 	g_BeamIndex_heal = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	PrecacheSound(SOUND_HEAL_BEAM);
 	PrecacheSound(SOUND_ARMOR_BEAM);
+	PrecacheSound(SOUND_REPAIR_BEAM);
 	PrecacheSound(SOUND_DASH);
 	PrecacheSound("mvm/mvm_tank_start.wav");
 	
 }
 public void M3_ClearAll()
 {
+	Zero(b_ActivatedDuringLastMann);
 	Zero(ability_cooldown);
 	Zero(ability_cooldown_2);
 	Zero(Attack3AbilitySlotArray);
@@ -71,9 +75,9 @@ public void M3_Abilities(int client)
 		{
 			GearTesting(client);
 		}
-		case 5:
+		case 6:
 		{
-			BuilderMenu(client);
+			PlaceableTempomaryRepairGrenade(client);
 		}
 	}
 }
@@ -153,10 +157,17 @@ public void PlaceableTempomaryArmorGrenade(int client)
 	{
 		ability_cooldown[client] = GetGameTime() + 100.0;
 		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-		
-		int entity = CreateEntityByName("tf_projectile_pipe");
+		int entity;
+
+		if(b_StickyExtraGrenades[client])
+			entity = CreateEntityByName("tf_projectile_pipe_remote");
+		else
+			entity = CreateEntityByName("tf_projectile_pipe");
+
 		if(IsValidEntity(entity))
 		{
+			SetEntitySpike(entity, true);
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			static float pos[3], ang[3], vel_2[3];
 			GetClientEyeAngles(client, ang);
 			GetClientEyePosition(client, pos);	
@@ -178,6 +189,9 @@ public void PlaceableTempomaryArmorGrenade(int client)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+			if(b_StickyExtraGrenades[client])
+				SetEntProp(entity, Prop_Send, "m_iType", 1);
+				
 			for(int i; i<4; i++)
 			{
 				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelArmor, _, i);
@@ -259,37 +273,8 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
-							int Armor_Max = 300;
-							int Extra = 0;
-						
-							Extra = Armor_Level[target];
-								
-							Armor_Max = MaxArmorCalculation(Extra, target, 1.0);
-								
-							
-								
-							if(Armor_Charge[target] < Armor_Max)
-							{
-								if(Extra == 50)
-									Armor_Charge[target] += 75 / 5;
-									
-								else if(Extra == 100)
-									Armor_Charge[target] += 100 / 5;
-									
-								else if(Extra == 150)
-									Armor_Charge[target] += 200 / 5;
-									
-								else if(Extra == 200)
-									Armor_Charge[target] += 350 / 5;
-									
-								else
-									Armor_Charge[target] += 25 / 5;
-											
-								if(Armor_Charge[target] >= Armor_Max)
-								{
-									Armor_Charge[target] = Armor_Max;
-								}
-							}
+							//This gives 35% armor
+							GiveArmorViaPercentage(target, 0.075, 1.0);
 						}
 					}
 				}
@@ -321,10 +306,16 @@ public void PlaceableTempomaryHealingGrenade(int client)
 		ability_cooldown[client] = GetGameTime() + 140.0;
 		
 		CreateTimer(140.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-		
-		int entity = CreateEntityByName("tf_projectile_pipe");
+		int entity;		
+		if(b_StickyExtraGrenades[client])
+			entity = CreateEntityByName("tf_projectile_pipe_remote");
+		else
+			entity = CreateEntityByName("tf_projectile_pipe");
+
 		if(IsValidEntity(entity))
 		{
+			SetEntitySpike(entity, true);
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			static float pos[3], ang[3], vel_2[3];
 			GetClientEyeAngles(client, ang);
 			GetClientEyePosition(client, pos);	
@@ -346,6 +337,9 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
 			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+			if(b_StickyExtraGrenades[client])
+				SetEntProp(entity, Prop_Send, "m_iType", 1);
+
 			for(int i; i<4; i++)
 			{
 				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
@@ -457,7 +451,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 									Healing_Amount = 10.0;
 								}
 								EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 1.0);
-								StartHealingTimer(target, 0.1, RoundToCeil(Healing_Amount * 0.1), 10);
+								StartHealingTimer(target, 0.1, Healing_Amount * 0.1, 10);
 								
 								Healing_done_in_total[client] += RoundToCeil(Healing_Amount);		
 							}
@@ -483,7 +477,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 									Healing_Amount = 10.0;
 								}
 							
-								StartHealingTimer(baseboss_index_allied, 0.1, RoundToCeil(Healing_Amount * 0.1), 10);
+								StartHealingTimer(baseboss_index_allied, 0.1, Healing_Amount * 0.1, 10);
 							}
 						}
 					}
@@ -594,14 +588,19 @@ public void GearTesting(int client)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			ability_cooldown[client] = GetGameTime() + 500.0;
+			ability_cooldown[client] = GetGameTime() + 350.0;
 
 
-			CreateTimer(500.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(350.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 
 			SetEntityMoveType(client, MOVETYPE_NONE);
 
 			i_ClientHasCustomGearEquipped[client] = true;
+			b_ActivatedDuringLastMann[client] = false;
+			if(LastMann)
+			{
+				b_ActivatedDuringLastMann[client] = true;
+			}
 			
 			CreateTimer(3.0, QuantumActivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 		//	ClientCommand(client, "playgamesound mvm/mvm_tank_start.wav");
@@ -656,7 +655,6 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 
 			i_ClientHasCustomGearEquipped[client] = true;
 			
-
 			Store_GiveAll(client, 50, true);
 			ViewChange_PlayerModel(client);
 			
@@ -713,6 +711,13 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
+		if(b_ActivatedDuringLastMann[client])
+		{
+			int MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+			SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+		}
+		b_ActivatedDuringLastMann[client] = false;
+		//if in lastman, then give extra health.
 	}
 	return Plugin_Handled;
 }
@@ -732,4 +737,180 @@ public void SetAbilitySlotCount(int client, int value)
 public int GetAbilitySlotCount(int client)
 {
 	return Attack3AbilitySlotArray[client];
+}
+
+
+
+public void PlaceableTempomaryRepairGrenade(int client)
+{
+	if (ability_cooldown[client] < GetGameTime())
+	{
+		ability_cooldown[client] = GetGameTime() + 100.0;
+		CreateTimer(100.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+		int entity;		
+		if(b_StickyExtraGrenades[client])
+			entity = CreateEntityByName("tf_projectile_pipe_remote");
+		else
+			entity = CreateEntityByName("tf_projectile_pipe");
+
+		if(IsValidEntity(entity))
+		{
+			
+			SetEntitySpike(entity, true);
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
+			static float pos[3], ang[3], vel_2[3];
+			GetClientEyeAngles(client, ang);
+			GetClientEyePosition(client, pos);	
+		
+			ang[0] -= 8.0;
+			
+			float speed = 1500.0;
+			
+			vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+			vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+			vel_2[2] = Sine(DegToRad(ang[0]))*speed;
+			vel_2[2] *= -1;
+			
+			int team = GetClientTeam(client);
+				
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
+			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", 0);
+			if(b_StickyExtraGrenades[client])
+				SetEntProp(entity, Prop_Send, "m_iType", 1);
+
+			for(int i; i<4; i++)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelArmor, _, i);
+			}
+			
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", EntRefToEntIndex(i_StickyAccessoryLogicItem[client]));
+			//Make them barely bounce at all.
+			DispatchSpawn(entity);
+			TeleportEntity(entity, pos, ang, vel_2);
+			
+			IsCustomTfGrenadeProjectile(entity, 9999999.0);
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.m_bThisEntityIgnored = true;
+			
+			f_HealDelay[entity] = GetGameTime() + 1.0;
+			f_Duration[entity] = GetGameTime() + 10.0;
+			
+		//	SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
+			 
+			DataPack pack;
+			CreateDataTimer(0.1, Timer_Detect_Player_Near_Repair_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(EntIndexToEntRef(entity));
+	//		pack.WriteCell(Healing_Amount);	
+			pack.WriteCell(GetClientUserId(client));
+		}
+	}
+	else
+	{
+		float Ability_CD = ability_cooldown[client] - GetGameTime();
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
+
+public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+//	float Healing_Amount = pack.ReadCell();
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		if(IsValidClient(client))
+		{
+			float powerup_pos[3];
+			float client_pos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
+			if(f_HealDelay[entity] < GetGameTime())
+			{
+				f_HealDelay[entity] = GetGameTime() + 1.0;
+				int color[4];
+				
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 255;
+				color[3] = 255;
+		
+				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
+	   			TE_SendToAll();
+				bool Repaired_Building = false;
+				float RepairRateBonus = Attributes_FindOnPlayer(client, 95); //Sentry attack speed bonus
+				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
+				int CurrentMetal = GetAmmo(client, 3);
+
+				CurrentMetal *= 5;
+				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+				{
+					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+					if(IsValidEntity(entity_close))
+					{
+						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", client_pos);
+						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
+						{
+							Repaired_Building = true;
+							powerup_pos[2] += 45.0;
+							ParticleEffectAt(client_pos, "halloween_boss_axe_hit_sparks", 1.0);
+							if(CurrentMetal < healing_Amount)
+							{
+								healing_Amount = CurrentMetal;
+							}
+							if(CurrentMetal > 0)
+							{
+								int HealthBefore = GetEntProp(entity_close, Prop_Send, "m_iHealth");
+								SetVariantInt(healing_Amount);
+								AcceptEntityInput(entity_close, "AddHealth");
+								int HealthAfter = GetEntProp(entity_close, Prop_Send, "m_iHealth");
+
+								CurrentMetal -= (HealthAfter - HealthBefore) / 5;
+
+							}
+							Resistance_for_building_High[entity_close] = GetGameTime() + 1.1; 
+						}
+					}
+				}
+				CurrentMetal /= 5;
+				SetAmmo(client, 3, CurrentMetal);
+				CurrentAmmo[client][3] = GetAmmo(client, 3);
+				if(Repaired_Building)
+				{
+					EmitSoundToAll(SOUND_REPAIR_BEAM, entity, SNDCHAN_STATIC, 90, _, 1.0);
+					EmitSoundToAll(SOUND_REPAIR_BEAM, entity, SNDCHAN_STATIC, 90, _, 1.0);
+				}
+   			}
+   			if(f_Duration[entity] < GetGameTime())
+   			{
+   				RemoveEntity(entity);
+   				return Plugin_Stop;	
+   			}
+   			return Plugin_Continue;
+		}
+		else
+		{
+			return Plugin_Stop;	
+		}
+	}
+	else
+	{
+		return Plugin_Stop;	
+	}
 }

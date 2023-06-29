@@ -32,7 +32,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 
-	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -56,7 +56,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
+
 	"npc/metropolice/vo/pickupthecan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -160,8 +160,10 @@ methodmap MedivalMonk < CClotBody
 	public MedivalMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalMonk npc = view_as<MedivalMonk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "75000", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_MONK;
+		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -175,7 +177,7 @@ methodmap MedivalMonk < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalMonk_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 
 		npc.m_iState = 0;
@@ -283,11 +285,11 @@ public void MedivalMonk_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					PF_SetGoalEntity(npc.index, npc.m_iTarget);
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -296,11 +298,11 @@ public void MedivalMonk_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MONK_WALK");
 				}
-				PF_StartPathing(npc.index); //Charge at them!
+				NPC_StartPathing(npc.index); //Charge at them!
 			}
 			else
 			{
-				PF_StopPathing(iNPC);
+				NPC_StopPathing(iNPC);
 				npc.m_iTarget = GetClosestTarget(npc.index); //Find new target instantly.
 			}
 		}
@@ -322,11 +324,11 @@ public void MedivalMonk_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index]);
-					PF_SetGoalVector(npc.index, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
 				{
-					PF_SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
+					NPC_SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -335,7 +337,7 @@ public void MedivalMonk_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MONK_WALK");
 				}
-				PF_StartPathing(npc.index); //Charge at them!
+				NPC_StartPathing(npc.index); //Charge at them!
 			}
 			else
 			{
@@ -348,15 +350,15 @@ public void MedivalMonk_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_MONK_IDLE");
-						PF_StopPathing(iNPC);
+						NPC_StopPathing(iNPC);
 					}
 				}
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					PF_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-					PF_StartPathing(iNPC);
+					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+					NPC_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;
@@ -544,7 +546,7 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_MONK_IDLE");
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 					}
 				}
 			}
@@ -558,7 +560,7 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 	}
 }
 
-public Action MedivalMonk_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalMonk_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -585,7 +587,7 @@ public void MedivalMonk_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalMonk_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalMonk_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
@@ -640,16 +642,24 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	}
 	else
 	{
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+		if(!NpcStats_IsEnemySilenced(Monk))
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK)
+			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 			{
-				static float pos2[3];
-				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != MEDIVAL_MONK && i_NpcInternalId[entity_close] != RAIDMODE_GOD_ARKANTOS)
 				{
-					SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+					bool regrow = true;
+					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
+					if(regrow)
+					{
+						static float pos2[3];
+						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+						{
+							SetEntProp(entity_close, Prop_Data, "m_iHealth",GetEntProp(entity_close, Prop_Data, "m_iMaxHealth"));
+						}
+					}
 				}
 			}
 		}

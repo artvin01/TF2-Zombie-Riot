@@ -56,7 +56,7 @@ static char g_AngerSounds[][] = {
 	"vo/medic_weapon_taunts03.mp3",
 };
 static const char g_IdleMusic[][] = {
-	"#ui/gamestartup12.mp3",
+	"#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",
 };
 static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
@@ -113,6 +113,15 @@ static bool b_allies[MAXENTITIES];
 static bool b_lowplayercount[MAXENTITIES];
 static int i_currentwave[MAXENTITIES];
 
+//Blit'z item drop relate stuff
+
+bool b_Schwertkrieg_Alive= false;
+bool b_Donnerkrieg_Alive = false;
+bool b_Valid_Wave = false;
+bool b_Begin_Dialogue = false;
+bool b_was_talking = false;
+float g_f_blitz_dialogue_timesincehasbeenhurt;
+
   ///////////////////////
  ///BlitzLight Floats///
 ///////////////////////
@@ -143,7 +152,7 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}		
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
-	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSound(g_IdleMusic[i]);   }
+	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
@@ -159,7 +168,6 @@ public void Blitzkrieg_OnMapStart()
 	PrecacheSound("mvm/mvm_tank_end.wav");
 	PrecacheSound("mvm/mvm_tank_horn.wav");
 	PrecacheSound("mvm/mvm_tank_explode.wav");
-	PrecacheSound("zombiesurvival/beats/defaultzombiev2/10.mp3");
 	
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
@@ -171,10 +179,14 @@ public void Blitzkrieg_OnMapStart()
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
 	
-	
+	b_Schwertkrieg_Alive= false;	//I SWEAR I KNOW WHAT IM DOING
+	b_Donnerkrieg_Alive = false;
+	b_Valid_Wave = false;
+	b_Begin_Dialogue = false;
+	b_was_talking = false;
 }
 
-static float fl_PlayMusicSound[MAXENTITIES];
+//static float fl_PlayMusicSound[MAXENTITIES];
 
 methodmap Blitzkrieg < CClotBody
 {
@@ -183,11 +195,11 @@ methodmap Blitzkrieg < CClotBody
 		public get()							{ return i_AmountProjectiles[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AmountProjectiles[this.index] = TempValueForProperty; }
 	}
-	property float m_flPlayMusicSound
-	{
-		public get()							{ return fl_PlayMusicSound[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_PlayMusicSound[this.index] = TempValueForProperty; }
-	}
+//	property float m_flPlayMusicSound
+//	{
+//		public get()							{ return fl_PlayMusicSound[this.index]; }
+//		public set(float TempValueForProperty) 	{ fl_PlayMusicSound[this.index] = TempValueForProperty; }
+//	}
 		public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -209,17 +221,20 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayIdleAlertSound()");
 		#endif
 	}
+	/*
 	public void PlayMusicSound() {
 		if(this.m_flPlayMusicSound > GetEngineTime())
 			return;
 			
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitSoundToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		this.m_flPlayMusicSound = GetEngineTime() + 233.0;
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flPlayMusicSound = GetEngineTime() + 228.0;
+		
 		
 	}
+	*/
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
@@ -299,10 +314,16 @@ methodmap Blitzkrieg < CClotBody
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_BLITZKRIEG;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		
+
+		b_was_talking = false;
+		b_Valid_Wave = false;
+		b_Begin_Dialogue = false;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -318,11 +339,13 @@ methodmap Blitzkrieg < CClotBody
 			1 = Primary Run.
 			2 = Melee Run.
 		*/
-		npc.m_flPlayMusicSound = 0.0;
+//		npc.m_flPlayMusicSound = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+
+		Music_SetRaidMusic(g_IdleMusic[GetRandomInt(0, sizeof(g_IdleMusic) - 1)], 228, true);
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -345,6 +368,7 @@ methodmap Blitzkrieg < CClotBody
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
 		i_currentwave[npc.index]=(ZR_GetWaveCount()+1);
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		//wave control	| at which wave or beyond will the life activate | Now that I think about it, this one might just be useless
 		i_wave_life1[npc.index] = 15;
@@ -403,10 +427,18 @@ methodmap Blitzkrieg < CClotBody
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;	// used for extra rocket spam along side blitz's current rockets
 		
 		SDKHook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
+		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+			
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
+		SetVariantColor(view_as<int>({145, 47, 47, 255}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_rocketlauncher.mdl");
@@ -447,6 +479,7 @@ methodmap Blitzkrieg < CClotBody
 		//IDLE
 		npc.m_flSpeed = fl_move_speed[npc.index];
 		
+		
 		fl_TheFinalCountdown[npc.index] = 0.0;	//used for timer logic on blitzlight
 		fl_TheFinalCountdown2[npc.index] = 0.0;	//used for timer logic on blitzlight
 		i_PrimaryRocketsFired[npc.index] = 0;	//Checks how many rockets haave been fired by blitz's RL.
@@ -454,9 +487,25 @@ methodmap Blitzkrieg < CClotBody
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
 		
-		//adjust the "/4.0" to adjust how hard raid scaling happens. however be warned that on high player counts/waves blitz's scaling can scale extremely highly. 
-		fl_blitzscale[npc.index] = (RaidModeScaling/4.0)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
-		fl_blitzscale[npc.index] *= 60/i_currentwave[npc.index]; //and now we do extra math to make sure blitz's scaling doesn't go to the moon on later waves.
+		fl_blitzscale[npc.index] = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		if(i_currentwave[npc.index]<30)
+		{
+			fl_blitzscale[npc.index] *= 2.0;	//blitz is quite weak on wave 15
+		}
+		else if(i_currentwave[npc.index]>=60)
+		{
+			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
+		}
+		if(i_currentwave[npc.index]>60)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
+		}
+		if(i_currentwave[npc.index]==60)
+		{
+			b_Valid_Wave = true;
+		}
+		
+		npc.m_flMeleeArmor = 1.25;
 		
 		/*
 		Original scaling is divided by 4, the multiplied by the numbers bellow.
@@ -471,15 +520,14 @@ methodmap Blitzkrieg < CClotBody
 		b_BlitzLight_stop[npc.index]=false;		//Tell's the npc when blitzlight has ended
 		b_BlitzLight_sound[npc.index]=false;	//Stops sounds related to blitzlight.
 		
-		BlitzLight_Duration_notick[npc.index]=GetGameTime(npc.index)+300.0;	//Used to findout the current duration of blitzlight without tick's
+		BlitzLight_Duration_notick[npc.index]=GetGameTime(npc.index)+1000.0;	//Used to findout the current duration of blitzlight without tick's
 		
 		i_ExplosiveProjectileHexArray[npc.index] = EP_NO_KNOCKBACK;	//Block's KB from certain abilities. mainly blitzlight
 		
 		b_final_push[npc.index] = false;			//used for blitzlight logic.
 		b_Are_we_reloading[npc.index] = false;		//Tell's the npc that it is indeed reloading and that its a good idea to switch to melee. blocks certain abilities, also is used to block the RJ during blitzlight.
-		npc.PlayMusicSound();
+//		npc.PlayMusicSound();
 		npc.StartPathing();
-		Music_Stop_All_Beat(client);
 		
 		npc.m_flCharge_Duration = 0.0;					//during blitzlight, blitz's teleport gets replaced with a dash.
 		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;
@@ -490,11 +538,8 @@ methodmap Blitzkrieg < CClotBody
 		
 		b_allies[npc.index]=false;
 		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
 		Citizen_MiniBossSpawn(npc.index);
-	
+		Building_RaidSpawned(npc.index);
 		return npc;
 		
 		/*
@@ -514,7 +559,6 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		Music_Stop_All_Blitzkrieg(entity);
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
@@ -549,6 +593,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
+		/*
 		for(int client=1; client<=MaxClients; client++)
 		{
 			if(IsClientInGame(client))
@@ -561,8 +606,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
+		*/
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	int closest = npc.m_iTarget;
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -659,9 +705,9 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 				
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
 			
@@ -747,49 +793,59 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 				b_BlitzLight_sound[npc.index]=true;
 			}
-			if(!b_BlitzLight[npc.index])	//this checks if the npc is in blitzlight, if it is use dash instead of teleport.
+			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
-				if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+				if(!b_BlitzLight[npc.index])	//this checks if the npc is in blitzlight, if it is use dash instead of teleport.
 				{
-					static float flVel[3];
-					GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
-	
-					if (flVel[0] >= 190.0)
+					if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
 					{
-						npc.FaceTowards(vecTarget);
-						npc.FaceTowards(vecTarget);
-						npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
-						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-						
-						if(Tele_Check > 120.0)
+						static float flVel[3];
+						GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
+		
+						if (flVel[0] >= 190.0)
 						{
-							TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-							npc.PlayTeleportSound();
-						}
-					}
-				}
-			}
-			else
-			{
-				npc.m_flSpeed=fl_move_speed[npc.index];
-				if(npc.m_flCharge_Duration < GetGameTime(npc.index))
-				{
-					if(npc.m_flCharge_delay < GetGameTime(npc.index))
-					{
-						int Enemy_I_See;
-						Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-						//Target close enough to hit
-						if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
-						{
-							npc.m_flCharge_delay = GetGameTime(npc.index) + 7.5;
-							npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
-							PluginBot_Jump(npc.index, vecTarget);
+							npc.FaceTowards(vecTarget);
+							npc.FaceTowards(vecTarget);
+							npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
+							float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
+							
+							if(Tele_Check > 120.0)
+							{
+								bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+								if(Succeed)
+								{
+									npc.PlayTeleportSound();
+								}
+								else
+								{
+									npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+								}
+							}
 						}
 					}
 				}
 				else
 				{
-					npc.m_flSpeed=325.0;
+					npc.m_flSpeed=fl_move_speed[npc.index];
+					if(npc.m_flCharge_Duration < GetGameTime(npc.index))
+					{
+						if(npc.m_flCharge_delay < GetGameTime(npc.index))
+						{
+							int Enemy_I_See;
+							Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+							//Target close enough to hit
+							if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+							{
+								npc.m_flCharge_delay = GetGameTime(npc.index) + 7.5;
+								npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
+								PluginBot_Jump(npc.index, vecTarget);
+							}
+						}
+					}
+					else
+					{
+						npc.m_flSpeed=325.0;
+					}
 				}
 			}
 			if(i_PrimaryRocketsFired[npc.index] > i_maxfirerockets[npc.index])	//Every x rockets npc enters a 10 second reload time that scales on lifeloss reload.
@@ -878,7 +934,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 11.5 * i_HealthScale[npc.index];
+								meleedmg = 22.5 * i_HealthScale[npc.index];
 								if(target <= MaxClients)
 								{
 									float Bonus_damage = 1.0;
@@ -891,7 +947,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 									
 									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 									{
-										Bonus_damage = 1.5;
+										Bonus_damage = 1.3;
 									}
 									meleedmg *= Bonus_damage;	//Blitz does 50% less damage to players who hold a melee. blitz also takes base melee damage and not 50% extra
 									
@@ -899,19 +955,26 @@ public void Blitzkrieg_ClotThink(int iNPC)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 								
 								npc.PlayMeleeHitSound();		
-								if(IsValidClient(target))	//This makes the target take extra knockback if he is ubered.
+								bool Knocked = false;
+									
+								if(IsValidClient(target))
 								{
-									if(IsInvuln(target))
+									if (IsInvuln(target))
 									{
-										Custom_Knockback(npc.index, target, 450.0);
+										Knocked = true;
+										Custom_Knockback(npc.index, target, 900.0, true);
 										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
 									else
 									{
-										Custom_Knockback(npc.index, target, 100.0);
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 									}
 								}
+									
+								if(!Knocked)
+									Custom_Knockback(npc.index, target, 650.0); 
 								
 							
 								// Hit sound
@@ -936,20 +999,19 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
-	npc.PlayMusicSound();
+//	npc.PlayMusicSound();
 	npc.PlayIdleAlertSound();
 }
 
-public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
-	if(attacker <= 0)
+	if(attacker <= 0 || attacker > MaxClients)
 		return Plugin_Continue;
 		
 	Blitzkrieg npc = view_as<Blitzkrieg>(victim);
@@ -964,7 +1026,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 	
-	if(flDistanceToTarget > 1000000 && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index))	//Basically we "punish(ment)" players who are too far from blitz.
+	if(flDistanceToTarget > 1000000 && fl_blitz_ioc_punish_timer[npc.index][attacker] < GetGameTime(npc.index) && IsPlayerAlive(attacker) && TeutonType[attacker] == TEUTON_NONE && dieingstate[attacker] == 0)	//Basically we "punish(ment)" players who are too far from blitz.
 	{
 		//CPrintToChatAll("Target inside distance %i", attacker);
 		fl_blitz_ioc_punish_timer[npc.index][attacker]=GetGameTime(npc.index)+5.0;
@@ -1235,18 +1297,20 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 		int spawn_index;
 		heck= maxhealth;
 		maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
-		spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-		if(spawn_index > MaxClients)	//Currently always spawns.
-		{
-		
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-		}
 		if(i_currentwave[npc.index]==45)	//Only spwans if the wave is 45.
 		{
 			spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			Zombies_Currently_Still_Ongoing += 1;
 			if(spawn_index > MaxClients)
 			{
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
+			spawn_index = Npc_Create(ALT_MEDIC_SUPPERIOR_MAGE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			Zombies_Currently_Still_Ongoing += 1;
+			if(spawn_index > MaxClients)
+			{
+			
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}
@@ -1256,6 +1320,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 			spawn_index = Npc_Create(ALT_DONNERKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			Zombies_Currently_Still_Ongoing += 1;
 			if(spawn_index > MaxClients)
 			{
 				CPrintToChatAll("{crimson}Blitzkrieg{default}: Ay, Donnerkrieg, how ya doin?");
@@ -1264,6 +1329,7 @@ public Action Blitzkrieg_ClotDamaged(int victim, int &attacker, int &inflictor, 
 			}
 			maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
 			spawn_index = Npc_Create(ALT_SCHWERTKRIEG, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			Zombies_Currently_Still_Ongoing += 1;
 			if(spawn_index > MaxClients)
 			{
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
@@ -1278,10 +1344,31 @@ public void Blitzkrieg_NPCDeath(int entity)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(entity);
 	npc.PlayDeathSound();
-	Music_Stop_All_Blitzkrieg(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Blitzkrieg_ClotDamaged);
+	
 //	Music_RoundEnd(entity);
+	
+	
+	if(b_Valid_Wave && b_Donnerkrieg_Alive && b_Schwertkrieg_Alive)
+	{
+		b_was_talking = false;
+		b_Begin_Dialogue = true;
+		g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+		ReviveAll(true);
+		
+		RaidModeTime += 60.0;
+
+		StopSound(npc.index,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+
+		int i = MaxClients + 1;
+		while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
+		{
+			RemoveEntity(i);
+		}
+	}
 	
 	int closest = npc.m_iTarget;
 	
@@ -1443,7 +1530,6 @@ public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 		
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(enemy);
-		vecTarget[2] -= 54.0;
 		
 		Handle data = CreateDataPack();
 		WritePackFloat(data, vecTarget[0]);
@@ -1607,8 +1693,9 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 			{
 				alpha=2.75;
 			}
-			
+			startPosition[2] += 25.0;
 			makeexplosion(client, client, startPosition, "", RoundToCeil((225*alpha)*zr_smallmapbalancemulti.FloatValue), 350);
+			startPosition[2] -= 25.0;
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 			TE_SendToAll();
@@ -1630,17 +1717,17 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 			EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 		}
 }
-
+/*
 void Music_Stop_All_Blitzkrieg(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#ui/gamestartup12.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
+	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3");
 }
 void Music_Stop_All_Beat(int entity)
 {
@@ -1652,6 +1739,7 @@ void Music_Stop_All_Beat(int entity)
 	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
 	StopSound(entity, SNDCHAN_AUTO, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
 }
+*/
 
 
 
@@ -1928,7 +2016,12 @@ public void BlitzLight_DealDamage(int entity)
 	if(i_BlitzLight_dmg_throttle[npc.index] > 6)	//do damage 10 times a second.
 	{
 		i_BlitzLight_dmg_throttle[npc.index] = 0;	//damage throttle
-		Explode_Logic_Custom(BlitzLight_DMG[npc.index] * 0.25, entity, entity, -1, beamLoc, 2*BlitzLight_DMG_Radius[npc.index] , _ , _ , true);
+		float dmg_pen = 0.25;
+		if(i_currentwave[npc.index]>=60)
+		{
+			dmg_pen = 0.375;	//A slight buff to damage on wave 60
+		}
+		Explode_Logic_Custom(BlitzLight_DMG[npc.index] * dmg_pen, entity, entity, -1, beamLoc, 2*BlitzLight_DMG_Radius[npc.index] , _ , _ , true);
 		//CPrintToChatAll("dmg: %fl", BlitzLight_DMG[npc.index]);
 		//CPrintToChatAll("radius: %fl", 1.25*BlitzLight_DMG_Radius[npc.index]);
 		beamLoc[2]+=10;

@@ -143,9 +143,11 @@ methodmap PhantomKnight < CClotBody
 	public PhantomKnight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
-		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!
 		i_NpcInternalId[npc.index] = PHANTOM_KNIGHT;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -187,7 +189,7 @@ methodmap PhantomKnight < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -283,7 +285,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -358,11 +360,11 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 		
@@ -614,7 +616,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action PhantomKnight_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action PhantomKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -633,25 +635,28 @@ public Action PhantomKnight_TraceAttack(int victim, int& attacker, int& inflicto
 {
 	PhantomKnight npc = view_as<PhantomKnight>(victim);
 
-	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		if(hitgroup == HITGROUP_HEAD)
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
-			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			if(hitgroup == HITGROUP_HEAD)
 			{
-				b_WasAHeadShot[victim] = true;
-				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
-				npc.m_blPlayHurtAnimation = true;
+				if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				{
+					b_WasAHeadShot[victim] = true;
+					npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+					npc.m_blPlayHurtAnimation = true;
+				}
 			}
-		}
-		else
-		{
-			if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+			else
 			{
-				b_WasAHeadShot[victim] = false;
-				npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
-				npc.m_blPlayHurtAnimation = true;
-			}	
+				if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+				{
+					b_WasAHeadShot[victim] = false;
+					npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 1.0;
+					npc.m_blPlayHurtAnimation = true;
+				}	
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -663,7 +668,7 @@ public void PhantomKnight_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, PhantomKnight_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
@@ -689,7 +694,8 @@ public void PhantomKnight_NPCDeath(int entity)
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 		DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_MODEL);
-
+		SetVariantInt(1);
+		AcceptEntityInput(entity_death, "SetBodyGroup");	
 		DispatchSpawn(entity_death);
 		
 

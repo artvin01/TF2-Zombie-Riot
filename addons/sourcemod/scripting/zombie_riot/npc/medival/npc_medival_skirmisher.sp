@@ -39,7 +39,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
+
 	"npc/metropolice/vo/pickupthecan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -148,8 +148,10 @@ methodmap MedivalSkirmisher < CClotBody
 	public MedivalSkirmisher(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalSkirmisher npc = view_as<MedivalSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_SKIRMISHER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -167,7 +169,7 @@ methodmap MedivalSkirmisher < CClotBody
 		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSkirmisher_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 
 
@@ -238,7 +240,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -254,29 +256,6 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				/*
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
 			
 			if(flDistanceToTarget < 160000)
 			{
@@ -295,7 +274,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 						
 						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 						
-						PF_SetGoalVector(npc.index, vBackoffPos);
+						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
 				}
 				else
@@ -319,7 +298,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 							npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
 						}
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
 					else
@@ -332,10 +311,34 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 			}
+			
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
+				
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				/*
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
+				*/
+				
+				
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			} else {
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -367,7 +370,7 @@ public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 	
 }
 
-public Action MedivalSkirmisher_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSkirmisher_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -394,7 +397,7 @@ public void MedivalSkirmisher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSkirmisher_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

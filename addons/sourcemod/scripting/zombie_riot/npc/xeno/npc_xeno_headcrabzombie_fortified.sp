@@ -132,6 +132,7 @@ methodmap XenoFortifiedHeadcrabZombie < CClotBody
 		XenoFortifiedHeadcrabZombie npc = view_as<XenoFortifiedHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "650", ally));
 		
 		i_NpcInternalId[npc.index] = XENO_FORTIFIED_HEADCRAB_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -146,7 +147,7 @@ methodmap XenoFortifiedHeadcrabZombie < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoFortifiedHeadcrabZombie_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoFortifiedHeadcrabZombie_ClotThink);
 		
 		
@@ -214,7 +215,7 @@ public void XenoFortifiedHeadcrabZombie_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -230,11 +231,11 @@ public void XenoFortifiedHeadcrabZombie_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		npc.StartPathing();
 		
@@ -307,7 +308,7 @@ public void XenoFortifiedHeadcrabZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -316,25 +317,27 @@ public void XenoFortifiedHeadcrabZombie_ClotThink(int iNPC)
 }
 
 
-public Action XenoFortifiedHeadcrabZombie_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoFortifiedHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
 	XenoFortifiedHeadcrabZombie npc = view_as<XenoFortifiedHeadcrabZombie>(victim);
-	
-	if(!npc.bXenoInfectedSpecialHurt)
+	if(!NpcStats_IsEnemySilenced(victim))
 	{
-		if(EscapeModeForNpc)
+		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			npc.m_flSpeed = 310.0;
+			if(EscapeModeForNpc)
+			{
+				npc.m_flSpeed = 310.0;
+			}
+			else
+			{
+				npc.m_flSpeed = 260.0;
+			}
+			npc.bXenoInfectedSpecialHurt = true;
 		}
-		else
-		{
-			npc.m_flSpeed = 260.0;
-		}
-		npc.bXenoInfectedSpecialHurt = true;
 	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -353,7 +356,7 @@ public void XenoFortifiedHeadcrabZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoFortifiedHeadcrabZombie_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoFortifiedHeadcrabZombie_ClotThink);
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");

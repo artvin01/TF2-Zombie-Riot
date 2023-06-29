@@ -303,7 +303,7 @@ methodmap BunkerKahml < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerKahml_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerKahml_ClotThink);
 		
 		fl_AbilityManagement_Timer[npc.index] = gameTime + fl_AbilityFirstUsageTimer;
@@ -617,11 +617,11 @@ public void BunkerKahml_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(npc.m_flNextTeleport < GetGameTime(npc.index) && !b_TeleporterReady[npc.index] && flDistanceToTarget > 1520000 && !b_AnhilationReady[npc.index])
 		{
@@ -665,7 +665,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 			else
 			{
 				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
-				//PF_StopPathing(npc.index);
+				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
 				if(b_AbilityDoubleBarrel[npc.index])
@@ -1085,14 +1085,14 @@ public void BunkerKahml_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action BunkerKahml_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action BunkerKahml_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	BunkerKahml npc = view_as<BunkerKahml>(victim);
 	
@@ -1120,7 +1120,7 @@ public void BunkerKahml_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, BunkerKahml_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, BunkerKahml_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))

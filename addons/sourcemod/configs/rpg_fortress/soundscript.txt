@@ -729,7 +729,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Talk"
+"Rpgfortress.Alyx.Talk"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -753,7 +753,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Leave"
+"Rpgfortress.Alyx.Leave"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -776,7 +776,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Accept"
+"Rpgfortress.Alyx.Accept"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -792,7 +792,7 @@
 	}
 }
 
-"Rpgfortress.Alex.Turnin"
+"Rpgfortress.Alyx.Turnin"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -810,7 +810,7 @@
 	}
 }
 
-"Rpgfortress.Alex.LastAccept"
+"Rpgfortress.Alyx.LastAccept"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -825,7 +825,7 @@
 	}
 }
 
-"Rpgfortress.Alex.LastTurnin"
+"Rpgfortress.Alyx.LastTurnin"
 {
 	"channel"	"CHAN_VOICE"
 	"volume"	"1.0"
@@ -1100,5 +1100,284 @@
 	"rndwave"
 	{
 		"wave"  "vo/spy_sf13_magic_reac06.mp3"
+	}
+}
+
+"Rpgfortress.RebelMale.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/male01/question01.wav"
+		"wave"	"vo/npc/male01/question02.wav"
+		"wave"	"vo/npc/male01/question03.wav"
+		"wave"	"vo/npc/male01/question04.wav"
+		"wave"	"vo/npc/male01/question05.wav"
+		"wave"	"vo/npc/male01/question06.wav"
+		"wave"	"vo/npc/male01/question07.wav"
+		"wave"	"vo/npc/male01/question09.wav"
+		"wave"	"vo/npc/male01/question13.wav"
+		"wave"	"vo/npc/male01/question15.wav"
+		"wave"	"vo/npc/male01/question17.wav"
+		"wave"	"vo/npc/male01/question18.wav"
+		"wave"	"vo/npc/male01/question19.wav"
+		"wave"	"vo/npc/male01/question20.wav"
+		"wave"	"vo/npc/male01/question23.wav"
+		"wave"	"vo/npc/male01/question25.wav"
+		"wave"	"vo/npc/male01/question26.wav"
+		"wave"	"vo/npc/male01/question27.wav"
+		"wave"	"vo/npc/male01/question28.wav"
+		"wave"	"vo/npc/male01/question31.wav"
+	}
+}
+
+"Rpgfortress.RebelMale.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/male01/illstayhere01.wav"
+		"wave"  "vo/npc/male01/imstickinghere01.wav"
+		"wave"	"vo/npc/male01/question14.wav"
+		"wave"	"vo/npc/male01/question22.wav"
+		"wave"	"vo/npc/male01/answer01.wav"
+		"wave"	"vo/npc/male01/answer02.wav"
+		"wave"	"vo/npc/male01/answer03.wav"
+		"wave"	"vo/npc/male01/answer04.wav"
+		"wave"	"vo/npc/male01/answer07.wav"
+		"wave"	"vo/npc/male01/answer08.wav"
+		"wave"	"vo/npc/male01/answer12.wav"
+		"wave"	"vo/npc/male01/answer13.wav"
+		"wave"	"vo/npc/male01/answer14.wav"
+		"wave"	"vo/npc/male01/answer16.wav"
+		"wave"	"vo/npc/male01/answer18.wav"
+		"wave"	"vo/npc/male01/answer19.wav"
+		"wave"	"vo/npc/male01/answer20.wav"
+		"wave"	"vo/npc/male01/answer21.wav"
+		"wave"	"vo/npc/male01/answer22.wav"
+		"wave"	"vo/npc/male01/answer23.wav"
+		"wave"	"vo/npc/male01/answer24.wav"
+		"wave"	"vo/npc/male01/answer25.wav"
+		"wave"	"vo/npc/male01/answer28.wav"
+		"wave"	"vo/npc/male01/answer29.wav"
+		"wave"	"vo/npc/male01/answer32.wav"
+		"wave"	"vo/npc/male01/answer33.wav"
+		"wave"	"vo/npc/male01/answer34.wav"
+		"wave"	"vo/npc/male01/answer35.wav"
+		"wave"	"vo/npc/male01/answer36.wav"
+		"wave"	"vo/npc/male01/answer37.wav"
+		"wave"	"vo/npc/male01/answer38.wav"
+		"wave"	"vo/npc/male01/answer40.wav"
+	}
+}
+
+"Rpgfortress.RebelMale.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/male01/question11.wav"
+		"wave"	"vo/npc/male01/question16.wav"
+		"wave"	"vo/npc/male01/question21.wav"
+	}
+}
+
+"Rpgfortress.RebelMale.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/male01/fantastic01.wav"
+		"wave"  "vo/npc/male01/fantastic02.wav"
+		"wave"	"vo/npc/male01/nice.wav"
+		"wave"	"vo/npc/male01/question12.wav"
+		"wave"	"vo/npc/male01/question29.wav"
+		"wave"	"vo/npc/male01/question30.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/female01/question01.wav"
+		"wave"	"vo/npc/female01/question02.wav"
+		"wave"	"vo/npc/female01/question03.wav"
+		"wave"	"vo/npc/female01/question04.wav"
+		"wave"	"vo/npc/female01/question05.wav"
+		"wave"	"vo/npc/female01/question06.wav"
+		"wave"	"vo/npc/female01/question07.wav"
+		"wave"	"vo/npc/female01/question09.wav"
+		"wave"	"vo/npc/female01/question13.wav"
+		"wave"	"vo/npc/female01/question15.wav"
+		"wave"	"vo/npc/female01/question17.wav"
+		"wave"	"vo/npc/female01/question18.wav"
+		"wave"	"vo/npc/female01/question19.wav"
+		"wave"	"vo/npc/female01/question20.wav"
+		"wave"	"vo/npc/female01/question23.wav"
+		"wave"	"vo/npc/female01/question25.wav"
+		"wave"	"vo/npc/female01/question26.wav"
+		"wave"	"vo/npc/female01/question27.wav"
+		"wave"	"vo/npc/female01/question28.wav"
+		"wave"	"vo/npc/female01/question31.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/female01/illstayhere01.wav"
+		"wave"  "vo/npc/female01/imstickinghere01.wav"
+		"wave"	"vo/npc/female01/question14.wav"
+		"wave"	"vo/npc/female01/question22.wav"
+		"wave"	"vo/npc/female01/answer01.wav"
+		"wave"	"vo/npc/female01/answer02.wav"
+		"wave"	"vo/npc/female01/answer03.wav"
+		"wave"	"vo/npc/female01/answer04.wav"
+		"wave"	"vo/npc/female01/answer07.wav"
+		"wave"	"vo/npc/female01/answer08.wav"
+		"wave"	"vo/npc/female01/answer12.wav"
+		"wave"	"vo/npc/female01/answer13.wav"
+		"wave"	"vo/npc/female01/answer14.wav"
+		"wave"	"vo/npc/female01/answer16.wav"
+		"wave"	"vo/npc/female01/answer18.wav"
+		"wave"	"vo/npc/female01/answer19.wav"
+		"wave"	"vo/npc/female01/answer20.wav"
+		"wave"	"vo/npc/female01/answer21.wav"
+		"wave"	"vo/npc/female01/answer22.wav"
+		"wave"	"vo/npc/female01/answer23.wav"
+		"wave"	"vo/npc/female01/answer24.wav"
+		"wave"	"vo/npc/female01/answer25.wav"
+		"wave"	"vo/npc/female01/answer28.wav"
+		"wave"	"vo/npc/female01/answer29.wav"
+		"wave"	"vo/npc/female01/answer32.wav"
+		"wave"	"vo/npc/female01/answer33.wav"
+		"wave"	"vo/npc/female01/answer34.wav"
+		"wave"	"vo/npc/female01/answer35.wav"
+		"wave"	"vo/npc/female01/answer36.wav"
+		"wave"	"vo/npc/female01/answer37.wav"
+		"wave"	"vo/npc/female01/answer38.wav"
+		"wave"	"vo/npc/female01/answer40.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	"vo/npc/female01/question11.wav"
+		"wave"	"vo/npc/female01/question16.wav"
+		"wave"	"vo/npc/female01/question21.wav"
+	}
+}
+
+"Rpgfortress.RebelFemale.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/npc/female01/fantastic01.wav"
+		"wave"  "vo/npc/female01/fantastic02.wav"
+		"wave"	"vo/npc/female01/nice.wav"
+		"wave"	"vo/npc/female01/question12.wav"
+		"wave"	"vo/npc/female01/question29.wav"
+		"wave"	"vo/npc/female01/question30.wav"
+	}
+}
+
+"Rpgfortress.Eli.Talk"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/eli_allset.wav"
+		"wave"	"vo/eli_lab/eli_welcometolab.wav"
+	}
+}
+
+"Rpgfortress.Eli.Leave"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/eli_gowithalyx01.wav"
+		"wave"  "vo/eli_lab/eli_gowithalyx02.wav"
+		"wave"  "vo/eli_lab/eli_gowithalyx03.wav"
+		"wave"	"vo/eli_lab/eli_portal02.wav"
+		"wave"	"vo/citadel/eli_dontworryboutme.wav"
+		"wave"	"vo/novaprospekt/eli_wherewillyougo01.wav"
+	}
+}
+
+"Rpgfortress.Eli.Accept"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/eli_lab/eli_goodvort.wav"
+		"wave"	"vo/novaprospekt/eli_iknow.wav"
+	}
+}
+
+"Rpgfortress.Eli.TurnIn"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_95dB"
+	"pitch"		"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"  "vo/k_lab/eli_seeforyourself.wav"
+		"wave"	"vo/eli_lab/eli_thing.wav"
+		"wave"	"vo/k_lab/eli_phenom02.wav"
 	}
 }

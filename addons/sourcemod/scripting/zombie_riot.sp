@@ -1,8 +1,9 @@
 #include <sourcemod>
-#tryinclude <menus-controller>
 
 #undef REQUIRE_PLUGIN
 #include <textstore>
+
+#define UseDownloadTable
 
 #define ZR
 #define CONFIG	"configs/zombie_riot"

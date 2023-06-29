@@ -14,6 +14,7 @@ static const char RarityName[][] =
 enum struct StoreEnum
 {
 	char Tag[16];
+	char Key[48];
 	
 	char Model[PLATFORM_MAX_PATH];
 	char Intro[64];
@@ -38,6 +39,7 @@ enum struct StoreEnum
 	void SetupEnum(KeyValues kv)
 	{
 		kv.GetString("tag", this.Tag, 16);
+		kv.GetString("key", this.Key, 48);
 		
 		kv.GetString("model", this.Model, PLATFORM_MAX_PATH);
 		if(this.Model[0])
@@ -224,7 +226,8 @@ enum
 	MENU_NONE = -1,
 	MENU_WEAPONS = 0,
 	MENU_SPELLS = 1,
-	MENU_BACKPACK = 2
+	MENU_BACKPACK = 2,
+	MENU_BUILDING = 3
 }
 
 static int ItemXP = -1;
@@ -302,6 +305,7 @@ void TextStore_PluginStart()
 {
 	CreateTimer(2.0, TextStore_ItemTimer, _, TIMER_REPEAT);
 	RegConsoleCmd("rpg_help", TextStore_HelpCommand, _, FCVAR_HIDDEN);
+	RegAdminCmd("rpg_givemeall", TextStore_GiveMeAllCommand, ADMFLAG_ROOT);
 }
 
 public Action TextStore_HelpCommand(int client, int args)
@@ -310,6 +314,22 @@ public Action TextStore_HelpCommand(int client, int args)
 	if(client)
 		FakeClientCommandEx(client, "sm_store");
 	
+	return Plugin_Handled;
+}
+
+public Action TextStore_GiveMeAllCommand(int client, int args)
+{
+	if(client)
+	{
+		int count;
+		int length = TextStore_GetItems();
+		for(int i; i < length; i++)
+		{
+			TextStore_GetInv(client, i, count);
+			if(count < 1)
+				TextStore_SetInv(client, i, 1);
+		}
+	}
 	return Plugin_Handled;
 }
 
@@ -354,6 +374,11 @@ void TextStore_ConfigSetup(KeyValues map)
 	MarketKv = new KeyValues("MarketData");
 	MarketKv.ImportFromFile(buffer);
 	
+	RequestFrame(TextStore_ConfigSetupFrame);
+}
+
+public void TextStore_ConfigSetupFrame()
+{
 	HashCheck();
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -420,9 +445,9 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 
 		SpellList.PushArray(spell);
 	}
-	else
+	else if(!Store_EquipItem(client, item, index, name, auto))
 	{
-		Store_EquipItem(client, item, index, name, auto);
+		return Item_None;
 	}
 	return Item_On;
 }
@@ -474,7 +499,7 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 		{
 			if(item < 0)
 			{
-				Tinker_DescItem(item, desc);
+				Tinker_DescItem(client, item, desc);
 			}
 			else
 			{
@@ -574,6 +599,8 @@ static void LoadItems(int client)
 	int cap = GetLevelCap(Tier[client]);
 	if(Level[client] > cap)
 		Level[client] = cap;
+	
+	Traffic_LoadItems(client);
 }
 
 void TextStore_AddXP(int client, int xp)
@@ -600,7 +627,7 @@ stock void TextStore_AddTier(int client)
 
 int TextStore_GetItemCount(int client, const char[] name)
 {
-	if(StrEqual(name, ITEM_CASH))
+	if(StrEqual(name, ITEM_CASH, false))
 		return TextStore_Cash(client);
 	
 	int amount = -1;
@@ -622,13 +649,13 @@ int TextStore_GetItemCount(int client, const char[] name)
 
 void TextStore_AddItemCount(int client, const char[] name, int amount)
 {
-	if(StrEqual(name, ITEM_CASH))
+	if(StrEqual(name, ITEM_CASH, false))
 	{
 		TextStore_Cash(client, amount);
 		if(amount > 0)
 			SPrintToChat(client, "You gained %d credits", amount);
 	}
-	else if(StrEqual(name, ITEM_XP))
+	else if(StrEqual(name, ITEM_XP, false))
 	{
 		GiveXP(client, amount);
 		if(amount > 0)
@@ -636,7 +663,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 	}
 	else
 	{
-		bool tier = StrEqual(name, ITEM_TIER);
+		bool tier = StrEqual(name, ITEM_TIER, false);
 		if(tier)
 		{
 			amount = 1;
@@ -682,35 +709,42 @@ void TextStore_ZoneEnter(int client, const char[] name)
 			StoreList.SetArray(name, store, sizeof(store));
 		}
 
-		store.PlayEnter(client);
-		strcopy(InStore[client], sizeof(InStore[]), name);
-		strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
-
-		if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
+		if(store.Key[0] && !TextStore_GetItemCount(client, store.Key))
 		{
-			MarketKv.Rewind();
-			if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
-			{
-				if(MarketKv.GotoFirstSubKey())
-				{
-					do
-					{
-						int cash = MarketKv.GetNum("cash");
-						MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
-						SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
-						TextStore_Cash(client, cash);
-					}
-					while(MarketKv.GotoNextKey());
-
-					MarketKv.GoBack();
-				}
-
-				MarketKv.DeleteThis();
-				SaveMarket(client);
-			}
+			SPrintToChat(client, "You require \"%s\" to use this shop", store.Key);
 		}
-		
-		FakeClientCommand(client, "sm_buy");
+		else
+		{
+			store.PlayEnter(client);
+			strcopy(InStore[client], sizeof(InStore[]), name);
+			strcopy(InStoreTag[client], sizeof(InStoreTag[]), store.Tag);
+
+			if(StrEqual(store.Tag, "market", false) && GetClientAuthId(client, AuthId_Steam3, store.Enter, sizeof(store.Enter)))
+			{
+				MarketKv.Rewind();
+				if(MarketKv.JumpToKey("Payout") && MarketKv.JumpToKey(store.Enter))
+				{
+					if(MarketKv.GotoFirstSubKey())
+					{
+						do
+						{
+							int cash = MarketKv.GetNum("cash");
+							MarketKv.GetSectionName(store.Enter, sizeof(store.Enter));
+							SPrintToChat(client, "%d of your %s were sold for %d credits", MarketKv.GetNum("amount"), store.Enter, cash);
+							TextStore_Cash(client, cash);
+						}
+						while(MarketKv.GotoNextKey());
+
+						MarketKv.GoBack();
+					}
+
+					MarketKv.DeleteThis();
+					SaveMarket(client);
+				}
+			}
+			
+			FakeClientCommand(client, "sm_buy");
+		}
 	}
 }
 
@@ -981,10 +1015,11 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	menu.AddItem("rpg_stats", "Player Stats");
-	menu.AddItem("rpg_spawns", "Spawn Stats");
-	menu.AddItem("rpg_party", "Party");
-	menu.AddItem("rpg_help", "Search");
+	menu.AddItem("rpg_stats", 		"Player Stats");
+	menu.AddItem("rpg_spawns", 		"Spawn Stats");
+	menu.AddItem("rpg_party", 		"Party");
+	menu.AddItem("rpg_help", 		"Search");
+	menu.AddItem("rpg_settings", 	"Settings");
 	return Plugin_Changed;
 }
 
@@ -1445,6 +1480,10 @@ static void DropItem(int client, int index, float pos[3], int amount)
 				DispatchKeyValue(entity, "spawnflags", "6");
 				DispatchKeyValue(entity, "targetname", "rpg_item");
 
+				ang[1] = index == -1 ? -1.0 : kv.GetFloat("modelscale", -1.0);
+				if(ang[1] > 0.0)
+					DispatchKeyValueFloat(entity, "modelscale", ang[1]);
+
 				if(index != -1)
 				{
 					ang[0] = GetRandomFloat(0.0, 360.0);
@@ -1587,7 +1626,7 @@ static int GetBackpackSize(int client)
 	return amount;
 }
 
-void TextStore_DespoitBackpack(int client, bool death)
+void TextStore_DepositBackpack(int client, bool death, bool message = false)
 {
 	float pos[3];
 	int amount;
@@ -1617,10 +1656,12 @@ void TextStore_DespoitBackpack(int client, bool death)
 			}
 			else if(pack.Item == -1)
 			{
+				cash = 1;
 				TextStore_Cash(client, pack.Amount);
 			}
 			else
 			{
+				cash = 1;
 				TextStore_GetInv(client, pack.Item, amount);
 				TextStore_SetInv(client, pack.Item, pack.Amount + amount);
 			}
@@ -1643,6 +1684,10 @@ void TextStore_DespoitBackpack(int client, bool death)
 		{
 			SPrintToChat(client, "You have dropped %d items", amount);
 		}
+	}
+	else if(message && cash)
+	{
+		SPrintToChat(client, "You backpack was deposited");
 	}
 }
 
@@ -2055,6 +2100,18 @@ static void ShowMenu(int client, int page = 0)
 			menu.ExitBackButton = true;
 			InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);
 		}
+		case MENU_BUILDING:
+		{
+			/*if(Plots_ShowMenu(client))
+			{
+				InMenu[client] = true;
+			}
+			else*/
+			{
+				MenuType[client] = MENU_WEAPONS;
+				InMenu[client] = false;
+			}
+		}
 		default:
 		{
 			InMenu[client] = false;
@@ -2250,7 +2307,7 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 	return 0;
 }
 
-void TextStore_Inpsect(int client)
+void TextStore_Inspect(int client)
 {
 	switch(MenuType[client])
 	{
@@ -2259,7 +2316,7 @@ void TextStore_Inpsect(int client)
 			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
 		}
-		case MENU_SPELLS:
+		case MENU_SPELLS, MENU_BUILDING:
 		{
 			MenuType[client] = MENU_WEAPONS;
 			RefreshAt[client] = 1.0;

@@ -34,6 +34,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
+				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 15.0);
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -394,6 +395,16 @@ public Action Timer_Management_Passanger(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+bool Passanger_HasCharge(int client)
+{
+	return h_TimerPassangerManagement[client] != INVALID_HANDLE;
+}
+
+void Passanger_ChargeReduced(int client, float time)
+{
+	if(h_TimerPassangerManagement[client] != INVALID_HANDLE)
+		f_PassangerAbilityCooldownRegen[client] -= time;
+}
 
 public void Passanger_Cooldown_Logic(int client, int weapon)
 {
@@ -456,11 +467,12 @@ public void Kill_Timer_Passanger(int client)
 
 public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, int slot)
 {
-	if(i_PassangerAbilityCount[client] > 0)
+	if(i_PassangerAbilityCount[client] > 0 || CvarInfiniteCash.BoolValue)
 	{	
 		int mana_cost = 350;
 		if(mana_cost <= Current_Mana[client])
 		{		
+			Rogue_OnAbilityUse(client, weapon);
 			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 			Mana_Hud_Delay[client] = 0.0;
 			
@@ -548,6 +560,13 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	static float vecHit[3];
 	GetBeamDrawStartPoint_Stock(client, StartLightningPos);
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
+
+	//deal more damage during raids, otherwise its really weak in most cases.
+	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	{
+		damage *= 1.25;
+	}
+
 	if(Firstlightning)
 	{
 		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(target), 1);
@@ -564,6 +583,10 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 		if(IsValidEntity(enemy))
 		{
 			damage = (original_damage * (0.15 * loop));
+			if(b_thisNpcIsARaid[enemy])
+			{
+				damage *= 1.35;
+			}
 			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;
@@ -601,11 +624,14 @@ void Passanger_CauseCoolSoundEffect(float StartLightningPos[3])
 
 void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
-	float damage = 200.0;
+	float damage = 165.0;
 	Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
 	if(address != Address_Null)
 		damage *= TF2Attrib_GetValue(address); //massive damage!
 
+
+	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!
+	PassangerHandLightningEffect(client, lightningpos);
 	DataPack pack;
 	CreateDataTimer(PASSANGER_DELAY_ABILITY, TimerPassangerAbility, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(client);
@@ -702,4 +728,16 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 	pack.WriteCell(LightningStrikes-1, false);
 
 	return Plugin_Continue;
+}
+
+static void PassangerHandLightningEffect(int entity = -1, float VecPos_target[3] = {0.0,0.0,0.0})
+{	
+	int r = 255; //Blue.
+	int g = 255;
+	int b = 65;
+	int laser;
+
+	laser = ConnectWithBeam(entity, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, _, VecPos_target,"effect_hand_l");
+
+	CreateTimer(1.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }

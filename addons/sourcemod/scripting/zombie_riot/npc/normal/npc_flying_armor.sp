@@ -162,8 +162,10 @@ methodmap FlyingArmor < CClotBody
 	public FlyingArmor(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		FlyingArmor npc = view_as<FlyingArmor>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "2000", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcInternalId[npc.index] = FLYINGARMOR_ZOMBIE;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -185,7 +187,7 @@ methodmap FlyingArmor < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FlyingArmor_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, FlyingArmor_ClotThink);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -245,7 +247,7 @@ public void FlyingArmor_ClotThink(int iNPC)
 	{
 	
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -286,9 +288,9 @@ public void FlyingArmor_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -357,7 +359,7 @@ public void FlyingArmor_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -365,7 +367,7 @@ public void FlyingArmor_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action FlyingArmor_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FlyingArmor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -389,21 +391,24 @@ public Action FlyingArmor_ClotDamaged(int victim, int &attacker, int &inflictor,
 public void FlyingArmor_NPCDeath(int entity)
 {
 	FlyingArmor npc = view_as<FlyingArmor>(entity);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float startPosition[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-	maxhealth /= 2;
-	for(int i; i<1; i++)
+	if(!NpcStats_IsEnemySilenced(entity))
 	{
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		
-		int spawn_index = Npc_Create(FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-		if(spawn_index > MaxClients)
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		float startPosition[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+		maxhealth /= 2;
+		for(int i; i<1; i++)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index = Npc_Create(FLYINGARMOR_TINY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
 		}
 	}
 	if(!npc.m_bGib)
@@ -411,7 +416,7 @@ public void FlyingArmor_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, FlyingArmor_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, FlyingArmor_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

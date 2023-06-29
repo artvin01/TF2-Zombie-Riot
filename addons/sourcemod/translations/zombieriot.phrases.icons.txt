@@ -8,6 +8,18 @@
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
 		"chi"       "真正的融合战士已经到来。"
 	}
+	"Silvester And Blue Goggles Arrived."
+	{
+		"en" 		"Silvester And Blue Goggles Arrived."
+	}
+	"Nemesis Arrived."
+	{
+		"en" 		"Nemesis, the original Xeno infector arrived."
+	}
+	"Arkantos Arrived"
+	{
+		"en" 		"The Atlantean and great leader Arkantos arrived."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."

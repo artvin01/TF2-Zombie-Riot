@@ -152,7 +152,7 @@ methodmap BunkerSkeletonSmall < CClotBody
 		//IDLE
 		npc.m_flSpeed = 300.0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerSkeletonSmall_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerSkeletonSmall_ClotThink);
 		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
@@ -216,7 +216,7 @@ public void BunkerSkeletonSmall_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		npc.StartPathing();
 		//PluginBot_NormalJump(npc.index);
 	}
@@ -232,11 +232,11 @@ public void BunkerSkeletonSmall_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen) //Target close enough to hit
 		{
@@ -300,7 +300,7 @@ public void BunkerSkeletonSmall_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -333,7 +333,6 @@ public void BunkerSkeletonSmall_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BunkerSkeletonSmall_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_Think, BunkerSkeletonSmall_ClotThink);
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }

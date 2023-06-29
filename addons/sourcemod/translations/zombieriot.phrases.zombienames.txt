@@ -946,532 +946,566 @@
 		"en"	"Gambler"
 		"de"	"Gambler" //Not Really needed i just added them just in case others want their lang
 		"ru"	"Азартный игрок"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Pablo Gonzales"
 	{
 		"en"	"Pablo Gonzales"
 		"de"	"Pablo Gonzales"
 		"ru"	"Пабло Гонсалес"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Doktor Medick"
 	{
 		"en"	"Doktor Medick"
 		"de"	"Doktor Medick"
 		"ru"	"Доктор Мэдик"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Eternal Kaptain Heavy"
 	{
 		"en"	"Eternal Kaptain Heavy"
 		"de"	"Eternal Kaptain Heavy"
 		"ru"	"Вечный капитан Пулемётчик"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Booty Executioner"
 	{
 		"en"	"Booty Executioner"
 		"de"	"Booty Executioner"
 		"ru"	"Ягодичный Палач"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Sandvich Slayer"
 	{
 		"en"	"Sandvich Slayer"
 		"de"	"Sandvich Slayer"
 		"ru"	"Палач Бутербродов"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Payday Cloaker"
 	{
 		"en"	"Payday Cloaker"
 		"de"	"Payday Cloaker"
 		"ru"	"Клокер из Payday"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Kahmlstein"
 	{
 		"en"		"Bunker Kahmlstein"
-		//"de"		""
 		"ru"		"Бункерный Кахмльштайн"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Zerofuse"
 	{
 		"en"		"Zerofuse"
-		//"de"		""
 		"ru"		"Зерофуз"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Bot Soldier"
 	{
 		"en"		"Bunker Bot Soldier"
-		//"de"		""
 		"ru"		"Бункерный бот-солдат"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Bot Sniper"
 	{
 		"en"		"Bunker Bot Sniper"
-		//"de"		""
 		"ru"		"Бункерный бот-снайпер"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Skeleton"
 	{
 		"en"		"Bunker Skeleton"
-		//"de"		""
 		"ru"		"Бункерный скелет"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Small Skeleton"
 	{
 		"en"		"Bunker Small Skeleton"
-		//"de"		""
 		"ru"		"Бункерный маленький скелет"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Skeleton King"
 	{
 		"en"		"Bunker Skeleton King"
-		//"de"		""
 		"ru"		"Бункерный король скелетов"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Bunker Headless Horseman"
 	{
 		"en"		"Bunker Headless Horseman"
-		//"de"		""
 		"ru"		"Бункерный Пеший всадник без головы"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Gold Bloon"
 	{
 		"en"		"Gold Bloon"
-		//"de"		""
 		"ru"		"Золотой шар"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Scout"
 	{
 		"en"		"Ridden Scout"
-		//"de"		""
 		"ru"		"Ездовой разведчик"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Villager"
 	{
 		"en"		"Villager"
-		//"de"		""
 		"ru"		"Житель"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Building"
 	{
 		"en"		"Building"
-		//"de"		""
 		"ru"		"Постройка"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Construct"
 	{
 		"en"		"Construct"
-		//"de"		""
 		"ru"		"Строение"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Champion"
 	{
 		"en"		"Champion"
-		//"de"		""
 		"ru"		"Чемпион"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Light Cavalry"
 	{
 		"en"		"Light Cavalry"
-		//"de"		""
 		"ru"		"Лёгкий кавалерист"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Hussar"
 	{
 		"en"		"Hussar"
-		//"de"		""
 		"ru"		"Гусар"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Knight"
 	{
 		"en"		"Knight"
-		//"de"		""
 		"ru"		"Рыцарь"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Obuch"
 	{
 		"en"		"Obuch"
-		//"de"		""
 		"ru"		"Обух"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Monk"
 	{
 		"en"		"Monk"
-		//"de"		""
 		"ru"		"Монах"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Cavalary"
 	{
 		"en"		"Cavalary"
-		//"de"		""
 		"ru"		"Кавалерист"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Paladin"
 	{
 		"en"		"Paladin"
-		//"de"		""
 		"ru"		"Паладин"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Crossbow Giant"
 	{
 		"en"		"Crossbow Giant"
-		//"de"		""
 		"ru"		"Гигантский арбалетчик"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Swordsman Giant"
 	{
 		"en"		"Swordsman Giant"
-		//"de"		""
 		"ru"		"Гигантский мечник"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Mounted Archer"
 	{
 		"en"		"Mounted Archer"
-		//"de"		""
 		"ru"		"Конный лучник"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Eagle Warrior"
 	{
 		"en"		"Eagle Warrior"
-		//"de"		""
 		"ru"		"Орёл-воин"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Giant Eagle Warrior"
 	{
 		"en"		"Giant Eagle Warrior"
-		//"de"		""
 		"ru"		"Гигантский орёл-воин"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Son Of Osiris"
 	{
 		"en"		"Son Of Osiris"
-		//"de"		""
 		"ru"		"Сын Осириса"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Achilles"
 	{
 		"en"		"Achilles"
-		//"de"		""
 		"ru"		"Ахилл"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Abalest"
 	{
 		"en"		"Medieval Arbalest"
-		//"de"		""
 		"ru"		"Арбалетчик средневековья"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Brawler"
 	{
 		"en"		"Medieval Brawler"
-		//"de"		""
 		"ru"		"Боец средневековья"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
-		//"de"		""
 		"ru"		"Лучник средневековья"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Halberdier"
 	{
 		"en"		"Medieval Halberdier"
-		//"de"		""
 		"ru"		"Алебардист средневековья"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Medival Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
-		//"de"		""
 		"ru"		"Элитный лучник средневековья"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
 	}
 	"Trebuchet"
 	{
 		"en"		"Trebuchet"
-		//"de"		""
 		"ru"		"Требушет"
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""
+	}
+	"Ikunagae"
+	{
+		"en"		"Iku Nagae"
+		"de"		"Iku Nagae"
+	}
+	"Mecha Soldier Barrager"
+	{
+		"en"		"Mecha Soldier Barrager"
+		"de"		"Machine Soldat Spammer"
+	}
+	"Nearl Radiant Sword"
+	{
+		"en"		"Nearl Radiant Sword"
+	}
+	"Spawned Combine"
+	{
+		"en"		"Spawned Combine"
+	}
+	"Spawned Father Grigori"
+	{
+		"en"		"Spawned Father Grigori"
+	}
+	"Spawned Blue Goggles"
+	{
+		"en"		"Spawned Blue Goggles"
+	}
+	"Silvester"
+	{
+		"en"		"Silvester"
+	}
+	"Blue Goggles"
+	{
+		"en"		"Blue Goggles"
+	}
+	"Angeled Silvester"
+	{
+		"en"		"Angeled Silvester"
+	}
+	"Nemesis"
+	{
+		"en"		"Nemesis"
+	}
+	"Shell Sea Runner"
+	{
+		"en"		"Shell Sea Runner"
+		"chi"		"壳海狂奔者"
+	}
+	"Nourished Runner"
+	{
+		"en"		"Nourished Runner"
+		"chi"		"富营养的狂奔者"
+	}
+	"Deep Sea Slider"
+	{
+		"en"		"Deep Sea Slider"
+		"chi"		"底海滑动者"
+	}
+	"Nourished Slider"
+	{
+		"en"		"Nourished Slider"
+		"chi"		"富营养的滑动者"
+	}
+	"Ridge Sea Spitter"
+	{
+		"en"		"Ridge Sea Spitter"
+		"chi"		"脊海喷吐者"
+	}
+	"Nourished Spitter"
+	{
+		"en"		"Nourished Spitter"
+		"chi"		"富营养的喷吐者"
+	}
+	"Basin Sea Reaper"
+	{
+		"en"		"Basin Sea Reaper"
+		"chi"		"钵海收割者"
+	}
+	"Nourished Reaper"
+	{
+		"en"		"Nourished Reaper"
+		"chi"		"富营养的收割者"
+	}
+	"Pocket Sea Crawler"
+	{
+		"en"		"Pocket Sea Crawler"
+		"chi"		"囊海爬行者"
+	}
+	"Nourished Crawler"
+	{
+		"en"		"Nourished Crawler"
+		"chi"		"富营养的爬行者"
+	}
+	"Primal Sea Piercer"
+	{
+		"en"		"Primal Sea Piercer"
+		"chi"		"始海穿刺者"
+	}
+	"Nourished Piercer"
+	{
+		"en"		"Nourished Piercer"
+		"chi"		"富营养的穿刺者"
+	}
+	"The First To Talk"
+	{
+		"en"		"The First To Talk"
+		"chi"		"首言者"
+	}
+	"Sal Viento Bishop Quintus"
+	{
+		"en"		"Sal Viento Bishop Quintus"
+		"chi"		"盐风主教昆图斯"
+	}
+	"Armorless Union Knight"
+	{
+		"en"		"Armorless Union Knight"
+		"chi"		"无名独立骑士"
+	}
+	"Roar Knightclub Trainee"
+	{
+		"en"		"Roar Knightclub Trainee"
+		"chi"		"呼啸骑士团学徒"
+	}
+	"Bloodboil Knightclub Trainee"
+	{
+		"en"		"Bloodboil Knightclub Trainee"
+		"chi"		"沸血骑士团学徒"
+	}
+	"Armorless Union Cleanup Squad"
+	{
+		"en"		"Armorless Union Cleanup Squad"
+		"chi"		"无胄盟清扫小队"
+	}
+	"Consumable Remains"
+	{
+		"en"		"Consumable Remains"
+	}
+	"The Endspeaker, Will of We Many"
+	{
+		"en"		"The Endspeaker, Will of We Many"
+		"chi"		"屠谕者，大群意志"
+	}
+	"Nethersea Founder"
+	{
+		"en"		"Nethersea Founder"
+		"chi"		"深溟奠基者"
+	}
+	"Nourished Founder"
+	{
+		"en"		"Nethersea Founder"
+		"chi"		"富营养的奠基者"
+	}
+	"Regressed Founder"
+	{
+		"en"		"Regressed Founder"
+		"chi"		"退行的奠基者"
+	}
+	"Nethersea Predator"
+	{
+		"en"		"Nethersea Predator"
+		"chi"		"深溟猎食者"
+	}
+	"Nourished Predator"
+	{
+		"en"		"Nourished Predator"
+		"chi"		"富营养的猎食者"
+	}
+	"Regressed Predator"
+	{
+		"en"		"Regressed Predator"
+		"chi"		"退行的猎食者"
+	}
+	"Nethersea Brandguider"
+	{
+		"en"		"Nethersea Brandguider"
+		"chi"		"深溟引痕者"
+	}
+	"Nourished Brandguider"
+	{
+		"en"		"Nourished Brandguider"
+		"chi"		"富营养的引痕者"
+	}
+	"Regressed Brandguider"
+	{
+		"en"		"Regressed Brandguider"
+		"chi"		"退行的引痕者"
+	}
+	"Armorless Union Assassin"
+	{
+		"en"		"Armorless Union Assassin"
+		"chi"		"无胄盟刺客"
+	}
+	"Nethersea Spewer"
+	{
+		"en"		"Nethersea Spewer"
+		"chi"		"深溟喷溅者"
+	}
+	"Nourished Spewer"
+	{
+		"en"		"Nourished Spewer"
+		"chi"		"富营养的喷溅者"
+	}
+	"Regressed Spewer"
+	{
+		"en"		"Regressed Spewer"
+		"chi"		"退行的喷溅者"
+	}
+	"Nethersea Swarmcaller"
+	{
+		"en"		"Nethersea Swarmcaller"
+		"chi"		"深溟巢涌者"
+	}
+	"Nourished Swarmcaller"
+	{
+		"en"		"Nourished Swarmcaller"
+		"chi"		"富营养的巢涌者"
+	}
+	"Regressed Swarmcaller"
+	{
+		"en"		"Regressed Swarmcaller"
+		"chi"		"退行的巢涌者"
+	}
+	"Nethersea Reefbreaker"
+	{
+		"en"		"Nethersea Reefbreaker"
+		"chi"		"深溟裂礁者"
+	}
+	"Nourished Reefbreaker"
+	{
+		"en"		"Nourished Reefbreaker"
+		"chi"		"富营养的裂礁者"
+	}
+	"Regressed Reefbreaker"
+	{
+		"en"		"Regressed Reefbreaker"
+		"chi"		"退行的裂礁者"
+	}
+	"Thorns"
+	{
+		"en"		"Thorns"
+		"chi"		"棘刺"
+	}
+	"God Arkantos"
+	{
+		"en"		"God Arkantos"
+	}
+	"Seaborn Scout"
+	{
+		"en"		"Seaborn Scout"
+	}
+	"Seaborn Soldier"
+	{
+		"en"		"Seaborn Soldier"
+	}
+	"Seaborn Pyro"
+	{
+		"en"		"Seaborn Pyro"
+	}
+	"Seaborn Demoman"
+	{
+		"en"		"Seaborn Demoman"
+	}
+	"Seaborn Heavy"
+	{
+		"en"		"Seaborn Heavy"
+	}
+	"Seaborn Engineer"
+	{
+		"en"		"Seaborn Engineer"
+	}
+	"Seaborn Medic"
+	{
+		"en"		"Seaborn Medic"
+	}
+	"Seaborn Sniper"
+	{
+		"en"		"Seaborn Sniper"
+	}
+	"Seaborn Spy"
+	{
+		"en"		"Seaborn Spy"
+	}
+	"Citizen"
+	{
+		"en"		"Citizen"
+	}
+	"Barracks Railgunner"
+	{
+		"en"		"Railgunner"
+	}
+	"Barracks Basic Mage"
+	{
+		"en"		"Basic Medic Mage"
+	}
+	"Barracks Intermediate Mage"
+	{
+		"en"		"Intermediate Medic Mage"
+	}
+	"Barracks Ikunagae"
+	{
+		"en"		"Iku Nagae"
+		
+		
+		"de"		"Iku Nagae"
+	}
+	"Barracks SchwertKrieg"
+	{
+		"en"		"Schwertkrieg"
+		"ru"		"Шверткриг"
+		"nl"		"Schwertkrieg"
+	}
+	"Barracks Donnerkrieg"
+	{
+		"en"		"Donnerkrieg"
+		"ru"		"Доннеркриг"
+		"nl"		"Donnerkrieg"
+	}
+	"Barracks Holy Knight"
+	{
+		"en"		"Holy Knight"
+		"ru"		"Священный рыцарь"
+		"pt"		"Cavaleiro Santo"
+		"nl"		"Heilige Ridder"
+	}
+	"Barracks Mecha Barrager"
+	{
+		"en"		"Mecha Soldier Barrager"
+		"de"		"Machine Soldat Spammer"
+	}
+	"Barracks Barrager"
+	{
+		"en"		"Barrager"
+	}
+	"Barracks Berserker"
+	{
+		"en"		"Berserker"
+	}
+	"Barracks Crossbow Medic"
+	{
+		"en"		"Medic Crossbowman"
+	}
+	"The Last Knight"
+	{
+		"en"		"The Last Knight"
+		"chi"		"最后的骑士"
+	}
+	"Tide-Hunt Knight"
+	{
+		"en"		"Tide-Hunt Knight"
+		"chi"		"猎潮的骑士"
+	}
+	"Saint Carmen"
+	{
+		"en"		"Saint Carmen"
+		"chi"		"圣徒卡门"
 	}
 }

@@ -138,6 +138,7 @@ methodmap XenoHeavyGiant < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		i_NpcInternalId[npc.index] = XENO_HEAVY_ZOMBIE_GIANT;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -149,7 +150,7 @@ methodmap XenoHeavyGiant < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, XenoHeavyGiant_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, XenoHeavyGiant_ClotThink);
 		
 		
@@ -214,7 +215,7 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -241,9 +242,9 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 
 			npc.StartPathing();
@@ -308,7 +309,7 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 		}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -316,7 +317,7 @@ public void XenoHeavyGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action XenoHeavyGiant_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action XenoHeavyGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	XenoHeavyGiant npc = view_as<XenoHeavyGiant>(victim);
 		
@@ -339,24 +340,27 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float startPosition[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-	maxhealth /= 3;
-	for(int i; i<1; i++)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		
-		int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
-		if(spawn_index > MaxClients)
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		float startPosition[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+		maxhealth /= 3;
+		for(int i; i<1; i++)
 		{
-			Zombies_Currently_Still_Ongoing += 1;
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index = Npc_Create(XENO_HEAVY_ZOMBIE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
 		}
 	}
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, XenoHeavyGiant_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, XenoHeavyGiant_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

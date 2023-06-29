@@ -148,6 +148,7 @@ methodmap Soldier_Barrager < CClotBody
 		Soldier_Barrager npc = view_as<Soldier_Barrager>(CClotBody(vecPos, vecAng, "models/player/Soldier.mdl", "1.0", "2000", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SOLDIER_BARRAGER;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -163,7 +164,7 @@ methodmap Soldier_Barrager < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Soldier_Barrager_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Soldier_Barrager_ClotThink);
 		
 		//IDLE
@@ -253,7 +254,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -265,29 +266,6 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				/*
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
 			
 			if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 			{
@@ -335,7 +313,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 					
 					vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 					
-					PF_SetGoalVector(npc.index, vBackoffPos);
+					NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				}
 			}
 			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
@@ -379,10 +357,34 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 				npc.StartPathing();
 				
 			}
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius())
+			{
+				
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				/*
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+				
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
+				*/
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else
+			{
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -391,7 +393,7 @@ public void Soldier_Barrager_ClotThink(int iNPC)
 }
 
 
-public Action Soldier_Barrager_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Soldier_Barrager_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Soldier_Barrager npc = view_as<Soldier_Barrager>(victim);
 		
@@ -415,7 +417,7 @@ public void Soldier_Barrager_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Soldier_Barrager_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Soldier_Barrager_ClotThink);
 		
 	

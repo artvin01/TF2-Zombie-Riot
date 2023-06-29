@@ -64,8 +64,8 @@ static char gLaser1;
 static bool FusionWarrior_BEAM_CanUse[MAXENTITIES];
 static bool FusionWarrior_BEAM_IsUsing[MAXENTITIES];
 static int FusionWarrior_BEAM_TicksActive[MAXENTITIES];
-static int FusionWarrior_BEAM_Laser;
-static int FusionWarrior_BEAM_Glow;
+int FusionWarrior_BEAM_Laser;
+int FusionWarrior_BEAM_Glow;
 static float FusionWarrior_BEAM_CloseDPT[MAXENTITIES];
 static float FusionWarrior_BEAM_FarDPT[MAXENTITIES];
 static int FusionWarrior_BEAM_MaxDistance[MAXENTITIES];
@@ -119,6 +119,8 @@ public void TrueFusionWarrior_OnMapStart()
 	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
 	PrecacheSound("player/flow.wav");
+
+	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
 }
 
 void TrueFusionWarrior_TBB_Precahce()
@@ -267,6 +269,7 @@ methodmap TrueFusionWarrior < CClotBody
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -288,6 +291,7 @@ methodmap TrueFusionWarrior < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
 			}
 		}
+		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -320,7 +324,7 @@ methodmap TrueFusionWarrior < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
-		SDKHook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
+		
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -383,6 +387,8 @@ methodmap TrueFusionWarrior < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
+		Music_SetRaidMusic("#zombiesurvival/fusion_raid/fusion_bgm.mp3", 178, true);
 		
 		npc.Anger = false;
 		b_angered_twice[npc.index] = false;
@@ -395,7 +401,7 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_bInKame = false;
 		
 		Citizen_MiniBossSpawn(npc.index);
-		
+		Building_RaidSpawned(npc.index);
 		return npc;
 	}
 }
@@ -442,8 +448,19 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		if(npc.m_bInKame)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+			if(npc.m_iTarget == -1)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
+		}
+		else
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int closest = npc.m_iTarget;
@@ -453,17 +470,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		if(b_angered_twice[npc.index])
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;
+			npc.m_flMeleeArmor = 1.25;
 		}
 		else if(npc.Anger)
 		{
-			npc.m_flRangedArmor = 0.4;
-			npc.m_flMeleeArmor = 0.4;
+			npc.m_flRangedArmor = 0.6;
+			npc.m_flMeleeArmor = 0.75;
 		}	
 		else
 		{
-			npc.m_flRangedArmor = 0.5;
-			npc.m_flMeleeArmor = 0.5;			
+			npc.m_flRangedArmor = 0.7;
+			npc.m_flMeleeArmor = 0.875;			
 		}
 	}
 	else
@@ -471,28 +488,27 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		if(b_angered_twice[npc.index])
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;
+			npc.m_flMeleeArmor = 1.25;
 		}
 		else if(npc.Anger)
 		{
-			npc.m_flRangedArmor = 0.8;
-			npc.m_flMeleeArmor = 0.8;
+			npc.m_flRangedArmor = 0.85;
+			npc.m_flMeleeArmor = 1.0625;
 		}	
 		else
 		{
 			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.0;			
+			npc.m_flMeleeArmor = 1.25;			
 		}	
 	}
-
+	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-		
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(closest);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest, 0.3);
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 		
 			//Body pitch
 	//		if(flDistanceToTarget < Pow(110.0,2.0))
@@ -516,7 +532,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			{
 				npc.m_flNextThinkTime = 0.0;
 				npc.FaceTowards(vecTarget, 100.0);
-				PF_StopPathing(npc.index);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.SetActivity("ACT_MP_CROUCH_MELEE");
 				npc.m_bInKame = false;
@@ -544,6 +560,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
 							GiveNamedItem(client, "Cured Silvester");
+							CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
 						}
 					}
 				}
@@ -582,9 +599,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, closest);
+				NPC_SetGoalEntity(npc.index, closest);
 			}
 			
 			
@@ -605,8 +622,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			}
 			if(npc.m_bInKame)
 			{
-				npc.FaceTowards(vecTarget, 800.0);
-				PF_StopPathing(npc.index);
+				npc.FaceTowards(vecTarget, 650.0);
+				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
 			}
@@ -628,7 +645,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
+					npc.FireRocket(vPredictedPos, 8.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -637,112 +654,114 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 10.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
+					npc.FireRocket(vPredictedPos, 8.0 * RaidModeScaling, 800.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
 				}
 			}
-			
-			if(npc.m_flNextPull < GetGameTime(npc.index) && !npc.m_bInKame)
+			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
-				if (!npc.Anger)
+				if(npc.m_flNextPull < GetGameTime(npc.index) && !npc.m_bInKame)
 				{
-					npc.FaceTowards(vecTarget);
-					
-					for(int client = 1; client <= MaxClients; client++)
+					if (!npc.Anger)
 					{
-						if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+						npc.FaceTowards(vecTarget);
+						
+						for(int client = 1; client <= MaxClients; client++)
 						{
-							float vAngles[3], vDirection[3];
-							
-							float entity_angles[3];
-									
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
-							
-							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
-							
-							float Distance = GetVectorDistance(vAngles, entity_angles);
-							if(Distance < 1250)
-							{				
-								if(vAngles[0] > -45.0)
-								{
-											vAngles[0] = -45.0;
-								}
-													
-								TF2_AddCondition(client, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
-														
-								GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
-													
-								ScaleVector(vDirection, -1250.0);
+							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							{
+								float vAngles[3], vDirection[3];
 								
-								if(vDirection[2] > 0.0)
-								{
-									vDirection[2] *= -1.0;
-								}
-													                    
-								TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
-							}
-						}
-					}
-					
-					
-					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
-					
-					
-					npc.m_flNextPull = GetGameTime(npc.index) + 15.0;
-					npc.PlayPullSound();
-					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				}
-				else if (npc.Anger)
-				{
-					npc.FaceTowards(vecTarget);
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
-						{
-							float vAngles[3], vDirection[3];
-							
-							float entity_angles[3];
-									
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
-							
-							GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
-							
-							float Distance = GetVectorDistance(vAngles, entity_angles);
-							if(Distance < 1250)
-							{				
-								if(vAngles[0] > -45.0)
-								{
-										vAngles[0] = -45.0;
-								}
-													
-								TF2_AddCondition(client, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
-														
-								GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+								float entity_angles[3];
 										
-								if(vDirection[2] > 0.0)
-								{
-									vDirection[2] *= -1.0;
-								}
+								GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
 								
-								ScaleVector(vDirection, -1250.0);
-													                    
-								TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
+								GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
+								
+								float Distance = GetVectorDistance(vAngles, entity_angles);
+								if(Distance < 1250)
+								{				
+									if(vAngles[0] > -45.0)
+									{
+												vAngles[0] = -45.0;
+									}
+														
+									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
+															
+									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+														
+									ScaleVector(vDirection, -1250.0);
+									
+									if(vDirection[2] > 0.0)
+									{
+										vDirection[2] *= -1.0;
+									}
+																			
+									TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
+								}
 							}
 						}
+						
+						
+						npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
+						
+						
+						npc.m_flNextPull = GetGameTime(npc.index) + 15.0;
+						npc.PlayPullSound();
+						npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 					}
-					
-					
-					npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
-	
-					npc.m_flNextPull = GetGameTime(npc.index) + 13.0;
-					npc.PlayPullSound();
-					npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				}
-			} 
+					else if (npc.Anger)
+					{
+						npc.FaceTowards(vecTarget);
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							{
+								float vAngles[3], vDirection[3];
+								
+								float entity_angles[3];
+										
+								GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
+								
+								GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", entity_angles); 
+								
+								float Distance = GetVectorDistance(vAngles, entity_angles);
+								if(Distance < 1250)
+								{				
+									if(vAngles[0] > -45.0)
+									{
+											vAngles[0] = -45.0;
+									}
+														
+									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
+															
+									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
+											
+									if(vDirection[2] > 0.0)
+									{
+										vDirection[2] *= -1.0;
+									}
+									
+									ScaleVector(vDirection, -1250.0);
+																			
+									TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, vDirection);
+								}
+							}
+						}
+						
+						
+						npc.DispatchParticleEffect(npc.index, "hammer_bell_ring_shockwave2", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
+		
+						npc.m_flNextPull = GetGameTime(npc.index) + 13.0;
+						npc.PlayPullSound();
+						npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+					}
+				} 
+			}
 									
 									
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
@@ -751,7 +770,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				{
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);	
+					npc.FireRocket(vPredictedPos, 3.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);	
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -771,7 +790,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					
 					npc.FaceTowards(vecTarget);
 					npc.FaceTowards(vecTarget);
-					npc.FireRocket(vPredictedPos, 4.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);
+					npc.FireRocket(vPredictedPos, 3.0 * RaidModeScaling, 700.0, "models/effects/combineball.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
@@ -800,10 +819,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 6.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 						
-						if(Tele_Check > 120)
+						if(Tele_Check > 120.0)
 						{
-							TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-							npc.PlayTeleportSound();
+							bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+							if(Succeed)
+							{
+								npc.PlayTeleportSound();
+							}
+							else
+							{
+								npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+							}
 						}
 					}
 				}
@@ -815,10 +841,17 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget);
 						npc.m_flNextTeleport = GetGameTime(npc.index) + 5.0;
 						float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
-						if(Tele_Check > 120)
+						if(Tele_Check > 120.0)
 						{
-							TeleportEntity(npc.index, vPredictedPos, NULL_VECTOR, NULL_VECTOR);
-							npc.PlayTeleportSound();
+							bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+							if(Succeed)
+							{
+								npc.PlayTeleportSound();
+							}
+							else
+							{
+								npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+							}
 						}
 					}
 				}
@@ -853,11 +886,24 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
+									float damage = 24.0;
+									float damage_rage = 28.0;
+									if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+									{
+										damage = 20.0; //nerf
+										damage_rage = 21.0; //nerf
+									}
+									else if(ZR_GetWaveCount()+1 > 55)
+									{
+										damage = 19.0; //nerf
+										damage_rage = 20.0; //nerf
+									}
+
 									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 24.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 											
 									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 28.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+										SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
 										
 									
 									// Hit particle
@@ -865,22 +911,26 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 									
 									// Hit sound
 									npc.PlayMeleeHitSound();
+									bool Knocked = false;
 									
 									if(IsValidClient(target))
 									{
 										if (IsInvuln(target))
 										{
+											Knocked = true;
 											Custom_Knockback(npc.index, target, 900.0, true);
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
 										else
 										{
-											Custom_Knockback(npc.index, target, 650.0); 
 											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 										}
 									}
+									
+									if(!Knocked)
+										Custom_Knockback(npc.index, target, 650.0); 
 								} 
 							}
 						delete swingTrace;
@@ -893,10 +943,13 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					}
 				}
-				PF_StopPathing(npc.index);
-				npc.m_bPathing = false;
 			}
 		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}	
 	if  (!npc.m_bInKame)
 	{
 		npc.StartPathing();
@@ -905,7 +958,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 	
-public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -981,7 +1034,11 @@ public Action TrueFusionWarrior_ClotDamaged(int victim, int &attacker, int &infl
 			SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 
 			CPrintToChatAll("{gold}Silvester{default}: ...End this before its too late...");
-
+			int i = MaxClients + 1;
+			while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
+			{
+				RemoveEntity(i);
+			}
 			int skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -1031,7 +1088,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, TrueFusionWarrior_ClotDamaged);
+	
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	

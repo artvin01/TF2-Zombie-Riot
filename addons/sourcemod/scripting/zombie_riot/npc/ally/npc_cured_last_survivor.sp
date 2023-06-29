@@ -305,6 +305,7 @@ methodmap CuredFatherGrigori < CClotBody
 		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", true, true, false));
 		
 		i_NpcInternalId[npc.index] = CURED_FATHER_GRIGORI;
+		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -315,8 +316,9 @@ methodmap CuredFatherGrigori < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CuredFatherGrigori_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		npc.m_flNextMeleeAttack = 0.0;
 					
@@ -410,9 +412,9 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 15000 && flDistanceToTarget < 1000000 && npc.m_flReloadDelay < GetGameTime(npc.index))
@@ -456,7 +458,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						return; //bye
 					}
 					
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					
 					npc.FaceTowards(vecTarget, 10000.0);
@@ -590,6 +592,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		{
 			npc.m_iTargetAlly = GetClosestAllyPlayer(npc.index);
 			npc.m_bGetClosestTargetTimeAlly = true; //Yeah he just picks one.
+			npc.m_iChanged_WalkCycle = -1; //Reset
 		}
 		if(IsValidAllyPlayer(npc.index, npc.m_iTargetAlly))
 		{
@@ -609,7 +612,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				}
-				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);		
 				
@@ -626,7 +629,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				}
-				PF_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);		
 				
@@ -641,7 +644,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 0;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 				if (npc.m_iAttacksTillReload != 2)
@@ -665,7 +668,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				npc.m_bWasSadAlready = true;
 			}
 			npc.m_bGetClosestTargetTimeAlly = false;
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);	
@@ -674,11 +677,13 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action CuredFatherGrigori_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action CuredFatherGrigori_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if (damage < 9999999.0)	//So they can be slayed.
+	{
+		damage = 0.0;
 		return Plugin_Handled;
-		
+	}
 	else
 		return Plugin_Continue;
 }
@@ -688,7 +693,7 @@ public void CuredFatherGrigori_NPCDeath(int entity)
 	CuredFatherGrigori npc = view_as<CuredFatherGrigori>(entity);
 //	npc.PlayDeathSound(); He cant die.
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CuredFatherGrigori_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CuredFatherGrigori_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

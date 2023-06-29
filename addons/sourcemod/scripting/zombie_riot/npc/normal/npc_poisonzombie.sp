@@ -129,6 +129,7 @@ methodmap PoisonZombie < CClotBody
 		PoisonZombie npc = view_as<PoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "700", ally));
 		
 		i_NpcInternalId[npc.index] = POISON_ZOMBIE;
+		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -138,7 +139,7 @@ methodmap PoisonZombie < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, PoisonZombie_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -193,7 +194,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -220,9 +221,9 @@ public void PoisonZombie_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -300,7 +301,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -338,7 +339,7 @@ public void PoisonZombie_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, PoisonZombie_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
 	
 //	AcceptEntityInput(npc.index, "KillHierarchy");

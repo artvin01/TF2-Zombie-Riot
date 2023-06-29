@@ -11,6 +11,7 @@ methodmap BarrackSwordsman < BarrackBody
 		BarrackSwordsman npc = view_as<BarrackSwordsman>(BarrackBody(client, vecPos, vecAng, "400"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_SWORDSMAN;
+		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackSwordsman_ClotThink);
 
@@ -35,9 +36,10 @@ methodmap BarrackSwordsman < BarrackBody
 public void BarrackSwordsman_ClotThink(int iNPC)
 {
 	BarrackSwordsman npc = view_as<BarrackSwordsman>(iNPC);
-	if(BarrackBody_ThinkStart(npc.index))
+	float GameTime = GetGameTime(iNPC);
+	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		int client = BarrackBody_ThinkTarget(npc.index, false);
+		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
 		if(npc.m_iTarget > 0)
 		{
@@ -47,20 +49,20 @@ public void BarrackSwordsman_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
+				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
 					if(!npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
 						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index) + 0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.44;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + (1.0 * npc.BonusFireRate);
+						npc.m_flAttackHappens = GameTime + 0.3;
+						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
+						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if(npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -80,7 +82,7 @@ public void BarrackSwordsman_ClotThink(int iNPC)
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if(npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
 					}

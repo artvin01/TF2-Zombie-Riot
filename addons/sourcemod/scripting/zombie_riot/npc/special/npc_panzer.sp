@@ -61,16 +61,16 @@ static char g_MeleeMissSounds[][] = {
 
 public void NaziPanzer_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_SpawnSounds));	   i++) { PrecacheSound(g_SpawnSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_SpawnSounds));	   i++) { PrecacheSoundCustom(g_SpawnSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSoundCustom(g_IdleSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_GrappleSound));   i++) { PrecacheSound(g_GrappleSound[i]);   }
+	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSoundCustom(g_AngerSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_GrappleSound));   i++) { PrecacheSoundCustom(g_GrappleSound[i]);   }
 	for (int i = 0; i < (sizeof(g_FlameSounds));   i++) { PrecacheSound(g_FlameSounds[i]);   }
 
 //	g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -114,7 +114,7 @@ methodmap NaziPanzer < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(7.0, 10.0);
 		
 		#if defined DEBUG_SOUND
@@ -148,8 +148,8 @@ methodmap NaziPanzer < CClotBody
 	}
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -166,7 +166,7 @@ methodmap NaziPanzer < CClotBody
 	}
 	public void PlaySpawnSound() {
 	
-		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -189,8 +189,8 @@ methodmap NaziPanzer < CClotBody
 	}
 	public void PlayAngerSound() {
 	
-		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::Playnpc.AngerSound()");
@@ -248,7 +248,8 @@ methodmap NaziPanzer < CClotBody
 			
 			if(IsValidEntity(this.m_iWearable3))
 				RemoveEntity(this.m_iWearable3);
-			this.m_iWearable3 = ConnectWithBeam(this.m_iWearable4, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
+
+			this.m_iWearable3 = ConnectWithBeam(this.index, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Panzer_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 			
 		}
@@ -259,6 +260,7 @@ methodmap NaziPanzer < CClotBody
 		NaziPanzer npc = view_as<NaziPanzer>(CClotBody(vecPos, vecAng, "models/zombie_riot/cod_zombies/panzer_soldat_2.mdl", "1.15", GetPanzerHealth(), ally, false, true));
 		
 		i_NpcInternalId[npc.index] = NAZI_PANZER;
+		i_NpcWeight[npc.index] = 3;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -272,7 +274,7 @@ methodmap NaziPanzer < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;		
 
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, NaziPanzer_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
@@ -294,41 +296,6 @@ methodmap NaziPanzer < CClotBody
 		float wave = float(ZR_GetWaveCount()+1);
 		
 		wave *= 0.1;
-		
-		if(EscapeModeMap)
-		{
-			wave = 1.7;
-			int amount_of_people = CountPlayersOnRed();
-			int health = 5000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		
-		npc.m_iWearable4 = CreateEntityByName("prop_physics_override");
-	
-		SetEntPropEnt(npc.m_iWearable4, Prop_Send, "m_hOwnerEntity", client);
-		DispatchKeyValue(npc.m_iWearable4, "model", ENERGY_BALL_MODEL_PANZER);
-		DispatchKeyValue(npc.m_iWearable4, "modelscale", "0");
-		DispatchSpawn(npc.m_iWearable4);
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-	
-	
-		npc.GetAttachment("hook_middle", flPos, flAng);
-		
-		TeleportEntity(npc.m_iWearable4, flPos, NULL_VECTOR, NULL_VECTOR);
-		SetEntityMoveType(npc.m_iWearable4, MOVETYPE_FLY);
-		
-		SetParent(npc.index, npc.m_iWearable4, "hook_middle");
-		
-		SetEntityCollisionGroup(npc.m_iWearable4, 1);
-		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 0);
 	
 		npc.m_flWaveScale = wave;
 		
@@ -449,17 +416,16 @@ public void NaziPanzer_ClotThink(int iNPC)
 	else if (!npc.m_bLostHalfHealthAnim && npc.m_bLostHalfHealth)
 	{
 		npc.m_flNextThinkTime = npc.m_flDoSpawnGesture;
-		int iActivity = npc.LookupActivity("PANZER_STAGGER_2");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.AddGesture("PANZER_STAGGER_2");
 		npc.m_flSpeed = 0.0;
 		npc.m_bLostHalfHealthAnim = true;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 	}
 	if(npc.m_flStandStill > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;		
 	}
 	else
@@ -482,7 +448,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		//PluginBot_NormalJump(npc.index);
 	}
 	
@@ -499,11 +465,11 @@ public void NaziPanzer_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
 	//		PrintToChatAll("cutoff");
-			PF_SetGoalVector(npc.index, vPredictedPos);	
+			NPC_SetGoalVector(npc.index, vPredictedPos);	
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		
 		npc.StartPathing();
@@ -556,7 +522,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			npc.AddGesture("ACT_FLY_LAND");
 			npc.m_bDuringHighFlight = false;
-			npc.m_flStandStill = GetGameTime(npc.index) + 1.0;
+			npc.m_flStandStill = GetGameTime(npc.index) + 1.25;
 		}
 		else if (flDistanceToTarget < 20000 && npc.m_bFlamerToggled)
 		{
@@ -740,7 +706,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 				
 			}
 		}
-		else if(flDistanceToTarget > 1250000/*1100*/ && !npc.m_bDuringHighFlight && !npc.m_bFlamerToggled)
+		else if(flDistanceToTarget > 1250000/*1100*/ && !npc.m_bDuringHighFlight && !npc.m_bFlamerToggled && !NpcStats_IsEnemySilenced(npc.index))
 		{
 				
 			if(IsValidEntity(npc.m_iWearable1))
@@ -748,6 +714,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 			
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
+				
 			float flPos[3]; // original
 			float flAng[3]; // original
 	
@@ -773,7 +740,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -782,7 +749,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 }
 
 
-public Action NaziPanzer_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action NaziPanzer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -793,6 +760,7 @@ public Action NaziPanzer_ClotDamaged(int victim, int &attacker, int &inflictor, 
 	
 	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
 	{
+		damage = 0.0;
 		return Plugin_Handled;
 	}
 	
@@ -860,7 +828,7 @@ public void NaziPanzer_NPCDeath(int entity)
 	}
 	
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, NaziPanzer_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, NaziPanzer_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
 		
@@ -886,7 +854,8 @@ public void NaziPanzer_NPCDeath(int entity)
 		float pos[3];
 		float Angles[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
-
+		
+//		Angles[1] += 90.0;
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
@@ -897,10 +866,8 @@ public void NaziPanzer_NPCDeath(int entity)
 		
 		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
 		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("panzer_death_2");
+		SetVariantString("panzer_death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		
-		pos[2] += 20.0;
 		
 		CreateTimer(2.0, Timer_RemoveEntityPanzer, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -939,7 +906,7 @@ public MRESReturn Panzer_DHook_RocketExplodePre(int entity)
 				pack.WriteCell(GetClientUserId(Closest_Player));
 				if(IsValidEntity(npc.m_iWearable3))
 					RemoveEntity(npc.m_iWearable3);
-				npc.m_iWearable3 = ConnectWithBeam(npc.m_iWearable4, Closest_Player, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
+				npc.m_iWearable3 = ConnectWithBeam(npc.index, Closest_Player, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER);
 				npc.m_bGrabbedSomeone = true;
 				npc.m_flStandStill = 9999999.0;	
 				

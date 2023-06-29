@@ -1,15 +1,21 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+//#define UseDownloadTable
+
+#define MIN_FADE_DISTANCE	9999.9
+#define MAX_FADE_DISTANCE	9999.9
+#define STARTER_WEAPON_LEVEL	5
+
 //#define ZR_ApplyKillEffects NPC_DeadEffects
-#define ZR_GetWaveCount Waves_GetRound
+#define ZR_GetWaveCount Rogue_GetRoundScale
 
 public const int AmmoData[][] =
 {
 	// Price, Ammo
 	{ 0, 0 },			//N/A
 	{ 0, 0 },			//Primary
-	{ 0, 99999 },		//Secondary
+	{ 0, 4222 },		//Secondary
 	{ 10, 500 },		//Metal
 	{ 0, 0 },			//Ball
 	{ 0, 0 },			//Food
@@ -47,6 +53,7 @@ public const char PerkNames[][] =
 	"Speed Cola",
 	"Deadshot Daiquiri",
 	"Widows Wine",
+	"Recycle Poire"
 };
 
 public const char PerkNames_Recieved[][] =
@@ -58,6 +65,7 @@ public const char PerkNames_Recieved[][] =
 	"Speed Cola Recieved",
 	"Deadshot Daiquiri Recieved",
 	"Widows Wine Recieved",
+	"Recycle Poire Recieved"
 };
 
 enum
@@ -68,13 +76,30 @@ enum
 	WEAPON_MAIMMOAB = 4,
 	WEAPON_CRIPPLEMOAB = 5,
 	WEAPON_IRENE = 6,
-	WEAPON_COSMIC_TERROR = 8
+	WEAPON_7 = 7,
+	WEAPON_8 = 8,
+	WEAPON_9 = 9,
+	WEAPON_10 = 10,
+	WEAPON_OCEAN = 11,
+	WEAPON_NEARL = 12,
+	WEAPON_LAPPLAND = 13,
+	WEAPON_LANTEAN = 14,
+	WEAPON_SPECTER = 15,
+	WEAPON_RIOT_SHIELD = 16,
+	WEAPON_YAMATO = 17,
+	WEAPON_BATTILONS = 18,
+	WEAPON_SAGA = 19,
+	WEAPON_BEAM_PAP = 20,
+	WEAPON_MLYNAR = 21,
+	WEAPON_GLADIIA = 22,
+	WEAPON_SPIKELAYER = 23,
 }
 
 ArrayList SpawnerList;
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
+int GrigoriMaxSells = 3;
 int Bob_Exists_Index = -1;
 int CurrentPlayers;
 ConVar zr_voteconfig;
@@ -89,13 +114,13 @@ ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
 ConVar zr_disablerandomvillagerspawn;
+ConVar zr_waitingtime;
 //ConVar CvarEnablePrivatePlugins;
-int CurrentGame;
+int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
-bool EscapeMode;
 int LimitNpcs;
 
 //bool RaidMode; 							//Is this raidmode?
@@ -103,6 +128,7 @@ float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
+float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 int PlayersAliveScaling;
@@ -111,9 +137,6 @@ bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
 Cookie CookieScrap;
-Cookie CookiePlayStreak;
-Cookie CookieCache;
-Cookie CookieAmmoCount;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
@@ -124,8 +147,13 @@ float f_RingDelayGift[MAXENTITIES];
 //custom wave music.
 char char_MusicString1[256];
 int i_MusicLength1;
+bool b_MusicCustom1;
 char char_MusicString2[256];
 int i_MusicLength2;
+bool b_MusicCustom2;
+char char_RaidMusicSpecial1[256];
+int i_RaidMusicLength1;
+bool b_RaidMusicCustom1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
 int CurrentRound;
@@ -155,6 +183,7 @@ int CashSpent[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Scrap[MAXTF2PLAYERS];
+int PlayStreak[MAXTF2PLAYERS];
 int Ammo_Count_Ready;
 int Ammo_Count_Used[MAXTF2PLAYERS];
 //float Armor_Ready[MAXTF2PLAYERS];
@@ -175,7 +204,7 @@ const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
-//float Resistance_for_building_High[MAXENTITIES];
+float Resistance_for_building_High[MAXENTITIES];
 int i_WhatBuilding[MAXENTITIES]={0, ...};
 bool Building_Constructed[MAXENTITIES]={false, ...};
 
@@ -183,7 +212,6 @@ int Elevator_Owner[MAXENTITIES]={0, ...};
 bool Is_Elevator[MAXENTITIES]={false, ...};
 
 int StoreWeapon[MAXENTITIES];
-int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
 
 int Level[MAXTF2PLAYERS];
@@ -194,6 +222,7 @@ int i_PreviousPointAmount[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
+int i_PlayerDamaged[MAXTF2PLAYERS];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 
@@ -207,6 +236,7 @@ int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
 float MultiGlobal = 0.25;
+float MultiGlobalHealth = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 			
 int g_CarriedDispenser[MAXPLAYERS+1];
@@ -239,28 +269,20 @@ bool b_SpecialGrigoriStore;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
-float f_ArmorHudOffsetX[MAXTF2PLAYERS];
-float f_ArmorHudOffsetY[MAXTF2PLAYERS];
-
-float f_HurtHudOffsetX[MAXTF2PLAYERS];
-float f_HurtHudOffsetY[MAXTF2PLAYERS];
-
-float f_WeaponHudOffsetX[MAXTF2PLAYERS];
-float f_WeaponHudOffsetY[MAXTF2PLAYERS];
-
-float f_NotifHudOffsetX[MAXTF2PLAYERS];
-float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
+#include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/escape.sp"
+#include "zombie_riot/freeplay.sp"
 #include "zombie_riot/item_gift_rpg.sp"
 #include "zombie_riot/music.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
+#include "zombie_riot/rogue.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -291,6 +313,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 #include "zombie_riot/custom/wand/weapon_necromancy_wand.sp"
 #include "zombie_riot/custom/wand/weapon_wand_necro_spell.sp"
 #include "zombie_riot/custom/wand/weapon_autoaim_wand.sp"
+#include "zombie_riot/custom/wand/weapon_wand_skulls.sp"
 #include "zombie_riot/custom/weapon_arrow_shot.sp"
 //#include "zombie_riot/custom/weapon_pipe_shot.sp"
 #include "zombie_riot/custom/weapon_survival_knife.sp"
@@ -337,6 +360,13 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 #include "zombie_riot/custom/weapon_cosmic_terror.sp"
 #include "zombie_riot/custom/wand/weapon_wand_potions.sp"
 #include "zombie_riot/custom/weapon_ocean_song.sp"
+#include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
+#include "zombie_riot/custom/weapon_specter.sp"
+#include "zombie_riot/custom/weapon_yamato.sp"
+#include "zombie_riot/custom/weapon_saga.sp"
+#include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
+#include "zombie_riot/custom/weapon_mlynar.sp"
+#include "zombie_riot/custom/weapon_enforcer.sp"
 
 void ZR_PluginLoad()
 {
@@ -353,22 +383,21 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
+	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
 	
-	CookieCache = new Cookie("zr_lastgame", "The last game saved data is from", CookieAccess_Protected);
-	CookieAmmoCount = new Cookie("zr_ammoboxcount", "Ammobox count from game", CookieAccess_Protected);
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
-	CookiePlayStreak = new Cookie("zr_playstreak", "How many times you played in a row", CookieAccess_Protected);
-	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	
 	CvarSvRollagle = FindConVar("sv_rollangle");
 	if(CvarSvRollagle)
 		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	OnPluginStart_Build_on_Building();
 	Database_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
@@ -376,6 +405,7 @@ void ZR_PluginStart()
 	OnPluginStart_Glitched_Weapon();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
+	Rogue_PluginStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -388,13 +418,14 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	Rogue_MapStart();
+	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
-	EscapeMode = false;
-	EscapeModeForNpc = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
+	OnMapStart_Build_on_Build();
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
 	Music_ClearAll();
@@ -407,11 +438,15 @@ void ZR_MapStart()
 	Survival_Knife_ClearAll();
 	MedKit_ClearAll();
 	Wand_autoaim_ClearAll();
+	Weapon_lantean_Wand_ClearAll();
 	Wand_Elemental_2_ClearAll();
 	Wand_Calcium_Spell_ClearAll();
 	Wand_Fire_Spell_ClearAll();
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
+	Wand_Skull_Summon_ClearAll();
+	ShieldLogic_OnMapStart();
+	Rogue_OnAbilityUseMapStart();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -445,7 +480,11 @@ void ZR_MapStart()
 	Irene_Map_Precache();
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
-	
+	Weapon_lantean_Wand_Map_Precache();
+	EscapeSentryHat_MapStart();
+	PrecachePlayerGiveGiveResponseVoice();
+	Mlynar_Map_Precache();
+	Reset_stats_Mlynar_Global();
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -457,6 +496,7 @@ void ZR_MapStart()
 	Mangler_MapStart();
 	Pipebomb_MapStart();
 	Wand_Map_Precache();
+	Wand_Skulls_Precache();
 	Wand_Attackspeed_Map_Precache();
 	Wand_Fire_Map_Precache();
 	Wand_FireBall_Map_Precache();
@@ -508,6 +548,10 @@ void ZR_MapStart()
 	Reset_stats_Passanger_Global();
 	Wand_Potions_Precache();
 	ResetMapStartOcean();
+	Specter_MapStart();
+	Reset_stats_Yamato_Global();	//acts as a reset/map precache
+	Saga_MapStart();
+	Beam_Wand_Pap_OnMapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -517,12 +561,14 @@ void ZR_MapStart()
 	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	
-	FormatEx(char_MusicString1, sizeof(char_MusicString1), "");
-			
-	FormatEx(char_MusicString2, sizeof(char_MusicString2), "");
+	char_MusicString1[0] = 0;
+	char_MusicString2[0] = 0;
+	char_RaidMusicSpecial1[0] = 0;
 			
 	i_MusicLength1 = 0;
 	i_MusicLength2 = 0;
+	i_RaidMusicLength1 = 0;
+	b_RaidMusicCustom1 = false;
 	
 	//Store_RandomizeNPCStore(true);
 }
@@ -538,6 +584,7 @@ void ZR_ClientPutInServer(int client)
 	CashRecievedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
+	i_PlayerDamaged[client] = 0;
 	i_KillsMade[client] = 0;
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
@@ -549,24 +596,28 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	Ammo_Count_Used[client] = 0;
-	
+	/*
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
-	
-	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
+	See databaseuh
+	*/
+
 }
 
 void ZR_ClientDisconnect(int client)
 {
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
+	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
+	Reset_stats_LappLand_Singular(client);
+	Reset_stats_Mlynar_Singular(client);
+	Reset_stats_SpikeLayer_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -578,6 +629,24 @@ void ZR_ClientDisconnect(int client)
 	i_ExtraPlayerPoints[client] = 0;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
+	
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity)) //delete all buildings that arent mounted
+		{
+			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
+			{
+				static char classname[64];
+				GetEntityClassname(entity, classname, sizeof(classname));
+				if(!StrContains(classname, "obj_sentrygun"))
+				{
+					//sometimes this building does not vanish upon being used, we must destroy it manually.
+					RemoveEntity(entity);
+				}
+			}
+		}
+	}
 }
 
 public any Native_GetWaveCounts(Handle plugin, int numParams)
@@ -604,7 +673,7 @@ public Action OnReloadCommand(int args)
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, path, sizeof(path)))
 		{
-			if(!StrContains(path, "base_boss"))
+			if(!StrContains(path, "zr_base_npc"))
 				RemoveEntity(i);
 		}
 	}
@@ -617,6 +686,7 @@ public Action Command_AFK(int client, int args)
 {
 	if(client)
 	{
+	//	DestroyDispenser(client);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
@@ -650,6 +720,32 @@ public Action Command_TestTutorial(int client, int args)
 	{
 		StartTutorial(targets[target]);
 	}
+	return Plugin_Handled;
+}
+
+public Action Command_GiveCashAll(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_cash_all <cash>");
+        return Plugin_Handled;
+    }
+
+	char buf[12];
+	GetCmdArg(1, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+	
+	if(money > 0)
+	{
+		PrintToChatAll("You gained %i cash due to the admin %N!", money, client);	
+	}
+	else
+	{
+		PrintToChatAll("You lost %i cash due to the admin %N!", money, client);	
+	}
+	CurrentCash += money;
+
 	return Plugin_Handled;
 }
 public Action Command_GiveCash(int client, int args)
@@ -689,6 +785,50 @@ public Action Command_GiveCash(int client, int args)
 		{
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
+		}
+	}
+	
+	return Plugin_Handled;
+}
+
+
+public Action Command_GiveXp(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_xp <target> <cash>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
+			XP[targets[target]] += money;
+		}
+		else
+		{
+			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
+			XP[targets[target]] += money;			
 		}
 	}
 	
@@ -747,6 +887,7 @@ public Action Command_AFKKnight(int client, int args)
 {
 	if(client)
 	{
+		DestroyDispenser(client);
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 2);
 	}
@@ -762,6 +903,13 @@ public Action Command_SpawnGrigori(int client, int args)
 
 public void OnClientAuthorized(int client)
 {
+	Ammo_Count_Used[client] = 0;
+	CashSpentTotal[client] = 0;
+	f_LeftForDead_Cooldown[client] = 0.0;
+	
+	if(CurrentRound)
+		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
+
 	Database_ClientAuthorized(client);
 }
 
@@ -782,6 +930,12 @@ public Action Timer_Dieing(Handle timer, int client)
 			
 			if(dieingstate[client] <= 0)
 			{
+				if(dieingstate[client] != -5)
+				{
+					GiveCompleteInvul(client, 2.0);
+					EmitSoundToAll("mvm/mvm_revive.wav", client, SNDCHAN_AUTO, 90, _, 1.0);
+					MakePlayerGiveResponseVoice(client, 3); //Revived response!
+				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
 				RequestFrame(Movetype_walk, client);
 				dieingstate[client] = 0;
@@ -803,16 +957,8 @@ public Action Timer_Dieing(Handle timer, int client)
 				SetEntityCollisionGroup(client, 5);
 				PrintCenterText(client, "");
 				DoOverlay(client, "");
-				if(!EscapeMode)
-				{
-					SetEntityHealth(client, 50);
-					RequestFrame(SetHealthAfterRevive, client);
-				}	
-				else
-				{
-					SetEntityHealth(client, 150);
-					RequestFrame(SetHealthAfterRevive, client);						
-				}
+				SetEntityHealth(client, 50);
+				RequestFrame(SetHealthAfterRevive, client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -938,7 +1084,8 @@ void CheckAlivePlayersforward(int killed=0)
 
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 {
-	if(!Waves_Started() || GameRules_GetRoundState() != RoundState_RoundRunning)
+	bool rogue = Rogue_Mode();
+	if(!Waves_Started() || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
 	{
 		LastMann = false;
 		CurrentPlayers = 0;
@@ -955,10 +1102,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = !Waves_InSetup();
+	LastMann = (!rogue && !Waves_InSetup());
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
-	int GlobalIntencity_Reduntant = Waves_GetIntencity();
+	int GlobalIntencity_Reduntant;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -995,7 +1142,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
+	if(rogue || (LastMann && !GlobalIntencity_Reduntant)) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
@@ -1062,28 +1209,18 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					ShowHudText(client, -1, "%T", "Last Alive", client);
 					int MaxHealth;
 					MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-					
-					SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+					if(i_HealthBeforeSuit[client] == 0)
+					{
+						SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+					}
+					//if in quantum suit, dont.
 					
 					int Extra = 0;
 						
 					Extra = RoundToNearest(Attributes_FindOnPlayer(client, 701));
+					int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
-					if(Extra == 50)
-						Armor_Charge[client] = 200;
-						
-					else if(Extra == 100)
-						Armor_Charge[client] = 350;
-						
-					else if(Extra == 150)
-						Armor_Charge[client] = 700;
-						
-					else if(Extra == 200)
-						Armor_Charge[client] = 1500;
-						
-					else
-						Armor_Charge[client] = 150;
-									
+					Armor_Charge[client] = Armor_Max;
 				}
 			}
 		}
@@ -1098,25 +1235,32 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			Bob_Exists = false;
 			int bob_index = EntRefToEntIndex(Bob_Exists_Index);
 			NPC_Despawn_bob(bob_index);
-			Bob_Exists_Index = 0;
+			Bob_Exists_Index = -1;
 		}
+
+		if(rogue)
+			rogue = !Rogue_BattleLost();
 	
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		
+		if(!rogue)
+		{
+			int entity = CreateEntityByName("game_round_win"); 
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+		}
+
 		if(killed)
 		{
-			Music_RoundEnd(killed);
-			CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
-		//	RequestFrames(Remove_All, 300);
+			Music_RoundEnd(killed, !rogue);
+			if(!rogue)
+			{
+				CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
+			//	RequestFrames(Remove_All, 300);
+			}
 		}
 	}
 }
-
-
 
 //Revival raid spam
 public void SetHealthAfterReviveRaid(int client)
@@ -1158,32 +1302,8 @@ public void SetHealthAfterRevive(int client)
 public void SetHealthAfterReviveAgain(int client)
 {
 	if(IsValidClient(client))
-	{	
-		RequestFrame(SetHealthAfterReviveAgainAgain, client);	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
-	}
-	
-}
-
-public void SetHealthAfterReviveAgainAgain(int client) //For some reason i have to do it more then once for escape.
-{
-	if(IsValidClient(client))
-	{	
-		if(EscapeMode)
-		{
-			SetEntityHealth(client, 150);
-		}
-		else
-		{
-			SetEntityHealth(client, 50);
-		}
+	{
+		SetEntityHealth(client, 50);
 	}
 }
 
@@ -1195,17 +1315,11 @@ public void NPC_SpawnNextRequestFrame(bool force)
 	NPC_SpawnNext(false, false, false);
 }
 
-public void TF2_OnWaitingForPlayersEnd()
-{
-	Queue_WaitingForPlayersEnd();
-}
-
-
 stock void UpdatePlayerPoints(int client)
 {
 	int Points;
 	
-	Points += Healing_done_in_total[client] / 5;
+	Points += Healing_done_in_total[client] / 3;
 	
 	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
 
@@ -1214,6 +1328,8 @@ stock void UpdatePlayerPoints(int client)
 	Points += Resupplies_Supplied[client] * 2;
 	
 	Points += i_BarricadeHasBeenDamaged[client] / 65;
+
+	Points += i_PlayerDamaged[client] / 20;
 	
 	Points += i_ExtraPlayerPoints[client] / 2;
 	
@@ -1222,27 +1338,87 @@ stock void UpdatePlayerPoints(int client)
 	PlayerPoints[client] = Points;	// Do stuff here :)
 }
 
-stock int MaxArmorCalculation(int value, int client, float multiplyier)
+stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier)
 {
+	if(ArmorLevel == -1)
+	{
+		ArmorLevel = RoundToNearest(Attributes_FindOnPlayer(client, 701));
+	}
+
 	int Armor_Max;
 	
-	if(value == 50)
+	if(ArmorLevel == 50)
 		Armor_Max = 300;
 											
-	else if(value == 100)
+	else if(ArmorLevel == 100)
 		Armor_Max = 450;
 											
-	else if(value == 150)
+	else if(ArmorLevel == 150)
 		Armor_Max = 1000;
 										
-	else if(value == 200)
+	else if(ArmorLevel == 200)
 		Armor_Max = 2000;	
 		
 	else
 		Armor_Max = 200;
+
+	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	{
+		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
+	}
 		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
+}
+
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
+{
+	int Armor_Max;
+	
+	Armor_Max = MaxArmorCalculation(_, client, MaxMulti);
+	/*
+	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	{
+		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
+	}
+	*/
+	if(Armor_Charge[client] < Armor_Max)
+	{
+		int ArmorToGive;
+
+		ArmorToGive = RoundToCeil(float(Armor_Max) * multiplyier);
+		
+		Armor_Charge[client] += ArmorToGive;
+
+		if(Armor_Charge[client] >= Armor_Max)
+		{
+			Armor_Charge[client] = Armor_Max;
+		}
+	}
+	
+}
+stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Multi = 1.0)
+{
+	int AmmoToAdd;
+	if(AmmoCount == 0)
+	{
+		AmmoToAdd = AmmoData[AmmoType][1];
+	}
+	else
+	{
+		AmmoToAdd = AmmoCount;
+	}
+	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	{
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.25);
+	}
+	if(Multi != 1.0)
+	{
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * Multi);
+	}
+
+
+	SetAmmo(client, AmmoType, GetAmmo(client, AmmoType)+(AmmoToAdd));
 }
 
 //	f_TimerTickCooldownRaid = 0.0;
@@ -1295,15 +1471,82 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 	}
 }
 
-
+public Action DeleteEntitiesInHazards(Handle timer)
+{
+	float BuildingPos[3];
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if (IsValidEntity(entity) && !i_BeingCarried[entity])
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
+			BuildingPos[2] + 10.0;
+			if(IsPointNoBuild(BuildingPos))
+			{
+				RemoveEntity(entity);
+			}
+		}
+	}
+	for(int entitycount; entitycount<ZR_MAX_TRAPS; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
+		if (IsValidEntity(entity))
+		{
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
+			BuildingPos[2] + 10.0;
+			if(IsPointNoBuild(BuildingPos))
+			{
+				RemoveEntity(entity);
+			}
+		}
+	}
+	for(int entity; entity<MAXENTITIES; entity++)
+	{
+		if (IsValidEntity(entity))
+		{
+			if(IsEntitySpike(entity))
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
+				BuildingPos[2] + 10.0;
+				if(IsPointNoBuild(BuildingPos))
+				{
+					RemoveEntity(entity);
+				}
+			}
+		}
+	}
+	return Plugin_Handled;
+}
 void ReviveAll(bool raidspawned = false)
 {
 	//only set false here
 	ZombieMusicPlayed = false;
+
+	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
+			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			if(glowentity > MaxClients)
+				RemoveEntity(glowentity);
+
+			if(IsPlayerAlive(client))
+			{
+				SetEntityMoveType(client, MOVETYPE_WALK);
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				int entity, i;
+				while(TF2U_GetWearable(client, entity, i))
+				{
+					SetEntityRenderMode(entity, RENDER_NORMAL);
+					SetEntityRenderColor(entity, 255, 255, 255, 255);
+				}
+			}
+			//just make visible.
+			SetEntityRenderMode(client, RENDER_NORMAL);
+			SetEntityRenderColor(client, 255, 255, 255, 255);
+
 			i_AmountDowned[client] = 0;
 			DoOverlay(client, "");
 			if(GetClientTeam(client)==2)
@@ -1320,7 +1563,15 @@ void ReviveAll(bool raidspawned = false)
 				}
 				else if(dieingstate[client] > 0)
 				{
-					dieingstate[client] = 0;
+					GiveCompleteInvul(client, 2.0);
+					if(b_LeftForDead[client])
+					{
+						dieingstate[client] = -8; //-8 for incode reasons, check dieing timer.
+					}
+					else
+					{
+						dieingstate[client] = 0;
+					}
 					Store_ApplyAttribs(client);
 					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 					int entity, i;
@@ -1334,34 +1585,29 @@ void ReviveAll(bool raidspawned = false)
 					SetEntityCollisionGroup(client, 5);
 					if(!raidspawned)
 					{
-						if(!EscapeMode)
-						{
-							SetEntityHealth(client, 50);
-							RequestFrame(SetHealthAfterRevive, client);
-						}	
-						else
-						{
-							SetEntityHealth(client, 150);
-							RequestFrame(SetHealthAfterRevive, client);						
-						}
+						SetEntityHealth(client, 50);
+						RequestFrame(SetHealthAfterRevive, client);
 					}
 				}
 				if(raidspawned)
 				{
-					SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-					RequestFrame(SetHealthAfterReviveRaid, client);	
+					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
+					{
+						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
+						RequestFrame(SetHealthAfterReviveRaid, client);	
+					}
 				}
 			}
 		}
 	}
 	
 	int entity = MaxClients + 1;
-	while((entity = FindEntityByClassname(entity, "base_boss")) != -1)
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
 		if(i_NpcInternalId[entity] == CITIZEN)
 		{
 			Citizen npc = view_as<Citizen>(entity);
-			if(npc.m_bDowned && npc.m_iWearable3 > 0)
+			if(npc.m_nDowned && npc.m_iWearable3 > 0)
 			{
 				npc.SetDowned(false);
 				if(!Waves_InSetup())
@@ -1428,12 +1674,18 @@ void GiveXP(int client, int xp)
 		while(Level[client] < nextLevel)
 		{
 			Level[client]++;
+
+			if(Level[client] == STARTER_WEAPON_LEVEL)
+				CPrintToChat(client, "%t", "All Weapons Unlocked");
 			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
 			
-			if(!(Level[client] % 2))
+			if(Level[client] > STARTER_WEAPON_LEVEL && !(Level[client] % 2))
 				slots++;
+			
+			if(Level[client] < 81 && !(Level[client] % 10))
+				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
 		}
 		
 		if(slots)

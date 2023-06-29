@@ -169,7 +169,7 @@ methodmap BunkerSkeletonKing < CClotBody
 		//SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		//SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, BunkerSkeletonKing_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, BunkerSkeletonKing_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BunkerSkeletonKing_ClotDamaged_Post);
 		
@@ -284,7 +284,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		npc.StartPathing();
 		//PluginBot_NormalJump(npc.index);
 	}
@@ -300,11 +300,11 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) //Predict their pos.
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, closest);
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, closest);
+			NPC_SetGoalEntity(npc.index, closest);
 		}
 		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen) //Target close enough to hit
 		{
@@ -368,7 +368,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -431,7 +431,6 @@ public void BunkerSkeletonKing_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
-	SDKUnhook(entity, SDKHook_OnTakeDamage, BunkerSkeletonKing_OnTakeDamage);
 	SDKUnhook(entity, SDKHook_OnTakeDamagePost, BunkerSkeletonKing_ClotDamaged_Post);
 	SDKUnhook(entity, SDKHook_Think, BunkerSkeletonKing_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))

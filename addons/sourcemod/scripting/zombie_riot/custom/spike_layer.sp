@@ -54,23 +54,51 @@ public bool Spike_ShouldCollide(int client, int collisiongroup, int contentsmask
 //static int Spike_Owner[MAXENTITIES]={0, ...};
 
 
+#define MAXSPIKESALLOWED 120
 
 static int Spike_Health[MAXENTITIES]={0, ...};
-static int Spike_Limit[MAXPLAYERS+1]={40, ...}; //Default is 40.
 static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
+static int Spikes_AliveCap[MAXPLAYERS+1]={30, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
+static int Spikes_AliveGlobal;
+Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
+
 
 bool IsEntitySpike(int entity)
 {
 	return Is_Spike[entity];
 }
 
+void SetEntitySpike(int entity, bool set)
+{
+	Is_Spike[entity] = set;
+}
+
+void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
+{
+	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerSpikeLayerManagement[client]);
+	}	
+	h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+	f_SpikeLayerHudDelay[client] = 0.0;
+}
+
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
 {
+	Spikes_AliveCap[client] = 30;
+	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
+	{
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
+		return;
+	}
 	if(weapon >= MaxClients)
 	{
-		if(Spike_Limit[client] <= Spikes_Alive[client])
+		if(30 <= Spikes_Alive[client])
 		{
 			//ONLY give back ammo IF the Spike has full health.
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
@@ -87,7 +115,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 			return;
 		}
 		
-		float Calculate_HP_Spikes = 70.0; 
+		float Calculate_HP_Spikes = 90.0; 
 		
 		float Bonus_damage;
 			
@@ -97,10 +125,99 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 				
 		Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
-		if (EscapeMode)
+		if (Bonus_damage <= 1.0)
+			Bonus_damage = 1.0;
+			
+		Calculate_HP_Spikes *= Bonus_damage;
+		
+		static float ang[3], pos[3], vel[3];
+		int team = GetClientTeam(client);
+
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
+		GetClientEyeAngles(client, ang);
+		pos[2] += 63;
+
+		vel[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*1500.0;
+		vel[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*1500.0;
+		vel[2] = Sine(DegToRad(ang[0]))*-1500.0;
+
+		int entity = CreateEntityByName("tf_projectile_pipe_remote");
+		if(IsValidEntity(entity))
 		{
-			Calculate_HP_Spikes *= 3.0;
+			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
+																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
+			SetEntProp(entity, Prop_Send, "m_iType", 1);
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
+			Spike_Health[entity] = RoundToCeil(Calculate_HP_Spikes);
+			Spike_MaxHealth[entity] = RoundToCeil(Calculate_HP_Spikes);
+		//	SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", weapon);
+		//	SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+		/*
+			DONT DO THIS!!
+			Entity 69 (class 'tf_projectile_pipe_remote') reported ENTITY_CHANGE_NONE but 'm_hOriginalLauncher' changed.
+			Entity 69 (class 'tf_projectile_pipe_remote') reported ENTITY_CHANGE_NONE but 'm_hLauncher' changed.
+		
+		*/
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vel);
+
+			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+			DispatchSpawn(entity);
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vel);
+			Is_Spike[entity] = true;
+		//	Spike_Owner[entity] = client;
+
+		//	HasSentry[client] = EntIndexToEntRef(entity);
+		//	EmitSoundToAll("weapons/drg_wrench_teleport.wav", entity, SNDCHAN_WEAPON, 70);
+			Spikes_Alive[client] += 1;
+			Spikes_AliveGlobal += 1;
+			CreateTimer(0.25, Detect_Spike_Still, EntIndexToEntRef(entity), TIMER_REPEAT);
 		}
+		//Borowed from RPG fortress!
+	}
+}
+
+
+public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classname, bool &result)
+{
+	Spikes_AliveCap[client] = 40;
+	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
+	{
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
+		return;
+	}
+	if(weapon >= MaxClients)
+	{
+		if(40 <= Spikes_Alive[client])
+		{
+			//ONLY give back ammo IF the Spike has full health.
+			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1); //Give ammo back that they just spend like an idiot
+			for(int i; i<Ammo_MAX; i++)
+			{
+				CurrentAmmo[client][i] = GetAmmo(client, i);
+			}	
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Limit Reached");
+			return;
+		}
+		
+		float Calculate_HP_Spikes = 110.0; 
+		
+		float Bonus_damage;
+			
+		float attack_speed;
+		
+		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+				
+		Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;
@@ -149,6 +266,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		//	HasSentry[client] = EntIndexToEntRef(entity);
 		//	EmitSoundToAll("weapons/drg_wrench_teleport.wav", entity, SNDCHAN_WEAPON, 70);
 			Spikes_Alive[client] += 1;
+			Spikes_AliveGlobal += 1;
 			CreateTimer(0.25, Detect_Spike_Still, EntIndexToEntRef(entity), TIMER_REPEAT);
 		}
 		//Borowed from RPG fortress!
@@ -178,7 +296,7 @@ public Action Detect_Spike_Still(Handle timer, int ref)
 				if(IsValidEntity(entity))
 				{
 					DataPack pack;
-					CreateDataTimer(0.25, Did_Enemy_Step_On_Spike, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					CreateDataTimer(0.25, Did_Enemy_Step_On_Spike, pack, TIMER_REPEAT);
 					pack.WriteCell(EntIndexToEntRef(entity));
 					pack.WriteCell(entity);
 					pack.WriteCell(client);
@@ -240,58 +358,15 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 								if(Health <= 0)
 									continue;
 								
-								//int MaxHealth = GetEntProp(baseboss_index, Prop_Data, "m_iMaxHealth");
-								
-								int Damage_Calc;
-								
-								//Damage_Calc = MaxHealth - Health; //how much dmg to kill
-								
-								Damage_Calc = Health;
-								
-							//	PrintToChatAll("%i",Damage_Calc);
-								if(Damage_Calc > Spike_Health[entity])
-								{
-									//i was trying some really dumb math, its actually this easy...
-									Damage_Calc = Spike_Health[entity];
-								}
-								
-								float Health_Before_Hurt = float(GetEntProp(baseboss_index, Prop_Data, "m_iHealth"));
-					
 								//Just do full damage.
-								SDKHooks_TakeDamage(baseboss_index, client, client, float(Damage_Calc), DMG_BULLET, -1, NULL_VECTOR, Spikepos);
-								
-								float Health_After_Hurt = float(GetEntProp(baseboss_index, Prop_Data, "m_iHealth"));
-								
-								Spike_Health[entity] -= RoundToCeil(Health_Before_Hurt - Health_After_Hurt);
-								
-								if (Spike_Health[entity] == 0)
-								{
-									RemoveEntity(entity);
-									Is_Spike[entity] = false;
-									Spikes_Alive[client] -= 1;
-									return Plugin_Stop;
-								}
-								else if (Spike_Health[entity] < 0)
-								{
-									RemoveEntity(entity);
-									Is_Spike[entity] = false;
-									Spikes_Alive[client] -= 1;
-								//	not anymore bug, enemies CAN take more damage.
-								//	PrintToConsoleAll("Somehow the spike did more dmg then it has health? BUG!!!!!!!");
-									return Plugin_Stop;
-								}
-								
-								//We cant use posttake damage, any resistance will just eat spikes hard, no real way around that unless i do litteral frame checks that rape
-								//Server performance in 0.0001 nano seconds
-								//So we just calculate it beforehand!
-								//Minicrits included?
-								//any enemy with invineability like minions will sadly be ignored by this, but i guess that buffs them!
-								//Or i should probably add a check for those types of enemy, or a global native or some crap, but thats too much effort
-								//i will probably just do a check for if they are invinceable or not.
-								//Also with this logic, NPC's should NEVER gib from this, if they do, then there is a bug!!!!!!!
-								
-						//		RemoveEntity(entity);
-						//		return Plugin_Stop;
+								SDKHooks_TakeDamage(baseboss_index, client, client, float(Spike_Health[entity]), DMG_BULLET, -1, NULL_VECTOR, Spikepos);
+
+								RemoveEntity(entity);
+								Is_Spike[entity] = false;
+								Spikes_Alive[client] -= 1;
+								Spikes_AliveGlobal -= 1;
+
+								return Plugin_Stop;
 							}
 						}
 					}
@@ -303,6 +378,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 		{
 			if(entity>MaxClients && IsValidEntity(entity))
 			{
+				Spikes_AliveGlobal -= 1;
 				Spikes_Alive[original_client] -= 1; // I dont knowhow this happend or how to delete you off it, im sorry. Youre lost. Edit: Actually, this is fine to do! Arrays dont care if its a valid entity or not, luckly.
 				Is_Spike[entity] = false;
 				RemoveEntity(entity);
@@ -313,6 +389,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 	}
 	else
 	{
+		Spikes_AliveGlobal -= 1;
 		Spikes_Alive[original_client] -= 1; // I dont knowhow this happend or how to delete you off it, im sorry. Youre lost. Edit: Actually, this is fine to do! Arrays dont care if its a valid entity or not, luckly.
 		Is_Spike[original_entity] = false;
 		return Plugin_Stop;
@@ -352,6 +429,90 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 						}
 						RemoveEntity(entity);
 					}
+				}
+			}
+		}
+	}
+}
+
+public void Enable_SpikeLayer(int client, int weapon) 
+{
+	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER) 
+		{
+			//Is the weapon it again?
+			//Yes?
+			KillTimer(h_TimerSpikeLayerManagement[client]);
+			h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+			DataPack pack;
+			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)
+	{
+		DataPack pack;
+		h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+public Action Timer_Management_SpikeLayer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	if(IsValidClient(client))
+	{
+		if (IsClientInGame(client))
+		{
+			if (IsPlayerAlive(client))
+			{
+				SpikeLayer_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
+			}
+			else
+				Kill_Timer_SpikeLayer(client);
+		}
+		else
+			Kill_Timer_SpikeLayer(client);
+	}
+	else
+		Kill_Timer_SpikeLayer(client);
+		
+	return Plugin_Continue;
+}
+
+public void Kill_Timer_SpikeLayer(int client)
+{
+	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	{
+		KillTimer(h_TimerSpikeLayerManagement[client]);
+		h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+	}
+}
+
+
+public void SpikeLayer_Cooldown_Logic(int client, int weapon)
+{
+	if (!IsValidMulti(client))
+		return;
+		
+	if(IsValidEntity(weapon))
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)
+		{
+			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+			{
+				if(f_SpikeLayerHudDelay[client] < GetGameTime())
+				{
+					PrintHintText(client,"Spikes Layed [%i/%i]\nSpike Global Limit[%i/%i]",Spikes_Alive[client],Spikes_AliveCap[client],Spikes_AliveGlobal,MAXSPIKESALLOWED);	
+					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+					f_SpikeLayerHudDelay[client] = GetGameTime() + 0.5;
 				}
 			}
 		}

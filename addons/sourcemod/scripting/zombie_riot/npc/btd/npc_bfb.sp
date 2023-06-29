@@ -69,23 +69,7 @@ static int MoabHealth(bool fortified)
 
 void Bfb_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
 	PrecacheModel("models/zombie_riot/btd/bfb.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/bfb.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbdamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/bfb/bfbstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap BFB < CClotBody
@@ -104,12 +88,12 @@ methodmap BFB < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 2.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabPop) - 1);
-		EmitSoundToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 2.0);
 	}
 	public int UpdateBloonOnDamage()
 	{
@@ -129,6 +113,7 @@ methodmap BFB < CClotBody
 		BFB npc = view_as<BFB>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bfb.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BFB;
+		i_NpcWeight[npc.index] = 3;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -149,7 +134,7 @@ methodmap BFB < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Bfb_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bfb_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bfb_ClotThink);
 		
@@ -210,11 +195,11 @@ public void Bfb_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -269,14 +254,14 @@ public void Bfb_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action Bfb_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Bfb_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -299,7 +284,7 @@ public void Bfb_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bfb_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Bfb_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Bfb_ClotThink);
 	
 	float pos[3], angles[3];

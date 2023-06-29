@@ -77,23 +77,7 @@ static int MoabHealth(bool fortified)
 
 void DDT_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/ddt.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtdamagestate4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/ddt/ddtstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap DDT < CClotBody
@@ -112,17 +96,17 @@ methodmap DDT < CClotBody
 	public void PlayLeadSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundLead) - 1);
-		EmitSoundToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundLead[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabPop) - 1);
-		EmitSoundToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public int UpdateBloonOnDamage()
 	{
@@ -142,6 +126,7 @@ methodmap DDT < CClotBody
 		DDT npc = view_as<DDT>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_DDT;
+		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -155,9 +140,7 @@ methodmap DDT < CClotBody
 		npc.m_flSpeed = MoabSpeed();
 		npc.m_bFortified = fortified;
 		
-		bool camo = true;
-		Building_CamoOrRegrowBlocker(camo, camo);
-		npc.m_bCamo = camo;
+		npc.m_bCamo = true;
 		
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iState = 0;
@@ -166,15 +149,12 @@ methodmap DDT < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, DDT_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, DDT_ClotThink);
 		
-		if(camo)
-		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 60);
-		}
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
 		
 		npc.StartPathing();
 		
@@ -214,6 +194,23 @@ public void DDT_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	bool camo = !NpcStats_IsEnemySilenced(npc.index);
+	Building_CamoOrRegrowBlocker(npc.index, camo);
+
+	if(npc.m_bCamo)
+	{
+		if(!camo)
+		{
+			npc.m_bCamo = false;
+			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+		}
+	}
+	else if(camo)
+	{
+		npc.m_bCamo = true;
+		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
+	}
+
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -233,11 +230,11 @@ public void DDT_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -292,14 +289,14 @@ public void DDT_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -314,11 +311,19 @@ public Action DDT_ClotDamaged(int victim, int &attacker, int &inflictor, float &
 	else if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
 	{
 		damage *= 0.15;
+
+		damagePosition[2] += 50.0;
+		npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+		damagePosition[2] -= 50.0;
 	}
 	else
 	{
 		damage *= 0.15;
 		npc.PlayLeadSound();
+
+		damagePosition[2] += 50.0;
+		npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+		damagePosition[2] -= 50.0;
 	}
 	return Plugin_Changed;
 }
@@ -335,7 +340,7 @@ public void DDT_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, DDT_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, DDT_ClotThink);
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");

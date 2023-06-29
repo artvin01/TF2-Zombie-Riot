@@ -139,6 +139,7 @@ methodmap Sniper_railgunner < CClotBody
 		Sniper_railgunner npc = view_as<Sniper_railgunner>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "12500", ally));
 		
 		i_NpcInternalId[npc.index] = ALT_SNIPER_RAILGUNNER;
+		i_NpcWeight[npc.index] = 1;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -151,7 +152,7 @@ methodmap Sniper_railgunner < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Sniper_railgunner_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, Sniper_railgunner_ClotThink);
 		
 		//IDLE
@@ -225,7 +226,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -240,29 +241,6 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				/*
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
-				*/
-				
-				
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
 			
 			if(flDistanceToTarget < 1562500)	//1250 range
 			{
@@ -281,7 +259,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 						
 						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 						
-						PF_SetGoalVector(npc.index, vBackoffPos);
+						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
 				}
 				else
@@ -304,14 +282,15 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							float speed;
 							speed = 1250.0;
 							damage = 50.0;
-							if(i_overcharge[npc.index] > 5)	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
+							
+							if(i_overcharge[npc.index] > 5 && !NpcStats_IsEnemySilenced(npc.index))	//tl;dr, 6th shot is super pew pew. quad pew for 400 dmg 
 							{
 								speed = 2000.0;
 								damage = 50.0;
 								i_overcharge[npc.index] = 0;
 								npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 7.0;	//long reload, the gun overheated from the charge shot.
 								npc.PlayMeleeSound();
-								if(flDistanceToTarget > 1000000)	//doesn't predict over 1000 hu
+								if(flDistanceToTarget < 1000000)	//doesn't predict over 1000 hu
 								{
 									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
 								}
@@ -325,7 +304,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							}
 							else
 							{
-								if(flDistanceToTarget > 562500)	//Doesn't predict over 750 hu
+								if(flDistanceToTarget < 562500)	//Doesn't predict over 750 hu
 								{
 									vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed);
 								}
@@ -341,7 +320,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 							npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
 							npc.PlayRangedReloadSound();
 						}
-						PF_StopPathing(npc.index);
+						NPC_StopPathing(npc.index);
 						npc.m_bPathing = false;
 					}
 					else
@@ -354,10 +333,34 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 			}
+			
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
+				
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				/*
+				int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);
+				*/
+				
+				
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			} else {
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -365,7 +368,7 @@ public void Sniper_railgunner_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Sniper_railgunner_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Sniper_railgunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Sniper_railgunner npc = view_as<Sniper_railgunner>(victim);
 		
@@ -400,7 +403,7 @@ public void Sniper_railgunner_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Sniper_railgunner_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Sniper_railgunner_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Sniper_railgunner_ClotDamaged_Post);	
 	

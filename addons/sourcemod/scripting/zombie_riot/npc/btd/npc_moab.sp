@@ -69,39 +69,17 @@ static int MoabHealth(bool fortified)
 
 void Moab_MapStart()
 {
-	#if defined FORCE_BLOON_ENABLED
-	char buffer[256];
 	for(int i; i<sizeof(SoundMoabHit); i++)
 	{
-		PrecacheSound(SoundMoabHit[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundMoabHit[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
+	
 	for(int i; i<sizeof(SoundMoabPop); i++)
 	{
-		PrecacheSound(SoundMoabHit[i]);
-		FormatEx(buffer, sizeof(buffer), "sound/%s", SoundMoabPop[i]);
-		AddFileToDownloadsTable(buffer);
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/boab.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.dx80.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.dx90.vtx");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.mdl");
-	AddFileToDownloadsTable("models/zombie_riot/btd/boab.vvd");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage1diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage1diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage2diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage2diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage3diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage3diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage4diffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabdamage4diffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabreinforceddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabreinforceddiffuse.vtf");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabstandarddiffuse.vmt");
-	AddFileToDownloadsTable("material/models/zombie_riot/btd/moab/moabstandarddiffuse.vtf");
-	#endif
 }
 
 methodmap Moab < CClotBody
@@ -120,12 +98,12 @@ methodmap Moab < CClotBody
 	public void PlayHitSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabHit) - 1);
-		EmitSoundToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabHit[sound], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 	}
 	public void PlayDeathSound()
 	{
 		int sound = GetRandomInt(0, sizeof(SoundMoabPop) - 1);
-		EmitSoundToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+		EmitCustomToAll(SoundMoabPop[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
 	}
 	public int UpdateBloonOnDamage()
 	{
@@ -145,6 +123,7 @@ methodmap Moab < CClotBody
 		Moab npc = view_as<Moab>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/boab.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcInternalId[npc.index] = BTD_MOAB;
+		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -165,7 +144,7 @@ methodmap Moab < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Moab_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Moab_ClotThink);
 		
@@ -226,11 +205,11 @@ public void Moab_ClotThink(int iNPC)
 		{
 			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 			
-			PF_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
+			NPC_SetGoalVector(npc.index, PredictSubjectPosition(npc, PrimaryThreatIndex));
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -285,14 +264,14 @@ public void Moab_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
-public Action Moab_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Moab_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -315,7 +294,7 @@ public void Moab_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Moab_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Moab_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, Moab_ClotThink);
 	
 	float pos[3], angles[3];

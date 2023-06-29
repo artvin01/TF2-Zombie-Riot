@@ -74,11 +74,6 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				
 			Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
 			
-			if (EscapeMode)
-			{
-				Calculate_HP_Spikes *= 3.0;
-			}
-			
 			if (Bonus_damage <= 1.0)
 				Bonus_damage = 1.0;
 				
@@ -114,6 +109,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				SetEntityModel(TripMine, TRIP_MODEL);
 				DispatchKeyValue(TripMine, "StartDisabled", "false");
 				DispatchSpawn(TripMine);
+				SetEntitySpike(TripMine, true);
 						
 				SetEntityMoveType(TripMine, MOVETYPE_NONE);
 				SetEntProp(TripMine, Prop_Data, "m_takedamage", 0);
@@ -359,7 +355,7 @@ public void Trip_TrackPlanted(int client)
 									int targ = TR_GetEntityIndex(Trace);
 									char other_classname[32];
 									GetEntityClassname(targ, other_classname, sizeof(other_classname));
-									if ((StrContains(other_classname, "base_boss") != -1) && (GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
+									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(targ, Prop_Send, "m_iTeamNum")))
 									{
 										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client], DMG_BLAST, -1);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);
@@ -540,10 +536,10 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 	}
 }
 
-int Terroriser_Bomb_Implant_Particle[MAXENTITIES+1] = {-1, ...};
-
 public void Apply_Particle_Teroriser_Indicator(int entity)
 {
+	b_HasBombImplanted[entity] = true;	
+	/*
 	int particle_index;
 	particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
 	if(!IsValidEntity(particle_index))
@@ -554,6 +550,7 @@ public void Apply_Particle_Teroriser_Indicator(int entity)
 		flPos[2] += 90.0 * GetEntPropFloat(entity, Prop_Data, "m_flModelScale");
 		Terroriser_Bomb_Implant_Particle[entity] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "powerup_icon_supernova_red",entity));
 	}
+	*/
 }
 
 void CleanAllApplied_Aresenal(int entity, bool force = false)
@@ -568,14 +565,17 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	}
 	if(!Anyplayerhasbombsleft || force)
 	{
-		int particle_index;
+		b_HasBombImplanted[entity] = false;	
+	}
+	/*
+			int particle_index;
 		particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
 
 		if(IsValidEntity(particle_index))
 		{
 			RemoveEntity(particle_index);
 		}		
-	}
+		*/
 }
 
 void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2[3], bool allowLagcomp = false)
@@ -613,6 +613,7 @@ void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2
 	{
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
 	}
+	
 	if(!b_NpcHasDied[npc]) //Incase it gets called later.
 	{
 		f_CooldownForHurtHud[client] = 0.0; //So it shows the damage delt by by secondary internal combustion too.

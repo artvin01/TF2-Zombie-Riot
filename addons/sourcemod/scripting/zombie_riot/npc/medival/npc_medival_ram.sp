@@ -44,8 +44,9 @@ methodmap MedivalRam < CClotBody
 	
 	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.5", "10000", ally));
+		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.8", "30000", ally, false, true));
 		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
+		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -58,7 +59,7 @@ methodmap MedivalRam < CClotBody
 				Garrison[npc.index] = GetIndexByPluginName(data);
 			
 			if(Garrison[npc.index] && !ally)
-				Zombies_Currently_Still_Ongoing += 4;
+				Zombies_Currently_Still_Ongoing += 6;
 		}
 		else
 		{
@@ -78,7 +79,7 @@ methodmap MedivalRam < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 0.2;
+		npc.m_flRangedArmor = 0.01;
 		
 		if(Garrison[npc.index])
 		{
@@ -89,19 +90,27 @@ methodmap MedivalRam < CClotBody
 		{
 			npc.m_iWearable1 = -1;
 		}
+		SDKHook(npc.index, SDKHook_Touch, RamTouchDamageTouch);
 		
 		return npc;
 	}
-	
-	
 }
 
+public void RamTouchDamageTouch(int entity, int other)
+{
+	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
+	{
+		SDKHooks_TakeDamage(other, entity, entity, 10.0, DMG_CRUSH, -1, _);
+	}
+}
 //TODO 
 //Rewrite
 public void MedivalRam_ClotThink(int iNPC)
 {
 	MedivalRam npc = view_as<MedivalRam>(iNPC);
 	
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -120,9 +129,12 @@ public void MedivalRam_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-	
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		if(npc.m_iTarget == -1)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -150,9 +162,9 @@ public void MedivalRam_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 	
 			//Target close enough to hit
@@ -165,7 +177,6 @@ public void MedivalRam_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
@@ -176,7 +187,7 @@ public void MedivalRam_ClotThink(int iNPC)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
 							{
 								
 								int target = TR_GetEntityIndex(swingTrace);	
@@ -195,6 +206,7 @@ public void MedivalRam_ClotThink(int iNPC)
 									
 									
 									// Hit sound
+									ParticleEffectAt(vecHit, "skull_island_embers", 2.0);
 									npc.PlayMeleeHitSound();
 								} 
 							}
@@ -215,10 +227,14 @@ public void MedivalRam_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		if(npc.m_iTarget == -1)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 	}
 //	npc.PlayIdleAlertSound();
 }
@@ -245,12 +261,9 @@ void MedivalRam_NPCDeath(int entity)
 		
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
-		for(int i; i < 4; i++)
+		for(int i; i < 6; i++)
 		{
 			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
 		}
-
-		if(!friendly)
-			Zombies_Currently_Still_Ongoing -= 4;
 	}
 }

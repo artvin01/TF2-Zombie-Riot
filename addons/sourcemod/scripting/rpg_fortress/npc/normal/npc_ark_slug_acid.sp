@@ -80,7 +80,7 @@ methodmap ArkSlugAcid < CClotBody
 		ArkSlugAcid npc = view_as<ArkSlugAcid>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", "2080", ally, false));
 		// Acid Originium Slug (HP)
 
-		i_NpcInternalId[npc.index] = ARK_SLUG;
+		i_NpcInternalId[npc.index] = ARK_SLUGACID;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -94,7 +94,7 @@ methodmap ArkSlugAcid < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
+		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 0.5);
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
@@ -106,7 +106,7 @@ methodmap ArkSlugAcid < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugAcid_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlugAcid_ClotThink);
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
 		i_NoEntityFoundCount[npc.index] = 6;
@@ -128,7 +128,7 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 		return;
 	}
 	
-	npc.m_flNextDelayTime = gameTime;// + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 
@@ -229,11 +229,11 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, npc.m_iTarget);
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -288,7 +288,7 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.0 : 1.5);
 					
 					npc.m_bisWalking = false;
-					PF_StopPathing(npc.index);
+					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
 			}

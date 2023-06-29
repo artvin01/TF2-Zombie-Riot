@@ -32,7 +32,7 @@ static const char g_IdleSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 
-	"npc/metropolice/vo/pickupthatcan2.wav",
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
@@ -56,7 +56,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthecan1.wav",
-	"npc/metropolice/vo/pickupthecan2.wav",
+
 	"npc/metropolice/vo/pickupthecan3.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
@@ -95,6 +95,8 @@ void MedivalSamurai_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 }
+
+float f_RangedPainTolerance[MAXENTITIES];
 
 methodmap MedivalSamurai < CClotBody
 {
@@ -163,8 +165,10 @@ methodmap MedivalSamurai < CClotBody
 	public MedivalSamurai(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		MedivalSamurai npc = view_as<MedivalSamurai>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "25000", ally));
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		i_NpcInternalId[npc.index] = MEDIVAL_SAMURAI;
+		i_NpcWeight[npc.index] = 2;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -177,7 +181,7 @@ methodmap MedivalSamurai < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, MedivalSamurai_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);
 		
@@ -195,6 +199,7 @@ methodmap MedivalSamurai < CClotBody
 		
 		npc.m_flMeleeArmor = 1.30; 		//Honorable fighters!
 		npc.m_flRangedArmor = 0.9;		//FUCK YOU RANGED KILL YOURSELF AAAAAAAAAAAAAAA
+		f_RangedPainTolerance[npc.index] = 0.0;
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
@@ -248,7 +253,7 @@ public void MedivalSamurai_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -286,9 +291,9 @@ public void MedivalSamurai_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			} else {
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -384,7 +389,7 @@ public void MedivalSamurai_ClotThink(int iNPC)
 	else
 	{
 		
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -392,7 +397,7 @@ public void MedivalSamurai_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MedivalSamurai_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action MedivalSamurai_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	MedivalSamurai npc = view_as<MedivalSamurai>(victim);
 		
@@ -414,8 +419,13 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
 	{
-		npc.Anger = true; //	>:(
-		npc.m_flSpeed = 330.0;
+		f_RangedPainTolerance[npc.index] += damage;
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
+		{
+			npc.Anger = true; //	>:(
+			npc.m_flSpeed = 330.0;
+		}
+
 	}
 }
 
@@ -427,7 +437,7 @@ public void MedivalSamurai_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, MedivalSamurai_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MedivalSamurai_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, MedivalSamurai_ClotDamaged_Post);	
 	

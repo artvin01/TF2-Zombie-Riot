@@ -23,9 +23,23 @@ enum
 
 	FARM_COW						= 16,
 
-	ARK_SLUG	= 17,
-	ARK_SINGER	= 18,
-	ARK_SLUGACID	= 19
+	ARK_SLUG		= 17,
+	ARK_SINGER		= 18,
+	ARK_SLUGACID		= 19,
+	ARK_SLUG_INFUSED	= 20,
+
+	COMBINE_PISTOL,
+	COMBINE_SMG,
+	COMBINE_AR2,
+	COMBINE_ELITE,
+	COMBINE_SHOTGUN		= 25,
+	COMBINE_SWORDSMAN,
+	COMBINE_GIANT,
+	COMBINE_OVERLORD,
+	TOWNGUARD_PISTOL,
+	COMBINE_OVERLORD_CC	= 30,
+	COMBINE_TURTLE,
+	FARM_BEAR
 }
 
 public const char NPC_Names[][] =
@@ -49,7 +63,20 @@ public const char NPC_Names[][] =
 	"Farming Cow",
 	"Originium Slug",
 	"Scarlet Singer",
-	"Acid Originium Slug"
+	"Acid Originium Slug",
+	"Infused Originium Slug",
+	"Metro Cop",
+	"Metro Raider",
+	"Combine Rifler",
+	"Combine Elite",
+	"Combine Shotgunner",
+	"Combine Swordsman",
+	"Combine Giant Swordsman",
+	"Combine Overlord",
+	"Rebel Guard",
+	"Overlord The Last",
+	"Hat Turtle",
+	"Heavy Farm Bear"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -73,7 +100,20 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_heavy_cow",
 	"npc_ark_slug",
 	"npc_ark_singer",
-	"npc_ark_slug_acid"
+	"npc_ark_slug_acid",
+	"npc_ark_slug_infused",
+	"npc_combine_pistol",
+	"npc_combine_smg",
+	"npc_combine_ar2",
+	"npc_combine_elite",
+	"npc_combine_shotgun",
+	"npc_combine_swordsman",
+	"npc_combine_giant",
+	"npc_combine_overlord",
+	"npc_townguard_pistol",
+	"npc_combine_overlord_cc",
+	"npc_combine_turtle",
+	"npc_heavy_farm_bear",
 };
 
 void NPC_MapStart()
@@ -97,6 +137,10 @@ void NPC_MapStart()
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
+	ArkSlugInfused_MapStart();
+	BaseSquad_MapStart();
+	CombineTurtle_MapStart();
+	FarmBear_OnMapStart_NPC();
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
@@ -182,6 +226,58 @@ stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng
 		case ARK_SLUGACID:
 		{
 			entity = ArkSlugAcid(client, vecPos, vecAng, ally);
+		}
+		case ARK_SLUG_INFUSED:
+		{
+			entity = ArkSlugInfused(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_PISTOL:
+		{
+			entity = CombinePistol(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_SMG:
+		{
+			entity = CombineSMG(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_AR2:
+		{
+			entity = CombineAR2(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_ELITE:
+		{
+			entity = CombineElite(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_SHOTGUN:
+		{
+			entity = CombineShotgun(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_SWORDSMAN:
+		{
+			entity = CombineSwordsman(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_GIANT:
+		{
+			entity = CombineGiant(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_OVERLORD:
+		{
+			entity = CombineOverlord(client, vecPos, vecAng, ally);
+		}
+		case TOWNGUARD_PISTOL:
+		{
+			entity = TownGuardPistol(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_OVERLORD_CC:
+		{
+			entity = CombineOverlordCC(client, vecPos, vecAng, ally);
+		}
+		case COMBINE_TURTLE:
+		{
+			entity = CombineTurtle(client, vecPos, vecAng, ally);
+		}
+		case FARM_BEAR:
+		{
+			entity = FarmBear(client, vecPos, vecAng, ally);
 		}
 		default:
 		{
@@ -272,6 +368,58 @@ public void NPCDeath(int entity)
 		{
 			ArkSlugAcid_NPCDeath(entity);
 		}
+		case ARK_SLUG_INFUSED:
+		{
+			ArkSlugInfused_NPCDeath(entity);
+		}
+		case COMBINE_PISTOL:
+		{
+			CombinePistol_NPCDeath(entity);
+		}
+		case COMBINE_SMG:
+		{
+			CombineSMG_NPCDeath(entity);
+		}
+		case COMBINE_AR2:
+		{
+			CombineAR2_NPCDeath(entity);
+		}
+		case COMBINE_ELITE:
+		{
+			CombineElite_NPCDeath(entity);
+		}
+		case COMBINE_SHOTGUN:
+		{
+			CombineShotgun_NPCDeath(entity);
+		}
+		case COMBINE_SWORDSMAN:
+		{
+			CombineSwordsman_NPCDeath(entity);
+		}
+		case COMBINE_GIANT:
+		{
+			CombineGiant_NPCDeath(entity);
+		}
+		case COMBINE_OVERLORD:
+		{
+			CombineOverlord_NPCDeath(entity);
+		}
+		case TOWNGUARD_PISTOL:
+		{
+			TownGuardPistol_NPCDeath(entity);
+		}
+		case COMBINE_OVERLORD_CC:
+		{
+			CombineOverlordCC_NPCDeath(entity);
+		}
+		case COMBINE_TURTLE:
+		{
+			CombineTurtle_NPCDeath(entity);
+		}
+		case FARM_BEAR:
+		{
+			FarmBear_NPCDeath(entity);
+		}
 		default:
 		{
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -339,12 +487,14 @@ public void NPC_Despawn(int entity)
 			RemoveEntity(npc.m_iTextEntity2);
 		if(IsValidEntity(npc.m_iTextEntity3))
 			RemoveEntity(npc.m_iTextEntity3);
+		if(IsValidEntity(npc.m_iTextEntity4))
+			RemoveEntity(npc.m_iTextEntity4);
 
 		RemoveEntity(entity);
 	}
 }
 
-void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
+void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	
@@ -415,7 +565,7 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
 			{
-				PF_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+				NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -523,7 +673,7 @@ void Npc_Base_Thinking(int entity, float distance, char[] WalkBack, char[] Stand
 		}
 		if(npc.m_bPathing)
 		{
-			PF_StopPathing(npc.index);
+			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;	
 		}
 	}
@@ -559,6 +709,10 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 		{
 			result = HeavyCow_Interact(client, weapon);
 		}
+		case FARM_BEAR:
+		{
+			result = HeavyBear_Interact(client, weapon);
+		}
 	}
 	return result;
 }
@@ -581,7 +735,22 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
 
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
+#include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
 
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"
+#include "rpg_fortress/npc/normal/npc_ark_slug_infused.sp"
+
+#include "rpg_fortress/npc/combine/npc_basesquad.sp"
+#include "rpg_fortress/npc/combine/npc_combine_pistol.sp"
+#include "rpg_fortress/npc/combine/npc_combine_smg.sp"
+#include "rpg_fortress/npc/combine/npc_combine_ar2.sp"
+#include "rpg_fortress/npc/combine/npc_combine_elite.sp"
+#include "rpg_fortress/npc/combine/npc_combine_shotgun.sp"
+#include "rpg_fortress/npc/combine/npc_combine_swordsman.sp"
+#include "rpg_fortress/npc/combine/npc_combine_giant.sp"
+#include "rpg_fortress/npc/combine/npc_combine_overlord.sp"
+#include "rpg_fortress/npc/combine/npc_townguard_pistol.sp"
+#include "rpg_fortress/npc/combine/npc_combine_overlord_cc.sp"
+#include "rpg_fortress/npc/combine/npc_combine_turtle.sp"

@@ -175,6 +175,7 @@ methodmap CombineSoldierShotgun < CClotBody
 		CombineSoldierShotgun npc = view_as<CombineSoldierShotgun>(CClotBody(vecPos, vecAng, "models/combine_soldier.mdl", "1.15", "650", ally));
 		
 		i_NpcInternalId[npc.index] = COMBINE_SOLDIER_SHOTGUN;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -190,7 +191,7 @@ methodmap CombineSoldierShotgun < CClotBody
 
 		npc.m_fbGunout = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, CombineSoldierShotgun_OnTakeDamage);
+		
 		SDKHook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -246,7 +247,7 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		npc.StartPathing();
 		
 	}
@@ -275,11 +276,11 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				PF_SetGoalVector(npc.index, vPredictedPos);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
 			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -343,7 +344,7 @@ public void CombineSoldierShotgun_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -375,7 +376,7 @@ public void CombineSoldierShotgun_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, CombineSoldierShotgun_OnTakeDamage);
+	
 	SDKUnhook(npc.index, SDKHook_Think, CombineSoldierShotgun_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

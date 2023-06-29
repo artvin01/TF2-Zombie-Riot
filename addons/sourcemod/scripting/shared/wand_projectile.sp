@@ -70,7 +70,10 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
+	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
+		//make rockets visible on spawn.
+		
 		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
 		{
@@ -97,7 +100,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 10.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -141,7 +144,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
-	#if defined ZR
+#if defined ZR
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -188,7 +191,29 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Want_CalciumWandTouch(entity, target);
 		}
-		/* Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
+		case WEAPON_LAPPLAND:
+		{
+			Melee_LapplandArkTouch(entity, target);
+		}
+		case 15:
+		{
+			Event_Ark_OnHatTouch(entity, target);
+		}
+		case 17: //Staff of the Skull Servants auto-fire projectiles.
+		{
+			Wand_Skulls_Touch(entity, target);
+		}
+		case 18: //Staff of the Skull Servants launched skull.
+		{
+			Wand_Skulls_Touch_Launched(entity, target);
+		}
+		/*		
+		case WEAPON_LANTEAN:
+		{
+			lantean_Wand_Touch_World(entity, target);
+		}
+
+		 	Doesnt work, this projectile has noclip, go to DHOOK public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		case 11:
 		{
 			

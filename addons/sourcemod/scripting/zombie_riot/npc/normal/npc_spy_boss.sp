@@ -206,6 +206,7 @@ methodmap SpyMainBoss < CClotBody
 		SpyMainBoss npc = view_as<SpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
 		i_NpcInternalId[npc.index] = SPY_MAIN_BOSS;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -220,7 +221,7 @@ methodmap SpyMainBoss < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, SpyMainBoss_ClotDamaged);
+		
 		SDKHook(npc.index, SDKHook_Think, SpyMainBoss_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SpyMainBoss_ClotDamaged_Post);
 		
@@ -316,7 +317,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -411,9 +412,9 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		} else {
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		if(npc.m_flDead_Ringer_Invis_bool) //no attack or anything.
 		{
@@ -582,7 +583,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -591,7 +592,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 }
 
 
-public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SpyMainBoss_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -635,7 +636,7 @@ public Action SpyMainBoss_ClotDamaged(int victim, int &attacker, int &inflictor,
 			npc.m_blPlayHurtAnimation = true;
 		}
 	}
-	else
+	else if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		damage *= 0.1;
 	}
@@ -681,7 +682,7 @@ public void SpyMainBoss_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, SpyMainBoss_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, SpyMainBoss_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SpyMainBoss_ClotDamaged_Post);
 	if(IsValidEntity(npc.m_iWearable5))

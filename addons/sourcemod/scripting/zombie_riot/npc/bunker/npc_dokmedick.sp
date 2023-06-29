@@ -352,7 +352,7 @@ methodmap Doktor_Medick < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Doktor_Medick_ClotDamaged);
+		
 		//SDKHook(npc.index, SDKHook_OnTakeDamagePost, Doktor_Medick_ClotDamaged_Post);
 		SDKHook(npc.index, SDKHook_Think, Doktor_Medick_ClotThink);
 		
@@ -468,7 +468,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	if(f_OverDose_Usage[npc.index] <= GetGameTime(npc.index) && !b_OverDoseActive[npc.index] && !b_TempOpener[npc.index] && !MoonLight_used[npc.index])
@@ -650,11 +650,11 @@ public void Doktor_Medick_ClotThink(int iNPC)
 			
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-			PF_SetGoalVector(npc.index, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else
 		{
-			PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		float vOrigin[3];
 		float vEnd[3];
@@ -751,7 +751,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 			else
 			{
 				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1400.0);
-				//PF_StopPathing(npc.index);
+				//NPC_StopPathing(npc.index);
 				//npc.m_bPathing = false;
 				npc.FaceTowards(vecTarget, 10000.0);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.4;
@@ -906,7 +906,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -914,7 +914,7 @@ public void Doktor_Medick_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Doktor_Medick_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Doktor_Medick_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Doktor_Medick npc = view_as<Doktor_Medick>(victim);
 	
@@ -1013,7 +1013,7 @@ public void Doktor_Medick_NPCDeath(int entity)
 		EmitSoundToAll(DOKMED_DEATH, _, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vEnd);
 	}
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Doktor_Medick_ClotDamaged);
+	
 	SDKUnhook(npc.index, SDKHook_Think, MoonLight_TBB_Tick);
 	//SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Doktor_Medick_ClotDamaged_Post);
 	SDKUnhook(npc.index, SDKHook_Think, Doktor_Medick_ClotThink);
