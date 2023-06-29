@@ -1315,12 +1315,6 @@ public void NPC_SpawnNextRequestFrame(bool force)
 	NPC_SpawnNext(false, false, false);
 }
 
-public void TF2_OnWaitingForPlayersEnd()
-{
-	Queue_WaitingForPlayersEnd();
-}
-
-
 stock void UpdatePlayerPoints(int client)
 {
 	int Points;

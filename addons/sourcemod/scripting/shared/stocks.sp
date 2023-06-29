@@ -1217,14 +1217,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	}
 	else
 	{
-		if(entity > MaxClients)
-		{
-
-		}
-		else
-		{
-			ForcePlayerSuicide(entity);
-		}
+		SDKHooks_TakeDamage(entity, 0, 0, 100.0 - newHealth);
 	}
 	
 	/*

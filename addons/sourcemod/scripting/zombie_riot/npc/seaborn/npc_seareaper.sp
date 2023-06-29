@@ -119,7 +119,7 @@ public void SeaReaper_ClotThink(int iNPC)
 	SeaReaper npc = view_as<SeaReaper>(iNPC);
 	
 	if(npc.Anger)
-		SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 9000.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+		SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -209,13 +209,13 @@ public void SeaReaper_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 75.0 : 60.0, DMG_CLUB);
-						// 400 x 0.15
-						// 500 x 0.15
+						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 37.5 : 30.0, DMG_CLUB);
+						// 400 x 0.15 x 0.5
+						// 500 x 0.15 x 0.5
 
-						SeaSlider_AddNeuralDamage(target, npc.index,i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 8 : 6);
-						// 400 x 0.1 x 0.15
-						// 500 x 0.1 x 0.15
+						SeaSlider_AddNeuralDamage(target, npc.index,i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 4 : 3);
+						// 400 x 0.1 x 0.15 x 0.5
+						// 500 x 0.1 x 0.15 x 0.5
 					}
 				}
 
@@ -237,7 +237,7 @@ public void SeaReaper_ClotThink(int iNPC)
 				npc.m_flAttackHappens = gameTime + 0.55;
 
 				//npc.m_flDoingAnimation = gameTime + 1.2;
-				npc.m_flNextMeleeAttack = gameTime + 3.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
 				npc.m_flHeadshotCooldown = gameTime + 1.1;
 			}
 		}

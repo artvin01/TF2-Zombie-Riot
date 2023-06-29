@@ -265,7 +265,7 @@ void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage, bool sound 
 			{
 				npc.m_iArmorErosion = 0;
 
-				FreezeNpcInTime(victim, 5.0);
+				FreezeNpcInTime(victim, 3.0);
 
 				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
 				b_ThisNpcIsSawrunner[attacker] = true;

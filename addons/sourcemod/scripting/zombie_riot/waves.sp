@@ -165,6 +165,11 @@ public Action Waves_SetWaveCmd(int client, int args)
 	return Plugin_Handled;
 }
 
+bool Waves_InVote()
+{
+	return (Rogue_Mode() || Voting);
+}
+
 public Action Waves_RevoteCmd(int client, int args)
 {
 	if(Rogue_Mode())
@@ -791,6 +796,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				
 				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+
+				Queue_DifficultyVoteEnded();
 				
 				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
 				ExcuteRelay("zr_waveselected", WhatDifficultySetting);

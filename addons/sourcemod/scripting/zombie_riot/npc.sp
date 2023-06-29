@@ -298,8 +298,12 @@ enum
 	ALT_BARRACK_MECHA_BARRAGER = 261,
 	ALT_BARRACK_BARRAGER = 262,
 	ALT_BARRACKS_BERSERKER = 263,
-	ALT_BARRACKS_CROSSBOW_MEDIC = 264
-	
+	ALT_BARRACKS_CROSSBOW_MEDIC = 264,
+	LASTKNIGHT		= 265,
+	BARRACK_LASTKNIGHT	= 266,
+	SAINTCARMEN		= 267,
+	PATHSHAPER		= 268,
+	PATHSHAPER_FRACTAL	= 269
 }
 
 public const char NPC_Names[][] =
@@ -589,7 +593,12 @@ public const char NPC_Names[][] =
 	"Barracks Mecha Barrager",
 	"Barracks Barrager",
 	"Barracks Berserker",
-	"Barracks Crossbow Medic"
+	"Barracks Crossbow Medic",
+	"The Last Knight",
+	"Tide-Hunt Knight",
+	"Saint Carmen",
+	"Pathshaper",
+	"Pathshaper Fractal"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -875,7 +884,13 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",	//mecha barragers
 	"",	//Barrager
 	"",	//Bereserker
-	""	//Medic Crossbowman
+	"",	//Medic Crossbowman
+
+	"npc_lastknight",
+	"",
+	"npc_saintcarmenn",
+	"npc_pathshaper",
+	"npc_pathshaper_fractal"
 };
 
 void NPC_MapStart()
@@ -1857,6 +1872,21 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case ALT_BARRACKS_CROSSBOW_MEDIC:
 			entity = Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
+		
+		case LASTKNIGHT:
+			entity = LastKnight(client, vecPos, vecAng, ally, data);
+		
+		case BARRACK_LASTKNIGHT:
+			entity = BarrackLastKnight(client, vecPos, vecAng, ally);
+		
+		case SAINTCARMEN:
+			entity = BarrackLastKnight(client, vecPos, vecAng, ally);
+		
+		case PATHSHAPER:
+			entity = Pathshaper(client, vecPos, vecAng, ally);
+		
+		case PATHSHAPER_FRACTAL:
+			entity = PathshaperFractal(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2624,6 +2654,21 @@ public void NPCDeath(int entity)
 			
 		case ALT_BARRACKS_CROSSBOW_MEDIC:
 			Barrack_Alt_Crossbowmedic_NPCDeath(entity);
+		
+		case LASTKNIGHT:
+			LastKnight_NPCDeath(entity);
+		
+		case BARRACK_LASTKNIGHT:
+			BarrackLastKnight_NPCDeath(entity);
+		
+		case SAINTCARMEN:
+			SaintCarmen_NPCDeath(entity);
+		
+		case PATHSHAPER:
+			Pathshaper_NPCDeath(entity);
+		
+		case PATHSHAPER_FRACTAL:
+			PathshaperFractal_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3177,13 +3222,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case MEDIVAL_MONK:
 			MedivalMonk_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-		case BARRACK_MILITIA:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_ARCHER:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_MAN_AT_ARMS:
+		case BARRACK_MILITIA, BARRACK_ARCHER, BARRACK_MAN_AT_ARMS, BARRACK_CROSSBOW, BARRACK_SWORDSMAN, BARRACK_ARBELAST,
+		BARRACK_TWOHANDED, BARRACK_LONGBOW, BARRACK_CHAMPION, BARRACK_MONK, BARRACK_HUSSAR, BARRACK_LASTKNIGHT:
 			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case MEDIVAL_HALB:
@@ -3200,30 +3240,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case MEDIVAL_ELITE_LONGBOWMEN:
 			MedivalEliteLongbowmen_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_CROSSBOW:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_SWORDSMAN:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_ARBELAST:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_TWOHANDED:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_LONGBOW:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_CHAMPION:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_MONK:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-		case BARRACK_HUSSAR:
-			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case MEDIVAL_CAVALARY:
 			MedivalCavalary_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -3368,6 +3384,15 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case SEABORN_HEAVY:
 			SeabornHeavy_OnTakeDamage(victim, attacker, damagetype);
+		
+		case LASTKNIGHT:
+			LastKnight_OnTakeDamage(victim, attacker, damage, weapon);
+		
+		case SAINTCARMEN, PATHSHAPER_FRACTAL:
+			Generic_OnTakeDamage(victim, attacker);
+		
+		case PATHSHAPER:
+			Pathshaper_OnTakeDamage(victim, attacker);
 	}
 	return Plugin_Changed;
 }
@@ -3583,9 +3608,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 #include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
 
-
-//ALT barrack Npc's	//warp
-
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_basic_mage.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_iku_nagae.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_intermediate_mage.sp"
@@ -3641,3 +3663,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_medic.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_sniper.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_spy.sp"
+#include "zombie_riot/npc/seaborn/npc_lastknight.sp"
+#include "zombie_riot/npc/ally/npc_barrack_lastknight.sp"
+#include "zombie_riot/npc/seaborn/npc_saintcarmen.sp"
+#include "zombie_riot/npc/seaborn/npc_pathshaper.sp"
+#include "zombie_riot/npc/seaborn/npc_pathshaper_fractal.sp"

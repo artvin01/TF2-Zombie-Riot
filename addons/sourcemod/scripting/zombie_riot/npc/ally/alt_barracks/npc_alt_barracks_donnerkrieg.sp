@@ -51,6 +51,7 @@ static int i_laser_throttle[MAXENTITIES];
 static bool b_cannon_active[MAXENTITIES];
 static float fl_cannon_recharge[MAXENTITIES];
 static int i_throttle_amt[MAXENTITIES];
+static bool ResetAnimBackToNorm[MAXENTITIES];
 
 public void Barrack_Alt_Donnerkrieg_MapStart()
 {
@@ -148,6 +149,7 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		fl_cannon_recharge[npc.index] = GetGameTime(npc.index) + 10.0;
 		
 		i_laser_throttle[npc.index] = 0;
+		ResetAnimBackToNorm[npc.index] = false;
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		return npc;
@@ -162,6 +164,13 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
+		
+		if(ResetAnimBackToNorm[npc.index])
+		{
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+			ResetAnimBackToNorm[npc.index] = false;
+		}
 		
 		if(PrimaryThreatIndex>0)
 		{
@@ -386,9 +395,8 @@ static Action Ikunagae_TBB_Timer(Handle timer, int client)
 	npc.m_flMeleeArmor = 1.0;
 	
 	Ikunagae_BEAM_TicksActive[client] = 0;
-	
-	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-	if(iActivity > 0) npc.StartActivity(iActivity);
+
+	ResetAnimBackToNorm[client] = true;
 	
 	//StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	//StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");

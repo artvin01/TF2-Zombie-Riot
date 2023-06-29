@@ -71,7 +71,7 @@ methodmap SeaPredator < CClotBody
 		
 		i_NpcInternalId[npc.index] = carrier ? SEAPREDATOR_CARRIER : (elite ? SEAPREDATOR_ALT : SEAPREDATOR);
 		i_NpcWeight[npc.index] = 1;
-		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

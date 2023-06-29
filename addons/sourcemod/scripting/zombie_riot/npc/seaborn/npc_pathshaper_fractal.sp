@@ -31,18 +31,7 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
-void SeaPiercer_MapStart()
-{
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_HurtSound);
-
-	PrecacheModel("models/headcrabblack.mdl");
-}
-
-methodmap SeaPiercer < CClotBody
+methodmap PathshaperFractal < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -69,37 +58,38 @@ methodmap SeaPiercer < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaPiercer(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeaPiercer npc = view_as<SeaPiercer>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", data[0] ? "1875" : "1350", ally, false, true));
-		// 9000 x 0.15
-		// 12500 x 0.15
+		PathshaperFractal npc = view_as<PathshaperFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.7", "20000", ally));
+		// 20000 x 1.0
 
-		i_NpcInternalId[npc.index] = data[0] ? SEAPIERCER_ALT : SEAPIERCER;
-		i_NpcWeight[npc.index] = 3;
+		i_NpcInternalId[npc.index] = PATHSHAPER_FRACTAL;
+		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
+		SDKHook(npc.index, SDKHook_Think, PathshaperFractal_ClotThink);
 		
-		SDKHook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
-		
-		npc.m_flSpeed = 187.5;	// 0.75 x 250
+		npc.m_flSpeed = 100.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.m_iAttacksTillMegahit = 0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		return npc;
 	}
 }
 
-public void SeaPiercer_ClotThink(int iNPC)
+public void PathshaperFractal_ClotThink(int iNPC)
 {
-	SeaPiercer npc = view_as<SeaPiercer>(iNPC);
+	PathshaperFractal npc = view_as<PathshaperFractal>(iNPC);
+
+	SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2970.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -164,30 +154,23 @@ public void SeaPiercer_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						
-						b_ThisNpcIsSawrunner[npc.index] = true;
-
-						if(target <= MaxClients && i_HealthBeforeSuit[target] > 0)
-						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.9, DMG_DROWN); // Make it oneshot the enemy if they have the quantum armor
-							Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
-						}
-						else
-						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAPIERCER_ALT ? 52.5 : 41.25, DMG_DROWN);
-							// 550 x 0.15 x 0.5
-							// 700 x 0.15 x 0.5
-						}
-
-						b_ThisNpcIsSawrunner[npc.index] = false;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 600.0 : 200.0, DMG_CLUB);
+						Custom_Knockback(npc.index, target, 562.5);
 					}
 				}
 
 				delete swingTrace;
+
+				if(++npc.m_iAttacksTillMegahit > 5)
+				{
+					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+					Pathshaper_SpawnFractal(npc, health, 12);
+					npc.m_iAttacksTillMegahit = 0;
+				}
 			}
 		}
 
-		if(distance < 22500.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
@@ -199,9 +182,7 @@ public void SeaPiercer_ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.55;
-
-				//npc.m_flDoingAnimation = gameTime + 1.2;
-				npc.m_flNextMeleeAttack = gameTime + 1.75;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
 				npc.m_flHeadshotCooldown = gameTime + 1.5;
 			}
 		}
@@ -214,26 +195,11 @@ public void SeaPiercer_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action SeaPiercer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void PathshaperFractal_NPCDeath(int entity)
 {
-	if(attacker < 1)
-		return Plugin_Continue;
-		
-	SeaPiercer npc = view_as<SeaPiercer>(victim);
-	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
-	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
-	}
-	return Plugin_Changed;
-}
-
-void SeaPiercer_NPCDeath(int entity)
-{
-	SeaPiercer npc = view_as<SeaPiercer>(entity);
+	PathshaperFractal npc = view_as<PathshaperFractal>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaPiercer_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, PathshaperFractal_ClotThink);
 }

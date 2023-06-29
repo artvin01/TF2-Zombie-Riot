@@ -231,6 +231,9 @@ public void UnderTides_ClotThink(int iNPC)
 
 					SeaSlider_AddNeuralDamage(enemy[i], npc.index, 57);
 					// 380 * 0.15
+
+					if(!i)
+						npc.FaceTowards(vecTarget, 99999.0);
 				}
 			}
 
@@ -255,6 +258,9 @@ public void UnderTides_ClotThink(int iNPC)
 
 					npc.FireArrow(vecTarget, 57.0, 1300.0);
 					// 380 * 0.15
+
+					if(!i)
+						npc.FaceTowards(vecTarget, 200.0);
 				}
 			}
 
@@ -286,6 +292,9 @@ public void UnderTides_ClotThink(int iNPC)
 
 					i_NervousImpairmentArrowAmount[entity] = 12;
 					// 380 * 0.2 * 0.15
+
+					if(!i)
+						npc.FaceTowards(vecTarget, 100.0);
 					
 					if(entity != -1)
 					{
@@ -497,7 +506,7 @@ void UnderTides_NPCDeath(int entity)
 	npc.PlayDeathSound();
 
 	float pos[3];
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
