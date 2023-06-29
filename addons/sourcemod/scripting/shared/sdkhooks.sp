@@ -1613,29 +1613,21 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					{
 						damage *= 0.9;
 						Replicated_Damage *= 0.9;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					case 2:
 					{
 						damage *= 0.85;
 						Replicated_Damage *= 0.85;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					case 3:
 					{
 						damage *= 0.8;
 						Replicated_Damage *= 0.80;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					case 4:
 					{
 						damage *= 0.75;
 						Replicated_Damage *= 0.75;
-					//	if(Though_Armor)
-					//		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.15);
 					}
 					default:
 					{

@@ -882,6 +882,14 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	{
 		damage *= f_FreeplayDamageExtra;
 	}
+	if(f_PotionShrinkEffect[attacker] > GetGameTime() || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GetGameTime()))
+	{
+		damage *= 0.5; //half the damage when small.
+	}
+	if(f_HussarBuff[attacker] > GetGameTime()) //hussar!
+	{
+		damage *= 1.10;
+	}
 	
 	if(b_thisNpcIsABoss[attacker])
 	{
