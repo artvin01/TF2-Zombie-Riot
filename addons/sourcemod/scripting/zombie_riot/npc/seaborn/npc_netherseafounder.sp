@@ -70,7 +70,7 @@ methodmap SeaFounder < CClotBody
 		
 		i_NpcInternalId[npc.index] = carrier ? SEAFOUNDER_CARRIER : (elite ? SEAFOUNDER_ALT : SEAFOUNDER);
 		i_NpcWeight[npc.index] = 2;
-		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

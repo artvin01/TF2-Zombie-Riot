@@ -1268,6 +1268,7 @@
 	"Armorless Union Knight"
 	{
 		"en"		"Armorless Union Knight"
+		"chi"		"无名独立骑士"
 	}
 	"Roar Knightclub Trainee"
 	{
@@ -1491,5 +1492,20 @@
 	"Barracks Crossbow Medic"
 	{
 		"en"		"Medic Crossbowman"
+	}
+	"The Last Knight"
+	{
+		"en"		"The Last Knight"
+		"chi"		"最后的骑士"
+	}
+	"Tide-Hunt Knight"
+	{
+		"en"		"Tide-Hunt Knight"
+		"chi"		"猎潮的骑士"
+	}
+	"Saint Carmen"
+	{
+		"en"		"Saint Carmen"
+		"chi"		"圣徒卡门"
 	}
 }

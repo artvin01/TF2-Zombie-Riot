@@ -35,6 +35,8 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav"
 };
 
+static bool PeaceKnight;
+
 methodmap LastKnight < CClotBody
 {
 	public void PlayIdleSound()
@@ -64,6 +66,15 @@ methodmap LastKnight < CClotBody
 	
 	public LastKnight(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
+		if(data[0])
+		{
+			PeaceKnight = false;
+		}
+		else if(PeaceKnight)
+		{
+			return view_as<LastKnight>(-1);
+		}
+		
 		LastKnight npc = view_as<LastKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "125000", ally, false));
 		// 125000 x 1.0
 
@@ -74,7 +85,7 @@ methodmap LastKnight < CClotBody
 		i_NpcWeight[npc.index] = 5;
 		npc.SetActivity("ACT_PRINCE_WALK");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
@@ -94,6 +105,12 @@ methodmap LastKnight < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		vecMe[2] += 100.0;
+
+		npc.m_iWearable4 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
+		SetParent(npc.index, npc.m_iWearable4);
+		
 		return npc;
 	}
 	property int m_iPhase
@@ -122,7 +139,6 @@ public void LastKnight_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -135,9 +151,76 @@ public void LastKnight_ClotThink(int iNPC)
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 	
+	if(b_NpcIsInvulnerable[npc.index])
+	{
+		b_NpcIsInvulnerable[npc.index] = false;
+		npc.SetActivity("ACT_RIDER_RUN");
+
+		if(!IsValidEntity(npc.m_iWearable3))
+		{
+			npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
+			SetVariantString("1.1");
+			AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 55, 55, 55, 255);
+		}
+	}
+
+	bool aggressive = CitizenRunner_WasKilled();
+
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0);
+		if(!aggressive)
+		{
+			bool found;
+
+			for(int i; i < i_MaxcountNpc; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				if(entity != INVALID_ENT_REFERENCE && entity != npc.index && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if(!found)
+			{
+				PeaceKnight = true;
+				CPrintToChatAll("{gray}The Last Knight{default}: You have proven yourself, you're against the ocean, and you're not my enemy.");
+
+				int owner;
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsClientInGame(client) && GetClientTeam(client) == 2)
+					{
+						int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+						if(entity != INVALID_ENT_REFERENCE && i_WhatBuilding[entity] == BuildingSummoner)
+						{
+							owner = client;
+							break;
+						}
+					}
+				}
+
+				float pos[3], ang[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+				int ally = Npc_Create(BARRACK_LASTKNIGHT, owner, pos, ang, true);
+				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
+				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
+				view_as<BarrackBody>(ally).m_iSupplyCount = 0;
+
+				npc.m_bDissapearOnDeath = true;
+				npc.m_flNextDelayTime = FAR_FUTURE;
+				SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);
+				return;
+			}
+		}
+
+		npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, 500.0, true, _, _, _, _, 125.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		if(npc.m_iTarget < 1)
@@ -146,15 +229,15 @@ public void LastKnight_ClotThink(int iNPC)
 			npc.m_iTarget = GetClosestAlly(npc.index, 100.0);
 		}
 
-		// Won't attack runners
+		// Won't attack runners, find players
 		if(npc.m_iTarget < 1 || i_NpcInternalId[npc.m_iTarget] == CITIZEN_RUNNER)
-			npc.m_iTarget = GetClosestTarget(npc.index);
+			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, true, true);
 	}
 
-	if(CitizenRunner_WasKilled())
+	if(aggressive)
 	{
-		npc.m_flMeleeArmor = 0.4;
-		npc.m_flRangedArmor = 0.4;
+		npc.m_flMeleeArmor = 0.5;
+		npc.m_flRangedArmor = 0.5;
 	}
 	
 	if(npc.m_iTarget > 0)
@@ -169,7 +252,7 @@ public void LastKnight_ClotThink(int iNPC)
 			if(npc.m_flAttackHappens < gameTime)
 			{
 				npc.m_flAttackHappens = 0.0;
-
+				
 				int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 				SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 0);
 
@@ -187,7 +270,20 @@ public void LastKnight_ClotThink(int iNPC)
 
 					if(target > 0)
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 2000.0 : 1000.0, DMG_CLUB);
+						float damage = 1000.0;
+						if(target > MaxClients)
+						{
+							damage = 3000.0;
+
+							if(f_TimeFrozenStill[target] > gameTime)
+								damage *= 1.75;
+						}
+						else if(TF2_IsPlayerInCondition(target, TFCond_Dazed))
+						{
+							damage *= 1.75;
+						}
+
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						npc.PlayMeleeHitSound();
 					}
 				}
@@ -198,12 +294,25 @@ public void LastKnight_ClotThink(int iNPC)
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			if(distance < 10000.0)
+			if(npc.m_iPhase == 2)
+			{
+				if(distance < 5000.0)
+				{
+					int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					if(IsValidEnemy(npc.index, target, true))
+					{
+						npc.m_iTarget = target;
+						npc.m_flNextMeleeAttack = gameTime;
+						npc.m_flAttackHappens = gameTime;
+					}
+				}
+			}
+			else if(distance < 10000.0)
 			{
 				//int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//if(IsValidEnemy(npc.index, target, true))
 				{
-					npc.m_iTarget = target;
+					//npc.m_iTarget = target;
 					npc.m_flNextMeleeAttack = gameTime + 1.75;
 					npc.PlayMeleeSound();
 
@@ -241,34 +350,108 @@ public void LastKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
-	if(attacker < 1)
-		return Plugin_Continue;
-	
 	LastKnight npc = view_as<LastKnight>(victim);
+
+	if(b_NpcIsInvulnerable[npc.index])
+	{
+		damage = 0.0;
+		return;
+	}
+
+	if(attacker < 1)
+		return;
+
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flHeadshotCooldown < gameTime)
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	return Plugin_Changed;
+
+	gameTime = GetGameTime();
+	if(f_VeryLowIceDebuff[attacker] < gameTime)
+	{
+		f_VeryLowIceDebuff[attacker] = gameTime + (npc.m_iPhase ? 2.0 : 1.0);
+
+		if(IsValidEntity(weapon))
+		{
+			char buffer[36];
+			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
+				ApplyTempAttrib(weapon, 6, 0.9, npc.m_iPhase ? 2.0 : 1.0);
+		}
+	}
+	else if(f_LowIceDebuff[attacker] < gameTime)
+	{
+		f_LowIceDebuff[attacker] = f_VeryLowIceDebuff[attacker];
+		f_VeryLowIceDebuff[attacker] += (npc.m_iPhase ? 2.0 : 1.0);
+
+		if(IsValidEntity(weapon))
+		{
+			char buffer[36];
+			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
+				ApplyTempAttrib(weapon, 6, 0.9, npc.m_iPhase ? 2.0 : 1.0);
+		}
+	}
+	else if(f_HighIceDebuff[attacker] < gameTime)
+	{
+		f_HighIceDebuff[attacker] = f_LowIceDebuff[attacker];
+		f_LowIceDebuff[attacker] += (npc.m_iPhase ? 2.0 : 1.0);
+		f_VeryLowIceDebuff[attacker] += (npc.m_iPhase ? 2.0 : 1.0);
+
+		if(IsValidEntity(weapon))
+		{
+			char buffer[36];
+			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
+				ApplyTempAttrib(weapon, 6, 0.9, npc.m_iPhase ? 2.0 : 1.0);
+		}
+	}
+	else if(attacker > MaxClients)
+	{
+		if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
+			Cryo_FreezeZombie(attacker);
+	}
+	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
+	{
+		TF2_StunPlayer(attacker, f_HighIceDebuff[attacker] - gameTime, 0.8, TF_STUNFLAG_SLOWDOWN);
+
+		if(IsValidEntity(weapon))
+		{
+			char buffer[36];
+			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
+				ApplyTempAttrib(weapon, 6, 0.75, f_HighIceDebuff[attacker] - gameTime);
+		}
+	}
+
+	int ratio = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 5 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+
+	switch(npc.m_iPhase)
+	{
+		case 0:
+		{
+			if(ratio < 3)
+				npc.m_iPhase = 1;
+		}
+		case 1:
+		{
+			if(ratio < 1)
+			{
+				npc.m_iPhase = 2;
+				npc.m_flSpeed = 75.0;
+				Change_Npc_Collision(npc.index, 1);	// Ignore buildings
+				b_NpcIsInvulnerable[npc.index] = true;
+				FreezeNpcInTime(npc.index, 5.0);
+			}
+		}
+	}
 }
 
 void LastKnight_NPCDeath(int entity)
 {
 	LastKnight npc = view_as<LastKnight>(entity);
-	if(!npc.m_bGib)
+	if(!npc.m_bGib && !npc.m_bDissapearOnDeath)
 		npc.PlayDeathSound();
-	
-	if(i_NpcInternalId[npc.index] == LastKnight_CARRIER)
-	{
-		float pos[3];
-		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-		Remains_SpawnDrop(pos, Buff_Reefbreaker);
-	}
-	
 	
 	SDKUnhook(npc.index, SDKHook_Think, LastKnight_ClotThink);
 

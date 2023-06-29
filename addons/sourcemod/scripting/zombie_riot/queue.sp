@@ -5,7 +5,7 @@ static bool AddedPoint[MAXTF2PLAYERS];
 
 void Queue_PutInServer(int client)
 {
-	if(GameRules_GetProp("m_bInWaitingForPlayers"))
+	if(Waves_InVote())
 		return;
 	
 	int count;
@@ -33,7 +33,7 @@ void Queue_AddPoint(int client)
 	}
 }
 
-void Queue_WaitingForPlayersEnd()
+void Queue_DifficultyVoteEnded()
 {
 	int count;
 	int[] queue = new int[MaxClients];
@@ -125,8 +125,7 @@ void Queue_Menu(int client)
 	}
 	else
 	{
-		FormatEx(buffer, sizeof(buffer), "%t", "Redirect to different ZR server");
-		menu.AddItem("", buffer,ITEMDRAW_DISABLED);
+		menu.AddItem("", buffer, ITEMDRAW_SPACER);
 	}
 	
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
@@ -141,8 +140,7 @@ void Queue_Menu(int client)
 		menu.AddItem("sm_solitaire", "Solitaire");
 		menu.AddItem("sm_pong", "Pong");
 		menu.AddItem("sm_connect4", "Connect4");
-	}	
-
+	}
 	
 	menu.Pagination = false;
 	menu.ExitButton = true;
@@ -252,7 +250,7 @@ void Queue_ClientDisconnect(int client)
 {
 	AddedPoint[client] = false;
 	WaitingInQueue[client] = false;
-	if(GameRules_GetProp("m_bInWaitingForPlayers"))
+	if(Waves_InVote())
 		return;
 	
 	int count;
