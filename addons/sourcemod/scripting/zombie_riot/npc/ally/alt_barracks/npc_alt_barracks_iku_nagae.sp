@@ -28,6 +28,7 @@ static char g_PullSounds[][] = {
 
 static int i_laser_throttle[MAXENTITIES];
 
+static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Ikunagae_BEAM_CanUse[MAXENTITIES];
 static bool Ikunagae_BEAM_IsUsing[MAXENTITIES];
 static int Ikunagae_BEAM_TicksActive[MAXENTITIES];
@@ -432,6 +433,7 @@ static Action Ikunagae_TBB_Tick(int client)
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, Ikunagae_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
+			BEAM_Targets_Hit[client] = 1.0;
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
 				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
@@ -447,9 +449,11 @@ static Action Ikunagae_TBB_Tick(int client)
 					{
 						inflictor=client;
 					}
-					SDKHooks_TakeDamage(victim, client, inflictor, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, inflictor, (damage/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}
+			
 			int colorLayer4[4];
 			SetColorRGBA(colorLayer4, r, g, b, 30);
 			int colorLayer3[4];
