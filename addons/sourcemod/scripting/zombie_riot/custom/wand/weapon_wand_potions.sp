@@ -765,8 +765,6 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	ParticleEffectAt(pos1, PARTICLE_SHRINK, 1.0);
 	EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
 
-	bool raid = IsValidEntity(EntRefToEntIndex(RaidBossActive));
-
 	int count;
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 	{
@@ -776,40 +774,28 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
 			{
-				if(raid)
-				{
-					float time = GetGameTime() + 1.5;
-					if(f_MaimDebuff[i] < time)
-						f_MaimDebuff[i] = time;
-					
-					if(f_CrippleDebuff[i] < time)
-						f_CrippleDebuff[i] = time;
-					
-					break;
-				}
-				
 				float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
 				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.35);
 
-				if(b_thisNpcIsABoss[i] || b_StaticNPC[i])
+				if(b_thisNpcIsABoss[i] || b_StaticNPC[i] || b_thisNpcIsARaid[i])
 				{
 					if(!count)
 					{
-						float time = GetGameTime() + 2.0;
-						if(f_MaimDebuff[i] < time)
-							f_MaimDebuff[i] = time;
+						float time = GetGameTime() + 4.0;
+						if(b_thisNpcIsARaid[i])
+						{
+							time = GetGameTime() + 3.0;
+						}
+						if(f_PotionShrinkEffect[i] < time)
+							f_PotionShrinkEffect[i] = time;
 						
-						if(f_CrippleDebuff[i] < time)
-							f_CrippleDebuff[i] = time;
-						
-						CreateTimer(2.0, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
+						CreateTimer(time, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
 						break;
 					}
 				}
 				else
 				{
-					f_MaimDebuff[i] = FAR_FUTURE;
-					f_CrippleDebuff[i] = FAR_FUTURE;
+					f_PotionShrinkEffect[i] = FAR_FUTURE;
 				}
 				
 				if(++count > 1)
