@@ -1189,6 +1189,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				speed_for_return *= 0.9;
 			}
+			if(f_MaimDebuff[this.index] > Gametime)
+			{
+				speed_for_return *= 0.9;
+			}
+			if(f_PotionShrinkEffect[this.index] > Gametime)
+			{
+				speed_for_return *= 0.9;
+			}
 			
 			if(f_HighIceDebuff[this.index] > Gametime)
 			{

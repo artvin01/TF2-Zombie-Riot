@@ -1438,6 +1438,10 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 
 	if(IsValidClient(client))
 	{
+		if(TF2_IsPlayerInCondition(client,TFCond_Taunting)) //prevent people that taunt from picking up buildings due to npc targetting issues
+		{
+			return Plugin_Handled;
+		}
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
