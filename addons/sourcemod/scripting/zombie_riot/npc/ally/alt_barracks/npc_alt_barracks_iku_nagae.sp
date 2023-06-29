@@ -44,7 +44,7 @@ static float Ikunagae_BEAM_CloseBuildingDPT[MAXENTITIES];
 static float Ikunagae_BEAM_FarBuildingDPT[MAXENTITIES];
 static float Ikunagae_BEAM_Duration[MAXENTITIES];
 static float Ikunagae_BEAM_ZOffset[MAXENTITIES];
-static int Ikunagae_BEAM_HitDetected[MAXENTITIES];
+static bool Ikunagae_BEAM_HitDetected[MAXENTITIES];
 static int Ikunagae_BEAM_BuildingHit[MAXENTITIES];
 static bool Ikunagae_BEAM_UseWeapon[MAXENTITIES];
 
