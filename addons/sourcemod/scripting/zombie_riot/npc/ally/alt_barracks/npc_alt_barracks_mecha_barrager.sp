@@ -26,6 +26,7 @@ static const char g_RangedReloadSound[][] = {
 
 public void Barrack_Alt_Mecha_Barrager_MapStart()
 {
+	PrecacheModel("models/player/medic.mdl");
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
@@ -184,22 +185,6 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-<<<<<<< HEAD
-					if(npc.m_flNextMeleeAttack < GameTime && i_ammo_count[npc.index] >0)
-					{
-						//Play attack anim
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						float flPos[3]; // original
-						float flAng[3]; // original
-						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.PlayRangedSound();
-						npc.FireParticleRocket(vecTarget, 100.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, true, flPos,_, GetClientOfUserId(npc.OwnerUserId));
-						npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
-						npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
-						i_ammo_count[npc.index]--;
-=======
 					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && i_ammo_count[npc.index] >=0)
@@ -214,7 +199,6 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 							npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
 							i_ammo_count[npc.index]--;
 						}
->>>>>>> d079fc48eec95090160a88f172e22c472fe1a85e
 					}
 				}
 			}
