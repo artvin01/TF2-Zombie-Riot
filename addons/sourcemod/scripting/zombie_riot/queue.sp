@@ -13,10 +13,10 @@ void Queue_PutInServer(int client)
 	{
 		if(i != client && !WaitingInQueue[i] && IsClientInGame(i) && GetClientTeam(i) > 1 && !IsFakeClient(i))
 		{
-			if(++count >= MAX_PLAYER_COUNT)
+			if(++count >= CalcMaxPlayers())
 			{
 				WaitingInQueue[client] = true;
-				PrintToChat(client, "Server is full with a maximum of %d players", MAX_PLAYER_COUNT);
+				PrintToChat(client, "Server is full with a maximum of %d players", CalcMaxPlayers());
 				PrintToChat(client, "You have been placed in spectator, if you like to join in when a slot is open, join a team. Otherwise you will join in next map change.");
 				return;
 			}
@@ -53,12 +53,12 @@ void Queue_DifficultyVoteEnded()
 		}
 	}
 	
-	if(count > MAX_PLAYER_COUNT)
+	if(count > CalcMaxPlayers())
 	{
 		SortCustom1D(queue, count, Queue_Sorting);
 		
 		int i;
-		for(; i<MAX_PLAYER_COUNT; i++)
+		for(; i<CalcMaxPlayers(); i++)
 		{
 			Queue_AddPoint(queue[i]);
 		}
@@ -67,8 +67,8 @@ void Queue_DifficultyVoteEnded()
 		{
 			PlayStreak[queue[i]] = 0;
 			WaitingInQueue[queue[i]] = true;
-			PrintCenterText(queue[i], "Server is full with a maximum of %d players", MAX_PLAYER_COUNT);
-			PrintToChat(queue[i], "Server is full with a maximum of %d players", MAX_PLAYER_COUNT);
+			PrintCenterText(queue[i], "Server is full with a maximum of %d players", CalcMaxPlayers());
+			PrintToChat(queue[i], "Server is full with a maximum of %d players", CalcMaxPlayers());
 			PrintToChat(queue[i], "You have been placed in spectator, if you like to join in when a slot is open, join a team. Otherwise you will join in next map change.");
 		}
 	}
@@ -176,7 +176,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2)
 							{
-								if(++count >= MAX_PLAYER_COUNT)
+								if(++count >= CalcMaxPlayers())
 								{
 									Queue_Menu(client);
 									if(GetClientTeam(client) != 2)
@@ -231,7 +231,7 @@ bool Queue_JoinTeam(int client)
 	{
 		if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2 && !WaitingInQueue[i])
 		{
-			if(++count >= MAX_PLAYER_COUNT)
+			if(++count >= CalcMaxPlayers())
 			{
 				WaitingInQueue[client] = true;
 				ChangeClientTeam(client, 2);
@@ -258,7 +258,7 @@ void Queue_ClientDisconnect(int client)
 	{
 		if(i != client && IsClientInGame(i) && GetClientTeam(i) == 2 && !WaitingInQueue[i])
 		{
-			if(++count >= MAX_PLAYER_COUNT)
+			if(++count >= CalcMaxPlayers())
 				return;
 		}
 	}
@@ -283,4 +283,17 @@ void Queue_ClientDisconnect(int client)
 		ShowVGUIPanel(target, "class_red");
 		PlayStreak[client] = 1;
 	}
+}
+
+
+int CalcMaxPlayers()
+{
+	int playercount = MAX_PLAYER_COUNT;
+
+	if(OperationSystem == OS_Linux)
+	{
+		playercount -= 2; //linux is abit shite
+	}
+
+	return playercount;
 }

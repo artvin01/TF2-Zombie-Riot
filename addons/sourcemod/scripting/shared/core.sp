@@ -38,9 +38,9 @@
 #define MAX_PLAYER_COUNT_STRING		"14"
 
 //This is for spectating
-#define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 16, rest is for killfeed bots
+#define MAX_PLAYER_COUNT_SLOTS				24 
 #define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
-//cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
+
 #else
 #define MAX_PLAYER_COUNT			24
 #define MAX_PLAYER_COUNT_STRING		"24"
@@ -53,6 +53,12 @@
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
+enum OSType
+{
+    OS_Linux = 0,
+    OS_Windows,
+    OS_Unknown
+}
 
 
 #define LagCompensation
@@ -197,6 +203,7 @@ StringMap HookListMap;
 StringMap HookIdMap;
 
 bool DoingLagCompensation;
+OSType OperationSystem;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
@@ -1137,6 +1144,7 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
+	checkOS();
 }
 
 public Action Timer_Temp(Handle timer)
@@ -3275,4 +3283,24 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
 	}
 	return Plugin_Continue;
+}
+
+
+void checkOS()
+{
+    char cmdline[256];
+    GetCommandLine(cmdline, sizeof(cmdline));
+
+    if (StrContains(cmdline, "./srcds_linux ", false) != -1)
+    {
+        OperationSystem = OS_Linux;
+    }
+    else if (StrContains(cmdline, ".exe", false) != -1)
+    {
+        OperationSystem = OS_Windows;
+    }
+    else
+    {
+        OperationSystem = OS_Unknown;
+    }
 }

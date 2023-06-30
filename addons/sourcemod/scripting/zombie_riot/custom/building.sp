@@ -64,6 +64,103 @@ enum
 	BuildingHealingStation = 10,
 	BuildingSummoner = 11
 }
+enum
+{
+	EMPTY 							= 0,
+	UNIT_COPPER_SMITH 				= 1,
+	UNIT_IRON_CASTING 				= 2,
+	UNIT_STEEL_CASTING 				= 3,
+	UNIT_REFINED_STEEL 				= 4,
+	
+	
+	UNIT_FLETCHING 					= 5,
+	UNIT_STEEL_ARROWS 				= 6,
+	UNIT_BRACER 					= 7,
+	UNIT_OBSIDIAN_REFINED_TIPS 		= 8,
+		
+	UNIT_COPPER_ARMOR_PLATE 		= 9,
+	UNIT_IRON_ARMOR_PLATE 			= 10,
+	UNIT_CHAINMAIL_ARMOR 			= 11,
+	UNIT_REFORGED_ARMOR_PLATE 		= 12,
+	
+	UNIT_HERBAL_MEDICINE 			= 13,
+	UNIT_REFINED_MEDICINE 			= 14,
+
+	BUILDING_TOWER					= 15,
+	BUILDING_GUARD_TOWER			= 16,
+	BUILDING_IMPERIAL_TOWER			= 17,
+	BUILDING_BALLISTICAL_TOWER		= 18,
+	BUILDING_DONJON					= 19,
+	BUILDING_KREPOST				= 20,
+	BUILDING_CASTLE					= 21,
+
+	
+	BUILDING_MANUAL_FIRE			= 22,
+	
+	BUILDING_MUDERHOLES				= 23,
+	BUILDING_BALLISTICS				= 24,
+	BUILDING_CHEMISTRY				= 25,
+	BUILDING_CRENELATIONS			= 26,
+
+	
+	BUILDING_CONSCRIPTION			= 27,
+	BUILDING_GOLDMINERS				= 28,
+
+	BUILDING_ASSISTANT_VILLAGER		= 29,
+	BUILDING_VILLAGER_EDUCATION		= 30,
+
+	BUILDING_STRONGHOLDS			= 31,
+	BUILDING_HOARDINGS				= 32,
+	BUILDING_EXQUISITE_HOUSING		= 33,
+}
+
+public const char BuildingUpgrade_Names[][] =
+{
+	"nothing",
+	"Barracks Copper Smith",
+	"Barracks Iron Casting",
+	"Barracks Steel Casting",
+	"Barracks Refined Steel",
+
+	"Barracks Fletching",
+	"Barracks Steel Arrows",
+	"Barracks Bracer",
+	"Barracks Obsidian Refined Tips",
+	
+	"Barracks Copper Armor Plate",
+	"Barracks Iron Armor Plate",
+	"Barracks Chainmail Armor",
+	"Barracks Reforged Armor Plate",
+
+	"Barracks Herbal Medicine",
+	"Barracks Refined Medicine",
+
+	"Barracks Tower",
+	"Barracks Guard Tower",
+	"Barracks Imperial Tower",
+	"Barracks Ballistical Tower",
+	"Barracks Donjon",
+	"Barracks Krepost",
+	"Barracks Castle",
+
+	"Barracks Manual Fire",
+
+	"Barracks Murder Holes",
+	"Barracks Ballistics",
+	"Barracks Chemistry",
+	"Barracks Crenelations",
+
+	"Barracks Conscription",
+	"Barracks Goldminers",
+
+	"Barracks Assistant Villager",
+	"Barracks Villager Education",
+	
+	"Barracks Strongholds",
+	"Barracks Hoardings",
+	"Barracks Exquisite Housing",
+};
+
 
 enum struct VillageBuff
 {
@@ -859,6 +956,10 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 {
 	if(damagetype == DMG_CRUSH)
 	{
+		if(damage >= 1000000.0)
+		{
+			return Plugin_Continue;
+		}
 		damage = 0.0;
 		return Plugin_Handled;
 	}
@@ -1185,7 +1286,6 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 {
 	if(damagetype == DMG_CRUSH)
 	{
-		damage = 0.0;
 		return;
 	}
 	if(i_BeingCarried[entity])
@@ -1438,6 +1538,10 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 
 	if(IsValidClient(client))
 	{
+		if(TF2_IsPlayerInCondition(client,TFCond_Taunting)) //prevent people that taunt from picking up buildings due to npc targetting issues
+		{
+			return Plugin_Handled;
+		}
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
@@ -6061,6 +6165,7 @@ static bool FinalBuilder[MAXTF2PLAYERS];
 static bool MedievalUnlock[MAXTF2PLAYERS];
 static bool GlassBuilder[MAXTF2PLAYERS];
 static int CivType[MAXTF2PLAYERS];
+static bool b_InUpgradeMenu[MAXTF2PLAYERS];
 
 enum
 {
@@ -6161,6 +6266,14 @@ static const int SummonerAlternative[][] =
 
 	{ ALT_BARRACK_DONNERKRIEG, 			175, 	350, 	15, 	12, 11, 1 },	// Construction Expert
 	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	10, 	13, 16, 1 }	// Construction Master
+};
+
+static const int BarracksUpgrades[][] =
+{
+	// Building Upgrade ID, 			Wood, 	Food, 	Gold, 	Time, 	Level,		 Supply
+	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 		1, 			1 },		// None
+
+	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7,		2, 			1 },		// Construction Novice
 };
 
 static const char CivName[][] =
@@ -6364,12 +6477,25 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
 	{
 		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-		WoodAmount[owner] += SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
-		FoodAmount[owner] += SupplyRate[owner] / (LastMann ? 10.0 : 20.0);
+		float SupplyRateCalc = SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
+
+		if(HexBarracksBuildingUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
+		{
+			SupplyRateCalc *= 1.25;
+		}
+		WoodAmount[owner] += SupplyRateCalc;
+		FoodAmount[owner] += SupplyRateCalc * 2.0; //food is gained 2x as fast
 
 		// 1 Supply = 1 Gold Every 150 Seconds
 		if(MedievalUnlock[owner])
-			GoldAmount[owner] += SupplyRate[owner] / 1500.0;
+		{
+			float GoldSupplyRate = SupplyRate[owner] / 1500.0;
+			if(HexBarracksBuildingUpgrades[owner] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+			{
+				GoldSupplyRate *= 1.25;
+			}
+			GoldAmount[owner] += GoldSupplyRate;
+		}
 
 		if(TrainingIn[owner])
 		{
@@ -6453,7 +6579,12 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						{
 							TrainingIndex[owner] = TrainingQueue[owner];
 							TrainingStartedIn[owner] = GetGameTime();
-							TrainingIn[owner] = TrainingStartedIn[owner] + float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
+							float trainingTime = float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
+							if(HexBarracksBuildingUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
+							{
+								trainingTime *= 0.75;
+							}
+							TrainingIn[owner] = TrainingStartedIn[owner] + trainingTime;
 							TrainingQueue[owner] = -1;
 						}
 					}
@@ -6530,15 +6661,22 @@ static void SummonerMenu(int client, int viewer)
 	bool owner = client == viewer;
 	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);
 	int level = MaxSupportBuildingsAllowed(client, true);
+	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
 
 	SetGlobalTransTarget(viewer);
-	menu.SetTitle("%s\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
-
-	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-
+	if(!(GetEntityFlags(viewer) & FL_DUCKING))
+	{
+		menu.SetTitle("%s\n%t\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], "Crouch To See Info Barracks", RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
+	}
+	else
+	{
+		menu.SetTitle("%s\n\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));	
+	}
 	char buffer1[256];
+	itemsAddedToList += 1;
+	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	if(TrainingIn[client])
 	{
 		if(AtMaxSupply(client) || GetSupplyLeft(client) < GetData(CivType[client], TrainingIndex[client], SupplyCost))
@@ -6561,43 +6699,104 @@ static void SummonerMenu(int client, int viewer)
 		if(TrainingQueue[client] != -1)
 			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[client], TrainingQueue[client], NPCIndex)]);
 		
+		itemsAddedToList += 1;
 		menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 	else
 	{
+		itemsAddedToList += 1;
 		menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
-	char buffer2[64];
-	int options;
-	for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)
+	if(b_InUpgradeMenu[viewer])
 	{
-		if(GetData(CivType[client], i, TrainLevel) > level)
-			continue;
+		itemsAddedToList += 1;
 		
-		FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
-		FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+		//Upgrade menu list:
+		/*
+		//MELEE PERKS
+		#define ZR_UNIT_UPGRADES_COPPER_SMITH			(1 << 1)
+		#define ZR_UNIT_UPGRADES_IRON_CASTING			(1 << 2)
+		#define ZR_UNIT_UPGRADES_STEEL_CASTING			(1 << 3)
+		//NEED DONJON MINUMUM:
+		#define ZR_UNIT_UPGRADES_REFINED_STEEL			(1 << 4)
+		in order
+		*/
 
-		if(GetData(CivType[client], i, WoodCost))
-			Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetData(CivType[client], i, WoodCost));
-		
-		if(GetData(CivType[client], i, FoodCost))
-			Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetData(CivType[client], i, FoodCost));
-		
-		if(GetData(CivType[client], i, GoldCost))
-			Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetData(CivType[client], i, GoldCost));
-		
-		Format(buffer1, sizeof(buffer1), "%s ]\n%t\n ", buffer1, buffer2);
-		IntToString(i, buffer2, sizeof(buffer2));
-		bool poor = (!alive ||
-			WoodAmount[client] < GetData(CivType[client], i, WoodCost) ||
-			FoodAmount[client] < GetData(CivType[client], i, FoodCost) ||
-			GoldAmount[client] < GetData(CivType[client], i, GoldCost));
+	//	Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[client], TrainingQueue[client], NPCIndex)]);
+	//	menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT);
 
-		menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		if(++options > 3)
-			break;
+	//	AddItemToTrainingList()
+	//	menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
+	else
+	{
+
+		char buffer2[64];
+		int options;
+		for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)
+		{
+			if(GetData(CivType[client], i, TrainLevel) > level)
+				continue;
+			
+			bool ShowingDesc = false;
+			if(GetEntityFlags(viewer) & FL_DUCKING)
+			{
+				ShowingDesc = true;
+				FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+			}
+			else
+			{
+				FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+			}
+			if(!ShowingDesc)
+			{
+				if(GetData(CivType[client], i, WoodCost))
+					Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetData(CivType[client], i, WoodCost));
+				
+				if(GetData(CivType[client], i, FoodCost))
+					Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetData(CivType[client], i, FoodCost));
+				
+				if(GetData(CivType[client], i, GoldCost))
+					Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetData(CivType[client], i, GoldCost));
+				
+				Format(buffer1, sizeof(buffer1), "%s ]\n", buffer1);
+			}
+			else
+			{
+				Format(buffer1, sizeof(buffer1), "%t\n", buffer2);
+			}
+
+			IntToString(i, buffer2, sizeof(buffer2));
+			bool poor = (!alive ||
+				WoodAmount[client] < GetData(CivType[client], i, WoodCost) ||
+				FoodAmount[client] < GetData(CivType[client], i, FoodCost) ||
+				GoldAmount[client] < GetData(CivType[client], i, GoldCost));
+
+			itemsAddedToList += 1;
+			menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			if(++options > 3)
+				break;
+		}
+	}
+
+	Format(buffer1, sizeof(buffer1), "%t", "Toggle Upgrade Menu Barracks");
+	
+	itemsAddedToList += 1;
+	for(int loops = 0; loops < 10; loops ++)
+	{
+		if(itemsAddedToList < 9)
+		{
+			itemsAddedToList += 1;
+			menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
+		}
+		else
+		{
+			break;
+		}
+	}
+	//should always be at 9
+	menu.AddItem("50", buffer1, ITEMDRAW_DEFAULT);
 
 	menu.Pagination = 0;
 	menu.ExitButton = true;
@@ -6605,6 +6804,7 @@ static void SummonerMenu(int client, int viewer)
 		InMenu[viewer] = client;
 }
 
+//void AddItemToTrainingList(char item, )
 public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
@@ -6621,6 +6821,23 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			if(choice)
 			{
+				char buffer[16];
+				menu.GetItem(choice, buffer, sizeof(buffer));
+				int id = StringToInt(buffer);
+				if(id == 50)
+				{
+					if(b_InUpgradeMenu[client])
+					{
+						b_InUpgradeMenu[client] = false;
+					}
+					else
+					{
+						b_InUpgradeMenu[client] = true;
+					}
+					
+					SummonerMenu(client, client);
+					return 0;
+				}
 				int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
 				if(entity != INVALID_ENT_REFERENCE)
 				{
@@ -6773,3 +6990,38 @@ void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const flo
 		TeleportEntity(prop2,origin,angles,velocity);
 	}
 }
+
+
+void Barracks_BuildingThink(int building)
+{
+	BarrackBody npc = view_as<BarrackBody>(building);
+	float GameTime = GetGameTime(npc.index);
+	int client = GetEntPropEnt(building, Prop_Send, "m_hBuilder");
+	
+	if(!IsValidClient(client))
+	{
+		return;
+	}
+	//do not think.
+
+
+	//they do not even have the first upgrade, do not think.
+	if(!(HexBarracksBuildingUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
+		return;
+
+	float MinimumDistance = 100.0;
+	float MaximumDistance = 600.0;
+	MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
+	float pos[3];
+	bool mounted = (Building_Mounted[client] == i_HasSentryGunAlive[client]);
+	if(mounted)
+	{
+		GetClientEyePosition(client, pos);
+	}
+	else
+	{
+		GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
+	}
+	int ValidEnemyToTarget = GetClosestTarget(npc.index, true, MaximumDistance, true, _, _ ,pos, true,_,_,true, MinimumDistance);
+	
+}	
