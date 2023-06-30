@@ -781,13 +781,13 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 				{
 					if(!count)
 					{
-						float time = GetGameTime() + 4.0;
+						float time = 4.0;
 						if(b_thisNpcIsARaid[i])
 						{
-							time = GetGameTime() + 3.0;
+							time = 3.0;
 						}
-						if(f_PotionShrinkEffect[i] < time)
-							f_PotionShrinkEffect[i] = time;
+						if(f_PotionShrinkEffect[i] < (GetGameTime() + time))
+							f_PotionShrinkEffect[i] =  (GetGameTime() + time);
 						
 						CreateTimer(time, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
 						break;

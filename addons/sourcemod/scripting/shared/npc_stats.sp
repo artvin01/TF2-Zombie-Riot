@@ -4039,7 +4039,8 @@ stock int GetClosestTarget(int entity,
 	  bool CanSee = false,
 	   float fldistancelimitAllyNPC = 350.0,
 	   bool IgnorePlayers = false,
-	   bool UseVectorDistance = false)
+	   bool UseVectorDistance = false,
+  		float MinimumDistance = 0.0)
 {
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 	if(EntityLocation[2] == 0.0)
@@ -4167,7 +4168,7 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance);
+	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance, MinimumDistance);
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)
@@ -4183,7 +4184,7 @@ void GetClosestTarget_AddTarget(int entity, int type)
 	}	
 }
 
-int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance)
+int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance, float MinimumDistance)
 {
 	int ClosestTarget = -1; 
 
@@ -4360,7 +4361,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 			distance_limit *= distance_limit;
 
-			if(distanceVector < distance_limit)
+			if(distanceVector < distance_limit && MinimumDistance < distanceVector)
 			{
 				if( TargetDistance ) 
 				{

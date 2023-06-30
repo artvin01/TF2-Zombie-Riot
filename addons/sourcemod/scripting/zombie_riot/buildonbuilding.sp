@@ -628,6 +628,6 @@ void IsBuildingNotFloating(int building)
 	}
 	if(!IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
 	{
-		SDKHooks_TakeDamage(building, 0, 0, 100000.0, DMG_ACID);
+		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
 	}
 }
