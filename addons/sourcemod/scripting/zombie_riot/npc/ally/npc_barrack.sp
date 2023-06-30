@@ -130,6 +130,122 @@ static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
+int i_NormalBarracks_HexBarracksUpgrades[MAXTF2PLAYERS];
+int i_NormalBarracks_HexBarracksUpgrades_2[MAXTF2PLAYERS];
+
+//Barracks smith things:
+
+
+#define ZR_UNIT_UPGRADES_NONE					0
+
+//MELEE PERKS
+#define ZR_UNIT_UPGRADES_COPPER_SMITH			(1 << 1) //done :)
+#define ZR_UNIT_UPGRADES_IRON_CASTING			(1 << 2) //done :)
+#define ZR_UNIT_UPGRADES_STEEL_CASTING			(1 << 3) //done :)
+//NEED DONJON MINUMUM:
+#define ZR_UNIT_UPGRADES_REFINED_STEEL			(1 << 4) //done :)
+//in the end this should grant 1.5x damage
+
+//RANGED PERKS
+#define ZR_UNIT_UPGRADES_FLETCHING				(1 << 5) //done :)
+#define ZR_UNIT_UPGRADES_STEEL_ARROWS			(1 << 6) //done :)
+#define ZR_UNIT_UPGRADES_BRACER					(1 << 7) //done :)
+//NEED DONJON MINUMUM:
+#define ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS	(1 << 8) //done :)
+//in the end this should grant 1.35x the damage and 25% more range
+
+//ARMOR PERKS affects all units.
+#define ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR		(1 << 9) //done :)
+#define ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR		(1 << 10) //done :)
+#define ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR		(1 << 11) //done :)
+//NEED DONJON MINUMUM:
+#define ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR	(1 << 12) //done :)
+//in the end this should grant 5 flat armor reduction and 25% damage resistance, no health so medics are amazing
+
+#define ZR_UNIT_UPGRADES_HERBAL_MEDICINE		(1 << 13) //done :)
+//this will heal units very slowly overtime
+//NEED DONJON MINUMUM:
+#define ZR_UNIT_UPGRADES_REFINED_MEDICINE		(1 << 14) //done :)
+//this will make units heal faster and give more max health (10%+ max health)
+
+//UPGRADES TO BUILDINGS
+//these should be very expensive, allows building to attack with arrows
+//the building will also now gain abit of health, so it can be used as a weak barricade
+#define ZR_BARRACKS_UPGRADES_TOWER				(1 << 15)
+#define ZR_BARRACKS_UPGRADES_GUARD_TOWER		(1 << 16)
+#define ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER		(1 << 17)
+#define ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER	(1 << 18)
+//going below this will lower your deployment slots to 2
+//BELOW HERE will allow to garrison units (they will be given 0 gravity and teleported off the map and flagged so they dont get deleted)
+//they will add extra arrows and heal the units overtime
+//garrison will also work if you mount the building, allowing you to save your units in the most dire of situations.
+#define ZR_BARRACKS_UPGRADES_DONJON				(1 << 19)
+#define ZR_BARRACKS_UPGRADES_KREPOST			(1 << 20)
+//at this point, the building will have 75% HP of a barricade, but getting this is very lategame, about wave 50 or so
+#define ZR_BARRACKS_UPGRADES_CASTLE				(1 << 21)
+//getting here will allow you to make teutonic knights, replacing the champion line.
+
+//Have a toggle option to fire the arrows of your turret manually when you mount it
+//it will give a boost in firepower as you do it manually!
+#define ZR_BARRACKS_UPGRADES_MANUAL_FIRE		(1 << 22)
+//Allows the building to attack units directly near it
+#define ZR_BARRACKS_UPGRADES_MURDERHOLES		(1 << 23)
+//allows the building to predict enemies
+#define ZR_BARRACKS_UPGRADES_BALLISTICS			(1 << 24)
+//inflict burning onto enemy and also get abit extra damage
+#define ZR_BARRACKS_UPGRADES_CHEMISTY			(1 << 25)
+
+//only vaiable once reaching donjon:
+
+#define ZR_BARRACKS_UPGRADES_CONSCRIPTION		(1 << 26) //done :)
+//allows to make units faster, you also gain resources faster, doesnt affect gold.
+#define ZR_BARRACKS_UPGRADES_GOLDMINERS			(1 << 27) //done :)
+//THIS is only aviable once you have the gold crown.
+//this will allow you to gain gold faster if you have units in your building
+//but it will also give you a 25% increace on gold gain passively.
+#define ZR_BARRACKS_UPGRADES_CRENELLATIONS		(1 << 28) //done :)
+//The castle will have a huge boost in range, allowing to snipe at great ranges
+//it will also increace the speed of the arrows by alot.
+#define ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER	(1 << 29)
+//This will allow you to make one villager, this villager will try to make a building near you, or whereever you tell it to make one
+//This building will only fire arrows, its max upgrade limit is another donjon, it cannot be a krepost or castle.
+//This villager will try to repair all buildings around it for free, although, it will always prioritise repairing its own buildings
+//When it notices its health is too low, then it will automatically run away and garrison inside its own building for safety
+//it wont try to garrison inside your building and you cannot manually assign it a tast to repair stuff, only assign it where to build
+//its building, but i t can only make one if its directly on a nav mesh to prevent abuse
+//This villager will take away one ally spot and 1 barricade limit
+//meaning if you have a castle and this villager, then you can only make 1 unit and 1 barricade
+//its repair power derives from your repair upgrades.
+//it is also unable to attack at all, its not fragile but it just cant defend itself
+//garrisoning this unit wont increace the damage of the building it hides inside.
+//unless....
+#define ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	(1 << 30)
+//this upgrade will make the villager free and wont consume slots, this means you can have 2 units and 2 barricades when you get this.
+
+
+//only vaiable once reaching Krepost:
+
+#define ZR_BARRACKS_UPGRADES_STRONGHOLDS	(1 << 31)
+//The building will attack 33% faster, it will also heal any nearby MELEE player or unit slowly, weaker song of ocean minus buff.
+
+
+#define ZR_BARRACKS_UPGRADES_HOARDINGS		(1 << 1)
+//ALL your buildings will gain 25% more health. This is to encurage camping with the building when you get upto middle.
+//but making this building again will limit you to not make units and such, and have less barricades out
+//this upgrade will only work when the castle is out, the moment the building breaks, the HP of all your buidlings will go down once more.
+
+//i ran out of space...
+#define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2)
+//allow to get 3 deployment slots again.
+
+
+//in the end, this should be stronger then a sentry with full upgrades by 2x
+//but i will make it eat up barricade slots so if you have this fully upgrades, you can only make 2 barricades at max
+//but it wont affect barracks supply limit unless you get some upgrades that change this.
+
+//mounting this building will cause it to deal half the damage, or attack half as fast, whatever works.
+//just nerf the building overall, so its more advantagous to have it placed down.
+//none of these upgrades cost gold (or should)
 
 methodmap BarrackBody < CClotBody
 {
@@ -398,22 +514,26 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime)
 		npc.PlayHurtSound();
 	}
 	int HealingAmount;
-	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_HERBAL_MEDICINE))
+	int client = GetClientOfUserId(npc.OwnerUserId);
+	if(client > 0)
 	{
-		HealingAmount += 1;
-		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_HERBAL_MEDICINE))
 		{
 			HealingAmount += 1;
-		}
-	}
-	if(HealingAmount > 0)
-	{
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				HealingAmount += 1;
+			}
+		}
+		if(HealingAmount > 0)
+		{
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
+				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				}
 			}
 		}
 	}
@@ -705,7 +825,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	{
 		damage *= 0.5;
 	}
-	else if(damagetype & (DMG_CLUB)) //They take no knockback
+	else if(damagetype & (DMG_CLUB))
 	{
 		if(CurrentPlayers == 1)
 		{
@@ -720,10 +840,14 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 			damage *= 0.75;
 		}
 	}
-	damage = Barracks_UnitOnTakeDamage(npc.index, GetClientOfUserId(npc.OwnerUserId), damage);
-	damage -= Rogue_Barracks_FlatArmor();
-
 	BarrackBody npc = view_as<BarrackBody>(victim);
+	int client = GetClientOfUserId(npc.OwnerUserId);
+	if(client > 0)
+	{
+		damage = Barracks_UnitOnTakeDamage(npc.index, client, damage);
+	}
+	damage -= Rogue_Barracks_FlatArmor();
+	
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -894,123 +1018,6 @@ void BarrackBody_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 }
 
-
-
-//Barracks smith things:
-
-int i_NormalBarracks_HexBarracksUpgrades[MAXTF2PLAYERS];
-
-#define ZR_UNIT_UPGRADES_NONE					0
-
-//MELEE PERKS
-#define ZR_UNIT_UPGRADES_COPPER_SMITH			(1 << 1) //done :)
-#define ZR_UNIT_UPGRADES_IRON_CASTING			(1 << 2) //done :)
-#define ZR_UNIT_UPGRADES_STEEL_CASTING			(1 << 3) //done :)
-//NEED DONJON MINUMUM:
-#define ZR_UNIT_UPGRADES_REFINED_STEEL			(1 << 4) //done :)
-//in the end this should grant 1.5x damage
-
-//RANGED PERKS
-#define ZR_UNIT_UPGRADES_FLETCHING				(1 << 5) //done :)
-#define ZR_UNIT_UPGRADES_STEEL_ARROWS			(1 << 6) //done :)
-#define ZR_UNIT_UPGRADES_BRACER					(1 << 7) //done :)
-//NEED DONJON MINUMUM:
-#define ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS	(1 << 8) //done :)
-//in the end this should grant 1.35x the damage and 25% more range
-
-//ARMOR PERKS affects all units.
-#define ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR		(1 << 9) //done :)
-#define ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR		(1 << 10) //done :)
-#define ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR		(1 << 11) //done :)
-//NEED DONJON MINUMUM:
-#define ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR	(1 << 12) //done :)
-//in the end this should grant 5 flat armor reduction and 25% damage resistance, no health so medics are amazing
-
-#define ZR_UNIT_UPGRADES_HERBAL_MEDICINE		(1 << 13) //done :)
-//this will heal units very slowly overtime
-//NEED DONJON MINUMUM:
-#define ZR_UNIT_UPGRADES_REFINED_MEDICINE		(1 << 14) //done :)
-//this will make units heal faster and give more max health (10%+ max health)
-
-//UPGRADES TO BUILDINGS
-//these should be very expensive, allows building to attack with arrows
-//the building will also now gain abit of health, so it can be used as a weak barricade
-#define ZR_BARRACKS_UPGRADES_TOWER				(1 << 15)
-#define ZR_BARRACKS_UPGRADES_GUARD_TOWER		(1 << 16)
-#define ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER		(1 << 17)
-#define ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER	(1 << 18)
-//going below this will lower your deployment slots to 2
-//BELOW HERE will allow to garrison units (they will be given 0 gravity and teleported off the map and flagged so they dont get deleted)
-//they will add extra arrows and heal the units overtime
-//garrison will also work if you mount the building, allowing you to save your units in the most dire of situations.
-#define ZR_BARRACKS_UPGRADES_DONJON				(1 << 19)
-#define ZR_BARRACKS_UPGRADES_KREPOST			(1 << 20)
-//at this point, the building will have 75% HP of a barricade, but getting this is very lategame, about wave 50 or so
-#define ZR_BARRACKS_UPGRADES_CASTLE				(1 << 21)
-//getting here will allow you to make teutonic knights, replacing the champion line.
-
-//Have a toggle option to fire the arrows of your turret manually when you mount it
-//it will give a boost in firepower as you do it manually!
-#define ZR_BARRACKS_UPGRADES_MANUAL_FIRE		(1 << 22)
-//Allows the building to attack units directly near it
-#define ZR_BARRACKS_UPGRADES_MURDERHOLES		(1 << 23)
-//allows the building to predict enemies
-#define ZR_BARRACKS_UPGRADES_BALLISTICS			(1 << 24)
-//inflict burning onto enemy and also get abit extra damage
-#define ZR_BARRACKS_UPGRADES_CHEMISTY			(1 << 25)
-
-//only vaiable once reaching donjon:
-
-#define ZR_BARRACKS_UPGRADES_CONSCRIPTION		(1 << 26) //done :)
-//allows to make units faster, you also gain resources faster, doesnt affect gold.
-#define ZR_BARRACKS_UPGRADES_GOLDMINERS			(1 << 27) //done :)
-//THIS is only aviable once you have the gold crown.
-//this will allow you to gain gold faster if you have units in your building
-//but it will also give you a 25% increace on gold gain passively.
-#define ZR_BARRACKS_UPGRADES_CRENELLATIONS		(1 << 28) //done :)
-//The castle will have a huge boost in range, allowing to snipe at great ranges
-//it will also increace the speed of the arrows by alot.
-#define ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER	(1 << 29)
-//This will allow you to make one villager, this villager will try to make a building near you, or whereever you tell it to make one
-//This building will only fire arrows, its max upgrade limit is another donjon, it cannot be a krepost or castle.
-//This villager will try to repair all buildings around it for free, although, it will always prioritise repairing its own buildings
-//When it notices its health is too low, then it will automatically run away and garrison inside its own building for safety
-//it wont try to garrison inside your building and you cannot manually assign it a tast to repair stuff, only assign it where to build
-//its building, but i t can only make one if its directly on a nav mesh to prevent abuse
-//This villager will take away one ally spot and 1 barricade limit
-//meaning if you have a castle and this villager, then you can only make 1 unit and 1 barricade
-//its repair power derives from your repair upgrades.
-//it is also unable to attack at all, its not fragile but it just cant defend itself
-//garrisoning this unit wont increace the damage of the building it hides inside.
-//unless....
-#define ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	(1 << 30)
-//this upgrade will make the villager free and wont consume slots, this means you can have 2 units and 2 barricades when you get this.
-
-
-//only vaiable once reaching Krepost:
-
-#define ZR_BARRACKS_UPGRADES_STRONGHOLDS	(1 << 31)
-//The building will attack 33% faster, it will also heal any nearby MELEE player or unit slowly, weaker song of ocean minus buff.
-
-int i_NormalBarracks_HexBarracksUpgrades_2[MAXTF2PLAYERS];
-
-#define ZR_BARRACKS_UPGRADES_HOARDINGS		(1 << 1)
-//ALL your buildings will gain 25% more health. This is to encurage camping with the building when you get upto middle.
-//but making this building again will limit you to not make units and such, and have less barricades out
-//this upgrade will only work when the castle is out, the moment the building breaks, the HP of all your buidlings will go down once more.
-
-//i ran out of space...
-#define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2)
-//allow to get 3 deployment slots again.
-
-
-//in the end, this should be stronger then a sentry with full upgrades by 2x
-//but i will make it eat up barricade slots so if you have this fully upgrades, you can only make 2 barricades at max
-//but it wont affect barracks supply limit unless you get some upgrades that change this.
-
-//mounting this building will cause it to deal half the damage, or attack half as fast, whatever works.
-//just nerf the building overall, so its more advantagous to have it placed down.
-//none of these upgrades cost gold (or should)
 
 float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int damagetype)
 {
