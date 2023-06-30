@@ -449,7 +449,7 @@ static Action Ikunagae_TBB_Tick(int client)
 					{
 						inflictor=client;
 					}
-					SDKHooks_TakeDamage(victim, client, inflictor, (damage/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1)/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}

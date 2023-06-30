@@ -192,7 +192,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
-						npc.FireParticleRocket(vecTarget, 100.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),100.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
 						npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
 						i_ammo_count[npc.index]--;

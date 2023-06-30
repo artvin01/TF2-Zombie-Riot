@@ -138,7 +138,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 					ScaleVector(Direction, distance);
 					AddVectors(UserLoc, Direction, endLoc);
 							
-					npc.FireParticleRocket(endLoc, 2500.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue", _ , false, _,_,_, GetClientOfUserId(npc.OwnerUserId));
+					npc.FireParticleRocket(endLoc, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2500.0, 1) , 850.0 , 100.0 , "raygun_projectile_blue", _ , false, _,_,_, GetClientOfUserId(npc.OwnerUserId));
 					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 		
 				}
@@ -186,7 +186,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), 4500.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 4500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

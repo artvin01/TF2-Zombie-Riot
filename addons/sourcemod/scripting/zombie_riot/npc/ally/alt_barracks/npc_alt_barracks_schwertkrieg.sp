@@ -177,7 +177,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 							float time = 1.0;
 							current_loc = WorldSpaceCenter(npc.index);
 							spawnRing_Vectors(current_loc, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, time, 4.0, 0.1, 1, 1.0);
-							Explode_Logic_Custom(15000.0 * npc.BonusDamageBonus, GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 1250*2.0 ,_,0.8, false);
+							Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 1250*2.0 ,_,0.8, false);
 							current_loc[2] -= 500.0;
 							float sky_loc[3]; sky_loc = current_loc; sky_loc[2] += 5000.0;
 							TE_SetupBeamPoints(current_loc, sky_loc, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
@@ -221,7 +221,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), 17500.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),17500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

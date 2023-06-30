@@ -319,7 +319,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int client, int
 						{
 							damage *= 1.5;
 						}
-						SDKHooks_TakeDamage(target, npc.index, client, damage * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);						
+						SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);						
 
 						npc.PlayMeleeHitSound();
 					} 
@@ -404,7 +404,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int client, in
 					vecTarget = PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed);
 					npc.m_flSpeed = 0.0;
 					int rocket;
-					rocket = npc.FireParticleRocket(vecTarget, damage * npc.BonusDamageBonus , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 
 					DataPack pack;
@@ -497,7 +497,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int client, i
 					vecTarget = PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed);
 					npc.m_flSpeed = 0.0;
 					int rocket;
-					rocket = npc.FireParticleRocket(vecTarget, damage * npc.BonusDamageBonus , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				
 				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 					DataPack pack;
