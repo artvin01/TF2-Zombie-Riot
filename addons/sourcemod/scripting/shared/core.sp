@@ -81,7 +81,7 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
-ConVar CvarMaxBotsForKillfeed;
+//ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 ConVar zr_downloadconfig;
 ConVar CvarRerouteToIp;
@@ -392,7 +392,7 @@ int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int g_particleCritText;
 int g_particleMissText;
-int LastHitId[MAXENTITIES];
+int LastHitRef[MAXENTITIES];
 int DamageBits[MAXENTITIES];
 float Damage[MAXENTITIES];
 int LastHitWeaponRef[MAXENTITIES];
@@ -999,8 +999,8 @@ float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #include "shared/dhooks.sp"
 #include "shared/events.sp"
 #include "shared/filenetwork.sp"
+#include "shared/killfeed.sp"
 #include "shared/npcs.sp"
-#include "shared/npc_death_showing.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -1106,6 +1106,7 @@ public void OnPluginStart()
 	DHook_Setup();
 	SDKCall_Setup();
 	ConVar_PluginStart();
+	KillFeed_PluginStart();
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
@@ -1475,6 +1476,8 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
+	KillFeed_ClientPutInServer(client);
+
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
@@ -1489,7 +1492,6 @@ public void OnClientPutInServer(int client)
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
 	
-	AdjustBotCount();
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
 	WeaponClass[client] = TFClass_Unknown;
@@ -1528,6 +1530,7 @@ public void OnClientCookiesCached(int client)
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
+	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
 	i_HealthBeforeSuit[client] = 0;
@@ -2178,7 +2181,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
-		LastHitId[entity] = -1;
+		LastHitRef[entity] = -1;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
 		LastHitWeaponRef[entity] = -1;
@@ -2250,6 +2253,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 	= 1.0;
 		fl_Extra_Speed[entity] 			= 1.0;
 		fl_Extra_Damage[entity] 		= 1.0;
+
+		KillFeed_EntityCreated(entity);
+
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);

@@ -2698,13 +2698,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 {	
 	if(!b_NpcHasDied[pThis])
 	{
-		int client = GetClientOfUserId(LastHitId[pThis]);
+		int client = EntRefToEntIndex(LastHitRef[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
 		
 		int overkill = RoundToNearest(Damage[pThis] - float(Health));
 		
-		if(client && IsClientInGame(client))
+		if(client > 0 && client <= MaxClients)
 		{
 	//		PlayFakeDeathSound(client);
 #if defined ZR
@@ -2719,6 +2719,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveHudCooldown(client);
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
+
+		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 		
 		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
 		{

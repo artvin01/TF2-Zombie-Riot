@@ -6,7 +6,7 @@ void Events_PluginStart()
 	HookEvent("teamplay_round_start", OnRoundStart, EventHookMode_PostNoCopy);
 	HookEvent("post_inventory_application", OnPlayerResupply, EventHookMode_Post);
 	HookEvent("player_spawn", OnPlayerSpawn, EventHookMode_Post);
-	HookEvent("player_death", OnPlayerDeath, EventHookMode_Post);
+	HookEvent("player_death", OnPlayerDeath, EventHookMode_Pre);
 	HookEvent("teamplay_broadcast_audio", OnBroadcast, EventHookMode_Pre);
 	HookEvent("teamplay_win_panel", OnWinPanel, EventHookMode_Pre);
 	HookEvent("player_team", OnPlayerTeam, EventHookMode_Pre);
@@ -466,44 +466,58 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
+public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(client)
-	{
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	if(!client)
+		return Plugin_Continue;
+	
+	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+
 #if defined ZR
-		Escape_DropItem(client);
-		if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
-		{
-			DestroyDispenser(client);
-		}
-		else
-		{
-			Building_Mounted[client] = 0;
-			Player_Mounting_Building[client] = false;
-			g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
-		}
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+#else
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+#endif
 
-		//Incase they die, do suit!
-		i_HealthBeforeSuit[client] = 0;
-		i_ClientHasCustomGearEquipped[client] = false;
-		CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
-		//
+#if defined ZR
+	Escape_DropItem(client);
+	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
+	{
+		DestroyDispenser(client);
 
-		Citizen_PlayerDeath(client);
-		Bob_player_killed(event, name, dontBroadcast);
-		Skulls_PlayerKilled(client);
+		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
+		if(obj != INVALID_ENT_REFERENCE)
+			KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	}
+	else
+	{
+		Building_Mounted[client] = 0;
+		Player_Mounting_Building[client] = false;
+		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
+	}
+
+	//Incase they die, do suit!
+	i_HealthBeforeSuit[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = false;
+	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+	//
+
+	Citizen_PlayerDeath(client);
+	Bob_player_killed(event, name, dontBroadcast);
+	Skulls_PlayerKilled(client);
 #endif
 
 #if defined RPG
-		TextStore_DepositBackpack(client, true);
-		UpdateLevelAbovePlayerText(client, true);
+	TextStore_DepositBackpack(client, true);
+	UpdateLevelAbovePlayerText(client, true);
 #endif
 
-		Store_WeaponSwitch(client, -1);
-		RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
-	}
+	Store_WeaponSwitch(client, -1);
+	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
+
+	event.BroadcastDisabled = true;
+	return Plugin_Changed;
 }
 
 public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)

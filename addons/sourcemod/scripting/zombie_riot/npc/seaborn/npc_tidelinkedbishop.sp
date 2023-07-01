@@ -1,0 +1,371 @@
+#pragma semicolon 1
+#pragma newdecls required
+ 
+static const char g_DeathSounds[][] =
+{
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav"
+};
+
+static const char g_IdleAlertedSounds[][] =
+{
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav"
+};
+
+static const char g_MeleeAttackSounds[][] =
+{
+	"weapons/bow_shoot.wav"
+};
+
+static int LaserSprite;
+
+#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
+
+void TidelinkedBishop_MapStart()
+{
+	LaserSprite = PrecacheModel(SPRITE_SPRITE);
+}
+
+methodmap TidelinkedBishop < CClotBody
+{
+	public void PlayIdleSound()
+	{
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+	}
+	public void PlayDeathSound() 
+	{
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	}
+	public void PlayAngerSound()
+ 	{
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayMeleeSound()
+ 	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	
+	public TidelinkedBishop(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		TidelinkedBishop npc = view_as<TidelinkedBishop>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.6", "40000", ally, false, true));
+		// 40000 x 1.0
+
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+		i_NpcInternalId[npc.index] = TIDELINKED_BISHOP;
+		i_NpcWeight[npc.index] = 3;
+		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+		
+		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		
+		SDKHook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
+		
+		npc.m_flSpeed = 100.0;	// 0.4 x 250
+		npc.m_flGetClosestTargetTime = 0.0;
+
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
+
+		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/medic/medic_blighted_beak.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+
+		return npc;
+	}
+}
+
+public void TidelinkedBishop_ClotThink(int iNPC)
+{
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(iNPC);
+
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+		npc.m_iTarget = 0;
+	
+	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+	}
+	
+	if(npc.m_iTarget > 0)
+	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
+			{
+				npc.m_flAttackHappens = 0.0;
+				
+				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0);
+				npc.FaceTowards(vecTarget, 15000.0);
+
+				npc.PlayMeleeSound();
+				int entity = npc.FireArrow(vecTarget, 90.0, 1200.0, "models/weapons/w_bugbait.mdl");
+				// 600 x 0.15
+
+				i_NervousImpairmentArrowAmount[entity] = 36;
+				// 600 x 0.4 x 0.15
+
+				if(entity != -1)
+				{
+					if(IsValidEntity(f_ArrowTrailParticle[entity]))
+						RemoveEntity(f_ArrowTrailParticle[entity]);
+					
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(entity, 100, 100, 255, 255);
+					
+					vecTarget = WorldSpaceCenter(entity);
+					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
+					SetParent(entity, f_ArrowTrailParticle[entity]);
+					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+				}
+			}
+		}
+
+		if(distance < 250000.0 && npc.m_flNextMeleeAttack < gameTime)	// 2.5 * 200
+		{
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, target, true))
+			{
+				npc.m_iTarget = target;
+
+				if(npc.m_flNextRangedAttack < gameTime)
+				{
+					npc.PlayAngerSound();
+					npc.SetActivity("ACT_SEABORN_FIRST_ATTACK_2");
+					b_NpcIsInvulnerable[npc.index] = true;
+					
+					vecTarget[2] += 10.0;
+
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(npc.index));
+					pack.WriteFloat(vecTarget[0]);
+					pack.WriteFloat(vecTarget[1]);
+					pack.WriteFloat(vecTarget[2]);
+
+					CreateTimer(1.0, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.25, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.5, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.75, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.0, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.25, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+
+					CreateTimer(3.0, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.25, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.5, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.75, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.0, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.25, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+
+					spawnRing_Vectors(vecTarget, 325.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
+
+					npc.m_flDoingAnimation = gameTime + 4.0;
+					npc.m_flNextMeleeAttack = gameTime + 6.0;
+					npc.m_flNextRangedAttack = gameTime + 35.0;
+				}
+				else
+				{
+					npc.AddGesture("ACT_SEABORN_FIRST_ATTACK_1");
+					
+					npc.m_flAttackHappens = gameTime + 0.35;
+
+					npc.m_flDoingAnimation = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 3.0;
+				}
+			}
+		}
+		
+		if(npc.m_flDoingAnimation > gameTime)
+		{
+			npc.StopPathing();
+		}
+		else
+		{
+			if(distance < npc.GetLeadRadius())
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			}
+			else 
+			{
+				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			}
+
+			npc.StartPathing();
+
+			if(b_NpcIsInvulnerable[npc.index])
+			{
+				b_NpcIsInvulnerable[npc.index] = false;
+				npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+			}
+		}
+	}
+	else
+	{
+		npc.StopPathing();
+	}
+
+	npc.PlayIdleSound();
+}
+
+public Action TidelinkedBishop_TimerShoot(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(EntRefToEntIndex(pack.ReadCell()));
+	if(npc.index != INVALID_ENT_REFERENCE)
+	{
+		float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
+		vecPos[2] += 100.0;
+
+		npc.PlayMeleeSound();
+
+		int entity = npc.FireArrow(vecPos, 90.0, 2000.0, "models/weapons/w_bugbait.mdl");
+		if(entity != -1)
+		{
+			if(IsValidEntity(f_ArrowTrailParticle[entity]))
+				RemoveEntity(f_ArrowTrailParticle[entity]);
+			
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(entity, 100, 100, 255, 255);
+			
+			vecPos = WorldSpaceCenter(entity);
+			f_ArrowTrailParticle[entity] = ParticleEffectAt(vecPos, "rockettrail_bubbles", 3.0);
+			SetParent(entity, f_ArrowTrailParticle[entity]);
+			f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
+		}
+	}
+	return Plugin_Stop;
+}
+
+public Action TidelinkedBishop_TimerAttack(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(EntRefToEntIndex(pack.ReadCell()));
+	if(npc.index != INVALID_ENT_REFERENCE)
+	{
+		float vecPos[3];
+		vecPos[0] = pack.ReadFloat();
+		vecPos[1] = pack.ReadFloat();
+		vecPos[2] = pack.ReadFloat();
+
+		//spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
+
+		Zero(HitEnemies);
+		TR_EnumerateEntitiesSphere(vecPos, 325.0 * 0.75, PARTITION_NON_STATIC_EDICTS, TidelinkedBishop_EnumerateEntitiesInRange, npc.index);
+
+		// Hits the target with the highest armor within range
+
+		int victim;
+		int armor = -9999999;
+		for(int i; i < sizeof(HitEnemies); i++)
+		{
+			if(!HitEnemies[i])
+				break;
+			
+			int myArmor = 1;
+			if(HitEnemies[i] <= MaxClients)
+				myArmor = Armor_Charge[HitEnemies[i]];
+			
+			if(myArmor > armor)
+			{
+				victim = HitEnemies[i];
+				armor = myArmor;
+			}
+		}
+
+		if(victim)
+		{
+			vecPos = WorldSpaceCenter(victim);
+			ParticleEffectAt(vecPos, "water_bulletsplash01", 3.0);
+
+			float vecPos2[3];
+			vecPos2[0] = vecPos[0];
+			vecPos2[1] = vecPos[1];
+			vecPos2[2] = vecPos[2] + 2000.0;
+
+			TE_SetupBeamPoints(vecPos, vecPos2, LaserSprite, 0, 0, 0, 1.0, 1.0, 1.2, 1, 1.0, {50, 50, 255, 255}, 0);
+			TE_SendToAll();
+
+			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
+			// 600 x 0.15
+			
+			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
+			// 600 x 0.4 x 0.15
+		}
+	}
+	return Plugin_Stop;
+}
+
+public bool TidelinkedBishop_EnumerateEntitiesInRange(int victim, int attacker)
+{
+	if(IsValidEnemy(attacker, victim, true))
+	{
+		for(int i; i < sizeof(HitEnemies); i++)
+		{
+			if(!HitEnemies[i])
+			{
+				HitEnemies[i] = victim;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	return true;
+}
+
+public Action TidelinkedBishop_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(attacker < 1)
+		return Plugin_Continue;
+	
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(victim);
+	if(b_NpcIsInvulnerable[npc.index])
+		damage = 0.0;
+	
+	return Plugin_Changed;
+}
+
+void TidelinkedBishop_NPCDeath(int entity)
+{
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
+	if(!npc.m_bGib)
+		npc.PlayDeathSound();
+	
+	
+	SDKUnhook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+}
