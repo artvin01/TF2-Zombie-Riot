@@ -9,7 +9,7 @@ methodmap BarrackVillager < BarrackBody
 	{
 		BarrackVillager npc = view_as<BarrackVillager>(BarrackBody(client, vecPos, vecAng, "1000"));
 		
-		i_NpcInternalId[npc.index] = BARRACKS_TEUTONIC_KNIGHT;
+		i_NpcInternalId[npc.index] = BARRACKS_VILLAGER;
 		i_NpcWeight[npc.index] = 1;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackVillager_ClotThink);

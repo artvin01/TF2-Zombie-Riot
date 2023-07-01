@@ -601,6 +601,8 @@ public const char NPC_Names[][] =
 	"Saint Carmen",
 	"Pathshaper",
 	"Pathshaper Fractal"
+	"Barracks Teutonic Knight",
+	"Barracks Villager",
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -892,7 +894,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"npc_saintcarmenn",
 	"npc_pathshaper",
-	"npc_pathshaper_fractal"
+	"npc_pathshaper_fractal",
+	"",
+	""
 };
 
 void NPC_MapStart()
@@ -1890,6 +1894,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case PATHSHAPER_FRACTAL:
 			entity = PathshaperFractal(client, vecPos, vecAng, ally);
 			
+		case BARRACKS_TEUTONIC_KNIGHT:
+			entity = BarrackTeuton(client, vecPos, vecAng, ally);
+
+		case BARRACKS_VILLAGER:
+			entity = BarrackVillager(client, vecPos, vecAng, ally);
+			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2671,6 +2681,12 @@ public void NPCDeath(int entity)
 		
 		case PATHSHAPER_FRACTAL:
 			PathshaperFractal_NPCDeath(entity);
+			
+		case BARRACKS_TEUTONIC_KNIGHT:
+			entity = BarrackTeuton_NPCDeath(entity);
+
+		case BARRACKS_VILLAGER:
+			entity = BarrackVillager_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3225,7 +3241,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			MedivalMonk_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case BARRACK_MILITIA, BARRACK_ARCHER, BARRACK_MAN_AT_ARMS, BARRACK_CROSSBOW, BARRACK_SWORDSMAN, BARRACK_ARBELAST,
-		BARRACK_TWOHANDED, BARRACK_LONGBOW, BARRACK_CHAMPION, BARRACK_MONK, BARRACK_HUSSAR, BARRACK_LASTKNIGHT:
+		BARRACK_TWOHANDED, BARRACK_LONGBOW, BARRACK_CHAMPION, BARRACK_MONK, BARRACK_HUSSAR, BARRACK_LASTKNIGHT, BARRACKS_TEUTONIC_KNIGHT,
+		BARRACKS_VILLAGER:
 			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case MEDIVAL_HALB:
