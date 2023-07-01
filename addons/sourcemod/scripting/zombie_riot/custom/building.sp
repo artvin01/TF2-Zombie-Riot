@@ -999,6 +999,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	if(GetEntProp(entity, Prop_Data, "m_iHealth") <= damage)
 	{
 		b_BuildingHasDied[entity] = true;
+		KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
 	}
 	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
 	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
@@ -6270,14 +6271,55 @@ static const int SummonerAlternative[][] =
 
 static const int BarracksUpgrades[][] =
 {
-	// Building Upgrade ID, 			Wood, 	Food, 	Gold, 	Time, 	Level,		 Supply
-	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 		1, 			1 },		// None
+	// Building Upgrade ID, 		Wood, 	Food, 	Gold, 	Time, 	Level,		,Requirement HexArray ,Requirement 									,Requirement 2 HexArray,	Requirement 2						,give hex array		,Give Client
+	{ UNIT_COPPER_SMITH , 			10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_SMITH					},		// Construction Novice
+	{ UNIT_IRON_CASTING, 			50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_SMITH,				1,							0,									1,					ZR_UNIT_UPGRADES_IRON_CASTING					},		// Construction Apprentice
+	{ UNIT_STEEL_CASTING, 			50, 	10, 	1, 		7,		7, 			1,						ZR_UNIT_UPGRADES_IRON_CASTING,				1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_CASTING					},		// Construction Worker
+	{ UNIT_REFINED_STEEL, 			50, 	10, 	1, 		7,		11, 		1,						ZR_UNIT_UPGRADES_STEEL_CASTING,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_STEEL					},		// Construction Expert
 
-	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7,		2, 			1 },		// Construction Novice
-};
+	{ UNIT_FLETCHING , 				10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_FLETCHING						},		// Construction Novice
+	{ UNIT_STEEL_ARROWS, 			50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_FLETCHING,					1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_ARROWS					},		// Construction Apprentice
+	{ UNIT_BRACER, 					50, 	10, 	1, 		7,		7, 			1,						ZR_UNIT_UPGRADES_STEEL_ARROWS,				1,							0,									1,					ZR_UNIT_UPGRADES_BRACER							},		// Construction Worker
+	{ UNIT_OBSIDIAN_REFINED_TIPS, 	50, 	10, 	1, 		7,		11, 		1,						ZR_UNIT_UPGRADES_BRACER,					1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS			},		// Construction Expert
 
-static const char CivName[][] =
-{
+	{ UNIT_COPPER_ARMOR_PLATE , 	10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR				},		// Construction Novice
+	{ UNIT_IRON_ARMOR_PLATE, 		50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR,		1,							0,									1,					ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR				},		// Construction Apprentice
+	{ UNIT_CHAINMAIL_ARMOR, 		50, 	10, 	1, 		7,		7, 			1,						ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR,			1,							0,									1,					ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR				},		// Construction Worker
+	{ UNIT_REFORGED_ARMOR_PLATE, 	50, 	10, 	1, 		7,		11, 		1,						ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR			},		// Construction Expert
+
+	{ UNIT_HERBAL_MEDICINE , 		10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_HERBAL_MEDICINE				},		// Construction Novice
+	{ UNIT_REFINED_MEDICINE, 		50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_HERBAL_MEDICINE,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_MEDICINE				},		// Construction Apprentice
+
+	//tower specific upgrades						1,
+	{ BUILDING_TOWER , 				10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_TOWER						},		// Construction Novice
+	{ BUILDING_GUARD_TOWER, 		50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_GUARD_TOWER				},		// Construction Apprentice
+	{ BUILDING_IMPERIAL_TOWER, 		50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_GUARD_TOWER,			1,							0,									1,					ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER				},		// Construction Worker
+	{ BUILDING_BALLISTICAL_TOWER, 	50, 	10, 	1, 		7,		7, 			1,						ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER			},		// Construction Expert
+	{ BUILDING_DONJON, 				50, 	10, 	1, 		7,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_DONJON						},		// Construction Expert
+	{ BUILDING_KREPOST, 			50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
+	{ BUILDING_CASTLE, 				50, 	10, 	1, 		7,		16, 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
+
+	{ BUILDING_MANUAL_FIRE , 		10, 	40, 	0, 		5, 		2, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_MANUAL_FIRE				},		// Construction Novice
+
+
+	{ BUILDING_MUDERHOLES , 		10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_MURDERHOLES				},		// Construction Novice
+	{ BUILDING_BALLISTICS, 			50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_MURDERHOLES,			1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICS					},		// Construction Apprentice
+	{ BUILDING_CHEMISTRY, 			50, 	10, 	1, 		7,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICS,			1,							0,									1,					ZR_BARRACKS_UPGRADES_CHEMISTY					},		// Construction Worker
+	{ BUILDING_CRENELATIONS, 		50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_CHEMISTY,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CRENELLATIONS				},		// Construction Expert
+
+	{ BUILDING_CONSCRIPTION , 		10, 	40, 	0, 		5, 		2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
+	{ BUILDING_GOLDMINERS, 			50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
+
+	{ BUILDING_ASSISTANT_VILLAGER, 	50, 	10, 	1, 		7,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
+	{ BUILDING_VILLAGER_EDUCATION, 	50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
+
+	{ BUILDING_STRONGHOLDS, 		50, 	10, 	1, 		7,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
+	{ BUILDING_HOARDINGS, 			50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
+	{ BUILDING_EXQUISITE_HOUSING, 	50, 	10, 	1, 		7,		16, 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
+};					
+
+static const char CivName[][] =		
+{		
 	"Standard Barracks",
 	"Iberia Barracks",
 	"Blitzkrieg's Army"
@@ -6479,7 +6521,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
 		float SupplyRateCalc = SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
 
-		if(HexBarracksBuildingUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
+		if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 		{
 			SupplyRateCalc *= 1.25;
 		}
@@ -6490,7 +6532,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		if(MedievalUnlock[owner])
 		{
 			float GoldSupplyRate = SupplyRate[owner] / 1500.0;
-			if(HexBarracksBuildingUpgrades[owner] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+			if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
 			{
 				GoldSupplyRate *= 1.25;
 			}
@@ -6559,6 +6601,12 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 							view_as<BarrackBody>(npc).BonusFireRate *= 0.75;
 						}
 						//juggernog
+
+						if(npc > MaxClients && (i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+						{
+							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.1));
+							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.1));
+						}
 						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 2)
 						{
 							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
@@ -6580,7 +6628,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 							TrainingIndex[owner] = TrainingQueue[owner];
 							TrainingStartedIn[owner] = GetGameTime();
 							float trainingTime = float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
-							if(HexBarracksBuildingUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
+							if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 							{
 								trainingTime *= 0.75;
 							}
@@ -7006,7 +7054,7 @@ void Barracks_BuildingThink(int building)
 
 
 	//they do not even have the first upgrade, do not think.
-	if(!(HexBarracksBuildingUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
+	if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		return;
 
 	float MinimumDistance = 100.0;

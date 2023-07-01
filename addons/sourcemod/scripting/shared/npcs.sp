@@ -1593,7 +1593,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 
 			//NPC STUFF FOR RECORD AND ON KILL
-			LastHitId[victim] = GetClientUserId(attacker);
+			LastHitRef[victim] = EntIndexToEntRef(attacker);
 			DamageBits[victim] = damagetype;
 			Damage[victim] = damage;
 			
@@ -2743,8 +2743,8 @@ void NPC_DeadEffects(int entity)
 #endif
 		
 		int WeaponLastHit = EntRefToEntIndex(LastHitWeaponRef[entity]);
-		int client = GetClientOfUserId(LastHitId[entity]);
-		if(client && IsClientInGame(client))
+		int client = EntRefToEntIndex(LastHitRef[entity]);
+		if(client > 0 && client <= MaxClients)
 		{
 			
 #if defined ZR
@@ -2758,7 +2758,6 @@ void NPC_DeadEffects(int entity)
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 			
-			NPC_Killed_Show_Hud(client, entity, WeaponLastHit, NPC_Names[i_NpcInternalId[entity]], DamageBits[entity]);
 			Attributes_OnKill(client, WeaponLastHit);
 		}
 	}

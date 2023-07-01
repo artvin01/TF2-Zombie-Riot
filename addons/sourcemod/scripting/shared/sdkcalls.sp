@@ -429,7 +429,7 @@ stock void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, int
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
 	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
 }
-
+/*
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
 	int bot = SDKCall(
@@ -446,7 +446,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 	return bot;
 }
-
+*/
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
 void Sdkcall_Load_Lagcomp()

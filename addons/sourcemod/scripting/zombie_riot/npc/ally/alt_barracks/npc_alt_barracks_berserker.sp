@@ -153,7 +153,7 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 					
-					float damage = (1500.0*npc.BonusDamageBonus) * (1.0+(1-(Health/MaxHealth))*2);
+					float damage = (1500.0) * (1.0+(1-(Health/MaxHealth))*2);
 					float speed = (0.25*npc.BonusFireRate) * (Health / MaxHealth)+0.1;
 					//Play attack ani
 					
@@ -179,7 +179,7 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), damage, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

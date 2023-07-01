@@ -36,6 +36,7 @@ public void Barrack_Alt_Mecha_Barrager_MapStart()
 }
 
 static int i_ammo_count[MAXENTITIES];
+static bool b_target_close[MAXENTITIES];
 static bool b_we_are_reloading[MAXENTITIES];
 static float fl_idle_timer[MAXENTITIES];
 
@@ -80,6 +81,7 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 		
 		
 		i_ammo_count[npc.index]=0;
+		b_target_close[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		fl_idle_timer[npc.index] = 2.0 + GetGameTime(npc.index);
 		
@@ -125,11 +127,18 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
-		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index])	//the npc will prefer to fully reload the clip before attacking
+		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 		{
 			b_we_are_reloading[npc.index]=true;
 		}
-		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
+		if((b_we_are_reloading[npc.index] || (b_target_close[npc.index] && i_ammo_count[npc.index]<=0)) && npc.m_flReloadIn<GameTime)	//Reload IF. Target too close. Empty clip.
+		{
+			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
+			npc.m_flReloadIn = 0.75* npc.BonusFireRate + GameTime;
+			i_ammo_count[npc.index]++;
+			npc.PlayRangedReloadSound();
+		}
+		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && !b_target_close[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
 		{
 			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
 			npc.m_flReloadIn = 0.75* npc.BonusFireRate + GameTime;
@@ -145,7 +154,15 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			npc.PlayIdleAlertSound();
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if(i_ammo_count[npc.index]==0 || b_we_are_reloading[npc.index])	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
+			if(flDistanceToTarget < 60000)
+			{
+				b_target_close[npc.index]=true;
+			}
+			else
+			{
+				b_target_close[npc.index]=false;
+			}
+			if((i_ammo_count[npc.index]==0 || b_we_are_reloading[npc.index]) && !b_target_close[npc.index])	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
 			{
 				
 				int Enemy_I_See;
@@ -171,15 +188,11 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GameTime && i_ammo_count[npc.index] >0)
 					{
 						//Play attack anim
-						
-						float flPos[3]; // original
-						float flAng[3]; // original
-						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
-						npc.FireParticleRocket(vecTarget, 100.0 * npc.BonusDamageBonus ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, true, flPos,_, GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),100.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
 						npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
 						i_ammo_count[npc.index]--;
