@@ -107,7 +107,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 		npc.m_iTargetAlly = GetClosestAlly(npc.index);
 		if(npc.m_iTargetAlly < 1)
 		{
-			LastHitId[npc.index] = 0;
+			LastHitRef[npc.index] = -1;
 			SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.0, DMG_CLUB);
 			return;
 		}

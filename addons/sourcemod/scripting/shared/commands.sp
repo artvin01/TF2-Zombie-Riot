@@ -155,7 +155,7 @@ public Action OnSayCommand(int client, const char[] command, int args)
 		return Plugin_Handled;
 #endif
 
-	return NPC_SayCommand(client, command);
+	return Plugin_Continue;
 }
 
 #if defined ZR

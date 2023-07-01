@@ -3291,66 +3291,6 @@ stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, f
 	
 }
 
-stock void AdjustBotCount(int ExtraData = 1) //1 is the default
-{
-	int botscalculaton = 1;
-	int botsonserver = 0;
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsFakeClient(client))
-		{
-			botsonserver++;
-		}
-	}
-
-#if defined ZR
-	if(ExtraData > CvarMaxBotsForKillfeed.IntValue)
-	{
-		botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-	}
-	else
-	{
-		botscalculaton = ExtraData;
-	}
-	
-	if(botscalculaton < 1)
-	{
-		botscalculaton = 1; //MUST BE 1 ATLEAST!
-	}
-#endif
-
-#if defined RPG
-	botscalculaton = CvarMaxBotsForKillfeed.IntValue;
-#endif
-
-	int bots_to_spawn_or_despawn;
-	int bots_to_spawn_or_despawn_Invert;
-
-	bots_to_spawn_or_despawn = botscalculaton - botsonserver;
-	bots_to_spawn_or_despawn_Invert = botsonserver - botscalculaton;
-
-	//dont do anything if the amount is the same.
-	if(bots_to_spawn_or_despawn > 0)
-	{
-		for(int i=0; i<botscalculaton; i++)
-		{
-			SpawnBotCustom("Zombie", false);
-		}
-	}
-	else if (bots_to_spawn_or_despawn < 0) //Kick bots that are not used.
-	{
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsFakeClient(client) && bots_to_spawn_or_despawn_Invert > 0)
-			{
-				KickClient(client);
-				bots_to_spawn_or_despawn_Invert--;
-			}
-		}
-	}
-
-}
-
 public void GiveCompleteInvul(int client, float time)
 {
 	f_ClientInvul[client] = GetGameTime() + time;

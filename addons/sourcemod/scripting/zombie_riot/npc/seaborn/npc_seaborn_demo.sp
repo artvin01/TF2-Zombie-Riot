@@ -115,7 +115,7 @@ public void SeabornDemo_ClotThink(int iNPC)
 
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							LastHitId[npc.index] = 0;
+							LastHitRef[npc.index] = -1;
 							SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.0, DMG_CLUB);
 						}
 					}
