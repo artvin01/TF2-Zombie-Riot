@@ -6417,6 +6417,9 @@ public bool Building_Summoner(int client, int entity)
 	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
+	SetDefaultValuesToZeroNPC(entity);
+	b_FUCKYOU_move_anim[entity] = false;
+	SDKHook(client, SDKHook_PreThink, Barracks_BuildingThink);
 	
 	return true;
 }
@@ -6991,8 +6994,27 @@ static int GetSupplyLeft(int client)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
-				personal += npc.m_iSupplyCount;
+			{
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+				{
+					if(i_NpcInternalId[npc.index] != BARRACKS_VILLAGER)
+					{
+						personal += npc.m_iSupplyCount;
+					}
+				}
+				else
+				{
+					personal += npc.m_iSupplyCount;
+				}
+			}
 		}
+	}
+
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+	{
+		personal -= 1;
+		if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING))
+			personal += 1;
 	}
 
 	return 3 + Rogue_Barracks_BonusSupply() - personal;
@@ -7039,24 +7061,46 @@ void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const flo
 }
 
 
-void Barracks_BuildingThink(int building)
+void Barracks_BuildingThink(int client)
 {
+	int building = EntRefToEntIndex(i_HasSentryGunAlive[client]);
+
+	if(!IsValidEntity(building))
+	{
+		SDKUnhook(client, SDKHook_PreThink, Barracks_BuildingThink);
+		return;
+	}
+	if(i_WhatBuilding[building] != BuildingSummoner)
+	{
+		SDKUnhook(client, SDKHook_PreThink, Barracks_BuildingThink);
+		return;
+	}
 	BarrackBody npc = view_as<BarrackBody>(building);
 	float GameTime = GetGameTime(npc.index);
-	int client = GetEntPropEnt(building, Prop_Send, "m_hBuilder");
 	
 	if(!IsValidClient(client))
 	{
+		SDKUnhook(client, SDKHook_PreThink, Barracks_BuildingThink);
 		return;
 	}
 	//do not think.
 
+	if(npc.m_flNextThinkTime > GameTime) //add a delay, we dont really need more lol
+	{
+		return;
+	}
+	
+	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	//they do not even have the first upgrade, do not think.
+	//they do not even have the first upgrade, do not think, but dont cancel.
 	if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		return;
 
 	float MinimumDistance = 100.0;
+
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
+		MinimumDistance = 0.0;
+
 	float MaximumDistance = 600.0;
 	MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
 	float pos[3];
@@ -7071,4 +7115,186 @@ void Barracks_BuildingThink(int building)
 	}
 	int ValidEnemyToTarget = GetClosestTarget(npc.index, true, MaximumDistance, true, _, _ ,pos, true,_,_,true, MinimumDistance);
 	
+	if(!b_FUCKYOU_move_anim[building]) //apply health multi.
+	{
+		float healthMult = 1.35;
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)
+		{
+			healthMult *= 1.35;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)
+		{
+			healthMult *= 1.5;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+		{
+			healthMult *= 2.0;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
+		{
+			healthMult *= 3.0;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
+		{
+			healthMult *= 4.0;
+		}
+		SetEntProp(building, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(building, Prop_Data, "m_iHealth")) * healthMult));
+		SetEntProp(building, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(building, Prop_Data, "m_iMaxHealth")) * healthMult));
+		Building_Repair_Health[building] = GetEntProp(building, Prop_Data, "m_iMaxHealth");
+		Building_Max_Health[building] = GetEntProp(building, Prop_Data, "m_iMaxHealth");
+		b_FUCKYOU_move_anim[building] = true;
+	}
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
+	{
+		if(mounted)
+		{
+			DoHealingOcean(client, client, (500.0 * 500.0), 2.0, true);
+		}
+		else
+		{
+			DoHealingOcean(building, building, (500.0 * 500.0), 2.0, true);
+		}
+	}
+	if(IsValidEnemy(client, ValidEnemyToTarget))
+	{
+		if(npc.m_flNextMeleeAttack < GameTime)
+		{
+			float ArrowDamage = 100.0;
+			int ArrowCount = 1;
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)
+			{
+				ArrowDamage += 200.0;
+				ArrowCount += 1;
+			}
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)
+			{
+				ArrowDamage += 500.0;
+				ArrowCount += 1;
+			}
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+			{
+				ArrowDamage += 800.0;
+				ArrowCount += 1;
+			}
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
+			{
+				ArrowDamage += 1200.0;
+				ArrowCount += 2;
+			}
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
+			{
+				ArrowDamage += 5000.0;
+				ArrowCount += 5;
+			}
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+			{
+				ArrowDamage *= 1.25;
+			}
+			if(mounted) //mounted its half as strong.
+			{
+				ArrowDamage *= 0.5;
+			}
+
+			float AttackDelay = 5.0;
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
+			{
+				AttackDelay *= 0.77; //attack 33% faster
+			}
+			
+			npc.m_flNextMeleeAttack = GameTime + AttackDelay;
+			npc.m_flDoingSpecial = ArrowDamage;
+			npc.m_iOverlordComboAttack = ArrowCount;
+		}
+		if(npc.m_iOverlordComboAttack > 0)
+		{
+			float vecTarget[3];
+			float projectile_speed = 1200.0;
+			
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
+			{
+				vecTarget = PredictSubjectPositionForProjectiles(npc, ValidEnemyToTarget, projectile_speed, 75.0);
+				if(!Can_I_See_Enemy_Only(npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
+				{
+					vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+				}
+			}
+			else
+			{
+				vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+			}
+
+
+			EmitSoundToAll("weapons/bow_shoot.wav", npc.index, _, 70, _, 0.9, 100);
+
+			//npc.m_flDoingSpecial is damage, see above.
+			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 75.0);
+			npc.m_iOverlordComboAttack -= 1;
+
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+			{
+				DataPack pack;
+				CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				pack.WriteCell(EntIndexToEntRef(arrow)); //projectile
+				pack.WriteCell(EntIndexToEntRef(ValidEnemyToTarget));		//victim to annihilate :)
+			}
+		}
+	}
+	if(npc.m_flDoingAnimation > GameTime)
+	{
+		return;
+	}
+	npc.m_flDoingAnimation = GameTime + 5.0;
+	//only check for hoardings every 5 seconds.
+
+	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_HOARDINGS)
+	{
+		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+		{
+			int Building_hordings = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			if(IsValidEntity(Building_hordings))
+			{
+				if(!i_BuildingRecievedHordings[Building_hordings]) 
+				{
+					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hBuilder") == client)
+					{
+						SetEntProp(Building_hordings, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iHealth")) * 1.25));
+						SetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth")) * 1.25));
+						Building_Repair_Health[Building_hordings] *= 1.25;
+						Building_Max_Health[Building_hordings] *= 1.25;
+						i_BuildingRecievedHordings[Building_hordings] = true;					
+					}
+				}
+			}
+		}
+	}
 }	
+
+
+void BuildingHordingsRemoval(int entity)
+{
+	if(i_WhatBuilding[entity] == BuildingSummoner)
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+		if(i_NormalBarracks_HexBarracksUpgrades_2[owner] & ZR_BARRACKS_UPGRADES_HOARDINGS)
+		{
+			for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+			{
+				int Building_hordings = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+				if(IsValidEntity(Building_hordings))
+				{
+					if(i_BuildingRecievedHordings[Building_hordings])
+					{
+						if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hBuilder") == owner)
+						{
+							SetEntProp(Building_hordings, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iHealth")) * 0.75));
+							SetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth")) * 0.75));
+							Building_Repair_Health[entity] *= 0.75;
+							Building_Max_Health[entity] *= 0.75;
+							i_BuildingRecievedHordings[Building_hordings] = false;					
+						}
+					}
+				}
+			}
+		}
+	}
+}

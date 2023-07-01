@@ -132,6 +132,7 @@ static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
 int i_NormalBarracks_HexBarracksUpgrades[MAXTF2PLAYERS];
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXTF2PLAYERS];
+bool i_BuildingRecievedHordings[MAXTF2PLAYERS];
 
 //Barracks smith things:
 
@@ -171,29 +172,29 @@ int i_NormalBarracks_HexBarracksUpgrades_2[MAXTF2PLAYERS];
 //UPGRADES TO BUILDINGS
 //these should be very expensive, allows building to attack with arrows
 //the building will also now gain abit of health, so it can be used as a weak barricade
-#define ZR_BARRACKS_UPGRADES_TOWER				(1 << 15)
-#define ZR_BARRACKS_UPGRADES_GUARD_TOWER		(1 << 16)
-#define ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER		(1 << 17)
-#define ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER	(1 << 18)
+#define ZR_BARRACKS_UPGRADES_TOWER				(1 << 15) //done :)
+#define ZR_BARRACKS_UPGRADES_GUARD_TOWER		(1 << 16) //done :)
+#define ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER		(1 << 17) //done :)
+#define ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER	(1 << 18) //done :)
 //going below this will lower your deployment slots to 2
 //BELOW HERE will allow to garrison units (they will be given 0 gravity and teleported off the map and flagged so they dont get deleted)
 //they will add extra arrows and heal the units overtime
 //garrison will also work if you mount the building, allowing you to save your units in the most dire of situations.
-#define ZR_BARRACKS_UPGRADES_DONJON				(1 << 19)
-#define ZR_BARRACKS_UPGRADES_KREPOST			(1 << 20)
+#define ZR_BARRACKS_UPGRADES_DONJON				(1 << 19) //done :)
+#define ZR_BARRACKS_UPGRADES_KREPOST			(1 << 20) //done :)
 //at this point, the building will have 75% HP of a barricade, but getting this is very lategame, about wave 50 or so
-#define ZR_BARRACKS_UPGRADES_CASTLE				(1 << 21)
+#define ZR_BARRACKS_UPGRADES_CASTLE				(1 << 21) //done :)
 //getting here will allow you to make teutonic knights, replacing the champion line.
 
 //Have a toggle option to fire the arrows of your turret manually when you mount it
 //it will give a boost in firepower as you do it manually!
-#define ZR_BARRACKS_UPGRADES_MANUAL_FIRE		(1 << 22)
+#define ZR_BARRACKS_UPGRADES_MANUAL_FIRE		(1 << 22) //done :)
 //Allows the building to attack units directly near it
-#define ZR_BARRACKS_UPGRADES_MURDERHOLES		(1 << 23)
+#define ZR_BARRACKS_UPGRADES_MURDERHOLES		(1 << 23) //done :)
 //allows the building to predict enemies
-#define ZR_BARRACKS_UPGRADES_BALLISTICS			(1 << 24)
+#define ZR_BARRACKS_UPGRADES_BALLISTICS			(1 << 24) //done :)
 //inflict burning onto enemy and also get abit extra damage
-#define ZR_BARRACKS_UPGRADES_CHEMISTY			(1 << 25)
+#define ZR_BARRACKS_UPGRADES_CHEMISTY			(1 << 25) //done :)
 
 //only vaiable once reaching donjon:
 
@@ -225,17 +226,17 @@ int i_NormalBarracks_HexBarracksUpgrades_2[MAXTF2PLAYERS];
 
 //only vaiable once reaching Krepost:
 
-#define ZR_BARRACKS_UPGRADES_STRONGHOLDS	(1 << 31)
+#define ZR_BARRACKS_UPGRADES_STRONGHOLDS	(1 << 31) //done :)
 //The building will attack 33% faster, it will also heal any nearby MELEE player or unit slowly, weaker song of ocean minus buff.
 
 
-#define ZR_BARRACKS_UPGRADES_HOARDINGS		(1 << 1)
+#define ZR_BARRACKS_UPGRADES_HOARDINGS		(1 << 1) //Done :)
 //ALL your buildings will gain 25% more health. This is to encurage camping with the building when you get upto middle.
 //but making this building again will limit you to not make units and such, and have less barricades out
 //this upgrade will only work when the castle is out, the moment the building breaks, the HP of all your buidlings will go down once more.
 
 //i ran out of space...
-#define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2)
+#define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2) //Done :)
 //allow to get 3 deployment slots again.
 
 
@@ -1110,9 +1111,9 @@ float Barracks_UnitOnTakeDamage(int entity, int client, float damage)
 
 	damage *= DamageResisted;
 
-	if(damage < 0)
+	if(damage < 0.0)
 	{
-		damage = 0;
+		damage = 0.0;
 	}
 	return damage;
 }

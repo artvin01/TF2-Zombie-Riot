@@ -2174,6 +2174,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_GodArkantosBuff[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
+		i_BuildingRecievedHordings[entity] = false;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
@@ -2820,6 +2821,7 @@ public void OnEntityDestroyed(int entity)
 			
 #if defined ZR
 			OnEntityDestroyed_BackPack(entity);
+			BuildingHordingsRemoval(entity);
 #endif
 			
 			RemoveNpcThingsAgain(entity);

@@ -2422,6 +2422,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}		
 		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
 		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
+		
+
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
 		{
@@ -2461,10 +2463,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
 			this.GetLocomotionInterface().Run();
 		}
+		if(this.m_bAllowBackWalking)
+		{
+			this.GetBaseNPC().flMaxYawRate = 0.0;
+		}
+		else
+		{
+			this.GetBaseNPC().flMaxYawRate = (225.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
+		}
 
-	//	if(!this.m_bAllowBackWalking)
-	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
-		
 		//increace the size of the avoid box by 2x
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);

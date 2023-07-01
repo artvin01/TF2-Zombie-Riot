@@ -3078,7 +3078,7 @@
 	}
 	"Barracks Donjon Tower Desc"
 	{
-		"en"		"Increaced health and damage and arrow count, unlocks more upgrades."
+		"en"		"Increaced health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

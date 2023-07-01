@@ -303,7 +303,9 @@ enum
 	BARRACK_LASTKNIGHT	= 266,
 	SAINTCARMEN		= 267,
 	PATHSHAPER		= 268,
-	PATHSHAPER_FRACTAL	= 269
+	PATHSHAPER_FRACTAL	= 269,
+	BARRACKS_TEUTONIC_KNIGHT	= 270,
+	BARRACKS_VILLAGER			= 271
 }
 
 public const char NPC_Names[][] =
@@ -3607,6 +3609,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 #include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
+#include "zombie_riot/npc/ally/npc_barrack_teutonic_knight.sp"
+#include "zombie_riot/npc/ally/npc_barrack_villager.sp"
 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_basic_mage.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_iku_nagae.sp"
