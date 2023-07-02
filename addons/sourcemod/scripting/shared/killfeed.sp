@@ -46,9 +46,41 @@ static char KillIcon[MAXENTITIES][32];
 static ArrayList FeedList;
 static Handle FeedTimer;
 
+void AdjustBotCount()
+{
+	PrintToChatAll("call");
+	int botcount = 0;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client))
+		{
+			botcount += 1;
+			if(botcount > 2)
+			{
+				botcount -= 1;
+				KickClient(client);
+			}
+		}
+	}
+	PrintToChatAll("%i",botcount);
+	for(int loop = 1; loop <= 20; loop++)
+	{
+		if(botcount < 2)
+		{
+			PrintToChatAll("SpawnBot");
+			SpawnBotCustom("bot1", true);
+			botcount++;	
+		}
+		else
+		{
+			break;
+		}
+	}
+}
 void KillFeed_PluginStart()
 {
 	FeedList = new ArrayList(sizeof(KillFeed));
+
 
 	for(int client = 1; client <= MaxClients; client++)
 	{

@@ -1503,6 +1503,7 @@ public void OnClientPutInServer(int client)
 	
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
+	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
 	
