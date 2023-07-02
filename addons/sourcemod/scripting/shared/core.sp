@@ -1065,6 +1065,8 @@ public void OnPluginStart()
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
+	SkyboxProps_OnPluginStart();
+	
 #if defined ZR
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 #endif	
@@ -1245,6 +1247,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
+	SkyboxProps_OnMapStart();
 	
 	MapStartResetAll();
 	
@@ -2823,6 +2826,8 @@ public void OnEntityDestroyed(int entity)
 			i_WandIdNumber[entity] = -1;
 			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
+			
+			SkyboxProps_OnEntityDestroyed(entity);
 			
 #if defined ZR
 			OnEntityDestroyed_BackPack(entity);
