@@ -133,6 +133,8 @@ static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
+int i_EntityRecievedUpgrades[MAXENTITIES];
+int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
 
 //Barracks smith things:
@@ -1138,4 +1140,145 @@ float Barracks_UnitOnTakeDamage(int entity, int client, float damage)
 		damage = 0.0;
 	}
 	return damage;
+}
+
+void Barracks_UpdateAllEntityUpgrades(int client)
+{
+	for (int i = 0; i < MAXENTITIES; i++)
+	{
+		if(IsValidEntity(i) && (i_IsABuilding[i] || !b_NpcHasDied[i])) //This isnt expensive.
+		{
+			BarrackBody npc = view_as<BarrackBody>(i);
+			if(GetClientOfUserId(npc.OwnerUserId) == client && !b_NpcHasDied[i])
+			{
+				Barracks_UpdateEntityUpgrades(i, client);
+			}
+			else if(i_IsABuilding[i])
+			{
+				Barracks_UpdateEntityUpgrades(i, client);
+			}
+		}
+	}
+}
+
+void Barracks_UpdateEntityUpgrades(int entity, int client)
+{
+	if(i_IsABuilding[entity] && i_WhatBuilding[entity] == BuildingSummoner)
+	{
+		float healthMult = 1.0;
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER))
+		{
+			healthMult *= 1.35;
+			i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER))
+		{
+			healthMult *= 1.5;
+			i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON))
+		{
+			healthMult *= 2.0;
+			i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST))
+		{
+			healthMult *= 3.0;
+			i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE))
+		{
+			healthMult *= 4.0;
+			i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
+		}
+		if(healthMult > 1.0)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthMult));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthMult));
+			Building_Repair_Health[entity] *= healthMult;
+			Building_Max_Health[entity] *= healthMult;
+		}
+	}
+	if(b_NpcHasDied[entity] && i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE)
+	{
+		if(!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+		{
+			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.1));
+		}
+	
+		if(!FinalBuilder[entity] && FinalBuilder[client])
+		{
+			FinalBuilder[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.5;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.75;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.65));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.65));
+		}
+		if(FinalBuilder[entity] && !FinalBuilder[client])
+		{
+			FinalBuilder[entity] = false;
+			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.5;			
+			view_as<BarrackBody>(entity).BonusFireRate /= 0.75;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.65));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.65));
+		}
+		if(!GlassBuilder[entity] && GlassBuilder[client])
+		{
+			GlassBuilder[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.15;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.8));
+		}
+		if(GlassBuilder[entity] && !GlassBuilder[client])
+		{
+			GlassBuilder[entity] = false;
+			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.15;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 0.8));
+		}
+
+		/*
+			//FOR PERK MACHINE!
+			public const char PerkNames[][] =
+			{
+				"No Perk", //unused
+				"Quick Revive", //get extra healing, see heal code?
+				"Juggernog",	
+				"Double Tap",
+				"Speed Cola",
+				"Deadshot Daiquiri",
+				"Widows Wine",
+				"Recycle Poire"
+			};
+		*/
+		//double tap
+		if(i_CurrentEquippedPerk[entity] != 3 && i_CurrentEquippedPerk[client] == 3)
+		{
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
+		}
+		if(i_CurrentEquippedPerk[entity] == 3 && i_CurrentEquippedPerk[client] != 3)
+		{
+			view_as<BarrackBody>(entity).BonusFireRate /= 0.85;
+		}
+		//juggernog
+		if(i_CurrentEquippedPerk[entity] != 2 && i_CurrentEquippedPerk[client] == 2)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.3));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.3));
+		}
+		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.3));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.3));
+		}
+
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+		{
+			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.1));
+		}
+	}
 }

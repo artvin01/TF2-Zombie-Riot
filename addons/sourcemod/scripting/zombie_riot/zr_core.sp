@@ -41,7 +41,6 @@ public const int AmmoData[][] =
 	{ 0, 0 }			//Drinks like potions
 };
 
-int i_CurrentEquippedPerk[MAXTF2PLAYERS];
 
 //FOR PERK MACHINE!
 public const char PerkNames[][] =
