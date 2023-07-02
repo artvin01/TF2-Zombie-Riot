@@ -4345,6 +4345,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_HasGlassBuilder[client] = false;
 	b_LeftForDead[client] = false;
 	b_StickyExtraGrenades[client] = false;
+	b_HasMechanic[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -4924,6 +4925,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_StickyExtraGrenades[client] = true;
 					}
+					if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
+					{
+						b_HasMechanic[client] = true;
+					}
 
 #endif
 					
@@ -5203,6 +5208,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_SpikeLayer(client, entity);
+		Barracks_UpdateAllEntityUpgrades(client);
 #endif
 
 #if defined RPG

@@ -4718,11 +4718,11 @@ public void NpcBaseThink(int iNPC)
 
 		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
 
-		if(b_thisNpcIsARaid[entity])
+		if(b_thisNpcIsARaid[iNPC])
 		{
 			HealingAmount /= 10;
 		}
-		else if(b_thisNpcIsABoss[entity])
+		else if(b_thisNpcIsABoss[iNPC])
 		{
 			HealingAmount /= 2;
 		}

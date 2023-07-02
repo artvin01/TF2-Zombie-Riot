@@ -514,6 +514,7 @@ public bool Building_Sentry(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 //	CreateTimer(0.5, Timer_DroppedBuildingWaitSentryLeveLUp, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	return true;
@@ -547,6 +548,7 @@ public bool Building_Railgun(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -582,6 +584,7 @@ public bool Building_Mortar(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -621,6 +624,7 @@ public bool Building_HealingStation(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -698,6 +702,7 @@ public bool Building_DispenserWall(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -732,6 +737,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -772,6 +778,7 @@ public bool Building_AmmoBox(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -815,6 +822,7 @@ public bool Building_ArmorTable(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -860,6 +868,7 @@ public bool Building_PerkMachine(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -903,6 +912,7 @@ public bool Building_PackAPunch(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -4345,6 +4355,7 @@ public bool Building_Village(int client, int entity)
 	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -6412,6 +6423,7 @@ public bool Building_Summoner(int client, int entity)
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.15);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
+	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_summoner");
 	Building_cannot_be_repaired[entity] = true;
@@ -6422,6 +6434,7 @@ public bool Building_Summoner(int client, int entity)
 	SetDefaultValuesToZeroNPC(entity);
 	b_FUCKYOU_move_anim[entity] = false;
 	SDKHook(client, SDKHook_PreThink, Barracks_BuildingThink);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -6593,6 +6606,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetData(CivType[owner], TrainingIndex[owner], SupplyCost);
+						Barracks_UpdateEntityUpgrades(owner, npc);
 
 
 						if(TrainingQueue[owner] != -1)
