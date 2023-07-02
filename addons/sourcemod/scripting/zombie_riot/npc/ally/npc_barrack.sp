@@ -128,11 +128,12 @@ static int BarrackOwner[MAXENTITIES];
 static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
+static bool NpcSpecialCommand[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
-int i_NormalBarracks_HexBarracksUpgrades[MAXTF2PLAYERS];
-int i_NormalBarracks_HexBarracksUpgrades_2[MAXTF2PLAYERS];
-bool i_BuildingRecievedHordings[MAXTF2PLAYERS];
+int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
+int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
+bool i_BuildingRecievedHordings[MAXENTITIES];
 
 //Barracks smith things:
 
@@ -342,6 +343,17 @@ methodmap BarrackBody < CClotBody
 			CommandOverride[view_as<int>(this)] = value;
 		}
 	}
+	property bool b_NpcSpecialCommand
+	{
+		public get()
+		{
+			return NpcSpecialCommand[view_as<int>(this)];
+		}
+		public set(bool value)
+		{
+			NpcSpecialCommand[view_as<int>(this)] = value;
+		}
+	}
 	property int m_iSupplyCount
 	{
 		public get()
@@ -383,6 +395,7 @@ methodmap BarrackBody < CClotBody
 		FireRateBonus[npc.index] = 1.0;
 		DamageBonus[npc.index] = 1.0;
 		CommandOverride[npc.index] = -1;
+		NpcSpecialCommand[npc.index] = false;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -549,7 +562,7 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime)
 	return true;
 }
 
-int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
+int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime, bool passive = false)
 {
 	BarrackBody npc = view_as<BarrackBody>(iNPC);
 
@@ -587,9 +600,12 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 			npc.m_iTargetAlly = 0;
 		}
 		
-		npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);
+		if(!passive)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo);	
+		}
 		
-		if(npc.m_iTargetAlly > 0)
+		if(npc.m_iTargetAlly > 0 && !passive)
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTargetAlly);
 			npc.m_iTargetRally = GetClosestTarget(npc.index, _, command == Command_Aggressive ? FAR_FUTURE : 900.0, camo, _, _, vecTarget, command != Command_Aggressive);
@@ -610,9 +626,11 @@ int BarrackBody_ThinkTarget(int iNPC, bool camo, float GameTime)
 					}
 				}
 			}
-
-			if(npc.m_iTargetRally < 1)
-				npc.m_iTargetRally = npc.m_iTarget;
+			if(!passive)
+			{
+				if(npc.m_iTargetRally < 1)
+					npc.m_iTargetRally = npc.m_iTarget;
+			}
 		}
 
 		npc.m_flGetClosestTargetTime = GameTime + 1.0;
@@ -883,8 +901,9 @@ static void ShowMenu(int client, int entity)
 	menu.AddItem(num, "Defend Me", npc.CmdOverride == Command_DefensivePlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Retreat to Barrack", npc.CmdOverride == Command_Retreat ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Retreat to Me\n ", npc.CmdOverride == Command_RetreatPlayer ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Hold Position", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Walk to Position\n ");
+//	menu.AddItem(num, "Hold Position", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Walk to Position and Hold\n ");
+	menu.AddItem(num, "Npc Special Commands\n ", npc.b_NpcSpecialCommand ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	menu.AddItem(num, "Sacrifice\n ", npc.m_iSupplyCount < 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.Pagination = 0;
@@ -953,11 +972,6 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 					}
 					case 6:
 					{
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_SpawnPosition[npc.index]);
-						npc.CmdOverride = Command_HoldPos;
-					}
-					case 7:
-					{
 						float StartOrigin[3], Angles[3], vecPos[3];
 						GetClientEyeAngles(client, Angles);
 						GetClientEyePosition(client, StartOrigin);
@@ -972,6 +986,14 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 						f3_SpawnPosition[npc.index] = vecPos;
 						b_WalkToPosition[npc.index] = true;
 						npc.CmdOverride = Command_HoldPos;
+					}
+					case 7:
+					{
+						if(i_NpcInternalId[npc.index] == BARRACKS_VILLAGER)
+						{
+							BarracksVillager_MenuSpecial(client, npc.index);
+							return 0;
+						}
 					}
 					case 8:
 					{

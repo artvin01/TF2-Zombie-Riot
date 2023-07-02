@@ -6151,11 +6151,13 @@ public MRESReturn Dhook_FirstSpawn_Post(int Building_Index, Handle hParams)
 {
 	return MRES_Ignored;
 }
-
-static float WoodAmount[MAXTF2PLAYERS];
-static float FoodAmount[MAXTF2PLAYERS];
-static float GoldAmount[MAXTF2PLAYERS];
-static int SupplyRate[MAXTF2PLAYERS];
+/*
+float WoodAmount[MAXTF2PLAYERS];
+float FoodAmount[MAXTF2PLAYERS];
+float GoldAmount[MAXTF2PLAYERS];
+int SupplyRate[MAXTF2PLAYERS];
+See ZR core.
+*/
 static int InMenu[MAXTF2PLAYERS];
 static float TrainingStartedIn[MAXTF2PLAYERS];
 static float TrainingIn[MAXTF2PLAYERS];
@@ -7000,12 +7002,14 @@ static int GetSupplyLeft(int client)
 				{
 					if(i_NpcInternalId[npc.index] != BARRACKS_VILLAGER)
 					{
-						personal += npc.m_iSupplyCount;
+						if(i_NpcInternalId[npc.index] != BARRACKS_BUILDING)
+							personal += npc.m_iSupplyCount;
 					}
 				}
 				else
 				{
-					personal += npc.m_iSupplyCount;
+					if(i_NpcInternalId[npc.index] != BARRACKS_BUILDING)
+						personal += npc.m_iSupplyCount;
 				}
 			}
 		}

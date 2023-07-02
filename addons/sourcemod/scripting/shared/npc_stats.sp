@@ -6722,6 +6722,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	return ClosestTarget; 
 }
 
+
 stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))

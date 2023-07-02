@@ -165,6 +165,10 @@ float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
+float WoodAmount[MAXTF2PLAYERS];
+float FoodAmount[MAXTF2PLAYERS];
+float GoldAmount[MAXTF2PLAYERS];
+int SupplyRate[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05

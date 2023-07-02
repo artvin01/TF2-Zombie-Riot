@@ -305,7 +305,8 @@ enum
 	PATHSHAPER		= 268,
 	PATHSHAPER_FRACTAL	= 269,
 	BARRACKS_TEUTONIC_KNIGHT	= 270,
-	BARRACKS_VILLAGER			= 271
+	BARRACKS_VILLAGER			= 271,
+	BARRACKS_BUILDING			= 272
 }
 
 public const char NPC_Names[][] =
@@ -600,9 +601,10 @@ public const char NPC_Names[][] =
 	"Tide-Hunt Knight",
 	"Saint Carmen",
 	"Pathshaper",
-	"Pathshaper Fractal"
+	"Pathshaper Fractal",
 	"Barracks Teutonic Knight",
 	"Barracks Villager",
+	"Barracks Building"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1899,6 +1901,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case BARRACKS_VILLAGER:
 			entity = BarrackVillager(client, vecPos, vecAng, ally);
+
+		case BARRACKS_BUILDING:
+			entity = BarrackBuilding(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2683,10 +2688,13 @@ public void NPCDeath(int entity)
 			PathshaperFractal_NPCDeath(entity);
 			
 		case BARRACKS_TEUTONIC_KNIGHT:
-			entity = BarrackTeuton_NPCDeath(entity);
+			BarrackTeuton_NPCDeath(entity);
 
 		case BARRACKS_VILLAGER:
-			entity = BarrackVillager_NPCDeath(entity);
+			BarrackVillager_NPCDeath(entity);
+
+		case BARRACKS_BUILDING:
+			BarrackBuilding_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3242,7 +3250,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case BARRACK_MILITIA, BARRACK_ARCHER, BARRACK_MAN_AT_ARMS, BARRACK_CROSSBOW, BARRACK_SWORDSMAN, BARRACK_ARBELAST,
 		BARRACK_TWOHANDED, BARRACK_LONGBOW, BARRACK_CHAMPION, BARRACK_MONK, BARRACK_HUSSAR, BARRACK_LASTKNIGHT, BARRACKS_TEUTONIC_KNIGHT,
-		BARRACKS_VILLAGER:
+		BARRACKS_VILLAGER,BARRACKS_BUILDING:
 			BarrackBody_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case MEDIVAL_HALB:
@@ -3628,6 +3636,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
 #include "zombie_riot/npc/ally/npc_barrack_teutonic_knight.sp"
 #include "zombie_riot/npc/ally/npc_barrack_villager.sp"
+#include "zombie_riot/npc/ally/npc_barrack_building.sp"
 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_basic_mage.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_iku_nagae.sp"

@@ -1516,4 +1516,8 @@
 	{
 		"en"		"Villager"
 	}
+	"Barracks Building"
+	{
+		"en"		"Tower"
+	}
 }
