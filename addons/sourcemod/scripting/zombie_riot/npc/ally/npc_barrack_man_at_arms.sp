@@ -12,6 +12,7 @@ methodmap BarrackManAtArms < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_MAN_AT_ARMS;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "sword");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackManAtArms_ClotThink);
 
@@ -75,7 +76,7 @@ public void BarrackManAtArms_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, 500.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							}
 						}

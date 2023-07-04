@@ -1580,4 +1580,16 @@
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 	}
+	"Barracks Teutonic Knight"
+	{
+		"en"		"Teutonic Knight"
+	}
+	"Barracks Villager"
+	{
+		"en"		"Villager"
+	}
+	"Barracks Building"
+	{
+		"en"		"Tower"
+	}
 }

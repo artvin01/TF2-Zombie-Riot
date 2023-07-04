@@ -137,7 +137,7 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 						float flAng[3]; // original
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 							
-						npc.FireParticleRocket(vecTarget, 600.0 * npc.BonusDamageBonus , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),600.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + (2.25 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}

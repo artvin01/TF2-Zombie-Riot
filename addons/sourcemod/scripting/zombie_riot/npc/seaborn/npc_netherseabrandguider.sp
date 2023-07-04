@@ -80,6 +80,7 @@ methodmap SeaBrandguider < CClotBody
 		i_NpcInternalId[npc.index] = carrier ? SEABRANDGUIDER_CARRIER : (elite ? SEABRANDGUIDER_ALT : SEABRANDGUIDER);
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
+		KillFeed_SetKillIcon(npc.index, "freedom_staff");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

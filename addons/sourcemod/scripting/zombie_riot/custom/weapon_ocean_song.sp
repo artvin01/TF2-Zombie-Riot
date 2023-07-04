@@ -276,14 +276,22 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void DoHealingOcean(int client, int target, float range = 160000.0, float extra_heal = 1.0)
+void DoHealingOcean(int client, int target, float range = 160000.0, float extra_heal = 1.0, bool HordingsBuff = false)
 {
 	float BannerPos[3];
-	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", BannerPos);
+	GetEntPropVector(target, Prop_Data, "m_vecOrigin", BannerPos);
 	float flHealMulti;
 	float flHealMutli_Calc;
 
-	flHealMulti = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+	if(!HordingsBuff)
+	{
+		flHealMulti = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+
+	}
+	else
+	{
+		flHealMulti = 1.0;
+	}
 	
 	float targPos[3];
 	for(int ally=1; ally<=MaxClients; ally++)
@@ -319,13 +327,16 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 						ApplyHealEvent(ally, healingdone);
 					}
 				}
-				if(f_OceanBuffAbility[client] > GetGameTime())
+				if(!HordingsBuff)
 				{
-					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
-				}
-				else 
-				{
-					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+					if(f_OceanBuffAbility[client] > GetGameTime())
+					{
+						f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
+					}
+					else 
+					{
+						f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+					}
 				}
 			}
 		}
@@ -348,13 +359,16 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				} 
 				flHealMutli_Calc *= extra_heal;
 				int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
-				if(f_OceanBuffAbility[client] > GetGameTime())
+				if(!HordingsBuff)
 				{
-					f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
-				}
-				else 
-				{
-					f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+					if(f_OceanBuffAbility[client] > GetGameTime())
+					{
+						f_Ocean_Buff_Stronk_Buff[ally] = GetGameTime() + 0.21;
+					}
+					else 
+					{
+						f_Ocean_Buff_Weak_Buff[ally] = GetGameTime() + 0.21;
+					}
 				}
 				Healing_done_in_total[client] += healingdone;
 			}

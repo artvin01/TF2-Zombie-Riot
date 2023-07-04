@@ -79,6 +79,7 @@ methodmap SeaSpitter < CClotBody
 		i_NpcInternalId[npc.index] = data[0] ? SEASPITTER_ALT : SEASPITTER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK");
+		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

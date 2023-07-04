@@ -149,6 +149,7 @@ methodmap SawRunner < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		KillFeed_SetKillIcon(npc.index, "headtaker");
 		
 		npc.m_iPlayMusicSound = 0;
 		npc.m_flNextMeleeAttack = 0.0;

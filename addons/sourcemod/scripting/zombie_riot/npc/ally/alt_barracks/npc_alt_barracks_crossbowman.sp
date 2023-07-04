@@ -130,14 +130,14 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 						{
 							i_overcharge[npc.index]=0;
 							npc.PlayRangedSound();
-							npc.FireParticleRocket(vecTarget, 750.0 * npc.BonusDamageBonus*2.0 , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 750.0, 1)*2.0 , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (4.25 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 						}
 						else
 						{
 							
-							npc.FireParticleRocket(vecTarget, 750.0 * npc.BonusDamageBonus , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 750.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (2.75 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							i_overcharge[npc.index]++;

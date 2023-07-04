@@ -1086,9 +1086,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		bool Is_Boss = true;
 #if defined ZR
-		if(IS_MusicReleasingRadio())
+		if(IS_MusicReleasingRadio() && !b_IsAlliedNpc[this.index])
 			speed_for_return *= 0.9;
 #endif
+		if(i_CurrentEquippedPerk[this.index] == 4)
+		{
+			speed_for_return *= 1.25;
+		}
 		if(!this.m_bThisNpcIsABoss)
 		{
 			
@@ -2422,6 +2426,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}		
 		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
 		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
+		
+
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
 		{
@@ -2461,10 +2467,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
 			this.GetLocomotionInterface().Run();
 		}
+		if(this.m_bAllowBackWalking)
+		{
+			this.GetBaseNPC().flMaxYawRate = 0.0;
+		}
+		else
+		{
+			this.GetBaseNPC().flMaxYawRate = (225.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
+		}
 
-	//	if(!this.m_bAllowBackWalking)
-	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
-		
 		//increace the size of the avoid box by 2x
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);
@@ -2691,13 +2702,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 {	
 	if(!b_NpcHasDied[pThis])
 	{
-		int client = GetClientOfUserId(LastHitId[pThis]);
+		int client = EntRefToEntIndex(LastHitRef[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
 		
 		int overkill = RoundToNearest(Damage[pThis] - float(Health));
 		
-		if(client && IsClientInGame(client))
+		if(client > 0 && client <= MaxClients)
 		{
 	//		PlayFakeDeathSound(client);
 #if defined ZR
@@ -2712,6 +2723,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveHudCooldown(client);
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
+
+		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 		
 		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
 		{
@@ -4039,7 +4052,8 @@ stock int GetClosestTarget(int entity,
 	  bool CanSee = false,
 	   float fldistancelimitAllyNPC = 350.0,
 	   bool IgnorePlayers = false,
-	   bool UseVectorDistance = false)
+	   bool UseVectorDistance = false,
+  		float MinimumDistance = 0.0)
 {
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 	if(EntityLocation[2] == 0.0)
@@ -4167,7 +4181,7 @@ stock int GetClosestTarget(int entity,
 			}
 		}
 	}
-	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance);
+	return GetClosestTarget_Internal(entity, fldistancelimit, fldistancelimitAllyNPC, EntityLocation, UseVectorDistance, MinimumDistance);
 }
 
 void GetClosestTarget_AddTarget(int entity, int type)
@@ -4183,7 +4197,7 @@ void GetClosestTarget_AddTarget(int entity, int type)
 	}	
 }
 
-int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance)
+int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistancelimitAllyNPC, const float EntityLocation[3], bool UseVectorDistance, float MinimumDistance)
 {
 	int ClosestTarget = -1; 
 
@@ -4360,7 +4374,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 			distance_limit *= distance_limit;
 
-			if(distanceVector < distance_limit)
+			if(distanceVector < distance_limit && MinimumDistance < distanceVector)
 			{
 				if( TargetDistance ) 
 				{
@@ -4681,6 +4695,7 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 }
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
+float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
@@ -4696,6 +4711,36 @@ public void NpcBaseThink(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
+
+	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	{
+		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
+
+		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
+
+		if(b_thisNpcIsARaid[iNPC])
+		{
+			HealingAmount /= 10;
+		}
+		else if(b_thisNpcIsABoss[iNPC])
+		{
+			HealingAmount /= 2;
+		}
+		if(HealingAmount < 1)
+		{
+			HealingAmount = 1;
+		}
+
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			}
+		}
+	}
+	
 //	PlayerInIlligalStuckArea(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
@@ -6712,6 +6757,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	return ClosestTarget; 
 }
 
+
 stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
@@ -6991,6 +7037,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Changed_WalkCycle[entity] = -1;
 	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
+	f_QuickReviveHealing[entity] = 0.0;
 #if defined ZR
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);

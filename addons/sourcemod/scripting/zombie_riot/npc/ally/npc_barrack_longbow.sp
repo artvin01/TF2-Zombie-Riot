@@ -11,6 +11,7 @@ methodmap BarrackLongbow < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_LONGBOW;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackLongbow_ClotThink);
 
@@ -83,7 +84,7 @@ void BarrackLongbow_HandleAnimEvent(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSound();
-			npc.FireArrow(vecTarget, 3750.0 * npc.BonusDamageBonus, 2000.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
+			npc.FireArrow(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),3750.0, 1), 2000.0, _, _, _, GetClientOfUserId(npc.OwnerUserId));
 		}
 	}
 }

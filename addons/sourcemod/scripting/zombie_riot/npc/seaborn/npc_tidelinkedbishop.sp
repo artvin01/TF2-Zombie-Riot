@@ -4,40 +4,31 @@
 static const char g_DeathSounds[][] =
 {
 	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"vo/npc/male01/no02.wav"
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
 	"vo/npc/male01/ohno.wav",
 	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
-};
-
-static const char g_AngerSounds[][] =
-{
-	"npc/roller/mine/rmine_taunt2.wav"
+	"vo/npc/male01/overthere02.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/bow_shoot.wav",
+	"weapons/bow_shoot.wav"
 };
 
-static int HitEnemies[16];
 static int LaserSprite;
 
 #define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
 
-void FirstToTalk_MapStart()
+void TidelinkedBishop_MapStart()
 {
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_AngerSounds);
 	LaserSprite = PrecacheModel(SPRITE_SPRITE);
 }
 
-methodmap FirstToTalk < CClotBody
+methodmap TidelinkedBishop < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -60,52 +51,47 @@ methodmap FirstToTalk < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public FirstToTalk(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TidelinkedBishop(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		FirstToTalk npc = view_as<FirstToTalk>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "5000", ally, false, true));
-		// 21000 x 0.15
+		TidelinkedBishop npc = view_as<TidelinkedBishop>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.6", "40000", ally, false, true));
+		// 40000 x 1.0
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = FIRSTTOTALK;
-		i_NpcWeight[npc.index] = 4;
+		i_NpcInternalId[npc.index] = TIDELINKED_BISHOP;
+		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
-		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+		KillFeed_SetKillIcon(npc.index, "taunt_spy");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
+		SDKHook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
 		
-		SDKHook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
-		
-		npc.m_flSpeed = 200.0;	// 0.8 x 250
+		npc.m_flSpeed = 100.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 10.0;
-		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/hw2013_octo_face/hw2013_octo_face.mdl");
+
+		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/medic/medic_blighted_beak.mdl");
 		SetVariantString("1.15");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
-		SetParent(npc.index, npc.m_iWearable1);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+
 		return npc;
 	}
 }
 
-public void FirstToTalk_ClotThink(int iNPC)
+public void TidelinkedBishop_ClotThink(int iNPC)
 {
-	FirstToTalk npc = view_as<FirstToTalk>(iNPC);
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -186,19 +172,19 @@ public void FirstToTalk_ClotThink(int iNPC)
 					pack.WriteFloat(vecTarget[1]);
 					pack.WriteFloat(vecTarget[2]);
 
-					CreateTimer(1.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(1.25, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(1.5, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(1.75, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(2.0, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(2.25, FirstToTalk_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.0, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.25, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.5, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.75, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.0, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(2.25, TidelinkedBishop_TimerShoot, pack, TIMER_FLAG_NO_MAPCHANGE);
 
-					CreateTimer(3.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.5, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(3.75, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(4.0, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
-					CreateTimer(4.25, FirstToTalk_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+					CreateTimer(3.0, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.25, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.5, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(3.75, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.0, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(4.25, TidelinkedBishop_TimerAttack, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
 
 					spawnRing_Vectors(vecTarget, 325.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 4.5, 6.0, 0.1, 1);
 
@@ -251,10 +237,10 @@ public void FirstToTalk_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
+public Action TidelinkedBishop_TimerShoot(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(EntRefToEntIndex(pack.ReadCell()));
 	if(npc.index != INVALID_ENT_REFERENCE)
 	{
 		float vecPos[3]; vecPos = WorldSpaceCenter(npc.index);
@@ -280,10 +266,10 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
+public Action TidelinkedBishop_TimerAttack(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	FirstToTalk npc = view_as<FirstToTalk>(EntRefToEntIndex(pack.ReadCell()));
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(EntRefToEntIndex(pack.ReadCell()));
 	if(npc.index != INVALID_ENT_REFERENCE)
 	{
 		float vecPos[3];
@@ -294,7 +280,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 		//spawnRing_Vectors(vecPos, 10.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 650.0);
 
 		Zero(HitEnemies);
-		TR_EnumerateEntitiesSphere(vecPos, 325.0 * 0.75, PARTITION_NON_STATIC_EDICTS, FirstToTalk_EnumerateEntitiesInRange, npc.index);
+		TR_EnumerateEntitiesSphere(vecPos, 325.0 * 0.75, PARTITION_NON_STATIC_EDICTS, TidelinkedBishop_EnumerateEntitiesInRange, npc.index);
 
 		// Hits the target with the highest armor within range
 
@@ -339,7 +325,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-public bool FirstToTalk_EnumerateEntitiesInRange(int victim, int attacker)
+public bool TidelinkedBishop_EnumerateEntitiesInRange(int victim, int attacker)
 {
 	if(IsValidEnemy(attacker, victim, true))
 	{
@@ -358,26 +344,26 @@ public bool FirstToTalk_EnumerateEntitiesInRange(int victim, int attacker)
 	return true;
 }
 
-public Action FirstToTalk_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action TidelinkedBishop_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker < 1)
 		return Plugin_Continue;
 	
-	FirstToTalk npc = view_as<FirstToTalk>(victim);
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(victim);
 	if(b_NpcIsInvulnerable[npc.index])
 		damage = 0.0;
 	
 	return Plugin_Changed;
 }
 
-void FirstToTalk_NPCDeath(int entity)
+void TidelinkedBishop_NPCDeath(int entity)
 {
-	FirstToTalk npc = view_as<FirstToTalk>(entity);
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
 	
-	SDKUnhook(npc.index, SDKHook_Think, FirstToTalk_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

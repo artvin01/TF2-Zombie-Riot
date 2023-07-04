@@ -46,6 +46,7 @@ void ConVar_PluginStart()
 	
 	ConVar_Add("nb_blind", "1.0"); //for bot
 	ConVar_Add("tf_bot_quota_mode", "normal"); //for bot
+	ConVar_Add("tf_bot_quota", "2");
 	
 	ConVar_Add("sv_quota_stringcmdspersecond", "1000"); //IF FOR SOME REASON THE SERVER LAGS MASIVELY, PUT IT BACK TO 40/100 AT MOST! some cunt is abusing.
 	
@@ -58,7 +59,6 @@ void ConVar_PluginStart()
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
 	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
 	ConVar_Add("sv_visiblemaxplayers", MAX_PLAYER_COUNT_STRING_SLOTS);
-//	ConVar_Add("tf_bot_quota", ); dooesnt do anything anyways.
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 	
 	#if defined ZR
@@ -86,7 +86,7 @@ void ConVar_PluginStart()
 	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
 	
 	CvarXpMultiplier = CreateConVar("zr_xpmultiplier", "1.0", "Amount of xp gained is multiplied by.");
-	CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
+	//CvarMaxBotsForKillfeed = CreateConVar("zr_maxbotsforkillfeed", "8", "The maximum amount of blue bots allowed for the killfeed and more");
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
 	CvarRerouteToIp = CreateConVar("zr_rerouteip", "", "If the server is full, reroute", FCVAR_DONTRECORD);

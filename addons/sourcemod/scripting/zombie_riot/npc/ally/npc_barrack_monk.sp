@@ -14,6 +14,7 @@ methodmap BarrackMonk < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_MONK;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "armageddon");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackMonk_ClotThink);
 

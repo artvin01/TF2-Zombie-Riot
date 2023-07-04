@@ -38,9 +38,9 @@
 #define MAX_PLAYER_COUNT_STRING		"14"
 
 //This is for spectating
-#define MAX_PLAYER_COUNT_SLOTS				24 //Max should be 16, rest is for killfeed bots
+#define MAX_PLAYER_COUNT_SLOTS				24 
 #define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
-//cant do more then 12, more then 12 cause memory isssues because that many npcs can just cause that much lag
+
 #else
 #define MAX_PLAYER_COUNT			24
 #define MAX_PLAYER_COUNT_STRING		"24"
@@ -53,6 +53,12 @@
 //Allah This plugin has so much we need to do this.
 
 // THESE ARE TO TOGGLE THINGS!
+enum OSType
+{
+    OS_Linux = 0,
+    OS_Windows,
+    OS_Unknown
+}
 
 
 #define LagCompensation
@@ -75,7 +81,7 @@ public float OFF_THE_MAP_NONCONST[3] = { 16383.0, 16383.0, -16383.0 };
 
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarDisableThink;
-ConVar CvarMaxBotsForKillfeed;
+//ConVar CvarMaxBotsForKillfeed;
 ConVar CvarXpMultiplier;
 ConVar zr_downloadconfig;
 ConVar CvarRerouteToIp;
@@ -187,7 +193,6 @@ public const int RenderColors_RPG[][] =
 
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
-//ConVar tf_bot_quota;
 
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
@@ -197,6 +202,7 @@ StringMap HookListMap;
 StringMap HookIdMap;
 
 bool DoingLagCompensation;
+OSType OperationSystem;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
@@ -261,6 +267,9 @@ float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 float f_ClientArmorRegen[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+int i_CurrentEquippedPerk[MAXENTITIES];
+int Building_Max_Health[MAXENTITIES]={0, ...};
+int Building_Repair_Health[MAXENTITIES]={0, ...};
 
 float f_ClientReviveDelay[MAXENTITIES];
 
@@ -385,7 +394,7 @@ int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int g_particleCritText;
 int g_particleMissText;
-int LastHitId[MAXENTITIES];
+int LastHitRef[MAXENTITIES];
 int DamageBits[MAXENTITIES];
 float Damage[MAXENTITIES];
 int LastHitWeaponRef[MAXENTITIES];
@@ -410,7 +419,7 @@ bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 int i_Wearable[MAXENTITIES][7];
 int i_FreezeWearable[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
-float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
+float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
@@ -448,9 +457,13 @@ int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
+bool b_HasMechanic[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
+bool FinalBuilder[MAXENTITIES];
+bool GlassBuilder[MAXENTITIES];
+bool HasMechanic[MAXENTITIES];
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
@@ -658,8 +671,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_209.mdl"
-//#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_175.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_210.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT -0.02 //Make it 0 for now
 
@@ -992,8 +1004,8 @@ float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #include "shared/dhooks.sp"
 #include "shared/events.sp"
 #include "shared/filenetwork.sp"
+#include "shared/killfeed.sp"
 #include "shared/npcs.sp"
-#include "shared/npc_death_showing.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -1059,6 +1071,8 @@ public void OnPluginStart()
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
+	SkyboxProps_OnPluginStart();
+	
 #if defined ZR
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 #endif	
@@ -1072,7 +1086,6 @@ public void OnPluginStart()
 	sv_cheats = FindConVar("sv_cheats");
 	nav_edit = FindConVar("nav_edit");
 	cvarTimeScale = FindConVar("host_timescale");
-//	tf_bot_quota = FindConVar("tf_bot_quota");
 
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
@@ -1083,7 +1096,7 @@ public void OnPluginStart()
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	
-	FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
+	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
 	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
 
 	sv_cheats.Flags &= ~FCVAR_NOTIFY;
@@ -1099,6 +1112,7 @@ public void OnPluginStart()
 	DHook_Setup();
 	SDKCall_Setup();
 	ConVar_PluginStart();
+	KillFeed_PluginStart();
 	NPC_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
@@ -1137,6 +1151,7 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
+	checkOS();
 }
 
 public Action Timer_Temp(Handle timer)
@@ -1237,6 +1252,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
+	SkyboxProps_OnMapStart();
 	
 	MapStartResetAll();
 	
@@ -1467,6 +1483,8 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
+	KillFeed_ClientPutInServer(client);
+
 	b_IsPlayerABot[client] = false;
 	if(IsFakeClient(client))
 	{
@@ -1481,9 +1499,9 @@ public void OnClientPutInServer(int client)
 	FileNetwork_ClientPutInServer(client);
 	SDKHook_HookClient(client);
 	
-	AdjustBotCount();
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
+	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -1520,6 +1538,7 @@ public void OnClientCookiesCached(int client)
 public void OnClientDisconnect(int client)
 {
 	FileNetwork_ClientDisconnect(client);
+	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
 	i_HealthBeforeSuit[client] = 0;
@@ -2164,12 +2183,18 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
 		f_GodArkantosBuff[entity] = 0.0;
+		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
+		HasMechanic[entity] = false;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
+		i_BuildingRecievedHordings[entity] = false;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
+		FinalBuilder[entity] = false;
+		i_CurrentEquippedPerk[entity] = 0;
+		GlassBuilder[entity] = false;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
-		LastHitId[entity] = -1;
+		LastHitRef[entity] = -1;
 		DamageBits[entity] = -1;
 		Damage[entity] = 0.0;
 		LastHitWeaponRef[entity] = -1;
@@ -2237,10 +2262,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		
-		fl_Extra_MeleeArmor[entity] 	= 1.0;
-		fl_Extra_RangedArmor[entity] 	= 1.0;
-		fl_Extra_Speed[entity] 			= 1.0;
-		fl_Extra_Damage[entity] 		= 1.0;
+		fl_Extra_MeleeArmor[entity] 		= 1.0;
+		fl_Extra_RangedArmor[entity] 		= 1.0;
+		fl_Extra_Speed[entity] 				= 1.0;
+		fl_Extra_Damage[entity] 			= 1.0;
+		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;
+		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
+
+		KillFeed_EntityCreated(entity);
+
 #if defined ZR
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
@@ -2810,8 +2840,11 @@ public void OnEntityDestroyed(int entity)
 			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
+			SkyboxProps_OnEntityDestroyed(entity);
+			
 #if defined ZR
 			OnEntityDestroyed_BackPack(entity);
+			BuildingHordingsRemoval(entity);
 #endif
 			
 			RemoveNpcThingsAgain(entity);
@@ -3275,4 +3308,24 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
 	}
 	return Plugin_Continue;
+}
+
+
+void checkOS()
+{
+    char cmdline[256];
+    GetCommandLine(cmdline, sizeof(cmdline));
+
+    if (StrContains(cmdline, "./srcds_linux ", false) != -1)
+    {
+        OperationSystem = OS_Linux;
+    }
+    else if (StrContains(cmdline, ".exe", false) != -1)
+    {
+        OperationSystem = OS_Windows;
+    }
+    else
+    {
+        OperationSystem = OS_Unknown;
+    }
 }

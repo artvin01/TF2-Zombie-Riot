@@ -205,6 +205,7 @@ methodmap StalkerCombine < StalkerShared
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -472,7 +473,8 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
-							SDKHooks_TakeDamage(npc.m_iTarget, 0, 0, 99999999.9, DMG_DROWN);
+							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 99999999.9, DMG_DROWN);
 							SDKHooks_TakeDamage(npc.index, 0, 0, 99999999.9, DMG_DROWN);
 						}
 					}

@@ -1,41 +1,40 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// Balanced around Mid Soldier
+// Balanced around Mid Spy
 
-methodmap BarrackTwoHanded < BarrackBody
+methodmap BarrackTeuton < BarrackBody
 {
-	public BarrackTwoHanded(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackTeuton(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625"));
+		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "2000"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_TWOHANDED;
+		i_NpcInternalId[npc.index] = BARRACKS_TEUTONIC_KNIGHT;
 		i_NpcWeight[npc.index] = 1;
-		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackTwoHanded_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, BarrackTeuton_ClotThink);
 
-		npc.m_flSpeed = 225.0;
+		npc.m_flSpeed = 250.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/soldier/hw2013_rocket_ranger/hw2013_rocket_ranger.mdl");
-		SetVariantString("1.15");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
-		SetVariantString("0.9");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
 	}
 }
 
-public void BarrackTwoHanded_ClotThink(int iNPC)
+public void BarrackTeuton_ClotThink(int iNPC)
 {
-	BarrackTwoHanded npc = view_as<BarrackTwoHanded>(iNPC);
+	BarrackTeuton npc = view_as<BarrackTeuton>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -54,7 +53,7 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
-						npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
@@ -75,7 +74,7 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2400.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),12000.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -90,13 +89,13 @@ public void BarrackTwoHanded_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 225.0, "ACT_IDLE", "ACT_CUSTOM_WALK_SWORD");
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_TEUTON_NEW_IDLE", "ACT_TEUTON_NEW_WALK");
 	}
 }
 
-void BarrackTwoHanded_NPCDeath(int entity)
+void BarrackTeuton_NPCDeath(int entity)
 {
-	BarrackTwoHanded npc = view_as<BarrackTwoHanded>(entity);
+	BarrackTeuton npc = view_as<BarrackTeuton>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackTwoHanded_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, BarrackTeuton_ClotThink);
 }

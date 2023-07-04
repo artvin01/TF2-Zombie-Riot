@@ -1371,8 +1371,6 @@ void Waves_Progress()
 			if(refreshNPCStore)
 				Store_RandomizeNPCStore(false);
 		}
-		
-		AdjustBotCount(CurrentWave + 2);
 	}
 	else if(Rogue_Mode())
 	{
@@ -1422,13 +1420,11 @@ void Waves_Progress()
 			{
 				panzer_spawn = true;
 				NPC_SpawnNext(false, panzer_spawn, false);
-				AdjustBotCount(CurrentWave + 2);
 			}
 			else
 			{
 				panzer_spawn = false;
 				NPC_SpawnNext(false, false, false);
-				AdjustBotCount(CurrentWave + 2);
 			}
 			
 			if(Enemies.Empty)

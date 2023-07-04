@@ -111,11 +111,12 @@ public void SeabornDemo_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
+						KillFeed_SetKillIcon(npc.index, "ullapool_caber");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
 
 						if(!NpcStats_IsEnemySilenced(npc.index))
 						{
-							LastHitId[npc.index] = 0;
+							LastHitRef[npc.index] = -1;
 							SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.0, DMG_CLUB);
 						}
 					}
@@ -160,6 +161,7 @@ void SeabornDemo_NPCDeath(int entity)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
 		startPosition[2] += 45;
 
+		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		Explode_Logic_Custom(75.0, -1, npc.index, -1, startPosition, 150.0, _, _, true, _, false, 1.0, SeabornDemo_ExplodePost);
 
 		DataPack pack_boom = new DataPack();

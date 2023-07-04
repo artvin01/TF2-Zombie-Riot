@@ -60,6 +60,7 @@ methodmap SeaSwarmcaller < CClotBody
 		i_NpcInternalId[npc.index] = carrier ? SEASWARMCALLER_CARRIER : (elite ? SEASWARMCALLER_ALT : SEASWARMCALLER);
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
+		KillFeed_SetKillIcon(npc.index, "saw_kill");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

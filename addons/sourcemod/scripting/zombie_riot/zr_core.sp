@@ -41,7 +41,6 @@ public const int AmmoData[][] =
 	{ 0, 0 }			//Drinks like potions
 };
 
-int i_CurrentEquippedPerk[MAXTF2PLAYERS];
 
 //FOR PERK MACHINE!
 public const char PerkNames[][] =
@@ -165,6 +164,10 @@ float healing_cooldown[MAXTF2PLAYERS];
 float Damage_dealt_in_total[MAXTF2PLAYERS];
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 float f_TimeAfterSpawn[MAXTF2PLAYERS];
+float WoodAmount[MAXTF2PLAYERS];
+float FoodAmount[MAXTF2PLAYERS];
+float GoldAmount[MAXTF2PLAYERS];
+int SupplyRate[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -367,6 +370,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
 #include "zombie_riot/custom/weapon_mlynar.sp"
 #include "zombie_riot/custom/weapon_enforcer.sp"
+#include "zombie_riot/sm_skyboxprops.sp"
 
 void ZR_PluginLoad()
 {

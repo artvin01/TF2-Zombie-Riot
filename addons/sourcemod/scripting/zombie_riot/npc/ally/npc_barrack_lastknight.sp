@@ -9,6 +9,7 @@ methodmap BarrackLastKnight < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_LASTKNIGHT;
 		i_NpcWeight[npc.index] = 2;
+		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		
@@ -75,13 +76,13 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 								static int AttackCount;
 								if(++AttackCount > 4)
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, 8000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8000.0, 0), DMG_CLUB, -1, _, vecHit);
 									Custom_Knockback(npc.index, target, 1000.0);
 									AttackCount = 0;
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, client, 4000.0 * npc.BonusDamageBonus, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),4000.0, 0), DMG_CLUB, -1, _, vecHit);
 								}
 							} 
 						}

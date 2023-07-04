@@ -84,7 +84,7 @@ methodmap SeaReefbreaker < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
-		
+		KillFeed_SetKillIcon(npc.index, "nessieclub");
 		
 		SDKHook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
 		

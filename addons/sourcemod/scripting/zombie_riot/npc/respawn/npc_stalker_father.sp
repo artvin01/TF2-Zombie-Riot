@@ -33,6 +33,7 @@ methodmap StalkerFather < StalkerShared
 		
 		int iActivity = npc.LookupActivity("ACT_WALK_RIFLE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

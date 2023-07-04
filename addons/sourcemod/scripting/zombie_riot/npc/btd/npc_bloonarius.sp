@@ -248,6 +248,7 @@ methodmap Bloonarius < CClotBody
 		
 		i_NpcInternalId[npc.index] = BTD_BLOONARIUS;
 		i_NpcWeight[npc.index] = 5;
+		KillFeed_SetKillIcon(npc.index, "vehicle");
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 128, 255, 128, 255);

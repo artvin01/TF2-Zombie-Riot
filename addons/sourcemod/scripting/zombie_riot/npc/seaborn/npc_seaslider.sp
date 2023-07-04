@@ -80,6 +80,7 @@ methodmap SeaSlider < CClotBody
 		i_NpcInternalId[npc.index] = data[0] ? SEASLIDER_ALT : SEASLIDER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK_ON_FIRE");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

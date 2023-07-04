@@ -1286,7 +1286,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
 	}
 #endif
-	
+
 	if(!(damagetype & DMG_DROWN))
 	{
 		if(IsInvuln(victim))
@@ -1355,6 +1355,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	else if(attacker <= MaxClients && attacker > 0)
 	{
 		return Plugin_Handled;	
+	}
+	else
+	{
+		LastHitRef[victim] = EntIndexToEntRef(attacker);
 	}
 		
 
@@ -1448,6 +1452,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(OnTakeDamage_ShieldLogic(victim, damagetype))
 		{
 			return Plugin_Handled;
+		}
+		if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+		{
+			if(i_CurrentEquippedPerk[attacker] == 5)
+			{
+				damage *= 1.25;
+			}
 		}
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
@@ -1659,6 +1670,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			startPosition[2] += 25.0;
 			makeexplosion(victim, victim, startPosition, "", 0, 0);
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime)
@@ -1667,6 +1680,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
+
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
 		else if(!LastMann && !b_IsAloneOnServer)
@@ -1686,6 +1701,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			if(!Any_Left)
 			{
 				CheckAlivePlayers(_, victim);
+
+				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 				return Plugin_Handled;
 			}
 			
@@ -1724,7 +1741,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			//	TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
-				if(!b_LeftForDead[victim] && !SpecterCheckIfAutoRevive(victim))
+
+				bool autoRevive = (b_LeftForDead[victim] || SpecterCheckIfAutoRevive(victim));
+				if(!autoRevive)
 				{
 					entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
 					if(entity > MaxClients)
@@ -1741,7 +1760,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				int i;
 				while(TF2U_GetWearable(victim, entity, i))
 				{
-					if(!b_LeftForDead[victim] && !SpecterCheckIfAutoRevive(victim))
+					if(!autoRevive)
 					{
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 255, 255, 255, 125);
@@ -1752,7 +1771,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 						SetEntityRenderColor(entity, 255, 255, 255, 10);
 					}
 				}
-				if(!b_LeftForDead[victim] && !SpecterCheckIfAutoRevive(victim))
+				if(!autoRevive)
 				{
 					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(victim, 255, 255, 255, 125);
@@ -1762,6 +1781,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(victim, 255, 255, 255, 10);
 				}
+
+				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
 				return Plugin_Handled;
 			}
 			else
@@ -1788,7 +1809,7 @@ float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 		damage *= 0.65;
 	}
 	float value;
-	
+
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
 	{
 		value = Attributes_FindOnPlayer(victim, 206);	// MELEE damage resitance
