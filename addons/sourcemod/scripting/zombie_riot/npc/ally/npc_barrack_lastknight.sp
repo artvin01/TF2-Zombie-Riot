@@ -9,6 +9,7 @@ methodmap BarrackLastKnight < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_LASTKNIGHT;
 		i_NpcWeight[npc.index] = 2;
+		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		

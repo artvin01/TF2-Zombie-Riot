@@ -171,6 +171,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 
 					if(target > 0)
 					{
+						KillFeed_SetKillIcon(npc.index, "taunt_spy");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, target > MaxClients ? 600.0 : 200.0, DMG_CLUB);
 						npc.PlayMeleeHitSound();
 

@@ -1824,6 +1824,7 @@ public void Citizen_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "wrench_jag");
 						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.m_iGunSeller), npc.m_fGunDamage, DMG_SLASH, -1, _, vecHit);
 						
 						//Did we kill them?
@@ -2112,6 +2113,7 @@ public void Citizen_ClotThink(int iNPC)
 						
 						if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
 						{
+							KillFeed_SetKillIcon(npc.index, "pistol");
 							npc.FaceTowards(vecTarget, 15000.0);
 							npc.SetActivity("ACT_RANGE_ATTACK_PISTOL");
 							npc.m_flSpeed = 0.0;
@@ -2207,6 +2209,7 @@ public void Citizen_ClotThink(int iNPC)
 							
 							if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
 							{
+								KillFeed_SetKillIcon(npc.index, "smg");
 								npc.FaceTowards(vecTarget, 15000.0);
 								npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 								
@@ -2289,6 +2292,7 @@ public void Citizen_ClotThink(int iNPC)
 							
 							if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
 							{
+								KillFeed_SetKillIcon(npc.index, "panic_attack");
 								npc.FaceTowards(vecTarget, 15000.0);
 								npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SMG1");
 								
@@ -2362,6 +2366,7 @@ public void Citizen_ClotThink(int iNPC)
 						
 						if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
 						{
+							KillFeed_SetKillIcon(npc.index, "shotgun_primary");
 							npc.FaceTowards(vecTarget, 15000.0);
 							npc.SetActivity("ACT_IDLE_ANGRY_AR2");
 							npc.m_flSpeed = 0.0;
@@ -2446,6 +2451,7 @@ public void Citizen_ClotThink(int iNPC)
 						
 						if(IsValidEnemy(npc.index, enemy, true))	// We can see a target
 						{
+							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 							npc.FaceTowards(vecTarget, 15000.0);
 							npc.SetActivity("ACT_IDLE_ANGRY_RPG");
 							npc.m_flSpeed = 0.0;
@@ -3289,6 +3295,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
 			if(health < 1)
 			{
+				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype);
 				npc.SetDowned(1);
 				damage = 0.0;
 			}

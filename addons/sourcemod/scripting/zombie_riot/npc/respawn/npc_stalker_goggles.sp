@@ -51,6 +51,7 @@ methodmap StalkerGoggles < StalkerShared
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_ITEM2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		KillFeed_SetKillIcon(npc.index, "club");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -464,6 +465,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	{
 		if(!npc.m_bPlayingSniper)
 		{
+			KillFeed_SetKillIcon(npc.index, "huntsman_headshot");
+			
 			for(int i; i < 9; i++)
 			{
 				StopSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
@@ -480,6 +483,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	{
 		if(npc.m_bPlayingSniper)
 		{
+			KillFeed_SetKillIcon(npc.index, "club");
+			
 			for(int i; i < 9; i++)
 			{
 				StopSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");

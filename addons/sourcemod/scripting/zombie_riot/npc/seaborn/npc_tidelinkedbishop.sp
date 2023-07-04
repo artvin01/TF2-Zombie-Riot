@@ -62,6 +62,7 @@ methodmap TidelinkedBishop < CClotBody
 		i_NpcInternalId[npc.index] = TIDELINKED_BISHOP;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
+		KillFeed_SetKillIcon(npc.index, "taunt_spy");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

@@ -457,6 +457,7 @@ methodmap Bloon < CClotBody
 		
 		i_NpcInternalId[npc.index] = BTD_BLOON;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
 		npc.m_iStepNoiseType = NOTHING;	

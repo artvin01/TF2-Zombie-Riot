@@ -558,6 +558,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								int target = TR_GetEntityIndex(swingTrace);
 								if(target == npc.m_iTarget) 
 								{
+									KillFeed_SetKillIcon(npc.index, "club");
+
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
 									if(npc.Anger)
@@ -643,6 +645,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 						{
+							KillFeed_SetKillIcon(npc.index, "huntsman");
+							
 							npc.m_flAttackHappens = gameTime + 0.001;
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
@@ -671,6 +675,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					// Happens pretty much every think update (0.1 sec)
 					if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 					{
+						KillFeed_SetKillIcon(npc.index, "pro_smg");
+						
 						npc.FaceTowards(vecTarget, 400.0);
 
 						npc.PlaySMGSound();
@@ -717,6 +723,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					}
 					else if(npc.m_flAttackHappens && npc.m_flAttackHappens < gameTime)
 					{
+						KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+						
 						vecMe[2] += 45;
 						
 						b_ThisNpcIsSawrunner[npc.index] = true;

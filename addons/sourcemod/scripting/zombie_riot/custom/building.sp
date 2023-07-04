@@ -6173,6 +6173,9 @@ static float TrainingStartedIn[MAXTF2PLAYERS];
 static float TrainingIn[MAXTF2PLAYERS];
 static int TrainingIndex[MAXTF2PLAYERS];
 static int TrainingQueue[MAXTF2PLAYERS];
+static float ResearchStartedIn[MAXTF2PLAYERS];
+static float ResearchIn[MAXTF2PLAYERS];
+static int ResearchIndex[MAXTF2PLAYERS];
 static int CommandMode[MAXTF2PLAYERS];
 //bool FinalBuilder[MAXENTITIES];
 static bool MedievalUnlock[MAXTF2PLAYERS];
@@ -6183,12 +6186,19 @@ static bool b_InUpgradeMenu[MAXTF2PLAYERS];
 enum
 {
 	NPCIndex = 0,
-	WoodCost,
-	FoodCost,
-	GoldCost,
-	TrainTime,
-	TrainLevel,
-	SupplyCost
+	UpgradeIndex = 0,
+	WoodCost = 1,
+	FoodCost = 2,
+	GoldCost = 3,
+	TrainTime = 4,
+	TrainLevel = 5,
+	SupplyCost = 6,
+	RequirementHexArray = 6,
+	Requirement = 7,
+	Requirement2HexArray = 8,
+	Requirement2 = 9,
+	GiveHexArray = 10,
+	GiveClient = 11
 }
 
 enum
@@ -6352,7 +6362,7 @@ static int GetUnitCount(int civ)
 	}
 }
 
-static int GetData(int civ, int unit, int index)
+static int GetSData(int civ, int unit, int index)
 {
 	switch(civ)
 	{
@@ -6365,6 +6375,16 @@ static int GetData(int civ, int unit, int index)
 		default:
 			return SummonerBase[unit][index];
 	}
+}
+
+static int GetResearchCount(int civ)
+{
+	return sizeof(BarracksUpgrades);
+}
+
+static int GetRData(int civ, int type, int index)
+{
+	return BarracksUpgrades[type][index];
 }
 
 public Action Building_PlaceSummoner(int client, int weapon, const char[] classname, bool &result)
@@ -6399,6 +6419,7 @@ public bool Building_Summoner(int client, int entity)
 	FoodAmount[client] = 100.0;
 	GoldAmount[client] = 0.0;
 	TrainingIn[client] = 0.0;
+	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
 	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
@@ -6566,7 +6587,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 		if(TrainingIn[owner])
 		{
-			if(!AtMaxSupply(owner) && GetSupplyLeft(owner) >= GetData(CivType[owner], TrainingIndex[owner], SupplyCost))
+			if(!AtMaxSupply(owner) && GetSupplyLeft(owner) >= GetSData(CivType[owner], TrainingIndex[owner], SupplyCost))
 			{
 				float gameTime = GetGameTime();
 				if(TrainingIn[owner] < gameTime)
@@ -6602,10 +6623,10 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						GetEntPropVector(mounted ? owner : entity, Prop_Data, "m_angRotation", ang);
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
-						int npc = Npc_Create(GetData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
+						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
-						view_as<BarrackBody>(npc).m_iSupplyCount = GetData(CivType[owner], TrainingIndex[owner], SupplyCost);
+						view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[owner], TrainingIndex[owner], SupplyCost);
 						Barracks_UpdateEntityUpgrades(owner, npc);
 
 
@@ -6613,7 +6634,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						{
 							TrainingIndex[owner] = TrainingQueue[owner];
 							TrainingStartedIn[owner] = GetGameTime();
-							float trainingTime = float(GetData(CivType[owner], TrainingQueue[owner], TrainTime));
+							float trainingTime = float(GetSData(CivType[owner], TrainingQueue[owner], TrainTime));
 							if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 							{
 								trainingTime *= 0.75;
@@ -6637,6 +6658,22 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
 				//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
 				}
+				*/
+			}
+		}
+
+		if(ResearchIn[owner])
+		{
+			float gameTime = GetGameTime();
+			if(ResearchIn[owner] < gameTime)
+			{
+				ResearchIn[owner] = 0.0;
+
+				/*
+					Artvin TODO, add effect when research is done
+					GetRData(CivType[owner], ResearchIndex[owner], UpgradeIndex)
+					GetRData(CivType[owner], ResearchIndex[owner], GiveHexArray)
+					GetRData(CivType[owner], ResearchIndex[owner], GiveClient)
 				*/
 			}
 		}
@@ -6710,89 +6747,61 @@ static void SummonerMenu(int client, int viewer)
 	}
 
 	char buffer1[256];
-	itemsAddedToList += 1;
-	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	if(TrainingIn[client])
-	{
-		if(AtMaxSupply(client) || GetSupplyLeft(client) < GetData(CivType[client], TrainingIndex[client], SupplyCost))
-		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)]);
-			if(i_BarricadesBuild[client])
-				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
-		}
-		else if(TrainingStartedIn[client] < 0.0)
-		{
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)]);
-		}
-		else
-		{
-			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[GetData(CivType[client], TrainingIndex[client], NPCIndex)],
-				100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
-		}
-
-		if(TrainingQueue[client] != -1)
-			Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[client], TrainingQueue[client], NPCIndex)]);
-		
-		itemsAddedToList += 1;
-		menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	}
-	else
-	{
-		itemsAddedToList += 1;
-		menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	}
+	char buffer2[64];
+	int options;
 
 	if(b_InUpgradeMenu[viewer])
 	{
-		itemsAddedToList += 1;
-		
-		//Upgrade menu list:
-		/*
-		//MELEE PERKS
-		#define ZR_UNIT_UPGRADES_COPPER_SMITH			(1 << 1)
-		#define ZR_UNIT_UPGRADES_IRON_CASTING			(1 << 2)
-		#define ZR_UNIT_UPGRADES_STEEL_CASTING			(1 << 3)
-		//NEED DONJON MINUMUM:
-		#define ZR_UNIT_UPGRADES_REFINED_STEEL			(1 << 4)
-		in order
-		*/
+		itemsAddedToList = 2;
 
-	//	Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetData(CivType[client], TrainingQueue[client], NPCIndex)]);
-	//	menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT);
-
-	//	AddItemToTrainingList()
-	//	menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	}
-	else
-	{
-		char buffer2[64];
-		int options;
-		for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)
+		if(ResearchIn[client])
 		{
-			if(GetData(CivType[client], i, TrainLevel) > level)
+			float gameTime = GetGameTime();
+			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f%%)\n ", BuildingUpgrade_Names[GetRData(CivType[client], ResearchIndex[client], UpgradeIndex)],
+				100.0 - ((ResearchIn[client] - gameTime) * 100.0 / (ResearchIn[client] - ResearchStartedIn[client])));
+			
+			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		}
+		
+		int limit = GetResearchCount(CivType[client]);
+		for(int i; i < limit; i++)
+		{
+			if(GetRData(CivType[client], i, TrainLevel) > level)
 				continue;
+			
+			/*
+				Artvan do whatever requirements mean because what the fuc
+				GetRData(CivType[client], i, RequirementHexArray)
+				GetRData(CivType[client], i, Requirement)
+				GetRData(CivType[client], i, Requirement2HexArray)
+				GetRData(CivType[client], i, Requirement2)
+			*/
 			
 			bool ShowingDesc = false;
 			if(GetEntityFlags(viewer) & FL_DUCKING)
 			{
 				ShowingDesc = true;
-				FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+				FormatEx(buffer2, sizeof(buffer2), "%s Desc", BuildingUpgrade_Names[GetRData(CivType[client], i, UpgradeIndex)]);
 			}
 			else
 			{
-				FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetData(CivType[client], i, NPCIndex)]);
+				FormatEx(buffer1, sizeof(buffer1), "%t [", BuildingUpgrade_Names[GetRData(CivType[client], i, UpgradeIndex)]);
 			}
+
 			if(!ShowingDesc)
 			{
-				if(GetData(CivType[client], i, WoodCost))
-					Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetData(CivType[client], i, WoodCost));
+				if(GetRData(CivType[client], i, WoodCost))
+					Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetRData(CivType[client], i, WoodCost));
 				
-				if(GetData(CivType[client], i, FoodCost))
-					Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetData(CivType[client], i, FoodCost));
+				if(GetRData(CivType[client], i, FoodCost))
+					Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetRData(CivType[client], i, FoodCost));
 				
-				if(GetData(CivType[client], i, GoldCost))
-					Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetData(CivType[client], i, GoldCost));
+				if(GetRData(CivType[client], i, GoldCost))
+					Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetRData(CivType[client], i, GoldCost));
 				
 				Format(buffer1, sizeof(buffer1), "%s ]\n", buffer1);
 			}
@@ -6803,9 +6812,100 @@ static void SummonerMenu(int client, int viewer)
 
 			IntToString(i, buffer2, sizeof(buffer2));
 			bool poor = (!alive ||
-				WoodAmount[client] < GetData(CivType[client], i, WoodCost) ||
-				FoodAmount[client] < GetData(CivType[client], i, FoodCost) ||
-				GoldAmount[client] < GetData(CivType[client], i, GoldCost));
+				WoodAmount[client] < GetRData(CivType[client], i, WoodCost) ||
+				FoodAmount[client] < GetRData(CivType[client], i, FoodCost) ||
+				GoldAmount[client] < GetRData(CivType[client], i, GoldCost));
+
+			itemsAddedToList++;
+			menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			if(++options > 3)
+				break;
+		}
+
+		//Upgrade menu list:
+		/*
+		//MELEE PERKS
+		#define ZR_UNIT_UPGRADES_COPPER_SMITH			(1 << 1)
+		#define ZR_UNIT_UPGRADES_IRON_CASTING			(1 << 2)
+		#define ZR_UNIT_UPGRADES_STEEL_CASTING			(1 << 3)
+		//NEED DONJON MINUMUM:
+		#define ZR_UNIT_UPGRADES_REFINED_STEEL			(1 << 4)
+		in order
+		*/
+	}
+	else
+	{
+		itemsAddedToList += 1;
+		menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		if(TrainingIn[client])
+		{
+			if(AtMaxSupply(client) || GetSupplyLeft(client) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+			{
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)]);
+				if(i_BarricadesBuild[client])
+					Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
+			}
+			else if(TrainingStartedIn[client] < 0.0)
+			{
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)]);
+			}
+			else
+			{
+				float gameTime = GetGameTime();
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)],
+					100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
+			}
+
+			if(TrainingQueue[client] != -1)
+				Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, NPC_Names[GetSData(CivType[client], TrainingQueue[client], NPCIndex)]);
+			
+			itemsAddedToList += 1;
+			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			itemsAddedToList += 1;
+			menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		}
+		
+		for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)
+		{
+			if(GetSData(CivType[client], i, TrainLevel) > level)
+				continue;
+			
+			bool ShowingDesc = false;
+			if(GetEntityFlags(viewer) & FL_DUCKING)
+			{
+				ShowingDesc = true;
+				FormatEx(buffer2, sizeof(buffer2), "%s Desc", NPC_Names[GetSData(CivType[client], i, NPCIndex)]);
+			}
+			else
+			{
+				FormatEx(buffer1, sizeof(buffer1), "%t [", NPC_Names[GetSData(CivType[client], i, NPCIndex)]);
+			}
+			if(!ShowingDesc)
+			{
+				if(GetSData(CivType[client], i, WoodCost))
+					Format(buffer1, sizeof(buffer1), "%s $%d", buffer1, GetSData(CivType[client], i, WoodCost));
+				
+				if(GetSData(CivType[client], i, FoodCost))
+					Format(buffer1, sizeof(buffer1), "%s £%d", buffer1, GetSData(CivType[client], i, FoodCost));
+				
+				if(GetSData(CivType[client], i, GoldCost))
+					Format(buffer1, sizeof(buffer1), "%s ¥%d", buffer1, GetSData(CivType[client], i, GoldCost));
+				
+				Format(buffer1, sizeof(buffer1), "%s ]\n", buffer1);
+			}
+			else
+			{
+				Format(buffer1, sizeof(buffer1), "%t\n", buffer2);
+			}
+
+			IntToString(i, buffer2, sizeof(buffer2));
+			bool poor = (!alive ||
+				WoodAmount[client] < GetSData(CivType[client], i, WoodCost) ||
+				FoodAmount[client] < GetSData(CivType[client], i, FoodCost) ||
+				GoldAmount[client] < GetSData(CivType[client], i, GoldCost));
 
 			itemsAddedToList += 1;
 			menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -6829,6 +6929,7 @@ static void SummonerMenu(int client, int viewer)
 			break;
 		}
 	}
+
 	//should always be at 9
 	menu.AddItem("50", buffer1, ITEMDRAW_DEFAULT);
 
@@ -6872,16 +6973,28 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					SummonerMenu(client, client);
 					return 0;
 				}
+
 				int entity = EntRefToEntIndex(i_HasSentryGunAlive[client]);
 				if(entity != INVALID_ENT_REFERENCE)
 				{
 					if(choice == 1)
 					{
-						if(TrainingQueue[client] != -1)
+						if(b_InUpgradeMenu[client])
 						{
-							WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
-							FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
-							GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
+							if(ResearchIn[client])
+							{
+								ResearchIn[client] = 0.0;
+
+								WoodAmount[client] += float(GetRData(CivType[client], ResearchIndex[client], WoodCost));
+								FoodAmount[client] += float(GetRData(CivType[client], ResearchIndex[client], FoodCost));
+								GoldAmount[client] += float(GetRData(CivType[client], ResearchIndex[client], GoldCost));
+							}
+						}
+						else if(TrainingQueue[client] != -1)
+						{
+							WoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], WoodCost));
+							FoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], FoodCost));
+							GoldAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], GoldCost));
 
 							TrainingQueue[client] = -1;
 						}
@@ -6889,9 +7002,37 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						{
 							TrainingIn[client] = 0.0;
 
-							WoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], WoodCost));
-							FoodAmount[client] += float(GetData(CivType[client], TrainingIndex[client], FoodCost));
-							GoldAmount[client] += float(GetData(CivType[client], TrainingIndex[client], GoldCost));
+							WoodAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], WoodCost));
+							FoodAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], FoodCost));
+							GoldAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], GoldCost));
+						}
+					}
+					else if(b_InUpgradeMenu[client])
+					{
+						char num[16];
+						menu.GetItem(choice, num, sizeof(num));
+						int item = StringToInt(num);
+
+						float woodcost = float(GetRData(CivType[client], item, WoodCost));
+						float foodcost = float(GetRData(CivType[client], item, FoodCost));
+						float goldcost = float(GetRData(CivType[client], item, GoldCost));
+
+						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
+						{
+							if(ResearchIn[client])
+							{
+								WoodAmount[client] += float(GetRData(CivType[client], TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetRData(CivType[client], TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetRData(CivType[client], TrainingQueue[client], GoldCost));
+							}
+
+							ResearchIndex[client] = item;
+							ResearchStartedIn[client] = GetGameTime();
+							ResearchIn[client] = ResearchStartedIn[client] + float(GetRData(CivType[client], item, TrainTime));
+							
+							WoodAmount[client] -= woodcost;
+							FoodAmount[client] -= foodcost;
+							GoldAmount[client] -= goldcost;
 						}
 					}
 					else
@@ -6900,9 +7041,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						menu.GetItem(choice, num, sizeof(num));
 						int item = StringToInt(num);
 
-						float woodcost = float(GetData(CivType[client], item, WoodCost));
-						float foodcost = float(GetData(CivType[client], item, FoodCost));
-						float goldcost = float(GetData(CivType[client], item, GoldCost));
+						float woodcost = float(GetSData(CivType[client], item, WoodCost));
+						float foodcost = float(GetSData(CivType[client], item, FoodCost));
+						float goldcost = float(GetSData(CivType[client], item, GoldCost));
 
 						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
 						{
@@ -6910,7 +7051,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							{
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
-								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetData(CivType[client], item, TrainTime) / 3) : GetData(CivType[client], item, TrainTime));
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetSData(CivType[client], item, TrainTime) / 3) : GetSData(CivType[client], item, TrainTime));
 							}
 							else if(TrainingQueue[client] == -1)
 							{
@@ -6918,9 +7059,9 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 							else
 							{
-								WoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], WoodCost));
-								FoodAmount[client] += float(GetData(CivType[client], TrainingQueue[client], FoodCost));
-								GoldAmount[client] += float(GetData(CivType[client], TrainingQueue[client], GoldCost));
+								WoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], GoldCost));
 
 								TrainingQueue[client] = item;
 							}
@@ -7008,7 +7149,7 @@ static int GetSupplyLeft(int client)
 
 static bool AtMaxSupply(int client)
 {
-	int userid = GetClientUserId(client);
+	/*int userid = GetClientUserId(client);
 	int personal = i_BarricadesBuild[client] * 3 / 2;
 	int global;
 	int entity = MaxClients + 1;
@@ -7027,7 +7168,8 @@ static bool AtMaxSupply(int client)
 	int maxGlobal = 15 + Rogue_Barracks_BonusSupply();
 	int maxLocal = 2 + Rogue_Barracks_BonusSupply();
 
-	return (global > maxGlobal || personal > maxLocal);
+	return (global > maxGlobal || personal > maxLocal);*/
+	return GetSupplyLeft(client) < 1;
 }
 
 void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR)

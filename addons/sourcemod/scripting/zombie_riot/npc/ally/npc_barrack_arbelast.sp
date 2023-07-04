@@ -11,6 +11,7 @@ methodmap BarrackArbelast < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARBELAST;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArbelast_ClotThink);
 

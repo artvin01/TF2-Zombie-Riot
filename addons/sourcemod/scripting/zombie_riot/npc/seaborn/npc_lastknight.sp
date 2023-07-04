@@ -84,6 +84,7 @@ methodmap LastKnight < CClotBody
 		i_NpcInternalId[npc.index] = LASTKNIGHT;
 		i_NpcWeight[npc.index] = 5;
 		npc.SetActivity("ACT_PRINCE_WALK");
+		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -155,6 +156,7 @@ public void LastKnight_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		npc.SetActivity("ACT_RIDER_RUN");
+		KillFeed_SetKillIcon(npc.index, "vehicle");
 
 		if(!IsValidEntity(npc.m_iWearable3))
 		{

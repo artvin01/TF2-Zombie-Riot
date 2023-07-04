@@ -365,18 +365,28 @@ static void ShowNextFeed()
 		bool botUsed;
 		if(feed.victim_name[0] && victim)
 		{
-			SetClientName(victim, feed.victim_name);
-			SetEntPropString(victim, Prop_Data, "m_szNetname", feed.victim_name);
-			KillFeed_SetBotTeam(victim, feed.victim_team);
-			botUsed = true;
+			char buffer[64];
+			GetClientName(victim, buffer, sizeof(buffer));
+			if(!StrEqual(buffer, feed.victim_name) || GetClientTeam(victim) != feed.victim_team)
+			{
+				SetClientName(victim, feed.victim_name);
+				SetEntPropString(victim, Prop_Data, "m_szNetname", feed.victim_name);
+				KillFeed_SetBotTeam(victim, feed.victim_team);
+				botUsed = true;
+			}
 		}
 
 		if(feed.attacker_name[0] && attacker)
 		{
-			SetClientName(attacker, feed.attacker_name);
-			SetEntPropString(attacker, Prop_Data, "m_szNetname", feed.attacker_name);
-			KillFeed_SetBotTeam(attacker, feed.attacker_team);
-			botUsed = true;
+			char buffer[64];
+			GetClientName(attacker, buffer, sizeof(buffer));
+			if(!StrEqual(buffer, feed.attacker_name) || GetClientTeam(attacker) != feed.attacker_team)
+			{
+				SetClientName(attacker, feed.attacker_name);
+				SetEntPropString(attacker, Prop_Data, "m_szNetname", feed.attacker_name);
+				KillFeed_SetBotTeam(attacker, feed.attacker_team);
+				botUsed = true;
+			}
 		}
 		
 		Event event = CreateEvent("player_death", true);
@@ -392,37 +402,83 @@ static void ShowNextFeed()
 		event.SetInt("inflictor_entindex", feed.inflictor_entindex);
 		event.SetInt("customkill", feed.customkill);
 
-		if(feed.silent_kill)
+		DataPack pack = new DataPack();
+		pack.WriteCell(event);
+		pack.WriteCell(feed.silent_kill);
+
+		bool botUsedAgain = !FeedList.Length;
+		if(!botUsedAgain)
 		{
-			if(victim)
-				event.FireToClient(victim);
-			
-			if(attacker)
-				event.FireToClient(attacker);
-		}
-		else
-		{
-			for(int client = 1; client <= MaxClients; client++)
+			// Save delay time if we kill the same NPC name
+
+			FeedList.GetArray(0, feed);
+
+			victim = GetClientOfUserId(feed.userid);
+			attacker = GetClientOfUserId(feed.attacker);
+
+			if(feed.victim_name[0] && victim)
 			{
-				if(IsClientInGame(client))
-					event.FireToClient(client);
+				char buffer[64];
+				GetClientName(victim, buffer, sizeof(buffer));
+				if(!StrEqual(buffer, feed.victim_name) || GetClientTeam(victim) != feed.victim_team)
+					botUsedAgain = true;
+			}
+
+			if(feed.attacker_name[0] && attacker)
+			{
+				char buffer[64];
+				GetClientName(attacker, buffer, sizeof(buffer));
+				if(!StrEqual(buffer, feed.attacker_name) || GetClientTeam(attacker) != feed.attacker_team)
+					botUsedAgain = true;
 			}
 		}
 
-		event.Cancel();
+		pack.WriteCell(botUsedAgain);
 
-		if(botUsed)
-		{
-			FeedTimer = CreateTimer(0.3, KillFeed_Timer);
-		}
-		else
-		{
-			ShowNextFeed();
-		}
+		// Need time to change the bot's display name
+		FeedTimer = CreateTimer(botUsed ? 0.0 : 0.2, KillFeed_ShowTimer, pack, TIMER_DATA_HNDL_CLOSE);
 	}
 }
 
-public Action KillFeed_Timer(Handle timer)
+public Action KillFeed_ShowTimer(Handle timer, DataPack pack)
+{
+	FeedTimer = null;
+	pack.Reset();
+
+	Event event = pack.ReadCell();
+
+	if(pack.ReadCell())
+	{
+		int victim = GetClientOfUserId(event.GetInt("userid"));
+		int attacker = GetClientOfUserId(event.GetInt("attacker"));
+
+		if(victim)
+			event.FireToClient(victim);
+		
+		if(attacker)
+			event.FireToClient(attacker);
+	}
+	else
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+				event.FireToClient(client);
+		}
+	}
+
+	if(pack.ReadCell())
+	{
+		FeedTimer = CreateTimer(0.2, KillFeed_NextTimer);
+	}
+	else
+	{
+		ShowNextFeed();
+	}
+	return Plugin_Continue;
+}
+
+public Action KillFeed_NextTimer(Handle timer)
 {
 	FeedTimer = null;
 	ShowNextFeed();

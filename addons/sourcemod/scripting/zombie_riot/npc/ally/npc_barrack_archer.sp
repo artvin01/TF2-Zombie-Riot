@@ -12,6 +12,7 @@ methodmap BarrackArcher < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARCHER;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackArcher_ClotThink);
 

@@ -11,6 +11,7 @@ methodmap BarrackMilitia < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_MILITIA;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "boston_basher");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackMilitia_ClotThink);
 

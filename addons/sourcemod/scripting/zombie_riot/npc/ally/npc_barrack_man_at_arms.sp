@@ -12,6 +12,7 @@ methodmap BarrackManAtArms < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_MAN_AT_ARMS;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "sword");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackManAtArms_ClotThink);
 

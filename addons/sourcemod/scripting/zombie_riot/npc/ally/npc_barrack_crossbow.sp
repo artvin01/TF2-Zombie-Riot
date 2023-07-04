@@ -12,6 +12,7 @@ methodmap BarrackCrossbow < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_CROSSBOW;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackCrossbow_ClotThink);
 

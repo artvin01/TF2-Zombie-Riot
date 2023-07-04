@@ -127,6 +127,7 @@ methodmap DDT < CClotBody
 		
 		i_NpcInternalId[npc.index] = BTD_DDT;
 		i_NpcWeight[npc.index] = 2;
+		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
