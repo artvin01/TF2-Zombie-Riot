@@ -3089,32 +3089,6 @@
 		//"it"		""
 		//"fr"		""	
 	}
-	"Barracks Donjon"
-	{
-		"en"		"Donjon"
-		//"de"		""
-		//"ru"		""
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""	
-	}
-	"Barracks Donjon Desc"
-	{
-		"en"		"Increaced health and damage and arrow count, unlocks more upgrades."
-		//"de"		""
-		//"ru"		""
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""	
-	}
 	"Barracks Krepost"
 	{
 		"en"		"Krepost"
@@ -3260,7 +3234,7 @@
 	}
 	"Barracks Chemistry Desc"
 	{
-		"en"		"Your building will set enemies ablaze with its arrows and increaces their damage."
+		"en"		"increaces ranged damage of barracks."
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -3286,7 +3260,7 @@
 	}
 	"Barracks Crenelations Desc"
 	{
-		"en"		"Massively increaced range, non ranged units will now increace arrow count aswell, arrows now home onto the target."
+		"en"		"Massively increaced range, arrows now home onto the target."
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -3468,7 +3442,33 @@
 	}
 	"Barracks Exquisite Housing Desc"
 	{
-		"en"		"Gain back your lost 1 deployment slot from making a tower."
+		"en"		"Gain back your lost 1 deployment slot from making the Donjon.\nAllows you atleast make 1 barricade.\nLevel upgrades might not allow this."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
+	"Barracks Villager Desc"
+	{
+		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
+	"Barracks Teutonic Knight Desc"
+	{
+		"en"		"The strongest of the strongest. Ultimate melee unit."	
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

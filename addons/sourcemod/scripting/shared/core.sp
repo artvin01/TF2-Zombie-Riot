@@ -464,6 +464,7 @@ float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
+int Building_Hidden_Prop[MAXENTITIES][2];
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
@@ -2258,6 +2259,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
+		i_IsABuilding[entity] = false;
 		Resistance_for_building_High[entity] = 0.0;
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;

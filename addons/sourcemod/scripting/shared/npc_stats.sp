@@ -1987,7 +1987,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntityCollisionGroup(item, 1);
 		return item;
 	}
-	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
+	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 55.0, int Npc_type = 0, int Ignore_Buildings = 0)
 	{
 		switch(Npc_type)
 		{
@@ -2008,7 +2008,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		vecTarget = WorldSpaceCenter(target);
+		float WorldSpaceTarget[3];
+
+		WorldSpaceTarget = WorldSpaceCenter(target);
+		vecTarget = WorldSpaceTarget;
+		vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
+
 		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
@@ -2016,7 +2021,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
 		
-		vecSwingStart[2] += vecSwingStartOffset;
+		vecSwingStart[2] += vecSwingStartOffset; //default is 55 for a few reasons.
 		
 		float vecSwingEnd[3];
 		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * vecSwingMaxs[0];
@@ -2128,6 +2133,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(this.index, Prop_Send, "m_iTeamNum")));
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
@@ -2288,6 +2294,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])

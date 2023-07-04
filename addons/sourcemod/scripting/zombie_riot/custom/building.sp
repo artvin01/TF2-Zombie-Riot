@@ -210,13 +210,7 @@ void Building_MapStart()
 	
 	Village_Effects = new ArrayList(sizeof(VillageBuff));
 	
-//	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-//	SyncHud_Notifaction = CreateHudSynchronizer();
 	PrecacheModel(CUSTOM_SENTRYGUN_MODEL); //MORTAR MODEL AND RAILGUN MODEL!!!
-//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.mdl");
-//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx80.vtx");
-//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.dx90.vtx");
-//	AddFileToDownloadsTable("models/zombie_riot/buildings/mortar_2.vvd"); 			//ADD TO DOWNLOADS!
 	
 	PrecacheSound(MORTAR_SHOT);
 	PrecacheSound(MORTAR_BOOM); 
@@ -230,6 +224,7 @@ void Building_MapStart()
 	PrecacheSound(RAILGUN_READY);
 	PrecacheSound(RAILGUN_ACTIVATED);
 	PrecacheSound(RAILGUN_READY_ALARM);
+	PrecacheModel("models/props_manor/clocktower_01.mdl");
 	PrecacheSound("weapons/drg_wrench_teleport.wav");
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -251,7 +246,7 @@ void Building_MapStart()
 }
 
 //static int RebelTimerSpawnIn;
-static int Building_Hidden_Prop[MAXENTITIES][2];
+//int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
 
 
@@ -399,7 +394,7 @@ public Action Building_PlaceRailgun(int client, int weapon, const char[] classna
 
 public Action Building_PlaceDispenser(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_BarricadesBuild[client] < MaxBarricadesAllowed(client))
+	if(BarricadeMaxSupply(client) < MaxBarricadesAllowed(client))
 	{
 		PlaceBuilding(client, weapon, Building_DispenserWall, TFObject_Dispenser);
 		return Plugin_Continue;		
@@ -515,6 +510,9 @@ public bool Building_Sentry(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
+	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
+	SetVariantInt(SentryHealAmountExtra);
+	AcceptEntityInput(entity, "AddHealth");
 	
 //	CreateTimer(0.5, Timer_DroppedBuildingWaitSentryLeveLUp, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	return true;
@@ -549,6 +547,9 @@ public bool Building_Railgun(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
+	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
+	SetVariantInt(SentryHealAmountExtra);
+	AcceptEntityInput(entity, "AddHealth");
 	
 	return true;
 }
@@ -585,6 +586,9 @@ public bool Building_Mortar(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
+	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
+	SetVariantInt(SentryHealAmountExtra);
+	AcceptEntityInput(entity, "AddHealth");
 	
 	return true;
 }
@@ -625,6 +629,9 @@ public bool Building_HealingStation(int client, int entity)
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
+	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
+	SetVariantInt(SentryHealAmountExtra);
+	AcceptEntityInput(entity, "AddHealth");
 	
 	return true;
 }
@@ -4356,6 +4363,9 @@ public bool Building_Village(int client, int entity)
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
 	Barracks_UpdateEntityUpgrades(client, entity, true);
+	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
+	SetVariantInt(SentryHealAmountExtra);
+	AcceptEntityInput(entity, "AddHealth");
 	
 	return true;
 }
@@ -4679,6 +4689,12 @@ void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow =
 			}
 		}
 	}
+}
+
+static void BarracksCheckItems(int client)
+{
+	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
+	i_NormalBarracks_HexBarracksUpgrades_2[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 2");
 }
 
 static void VillageCheckItems(int client)
@@ -5645,8 +5661,17 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 				prop1 = CreateEntityByName("prop_dynamic_override");
 				if(IsValidEntity(prop1))
 				{
-					DispatchKeyValue(prop1, "model", SUMMONER_MODEL);
-					DispatchKeyValue(prop1, "modelscale", "0.15");
+					int clientPre = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
+					if((i_NormalBarracks_HexBarracksUpgrades[clientPre] & ZR_BARRACKS_UPGRADES_TOWER))
+					{
+						DispatchKeyValue(prop1, "model", "models/props_manor/clocktower_01.mdl");
+						DispatchKeyValue(prop1, "modelscale", "0.11");
+					}
+					else
+					{
+						DispatchKeyValue(prop1, "model", SUMMONER_MODEL);
+						DispatchKeyValue(prop1, "modelscale", "0.15");
+					}
 					DispatchKeyValue(prop1, "StartDisabled", "false");
 					DispatchKeyValue(prop1, "Solid", "0");
 					SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
@@ -6193,6 +6218,7 @@ enum
 	TrainTime = 4,
 	TrainLevel = 5,
 	SupplyCost = 6,
+	ResearchRequirement = 7,
 	RequirementHexArray = 6,
 	Requirement = 7,
 	Requirement2HexArray = 8,
@@ -6228,116 +6254,123 @@ static const char CommandName[][] =
 
 static const int SummonerBase[][] =
 {
-	// NPC Index, Wood, Food, Gold, Time, Level, Supply
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1, 0 },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1, 0  },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1, 0  },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1, 0  },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1, 0  },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1, 0  },	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1, 0  },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1, 0  },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1, 0  },	// Construction Master
 
-
-	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1 },	// Construction Expert
-	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16, 1 }	// Construction Master
+	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1, 0  },	// Construction Expert
+	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16, 1, 0  },	// Construction Master
+	
+	{ BARRACKS_TEUTONIC_KNIGHT, 750, 0, 	5, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE },	// Construction Master
+	{ BARRACKS_VILLAGER, 		500, 500, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER  }	// Construction Expert
 };
 
 static const int SummonerThorns[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1 },		// None
+	{ BARRACK_MILITIA, 5, 30, 0, 5, 1, 1, 0 },		// None
 
-	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1 },		// Construction Novice
-	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1 },	// Construction Apprentice
+	{ BARRACK_ARCHER, 50, 10, 0, 7, 2, 1, 0 },		// Construction Novice
+	{ BARRACK_MAN_AT_ARMS, 10, 50, 0, 6, 4, 1, 0 },	// Construction Apprentice
 
-	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1 },	// Construction Apprentice
-	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1 },	// Construction Worker
+	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1, 0 },	// Construction Apprentice
+	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1, 0 },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1 },	// Construction Worker
-	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1 },	// Construction Expert
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1, 0},	// Construction Worker
+	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1, 0 },	// Construction Expert
 
-	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1 },	// Construction Expert
-	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1 },	// Construction Master
+	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1, 0 },	// Construction Expert
+	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1, 0 },	// Construction Master
 
+	{ BARRACK_THORNS, 0, 0, 0, 0, 11, 2, 0 },	// Construction Expert
 
-	{ BARRACK_THORNS, 0, 0, 0, 0, 11, 3 }	// Construction Expert
+	{ BARRACKS_TEUTONIC_KNIGHT, 750, 0, 	5, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE },	// Construction Master
+	{ BARRACKS_VILLAGER, 		500, 500, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER  }	// Construction Expert
 };
 
 static const int SummonerAlternative[][] =
 {
 	// NPC Index, 						Wood, 	Food, 	Gold, 	Time, Level, Supply
-	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 1, 1 },		// None
+	{ ALT_BARRACK_BASIC_MAGE , 			10, 	40, 	0, 		5, 1, 1, 0 },		// None
 
-	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7, 2, 1 },		// Construction Novice
-	{ ALT_BARRACK_INTERMEDIATE_MAGE ,	10, 	50, 	0, 		6, 4, 1 },	// Construction Apprentice
+	{ ALT_BARRACK_MECHA_BARRAGER, 		50, 	10, 	1, 		7, 2, 1, 0 },		// Construction Novice
+	{ ALT_BARRACK_INTERMEDIATE_MAGE ,	10, 	50, 	0, 		6, 4, 1, 0 },	// Construction Apprentice
 
-	{ ALT_BARRACKS_CROSSBOW_MEDIC, 		50, 	25, 	2, 		8, 4, 1 },	// Construction Apprentice
-	{ ALT_BARRACK_BARRAGER,				75,		50, 	1, 		7, 7, 1 },	// Construction Worker
+	{ ALT_BARRACKS_CROSSBOW_MEDIC, 		50, 	25, 	2, 		8, 4, 1, 0 },	// Construction Apprentice
+	{ ALT_BARRACK_BARRAGER,				75,		50, 	1, 		7, 7, 1, 0 },	// Construction Worker
 
-	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1 },	// Construction Worker
-	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		7, 11, 1 },	// Construction Expert
+	{ ALT_BARRACK_RAILGUNNER , 			100, 	50, 	2,		11, 7, 1, 0 },	// Construction Worker
+	{ ALT_BARRACKS_HOLY_KNIGHT, 		250, 	100, 	0, 		7, 11, 1, 0 },	// Construction Expert
 
-	{ ALT_BARRACKS_BERSERKER, 			50, 	100, 	0,		3, 11, 1 },	// Construction Expert	//these ones are meant to be spammed into oblivion
-	{ ALT_BARRACK_IKUNAGAE , 			125,	300,	0,		7, 16, 1 },	// Construction Master
+	{ ALT_BARRACKS_BERSERKER, 			50, 	100, 	0,		3, 11, 1, 0 },	// Construction Expert	//these ones are meant to be spammed into oblivion
+	{ ALT_BARRACK_IKUNAGAE , 			125,	300,	0,		7, 16, 1, 0 },	// Construction Master
 
 
-	{ ALT_BARRACK_DONNERKRIEG, 			175, 	350, 	15, 	12, 11, 1 },	// Construction Expert
-	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	10, 	13, 16, 1 }	// Construction Master
+	{ ALT_BARRACK_DONNERKRIEG, 			175, 	350, 	15, 	12, 11, 1, 0 },	// Construction Expert
+	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	10, 	13, 16, 1, 0 },	// Construction Master
+	
+	{ BARRACKS_TEUTONIC_KNIGHT, 750, 0, 	5, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE },	// Construction Master
+	{ BARRACKS_VILLAGER, 		500, 500, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER  }	// Construction Expert
 };
 
 static const int BarracksUpgrades[][] =
 {
 	// Building Upgrade ID, 		Wood, 	Food, 	Gold, 	Time, 	Level,		,Requirement HexArray ,Requirement 									,Requirement 2 HexArray,	Requirement 2						,give hex array		,Give Client
-	{ UNIT_COPPER_SMITH , 			10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_SMITH					},		// Construction Novice
-	{ UNIT_IRON_CASTING, 			50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_SMITH,				1,							0,									1,					ZR_UNIT_UPGRADES_IRON_CASTING					},		// Construction Apprentice
-	{ UNIT_STEEL_CASTING, 			50, 	10, 	1, 		7,		7, 			1,						ZR_UNIT_UPGRADES_IRON_CASTING,				1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_CASTING					},		// Construction Worker
-	{ UNIT_REFINED_STEEL, 			50, 	10, 	1, 		7,		11, 		1,						ZR_UNIT_UPGRADES_STEEL_CASTING,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_STEEL					},		// Construction Expert
+	{ UNIT_COPPER_SMITH , 			50, 	100, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_SMITH					},		// Construction Novice
+	{ UNIT_IRON_CASTING, 			100, 	200, 	0, 		10,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_SMITH,				1,							0,									1,					ZR_UNIT_UPGRADES_IRON_CASTING					},		// Construction Apprentice
+	{ UNIT_STEEL_CASTING, 			150, 	450, 	0, 		10,		7, 			1,						ZR_UNIT_UPGRADES_IRON_CASTING,				1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_CASTING					},		// Construction Worker
+	{ UNIT_REFINED_STEEL, 			250, 	1000, 	0, 		15,		11, 		1,						ZR_UNIT_UPGRADES_STEEL_CASTING,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_STEEL					},		// Construction Expert
 
-	{ UNIT_FLETCHING , 				10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_FLETCHING						},		// Construction Novice
-	{ UNIT_STEEL_ARROWS, 			50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_FLETCHING,					1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_ARROWS					},		// Construction Apprentice
-	{ UNIT_BRACER, 					50, 	10, 	1, 		7,		7, 			1,						ZR_UNIT_UPGRADES_STEEL_ARROWS,				1,							0,									1,					ZR_UNIT_UPGRADES_BRACER							},		// Construction Worker
-	{ UNIT_OBSIDIAN_REFINED_TIPS, 	50, 	10, 	1, 		7,		11, 		1,						ZR_UNIT_UPGRADES_BRACER,					1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS			},		// Construction Expert
+	{ UNIT_FLETCHING , 				70, 	50, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_FLETCHING						},		// Construction Novice
+	{ UNIT_STEEL_ARROWS, 			100, 	100, 	0, 		10,		4, 			1,						ZR_UNIT_UPGRADES_FLETCHING,					1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_ARROWS					},		// Construction Apprentice
+	{ UNIT_BRACER, 					250, 	150, 	0, 		10,		7, 			1,						ZR_UNIT_UPGRADES_STEEL_ARROWS,				1,							0,									1,					ZR_UNIT_UPGRADES_BRACER							},		// Construction Worker
+	{ UNIT_OBSIDIAN_REFINED_TIPS, 	600, 	250, 	0, 		15,		11, 		1,						ZR_UNIT_UPGRADES_BRACER,					1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS			},		// Construction Expert
 
-	{ UNIT_COPPER_ARMOR_PLATE , 	10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR				},		// Construction Novice
-	{ UNIT_IRON_ARMOR_PLATE, 		50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR,		1,							0,									1,					ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR				},		// Construction Apprentice
-	{ UNIT_CHAINMAIL_ARMOR, 		50, 	10, 	1, 		7,		7, 			1,						ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR,			1,							0,									1,					ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR				},		// Construction Worker
-	{ UNIT_REFORGED_ARMOR_PLATE, 	50, 	10, 	1, 		7,		11, 		1,						ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR			},		// Construction Expert
+	{ UNIT_COPPER_ARMOR_PLATE , 	50, 	50, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR				},		// Construction Novice
+	{ UNIT_IRON_ARMOR_PLATE, 		100, 	200, 	0, 		10,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR,		1,							0,									1,					ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR				},		// Construction Apprentice
+	{ UNIT_CHAINMAIL_ARMOR, 		200, 	450, 	0, 		10,		7, 			1,						ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR,			1,							0,									1,					ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR				},		// Construction Worker
+	{ UNIT_REFORGED_ARMOR_PLATE, 	250, 	2000, 	0, 		15,		11, 		1,						ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR			},		// Construction Expert
 
-	{ UNIT_HERBAL_MEDICINE , 		10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_HERBAL_MEDICINE				},		// Construction Novice
-	{ UNIT_REFINED_MEDICINE, 		50, 	10, 	1, 		7,		4, 			1,						ZR_UNIT_UPGRADES_HERBAL_MEDICINE,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_MEDICINE				},		// Construction Apprentice
+	{ UNIT_HERBAL_MEDICINE , 		200, 	300, 	0, 		15, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_HERBAL_MEDICINE				},		// Construction Novice
+	{ UNIT_REFINED_MEDICINE, 		300, 	1000, 	0, 		20,		4, 			1,						ZR_UNIT_UPGRADES_HERBAL_MEDICINE,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_MEDICINE				},		// Construction Apprentice
 
 	//tower specific upgrades						1,
-	{ BUILDING_TOWER , 				10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_TOWER						},		// Construction Novice
-	{ BUILDING_GUARD_TOWER, 		50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_GUARD_TOWER				},		// Construction Apprentice
-	{ BUILDING_IMPERIAL_TOWER, 		50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_GUARD_TOWER,			1,							0,									1,					ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER				},		// Construction Worker
-	{ BUILDING_BALLISTICAL_TOWER, 	50, 	10, 	1, 		7,		7, 			1,						ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER			},		// Construction Expert
-	{ BUILDING_DONJON, 				50, 	10, 	1, 		7,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_DONJON						},		// Construction Expert
-	{ BUILDING_KREPOST, 			50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
-	{ BUILDING_CASTLE, 				50, 	10, 	1, 		7,		16, 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
+	{ BUILDING_TOWER, 				50, 	10, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_TOWER						},		// Construction Novice
+	{ BUILDING_GUARD_TOWER, 		150, 	25, 	0, 		15,		4, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_GUARD_TOWER				},		// Construction Apprentice
+	{ BUILDING_IMPERIAL_TOWER, 		250, 	50, 	0, 		20,		4, 			1,						ZR_BARRACKS_UPGRADES_GUARD_TOWER,			1,							0,									1,					ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER				},		// Construction Worker
+	{ BUILDING_BALLISTICAL_TOWER, 	500, 	100, 	0, 		25,		7, 			1,						ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER			},		// Construction Expert
+	{ BUILDING_DONJON, 				1000, 	200, 	0, 		30,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_DONJON						},		// Construction Expert
+	{ BUILDING_KREPOST, 			2500, 	400, 	0, 		35,		11, 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
+	{ BUILDING_CASTLE, 				3500, 	1000, 	0, 		50,		16, 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
 
-	{ BUILDING_MANUAL_FIRE , 		10, 	40, 	0, 		5, 		2, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_MANUAL_FIRE				},		// Construction Novice
+//unused for now, too lazy aa
+	{ BUILDING_MANUAL_FIRE , 		10, 	40, 	0, 		5, 		9999,/*2,*/ 1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_MANUAL_FIRE				},		// Construction Novice
 
+	{ BUILDING_MUDERHOLES , 		20, 	500, 	0, 		10, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_MURDERHOLES				},		// Construction Novice
+	{ BUILDING_BALLISTICS, 			500, 	200, 	0, 		15,		4, 			1,						ZR_BARRACKS_UPGRADES_MURDERHOLES,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_BALLISTICS					},		// Construction Apprentice
+	{ BUILDING_CHEMISTRY, 			750, 	200, 	0, 		20,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICS,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_CHEMISTY					},		// Construction Worker
+	{ BUILDING_CRENELATIONS, 		1000, 	300, 	0, 		40,		11, 		1,						ZR_BARRACKS_UPGRADES_CHEMISTY,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CRENELLATIONS				},		// Construction Expert
 
-	{ BUILDING_MUDERHOLES , 		10, 	40, 	0, 		5, 		2, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_MURDERHOLES				},		// Construction Novice
-	{ BUILDING_BALLISTICS, 			50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_MURDERHOLES,			1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICS					},		// Construction Apprentice
-	{ BUILDING_CHEMISTRY, 			50, 	10, 	1, 		7,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICS,			1,							0,									1,					ZR_BARRACKS_UPGRADES_CHEMISTY					},		// Construction Worker
-	{ BUILDING_CRENELATIONS, 		50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_CHEMISTY,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CRENELLATIONS				},		// Construction Expert
+	{ BUILDING_CONSCRIPTION , 		500, 	300, 	0, 		30, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
+	{ BUILDING_GOLDMINERS, 			250, 	250, 	10, 	40,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
 
-	{ BUILDING_CONSCRIPTION , 		10, 	40, 	0, 		5, 		2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
-	{ BUILDING_GOLDMINERS, 			50, 	10, 	1, 		7,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
+	{ BUILDING_ASSISTANT_VILLAGER, 	1000, 	1000, 	0, 		60,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
+	{ BUILDING_VILLAGER_EDUCATION, 	2000, 	2000, 	0, 		70,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
 
-	{ BUILDING_ASSISTANT_VILLAGER, 	50, 	10, 	1, 		7,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
-	{ BUILDING_VILLAGER_EDUCATION, 	50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
-
-	{ BUILDING_STRONGHOLDS, 		50, 	10, 	1, 		7,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
-	{ BUILDING_HOARDINGS, 			50, 	10, 	1, 		7,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
-	{ BUILDING_EXQUISITE_HOUSING, 	50, 	10, 	1, 		7,		16, 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
+	{ BUILDING_STRONGHOLDS, 		500, 	500, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
+	{ BUILDING_HOARDINGS, 			1000, 	2000, 	0, 		50,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
+	{ BUILDING_EXQUISITE_HOUSING, 	5000, 	5000, 	10, 	70,		16, 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
 };					
 
 static const char CivName[][] =		
@@ -6415,9 +6448,22 @@ public Action Building_PlaceSummoner(int client, int weapon, const char[] classn
 
 public bool Building_Summoner(int client, int entity)
 {
+	SetDefaultValuesToZeroNPC(entity);
+	b_BuildingHasDied[entity] = false;
+	b_CantCollidieAlly[entity] = true;
+	i_IsABuilding[entity] = true;
+	b_NoKnockbackFromSources[entity] = true;
+	b_NpcHasDied[entity] = true;
+	BarracksCheckItems(client);
 	WoodAmount[client] = 50.0;
 	FoodAmount[client] = 100.0;
 	GoldAmount[client] = 0.0;
+	if(CvarInfiniteCash.BoolValue)
+	{
+		WoodAmount[client] = 99999.0;
+		FoodAmount[client] = 99999.0;
+		GoldAmount[client] = 9999.0;
+	}
 	TrainingIn[client] = 0.0;
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
@@ -6447,14 +6493,15 @@ public bool Building_Summoner(int client, int entity)
 	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_summoner");
-	Building_cannot_be_repaired[entity] = true;
+	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
 	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
-	SetDefaultValuesToZeroNPC(entity);
-	b_FUCKYOU_move_anim[entity] = false;
 	SDKHook(client, SDKHook_PreThink, Barracks_BuildingThink);
+	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
+	SetVariantInt(SentryHealAmountExtra);
+	AcceptEntityInput(entity, "AddHealth");
 	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
@@ -6523,8 +6570,18 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 				//BELOW IS SET ONCE!
 				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
 				Building_Constructed[entity] = true;
-				
+				/*
+				if((i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_TOWER))
+				{
+					SetEntityModel(entity, "models/props_manor/clocktower_01.mdl");
+					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.11);
+				}
+				else
+				{
+				*/
 				SetEntityModel(entity, SUMMONER_MODEL);
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.15);
+				//}
 				
 				static const float minbounds[3] = {-20.0, -20.0, 0.0};
 				static const float maxbounds[3] = {20.0, 20.0, 30.0};
@@ -6627,7 +6684,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[owner], TrainingIndex[owner], SupplyCost);
-						Barracks_UpdateEntityUpgrades(owner, npc);
+						Barracks_UpdateEntityUpgrades(owner, npc, true, true); //make sure upgrades if spawned, happen on full health!
 
 
 						if(TrainingQueue[owner] != -1)
@@ -6638,6 +6695,10 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 							if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 							{
 								trainingTime *= 0.75;
+							}
+							if(CvarInfiniteCash.BoolValue)
+							{
+								trainingTime = 0.0;
 							}
 							TrainingIn[owner] = TrainingStartedIn[owner] + trainingTime;
 							TrainingQueue[owner] = -1;
@@ -6669,12 +6730,23 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 			{
 				ResearchIn[owner] = 0.0;
 
-				/*
-					Artvin TODO, add effect when research is done
-					GetRData(CivType[owner], ResearchIndex[owner], UpgradeIndex)
-					GetRData(CivType[owner], ResearchIndex[owner], GiveHexArray)
-					GetRData(CivType[owner], ResearchIndex[owner], GiveClient)
-				*/
+				int Get_GiveHexArray;
+				int Get_GiveClient;
+			//	GetRData(CivType[owner], ResearchIndex[owner], UpgradeIndex);
+				Get_GiveHexArray = GetRData(CivType[owner], ResearchIndex[owner], GiveHexArray);
+				Get_GiveClient = GetRData(CivType[owner], ResearchIndex[owner], GiveClient);
+				
+				if(Get_GiveHexArray == 1)
+				{
+					i_NormalBarracks_HexBarracksUpgrades[owner] |= Get_GiveClient;
+					Store_SetNamedItem(owner, "Barracks Hex Upgrade 1", i_NormalBarracks_HexBarracksUpgrades[owner]);
+				}
+				else if(Get_GiveHexArray == 2)
+				{
+					i_NormalBarracks_HexBarracksUpgrades_2[owner] |= Get_GiveClient;
+					Store_SetNamedItem(owner, "Barracks Hex Upgrade 2", i_NormalBarracks_HexBarracksUpgrades_2[owner]);
+				}
+				Barracks_UpdateAllEntityUpgrades(owner);
 			}
 		}
 
@@ -6749,7 +6821,16 @@ static void SummonerMenu(int client, int viewer)
 	char buffer1[256];
 	char buffer2[64];
 	int options;
-
+	int options_unitMax = 3;
+	
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
+	{
+		options_unitMax += 1;
+	}
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
+	{
+		options_unitMax += 1;
+	}
 	if(b_InUpgradeMenu[viewer])
 	{
 		itemsAddedToList = 2;
@@ -6757,13 +6838,15 @@ static void SummonerMenu(int client, int viewer)
 		if(ResearchIn[client])
 		{
 			float gameTime = GetGameTime();
-			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f%%)\n ", BuildingUpgrade_Names[GetRData(CivType[client], ResearchIndex[client], UpgradeIndex)],
+			FormatEx(buffer1, sizeof(buffer1), "Researching %t... (%.0f%%)", BuildingUpgrade_Names[GetRData(CivType[client], ResearchIndex[client], UpgradeIndex)],
 				100.0 - ((ResearchIn[client] - gameTime) * 100.0 / (ResearchIn[client] - ResearchStartedIn[client])));
 			
 			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			menu.AddItem(buffer1, "Cancel Research\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		}
 		else
 		{
+			menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			menu.AddItem(buffer1, "\n ", owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		}
 		
@@ -6772,14 +6855,102 @@ static void SummonerMenu(int client, int viewer)
 		{
 			if(GetRData(CivType[client], i, TrainLevel) > level)
 				continue;
+
+			int Get_GiveHexArray = GetRData(CivType[client], i, GiveHexArray);
+			int Get_GiveClient = GetRData(CivType[client], i, GiveClient);
+
+			//check if we already down the upgrade!
+			if(Get_GiveHexArray == 1)
+			{
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & Get_GiveClient)
+				{
+					continue;
+				}
+			}
+			else if(Get_GiveHexArray == 2)
+			{
+				if(i_NormalBarracks_HexBarracksUpgrades_2[client] & Get_GiveClient)
+				{
+					continue;
+				}
+			}
+
+			int Get_RequirementHexArray;
+			int Get_Requirement;
+			int Get_RequirementHexArray_2;
+			int Get_Requirement_2;
+
+			Get_RequirementHexArray = GetRData(CivType[client], i, RequirementHexArray);
+			Get_Requirement = GetRData(CivType[client], i, Requirement);
+			Get_RequirementHexArray_2 = GetRData(CivType[client], i, Requirement2HexArray);
+			Get_Requirement_2 = GetRData(CivType[client], i, Requirement2);
+			bool poor;
 			
+			if(ResearchIn[client])
+			{
+				poor = true;
+			}
 			/*
-				Artvan do whatever requirements mean because what the fuc
-				GetRData(CivType[client], i, RequirementHexArray)
-				GetRData(CivType[client], i, Requirement)
-				GetRData(CivType[client], i, Requirement2HexArray)
-				GetRData(CivType[client], i, Requirement2)
+			PrintToServer("Name: %t", BuildingUpgrade_Names[GetRData(CivType[client], i, UpgradeIndex)]);
+			PrintToServer("Get_RequirementHexArray %i", Get_RequirementHexArray);
+			PrintToServer("Get_Requirement %i", Get_Requirement);
+			PrintToServer("Get_RequirementHexArray2 %i", Get_RequirementHexArray);
+			PrintToServer("Get_Requirement2 %i", Get_Requirement_2);
+
+			PrintToServer("i_NormalBarracks_HexBarracksUpgrades[client] %i", i_NormalBarracks_HexBarracksUpgrades[client]);
+			PrintToServer("i_NormalBarracks_HexBarracksUpgrades_2[client] %i", i_NormalBarracks_HexBarracksUpgrades_2[client]);
 			*/
+			if(Get_RequirementHexArray > 0 && Get_Requirement > 0)
+			{
+				if(Get_RequirementHexArray == 1)
+				{
+					if(i_NormalBarracks_HexBarracksUpgrades[client] == 0) //whatever requirement exists, they do not match it.
+					{
+						continue;
+					}
+					if(!(i_NormalBarracks_HexBarracksUpgrades[client] & Get_Requirement))
+					{
+						continue;
+					}
+				}
+				else
+				{
+					if(i_NormalBarracks_HexBarracksUpgrades_2[client] == 0) //whatever requirement exists, they do not match it.
+					{
+						continue;
+					}
+					if(!(i_NormalBarracks_HexBarracksUpgrades_2[client] & Get_Requirement))
+					{
+						continue;
+					}					
+				}
+			}
+			
+			if(Get_RequirementHexArray_2 > 0 && Get_Requirement_2 > 0)
+			{
+				if(Get_RequirementHexArray_2 == 1)
+				{
+					if(i_NormalBarracks_HexBarracksUpgrades[client] == 0) //whatever requirement exists, they do not match it.
+					{
+						continue;
+					}
+					if(!(i_NormalBarracks_HexBarracksUpgrades[client] & Get_Requirement_2))
+					{
+						continue;
+					}
+				}
+				else
+				{
+					if(i_NormalBarracks_HexBarracksUpgrades_2[client] == 0) //whatever requirement exists, they do not match it.
+					{
+						continue;
+					}
+					if(!(i_NormalBarracks_HexBarracksUpgrades_2[client] & Get_Requirement_2))
+					{
+						continue;
+					}					
+				}
+			}
 			
 			bool ShowingDesc = false;
 			if(GetEntityFlags(viewer) & FL_DUCKING)
@@ -6811,27 +6982,21 @@ static void SummonerMenu(int client, int viewer)
 			}
 
 			IntToString(i, buffer2, sizeof(buffer2));
-			bool poor = (!alive ||
-				WoodAmount[client] < GetRData(CivType[client], i, WoodCost) ||
-				FoodAmount[client] < GetRData(CivType[client], i, FoodCost) ||
-				GoldAmount[client] < GetRData(CivType[client], i, GoldCost));
+			if(!poor)
+			{
+				poor = (!alive ||
+					WoodAmount[client] < GetRData(CivType[client], i, WoodCost) ||
+					FoodAmount[client] < GetRData(CivType[client], i, FoodCost) ||
+					GoldAmount[client] < GetRData(CivType[client], i, GoldCost));
+					
+			}
 
 			itemsAddedToList++;
 			menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			if(++options > 3)
+			if(++options >= 6)
 				break;
 		}
 
-		//Upgrade menu list:
-		/*
-		//MELEE PERKS
-		#define ZR_UNIT_UPGRADES_COPPER_SMITH			(1 << 1)
-		#define ZR_UNIT_UPGRADES_IRON_CASTING			(1 << 2)
-		#define ZR_UNIT_UPGRADES_STEEL_CASTING			(1 << 3)
-		//NEED DONJON MINUMUM:
-		#define ZR_UNIT_UPGRADES_REFINED_STEEL			(1 << 4)
-		in order
-		*/
 	}
 	else
 	{
@@ -6872,7 +7037,44 @@ static void SummonerMenu(int client, int viewer)
 		{
 			if(GetSData(CivType[client], i, TrainLevel) > level)
 				continue;
-			
+
+			bool poor;
+
+
+			int ResearchRequirement_internal = GetSData(CivType[client], i, ResearchRequirement);
+			if(ResearchRequirement_internal > 0)
+			{
+				if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ResearchRequirement_internal))
+				{
+					continue;
+				}
+			}
+			if(ResearchRequirement_internal & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
+			{
+				if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
+				{
+					//dont train more then one at a time
+					poor = true;
+				}
+				else
+				{
+					for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+					{
+						int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+
+						if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
+						{
+							BarrackBody npc = view_as<BarrackBody>(entity_close);
+							if(GetClientOfUserId(npc.OwnerUserId) == client)
+							{
+								poor = true;
+								break;
+							}
+						}
+					}					
+				}
+			}
+
 			bool ShowingDesc = false;
 			if(GetEntityFlags(viewer) & FL_DUCKING)
 			{
@@ -6902,14 +7104,19 @@ static void SummonerMenu(int client, int viewer)
 			}
 
 			IntToString(i, buffer2, sizeof(buffer2));
-			bool poor = (!alive ||
-				WoodAmount[client] < GetSData(CivType[client], i, WoodCost) ||
-				FoodAmount[client] < GetSData(CivType[client], i, FoodCost) ||
-				GoldAmount[client] < GetSData(CivType[client], i, GoldCost));
+			if(!poor)
+			{
+				poor = (!alive ||
+					WoodAmount[client] < GetSData(CivType[client], i, WoodCost) ||
+					FoodAmount[client] < GetSData(CivType[client], i, FoodCost) ||
+					GoldAmount[client] < GetSData(CivType[client], i, GoldCost));
+			}
 
 			itemsAddedToList += 1;
 			menu.AddItem(buffer2, buffer1, poor ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			if(++options > 3)
+
+
+			if(++options > options_unitMax)
 				break;
 		}
 	}
@@ -7029,6 +7236,10 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							ResearchIndex[client] = item;
 							ResearchStartedIn[client] = GetGameTime();
 							ResearchIn[client] = ResearchStartedIn[client] + float(GetRData(CivType[client], item, TrainTime));
+							if(CvarInfiniteCash.BoolValue)
+							{
+								ResearchIn[client] = GetGameTime(); 
+							}
 							
 							WoodAmount[client] -= woodcost;
 							FoodAmount[client] -= foodcost;
@@ -7108,10 +7319,24 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static int GetSupplyLeft(int client)
+
+int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 {
 	int userid = GetClientUserId(client);
-	int personal = i_BarricadesBuild[client] * 3 / 2;
+	int personal ;
+	if(!ignore_barricades)
+	{
+		personal = i_BarricadesBuild[client] * 3 / 2;
+		if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+		{
+			if(personal > MaxBarricadesAllowed(client)) //even if you build a barricade, it will allow you to get 1 more unit.
+			{
+				personal = MaxBarricadesAllowed(client) - 1;
+			}
+		}
+	}
+
+
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
@@ -7120,7 +7345,7 @@ static int GetSupplyLeft(int client)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId == userid)
 			{
-				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION)
 				{
 					if(i_NpcInternalId[npc.index] != BARRACKS_VILLAGER)
 					{
@@ -7136,15 +7361,42 @@ static int GetSupplyLeft(int client)
 			}
 		}
 	}
-
+	
 	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
 	{
-		personal -= 1;
-		if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING))
-			personal += 1;
+		personal += 1;
+		if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+			personal -= 1;
 	}
 
+	if(personal < 0)
+	{
+		personal = 0;
+	}
+
+	return personal;
+}
+
+static int GetSupplyLeft(int client)
+{
+	int personal = ActiveCurrentNpcsBarracks(client);
 	return 3 + Rogue_Barracks_BonusSupply() - personal;
+}
+
+static int BarricadeMaxSupply(int client)
+{
+	int Barricades_Active = i_BarricadesBuild[client];
+	//4 at max
+	int personalalive = ActiveCurrentNpcsBarracks(client, true);
+
+	Barricades_Active += RoundToCeil((float(personalalive) * 1.1));
+
+	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+	{
+		Barricades_Active -= 1; //allow to always have build atelast 1 barricade when getting this upgrade, unless you have glass builder.
+	}
+
+	return Barricades_Active;
 }
 
 static bool AtMaxSupply(int client)
@@ -7187,7 +7439,6 @@ void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const flo
 		TeleportEntity(prop2,origin,angles,velocity);
 	}
 }
-
 
 void Barracks_BuildingThink(int client)
 {
@@ -7243,49 +7494,15 @@ void Barracks_BuildingThink(int client)
 	}
 	int ValidEnemyToTarget = GetClosestTarget(npc.index, true, MaximumDistance, true, _, _ ,pos, true,_,_,true, MinimumDistance);
 	
-	if(!b_FUCKYOU_move_anim[building]) //apply health multi.
-	{
-		float healthMult = 1.35;
-		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)
-		{
-			healthMult *= 1.35;
-			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
-		}
-		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)
-		{
-			healthMult *= 1.5;
-			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
-		}
-		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
-		{
-			healthMult *= 2.0;
-			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_DONJON;
-		}
-		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
-		{
-			healthMult *= 3.0;
-			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_KREPOST;
-		}
-		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
-		{
-			healthMult *= 4.0;
-			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_CASTLE;
-		}
-		SetEntProp(building, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(building, Prop_Data, "m_iHealth")) * healthMult));
-		SetEntProp(building, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(building, Prop_Data, "m_iMaxHealth")) * healthMult));
-		Building_Repair_Health[building] = GetEntProp(building, Prop_Data, "m_iMaxHealth");
-		Building_Max_Health[building] = GetEntProp(building, Prop_Data, "m_iMaxHealth");
-		b_FUCKYOU_move_anim[building] = true;
-	}
 	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
 	{
 		if(mounted)
 		{
-			DoHealingOcean(client, client, (500.0 * 500.0), 2.0, true);
+			DoHealingOcean(client, client, (500.0 * 500.0), 0.5, true);
 		}
 		else
 		{
-			DoHealingOcean(building, building, (500.0 * 500.0), 2.0, true);
+			DoHealingOcean(building, building, (500.0 * 500.0), 0.5, true);
 		}
 	}
 	if(IsValidEnemy(client, ValidEnemyToTarget))
@@ -7347,7 +7564,7 @@ void Barracks_BuildingThink(int client)
 			
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
 			{
-				vecTarget = PredictSubjectPositionForProjectiles(npc, ValidEnemyToTarget, projectile_speed, 75.0);
+				vecTarget = PredictSubjectPositionForProjectiles(npc, ValidEnemyToTarget, projectile_speed, 55.0);
 				if(!Can_I_See_Enemy_Only(npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
 					vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
@@ -7362,8 +7579,10 @@ void Barracks_BuildingThink(int client)
 			EmitSoundToAll("weapons/bow_shoot.wav", npc.index, _, 70, _, 0.9, 100);
 
 			//npc.m_flDoingSpecial is damage, see above.
-			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 75.0);
+			b_IsAlliedNpc[npc.index] = true;
+			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 55.0);
 			npc.m_iOverlordComboAttack -= 1;
+			b_IsAlliedNpc[npc.index] = false;
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
 			{
@@ -7390,12 +7609,9 @@ void Barracks_BuildingThink(int client)
 			{
 				if(!i_BuildingRecievedHordings[Building_hordings]) 
 				{
-					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hBuilder") == client)
+					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hBuilder") == client && Building_Constructed[Building_hordings])
 					{
-						SetEntProp(Building_hordings, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iHealth")) * 1.25));
-						SetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth")) * 1.25));
-						Building_Repair_Health[Building_hordings] *= 1.25;
-						Building_Max_Health[Building_hordings] *= 1.25;
+						SetBuildingMaxHealth(Building_hordings, 1.25, false, true);
 						i_BuildingRecievedHordings[Building_hordings] = true;					
 					}
 				}
@@ -7431,10 +7647,7 @@ void BuildingHordingsRemoval(int entity)
 					{
 						if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hBuilder") == owner)
 						{
-							SetEntProp(Building_hordings, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iHealth")) * 0.75));
-							SetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(Building_hordings, Prop_Data, "m_iMaxHealth")) * 0.75));
-							Building_Repair_Health[entity] *= 0.75;
-							Building_Max_Health[entity] *= 0.75;
+							SetBuildingMaxHealth(Building_hordings, 1.25, true, false);
 							i_BuildingRecievedHordings[Building_hordings] = false;					
 						}
 					}
@@ -7446,8 +7659,8 @@ void BuildingHordingsRemoval(int entity)
 		{
 			if(i_BuildingRecievedHordings[player.m_iTowerLinked]) 
 			{
-				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) * 0.75));
-				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) * 0.75));
+				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) / 1.25));
+				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) / 1.25));
 				i_BuildingRecievedHordings[player.m_iTowerLinked] = false;
 			}			
 		}

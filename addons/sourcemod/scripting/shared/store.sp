@@ -4444,6 +4444,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
+	Barracks_UpdateAllEntityUpgrades(client);
 
 	Manual_Impulse_101(client, health);
 }
@@ -5208,7 +5209,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_SpikeLayer(client, entity);
-		Barracks_UpdateAllEntityUpgrades(client);
 #endif
 
 #if defined RPG

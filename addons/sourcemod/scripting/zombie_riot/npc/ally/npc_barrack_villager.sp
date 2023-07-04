@@ -317,15 +317,16 @@ public void BarrackVillager_ClotThink(int iNPC)
 				}
 				case Villager_Command_StandNearTower:
 				{
-					IngoreBarracksCommands = true;
 					if(BarracksVillager_RepairSelfTower(npc.index, BuildingAlive))
 					{
+						IngoreBarracksCommands = true;
 						//uhhh....
 					}
 					else
 					{
 						if(BuildingAlive > 0)
 						{
+							IngoreBarracksCommands = true;
 							float BuildingPos[3];
 							GetEntPropVector(BuildingAlive, Prop_Data, "m_vecOrigin", BuildingPos);
 							int Closest_Building = GetClosestBuildingVillager(npc.index, BuildingPos, (750.0 * 750.0));
@@ -388,10 +389,9 @@ public void BarrackVillager_ClotThink(int iNPC)
 				}
 				case Villager_Command_RepairFocus:
 				{
-					IngoreBarracksCommands = true;
 					if(BarracksVillager_RepairSelfTower(npc.index, BuildingAlive))
 					{
-
+						IngoreBarracksCommands = true;
 					}
 					else
 					{
@@ -429,6 +429,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						}
 						else
 						{
+							IngoreBarracksCommands = true;
 							BarracksVillager_RepairBuilding(npc.index, Closest_Building);
 							//building found thats hurt, repair.
 						}
@@ -469,7 +470,7 @@ bool BarracksVillager_RepairSelfTower(int entity, int tower)
 		return false;
 	}
 	bool BuldingCanBeRepaired = false;
-	if(flDistanceToTarget < (25.0*25.0))
+	if(flDistanceToTarget < (50.0*50.0))
 	{
 		BuldingCanBeRepaired = true;
 		npc.FaceTowards(BuildingPos, 10000.0); //build.
@@ -517,7 +518,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 	//we have no building to repair! ahh!
 	//be lazy :)
 	bool BuldingCanBeRepaired = false;
-	if(flDistanceToTarget < (25.0*25.0))
+	if(flDistanceToTarget < (50.0*50.0))
 	{
 		BuldingCanBeRepaired = true;
 		npc.FaceTowards(BuildingPos, 10000.0); //build.
