@@ -11,14 +11,17 @@
 	"Silvester And Blue Goggles Arrived."
 	{
 		"en" 		"Silvester And Blue Goggles Arrived."
+		"ru" 		"Сильвестр и Блу Гогглз прибыли."
 	}
 	"Nemesis Arrived."
 	{
 		"en" 		"Nemesis, the original Xeno infector arrived."
+		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
 	}
 	"Arkantos Arrived"
 	{
 		"en" 		"The Atlantean and great leader Arkantos arrived."
+		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
 	}
 	"Blitzkrieg Spawn"
 	{

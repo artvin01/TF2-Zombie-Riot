@@ -126,7 +126,7 @@
 	"Combine Golden Collos"
 	{
 		"en" 		"Combine Golden Collos"
-		"ru" 		"Золотой коллос комбайнов"
+		"ru" 		"Золотой комбайн-коллос"
 		"pt"		"Soldado do Coliseu Doudado da Combine"
 		"nl"		"Combine Gouden Colossus"
 	}
@@ -409,7 +409,7 @@
 	"Xeno Combine Golden Collos"
 	{
 		"en" 		"Xeno Combine Golden Collos"
-		"ru" 		"Ксенокомбайн золотой коллос"
+		"ru" 		"Золотой ксенокомбайн-коллос"
 		"pt"		"Xeno Combine Colossus Dourado"
 		"nl"		"Xeno Combine Gouden Colossus"
 	}
@@ -606,7 +606,7 @@
 	"Combine Mage"
 	{
 		"en" 		"Combine Mage"
-		"ru" 		"Комбайн маг"
+		"ru" 		"Комбайн-маг"
 		"pt"		"Mago da Combine"
 		"nl"		"Combine Magier"
 	}
@@ -655,10 +655,12 @@
 	"Golden Bloon"
 	{
 		"en" 		"Golden Bloon"
+		"ru" 		"Золотой шар"
 	}
 	"Bloonarius"
 	{
 		"en" 		"Bloonarius"
+		"ru" 		"Шариус"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -1157,305 +1159,368 @@
 	{
 		"en"		"Iku Nagae"
 		"de"		"Iku Nagae"
+		"ru"		"Ику Нагаэ"
 	}
 	"Mecha Soldier Barrager"
 	{
 		"en"		"Mecha Soldier Barrager"
 		"de"		"Machine Soldat Spammer"
+		"ru"		"Меха-солдат-бомбардир"
 	}
 	"Nearl Radiant Sword"
 	{
 		"en"		"Nearl Radiant Sword"
+		"ru"		"Лучезарный меч Нерл"
 	}
 	"Spawned Combine"
 	{
 		"en"		"Spawned Combine"
+		"ru"		"Созданный комбайн"
 	}
 	"Spawned Father Grigori"
 	{
 		"en"		"Spawned Father Grigori"
+		"ru"		"Созданный отец Григорий"
 	}
 	"Spawned Blue Goggles"
 	{
 		"en"		"Spawned Blue Goggles"
+		"ru"		"Созданный Блу Гогглз"
 	}
 	"Silvester"
 	{
 		"en"		"Silvester"
+		"ru"		"Сильвестр"
 	}
 	"Blue Goggles"
 	{
 		"en"		"Blue Goggles"
+		"ru"		"Блу Гогглз"
 	}
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
+		"ru"		"Угловатый Сильвестр"
 	}
 	"Nemesis"
 	{
 		"en"		"Nemesis"
+		"ru"		"Немезид"
 	}
 	"Shell Sea Runner"
 	{
 		"en"		"Shell Sea Runner"
+		"ru"		"Морской бегун из ракушек"
 		"chi"		"壳海狂奔者"
 	}
 	"Nourished Runner"
 	{
 		"en"		"Nourished Runner"
+		"ru"		"Сытый бегун"
 		"chi"		"富营养的狂奔者"
 	}
 	"Deep Sea Slider"
 	{
 		"en"		"Deep Sea Slider"
+		"ru"		"Глубоководный ползун"
 		"chi"		"底海滑动者"
 	}
 	"Nourished Slider"
 	{
 		"en"		"Nourished Slider"
+		"ru"		"Сытый ползун"
 		"chi"		"富营养的滑动者"
 	}
 	"Ridge Sea Spitter"
 	{
 		"en"		"Ridge Sea Spitter"
+		"ru"		"Хребтовый морской плевальщик"
 		"chi"		"脊海喷吐者"
 	}
 	"Nourished Spitter"
 	{
 		"en"		"Nourished Spitter"
+		"ru"		"Сытый плевальщик"
 		"chi"		"富营养的喷吐者"
 	}
 	"Basin Sea Reaper"
 	{
 		"en"		"Basin Sea Reaper"
+		"ru"		"Бассейновый жнец"
 		"chi"		"钵海收割者"
 	}
 	"Nourished Reaper"
 	{
 		"en"		"Nourished Reaper"
+		"ru"		"Сытый жнец"
 		"chi"		"富营养的收割者"
 	}
 	"Pocket Sea Crawler"
 	{
 		"en"		"Pocket Sea Crawler"
+		"ru"		"Карманный морской краулер"
 		"chi"		"囊海爬行者"
 	}
 	"Nourished Crawler"
 	{
 		"en"		"Nourished Crawler"
+		"ru"		"Сытый краулер"
 		"chi"		"富营养的爬行者"
 	}
 	"Primal Sea Piercer"
 	{
 		"en"		"Primal Sea Piercer"
+		"ru"		"Первобытный морской пронзатель"
 		"chi"		"始海穿刺者"
 	}
 	"Nourished Piercer"
 	{
 		"en"		"Nourished Piercer"
+		"ru"		"Сытый пронзатель"
 		"chi"		"富营养的穿刺者"
 	}
 	"The First To Talk"
 	{
 		"en"		"The First To Talk"
+		"ru"		"Первый говорящий"
 		"chi"		"首言者"
 	}
 	"Sal Viento Bishop Quintus"
 	{
 		"en"		"Sal Viento Bishop Quintus"
+		"ru"		"Сал Вьенто Епископ Квинт"
 		"chi"		"盐风主教昆图斯"
 	}
 	"Armorless Union Knight"
 	{
 		"en"		"Armorless Union Knight"
+		"ru"		"Рыцарь из «Союза без брони»"
 		"chi"		"无名独立骑士"
 	}
 	"Roar Knightclub Trainee"
 	{
 		"en"		"Roar Knightclub Trainee"
+		"ru"		"Ученик из «Рыцарского клуба \"Рев\"»"
 		"chi"		"呼啸骑士团学徒"
 	}
 	"Bloodboil Knightclub Trainee"
 	{
 		"en"		"Bloodboil Knightclub Trainee"
+		"ru"		"Ученик из «Рыцарского клуба \"Кровавый котёл\"»"
 		"chi"		"沸血骑士团学徒"
 	}
 	"Armorless Union Cleanup Squad"
 	{
 		"en"		"Armorless Union Cleanup Squad"
+		"ru"		"Отряд зачистки из «Союза без брони»"
 		"chi"		"无胄盟清扫小队"
 	}
 	"Consumable Remains"
 	{
 		"en"		"Consumable Remains"
+		"ru"		"Потребляемые остатки"
 	}
 	"The Endspeaker, Will of We Many"
 	{
 		"en"		"The Endspeaker, Will of We Many"
+		"ru"		"Говорящий с концом, воля многих из нас"
 		"chi"		"屠谕者，大群意志"
 	}
 	"Nethersea Founder"
 	{
 		"en"		"Nethersea Founder"
+		"ru"		"Основатель низинного моря"
 		"chi"		"深溟奠基者"
 	}
 	"Nourished Founder"
 	{
-		"en"		"Nethersea Founder"
+		"en"		"Nourished Founder"
+		"ru"		"Сытый основатель"
 		"chi"		"富营养的奠基者"
 	}
 	"Regressed Founder"
 	{
 		"en"		"Regressed Founder"
+		"ru"		"Откатывающийся основатель"
 		"chi"		"退行的奠基者"
 	}
 	"Nethersea Predator"
 	{
 		"en"		"Nethersea Predator"
+		"ru"		"Хищник низинного моря"
 		"chi"		"深溟猎食者"
 	}
 	"Nourished Predator"
 	{
 		"en"		"Nourished Predator"
+		"ru"		"Сытый хищник"
 		"chi"		"富营养的猎食者"
 	}
 	"Regressed Predator"
 	{
 		"en"		"Regressed Predator"
+		"ru"		"Откатывающийся хищник"
 		"chi"		"退行的猎食者"
 	}
 	"Nethersea Brandguider"
 	{
 		"en"		"Nethersea Brandguider"
+		"ru"		"Наводчик головёшек низинного моря"
 		"chi"		"深溟引痕者"
 	}
 	"Nourished Brandguider"
 	{
 		"en"		"Nourished Brandguider"
+		"ru"		"Сытый наводчик головёшек"
 		"chi"		"富营养的引痕者"
 	}
 	"Regressed Brandguider"
 	{
 		"en"		"Regressed Brandguider"
+		"ru"		"Откатывающийся наводчик головёшек"
 		"chi"		"退行的引痕者"
 	}
 	"Armorless Union Assassin"
 	{
 		"en"		"Armorless Union Assassin"
+		"ru"		"Убийца из «Союза без брони»"
 		"chi"		"无胄盟刺客"
 	}
 	"Nethersea Spewer"
 	{
 		"en"		"Nethersea Spewer"
+		"ru"		"Изрыгатель низинного моря"
 		"chi"		"深溟喷溅者"
 	}
 	"Nourished Spewer"
 	{
 		"en"		"Nourished Spewer"
+		"ru"		"Сытый изрыгатель"
 		"chi"		"富营养的喷溅者"
 	}
 	"Regressed Spewer"
 	{
 		"en"		"Regressed Spewer"
+		"ru"		"Откатывающийся изрыгатель"
 		"chi"		"退行的喷溅者"
 	}
 	"Nethersea Swarmcaller"
 	{
 		"en"		"Nethersea Swarmcaller"
+		"ru"		"Вызыватель роя низинного моря"
 		"chi"		"深溟巢涌者"
 	}
 	"Nourished Swarmcaller"
 	{
 		"en"		"Nourished Swarmcaller"
+		"ru"		"Сытый вызыватель роя"
 		"chi"		"富营养的巢涌者"
 	}
 	"Regressed Swarmcaller"
 	{
 		"en"		"Regressed Swarmcaller"
+		"ru"		"Откатывающийся вызыватель роя"
 		"chi"		"退行的巢涌者"
 	}
 	"Nethersea Reefbreaker"
 	{
 		"en"		"Nethersea Reefbreaker"
+		"ru"		"Рифоразрушитель низинного моря"
 		"chi"		"深溟裂礁者"
 	}
 	"Nourished Reefbreaker"
 	{
 		"en"		"Nourished Reefbreaker"
+		"ru"		"Сытый рифоразрушитель"
 		"chi"		"富营养的裂礁者"
 	}
 	"Regressed Reefbreaker"
 	{
 		"en"		"Regressed Reefbreaker"
+		"ru"		"Откатывающийся рифоразрушитель"
 		"chi"		"退行的裂礁者"
 	}
 	"Thorns"
 	{
 		"en"		"Thorns"
+		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
 	"God Arkantos"
 	{
 		"en"		"God Arkantos"
+		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"
+		"ru"		"Разведчик Seaborn"
 	}
 	"Seaborn Soldier"
 	{
 		"en"		"Seaborn Soldier"
+		"ru"		"Солдат Seaborn"
 	}
 	"Seaborn Pyro"
 	{
 		"en"		"Seaborn Pyro"
+		"ru"		"Поджигатель Seaborn"
 	}
 	"Seaborn Demoman"
 	{
 		"en"		"Seaborn Demoman"
+		"ru"		"Подрывник Seaborn"
 	}
 	"Seaborn Heavy"
 	{
 		"en"		"Seaborn Heavy"
+		"ru"		"Пулемётчик Seaborn"
 	}
 	"Seaborn Engineer"
 	{
 		"en"		"Seaborn Engineer"
+		"ru"		"Инженер Seaborn"
 	}
 	"Seaborn Medic"
 	{
 		"en"		"Seaborn Medic"
+		"ru"		"Медик Seaborn"
 	}
 	"Seaborn Sniper"
 	{
 		"en"		"Seaborn Sniper"
+		"ru"		"Снайпер Seaborn"
 	}
 	"Seaborn Spy"
 	{
 		"en"		"Seaborn Spy"
+		"ru"		"Шпион Seaborn"
 	}
 	"Citizen"
 	{
 		"en"		"Citizen"
+		"ru"		"Горожанин"
 	}
 	"Barracks Railgunner"
 	{
 		"en"		"Railgunner"
+		"ru"		"Рельсотроновик"
 	}
 	"Barracks Basic Mage"
 	{
 		"en"		"Basic Medic Mage"
+		"ru"		"Базовый маг-медик"
 	}
 	"Barracks Intermediate Mage"
 	{
 		"en"		"Intermediate Medic Mage"
+		"ru"		"Средний маг-медик"
 	}
 	"Barracks Ikunagae"
 	{
 		"en"		"Iku Nagae"
-		
-		
 		"de"		"Iku Nagae"
+		"ru"		"Ику Нагаэ"
 	}
 	"Barracks SchwertKrieg"
 	{
@@ -1480,44 +1545,54 @@
 	{
 		"en"		"Mecha Soldier Barrager"
 		"de"		"Machine Soldat Spammer"
+		"ru"		"Меха-солдат-бомбардир"
 	}
 	"Barracks Barrager"
 	{
 		"en"		"Barrager"
+		"ru"		"Бомбардир"
 	}
 	"Barracks Berserker"
 	{
 		"en"		"Berserker"
+		"ru"		"Берсерк"
 	}
 	"Barracks Crossbow Medic"
 	{
 		"en"		"Medic Crossbowman"
+		"ru"		"Медик-арбалетчик"
 	}
 	"The Last Knight"
 	{
 		"en"		"The Last Knight"
+		"ru"		"Последний рыцарь"
 		"chi"		"最后的骑士"
 	}
 	"Tide-Hunt Knight"
 	{
 		"en"		"Tide-Hunt Knight"
+		"ru"		"Рыцарь приливной охоты"
 		"chi"		"猎潮的骑士"
 	}
 	"Saint Carmen"
 	{
 		"en"		"Saint Carmen"
+		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 	}
 	"Barracks Teutonic Knight"
 	{
 		"en"		"Teutonic Knight"
+		"ru"		"Тевтонский рыцарь"
 	}
 	"Barracks Villager"
 	{
 		"en"		"Villager"
+		"ru"		"Житель"
 	}
 	"Barracks Building"
 	{
 		"en"		"Tower"
+		"ru"		"Башня"
 	}
 }

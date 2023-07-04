@@ -4,82 +4,102 @@
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
+		"ru"		"Архетип: Мультивыстрел"
 	}
 	"Rapid Fire"
 	{
 		"en"		"Archetype: Rapid Fire"
+		"ru"		"Архетип: Быстрый огонь"
 	}
 	"Single Pellet"
 	{
 		"en"		"Archetype: Single Pellet"
+		"ru"		"Архетип: Одиночный выстрел"
 	}
 	"Infinite Fire"
 	{
 		"en"		"Archetype: Infinite Fire"
+		"ru"		"Архетип: Бесконечный огонь"
 	}
 	"Trap Master"
 	{
 		"en"		"Archetype: Trap Master"
+		"ru"		"Архетип: Ловчий"
 	}
 	"Far Range"
 	{
 		"en"		"Archetype: Far Range"
+		"ru"		"Архетип: Дальняя дальность"
 	}
 	"Explosive Mind"
 	{
 		"en"		"Archetype: Explosive Mind"
+		"ru"		"Архетип: Взрывной разум"
 	}
 	"Team Support"
 	{
 		"en"		"Archetype: Team Support"
+		"ru"		"Архетип: Командная поддержка"
 	}
 	"Debuff"
 	{
 		"en"		"Archetype: Debuff"
+		"ru"		"Архетип: Ослабление"
 	}
 	"Brawler"
 	{
 		"en"		"Archetype: Brawler"
+		"ru"		"Архетип: Боец"
 	}
 	"Ambusher"
 	{
 		"en"		"Archetype: Ambusher"
+		"ru"		"Архетип: Засадник"
 	}
 	"Combatant"
 	{
 		"en"		"Archetype: Combatant"
+		"ru"		"Архетип: Комбатант"
 	}
 	"Aberration"
 	{
 		"en"		"Archetype: Aberration"
+		"ru"		"Архетип: Аберрация"
 	}
 	"Duelist"
 	{
 		"en"		"Archetype: Duelist"
+		"ru"		"Архетип: Дуэлянт"
 	}
 	"Lord"
 	{
 		"en"		"Archetype: Lord"
+		"ru"		"Архетип: Лорд"
 	}
 	"Crusher"
 	{
 		"en"		"Archetype: Crusher"
+		"ru"		"Архетип: Дробитель"
 	}
 	"Summoner"
 	{
 		"en"		"Archetype: Summoner"
+		"ru"		"Архетип: Призыватель"
 	}
 	"Chain Caster"
 	{
 		"en"		"Archetype: Chain Caster"
+		"ru"		"Архетип: Мастер цепей"
 	}
 	"Multi Caster"
 	{
 		"en"		"Archetype: Multi Caster"
+		"ru"		"Архетип: Мультизаклинатель"
 	}
 	"Base Caster"
 	{
 		"en"		"Archetype: Base Caster"
+		"ru"		"Архетип: Базовый заклинатель"
 	}
 	"Syringe Gun Desc"
 	{
@@ -116,6 +136,7 @@
 	"Sniper Rifle Pap 3"
 	{
 		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
+		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона.\nНекоторые очки могут ещё больше увелич. урон при полном заряде."
 		"chi"       "昂贵的超级升级，5发子弹一次造成极端伤害。\n有些护目镜在充满电时可能会进一步增加伤害。"
 	}
 	"Sniper Rifle Pap 4"
@@ -229,13 +250,13 @@
 	"Grenade Launcher Pap 2"
 	{
 		"en"		"Reduced damage and attackspeed."
-		"ru"		"Увеличенный урон и скорость атаки."
+		"ru"		"Уменьшенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 3"
 	{
 		"en"		"Sligthty increased damage and massively increased attackspeed and reload speed."
-		"ru"		"Увеличенный урон и крупно увеличенная скорости атаки и скорости перезарядки."
+		"ru"		"Немного увеличенный урон и крупно увеличенная скорость атаки и перезарядки."
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
 	
@@ -312,7 +333,7 @@
 	"The Pomson 7000 Desc"
 	{
 		"en"		"Rapid fire laser gun!\nTurns to Primary!"
-		"ru"		"Скорострельная лазерная пушка!"
+		"ru"		"Скорострельная лазерная пушка!\nПревращается в основное!"
 		"chi"       "快速激光枪!"
 	}
 	"The Pomson 7000 Pap 1"
@@ -338,6 +359,7 @@
 	"Marksman Rifle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.\nArchetype changes to ''Explosive Mind''"
+	    "ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные.\nАрхетип меняется на «Взрывной разум»"
 	}
 	
 	"Quad Launcher Desc"
@@ -396,6 +418,7 @@
 	"Star Shooter Desc"
 	{
 		"en"	"Sure, Brain, but where are you going to get enough stars for this?\nYour M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
+		"ru"	"Конечно, Мозг, но где ты достанешь достаточно звёзд для этого?\nВремя восст. M1 покажет вам, через какое время она снова будет восстанавливаться.\nБольше перегрев означает меньший урон."
 		"chi"   "当然，兄弟，但你要去哪里弄到足够的星星呢?你射击时，冷却时间会告诉你它多久才会再次冷却。更高的过热意味着更少的伤害。"
 	}
 	
@@ -409,6 +432,7 @@
 	"Elite Sniper Desc"
 	{
 		"en"	"Trained monkeys master the skills of bouncing bullets, which will go from target to target, killing them.\nDeals 1.5x dmg during raids."
+		"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага.\nНаносят 1,5х урона во время рейдов."
 		"chi"   "经过训练的猴子掌握了弹跳子弹的技能，子弹会从一个目标射到另一个目标，杀死它们。\n在突袭中造成1.5倍伤害。"
 		
 	}
@@ -458,7 +482,7 @@
 	"The Cow Mangler 6000 Pap 1"
 	{
 		"en"	"Increased damage and attackspeed and max ammo"
-		"ru"	"Увеличенный урон и скорость атаки."
+		"ru"	"Увеличенный урон и скорость атаки и боезапас."
 		"chi"   "增加伤害和攻击速度。"
 	}
 	
@@ -472,7 +496,7 @@
 	"Neutronstar Burst Cannon Desc"
 	{
 		"en"	"Strong for both single and multi target, more targets hit = less damage though.\nDoes more dmg the farther you are, cannot charge."
-		"ru"	"Сильна как для одной, так и для нескольких целей, больше поражённых целей = меньше урона.\nНаносит больше урона, чем дальше вы находитесь, не может заряжаться."
+		"ru"	"Сильна как для одной, так и для нескольких целей, больше поражённых целей = меньше урона.\nУрон зависит от дальности, не может заряжаться."
 		"chi"   "对单目标和多目标都很强大，击中的目标越多=伤害越少\n距离越远=伤害越高，不能给超量充能。"
 	}
 	
@@ -569,6 +593,7 @@
 	"SMG Pap 4"
 	{
 		"en"	"Increased damage and attackspeed, Removes clip, infinite clip size.\nArchetype changes to ''Infinite Fire''"
+	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы.\nАрхетип меняется на «Бесконечный огонь»"
 	}
 	"SMG Pap 5"
 	{
@@ -598,7 +623,7 @@
 	"Medigun Desc"
 	{
 		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 15%% resistance during heal."
-		"ru"	"Сверхлечение постоянное, лечит союзников и может использовать убер-заряд на них. Лечение союзников лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и сопротивления во время лечения."
+		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 15%% сопр. во время лечен."
 		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%%的伤害和抗性。"
 	}
 	
@@ -669,6 +694,7 @@
 	"Riot Gun Desc"
 	{
 		"en"	"Press M2 Nearby enemies to stun them and gain massively increased attackspeed and damage for upto 10 hit targets.\nTake less damage from attacks you look at, bosses and raids pierce it by half.\nSpeedcola reduces ability cooldown."
+		"ru"	"Нажав М2 вблизи врагов, вы оглушите их и получ. увелич. скорость атаки и нанесёте урон 10 целям.\nПолучайте меньше урона от атак, на которые вы смотрите, боссы и рейды пробивают его наполовину.\nБыстрокола уменьш. время восст. способн."
 		"chi"   "按M2击晕附近的敌人，并为最多10个命中的目标大幅提高攻击速度和伤害。\n从你看到的攻击中受到更少的伤害，boss和突袭穿透它一半。极速可乐减少技能冷却时间。"
 	}
 	"Riot Gun Pap 1"
@@ -718,7 +744,7 @@
 	"Knife Pap 2"
 	{
 		"en"	"No Backstab, Increased damage, gain additional Short Effects via [M1].\nArchetype changes to ''Combatant''"
-		"ru"	"Крошечный удар в спину, увеличенный урон, получение доп. коротких эффектов на [М1]."
+		"ru"	"Нет удара в спину, увеличенный урон, получение доп. коротких эффектов на [М1].\nАрхетип меняется на «Комбатант»"
 		"chi"   "增加少量的背刺伤害，增加普攻伤害，通过攻击获得额外的短效果"
 	}
 	"Knife Pap 3"
@@ -738,14 +764,17 @@
 	"Hammer Pap 1"
 	{
 		"en"	"Increased damage"
+		"ru"	"Увеличенный урон."
 	}
 	"Hammer Pap 2"
 	{
 		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\nArchetype changes to ''Crusher''"
+	    "ru"	"Увеличенный урон и сниженная скорость атаки.\nВаши атаки настолько сильны, что вызывают взрывы.\nАрхетип меняется на «Дробитель»"
 	}
 	"Hammer Pap 3"
 	{
 		"en"	"Increased damage"
+		"ru"	"Увеличенный урон."
 	}
 	
 	"Fire Axe Desc"
@@ -763,6 +792,7 @@
 	"Fire Axe Pap 2"
 	{
 		"en"	"Increased damage and attackspeed"
+		"ru"	"Увеличенный урон, скорость атаки."
 	}
 	
 	"Survivalist Blade Desc"
@@ -805,7 +835,7 @@
 	"Fractured Ark Desc"
 	{
 		"en"	"A legendary blade with magical properties, can parry with m2\nParry to get weak projectiles."
-		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2."
+		"ru"	"Легендарный клинок с магическими свойствами, может парировать с помощью М2.\nПарируйте, чтобы отбить слабые снаряды."
 		"chi"   "一把具有魔法属性的传奇剑，可以用m2格挡"
 	}
 	"Fractured Ark Pap 1"
@@ -829,7 +859,7 @@
 	"Longsword Desc"
 	{
 		"en"	"5%% extra melee resistance"
-		"ru"	"5%% дополнительного сопротивления ближнему бою."
+		"ru"	"5%% доп. сопр. атакам ближнего боя."
 		"chi"   "5%%额外近战抗性"
 	}
 	"Longsword Pap 1"
@@ -854,6 +884,7 @@
 	"Speed Fists Of Speed Desc"
 	{
 		"en"	"Attack incredibly fast, cause bleed for 8 seconds on attack."
+		"ru"	"Атакует невероятно быстро, при атаке вызывает кровотеч. на 8 сек."
 	}
 	"Speed Fists Of Speed Pap 1"
 	{
@@ -884,13 +915,13 @@
 	"Medusa Teslar Stick Desc"
 	{
 		"en"	"Causes bleed, 5%% extra melee resistance. Causes debuff on enemy which slows them down and makes them take more damage, 25%% more dmg takes for affected enemies."
-		"ru"	"Вызывает кровотечение, 5%% доп. сопр. в ближнем бою. Накладывает на врага эффект, который замедляет его и заставляет получать больше урона."
+		"ru"	"Вызывает кровотечение, 5%% доп. сопр. в ближнем бою. Накладыв. на врага эфф., который замедл. его и заставл. получ. больше урона, на 25%% больше урона получ. поражённые враги."
 		"chi"   "对敌人造成流血，额外获得5%%近战抗性。对敌人造成负面效果，使敌人减速并受到更多伤害"
 	}
 	"Medusa Teslar Stick Pap 1"
 	{
 		"en"	"Increased damage and attackspeed, Debuff is massively stronger, enemies will take 35%% more dmg."
-		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее."
+		"ru"	"Увеличенный урон и скорость атаки, эффект значительно сильнее, враги получают на 35%% больше урона."
 		"chi"   "增加伤害和攻击速度，负面效果大大增强。"
 	}
 	
@@ -942,6 +973,7 @@
 	"Cryo Staff Desc"
 	{
 		"en"	"Will freeze enemies with enough dmg.\nM2 triggers a shockwave at your location\nWhich deals massively increased damage to frozen zombies.\nAnd freeze enemies if dealing enough damage, if frozen, damage buff is 2x as effective."
+		"ru"	"Замораживает врагов при достаточн. кол-ве урона.\nM2 - вызывает небольшую ударную волну,\nкоторая наносит замороженным зомби значительно больший урон.\nИ замораживает врагов, если нанести достаточно урона. По замороженным = 2x урон."
 	}
 	"Cryo Staff Pap 1"
 	{
@@ -979,6 +1011,7 @@
 	"Lightning Staff Pap 3"
 	{
 		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time.\nArchetype changes to ''Chain Caster''"
+		"ru"	"Значительно увеличенный урон.\nВаша способность изменяется на двойную заряженную, случайную атаку, многоударную цепную атаку молнией.\nВаша атака также будет цепной по 4 врагам, но атаковать в 3 раза медленнее, каждая атака будет сильно замедлять врага на короткое время.\nАрхетип меняется на «Мастер цепей»"
 	}
 	
 	"Beam Wand Desc"
@@ -1127,11 +1160,13 @@
 	"Wrench Desc"
 	{
 		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench."
+		"ru"	"Ремонтирует постройки и турели, имейте при себе для присвоения построек, работает с любым гаечным ключом."
 		"chi"   "修理建筑物和哨兵，用任何扳手工作。"
 	}
 	"Builder Extra Gear Desc"
 	{
 		"en"	"Extra Menu for builders!"
+		"ru"	"Доп. меню для строителя!"
 		"chi"   "建造师的额外装备(用鼠标滚轮打开)"
 	}
 	
@@ -1159,6 +1194,7 @@
 	"Buildable Barricade Desc Rogue"
 	{
 		"en"	"You get 2 free barricades each fight, you can only place 2 at once due to this."
+		"ru"	"Вы получаете 2 бесплатные баррикады в каждом бою, но из-за этого вы можете поставить только 2 баррикады одновременно."
 	}
 	
 	"Buildable Armortable Desc"
@@ -1185,6 +1221,7 @@
 	"Buildable Pack-a-Punch Desc"
 	{
 		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price.\nIf any other player with more upgrades then you exists that also has a pap, then they will get the majority of the cash."
+		"ru"	"Использование этой машины даст вам усиление вашему оружию за кредиты.\nПервая покупка стоит вдвое дороже.\nЕсли у любого другого игрока, у которого больше улучшений, чем у вас, также есть улучшайзер, то он получит большую часть денег."
 	}
 	
 	"Buildable Sentry Desc"
@@ -1211,6 +1248,7 @@
 	"Buildable Healing Station Desc"
 	{
 		"en"	"Heals for 30 Health, scales with medigun upgrades."
+		"ru"	"Лечит на 30 ед. здоровья, увеличивается с улучшением лечеб. пушки."
 		"chi"   "治疗30点生命值，随着武器升级而增加。"
 	}
 	
@@ -1273,7 +1311,7 @@
 	"Bob's Enhancer Desc"
 	{
 		"en"	"1.65x increased Melee Damage, +22 HP on kill and +600 HP, +7%% melee resistance with melee equipped"
-	//	"ru"	"Двукратное увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+7%%的近战抗性"
 	}
 	
@@ -1526,13 +1564,14 @@
 	"Panic Attack Desc"
 	{
 		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive.\nPassive healing wont work if your holding weapon has this effect, such as ocean song, but still give buffs."
+		"ru"	"Вы атакуете на 15%% медл., но чем меньше у вас здор., тем быстрее вы атакуете, до 25%% быстрее, не работает, если вы посл. выживший.\nПассивное лечение не работает, если оружие имеет этот эфф. (напр. песня океана), но всё равно даёт усиления."
 		"chi"   "你的攻击速度会慢15%，但是你的血量越低，你的攻击速度就越快\n最快25%，对最后一个活着的人不起作用。\n如果你的手持武器有这个效果，被动治疗将不起作用，比如海洋之歌，但仍然给予buff。"
 	}
 	
 	"Barbarians Mind Desc"
 	{
 		"en"	"Your melee will deal 10%% more damage, and you will take 5%% less damage overall, but all your other weapons will be completely useless and deal NO damage."
-		"ru"	"Ваше оружие ближнего боя будет наносить на 10%% больше урона, и вы будете получать на 5%% меньше урона в целом, но всё остальное оружие будет совершенно бесполезным и не будет наносить НИКАКОГО урона."
+		"ru"	"Ваше оружие ближн. боя будет нанос. на 10%% больше урона, и вы будете получ. на 5%% меньше урона в целом, но всё остальн. оружие будет совершенно бесполезным и не будет нанос. НИКАКОГО урона."
 		"chi"   "你的近战伤害将增加10%%，但你的其他伤害将减少5%%，你的所有非近战武器将完全无用，不会造成伤害。"
 	}
 	
@@ -1678,22 +1717,25 @@
 	"Fusion Blade Pap 1"
 	{
 		"en"	"Active a long cooldown m2 ability.\nWhich buffs your damage and abit less resistance by 15%%, and allies by 10%% this stacks with 2 on eachother.\nThis works with allied npcs aswell."
-		"ru"	"Активирует способность на M2 с длительным временем восстановления.\nКоторая увеличивает ваш урон и сопротивление на 15%%, а союзников на 10%%, при этом эффект накапливается по 2 на каждого.\nТакже действует на дружественных NPC."
+		"ru"	"Активирует способность на M2 с длительным временем восст.\nКоторая увелич. ваш урон и сопр. на 15%%, а союзников на 10%%, при этом эфф. накаплив. по 2 на каждого.\nТакже действует на дружественных NPC."
 		"chi"   "按右键可以激活技能，但冷却时间较长。\n可以提高你的一点伤害和增大15%%的伤害抗性，队友可以获得10%%的增益(可叠加)。\n这也适用于友方npc。"
 	}
 	"Fusion Blade Pap 1.5"
 	{
 		"en"	"Increased damage."
+		"ru"	"Увеличение урона."
 		"chi"   "增加伤害。"
 	}
 	"Fusion Blade Pap 2"
 	{
 		"en"	"More damage and 5%% melee resistance."
+		"ru"	"Больше урона и 5%% сопр. ближнему бою."
 		"chi"   "更多的伤害和5%的近战抗性。"
 	}
 	"Fusion Blade Pap 3"
 	{
 		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration''"
+		"ru"	"M2 способность меняется.\nПоместите гигантский меч перед собой, нанося урон.\nОглушает всех врагов в радиусе действия.\nВы получаете крупные усиления.\nУдар по врагам фокусирующим мечом, даёт 2x урона.\nАрхетип меняется на «Аберрация»"
 	}
 
 	
@@ -1712,13 +1754,13 @@
 	"Tornado Blitz Desc Spam2"
 	{
 		"en"	"We may be approaching the upper limit of what our technology can do at this point\nBut we must press on\nWe increased the cooling of the launcher to achieve even more potent kinetic Nano-rockets\nOh also you can switch between barrage mode and standard with mouse2\nBe ware barrage mode is less rocket efficient\nEnjoy!"
-		"ru"	"Возможно, мы приближаемся к самому пределу возможностей нашей технологии на данный момент\nНо мы должны продолжать\nМы увеличили охлаждение ракетомёта, чтобы получить ещё более мощные кинетические наноракеты\nНаслаждайтесь!"
+		"ru"	"Возможно, мы приближаемся к самому пределу возможностей нашей технологии на данный момент\nНо мы должны продолжать\nМы увеличили охлаждение ракетомёта, чтобы получить ещё более мощные кинетические наноракеты\nТакже вы можете переключаться между стандартным и режимом залпа с помощью M2\nРежим залпа менее эффективен.\nНаслаждайтесь!"
 		"chi"   "在这一点上，我们可能已经接近了我们技术的上限，但我们必须继续努力，我们增加了发射装置的冷却，以实现更强大的动能纳米火箭，享受!"
 	}
 	"Tornado Blitz Desc Spam3"
 	{
 		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nBarrage was also made more powerfull\nWe have no idea if this is safe, however it is still quite potent."
-		"ru"	"Мы не несём ответственности за то, что может вызвать это чудовище\nМы добавили охлаждение жидким азотом, чтобы увеличить эффективность наноракеты\nМы не знаем, безопасно ли это, однако она всё ещё достаточно мощная."
+		"ru"	"Мы не несём ответственности за то, что может вызвать это чудовище\nМы добавили охлаждение жидким азотом, чтобы увеличить эффективность наноракеты\nРежим залпа также стал более мощным\nМы не знаем, безопасно ли это, однако она всё ещё достаточно мощная."
 		"chi"   "我们对这个怪物可能造成的后果不负责，我们已经添加了液氮冷却来提高纳米火箭的效率，我们不知道这是否安全，但它仍然相当有效。"
 	}
 	"The Street Fighter Desc"
@@ -1817,6 +1859,7 @@
 	"Alchemist Potion Pap 9"
 	{
 		"en"	"M2 now is able to shrink enemies, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
+		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление и заставляя наносить меньше урона.\nБоссы будут снимать этот эффект через несколько секунд, а рейды ещё быстрее."
 	}
 
 	"Crusader Desc"
@@ -1829,7 +1872,7 @@
 	"Buildable Barracks Desc"
 	{
 		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troops to give more commands."
-		"ru"	"Позволяет обучать союзников, чтобы они сражались за вас.\nРемонт даёт больше ресурсов.\nУлучшение строения даёт более сильных союзников.\nНажмите R на своих войсках для командования."
+		"ru"	"Позволяет обучать союзников.\nРемонт даёт больше ресурсов.\nУлучшение строения даёт более сильных союзников.\nНажмите R на своих войсках для командования."
 		"chi"   "允许训练战士为你而战。\n建筑修复属性升级会影响这一点。\n建筑升级属性提供更强大的战士。在你的战士上按R键可以发出更多命令。"
 	}
 	"Militia Desc"
@@ -1889,7 +1932,7 @@
 	"Monk Desc"
 	{
 		"en"	"Provides AOE damage around it but lacks self defense"
-		"ru"	"Исцеляет всех союзников вокруг себя, но не имеет самозащиты"
+		"ru"	"Наносит урон вокруг себя, но не имеет самозащиты"
 		"chi"   "在周围提供AOE伤害，但缺乏自我防御"
 	}
 	"Hussar Desc"
@@ -1901,6 +1944,7 @@
 	"Thorns Desc"
 	{
 		"en"	"Takes 3 supply, high damage, health, and range."
+		"ru"	"Требует 3 ед. припасов, высокий урон, прочность и дальность."
 	}
 	"Fish Melee Desc"
 	{
@@ -1911,192 +1955,236 @@
 	"Lantean Staff Desc"
 	{
 		"en" 	"Wherever you look, the drones fly\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control"
+		"ru" 	"Куда бы вы ни посмотрели, туда полетят дроны\nПри превышении 10 дронов жезл перегружается, что означает, что они наносят меньше урона, и их труднее контролировать."
 		"chi"   "无论你往哪里看，无人机都在飞。超过10架无人机会让魔杖过度充电，这意味着它们造成的伤害更小，也更难控制"
 	}
 	"Lantean Staff Desc pap"
 	{
 		"en"	"Your drones can now penetrate more enemies\nLess damage loss on overcharge"
+		"ru"	"Теперь ваши дроны могут пробивать больше врагов\nМеньше потери урона при перегрузке."
 		"chi"   "你的无人机现在可以穿透更多的敌人，但在过度充能时伤害损失更少"
 	}
 	"Specter Pap 1"
 	{
 		"en"	"Attacks slower but hits two targets at once.\nArchetype changes to ''Crusher''"
+		"ru"	"Атакует медленнее, но поражает сразу две цели.\nАрхетип меняется на «Дробитель»"
 		"chi"   "攻击速度较慢，但能同时击中两个目标"
 	}
 	"Specter Pap 2a"
 	{
 		"en"	"Attacks a third target"
+		"ru"	"Атакует третью цель."
 		"chi"   "可以同时攻击三个目标"
 	}
 	"Specter Pap 2b"
 	{
 		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards"
+		"ru"	"Получает способность становиться нематериальным, но теряет всю прочность и оглушается после этого."
 		"chi"   "获得无形的技能，但会失去所有生命值，之后会被击晕"
 	}
 	"Specter Pap 3"
 	{
 		"en"	"Grants the effect of the previous unbought upgrade"
+		"ru"	"Даёт эффект предыдущего некупленного улучшения."
 		"chi"   "获得先前未购买升级的效果"
 	}
 	"Specter Pap 4"
 	{
 		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt"
+		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
 		"chi"   "增加伤害，并获得自我复活能力，如果造成足够的伤害"
 	}
 	"Specter Pap 5"
 	{
 		"en"	"Replaces ability from being intangible to triple damage, resistance, and attack a 4th target\nHealth is only lost when attacking enemies with a lower precent health than you, otherwise deal bonus damage\nYou do more dmg, and take less damage."
+		"ru"	"Заменяет способность от нематериальности на тройной урон, сопротивление и атаку 4-й цели\nПрочность теряется только при атаке врагов с меньшим процентом здоровья, чем у вас, иначе наносится бонусный урон\nВы наносите больше урона и получаете меньше урона."
 		"chi"   "将技能从无形变为三倍伤害，抗性，攻击第4个目标\n生命值只在攻击比你生命值低的敌人时损失，否则造成额外伤害\n你造成更多伤害，会使你受到更少伤害。"
 	}
 	"Lantean Staff Desc pap2"
 	{
-		"en"	"Your drones can now penetrate even more targets\nLess damge loss on penetration\nLower damage penatly on overcharge too"
+		"en"	"Your drones can now penetrate even more targets\nLess damage loss on penetration\nLower damage penalty on overcharge too"
+		"ru"	"Теперь ваши дроны могут пробивать ещё больше целей\nМеньше потери урона при пробивании\nМеньше уменьшения урона при перегрузке тоже"
 		"chi"   "你的无人机现在可以穿透更多的目标，更少的穿透伤害损失，更低的充能伤害"
 	}
 	"Yamato_Desc"
 	{
 		"en"	"Each time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist\nArchetype changes to ''Duelist''"
+		"ru"	"Каждый раз, когда вы нанос. урон, вы получ. «Мотивацию», которая исп. как источник энергии для ваших способн.\nR: Перекл. между «Вызванными мечами» и «Спиральными мечами»\nУдерж. ПКМ, чтобы выстрелить вызванными мечами во врагов!\nВы теряете 10%% сопротивления к повреждениям в ближнем бою\nАрхетип меняется на «Дуэлист»"
 	}
 	"Preaching Sword Desc"
 	{
 		"en"	"A quick attacking cheap sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
+		"ru"	"Быстрый атакующий дешёвый меч с повышенной стоимостью при продаже.\nПри нанесении смерт. урона врагу наносится крит. ранение.\nУбитые критически раненые враги дают перезарядку времени восстановл. на 1 сек."
 		"chi"   "一个快速攻击的廉价剑，增加了卖回价值。造成致命伤害会对敌人造成重伤。杀死重伤的敌人提供1秒的冷却时间。"
 	}
 	"Preaching Sword Pap 1"
 	{
 		"en"	"Gains an ability that deals 320%% of damage to 6 nearby enemies and all enemies with Critically Wounded.\nCritically Wounded debuff now provides two seconds cooldown recharge."
+		"ru"	"Получает способность, которая наносит 320%% урона 6 ближайшим врагам и всем врагам с критическим ранением.\nЭфф. крит. ранения теперь перезаряжает время восстановл. на 2 сек."
 		"chi"   "获得一种技能，对附近的6个敌人和所有重伤的敌人造成320%的伤害。\n重伤debuff现在提供2秒的冷却时间。"
 	}
 	"Preaching Sword Pap 2"
 	{
 		"en"	"Ability gains a third charge, decreased recharge time, and deals 400%% damage.\nProvides 10 health regeneration while not taking damage."
+		"ru"	"Способность получает третий заряд, уменьшает время перезарядки и наносит 400%% урона.\nПолучает 10 восст. здоровья, пока не получает урон."
 		"chi"   "技能获得第三次充能，减少充能时间，造成400%%伤害。\n在不受伤害的情况下提供10点生命回复。"
 	}
 	"Spike Layer Pap 1"
 	{
-		"en"	"Faster Attackspeed, Spike limit increaces, damage increaces slightly."
+		"en"	"Faster Attackspeed, Spike limit increases, damage increases slightly."
+		"ru"	"Более высокая скорость атаки, лимит шипов увеличивается, урон немного увеличивается."
 	}
 	"Throwable Repair Grenade Desc"
 	{
 		"en"	"Throw a grenade that repairs buildings near it over time.\nBuilder upgrades affect it.\nMay require wrench to be equipped to fully work.\nGives buildings 25% damage resistance while in range."
+		"ru"	"Бросает гранату, которая со временем ремонт. постройки рядом с ней.\nУлучш. построек влияют на неё.\nМожет потреб. гаечный ключ в руках для полноценной работы.\nДаёт постройкам 25% сопр. урону, пока они находятся в радиусе действия."
 		"chi"   "投掷一枚手榴弹，随着时间的推移可以修复附近的建筑物。\n建筑升级会影响它。可能需要配备扳手才能完全工作。在有效射程内给予建筑物25%的伤害抗性。"
 	}
 	"Beam Wand pap Alt 1"
 	{
 		"en"	"Have you ever wondered what it would be like to fire 2 laser beams?\nWell, wonder-no-more!\nHold Mouse1 to attack\nOnce charge is full press Mouse2 to use it!"
+		"ru"	"Вы когда-нибудь задумывались, каково это - стрелять двумя лазерными лучами?\nНу, теперь это реальность!\nУдерж. ЛКМ для атаки\n, при полном заряде нажмите ПКМ для использования!"
 		"chi"   "你有没有想过发射两束激光会是什么样子?\n 左键攻击\n一旦充能完毕，按右键使用它!"
 	}
 	"Beam Wand pap Alt 2"
 	{
-		"en"	"So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot piecre multiple targets!"
+		"en"	"So, you want more power?\nIntroducing the ''Particle Cannon''tm\nPress RELOAD to switch between the particle Beam/Cannon\nThe particle cannon also has its own Mouse2 ability\nParticle cannon cannot pierce multiple targets!"
+		"ru"	"Итак, вы хотите больше мощности?\nПредставляем «Нейтронная пушка»tm\nНажмите ПЕРЕЗАРЯДКУ для перекл. между нейтронным лучом/пушкой\nНейтронная пушка также имеет свою собственную способность на ПКМ\nНейтронная пушка не может пробить несколько целей!"
 		"chi"   "所以，你想要更大的力量?\n介绍“粒子炮”\n按R在粒子束/炮之间切换\n粒子炮也有自己的鼠标右键技能\n粒子炮不能拼接多个目标!"
 	}
 	"Dragon Fury PAP 1"
 	{
-		"en"	"Increaced damage"
+		"en"	"Increased damage"
+		"ru"	"Увеличение урона."
 	}
 	"Sticky Support Grenades Desc"
 	{
 		"en"	"Your extra equipment grenades will now instantly stick on where they land instead of rolling."
+		"ru"	"Гранаты для дополнительного снаряжения теперь будут мгновенно прилипать к месту приземления, а не катиться."
 	}
 	"The Enforcer Desc"
 	{
 		"en"	"Doubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
+		"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 2 цели, расходует одну обойму на каждую поражённую цель."
 	}
 	"The Enforcer Pap 1"
 	{
 		"en"	"Increased ability knockback by +5%% and can hit up to 3 targets"
+		"ru"	"Увеличение отдачи способности на +5%% и может поразить до 3 целей."
 	}
 	"The Enforcer Pap 2"
 	{
 		"en"	"Increased ability knockback by +5%% and can hit up to 5 targets"
+		"ru"	"Увеличение отдачи способности на +5%% и может поразить до 5 целей."
 	}
 	"The Enforcer Pap 3"
 	{
 		"en"	"Increased ability knockback by +10%% and can hit up to 8 targets"
+		"ru"	"Увеличение отдачи способности на +10%% и может поразить до 8 целей."
 	}
 	"The Enforcer Pap 4"
 	{
 		"en"	"Increased ability knockback by +10%% and can hit up to 10 targets"
+		"ru"	"Увеличение отдачи способности на +10%% и может поразить до 10 целей."
 	}
 	"The Enforcer Pap 5"
 	{
 		"en"	"Increased ability knockback by +20%%"
+		"ru"	"Увеличение отдачи способности на +20%%."
 	}
 	"The Enforcer Pap 6"
 	{
 		"en"	"Increased ability knockback by +25%%"
+		"ru"	"Увеличение отдачи способности на +25%%."
 	}
 	"The Enforcer Pap 7"
 	{
 		"en"	"Increased ability knockback by +25%%"
+		"ru"	"Увеличение отдачи способности на +25%%."
 	}
 	"The Enforcer Pap 8"
 	{
 		"en"	"Increased ability knockback by +50%%"
+		"ru"	"Увеличение отдачи способности на +50%%."
 	}
 	"The Enforcer Pap 9"
 	{
 		"en"	"Increased ability knockback by +50%%"
+		"ru"	"Увеличение отдачи способности на +50%%."
 	}
 	"The Enforcer Pap 10"
 	{
 		"en"	"Increased ability knockback by +50%%"
+		"ru"	"Увеличение отдачи способности на +50%%."
 	}
 	"The Enforcer Pap 11"
 	{
 		"en"	"Increased ability knockback by +50%%"
+		"ru"	"Увеличение отдачи способности на +50%%."
 	}
 	"The Enforcer Pap 12"
 	{
 		"en"	"Increased ability knockback by +100%%"
+		"ru"	"Увеличение отдачи способности на +100%%."
 	}
 	"Mlynar Sword Desc"
 	{
 		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
+		"ru"	"Урон на 30%% и на 50%% меньше, отдача на 10% медл.\nВы не можете нормально атаковать и отражаете урон во врагов в зависимости от своего урона.\nВы накапл. урон, стоя рядом с врагами и получая повреждения.\nУ оружия нет спада урона на расстоянии при большем кол-ве поражённых врагов."
 	}
 	"Barracks Railgunner Desc"
 	{
 		"en"	"A long ranged Sniper unit, fragile!"
+		"ru"	"Дальнобойный снайперский боец, хрупкий!"
 	}
 	"Barracks Basic Mage Desc"
 	{
 		"en"	"A magic medic, fragile, but deadly!"
+		"ru"	"Волшебный медик, хрупкий, но смертоносный!"
 	}
 	"Barracks Intermediate Mage Desc"
 	{
 		"en"	"A stronger variant of the basic mage, just as deadly, but just as fragile!"
+		"ru"	"Более сильный вариант базового мага, такой же смертоносный, но такой же хрупкий!"
 	}
 	"Barracks Ikunagae Desc"
 	{
 		"en"		"A machine capable of manupulating energy, fragile, but deadly!"
+		"ru"		"Машина, способная манипулировать энергией, хрупкая, но смертоносная!"
 	}
 	"Barracks SchwertKrieg Desc"
 	{
 		"en"		"A melee medic, can teleport to targets, Heals outside of combat"
+		"ru"		"Медик ближнего боя, может телепортироваться к цели, лечит вне боя."
 	}
 	"Barracks Donnerkrieg Desc"
 	{
 		"en"		"Can shoot a powerful Laser, immobile while laser is active, fragile!"
+		"ru"		"Может стрелять мощным лазером, неподвижен, пока действует лазер, хрупкий!"
 	}
 	"Barracks Holy Knight Desc"
 	{
 		"en"		"A combine warrior, has a ranged attack"
+		"ru"		"Воин-комбайн, имеет дальнобойную атаку."
 	}
 	"Barracks Mecha Barrager Desc"
 	{
 		"en"		"A mechanical Soldier with an explosive Bison"
+		"ru"		"Механический солдат со взрывным бизоном."
 	}
 	"Barracks Barrager Desc"
 	{
 		"en"		"An upgraded variant of the barrager"
+		"ru"		"Улучшенный вариант бомбардира."
 	}
 	"Barracks Berserker Desc"
 	{
 		"en"		"A medic that gets stronger the closer to death it is"
+		"ru"		"Медик, который становится тем сильнее, чем ближе к смерти."
 	}
 	"Barracks Crossbow Medic Desc"
 	{
 		"en"		"A medic with a long ranged crusaders crossbow... fragile!"
+		"ru"		"Медик с дальнобойным арбалетом крестоносца... хрупкий!"
 	}
 }
