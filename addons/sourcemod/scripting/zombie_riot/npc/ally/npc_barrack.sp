@@ -501,7 +501,7 @@ int BarrackBody_HealthHud(BarrackBody npc, float ExtraOffset = 0.0)
 		float offesetExtra[3];
 		offesetExtra[2] += 50.0;
 		offesetExtra[2] += ExtraOffset;
-		int TextEntity = SpawnFormattedWorldText(HealthText,{0.0,0.0,50.0}, 13, HealthColour, npc.index);
+		int TextEntity = SpawnFormattedWorldText(HealthText,offesetExtra, 13, HealthColour, npc.index);
 	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
 		DispatchKeyValue(TextEntity, "font", "1");
 		npc.m_iWearable6 = TextEntity;	

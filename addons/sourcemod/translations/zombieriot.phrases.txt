@@ -2996,9 +2996,9 @@
 	}
 	"Barracks Tower Desc"
 	{
-		"en"		"You lose 1 deployment slot, but unlock more upgrades\nmore health for your building, and it defends itself."
+		"en"		"unlock more upgrades\nmore health for your building, and it defends itself."
 		//"de"		""
-		"ru"		"Вы теряете 1 ячейку развёртывания, но открываете новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
+		"ru"		"новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""

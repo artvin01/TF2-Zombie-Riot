@@ -6644,7 +6644,38 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 
 		if(TrainingIn[owner])
 		{
-			if(!AtMaxSupply(owner) && GetSupplyLeft(owner) >= GetSData(CivType[owner], TrainingIndex[owner], SupplyCost))
+			bool OwnsVillager = false;
+			bool HasupgradeVillager = false;
+			if(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex) == BARRACKS_VILLAGER)
+			{
+				if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
+				{
+					HasupgradeVillager = true;
+					if(BARRACKS_VILLAGER == GetSData(CivType[owner], TrainingIndex[owner], NPCIndex))
+					{
+						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						{
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+
+							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
+							{
+								BarrackBody npc = view_as<BarrackBody>(entity_close);
+								if(GetClientOfUserId(npc.OwnerUserId) == owner)
+								{
+									OwnsVillager = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+			int subtractVillager = 0;
+			if(!OwnsVillager && HasupgradeVillager)
+			{
+				subtractVillager = 1;
+			}
+			if((/*(!AtMaxSupply(owner) &&*/ GetSupplyLeft(owner) + subtractVillager) >= GetSData(CivType[owner], TrainingIndex[owner], SupplyCost))
 			{
 				float gameTime = GetGameTime();
 				if(TrainingIn[owner] < gameTime)
@@ -7004,7 +7035,38 @@ static void SummonerMenu(int client, int viewer)
 		menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 		if(TrainingIn[client])
 		{
-			if(AtMaxSupply(client) || GetSupplyLeft(client) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+			bool OwnsVillager = false;
+			bool HasupgradeVillager = false;
+			if(GetSData(CivType[client], TrainingIndex[client], NPCIndex) == BARRACKS_VILLAGER)
+			{
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
+				{
+					HasupgradeVillager = true;
+					if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
+					{
+						for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+						{
+							int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+
+							if(IsValidEntity(entity_close) && i_NpcInternalId[entity_close] == BARRACKS_VILLAGER)
+							{
+								BarrackBody npc = view_as<BarrackBody>(entity_close);
+								if(GetClientOfUserId(npc.OwnerUserId) == client)
+								{
+									OwnsVillager = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+			int subtractVillager = 0;
+			if(!OwnsVillager && HasupgradeVillager)
+			{
+				subtractVillager = 1;
+			}
+			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", NPC_Names[GetSData(CivType[client], TrainingIndex[client], NPCIndex)]);
 				if(i_BarricadesBuild[client])
@@ -7263,6 +7325,10 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
 								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetSData(CivType[client], item, TrainTime) / 3) : GetSData(CivType[client], item, TrainTime));
+								if(CvarInfiniteCash.BoolValue)
+								{
+									TrainingIn[client] = TrainingStartedIn[client] + 0.5;
+								}
 							}
 							else if(TrainingQueue[client] == -1)
 							{
