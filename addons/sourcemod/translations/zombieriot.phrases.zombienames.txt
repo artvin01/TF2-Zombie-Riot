@@ -1583,13 +1583,16 @@
 	"Barracks Teutonic Knight"
 	{
 		"en"		"Teutonic Knight"
+		"ru"		"Тевтонский рыцарь"
 	}
 	"Barracks Villager"
 	{
 		"en"		"Villager"
+		"ru"		"Житель"
 	}
 	"Barracks Building"
 	{
 		"en"		"Tower"
+		"ru"		"Башня"
 	}
 }
