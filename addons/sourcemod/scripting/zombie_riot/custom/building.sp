@@ -6727,6 +6727,7 @@ static void SummonerMenu(int client, int viewer)
 	{
 		menu.SetTitle("%s\n\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));	
 	}
+
 	char buffer1[256];
 	itemsAddedToList += 1;
 	menu.AddItem(NULL_STRING, CommandName[CommandMode[client]], owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -6784,7 +6785,6 @@ static void SummonerMenu(int client, int viewer)
 	}
 	else
 	{
-
 		char buffer2[64];
 		int options;
 		for(int i = GetUnitCount(CivType[client]) - 1; i >= 0; i--)

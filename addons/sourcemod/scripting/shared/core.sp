@@ -193,7 +193,6 @@ public const int RenderColors_RPG[][] =
 
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
-//ConVar tf_bot_quota;
 
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
@@ -1078,7 +1077,6 @@ public void OnPluginStart()
 	sv_cheats = FindConVar("sv_cheats");
 	nav_edit = FindConVar("nav_edit");
 	cvarTimeScale = FindConVar("host_timescale");
-//	tf_bot_quota = FindConVar("tf_bot_quota");
 
 	CvarMpSolidObjects = FindConVar("tf_solidobjects");
 	if(CvarMpSolidObjects)
@@ -1089,7 +1087,7 @@ public void OnPluginStart()
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	
-	FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
+	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
 	FindConVar("sv_tags").Flags &= ~FCVAR_NOTIFY;
 
 	sv_cheats.Flags &= ~FCVAR_NOTIFY;

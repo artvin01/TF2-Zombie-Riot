@@ -129,7 +129,7 @@ void KillFeed_EntityCreated(int entity)
 	KillIcon[entity][0] = 0;
 }
 
-stock void KillFeed_SetKillIcon(int entity, const char[] icon)
+void KillFeed_SetKillIcon(int entity, const char[] icon)
 {
 	strcopy(KillIcon[entity], sizeof(KillIcon[]), icon);
 }
@@ -163,8 +163,6 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 
 void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
-	// TODO: Possibly headshot kill icon
-
 	int botNum;
 	KillFeed feed;
 
