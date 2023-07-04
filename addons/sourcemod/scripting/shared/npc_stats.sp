@@ -1086,9 +1086,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		bool Is_Boss = true;
 #if defined ZR
-		if(IS_MusicReleasingRadio())
+		if(IS_MusicReleasingRadio() && !b_IsAlliedNpc[this.index])
 			speed_for_return *= 0.9;
 #endif
+		if(i_CurrentEquippedPerk[this.index] == 4)
+		{
+			speed_for_return *= 1.25;
+		}
 		if(!this.m_bThisNpcIsABoss)
 		{
 			
@@ -4691,6 +4695,7 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 }
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
+float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
@@ -4706,6 +4711,36 @@ public void NpcBaseThink(int iNPC)
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
+
+	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	{
+		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
+
+		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
+
+		if(b_thisNpcIsARaid[iNPC])
+		{
+			HealingAmount /= 10;
+		}
+		else if(b_thisNpcIsABoss[iNPC])
+		{
+			HealingAmount /= 2;
+		}
+		if(HealingAmount < 1)
+		{
+			HealingAmount = 1;
+		}
+
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			}
+		}
+	}
+	
 //	PlayerInIlligalStuckArea(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
@@ -7002,6 +7037,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Changed_WalkCycle[entity] = -1;
 	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
+	f_QuickReviveHealing[entity] = 0.0;
 #if defined ZR
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);

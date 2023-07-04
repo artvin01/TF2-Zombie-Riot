@@ -1395,6 +1395,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		else if(!(damagetype & DMG_SLASH))
 		{
 #if defined ZR
+			if(i_CurrentEquippedPerk[attacker] == 5)
+			{
+				damage *= 1.25;
+			}
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
 				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
@@ -1407,6 +1411,22 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage *= fl_Extra_RangedArmor[victim];
 		}
 		damage *= fl_Extra_Damage[attacker];
+		if(i_CurrentEquippedPerk[victim] == 6)
+		{
+			if(f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
+			{
+				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+				
+				float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+				
+				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
+				
+				EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 60, _, 1.0);
+
+				damage *= 0.5;
+				f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION;
+			}
+		}
 
 		//No resistances towards slash as its internal.
 

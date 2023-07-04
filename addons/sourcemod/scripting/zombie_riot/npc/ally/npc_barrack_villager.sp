@@ -168,6 +168,8 @@ public void BarrackVillager_ClotThink(int iNPC)
 						VillagerDesiredBuildLocation[npc.index][2] = 0.0;
 						npc.f_VillagerBuildCooldown = GameTime + 120.0;
 						npc.m_iTowerLinked = spawn_index;
+						BarrackVillager player = view_as<BarrackVillager>(client);
+						player.m_iTowerLinked = spawn_index;
 						if(!b_IsAlliedNpc[iNPC])
 						{
 							Zombies_Currently_Still_Ongoing += 1;

@@ -251,10 +251,8 @@ void Building_MapStart()
 }
 
 //static int RebelTimerSpawnIn;
-int Building_Repair_Health[MAXENTITIES]={0, ...};
 static int Building_Hidden_Prop[MAXENTITIES][2];
 static int Building_Hidden_Prop_To_Building[MAXENTITIES]={-1, ...};
-int Building_Max_Health[MAXENTITIES]={0, ...};
 
 
 static int i_HasSentryGunAlive[MAXTF2PLAYERS]={-1, ...};
@@ -516,6 +514,7 @@ public bool Building_Sentry(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 //	CreateTimer(0.5, Timer_DroppedBuildingWaitSentryLeveLUp, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	return true;
@@ -549,6 +548,7 @@ public bool Building_Railgun(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -584,6 +584,7 @@ public bool Building_Mortar(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -623,6 +624,7 @@ public bool Building_HealingStation(int client, int entity)
 	{
 		Building_Collect_Cooldown[entity][i] = 0.0;
 	}
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -700,6 +702,7 @@ public bool Building_DispenserWall(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -734,6 +737,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -774,6 +778,7 @@ public bool Building_AmmoBox(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -817,6 +822,7 @@ public bool Building_ArmorTable(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -862,6 +868,7 @@ public bool Building_PerkMachine(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -905,6 +912,7 @@ public bool Building_PackAPunch(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return false;
 }
 
@@ -4297,6 +4305,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
+	Barracks_UpdateAllEntityUpgrades(client);
 }
 
 public Action Building_PlaceVillage(int client, int weapon, const char[] classname, bool &result)
@@ -4346,6 +4355,7 @@ public bool Building_Village(int client, int entity)
 	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -6164,9 +6174,9 @@ static float TrainingIn[MAXTF2PLAYERS];
 static int TrainingIndex[MAXTF2PLAYERS];
 static int TrainingQueue[MAXTF2PLAYERS];
 static int CommandMode[MAXTF2PLAYERS];
-static bool FinalBuilder[MAXTF2PLAYERS];
+//bool FinalBuilder[MAXENTITIES];
 static bool MedievalUnlock[MAXTF2PLAYERS];
-static bool GlassBuilder[MAXTF2PLAYERS];
+//bool GlassBuilder[MAXENTITIES];
 static int CivType[MAXTF2PLAYERS];
 static bool b_InUpgradeMenu[MAXTF2PLAYERS];
 
@@ -6413,6 +6423,7 @@ public bool Building_Summoner(int client, int entity)
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.15);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
+	Building_Repair_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	Building_Max_Health[entity] = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_summoner");
 	Building_cannot_be_repaired[entity] = true;
@@ -6423,6 +6434,7 @@ public bool Building_Summoner(int client, int entity)
 	SetDefaultValuesToZeroNPC(entity);
 	b_FUCKYOU_move_anim[entity] = false;
 	SDKHook(client, SDKHook_PreThink, Barracks_BuildingThink);
+	Barracks_UpdateEntityUpgrades(client, entity, true);
 	
 	return true;
 }
@@ -6530,6 +6542,10 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		{
 			SupplyRateCalc *= 1.25;
 		}
+		if(i_CurrentEquippedPerk[owner] == 7)
+		{
+			SupplyRateCalc *= 1.25;
+		}
 		WoodAmount[owner] += SupplyRateCalc;
 		FoodAmount[owner] += SupplyRateCalc * 2.0; //food is gained 2x as fast
 
@@ -6538,6 +6554,10 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 		{
 			float GoldSupplyRate = SupplyRate[owner] / 1500.0;
 			if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+			{
+				GoldSupplyRate *= 1.25;
+			}
+			if(i_CurrentEquippedPerk[owner] == 7)
 			{
 				GoldSupplyRate *= 1.25;
 			}
@@ -6586,47 +6606,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
 						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetData(CivType[owner], TrainingIndex[owner], SupplyCost);
+						Barracks_UpdateEntityUpgrades(owner, npc);
 
-						if(npc > MaxClients && FinalBuilder[owner])
-						{
-							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.5;
-						}
-						if(npc > MaxClients && GlassBuilder[owner])
-						{
-							view_as<BarrackBody>(npc).BonusDamageBonus *= 1.15;
-						}
-
-						//double tap
-						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 3)
-						{
-							view_as<BarrackBody>(npc).BonusFireRate *= 0.85;
-						}
-						if(npc > MaxClients && FinalBuilder[owner])
-						{
-							view_as<BarrackBody>(npc).BonusFireRate *= 0.75;
-						}
-						//juggernog
-
-						if(npc > MaxClients && (i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
-						{
-							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.1));
-							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.1));
-						}
-						if(npc > MaxClients && i_CurrentEquippedPerk[owner] == 2)
-						{
-							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.3));
-							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.3));
-						}
-						if(npc > MaxClients && FinalBuilder[owner])
-						{
-							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 1.65));
-							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 1.65));
-						}
-						if(npc > MaxClients && GlassBuilder[owner])
-						{
-							SetEntProp(npc, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iHealth")) * 0.8));
-							SetEntProp(npc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(npc, Prop_Data, "m_iMaxHealth")) * 0.8));
-						}
 
 						if(TrainingQueue[owner] != -1)
 						{
@@ -7126,22 +7107,27 @@ void Barracks_BuildingThink(int client)
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)
 		{
 			healthMult *= 1.35;
+			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
 		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)
 		{
 			healthMult *= 1.5;
+			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
 		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
 		{
 			healthMult *= 2.0;
+			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_DONJON;
 		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
 		{
 			healthMult *= 3.0;
+			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_KREPOST;
 		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
 		{
 			healthMult *= 4.0;
+			i_EntityRecievedUpgrades[building] |= ZR_BARRACKS_UPGRADES_CASTLE;
 		}
 		SetEntProp(building, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(building, Prop_Data, "m_iHealth")) * healthMult));
 		SetEntProp(building, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(building, Prop_Data, "m_iMaxHealth")) * healthMult));
@@ -7205,7 +7191,9 @@ void Barracks_BuildingThink(int client)
 			{
 				AttackDelay *= 0.77; //attack 33% faster
 			}
-			
+			//calc upgrades for damage
+			Barracks_UnitExtraDamageCalc(npc.index, client,ArrowDamage, 1);
+
 			npc.m_flNextMeleeAttack = GameTime + AttackDelay;
 			npc.m_flDoingSpecial = ArrowDamage;
 			npc.m_iOverlordComboAttack = ArrowCount;
@@ -7271,6 +7259,16 @@ void Barracks_BuildingThink(int client)
 				}
 			}
 		}
+	}					
+	BarrackVillager player = view_as<BarrackVillager>(client);
+	if(IsValidEntity(player.m_iTowerLinked))
+	{
+		if(!i_BuildingRecievedHordings[player.m_iTowerLinked]) 
+		{
+			SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) * 1.25));
+			SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) * 1.25));
+			i_BuildingRecievedHordings[player.m_iTowerLinked] = true;
+		}			
 	}
 }	
 
@@ -7300,6 +7298,16 @@ void BuildingHordingsRemoval(int entity)
 					}
 				}
 			}
+		}
+		BarrackVillager player = view_as<BarrackVillager>(owner);
+		if(IsValidEntity(player.m_iTowerLinked))
+		{
+			if(i_BuildingRecievedHordings[player.m_iTowerLinked]) 
+			{
+				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) * 0.75));
+				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) * 0.75));
+				i_BuildingRecievedHordings[player.m_iTowerLinked] = false;
+			}			
 		}
 	}
 }

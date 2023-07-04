@@ -1453,6 +1453,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			return Plugin_Handled;
 		}
+		if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+		{
+			if(i_CurrentEquippedPerk[attacker] == 5)
+			{
+				damage *= 1.25;
+			}
+		}
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
 			damage *= 1.10;
@@ -1802,7 +1809,7 @@ float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 		damage *= 0.65;
 	}
 	float value;
-	
+
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
 	{
 		value = Attributes_FindOnPlayer(victim, 206);	// MELEE damage resitance

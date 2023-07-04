@@ -35,6 +35,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 {
 	BarrackBuilding npc = view_as<BarrackBuilding>(iNPC);
 	float GameTime = GetGameTime(iNPC);
+	int client = GetClientOfUserId(npc.OwnerUserId);
 
 	if(i_AttacksTillMegahit[iNPC] >= 255)
 	{
@@ -43,6 +44,67 @@ public void BarrackBuilding_ClotThink(int iNPC)
 			i_AttacksTillMegahit[iNPC] = 300;
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+		}
+		float MinimumDistance = 100.0;
+
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
+			MinimumDistance = 0.0;
+
+		float MaximumDistance = 600.0;
+		MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+
+		int ValidEnemyToTarget = GetClosestTarget(npc.index, true, MaximumDistance, true, _, _ ,pos, true,_,_,true, MinimumDistance);
+		if(IsValidEnemy(npc.index, ValidEnemyToTarget))
+		{
+			if(npc.m_flNextMeleeAttack < GameTime)
+			{
+				float ArrowDamage = 8000.0;
+				int ArrowCount = 5;
+				float AttackDelay = 5.0;
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
+				{
+					AttackDelay *= 0.77; //attack 33% faster
+				}
+				Barracks_UnitExtraDamageCalc(npc.index, client ,ArrowDamage, 1);
+				npc.m_flNextMeleeAttack = GameTime + AttackDelay;
+				npc.m_flDoingSpecial = ArrowDamage;
+				npc.m_iOverlordComboAttack = ArrowCount;
+			}
+			if(npc.m_iOverlordComboAttack > 0)
+			{
+				float vecTarget[3];
+				float projectile_speed = 1200.0;
+				
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICS)
+				{
+					vecTarget = PredictSubjectPositionForProjectiles(npc, ValidEnemyToTarget, projectile_speed, 75.0);
+					if(!Can_I_See_Enemy_Only(npc.index, ValidEnemyToTarget)) //cant see enemy in the predicted position, we will instead just attack normally
+					{
+						vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+					}
+				}
+				else
+				{
+					vecTarget = WorldSpaceCenter(ValidEnemyToTarget);
+				}
+
+
+				EmitSoundToAll("weapons/bow_shoot.wav", npc.index, _, 70, _, 0.9, 100);
+
+				//npc.m_flDoingSpecial is damage, see above.
+				int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 75.0);
+				npc.m_iOverlordComboAttack -= 1;
+
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+				{
+					DataPack pack;
+					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					pack.WriteCell(EntIndexToEntRef(arrow)); //projectile
+					pack.WriteCell(EntIndexToEntRef(ValidEnemyToTarget));		//victim to annihilate :)
+				}
+			}
 		}
 	}
 	else

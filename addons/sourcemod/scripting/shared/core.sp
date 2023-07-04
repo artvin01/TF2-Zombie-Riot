@@ -267,6 +267,9 @@ float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 float f_ClientArmorRegen[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+int i_CurrentEquippedPerk[MAXENTITIES];
+int Building_Max_Health[MAXENTITIES]={0, ...};
+int Building_Repair_Health[MAXENTITIES]={0, ...};
 
 float f_ClientReviveDelay[MAXENTITIES];
 
@@ -416,7 +419,7 @@ bool b_RocketBoomEffect[MAXENTITIES]={false, ...};
 int i_Wearable[MAXENTITIES][7];
 int i_FreezeWearable[MAXENTITIES];
 float f_WidowsWineDebuff[MAXENTITIES];
-float f_WidowsWineDebuffPlayerCooldown[MAXTF2PLAYERS];
+float f_WidowsWineDebuffPlayerCooldown[MAXENTITIES];
 float f_SpecterDyingDebuff[MAXENTITIES];
 
 int i_Hex_WeaponUsesTheseAbilities[MAXENTITIES];
@@ -454,9 +457,13 @@ int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
+bool b_HasMechanic[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
+bool FinalBuilder[MAXENTITIES];
+bool GlassBuilder[MAXENTITIES];
+bool HasMechanic[MAXENTITIES];
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
@@ -1064,6 +1071,8 @@ public void OnPluginStart()
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
+	SkyboxProps_OnPluginStart();
+	
 #if defined ZR
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 #endif	
@@ -1243,6 +1252,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
+	SkyboxProps_OnMapStart();
 	
 	MapStartResetAll();
 	
@@ -1491,6 +1501,7 @@ public void OnClientPutInServer(int client)
 	
 //	f_LeftForDead_Cooldown[client] = GetGameTime() + 100.0;
 	//do cooldown upon connection.
+	AdjustBotCount();
 	WeaponClass[client] = TFClass_Unknown;
 	f_ClientReviveDelay[client] = 0.0;
 	
@@ -2172,10 +2183,15 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 		f_HussarBuff[entity] = 0.0;
 		f_GodArkantosBuff[entity] = 0.0;
+		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
+		HasMechanic[entity] = false;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
 		i_BuildingRecievedHordings[entity] = false;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
+		FinalBuilder[entity] = false;
+		i_CurrentEquippedPerk[entity] = 0;
+		GlassBuilder[entity] = false;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		LastHitRef[entity] = -1;
@@ -2246,10 +2262,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		
-		fl_Extra_MeleeArmor[entity] 	= 1.0;
-		fl_Extra_RangedArmor[entity] 	= 1.0;
-		fl_Extra_Speed[entity] 			= 1.0;
-		fl_Extra_Damage[entity] 		= 1.0;
+		fl_Extra_MeleeArmor[entity] 		= 1.0;
+		fl_Extra_RangedArmor[entity] 		= 1.0;
+		fl_Extra_Speed[entity] 				= 1.0;
+		fl_Extra_Damage[entity] 			= 1.0;
+		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;
+		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
 
 		KillFeed_EntityCreated(entity);
 
@@ -2821,6 +2839,8 @@ public void OnEntityDestroyed(int entity)
 			i_WandIdNumber[entity] = -1;
 			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
+			
+			SkyboxProps_OnEntityDestroyed(entity);
 			
 #if defined ZR
 			OnEntityDestroyed_BackPack(entity);
