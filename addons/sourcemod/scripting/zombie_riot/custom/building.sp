@@ -7650,7 +7650,7 @@ void Barracks_BuildingThink(int client)
 			npc.m_iOverlordComboAttack -= 1;
 			b_IsAlliedNpc[npc.index] = false;
 
-			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 			{
 				DataPack pack;
 				CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);

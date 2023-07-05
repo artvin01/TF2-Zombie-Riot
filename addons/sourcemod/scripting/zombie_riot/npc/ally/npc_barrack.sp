@@ -1080,7 +1080,9 @@ float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int dam
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_BRACER))
 			DmgMulti *= 1.3;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS))
-			DmgMulti *= 1.5;		
+			DmgMulti *= 1.5;	
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY))
+			DmgMulti *= 1.2;
 	}
 
 	damage *= npc.BonusDamageBonus;

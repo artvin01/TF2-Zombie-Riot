@@ -98,7 +98,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 					int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 40.0, GetClientOfUserId(npc.OwnerUserId));
 					npc.m_iOverlordComboAttack -= 1;
 
-					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
+					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS)
 					{
 						DataPack pack;
 						CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
