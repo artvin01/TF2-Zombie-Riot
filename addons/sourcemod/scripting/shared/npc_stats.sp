@@ -4768,7 +4768,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 			npc.m_bTeamGlowDefault = true;
 			npc.m_iTeamGlow = TF2_CreateGlow(entity);
 					
-			SetVariantColor(view_as<int>({0, 200, 255, 200}));
+			SetVariantColor(view_as<int>({125, 200, 255, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		}
 	}
