@@ -6351,8 +6351,8 @@ static const int BarracksUpgrades[][] =
 	{ BUILDING_IMPERIAL_TOWER, 		250, 	50, 	0, 		20,		4, 			1,						ZR_BARRACKS_UPGRADES_GUARD_TOWER,			1,							0,									1,					ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER				},		// Construction Worker
 	{ BUILDING_BALLISTICAL_TOWER, 	500, 	100, 	0, 		25,		7, 			1,						ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER			},		// Construction Expert
 	{ BUILDING_DONJON, 				1000, 	200, 	0, 		30,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_DONJON						},		// Construction Expert
-	{ BUILDING_KREPOST, 			2500, 	400, 	0, 		35,		11, 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
-	{ BUILDING_CASTLE, 				3500, 	1000, 	0, 		50,		16, 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
+	{ BUILDING_KREPOST, 			2500, 	1000, 	0, 		35,		11, 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
+	{ BUILDING_CASTLE, 				6000, 	3500, 	0, 		50,		16, 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
 
 //unused for now, too lazy aa
 	{ BUILDING_MANUAL_FIRE , 		10, 	40, 	0, 		5, 		9999,/*2,*/ 1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_MANUAL_FIRE				},		// Construction Novice
@@ -6362,11 +6362,11 @@ static const int BarracksUpgrades[][] =
 	{ BUILDING_CHEMISTRY, 			750, 	200, 	0, 		20,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICS,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_CHEMISTY					},		// Construction Worker
 	{ BUILDING_CRENELATIONS, 		1000, 	300, 	0, 		40,		11, 		1,						ZR_BARRACKS_UPGRADES_CHEMISTY,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CRENELLATIONS				},		// Construction Expert
 
-	{ BUILDING_CONSCRIPTION , 		500, 	300, 	0, 		30, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
-	{ BUILDING_GOLDMINERS, 			250, 	250, 	10, 	40,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
+	{ BUILDING_CONSCRIPTION , 		1000, 	400, 	0, 		30, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
+	{ BUILDING_GOLDMINERS, 			500, 	500, 	10, 	40,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
 
-	{ BUILDING_ASSISTANT_VILLAGER, 	1000, 	1000, 	0, 		60,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
-	{ BUILDING_VILLAGER_EDUCATION, 	2000, 	2000, 	0, 		70,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
+	{ BUILDING_ASSISTANT_VILLAGER, 	1200, 	1200, 	0, 		60,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
+	{ BUILDING_VILLAGER_EDUCATION, 	3000, 	2000, 	0, 		70,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
 
 	{ BUILDING_STRONGHOLDS, 		500, 	500, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
 	{ BUILDING_HOARDINGS, 			1000, 	2000, 	0, 		50,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
@@ -7594,12 +7594,12 @@ void Barracks_BuildingThink(int client)
 			}
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
 			{
-				ArrowDamage += 1200.0;
+				ArrowDamage += 900.0;
 				ArrowCount += 2;
 			}
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
 			{
-				ArrowDamage += 5000.0;
+				ArrowDamage += 2000.0;
 				ArrowCount += 5;
 			}
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)

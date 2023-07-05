@@ -2642,9 +2642,9 @@
 	}
 	"Barracks Iron Casting Desc"
 	{
-		"en"		"Increase Melee Damage by 20%%"
+		"en"		"Increase Melee Damage by 15%%"
 		//"de"		""
-		"ru"		"Увеличение урона ближнего боя на 20%%"
+		"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2759,9 +2759,9 @@
 	}
 	"Barracks Steel Arrows Desc"
 	{
-		"en"		"20%% Increased ranged damage && 10%% more Range"
+		"en"		"15%% Increased ranged damage && 10%% more Range"
 		//"de"		""
-		"ru"		"20%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+		"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2839,9 +2839,9 @@
 	}
 	"Barracks Copper Armor Plate Desc"
 	{
-		"en"		"5%% damage reduction and 1 flat damage reduction"
+		"en"		"3%% damage reduction and 1 flat damage reduction"
 		//"de"		""
-		"ru"		"5%% снижение урона и 1 плоское снижение урона"
+		"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2865,9 +2865,9 @@
 	}
 	"Barracks Iron Armor Plate Desc"
 	{
-		"en"		"5%% damage reduction and 1 flat damage reduction"
+		"en"		"3%% damage reduction and 1 flat damage reduction"
 		//"de"		""
-		"ru"		"5%% снижение урона и 1 плоское снижение урона"
+		"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2891,9 +2891,9 @@
 	}
 	"Barracks Chainmail Armor Desc"
 	{
-		"en"		"5%% damage reduction and 1 flat damage reduction"
+		"en"		"3%% damage reduction and 1 flat damage reduction"
 		//"de"		""
-		"ru"		"5%% снижение урона и 1 плоское снижение урона"
+		"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3152,9 +3152,9 @@
 	}
 	"Barracks Krepost Desc"
 	{
-		"en"		"Increased health and damage and arrow count, unlocks more upgrades.\nAllows you to train a new special unit slowly."
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 		//"de"		""
-		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПозволяет медленно обучать нового особого воина."
+		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3178,9 +3178,9 @@
 	}
 	"Barracks Castle Desc"
 	{
-		"en"		"Increased health and damage and arrow count, unlocks more upgrades.\nIncreaces speed of training the new special unit massively."
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades.\nAllows you to train a new special unit slowly."
 		//"de"		""
-		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПовышается скорость обучения нового особого воина."
+		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПозволяет медленно обучать нового особого воина."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""

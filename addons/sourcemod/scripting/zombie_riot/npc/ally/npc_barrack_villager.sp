@@ -560,13 +560,13 @@ void BarracksVillager_MenuSpecial(int client, int entity)
 
 	Menu menu = new Menu(BarrackVillager_MenuH);
 	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", NPC_Names[i_NpcInternalId[entity]]);
-
+	BarrackVillager player = view_as<BarrackVillager>(client);
 	char num[16];
 	IntToString(EntIndexToEntRef(entity), num, sizeof(num));
 	menu.AddItem(num, "Default Engagement", npc.i_VillagerSpecialCommand == Villager_Command_Default ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Place Tower There", ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Place Tower There", IsValidEntity(player.m_iTowerLinked) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Repair This", npc.i_VillagerSpecialCommand == Villager_Command_RepairFocus ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-	menu.AddItem(num, "Gather Resources", npc.i_VillagerSpecialCommand == Villager_Command_GatherResource ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Gather Resources", ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Stand Near Tower", npc.i_VillagerSpecialCommand == Villager_Command_StandNearTower ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.Pagination = 0;

@@ -1067,18 +1067,18 @@ float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int dam
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_IRON_CASTING))
 			DmgMulti *= 1.2;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_STEEL_CASTING))
-			DmgMulti *= 1.3;
+			DmgMulti *= 1.25;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_STEEL))
-			DmgMulti *= 1.5;
+			DmgMulti *= 1.4;
 	}
 	else //Rest is treated as ranged.
 	{
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_FLETCHING))
 			DmgMulti *= 1.15;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_STEEL_ARROWS))
-			DmgMulti *= 1.2;
+			DmgMulti *= 1.15;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_BRACER))
-			DmgMulti *= 1.3;
+			DmgMulti *= 1.25;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS))
 			DmgMulti *= 1.5;	
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY))
@@ -1124,22 +1124,22 @@ float Barracks_UnitOnTakeDamage(int entity, int client, float damage)
 
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR))
 	{
-		DamageResisted *= 0.95;
+		DamageResisted *= 0.97;
 		damage -= 1;
 	}
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR))
 	{
-		DamageResisted *= 0.95;
+		DamageResisted *= 0.97;
 		damage -= 1;
 	}
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR))
 	{
-		DamageResisted *= 0.95;
+		DamageResisted *= 0.97;
 		damage -= 1;
 	}
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR))
 	{
-		DamageResisted *= 0.95;
+		DamageResisted *= 0.97;
 		damage -= 1;
 	}
 
