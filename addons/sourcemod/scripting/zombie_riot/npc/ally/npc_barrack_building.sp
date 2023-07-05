@@ -3,8 +3,24 @@
 
 #define TOWER_SIZE_BARRACKS "0.65"
 
+static const char g_HurtSounds[][] = {
+	")physics/metal/metal_box_impact_bullet1.wav",
+	")physics/metal/metal_box_impact_bullet2.wav",
+	")physics/metal/metal_box_impact_bullet3.wav",
+};
+
 methodmap BarrackBuilding < BarrackBody
 {
+	public void PlayHurtSound() 
+	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		
+	}
 	public BarrackBuilding(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
 		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "4000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 60.0));
@@ -12,6 +28,7 @@ methodmap BarrackBuilding < BarrackBody
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 
 		i_NpcInternalId[npc.index] = BARRACKS_BUILDING;
 		i_NpcWeight[npc.index] = 999;
@@ -24,6 +41,7 @@ methodmap BarrackBuilding < BarrackBody
 		npc.m_iNpcStepVariation = 0;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackBuilding_ClotThink);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BarrackBuilding_OnTakeDamagePost);
 
 		npc.m_flSpeed = 0.0;
 		
@@ -36,6 +54,11 @@ public void BarrackBuilding_ClotThink(int iNPC)
 	BarrackBuilding npc = view_as<BarrackBuilding>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	int client = GetClientOfUserId(npc.OwnerUserId);
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
 	if(BarrackBody_ThinkStart(npc.index, GameTime, 60.0))
 	{
 		if(i_AttacksTillMegahit[iNPC] >= 255)
@@ -124,6 +147,27 @@ public void BarrackBuilding_ClotThink(int iNPC)
 void BarrackBuilding_NPCDeath(int entity)
 {
 	BarrackBuilding npc = view_as<BarrackBuilding>(entity);
+	float pos[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	makeexplosion(-1, -1, pos, "", 0, 0);
 	BarrackBody_NPCDeath(npc.index);
+	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, BarrackBuilding_OnTakeDamagePost);
 	SDKUnhook(npc.index, SDKHook_Think, BarrackBuilding_ClotThink);
+}
+
+
+
+public void BarrackBuilding_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+{
+	//Valid attackers only.
+	if(attacker <= 0)
+		return;
+		
+	BarrackBuilding npc = view_as<BarrackBuilding>(victim);
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
 }

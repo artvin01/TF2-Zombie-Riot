@@ -235,7 +235,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 			}
 
 		}
-		if(!npc.m_flDoingAnimation < GetGameTime(npc.index))
+		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_THORNS_STAND", "ACT_THORNS_WALK");
 		}
