@@ -7646,7 +7646,7 @@ void Barracks_BuildingThink(int client)
 
 			//npc.m_flDoingSpecial is damage, see above.
 			b_IsAlliedNpc[npc.index] = true;
-			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 55.0);
+			int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 55.0, client);
 			npc.m_iOverlordComboAttack -= 1;
 			b_IsAlliedNpc[npc.index] = false;
 

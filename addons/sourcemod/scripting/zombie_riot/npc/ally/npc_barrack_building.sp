@@ -95,7 +95,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 					EmitSoundToAll("weapons/bow_shoot.wav", npc.index, _, 70, _, 0.9, 100);
 
 					//npc.m_flDoingSpecial is damage, see above.
-					int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 40.0);
+					int arrow = npc.FireArrow(vecTarget, npc.m_flDoingSpecial, projectile_speed,_,_, 40.0, GetClientOfUserId(npc.OwnerUserId));
 					npc.m_iOverlordComboAttack -= 1;
 
 					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
