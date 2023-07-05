@@ -65,7 +65,7 @@ methodmap Pathshaper < CClotBody
 		Pathshaper npc = view_as<Pathshaper>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.75", "35000", ally, false, true));
 		// 35000 x 1.0
 		
-		SetVariantInt(15);
+		SetVariantInt(31);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 

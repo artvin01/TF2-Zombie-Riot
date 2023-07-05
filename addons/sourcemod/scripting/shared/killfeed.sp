@@ -352,9 +352,9 @@ static void ShowNextFeed()
 {
 	if(FeedList.Length)
 	{
-		KillFeed feed;
+		KillFeed feedmain, feed;
+		FeedList.GetArray(0, feedmain);
 		FeedList.GetArray(0, feed);
-		FeedList.Erase(0);
 
 		int victim = GetClientOfUserId(feed.userid);
 		int attacker = GetClientOfUserId(feed.attacker);
@@ -385,93 +385,78 @@ static void ShowNextFeed()
 				botUsed = true;
 			}
 		}
-		
-		Event event = CreateEvent("player_death", true);
 
-		event.SetInt("attacker", feed.attacker);
-		event.SetInt("userid", feed.userid);
-		event.SetInt("victim_entindex", victim);
-		event.SetInt("assister", feed.assister);
-		event.SetInt("weaponid", feed.weaponid);
-		event.SetString("weapon", feed.weapon);
-		event.SetInt("weapon_def_index", feed.weapon_def_index);
-		event.SetInt("damagebits", feed.damagebits);
-		event.SetInt("inflictor_entindex", feed.inflictor_entindex);
-		event.SetInt("customkill", feed.customkill);
+		ArrayList list = new ArrayList();
 
-		DataPack pack = new DataPack();
-		pack.WriteCell(event);
-		pack.WriteCell(feed.silent_kill);
-
-		bool botUsedAgain = !FeedList.Length;
-		if(!botUsedAgain)
+		do
 		{
-			// Save delay time if we kill the same NPC name
+			FeedList.Erase(0);
 
+			Event event = CreateEvent("player_death", true);
+
+			event.SetInt("attacker", feed.attacker);
+			event.SetInt("userid", feed.userid);
+			event.SetInt("victim_entindex", victim);
+			event.SetInt("assister", feed.assister);
+			event.SetInt("weaponid", feed.weaponid);
+			event.SetString("weapon", feed.weapon);
+			event.SetInt("weapon_def_index", feed.weapon_def_index);
+			event.SetInt("damagebits", feed.damagebits);
+			event.SetInt("inflictor_entindex", feed.inflictor_entindex);
+			event.SetInt("customkill", feed.customkill);
+			event.SetBool("silent_kill", feed.silent_kill);
+
+			list.Push(event);
+
+			if(!FeedList.Length)
+				break;
+			
+			// Add anything using the same team/name
 			FeedList.GetArray(0, feed);
-
-			victim = GetClientOfUserId(feed.userid);
-			attacker = GetClientOfUserId(feed.attacker);
-
-			if(feed.victim_name[0] && victim)
-			{
-				char buffer[64];
-				GetClientName(victim, buffer, sizeof(buffer));
-				if(!StrEqual(buffer, feed.victim_name) || GetClientTeam(victim) != feed.victim_team)
-					botUsedAgain = true;
-			}
-
-			if(feed.attacker_name[0] && attacker)
-			{
-				char buffer[64];
-				GetClientName(attacker, buffer, sizeof(buffer));
-				if(!StrEqual(buffer, feed.attacker_name) || GetClientTeam(attacker) != feed.attacker_team)
-					botUsedAgain = true;
-			}
 		}
-
-		pack.WriteCell(botUsedAgain);
+		while(feed.victim_team == feedmain.victim_team &&
+			feed.attacker_team == feedmain.attacker_team &&
+			StrEqual(feed.victim_name, feedmain.victim_name) &&
+			StrEqual(feed.attacker_name, feedmain.attacker_name));
 
 		// Need time to change the bot's display name
-		FeedTimer = CreateTimer(botUsed ? 0.0 : 0.2, KillFeed_ShowTimer, pack, TIMER_DATA_HNDL_CLOSE);
+		FeedTimer = CreateTimer(botUsed ? 0.0 : 0.3, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
 	}
 }
 
-public Action KillFeed_ShowTimer(Handle timer, DataPack pack)
+public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 {
 	FeedTimer = null;
-	pack.Reset();
 
-	Event event = pack.ReadCell();
-
-	if(pack.ReadCell())
+	int length = list.Length;
+	for(int i; i < length; i++)
 	{
-		int victim = GetClientOfUserId(event.GetInt("userid"));
-		int attacker = GetClientOfUserId(event.GetInt("attacker"));
+		Event event = list.Get(i);
 
-		if(victim)
-			event.FireToClient(victim);
-		
-		if(attacker)
-			event.FireToClient(attacker);
-	}
-	else
-	{
-		for(int client = 1; client <= MaxClients; client++)
+		if(event.GetBool("silent_kill"))
 		{
-			if(IsClientInGame(client))
-				event.FireToClient(client);
+			int victim = GetClientOfUserId(event.GetInt("userid"));
+			int attacker = GetClientOfUserId(event.GetInt("attacker"));
+
+			if(victim)
+				event.FireToClient(victim);
+			
+			if(attacker)
+				event.FireToClient(attacker);
 		}
+		else
+		{
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+					event.FireToClient(client);
+			}
+		}
+
+		event.Cancel();
 	}
 
-	if(pack.ReadCell())
-	{
-		FeedTimer = CreateTimer(0.2, KillFeed_NextTimer);
-	}
-	else
-	{
-		ShowNextFeed();
-	}
+	FeedTimer = CreateTimer(0.3, KillFeed_NextTimer);
 	return Plugin_Continue;
 }
 
