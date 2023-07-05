@@ -473,10 +473,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					CClotBody npcstats = view_as<CClotBody>(entity);
 					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
 					{
-						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
-							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+							GiveNpcOutLineLastOrBoss(entity, true);
 						else
-							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+							GiveNpcOutLineLastOrBoss(entity, false);
 					}
 					
 					if(!npcstats.m_bStaticNPC)
@@ -717,11 +717,11 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
-						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", true);
+						GiveNpcOutLineLastOrBoss(entity_Spawner, true);
 					}
 					else
 					{
-						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
+						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
 					if(zr_spawnprotectiontime.FloatValue > 0.0)
@@ -795,7 +795,7 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			CClotBody npcstats = view_as<CClotBody>(entity);
 			if(isBoss)
 			{
-				SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+				GiveNpcOutLineLastOrBoss(entity, true);
 				npcstats.m_bThisNpcIsABoss = true; //Set to true!
 			}
 			else

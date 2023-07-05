@@ -570,7 +570,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
 							{
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
-								SetEntProp(view_as<int>(fake_spawned), Prop_Send, "m_bGlowEnabled", true);
+								GiveNpcOutLineLastOrBoss(view_as<int>(fake_spawned), true);
 							}
 							Zombies_Currently_Still_Ongoing += 1;
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;

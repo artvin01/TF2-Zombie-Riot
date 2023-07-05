@@ -522,7 +522,7 @@ methodmap TrueZerofuse < CClotBody
 			fl_ZeroMusic_Timer[npc.index] = GetGameTime(npc.index) + 11.0;
 			fl_ForceWrath[npc.index] = GetGameTime(npc.index) + 227.0;
 			fl_MinionSummon[npc.index] = GetGameTime(npc.index) + 30.0;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			CPrintToChatAll("{crimson}[WARNING] {yellow}Zerofuse is a slight passive {red}healer {yellow}be AWARE!!");
 		}
 		npc.m_bThisNpcIsABoss = true;

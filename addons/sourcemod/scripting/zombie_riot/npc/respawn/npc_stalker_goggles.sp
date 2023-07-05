@@ -65,7 +65,7 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_bStaticNPC = true;
 
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		GiveNpcOutLineLastOrBoss(npc.index, false);
 
 		Zero(fl_AlreadyStrippedMusic);
 

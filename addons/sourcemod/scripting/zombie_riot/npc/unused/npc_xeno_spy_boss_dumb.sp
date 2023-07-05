@@ -244,7 +244,7 @@ methodmap XenoSpyMainBoss < CClotBody
 		npc.m_bmovedelay_gun = false;
 		npc.m_bmovedelay = false;
 		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -352,7 +352,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (Allies_Alive * 3));
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			if(!npc.m_flHalf_Life_Regen)
 			{
 				npc.m_flHalf_Life_Regen = true;
@@ -382,7 +382,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		{
 			npc.m_flHalf_Life_Regen = false;
 			
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -830,7 +830,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
 					npc_minion.m_bThisNpcIsABoss = true;
-					SetEntProp(spawn_index, Prop_Send, "m_bGlowEnabled", true);
+					GiveNpcOutLineLastOrBoss(spawn_index, true);
 					Allies_Alive += 1;
 					CreateTimer(1.0, XenoSpyMainBoss_Timer_MinionDespawnCheck_Spy, EntIndexToEntRef(spawn_index), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 				}
@@ -844,7 +844,7 @@ public Action XenoSpyMainBoss_Timer_MinionDespawnCheck_Spy(Handle timer, int ref
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(entity, true);
 		
 		if(IsValidEntity(EntRefToEntIndex(g_MasterEntRef)))
 			return Plugin_Continue;

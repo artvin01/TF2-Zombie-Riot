@@ -1865,11 +1865,15 @@ void Hook_DHook_UpdateTransmitState(int entity)
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {   
-	if(b_IsEntityNeverTranmitted[entity])
+	if(b_IsAlliedNpc[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+	else if(b_IsEntityNeverTranmitted[entity])
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
 	}
-	if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}

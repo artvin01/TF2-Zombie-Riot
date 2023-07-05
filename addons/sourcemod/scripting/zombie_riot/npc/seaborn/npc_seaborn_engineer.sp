@@ -154,7 +154,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		}
 		
 		if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+			GiveNpcOutLineLastOrBoss(npc.index, false);
 		
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextRangedAttack = FAR_FUTURE;
@@ -176,7 +176,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 					b_ThisEntityIgnored[entity] = true;
 
 					if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-						SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+						GiveNpcOutLineLastOrBoss(npc.index, true);
 					
 					npc.m_iTarget = 0;
 					npc.m_iTargetAlly = entity;

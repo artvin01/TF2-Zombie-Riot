@@ -211,7 +211,7 @@ methodmap CombineOverlord < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		/*
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");

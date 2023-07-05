@@ -164,7 +164,7 @@ methodmap Payday_Cloaker < CClotBody
 			{
 				fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 			}
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 		}
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");

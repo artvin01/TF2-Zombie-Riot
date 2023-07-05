@@ -312,7 +312,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		npc.m_bmovedelay = false;
 		npc.g_TimesSummoned = 0;
 		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		GiveNpcOutLineLastOrBoss(npc.index, false);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -436,7 +436,7 @@ public void CorruptedSpyRaid_ClotThink(int iNPC)
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 			
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 			int entity = EntRefToEntIndex(iNPC);
 			if(IsValidEntity(entity) && entity>MaxClients)
@@ -714,7 +714,7 @@ public Action CorruptedSpyRaid_OnTakeDamage(int victim, int &attacker, int &infl
 		npc.m_flNextRangedAttack = 4.05;
 		npc.m_flNextMeleeAttack = GetGameTime() + 4.05;
 		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		GiveNpcOutLineLastOrBoss(npc.index, false);
 		
 		npc.PlayCloakSound();
 		npc.PlayCloakSound();

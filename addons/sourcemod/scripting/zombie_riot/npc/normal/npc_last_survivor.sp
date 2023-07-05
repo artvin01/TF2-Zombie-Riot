@@ -247,7 +247,7 @@ methodmap FatherGrigori < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, FatherGrigori_ClotThink);	
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, FatherGrigori_OnTakeDamagePost);
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 					
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;

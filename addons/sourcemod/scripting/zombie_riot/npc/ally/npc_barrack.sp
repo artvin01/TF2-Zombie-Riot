@@ -447,7 +447,25 @@ methodmap BarrackBody < CClotBody
 			
 			npc.m_iWearable7 = particle;
 		}
-
+		/*
+		if(IsValidEntity(npc.m_iTeamGlow))
+		{
+			RemoveEntity(npc.m_iTeamGlow);
+		}
+		if(!IsValidEntity(npc.m_iTeamGlow))
+		{
+			int Tf2Glow = TF2_CreateGlow_White(npc.index);
+			
+			if(Tf2Glow != -1)
+			{
+				BarrackOwner[Tf2Glow] = client;
+				SDKHook(Tf2Glow, SDKHook_SetTransmit, BarrackBody_Transmit);
+				npc.m_iTeamGlow = Tf2Glow;
+			}
+		}
+		//refuses to work with npcs, i give up.
+		*/
+		
 		int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
 		BarrackOwner[Textentity] = client;
 		npc.StartPathing();
@@ -540,6 +558,7 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 	if(npc.m_flNextThinkTime > GameTime)
 		return false;
 		
+
 	BarrackBody_HealthHud(npc,offsetHealth);
 	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
 	{

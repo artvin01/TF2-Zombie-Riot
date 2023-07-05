@@ -897,6 +897,40 @@ stock int TF2_CreateGlow(int iEnt)
 
 	return ent;
 }
+
+stock int TF2_CreateGlow_White(int iEnt)
+{
+	int entity = CreateEntityByName("tf_taunt_prop");
+	if(IsValidEntity(entity))
+	{
+		char model[PLATFORM_MAX_PATH];
+		GetEntPropString(iEnt, Prop_Data, "m_ModelName", model, PLATFORM_MAX_PATH);
+		PrintToChatAll("%s",model);
+		SetEntityModel(entity, model);
+
+		DispatchSpawn(entity);
+		ActivateEntity(entity);
+
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(iEnt, Prop_Send, "m_iTeamNum"));
+
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(iEnt, Prop_Send, "m_flModelScale"));
+		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", iEnt);
+		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", iEnt);
+		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+		int iFlags = GetEntProp(entity, Prop_Send, "m_fEffects");
+			
+		SetEntProp(entity, Prop_Send, "m_fEffects",
+				iFlags |EF_BONEMERGE|EF_NOSHADOW|EF_NORECEIVESHADOW);
+
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", iEnt);
+
+		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
+	return entity;
+}
+
 stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)
 {
 	SetVariantString("!activator");

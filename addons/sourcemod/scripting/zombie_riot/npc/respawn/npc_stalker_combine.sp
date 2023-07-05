@@ -226,7 +226,7 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_bDissapearOnDeath = false;
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 		i_PlayMusicSound = 0;
@@ -325,7 +325,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 							AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 							npc.m_bmovedelay = true;
-							SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+							GiveNpcOutLineLastOrBoss(npc.index, true);
 
 							npc.PlaySpecialSound();
 						}

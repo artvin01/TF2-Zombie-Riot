@@ -1393,6 +1393,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
+	property bool m_bTeamGlowDefault
+	{
+		public get()							{ return b_TeamGlowDefault[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_TeamGlowDefault[this.index] = TempValueForProperty; }
+	}
 #endif
 	property int m_iTextEntity1
 	{
@@ -4711,12 +4716,81 @@ public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
 }
+void NpcDrawWorldLogic(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(IsValidEntity(npc.m_iTeamGlow))
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+	if(b_IsAlliedNpc[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+	else if(b_IsEntityNeverTranmitted[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_DONTSEND));
+	}
+	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+#if defined ZR
+	else if(b_thisNpcHasAnOutline[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+#endif
+	else
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_PVSCHECK));
+	}
+}
+
+void GiveNpcOutLineLastOrBoss(int entity, bool add)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	//they have a custom outline.
+	//if !npc.m_bTeamGlowDefault is off, then that means that they have an outline that isnt set with this.
+	if(IsValidEntity(npc.m_iTeamGlow) && !npc.m_bTeamGlowDefault)
+	{	
+		return;
+	}
+
+	if(add)
+	{
+		if(!IsValidEntity(npc.m_iTeamGlow))
+		{
+			npc.m_bTeamGlowDefault = true;
+			npc.m_iTeamGlow = TF2_CreateGlow(entity);
+					
+			SetVariantColor(view_as<int>({0, 200, 255, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		}
+	}
+	else
+	{
+		npc.m_bTeamGlowDefault = false;
+		if(IsValidEntity(npc.m_iTeamGlow)) 
+		{
+			RemoveEntity(npc.m_iTeamGlow);
+		}		
+	}
+
+}
+
+
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 
+	NpcDrawWorldLogic(iNPC);
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
@@ -6928,6 +7002,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NPCTeleportOutOfStuck[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
+	b_TeamGlowDefault[entity] = false;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
 	f_NpcTurnPenalty[entity] = 1.0;

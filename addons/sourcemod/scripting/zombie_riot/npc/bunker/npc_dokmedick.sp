@@ -345,7 +345,7 @@ methodmap Doktor_Medick < CClotBody
 				}
 			}
 			RaidModeTime = GetGameTime(npc.index) + 320.0;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 		}
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

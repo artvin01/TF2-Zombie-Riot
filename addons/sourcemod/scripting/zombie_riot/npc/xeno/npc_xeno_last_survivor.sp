@@ -252,8 +252,7 @@ methodmap XenoFatherGrigori < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, XenoFatherGrigori_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
-		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 					
 					
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
