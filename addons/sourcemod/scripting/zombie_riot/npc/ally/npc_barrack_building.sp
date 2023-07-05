@@ -63,7 +63,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 				{
 					float ArrowDamage = 3000.0;
 					int ArrowCount = 5;
-					float AttackDelay = 5.0;
+					float AttackDelay = 7.0;
 					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
 					{
 						AttackDelay *= 0.77; //attack 33% faster

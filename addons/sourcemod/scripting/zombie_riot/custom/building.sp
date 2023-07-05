@@ -6368,8 +6368,8 @@ static const int BarracksUpgrades[][] =
 	{ BUILDING_ASSISTANT_VILLAGER, 	1200, 	1200, 	0, 		60,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
 	{ BUILDING_VILLAGER_EDUCATION, 	3000, 	2000, 	0, 		70,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
 
-	{ BUILDING_STRONGHOLDS, 		500, 	500, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
-	{ BUILDING_HOARDINGS, 			1000, 	2000, 	0, 		50,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
+	{ BUILDING_STRONGHOLDS, 		2500, 	2500, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
+	{ BUILDING_HOARDINGS, 			2000, 	3000, 	0, 		50,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
 	{ BUILDING_EXQUISITE_HOUSING, 	5000, 	5000, 	10, 	70,		16, 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
 };					
 
@@ -7611,7 +7611,7 @@ void Barracks_BuildingThink(int client)
 				ArrowDamage *= 0.5;
 			}
 
-			float AttackDelay = 5.0;
+			float AttackDelay = 7.0;
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
 			{
 				AttackDelay *= 0.77; //attack 33% faster
