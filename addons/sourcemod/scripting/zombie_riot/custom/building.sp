@@ -7546,7 +7546,7 @@ void Barracks_BuildingThink(int client)
 	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
 		MinimumDistance = 0.0;
 
-	float MaximumDistance = 600.0;
+	float MaximumDistance = 400.0;
 	MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
 	float pos[3];
 	bool mounted = (Building_Mounted[client] == i_HasSentryGunAlive[client]);

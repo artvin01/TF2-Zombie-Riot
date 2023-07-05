@@ -7,7 +7,7 @@ methodmap BarrackTeuton < BarrackBody
 {
 	public BarrackTeuton(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "2000"));
+		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300"));
 		
 		i_NpcInternalId[npc.index] = BARRACKS_TEUTONIC_KNIGHT;
 		i_NpcWeight[npc.index] = 1;
@@ -74,7 +74,7 @@ public void BarrackTeuton_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),12000.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9000.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

@@ -7,7 +7,7 @@ methodmap BarrackBuilding < BarrackBody
 {
 	public BarrackBuilding(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "5000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 60.0));
+		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "3000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 60.0));
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");
@@ -51,7 +51,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
 				MinimumDistance = 0.0;
 
-			float MaximumDistance = 600.0;
+			float MaximumDistance = 400.0;
 			MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
