@@ -177,7 +177,7 @@ methodmap AltCombineMage < CClotBody
 		i_NpcInternalId[npc.index] = ALT_COMBINE_MAGE;
 		i_NpcWeight[npc.index] = 1;
 		
-		int iActivity = npc.LookupActivity("ACT_IDLE_ANGRY");
+		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
