@@ -631,6 +631,9 @@ void ZR_ClientDisconnect(int client)
 	PlayerPoints[client] = 0;
 	i_PreviousPointAmount[client] = 0;
 	i_ExtraPlayerPoints[client] = 0;
+	WoodAmount[client] = 0.0;
+	FoodAmount[client] = 0.0;
+	GoldAmount[client] = 0.0;
 	Timer_Knife_Management[client] = INVALID_HANDLE;
 	Escape_DropItem(client, false);
 	

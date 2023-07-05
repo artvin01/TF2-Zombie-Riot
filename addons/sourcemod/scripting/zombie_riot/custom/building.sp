@@ -6455,14 +6455,14 @@ public bool Building_Summoner(int client, int entity)
 	b_NoKnockbackFromSources[entity] = true;
 	b_NpcHasDied[entity] = true;
 	BarracksCheckItems(client);
-	WoodAmount[client] = 50.0;
-	FoodAmount[client] = 100.0;
-	GoldAmount[client] = 0.0;
+	//WoodAmount[client] = 50.0;
+	//FoodAmount[client] = 100.0;
+	//GoldAmount[client] = 0.0;
 	if(CvarInfiniteCash.BoolValue)
 	{
-		WoodAmount[client] = 99999.0;
-		FoodAmount[client] = 99999.0;
-		GoldAmount[client] = 9999.0;
+		WoodAmount[client] = 999999.0;
+		FoodAmount[client] = 999999.0;
+		GoldAmount[client] = 99999.0;
 	}
 	TrainingIn[client] = 0.0;
 	ResearchIn[client] = 0.0;
