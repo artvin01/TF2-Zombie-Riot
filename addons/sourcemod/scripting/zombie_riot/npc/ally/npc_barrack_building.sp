@@ -46,7 +46,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 				SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			}
-			float MinimumDistance = 100.0;
+			float MinimumDistance = 60.0;
 
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)
 				MinimumDistance = 0.0;

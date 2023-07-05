@@ -153,7 +153,6 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int command = client ? (npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(client) : npc.CmdOverride) : Command_Aggressive;
 		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
@@ -204,6 +203,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				if(ThornsAbilityActiveTimes[npc.index] > 1)
 				{
+					ThornsAbilityActive[npc.index] = FAR_FUTURE;
 					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "root", {0.0,0.0,0.0});
 
 				}
@@ -235,7 +235,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 			}
 
 		}
-		if(!npc.m_flDoingAnimation)
+		if(!npc.m_flDoingAnimation < GetGameTime(npc.index))
 		{
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_THORNS_STAND", "ACT_THORNS_WALK");
 		}
@@ -477,7 +477,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int client, i
 
 					if(ThornsAbilityActiveTimes[npc.index] > 1)
 					{
-						damage = 10000.0;
+						damage = 8000.0;
 					}
 					
 					if(ThornsLevelAt[npc.index] == 2)

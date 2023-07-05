@@ -2266,13 +2266,17 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
-	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
+	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOrigin(this.index);
+		if(entitytofirefrom == -1)
+		{
+			entitytofirefrom = this.index;
+		}
+		vecSwingStart = GetAbsOrigin(entitytofirefrom);
 		vecSwingStart[2] += 54.0;
 
 		vecSwingStart[2] += offset;
@@ -4355,7 +4359,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			*/
 
 			float distance_limit;
-			switch(GetClosestTarget_Enemy_Type[target])
+			switch(GetClosestTarget_Enemy_Type[i])
 			{
 				case 1:
 				{

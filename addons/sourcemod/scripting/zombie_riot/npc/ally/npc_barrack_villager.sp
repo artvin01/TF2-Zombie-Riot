@@ -106,6 +106,8 @@ public void BarrackVillager_ClotThink(int iNPC)
 	npc.m_flSpeed = 150.0;
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
+		int client = GetClientOfUserId(npc.OwnerUserId);
+		BarrackVillager player = view_as<BarrackVillager>(client);
 		if(npc.i_VillagerSpecialCommand != Villager_Command_GatherResource)
 		{
 			if(IsValidEntity(npc.m_iWearable2))
@@ -131,11 +133,10 @@ public void BarrackVillager_ClotThink(int iNPC)
 			}
 		}
 
-		int client = GetClientOfUserId(npc.OwnerUserId);
 		//	npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 		bool ListenToCustomCommands = true;
 		bool IngoreBarracksCommands = false;
-		int BuildingAlive = npc.m_iTowerLinked;
+		int BuildingAlive = player.m_iTowerLinked;
 		if(!IsValidEntity(BuildingAlive))
 		{
 			if(VillagerDesiredBuildLocation[npc.index][0] != 0.0 && npc.f_VillagerBuildCooldown < GameTime)
@@ -168,7 +169,6 @@ public void BarrackVillager_ClotThink(int iNPC)
 						VillagerDesiredBuildLocation[npc.index][2] = 0.0;
 						npc.f_VillagerBuildCooldown = GameTime + 120.0;
 						npc.m_iTowerLinked = spawn_index;
-						BarrackVillager player = view_as<BarrackVillager>(client);
 						player.m_iTowerLinked = spawn_index;
 						if(!b_IsAlliedNpc[iNPC])
 						{
@@ -183,6 +183,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 			}
 			else if(IsValidClient(client))
 			{
+
 				if(npc.f_VillagerRemind < GameTime && npc.f_VillagerBuildCooldown < GameTime)
 				{
 					npc.f_VillagerRemind = GameTime + 10.0;
@@ -593,6 +594,7 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 			{
 				BarrackVillager npc = view_as<BarrackVillager>(entity);
 				float GameTime = GetGameTime(entity);
+				npc.m_flComeToMe = GameTime;
 
 				switch(choice)
 				{
@@ -607,7 +609,7 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 							float StartOrigin[3], Angles[3], vecPos[3];
 							GetClientEyeAngles(client, Angles);
 							GetClientEyePosition(client, StartOrigin);
-							Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+							Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, HitOnlyWorld);
 							if (TR_DidHit(TraceRay))
 								TR_GetEndPosition(vecPos, TraceRay);
 								
@@ -664,7 +666,7 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 						float StartOrigin[3], Angles[3], vecPos[3];
 						GetClientEyeAngles(client, Angles);
 						GetClientEyePosition(client, StartOrigin);
-						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, HitOnlyWorld);
 						if (TR_DidHit(TraceRay))
 							TR_GetEndPosition(vecPos, TraceRay);
 								
@@ -680,7 +682,7 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 						float StartOrigin[3], Angles[3], vecPos[3];
 						GetClientEyeAngles(client, Angles);
 						GetClientEyePosition(client, StartOrigin);
-						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, HitOnlyWorld);
 						if (TR_DidHit(TraceRay))
 							TR_GetEndPosition(vecPos, TraceRay);
 								

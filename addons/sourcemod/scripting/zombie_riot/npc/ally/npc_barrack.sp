@@ -938,6 +938,7 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 			if(entity != INVALID_ENT_REFERENCE)
 			{
 				BarrackBody npc = view_as<BarrackBody>(entity);
+				npc.m_flComeToMe = GetGameTime();
 
 				switch(choice)
 				{
@@ -985,7 +986,7 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 						float StartOrigin[3], Angles[3], vecPos[3];
 						GetClientEyeAngles(client, Angles);
 						GetClientEyePosition(client, StartOrigin);
-						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+						Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, HitOnlyWorld);
 						if (TR_DidHit(TraceRay))
 							TR_GetEndPosition(vecPos, TraceRay);
 							
