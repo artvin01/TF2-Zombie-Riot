@@ -136,6 +136,7 @@ int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 int i_EntityRecievedUpgrades[MAXENTITIES];
 int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
+float f_NextHealTime[MAXENTITIES];
 
 //Barracks smith things:
 
@@ -404,6 +405,7 @@ methodmap BarrackBody < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = steptype;
+		f_NextHealTime[npc.index] = 0.0;
 
 		npc.m_iState = 0;
 		npc.m_iChanged_WalkCycle = 0;
@@ -539,32 +541,35 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 		return false;
 		
 	BarrackBody_HealthHud(npc,offsetHealth);
-
-	int HealingAmount;
-	int client = GetClientOfUserId(npc.OwnerUserId);
-	if(client > 0)
+	if(f_NextHealTime[npc.index] < GameTime && !i_NpcIsABuilding[npc.index])
 	{
-		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_HERBAL_MEDICINE))
+		f_NextHealTime[npc.index] = GameTime + 0.5;
+		int HealingAmount;
+		int client = GetClientOfUserId(npc.OwnerUserId);
+		if(client > 0)
 		{
-			HealingAmount += 1;
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_HERBAL_MEDICINE))
 			{
 				HealingAmount += 1;
-			}
-		}
-		if(HealingAmount > 0)
-		{
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					HealingAmount += 1;
+				}
+			}
+			if(HealingAmount > 0)
+			{
+				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+					{
+						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					}
 				}
 			}
 		}
+			
 	}
-
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	return true;
 }
@@ -847,6 +852,9 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(attacker < 1)
 		return Plugin_Continue;
 	
+	if(i_NpcIsABuilding[victim])
+		return Plugin_Continue;
+		
 	if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 	{
 		damage *= 0.5;
