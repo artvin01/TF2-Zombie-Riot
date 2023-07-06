@@ -321,7 +321,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 				{
 					SetGlobalTransTarget(client_check);
-					ShowGameText(client_check, "item_armor", 1, "%t", "Schwertkrieg has been enraged...");
+					ShowGameText(client_check, "item_armor", 1, "%t", "schwert anger");
 				}
 			}
 		}
