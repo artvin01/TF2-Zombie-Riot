@@ -2785,7 +2785,7 @@
 	}
 	"Barracks Bracer Desc"
 	{
-		"en"		"Increaced Ranged Damage""
+		"en"		"Increaced Ranged Damage"
 		//"de"		""
 	//	"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
@@ -2822,8 +2822,6 @@
 		//"it"		""
 		//"fr"		""	
 	}
-
-
 	"Barracks Copper Armor Plate"
 	{
 		"en"		"Copper Armor Plate"
