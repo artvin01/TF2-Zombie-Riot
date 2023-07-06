@@ -898,36 +898,27 @@ stock int TF2_CreateGlow(int iEnt)
 	return ent;
 }
 
-stock int TF2_CreateGlow_White(int iEnt)
+stock int TF2_CreateGlow_White(int entIndex)
 {
-	int entity = CreateEntityByName("tf_taunt_prop");
-	if(IsValidEntity(entity))
-	{
-		char model[PLATFORM_MAX_PATH];
-		GetEntPropString(iEnt, Prop_Data, "m_ModelName", model, PLATFORM_MAX_PATH);
-		PrintToChatAll("%s",model);
-		SetEntityModel(entity, model);
+	char oldEntName[64];
+	GetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName, sizeof(oldEntName));
 
-		DispatchSpawn(entity);
-		ActivateEntity(entity);
+	char strName[126], strClass[64];
+	GetEntityClassname(entIndex, strClass, sizeof(strClass));
+	FormatEx(strName, sizeof(strName), "%s%i", strClass, entIndex);
+	DispatchKeyValue(entIndex, "targetname", strName);
 
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(iEnt, Prop_Send, "m_iTeamNum"));
+	int ent = CreateEntityByName("tf_glow");
+	DispatchKeyValue(ent, "target", strName);
+	FormatEx(strName, sizeof(strName), "tf_glow_%i", entIndex);
+	DispatchKeyValue(ent, "targetname", strName);
+	DispatchKeyValue(ent, "Mode", "0");
+	DispatchSpawn(ent);
 
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(iEnt, Prop_Send, "m_flModelScale"));
-		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", iEnt);
-		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", iEnt);
-		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
-		int iFlags = GetEntProp(entity, Prop_Send, "m_fEffects");
-			
-		SetEntProp(entity, Prop_Send, "m_fEffects",
-				iFlags |EF_BONEMERGE|EF_NOSHADOW|EF_NORECEIVESHADOW);
+	AcceptEntityInput(ent, "Enable");
 
-		SetVariantString("!activator");
-		AcceptEntityInput(entity, "SetParent", iEnt);
-
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(entity, 255, 255, 255, 255);
-	}
+	//Change name back to old name because we don't need it anymore.
+	SetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName);
 	return entity;
 }
 
