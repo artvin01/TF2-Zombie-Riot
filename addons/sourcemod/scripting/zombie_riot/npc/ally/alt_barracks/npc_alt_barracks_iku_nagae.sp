@@ -301,8 +301,8 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
 	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = 12500.0* npc.BonusDamageBonus;	//what the fuck
-	Ikunagae_BEAM_FarDPT[client] = 2500.0* npc.BonusDamageBonus;
+	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),12500.0, 1);	//what the fuck
+	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2500.0, 1);
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
