@@ -1580,6 +1580,21 @@
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 	}
+	"Pathshaper"
+	{
+		"en"		"Pathshaper"
+		"chi"		"塑路者"
+	}
+	"Pathshaper"
+	{
+		"en"		"Pathshaper"
+		"chi"		"塑路者"
+	}
+	"Pathshaper Fractal"
+	{
+		"en"		"Pathshaper Fractal"
+		"chi"		"塑路者分形"
+	}
 	"Barracks Teutonic Knight"
 	{
 		"en"		"Teutonic Knight"
@@ -1594,5 +1609,15 @@
 	{
 		"en"		"Tower"
 		"ru"		"Башня"
+	}
+	"Tidelinked Bishop"
+	{
+		"en"		"Tidelinked Bishop"
+		"chi"		"接潮主教"
+	}
+	"Tidelinked Archon"
+	{
+		"en"		"Tidelinked Archon"
+		"chi"		"接潮蔑死体"
 	}
 }
