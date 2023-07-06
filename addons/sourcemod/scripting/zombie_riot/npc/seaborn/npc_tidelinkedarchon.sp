@@ -31,7 +31,7 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
-methodmap PathshaperFractal < CClotBody
+methodmap TidelinkedArchon < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -58,27 +58,29 @@ methodmap PathshaperFractal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TidelinkedArchon(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		PathshaperFractal npc = view_as<PathshaperFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.3", "20000", ally));
+		TidelinkedArchon npc = view_as<TidelinkedArchon>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", "20000", ally, false, true));
 		// 20000 x 1.0
 
-		i_NpcInternalId[npc.index] = PATHSHAPER_FRACTAL;
-		i_NpcWeight[npc.index] = 0;
+		i_NpcInternalId[npc.index] = TIDELINKED_ARCHON;
+		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, PathshaperFractal_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
 		
-		npc.m_flSpeed = 100.0;	// 0.4 x 250
+		npc.m_flSpeed = 150.0;	// 0.6 x 250
+		npc.m_flMeleeArmor = 0.5;
+		npc.m_flRangedArmor = 1.25;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_iAttacksTillMegahit = 0;
+		npc.m_iTargetAlly = -1;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
@@ -86,11 +88,9 @@ methodmap PathshaperFractal < CClotBody
 	}
 }
 
-public void PathshaperFractal_ClotThink(int iNPC)
+public void TidelinkedArchon_ClotThink(int iNPC)
 {
-	PathshaperFractal npc = view_as<PathshaperFractal>(iNPC);
-
-	SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2970.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	TidelinkedArchon npc = view_as<TidelinkedArchon>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -101,7 +101,6 @@ public void PathshaperFractal_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		//npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -110,6 +109,57 @@ public void PathshaperFractal_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_iTargetAlly == -1)
+	{
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 5;
+		
+		int entity = Npc_Create(TIDELINKED_BISHOP, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+		if(entity > MaxClients)
+		{
+			npc.m_iTargetAlly = EntIndexToEntRef(entity);
+			view_as<CClotBody>(entity).m_iTargetAlly = EntIndexToEntRef(npc.index);
+
+			Zombies_Currently_Still_Ongoing++;
+			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
+			
+			if(view_as<CClotBody>(entity).m_iWearable3 == -1)
+			{
+				view_as<CClotBody>(entity).m_iWearable3 = ConnectWithBeam(view_as<CClotBody>(entity).m_iWearable1, npc.index, 0, 55, 255, 5.0, 5.0, 0.0, "sprites/laserbeam.vmt");
+			}
+		}
+	}
+
+	if(b_NpcIsInvulnerable[npc.index])
+	{
+		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
+		if(entity == INVALID_ENT_REFERENCE || b_NpcIsInvulnerable[entity])
+		{
+			SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9, DMG_SLASH);
+			return;
+		}
+
+		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+
+		health += maxhealth / 200;	// 20 seconds
+		if(health > maxhealth)
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
+
+			b_NpcIsInvulnerable[npc.index] = false;
+			npc.m_bisWalking = true;
+			npc.SetActivity("ACT_RUN");
+		}
+		else
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+		}
+		return;
+	}
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
@@ -155,21 +205,15 @@ public void PathshaperFractal_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 900.0 : 300.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB);
 						// 600 x 0.5
 
-						Custom_Knockback(npc.index, target, 562.5);
+						SeaSlider_AddNeuralDamage(target, npc.index, 150);
+						// 600 x 0.5 x 0.5
 					}
 				}
 
 				delete swingTrace;
-
-				if(++npc.m_iAttacksTillMegahit > 5)
-				{
-					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-					Pathshaper_SpawnFractal(npc, health, 12);
-					npc.m_iAttacksTillMegahit = 0;
-				}
 			}
 		}
 
@@ -185,7 +229,7 @@ public void PathshaperFractal_ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.55;
-				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextMeleeAttack = gameTime + 1.7;
 				npc.m_flHeadshotCooldown = gameTime + 1.5;
 			}
 		}
@@ -198,11 +242,38 @@ public void PathshaperFractal_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void PathshaperFractal_NPCDeath(int entity)
+void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 {
-	PathshaperFractal npc = view_as<PathshaperFractal>(entity);
+	if(attacker > 0)
+	{
+		TidelinkedArchon npc = view_as<TidelinkedArchon>(victim);
+
+		if(!b_NpcIsInvulnerable[npc.index] && (damage * 2.0) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			npc.m_iTarget = 0;
+			npc.m_bisWalking = false;
+			b_NpcIsInvulnerable[npc.index] = true;
+			npc.SetActivity("ACT_DIESIMPLE");
+			npc.SetPlaybackRate(0.5);
+		}
+		
+		if(b_NpcIsInvulnerable[npc.index])
+		{
+			damage = 0.0;
+		}
+		else if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+		}
+	}
+}
+
+void TidelinkedArchon_NPCDeath(int entity)
+{
+	TidelinkedArchon npc = view_as<TidelinkedArchon>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, PathshaperFractal_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
 }

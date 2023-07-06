@@ -4,15 +4,15 @@
 enum struct KillFeed
 {
 	int attacker;
-	char attacker_name[64];
+	char attacker_name[96];
 	int attacker_team;
 
 	int userid;
-	char victim_name[64];
+	char victim_name[96];
 	int victim_team;
 
 	int assister;
-	//char assister_name[64];
+	//char assister_name[96];
 	//int assister_team;
 
 	int weaponid;

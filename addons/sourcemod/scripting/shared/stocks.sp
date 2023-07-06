@@ -919,7 +919,7 @@ stock int TF2_CreateGlow_White(int entIndex)
 
 	//Change name back to old name because we don't need it anymore.
 	SetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName);
-	return entity;
+	return ent;
 }
 
 stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)

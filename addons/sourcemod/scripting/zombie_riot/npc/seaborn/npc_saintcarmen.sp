@@ -42,24 +42,24 @@ methodmap SaintCarmen < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound() 
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public SaintCarmen(int client, float vecPos[3], float vecAng[3], bool ally)
@@ -81,6 +81,8 @@ methodmap SaintCarmen < CClotBody
 		SDKHook(npc.index, SDKHook_Think, SaintCarmen_ClotThink);
 		
 		npc.m_flSpeed = 125.0;	// 0.5 x 250
+		npc.m_flMeleeArmor = 0.5;
+		npc.m_flRangedArmor = 1.25;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -172,7 +174,9 @@ public void SaintCarmen_ClotThink(int iNPC)
 					if(target > 0)
 					{
 						KillFeed_SetKillIcon(npc.index, "taunt_spy");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, target > MaxClients ? 600.0 : 200.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, target > MaxClients ? 900.0 : 300.0, DMG_CLUB);
+						// 1200 x 0.5 x 0.5
+
 						npc.PlayMeleeHitSound();
 
 						if(target <= MaxClients)
@@ -183,7 +187,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							TeleportEntity(target, _, _, vecHit);
 							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-							StartHealingTimer(target, 0.4, -200.0);
+							StartHealingTimer(target, 0.4, -300.0);
 
 							npc.m_flNextMeleeAttack += 1.0;
 							npc.m_flDoingAnimation = gameTime + 0.35;
@@ -201,7 +205,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 
 								npc.m_flNextMeleeAttack += 1.0;
 
-								StartHealingTimer(target, 0.4, -600.0);
+								StartHealingTimer(target, 0.4, -900.0);
 							}
 						}
 					}

@@ -306,7 +306,9 @@ enum
 	PATHSHAPER_FRACTAL	= 269,
 	BARRACKS_TEUTONIC_KNIGHT	= 270,
 	BARRACKS_VILLAGER			= 271,
-	BARRACKS_BUILDING			= 272
+	BARRACKS_BUILDING			= 272,
+	TIDELINKED_BISHOP	= 273,
+	TIDELINKED_ARCHON	= 274
 }
 
 public const char NPC_Names[][] =
@@ -604,7 +606,9 @@ public const char NPC_Names[][] =
 	"Pathshaper Fractal",
 	"Barracks Teutonic Knight",
 	"Barracks Villager",
-	"Barracks Building"
+	"Barracks Building",
+	"Tidelinked Bishop",
+	"Tidelinked Archon"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -898,7 +902,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_pathshaper",
 	"npc_pathshaper_fractal",
 	"",
-	""
+	"",
+	"",
+	"npc_tidelinkedbishop",
+	"npc_tidelinkedarchon"
 };
 
 void NPC_MapStart()
@@ -1904,6 +1911,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case BARRACKS_BUILDING:
 			entity = BarrackBuilding(client, vecPos, vecAng, ally);
+
+		case TIDELINKED_BISHOP:
+			entity = TidelinkedBishop(client, vecPos, vecAng, ally);
+
+		case TIDELINKED_ARCHON:
+			entity = TidelinkedBishop(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2695,6 +2708,12 @@ public void NPCDeath(int entity)
 
 		case BARRACKS_BUILDING:
 			BarrackBuilding_NPCDeath(entity);
+		
+		case TIDELINKED_BISHOP:
+			TidelinkedBishop_NPCDeath(entity);
+		
+		case TIDELINKED_ARCHON:
+			TidelinkedArchon_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3420,6 +3439,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case PATHSHAPER:
 			Pathshaper_OnTakeDamage(victim, attacker);
+		
+		case TIDELINKED_BISHOP:
+			TidelinkedBishop_OnTakeDamage(victim, attacker, damage);
+		
+		case TIDELINKED_ARCHON:
+			TidelinkedArchon_OnTakeDamage(victim, attacker, damage);
 	}
 	return Plugin_Changed;
 }
@@ -3698,3 +3723,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_saintcarmen.sp"
 #include "zombie_riot/npc/seaborn/npc_pathshaper.sp"
 #include "zombie_riot/npc/seaborn/npc_pathshaper_fractal.sp"
+#include "zombie_riot/npc/seaborn/npc_tidelinkedbishop.sp"
+#include "zombie_riot/npc/seaborn/npc_tidelinkedarchon.sp"
