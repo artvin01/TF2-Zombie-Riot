@@ -1114,6 +1114,11 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int red = 255;
 			int green = 255;
 			int blue = 0;
+
+			if(Building_Max_Health[entity] <= 0)
+			{
+				Building_Max_Health[entity] = 1;
+			}
 			
 			red = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
 		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
@@ -4695,6 +4700,9 @@ static void BarracksCheckItems(int client)
 {
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
 	i_NormalBarracks_HexBarracksUpgrades_2[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 2");
+	WoodAmount[client] = float(Store_HasNamedItem(client, "Barracks Wood"));
+	FoodAmount[client] = float(Store_HasNamedItem(client, "Barracks Food"));
+	GoldAmount[client] = float(Store_HasNamedItem(client, "Barracks Gold"));
 }
 
 static void VillageCheckItems(int client)
@@ -6455,9 +6463,9 @@ public bool Building_Summoner(int client, int entity)
 	b_NoKnockbackFromSources[entity] = true;
 	b_NpcHasDied[entity] = true;
 	BarracksCheckItems(client);
-	//WoodAmount[client] = 50.0;
-	//FoodAmount[client] = 100.0;
-	//GoldAmount[client] = 0.0;
+	WoodAmount[client] *= 0.75;
+	FoodAmount[client] *= 0.75;
+	GoldAmount[client] *= 0.75;
 	if(CvarInfiniteCash.BoolValue)
 	{
 		WoodAmount[client] = 999999.0;
@@ -6791,7 +6799,14 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
 }
 
-static void CheckSummonerUpgrades(int client)
+void BarracksSaveResources(int client)
+{
+	Store_SetNamedItem(client, "Barracks Wood", RoundToCeil(WoodAmount[client]));
+	Store_SetNamedItem(client, "Barracks Food", RoundToCeil(FoodAmount[client]));
+	Store_SetNamedItem(client, "Barracks Gold", RoundToCeil(GoldAmount[client]));
+}
+
+void CheckSummonerUpgrades(int client)
 {
 	SupplyRate[client] = 2;
 
