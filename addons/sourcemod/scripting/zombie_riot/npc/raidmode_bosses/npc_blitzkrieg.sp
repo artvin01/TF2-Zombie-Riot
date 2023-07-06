@@ -500,7 +500,7 @@ methodmap Blitzkrieg < CClotBody
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
 		}
-		if(i_currentwave[npc.index]==60)
+		if(i_currentwave[npc.index] >= 60 && !Waves_InFreeplay())
 		{
 			b_Valid_Wave = true;
 		}
