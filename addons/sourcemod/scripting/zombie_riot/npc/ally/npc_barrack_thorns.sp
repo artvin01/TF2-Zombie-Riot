@@ -81,7 +81,7 @@ methodmap BarrackThorns < BarrackBody
 			Format(healthSize, sizeof(healthSize), "4000");
 		}
 
-		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, healthSize,_,_,"0.75"));
+		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, healthSize,_,_,"0.75",_,"models/pickups/pickup_powerup_thorns.mdl"));
 
 		ThornsLevelAt[npc.index] = 0;
 

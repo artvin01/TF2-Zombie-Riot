@@ -55,7 +55,7 @@ methodmap Barrack_Alt_Basic_Mage < BarrackBody
 	}
 	public Barrack_Alt_Basic_Mage(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(BarrackBody(client, vecPos, vecAng, "100", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(BarrackBody(client, vecPos, vecAng, "100", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACK_BASIC_MAGE;
 		i_NpcWeight[npc.index] = 1;

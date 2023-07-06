@@ -18,7 +18,7 @@ static const char RemainModels[][] =
 	"models/pickups/pickup_powerup_king.mdl",
 	"models/pickups/pickup_powerup_precision.mdl",
 	"models/pickups/pickup_powerup_agility.mdl",
-	"models/pickups/pickup_powerup_strength.mdl"
+	"models/pickups/pickup_powerup_strength_arm.mdl"
 };
 
 void Remain_MapStart()

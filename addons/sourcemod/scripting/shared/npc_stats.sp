@@ -3390,7 +3390,10 @@ public bool ShouldCollideAlly(CBaseNPC_Locomotion loco, int otherindex)
 	{
 		return false;
 	}	
-	 
+	if(b_is_a_brush[otherindex])
+	{
+		return true;
+	}
 	if(b_CantCollidieAlly[otherindex])
 	{
 		return false;
@@ -3407,7 +3410,10 @@ public bool ShouldCollideAllyInvince(CBaseNPC_Locomotion loco, int otherindex)
 	{
 		return false;
 	}	
-
+	if(b_is_a_brush[otherindex])
+	{
+		return true;
+	}
 	if(b_CantCollidie[otherindex])
 	{
 		return false;
@@ -3432,7 +3438,10 @@ public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 		NpcStartTouch(loco,otherindex);
 		return true;
 	}
-	 
+	if(b_is_a_brush[otherindex])
+	{
+		return true;
+	} 
 	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 	{
 		return false;
@@ -3452,6 +3461,10 @@ public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int other
 			return false;
 		}
 		NpcStartTouch(loco,otherindex);
+		return true;
+	}
+	if(b_is_a_brush[otherindex])
+	{
 		return true;
 	}
 	 
