@@ -84,8 +84,8 @@ public void BarrackBuilding_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime)
 				{
-					float ArrowDamage = 3000.0;
-					int ArrowCount = 5;
+					float ArrowDamage = 4000.0;
+					int ArrowCount = 3;
 					float AttackDelay = 7.0;
 					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
 					{
