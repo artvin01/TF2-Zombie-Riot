@@ -60,12 +60,13 @@ methodmap SeaCrawler < CClotBody
 		// 25000 x 0.15
 		// 35000 x 0.15
 
-		SetVariantInt(data[0] ? 31 : 7);
+		SetVariantInt(data[0] ? 15 : 7);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		i_NpcInternalId[npc.index] = data[0] ? SEACRAWLER_ALT : SEACRAWLER;
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

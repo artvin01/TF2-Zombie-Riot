@@ -4345,6 +4345,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_HasGlassBuilder[client] = false;
 	b_LeftForDead[client] = false;
 	b_StickyExtraGrenades[client] = false;
+	b_HasMechanic[client] = false;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -4443,6 +4444,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
+	Barracks_UpdateAllEntityUpgrades(client);
 
 	Manual_Impulse_101(client, health);
 }
@@ -4923,6 +4925,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
 					{
 						b_StickyExtraGrenades[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
+					{
+						b_HasMechanic[client] = true;
 					}
 
 #endif

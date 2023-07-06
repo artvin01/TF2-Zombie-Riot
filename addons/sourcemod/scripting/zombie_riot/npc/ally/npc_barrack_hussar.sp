@@ -14,6 +14,7 @@ methodmap BarrackHussar < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_HUSSAR;
 		i_NpcWeight[npc.index] = 2;
+		KillFeed_SetKillIcon(npc.index, "scout_sword");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackHussar_ClotThink);
 

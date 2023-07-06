@@ -161,6 +161,7 @@ methodmap EndSpeaker < CClotBody
 		this.m_iAttackStack = 0;
 		this.m_flStackDecayAt = FAR_FUTURE;
 		this.m_bIgnoreBuildings = false;
+		KillFeed_SetKillIcon(this.index, "crocodile");
 
 		int count;
 		int[] remain = new int[i_MaxcountNpc_Allied];

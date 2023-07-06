@@ -74,6 +74,7 @@ methodmap SeabornSoldier < CClotBody
 		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
+		KillFeed_SetKillIcon(npc.index, "demokatana");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

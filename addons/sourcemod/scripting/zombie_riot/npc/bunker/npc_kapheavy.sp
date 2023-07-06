@@ -208,7 +208,7 @@ methodmap Eternal_Kaptain_Heavy < CClotBody
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 320.0;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 		}
 		
 		GiantSteps_Usage[npc.index] = GetGameTime(npc.index) + GiantSteps_FirstUsageTimer;

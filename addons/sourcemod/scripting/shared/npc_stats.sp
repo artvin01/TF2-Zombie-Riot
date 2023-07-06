@@ -1086,9 +1086,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		bool Is_Boss = true;
 #if defined ZR
-		if(IS_MusicReleasingRadio())
+		if(IS_MusicReleasingRadio() && !b_IsAlliedNpc[this.index])
 			speed_for_return *= 0.9;
 #endif
+		if(i_CurrentEquippedPerk[this.index] == 4)
+		{
+			speed_for_return *= 1.25;
+		}
 		if(!this.m_bThisNpcIsABoss)
 		{
 			
@@ -1388,6 +1392,11 @@ methodmap CClotBody < CBaseCombatCharacter
 				i_TeamGlow[this.index] = EntIndexToEntRef(iInt);
 			}
 		}
+	}
+	property bool m_bTeamGlowDefault
+	{
+		public get()							{ return b_TeamGlowDefault[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_TeamGlowDefault[this.index] = TempValueForProperty; }
 	}
 #endif
 	property int m_iTextEntity1
@@ -1983,7 +1992,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetEntityCollisionGroup(item, 1);
 		return item;
 	}
-	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0, int Npc_type = 0, int Ignore_Buildings = 0)
+	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 55.0, int Npc_type = 0, int Ignore_Buildings = 0)
 	{
 		switch(Npc_type)
 		{
@@ -2004,7 +2013,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float vecForward[3], vecRight[3], vecTarget[3];
 		
-		vecTarget = WorldSpaceCenter(target);
+		float WorldSpaceTarget[3];
+
+		WorldSpaceTarget = WorldSpaceCenter(target);
+		vecTarget = WorldSpaceTarget;
+		vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
+
 		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
 		vecForward[1] = eyePitch[1];
@@ -2012,7 +2026,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		float vecSwingStart[3]; vecSwingStart = GetAbsOrigin(this.index);
 		
-		vecSwingStart[2] += vecSwingStartOffset;
+		vecSwingStart[2] += vecSwingStartOffset; //default is 55 for a few reasons.
 		
 		float vecSwingEnd[3];
 		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * vecSwingMaxs[0];
@@ -2124,6 +2138,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, rocket_damage, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(this.index, Prop_Send, "m_iTeamNum")));
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
 			DispatchSpawn(entity);
@@ -2256,13 +2271,17 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityCollisionGroup(entity, 1);
 		}
 	}
-	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
+	public int FireArrow(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE, int entitytofirefrom = -1) //No defaults, otherwise i cant even judge.
 	{
 		//ITS NOT actually an arrow, because of an ANNOOOOOOOOOOOYING sound.
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
 
-		vecSwingStart = GetAbsOrigin(this.index);
+		if(entitytofirefrom == -1)
+		{
+			entitytofirefrom = this.index;
+		}
+		vecSwingStart = GetAbsOrigin(entitytofirefrom);
 		vecSwingStart[2] += 54.0;
 
 		vecSwingStart[2] += offset;
@@ -2284,6 +2303,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(this.index, Prop_Send, "m_iTeamNum"));
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
 			if(rocket_model[0])
@@ -2422,6 +2442,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}		
 		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
 		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
+		
+
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
 		{
@@ -2461,10 +2483,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.m_flNextRunTime = GetGameTime() + 0.15; //Only update every 0.1 seconds, we really dont need more, 
 			this.GetLocomotionInterface().Run();
 		}
+		if(this.m_bAllowBackWalking)
+		{
+			this.GetBaseNPC().flMaxYawRate = 0.0;
+		}
+		else
+		{
+			this.GetBaseNPC().flMaxYawRate = (225.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
+		}
 
-	//	if(!this.m_bAllowBackWalking)
-	//		this.FaceTowards(vec, (500.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]));
-		
 		//increace the size of the avoid box by 2x
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);
@@ -4337,7 +4364,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			*/
 
 			float distance_limit;
-			switch(GetClosestTarget_Enemy_Type[target])
+			switch(GetClosestTarget_Enemy_Type[i])
 			{
 				case 1:
 				{
@@ -4684,21 +4711,121 @@ public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 }
 
 float f_CheckIfStuckPlayerDelay[MAXENTITIES];
+float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
 }
+void NpcDrawWorldLogic(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(IsValidEntity(npc.m_iTeamGlow))
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+	if(b_IsAlliedNpc[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+	else if(b_IsEntityNeverTranmitted[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_DONTSEND));
+	}
+	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+#if defined ZR
+	else if(b_thisNpcHasAnOutline[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
+	}
+#endif
+	else
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_PVSCHECK));
+	}
+}
+
+void GiveNpcOutLineLastOrBoss(int entity, bool add)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	//they have a custom outline.
+	//if !npc.m_bTeamGlowDefault is off, then that means that they have an outline that isnt set with this.
+	if(IsValidEntity(npc.m_iTeamGlow) && !npc.m_bTeamGlowDefault)
+	{	
+		return;
+	}
+
+	if(add)
+	{
+		if(!IsValidEntity(npc.m_iTeamGlow))
+		{
+			npc.m_bTeamGlowDefault = true;
+			npc.m_iTeamGlow = TF2_CreateGlow(entity);
+					
+			SetVariantColor(view_as<int>({125, 200, 255, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		}
+	}
+	else
+	{
+		npc.m_bTeamGlowDefault = false;
+		if(IsValidEntity(npc.m_iTeamGlow)) 
+		{
+			RemoveEntity(npc.m_iTeamGlow);
+		}		
+	}
+
+}
+
+
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 
+	NpcDrawWorldLogic(iNPC);
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
+
+	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	{
+		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
+
+		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
+
+		if(b_thisNpcIsARaid[iNPC])
+		{
+			HealingAmount /= 10;
+		}
+		else if(b_thisNpcIsABoss[iNPC])
+		{
+			HealingAmount /= 2;
+		}
+		if(HealingAmount < 1)
+		{
+			HealingAmount = 1;
+		}
+
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			}
+		}
+	}
+	
 //	PlayerInIlligalStuckArea(iNPC);
 	
 	if(b_EntityInCrouchSpot[iNPC])
@@ -6715,6 +6842,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	return ClosestTarget; 
 }
 
+
 stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
@@ -6874,6 +7002,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NPCTeleportOutOfStuck[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
+	b_TeamGlowDefault[entity] = false;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
 	f_NpcTurnPenalty[entity] = 1.0;
@@ -6994,6 +7123,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Changed_WalkCycle[entity] = -1;
 	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
+	f_QuickReviveHealing[entity] = 0.0;
 #if defined ZR
 	ResetBoundVillageAlly(entity);
 	ResetFreeze(entity);

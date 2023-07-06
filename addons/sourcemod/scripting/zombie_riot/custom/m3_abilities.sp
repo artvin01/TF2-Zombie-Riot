@@ -804,7 +804,7 @@ public void PlaceableTempomaryRepairGrenade(int client)
 			f_HealDelay[entity] = GetGameTime() + 1.0;
 			f_Duration[entity] = GetGameTime() + 10.0;
 			
-		//	SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
+			SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
 			 
 			DataPack pack;
 			CreateDataTimer(0.1, Timer_Detect_Player_Near_Repair_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);

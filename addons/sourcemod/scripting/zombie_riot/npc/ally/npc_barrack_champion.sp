@@ -11,6 +11,7 @@ methodmap BarrackChampion < BarrackBody
 		
 		i_NpcInternalId[npc.index] = BARRACK_CHAMPION;
 		i_NpcWeight[npc.index] = 1;
+		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackChampion_ClotThink);
 

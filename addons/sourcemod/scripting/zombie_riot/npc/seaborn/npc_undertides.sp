@@ -83,7 +83,7 @@ methodmap UnderTides < CClotBody
 
 		if(!npc.Anger)
 		{
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			
 			npc.m_flMeleeArmor = 2.0;
 
@@ -198,7 +198,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
 
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.Anger = false;
 		npc.m_flMeleeArmor = 2.0;
@@ -215,6 +215,8 @@ public void UnderTides_ClotThink(int iNPC)
 
 		if(npc.m_flNextRangedSpecialAttack < gameTime)	// Great Tide
 		{
+			KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+
 			int enemy[16];
 			GetHighDefTargets(npc, enemy, sizeof(enemy));
 
@@ -247,6 +249,8 @@ public void UnderTides_ClotThink(int iNPC)
 		}
 		else if(npc.m_flNextRangedAttack < gameTime)	// Collapse
 		{
+			KillFeed_SetKillIcon(npc.index, "syringegun_medic");
+
 			int enemy[8];
 			GetHighDefTargets(npc, enemy, sizeof(enemy));
 
@@ -278,6 +282,8 @@ public void UnderTides_ClotThink(int iNPC)
 		}
 		else
 		{
+			KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+			
 			int enemy[2];
 			GetHighDefTargets(npc, enemy, sizeof(enemy));
 

@@ -320,7 +320,7 @@ methodmap BootyExecutioner < CClotBody
 			b_DuoOnePootisDied = false;
 			b_DuoDisableMainPootisTheme = false;
 			b_DuoMainLeaderDied = false;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			//b_DuoSandSlayerDied = false;
 			for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 			{

@@ -1,3 +1,4 @@
+
 "Phrases"
 {
 	"Credits Page"
@@ -26,7 +27,7 @@
 	{
 		"en"		"You are the Last Human Alive.\nSurvive the current wave to revive all your allies."
 		"it"		"Sei L'ultimo Umano In Vita.\nVinci il prossimo boss round per resuscitare tutti."
-		"ru"		"Вы последний выживший.\nВыживите в текущей волне, чтобы возродить всех своих товарищей."
+		"ru"		"Вы последний выживший.\nПереживите волну, чтобы возродить всех своих товарищей."
 		"pl"		"Jesteś ostatnim człowiekiem.\nPrzeżyj następną rundę z bossem aby wskrzeszyć resztę drużyny."  
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
 		"fr"		"Vous êtes le dernier survivant.\nSurviver au prochain boss pour réanimeer vos coéquipier."
@@ -197,13 +198,14 @@
 	"XP Loading"
 	{
 		"en"		"Loading your levels..."
+		"ru"		"Загрузка уровней..."
 		"chi"       "加载你的等级中..."
 	}
 	"Store Discount"
 	{
 		"en"		"-10%% Off Shipping With No Zombies"
 		"it"		"-10%% meno dal negozio quando non ci sono Zombie"
-		"ru"		"Скидка -10%% на покупки при отсутствии зомби"
+		"ru"		"Скидка -10%% при отсутствии зомби"
 		"pl"		"-10%% przeceny na zakupy podczas przerwy pomiędzy rundami"
 		"es"		"10%% de descuento mientras no hay Zombies"
 		"fr"		"Réduction de 10%% Sans les Zombies"
@@ -229,7 +231,7 @@
 	{
 		"en"		"Equipped"
 		"it"		"Equipaggiato"
-		"ru"		"Уже надето"
+		"ru"		"Надето"
 		"pl"		"Wyposażono"
  		"es"		"Equipado"
 		"fr"		"Equipé"
@@ -267,7 +269,7 @@
 	"Buy Scrap" //Its a currency
 	{
 		"en"		"Buy with scrap"
-		"ru"		"Купить за металл"
+		"ru"		"Куп. за металл"
 		"nl"		"Koop met scrap"
 		"chi"       "使用废料购买"
 	}
@@ -395,7 +397,7 @@
 	{
 		"en"		"Pistol Magazines"
 		"it"		"Caricatori Pistola"
-		"ru"		"Обойма для пистолета"
+		"ru"		"Обойма пистолета"
 		"pl"		"Magazynek do Pistoletu"
 		"es"		"Cartuchos de Pistola"
 		"fr"		"Munitions de Pistolet"
@@ -421,7 +423,7 @@
 	{
 		"en"		"Flamethrower Tank"
 		"it"		"Serbatoio Lanciafiamme"
-		"ru"		"Топливо для огнемёта"
+		"ru"		"Топливо огнемёта"
 		"pl"		"Paliwo do miotacza ognia"
 		"es"		"Tanque de Propano"
 		"fr"		"Réservoir de Lance Flamme"
@@ -512,7 +514,7 @@
 	{
 		"en"		"Sniper Rifle Rounds"
 		"it"		"Munizioni per il Cecchino"
-		"ru"		"Патроны для снайперской винтовки"
+		"ru"		"Патр. снайп. винт."
 		"pl"		"Amunicja do karabinu snajperskiego"
 		"es"		"Balas de Francotirador"
 		"fr"		"Balle de Sniper"
@@ -538,7 +540,7 @@
 	{
 		"en"		"SMG Magazines"
 		"it"		"Caricatori per l'SMG"
-		"ru"		"Патроны для ПП"
+		"ru"		"Патроны ПП"
 		"pl"		"Magazynek do pistoletu maszynowego"
 		"es"		"Balas de Subfusil"
 		"fr"		"Balles de mitraillette"
@@ -551,7 +553,7 @@
 	{
 		"en"		"Revolver Rounds"
 		"it"		"Munizioni Per Il Revolver"
-		"ru"		"Патроны для револьвера"
+		"ru"		"Патроны револьвера"
 		"pl"		"Amunicja do revolveru"
 		"es"		"Balas de Revolver"
 		"fr"		"Balle de Revolver"
@@ -564,7 +566,7 @@
 	{
 		"en"		"Shotgun Shells"
 		"it"		"Proiettili Shotgun"
-		"ru"		"Патроны для дробовика"
+		"ru"		"Патроны дробовика"
 		"pl"		"Amunicja do strzelby"
 		"es"		"Balas de Escopeta"
 		"fr"		"Balles de Fusils à Pompes"
@@ -590,7 +592,7 @@
 	{
 		"en"		"Medigun Fluid"
 		"it"		"Fluido Medigun"
-		"ru"		"Жидкость лечебной пушки"
+		"ru"		"Жидк. лечеб. пушки"
 		"pl"		"Ciecz do Mediguna"
 		"es"		"Fluido Médico"
 		"fr"		"Flux de Medigun"
@@ -648,7 +650,7 @@
 		"en"		"Someone used your ammo box, you gain +20 Credits!"
 		"de"		"Jemand hat ihre Munitionsbox benutzt, du bekommst +20 Kredit!"
 		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +20 Crediti!"
-		"ru"		"Кто-то воспользовался вашим ящиком с боеприпасами, вы получили +20 кредитов!"
+		"ru"		"Кто-то воспользовался вашим ящиком с боеприпасами, получено +20 кредитов!"
 		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +20 Kredytów!"
 		"es"		"Alguién usó tu caja de munición, ganas 20 dolares"
 		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 20 dollars!"
@@ -660,7 +662,7 @@
 	{
 		"en"		"Someone used your armor table, you gain +40 Credits!"
 		"it"		"Qualcuno ha usato la tua cassa di munizioni, hai ricevuto +40 Crediti!"
-		"ru"		"Кто-то воспользовался вашим верстаком брони, вы получили +40 кредитов!"
+		"ru"		"Кто-то воспользовался вашим верстаком брони, получено +40 кредитов!"
 		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +40 Kredytów!"
 		"es"		"Alguién usó tu caja de munición, ganas 40 dolares"
 		"fr"		"Quelqu'un a utilisé votre boite de munitions, vous gagnez 40 dollars!"
@@ -672,7 +674,7 @@
 	"Perk Machine Used"
 	{
 		"en"		"Someone used your perk machine, you gain +80 Credits!"
-		"ru"		"Кто-то воспользовался вашей перк-машиной, вы получили +80 кредитов!"
+		"ru"		"Кто-то воспользовался вашей перк-машиной, получено +80 кредитов!"
 		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +80 Kredit!"
 		"pt"		"Alguém usou sua maquina de habilidade, você ganhou +80 Créditos!"
 		"nl"		"Iemand gebruikte net uw perk machine, je krijgt hiervoor +80 krediet"
@@ -681,7 +683,7 @@
 	"Pap Machine Used"
 	{
 		"en"		"Someone used your Pack-A-Punch Machine, you gain +400 Credits!"
-		"ru"		"Кто-то воспользовался вашим улучшайзером, вы получили +400 кредитов!"
+		"ru"		"Кто-то воспользовался вашим улучшайзером, получено +400 кредитов!"
 		"de"		"Jemand hat ihre PackAPunch Maschine benutzt, du bekommst +400 Kredit!"
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, Você ganhou +400 Créditos!"
 		"nl"		"Iemand gebruikte net uw Pack-A-Punch, je krijgt hiervoor +400 krediet!" 
@@ -690,10 +692,12 @@
 	"Pap Machine Used But Another"
 	{
 		"en"		"Someone used your Pack-A-Punch Machine, you gain +100 Credits!\nAnother builder has more advanced tech then you, and gained the rest."
+        "ru"		"Кто-то воспользовался вашим улучшайзером, получено +100 кредитов!\nДругой строитель имеет более продвинутые технологии, чем ваши, и получил остальное."
 	}
 	"Pap Machine Used Me"
 	{
 		"en"		"A Pack-A-Punch was used that wasnt yours, but your tech is more advanced! You gain 300+ Credits."
+		"ru"		"Был использован улучшайзер, который не принадлежал вам, но ваша техника более совершенна! Получено 300+ кредитов."
 	}
 	"Equip Melee To Use"
 	{
@@ -803,6 +807,7 @@
 	"Spike Limit Reached Global"
 	{
 		"en" 		"There are too many Spikes on the map! Placement Failed."
+		"ru" 		"На карте слишком много шипов! Размещение не удалось."
 	}
 	"Threw Grenade"
 	{
@@ -819,7 +824,7 @@
 	{
 		"en" 		"Your grenade regenerated!"
 		"de"		"Ihre Granate wurde regeneriert!"
-		"ru"		"Ваша граната перезарядилась!"
+		"ru"		"Ваша граната вернулась!"
 		"es"		"Has recuperado la granada"
 		"fr"		"Vous avez récuperez vôtre grenade!"
 		"pt"		"Sua granada regenerou-se!"
@@ -841,7 +846,7 @@
 	{
 		"en" 		"Your Pipebomb regenerated!"
 		"de"		"Ihre Rohrbombe wurde regeneriert!"
-		"ru"		"Ваша бомба перезарядилась!"
+		"ru"		"Ваша бомба вернулась!"
 		"es"		"Ya tienes otra granada, que arda troya"
 		"fr"		"Vous avez récuperez vôtre grenade!"
 		"pt"		"Sua Bomba-de-Cano regenerou-se!"
@@ -878,7 +883,7 @@
 		"en" 		"Not Enough Mana! You need {1} Mana!"
 		"de"		"Nicht Genügend Mana! Du brauchst {1} Mana!"
 //		"it"		"Ricevuto {1} in questa ondata!"
-		"ru"		"Недостаточно маны! Вам нужно {1} маны!"
+		"ru"		"Недостаточно маны! Вам нужно {1} ед. маны!"
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
 //		"fr"		"Vous avez gagnez {1} Cette vague!"
@@ -1022,11 +1027,13 @@
 	"Recycle Poire"
 	{
 		"en" 		"Perk: Recycle Poiré"
+		"ru" 		"Перк: Переработка пуаре"
 	}
 
 	"Quick Revive Recieved"
 	{
 		"en" 		"QUICK REVIVE! 2x Revive speed and 15%% more healing speed and 2x Health on revive"
+		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15%% быстрее скорость лечения и 2x здоровье при оживлении"
 	}
 	"Juggernog Recieved"
 	{
@@ -1056,7 +1063,7 @@
 	"Deadshot Daiquiri Recieved"
 	{
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x доп. урона от выстрела в голову и удар в спину"
+		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x доп. урона от выстрела в голову и удара в спину"
 		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
 		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
 		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.25x Meer Hoofdschotschade en Rugstekingschade"
@@ -1073,11 +1080,12 @@
 	"Recycle Poire Recieved"
 	{
 		"en" 		"RECYCLE POIRÉ! 25%% More ammo from all non shop sources, and 50%% more max armor and armor gain."
+		"ru" 		"ПЕРЕРАБОТКА ПУАРЕ! На 25%% больше боеприпасов из всех источников (кроме магазина), и на 50% больше макс. брони и получаемой брони."
 	}
 	"Nuke Activated"
 	{
 		"en" 		"Nuke!"
-		"ru" 		"Бомба!"
+		"ru" 		"Ядерная бомба!"
 		"de"		"KERNWAFFENEXPLOSION!"
 		"pt"		"NUKE!"
 		"nl"		"Atoombom!"
@@ -1095,16 +1103,19 @@
 	"Max Health Activated"
 	{
 		"en" 		"Extra Health!"
+		"ru" 		"Дополнительное здоровье!"
 		"chi"       "额外的血量!"
 	}
 	"Max Money Activated"
 	{
 		"en" 		"Extra Cash!"
+		"ru" 		"Дополнительные деньги!"
 		"chi"       "额外的现金!"
 	}
 	"Help?"
 	{
 		"en" 		"Help/FAQ"
+		"ru" 		"Помощь/ЧАВО"
 		"chi"       "帮助/问题"
 	}
 	"Help Title?"
@@ -1199,19 +1210,23 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increaced Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increaced Heal/Firerate/Reload Rate.\n⍤ : 25%% Increaced Heal/Firerate/Reload Rate.\n⌃ : 25%% more dmg\n⌅ : 15 %% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increaced dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
+		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increased Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increased Heal/Firerate/Reload Rate.\n⍤ : 25%% Increased Heal/Firerate/Reload Rate.\n⌃ : 25%% more dmg\n⌅ : 15%% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increased dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
+		"ru" 		"ПОЛОЖ. ЭФФ.:\n⌒ : На 10% увелич. дальн. и скор-ть полёта снаряда.\n⌭ : На 5%% увелич. эффективн. лечения и скор-ть стрельбы/перезар.\n⌬ : На 10%% увелич. урон.\n⍣ : На 50%% увелич. эффективн. лечения и скор-ть стрельбы/перезар.\n⍤ : На 25%% увелич. эффективн. лечения и скор-ть стрельбы/перезар.\n⌃ : На 25%% увелич. урон.\n⌅ : 15%% сопр. урону\n⍋ 7%% сопр. урону и на 10%% увелич. урон.\nᐩ На 5%% увелич. урона и сопр.\nß : На 50% увелич. урона, сопр. и скор-ть.\n⍟ : На 25%% увелич. урон.\n⌾ : На 10%% увелич. урон.\n↖ На 35%% увелич. урон.\n⛨ 35%% сопр. урону."
 	}
 	"Show Debuffs"
 	{
 		"en" 		"Show Debuffs"
+		"ru" 		"Негат. эфф."
 	}
 	"Show Buffs"
 	{
 		"en" 		"Show Buffs"
+		"ru" 		"Полож. эфф."
 	}
 	"Debuff/Buff Explain 2"
 	{
-		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n♨ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow\n⯯ : 40%% more dmg taken.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities.\n▼ : 35%% more dmg taken, 65%% slower, 50%% less dmg delt."
+		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n♨ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow.\n⯯ : 40%% more dmg taken.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities.\n▼ : 35%% more dmg taken, 65%% slower, 50%% less dmg dealt."
+		"ru" 		"НЕГАТ. ЭФФ.:\nФиол. полоса брони : если заполнена, получ. тяж. полн. урон + тяж. замедл.\n⌁ : На 25%% увелич. получаем. урон и замедл. скор-ть передвиж.\n⌁⌁ : На 35%% увелич. получаем. урон и замедл. скор-ть передвиж.\n❣ : Уров. кровотеч.\n♨ : Горение\n❅ : На 5%% увелич. получаем. урон и замедл. скор-ть передвиж., кажд. ❅ даёт 5%% доп.\n४ : На 35%% увелич. получаем. урон и тяж. замедл.\n⯯ : На 40%% увелич. получаем. урон.\n↓ : На 65%% замедл. скор-ть передвиж.\nX : некоторые враги не могут исп. способн.\n▼ : На 35%% увелич. получаем. урон, на 65%% медл., на 50%% меньш. наносим. урон."
 	}
 	"Command Help Explained"
 	{
@@ -1243,6 +1258,7 @@
 	"Special Zombies Explained"
 	{
 		"en" 		"These are mini-bosses that spawn randomly after wave 12."
+		"ru" 		"Это мини-боссы, которые появляются случайным образом после 12-й волны."
 		"chi"       "这些是12波后随机生成的小boss。"
 	}
 	"Revival Zombies Explained"
@@ -1309,7 +1325,7 @@
 	"Ammobox Tooltip"
 	{
 		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на ящике с боеприпасами, чтобы получить боеприпасы для текущего оружия."
+		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на ящике с боеприпасами для получения боеприпасов для оружия в руках."
 		"de"		"Drücke NACHLADEN an der Munitionsbox um Munition für deine aktuelle Waffe zubekommen."
 		"pt"		"Pegue mais munição apertando o botão de RECARREGAR enquanto olha para caixa de munições."
 		"nl"		"Druk op te HERLAAD toets om via de ammunitiekist ammunitie te krijgen voor uw huidige wapen."
@@ -1353,7 +1369,7 @@
 	"Not Enough Money To Pap"
 	{
 		"en" 		"You do not have enough money to Pack-a-Punch your Weapon."
-		"ru" 		"У вас не хватает кредитов на улучшение вашего оружия."
+		"ru" 		"У вас недостаточно кредитов на улучшение вашего оружия."
 		"de"		"Sie haben nicht genügend Geld um ihre Waffe zu Pack-A-Punchen."
 		"pt"		"Você não tem dinheiro suficiente para dar um Pack-a-Punch em sua arma."
 		"nl"		"Je hebt geen geld om uw huidige wapen te Pack-A-Punchen."
@@ -1415,7 +1431,7 @@
 	"Healing Station Used"
 	{
 		"en" 		"Someone used your Healing Station, you gain +40 Credits!"
-		"ru" 		"Кто-то воспользовался вашей лечебной станцией, вы получили +40 кредитов!"
+		"ru" 		"Кто-то воспользовался вашей лечебной станцией, получено +40 кредитов!"
 		"de"		"Jemand hat deine Heilstation benutzt, du hast +40 Kredit bekommen!"
 		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +40 créditos!"
 		"nl"		"Iemand gebruikte net uw Genezingsstation, u krijgt +40 krediet!"
@@ -1612,7 +1628,7 @@
 	"Can Be Pack-A-Punched"
 	{
 		"en"		"Can Be Pack-A-Punched"
-		"ru"		"Может быть улучшено"
+		"ru"		"Можно улучшить"
 		"de"		"Kann man Pack-A-Punchen"
 		"pt"		"Compatível com Pack-A-Punch"
 		"nl"		"Kan Worden gePack-A-Punched"
@@ -1797,7 +1813,7 @@
 	"tutorial_2"
 	{
 		"en"		"Good! Now Navigate to ''weapons'' and buy any weapon you want.\nOpen the scoreboard (TAB) to open the store again if it got closed."
-		"ru"		"Отлично! Теперь перейдите к оружию и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
+		"ru"		"Отлично! Теперь перейдите к «оружию» и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
 		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
 		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
 		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
@@ -1805,7 +1821,7 @@
 	"tutorial_3"
 	{
 		"en"		"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
-		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в последующих волнах и выживите до конца!\nДополнительную помощь можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
+		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
@@ -1868,7 +1884,8 @@
 	}
 	"Save New"
 	{
-		"en"		"Enter name in chatbox to create a new loadout\nIt will save your current bought items with the name you give.\nYou can rebuy said loadout if you have enough cash."
+		"en"		"Enter name in chatbox to create a new loadout.\nIt will save your current bought items with the name you give.\nYou can rebuy said loadout if you have enough cash."
+		"ru"		"Введите имя в чат для создания нового снаряжения.\nЭто сохранит ваши купленные предметы с именем, которое вы дали.\nВы можете повторно купить это снаряжение, если у вас достаточно денег."
 		"chi"       "在聊天框中输入名字创建一个新的预设\n这将保存您当前购买的物品。如果你有足够的现金，你可以一件购买。"
 	}
 	"Invalid Name"
@@ -1890,26 +1907,31 @@
 	"All Weapons Unlocked"
 	{
 		"en"		"{pink}All weapons and upgrades are unlocked to buy!"
+		"ru"		"{pink}Всё оружие и улучшения теперь можно купить!"
 		"chi"       "{pink}所有武器和升级都可以解锁购买!"
 	}
 	"Starter Mode"
 	{
 		"en"		"Welcome to TF2: Zombie Riot!\nAdvanced weapons will unlock at Level 5"
+		"ru"		"Добро пожаловать в TF2: Восстание зомби!\nПродвинутое оружие будет открыто на 5-м уровне"
 		"chi"       "欢迎来到TF2:僵尸暴动!高级武器将在5级解锁"
 	}
 	"Skip Starter"
 	{
 		"en"		"Skip starter weapons and unlock advanced weapons"
+		"ru"		"Пропустить начальное оружие и открыть продвинутое оружие"
 		"chi"       "跳过初级武器并解锁高级武器"
 	}
 	"Skip Starter Confirm"
 	{
 		"en"		"You will be set to Level 5 and have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
+		"ru"		"Вы получите 5-й уровень и доступ к продвинутому оружию\nВы знакомы с основами покупки и выживания?\n "
 		"chi"       "你将被设置为5级，并可以使用先进的武器\n你熟悉购买和生存的基本知识吗?\n如若你不了解玩法，请误跳过新手教程!"
 	}
 	"Skip Starter Yes"
 	{
 		"en"		"Yes, set me to Level 5"
+		"ru"		"Да, дайте мне 5-й уровень"
 		"chi"       "是的，设置到5级(慎重)"
 	}
 	"nothing"
@@ -1920,7 +1942,7 @@
 	"At Weapon Limit"
 	{
 		"en"		"You reached the maximum amount of held weapons, some may not have been equipped."
-		"ru"		"Вы достигли максимального количества удерживаемого оружия, некоторые из них могли быть не выданы."
+		"ru"		"Вы достигли максимального количества оружия, некоторые из них могли быть не выданы."
 		"pt"		"Você alcançou o numero maximo de armas que você pode segurar, algumas podem não ter sido equipadas."
 		"nl"		"Je hebt het maximaal toegelaten wapens dat je mag dragen berijkt. Sommige werden niet gedragen."
 		"chi"       "你的武器数量达到了最大值，有些可能还没有装备。"
@@ -1965,7 +1987,7 @@
 	{
 		"en"		"You think you can easily run in here for safety? Not with me."
 		"de"		"Du denkst du kannst einfach hier rein gehen zur Sicherheit? Nicht mit mir."
-		"ru"		"Думаешь, ты можешь так легко забежать сюда для безопасности? Только не в мною смену."
+		"ru"		"Думаешь, ты можешь так легко забежать сюда? Только не в мною смену."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"你以为你能轻易跑到这里安全吗?对我来说不是。"
@@ -2242,7 +2264,7 @@
 	{
 		"en"		"This is the final wave, Prepare."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Это последняя волна, приготовьтесь."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"这是最后一波，准备。"
@@ -2255,7 +2277,7 @@
 	{
 		"en"		"Silvester shares his power with you..."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Сильвестр делится с вами своей силой..."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"希尔维斯特和你分享他的力量…"
@@ -2268,7 +2290,7 @@
 	{
 		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
 		//"de"		""
-		//"ru"		""
+		"ru"		"В будущем используйте кнопку TAB/таблицы очков, она откроет магазин без всяких команд!"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"在未来，使用TAB/计分板按钮，它将打开商店没有任何命令!"
@@ -2281,7 +2303,7 @@
 	{
 		"en"		"Invulnerable!"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Неуязвимость!"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"免疫伤害!"
@@ -2295,7 +2317,7 @@
 		"#format"	"{1:d}"
 		"en"		"Downs Left: {1}"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Падений осталось: {1}"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"剩余回合:{1}"
@@ -2309,7 +2331,7 @@
 		"#format"	"{1:.1f}"
 		"en"		"Down Cooldown: {1}"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Восстановл. падения: {1}"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"冷却时间:{1}"
@@ -2322,7 +2344,7 @@
 	{
 		"en"		"Low Health Shake"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Тряска при низк. ур. здор."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"低生命值屏幕效果"
@@ -2335,7 +2357,7 @@
 	{
 		"en"		"Weapon Screen Shake"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Тряска экрана оружия"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"武器射击屏幕晃动"
@@ -2348,7 +2370,7 @@
 	{
 		"en"		"Hit Marker"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Маркер попад."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"攻击标记"
@@ -2361,7 +2383,7 @@
 	{
 		"en"		"You have been Infected by Nemesis!\nDo not get close to allies."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Вы были заражены Немезидом!\nНе приближайтесь к союзникам."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"你被复仇女神感染了!不要与队友走得太近。"
@@ -2374,7 +2396,7 @@
 	{
 		"en"		"Eradicate all the xeno infected\nFind the cause behind this."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Искорените всех ксенозаражённых\nНайдите причину происходящего."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"消灭所有被感染的异种人，找出背后的原因。"
@@ -2387,7 +2409,7 @@
 	{
 		"en"		"Silvester and Goggles didnt attack you for no reason."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Сильвестр и Гогглз не нападали на вас без причины."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"西尔维斯特和护目镜不是无缘无故攻击你的。"
@@ -2400,7 +2422,7 @@
 	{
 		"en"		"They tried to warn you and prevent you from certain doom."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Они пытались предупредить вас и уберечь от верной гибели."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"他们试图警告你，让你免于厄运。"
@@ -2413,7 +2435,7 @@
 	{
 		"en"		"Prove them wrong, kill the remaining few infected."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Докажите, что они ошибаются, убейте оставшихся заражённых."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"证明他们是错的，杀死剩下的几个感染者。"
@@ -2426,7 +2448,7 @@
 	{
 		"en"		"This attack requires you to summon at least one skull!"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Эта атака требует, чтобы вы призвали хотя бы один череп!"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"此攻击需要你召唤至少一个骷髅!"
@@ -2440,7 +2462,7 @@
 		"#format"	"{1:d},{2:d}"
 		"en"		"You have summoned {1}/{2} Skull Servant(s)."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Вы вызвали {1}/{2} слуг черепа."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"你已经召唤了{1}/{2}骷髅仆人."
@@ -2451,9 +2473,9 @@
 	}
 	"Npc Stuck Spot Warning"
 	{
-		"en"		"Get out of the npc stuck zone. you will recieve this message every 0.5 seconds if you stay in it."
+		"en"		"Get out of the NPC stuck zone. you will receive this message every 0.5 seconds if you stay in it."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Выйдите из зоны застревания NPC. Вы будете получать это сообщение каждые 0,5 секунды, если останетесь в ней."
 		//"pt"		""
 		//"nl"		""
 		"chi"		"离开npc卡住的区域。如果你待在里面，每0.5秒你就会收到这条信息。"
@@ -2466,7 +2488,7 @@
 	{
 		"en"		"If you wish to see the wave counter in a better way, set ''cl_showpluginmessages'' to 1 in the console!"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Если вы хотите видеть счётчик волн в лучшем виде, установите «cl_showpluginmessages» на 1 в консоли!"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"如果您希望以更好的方式查看回合波数计数器，请在控制台中输入“cl_showpluginmessages 1”!"
@@ -2479,7 +2501,7 @@
 	{
 		"en"		"If you wish for Grigori to not half mute your game volume when he talks, set ''snd_ducktovolume'' to 1 in the console!"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Если вы хотите, чтобы Григорий не отключал наполовину громкость вашей игры, когда он говорит, установите «snd_ducktovolume» на 1 в консоли!"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"如果你希望Grigori说话的时候不会把你的游戏音量调成半静音，那就在控制台输入“snd_ducktovolume 1”吧!"
@@ -2492,7 +2514,7 @@
 	{
 		"en"		"Redirect to different ZR server"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Перейти на другой сервер в этом режиме"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"跳转到不同的僵尸暴动服务器"
@@ -2505,7 +2527,7 @@
 	{
 		"en"		"Server is full, what would you like to do:"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Сервер переполнен, что бы вы хотели сделать:"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"服务器幸存者团队已满，您想做什么:"
@@ -2518,7 +2540,7 @@
 	{
 		"en"		"Wait for the next map"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ждать следующей карты"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"等待下一张地图"
@@ -2531,7 +2553,7 @@
 	{
 		"en"		"Wait for an open slot"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ждать, пока освободится место"
 		//"pt"		""
 		//"nl"		""
 		"chi"		"等待空位"
@@ -2544,7 +2566,7 @@
 	{
 		"en"		"Buff/Debuff List"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Полож./негат. эфф."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2557,7 +2579,7 @@
 	{
 		"en"		"Crouch to see descriptions!"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Пригнитесь, чтобы посмотреть описание!"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2570,7 +2592,7 @@
 	{
 		"en"		"Toggle Upgrade Menu"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Меню улучшения"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2583,7 +2605,7 @@
 	{
 		"en"		"Copper Smith"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Медный кузнец"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2594,9 +2616,9 @@
 	}
 	"Barracks Copper Smith Desc"
 	{
-		"en"		"Increace Melee Damage by 15%%"
+		"en"		"Increase Melee Damage by 15%%"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2609,7 +2631,7 @@
 	{
 		"en"		"Iron Casting"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Железное литьё"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2620,9 +2642,9 @@
 	}
 	"Barracks Iron Casting Desc"
 	{
-		"en"		"Increace Melee Damage by 20%%"
+		"en"		"Increase Melee Damage by 15%%"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2635,7 +2657,7 @@
 	{
 		"en"		"Steel Casting"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Стальное литьё"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2646,9 +2668,9 @@
 	}
 	"Barracks Steel Casting Desc"
 	{
-		"en"		"Increace Melee Damage by 30%%"
+		"en"		"Increase Melee Damage by 30%%"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение урона ближнего боя на 30%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2661,7 +2683,7 @@
 	{
 		"en"		"Refined Steel"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Очищенная сталь"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2672,9 +2694,9 @@
 	}
 	"Barracks Refined Steel Desc"
 	{
-		"en"		"Increace Melee Damage by 50%%"
+		"en"		"Increase Melee Damage by 50%%"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение урона ближнего боя на 50%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2687,7 +2709,7 @@
 	{
 		"en"		"Requirement:"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Требование:"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2700,7 +2722,7 @@
 	{
 		"en"		"Fletching"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Оперение"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2711,9 +2733,9 @@
 	}
 	"Barracks Fletching Desc"
 	{
-		"en"		"15%% Increaced ranged damage && 10%% more Range"
+		"en"		"15%% Increased ranged damage && 10%% more Range"
 		//"de"		""
-		//"ru"		""
+		"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2726,7 +2748,7 @@
 	{
 		"en"		"Steel Arrows"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Стальные стрелы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2737,9 +2759,9 @@
 	}
 	"Barracks Steel Arrows Desc"
 	{
-		"en"		"20%% Increaced ranged damage && 10%% more Range"
+		"en"		"15%% Increased ranged damage && 10%% more Range"
 		//"de"		""
-		//"ru"		""
+		"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2752,7 +2774,7 @@
 	{
 		"en"		"Bracer"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Наручи"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2763,9 +2785,9 @@
 	}
 	"Barracks Bracer Desc"
 	{
-		"en"		"30%% Increaced ranged damage && 10%% more Range"
+		"en"		"30%% Increased ranged damage && 10%% more Range"
 		//"de"		""
-		//"ru"		""
+		"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2776,9 +2798,9 @@
 	}
 	"Barracks Obsidian Refined Tips"
 	{
-		"en"		"Bracer"
+		"en"		"Obsidian Refine"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Обсидиановое очищение"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2789,9 +2811,9 @@
 	}
 	"Barracks Obsidian Refined Tips Desc"
 	{
-		"en"		"50%% Increaced ranged damage"
+		"en"		"50%% Increased ranged damage"
 		//"de"		""
-		//"ru"		""
+		"ru"		"50%% увелич. урона в дальнем бою"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2801,12 +2823,12 @@
 		//"fr"		""	
 	}
 
-	
+
 	"Barracks Copper Armor Plate"
 	{
 		"en"		"Copper Armor Plate"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Медная бронепластина"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2817,9 +2839,9 @@
 	}
 	"Barracks Copper Armor Plate Desc"
 	{
-		"en"		"5%% damage reduction and 1 flat damage reduction"
+		"en"		"3%% damage reduction and 1 flat damage reduction"
 		//"de"		""
-		//"ru"		""
+		"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2832,7 +2854,7 @@
 	{
 		"en"		"Iron Armor Plate"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Железная бронепластина"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2843,9 +2865,9 @@
 	}
 	"Barracks Iron Armor Plate Desc"
 	{
-		"en"		"5%% damage reduction and 1 flat damage reduction"
+		"en"		"3%% damage reduction and 1 flat damage reduction"
 		//"de"		""
-		//"ru"		""
+		"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2858,7 +2880,7 @@
 	{
 		"en"		"Chainmail Armor"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Кольчужная броня"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2869,9 +2891,9 @@
 	}
 	"Barracks Chainmail Armor Desc"
 	{
-		"en"		"5%% damage reduction and 1 flat damage reduction"
+		"en"		"3%% damage reduction and 1 flat damage reduction"
 		//"de"		""
-		//"ru"		""
+		"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2884,7 +2906,7 @@
 	{
 		"en"		"Reforged Armor Plate"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Перекованная бронепластина"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2897,7 +2919,7 @@
 	{
 		"en"		"10%% damage reduction and 2 flat damage reduction"
 		//"de"		""
-		//"ru"		""
+		"ru"		"10%% снижение урона и 2 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2910,7 +2932,7 @@
 	{
 		"en"		"Herbal Medicine"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Фитотерапия"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2923,7 +2945,7 @@
 	{
 		"en"		"Low health regen passively on units"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Пассивное восстановление при низком уровне здоровья у войск"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2936,7 +2958,7 @@
 	{
 		"en"		"Refined Medicine"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Усовершенствованная медицина"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2947,9 +2969,9 @@
 	}
 	"Barracks Refined Medicine Desc"
 	{
-		"en"		"Increaced health regen and 10%% more max health"
+		"en"		"Increased health regen and 10%% more max health"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увелич. восст. здоровья и на 10% больше макс. запас здоровья"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2958,12 +2980,12 @@
 		//"it"		""
 		//"fr"		""	
 	}
-	
+
 	"Barracks Tower"
 	{
 		"en"		"Tower"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Башня"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2974,9 +2996,9 @@
 	}
 	"Barracks Tower Desc"
 	{
-		"en"		"You lose 1 deployment slot, but unlock more upgrades\nmore health for your building, and it defends itself."
+		"en"		"unlock more upgrades\nmore health for your building, and it defends itself."
 		//"de"		""
-		//"ru"		""
+		"ru"		"новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2989,7 +3011,7 @@
 	{
 		"en"		"Guard Tower"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Сторожевая башня"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3000,9 +3022,9 @@
 	}
 	"Barracks Guard Tower Desc"
 	{
-		"en"		"Increaced health and damage and arrow count."
+		"en"		"Increased health and damage and arrow count."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение прочности, урона и количества стрел."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3015,7 +3037,7 @@
 	{
 		"en"		"Imperial Tower"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Императорская башня"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3026,9 +3048,9 @@
 	}
 	"Barracks Imperial Tower Desc"
 	{
-		"en"		"Increaced health and damage and arrow count."
+		"en"		"Increased health and damage and arrow count."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение прочности, урона и количества стрел."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3039,9 +3061,9 @@
 	}
 	"Barracks Ballistical Tower"
 	{
-		"en"		"Ballistical Tower"
+		"en"		"Ballista Tower"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Башня с баллистой"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3052,9 +3074,9 @@
 	}
 	"Barracks Ballistical Tower Desc"
 	{
-		"en"		"Increaced health and damage and arrow count."
+		"en"		"Increased health and damage and arrow count."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение прочности, урона и количества стрел."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3067,7 +3089,7 @@
 	{
 		"en"		"Donjon Tower"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Башня-донжон"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3078,9 +3100,9 @@
 	}
 	"Barracks Donjon Tower Desc"
 	{
-		"en"		"Increaced health and damage and arrow count, unlocks more upgrades."
+		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3093,7 +3115,7 @@
 	{
 		"en"		"Donjon"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Донжон"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3104,9 +3126,9 @@
 	}
 	"Barracks Donjon Desc"
 	{
-		"en"		"Increaced health and damage and arrow count, unlocks more upgrades."
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3119,7 +3141,7 @@
 	{
 		"en"		"Krepost"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Крепость"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3130,9 +3152,9 @@
 	}
 	"Barracks Krepost Desc"
 	{
-		"en"		"Increaced health and damage and arrow count, unlocks more upgrades.\nAllows you to train a new special unit slowly."
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3145,7 +3167,7 @@
 	{
 		"en"		"Castle"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Замок"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3156,9 +3178,9 @@
 	}
 	"Barracks Castle Desc"
 	{
-		"en"		"Increaced health and damage and arrow count, unlocks more upgrades.\nIncreaces speed of training the new special unit massively."
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades.\nAllows you to train a new special unit slowly."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПозволяет медленно обучать нового особого воина."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3171,7 +3193,7 @@
 	{
 		"en"		"Manual Fire"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Атака вручную"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3182,9 +3204,9 @@
 	}
 	"Barracks Manual Fire Desc"
 	{
-		"en"		"Allows you to enable manual fire mode inside your building.\nManually fiering will increace its damage massively, but must be mounted."
+		"en"		"Allows you to enable manual fire mode inside your building.\nManually firing will increase its damage massively, but must be mounted."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Позволяет включить режим атаки вручную внутри постройки.\nАтака вручную значительно увеличивает его урон, но должна быть задана вручную."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3197,7 +3219,7 @@
 	{
 		"en"		"Murder Holes"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Убийственные дыры"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3210,7 +3232,7 @@
 	{
 		"en"		"Removed the minimal range of your building."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Убрана минимальная дальность атаки вашей постройки."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3223,7 +3245,7 @@
 	{
 		"en"		"Ballistics"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Баллистика"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3236,7 +3258,7 @@
 	{
 		"en"		"Your building will now predict the movement of enemies."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Теперь ваша постройка будет предсказывать движение врагов."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3249,7 +3271,7 @@
 	{
 		"en"		"Chemistry"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Химия"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3260,9 +3282,9 @@
 	}
 	"Barracks Chemistry Desc"
 	{
-		"en"		"Your building will set enemies ablaze with its arrows and increaces their damage."
+		"en"		"Your building will set enemies ablaze with its arrows and increases their damage."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ваша постройка будет поджигать врагов своими стрелами и увеличивать их урон."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3275,7 +3297,7 @@
 	{
 		"en"		"Crenelations"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Зубцы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3286,9 +3308,9 @@
 	}
 	"Barracks Crenelations Desc"
 	{
-		"en"		"Massively increaced range, non ranged units will now increace arrow count aswell, arrows now home onto the target."
+		"en"		"Massively increased range, non ranged units will now increase arrow count as well, arrows now home onto the target."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Значительное увеличение дальности стрельбы, войска ближнего боя теперь также увеличивают количество стрел, стрелы теперь наводятся в цель."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3301,7 +3323,7 @@
 	{
 		"en"		"Conscription"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Призыв"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3312,9 +3334,9 @@
 	}
 	"Barracks Conscription Desc"
 	{
-		"en"		"Train units 25%% faster, Gain resoruces 25%% faster (gold excluded)."
+		"en"		"Train units 25%% faster, Gain resources 25%% faster (gold excluded)."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Обучение войск на 25% быстрее, получение ресурсов на 25% быстрее (без учёта золота)."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3327,7 +3349,7 @@
 	{
 		"en"		"Goldminers"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Золотодобытчики"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3340,7 +3362,7 @@
 	{
 		"en"		"Get gold 25%% faster."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Получайте золото на 25%% быстрее."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3353,7 +3375,7 @@
 	{
 		"en"		"Assistant Villager"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Житель-помощник"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3366,7 +3388,7 @@
 	{
 		"en"		"Gain the ability to create a villager, it will build a tower and repair buildings talk to the villager for more info."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Получите возможность создать жителя, он будет строить башни и ремонтировать постройки, поговорите с ним для получения подробностей."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3379,7 +3401,7 @@
 	{
 		"en"		"Villager Education"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Образование жителей"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3392,7 +3414,7 @@
 	{
 		"en"		"Your villager will no longer take up deployment slots."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ваш житель больше не будет занимать ячейки развёртывания."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3405,7 +3427,7 @@
 	{
 		"en"		"Strongholds"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Цитадель"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3418,7 +3440,7 @@
 	{
 		"en"		"Your building attacks 33% faster and heals any melee unit or player around it."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Ваша постройка атакует на 33% быстрее и лечит любые войска ближнего боя или игрока вокруг него."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3431,7 +3453,7 @@
 	{
 		"en"		"Hoardings"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Щиты"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3444,7 +3466,7 @@
 	{
 		"en"		"While your building is alive, all your buildings will gain 25%% more health."
 		//"de"		""
-		//"ru"		""
+		"ru"		"Пока ваша постройка цела, все ваши постройки получают на 25%% больше прочности."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3457,7 +3479,7 @@
 	{
 		"en"		"Exquisite Housing"
 		//"de"		""
-		//"ru"		""
+		"ru"		"Изящное жильё"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3469,6 +3491,32 @@
 	"Barracks Exquisite Housing Desc"
 	{
 		"en"		"Gain back your lost 1 deployment slot from making a tower."
+		//"de"		""
+		"ru"		"Верните себе 1 ячейку развёртывания, потерянную при создании башни."
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
+	"Barracks Villager Desc"
+	{
+		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
+	"Barracks Teutonic Knight Desc"
+	{
+		"en"		"The strongest of the strongest. Ultimate melee unit."	
 		//"de"		""
 		//"ru"		""
 		//"pt"		""

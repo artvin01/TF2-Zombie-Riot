@@ -897,6 +897,31 @@ stock int TF2_CreateGlow(int iEnt)
 
 	return ent;
 }
+
+stock int TF2_CreateGlow_White(int entIndex)
+{
+	char oldEntName[64];
+	GetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName, sizeof(oldEntName));
+
+	char strName[126], strClass[64];
+	GetEntityClassname(entIndex, strClass, sizeof(strClass));
+	FormatEx(strName, sizeof(strName), "%s%i", strClass, entIndex);
+	DispatchKeyValue(entIndex, "targetname", strName);
+
+	int ent = CreateEntityByName("tf_glow");
+	DispatchKeyValue(ent, "target", strName);
+	FormatEx(strName, sizeof(strName), "tf_glow_%i", entIndex);
+	DispatchKeyValue(ent, "targetname", strName);
+	DispatchKeyValue(ent, "Mode", "0");
+	DispatchSpawn(ent);
+
+	AcceptEntityInput(ent, "Enable");
+
+	//Change name back to old name because we don't need it anymore.
+	SetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName);
+	return ent;
+}
+
 stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)
 {
 	SetVariantString("!activator");

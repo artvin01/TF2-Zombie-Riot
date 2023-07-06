@@ -78,6 +78,7 @@ methodmap SeaPiercer < CClotBody
 		i_NpcInternalId[npc.index] = data[0] ? SEAPIERCER_ALT : SEAPIERCER;
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

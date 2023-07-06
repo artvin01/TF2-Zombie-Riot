@@ -473,10 +473,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					CClotBody npcstats = view_as<CClotBody>(entity);
 					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
 					{
-						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0 && !IsValidEntity(npcstats.m_iTeamGlow))
-							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+							GiveNpcOutLineLastOrBoss(entity, true);
 						else
-							SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
+							GiveNpcOutLineLastOrBoss(entity, false);
 					}
 					
 					if(!npcstats.m_bStaticNPC)
@@ -717,11 +717,11 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
-						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", true);
+						GiveNpcOutLineLastOrBoss(entity_Spawner, true);
 					}
 					else
 					{
-						SetEntProp(entity_Spawner, Prop_Send, "m_bGlowEnabled", false);
+						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
 					if(zr_spawnprotectiontime.FloatValue > 0.0)
@@ -795,7 +795,7 @@ public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
 			CClotBody npcstats = view_as<CClotBody>(entity);
 			if(isBoss)
 			{
-				SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+				GiveNpcOutLineLastOrBoss(entity, true);
 				npcstats.m_bThisNpcIsABoss = true; //Set to true!
 			}
 			else
@@ -1395,6 +1395,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		else if(!(damagetype & DMG_SLASH))
 		{
 #if defined ZR
+			if(i_CurrentEquippedPerk[attacker] == 5)
+			{
+				damage *= 1.25;
+			}
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
 				if(Medival_Difficulty_Level != 0.0 && !b_IsAlliedNpc[victim])
@@ -1407,6 +1411,22 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage *= fl_Extra_RangedArmor[victim];
 		}
 		damage *= fl_Extra_Damage[attacker];
+		if(i_CurrentEquippedPerk[victim] == 6)
+		{
+			if(f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
+			{
+				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+				
+				float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+				
+				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
+				
+				EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 60, _, 1.0);
+
+				damage *= 0.5;
+				f_WidowsWineDebuff[attacker] = GameTime + FL_WIDOWS_WINE_DURATION;
+			}
+		}
 
 		//No resistances towards slash as its internal.
 

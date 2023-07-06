@@ -4,15 +4,15 @@
 enum struct KillFeed
 {
 	int attacker;
-	char attacker_name[64];
+	char attacker_name[96];
 	int attacker_team;
 
 	int userid;
-	char victim_name[64];
+	char victim_name[96];
 	int victim_team;
 
 	int assister;
-	//char assister_name[64];
+	//char assister_name[96];
 	//int assister_team;
 
 	int weaponid;
@@ -46,9 +46,38 @@ static char KillIcon[MAXENTITIES][32];
 static ArrayList FeedList;
 static Handle FeedTimer;
 
+void AdjustBotCount()
+{
+	int botcount = 0;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsFakeClient(client))
+		{
+			botcount += 1;
+			if(botcount > 2)
+			{
+				botcount -= 1;
+				KickClient(client);
+			}
+		}
+	}
+	for(int loop = 1; loop <= 20; loop++)
+	{
+		if(botcount < 2)
+		{
+			SpawnBotCustom("bot1", true);
+			botcount++;	
+		}
+		else
+		{
+			break;
+		}
+	}
+}
 void KillFeed_PluginStart()
 {
 	FeedList = new ArrayList(sizeof(KillFeed));
+
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -129,7 +158,7 @@ void KillFeed_EntityCreated(int entity)
 	KillIcon[entity][0] = 0;
 }
 
-stock void KillFeed_SetKillIcon(int entity, const char[] icon)
+void KillFeed_SetKillIcon(int entity, const char[] icon)
 {
 	strcopy(KillIcon[entity], sizeof(KillIcon[]), icon);
 }
@@ -163,8 +192,6 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 
 void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
-	// TODO: Possibly headshot kill icon
-
 	int botNum;
 	KillFeed feed;
 
@@ -212,6 +239,13 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 	else
 	{
 		return;
+	}
+	
+	if(attacker < 1 && lasthit > 0)
+	{
+		// Killed by hazard
+		attacker = lasthit;
+		lasthit = -69;
 	}
 	
 	if(attacker > 0)
@@ -268,6 +302,9 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		{
 			feed.customkill = TF_CUSTOM_SUICIDE;
 		}
+
+		if(!feed.attacker)
+			feed.attacker = feed.userid;
 	}
 	else if(attacker > MaxClients && attacker != victim)
 	{
@@ -279,6 +316,8 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		// "Finished off"
 		feed.assister = -1;
 		feed.customkill = TF_CUSTOM_SUICIDE;
+		if(!feed.attacker)
+			feed.attacker = feed.userid;
 	}
 
 	feed.weaponid = weapon;
@@ -325,9 +364,9 @@ static void ShowNextFeed()
 {
 	if(FeedList.Length)
 	{
-		KillFeed feed;
+		KillFeed feedmain, feed;
+		FeedList.GetArray(0, feedmain);
 		FeedList.GetArray(0, feed);
-		FeedList.Erase(0);
 
 		int victim = GetClientOfUserId(feed.userid);
 		int attacker = GetClientOfUserId(feed.attacker);
@@ -335,35 +374,82 @@ static void ShowNextFeed()
 		bool botUsed;
 		if(feed.victim_name[0] && victim)
 		{
-			SetClientName(victim, feed.victim_name);
-			SetEntPropString(victim, Prop_Data, "m_szNetname", feed.victim_name);
-			KillFeed_SetBotTeam(victim, feed.victim_team);
-			botUsed = true;
+			char buffer[64];
+			GetClientName(victim, buffer, sizeof(buffer));
+			if(!StrEqual(buffer, feed.victim_name) || GetClientTeam(victim) != feed.victim_team)
+			{
+				SetClientName(victim, feed.victim_name);
+				SetEntPropString(victim, Prop_Data, "m_szNetname", feed.victim_name);
+				KillFeed_SetBotTeam(victim, feed.victim_team);
+				botUsed = true;
+			}
 		}
 
 		if(feed.attacker_name[0] && attacker)
 		{
-			SetClientName(attacker, feed.attacker_name);
-			SetEntPropString(attacker, Prop_Data, "m_szNetname", feed.attacker_name);
-			KillFeed_SetBotTeam(attacker, feed.attacker_team);
-			botUsed = true;
+			char buffer[64];
+			GetClientName(attacker, buffer, sizeof(buffer));
+			if(!StrEqual(buffer, feed.attacker_name) || GetClientTeam(attacker) != feed.attacker_team)
+			{
+				SetClientName(attacker, feed.attacker_name);
+				SetEntPropString(attacker, Prop_Data, "m_szNetname", feed.attacker_name);
+				KillFeed_SetBotTeam(attacker, feed.attacker_team);
+				botUsed = true;
+			}
 		}
-		
-		Event event = CreateEvent("player_death", true);
 
-		event.SetInt("attacker", feed.attacker);
-		event.SetInt("userid", feed.userid);
-		event.SetInt("victim_entindex", victim);
-		event.SetInt("assister", feed.assister);
-		event.SetInt("weaponid", feed.weaponid);
-		event.SetString("weapon", feed.weapon);
-		event.SetInt("weapon_def_index", feed.weapon_def_index);
-		event.SetInt("damagebits", feed.damagebits);
-		event.SetInt("inflictor_entindex", feed.inflictor_entindex);
-		event.SetInt("customkill", feed.customkill);
+		ArrayList list = new ArrayList();
 
-		if(feed.silent_kill)
+		do
 		{
+			FeedList.Erase(0);
+
+			Event event = CreateEvent("player_death", true);
+
+			event.SetInt("attacker", feed.attacker);
+			event.SetInt("userid", feed.userid);
+			event.SetInt("victim_entindex", victim);
+			event.SetInt("assister", feed.assister);
+			event.SetInt("weaponid", feed.weaponid);
+			event.SetString("weapon", feed.weapon);
+			event.SetInt("weapon_def_index", feed.weapon_def_index);
+			event.SetInt("damagebits", feed.damagebits);
+			event.SetInt("inflictor_entindex", feed.inflictor_entindex);
+			event.SetInt("customkill", feed.customkill);
+			event.SetBool("silent_kill", feed.silent_kill);
+
+			list.Push(event);
+
+			if(!FeedList.Length)
+				break;
+			
+			// Add anything using the same team/name
+			FeedList.GetArray(0, feed);
+		}
+		while(feed.victim_team == feedmain.victim_team &&
+			feed.attacker_team == feedmain.attacker_team &&
+			StrEqual(feed.victim_name, feedmain.victim_name) &&
+			StrEqual(feed.attacker_name, feedmain.attacker_name));
+
+		// Need time to change the bot's display name
+		FeedTimer = CreateTimer(botUsed ? 0.1 : 0.0, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
+	}
+}
+
+public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
+{
+	FeedTimer = null;
+
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		Event event = list.Get(i);
+
+		if(event.GetBool("silent_kill"))
+		{
+			int victim = GetClientOfUserId(event.GetInt("userid"));
+			int attacker = GetClientOfUserId(event.GetInt("attacker"));
+
 			if(victim)
 				event.FireToClient(victim);
 			
@@ -380,19 +466,13 @@ static void ShowNextFeed()
 		}
 
 		event.Cancel();
-
-		if(botUsed)
-		{
-			FeedTimer = CreateTimer(0.3, KillFeed_Timer);
-		}
-		else
-		{
-			ShowNextFeed();
-		}
 	}
+
+	FeedTimer = CreateTimer(0.1, KillFeed_NextTimer);
+	return Plugin_Continue;
 }
 
-public Action KillFeed_Timer(Handle timer)
+public Action KillFeed_NextTimer(Handle timer)
 {
 	FeedTimer = null;
 	ShowNextFeed();

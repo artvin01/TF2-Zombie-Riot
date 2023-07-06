@@ -462,8 +462,6 @@ public Action XenoCombineSwordsman_OnTakeDamage(int victim, int &attacker, int &
 			
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 0.5;
 			npc.bXenoInfectedSpecialHurt = true;
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

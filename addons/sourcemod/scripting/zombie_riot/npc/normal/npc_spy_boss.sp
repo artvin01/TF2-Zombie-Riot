@@ -231,7 +231,7 @@ methodmap SpyMainBoss < CClotBody
 		npc.m_bmovedelay_gun = false;
 		npc.m_bmovedelay = false;
 		
-		SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();

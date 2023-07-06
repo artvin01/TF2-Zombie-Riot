@@ -825,6 +825,10 @@ public Action PerfectHomingShot(Handle timer, DataPack pack)
 			}
 			return Plugin_Continue;
 		}
+		else
+		{
+			return Plugin_Handled;
+		}
 	}
 	return Plugin_Handled;
 }

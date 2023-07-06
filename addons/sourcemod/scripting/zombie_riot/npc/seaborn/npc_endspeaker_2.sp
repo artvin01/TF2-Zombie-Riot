@@ -95,10 +95,12 @@ public void EndSpeaker2_ClotThink(int iNPC)
 				int entity = -1;
 				if(npc.m_hBuffs & BUFF_SPEWER)
 				{
+					KillFeed_SetKillIcon(npc.index, "syringegun_medic");
 					npc.FireRocket(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 				}
 				else
 				{
+					KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 					entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 				}
 

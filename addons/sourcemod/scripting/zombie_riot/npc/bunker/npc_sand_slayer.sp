@@ -233,7 +233,7 @@ methodmap SandvichSlayer < CClotBody
 			b_DuoOneTimeStopForExe = false;
 			b_DuoSandSlayerDied = false;
 			RaidModeTime = GetGameTime(npc.index) + 250.0;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 			for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 			{
 				fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0

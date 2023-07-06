@@ -129,6 +129,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		{
 			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
 			{
+				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
+
 				ParticleEffectAt(WorldSpaceCenter(npc.index), "water_bulletsplash01", 3.0);
 				ParticleEffectAt(WorldSpaceCenter(npc.m_iTargetAlly), "water_bulletsplash01", 3.0);
 
@@ -152,7 +154,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		}
 		
 		if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", false);
+			GiveNpcOutLineLastOrBoss(npc.index, false);
 		
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextRangedAttack = FAR_FUTURE;
@@ -174,7 +176,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 					b_ThisEntityIgnored[entity] = true;
 
 					if(!npc.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[npc.index])
-						SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+						GiveNpcOutLineLastOrBoss(npc.index, true);
 					
 					npc.m_iTarget = 0;
 					npc.m_iTargetAlly = entity;
@@ -235,6 +237,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
+						KillFeed_SetKillIcon(npc.index, "wrench");
+
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 150.0 : 75.0, DMG_CLUB);
 						SeaSlider_AddNeuralDamage(target, npc.index, 15);

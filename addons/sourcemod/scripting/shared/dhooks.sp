@@ -708,14 +708,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
 	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1] || !b_NpcHasDied[ent1] || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1])
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2])
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2] || !b_NpcHasDied[ent2] || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2])
 		{
 			return false;
 		}
+		//We do not want this entity to step on anything aside from the actual world or entities that are treated as the world
 	}
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
@@ -1864,11 +1865,15 @@ void Hook_DHook_UpdateTransmitState(int entity)
 
 public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
 {   
-	if(b_IsEntityNeverTranmitted[entity])
+	if(b_IsAlliedNpc[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+	else if(b_IsEntityNeverTranmitted[entity])
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
 	}
-	if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}

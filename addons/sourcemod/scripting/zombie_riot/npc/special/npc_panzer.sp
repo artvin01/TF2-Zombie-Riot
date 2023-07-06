@@ -485,6 +485,8 @@ public void NaziPanzer_ClotThink(int iNPC)
 				TR_GetEndPosition(vecHit, swingTrace);
 				if(target > 0) 
 				{
+					KillFeed_SetKillIcon(npc.index, "taunt_sniper");
+
 					float damage = 5.0;
 					
 					if(!ShouldNpcDealBonusDamage(target))
@@ -537,6 +539,8 @@ public void NaziPanzer_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "degreaser");
+
 						float damage = 20.0;
 						
 						if(!ShouldNpcDealBonusDamage(target))
@@ -589,63 +593,8 @@ public void NaziPanzer_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							float damage = 50.0;
-							
-							if(!ShouldNpcDealBonusDamage(target))
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
-							
-							
-								
-							// Hit sound
-							npc.PlayMeleeHitSound();
-						}
-						else
-						{
-							npc.PlayMeleeMissSound();
-						}
-					}
-					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
-					npc.m_flAttackHappenswillhappen = false;
-				}
-				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
-				}
-			}
-			
-		}
-		else if(flDistanceToTarget < 12500 || npc.m_flAttackHappenswillhappen)
-		{
-			//Look at target so we hit.
-		//	npc.FaceTowards(vecTarget, 20000.0);
-			
-			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-			{
-				//Play attack ani
-				if (!npc.m_flAttackHappenswillhappen)
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index)+0.2;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.33;
-					npc.m_flAttackHappenswillhappen = true;
-				}
-				//Can we attack right now?
-				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-				{
-					Handle swingTrace;
-					npc.FaceTowards(vecTarget, 20000.0);
-					if(npc.DoSwingTrace(swingTrace, closest,_,_,_,1))
-					{
-						int target = TR_GetEntityIndex(swingTrace);	
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						if(target > 0) 
-						{
+							KillFeed_SetKillIcon(npc.index, "steel_fists");
+
 							float damage = 50.0;
 							
 							if(!ShouldNpcDealBonusDamage(target))

@@ -117,6 +117,7 @@ methodmap Zomg < CClotBody
 		
 		i_NpcInternalId[npc.index] = BTD_ZOMG;
 		i_NpcWeight[npc.index] = 4;
+		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

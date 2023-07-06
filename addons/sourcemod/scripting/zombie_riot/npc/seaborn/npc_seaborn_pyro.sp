@@ -70,6 +70,7 @@ methodmap SeabornPyro < CClotBody
 		i_NpcInternalId[npc.index] = SEABORN_PYRO;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
+		KillFeed_SetKillIcon(npc.index, "lava_axe");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -220,6 +221,7 @@ void SeabornPyro_NPCDeath(int entity)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
 		startPosition[2] += 45;
 
+		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		Explode_Logic_Custom(50.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true);
 
 		DataPack pack_boom = new DataPack();

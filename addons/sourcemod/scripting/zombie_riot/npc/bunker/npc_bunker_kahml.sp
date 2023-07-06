@@ -291,7 +291,7 @@ methodmap BunkerKahml < CClotBody
 				fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 			}
 			RaidModeTime = GetGameTime(npc.index) + 325.0;
-			SetEntProp(npc.index, Prop_Send, "m_bGlowEnabled", true);
+			GiveNpcOutLineLastOrBoss(npc.index, true);
 		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

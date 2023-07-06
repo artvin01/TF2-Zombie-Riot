@@ -315,6 +315,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
@@ -334,6 +335,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
+			KillFeed_SetKillIcon(npc.index, "tf_generic_bomb");
+				
 			float damage = 200.0;
 			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 
 			{
@@ -567,7 +570,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
 							{
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
-								SetEntProp(view_as<int>(fake_spawned), Prop_Send, "m_bGlowEnabled", true);
+								GiveNpcOutLineLastOrBoss(view_as<int>(fake_spawned), true);
 							}
 							Zombies_Currently_Still_Ongoing += 1;
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;

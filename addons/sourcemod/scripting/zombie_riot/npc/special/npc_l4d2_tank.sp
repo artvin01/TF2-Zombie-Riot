@@ -159,6 +159,7 @@ methodmap L4D2_Tank < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		KillFeed_SetKillIcon(npc.index, "fists");
 	
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextDelayTime = GetGameTime(npc.index) + 0.2;
