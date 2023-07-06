@@ -1065,24 +1065,24 @@ float Barracks_UnitExtraDamageCalc(int entity, int client, float damage, int dam
 	if(damagetype == 0) //0 means melee
 	{
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_COPPER_SMITH))
-			DmgMulti *= 1.15;
+			DmgMulti *= 1.10;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_IRON_CASTING))
 			DmgMulti *= 1.2;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_STEEL_CASTING))
-			DmgMulti *= 1.25;
+			DmgMulti *= 1.20;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_STEEL))
-			DmgMulti *= 1.4;
+			DmgMulti *= 1.35;
 	}
 	else //Rest is treated as ranged.
 	{
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_FLETCHING))
-			DmgMulti *= 1.15;
+			DmgMulti *= 1.10;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_STEEL_ARROWS))
-			DmgMulti *= 1.15;
+			DmgMulti *= 1.10;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_BRACER))
-			DmgMulti *= 1.25;
+			DmgMulti *= 1.20;
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS))
-			DmgMulti *= 1.5;	
+			DmgMulti *= 1.35;	
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY))
 			DmgMulti *= 1.2;
 	}
@@ -1127,17 +1127,14 @@ float Barracks_UnitOnTakeDamage(int entity, int client, float damage)
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR))
 	{
 		DamageResisted *= 0.97;
-		damage -= 1;
 	}
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR))
 	{
 		DamageResisted *= 0.97;
-		damage -= 1;
 	}
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR))
 	{
 		DamageResisted *= 0.97;
-		damage -= 1;
 	}
 	if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR))
 	{
@@ -1180,36 +1177,29 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.25));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.25));
-			Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * 0.25);
-			Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * 0.25);
+			SetBuildingMaxHealth(entity, 0.25, false);
 		}
 		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = false;
 			if(firstbuild)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.25));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 0.25));
-			Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / 0.25);
-			Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / 0.25);
+				SetBuildingMaxHealth(entity, 0.25, true, true);
+			else
+				SetBuildingMaxHealth(entity, 0.25, true);
+
 		}
 		if(!HasMechanic[entity] && b_HasMechanic[client])
 		{
 			HasMechanic[entity] = true;
 			if(firstbuild)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.15));
-			Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * 1.15);
-			Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * 1.15);
+				SetBuildingMaxHealth(entity, 1.15, false, true);
+			else
+				SetBuildingMaxHealth(entity, 1.15, false);
 		}
 		if(HasMechanic[entity] && !b_HasMechanic[client])
 		{
 			HasMechanic[entity] = false;
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.15));
-			Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / 1.15);
-			Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / 1.15);
+			SetBuildingMaxHealth(entity, 1.15, false, false);
 		}
 		if(i_WhatBuilding[entity] == BuildingSummoner)
 		{
@@ -1231,39 +1221,38 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
 			{
-				healthMult *= 1.3;
+				healthMult *= 1.15;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_GUARD_TOWER;
 			}
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)))
 			{
-				healthMult *= 1.3;
+				healthMult *= 1.15;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
 			}
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)))
 			{
-				healthMult *= 1.3;
+				healthMult *= 1.15;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
 			}
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)&& (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON)))
 			{
-				healthMult *= 1.5;
+				healthMult *= 1.3;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
 			}
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST)))
 			{
-				healthMult *= 1.6;
+				healthMult *= 1.4;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
 			}
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE)))
 			{
-				healthMult *= 2.0;
+				healthMult *= 1.6;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
 			}
 			if(healthMult > 1.0)
 			{
 				SetBuildingMaxHealth(entity, healthMult, false, true);
 			}
-			
 		}
 	}
 	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
@@ -1348,15 +1337,17 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 }
 
 
-void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial)
+void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = false)
 {
 	if(reduce)
 	{
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / Multi));
 
 		int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / Multi);
+
+		HealthToSet = GetEntProp(entity, Prop_Data, "m_iHealth") - HealthToSet;
 		SetVariantInt(HealthToSet);
-		AcceptEntityInput(entity, "SetHealth");
+		AcceptEntityInput(entity, "RemoveHealth");
 
 		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / Multi);
 		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / Multi);	
@@ -1368,8 +1359,9 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial)
 		if(initial)
 		{
 			int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * Multi);
+			HealthToSet = HealthToSet - GetEntProp(entity, Prop_Data, "m_iHealth");
 			SetVariantInt(HealthToSet);
-			AcceptEntityInput(entity, "SetHealth");
+			AcceptEntityInput(entity, "AddHealth");
 		}
 		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * Multi);
 		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * Multi);			

@@ -2616,9 +2616,9 @@
 	}
 	"Barracks Copper Smith Desc"
 	{
-		"en"		"Increase Melee Damage by 15%%"
+		"en"		"Increaced Melee Damage"
 		//"de"		""
-		"ru"		"Увеличение урона ближнего боя на 15%%"
+	//	"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2642,9 +2642,9 @@
 	}
 	"Barracks Iron Casting Desc"
 	{
-		"en"		"Increase Melee Damage by 15%%"
+		"en"		"Increaced Melee Damage"
 		//"de"		""
-		"ru"		"Увеличение урона ближнего боя на 15%%"
+	//	"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2668,7 +2668,7 @@
 	}
 	"Barracks Steel Casting Desc"
 	{
-		"en"		"Increase Melee Damage by 30%%"
+		"en"		"Increaced Melee Damage"
 		//"de"		""
 		"ru"		"Увеличение урона ближнего боя на 30%%"
 		//"pt"		""
@@ -2694,9 +2694,9 @@
 	}
 	"Barracks Refined Steel Desc"
 	{
-		"en"		"Increase Melee Damage by 50%%"
+		"en"		"Increaced Melee Damage"
 		//"de"		""
-		"ru"		"Увеличение урона ближнего боя на 50%%"
+	//	"ru"		"Увеличение урона ближнего боя на 50%%"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2733,9 +2733,9 @@
 	}
 	"Barracks Fletching Desc"
 	{
-		"en"		"15%% Increased ranged damage && 10%% more Range"
+		"en"		"Increaced Ranged Damage and range"
 		//"de"		""
-		"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2759,9 +2759,9 @@
 	}
 	"Barracks Steel Arrows Desc"
 	{
-		"en"		"15%% Increased ranged damage && 10%% more Range"
+		"en"		"Increaced Ranged Damage and range"
 		//"de"		""
-		"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2785,9 +2785,9 @@
 	}
 	"Barracks Bracer Desc"
 	{
-		"en"		"30%% Increased ranged damage && 10%% more Range"
+		"en"		"Increaced Ranged Damage"
 		//"de"		""
-		"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+	//	"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2811,9 +2811,9 @@
 	}
 	"Barracks Obsidian Refined Tips Desc"
 	{
-		"en"		"50%% Increased ranged damage"
+		"en"		"Increaced Ranged Damage"
 		//"de"		""
-		"ru"		"50%% увелич. урона в дальнем бою"
+		//"ru"		"50%% увелич. урона в дальнем бою"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2822,8 +2822,6 @@
 		//"it"		""
 		//"fr"		""	
 	}
-
-
 	"Barracks Copper Armor Plate"
 	{
 		"en"		"Copper Armor Plate"
@@ -2839,9 +2837,9 @@
 	}
 	"Barracks Copper Armor Plate Desc"
 	{
-		"en"		"3%% damage reduction and 1 flat damage reduction"
+		"en"		"Increaced Damage reduction"
 		//"de"		""
-		"ru"		"3%% снижение урона и 1 плоское снижение урона"
+		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2865,9 +2863,9 @@
 	}
 	"Barracks Iron Armor Plate Desc"
 	{
-		"en"		"3%% damage reduction and 1 flat damage reduction"
+		"en"		"Increaced Damage reduction"
 		//"de"		""
-		"ru"		"3%% снижение урона и 1 плоское снижение урона"
+		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2891,9 +2889,9 @@
 	}
 	"Barracks Chainmail Armor Desc"
 	{
-		"en"		"3%% damage reduction and 1 flat damage reduction"
+		"en"		"Increaced Damage reduction"
 		//"de"		""
-		"ru"		"3%% снижение урона и 1 плоское снижение урона"
+		//"ru"		""
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -2917,9 +2915,9 @@
 	}
 	"Barracks Reforged Armor Plate Desc"
 	{
-		"en"		"10%% damage reduction and 2 flat damage reduction"
+		"en"		"Increaced Damage reduction"
 		//"de"		""
-		"ru"		"10%% снижение урона и 2 плоское снижение урона"
+		//"ru"		""
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3098,19 +3096,6 @@
 		//"it"		""
 		//"fr"		""	
 	}
-	"Barracks Donjon Tower Desc"
-	{
-		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
-		//"de"		""
-		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
-		//"pt"		""
-		//"nl"		""
-		//"chi"		""
-		//"pl"		""
-		//"es"		""
-		//"it"		""
-		//"fr"		""	
-	}
 	"Barracks Donjon"
 	{
 		"en"		"Donjon"
@@ -3126,9 +3111,9 @@
 	}
 	"Barracks Donjon Desc"
 	{
-		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
+		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
 		//"de"		""
-		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
+		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""
@@ -3282,9 +3267,9 @@
 	}
 	"Barracks Chemistry Desc"
 	{
-		"en"		"Your building will set enemies ablaze with its arrows and increases their damage."
+		"en"		"Arrows deal increased damage."
 		//"de"		""
-		"ru"		"Ваша постройка будет поджигать врагов своими стрелами и увеличивать их урон."
+		//"ru"		""
 		//"pt"		""
 		//"nl"		""
 		//"chi"		""

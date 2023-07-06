@@ -1834,8 +1834,21 @@ float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+	if(StrContains(sample, "weapons/dispenser_idle.wav", true) != -1)
+	{
+		return Plugin_Handled;
+	}
+
 	if(StrContains(sample, "sentry_", true) != -1)
 	{
+		if(StrContains(sample, "weapons/sentry_scan.wav", true) != -1)
+		{
+			if(b_SentryIsCustom[entity])
+			{
+				return Plugin_Handled;
+			}
+		}
+
 		volume *= 0.4;
 		level = SNDLEVEL_NORMAL;
 		

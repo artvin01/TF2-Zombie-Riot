@@ -34,7 +34,6 @@ public void Barrack_Alt_Barrager_MapStart()
 }
 
 static int i_ammo_count[MAXENTITIES];
-static bool b_target_close[MAXENTITIES];
 static bool b_we_are_reloading[MAXENTITIES];
 static float fl_idle_timer[MAXENTITIES];
 
@@ -79,7 +78,6 @@ methodmap Barrack_Alt_Barrager < BarrackBody
 		
 		
 		i_ammo_count[npc.index]=10;
-		b_target_close[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		fl_idle_timer[npc.index] = 2.0 + GetGameTime(npc.index);
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");
@@ -127,18 +125,11 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
-		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index] && !b_target_close[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
+		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 		{
 			b_we_are_reloading[npc.index]=true;
 		}
-		if((b_we_are_reloading[npc.index] || (b_target_close[npc.index] && i_ammo_count[npc.index]<=0)) && npc.m_flReloadIn<GameTime)	//Reload IF. Target too close. Empty clip.
-		{
-			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-			npc.m_flReloadIn = 0.5* npc.BonusFireRate + GameTime;
-			i_ammo_count[npc.index]++;
-			npc.PlayRangedReloadSound();
-		}
-		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && !b_target_close[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
+		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
 		{
 			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 			npc.m_flReloadIn = 0.5* npc.BonusFireRate + GameTime;
@@ -154,15 +145,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 			npc.PlayIdleAlertSound();
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if(flDistanceToTarget < 60000)
-			{
-				b_target_close[npc.index]=true;
-			}
-			else
-			{
-				b_target_close[npc.index]=false;
-			}
-			if((i_ammo_count[npc.index]==0 || b_we_are_reloading[npc.index]) && !b_target_close[npc.index])	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
+			if(i_ammo_count[npc.index]==0 || b_we_are_reloading[npc.index])	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
 			{
 				
 				int Enemy_I_See;

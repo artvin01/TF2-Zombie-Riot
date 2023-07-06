@@ -279,23 +279,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 					float flDistanceToTarget = GetVectorDistance(VillagerRepairFocusLoc[npc.index], MePos, true);
 					if(flDistanceToTarget < (25.0*25.0))
 					{
-						// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-						float SupplyRateCalc = SupplyRate[client] / (LastMann ? 20.0 : 40.0);
-
-						if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
-						{
-							SupplyRateCalc *= 1.25;
-						}
-						WoodAmount[client] += SupplyRateCalc;
-						FoodAmount[client] += SupplyRateCalc * 2.0; //food is gained 2x as fast
-
-						// 1 Supply = 1 Gold Every 150 Seconds
-						float GoldSupplyRate = SupplyRate[client] / 1500.0;
-						if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
-						{
-							GoldSupplyRate *= 1.25;
-						}
-						GoldAmount[client] += GoldSupplyRate;
+						SummonerRenerateResources(client, 0.25, true);
 						if(npc.m_iChanged_WalkCycle != 7)
 						{
 							npc.m_iChanged_WalkCycle = 7;
@@ -519,7 +503,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 	//we have no building to repair! ahh!
 	//be lazy :)
 	bool BuldingCanBeRepaired = false;
-	if(flDistanceToTarget < (50.0*50.0))
+	if(flDistanceToTarget < (100.0*100.0))
 	{
 		BuldingCanBeRepaired = true;
 		npc.FaceTowards(BuildingPos, 10000.0); //build.
@@ -546,11 +530,20 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 	{
 		if(GetEntProp(building, Prop_Data, "m_iHealth") < GetEntProp(building, Prop_Data, "m_iMaxHealth"))
 		{
-			SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iHealth") + (GetEntProp(building, Prop_Data, "m_iMaxHealth") / 500));
-			if(GetEntProp(building, Prop_Data, "m_iHealth") >= GetEntProp(building, Prop_Data, "m_iMaxHealth"))
+			if(i_IsABuilding[entity])
 			{
-				SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iMaxHealth"));
+				SetVariantInt(GetEntProp(building, Prop_Data, "m_iMaxHealth") / 750);
+				AcceptEntityInput(building, "AddHealth");
 			}
+			else
+			{
+				SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iMaxHealth") / 500);
+				if(GetEntProp(building, Prop_Data, "m_iHealth") >= GetEntProp(building, Prop_Data, "m_iMaxHealth"))
+				{
+					SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iMaxHealth"));
+				}				
+			}
+
 		}
 	}
 }

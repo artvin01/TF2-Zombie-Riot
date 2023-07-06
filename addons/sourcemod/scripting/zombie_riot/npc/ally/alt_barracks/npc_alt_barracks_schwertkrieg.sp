@@ -31,6 +31,7 @@ static char g_TeleportSounds[][] = {
 
 static int Ikunagae_BEAM_Laser;
 static float fl_self_heal_timer[MAXENTITIES];
+static float fl_emergency_tele_CD[MAXENTITIES];
 
 public void Barrack_Alt_Shwertkrieg_MapStart()
 {
@@ -140,6 +141,8 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		fl_self_heal_timer[npc.index] = GetGameTime(npc.index) + 1.0;
 		
+		fl_emergency_tele_CD[npc.index] = 0.0;
+		
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		
 		return npc;
@@ -154,22 +157,154 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
-		if(PrimaryThreatIndex > 0)
+		
+		
+		bool Emergency_Teleport = false;
+		float Health =float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+		float MaxHealth =  float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float H_Amt = (Health / MaxHealth) * 100.0;
+		if(fl_emergency_tele_CD[npc.index] < GameTime && H_Amt<10.0)	//if npc health is less then 10% AND is in combat the npc will teleport to the barracks or owner
 		{
-			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if(npc.m_flNextTeleport < GameTime && flDistanceToTarget < Pow(1250.0, 2.0))
-			{
-					npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
-					float current_loc[3]; current_loc = WorldSpaceCenter(npc.index);
-					npc.m_flNextTeleport = GameTime + 5.0 * npc.BonusFireRate;
-					float Tele_Check = GetVectorDistance(current_loc, vecTarget);
-					
-					if(Tele_Check > 100.0)
+			Emergency_Teleport = true;
+			fl_emergency_tele_CD[npc.index] = GameTime + 45.0;
+		}
+			
+		if(npc.m_flNextTeleport < GameTime || Emergency_Teleport)
+		{
+				float teleport_target_vec[3];
+				float teletime;
+				int type;
+				bool teleport = false;
+				
+				int command = Command_Aggressive;
+				int npc_owner = GetClientOfUserId(npc.OwnerUserId);
+				if(!IsValidClient(npc_owner))
+				{
+					Emergency_Teleport = false;
+					fl_emergency_tele_CD[npc.index] = GameTime + 300.0;
+					npc.m_flNextTeleport = GameTime + 300.0;
+				}
+				
+				command = npc.CmdOverride == Command_Default ? Building_GetFollowerCommand(npc_owner) : npc.CmdOverride;
+				if(command==Command_Aggressive)
+				{
+					type = 2;
+				}
+				else if(command==Command_Defensive)
+				{
+					type = 3;
+				}
+				else if(command==Command_Retreat || command==Command_RetreatPlayer)
+				{
+					type = 4;
+				}
+				
+				if(Emergency_Teleport)	//overrides all teleprot types
+				{
+					type = 1;
+				}
+				bool vaild = false;
+				float vecTarget[3];
+				if(PrimaryThreatIndex>0)
+				{
+					vaild = true;
+				 	vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				}
+				
+				
+				switch(type)
+				{
+					case 1:	//emergency
 					{
-						bool Succeed = NPC_Teleport(npc.index, vecTarget);
+						//CPrintToChatAll("emergency tele");
+						npc.CmdOverride = Command_RetreatPlayer;	//npc retreats to the player
+						teleport = true;
+						teletime = 45.0;
+						Emergency_Teleport = false;
+						teleport_target_vec = WorldSpaceCenter(npc_owner);
+						teleport_target_vec[2] += 200.0;
+					}
+					case 2:	//aggresive
+					{
+						if(vaild)
+						{
+							float target_dist = GetVectorDistance(WorldSpaceCenter(npc.index), vecTarget);
+							if (target_dist < 2500.0)	//target is within range, Murder
+							{
+								teletime = 15.0;
+								teleport = true;
+								teleport_target_vec = vecTarget;
+								//CPrintToChatAll("aggresive tele");
+								teleport_target_vec[2] += 200.0;
+							}
+							else
+							{
+								teleport = false;
+								npc.m_flNextTeleport = GameTime + 1.0;
+							}
+							
+						}
+						else
+						{
+							teleport = false;
+							npc.m_flNextTeleport = GameTime + 1.0;
+						}
+					}
+					case 3:	//defensive
+					{
+						if(vaild)
+						{
+							
+							float target_dist = GetVectorDistance(WorldSpaceCenter(npc.index), vecTarget);
+							if (target_dist < 300.0)	//target is within range, Murder
+							{
+								//CPrintToChatAll("Defensive tele");
+								teletime = 15.0;
+								teleport = true;
+								teleport_target_vec = vecTarget;
+								teleport_target_vec[2] += 200.0;
+							}
+							else	//not within range, ignore
+							{
+								teleport = false;
+								npc.m_flNextTeleport = GameTime + 1.0;
+							}
+						}
+						else
+						{
+							teleport = false;
+							npc.m_flNextTeleport = GameTime + 1.0;
+						}
+					}
+					case 4:	//retreat to player
+					{
+						
+						//CPrintToChatAll("retreat tele");
+						teletime = 20.0;
+						teleport = true;
+						teleport_target_vec = WorldSpaceCenter(npc_owner);
+						
+						teleport_target_vec[2] += 200.0;
+					}
+				}
+				
+				if(teleport)
+				{
+					
+					
+					npc.FaceTowards(teleport_target_vec);
+					npc.FaceTowards(teleport_target_vec);
+					float current_loc[3]; current_loc = WorldSpaceCenter(npc.index);
+					npc.m_flNextTeleport = GameTime + teletime * npc.BonusFireRate;
+					float Tele_Check = GetVectorDistance(current_loc, teleport_target_vec);
+					
+					//TE_SetupBeamPoints(current_loc, teleport_target_vec, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
+					//TE_SendToAll(0.0);
+					
+					if(Tele_Check > 120.0)
+					{
+						//CPrintToChatAll("tele checked");
+						bool Succeed = NPC_Teleport(npc.index, teleport_target_vec);
 						if(Succeed)
 						{
 							npc.PlayTeleportSound();
@@ -177,7 +312,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 							float time = 1.0;
 							current_loc = WorldSpaceCenter(npc.index);
 							spawnRing_Vectors(current_loc, 320.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 145, 47, 47, 255, 1, time, 4.0, 0.1, 1, 1.0);
-							Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 1250*2.0 ,_,0.8, false);
+							Explode_Logic_Custom(Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15000.0, 1), GetClientOfUserId(npc.OwnerUserId), npc.index, -1, current_loc, 325*2.0 ,_,0.8, false);
 							current_loc[2] -= 500.0;
 							float sky_loc[3]; sky_loc = current_loc; sky_loc[2] += 5000.0;
 							TE_SetupBeamPoints(current_loc, sky_loc, Ikunagae_BEAM_Laser, 0, 0, 0, 2.5, 10.0, 10.0, 0, 1.0, {145, 47, 47, 255}, 3);
@@ -186,10 +321,19 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						}
 						else
 						{
-							npc.m_flNextTeleport = GameTime + 0.1;
+							npc.m_flNextTeleport = GameTime + 0.5;
+							//CPrintToChatAll("tele failed");
 						}
 					}
-			}
+				}
+		}
+			
+		if(PrimaryThreatIndex > 0)
+		{
+			npc.PlayIdleAlertSound();
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
@@ -205,6 +349,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						npc.m_flAttackHappens = GameTime+0.4 * npc.BonusFireRate;
 						npc.m_flAttackHappens_bullshit = GameTime+0.54 * npc.BonusFireRate;
 						npc.m_flAttackHappenswillhappen = true;
+						fl_self_heal_timer[npc.index] = GameTime + 1.0;
 					}
 						
 					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -240,20 +385,18 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 		else
 		{
 			npc.PlayIdleSound();
-			
-			if(fl_self_heal_timer[npc.index]<GameTime)	//if the npc is idle they heal for 1% of there hp per second
-			{
-				int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-				int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		
+		}
+		if(fl_self_heal_timer[npc.index]<GameTime)	//npc heal's for 1% of there hp per second
+		{
 				
 				int Heal_Amt = RoundToFloor((MaxHealth / 100.0)*1.0);
 				if(Health+Heal_Amt < MaxHealth)
 				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", Health + Heal_Amt);
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToFloor(Health) + Heal_Amt);
 				}
 
 				fl_self_heal_timer[npc.index] = GameTime + 1.0;
-			}
 		}
 		BarrackBody_ThinkMove(npc.index, 350.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 7500.0, _, false);
 	}
