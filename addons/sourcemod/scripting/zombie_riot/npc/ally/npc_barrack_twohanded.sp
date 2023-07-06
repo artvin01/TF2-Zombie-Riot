@@ -7,7 +7,7 @@ methodmap BarrackTwoHanded < BarrackBody
 {
 	public BarrackTwoHanded(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625"));
+		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_TWOHANDED;
 		i_NpcWeight[npc.index] = 1;

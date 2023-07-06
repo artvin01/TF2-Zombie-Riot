@@ -23,7 +23,7 @@ methodmap BarrackBuilding < BarrackBody
 	}
 	public BarrackBuilding(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "4000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 60.0));
+		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "4000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");

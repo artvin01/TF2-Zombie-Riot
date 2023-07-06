@@ -7,8 +7,7 @@ methodmap BarrackLongbow < BarrackBody
 {
 	public BarrackLongbow(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350"));
-		
+		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		i_NpcInternalId[npc.index] = BARRACK_LONGBOW;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "huntsman");

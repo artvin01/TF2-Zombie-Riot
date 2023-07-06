@@ -46,7 +46,7 @@ methodmap Barrack_Alt_Crossbowmedic < BarrackBody
 	}
 	public Barrack_Alt_Crossbowmedic(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Crossbowmedic npc = view_as<Barrack_Alt_Crossbowmedic>(BarrackBody(client, vecPos, vecAng, "145", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Crossbowmedic npc = view_as<Barrack_Alt_Crossbowmedic>(BarrackBody(client, vecPos, vecAng, "145", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACKS_CROSSBOW_MEDIC;
 		i_NpcWeight[npc.index] = 1;

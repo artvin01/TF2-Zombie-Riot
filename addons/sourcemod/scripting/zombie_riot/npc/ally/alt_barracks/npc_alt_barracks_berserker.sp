@@ -79,7 +79,7 @@ methodmap Barrack_Alt_Berserker < BarrackBody
 	}
 	public Barrack_Alt_Berserker(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Berserker npc = view_as<Barrack_Alt_Berserker>(BarrackBody(client, vecPos, vecAng, "600", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Berserker npc = view_as<Barrack_Alt_Berserker>(BarrackBody(client, vecPos, vecAng, "600", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACKS_BERSERKER;
 		i_NpcWeight[npc.index] = 2;

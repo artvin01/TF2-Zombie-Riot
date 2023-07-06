@@ -7,7 +7,7 @@ methodmap BarrackArbelast < BarrackBody
 {
 	public BarrackArbelast(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackArbelast npc = view_as<BarrackArbelast>(BarrackBody(client, vecPos, vecAng, "250"));
+		BarrackArbelast npc = view_as<BarrackArbelast>(BarrackBody(client, vecPos, vecAng, "250",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_ARBELAST;
 		i_NpcWeight[npc.index] = 1;
