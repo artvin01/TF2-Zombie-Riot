@@ -898,28 +898,36 @@ stock int TF2_CreateGlow(int iEnt)
 	return ent;
 }
 
-stock int TF2_CreateGlow_White(int entIndex)
+stock int TF2_CreateGlow_White(int iEnt)
 {
-	char oldEntName[64];
-	GetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName, sizeof(oldEntName));
+	int entity = CreateEntityByName("tf_taunt_prop");
+	if(IsValidEntity(entity))
+	{
+		char model[PLATFORM_MAX_PATH];
+		GetEntPropString(iEnt, Prop_Data, "m_ModelName", model, PLATFORM_MAX_PATH);
+		SetEntityModel(entity, model);
 
-	char strName[126], strClass[64];
-	GetEntityClassname(entIndex, strClass, sizeof(strClass));
-	FormatEx(strName, sizeof(strName), "%s%i", strClass, entIndex);
-	DispatchKeyValue(entIndex, "targetname", strName);
+		DispatchSpawn(entity);
+		ActivateEntity(entity);
 
-	int ent = CreateEntityByName("tf_glow");
-	DispatchKeyValue(ent, "target", strName);
-	FormatEx(strName, sizeof(strName), "tf_glow_%i", entIndex);
-	DispatchKeyValue(ent, "targetname", strName);
-	DispatchKeyValue(ent, "Mode", "0");
-	DispatchSpawn(ent);
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(iEnt, Prop_Send, "m_iTeamNum"));
 
-	AcceptEntityInput(ent, "Enable");
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(iEnt, Prop_Send, "m_flModelScale"));
+		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", iEnt);
+		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", iEnt);
+		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
+		int iFlags = GetEntProp(entity, Prop_Send, "m_fEffects");
+			
+		SetEntProp(entity, Prop_Send, "m_fEffects",
+				iFlags |EF_BONEMERGE|EF_NOSHADOW|EF_NORECEIVESHADOW);
 
-	//Change name back to old name because we don't need it anymore.
-	SetEntPropString(entIndex, Prop_Data, "m_iName", oldEntName);
-	return ent;
+		SetVariantString("!activator");
+		AcceptEntityInput(entity, "SetParent", iEnt);
+
+		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
+	return entity;
 }
 
 stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", const float vOffsets[3] = {0.0,0.0,0.0}, bool maintain_anyways = false)

@@ -84,7 +84,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	}
 	public Barrack_Alt_Shwertkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1750", "models/player/medic.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Shwertkrieg npc = view_as<Barrack_Alt_Shwertkrieg>(BarrackBody(client, vecPos, vecAng, "1750", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACKS_SCHWERTKRIEG;
 		i_NpcWeight[npc.index] = 2;

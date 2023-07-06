@@ -67,7 +67,7 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 	}
 	public Barrack_Alt_Mecha_Barrager(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Mecha_Barrager npc = view_as<Barrack_Alt_Mecha_Barrager>(BarrackBody(client, vecPos, vecAng, "100", "models/bots/soldier/bot_soldier.mdl", STEPTYPE_NORMAL));
+		Barrack_Alt_Mecha_Barrager npc = view_as<Barrack_Alt_Mecha_Barrager>(BarrackBody(client, vecPos, vecAng, "100", "models/bots/soldier/bot_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACK_MECHA_BARRAGER;
 		i_NpcWeight[npc.index] = 1;

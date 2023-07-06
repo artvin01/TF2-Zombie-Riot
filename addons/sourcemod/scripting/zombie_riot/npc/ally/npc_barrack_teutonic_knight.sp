@@ -7,7 +7,7 @@ methodmap BarrackTeuton < BarrackBody
 {
 	public BarrackTeuton(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300"));
+		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcInternalId[npc.index] = BARRACKS_TEUTONIC_KNIGHT;
 		i_NpcWeight[npc.index] = 1;

@@ -124,7 +124,7 @@ enum
 	Command_MAX
 }
 
-static int BarrackOwner[MAXENTITIES];
+int BarrackOwner[MAXENTITIES];
 static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
@@ -137,6 +137,7 @@ int i_EntityRecievedUpgrades[MAXENTITIES];
 int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
+int i_Wearable_Outline[MAXENTITIES][7];
 
 //Barracks smith things:
 
@@ -387,7 +388,10 @@ methodmap BarrackBody < CClotBody
 		}
 	}
 	
-	public BarrackBody(int client, float vecPos[3], float vecAng[3], const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL, int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575", float ExtraOffset = 0.0)
+	public BarrackBody(int client, float vecPos[3], float vecAng[3],
+	 const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL,
+	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
+	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl")
 	{
 		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, true, .Ally_Collideeachother = true));
 		SetVariantInt(1);
@@ -420,55 +424,25 @@ methodmap BarrackBody < CClotBody
 		npc.m_flRangedArmor = 1.0;
 
 		
-		
-
-		int particle = CreateEntityByName("info_particle_system");
-		if(particle != -1)
-		{
-			float vecPos2[3];
-			vecPos2 = vecPos;
-			vecPos2[2] += 70.0;
-			vecPos2[2] += ExtraOffset;
-			TeleportEntity(particle, vecPos2, NULL_VECTOR, NULL_VECTOR);
-			DispatchKeyValue(particle, "targetname", "tf2particle");
-			DispatchKeyValue(particle, "effect_name", "powerup_icon_strength_red");
-			DispatchSpawn(particle);
-
-			SetParent(npc.index, particle);
-
-			ActivateEntity(particle);
-
-			AcceptEntityInput(particle, "start");
-
-			BarrackOwner[particle] = client;
-
-			SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
-			SDKHook(particle, SDKHook_SetTransmit, BarrackBody_Transmit);
-			
-			npc.m_iWearable7 = particle;
-		}
-		/*
 		if(IsValidEntity(npc.m_iTeamGlow))
 		{
 			RemoveEntity(npc.m_iTeamGlow);
-		}
-		if(!IsValidEntity(npc.m_iTeamGlow))
-		{
-			int Tf2Glow = TF2_CreateGlow_White(npc.index);
-			
-			if(Tf2Glow != -1)
-			{
-				BarrackOwner[Tf2Glow] = client;
-				SDKHook(Tf2Glow, SDKHook_SetTransmit, BarrackBody_Transmit);
-				npc.m_iTeamGlow = Tf2Glow;
-			}
-		}
-		//refuses to work with npcs, i give up.
-		*/
+		}		
+
+		npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
+		SetVariantString("0.65");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		BarrackOwner[npc.m_iWearable7] = client;
+		SDKHook(npc.m_iWearable7, SDKHook_SetTransmit, BarrackBody_Transmit);
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable7);
+		SetVariantColor(view_as<int>({255, 255, 255, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
 		BarrackOwner[Textentity] = client;
 		npc.StartPathing();
+		Barracks_UpdateEntityUpgrades(npc.index,client,true, true);
 		return npc;
 	}
 }
@@ -683,7 +657,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		float myPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", myPos);
 
-		if(f3_SpawnPosition[client][0] && (command == Command_HoldPosBarracks ||command == Command_HoldPos))
+		if(f3_SpawnPosition[client][0] && (command == Command_HoldPosBarracks && command != Command_HoldPos))
 		{
 			f3_SpawnPosition[npc.index] = f3_SpawnPosition[client];
 		}
@@ -1297,19 +1271,19 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!FinalBuilder[entity] && FinalBuilder[client])
 		{
 			FinalBuilder[entity] = true;
-			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.5;
-			view_as<BarrackBody>(entity).BonusFireRate *= 0.75;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.35;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.8;
 			if(BarracksUpgrade)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.65));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.65));
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.35));
 		}
 		if(FinalBuilder[entity] && !FinalBuilder[client])
 		{
 			FinalBuilder[entity] = false;
-			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.5;			
-			view_as<BarrackBody>(entity).BonusFireRate /= 0.75;
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.65));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.65));
+			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.35;			
+			view_as<BarrackBody>(entity).BonusFireRate /= 0.8;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.35));
 		}
 		if(!GlassBuilder[entity] && GlassBuilder[client])
 		{
@@ -1354,14 +1328,14 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(i_CurrentEquippedPerk[entity] != 2 && i_CurrentEquippedPerk[client] == 2)
 		{
 			if(BarracksUpgrade)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.3));
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
 
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.3));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.15));
 		}
 		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.3));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.3));
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.15));
 		}
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 		{
@@ -1378,26 +1352,26 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial)
 {
 	if(reduce)
 	{
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.15));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / Multi));
 
-		int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15);
+		int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / Multi);
 		SetVariantInt(HealthToSet);
 		AcceptEntityInput(entity, "SetHealth");
 
-		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / 1.15);
-		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / 1.15);	
+		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / Multi);
+		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / Multi);	
 	}
 	else
 	{
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.15));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * Multi));
 		
 		if(initial)
 		{
-			int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15);
+			int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * Multi);
 			SetVariantInt(HealthToSet);
 			AcceptEntityInput(entity, "SetHealth");
 		}
-		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * 1.15);
-		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * 1.15);			
+		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * Multi);
+		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * Multi);			
 	}
 }

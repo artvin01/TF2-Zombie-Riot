@@ -10,7 +10,7 @@ methodmap BarrackMonk < BarrackBody
 	}
 	public BarrackMonk(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "750"));
+		BarrackMonk npc = view_as<BarrackMonk>(BarrackBody(client, vecPos, vecAng, "750",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_MONK;
 		i_NpcWeight[npc.index] = 1;

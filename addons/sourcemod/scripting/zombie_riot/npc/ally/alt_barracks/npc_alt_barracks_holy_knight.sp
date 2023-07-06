@@ -26,7 +26,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 	}
 	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1250"));
+		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1250",_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACKS_HOLY_KNIGHT;
 		i_NpcWeight[npc.index] = 2;

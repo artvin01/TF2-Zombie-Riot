@@ -5,7 +5,7 @@ methodmap BarrackLastKnight < BarrackBody
 {
 	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75"));
+		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		
 		i_NpcInternalId[npc.index] = BARRACK_LASTKNIGHT;
 		i_NpcWeight[npc.index] = 2;

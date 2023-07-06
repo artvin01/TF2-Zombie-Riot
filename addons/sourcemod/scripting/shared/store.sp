@@ -1698,6 +1698,7 @@ void Store_ClientDisconnect(int client)
 	Store_WeaponSwitch(client, -1);
 	
 #if defined ZR
+	BarracksSaveResources(client);
 	Database_SaveGameData(client);
 
 	CashSpent[client] = 0;
@@ -4444,6 +4445,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
+	BarracksSaveResources(client);
+	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 
 	Manual_Impulse_101(client, health);
