@@ -198,6 +198,10 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 				{
 					type = 4;
 				}
+				if(command == Command_HoldPos || command == Command_HoldPosBarracks)
+				{
+					type = 5;
+				}
 				
 				if(Emergency_Teleport)	//overrides all teleprot types
 				{
@@ -285,6 +289,11 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 						teleport_target_vec = WorldSpaceCenter(npc_owner);
 						
 						teleport_target_vec[2] += 200.0;
+					}
+					case 5:	//if hold position, do nothing
+					{
+						teleport = false;
+						npc.m_flNextTeleport = GameTime + 2.5;
 					}
 				}
 				

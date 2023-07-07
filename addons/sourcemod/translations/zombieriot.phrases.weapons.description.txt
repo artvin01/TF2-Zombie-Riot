@@ -2187,4 +2187,8 @@
 		"en"		"A medic with a long ranged crusaders crossbow... fragile!"
 		"ru"		"Медик с дальнобойным арбалетом крестоносца... хрупкий!"
 	}
+	"Scientific Witchery Desc"
+	{
+		"en"		"The Ultimate Ranged Unit, combining all known reaserch on magic, and the latest tech, to create the ultimate mage. Costs 2 supply units"
+	}
 }
