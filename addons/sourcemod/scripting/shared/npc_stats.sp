@@ -2021,7 +2021,8 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		WorldSpaceTarget = WorldSpaceCenter(target);
 		vecTarget = WorldSpaceTarget;
-		vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
+		if(target <= MaxClients)
+			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
 
 		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
