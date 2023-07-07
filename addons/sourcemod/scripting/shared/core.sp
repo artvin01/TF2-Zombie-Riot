@@ -1205,14 +1205,19 @@ public void OnPluginEnd()
 			OnClientDisconnect(i);
 		}
 	}
-	
-	char buffer[64];
-	for(int i=MAXENTITIES; i>MaxClients; i--)
+	char classname[256];
+	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
-		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
+		if(IsValidEntity(i))
 		{
-			if(!StrContains(buffer, "zr_base_npc"))
+			GetEntityClassname(i, classname, sizeof(classname)); 
+			//prevent crash.
+
+			if(StrContains(classname, "zr_base_npc"))
+			{
 				RemoveEntity(i);
+				continue;
+			}
 		}
 	}
 	
@@ -3331,23 +3336,4 @@ void checkOS()
     {
         OperationSystem = OS_Unknown;
     }
-}
-
-void OnPluginEnd()
-{
-	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
-	{
-		if(IsValidEntity(i))
-		{
-			char cmdline[256];
-			GetEntityClassname(i, cmdline, sizeof(cmdline)); 
-			//prevent crash.
-
-			if(StrContains(classname, "zr_base_npc"))
-			{
-				RemoveEntity(i);
-				continue;
-			}
-		}
-	}
 }
