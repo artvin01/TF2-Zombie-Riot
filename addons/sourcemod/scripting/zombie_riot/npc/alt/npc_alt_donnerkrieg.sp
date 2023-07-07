@@ -255,7 +255,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		if(RaidModeScaling<=0.0)
 		{
-			RaidModeScaling = 1.0;	//just a safety net
+			RaidModeScaling = 10.0;	//just a safety net
 		}
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
@@ -352,7 +352,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 			
 			if(RaidModeScaling<=0.0)
 			{
-				RaidModeScaling = 30.0;	//just a safety net
+				RaidModeScaling = 10.0;	//just a safety net
 			}
 			
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -533,7 +533,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.FireParticleRocket(vecTarget, 50.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
+						npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 					}
 						
 					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -903,7 +903,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 
 	NightmareCannon_BEAM_CanUse[client] = true;
 
-	float dmg = 200.0*RaidModeScaling;
+	float dmg = 30.0*RaidModeScaling;
 	if(b_was_talking)
 	{
 		dmg *= 1.5;

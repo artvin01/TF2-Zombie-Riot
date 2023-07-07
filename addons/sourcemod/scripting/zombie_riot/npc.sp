@@ -308,7 +308,8 @@ enum
 	BARRACKS_VILLAGER			= 271,
 	BARRACKS_BUILDING			= 272,
 	TIDELINKED_BISHOP	= 273,
-	TIDELINKED_ARCHON	= 274
+	TIDELINKED_ARCHON	= 274,
+	ALT_BARRACK_SCIENTIFIC_WITCHERY = 275
 }
 
 public const char NPC_Names[][] =
@@ -608,7 +609,8 @@ public const char NPC_Names[][] =
 	"Barracks Villager",
 	"Barracks Building",
 	"Tidelinked Bishop",
-	"Tidelinked Archon"
+	"Tidelinked Archon",
+	"Scientific Witchery"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -905,7 +907,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"",
 	"npc_tidelinkedbishop",
-	"npc_tidelinkedarchon"
+	"npc_tidelinkedarchon",
+	""	//Scientific Witchery
 };
 
 void NPC_MapStart()
@@ -1118,6 +1121,8 @@ void NPC_MapStart()
 	Barrack_Alt_Barrager_MapStart();
 	Barrack_Alt_Berserker_MapStart();
 	Barrack_Alt_Crossbowmedic_MapStart();
+	Barrack_Alt_Scientific_Witchery_MapStart();
+	
 	Barracks_Thorns();
 
 	// Raid Low Prio
@@ -1918,6 +1923,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case TIDELINKED_ARCHON:
 			entity = TidelinkedBishop(client, vecPos, vecAng, ally);
 			
+		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
+			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
+			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -2714,6 +2722,9 @@ public void NPCDeath(int entity)
 		
 		case TIDELINKED_ARCHON:
 			TidelinkedArchon_NPCDeath(entity);
+			
+		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
+			Barrack_Alt_Scientific_Witchery_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3674,6 +3685,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_barrager.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
+#include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
 
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"

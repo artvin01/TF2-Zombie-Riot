@@ -1620,4 +1620,8 @@
 		"en"		"Tidelinked Archon"
 		"chi"		"接潮蔑死体"
 	}
+	"Scientific Witchery"
+	{
+		"en"	"Scientific Witchery"
+	}
 }
