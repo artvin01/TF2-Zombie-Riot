@@ -4804,6 +4804,10 @@ void NpcDrawWorldLogic(int entity)
 void GiveNpcOutLineLastOrBoss(int entity, bool add)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
+	if(b_NpcHasDied[entity])
+	{
+		return;
+	}
 	//they have a custom outline.
 	//if !npc.m_bTeamGlowDefault is off, then that means that they have an outline that isnt set with this.
 	if(IsValidEntity(npc.m_iTeamGlow) && !npc.m_bTeamGlowDefault)
@@ -4817,7 +4821,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 		{
 			npc.m_bTeamGlowDefault = true;
 			npc.m_iTeamGlow = TF2_CreateGlow(entity);
-					
+			
 			SetVariantColor(view_as<int>({125, 200, 255, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		}
