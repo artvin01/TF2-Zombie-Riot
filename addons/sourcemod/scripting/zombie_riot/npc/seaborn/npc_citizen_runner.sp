@@ -36,6 +36,11 @@ methodmap CitizenRunner < CClotBody
 		
 		npc.m_flSpeed = 241.5;
 		npc.m_flGetClosestTargetTime = 0.0;
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		SetVariantColor(view_as<int>({255, 200, 0, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
 		return npc;
 	}
 }
@@ -118,14 +123,15 @@ void CitizenRunner_NPCDeath(int entit)
 		{
 			Zombies_Currently_Still_Ongoing++;
 			
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 10;
+			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 30;
 			SetEntProp(entity, Prop_Data, "m_iHealth", health);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 			
 			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
 			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
-			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 1.5;
+			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 1.25;
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 2.0;
+			b_thisNpcIsABoss[entity] = true;
 
 			FreezeNpcInTime(entity, 1.5);
 		}

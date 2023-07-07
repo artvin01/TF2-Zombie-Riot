@@ -71,7 +71,7 @@ methodmap KazimierzKnightArcher < CClotBody
 	
 	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "1500", ally));
+		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4000", ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

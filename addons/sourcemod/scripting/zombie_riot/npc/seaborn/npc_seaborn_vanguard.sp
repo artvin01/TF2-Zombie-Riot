@@ -28,12 +28,23 @@ static const char g_IdleAlertedSounds[][] =
 
 static const char g_MeleeHitSounds[][] =
 {
-	"mvm/melee_impacts/bottle_hit_robo01.wav",
-	"mvm/melee_impacts/bottle_hit_robo02.wav",
-	"mvm/melee_impacts/bottle_hit_robo03.wav"
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav"
 };
 
-methodmap SeabornDefender < CClotBody
+static const char g_MeleeAttackSounds[][] =
+{
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
+};
+
+static float SpeedCache = 1.0;
+
+methodmap SeabornVanguard < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -55,70 +66,86 @@ methodmap SeabornDefender < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
-	
-	public SeabornDefender(int client, float vecPos[3], float vecAng[3], bool ally)
+	public void PlayMeleeSound()
 	{
-		SeabornDefender npc = view_as<SeabornDefender>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "13500", ally, false));
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
+	}
+	
+	public SeabornVanguard(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_DEFENDER;
-		i_NpcWeight[npc.index] = 3;
-		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
-		KillFeed_SetKillIcon(npc.index, "splendid_screen");
+		i_NpcInternalId[npc.index] = SEABORN_VANGUARD;
+		i_NpcWeight[npc.index] = 1;
+		npc.SetActivity("ACT_CUSTOM_WALK_SAMURAI");
+		KillFeed_SetKillIcon(npc.index, "demokatana");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornDefender_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SeabornVanguard_ClotThink);
 		
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 285.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_iOverlordComboAttack = 0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield_all.mdl");
-		SetVariantString("1.0");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		
-		switch(Rogue_GetRound() % 3)
-		{
-			case 0:
-			{
-				SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
-			}
-			case 1:
-			{
-				SetEntityRenderColor(npc.m_iWearable1, 255, 0, 255, 255);
-			}
-			case 2:
-			{
-				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 0, 255);
-			}
-		}
-
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/jul13_stormn_normn/jul13_stormn_normn.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
+		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/demo/demo_shogun_kabuto/demo_shogun_kabuto.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
+
+		SpeedCache = 0.0;
 
 		return npc;
 	}
 }
 
-public void SeabornDefender_ClotThink(int iNPC)
+void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
 {
-	SeabornDefender npc = view_as<SeabornDefender>(iNPC);
+	if(!b_IsAlliedNpc[npc.index])
+	{
+		if(!SpeedCache)
+		{
+			SpeedCache = 1.0;
+
+			for(int i; i < i_MaxcountNpc; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == SEABORN_VANGUARD && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
+				{
+					SpeedCache *= 1.05;
+				}
+			}
+		}
+
+		speed *= SpeedCache;
+	}
+}
+
+public void SeabornVanguard_ClotThink(int iNPC)
+{
+	SeabornVanguard npc = view_as<SeabornVanguard>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -164,19 +191,18 @@ public void SeabornDefender_ClotThink(int iNPC)
 		}
 
 		npc.StartPathing();
-
-		if(distance < 6000.0 && npc.m_flNextMeleeAttack < gameTime)
+		
+		if(npc.m_flAttackHappens)
 		{
-			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, target))
+			if(npc.m_flAttackHappens < gameTime)
 			{
-				npc.m_flNextMeleeAttack = gameTime + 0.75;
-
+				npc.m_flAttackHappens = 0.0;
+				
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
 				{
-					target = TR_GetEntityIndex(swingTrace);	
+					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
@@ -184,11 +210,27 @@ public void SeabornDefender_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 250.0 : 50.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 300.0 : 100.0, DMG_CLUB);
 					}
 				}
 
 				delete swingTrace;
+			}
+		}
+
+		if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)
+		{
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			if(IsValidEnemy(npc.index, target))
+			{
+				npc.m_iTarget = target;
+				npc.m_flNextMeleeAttack = gameTime + 0.85;
+
+				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_CALM");
+				npc.m_flAttackHappens = gameTime + 0.25;
+				//npc.m_flDoingAnimation = gameTime + 1.2;
+				npc.m_flHeadshotCooldown = gameTime + 0.55;
 			}
 		}
 	}
@@ -200,89 +242,22 @@ public void SeabornDefender_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornDefender_OnTakeDamage(int victim, int attacker, float &damage, int damagetype)
+void SeabornVanguard_NPCDeath(int entity)
 {
-	if(attacker > 0)
-	{
-		SeabornDefender npc = view_as<SeabornDefender>(victim);
-
-		bool hot;
-		bool magic;
-		bool pierce;
-		
-		if((damagetype & DMG_SLASH) || NpcStats_IsEnemySilenced(npc.index))
-		{
-			pierce = true;
-		}
-		else
-		{
-			if((damagetype & DMG_BLAST) && f_IsThisExplosiveHitscan[attacker] != GetGameTime(npc.index))
-			{
-				hot = true;
-				pierce = true;
-			}
-			
-			if(damagetype & DMG_PLASMA)
-			{
-				magic = true;
-				pierce = true;
-			}
-			else if((damagetype & DMG_SHOCK) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_LASER_NO_BLAST))
-			{
-				magic = true;
-			}
-		}
-
-		switch(Rogue_GetRound() % 3)
-		{
-			case 0:
-			{
-				if(hot)
-				{
-					damage *= 0.1;
-
-					damagePosition[2] += 30.0;
-					npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
-					damagePosition[2] -= 30.0;
-				}
-			}
-			case 1:
-			{
-				if(magic)
-				{
-					damage *= 0.1;
-
-					damagePosition[2] += 30.0;
-					npc.DispatchParticleEffect(npc.index, "medic_resist_match_fire_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
-					damagePosition[2] -= 30.0;
-				}
-			}
-			case 2:
-			{
-				if(!pierce)
-				{
-					damage *= 0.1;
-					
-					damagePosition[2] += 30.0;
-					npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
-					damagePosition[2] -= 30.0;
-				}
-			}
-		}
-	}
-}
-
-void SeabornDefender_NPCDeath(int entity)
-{
-	SeabornDefender npc = view_as<SeabornDefender>(entity);
+	SeabornVanguard npc = view_as<SeabornVanguard>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornDefender_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, SeabornVanguard_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	
+	SpeedCache = 0.0;
 }

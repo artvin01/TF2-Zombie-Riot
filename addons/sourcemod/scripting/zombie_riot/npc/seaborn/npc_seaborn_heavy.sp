@@ -205,9 +205,12 @@ void SeabornHeavy_OnTakeDamage(int victim, int attacker, int damagetype)
 
 			if(damagetype & DMG_CLUB)
 			{
-				npc.m_flMeleeArmor -= 0.05;
-				if(npc.m_flMeleeArmor < 0.05)
-					npc.m_flMeleeArmor = 0.05;
+				if(!NpcStats_IsEnemySilenced(npc.index))
+				{
+					npc.m_flMeleeArmor -= 0.05;
+					if(npc.m_flMeleeArmor < 0.05)
+						npc.m_flMeleeArmor = 0.05;
+				}
 				
 				npc.m_flRangedArmor += 0.05;
 				if(npc.m_flRangedArmor > 1.5)

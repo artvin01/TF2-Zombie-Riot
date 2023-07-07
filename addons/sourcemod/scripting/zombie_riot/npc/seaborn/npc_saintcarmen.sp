@@ -125,7 +125,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
+	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget) && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)

@@ -69,7 +69,7 @@ methodmap SeabornSoldier < CClotBody
 	
 	public SeabornSoldier(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "3000", ally));
+		SeabornSoldier npc = view_as<SeabornSoldier>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_SOLDIER;
 		i_NpcWeight[npc.index] = 2;
