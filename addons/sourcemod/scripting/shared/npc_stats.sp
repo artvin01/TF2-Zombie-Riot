@@ -28,6 +28,8 @@ float f3_AvoidOverrideMin[MAXENTITIES][3];
 float f3_AvoidOverrideMax[MAXENTITIES][3];
 float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
 float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
+float f_AvoidObstacleNavTime[MAXENTITIES];
+bool b_AvoidObstacleType[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -2494,9 +2496,42 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.GetBaseNPC().flMaxYawRate = (225.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
 		}
 
+		if(f_AvoidObstacleNavTime[this.index] < GetGameTime()) //add abit of delay for optimisation
+		{
+			float EntityLocation[3];
+			GetEntPropVector( this.index, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+			CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 25.0);
+			b_AvoidObstacleType[this.index] = false;
+			if(area == NULL_AREA) //incase no nav was found
+			{
+				area = TheNavMesh.GetNearestNavArea(EntityLocation, true, 100.0); //not big, dont bother too much otherwise.
+			}
+
+			if(area != NULL_AREA)
+			{
+				int NavAttribs = area.GetAttributes();
+				if(NavAttribs & NAV_MESH_WALK)
+				{
+					b_AvoidObstacleType[this.index] = true;
+				}
+			}
+			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
+		}
+
+
 		//increace the size of the avoid box by 2x
-		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
-		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);
+
+		if(!b_AvoidObstacleType[this.index])
+		{
+			this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
+			this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);	
+		}
+		else
+		{
+			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
+			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});	
+		}
+
 
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
@@ -6960,6 +6995,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_DungeonContracts_35PercentMoreDamage[entity] = false;
 	b_DungeonContracts_25PercentMoreDamage[entity] = false;
 #endif
+	f_AvoidObstacleNavTime[entity] = 0.0;
 	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
