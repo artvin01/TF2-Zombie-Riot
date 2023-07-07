@@ -649,10 +649,10 @@ stock void EquipDispenser(int client, int target, int building_variant)
 			}
 		}
 		Building_Mounted[client] = EntIndexToEntRef(target);
-		TeleportEntity(target, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
 		i_BeingCarried[target] = true;
 		Player_Mounting_Building[client] = true;
 		Event_ObjectMoved_Custom(target);
+		TeleportEntity(target, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR);
 		g_CarriedDispenser[client] = EntIndexToEntRef(target);
 	}
 }

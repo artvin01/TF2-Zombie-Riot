@@ -1011,7 +1011,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetVariantColor(view_as<int>({255, 255, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 	}
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index])
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
 	{
 		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{

@@ -844,7 +844,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_firsttotalk",
 	"npc_undertides",
 	"npc_seaborn_kazimersch_knight",
-	"npc_seaborn_kazimersch_knight_archer",
+	"npc_seaborn_kazimersch_archer",
 	"npc_seaborn_kazimersch_beserker",
 	"npc_seaborn_kazimersch_longrange",
 	"npc_endspeaker_freeplay",

@@ -68,7 +68,7 @@ methodmap SeabornSpy < CClotBody
 	
 	public SeabornSpy(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornSpy npc = view_as<SeabornSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
+		SeabornSpy npc = view_as<SeabornSpy>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_SPY;
 		i_NpcWeight[npc.index] = 1;
@@ -86,7 +86,7 @@ methodmap SeabornSpy < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);

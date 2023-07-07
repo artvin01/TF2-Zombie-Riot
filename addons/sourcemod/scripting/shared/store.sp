@@ -1698,7 +1698,6 @@ void Store_ClientDisconnect(int client)
 	Store_WeaponSwitch(client, -1);
 	
 #if defined ZR
-	BarracksSaveResources(client);
 	Database_SaveGameData(client);
 
 	CashSpent[client] = 0;

@@ -3822,6 +3822,10 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	{
 		return false;
 	}
+	if(i_NpcIsABuilding[entity])
+	{
+		return true;
+	}
 	return i_IsABuilding[entity];
 }
 

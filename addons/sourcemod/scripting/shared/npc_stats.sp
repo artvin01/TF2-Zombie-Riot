@@ -1135,7 +1135,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(b_NpcResizedForCrouch[this.index])
 		{
 			speed_for_return *= 0.33333;
-		}		
+		}
+
+		//SeabornVanguard_SpeedBuff(this, speed_for_return);	
 
 		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
 		{

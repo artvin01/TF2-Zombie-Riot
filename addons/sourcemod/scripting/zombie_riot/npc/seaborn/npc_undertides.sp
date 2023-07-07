@@ -208,6 +208,16 @@ public void UnderTides_ClotThink(int iNPC)
 		npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 30.0;
 
 		Citizen_MiniBossSpawn(npc.index);
+		
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawner_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
 	}
 	else if(npc.m_flNextMeleeAttack < gameTime)
 	{
@@ -512,10 +522,21 @@ void UnderTides_NPCDeath(int entity)
 	npc.PlayDeathSound();
 
 	float pos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
+	
+	Spawner_RemoveFromArray(entity);
+	
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

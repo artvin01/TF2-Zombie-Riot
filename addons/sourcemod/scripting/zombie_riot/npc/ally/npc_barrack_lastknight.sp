@@ -47,12 +47,16 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
+					static int AttackCount;
+
 					if(!npc.m_flAttackHappenswillhappen)
 					{
+						AttackCount++;
+
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
-						npc.AddGesture("ACT_CUSTOM_ATTACK_LUCIAN");
+						npc.AddGesture(AttackCount > 4 ? "ACT_LAST_KNIGHT_ATTACK_2" : "ACT_LAST_KNIGHT_ATTACK_1");
 						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GameTime + 0.45;
+						npc.m_flAttackHappens = GameTime + 0.45;	// TODO: Set these
 						npc.m_flAttackHappens_bullshit = GameTime + 0.64;
 						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
@@ -73,8 +77,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 							{
 								npc.PlaySwordHitSound();
 
-								static int AttackCount;
-								if(++AttackCount > 4)
+								if(AttackCount > 4)
 								{
 									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8000.0, 0), DMG_CLUB, -1, _, vecHit);
 									Custom_Knockback(npc.index, target, 1000.0);
@@ -97,7 +100,7 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_PRINCE_IDLE", "ACT_PRINCE_WALK");
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_LAST_KNIGHT_WALK", "ACT_LAST_KNIGHT_WALK");
 	}
 }
 

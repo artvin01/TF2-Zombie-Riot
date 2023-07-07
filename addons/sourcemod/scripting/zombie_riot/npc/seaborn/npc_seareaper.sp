@@ -149,6 +149,8 @@ public void SeaReaper_ClotThink(int iNPC)
 				npc.m_iTarget = 0;
 				npc.m_flNextThinkTime = gameTime + 1.5;
 				npc.StopPathing();
+
+				fl_GetClosestTargetTimeTouch[npc.index] = FAR_FUTURE;	// No.
 			}
 		}
 	}

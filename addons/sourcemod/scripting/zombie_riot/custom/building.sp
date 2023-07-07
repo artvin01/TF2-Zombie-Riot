@@ -6278,7 +6278,7 @@ static const int SummonerBase[][] =
 	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1, 0  },	// Construction Master
 
 	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1, 0  },	// Construction Expert
-	{ BARRACK_HUSSAR, 0, 400, 35, 15, 16, 1, 0  },	// Construction Master
+	{ BARRACK_HUSSAR, 0, 400, 100, 15, 16, 1, 0  },	// Construction Master
 	
 	{ BARRACKS_TEUTONIC_KNIGHT, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE },	// Construction Master
 	{ BARRACKS_VILLAGER, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER  }	// Construction Expert
@@ -6373,7 +6373,7 @@ static const int BarracksUpgrades[][] =
 	{ BUILDING_CONSCRIPTION , 		1000, 	400, 	0, 		30, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
 	{ BUILDING_GOLDMINERS, 			500, 	500, 	10, 	40,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
 
-	{ BUILDING_ASSISTANT_VILLAGER, 	1200, 	1200, 	0, 		60,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
+	{ BUILDING_ASSISTANT_VILLAGER, 	1200, 	1200, 	0, 		60,		11, 		1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
 	{ BUILDING_VILLAGER_EDUCATION, 	2000, 	3000, 	0, 		70,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
 
 	{ BUILDING_STRONGHOLDS, 		1500, 	2500, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
@@ -6503,15 +6503,16 @@ public bool Building_Summoner(int client, int entity)
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_summoner");
 	Building_cannot_be_repaired[entity] = false;
 	Is_Elevator[entity] = false;
-	Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
+	
+	if(!CvarInfiniteCash.BoolValue)
+		Building_Sentry_Cooldown[client] = GetGameTime() + 60.0;
+		
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;
-	SDKHook(client, SDKHook_PreThink, Barracks_BuildingThink);
+	SDKHook(client, SDKHook_PreThink, Barracks_BuildingThink);			
 	int SentryHealAmountExtra = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2;
 	SetVariantInt(SentryHealAmountExtra);
 	AcceptEntityInput(entity, "AddHealth");
-	Barracks_UpdateEntityUpgrades(client, entity, true);
-	
 	return true;
 }
 
@@ -6587,8 +6588,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 				else
 				{
 				*/
-				SetEntityModel(entity, SUMMONER_MODEL);
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.15);
+		//		SetEntityModel(entity, SUMMONER_MODEL);
+		//		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.15);
 				//}
 				
 				static const float minbounds[3] = {-20.0, -20.0, 0.0};
@@ -6598,7 +6599,8 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 				SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
 				SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-				view_as<CClotBody>(entity).UpdateCollisionBox();			
+				view_as<CClotBody>(entity).UpdateCollisionBox();	
+				Barracks_UpdateEntityUpgrades(entity, owner, true);		
 			}
 		}
 		else
@@ -6621,34 +6623,7 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 	
 	if(entity != INVALID_ENT_REFERENCE && owner && Building_Constructed[entity])
 	{
-		// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-		float SupplyRateCalc = SupplyRate[owner] / (LastMann ? 20.0 : 40.0);
-
-		if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
-		{
-			SupplyRateCalc *= 1.25;
-		}
-		if(i_CurrentEquippedPerk[owner] == 7)
-		{
-			SupplyRateCalc *= 1.25;
-		}
-		WoodAmount[owner] += SupplyRateCalc;
-		FoodAmount[owner] += SupplyRateCalc * 2.0; //food is gained 2x as fast
-
-		// 1 Supply = 1 Gold Every 150 Seconds
-		if(MedievalUnlock[owner])
-		{
-			float GoldSupplyRate = SupplyRate[owner] / 1500.0;
-			if(i_NormalBarracks_HexBarracksUpgrades[owner] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
-			{
-				GoldSupplyRate *= 1.25;
-			}
-			if(i_CurrentEquippedPerk[owner] == 7)
-			{
-				GoldSupplyRate *= 1.25;
-			}
-			GoldAmount[owner] += GoldSupplyRate;
-		}
+		SummonerRenerateResources(owner, 1.0);
 
 		if(TrainingIn[owner])
 		{
@@ -6828,6 +6803,39 @@ void CheckSummonerUpgrades(int client)
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = (CivType[client] || HasNamedItem(client, "Medieval Crown"));
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
+}
+
+void SummonerRenerateResources(int client, float multi, bool allowgold = false)
+{
+	// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
+	float SupplyRateCalc = SupplyRate[client] / (LastMann ? 20.0 : 40.0);
+
+	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
+	{
+		SupplyRateCalc *= 1.25;
+	}
+	if(i_CurrentEquippedPerk[client] == 7)
+	{
+		SupplyRateCalc *= 1.15;
+	}
+	SupplyRateCalc *= multi;
+	WoodAmount[client] += SupplyRateCalc;
+	FoodAmount[client] += SupplyRateCalc * 1.25;
+
+	if(MedievalUnlock[client] || allowgold)
+	{
+		float GoldSupplyRate = SupplyRate[client] / 1500.0;
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+		{
+			GoldSupplyRate *= 1.25;
+		}
+		if(i_CurrentEquippedPerk[client] == 7)
+		{
+			GoldSupplyRate *= 1.25;
+		}
+		GoldSupplyRate *= multi;
+		GoldAmount[client] += GoldSupplyRate;
+	}
 }
 
 static void OpenSummonerMenu(int client, int viewer)
@@ -7611,13 +7619,13 @@ void Barracks_BuildingThink(int client)
 			}
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST)
 			{
-				ArrowDamage += 900.0;
-				ArrowCount += 2;
+				ArrowDamage += 1200.0;
+				ArrowCount += 1;
 			}
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE)
 			{
-				ArrowDamage += 2000.0;
-				ArrowCount += 5;
+				ArrowDamage += 3000.0;
+				ArrowCount += 1;
 			}
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CHEMISTY)
 			{

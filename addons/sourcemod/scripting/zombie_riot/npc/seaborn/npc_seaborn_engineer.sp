@@ -69,7 +69,7 @@ methodmap SeabornEngineer < CClotBody
 	
 	public SeabornEngineer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "3000", ally));
+		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_ENGINEER;
 		i_NpcWeight[npc.index] = 1;
@@ -163,7 +163,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		AcceptEntityInput(npc.m_iWearable1, "Enable");
 		AcceptEntityInput(npc.m_iWearable2, "Disable");
 	}
-	else if(npc.m_flNextRangedAttack < gameTime)
+	else if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		for(int i; i < i_MaxcountBuilding; i++)
 		{

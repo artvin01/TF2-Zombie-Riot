@@ -65,7 +65,7 @@ methodmap SeabornPyro < CClotBody
 	
 	public SeabornPyro(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1500", ally));
+		SeabornPyro npc = view_as<SeabornPyro>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2225", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_PYRO;
 		i_NpcWeight[npc.index] = 1;

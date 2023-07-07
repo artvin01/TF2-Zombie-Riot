@@ -45,7 +45,7 @@ methodmap SeabornMedic < CClotBody
 	
 	public SeabornMedic(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornMedic npc = view_as<SeabornMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5000", ally));
+		SeabornMedic npc = view_as<SeabornMedic>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "6000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_MEDIC;
 		i_NpcWeight[npc.index] = 1;
@@ -113,38 +113,42 @@ public void SeabornMedic_ClotThink(int iNPC)
 		}
 		
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-		f_EmpowerStateOther[npc.m_iTargetAlly] = GetGameTime() + 1.5;
+		if(!NpcStats_IsEnemySilenced(npc.index))
+			f_EmpowerStateOther[npc.m_iTargetAlly] = GetGameTime() + 1.5;
 	}
 
 	gameTime = GetGameTime() + 0.5;
 
-	if(GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2)
+	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		for(int client = 1; client <= MaxClients; client++)
+		if(GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				f_HussarBuff[client] = gameTime;
+				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				{
+					f_HussarBuff[client] = gameTime;
+				}
 			}
-		}
 
-		for(int i; i < i_MaxcountNpc_Allied; i++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			for(int i; i < i_MaxcountNpc_Allied; i++)
 			{
-				f_HussarBuff[entity] = gameTime;
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+				{
+					f_HussarBuff[entity] = gameTime;
+				}
 			}
 		}
-	}
-	else
-	{
-		for(int i; i < i_MaxcountNpc; i++)
+		else
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			for(int i; i < i_MaxcountNpc; i++)
 			{
-				f_HussarBuff[entity] = gameTime;
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+				if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+				{
+					f_HussarBuff[entity] = gameTime;
+				}
 			}
 		}
 	}
