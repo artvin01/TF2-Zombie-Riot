@@ -3332,3 +3332,22 @@ void checkOS()
         OperationSystem = OS_Unknown;
     }
 }
+
+void OnPluginEnd()
+{
+	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
+	{
+		if(IsValidEntity(i))
+		{
+			char cmdline[256];
+			GetEntityClassname(i, cmdline, sizeof(cmdline)); 
+			//prevent crash.
+
+			if(StrContains(classname, "zr_base_npc"))
+			{
+				RemoveEntity(i);
+				continue;
+			}
+		}
+	}
+}
