@@ -165,9 +165,9 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 					BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 999999.0, _, false);
 				}
 			}
-			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
+			else if(flDistanceToTarget < 750000 && i_ammo_count[npc.index]>0)
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 100000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				fl_idle_timer[npc.index] = 2.5 + GameTime;
@@ -182,11 +182,8 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1100.0);
 						npc.FaceTowards(vecTarget, 20000.0);
-						float flPos[3]; // original
-						float flAng[3]; // original
-						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						npc.PlayRangedSound();
-						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),75.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, true, flPos,_, GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),75.0, 1) ,  1200.0, 200.0 , "raygun_projectile_blue", true , false, _, _,_, GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + 0.5* npc.BonusFireRate;
 						npc.m_flReloadIn = GameTime + 1.75* npc.BonusFireRate;
 						i_ammo_count[npc.index]--;
@@ -195,12 +192,12 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			}
 			else
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 100000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
 			}
 		}
 		else
 		{
-			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 100000.0, _, false);
+			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
 			npc.PlayIdleSound();
 		}
 	}
