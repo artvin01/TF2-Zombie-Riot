@@ -502,7 +502,7 @@ public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker,
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(attacker);
 
-		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, _, Entity_Position);
+		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, {0.0,0.0,1.0}, Entity_Position);
 	}
 		
 	return damage;
