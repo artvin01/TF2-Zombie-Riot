@@ -2587,7 +2587,7 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return other_entity;
 	}
-	return -1;
+	return 0;
 }
 
 float[] CalculateDamageForce( const float vecBulletDir[3], float flScale )
