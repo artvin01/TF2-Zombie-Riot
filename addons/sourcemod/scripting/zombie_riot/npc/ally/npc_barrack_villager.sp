@@ -530,14 +530,14 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 	{
 		if(GetEntProp(building, Prop_Data, "m_iHealth") < GetEntProp(building, Prop_Data, "m_iMaxHealth"))
 		{
-			if(i_IsABuilding[entity])
+			if(i_IsABuilding[building])
 			{
 				SetVariantInt(GetEntProp(building, Prop_Data, "m_iMaxHealth") / 750);
 				AcceptEntityInput(building, "AddHealth");
 			}
 			else
 			{
-				SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iMaxHealth") / 500);
+				SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iMaxHealth") / 750);
 				if(GetEntProp(building, Prop_Data, "m_iHealth") >= GetEntProp(building, Prop_Data, "m_iMaxHealth"))
 				{
 					SetEntProp(building, Prop_Data, "m_iHealth", GetEntProp(building, Prop_Data, "m_iMaxHealth"));

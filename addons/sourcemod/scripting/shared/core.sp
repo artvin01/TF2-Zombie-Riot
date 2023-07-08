@@ -1205,6 +1205,7 @@ public void OnPluginEnd()
 			OnClientDisconnect(i);
 		}
 	}
+	/*
 	char classname[256];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
@@ -1220,7 +1221,7 @@ public void OnPluginEnd()
 			}
 		}
 	}
-	
+	*/
 }
 
 public void OnMapStart()
@@ -3336,4 +3337,19 @@ void checkOS()
     {
         OperationSystem = OS_Unknown;
     }
+}
+
+void HideWallWeaponsExceptActive(int client)
+{
+	int weapon;
+	int i;
+	while(TF2_GetItem(client, weapon, i))
+	{
+		if(IsValidEntity(weapon))
+			SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | 0x020);
+	}
+
+	weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(weapon))
+		SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") & ~0x020);
 }
