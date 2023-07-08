@@ -2501,13 +2501,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			float EntityLocation[3];
 			GetEntPropVector( this.index, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-			CNavArea area = TheNavMesh.GetNavArea(EntityLocation, 25.0);
+			CNavArea area = TheNavMesh.GetNavAreaEntity(this.index, GETNAVAREA_CHECK_GROUND, 120.0);
 			b_AvoidObstacleType[this.index] = false;
-			if(area == NULL_AREA) //incase no nav was found
-			{
-				area = TheNavMesh.GetNearestNavArea(EntityLocation, true, 100.0); //not big, dont bother too much otherwise.
-			}
-
+			
 			if(area != NULL_AREA)
 			{
 				int NavAttribs = area.GetAttributes();
@@ -2516,7 +2512,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					b_AvoidObstacleType[this.index] = true;
 				}
 			}
-			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
+			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.25;
 		}
 
 
