@@ -2029,6 +2029,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 			{
 				case 0:
 				{
+					ReviveAll(true);
 					CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
 					i_TalkDelayCheck += 1;
 				}
