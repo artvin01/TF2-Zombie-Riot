@@ -90,7 +90,7 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 	}
 	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
 		i_NpcInternalId[npc.index] = ALT_BARRACK_SCIENTIFIC_WITCHERY;
 		i_NpcWeight[npc.index] = 1;
