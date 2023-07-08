@@ -972,11 +972,13 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		{
 			if(TeutonType[attacker] != TEUTON_NONE)
 			{
+				damage = 0.0;
 				return Plugin_Handled;
 			}
 		}
 		else //Ignore any atacker that isnt a player, they might ruin this, like grigori.
 		{
+			damage = 0.0;
 			return Plugin_Handled;
 		}
 	}
