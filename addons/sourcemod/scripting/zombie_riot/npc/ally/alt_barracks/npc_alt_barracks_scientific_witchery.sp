@@ -194,7 +194,7 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 			else if(flDistanceToTarget < Pow(1250.0, 2.0) && npc.m_flNextMeleeAttack < GameTime)
 			{
 				Create_Laser_Hell(npc.index, vecTarget);
-				npc.m_flNextMeleeAttack = GameTime + 1.5 * npc.BonusFireRate;
+				npc.m_flNextMeleeAttack = GameTime + 2.0 * npc.BonusFireRate;
 				
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.FaceTowards(vecTarget);
@@ -377,7 +377,7 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 		H_i_Slicer_Throttle[client] = 0;
 		for(int i=1 ; i<=H_SLICER_AMOUNT ; i++)
 		{
-				Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 7500.0);
+				Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 5000.0);
 				
 				TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 				TE_SendToAll(0.0);
@@ -474,7 +474,7 @@ static Action Scientific_Witchery_TBB_Ability(int client)
 	if(i_Slicer_Throttle[client]>2)
 	{
 		i_Slicer_Throttle[client] = 0;
-		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 12500.0);
+		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 8000.0);
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
 		Cur_Vec[2] -= 150.0;
