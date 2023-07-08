@@ -117,9 +117,23 @@ static int i_currentwave[MAXENTITIES];
 
 bool b_Schwertkrieg_Alive= false;
 bool b_Donnerkrieg_Alive = false;
+bool b_Blitz_Alive = false;
 bool b_Valid_Wave = false;
+
+bool Schwert_Takeover = false;
+bool Schwert_Takeover_Active = false;
+
+bool Donner_Takeover = false;
+bool Donner_Takeover_Active = false;
+
 bool b_Begin_Dialogue = false;
-bool b_was_talking = false;
+bool b_angered = false;
+
+bool b_donner_locked = false;
+bool b_schwert_loocked = false;
+
+bool b_timer_locked = false;
+
 float g_f_blitz_dialogue_timesincehasbeenhurt;
 
   ///////////////////////
@@ -183,7 +197,21 @@ public void Blitzkrieg_OnMapStart()
 	b_Donnerkrieg_Alive = false;
 	b_Valid_Wave = false;
 	b_Begin_Dialogue = false;
-	b_was_talking = false;
+	b_angered = false;
+	b_Blitz_Alive = false;
+	
+	Schwert_Takeover = false;
+	Schwert_Takeover_Active = false;
+
+	Donner_Takeover = false;
+	Donner_Takeover_Active = false;
+
+	b_angered = false;
+
+	b_donner_locked = false;
+ 	b_schwert_loocked = false;
+ 	
+ 	b_timer_locked = false;
 }
 
 //static float fl_PlayMusicSound[MAXENTITIES];
@@ -321,9 +349,10 @@ methodmap Blitzkrieg < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		
 
-		b_was_talking = false;
+		b_angered = false;
 		b_Valid_Wave = false;
 		b_Begin_Dialogue = false;
+		b_Blitz_Alive = true;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -503,6 +532,19 @@ methodmap Blitzkrieg < CClotBody
 		if(i_currentwave[npc.index] >= 60 && !Waves_InFreeplay())
 		{
 			b_Valid_Wave = true;
+			switch(GetRandomInt(1,2))
+			{
+				case 1:	//kebab
+				{
+					Donner_Takeover = true;
+					Schwert_Takeover = false;
+				}
+				case 2:	//sword
+				{
+					Donner_Takeover = false;
+					Schwert_Takeover = true;
+				}
+			}
 		}
 		
 		npc.m_flMeleeArmor = 1.25;
@@ -537,6 +579,14 @@ methodmap Blitzkrieg < CClotBody
 		b_life3[npc.index]=false;	//tell's the npc if 3rd life is true.
 		
 		b_allies[npc.index]=false;
+		
+		b_donner_locked = false;
+ 		b_schwert_loocked = false;
+		
+		b_timer_locked = false;
+		
+		
+		
 		
 		Citizen_MiniBossSpawn(npc.index);
 		Building_RaidSpawned(npc.index);
@@ -1347,28 +1397,11 @@ public void Blitzkrieg_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, Blitzkrieg_ClotThink);
 	
 //	Music_RoundEnd(entity);
-	
-	
-	if(b_Valid_Wave && b_Donnerkrieg_Alive && b_Schwertkrieg_Alive)
-	{
-		b_was_talking = false;
-		b_Begin_Dialogue = true;
-		g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
-		ReviveAll(true);
-		
-		RaidModeTime += 60.0;
 
-		StopSound(npc.index,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
-		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-		StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 
-		int i = MaxClients + 1;
-		while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
-		{
-			RemoveEntity(i);
-		}
-	}
+	RaidModeTime += 10.0;
+	
+	b_Blitz_Alive = false;
 	
 	int closest = npc.m_iTarget;
 	
