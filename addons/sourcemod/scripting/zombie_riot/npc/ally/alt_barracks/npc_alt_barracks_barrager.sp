@@ -157,9 +157,9 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 					BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 999999.0, _, false);
 				}
 			}
-			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
+			else if(flDistanceToTarget < 750000 && i_ammo_count[npc.index]>0)
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 750000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 700000.0, _, false);
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				fl_idle_timer[npc.index] = 2.5 + GameTime;
@@ -188,12 +188,12 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 			}
 			else
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 100000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 700000.0, _, false);
 			}
 		}
 		else
 		{
-			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 100000.0, _, false);
+			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 700000.0, _, false);
 			npc.PlayIdleSound();
 		}
 	}
