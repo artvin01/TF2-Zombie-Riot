@@ -605,6 +605,8 @@ public void Schwertkrieg_NPCDeath(int entity)
 	
 	b_angered = false;
 	
+	b_Valid_Wave = false;
+	
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 	b_NpcIsInvulnerable[npc.index] = false;
 			

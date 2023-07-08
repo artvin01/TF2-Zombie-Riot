@@ -331,7 +331,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	if(!b_Donnerkrieg_Alive)
+	if(!b_Donnerkrieg_Alive && b_Valid_Wave)
 	{
 
 		npc.m_flNextThinkTime = 0.0;
@@ -359,6 +359,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
 				npc.m_bDissapearOnDeath = true;
 						
+				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 0; client < MaxClients; client++)
 				{
@@ -880,6 +881,8 @@ public void Donnerkrieg_NPCDeath(int entity)
 	b_Donnerkrieg_Alive = false;
 	
 	b_angered = false;
+	
+	b_Valid_Wave = false;
 	
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 	b_NpcIsInvulnerable[npc.index] = false;
