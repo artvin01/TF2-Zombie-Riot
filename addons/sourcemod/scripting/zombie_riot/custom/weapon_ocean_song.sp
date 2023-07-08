@@ -182,7 +182,13 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	{
 		return;
 	}
-	GetBoneAnglesAndPos(client, "effect_hand_r", flPos, flAng);
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+	if(!IsValidEntity(viewmodelModel))
+		return;
+
+	GetBoneAnglesAndPos(viewmodelModel, "effect_hand_r", flPos, flAng);
 	flAng[0] += 80.0;
 
 	float vecSwingForward[3];
@@ -198,13 +204,13 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	int particle = ParticleEffectAtOcean(vecSwingEnd, "player_dripsred", 0.0 , _, false);
 
 
-	SetParent(client, particle, "effect_hand_r", _, true);
+	SetParent(viewmodelModel, particle, "effect_hand_r", _, true);
 	i_Particle_1[client] = EntIndexToEntRef(particle);
 
 
 	//Setup first invis particle here.
 	
-	GetBoneAnglesAndPos(client, "effect_hand_r", flPos, flAng);
+	GetBoneAnglesAndPos(viewmodelModel, "effect_hand_r", flPos, flAng);
 	flAng[0] += 70.0;
 
 	GetAngleVectors(flAng, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
@@ -214,7 +220,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	vecSwingEnd[2] = flPos[2] + (vecSwingForward[2] * OCEAN_SING_OFFSET_UP);
 
 	int particle2 = ParticleEffectAtOcean(vecSwingEnd, "medicgun_beam_red", 0.0 , particle, false);
-	SetParent(client, particle2, "effect_hand_r", _, true);
+	SetParent(viewmodelModel, particle2, "effect_hand_r", _, true);
 
 	char szCtrlParti[128];
 	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));

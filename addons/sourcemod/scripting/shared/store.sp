@@ -131,6 +131,7 @@ enum struct ItemInfo
 	int SpecialAttribRules_2;
 
 	int WeaponArchetype;
+	int WeaponForceClass;
 	
 	int CustomWeaponOnEquip;
 	
@@ -354,6 +355,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_archetype", prefix);
 		this.WeaponArchetype			= kv.GetNum(buffer, 0);
+
+		Format(buffer, sizeof(buffer), "%sviewmodel_force_class", prefix);
+		this.WeaponForceClass			= kv.GetNum(buffer, 0);
 
 #if defined ZR
 		Format(buffer, sizeof(buffer), "%sfunc_onbuy", prefix);
@@ -4703,6 +4707,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
 					}
 					
+					i_WeaponArchetype[entity] = info.WeaponArchetype;
+					i_WeaponForceClass[entity] = info.WeaponForceClass;
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
 					EntityFuncAttack2[entity] = info.FuncAttack2;
@@ -4938,7 +4944,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					if(EntityIsAWeapon)
 					{
-						i_WeaponArchetype[entity] = info.WeaponArchetype;
 						bool apply;
 						switch(info.Index)
 						{

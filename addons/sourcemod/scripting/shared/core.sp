@@ -901,6 +901,8 @@ float fl_Dead_Ringer[MAXENTITIES];
 bool b_Dead_Ringer_Invis_bool[MAXENTITIES];
 int i_AttacksTillMegahit[MAXENTITIES];
 int i_WeaponArchetype[MAXENTITIES];
+int i_WeaponForceClass[MAXENTITIES];
+int i_Viewmodel_PlayerModel[MAXENTITIES];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];
@@ -2270,6 +2272,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Resistance_for_building_High[entity] = 0.0;
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
+		i_WeaponForceClass[entity] = 0;
 		
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
