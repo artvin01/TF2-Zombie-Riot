@@ -4449,6 +4449,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	Barracks_UpdateAllEntityUpgrades(client);
 
 	Manual_Impulse_101(client, health);
+	HideWallWeaponsExceptActive(client);
 }
 
 static void CheckMultiSlots(int client)

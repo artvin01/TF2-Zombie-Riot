@@ -2021,7 +2021,8 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		WorldSpaceTarget = WorldSpaceCenter(target);
 		vecTarget = WorldSpaceTarget;
-		vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
+		if(target <= MaxClients)
+			vecTarget[2] += 10.0; //abit extra as they will most likely always shoot upwards more then downwards
 
 		MakeVectorFromPoints(WorldSpaceCenter(this.index), vecTarget, vecForward);
 		GetVectorAngles(vecForward, vecForward);
@@ -5940,11 +5941,11 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 	//	TE_SetupBeamPoints(m_vecSrc, endpos, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 0.1, 0.1, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	//	TE_SendToAll();
 
-		if(ShouldNpcDealBonusDamage(TR_GetEntityIndex(trace)))
+		if(!ShouldNpcDealBonusDamage(TR_GetEntityIndex(trace)))
 		{
 			bonus_entity_damage = 1.0;
 		}
-		if(client != -1)
+		if(client > 0)
 		{
 			if(IsValidEnemy(m_pAttacker, TR_GetEntityIndex(trace)))
 				SDKHooks_TakeDamage(TR_GetEntityIndex(trace), m_pAttacker, client, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually

@@ -6328,7 +6328,7 @@ static const int SummonerAlternative[][] =
 	{ ALT_BARRACK_DONNERKRIEG, 			175, 	350, 	15, 	12, 11, 1, 0 },	// Construction Expert
 	{ ALT_BARRACKS_SCHWERTKRIEG , 		225, 	75, 	10, 	13, 16, 1, 0 },	// Construction Master
 	
-	{ ALT_BARRACK_SCIENTIFIC_WITCHERY, 	500, 	350, 	35, 	30, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE },	// Construction Master
+	{ ALT_BARRACK_SCIENTIFIC_WITCHERY, 	1000, 	500, 	35, 	30, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE },	// Construction Master
 	{ BARRACKS_VILLAGER, 				750, 	750, 	0,		25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER  }	// Construction Expert
 };
 
