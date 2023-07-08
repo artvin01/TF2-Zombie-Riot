@@ -409,6 +409,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 			{
 				i_SaidLineAlready[npc.index] = 1;
 				CPrintToChatAll("{crimson}Donnerkrieg{default}: Wait no please stop");
+				ReviveAll(true);
 			}
 		}
 		if(npc.m_bInKame)
