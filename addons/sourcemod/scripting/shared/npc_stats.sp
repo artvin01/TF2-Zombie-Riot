@@ -2499,22 +2499,33 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(f_AvoidObstacleNavTime[this.index] < GetGameTime()) //add abit of delay for optimisation
 		{
-			float EntityLocation[3];
-			GetEntPropVector( this.index, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
-			CNavArea area = TheNavMesh.GetNavAreaEntity(this.index, GETNAVAREA_CHECK_GROUND, 120.0);
+			CNavArea areaNavget;
+			CNavArea areaNavget2;
+			Segment segment;
+			Segment segment2;
+
+			if(this.GetPathFollower().FirstSegment() != NULL_PATH_SEGMENT && this.GetPathFollower().NextSegment(this.GetPathFollower().FirstSegment()) != NULL_PATH_SEGMENT)
+			{
+				segment2 = this.GetPathFollower().FirstSegment();
+				segment = this.GetPathFollower().NextSegment(this.GetPathFollower().FirstSegment());
+
+				areaNavget = segment.area;
+				areaNavget2 = segment2.area;
+			}
+
 			b_AvoidObstacleType[this.index] = false;
 			
-			if(area != NULL_AREA)
+			if(areaNavget != NULL_AREA && areaNavget2 != NULL_AREA)
 			{
-				int NavAttribs = area.GetAttributes();
-				if(NavAttribs & NAV_MESH_WALK)
+				int NavAttribs = areaNavget.GetAttributes();
+				int NavAttribs2 = areaNavget2.GetAttributes();
+				if(NavAttribs & NAV_MESH_WALK || NavAttribs2 & NAV_MESH_WALK)
 				{
 					b_AvoidObstacleType[this.index] = true;
 				}
 			}
-			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.25;
+			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
 		}
-
 
 		//increace the size of the avoid box by 2x
 
@@ -2535,68 +2546,6 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
-
-		/*
-		
-		SDKCall(g_hStuckMonitor, this.GetLocomotionInterface());
-		
-		bool bStuck = this.IsStuck();
-		if(bStuck)
-		{
-			float there[3];
-			bool bYes = false;
-			
-			for (int i = 1; i <= 2; i++)
-			{
-				if (PF_GetFutureSegment(this.index, i, there)) 
-				{
-					bYes = true; 
-					break;
-				}
-			}
-			
-			if(bYes) 
-			{
-				CNavArea RandomArea = PickRandomArea();	
-			
-				if(RandomArea == NULL_AREA) 
-				{
-				
-				}
-				else
-				{
-					
-					float vecGoal[3]; RandomArea.GetCenter(vecGoal);
-					
-					if(!PF_IsPathToVectorPossible(this.index, vecGoal))
-					{
-					
-					}
-					else
-					{
-						NPC_StartPathing(this.index, vecGoal);
-						SDKCall(g_hClearStuckStatus, this.GetLocomotionInterface(), "Un-Stuck");//  Sauce code :)
-					}
-				}
-				
-			} 
-			
-			
-			else 
-			{
-				CNavArea area = TheNavMesh.GetNearestNavArea_Vec(WorldSpaceCenter(this.index), true);
-				if(area == NULL_AREA)
-					return;
-			
-				float center[3]; area.GetCenter(center); center[2] += 18.0;
-		//		PrintToChatAll("stuck2");
-				TeleportEntity(this.index, center, NULL_VECTOR, NULL_VECTOR);
-			}
-		}
-		
-		*/
-		
-		
 	}
 
 	 	
@@ -3170,65 +3119,6 @@ public Action SDKHook_Settransmit_Hide(int entity, int client)
 	return Plugin_Handled;
 }
 
-//Delay Twice for various reasons.
-/*
-public void Do_Death_Frame_Later(int ref)
-{
-	int pThis = EntRefToEntIndex(ref);
-	if(IsValidEntity(pThis) && pThis > 0)
-	{
-		RequestFrame(Do_Death_Frame_Later_Again, EntIndexToEntRef(pThis));
-	}
-}
-
-public void Do_Death_Frame_Later_Again(int ref)
-{
-	int pThis = EntRefToEntIndex(ref);
-	if(IsValidEntity(pThis) && pThis > 0)
-	{
-		RemoveEntity(pThis);
-	}
-}
-*/
-/*
-public Action Check_Emergency_Reload(Handle Timer_Handle, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		//SOMETHING TERRIBLE HAPPEND!!! PLUGIN MUST RELOAD ITSELF AND KILL ALL EXISTING BASE_BOSSES THAT ARE FROM THIS PLUGIN INSTANTLY!!!
-		//This can happen due to the plugin failing to correctly hook upton server restart, rendering winning/advancing IMPOSSIBLE.
-		char buffer[64];
-		for(int i=MAXENTITIES; i>MaxClients; i--)
-		{
-			if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
-			{
-				if(StrEqual(buffer, "zr_base_npc"))
-				{
-					GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer))
-					if(!StrContains(this_plugin_name, buffer))
-					{
-						RemoveEntity(i);
-					}
-				}
-			}
-		}
-		static char plugin_name[256];
-		GetPluginFilename(INVALID_HANDLE, plugin_name, sizeof(plugin_name));
-		ServerCommand("sm plugins reload %s", plugin_name);
-	}
-	return Plugin_Handled;
-}
-*/
-
-/*
-//	models/Gibs/HGIBS.mdl
-//	models/Gibs/HGIBS_scapula.mdl
-//	models/Gibs/HGIBS_spine.mdl
-//	models/Gibs/HGIBS_rib.mdl
-//	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
-*/
-
 public void Kill_Npc(int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -3260,7 +3150,6 @@ bool IsWalkEvent(int event, int special = 0)
 public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
-//	PrintToChatAll("CBaseAnimating_HandleAnimEvent(%i, %i)", pThis, event);
 	CClotBody npc = view_as<CClotBody>(pThis);
 	
 #if defined ZR
@@ -6331,7 +6220,6 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 	//Check of on if its too close, if yes, try again, but left or right, randomly chosen!
 	if(flDistanceToTarget < ((Pow(extra_backoff, 2.0)) / 2.0))
 	{
-	//	PrintToChatAll("Im against a wall! try other running away methods!");
 		int Direction = GetRandomInt(1, 2);
 		
 		float gameTime = GetGameTime();
@@ -6577,7 +6465,7 @@ stock float[] PredictSubjectPositionHook(CClotBody npc, int subject)
 		}
 	}
 	
-
+//	CNavArea leadArea = TheNavMesh.GetNavArea(pathTarget, 50.0);
 	CNavArea leadArea = TheNavMesh.GetNearestNavArea( pathTarget );
 	
 	
@@ -7261,7 +7149,6 @@ public void ArrowStartTouch(int arrow, int entity)
 
 public void Rocket_Particle_StartTouch(int entity, int target)
 {
-	//PrintToChatAll("touch: Started");
 	
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
@@ -7284,19 +7171,16 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 		
 		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
 		{
-			//PrintToChatAll("touch: explosive!");
 			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 		}
 		else
 		{
-			//PrintToChatAll("touch: kinetic!");
 			SDKHooks_TakeDamage(target, owner, inflictor, fl_rocket_particle_dmg[entity], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
 		
 		int particle = i_rocket_particle[entity];
 		if(IsValidEntity(particle))
 		{
-			//PrintToChatAll("touch: Removed particle!");
 			RemoveEntity(particle);
 		}
 	}
@@ -7306,7 +7190,6 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{
-			//PrintToChatAll("touch: Removed particle MISS!");
 			RemoveEntity(particle);
 		}
 	}
@@ -7320,7 +7203,6 @@ public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
 
 public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 {
-//	PrintToChatAll("boom!");
 	RemoveEntity(arrow);
 	int arrow_particle = EntRefToEntIndex(f_ArrowTrailParticle[arrow]);
 	if(IsValidEntity(arrow_particle))
@@ -7376,22 +7258,6 @@ public MRESReturn Dhook_UpdateGroundConstraint_Post(DHookParam param)
 	return MRES_Ignored;
 }
 
-/*
-public MRESReturn Dhook_ResolveCollision_Pre()
-{
-	PrintToChatAll("-----");
-	PrintToChatAll("1");
-	return MRES_Ignored;
-}
-
-public MRESReturn Dhook_ResolveCollision_Post()
-{
-	PrintToChatAll("2");
-	PrintToChatAll("-----");
-	return MRES_Ignored;
-}
-*/
-
 public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask, bool originalResult)
 {
 	return false;
@@ -7401,8 +7267,8 @@ public bool Never_ShouldCollide(int client, int collisiongroup, int contentsmask
 /*
 	note:
 	This is garbage lol
-
 */
+
 #if defined ZR
 bool NPC_Teleport(int npc, float endPos[3] /*Where do we want to end up?*/, bool ForPlayer = false, float startPos[3] = {0.0,0.0,0.0})
 {
@@ -8071,6 +7937,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "%s?",HealthText);
+	}
+	if(IgniteFor[npc.index] > 0)
+	{
+		Format(HealthText, sizeof(HealthText), "%s~",HealthText);
 	}
 #endif
 

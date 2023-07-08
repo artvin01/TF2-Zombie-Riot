@@ -843,11 +843,27 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon)
 		value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
 	}
 
-	if(wasBurning && value > BurnDamage[entity]) //Dont override if damage is lower.
+	if(wasBurning)
+	{
+		if(value > BurnDamage[entity]) //Dont override if damage is lower.
+		{
+			BurnDamage[entity] = value;
+			IgniteId[entity] = EntIndexToEntRef(attacker);
+
+			if(validWeapon)
+			{
+				IgniteRef[entity] = EntIndexToEntRef(weapon);
+			}
+			else
+			{
+				IgniteRef[entity] = -1;
+			}
+		}
+	}
+	else
 	{
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
-
 		if(validWeapon)
 		{
 			IgniteRef[entity] = EntIndexToEntRef(weapon);
@@ -2218,7 +2234,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		Debuff_added = true;
 		Debuff_added_hud = true;
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s♨", Debuff_Adder);			
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s~", Debuff_Adder);			
 	}
 		
 	if(f_HighIceDebuff[victim] > GameTime)
