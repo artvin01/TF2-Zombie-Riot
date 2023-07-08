@@ -629,5 +629,13 @@ void IsBuildingNotFloating(int building)
 	if(!IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
 	{
 		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+		return;
+	}
+	m_vecMaxs = view_as<float>( { 20.0, 20.0, 50.0 } );
+	m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );	
+	//before we allow this, we have to make sure the building cant be inside a wall.
+	if(IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
+	{
+		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
 	}
 }
