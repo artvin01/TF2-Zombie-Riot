@@ -88,6 +88,9 @@ static bool Silvester_BEAM_UseWeapon[MAXENTITIES];
 static float fl_Timebeforekamehameha[MAXENTITIES];
 static int i_InKame[MAXENTITIES];
 static bool b_RageAnimated[MAXENTITIES];
+static bool b_angered_twice[MAXENTITIES];
+static float f_TalkDelayCheck;
+static int i_TalkDelayCheck;
 
 
 static int Silvester_TE_Used;
@@ -320,6 +323,8 @@ methodmap RaidbossSilvester < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
+		f_TalkDelayCheck = 0.0;
+		i_TalkDelayCheck = 0;
 		
 		if(RaidModeScaling < 55)
 		{
@@ -346,6 +351,7 @@ methodmap RaidbossSilvester < CClotBody
 		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
+		b_angered_twice[npc.index] = false;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -460,6 +466,24 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 
 	npc.Update();
+
+	if(b_angered_twice[npc.index])
+	{
+		int closestTarget = GetClosestTarget(npc.index);
+		if(IsValidEntity(closestTarget))
+		{
+			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
+		}
+		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
+		npc.StopPathing();
+		if(SharedGiveupSilvester(npc.index,ally))
+		{
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}
+		return;
+	}
 
 	//Think throttling
 	/*
@@ -622,7 +646,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 	//link up to ally and take dmg from them.
 	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
-	if(IsEntityAlive(AllyEntity))
+	if(IsEntityAlive(AllyEntity) && !IsPartnerGivingUpGoggles(AllyEntity))
 	{
 		static float victimPos[3];
 		static float partnerPos[3];
@@ -689,7 +713,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 	if(npc.m_iInKame == 3)
 	{
-		if(AllyEntity != -1)
+		if(AllyEntity != -1 && !IsPartnerGivingUpGoggles(AllyEntity))
 		{
 			i_TargetToWalkTo[npc.index] = AllyEntity;
 			npc.m_flSpeed = 330.0;
@@ -697,7 +721,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextRangedSpecialAttackHappens && npc.m_flNextRangedSpecialAttackHappens != 1.0)
 	{
-		if(AllyEntity != -1 && !b_NoGravity[AllyEntity])
+		if(AllyEntity != -1 && !b_NoGravity[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
 		{
 			i_TargetToWalkTo[npc.index] = AllyEntity;
 			npc.m_flSpeed = 500.0;
@@ -924,7 +948,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			}
 			case 3:
 			{
-				if(AllyEntity != -1)
+				if(AllyEntity != -1 && !IsPartnerGivingUpGoggles(AllyEntity))
 				{
 					static float victimPos[3];
 					static float partnerPos[3];
@@ -1104,6 +1128,26 @@ public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.m_blPlayHurtAnimation = true;
 	}
 
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	{
+		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			b_angered_twice[npc.index] = true;
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			damage = 0.0;
+			CPrintToChatAll("{gold}Silvester{default}: You wont listen to our warnings do you!?");
+			return Plugin_Handled;
+		}
+	}
 	return Plugin_Changed;
 }
 
@@ -1959,4 +2003,52 @@ public Action Silvester_TBB_Tick(int client)
 		}
 	}
 	return Plugin_Continue;
+}
+
+bool IsPartnerGivingUpSilvester(int entity)
+{
+	if(!IsValidEntity(entity))
+		return true;
+
+	return b_angered_twice[entity];
+}
+
+bool SharedGiveupSilvester(int entity, int entity2)
+{
+	if(IsPartnerGivingUpSilvester(entity) && IsPartnerGivingUpGoggles(entity2))
+	{
+		if(i_TalkDelayCheck == 5)
+		{
+			return true;
+		}
+		if(f_TalkDelayCheck < GetGameTime())
+		{
+			f_TalkDelayCheck = GetGameTime() + 7.0;
+			RaidModeTime += 10.0; //cant afford to delete it, since duo.
+			switch(i_TalkDelayCheck)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painfull for you.");
+					i_TalkDelayCheck += 1;
+				}
+				case 1:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we cant beat him.");
+					i_TalkDelayCheck += 1;
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
+					i_TalkDelayCheck += 1;
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Silvester{default}: Good luck.");
+					i_TalkDelayCheck = 5;
+				}
+			}
+		}
+	}
+	return false;
 }
