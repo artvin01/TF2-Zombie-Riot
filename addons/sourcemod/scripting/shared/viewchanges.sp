@@ -130,6 +130,8 @@ void ViewChange_PlayerModel(int client)
 		
 				SDKCall_EquipWearable(client, entity);
 				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+				
+				i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
 
 #if defined RPG
 				Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
@@ -160,6 +162,25 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
 				
 				TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+
+				if(i_WeaponForceClass[active] > 0)
+				{
+					if(i_WeaponForceClass[active] > 10) //it is an allclass weapon, we want to force the weapon into the class the person holds
+					//some weapons for engi or spy just don do this and take pyro and look ugly as fuck.
+					{
+						//exception for engineer, hes always bugged, force medic.
+						class = view_as<TFClassType>(CurrentClass[client]);
+						if(class == TFClass_Engineer)
+						{
+							class = TFClass_Medic;
+						}
+					}
+					else
+					{
+						class = view_as<TFClassType>(i_WeaponForceClass[active]);
+					}
+				}
+
 
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 
