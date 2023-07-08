@@ -239,6 +239,7 @@ methodmap RaidbossNemesis < CClotBody
 		i_GunMode[npc.index] = 0;
 		i_GunAmmo[npc.index] = 0;
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
+		CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
 		
 		Citizen_MiniBossSpawn(npc.index);
 		Building_RaidSpawned(npc.index);

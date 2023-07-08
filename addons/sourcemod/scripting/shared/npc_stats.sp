@@ -8516,3 +8516,20 @@ public void DHookCleanIds()
 		delete snap;
 	}
 }
+
+
+void RemoveNpcFromEnemyList(int npc)
+{
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
+	{
+		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if(IsValidEntity(npc))
+		{
+			if(npc == entity_close)
+			{
+				i_ObjectsNpcs[entitycount] = -1; //remove from the list
+				break;
+			}
+		}
+	}	
+}

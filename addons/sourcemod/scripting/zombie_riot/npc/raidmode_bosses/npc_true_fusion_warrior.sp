@@ -534,7 +534,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 100.0);
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
-				npc.SetActivity("ACT_MP_CROUCH_MELEE");
+				npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 				npc.m_bInKame = false;
 				npc.m_bisWalking = false;
 				for(int client=1; client<=MaxClients; client++)
@@ -551,7 +551,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 				if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 				{
-					CPrintToChatAll("{gold}Silvester{default}: I thank you for your acceptance, i will help you eventually as a gift of kindness...");
+					CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, i thank you, and beware of the rogue machine... {red}Blitzkrieg.");
 					npc.m_bDissapearOnDeath = true;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
@@ -567,22 +567,22 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 				{
 					i_SaidLineAlready[npc.index] = 4;
-					CPrintToChatAll("{gold}Silvester{default}: ...You can cure this world, you cured me.");
+					CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
 				}
 				else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 				{
 					i_SaidLineAlready[npc.index] = 3;
-					CPrintToChatAll("{gold}Silvester{default}: ...You know, fusion warrior isn't my name");
+					CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and i will warn you of dangers.");
 				}
 				else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 				{
 					i_SaidLineAlready[npc.index] = 2;
-					CPrintToChatAll("{gold}Silvester{default}: Why...");
+					CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
 				}
 				else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 				{
 					i_SaidLineAlready[npc.index] = 1;
-					CPrintToChatAll("{gold}Silvester{default}: What are you waiting for..?");
+					CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
 				}
 				return; //He is trying to help.
 			}
@@ -968,19 +968,8 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 	
 	if(b_angered_twice[npc.index]) //Ignore teutons during this. they might ruin it.
 	{
-		if(IsValidClient(attacker))
-		{
-			if(TeutonType[attacker] != TEUTON_NONE)
-			{
-				damage = 0.0;
-				return Plugin_Handled;
-			}
-		}
-		else //Ignore any atacker that isnt a player, they might ruin this, like grigori.
-		{
-			damage = 0.0;
-			return Plugin_Handled;
-		}
+		damage = 0.0;
+		return Plugin_Handled;
 	}
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -1015,10 +1004,8 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
+		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") || (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= RoundToCeil(damage) || damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
-			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
-
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
 			ReviveAll(true);
@@ -1027,6 +1014,8 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 			RaidModeTime += 60.0;
 
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
 
 			StopSound(npc.index,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
@@ -1035,7 +1024,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 			SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 
-			CPrintToChatAll("{gold}Silvester{default}: ...End this before its too late...");
+			CPrintToChatAll("{gold}Silvester{default}: Stop, Stop please i beg you, i was infected!!");
 			int i = MaxClients + 1;
 			while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
 			{
@@ -1065,6 +1054,8 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		
 			npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
 */
+			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
+			return Plugin_Handled;
 		}
 	}
 	if(f_NpcImmuneToBleed[npc.index] > GetGameTime())

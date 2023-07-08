@@ -75,6 +75,7 @@ static char g_HappySounds[][] =
 	"vo/compmode/cm_sniper_matchwon_14.mp3"
 };
 
+static bool b_angered_twice[MAXENTITIES];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static int i_RaidDuoAllyIndex = INVALID_ENT_REFERENCE;
 static float f_HurtRecentlyAndRedirected[MAXENTITIES]={-1.0, ...};
@@ -194,6 +195,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		SDKHook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
+		b_angered_twice[npc.index] = false;
 		
 
 		/*
@@ -317,6 +319,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	
 
 	//Think throttling
 	if(npc.m_flNextThinkTime > gameTime)
@@ -342,11 +345,32 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			}	
 		}
 	}
-	else if(!IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
+	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
 	{	
 		RaidBossActive = EntIndexToEntRef(npc.index);
 	}
 	
+	if(b_angered_twice[npc.index])
+	{
+		int closestTarget = GetClosestTarget(npc.index);
+		if(IsValidEntity(closestTarget))
+		{
+			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
+		}
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+			
+		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+		npc.StopPathing();
+		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
+		if(SharedGiveupSilvester(ally,npc.index))
+		{
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}
+		return;
+	}
+
 	if(npc.m_flGetClosestTargetTime < gameTime || !IsEntityAlive(npc.m_iTarget))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -356,8 +380,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
 	bool alone = !IsEntityAlive(ally);
 
+	if(IsPartnerGivingUpSilvester(ally))
+	{
+		alone = true;
+	}
+
 	if(alone && !npc.Anger)
 	{
+		CPrintToChatAll("{darkblue}Blue Goggles{default}: We are trying to give you a warning, listen to us!");
 		npc.Anger = true;
 		npc.PlayAngerSound();
 	}
@@ -814,6 +844,26 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 		
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(victim);
 	
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	{
+		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			b_angered_twice[npc.index] = true;
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			damage = 0.0;
+			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, i wont stop you no more...");
+			return Plugin_Handled;
+		}
+
+	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -822,7 +872,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 
 	//redirect damage and reduce it if in range.
 	int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
-	if(IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity])
+	if(IsEntityAlive(AllyEntity) && !b_NpcIsInvulnerable[AllyEntity] && !IsPartnerGivingUpGoggles(AllyEntity))
 	{
 		static float victimPos[3];
 		static float partnerPos[3];
@@ -914,4 +964,12 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
 	
 	TE_SendToAll();
+}
+
+bool IsPartnerGivingUpGoggles(int entity)
+{
+	if(!IsValidEntity(entity))
+		return true;
+
+	return b_angered_twice[entity];
 }
