@@ -129,7 +129,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 		{
 			b_we_are_reloading[npc.index]=true;
 		}
-		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
+		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && i_ammo_count[npc.index]<25)	//reload if not attacking/idle for long
 		{
 			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 			npc.m_flReloadIn = 0.5* npc.BonusFireRate + GameTime;
@@ -159,7 +159,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 			}
 			else if(flDistanceToTarget < 120000 && i_ammo_count[npc.index]>0)
 			{
-				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 100000.0, _, false);
+				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 750000.0, _, false);
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				fl_idle_timer[npc.index] = 2.5 + GameTime;
