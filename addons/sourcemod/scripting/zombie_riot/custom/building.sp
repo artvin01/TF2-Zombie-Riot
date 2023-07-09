@@ -193,6 +193,7 @@ static bool Village_ForceUpdate[MAXTF2PLAYERS];
 static ArrayList Village_Effects;
 static int Village_TierExists[3];
 static float f_VillageRingVectorCooldown[MAXENTITIES];
+static float f_VillageSavingResources[MAXENTITIES];
 
 //static int gLaser1;
 
@@ -243,6 +244,7 @@ void Building_MapStart()
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
 	Zero(f_VillageRingVectorCooldown);
+	Zero(f_VillageSavingResources);
 }
 
 //static int RebelTimerSpawnIn;
@@ -6836,6 +6838,11 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		GoldSupplyRate *= multi;
 		GoldAmount[client] += GoldSupplyRate;
 	}
+	if(f_VillageSavingResources[client] < GetGameTime())
+	{
+		f_VillageSavingResources[client] = GetGameTime() + 10.0;
+		BarracksSaveResources(client);
+	}
 }
 
 static void OpenSummonerMenu(int client, int viewer)
@@ -7298,6 +7305,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							FoodAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], FoodCost));
 							GoldAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], GoldCost));
 						}
+						BarracksSaveResources(client);
 					}
 					else if(b_InUpgradeMenu[client])
 					{
@@ -7329,6 +7337,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							WoodAmount[client] -= woodcost;
 							FoodAmount[client] -= foodcost;
 							GoldAmount[client] -= goldcost;
+							BarracksSaveResources(client);
 						}
 					}
 					else
@@ -7369,6 +7378,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							WoodAmount[client] -= woodcost;
 							FoodAmount[client] -= foodcost;
 							GoldAmount[client] -= goldcost;
+							BarracksSaveResources(client);
 						}
 					}
 
