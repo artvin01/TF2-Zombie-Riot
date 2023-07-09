@@ -570,7 +570,7 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 		if(Schwert_Takeover_Active && !b_schwert_loocked)
 		{
 			b_schwert_loocked = true;
-			RaidModeTime += 20.0;
+			RaidModeTime += 50.0;
 			Schwert_Takeover = false;
 			Schwert_Takeover_Active = false;
 			npc.m_bThisNpcIsABoss = false;
