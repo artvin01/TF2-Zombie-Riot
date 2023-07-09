@@ -137,7 +137,6 @@ int i_EntityRecievedUpgrades[MAXENTITIES];
 int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
-int i_Wearable_Outline[MAXENTITIES][7];
 
 //Barracks smith things:
 
