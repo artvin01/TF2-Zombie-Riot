@@ -4448,7 +4448,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
-	BarracksSaveResources(client);
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 
