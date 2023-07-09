@@ -2583,11 +2583,15 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
+	else if(b_ThisEntityIsAProjectileForUpdateContraints[owner_projectile] && b_ThisEntityIsAProjectileForUpdateContraints[other_entity])
+	{
+		return -1;
+	}
 	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
 	{
 		return other_entity;
 	}
-	else if(b_ThisEntityIsAProjectileForUpdateContraints[owner_projectile] && b_ThisEntityIsAProjectileForUpdateContraints[other_entity])
+	else if(other_entity <= MaxClients)
 	{
 		return -1;
 	}
