@@ -2587,6 +2587,10 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return other_entity;
 	}
+	else if(b_ThisEntityIsAProjectileForUpdateContraints[owner_projectile] && b_ThisEntityIsAProjectileForUpdateContraints[other_entity])
+	{
+		return -1;
+	}
 	return 0;
 }
 
