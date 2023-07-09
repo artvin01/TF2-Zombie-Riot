@@ -151,16 +151,12 @@ public void LastKnight_ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;
-
-	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget) && !IsValidEnemy(npc.index, npc.m_iTarget))
-		npc.m_iTarget = 0;
-	
 	if(b_NpcIsInvulnerable[npc.index])
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		npc.SetActivity("ACT_RIDER_RUN");
 		KillFeed_SetKillIcon(npc.index, "vehicle");
+		npc.m_flNextThinkTime = gameTime + 0.4;
 
 		if(!IsValidEntity(npc.m_iWearable3))
 		{
@@ -171,7 +167,13 @@ public void LastKnight_ClotThink(int iNPC)
 			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 55, 55, 55, 255);
 		}
+		return;
 	}
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget) && !IsValidEnemy(npc.index, npc.m_iTarget))
+		npc.m_iTarget = 0;
 
 	bool aggressive = (PeaceKnight < 0 || CitizenRunner_WasKilled());
 
@@ -325,8 +327,8 @@ public void LastKnight_ClotThink(int iNPC)
 					npc.PlayMeleeSound();
 
 					npc.AddGesture("ACT_LAST_KNIGHT_ATTACK_1");
-					npc.m_flAttackHappens = gameTime + 0.45;	// TODO: Set these
-					npc.m_flDoingAnimation = gameTime + 0.55;
+					npc.m_flAttackHappens = gameTime + 0.25;
+					npc.m_flDoingAnimation = gameTime + 0.75;
 				}
 			}
 		}
@@ -362,14 +364,14 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 {
 	LastKnight npc = view_as<LastKnight>(victim);
 
+	if(attacker < 1)
+		return;
+
 	if(b_NpcIsInvulnerable[npc.index])
 	{
 		damage = 0.0;
 		return;
 	}
-
-	if(attacker < 1)
-		return;
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flHeadshotCooldown < gameTime)
@@ -394,8 +396,9 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 				npc.m_flSpeed = 75.0;
 				Change_Npc_Collision(npc.index, 1);	// Ignore buildings
 				b_NpcIsInvulnerable[npc.index] = true;
-				npc.SetActivity("ACT_LAST_KNIGHT_REVIVE");
-				npc.m_flNextThinkTime = gameTime + 3.0;
+				npc.AddGesture("ACT_LAST_KNIGHT_REVIVE");
+				npc.m_flNextThinkTime = gameTime + 8.3;
+				npc.StopPathing();
 			}
 		}
 	}
