@@ -230,7 +230,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 	
-	if(!b_Blitz_Alive && !b_Begin_Dialogue && Schwert_Takeover)
+	if(!b_Blitz_Alive && !b_Begin_Dialogue && Schwert_Takeover && b_Valid_Wave)
 	{
 		if(!Donner_Takeover_Active)
 		{

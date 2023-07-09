@@ -283,7 +283,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
 	
-	if(!b_Blitz_Alive && !b_Begin_Dialogue && Donner_Takeover)
+	if(!b_Blitz_Alive && !b_Begin_Dialogue && Donner_Takeover && b_Valid_Wave)
 	{
 		if(!Donner_Takeover_Active)
 		{
