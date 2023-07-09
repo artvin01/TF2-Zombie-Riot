@@ -4655,17 +4655,17 @@ public void NpcBaseThinkPost(int iNPC)
 void NpcDrawWorldLogic(int entity)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(IsValidEntity(npc.m_iTeamGlow))
+	if(b_IsEntityNeverTranmitted[entity])
+	{
+		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_DONTSEND));
+	}
+	else if(IsValidEntity(npc.m_iTeamGlow))
 	{
 		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
 	}
 	if(b_IsAlliedNpc[entity])
 	{
 		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
-	}
-	else if(b_IsEntityNeverTranmitted[entity])
-	{
-		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_DONTSEND));
 	}
 	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
 	{

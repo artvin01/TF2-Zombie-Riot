@@ -2591,6 +2591,14 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return other_entity;
 	}
+	else if(i_IsABuilding[other_entity])
+	{
+		return -1;
+	}
+	else if(b_IsAlliedNpc[other_entity])
+	{
+		return -1;
+	}
 	else if(other_entity <= MaxClients)
 	{
 		return -1;

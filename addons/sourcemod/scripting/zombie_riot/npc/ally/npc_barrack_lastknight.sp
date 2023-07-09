@@ -56,8 +56,8 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture(AttackCount > 4 ? "ACT_LAST_KNIGHT_ATTACK_2" : "ACT_LAST_KNIGHT_ATTACK_1");
 						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GameTime + 0.45;	// TODO: Set these
-						npc.m_flAttackHappens_bullshit = GameTime + 0.64;
+						npc.m_flAttackHappens = GameTime + (AttackCount > 4 ? 0.35 : 0.25);
+						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
 						npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}

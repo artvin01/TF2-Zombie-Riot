@@ -395,6 +395,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	{
 		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		npc.m_flDead_Ringer_Invis_bool = false;
+		b_IsEntityNeverTranmitted[npc.index] = false;
 			
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -712,7 +713,7 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 50));
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 100));
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= maxhealth)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
@@ -742,6 +743,7 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 2.0;
 		npc.m_flDead_Ringer = GetGameTime(npc.index) + 13.0;
 		npc.m_flDead_Ringer_Invis_bool = true;
+		b_IsEntityNeverTranmitted[npc.index] = true;
 		npc.PlayDeathSound();	
 	}
 	
