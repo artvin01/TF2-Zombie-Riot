@@ -253,7 +253,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
-		if(RaidModeScaling<=0.0)
+		if((ZR_GetWaveCount()+1)<60)
 		{
 			RaidModeScaling = 10.0;	//just a safety net
 		}
@@ -848,7 +848,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 		if(Donner_Takeover_Active && !b_donner_locked)
 		{
 			b_donner_locked = true;
-			RaidModeTime += 20.0;
+			RaidModeTime += 50.0;
 			Donner_Takeover = false;
 			Donner_Takeover_Active = false;
 			npc.m_bThisNpcIsABoss = false;
@@ -922,7 +922,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 
 	NightmareCannon_BEAM_CanUse[client] = true;
 
-	float dmg = 30.0*RaidModeScaling;
+	float dmg = 15.0*RaidModeScaling;
 	if(b_angered)
 	{
 		dmg *= 1.5;

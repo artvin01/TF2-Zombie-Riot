@@ -1399,7 +1399,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 //	Music_RoundEnd(entity);
 
 
-	RaidModeTime += 10.0;
+	RaidModeTime += 100.0;
 	
 	b_Blitz_Alive = false;
 	
