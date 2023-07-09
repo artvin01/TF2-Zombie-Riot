@@ -1175,6 +1175,7 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
+		SetEntProp(entity, Prop_Send, "m_iAmmoShells", 150);
 		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
 		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
 		

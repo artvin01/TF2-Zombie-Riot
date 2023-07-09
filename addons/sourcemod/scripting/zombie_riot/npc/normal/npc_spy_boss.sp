@@ -346,6 +346,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			
 		npc.PlayDecloakSound();
 		npc.PlayDecloakSound();
+		b_IsEntityNeverTranmitted[npc.index] = false;
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
@@ -625,6 +626,7 @@ public Action SpyMainBoss_OnTakeDamage(int victim, int &attacker, int &inflictor
 		npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 2.0;
 		npc.m_flDead_Ringer = GetGameTime(npc.index) + 13.0;
 		npc.m_flDead_Ringer_Invis_bool = true;
+		b_IsEntityNeverTranmitted[npc.index] = true;
 		npc.PlayDeathSound();	
 	}
 	
