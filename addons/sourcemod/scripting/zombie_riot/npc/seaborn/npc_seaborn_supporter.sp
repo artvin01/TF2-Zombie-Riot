@@ -31,7 +31,7 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/capper_shoot.wav"
 };
 
-methodmap SeabornCaster < CClotBody
+methodmap SeabornSupporter < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -54,9 +54,9 @@ methodmap SeabornCaster < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornCaster(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornCaster npc = view_as<SeabornCaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6000", ally, false));
+		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "7000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -70,14 +70,14 @@ methodmap SeabornCaster < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornCaster_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SeabornSupporter_ClotThink);
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		
-		npc.m_flSpeed = 230.0;
+		npc.m_flSpeed = 240.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flRangedArmor = 0.8;
+		npc.m_flNextRangedAttack = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
@@ -86,7 +86,7 @@ methodmap SeabornCaster < CClotBody
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1 , "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/all_class/trn_wiz_hat_spy.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/engineer/mining_hat.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
@@ -97,9 +97,9 @@ methodmap SeabornCaster < CClotBody
 	}
 }
 
-public void SeabornCaster_ClotThink(int iNPC)
+public void SeabornSupporter_ClotThink(int iNPC)
 {
-	SeabornCaster npc = view_as<SeabornCaster>(iNPC);
+	SeabornSupporter npc = view_as<SeabornSupporter>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -152,32 +152,57 @@ public void SeabornCaster_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 				
-				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 600.0);
+				vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0);
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				npc.FireParticleRocket(vecTarget, 100.0, 600.0, 150.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
+				npc.FireParticleRocket(vecTarget, 80.0, 700.0, 100.0, "raygun_projectile_blue", false, true, _, _, EP_DEALS_DROWN_DAMAGE);
 			}
 
-			npc.m_flSpeed = 115.0;
+			npc.m_flSpeed = 120.0;
 		}
 		else
 		{
-			npc.m_flSpeed = 230.0;
+			npc.m_flSpeed = 240.0;
 		}
 
-		if(distance < 90000.0 && npc.m_flNextMeleeAttack < gameTime)
+		if(distance < 111000.0 && npc.m_flNextMeleeAttack < gameTime)
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
-				npc.m_flNextMeleeAttack = gameTime + 1.65;
+				npc.m_flNextMeleeAttack = gameTime + 1.05;
 
 				npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_2");
 				npc.m_flAttackHappens = gameTime + 0.25;
 				//npc.m_flDoingAnimation = gameTime + 1.2;
 				npc.m_flHeadshotCooldown = gameTime + 0.55;
+			}
+		}
+
+		if(m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
+		{
+			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 5;
+
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+
+			int entity = Npc_Create(SEARUNNER_ALT, -1, pos, ang, ally);
+			if(entity > MaxClients)
+			{
+				if(!ally)
+					Zombies_Currently_Still_Ongoing++;
+				
+				SetEntProp(entity, Prop_Data, "m_iHealth", health);
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+				
+				fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 0.85;
+				fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 2.0;
+				view_as<CClotBody>(entity).m_iBleedType = BLEEDTYPE_METAL;
 			}
 		}
 	}
@@ -189,13 +214,13 @@ public void SeabornCaster_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornCaster_NPCDeath(int entity)
+void SeabornSupporter_NPCDeath(int entity)
 {
-	SeabornCaster npc = view_as<SeabornCaster>(entity);
+	SeabornSupporter npc = view_as<SeabornSupporter>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornCaster_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, SeabornSupporter_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

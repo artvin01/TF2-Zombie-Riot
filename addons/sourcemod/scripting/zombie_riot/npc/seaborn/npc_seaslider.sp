@@ -232,8 +232,10 @@ void SeaSlider_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
 }
 
-void SeaSlider_AddNeuralDamage(int victim, int attacker, int damage, bool sound = true)
+void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true)
 {
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	
 	if(victim <= MaxClients)
 	{
 		if(Armor_Charge[victim] < 1 && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
