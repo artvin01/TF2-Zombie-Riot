@@ -35,6 +35,8 @@ static bool Scientific_Witchery_BEAM_HitDetected[MAXENTITIES];
 static int Scientific_Witchery_BEAM_BuildingHit[MAXENTITIES];
 static float fl_runaway_timer_timeout[MAXENTITIES];
 
+static float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
+
 
 static int i_AmountProjectiles[MAXENTITIES];
 
@@ -45,8 +47,8 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
 	
-	
 	Zero(fl_self_heal_timer);
+	Zero2(fl_trace_target_timeout);
 	
 	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 }
@@ -377,7 +379,7 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 		H_i_Slicer_Throttle[client] = 0;
 		for(int i=1 ; i<=H_SLICER_AMOUNT ; i++)
 		{
-				Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 5000.0);
+				Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 7500.0);
 				
 				TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 				TE_SendToAll(0.0);
@@ -474,7 +476,7 @@ static Action Scientific_Witchery_TBB_Ability(int client)
 	if(i_Slicer_Throttle[client]>2)
 	{
 		i_Slicer_Throttle[client] = 0;
-		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 8000.0);
+		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 10000.0);
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
 		Cur_Vec[2] -= 150.0;
@@ -529,8 +531,12 @@ static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, in
 {
 	if (IsEntityAlive(entity) && Scientific_Witchery_BEAM_BuildingHit[client]<11)
 	{
-		Scientific_Witchery_BEAM_BuildingHit[client]++;
-		Scientific_Witchery_BEAM_HitDetected[entity] = true;
+		if(fl_trace_target_timeout[client][entity]<=GetGameTime())
+		{
+			fl_trace_target_timeout[client][entity] = GetGameTime() + 0.25;
+			Scientific_Witchery_BEAM_BuildingHit[client]++;
+			Scientific_Witchery_BEAM_HitDetected[entity] = true;
+		}
 	}
 	return false;
 }
