@@ -663,7 +663,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		
 		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
 
-		if(npc.m_iTarget > 0 && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
+		if(IsValidEntity(npc.m_iTarget) && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -686,7 +686,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			}
 		}
 
-		if(!pathed && npc.m_iTargetRally > 0 && command != Command_HoldPos && !retreating)
+		if(!pathed && IsValidEntity(npc.m_iTargetRally) && command != Command_HoldPos && !retreating)
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -718,7 +718,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			}
 		}
 		
-		if(!pathed && npc.m_iTargetAlly > 0 && command != Command_Aggressive)
+		if(!pathed && IsValidEntity(npc.m_iTargetAlly) && command != Command_Aggressive)
 		{
 			if(command != Command_HoldPos && command != Command_HoldPosBarracks)
 			{

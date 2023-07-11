@@ -77,6 +77,7 @@ methodmap MedivalRam < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
+		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
 		npc.m_flMeleeArmor = 2.0;
 		npc.m_flRangedArmor = 0.01;
@@ -130,8 +131,10 @@ public void MedivalRam_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		if(npc.m_iTarget == -1)
 		{
+			b_DoNotChangeTargetTouchNpc[npc.index] = 0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
