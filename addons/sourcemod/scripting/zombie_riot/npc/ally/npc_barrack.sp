@@ -1176,15 +1176,15 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
-			SetBuildingMaxHealth(entity, 0.25, false);
+			SetBuildingMaxHealth(entity, 0.25, false, _,true);
 		}
 		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = false;
 			if(firstbuild)
-				SetBuildingMaxHealth(entity, 0.25, true, true);
+				SetBuildingMaxHealth(entity, 0.25, true, true ,true);
 			else
-				SetBuildingMaxHealth(entity, 0.25, true);
+				SetBuildingMaxHealth(entity, 0.25, true, _ ,true);
 
 		}
 		if(!HasMechanic[entity] && b_HasMechanic[client])
@@ -1336,7 +1336,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 }
 
 
-void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = false)
+void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = false, bool inversehealth = false)
 {
 	if(reduce)
 	{
@@ -1346,7 +1346,10 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 
 		HealthToSet = GetEntProp(entity, Prop_Data, "m_iHealth") - HealthToSet;
 		SetVariantInt(HealthToSet);
-		AcceptEntityInput(entity, "RemoveHealth");
+		if(!inversehealth)
+			AcceptEntityInput(entity, "RemoveHealth");
+		else
+			AcceptEntityInput(entity, "AddHealth");
 
 		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / Multi);
 		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / Multi);	
@@ -1360,7 +1363,11 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 			int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * Multi);
 			HealthToSet = HealthToSet - GetEntProp(entity, Prop_Data, "m_iHealth");
 			SetVariantInt(HealthToSet);
+			
+		if(!inversehealth)
 			AcceptEntityInput(entity, "AddHealth");
+		else
+			AcceptEntityInput(entity, "RemoveHealth");
 		}
 		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * Multi);
 		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * Multi);			
