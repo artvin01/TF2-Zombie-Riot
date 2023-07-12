@@ -916,7 +916,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 
 	"npc_lastknight",
 	"",
-	"npc_saintcarmenn",
+	"npc_saintcarmen",
 	"npc_pathshaper",
 	"npc_pathshaper_fractal",
 	"",
