@@ -309,7 +309,15 @@ enum
 	BARRACKS_BUILDING			= 272,
 	TIDELINKED_BISHOP	= 273,
 	TIDELINKED_ARCHON	= 274,
-	ALT_BARRACK_SCIENTIFIC_WITCHERY = 275
+	ALT_BARRACK_SCIENTIFIC_WITCHERY = 275,
+	SEABORN_GUARD		= 276,
+	SEABORN_DEFENDER	= 277,
+	SEABORN_VANGUARD	= 278,
+	SEABORN_CASTER		= 279,
+	SEABORN_SPECIALIST	= 280,
+	SEABORN_SUPPORTER	= 281,
+	ISHARMLA		= 282,
+	ISHARMLA_TRANS		= 283
 }
 
 public const char NPC_Names[][] =
@@ -610,7 +618,15 @@ public const char NPC_Names[][] =
 	"Barracks Building",
 	"Tidelinked Bishop",
 	"Tidelinked Archon",
-	"Scientific Witchery"
+	"Scientific Witchery",
+	"Seaborn Guard",
+	"Seaborn Defender",
+	"Seaborn Vanguard",
+	"Seaborn Caster",
+	"Seaborn Specialist",
+	"Seaborn Supporter",
+	"Ishar'mla, Heart of Corruption",
+	"Ishar'mla, Heart of Corruption"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -908,7 +924,15 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"",
 	"npc_tidelinkedbishop",
 	"npc_tidelinkedarchon",
-	""	//Scientific Witchery
+	"",	//Scientific Witchery
+	"npc_seaborn_guard",
+	"npc_seaborn_defender",
+	"npc_seaborn_vanguard",
+	"npc_seaborn_caster",
+	"npc_seaborn_specialist",
+	"npc_seaborn_supporter",
+	"npc_isharmla",
+	"npc_isharmla_trans"
 };
 
 void NPC_MapStart()
@@ -1108,6 +1132,7 @@ void NPC_MapStart()
 	EndSpeaker_MapStart();
 	Remain_MapStart();
 	KazimierzKnightAssasin_OnMapStart_NPC();
+	IsharmlaTrans_MapStart();
 	
 	//Alt Barracks	//warp
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1925,6 +1950,30 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
+
+		case SEABORN_GUARD:
+			entity = SeabornGuard(client, vecPos, vecAng, ally);
+
+		case SEABORN_DEFENDER:
+			entity = SeabornDefender(client, vecPos, vecAng, ally);
+
+		case SEABORN_VANGUARD:
+			entity = SeabornVanguard(client, vecPos, vecAng, ally);
+
+		case SEABORN_CASTER:
+			entity = SeabornCaster(client, vecPos, vecAng, ally);
+
+		case SEABORN_SPECIALIST:
+			entity = SeabornSpecialist(client, vecPos, vecAng, ally);
+
+		case SEABORN_SUPPORTER:
+			entity = SeabornSupporter(client, vecPos, vecAng, ally);
+
+		case ISHARMLA:
+			entity = Isharmla(client, vecPos, vecAng, ally);
+
+		case ISHARMLA_TRANS:
+			entity = IsharmlaTrans(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2725,6 +2774,30 @@ public void NPCDeath(int entity)
 			
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			Barrack_Alt_Scientific_Witchery_NPCDeath(entity);
+		
+		case SEABORN_GUARD:
+			SeabornGuard_NPCDeath(entity);
+		
+		case SEABORN_DEFENDER:
+			SeabornDefender_NPCDeath(entity);
+		
+		case SEABORN_VANGUARD:
+			SeabornVanguard_NPCDeath(entity);
+		
+		case SEABORN_CASTER:
+			SeabornCaster_NPCDeath(entity);
+		
+		case SEABORN_SPECIALIST:
+			SeabornSpecialist_NPCDeath(entity);
+		
+		case SEABORN_SUPPORTER:
+			SeabornSupporter_NPCDeath(entity);
+		
+		case ISHARMLA:
+			Isharmla_NPCDeath(entity);
+		
+		case ISHARMLA_TRANS:
+			IsharmlaTrans_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3456,6 +3529,15 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case TIDELINKED_ARCHON:
 			TidelinkedArchon_OnTakeDamage(victim, attacker, damage);
+		
+		case SEABORN_GUARD, SEABORN_VANGUARD, SEABORN_CASTER, SEABORN_SPECIALIST, SEABORN_SUPPORTER:
+			Generic_OnTakeDamage(victim, attacker);
+		
+		case SEABORN_DEFENDER:
+			SeabornDefender_OnTakeDamage(victim, attacker, damage, damagetype, damagePosition);
+		
+		case ISHARMLA:
+			Isharmla_OnTakeDamage(victim, attacker, damage);
 	}
 	return Plugin_Changed;
 }
@@ -3737,3 +3819,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_pathshaper_fractal.sp"
 #include "zombie_riot/npc/seaborn/npc_tidelinkedbishop.sp"
 #include "zombie_riot/npc/seaborn/npc_tidelinkedarchon.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_guard.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_defender.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_vanguard.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_caster.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_specialist.sp"
+#include "zombie_riot/npc/seaborn/npc_seaborn_supporter.sp"
+#include "zombie_riot/npc/seaborn/npc_isharmla.sp"
+#include "zombie_riot/npc/seaborn/npc_isharmla_trans.sp"

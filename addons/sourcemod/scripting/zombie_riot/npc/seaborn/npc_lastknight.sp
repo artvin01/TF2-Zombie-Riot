@@ -106,15 +106,23 @@ methodmap LastKnight < CClotBody
 		SetVariantString("5.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_demo.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/sbox2014_knight_helmet/sbox2014_knight_helmet_demo.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		vecMe[2] += 100.0;
 
-		npc.m_iWearable4 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
-		SetParent(npc.index, npc.m_iWearable4);
+		npc.m_iWearable5 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
+		SetParent(npc.index, npc.m_iWearable5);
 		
 		return npc;
 	}
@@ -158,14 +166,14 @@ public void LastKnight_ClotThink(int iNPC)
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		npc.m_flNextThinkTime = gameTime + 0.4;
 
-		if(!IsValidEntity(npc.m_iWearable3))
+		if(!IsValidEntity(npc.m_iWearable6))
 		{
-			npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
+			npc.m_iWearable6 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
 			SetVariantString("1.1");
-			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 55, 55, 55, 255);
+			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable6, 55, 55, 55, 255);
 		}
 		return;
 	}
@@ -477,4 +485,10 @@ void LastKnight_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

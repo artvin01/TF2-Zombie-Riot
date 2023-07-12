@@ -1139,7 +1139,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return *= 0.33333;
 		}
 
-		//SeabornVanguard_SpeedBuff(this, speed_for_return);	
+#if defined ZR
+		SeabornVanguard_SpeedBuff(this, speed_for_return);	
+#endif
 
 		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
 		{

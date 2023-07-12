@@ -61,7 +61,7 @@ methodmap SeabornSupporter < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_CASTER;
+		i_NpcInternalId[npc.index] = SEABORN_SUPPORTER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "merasmus_zap");
@@ -181,8 +181,10 @@ public void SeabornSupporter_ClotThink(int iNPC)
 			}
 		}
 
-		if(m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
+		if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
+			npc.m_flNextRangedAttack = gameTime + 10.0;
+
 			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 5;
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

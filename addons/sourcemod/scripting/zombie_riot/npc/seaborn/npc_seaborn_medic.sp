@@ -65,11 +65,11 @@ methodmap SeabornMedic < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_hat.mdl");
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 155, 155, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
 
 		npc.StartPathing();
 		return npc;

@@ -1624,4 +1624,9 @@
 	{
 		"en"	"Scientific Witchery"
 	}
+	"Ishar'mla, Heart of Corruption"
+	{
+		"en"		"Ishar'mla, Heart of Corruption"
+		"chi"		"伊莎玛拉，腐化之心"
+	}
 }
