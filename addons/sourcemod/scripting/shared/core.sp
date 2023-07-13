@@ -2284,7 +2284,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		KillFeed_EntityCreated(entity);
 
+
 #if defined ZR
+		BarracksEntityCreated(entity);
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
