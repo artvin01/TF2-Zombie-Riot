@@ -93,6 +93,7 @@ methodmap SeaReefbreaker < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_bCamo = false;
+		npc.m_iAttackStack = 0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
