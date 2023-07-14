@@ -448,6 +448,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED	(1 << 3)
 #define ZR_DAMAGE_GIB_REGARDLESS				(1 << 4)
 #define ZR_DAMAGE_IGNORE_DEATH_PENALTY			(1 << 5)
+#define ZR_DAMAGE_REFLECT_LOGIC					(1 << 6)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -830,6 +831,7 @@ float fl_Speed[MAXENTITIES];
 int i_Target[MAXENTITIES];
 float fl_GetClosestTargetTime[MAXENTITIES];
 float fl_GetClosestTargetTimeTouch[MAXENTITIES];
+int b_DoNotChangeTargetTouchNpc[MAXENTITIES];
 float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
@@ -2283,7 +2285,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		KillFeed_EntityCreated(entity);
 
+
 #if defined ZR
+		BarracksEntityCreated(entity);
 		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);

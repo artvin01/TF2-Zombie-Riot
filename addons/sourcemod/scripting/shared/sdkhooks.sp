@@ -2007,6 +2007,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			//return Gladiia_OnTakeDamageSelf(victim, attacker, damage);
 		}
+		case WEAPON_BLEMISHINE:
+		{
+			return Player_OnTakeDamage_Blemishine(victim, attacker, damage);
+		}
 	}
 	return damage;
 }

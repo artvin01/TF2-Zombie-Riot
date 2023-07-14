@@ -2022,7 +2022,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
-	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
@@ -2040,6 +2039,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 	}
 	*/
+	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 
@@ -2065,6 +2065,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		event.Fire();
 	}
 
+	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	if(health <= 0)
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 }
@@ -2934,6 +2935,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_BeamWand_Pap(attacker, damagetype);
 		}
+		case WEAPON_BLEMISHINE:
+		{
+			NPC_OnTakeDamage_Blemishine(attacker, victim, damage,weapon);
+		}
 	}
 #endif
 
@@ -2974,3 +2979,38 @@ public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
 	PrintToChatAll("%i",entity);
 	PrintToChatAll("%i",event.GetInt("attacker_player"));
 }*/
+
+
+void OnKillUniqueWeapon(int attacker, int victim, int weapon)
+{
+	if(!IsValidEntity(weapon))
+		return;
+
+	if(!IsValidClient(attacker))
+		return;
+		
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_MLYNAR:
+		{
+			MlynarReduceDamageOnKill(attacker);
+		}
+	}
+}
+void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_custom_zr)
+{
+	if(!IsValidEntity(weapon))
+		return;
+
+	if(!IsValidClient(attacker))
+		return;
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_MLYNAR:
+		{
+			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
+				MlynarTakeDamagePostRaid(attacker);
+		}
+	}
+}

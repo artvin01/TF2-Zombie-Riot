@@ -91,7 +91,7 @@ methodmap SeabornHeavy < CClotBody
 		npc.m_flRangedArmor = 0.9;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		return npc;
 	}

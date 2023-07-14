@@ -70,6 +70,7 @@ void Queue_DifficultyVoteEnded()
 			PrintCenterText(queue[i], "Server is full with a maximum of %d players", CalcMaxPlayers());
 			PrintToChat(queue[i], "Server is full with a maximum of %d players", CalcMaxPlayers());
 			PrintToChat(queue[i], "You have been placed in spectator, if you like to join in when a slot is open, join a team. Otherwise you will join in next map change.");
+			PrintToChat(queue[i], "This was done to give place to a player who was waiting in spectator the previous map.");
 			ForcePlayerSuicide(queue[i]);
 		}
 	}

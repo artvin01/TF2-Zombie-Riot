@@ -2984,7 +2984,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
-			if(damage > 0)
+			if(damage > 0.0)
 			{
 				//npcs do not take damage from drown damage, so what we will do instead
 				//is to make it do slash damage, slash damage ignores most resistances like drown does.
@@ -3004,7 +3004,12 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				Call_StartFunction(null, FunctionToCallOnHit);
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1 / damage_reduction);
+				//do not allow division by 0
+				if(damage_1 == 0.0)
+					Call_PushFloat(damage_1);
+				else
+					Call_PushFloat(damage_1 / damage_reduction);
+					
 				Call_PushCell(weapon);
 				Call_Finish();
 			}

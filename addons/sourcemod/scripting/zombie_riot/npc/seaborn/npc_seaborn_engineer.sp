@@ -69,7 +69,7 @@ methodmap SeabornEngineer < CClotBody
 	
 	public SeabornEngineer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "10000", ally));
+		SeabornEngineer npc = view_as<SeabornEngineer>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "10000", ally));
 		
 		i_NpcInternalId[npc.index] = SEABORN_ENGINEER;
 		i_NpcWeight[npc.index] = 1;
@@ -92,7 +92,7 @@ methodmap SeabornEngineer < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/cyoa_pda/cyoa_pda.mdl");

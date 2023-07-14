@@ -1139,7 +1139,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return *= 0.33333;
 		}
 
-		//SeabornVanguard_SpeedBuff(this, speed_for_return);	
+#if defined ZR
+		SeabornVanguard_SpeedBuff(this, speed_for_return);	
+#endif
 
 		if(!Is_Boss && !b_CannotBeSlowed[this.index]) //Make sure that any slow debuffs dont affect these.
 		{
@@ -2742,11 +2744,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			}
 		}
 		
+		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		npc.m_flNextDelayTime = 999999.9; //disable them thinking.
 		SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
+		OnKillUniqueWeapon(iAttacker, pThis, iWeapon);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 #endif
@@ -6917,6 +6921,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Target[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
 	fl_GetClosestTargetTimeTouch[entity] = 0.0;
+	b_DoNotChangeTargetTouchNpc[entity] = 0;
 	fl_GetClosestTargetNoResetTime[entity] = 0.0;
 	fl_NextHurtSound[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
@@ -8062,6 +8067,9 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
 		if(!b_TouchedEntity[entity_traced])
 			break;
 
+		if(i_IsABuilding[entity_traced])
+			continue;
+
 		if(b_TouchedEntity[entity_traced] <= MaxClients)
 		{
 		//	TF2_AddCondition(b_TouchedEntity[entity_traced], TFCond_LostFooting, 0.1);
@@ -8072,7 +8080,15 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
 		}
 		
 		SDKHooks_TakeDamage(b_TouchedEntity[entity_traced], iNPC, iNPC, damage, DMG_CRUSH, -1, _);
-		Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
+		if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
+		{
+			Custom_SetAbsVelocity(b_TouchedEntity[entity_traced], vDirection);
+		}
+		else
+		{
+			CClotBody npc = view_as<CClotBody>(b_TouchedEntity[entity_traced]);
+			npc.SetVelocity(vDirection);
+		}
 	}
 
 	Zero(b_TouchedEntity);
@@ -8271,11 +8287,14 @@ public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
 		{
 			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
 			{
-				fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
-				if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
+				if(!b_DoNotChangeTargetTouchNpc[entity] || (b_DoNotChangeTargetTouchNpc[entity] && i_NpcIsABuilding[target]))
 				{
-					npc.m_iTarget = target;
-					npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
+					fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
+					if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
+					{
+						npc.m_iTarget = target;
+						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
+					}
 				}
 			}
 			//not valid enemy somehow, we dont do anything.

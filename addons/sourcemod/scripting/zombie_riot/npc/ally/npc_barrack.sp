@@ -663,7 +663,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 		
 		bool retreating = (command == Command_Retreat || command == Command_RetreatPlayer);
 
-		if(npc.m_iTarget > 0 && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
+		if(IsValidEntity(npc.m_iTarget) && canRetreat > 0.0 && command != Command_HoldPos && !retreating)
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -686,7 +686,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			}
 		}
 
-		if(!pathed && npc.m_iTargetRally > 0 && command != Command_HoldPos && !retreating)
+		if(!pathed && IsValidEntity(npc.m_iTargetRally) && command != Command_HoldPos && !retreating)
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -718,7 +718,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			}
 		}
 		
-		if(!pathed && npc.m_iTargetAlly > 0 && command != Command_Aggressive)
+		if(!pathed && IsValidEntity(npc.m_iTargetAlly) && command != Command_Aggressive)
 		{
 			if(command != Command_HoldPos && command != Command_HoldPosBarracks)
 			{
@@ -895,7 +895,10 @@ bool BarrackBody_Interact(int client, int entity)
 	}
 	return false;
 }
-
+void BarracksEntityCreated(int entity)
+{
+	BarrackOwner[entity] = 0;
+}
 static void ShowMenu(int client, int entity)
 {
 	BarrackBody npc = view_as<BarrackBody>(entity);
@@ -1176,29 +1179,31 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
-			SetBuildingMaxHealth(entity, 0.25, false);
+			SetBuildingMaxHealth(entity, 0.25, false, true,true);
 		}
 		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = false;
 			if(firstbuild)
-				SetBuildingMaxHealth(entity, 0.25, true, true);
+				SetBuildingMaxHealth(entity, 0.25, true, true ,true);
 			else
-				SetBuildingMaxHealth(entity, 0.25, true);
+				SetBuildingMaxHealth(entity, 0.25, true, _ ,true);
 
 		}
 		if(!HasMechanic[entity] && b_HasMechanic[client])
 		{
 			HasMechanic[entity] = true;
+
 			if(firstbuild)
 				SetBuildingMaxHealth(entity, 1.15, false, true);
 			else
 				SetBuildingMaxHealth(entity, 1.15, false);
+
 		}
 		if(HasMechanic[entity] && !b_HasMechanic[client])
 		{
 			HasMechanic[entity] = false;
-			SetBuildingMaxHealth(entity, 1.15, false, false);
+			SetBuildingMaxHealth(entity, 1.15, true, false);
 		}
 		if(i_WhatBuilding[entity] == BuildingSummoner)
 		{
@@ -1336,7 +1341,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 }
 
 
-void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = false)
+void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = false, bool inversehealth = false)
 {
 	if(reduce)
 	{
@@ -1344,9 +1349,20 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 
 		int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / Multi);
 
-		HealthToSet = GetEntProp(entity, Prop_Data, "m_iHealth") - HealthToSet;
-		SetVariantInt(HealthToSet);
-		AcceptEntityInput(entity, "RemoveHealth");
+		int HealthToSetPost = HealthToSet - GetEntProp(entity, Prop_Data, "m_iHealth");
+
+		if(HealthToSetPost < 0)
+		{
+			HealthToSetPost = GetEntProp(entity, Prop_Data, "m_iHealth") - HealthToSet;
+		}
+		SetVariantInt(HealthToSetPost);
+		if(initial)
+		{
+			if(!inversehealth)
+				AcceptEntityInput(entity, "RemoveHealth");
+			else
+				AcceptEntityInput(entity, "AddHealth");
+		}
 
 		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) / Multi);
 		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) / Multi);	
@@ -1358,9 +1374,20 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 		if(initial)
 		{
 			int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * Multi);
-			HealthToSet = HealthToSet - GetEntProp(entity, Prop_Data, "m_iHealth");
+			if(!inversehealth)
+			{
+				HealthToSet = HealthToSet - GetEntProp(entity, Prop_Data, "m_iHealth");
+			}
+			else
+			{
+				HealthToSet = GetEntProp(entity, Prop_Data, "m_iHealth") - HealthToSet;
+			}
 			SetVariantInt(HealthToSet);
-			AcceptEntityInput(entity, "AddHealth");
+			
+			if(!inversehealth)
+				AcceptEntityInput(entity, "AddHealth");
+			else
+				AcceptEntityInput(entity, "RemoveHealth");
 		}
 		Building_Repair_Health[entity] = RoundToCeil(float(Building_Repair_Health[entity]) * Multi);
 		Building_Max_Health[entity] = RoundToCeil(float(Building_Max_Health[entity]) * Multi);			

@@ -111,7 +111,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 					kv.GetSectionName(buffer, sizeof(buffer));
 					if(extra)
 					{
-						ExtraList.PushString(buffer);
+						//ExtraList.PushString(buffer);
 					}
 					else if(FileExists(buffer, true))
 					{

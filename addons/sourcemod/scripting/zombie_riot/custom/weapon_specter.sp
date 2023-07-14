@@ -342,6 +342,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 						float flPos[3];
 						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 						int particle_Sing = ParticleEffectAt(flPos, "utaunt_arcane_purple_parent", 5.0);
+						//cant use utaunt_lavalamp_green_parent, stays infinitly.
 						SetParent(client, particle_Sing);
 						ClientCommand(client, "playgamesound %s", SPECTER_SINGING);
 						ClientCommand(client, "playgamesound %s", SPECTER_SINGING);

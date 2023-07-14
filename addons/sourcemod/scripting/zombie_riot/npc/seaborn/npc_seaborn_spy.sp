@@ -89,7 +89,7 @@ methodmap SeabornSpy < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
-		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_knife/c_knife.mdl");
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
@@ -149,7 +149,7 @@ public void SeabornSpy_ClotThink(int iNPC)
 			}
 		}
 		
-		SetEntityRenderColor(npc.index, 155, 155, 255, alpha);
+		SetEntityRenderColor(npc.index, 100, 100, 255, alpha);
 	}
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))

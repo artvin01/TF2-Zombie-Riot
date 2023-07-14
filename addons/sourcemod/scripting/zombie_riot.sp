@@ -3,7 +3,7 @@
 #undef REQUIRE_PLUGIN
 #include <textstore>
 
-#define UseDownloadTable
+//#define UseDownloadTable
 
 #define ZR
 #define CONFIG	"configs/zombie_riot"

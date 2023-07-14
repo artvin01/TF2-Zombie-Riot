@@ -9,10 +9,8 @@ void StalkerGoggles_OnMapStart()
 	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
 	PrecacheSound("weapons/sniper_railgun_charged_shot_01.wav");
 	PrecacheSound("weapons/sniper_railgun_charged_shot_02.wav");
-	PrecacheSound("#music/bluemelee.mp3");
-	PrecacheSound("#music/bluerange.wav");
-//	PrecacheSoundCustom("#music/bluemelee.mp3");
-//	PrecacheSoundCustom("#music/bluerange.wav");
+	PrecacheSoundCustom("#music/bluemelee.mp3");
+	PrecacheSoundCustom("#music/bluerange.wav");
 }
 
 methodmap StalkerGoggles < StalkerShared

@@ -1624,4 +1624,33 @@
 	{
 		"en"	"Scientific Witchery"
 	}
+	"Ishar'mla, Heart of Corruption"
+	{
+		"en"		"Ishar'mla, Heart of Corruption"
+		"chi"		"伊莎玛拉，腐化之心"
+	}
+	"Seaborn Guard"
+	{
+		"en"		"Seaborn Guard"
+	}
+	"Seaborn Defender"
+	{
+		"en"		"Seaborn Defender"
+	}
+	"Seaborn Vanguard"
+	{
+		"en"		"Seaborn Vanguard"
+	}
+	"Seaborn Caster"
+	{
+		"en"		"Seaborn Caster"
+	}
+	"Seaborn Specialist"
+	{
+		"en"		"Seaborn Specialist"
+	}
+	"Seaborn Supporter"
+	{
+		"en"		"Seaborn Supporter"
+	}
 }

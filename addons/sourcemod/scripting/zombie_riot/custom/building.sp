@@ -7423,7 +7423,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 {
 	int userid = GetClientUserId(client);
-	int personal ;
+	int personal;
 	if(!ignore_barricades)
 	{
 		personal = i_BarricadesBuild[client] * 3 / 2;
@@ -7489,7 +7489,10 @@ static int BarricadeMaxSupply(int client)
 	//4 at max
 	int personalalive = ActiveCurrentNpcsBarracks(client, true);
 
-	Barricades_Active += RoundToCeil((float(personalalive) * 1.1));
+	if(personalalive > 1)
+	{
+		Barricades_Active += RoundToCeil((float(personalalive) * 1.1));
+	}
 
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
 	{

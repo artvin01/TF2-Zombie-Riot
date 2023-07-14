@@ -1,0 +1,359 @@
+#pragma semicolon 1
+#pragma newdecls required
+ 
+static const char g_DeathSounds[][] =
+{
+	"npc/metropolice/die1.wav",
+	"npc/metropolice/die2.wav",
+	"npc/metropolice/die3.wav",
+	"npc/metropolice/die4.wav"
+};
+
+static const char g_MeleeAttackSounds[][] =
+{
+	"player/invuln_off_vaccinator.wav"
+};
+
+methodmap Isharmla < CClotBody
+{
+	public void PlayDeathSound() 
+	{
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+	}
+	public void PlayMeleeSound() 
+	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	
+	public Isharmla(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		Isharmla npc = view_as<Isharmla>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally, false));
+		// 90000 x 1.0
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
+		i_NpcInternalId[npc.index] = ISHARMLA;
+		i_NpcWeight[npc.index] = 999;	// 6
+		npc.SetActivity("ACT_MONK_WALK");
+		
+		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		
+		SDKHook(npc.index, SDKHook_Think, Isharmla_ClotThink);
+		
+		npc.m_flSpeed = 150.0;	// 0.6 x 250
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappens = 0.0;
+		npc.Anger = false;
+		npc.m_iTargetAlly = -1;
+		npc.m_iPoints = 0;
+		npc.m_bSpeed = false;
+
+		b_CannotBeKnockedUp[npc.index] = true;
+		Is_a_Medic[npc.index] = true;
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
+
+		if(!ally && !IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 900.0;
+			RaidModeScaling = 0.0;
+		}
+
+		return npc;
+	}
+	property int m_iPoints
+	{
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property bool m_bSpeed
+	{
+		public get()		{	return view_as<bool>(this.m_iMedkitAnnoyance);	}
+		public set(bool value) 	{	this.m_iMedkitAnnoyance = value ? 1 : 0;	}
+	}
+}
+
+public void Isharmla_ClotThink(int iNPC)
+{
+	Isharmla npc = view_as<Isharmla>(iNPC);
+
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	if(npc.m_iTargetAlly == -1)
+		npc.Update();
+	
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	if(npc.m_iTargetAlly != -1)
+	{
+		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
+		if(entity != INVALID_ENT_REFERENCE)
+			return;
+		
+		if(npc.m_iTargetAlly == RaidBossActive)
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeScaling = 0.0;
+		}
+
+		npc.m_iTargetAlly = -1;
+		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
+		FreezeNpcInTime(npc.index, 5.0);
+
+		// Recover 2% HP
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 50));
+		
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+		SeaFounder_SpawnNethersea(pos);
+		return;
+	}
+
+	bool isRaid = RaidBossActive == EntIndexToEntRef(npc.index);
+
+	// Passive +1 SP
+	// Touching Nethersea +25 SP per 3 sec
+	// First Anger +50 SP per 3 sec
+	npc.m_iPoints += SeaFounder_TouchingNethersea(npc.index) ? ((GetURandomInt() % 2) ? 9 : 10) : 1;
+	if(npc.m_bSpeed)
+		npc.m_iPoints += ((GetURandomInt() % 2) ? 17 : 16);
+	
+	if(npc.m_iPoints > 12000)
+	{
+		if(isRaid)
+			RaidModeScaling = 1.0;
+		
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
+		
+		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+		if(entity > MaxClients)
+		{
+			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
+			view_as<CClotBody>(entity).Anger = npc.Anger;
+
+			Zombies_Currently_Still_Ongoing++;
+			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
+			
+			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+			
+			if(isRaid)
+				RaidBossActive = EntIndexToEntRef(entity);
+			
+			npc.m_bSpeed = false;
+			npc.m_iTargetAlly = EntIndexToEntRef(entity);
+			b_NpcIsInvulnerable[npc.index] = true;
+			SetEntityRenderColor(npc.index, 100, 100, 255, 64);
+			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 64);
+			return;
+		}
+	}
+	else if(isRaid)
+	{
+		RaidModeScaling = float(npc.m_iPoints) / 12000.0;
+	}
+	
+	b_NpcIsInvulnerable[npc.index] = false;
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_iTarget && !IsValidAlly(npc.index, npc.m_iTarget))
+		npc.m_iTarget = 0;
+
+	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		npc.m_iTarget = GetClosestAlly(npc.index);
+		npc.m_flGetClosestTargetTime = gameTime + 6.0;
+
+		if(npc.m_iTarget < 1)
+			npc.m_iTarget = GetClosestTarget(npc.index);
+	}
+	
+	if(npc.m_iTarget > 0)
+	{
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
+			{
+				npc.m_flAttackHappens = 0.0;
+				npc.PlayMeleeSound();
+				
+				float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+
+				if(IsValidAlly(npc.index, npc.m_iTarget))
+				{
+					float vecAlly[3]; vecAlly = WorldSpaceCenter(npc.m_iTarget);
+
+					int healing = npc.Anger ? 24000 : 16000;
+
+					bool regrow = true;
+					Building_CamoOrRegrowBlocker(npc.m_iTarget, _, regrow);
+					if(!regrow)
+						healing -= 16000;
+					
+					if(healing > 0)
+					{
+						int maxhealth = GetEntProp(npc.m_iTarget, Prop_Data, "m_iMaxHealth");
+						int health = GetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth") + healing;
+						if(health > maxhealth)
+							health = maxhealth;
+						
+						SetEntProp(npc.m_iTarget, Prop_Data, "m_iHealth", health);
+					}
+
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
+					
+					GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", vecAlly);
+
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+
+					NPCStats_RemoveAllDebuffs(npc.m_iTarget);
+					f_GodArkantosBuff[npc.m_iTarget] = GetGameTime() + 7.0;
+				}
+				
+				int ally = GetClosestAlly(npc.index, _, npc.m_iTarget);
+				if(ally > 0)
+				{
+					float vecAlly[3]; vecAlly = WorldSpaceCenter(ally);
+
+					int healing = npc.Anger ? 24000 : 16000;
+
+					bool regrow = true;
+					Building_CamoOrRegrowBlocker(ally, _, regrow);
+					if(!regrow)
+						healing -= 16000;
+					
+					if(healing > 0)
+					{
+						int maxhealth = GetEntProp(ally, Prop_Data, "m_iMaxHealth");
+						int health = GetEntProp(ally, Prop_Data, "m_iHealth") + healing;
+						if(health > maxhealth)
+							health = maxhealth;
+						
+						SetEntProp(ally, Prop_Data, "m_iHealth", health);
+					}
+
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
+					spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecAlly, vecMe);
+					
+					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", vecAlly);
+					
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+					spawnRing_Vectors(vecAlly, 0.0, 0.0, 0.0, 80.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+
+					NPCStats_RemoveAllDebuffs(ally);
+					f_GodArkantosBuff[ally] = GetGameTime() + 7.0;
+				}
+			}
+		}
+
+		if(npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_flNextMeleeAttack = gameTime + 6.0;
+
+			npc.AddGesture("ACT_MONK_ATTACK");
+			npc.m_flAttackHappens = gameTime + 0.85;
+			//npc.m_flDoingAnimation = gameTime + 1.25;
+		}
+		
+		if(npc.m_flDoingAnimation > gameTime)
+		{
+			npc.StopPathing();
+			npc.SetActivity("ACT_MONK_IDLE");
+		}
+		else
+		{
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.StartPathing();
+			npc.SetActivity("ACT_MONK_WALK");
+		}
+	}
+	else
+	{
+		npc.StopPathing();
+		npc.SetActivity("ACT_MONK_IDLE");
+	}
+}
+
+void Isharmla_OnTakeDamage(int victim, int attacker, float &damage)
+{
+	Isharmla npc = view_as<Isharmla>(victim);
+
+	if(attacker < 1)
+		return;
+
+	if(b_NpcIsInvulnerable[npc.index])
+	{
+		damage = 0.0;
+		return;
+	}
+
+	if(!npc.Anger)
+	{
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2))
+		{
+			npc.Anger = true;
+			npc.m_bSpeed = true;
+			SetEntityRenderColor(npc.index, 100, 100, 255, 200);
+		}
+	}
+}
+
+void Isharmla_NPCDeath(int entity)
+{
+	Isharmla npc = view_as<Isharmla>(entity);
+	if(!npc.m_bGib)
+		npc.PlayDeathSound();
+	
+	SDKUnhook(npc.index, SDKHook_Think, Isharmla_ClotThink);
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+}
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
+}

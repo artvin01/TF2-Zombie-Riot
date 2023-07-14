@@ -282,5 +282,10 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 		Zombies_Currently_Still_Ongoing++;
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+
+		fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+		fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+		fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+		fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
 	}
 }

@@ -98,8 +98,8 @@ methodmap SeabornSpecialist < CClotBody
 						teleported = true;
 						lowest = ratio;
 
-						vecPos2 = GetAbsOrigin(npc.index);
-						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng2);
+						vecPos2 = GetAbsOrigin(entity);
+						GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAng2);
 					}
 				}
 			}

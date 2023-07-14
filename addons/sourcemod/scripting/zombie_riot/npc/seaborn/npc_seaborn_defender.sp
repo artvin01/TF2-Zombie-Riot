@@ -200,7 +200,7 @@ public void SeabornDefender_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void SeabornDefender_OnTakeDamage(int victim, int attacker, float &damage, int damagetype)
+void SeabornDefender_OnTakeDamage(int victim, int attacker, float &damage, int damagetype, float damagePosition[3])
 {
 	if(attacker > 0)
 	{

@@ -5216,6 +5216,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_SpikeLayer(client, entity);
+//		Enable_Blemishine(client, entity);
 #endif
 
 #if defined RPG

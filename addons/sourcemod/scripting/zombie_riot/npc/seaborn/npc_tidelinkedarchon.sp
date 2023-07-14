@@ -121,10 +121,16 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		{
 			npc.m_iTargetAlly = EntIndexToEntRef(entity);
 			view_as<CClotBody>(entity).m_iTargetAlly = EntIndexToEntRef(npc.index);
+			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
 			Zombies_Currently_Still_Ongoing++;
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
+			
+			fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
 			
 			if(view_as<CClotBody>(entity).m_iWearable3 == -1)
 			{

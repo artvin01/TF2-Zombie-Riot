@@ -93,6 +93,7 @@ methodmap SeaReefbreaker < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.m_bCamo = false;
+		npc.m_iAttackStack = 0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
@@ -231,11 +232,11 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 	else if(camo)
 	{
 		npc.m_bCamo = true;
-		SetEntityRenderColor(npc.index, 155, 155, 255, 0);
+		SetEntityRenderColor(npc.index, 155, 155, 255, 1);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 150.0);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 300.0);
-		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 0);
-		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 0);
+		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 1);
+		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 1);
 	}
 	
 	if(npc.m_iTarget > 0)
@@ -274,7 +275,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								attack *= 2.5;
 							
-							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 2.0, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.1, DMG_CLUB);
 							npc.PlayMeleeHitSound();
 
 							if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)

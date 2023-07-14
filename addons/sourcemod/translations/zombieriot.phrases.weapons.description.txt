@@ -2191,4 +2191,20 @@
 	{
 		"en"		"The Ultimate Ranged Unit, combining all known reaserch on magic, and the latest tech, to create the ultimate mage. Costs 2 supply units"
 	}
+	"Steel Dagger Desc"
+	{
+		"en"		"Slow attacking Steel Dagger, provides overall resistances."
+	}
+	"Steel Dagger Desc 1"
+	{
+		"en"		"Increaced resistances and damage, gain m2 ability to heal allies over time with 'heal on kill' statt, stun enemies around you on ability use.\nYou gain resistances and damage during ability usage, you always deal 35%% more damage against stunned enemies."
+	}
+	"Steel Dagger Desc 2"
+	{
+		"en"		"Increaced resistances and damage."
+	}
+	"Steel Dagger Desc 3"
+	{
+		"en"		"Increaced resistances and damage, m2 ability gains extra damage and stun duration, provides extra heal on hit for all your surrounding allies during ability usage."
+	}
 }
