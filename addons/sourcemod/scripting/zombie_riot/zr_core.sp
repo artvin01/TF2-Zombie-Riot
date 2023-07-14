@@ -92,6 +92,7 @@ enum
 	WEAPON_MLYNAR = 21,
 	WEAPON_GLADIIA = 22,
 	WEAPON_SPIKELAYER = 23,
+	WEAPON_BLEMISHINE = 24,
 }
 
 ArrayList SpawnerList;
@@ -370,6 +371,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
 #include "zombie_riot/custom/weapon_mlynar.sp"
 #include "zombie_riot/custom/weapon_enforcer.sp"
+#include "zombie_riot/custom/weapon_blemishine.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 
 void ZR_PluginLoad()
@@ -489,6 +491,7 @@ void ZR_MapStart()
 	PrecachePlayerGiveGiveResponseVoice();
 	Mlynar_Map_Precache();
 	Reset_stats_Mlynar_Global();
+	Blemishine_Map_Precache();
 	
 	Waves_MapStart();
 	Music_MapStart();
@@ -622,6 +625,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_LappLand_Singular(client);
 	Reset_stats_Mlynar_Singular(client);
 	Reset_stats_SpikeLayer_Singular(client);
+	Reset_stats_Blemishine_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;

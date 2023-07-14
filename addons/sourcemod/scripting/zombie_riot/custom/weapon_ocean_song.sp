@@ -101,6 +101,7 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 
 
 }
+
 void ApplyExtraOceanEffects(int client, bool remove = false)
 {
 	bool do_new = true;
