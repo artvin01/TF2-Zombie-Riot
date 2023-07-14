@@ -2744,11 +2744,13 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			}
 		}
 		
+		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		npc.m_flNextDelayTime = 999999.9; //disable them thinking.
 		SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
+		OnKillUniqueWeapon(iAttacker, pThis, iWeapon);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 #endif

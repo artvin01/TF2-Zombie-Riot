@@ -502,7 +502,7 @@ public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker,
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(attacker);
 
-		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, {0.0,0.0,1.0}, Entity_Position);
+		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, {0.0,0.0,1.0}, Entity_Position, _, ZR_DAMAGE_REFLECT_LOGIC);
 	}
 		
 	return damage;
@@ -526,4 +526,49 @@ public void Mlynar_Think(int client)
 		SDKUnhook(client, SDKHook_PreThink, Mlynar_Think);
 		return;
 	}	
+}
+void MlynarTakeDamagePostRaid(int client)
+{
+	if(f_MlynarAbilityActiveTime[client] > GetGameTime())
+	{
+		f_MlynarDmgMultiPassive[client] -= 0.025;
+		f_MlynarDmgMultiAgressiveClose[client] -= 0.025;
+		f_MlynarDmgMultiHurt[client] -= 0.025;
+
+		if(f_MlynarDmgMultiPassive[client] < 1.0)
+		{
+			f_MlynarDmgMultiPassive[client] = 1.0;
+		}
+		if(f_MlynarDmgMultiAgressiveClose[client] < 1.0)
+		{
+			f_MlynarDmgMultiAgressiveClose[client] = 1.0;
+		}
+		if(f_MlynarDmgMultiHurt[client] < 1.0)
+		{
+			f_MlynarDmgMultiHurt[client] = 1.0;
+		}
+	}
+}
+
+void MlynarReduceDamageOnKill(int client)
+{
+	if(f_MlynarAbilityActiveTime[client] > GetGameTime())
+	{
+		f_MlynarDmgMultiPassive[client] -= 0.05;
+		f_MlynarDmgMultiAgressiveClose[client] -= 0.05;
+		f_MlynarDmgMultiHurt[client] -= 0.05;
+
+		if(f_MlynarDmgMultiPassive[client] < 1.0)
+		{
+			f_MlynarDmgMultiPassive[client] = 1.0;
+		}
+		if(f_MlynarDmgMultiAgressiveClose[client] < 1.0)
+		{
+			f_MlynarDmgMultiAgressiveClose[client] = 1.0;
+		}
+		if(f_MlynarDmgMultiHurt[client] < 1.0)
+		{
+			f_MlynarDmgMultiHurt[client] = 1.0;
+		}
+	}
 }
