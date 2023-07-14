@@ -53,7 +53,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 1;
 		float value = Attributes_FindOnWeapon(client, weapon, 180);
-		f_AbilityHealAmmount[client] = value * 2.0;
+		f_AbilityHealAmmount[client] = value * 1.5;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
 		/*
@@ -98,7 +98,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_FindOnWeapon(client, weapon, 180);
-		f_AbilityHealAmmount[client] = value * 2.0;
+		f_AbilityHealAmmount[client] = value * 1.5;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
 		/*
@@ -124,11 +124,11 @@ void BlemishineAbilityHit(int entity, int victim, float damage, int weapon)
 	float StunDuration = 4.0;
 	if(b_thisNpcIsABoss[victim])
 	{
-		StunDuration = 3.0;
+		StunDuration = 2.0;
 	}	
 	if(b_thisNpcIsARaid[victim])
 	{
-		StunDuration = 2.0;
+		StunDuration = 1.5;
 	}	
 
 	FreezeNpcInTime(victim, StunDuration);
@@ -136,14 +136,14 @@ void BlemishineAbilityHit(int entity, int victim, float damage, int weapon)
 
 void BlemishineAbilityHit2(int entity, int victim, float damage, int weapon)
 {
-	float StunDuration = 5.0;
+	float StunDuration = 4.5;
 	if(b_thisNpcIsABoss[victim])
 	{
-		StunDuration = 4.0;
+		StunDuration = 2.5;
 	}	
 	if(b_thisNpcIsARaid[victim])
 	{
-		StunDuration = 3.0;
+		StunDuration = 2.0;
 	}	
 
 	FreezeNpcInTime(victim, StunDuration);
@@ -289,7 +289,7 @@ public float NPC_OnTakeDamage_Blemishine(int attacker, int victim, float &damage
 			case 2:
 			{
 				float value = Attributes_FindOnWeapon(attacker, weapon, 180);
-				value *= 10.0;
+				value *= 8.0;
 				DoHealingOcean(attacker, attacker, (150.0 * 150.0), value, true);
 				damage *= 2.0;
 			}
