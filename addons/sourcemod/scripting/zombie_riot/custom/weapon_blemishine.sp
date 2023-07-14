@@ -284,14 +284,14 @@ public float NPC_OnTakeDamage_Blemishine(int attacker, int victim, float &damage
 		{
 			case 1:
 			{
-				damage *= 2.0;
+				damage *= 1.45;
 			}
 			case 2:
 			{
 				float value = Attributes_FindOnWeapon(attacker, weapon, 180);
 				value *= 10.0;
 				DoHealingOcean(attacker, attacker, (150.0 * 150.0), value, true);
-				damage *= 3.0;
+				damage *= 2.0;
 			}
 		}
 	}
