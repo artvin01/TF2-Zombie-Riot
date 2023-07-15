@@ -2939,6 +2939,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			NPC_OnTakeDamage_Blemishine(attacker, victim, damage,weapon);
 		}
+		case WEAPON_FANTASY_BLADE:
+		{
+			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
+		}
 	}
 #endif
 

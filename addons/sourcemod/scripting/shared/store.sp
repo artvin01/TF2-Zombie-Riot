@@ -5207,6 +5207,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Reset_stats_Irene_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
+		Activate_Fantasy_Blade(client, entity);
 		Enable_Irene(client, entity);
 		Enable_LappLand(client, entity);
 		Enable_PHLOG(client, entity);

@@ -3485,6 +3485,147 @@ stock CNavArea PickRandomArea()
 	return TheNavAreas.Get(GetURandomInt() % iAreaCount);
 }
 
+int HitEntitiesTeleportTrace[MAXENTITIES];
+public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
+{
+	if(IsValidEnemy(iExclude, entity, true, true))
+	{
+		for(int i=0; i < MAXENTITIES; i++)
+		{
+			if(!HitEntitiesTeleportTrace[i])
+			{
+				HitEntitiesTeleportTrace[i] = entity;
+				break;
+			}
+		}
+	}
+	return false;
+}
+
+bool Player_Teleport_Safe(int client, float endPos[3])
+{
+	bool FoundSafeSpot = false;
+
+	static float hullcheckmaxs_Player[3];
+	static float hullcheckmins_Player[3];
+	hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+	hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+
+	//Try base position.
+	float OriginalPos[3];
+	OriginalPos = endPos;
+
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+		FoundSafeSpot = true;
+
+	for (int x = 0; x < 6; x++)
+	{
+		if (FoundSafeSpot)
+			break;
+
+		endPos = OriginalPos;
+		//ignore 0 at all costs.
+		
+		switch(x)
+		{
+			case 0:
+				endPos[0] += 20.0;
+
+			case 1:
+				endPos[0] -= 20.0;
+
+			case 2:
+				endPos[0] += 30.0;
+
+			case 3:
+				endPos[0] -= 30.0;
+
+			case 4:
+				endPos[0] += 40.0;
+
+			case 5:
+				endPos[0] -= 40.0;	
+		}
+		for (int y = 0; y < 7; y++)
+		{
+			if (FoundSafeSpot)
+				break;
+
+			endPos[1] = OriginalPos[1];
+				
+			switch(y)
+			{
+				case 1:
+					endPos[1] += 20.0;
+
+				case 2:
+					endPos[1] -= 20.0;
+
+				case 3:
+					endPos[1] += 30.0;
+
+				case 4:
+					endPos[1] -= 30.0;
+
+				case 5:
+					endPos[1] += 40.0;
+
+				case 6:
+					endPos[1] -= 40.0;	
+			}
+
+			for (int z = 0; z < 7; z++)
+			{
+				if (FoundSafeSpot)
+					break;
+
+				endPos[2] = OriginalPos[2];
+						
+				switch(z)
+				{
+					case 1:
+						endPos[2] += 20.0;
+
+					case 2:
+						endPos[2] -= 20.0;
+
+					case 3:
+						endPos[2] += 30.0;
+
+					case 4:
+						endPos[2] -= 30.0;
+
+					case 5:
+						endPos[2] += 40.0;
+
+					case 6:
+						endPos[2] -= 40.0;	
+				}
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+					FoundSafeSpot = true;
+			}
+		}
+	}
+				
+
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+		FoundSafeSpot = true;
+
+	if(FoundSafeSpot)
+	{
+		TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
+	}
+	return FoundSafeSpot;
+}
+
+public void constrainDistance(const float[] startPoint, float[] endPoint, float distance, float maxDistance)
+{
+	float constrainFactor = maxDistance / distance;
+	endPoint[0] = ((endPoint[0] - startPoint[0]) * constrainFactor) + startPoint[0];
+	endPoint[1] = ((endPoint[1] - startPoint[1]) * constrainFactor) + startPoint[1];
+	endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
+}
+
 public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
 {
 	if(!b_NpcHasDied[entity])
