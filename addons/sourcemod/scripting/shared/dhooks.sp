@@ -826,6 +826,11 @@ things i tried
 				lantean_Wand_Touch(entity1, entity2);
 				return false;
 			}
+			else if (i_WandIdNumber[entity1] == 19) //Health Hose projectiles
+			{
+				Hose_Touch(entity1, entity2);
+				return false;
+			}
 #endif
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
