@@ -221,7 +221,7 @@ static Action Fantasy_Blade_Loop_Logic(int client)
 				}
 				if(fl_hud_timer[client]<GameTime)
 				{
-					fl_hud_timer[client] = GameTime + 0.25;
+					fl_hud_timer[client] = GameTime + 0.5;
 					Fantasy_Show_Hud(client, GameTime, pap);
 				}
 				
