@@ -2,10 +2,11 @@
 #pragma newdecls required
 
 static float Hose_Velocity = 1000.0;
-static float Hose_BaseHeal = 3.0;
+static float Hose_BaseHeal = 5.0;
 static float Hose_UberGain = 0.0025;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
+static float SelfHealMult = 0.5;
 static int Hose_LossPerHit = 2;
 static int Hose_Min = 1;
 
@@ -226,26 +227,7 @@ public void Hose_Touch(int entity, int other)
 		
 		ParticleEffectAt(ProjLoc, Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, 1.0);
 
-		int HealingPerBolt = Hose_Healing[entity];
-		int new_ammo = GetAmmo(owner, 21);
-
-		if(f_TimeUntillNormalHeal[other] > GetGameTime())
-		{
-			HealingPerBolt /= 2;
-			if(HealingPerBolt < 1)
-			{
-				HealingPerBolt = 1;
-			}
-			if(HealingPerBolt > new_ammo)
-			{
-				HealingPerBolt = new_ammo;
-			}
-		}
-		new_ammo -= HealingPerBolt;
-		SetAmmo(owner, 21, new_ammo);
-		CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-
-		Hose_Heal(owner, other, HealingPerBolt);
+		Hose_Heal(owner, other, Hose_Healing[entity]);
 		
 		Hose_Healing[entity] -= Hose_HealLoss[entity];
 		if (Hose_Healing[entity] < Hose_HealMin[entity])
@@ -299,9 +281,13 @@ public void Hose_Heal(int owner, int entity, int amt)
 		return;
 	
 	int newHP = flHealth + amt;
+	int ActualHealingDone = amt;
 	
 	if (newHP > flMaxHealth)
 	{
+		int diff = newHP - flMaxHealth;
+		ActualHealingDone -= diff;
+		
 		newHP = flMaxHealth;
 	}
 	if(entity < MaxClients)
@@ -312,7 +298,41 @@ public void Hose_Heal(int owner, int entity, int amt)
 	{
 		Healing_done_in_total[owner] += amt;
 	}
+	
 	SetEntProp(entity, Prop_Data, "m_iHealth", newHP);	
+	
+	int HealingPerBolt = ActualHealingDone;
+	int new_ammo = GetAmmo(owner, 21);
+
+	if(f_TimeUntillNormalHeal[entity] > GetGameTime())
+	{
+		HealingPerBolt /= 2;
+		if(HealingPerBolt < 1)
+		{
+			HealingPerBolt = 1;
+		}
+		if(HealingPerBolt > new_ammo)
+		{
+			HealingPerBolt = new_ammo;
+		}
+	}
+		
+	new_ammo -= HealingPerBolt;
+	SetAmmo(owner, 21, new_ammo);
+	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
+	
+	flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
+	flMaxHealth = SDKCall_GetMaxHealth(owner);
+	
+	int userHeal = RoundFloat(float(ActualHealingDone) * SelfHealMult);
+	
+	newHP = flHealth + userHeal;
+	if (newHP > flMaxHealth)
+	{
+		newHP = flMaxHealth;
+	}
+	
+	SetEntProp(owner, Prop_Data, "m_iHealth", newHP);
 }
 
 public void Hose_UpdateText(int owner)
