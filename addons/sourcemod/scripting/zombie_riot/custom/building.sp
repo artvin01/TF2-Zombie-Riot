@@ -4048,6 +4048,7 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 		return i_MaxSupportBuildingsAllowed[client];
 	}
 	int maxAllowed = 1;
+	int maxAllowedSaveStats = 1;
 	
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
 	
@@ -4057,16 +4058,23 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 	{
 		maxAllowed = 1;
 	}
-	
-	if(!ingore_glass && b_HasGlassBuilder[client])
+	maxAllowedSaveStats = maxAllowed;
+
+	if(b_HasGlassBuilder[client])
 	{
-		maxAllowed = 1;
+		maxAllowedSaveStats = 1;
+		if(!ingore_glass)
+			maxAllowed = 1;
 	}
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 	{
-		maxAllowed = 1;
+		maxAllowedSaveStats = 1;
+		if(!ingore_glass)
+			maxAllowed = 1;
 	}
-	i_MaxSupportBuildingsAllowed[client] = maxAllowed;
+	i_MaxSupportBuildingsAllowed[client] = maxAllowedSaveStats;
+	
+
 	return maxAllowed;
 }
 
@@ -6389,8 +6397,7 @@ static const int BarracksUpgrades[][] =
 	{ BUILDING_STRONGHOLDS, 		1500, 	2500, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
 	{ BUILDING_HOARDINGS, 			1500, 	3000, 	0, 		50,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
 	{ BUILDING_EXQUISITE_HOUSING, 	3000, 	5000, 	10, 	70,		16, 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
-	{ BUILDING_TROOP_CLASSES, 		10, 	10, 	0, 		5,		0, 			0,						0,											0,							0,									2,					ZR_BARRACKS_TROOP_CLASSES						},		// Construction Expert
-
+	{ BUILDING_TROOP_CLASSES, 		10, 	10, 	0, 		5,		0, 			1,						0,											1,							0,									2,					ZR_BARRACKS_TROOP_CLASSES						},		// Construction Expert
 };					
 
 static const char CivName[][] =		
@@ -6831,8 +6838,8 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		SupplyRateCalc *= 1.15;
 	}
 	SupplyRateCalc *= multi;
-	WoodAmount[client] += SupplyRateCalc;
-	FoodAmount[client] += SupplyRateCalc * 1.25;
+	WoodAmount[client] += SupplyRateCalc * 1.15;
+	FoodAmount[client] += SupplyRateCalc * 1.40;
 
 	if(MedievalUnlock[client] || allowgold)
 	{
