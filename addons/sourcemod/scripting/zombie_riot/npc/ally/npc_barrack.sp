@@ -243,6 +243,8 @@ float f_NextHealTime[MAXENTITIES];
 #define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2) //Done :)
 //allow to get 3 deployment slots again.
 
+#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
+
 
 //in the end, this should be stronger then a sentry with full upgrades by 2x
 //but i will make it eat up barricade slots so if you have this fully upgrades, you can only make 2 barricades at max

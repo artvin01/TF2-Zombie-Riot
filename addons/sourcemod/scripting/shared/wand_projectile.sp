@@ -207,6 +207,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Wand_Skulls_Touch_Launched(entity, target);
 		}
+		case 19: //Staff of the Skull Servants launched skull.
+		{
+			Wand_Health_Hose_Touch_World(entity, target);
+		}
 		/*		
 		case WEAPON_LANTEAN:
 		{

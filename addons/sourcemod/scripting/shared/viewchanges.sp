@@ -188,7 +188,11 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				if(entity > MaxClients)	// Weapon viewmodel
 				{
 					int team = GetClientTeam(client);
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
+					if(i_WeaponModelIndexOverride[active] > 0)
+						SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
+					else
+						SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
+					
 					SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 					SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
 					SetEntProp(entity, Prop_Send, "m_nSkin", team-2);

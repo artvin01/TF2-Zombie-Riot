@@ -122,6 +122,9 @@ enum struct ItemInfo
 	Function FuncReload4;
 	Function FuncOnDeploy;
 	Function FuncOnHolster;
+	int WeaponSoundIndexOverride;
+	int WeaponModelIndexOverride;
+	char WeaponModelOverride[128];
 	
 	int Attack3AbilitySlot;
 	
@@ -273,6 +276,22 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%ssemi_auto_stats_reloadtime", prefix);
 		this.SemiAutoStats_ReloadTime			= kv.GetFloat(buffer);
 	
+		Format(buffer, sizeof(buffer), "%sweapon_sound_index_override", prefix);
+		this.WeaponSoundIndexOverride	= view_as<bool>(kv.GetNum(buffer, 0));
+
+		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
+		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
+
+		if(this.WeaponModelOverride[0])
+		{
+			this.WeaponModelIndexOverride = PrecacheModel(this.WeaponModelOverride, true);
+		}
+		else
+		{
+			this.WeaponModelIndexOverride = 0;
+		}
+
+
 	
 		
 		Format(buffer, sizeof(buffer), "%sfunc_attack", prefix);
@@ -2496,6 +2515,7 @@ public void MenuPage(int client, int section)
 	{
 		return;
 	}
+	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -4708,6 +4728,17 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponArchetype[entity] = info.WeaponArchetype;
 					i_WeaponForceClass[entity] = info.WeaponForceClass;
+					i_WeaponSoundIndexOverride[entity] = info.WeaponSoundIndexOverride;
+					i_WeaponModelIndexOverride[entity] = info.WeaponModelIndexOverride;
+					if(info.WeaponModelOverride[0])
+					{
+						SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[entity]);
+						for(int i; i<4; i++)
+						{
+							SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_WeaponModelIndexOverride[entity], _, i);
+						}
+					}
+
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
 					EntityFuncAttack2[entity] = info.FuncAttack2;

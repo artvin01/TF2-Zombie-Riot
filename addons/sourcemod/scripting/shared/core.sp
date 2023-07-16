@@ -562,6 +562,8 @@ bool i_InternalMeleeTrace[MAXENTITIES];
 bool b_is_a_brush[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
+int i_WeaponSoundIndexOverride[MAXENTITIES];
+int i_WeaponModelIndexOverride[MAXENTITIES];
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -2189,6 +2191,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 #endif
+		i_WeaponSoundIndexOverride[entity] = 0;
+		i_WeaponModelIndexOverride[entity] = 0;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;

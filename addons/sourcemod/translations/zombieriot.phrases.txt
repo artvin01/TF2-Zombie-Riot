@@ -3512,4 +3512,43 @@
 		//"it"		""
 		//"fr"		""	
 	}
+	"Barracks Troop Classes"
+	{
+		"en"		"Barracks Troop Classes"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
+	"Barracks Troop Classes Desc"
+	{
+		"en"		"Allows the training of troops, but it will set your support building max to 1 (the villgaer is excluded from this.)"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
+	"Research Troop Classes"
+	{
+		"en"		"Research Troop Classes to train units (excludes villager)"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""	
+	}
 }
