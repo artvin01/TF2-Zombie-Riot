@@ -9,13 +9,6 @@ static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
 
-#define MAXENTITIES 2048
-
-
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
-
 static float TORNADO_Radius[MAXTF2PLAYERS];
 
 static bool BEAM_CanUse[MAXTF2PLAYERS];
@@ -86,9 +79,9 @@ public void Weapon_Wind_Laser_Builder_Unused(int client, int weapon, const char[
 	BEAM_Targets_Hit[client] = 0.0;
 	Strength[client] = 400.0 * flMultiplier;
 	
-	Strength[client] *= Attributes_FindOnPlayer(client, 287);
+	Strength[client] *= Attributes_FindOnPlayerZR(client, 287);
 	
-	float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayer(client, 344);
+	float Sniper_Sentry_Bonus_Removal = Attributes_FindOnPlayerZR(client, 344);
 			
 	if(Sniper_Sentry_Bonus_Removal >= 1.01) //do 1.01 cus minigun sentry can give abit more then less half range etc
 	{
@@ -134,9 +127,9 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 	
 	float attack_speed;
 		
-	attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+	attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+	Strength[client] = attack_speed * Strength[client] * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 	
 	Strength[client] *= 0.5;
 			
@@ -260,7 +253,7 @@ void TBB_Ability_Wind_Staff(int client)
 	
 	float sentry_range;
 			
-	sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+	sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
 	
 	BEAM_MaxDistance[client] = RoundToCeil(1000.0 * sentry_range);
 	BEAM_BeamRadius[client] = 50;

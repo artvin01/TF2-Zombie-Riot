@@ -655,7 +655,7 @@ public Action Timer_DroppedBuildingWaitSentryLeveLUp(Handle htimer, int entref)
 	//Wait until full complete
 	if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed")>0.99)
 	{
-		int level = RoundFloat(Attributes_FindOnPlayer(client, 148))+1;
+		int level = RoundFloat(Attributes_FindOnPlayerZR(client, 148))+1;
 		SetEntProp(obj, Prop_Send, "m_iUpgradeLevel", level);
 		
 		switch(level)
@@ -943,7 +943,7 @@ public Action Building_TimerDisableDispenser(Handle timer, int ref)
 /*
 void Building_IncreaseSentryLevel(int client)
 {
-	int level = RoundFloat(Attributes_FindOnPlayer(client, 148)) + 1;
+	int level = RoundFloat(Attributes_FindOnPlayerZR(client, 148)) + 1;
 	
 	int sentry = MaxClients+1;
 	while((sentry=FindEntityByClassname(sentry, "obj_sentrygun")) != -1)
@@ -2123,7 +2123,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					int HealTime = 30;
 					if(IsValidClient(owner))
 					{
-						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(owner, 8, true, 1.0, true));
+						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayerZR(owner, 8, true, 1.0, true));
 					}
 				/*
 					if(f_TimeUntillNormalHeal[client])
@@ -3266,7 +3266,7 @@ public bool BuildingCustomCommand(int client)
 						int HealTime = 30;
 						if(IsValidClient(client))
 						{
-							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayer(client, 8, true, 1.0, true));
+							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayerZR(client, 8, true, 1.0, true));
 						}
 						StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
 					}
@@ -3396,7 +3396,6 @@ public void BuildingRailgunShotClient(int client, int Railgun)
 	CreateTimer(15.5, RailgunFire_DeleteSound_client, client, TIMER_FLAG_NO_MAPCHANGE);
 }
 
-#define MAX_TARGETS_HIT 10
 static int BEAM_BuildingHit[MAX_TARGETS_HIT];
 static float BEAM_Targets_Hit[MAXENTITIES];
 static bool BEAM_HitDetected[MAXENTITIES];
@@ -3639,11 +3638,11 @@ public Action MortarFire(Handle timer, int client)
 			float attack_speed;
 			float sentry_range;
 		
-			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-			damage = attack_speed * damage * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 			
-			sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+			sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
 			
 			float AOE_range = 350.0 * sentry_range;
 			
@@ -3715,13 +3714,13 @@ static void Railgun_Boom(int client)
 
 		float attack_speed;
 
-		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+		attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-		Strength = attack_speed * Strength * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		Strength = attack_speed * Strength * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 		
 		float sentry_range;
 			
-		sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+		sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
 					
 		float BEAM_CloseBuildingDPT = Strength;
 		float BEAM_FarBuildingDPT = Strength;
@@ -3865,13 +3864,13 @@ static void Railgun_Boom_Client(int client)
 		Strength *= 40.0;
 		float attack_speed;
 		
-		attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+		attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-		Strength = attack_speed * Strength * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+		Strength = attack_speed * Strength * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 		
 		float sentry_range;
 			
-		sentry_range = Attributes_FindOnPlayer(client, 344, true, 1.0);			//Sentry Range bonus
+		sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
 		
 		float BEAM_CloseBuildingDPT = Strength;
 		float BEAM_FarBuildingDPT = Strength;
@@ -4048,17 +4047,19 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 		return i_MaxSupportBuildingsAllowed[client];
 	}
 	int maxAllowed = 1;
-	int maxAllowedSaveStats = 1;
 	
-  	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
+  	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayerZR(client, 762)); //762 is how many extra buildings are allowed on you.
 	
 	maxAllowed += Building_health_attribute; 
+	PrintToChatAll("0  maxAllowed %i",maxAllowed);
 	
 	if(maxAllowed < 1)
 	{
 		maxAllowed = 1;
 	}
-	maxAllowedSaveStats = maxAllowed;
+	int maxAllowedSaveStats = maxAllowed;
+	PrintToChatAll("1  maxAllowed %i",maxAllowed);
+	PrintToChatAll("1  maxAllowedSaveStats %i",maxAllowedSaveStats);
 
 	if(b_HasGlassBuilder[client])
 	{
@@ -4066,6 +4067,7 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 		if(!ingore_glass)
 			maxAllowed = 1;
 	}
+
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 	{
 		maxAllowedSaveStats = 1;
@@ -4073,7 +4075,8 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 			maxAllowed = 1;
 	}
 	i_MaxSupportBuildingsAllowed[client] = maxAllowedSaveStats;
-	
+	PrintToChatAll("2   maxAllowed %i",maxAllowed);
+	PrintToChatAll("2   maxAllowedSaveStats %i",maxAllowedSaveStats);
 
 	return maxAllowed;
 }
@@ -4083,7 +4086,7 @@ public int MaxBarricadesAllowed(int client)
 {
 	int maxAllowed = 4;
 	
- //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayer(client, 762)); //762 is how many extra buildings are allowed on you.
+ //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayerZR(client, 762)); //762 is how many extra buildings are allowed on you.
 	
 //	maxAllowed += Building_health_attribute;
 	

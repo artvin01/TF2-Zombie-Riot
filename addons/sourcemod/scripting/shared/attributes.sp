@@ -24,7 +24,7 @@ bool Attributes_Fire(int client, int weapon)
 int Attributes_Airdashes(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	return RoundFloat(Attributes_FindOnWeapon(client, weapon, 250) + Attributes_FindOnPlayer(client, 393));	// air dash count, sniper rage DISPLAY ONLY
+	return RoundFloat(Attributes_FindOnWeapon(client, weapon, 250) + Attributes_FindOnPlayerZR(client, 393));	// air dash count, sniper rage DISPLAY ONLY
 }
 #endif
 
@@ -214,16 +214,16 @@ void Attributes_OnKill(int client, int weapon)
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills")+1);
 	float value;
 	/*
-	float value = Attributes_FindOnPlayer(client, 203);	// drop health pack on kill
+	float value = Attributes_FindOnPlayerZR(client, 203);	// drop health pack on kill
 	if(value)
 		StartHealingTimer(client, 0.1, 1, RoundToCeil(SDKCall_GetMaxHealth(client)*value/5.0));
 
-	value = Attributes_FindOnPlayer(client, 296);	// sapper kills collect crits
+	value = Attributes_FindOnPlayerZR(client, 296);	// sapper kills collect crits
 	if(value)
 		SetEntProp(client, Prop_Send, "m_iRevengeCrits", GetEntProp(client, Prop_Send, "m_iRevengeCrits")+RoundFloat(value));
 	*/
 
-	value = Attributes_FindOnPlayer(client, 387);	// rage on kill
+	value = Attributes_FindOnPlayerZR(client, 387);	// rage on kill
 	if(value)
 	{
 		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter") + value;
@@ -346,7 +346,7 @@ void Attributes_OnKill(int client, int weapon)
 	}*/
 }
 
-float Attributes_FindOnPlayer(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)
+float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)
 {
 	bool found;
 	float value = defaul;

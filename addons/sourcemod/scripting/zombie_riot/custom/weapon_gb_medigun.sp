@@ -5,10 +5,6 @@ static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
-#define SOUND_WAND_SHOT 	"weapons/capper_shoot.wav"
-#define SOUND_ZAP "misc/halloween/spell_lightning_ball_impact.wav"
-
 void Gb_Ball_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT);

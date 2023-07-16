@@ -1072,8 +1072,6 @@ public bool NightmareCannon_BEAM_TraceWallsOnly(int entity, int contentsMask)
 	return !entity;
 }
 
-#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
-#define MAX_PLAYERS_ARRAY 36
 
 public bool NightmareCannon_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
@@ -1084,7 +1082,6 @@ public bool NightmareCannon_BEAM_TraceUsers(int entity, int contentsMask, int cl
 	return false;
 }
 
-#define MAXTF2PLAYERS	36
 
 static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3])
 {

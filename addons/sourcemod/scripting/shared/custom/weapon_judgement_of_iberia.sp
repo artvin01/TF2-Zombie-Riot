@@ -32,7 +32,6 @@ static int i_RefWeaponDelete[MAXTF2PLAYERS];
 static float f_WeaponDamageCalculated[MAXTF2PLAYERS];
 
 static int LaserSprite;
-#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
 
 void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 {

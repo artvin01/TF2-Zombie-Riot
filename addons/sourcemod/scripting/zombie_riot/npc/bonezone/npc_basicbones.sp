@@ -192,7 +192,7 @@ public void BasicBones_ClotThink(int iNPC)
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 4.0 ;
+//		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 4.0 ;
 	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))

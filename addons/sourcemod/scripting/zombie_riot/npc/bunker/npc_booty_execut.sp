@@ -937,9 +937,6 @@ public bool BootyExecutioner_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
-#define MAX_PLAYERS_ARRAY 36
-
 public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	static char classname[64];
@@ -969,8 +966,6 @@ public bool BootyExecutioner_BEAM_TraceUsers(int entity, int contentsMask, int c
 	}
 	return false;
 }
-
-#define MAXTF2PLAYERS	36
 
 public Action TrueBootyExecutioner_TBB_Tick(int client)
 {

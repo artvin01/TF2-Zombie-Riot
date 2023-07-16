@@ -61,7 +61,6 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
 
-#define LASERBEAM "sprites/laserbeam.vmt"
 #define LINKBEAM "sprites/glow01.vmt"
 #define PILLAR_MODEL "models/props_wasteland/rockcliff06d.mdl"
 #define PILLAR_SPACING 170.0
@@ -1841,8 +1840,6 @@ public bool Silvester_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
-#define MAX_PLAYERS_ARRAY 36
 
 
 public bool Silvester_BEAM_TraceUsers(int entity, int contentsMask, int client)
@@ -1886,9 +1883,6 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 	startPoint[1] += actualBeamOffset[1];
 	startPoint[2] += actualBeamOffset[2];
 }
-
-#define MAXTF2PLAYERS	36
-
 public Action Silvester_TBB_Tick(int client)
 {
 	static int tickCountClient[MAXENTITIES];

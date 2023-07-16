@@ -1,17 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define GORE_ABDOMEN	  (1 << 0)
-#define GORE_FOREARMLEFT  (1 << 1)
-#define GORE_HANDRIGHT	(1 << 2)
-#define GORE_FOREARMRIGHT (1 << 3)
-#define GORE_HEAD		 (1 << 4)
-#define GORE_HEADLEFT	 (1 << 5)
-#define GORE_HEADRIGHT	(1 << 6)
-#define GORE_UPARMLEFT	(1 << 7)
-#define GORE_UPARMRIGHT   (1 << 8)
-#define GORE_HANDLEFT	 (1 << 9)
-
 enum //hitgroup_t
 {
 	HITGROUP_GENERIC,

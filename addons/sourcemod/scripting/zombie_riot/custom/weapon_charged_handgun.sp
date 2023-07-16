@@ -16,10 +16,6 @@ static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int Beam_Laser;
 static int Beam_Glow;
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
-#define SOUND_WAND_SHOT 	"weapons/capper_shoot.wav"
-#define SOUND_ZAP "misc/halloween/spell_lightning_ball_impact.wav"
-
 void Charged_Handgun_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT);

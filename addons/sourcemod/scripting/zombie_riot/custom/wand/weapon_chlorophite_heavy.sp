@@ -88,10 +88,6 @@ public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
 	RMR_CurrentHomingTarget[projectile] = -1;
 }
 
-
-//Sarysapub1 code but fixed and altered to make it work for our base bosses
-#define TARGET_Z_OFFSET 40.0
-
 public Action Homing_Shots_Repeat_Timer_Chlorophite_Heavy(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);

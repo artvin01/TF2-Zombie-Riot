@@ -25,10 +25,6 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 #define FinalWrathRagePapSpeed 0.38 //Attack Speed Boost attribute 6
 #define FinalWrathResetSpeedTimer 17.0 //Back to normal Attack speed
 
-//Don't touch these unless you know how to do it
-#define MAXANGLEPITCH	65.0
-#define MAXANGLEYAW		75.0
-
 public void ZeroRage_ClearAll()
 {
 	Zero(ability_cooldown);

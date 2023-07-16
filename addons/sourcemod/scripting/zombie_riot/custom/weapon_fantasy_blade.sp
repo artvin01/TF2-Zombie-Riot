@@ -714,8 +714,6 @@ static void Destroy_Halo_And_Wings(int client, int type)
 static int H_Tick_Count[MAXENTITIES];
 static int H_Tick_Count_Max[MAXENTITIES];
 
-#define H_SLICER_AMOUNT 6	//how many individual pieces of the arc are there, more = nicer curve but more traces
-
 static int H_i_Slicer_Throttle[MAXENTITIES];
 
 static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];

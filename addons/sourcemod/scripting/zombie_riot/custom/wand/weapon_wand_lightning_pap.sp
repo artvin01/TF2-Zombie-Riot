@@ -11,9 +11,7 @@ static float Smite_ChargeTime = 0.99;
 static float Smite_ChargeSpan = 0.33;
 static float Smite_Radius = 400.0;
 
-#define SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO "misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE "weapons/vaccinator_charge_tier_03.wav"
-#define SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE	"misc/halloween/spell_mirv_explode_primary.wav"
 
 void Wand_LightningPap_Map_Precache()
 {
@@ -21,7 +19,6 @@ void Wand_LightningPap_Map_Precache()
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE);
 	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE);
 }
-#define spirite "spirites/zerogxplode.spr"
 
 public void Lighting_Wand_Pap_ClearAll()
 {

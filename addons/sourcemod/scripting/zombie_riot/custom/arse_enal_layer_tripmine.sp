@@ -10,8 +10,6 @@ Handle Timer_Trip_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
 
-#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
-
 static int LaserSprite;
 
 
@@ -70,9 +68,9 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 			
 			float attack_speed;
 		
-			attack_speed = 1.0 / Attributes_FindOnPlayer(client, 343, true, 1.0); //Sentry attack speed bonus
+			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 				
-			Bonus_damage = attack_speed * Attributes_FindOnPlayer(client, 287, true, 1.0);			//Sentry damage bonus
+			Bonus_damage = attack_speed * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 			
 			if (Bonus_damage <= 1.0)
 				Bonus_damage = 1.0;

@@ -1,9 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define GIFT_MODEL "models/items/tf_gift.mdl"
-//static int HighestTier;
-
 #define SELL_AMOUNT 0.7
 
 static const int SlotLimits[] =
@@ -4190,7 +4187,7 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 	
-	Mana_Regen_Level[client] = Attributes_FindOnPlayer(client, 405, true, 1.0);
+	Mana_Regen_Level[client] = Attributes_FindOnPlayerZR(client, 405, true, 1.0);
 	
 	delete snapshot;
 	delete map;

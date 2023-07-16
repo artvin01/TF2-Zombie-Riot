@@ -4,7 +4,6 @@
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
 
-#define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_FIREBALL_SOUND "misc/halloween/spell_fireball_cast.wav"
 
 public void Wand_Fire_Spell_ClearAll()

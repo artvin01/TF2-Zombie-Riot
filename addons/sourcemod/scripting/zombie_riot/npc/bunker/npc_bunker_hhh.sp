@@ -208,7 +208,7 @@ public void BunkerHeadlessHorse_ClotThink(int iNPC)
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 6.0;
+//		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 6.0;
 		npc.m_flRangedArmor = 0.0;
 		npc.m_flMeleeArmor = 0.0;
 	}
