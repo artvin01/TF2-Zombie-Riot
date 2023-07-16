@@ -280,6 +280,15 @@ public void Hose_Heal(int owner, int entity, int amt)
 	if (flHealth > flMaxHealth)	//Don't apply the new health because then you'd remove their overheal if they have any
 		return;
 	
+	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
+	{
+		amt /= 2;
+		if (amt < 1)
+		{
+			amt = 1;
+		}
+	}
+	
 	int newHP = flHealth + amt;
 	int ActualHealingDone = amt;
 	
@@ -306,11 +315,6 @@ public void Hose_Heal(int owner, int entity, int amt)
 
 	if(f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
-		HealingPerBolt /= 2;
-		if(HealingPerBolt < 1)
-		{
-			HealingPerBolt = 1;
-		}
 		if(HealingPerBolt > new_ammo)
 		{
 			HealingPerBolt = new_ammo;
