@@ -519,7 +519,9 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		if(i_Current_Pap[client]>=1)
 		{
 			bool do_new = false;
-			if(!IsValidEntity(i_halo_particles[client]))
+			int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
+			
+			if(!IsValidEntity(halo_particle))
 				do_new = true;
 			if(do_new)
 				Create_Halo(client);
@@ -529,14 +531,16 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 			bool do_new = false;
 			for(int i=0 ; i < 6 ; i++)
 			{
-				if(!IsValidEntity(i_wing_lasers[client][i]))
+				int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
+				if(!IsValidEntity(wing_laser))
 				{
 					do_new = true;
 				}
-			}
+			}	
 			for(int i=0 ; i < 5 ; i++)
 			{
-				if(!IsValidEntity(i_wing_particles[client][i]))
+				int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
+				if(!IsValidEntity(wing_particle))
 				{
 					do_new = true;
 				}
@@ -550,8 +554,9 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 	if(i_Current_Pap[client]>=1)
 	{
 		bool do_new = false;
+		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
 		
-		if(!IsValidEntity(i_halo_particles[client]))
+		if(!IsValidEntity(halo_particle))
 			do_new = true;
 		if(do_new)
 		{
@@ -565,14 +570,16 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		bool do_new = false;
 		for(int i=0 ; i < 6 ; i++)
 		{
-			if(!IsValidEntity(i_wing_lasers[client][i]))
+			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
+			if(!IsValidEntity(wing_laser))
 			{
 				do_new = true;
 			}
-		}
+		}	
 		for(int i=0 ; i < 5 ; i++)
 		{
-			if(!IsValidEntity(i_wing_particles[client][i]))
+			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
+			if(!IsValidEntity(wing_particle))
 			{
 				do_new = true;
 			}
@@ -596,8 +603,9 @@ static void Create_Halo(int client)
 	float flAng[3];
 	GetAttachment(client, "head", flPos, flAng);
 	flPos[2] += 10.0;
-	i_halo_particles[client]= ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
-	SetParent(client, i_halo_particles[client], "head");
+	int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
+	SetParent(client, particle, "head");
+	i_halo_particles[client] = EntRefToEntIndex(particle);
 }
 static void Create_Wings(int client, int viewmodelModel)
 {
@@ -646,45 +654,50 @@ static void Create_Wings(int client, int viewmodelModel)
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
 	SetParent(viewmodelModel, particle_0, "flag",_);
 
-	i_wing_lasers[client][0] = ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM);
-	i_wing_lasers[client][1] = ConnectWithBeamClient(particle_3, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM);
-	i_wing_lasers[client][2] = ConnectWithBeamClient(particle_3_1, particle_3, r, g, b, f_start, f_end, amp, LASERBEAM);
-	i_wing_lasers[client][3] = ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM);
-	i_wing_lasers[client][4] = ConnectWithBeamClient(particle_1, particle_3_1, r, g, b, f_start, f_end, amp, LASERBEAM);
-	i_wing_lasers[client][5] = ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM);
+	i_wing_lasers[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_3, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_3_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_wing_particles[client][0] = particle_1;
+	i_wing_particles[client][0] = EntIndexToEntRef(particle_1);
 	
-	i_wing_particles[client][1] = particle_2;
-	i_wing_particles[client][2] = particle_2_1;
+	i_wing_particles[client][1] = EntIndexToEntRef(particle_2);
+	i_wing_particles[client][2] = EntIndexToEntRef(particle_2_1);
 	
-	i_wing_particles[client][3] = particle_3;
-	i_wing_particles[client][4] = particle_3_1;
+	i_wing_particles[client][3] = EntIndexToEntRef(particle_3);
+	i_wing_particles[client][4] = EntIndexToEntRef(particle_3_1);
 	
 }
 static void Destroy_Halo_And_Wings(int client, int type)
 {
 	if(type==1 || type == 3)
 	{
+		
+		
 		for(int i=0 ; i < 6 ; i++)
 		{
-			if(IsValidEntity(i_wing_lasers[client][i]))
+			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
+			if(IsValidEntity(wing_laser))
 			{
-				RemoveEntity(i_wing_lasers[client][i]);
+				RemoveEntity(wing_laser);
 			}
 		}	
 		for(int i=0 ; i < 5 ; i++)
 		{
-			if(IsValidEntity(i_wing_particles[client][i]))
+			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
+			if(IsValidEntity(wing_particle))
 			{
-				RemoveEntity(i_wing_particles[client][i]);
+				RemoveEntity(wing_particle);
 			}
 		}
 	}
 	if(type==2 || type == 3)
 	{
-		if(IsValidEntity(i_halo_particles[client]))
-			RemoveEntity(i_halo_particles[client]);
+		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
+		if(IsValidEntity(halo_particle))
+			RemoveEntity(halo_particle);
 	}
 }
 			
