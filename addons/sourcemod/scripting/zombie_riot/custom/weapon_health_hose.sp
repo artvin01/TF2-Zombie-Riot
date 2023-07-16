@@ -227,6 +227,7 @@ public void Hose_Touch(int entity, int other)
 		ParticleEffectAt(ProjLoc, Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, 1.0);
 
 		int HealingPerBolt = Hose_Healing[entity];
+		int new_ammo = GetAmmo(owner, 21);
 
 		if(f_TimeUntillNormalHeal[other] > GetGameTime())
 		{
@@ -235,7 +236,14 @@ public void Hose_Touch(int entity, int other)
 			{
 				HealingPerBolt = 1;
 			}
+			if(HealingPerBolt > new_ammo)
+			{
+				HealingPerBolt = new_ammo;
+			}
 		}
+		new_ammo -= HealingPerBolt;
+		SetAmmo(owner, 21, new_ammo);
+		CurrentAmmo[owner][21] = GetAmmo(owner, 21);
 
 		Hose_Heal(owner, other, HealingPerBolt);
 		
