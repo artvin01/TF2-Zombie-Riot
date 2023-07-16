@@ -750,7 +750,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(!b_kahml_annihilation[npc.index])
 		{
 			//Target close enough to hit
-			if(flDistanceToTarget < 35000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < 22500 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);

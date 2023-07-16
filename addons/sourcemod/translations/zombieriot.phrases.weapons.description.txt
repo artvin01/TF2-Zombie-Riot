@@ -2207,4 +2207,16 @@
 	{
 		"en"		"Increaced resistances and damage, m2 ability gains extra damage and stun duration, provides extra heal on hit for all your surrounding allies during ability usage."
 	}
+	"Fantasy Blade pap 0"
+	{
+		"en"	"A blade of those who dare to Fantasize and dream...\nHold mouse 2 to fire a Fantasmal wave forward.\nThis action requires ''Shards'', you gain them by hitting stuff"
+	}
+	"Fantasy Blade pap 1"
+	{
+		"en"	"You feel as is the Fantasy is slowly becoming real...\nYou can now hold R+Mouse 2 to fire a long ranged Fantasmal wave\nYou also gain a Fantasmal Halo"
+	}
+	"Fantasy Blade pap 2"
+	{
+		"en"	"Fantasy and reality, its all the same\nBy Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy\nYou gain wings of Fantasy\n(They don't allow you to fly unfortunately)"
+	}
 }

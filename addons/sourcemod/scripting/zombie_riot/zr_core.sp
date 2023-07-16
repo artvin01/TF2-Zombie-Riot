@@ -93,6 +93,7 @@ enum
 	WEAPON_GLADIIA = 22,
 	WEAPON_SPIKELAYER = 23,
 	WEAPON_BLEMISHINE = 24,
+	WEAPON_FANTASY_BLADE = 25,
 }
 
 ArrayList SpawnerList;
@@ -368,6 +369,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
 #include "zombie_riot/custom/weapon_specter.sp"
 #include "zombie_riot/custom/weapon_yamato.sp"
+#include "zombie_riot/custom/weapon_fantasy_blade.sp"
 #include "zombie_riot/custom/weapon_saga.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
 #include "zombie_riot/custom/weapon_mlynar.sp"
@@ -559,6 +561,7 @@ void ZR_MapStart()
 	ResetMapStartOcean();
 	Specter_MapStart();
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
+	Fantasy_Blade_MapStart();
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	
