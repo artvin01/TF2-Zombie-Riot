@@ -96,7 +96,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = INVALID_HANDLE;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-			SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
+			
 			Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -110,7 +110,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
 		Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
