@@ -7152,10 +7152,10 @@ static void SummonerMenu(int client, int viewer)
 				}
 			}
 
-			ResearchRequirement_internal = GetSData(CivType[client], i, ResearchRequirement2);
-			if(ResearchRequirement_internal > 0)
+			int ResearchRequirement_internal_2 = GetSData(CivType[client], i, ResearchRequirement2);
+			if(ResearchRequirement_internal_2 > 0)
 			{
-				if(!(i_NormalBarracks_HexBarracksUpgrades_2[client] & ResearchRequirement_internal))
+				if(!(i_NormalBarracks_HexBarracksUpgrades_2[client] & ResearchRequirement_internal_2))
 				{
 					continue;
 				}
