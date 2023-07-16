@@ -173,7 +173,7 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		Hose_ProjectileCharged[projectile] = Hose_Charged[client];
 
 		//Remove unused hook.
-		SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
+		//SDKUnhook(projectile, SDKHook_StartTouch, Wand_Base_StartTouch);
 
 		for (int entity = 0; entity < MAXENTITIES; entity++)
 		{
@@ -192,6 +192,19 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 }
 
 //If you use SearchDamage (above), convert this timer to a void method and rename it to Cryo_DealDamage:
+
+public void Wand_Health_Hose_Touch_World(int entity, int other)
+{
+	if (other == 0)	
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		RemoveEntity(entity);
+	}
+}
 
 public void Hose_Touch(int entity, int other)
 {
@@ -212,8 +225,19 @@ public void Hose_Touch(int entity, int other)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		
 		ParticleEffectAt(ProjLoc, Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, 1.0);
-		
-		Hose_Heal(other, Hose_Healing[entity]);
+
+		int HealingPerBolt = Hose_Healing[entity];
+
+		if(f_TimeUntillNormalHeal[other] > GetGameTime())
+		{
+			HealingPerBolt /= 2;
+			if(HealingPerBolt < 1)
+			{
+				HealingPerBolt = 1;
+			}
+		}
+
+		Hose_Heal(owner, other, HealingPerBolt);
 		
 		Hose_Healing[entity] -= Hose_HealLoss[entity];
 		if (Hose_Healing[entity] < Hose_HealMin[entity])
@@ -249,7 +273,7 @@ public void Hose_Touch(int entity, int other)
 	}
 }
 
-public void Hose_Heal(int entity, int amt)
+public void Hose_Heal(int owner, int entity, int amt)
 {
 	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 		
@@ -272,7 +296,14 @@ public void Hose_Heal(int entity, int amt)
 	{
 		newHP = flMaxHealth;
 	}
-	
+	if(entity < MaxClients)
+	{
+		ApplyHealEvent(entity, amt);
+	}
+	if(owner < MaxClients)
+	{
+		Healing_done_in_total[owner] += amt;
+	}
 	SetEntProp(entity, Prop_Data, "m_iHealth", newHP);	
 }
 

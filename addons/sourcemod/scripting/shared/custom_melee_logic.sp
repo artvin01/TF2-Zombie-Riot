@@ -450,7 +450,7 @@ public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int 
 {
 	if(target == -1)
 		return ZEROSOUND;
-		
+
 	if(target > 0 && !b_NpcHasDied[target])
 	{
 		switch(weapon_index)
@@ -589,7 +589,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(soundIndex > 0)
 		{
 			char SoundStringToPlay[256];
+			if(i_WeaponSoundIndexOverride[weapon] > 0)
+				SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
+
 			SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+			if(i_WeaponSoundIndexOverride[weapon] > 0)
+				SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
+
 			EmitGameSoundToAll(SoundStringToPlay, client);
 		}
 
@@ -644,7 +650,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						if(soundIndex > 0)
 						{
 							char SoundStringToPlay[256];
+							if(i_WeaponSoundIndexOverride[weapon] > 0)
+								SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
+
 							SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+							if(i_WeaponSoundIndexOverride[weapon] > 0)
+								SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
+								
 							EmitGameSoundToAll(SoundStringToPlay, client);
 						}	
 					}

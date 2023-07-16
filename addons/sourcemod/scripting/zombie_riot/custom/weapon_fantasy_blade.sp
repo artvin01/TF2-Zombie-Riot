@@ -88,7 +88,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = INVALID_HANDLE;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-			SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
+		//	SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
 			Create_Halo_And_Wings(client);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -102,7 +102,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
+	//	SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
 		Create_Halo_And_Wings(client);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -223,6 +223,7 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 
 			if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
 			{
+				Create_Halo_And_Wings(client);
 				int pap = i_Current_Pap[client];
 				float GameTime = GetGameTime();
 				int buttons = GetClientButtons(client);
@@ -266,6 +267,10 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 					Fantasy_Show_Hud(client, GameTime, pap);
 				}
 				
+			}
+			else
+			{
+				Destroy_Hale_And_Wings(client);
 			}
 		}
 		else
