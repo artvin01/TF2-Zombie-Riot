@@ -55,8 +55,10 @@ static float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
 
 #define FANTASY_BLADE_MAX_SHARDS 9.0
 #define FANTASY_BLADE_MAX_PENETRATION 15	//how many targets the blade will penetrate before killing itself
+#define FANTASY_BLADE_PENETRATION_FALLOFF 1.2	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
 
 #define FANTASY_BLADE_SHARDS_GAIN_PER_HIT 0.3
+
 
 static int ShortTeleportLaserIndex;
 
@@ -66,6 +68,8 @@ public void Fantasy_Blade_MapStart()
 	Zero(fl_blade_swing_reload_time);
 	Zero(fl_teleport_recharge_time);
 	Zero(fl_hud_timer);
+	Zero2(fl_trace_target_timeout);
+	Zero(h_TimerFantasyManagement);
 	ShortTeleportLaserIndex = PrecacheModel("materials/sprites/laser.vmt", false);
 	PrecacheSound(WAND_TELEPORT_SOUND);
 	PrecacheSound(FANTASY_BLADE_SHOOT_1);
@@ -95,7 +99,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			KillTimer(h_TimerFantasyManagement[client]);
 			h_TimerFantasyManagement[client] = INVALID_HANDLE;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
-		
+			fl_Shard_Ammount[client] = 0.0;
 			
 			Create_Halo_And_Wings(client, true);
 			DataPack pack;
@@ -110,6 +114,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
+		fl_Shard_Ammount[client] = 0.0;
 		Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -1001,7 +1006,7 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 				if (Fantasy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 				{
 					SDKHooks_TakeDamage(victim, client, client, dmg/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+					BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
 				}
 			}
 
