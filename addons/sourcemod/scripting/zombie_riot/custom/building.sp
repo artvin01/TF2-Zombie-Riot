@@ -4051,15 +4051,12 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
   	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayerZR(client, 762)); //762 is how many extra buildings are allowed on you.
 	
 	maxAllowed += Building_health_attribute; 
-	PrintToChatAll("0  maxAllowed %i",maxAllowed);
 	
 	if(maxAllowed < 1)
 	{
 		maxAllowed = 1;
 	}
 	int maxAllowedSaveStats = maxAllowed;
-	PrintToChatAll("1  maxAllowed %i",maxAllowed);
-	PrintToChatAll("1  maxAllowedSaveStats %i",maxAllowedSaveStats);
 
 	if(b_HasGlassBuilder[client])
 	{
@@ -4075,8 +4072,6 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 			maxAllowed = 1;
 	}
 	i_MaxSupportBuildingsAllowed[client] = maxAllowedSaveStats;
-	PrintToChatAll("2   maxAllowed %i",maxAllowed);
-	PrintToChatAll("2   maxAllowedSaveStats %i",maxAllowedSaveStats);
 
 	return maxAllowed;
 }
