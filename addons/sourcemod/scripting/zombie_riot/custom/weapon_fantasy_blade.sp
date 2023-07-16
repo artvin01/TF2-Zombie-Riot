@@ -519,11 +519,31 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 	{
 		if(i_Current_Pap[client]>=1)
 		{
-			Create_Halo(client);
+			bool do_new = false;
+			if(!IsValidEntity(i_halo_particles[client]))
+				do_new = true;
+			if(do_new)
+				Create_Halo(client);
 		}
 		if(i_Current_Pap[client]>=2)
 		{
-			Create_Wings(client,viewmodelModel);
+			bool do_new = false;
+			for(int i=0 ; i < 6 ; i++)
+			{
+				if(!IsValidEntity(i_wing_lasers[client][i]))
+				{
+					do_new = true;
+				}
+			}
+			for(int i=0 ; i < 5 ; i++)
+			{
+				if(!IsValidEntity(i_wing_particles[client][i]))
+				{
+					do_new = true;
+				}
+			}
+			if(do_new)
+				Create_Wings(client,viewmodelModel);
 		}
 		
 		return;
