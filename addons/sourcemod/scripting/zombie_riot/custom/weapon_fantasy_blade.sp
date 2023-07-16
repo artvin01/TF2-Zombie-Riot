@@ -97,7 +97,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
 			SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
-			Create_Halo_And_Wings(client);
+			Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -111,7 +111,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
 		SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
-		Create_Halo_And_Wings(client);
+		Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
@@ -504,7 +504,7 @@ static int i_wing_particles[MAXTF2PLAYERS+1][5];
 
 static int i_halo_particles[MAXTF2PLAYERS+1];
 			
-static void Create_Halo_And_Wings(int client)
+static void Create_Halo_And_Wings(int client, bool first=false)
 {
 	//Ty artvin <3
 	
@@ -515,6 +515,19 @@ static void Create_Halo_And_Wings(int client)
 		return;
 		
 	
+	if(first)
+	{
+		if(i_Current_Pap[client]>=1)
+		{
+			Create_Halo(client);
+		}
+		if(i_Current_Pap[client]>=2)
+		{
+			Create_Wings(client,viewmodelModel);
+		}
+		
+		return;
+	}
 	if(i_Current_Pap[client]>=1)
 	{
 		bool do_new = false;
