@@ -6,7 +6,7 @@ static float Hose_BaseHeal = 5.0;
 static float Hose_UberGain = 0.0025;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
-static float SelfHealMult = 0.5;
+static float SelfHealMult = 0.33;
 static int Hose_LossPerHit = 2;
 static int Hose_Min = 1;
 
