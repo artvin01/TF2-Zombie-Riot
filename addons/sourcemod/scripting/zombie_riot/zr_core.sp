@@ -358,6 +358,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_riotshield.sp"
 #include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
+#include "zombie_riot/custom/weapon_health_hose.sp"
 #include "shared/custom/weapon_street_fighter.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 #include "shared/custom/weapon_judgement_of_iberia.sp"
@@ -515,6 +516,7 @@ void ZR_MapStart()
 	Wand_NerosSpell_Map_Precache();
 	Wand_autoaim_Map_Precache();
 	Weapon_Arrow_Shoot_Map_Precache();
+	Weapon_Hose_Precache();
 //	Weapon_Pipe_Shoot_Map_Precache();
 	Building_MapStart();
 	Survival_Knife_Map_Precache();

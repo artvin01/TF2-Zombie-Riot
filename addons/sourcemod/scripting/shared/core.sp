@@ -2861,6 +2861,7 @@ public void OnEntityDestroyed(int entity)
 #if defined ZR
 			OnEntityDestroyed_BackPack(entity);
 			BuildingHordingsRemoval(entity);
+			Hose_OnDestroyed(entity);
 #endif
 			
 			RemoveNpcThingsAgain(entity);
@@ -2891,7 +2892,7 @@ public void RemoveNpcThingsAgain(int entity)
 	CleanAllApplied_Aresenal(entity, true);
 	b_NpcForcepowerupspawn[entity] = 0;	
 #endif
-	CleanAllApplied_Cryo(entity);	
+	CleanAllApplied_Cryo(entity);
 	i_HexCustomDamageTypes[entity] = 0;
 }
 

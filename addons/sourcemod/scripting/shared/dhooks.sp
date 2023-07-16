@@ -794,6 +794,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
+			{
+				Hose_Touch(entity1, entity2);
+				return false;
+			}
 			if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;
