@@ -82,8 +82,8 @@ public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, i
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
-		TF2_AddCondition(client, TFCond_MegaHeal, Hose_UberTime);
-		TF2_AddCondition(client, TFCond_RuneHaste, Hose_UberTime);
+		TF2_AddCondition(client, TFCond_MegaHeal, dur);
+		TF2_AddCondition(client, TFCond_RuneHaste, dur);
 		
 		Hose_UpdateText(client);
 	}
@@ -106,7 +106,7 @@ public void Weapon_Health_Hose_Uber_Shotgun(int client, int weapon, bool crit, i
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
-		TF2_AddCondition(client, TFCond_MegaHeal, Hose_UberTime);
+		TF2_AddCondition(client, TFCond_MegaHeal, dur);
 		
 		Hose_UpdateText(client);
 	}
@@ -215,12 +215,6 @@ public void Hose_Touch(int entity, int other)
 		
 		Hose_Heal(other, Hose_Healing[entity]);
 		
-		if (GetGameTime() >= Hose_NextHealSound[owner])
-		{
-			EmitSoundToClient(owner, SOUND_HOSE_HEALED);
-			Hose_NextHealSound[owner] = GetGameTime() + 0.05;
-		}
-		
 		Hose_Healing[entity] -= Hose_HealLoss[entity];
 		if (Hose_Healing[entity] < Hose_HealMin[entity])
 		{
@@ -231,7 +225,10 @@ public void Hose_Touch(int entity, int other)
 		
 		if (Hose_GiveUber[entity])
 		{
-			Hose_UpdateText(owner);
+			if (GetGameTime() >= Hose_NextHealSound[owner])
+			{
+				Hose_UpdateText(owner);
+			}
 			
 			if (!Hose_Charged[owner] && Hose_Uber[owner] < 1.0)
 			{
@@ -242,6 +239,12 @@ public void Hose_Touch(int entity, int other)
 					EmitSoundToClient(owner, SOUND_HOSE_UBER_READY, _, _, 120);
 				}
 			}
+		}
+		
+		if (GetGameTime() >= Hose_NextHealSound[owner])
+		{
+			EmitSoundToClient(owner, SOUND_HOSE_HEALED);
+			Hose_NextHealSound[owner] = GetGameTime() + 0.05;
 		}
 	}
 }
