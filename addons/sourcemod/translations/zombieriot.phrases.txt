@@ -2616,7 +2616,7 @@
 	}
 	"Barracks Copper Smith Desc"
 	{
-		"en"		"Increaced Melee Damage"
+		"en"		"Increased Melee Damage"
 		//"de"		""
 	//	"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
@@ -2642,7 +2642,7 @@
 	}
 	"Barracks Iron Casting Desc"
 	{
-		"en"		"Increaced Melee Damage"
+		"en"		"Increased Melee Damage"
 		//"de"		""
 	//	"ru"		"Увеличение урона ближнего боя на 15%%"
 		//"pt"		""
@@ -2668,7 +2668,7 @@
 	}
 	"Barracks Steel Casting Desc"
 	{
-		"en"		"Increaced Melee Damage"
+		"en"		"Increased Melee Damage"
 		//"de"		""
 		"ru"		"Увеличение урона ближнего боя на 30%%"
 		//"pt"		""
@@ -2694,7 +2694,7 @@
 	}
 	"Barracks Refined Steel Desc"
 	{
-		"en"		"Increaced Melee Damage"
+		"en"		"Increased Melee Damage"
 		//"de"		""
 	//	"ru"		"Увеличение урона ближнего боя на 50%%"
 		//"pt"		""
@@ -2733,7 +2733,7 @@
 	}
 	"Barracks Fletching Desc"
 	{
-		"en"		"Increaced Ranged Damage and range"
+		"en"		"Increased Ranged Damage and range"
 		//"de"		""
 	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
@@ -2759,7 +2759,7 @@
 	}
 	"Barracks Steel Arrows Desc"
 	{
-		"en"		"Increaced Ranged Damage and range"
+		"en"		"Increased Ranged Damage and range"
 		//"de"		""
 	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
@@ -2785,7 +2785,7 @@
 	}
 	"Barracks Bracer Desc"
 	{
-		"en"		"Increaced Ranged Damage"
+		"en"		"Increased Ranged Damage"
 		//"de"		""
 	//	"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
 		//"pt"		""
@@ -2811,7 +2811,7 @@
 	}
 	"Barracks Obsidian Refined Tips Desc"
 	{
-		"en"		"Increaced Ranged Damage"
+		"en"		"Increased Ranged Damage"
 		//"de"		""
 		//"ru"		"50%% увелич. урона в дальнем бою"
 		//"pt"		""
@@ -2837,7 +2837,7 @@
 	}
 	"Barracks Copper Armor Plate Desc"
 	{
-		"en"		"Increaced Damage reduction"
+		"en"		"Increased Damage reduction"
 		//"de"		""
 		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
@@ -2863,7 +2863,7 @@
 	}
 	"Barracks Iron Armor Plate Desc"
 	{
-		"en"		"Increaced Damage reduction"
+		"en"		"Increased Damage reduction"
 		//"de"		""
 		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
 		//"pt"		""
@@ -2889,7 +2889,7 @@
 	}
 	"Barracks Chainmail Armor Desc"
 	{
-		"en"		"Increaced Damage reduction"
+		"en"		"Increased Damage reduction"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
@@ -2915,7 +2915,7 @@
 	}
 	"Barracks Reforged Armor Plate Desc"
 	{
-		"en"		"Increaced Damage reduction"
+		"en"		"Increased Damage reduction"
 		//"de"		""
 		//"ru"		""
 		//"pt"		""
