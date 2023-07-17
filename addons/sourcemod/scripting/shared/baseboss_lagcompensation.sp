@@ -2,8 +2,6 @@
 
 #pragma newdecls required
 
-#define MAXTF2PLAYERS	36
-
 /* engine/host.h#L157-L158 */
 #define TIME_TO_TICKS(%1)	RoundToNearest(0.5 + %1 / GetTickInterval())
 #define TICKS_TO_TIME(%1)	(GetTickInterval() * float(%1))

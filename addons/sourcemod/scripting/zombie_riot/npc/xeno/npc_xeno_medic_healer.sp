@@ -1,9 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define LASERBEAM "sprites/laserbeam.vmt"
-
-
 static char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",

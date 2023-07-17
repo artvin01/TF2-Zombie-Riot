@@ -193,7 +193,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 		npc.AddGesture("ACT_TRANSITION");
 		npc.m_bDoSpawnGesture = false;
 		npc.PlayHeIsAwake();
-		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 4.0;
+//		WakeTheFUCKUp[npc.index] = true && GetGameTime(npc.index) + 4.0;
 	}
 	
 	if(npc.m_flDoSpawnGesture > GetGameTime(npc.index))
@@ -274,7 +274,7 @@ public void BunkerSkeletonKing_ClotThink(int iNPC)
 				}
 			}
 		}
-		YourMinionHasBeenSummoned[npc.index] = false && GetGameTime(npc.index) + 9.0;
+	//	YourMinionHasBeenSummoned[npc.index] = false && GetGameTime(npc.index) + 9.0;
 	}
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;

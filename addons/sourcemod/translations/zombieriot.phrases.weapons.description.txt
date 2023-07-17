@@ -1010,7 +1010,7 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increaced Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time.\nArchetype changes to ''Chain Caster''"
+		"en"	"Massively increased Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time.\nArchetype changes to ''Chain Caster''"
 		"ru"	"Значительно увеличенный урон.\nВаша способность изменяется на двойную заряженную, случайную атаку, многоударную цепную атаку молнией.\nВаша атака также будет цепной по 4 врагам, но атаковать в 3 раза медленнее, каждая атака будет сильно замедлять врага на короткое время.\nАрхетип меняется на «Мастер цепей»"
 	}
 	
@@ -2197,15 +2197,15 @@
 	}
 	"Steel Dagger Desc 1"
 	{
-		"en"		"Increaced resistances and damage, gain m2 ability to heal allies over time with 'heal on kill' statt, stun enemies around you on ability use.\nYou gain resistances and damage during ability usage, you always deal 35%% more damage against stunned enemies."
+		"en"		"increased resistances and damage, gain m2 ability to heal allies over time with 'heal on kill' statt, stun enemies around you on ability use.\nYou gain resistances and damage during ability usage, you always deal 35%% more damage against stunned enemies."
 	}
 	"Steel Dagger Desc 2"
 	{
-		"en"		"Increaced resistances and damage."
+		"en"		"increased resistances and damage."
 	}
 	"Steel Dagger Desc 3"
 	{
-		"en"		"Increaced resistances and damage, m2 ability gains extra damage and stun duration, provides extra heal on hit for all your surrounding allies during ability usage."
+		"en"		"increased resistances and damage, m2 ability gains extra damage and stun duration, provides extra heal on hit for all your surrounding allies during ability usage."
 	}
 	"Fantasy Blade pap 0"
 	{

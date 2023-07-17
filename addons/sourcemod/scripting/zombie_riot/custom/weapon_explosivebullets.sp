@@ -8,7 +8,6 @@
 #define EXPLOSIVEBULLETS_PARTICLE_1	"ExplosionCore_Wall"
 #define EXPLOSIVEBULLETS_PARTICLE_2	"ExplosionCore_MidAir"
 
-#define SPRITE_SPRITE	"materials/sprites/laserbeam.vmt"
 
 static int LaserSprite;
 

@@ -2,10 +2,6 @@
 #pragma newdecls required
 
 #define EMPOWER_RANGE 200.0
-#define EMPOWER_SOUND "items/powerup_pickup_king.wav"
-#define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
-#define EMPOWER_WIDTH 5.0
-#define EMPOWER_HIGHT_OFFSET 20.0
 
 #define NEARL_ACTIVE_SOUND "mvm/mvm_tele_activate.wav"
 #define NEARL_EXTRA_DAMAGE_SOUND "misc/ks_tier_04_kill_01.wav"

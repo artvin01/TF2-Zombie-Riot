@@ -232,7 +232,7 @@ void Music_PostThink(int client)
 					TF2_AddCondition(client, TFCond_DefenseBuffed, 2.0);
 					TF2_AddCondition(client, TFCond_NoHealingDamageBuff, 2.0);
 					TF2_AddCondition(client, TFCond_RuneHaste, 2.0);
-					if(Attributes_FindOnPlayer(client, 232))
+					if(Attributes_FindOnPlayerZR(client, 232))
 						TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
 					
 					Give_Cond_Timer[client] = GetGameTime() + 1.0;

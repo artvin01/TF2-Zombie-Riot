@@ -76,7 +76,6 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 #define SON_OF_OSIRIS_RANGE 200.0
-#define LASERBEAM "sprites/laserbeam.vmt"
 
 void MedivalSonOfOsiris_OnMapStart_NPC()
 {

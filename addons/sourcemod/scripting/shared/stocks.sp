@@ -1598,15 +1598,6 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-#define	SHAKE_START					0			// Starts the screen shake for all players within the radius.
-#define	SHAKE_STOP					1			// Stops the screen shake for all players within the radius.
-#define	SHAKE_AMPLITUDE				2			// Modifies the amplitude of an active screen shake for all players within the radius.
-#define	SHAKE_FREQUENCY				3			// Modifies the frequency of an active screen shake for all players within the radius.
-#define	SHAKE_START_RUMBLEONLY		4			// Starts a shake effect that only rumbles the controller, no screen effect.
-#define	SHAKE_START_NORUMBLE		5			// Starts a shake that does NOT rumble the controller.
-
-
-
 stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
 {
 	//allow settings for the sick who cant handle screenshake.
@@ -3258,9 +3249,6 @@ stock void ConstrainDistance(const float[] startPoint, float[] endPoint, float d
 	if(do2)
 		endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
 }
-
-#define spirite "spirites/zerogxplode.spr"
-
 
 public void MakeExplosionFrameLater(DataPack pack)
 {

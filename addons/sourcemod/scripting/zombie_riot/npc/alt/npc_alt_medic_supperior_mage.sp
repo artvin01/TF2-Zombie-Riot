@@ -663,8 +663,6 @@ public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceWallsOnly(int entity, int con
 {
 	return !entity;
 }
-#define MAX_PLAYERS (MAX_PLAYERS_ARRAY < (MaxClients + 1) ? MAX_PLAYERS_ARRAY : (MaxClients + 1))
-#define MAX_PLAYERS_ARRAY 36
 
 public bool NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
@@ -729,7 +727,6 @@ static void NPC_ALT_MEDIC_SUPPERIOR_MAGE_GetBeamDrawStartPoint(int client, float
 	startPoint[2] += actualBeamOffset[2];
 }
 
-#define MAXTF2PLAYERS	36
 
 public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 {

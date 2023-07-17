@@ -66,7 +66,6 @@ static const char g_DuoPootisDeathTheme[][] = {
 	"#freak_fortress_2/pootis_engage/death_bgm1.mp3"
 };*/
 
-#define POOTISOUTROMUSIC "freak_fortress_2/pootis_engage/outromusic_lose.mp3"
 #define POOTISSLAYERSTEAK "freak_fortress_2/pootis_engage/ss_steak.mp3"
 #define POOTISSLAYERCANNON "freak_fortress_2/pootis_engage/ss_cannon.mp3"
 static float fl_AbilityManagement_Timer[MAXENTITIES];

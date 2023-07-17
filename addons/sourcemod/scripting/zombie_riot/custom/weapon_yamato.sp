@@ -31,8 +31,6 @@ static int g_rocket_particle;
 
 static char gLaser2;
 
-#define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
-
 #define YAMATO_MAX_ABILITY_COUNT 2	//how many abilites yamato has
 
 //NOTE: Only increase the ability count IF you added a new ability to EACH one. or you might end up with the 1st main have only 2 sub's but it cycles to a "3rd" which simply doesn't exist and makes the weapon do nothing
@@ -198,7 +196,6 @@ static void Yamato_Rainsword_Skill_2_Loop(int client)
 	return;
 }
 
-#define MAX_TARGETS_HIT 10
 static float BEAM_Targets_Hit[MAXTF2PLAYERS+1];
 static int BEAM_BuildingHit[MAX_TARGETS_HIT];
 static bool BEAM_HitDetected[MAXTF2PLAYERS+1];

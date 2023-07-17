@@ -1233,7 +1233,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 					
 					int Extra = 0;
 						
-					Extra = RoundToNearest(Attributes_FindOnPlayer(client, 701));
+					Extra = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
 					int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
 					Armor_Charge[client] = Armor_Max;
@@ -1358,7 +1358,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 {
 	if(ArmorLevel == -1)
 	{
-		ArmorLevel = RoundToNearest(Attributes_FindOnPlayer(client, 701));
+		ArmorLevel = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
 	}
 
 	int Armor_Max;

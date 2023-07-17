@@ -1812,19 +1812,19 @@ float Replicate_Damage_Medications(int victim, float damage, int damagetype)
 
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
 	{
-		value = Attributes_FindOnPlayer(victim, 206);	// MELEE damage resitance
+		value = Attributes_FindOnPlayerZR(victim, 206);	// MELEE damage resitance
 		if(value)
 			damage *= value;
 	}
 	else
 	{
-		value = Attributes_FindOnPlayer(victim, 205);	// RANGED damage resistance
+		value = Attributes_FindOnPlayerZR(victim, 205);	// RANGED damage resistance
 		if(value)
 			damage *= value;
 			//Everything else should be counted as ranged reistance probably.
 	}
 		
-	value = Attributes_FindOnPlayer(victim, 412);	// Overall damage resistance
+	value = Attributes_FindOnPlayerZR(victim, 412);	// Overall damage resistance
 	if(value)
 		damage *= value;	
 		

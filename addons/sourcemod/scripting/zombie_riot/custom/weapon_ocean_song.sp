@@ -6,7 +6,6 @@ static int i_Particle_4[MAXPLAYERS+1];
 static int i_Laser_1[MAXPLAYERS+1];
 static float f_OceanBuffAbility[MAXPLAYERS+1];
 
-#define LASERBEAM "sprites/laserbeam.vmt"
 #define OCEAN_HEAL_BASE 0.15
 #define OCEAN_SOUND "ambient_mp3/lair/cap_1_tone_metal_movement2.mp3"
 #define OCEAN_SOUND_MELEE "ambient/water/water_splash1.wav"
@@ -292,7 +291,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 
 	if(!HordingsBuff)
 	{
-		flHealMulti = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+		flHealMulti = Attributes_FindOnPlayerZR(client, 8, true, 1.0, true);
 
 	}
 	else

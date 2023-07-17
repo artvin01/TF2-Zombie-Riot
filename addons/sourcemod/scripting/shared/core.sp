@@ -141,11 +141,6 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define MAXENTITIES	2048
 #define MAXTF2PLAYERS	36
 
-#define CHAR_FULL	"█"
-#define CHAR_PARTFULL	"▓"
-#define CHAR_PARTEMPTY	"▒"
-#define CHAR_EMPTY	"░"
-
 #define CONFIG_CFG	CONFIG ... "/%s.cfg"
 
 #define DISPENSER_BLUEPRINT	"models/buildables/dispenser_blueprint.mdl"
@@ -703,7 +698,6 @@ enum
 #define GORE_UPARMRIGHT   (1 << 8)
 #define GORE_HANDLEFT	 (1 << 9)
 
-#define MAXENTITIES	2048
 
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
 

@@ -7,12 +7,6 @@
 static float Strength[MAXTF2PLAYERS];
 static float Accuracy[MAXTF2PLAYERS];
 
-#define MAXENTITIES 2048
-
-#define MAX_TARGETS_HIT 10
-#define MAX_SOUND_FILE_LENGTH 80
-#define MAX_EFFECT_NAME_LENGTH 48
-
 static bool BEAM_CanUse[MAXTF2PLAYERS];
 static bool BEAM_IsUsing[MAXTF2PLAYERS];
 static int BEAM_TicksActive[MAXTF2PLAYERS];

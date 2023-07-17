@@ -17,8 +17,6 @@ static float damage_multiplier[MAXENTITIES];
 static float mf_extra_damage[MAXENTITIES];
 static int coins_flipped[MAXTF2PLAYERS];
 
-#define ARROW_TRAIL_RED "effects/arrowtrail_red.vmt"
-
 //	if (Ability_Check_Cooldown(client, slot) < 0.0)
 //	{
 //		Ability_Apply_Cooldown(client, slot, 10.0);

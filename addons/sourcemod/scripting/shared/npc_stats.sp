@@ -5290,7 +5290,7 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			
 		if(enemy <= MaxClients && !ignore_attribute && !work_on_entity)
 		{
-			float Attribute_Knockback = Attributes_FindOnPlayer(enemy, 252, true, 1.0);	
+			float Attribute_Knockback = Attributes_FindOnPlayerZR(enemy, 252, true, 1.0);	
 			
 			knockback *= Attribute_Knockback;
 		}
@@ -8319,6 +8319,7 @@ public void PlayerInIlligalStuckArea(int entity)
 /*
 	64 is then newest, 0 is the oldest.
 */
+/*
 void PlayerIlligalResetOldestAndSort(int client, int ClientStuck)
 {
 	bool FreeSpot = false;
@@ -8350,6 +8351,7 @@ void PlayerIlligalResetOldestAndSort(int client, int ClientStuck)
 		//update latest
 	}
 }
+*/
 /*
 void PlayerIllgalMapCheck()
 {
@@ -8365,6 +8367,7 @@ void PlayerIllgalMapCheck()
 	
 }
 */
+/*
 void PlayerIlligalTooMuch(int client)
 {
 	int CountIlligal;
@@ -8393,14 +8396,16 @@ void PlayerIlligalTooMuch(int client)
 		AveragePos[0] /= AveragePosCount;
 		AveragePos[1] /= AveragePosCount;
 		AveragePos[2] /= AveragePosCount;
-		/*
-			Warn player, save poisition into cfg with map, slay, whatever, do it all.
-		*/
+		
+		//	Warn player, save poisition into cfg with map, slay, whatever, do it all.
+		
 		
 		ForcePlayerSuicide(client);
 		PrintToChat(client, "Do not abuse NPC stuckspots.");
 	}
 }
+*/
+
 /*
 static void ReportBadPosition(const float pos[3])
 {

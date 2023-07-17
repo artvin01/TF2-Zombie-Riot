@@ -16,14 +16,7 @@ static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
-#define SOUND_WAND_SHOT_AUTOAIM 	"weapons/man_melter_fire.wav"
-#define SOUND_WAND_SHOT_AUTOAIM_ABILITY	"weapons/man_melter_fire_crit.wav"
-#define SOUND_AUTOAIM_IMPACT 		"misc/halloween/spell_lightning_ball_impact.wav"
 
-#define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
-#define SOUND_WAND_SHOT 	"weapons/capper_shoot.wav"
-#define SOUND_ZAP "misc/halloween/spell_lightning_ball_impact.wav"
 
 #define SOUND_LAPPLAND_SHOT 	"weapons/fx/nearmiss/dragons_fury_nearmiss.wav"
 #define SOUND_LAPPLAND_ABILITY 	"items/powerup_pickup_plague.wav"
@@ -365,8 +358,6 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 		*/	
 	}
 }
-//Sarysapub1 code but fixed and altered to make it work for our base bosses
-#define TARGET_Z_OFFSET 40.0
 public Action Ark_Homing_Repeat_Timer(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);

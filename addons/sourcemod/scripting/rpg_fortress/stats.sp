@@ -490,12 +490,12 @@ public Action Stats_ShowStats(int client, int args)
 
 		char buffer[64];
 
-		float vuln = Attributes_FindOnPlayer(client, 412, true, 1.0) * 100.0;
+		float vuln = Attributes_FindOnPlayerZR(client, 412, true, 1.0) * 100.0;
 
 		int amount;
 		Stats_BaseHealth(client, amount);
 		int bonus = SDKCall_GetMaxHealth(client) - amount;
-		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% melee dmg, %.0f%% ranged dmg)", amount, bonus, vuln * Attributes_FindOnPlayer(client, 206, true, 1.0, true, true), vuln * Attributes_FindOnPlayer(client, 205, true, 1.0, true, true));
+		FormatEx(buffer, sizeof(buffer), "Max Health: %d + %d (%.0f%% melee dmg, %.0f%% ranged dmg)", amount, bonus, vuln * Attributes_FindOnPlayerZR(client, 206, true, 1.0, true, true), vuln * Attributes_FindOnPlayerZR(client, 205, true, 1.0, true, true));
 		menu.AddItem(NULL_STRING, buffer);
 
 		Stats_BaseCarry(client, amount, bonus);

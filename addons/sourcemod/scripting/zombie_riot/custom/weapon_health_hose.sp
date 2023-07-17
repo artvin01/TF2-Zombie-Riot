@@ -2,10 +2,11 @@
 #pragma newdecls required
 
 static float Hose_Velocity = 1000.0;
-static float Hose_BaseHeal = 3.0;
+static float Hose_BaseHeal = 5.0;
 static float Hose_UberGain = 0.0025;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
+static float SelfHealMult = 0.33;
 static int Hose_LossPerHit = 2;
 static int Hose_Min = 1;
 
@@ -21,7 +22,6 @@ static float Hose_NextHealSound[MAXPLAYERS + 1] = { 0.0, ... };
 static bool Hose_Charged[MAXPLAYERS + 1] = { false, ... };
 static bool Hose_ShotgunCharge[MAXPLAYERS + 1] = { false, ... };
 
-#define COLLISION_DETECTION_MODEL_BIG	"models/props_junk/wood_crate001a.mdl"
 #define SOUND_HOSE_HEALED		"weapons/rescue_ranger_charge_01.wav"
 #define SOUND_HOSE_UBER_END		"player/invuln_off_vaccinator.wav"
 #define SOUND_HOSE_UBER_ACTIVATE	"player/invuln_on_vaccinator.wav"
@@ -77,7 +77,7 @@ public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, i
 		Hose_Uber[client] = 0.0;
 		Hose_Charged[client] = true;
 		
-		float dur = Hose_UberTime + Attributes_FindOnPlayer(client, 314, true, 0.0, true);
+		float dur = Hose_UberTime + Attributes_FindOnPlayerZR(client, 314, true, 0.0, true);
 		EmitSoundToClient(client, SOUND_HOSE_UBER_ACTIVATE, _, _, 120);
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -101,7 +101,7 @@ public void Weapon_Health_Hose_Uber_Shotgun(int client, int weapon, bool crit, i
 		Hose_Charged[client] = true;
 		Hose_ShotgunCharge[client] = true;
 		
-		float dur = Hose_UberTime + Attributes_FindOnPlayer(client, 314, true, 0.0, true);
+		float dur = Hose_UberTime + Attributes_FindOnPlayerZR(client, 314, true, 0.0, true);
 		EmitSoundToClient(client, SOUND_HOSE_UBER_ACTIVATE, _, _, 120);
 		
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -124,13 +124,14 @@ public Action Hose_RemoveUber(Handle remove, int id)
 		
 		Hose_UpdateText(client);
 	}
+	return Plugin_Stop;
 }
 
 public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, int loss, int minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
 	Address address;
 	
-	float healmult = Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+	float healmult = Attributes_FindOnPlayerZR(client, 8, true, 1.0, true);
 		
 	if (Hose_ShotgunCharge[client])
 	{
@@ -226,26 +227,7 @@ public void Hose_Touch(int entity, int other)
 		
 		ParticleEffectAt(ProjLoc, Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, 1.0);
 
-		int HealingPerBolt = Hose_Healing[entity];
-		int new_ammo = GetAmmo(owner, 21);
-
-		if(f_TimeUntillNormalHeal[other] > GetGameTime())
-		{
-			HealingPerBolt /= 2;
-			if(HealingPerBolt < 1)
-			{
-				HealingPerBolt = 1;
-			}
-			if(HealingPerBolt > new_ammo)
-			{
-				HealingPerBolt = new_ammo;
-			}
-		}
-		new_ammo -= HealingPerBolt;
-		SetAmmo(owner, 21, new_ammo);
-		CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-
-		Hose_Heal(owner, other, HealingPerBolt);
+		Hose_Heal(owner, other, Hose_Healing[entity]);
 		
 		Hose_Healing[entity] -= Hose_HealLoss[entity];
 		if (Hose_Healing[entity] < Hose_HealMin[entity])
@@ -298,10 +280,23 @@ public void Hose_Heal(int owner, int entity, int amt)
 	if (flHealth > flMaxHealth)	//Don't apply the new health because then you'd remove their overheal if they have any
 		return;
 	
+	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
+	{
+		amt /= 2;
+		if (amt < 1)
+		{
+			amt = 1;
+		}
+	}
+	
 	int newHP = flHealth + amt;
+	int ActualHealingDone = amt;
 	
 	if (newHP > flMaxHealth)
 	{
+		int diff = newHP - flMaxHealth;
+		ActualHealingDone -= diff;
+		
 		newHP = flMaxHealth;
 	}
 	if(entity < MaxClients)
@@ -312,7 +307,36 @@ public void Hose_Heal(int owner, int entity, int amt)
 	{
 		Healing_done_in_total[owner] += amt;
 	}
+	
 	SetEntProp(entity, Prop_Data, "m_iHealth", newHP);	
+	
+	int HealingPerBolt = ActualHealingDone;
+	int new_ammo = GetAmmo(owner, 21);
+
+	if(f_TimeUntillNormalHeal[entity] > GetGameTime())
+	{
+		if(HealingPerBolt > new_ammo)
+		{
+			HealingPerBolt = new_ammo;
+		}
+	}
+		
+	new_ammo -= HealingPerBolt;
+	SetAmmo(owner, 21, new_ammo);
+	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
+	
+	flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
+	flMaxHealth = SDKCall_GetMaxHealth(owner);
+	
+	int userHeal = RoundFloat(float(ActualHealingDone) * SelfHealMult);
+	
+	newHP = flHealth + userHeal;
+	if (newHP > flMaxHealth)
+	{
+		newHP = flMaxHealth;
+	}
+	
+	SetEntProp(owner, Prop_Data, "m_iHealth", newHP);
 }
 
 public void Hose_UpdateText(int owner)

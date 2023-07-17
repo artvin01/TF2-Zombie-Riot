@@ -5,7 +5,6 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Necro_Damage[MAXPLAYERS+1]={0.0, ...};
 static bool Delete_Flame[MAXPLAYERS+1]={false, ...};
 
-#define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 
 public void Wand_Necro_Spell_ClearAll()
 {

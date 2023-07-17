@@ -24,7 +24,6 @@ static char gLaser1;
 #define SOUND_ARMOR_BEAM			"physics/metal/metal_box_strain1.wav"
 #define SOUND_REPAIR_BEAM			"physics/metal/metal_box_strain2.wav"
 
-#define SOUND_DASH			"npc/roller/mine/rmine_explode_shock1.wav"
 
 public void M3_Abilities_Precache()
 {
@@ -361,7 +360,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			
 			float Healing_Amount = 10.0;
 			
-			Healing_Amount *= Attributes_FindOnPlayer(client, 8, true, 1.0, true);
+			Healing_Amount *= Attributes_FindOnPlayerZR(client, 8, true, 1.0, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
 			f_Duration[entity] = GetGameTime() + 10.0;
@@ -854,7 +853,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
 	   			TE_SendToAll();
 				bool Repaired_Building = false;
-				float RepairRateBonus = Attributes_FindOnPlayer(client, 95); //Sentry attack speed bonus
+				float RepairRateBonus = Attributes_FindOnPlayerZR(client, 95); //Sentry attack speed bonus
 				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 
