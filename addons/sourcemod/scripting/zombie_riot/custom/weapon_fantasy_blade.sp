@@ -70,6 +70,7 @@ public void Fantasy_Blade_MapStart()
 	Zero(fl_hud_timer);
 	Zero2(fl_trace_target_timeout);
 	Zero(h_TimerFantasyManagement);
+	Zero(fl_Shard_Ammount);
 	ShortTeleportLaserIndex = PrecacheModel("materials/sprites/laser.vmt", false);
 	PrecacheSound(WAND_TELEPORT_SOUND);
 	PrecacheSound(FANTASY_BLADE_SHOOT_1);
@@ -99,7 +100,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			KillTimer(h_TimerFantasyManagement[client]);
 			h_TimerFantasyManagement[client] = INVALID_HANDLE;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
-			fl_Shard_Ammount[client] = 0.0;
 			
 			Create_Halo_And_Wings(client, true);
 			DataPack pack;
@@ -114,7 +114,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		fl_Shard_Ammount[client] = 0.0;
 		Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
