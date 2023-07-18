@@ -101,6 +101,14 @@
 		"en"		"Archetype: Base Caster"
 		"ru"		"Архетип: Базовый заклинатель"
 	}
+	"Abyssal Hunter"
+	{
+		"en"		"Archetype: Abyssal Hunter"
+	}
+	"Kazimierz"
+	{
+		"en"		"Archetype: Kazimierz"
+	}
 	"Syringe Gun Desc"
 	{
 		"en"		"Low Damage but very high bleed duration"
@@ -854,6 +862,34 @@
 	{
 		"en"	"Abilities change.\nEach attack silences the enemies for 5 seconds.\nAttacks give charges, melee gives 2x more.\nRanged attacks if melee didnt hit.\nHomes onto enemy that you looked at.\nAbility 2x dmg and ability duration and AOE silence.\nArchetype changes to ''Lord''"
 		"chi"   "能力的改变。每次攻击使敌人沉默5秒。攻击能充能，近战多充能2倍。如果近战没有命中，远程攻击。你所看到的敌人。2倍伤害，持续时间和AOE沉默。"
+	}
+	"Fractured Ark Pap 4"
+	{
+		"en"	"Attacks are always ranged but with decreased fire rate.\nAbility changes to be able to pull an enemy, depending on their weight, dealing 150%% of damage.\nArchetype changes to ''Abyssal Hunter''"
+	}
+	"Fractured Ark Pap 5"
+	{
+		"en"	"All Abyssal Hunter weapons gain 7.5%% damage resistance from Seaborn enemies and gain 1.5%% max health per second.\nAbility now charges faster and deals 180%% of damage.\nMain attack has longer projectile lifetime."
+	}
+	"Fractured Ark Pap 6"
+	{
+		"en"	"All Abyssal Hunter weapons now gain 12.5%% damage resistance from Seaborn enemies and gain 2.5%% max health per second.\nAbility now holds a third charge and deals 190%% of damage."
+	}
+	"Fractured Ark Pap 7"
+	{
+		"en"	"Ability now charges faster, deals 210%% of damage, and pulls significantly more."
+	}
+	"Fractured Ark Pap 8"
+	{
+		"en"	"All Abyssal Hunter weapons now gain 15%% damage resistance from all enemies and gain 3.5%% max health per second.\nAbility now deals ranged damage proportional to the distance the enemy was pulled."
+	}
+	"Fractured Ark Pap 9"
+	{
+		"en"	"Ability pulls heavier enemies, main attack fires faster."
+	}
+	"Fractured Ark Pap 10"
+	{
+		"en"	"Ability pulls even heavier enemies, main attack fires even faster."
 	}
 	
 	"Longsword Desc"
@@ -1966,9 +2002,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nArchetype changes to ''Crusher''"
-		"ru"	"Атакует медленнее, но поражает сразу две цели.\nАрхетип меняется на «Дробитель»"
-		"chi"   "攻击速度较慢，但能同时击中两个目标"
+		"en"	"Attacks slower but hits two targets at once.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Specter Pap 2a"
 	{
@@ -1990,7 +2024,7 @@
 	}
 	"Specter Pap 4"
 	{
-		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt"
+		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt\nAll Abyssal Hunter weapons gain +200 max health."
 		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
 		"chi"   "增加伤害，并获得自我复活能力，如果造成足够的伤害"
 	}

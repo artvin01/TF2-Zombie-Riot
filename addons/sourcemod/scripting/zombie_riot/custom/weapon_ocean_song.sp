@@ -307,15 +307,22 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range) // 650.0
 			{
-				bool inore_Heal = false;
+				float healingMulti = 1.0;
 
 				int weapon = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
-				if(IsValidEntity(weapon) && Panic_Attack[weapon])
+				if(IsValidEntity(weapon))
 				{
-					inore_Heal = true;
+					if(Panic_Attack[weapon])
+					{
+						healingMulti = 0.0;
+					}
+					else if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
+					{
+						healingMulti = 1.0825;
+					}
 				}
 
-				if(!inore_Heal)
+				if(healingMulti)
 				{	
 					if(f_TimeUntillNormalHeal[ally] > GetGameTime())
 					{
@@ -325,7 +332,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					{
 						flHealMutli_Calc = flHealMulti;
 					} 
-					flHealMutli_Calc *= extra_heal;
+					flHealMutli_Calc *= extra_heal * healingMulti;
 					int healingdone = HealEntityViaFloat(ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0);
 					if(healingdone > 0)
 					{

@@ -56,6 +56,10 @@ public const char ItemArchetype[][] =
 	"Chain Caster",		// 19
 	"Multi Caster",		// 20
 	"Base Caster",		// 21
+
+// CUSTOM
+	"Abyssal Hunter",	// 22
+	"Kazimierz"		// 23
 };
 
 enum struct ItemInfo
@@ -5246,6 +5250,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Mlynar(client, entity);
 		Enable_SpikeLayer(client, entity);
 //		Enable_Blemishine(client, entity);
+		Gladiia_Enable(client, entity);
 #endif
 
 #if defined RPG

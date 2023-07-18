@@ -450,40 +450,6 @@ public Action Timer_Management_SpecterAlter(Handle timer, DataPack pack)
 
 public void Enable_SpecterAlter(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerSpecterAlterManagement[client] != INVALID_HANDLE)
-	{
-		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPECTER)
-		{
-			//Is the weapon it again?
-			//Yes?
-			float damage = 65.0;
-
-			Address address;
-			address = TF2Attrib_GetByDefIndex(weapon, 1);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
-
-			address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
-
-			f_SpecterDeadDamage[client] = damage;
-
-			int flags = Specter_GetSpecterFlags(weapon);
-			if(flags & SPECTER_REVIVE)
-			{
-				KillTimer(h_TimerSpecterAlterManagement[client]);
-				h_TimerSpecterAlterManagement[client] = INVALID_HANDLE;
-				DataPack pack;
-				h_TimerSpecterAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SpecterAlter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(client);
-				pack.WriteCell(EntIndexToEntRef(weapon));
-			}
-		}
-		return;
-	}
-		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPECTER)
 	{
 		float damage = 65.0;
@@ -501,10 +467,24 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 		int flags = Specter_GetSpecterFlags(weapon);
 		if(flags & SPECTER_REVIVE)
 		{
+			delete h_TimerSpecterAlterManagement[client];
+
 			DataPack pack;
 			h_TimerSpecterAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SpecterAlter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+	}
+
+	if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(h_TimerSpecterAlterManagement[i])
+			{
+				TF2Attrib_SetByDefIndex(weapon, 26, 200.0);
+				break;
+			}
 		}
 	}
 }

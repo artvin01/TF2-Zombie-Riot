@@ -580,6 +580,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					delete swingTrace;
 					FinishLagCompensation_Base_boss();
 					delete pack;
+				}
+				case WEAPON_GLADIIA:
+				{
+					Gladiia_RangedAttack(client, weapon);
+					delete swingTrace;
+					FinishLagCompensation_Base_boss();
+					delete pack;
 				}	
 			}
 		}

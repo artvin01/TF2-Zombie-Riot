@@ -50,7 +50,13 @@ void Saga_DeadEffects(int victim, int attacker, int weapon)
 
 bool Saga_IsChargeWeapon(int client, int weapon)
 {
+	if(f_UberOnHitWeapon[weapon])
+		return true;
+	
 	if(Passanger_HasCharge(client))
+		return true;
+	
+	if(Gladiia_HasCharge(client, weapon))
 		return true;
 	
 	if(WeaponTimer[client] && EntRefToEntIndex(WeaponRef[client]) == weapon)
@@ -69,6 +75,7 @@ bool Saga_IsChargeWeapon(int client, int weapon)
 void Saga_ChargeReduction(int client, int weapon, float time)
 {
 	Passanger_ChargeReduced(client, time);
+	Gladiia_ChargeReduction(client, weapon, time);
 
 	if(WeaponTimer[client] && EntRefToEntIndex(WeaponRef[client]) == weapon)
 	{

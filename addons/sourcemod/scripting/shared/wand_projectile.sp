@@ -222,6 +222,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 			Cryo_Touch(entity, target);
 		}
 		*/
+		case WEAPON_GLADIIA:
+		{
+			Gladiia_WandTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])
