@@ -4874,6 +4874,10 @@ public void NpcBaseThink(int iNPC)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
+	{
+		npc.GetBaseNPC().flGravity = 0.0;
+	}
 
 	NpcDrawWorldLogic(iNPC);
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
@@ -5136,7 +5140,7 @@ public void NpcBaseThink(int iNPC)
 
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
-	if (!npc.IsOnGround() && !b_DoNotUnStuck[iNPC])
+	if (!npc.IsOnGround() && !b_DoNotUnStuck[iNPC] && f_KnockbackPullDuration[iNPC] < GetGameTime())
 	{
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
@@ -5232,10 +5236,17 @@ public void NpcBaseThink(int iNPC)
 	
 	
 }
-
 float f3_KnockbackToTake[MAXENTITIES][3];
 
-stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignore_attribute = false, bool override = false, bool work_on_entity = false)
+stock void Custom_Knockback(int attacker,
+ int enemy,
+  float knockback,
+   bool ignore_attribute = false,
+    bool override = false,
+	 bool work_on_entity = false,
+	 float PullDuration = 0.0,
+	 bool RecieveInfo = false,
+	 float RecievePullInfo[3] = {0.0,0.0,0.0})
 {
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy])
 	{							
@@ -5243,14 +5254,28 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 
 		if(attacker <= MaxClients)	
 		{
-			GetClientEyeAngles(attacker, vAngles);
-			if(vAngles[0] < -40.0) //if they look up too much, we set it.
+			if(PullDuration == 0.0)
 			{
-				vAngles[0] = -40.0;
+				GetClientEyeAngles(attacker, vAngles);
+				if(vAngles[0] < -40.0) //if they look up too much, we set it.
+				{
+					vAngles[0] = -40.0;
+				}
+				else if(vAngles[0] > -5.0) //if they look down too much, we set it.
+				{
+					vAngles[0] = -5.0;
+				}
 			}
-			else if(vAngles[0] > -5.0) //if they look down too much, we set it.
+			else
 			{
-				vAngles[0] = -5.0;
+				float vector1[3];
+				float pos1[3];
+				float pos2[3];
+				GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos1); 
+				GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos2); 
+				SubtractVectors(pos1, pos2, vector1);
+				NormalizeVector(vector1, vector1);
+				GetVectorAngles(vector1, vAngles); 
 			}
 		}
 		else
@@ -5261,15 +5286,21 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		
 		if(enemy <= MaxClients)	
 		{
-
-
 			if (!(GetEntityFlags(enemy) & FL_ONGROUND))
 			{
 				knockback *= 0.5; //Dont do as much knockback if they are in the air
-				if(attacker > MaxClients)	
+				if(attacker > MaxClients) //npcs have no angles up, help em.
 				{
-					vAngles[0] = -30.0;
+					if(PullDuration == 0.0)
+					{
+						vAngles[0] = -30.0;
+					}
+					else
+					{
+						vAngles[0] = 30.0;// ??
+					}
 				}
+				
 			}
 		}
 		else
@@ -5278,9 +5309,12 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			if (!npc.IsOnGround())
 			{
 				knockback *= 0.5; //Dont do as much knockback if they are in the air
-				if(attacker > MaxClients)	
+				if(attacker > MaxClients) //npcs have no angles up, help em.
 				{
-					vAngles[0] = -30.0;
+					if(PullDuration == 0.0)
+					{
+						vAngles[0] = -30.0;
+					}
 				}
 			}
 		}	
@@ -5295,13 +5329,17 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 			knockback *= Attribute_Knockback;
 		}
 		
-#if defined ZR
 		knockback *= 0.75; //oops, too much knockback now!
-#endif
 
 
 		ScaleVector(vDirection, knockback);
+
+		RecievePullInfo = vDirection;
 		
+		if(RecieveInfo)
+		{
+			return;
+		}
 		if(!override && enemy <= MaxClients)
 		{
 			float newVel[3];
@@ -5317,10 +5355,32 @@ stock void Custom_Knockback(int attacker, int enemy, float knockback, bool ignor
 		}		
 		if(!b_NpcHasDied[enemy])	
 		{
-			f3_KnockbackToTake[enemy] = vDirection;
-			//it needs to be on think, otherwise it wont work sometimes.
-			SDKUnhook(enemy, SDKHook_Think, NpcJumpThink); //incase another one was in progress.
-			SDKHook(enemy, SDKHook_Think, NpcJumpThink);
+			if(PullDuration > 0.0)
+			{
+				if(f_KnockbackPullDuration[enemy] < GetGameTime() + PullDuration)
+				{
+					f_KnockbackPullDuration[enemy] = GetGameTime() + PullDuration;
+					//this is alonger pull duration, override.
+				}
+				SDKUnhook(enemy, SDKHook_Think, NpcJumpThink); //incase another one was in progress.
+				//we do a push, yet they are being pulled, this calls for uhhh idk, what is bigger? we do this.
+				f3_KnockbackToTake[enemy] = vDirection;
+				i_PullTowardsTarget[enemy] = attacker;
+				f_PullStrength[enemy] = knockback;
+				//it needs to be on think, otherwise it wont work sometimes.
+				SDKHook(enemy, SDKHook_Think, NpcJumpThink);	
+			}
+			else
+			{
+				SDKUnhook(enemy, SDKHook_Think, NpcJumpThink); //incase another one was in progress.
+				//We'll make push override pulls.
+				f_KnockbackPullDuration[enemy] = GetGameTime() + PullDuration;
+				i_PullTowardsTarget[enemy] = 0;
+				f3_KnockbackToTake[enemy] = vDirection;
+				//it needs to be on think, otherwise it wont work sometimes.	
+
+				SDKHook(enemy, SDKHook_Think, NpcJumpThink);	
+			}
 		}		
 		else
 		{
@@ -5334,15 +5394,55 @@ public void NpcJumpThink(int iNPC)
 	if(IsValidEntity(iNPC) && !b_NpcHasDied[iNPC])
 	{
 		CClotBody npc = view_as<CClotBody>(iNPC);
-		float Jump_1_frame[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 
-		if (npc.IsOnGround())
-			Jump_1_frame[2] += 20.0;	
+		if(f_KnockbackPullDuration[iNPC] < GetGameTime())
+		{
+			if(i_PullTowardsTarget[iNPC] == 0)
+			{
+				float Jump_1_frame[3];
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 
-		SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-		npc.SetVelocity(f3_KnockbackToTake[iNPC]);
+				if (npc.IsOnGround())
+					Jump_1_frame[2] += 20.0;	
+
+				SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+				npc.GetLocomotionInterface().Jump();
+				npc.SetVelocity(f3_KnockbackToTake[iNPC]);
+			}
+		}
+		else
+		{
+			//the npc is being pulled, do different logic.
+			int puller = i_PullTowardsTarget[iNPC];
+			if(IsValidEntity(puller))
+			{
+				float Jump_1_frame[3];
+				/*
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+
+				if (npc.IsOnGround())
+					Jump_1_frame[2] += 20.0;	
+
+				SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
+				*/
+
+				Custom_Knockback(puller,
+				iNPC,
+				f_PullStrength[iNPC],
+				false,
+				false,
+				true,
+				0.1,
+				true,
+				Jump_1_frame);
+				npc.GetLocomotionInterface().Jump();
+				npc.SetVelocity(Jump_1_frame);
+				return;
+			}
+		}
 	}
+	f_PullStrength[iNPC] = 0.0;
+	i_PullTowardsTarget[iNPC] = 0;
 	SDKUnhook(iNPC, SDKHook_Think, NpcJumpThink);
 }
 

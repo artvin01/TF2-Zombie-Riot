@@ -6287,7 +6287,7 @@ static const int SummonerBase[][] =
 	{ BARRACK_CROSSBOW, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 	{ BARRACK_SWORDSMAN, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
 
-	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1, 0 ,0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ BARRACK_ARBELAST, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 	{ BARRACK_TWOHANDED, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
 	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
@@ -7168,7 +7168,7 @@ static void SummonerMenu(int client, int viewer)
 
 			if(ResearchRequirement_internal & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER)
 			{
-				if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex))
+				if(BARRACKS_VILLAGER == GetSData(CivType[client], TrainingIndex[client], NPCIndex) && TrainingIn[client] >= GetGameTime())
 				{
 					//dont train more then one at a time
 					poor = true;

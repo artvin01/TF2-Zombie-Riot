@@ -363,7 +363,11 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 	{
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		int entity = GetClientPointVisible(client, 900.0, true);
+		Handle swingTrace;
+		float vecSwingForward[3];
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 900.0, false, 45.0, false); //better detection due to HULL trace addition.
+		int entity = TR_GetEntityIndex(swingTrace);	
+		delete swingTrace;
 		FinishLagCompensation_Base_boss();
 
 		if(entity > MaxClients && !b_NpcHasDied[entity])
@@ -381,8 +385,8 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 				if(module)
 					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_PLASMA, weapon);
 
-				FreezeNpcInTime(entity, 0.7 + (force * 0.1));
-				Custom_Knockback(client, entity, -1500.0, true, true, true);
+				FreezeNpcInTime(entity, 0.4 + (force * 0.1));
+				Custom_Knockback(client, entity, -3000.0, true, true, true, 0.4 + (force * 0.1));
 				
 				EmitSoundToAll("weapons/grappling_hook_reel_stop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 			}
@@ -391,8 +395,8 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 				if(module)
 					SDKHooks_TakeDamage(entity, client, client, 280.0, DMG_PLASMA, weapon);
 
-				FreezeNpcInTime(entity, 0.6);
-				Custom_Knockback(client, entity, -300.0, true, true, true);
+				FreezeNpcInTime(entity, 0.3);
+				Custom_Knockback(client, entity, -600.0, true, true, true, 0.3);
 
 				EmitSoundToAll("weapons/grappling_hook_reel_stop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 			}
@@ -433,6 +437,14 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 
 void Gladiia_RangedAttack(int client, int weapon)
 {
+
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+
 	EmitSoundToAll("weapons/breadmonster/throwable/bm_throwable_throw.wav", client, _, 75, _, 0.55, GetRandomInt(90, 110));
 
 	float damage = 65.0;
@@ -468,7 +480,21 @@ void Gladiia_RangedAttack(int client, int weapon)
 	if(address != Address_Null)
 		time *= TF2Attrib_GetValue(address);
 
-	Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GLADIIA, weapon, "rockettrail_bubbles");
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GLADIIA, weapon, "rockettrail_bubbles");
+
+	if(IsValidEnemy(client, target))
+	{
+		if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
+		{
+			HomingProjectile_TurnToTarget(target, projectile);
+		}
+
+		DataPack pack;
+		CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+		pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+		//We have found a victim.
+	}
 }
 
 void Gladiia_WandTouch(int entity, int target)
