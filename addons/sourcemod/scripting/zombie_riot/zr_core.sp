@@ -288,6 +288,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
+#include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
@@ -375,7 +376,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_mlynar.sp"
 #include "zombie_riot/custom/weapon_enforcer.sp"
 #include "zombie_riot/custom/weapon_blemishine.sp"
-#include "zombie_riot/sm_skyboxprops.sp"
+#include "zombie_riot/custom/weapon_gladiia.sp"
 
 void ZR_PluginLoad()
 {
@@ -564,6 +565,7 @@ void ZR_MapStart()
 	Fantasy_Blade_MapStart();
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
+	Gladiia_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

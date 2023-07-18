@@ -71,6 +71,10 @@ methodmap Isharmla < CClotBody
 			RaidModeScaling = 0.0;
 		}
 
+		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
+		SetParent(npc.index, npc.m_iWearable2);
+
 		return npc;
 	}
 	property int m_iPoints
@@ -341,6 +345,9 @@ void Isharmla_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }
 
 static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
