@@ -7337,7 +7337,6 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							FoodAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], FoodCost));
 							GoldAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], GoldCost));
 						}
-						TrainingIndex[client] = 0;
 						BarracksSaveResources(client);
 					}
 					else if(b_InUpgradeMenu[client])
