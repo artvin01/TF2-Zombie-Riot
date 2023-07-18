@@ -12,7 +12,6 @@ static int EliteLevel[MAXTF2PLAYERS];
 void Gladiia_MapStart()
 {
 	Zero(WeaponCharge);
-	PrecacheSound("weapons/grappling_hook_reel_start.wav");
 	PrecacheSound("weapons/grappling_hook_reel_stop.wav");
 	PrecacheSound("weapons/grappling_hook_impact_flesh.wav");
 	PrecacheSound("weapons/grappling_hook_shoot.wav");
@@ -127,7 +126,10 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 							{
 								int entity = ParticleEffectAt(WorldSpaceCenter(client), "env_rain_128", -1.0);
 								if(entity > MaxClients)
+								{
+									SetParent(client, entity);
 									ParticleRef[client] = EntIndexToEntRef(entity);
+								}
 							}
 
 							return Plugin_Continue;
@@ -308,37 +310,37 @@ static int GetHighestGladiiaClient()
 
 public void Weapon_Gladiia_M2_S1L4(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 6, 1, 1.5);
+	PullAbilityM2(client, weapon, slot, 12, 2, 1.5);
 }
 
 public void Weapon_Gladiia_M2_S1L7(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 5, 1, 1.8);
+	PullAbilityM2(client, weapon, slot, 10, 2, 1.8);
 }
 
 public void Weapon_Gladiia_M2_S1L8(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 5, 1, 1.9);
+	PullAbilityM2(client, weapon, slot, 10, 2, 1.9);
 }
 
 public void Weapon_Gladiia_M2_S1L10(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 4, 2, 2.1);
+	PullAbilityM2(client, weapon, slot, 8, 3, 2.1);
 }
 
 public void Weapon_Gladiia_M2_S1L10M(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 4, 2, 2.1, true);
+	PullAbilityM2(client, weapon, slot, 8, 3, 2.1, true);
 }
 
 public void Weapon_Gladiia_M2_S1L20M(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 4, 3, 2.1, true);
+	PullAbilityM2(client, weapon, slot, 8, 4, 2.1, true);
 }
 
 public void Weapon_Gladiia_M2_S1L30M(int client, int weapon, bool crit, int slot)
 {
-	PullAbilityM2(client, weapon, slot, 4, 4, 2.1, true);
+	PullAbilityM2(client, weapon, slot, 8, 5, 2.1, true);
 }
 
 static void PullAbilityM2(int client, int weapon, int slot, int cost, int strength, float damagemulti, bool module = false)
@@ -382,7 +384,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 				FreezeNpcInTime(entity, 0.7 + (force * 0.1));
 				Custom_Knockback(client, entity, -1500.0, true, true, true);
 				
-				EmitSoundToAll("weapons/grappling_hook_reel_start.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+				EmitSoundToAll("weapons/grappling_hook_reel_stop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 			}
 			else if(force == -1)
 			{

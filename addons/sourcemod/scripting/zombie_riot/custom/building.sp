@@ -5024,7 +5024,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(mounted)
 		range *= 0.55;
 	
-	int BuildingAlive = i_HasSentryGunAlive[client];
+	/*int BuildingAlive = i_HasSentryGunAlive[client];
 	if(IsValidEntity(BuildingAlive))
 	{
 		BuildingAlive = EntRefToEntIndex(BuildingAlive);
@@ -5033,7 +5033,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 			f_VillageRingVectorCooldown[BuildingAlive] = GetGameTime() + 3.0;
 			spawnRing_Vectors(pos, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 3.0, 6.0, 0.1, 1);
 		}
-	}
+	}*/
 	
 	menu.Pagination = 0;
 	menu.ExitButton = true;

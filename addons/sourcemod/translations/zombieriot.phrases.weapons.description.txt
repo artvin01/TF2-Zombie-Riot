@@ -873,7 +873,7 @@
 	}
 	"Fractured Ark Pap 6"
 	{
-		"en"	"All Abyssal Hunter weapons now gain 12.5%% damage resistance from Seaborn enemies and gain 2.5%% max health per second.\nAbility now holds a third charge and deals 190%% of damage."
+		"en"	"All Abyssal Hunter weapons now gain 12.5%% damage resistance from Seaborn enemies and gain 2.5%% max health per second.\nAbility now holds a third charge and deals 190%% of damage.\nAttacks deal bonus damage to lightweight enemies."
 	}
 	"Fractured Ark Pap 7"
 	{
