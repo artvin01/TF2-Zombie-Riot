@@ -171,11 +171,17 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 				{
 					if(fl_Shard_Ammount[client]>=3)
 					{
-						float damage = 1000.0;
+						float damage = 500.0;
 						Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 						if(address != Address_Null)
 							damage *= TF2Attrib_GetValue(address);
+							
 						float time = Fantasy_Blade_Tele(client, weapon, damage, 1000.0);
+						
+						address = TF2Attrib_GetByDefIndex(weapon, 6);
+						if(address != Address_Null)
+							time *= TF2Attrib_GetValue(address);
+							
 						fl_teleport_recharge_time[client] = GameTime + time;
 						if(time>2.0)
 						{
@@ -420,8 +426,8 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 		
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
 		
-		Explode_Logic_Custom(damage, client, client, weapon, abspos, Range, _, _, false, _, _, _);
-		Explode_Logic_Custom(damage, client, client, weapon, endPos, Range, _, _, false, _, _, _);
+		Explode_Logic_Custom(damage/2.0, client, client, weapon, abspos, Range, _, _, false, _, _, _);
+		Explode_Logic_Custom(damage/2.0, client, client, weapon, endPos, Range, _, _, false, _, _, _);
 
 		Zero(HitEntitiesTeleportTrace);
 		static float maxs[3];
@@ -967,7 +973,7 @@ static Action Vertical_Slicer_Tick(int client)
 		i_Slicer_Throttle[client] = 0;
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
-		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 2.0, fl_damage[client]);
+		Fantasy_Blade_Damage_Trace(client, Cur_Vec, skyloc, 4.0, fl_damage[client]);
 		Cur_Vec[2] -= 150.0;
 		TE_SetupBeamPoints(Cur_Vec, skyloc, gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 		TE_SendToAll(0.0);
