@@ -3917,8 +3917,6 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 {
 	float Jump_1_frame[3];
-	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-	Jump_1_frame[2] += 20.0;
 	
 	static float hullcheckmaxs[3];
 	static float hullcheckmins[3];
@@ -3938,7 +3936,6 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		float vecNPC[3], vecJumpVel[3];
 		GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 		
-		vecNPC[2] -= 20.0;
 		float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
 		if(gravity <= 0.0)
 			gravity = FindConVar("sv_gravity").FloatValue;
@@ -5399,13 +5396,6 @@ public void NpcJumpThink(int iNPC)
 		{
 			if(i_PullTowardsTarget[iNPC] == 0)
 			{
-				float Jump_1_frame[3];
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-
-				if (npc.IsOnGround())
-					Jump_1_frame[2] += 20.0;	
-
-				SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 				npc.GetLocomotionInterface().Jump();
 				npc.SetVelocity(f3_KnockbackToTake[iNPC]);
 			}
@@ -5417,14 +5407,6 @@ public void NpcJumpThink(int iNPC)
 			if(IsValidEntity(puller))
 			{
 				float Jump_1_frame[3];
-				/*
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-
-				if (npc.IsOnGround())
-					Jump_1_frame[2] += 20.0;	
-
-				SetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-				*/
 
 				Custom_Knockback(puller,
 				iNPC,
