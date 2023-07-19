@@ -3916,89 +3916,65 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 
 public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 {
-	float Jump_1_frame[3];
+	float vecNPC[3], vecJumpVel[3];
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 	
-	static float hullcheckmaxs[3];
-	static float hullcheckmins[3];
-	if(b_IsGiant[bot_entidx])
+	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+	
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = vecPos[2] - vecNPC[2];
+	float height = flActualHeight;
+	if ( height < 72 )
 	{
-		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-	}			
-	else
+		height = 72.0;
+	}
+	float additionalHeight = 0.0;
+	
+	if ( height < 35 )
 	{
-		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );		
+		additionalHeight = 50.0;
 	}
 	
-	if (!IsSpaceOccupiedDontIgnorePlayers(Jump_1_frame, hullcheckmins, hullcheckmaxs, bot_entidx))//The boss will start to merge with shits, cancel out velocity.
+	height += additionalHeight;
+	
+	float speed = SquareRoot( 2 * gravity * height );
+	float time = speed / gravity;
+
+	time += SquareRoot( (2 * additionalHeight) / gravity );
+	
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( vecPos, vecNPC, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+	
+	// Don't jump too far/fast.
+	float flJumpSpeed = GetVectorLength(vecJumpVel);
+	float flMaxSpeed = 1250.0;
+	if ( flJumpSpeed > flMaxSpeed )
 	{
-		float vecNPC[3], vecJumpVel[3];
-		GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
-		
-		float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
-		if(gravity <= 0.0)
-			gravity = FindConVar("sv_gravity").FloatValue;
-		
-		// How fast does the headcrab need to travel to reach the position given gravity?
-		float flActualHeight = vecPos[2] - vecNPC[2];
-		float height = flActualHeight;
-		if ( height < 72 )
-		{
-			height = 72.0;
-		}
-		float additionalHeight = 0.0;
-		
-		if ( height < 35 )
-		{
-			additionalHeight = 50.0;
-		}
-		
-		height += additionalHeight;
-		
-		float speed = SquareRoot( 2 * gravity * height );
-		float time = speed / gravity;
-	
-		time += SquareRoot( (2 * additionalHeight) / gravity );
-		
-		// Scale the sideways velocity to get there at the right time
-		SubtractVectors( vecPos, vecNPC, vecJumpVel );
-		vecJumpVel[0] /= time;
-		vecJumpVel[1] /= time;
-		vecJumpVel[2] /= time;
-	
-		// Speed to offset gravity at the desired height.
-		vecJumpVel[2] = speed;
-		
-		// Don't jump too far/fast.
-		float flJumpSpeed = GetVectorLength(vecJumpVel);
-		float flMaxSpeed = 1250.0;
-		if ( flJumpSpeed > flMaxSpeed )
-		{
-			vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
-			vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
-			vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
-		}
-		CClotBody npc = view_as<CClotBody>(bot_entidx);
-		//npc.SetOrigin(Jump_1_frame);
-		//float No_Vel[3];
-		//npc.SetVelocity(No_Vel);
-		TeleportEntity(npc.index, Jump_1_frame, NULL_VECTOR, NULL_VECTOR);
-		npc.Jump();
-		npc.SetVelocity(vecJumpVel);
-		
-		/*char JumpAnim[32];
-		npc.JumpAnim(JumpAnim, sizeof(JumpAnim));
-		
-		if(!StrEqual(JumpAnim, ""))
-		{
-			npc.SetAnimation(JumpAnim);
-		}
-		*/
-		
-		return true;
+		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
-	return false;
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	npc.Jump();
+	npc.SetVelocity(vecJumpVel);
+	
+	/*char JumpAnim[32];
+	npc.JumpAnim(JumpAnim, sizeof(JumpAnim));
+	
+	if(!StrEqual(JumpAnim, ""))
+	{
+		npc.SetAnimation(JumpAnim);
+	}
+	*/
+	return true;
 }
 
 stock bool IsEntityAlive(int index)
@@ -5137,7 +5113,7 @@ public void NpcBaseThink(int iNPC)
 
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
-	if (!npc.IsOnGround() && !b_DoNotUnStuck[iNPC] && f_KnockbackPullDuration[iNPC] < GetGameTime())
+	if (!npc.IsOnGround() && !b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
@@ -5163,8 +5139,9 @@ public void NpcBaseThink(int iNPC)
 		}
 		if(b_NpcResizedForCrouch[iNPC])
 		{
-			hullcheckmins[2] = 41.0;
+			hullcheckmaxs[2] = 41.0;
 		}
+		hullcheckmins[2] += 17.0;
 		
 		//god i love floating point imprecision
 		hullcheckmaxs[0] += 1.0;
@@ -5373,7 +5350,7 @@ stock void Custom_Knockback(int attacker,
 			{
 				SDKUnhook(enemy, SDKHook_Think, NpcJumpThink); //incase another one was in progress.
 				//We'll make push override pulls.
-				f_KnockbackPullDuration[enemy] = GetGameTime() + PullDuration;
+				f_KnockbackPullDuration[enemy] = 0.0;
 				i_PullTowardsTarget[enemy] = 0;
 				f3_KnockbackToTake[enemy] = vDirection;
 				//it needs to be on think, otherwise it wont work sometimes.	
@@ -5398,6 +5375,7 @@ public void NpcJumpThink(int iNPC)
 		{
 			if(i_PullTowardsTarget[iNPC] == 0)
 			{
+				f_DoNotUnstuckDuration[iNPC] = GetGameTime() + 0.05;
 				npc.GetLocomotionInterface().Jump();
 				npc.SetVelocity(f3_KnockbackToTake[iNPC]);
 			}
@@ -5419,6 +5397,7 @@ public void NpcJumpThink(int iNPC)
 				0.1,
 				true,
 				Jump_1_frame);
+				f_DoNotUnstuckDuration[iNPC] = GetGameTime() + 0.05;
 				npc.GetLocomotionInterface().Jump();
 				npc.SetVelocity(Jump_1_frame);
 				return;
