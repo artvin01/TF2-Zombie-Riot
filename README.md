@@ -59,6 +59,15 @@ Main Server:
  
 "zr_viewshakeonlowhealth" = "1" ( def. "1" )
  - Should the view shake when low on health?
+
+"sv_visiblemaxplayers" = "24" ( def. "24" )
+ - This is a default cvar from tf2, but i recomend setting it to 24 on a 32 player server.
+ - it sets the max slots to 24 so players wont join, but bots can for killfeed reasons.
+
+"zr_maxplayersplaying" = "14" ( def. "14" )
+-Max players allowed to play at once, it should be set lower on linux due to performance drops on it
+-You may set it to any value, but i recomment 14-20
+
  
  
  
