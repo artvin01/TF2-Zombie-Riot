@@ -72,7 +72,10 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	int flags = Specter_GetSpecterFlags(weapon);
 	float gameTime = GetGameTime();
 	bool survival = SpecterSurviveFor[attacker] > gameTime;
-	
+	if(b_thisNpcIsARaid[victim])
+	{
+		damage *= 1.25;
+	}
 	if(survival)
 	{
 		int health = GetClientHealth(attacker);

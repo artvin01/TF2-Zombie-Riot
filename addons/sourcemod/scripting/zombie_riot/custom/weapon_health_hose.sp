@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static float Hose_Velocity = 1000.0;
-static float Hose_BaseHeal = 5.0;
+static float Hose_BaseHeal = 4.0;
 static float Hose_UberGain = 0.0025;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
@@ -277,12 +277,12 @@ public void Hose_Heal(int owner, int entity, int amt)
 		flMaxHealth = SDKCall_GetMaxHealth(entity);
 	}
 	
-	if (flHealth > flMaxHealth)	//Don't apply the new health because then you'd remove their overheal if they have any
+	if (flHealth >= flMaxHealth)	//Don't apply the new health because then you'd remove their overheal if they have any
 		return;
 	
 	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
-		amt /= 2;
+		amt /= 4;
 		if (amt < 1)
 		{
 			amt = 1;
@@ -330,6 +330,10 @@ public void Hose_Heal(int owner, int entity, int amt)
 	
 	int userHeal = RoundFloat(float(ActualHealingDone) * SelfHealMult);
 	
+	if(flHealth >= flMaxHealth)
+	{
+		return;
+	}
 	newHP = flHealth + userHeal;
 	if (newHP > flMaxHealth)
 	{

@@ -53,7 +53,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 1;
 		float value = Attributes_FindOnWeapon(client, weapon, 180);
-		f_AbilityHealAmmount[client] = value * 1.5;
+		f_AbilityHealAmmount[client] = value * 1.9;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
 		/*
@@ -98,7 +98,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_FindOnWeapon(client, weapon, 180);
-		f_AbilityHealAmmount[client] = value * 1.5;
+		f_AbilityHealAmmount[client] = value * 1.9;
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
 		/*
