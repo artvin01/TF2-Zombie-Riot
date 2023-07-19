@@ -66,7 +66,7 @@ public Action Command_PetMenu(int client, int argc)
 	
 	if(argc < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [data] [ally] [rpg level]");
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [rpg level] (All of the following parameters have a default of 1.0) [damage multi] [speed multi] [ranged armour] [melee armour]");
 		return Plugin_Handled;
 	}
 	
@@ -78,11 +78,13 @@ public Action Command_PetMenu(int client, int argc)
 		return Plugin_Handled;
 	}
 	
+	//1==index, 2==health, 3==data, 4==ally, 5==rpg lvl 
 	char buffer[64];
-	GetCmdArg(2, buffer, sizeof(buffer));
+	GetCmdArg(3, buffer, sizeof(buffer));
+
 	
 	bool ally;
-	if(argc > 2)
+	if(argc > 2)	//data
 		ally = view_as<bool>(GetCmdArgInt(3));
 	
 #if defined ZR
@@ -93,13 +95,31 @@ public Action Command_PetMenu(int client, int argc)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}
+		
+		int health = argc > 1 ? GetCmdArgInt(2) : GetEntProp(entity, Prop_Data, "m_iMaxHealth");	//set the custom hp of the npc, if none, just sets the plugin hp
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		
+		fl_Extra_Damage[entity] 		= argc > 5 ? GetCmdArgFloat(6) : fl_Extra_Damage[entity];
+		fl_Extra_Speed[entity] 			= argc > 6 ? GetCmdArgFloat(7) : fl_Extra_Speed[entity];
+		fl_Extra_RangedArmor[entity] 	= argc > 7 ? GetCmdArgFloat(8) : fl_Extra_RangedArmor[entity];
+		fl_Extra_MeleeArmor[entity] 	= argc > 8 ? GetCmdArgFloat(9) : fl_Extra_MeleeArmor[entity];
 	}
 #elseif defined RPG
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
 	if(IsValidEntity(entity))
 	{
-		Level[entity] = argc > 3 ? GetCmdArgInt(4) : 0;
+		Level[entity] = argc > 4 ? GetCmdArgInt(5) : 0;
 		Apply_Text_Above_Npc(entity, 0, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		
+		int health = argc > 1 ? GetCmdArgInt(2) : GetEntProp(entity, Prop_Data, "m_iMaxHealth");	//set the custom hp of the npc, if none, just sets the plugin hp
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		
+		fl_Extra_Damage[entity] 		= argc > 5 ? GetCmdArgFloat(6) : fl_Extra_Damage[entity];
+		fl_Extra_Speed[entity] 			= argc > 6 ? GetCmdArgFloat(7) : fl_Extra_Speed[entity];
+		fl_Extra_RangedArmor[entity] 	= argc > 7 ? GetCmdArgFloat(8) : fl_Extra_RangedArmor[entity];
+		fl_Extra_MeleeArmor[entity] 	= argc > 8 ? GetCmdArgFloat(9) : fl_Extra_MeleeArmor[entity];
 	}
 #else
 	Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
@@ -2605,7 +2625,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 public void NPC_Base_InitGamedata()
 {
-	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_ROOT);
+	RegAdminCmd("sm_spawn_npc", Command_PetMenu, ADMFLAG_SLAY);
 	
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
