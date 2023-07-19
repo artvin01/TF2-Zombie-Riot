@@ -58,12 +58,12 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
 	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
-	ConVar_Add("sv_visiblemaxplayers", MAX_PLAYER_COUNT_STRING_SLOTS);
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 	
 	#if defined ZR
 	ConVar_Add("mp_disable_respawn_times", "1.0");
 	
+	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "14", "How many players can play at once?", FCVAR_DONTRECORD);
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "1", "No Panzer will spawn or anything alike", FCVAR_DONTRECORD);
