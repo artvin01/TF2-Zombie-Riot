@@ -33,22 +33,6 @@
 #define ZR_MAX_SPAWNERS 128
 #define ZR_MAX_GIBCOUNT 12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 
-#if defined ZR
-#define MAX_PLAYER_COUNT			14
-#define MAX_PLAYER_COUNT_STRING		"14"
-
-//This is for spectating
-#define MAX_PLAYER_COUNT_SLOTS				24 
-#define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
-
-#else
-#define MAX_PLAYER_COUNT			24
-#define MAX_PLAYER_COUNT_STRING		"24"
-
-#define MAX_PLAYER_COUNT_SLOTS				24
-#define MAX_PLAYER_COUNT_STRING_SLOTS		"24"
-#endif
-
 //#pragma dynamic    131072
 //Allah This plugin has so much we need to do this.
 
@@ -87,6 +71,7 @@ ConVar zr_downloadconfig;
 ConVar CvarRerouteToIp;
 ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
+ConVar CvarMaxPlayerAlive;
 
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
@@ -3251,7 +3236,7 @@ public Action AdminCheckKick(Handle timer, int ref)
 		}
 		else
 		{
-			KickAt = MAX_PLAYER_COUNT_SLOTS;
+			KickAt = CvarMaxPlayerAlive.IntValue;
 		}
 
 		int playersOnServer = CountPlayersOnServer();

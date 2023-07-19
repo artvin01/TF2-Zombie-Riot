@@ -290,12 +290,13 @@ void Queue_ClientDisconnect(int client)
 
 int CalcMaxPlayers()
 {
-	int playercount = MAX_PLAYER_COUNT;
-
+	int playercount = CvarMaxPlayerAlive.IntValue;
+	/*
 	if(OperationSystem == OS_Linux)
 	{
 		playercount -= 2; //linux is abit shite
 	}
+	*/
 
 	return playercount;
 }

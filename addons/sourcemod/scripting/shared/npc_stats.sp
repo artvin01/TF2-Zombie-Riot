@@ -5269,7 +5269,9 @@ stock void Custom_Knockback(int attacker,
 				float pos1[3];
 				float pos2[3];
 				GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos1); 
-				GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos2); 
+				GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos2);
+				pos2[2] += 50.0; 
+				//so thery always should be pulled abit...
 				SubtractVectors(pos1, pos2, vector1);
 				NormalizeVector(vector1, vector1);
 				GetVectorAngles(vector1, vAngles); 
