@@ -5164,13 +5164,13 @@ public void NpcBaseThink(int iNPC)
 		hullcheckmins[2] += 17.0;
 		
 		//god i love floating point imprecision
-		hullcheckmaxs[0] += 1.0;
-		hullcheckmaxs[1] += 1.0;
-		hullcheckmaxs[2] += 1.0;
+		hullcheckmaxs[0] += 0.001;
+		hullcheckmaxs[1] += 0.001;
+		hullcheckmaxs[2] += 0.001;
 
-		hullcheckmins[0] -= 1.0;
-		hullcheckmins[1] -= 1.0;
-		hullcheckmins[2] -= 1.0;
+		hullcheckmins[0] -= 0.001;
+		hullcheckmins[1] -= 0.001;
+		hullcheckmins[2] -= 0.001;
 		
 		//invert to save 1 frame per 3 minutes
 		/*
@@ -8251,13 +8251,13 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
 	}
 		
 	//god i love floating point imprecision
-	hullcheckmaxs[0] += 1.0;
-	hullcheckmaxs[1] += 1.0;
-	hullcheckmaxs[2] += 1.0;
+	hullcheckmaxs[0] += 0.001;
+	hullcheckmaxs[1] += 0.001;
+	hullcheckmaxs[2] += 0.001;
 
-	hullcheckmins[0] -= 1.0;
-	hullcheckmins[1] -= 1.0;
-	hullcheckmins[2] -= 1.0;
+	hullcheckmins[0] -= 0.001;
+	hullcheckmins[1] -= 0.001;
+	hullcheckmins[2] -= 0.001;
 	/*
 	for(int client; client <= MaxClients; client++)
 	{
