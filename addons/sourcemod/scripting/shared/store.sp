@@ -130,6 +130,7 @@ enum struct ItemInfo
 	int Attack3AbilitySlot;
 	
 	int SpecialAdditionViaNonAttribute; //better then spamming attribs.
+	int SpecialAdditionViaNonAttributeInfo; //better then spamming attribs.
 
 	int SpecialAttribRules;
 	int SpecialAttribRules_2;
@@ -331,6 +332,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sspecial_attribute", prefix);
 		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
+
+		Format(buffer, sizeof(buffer), "%sspecial_attribute_info", prefix);
+		this.SpecialAdditionViaNonAttributeInfo			= kv.GetNum(buffer);
 		
 		static char buffers[32][16];
 		Format(buffer, sizeof(buffer), "%sattributes", prefix);
@@ -1299,7 +1303,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						int HigherTechAdvancedClient;
 						int HigherTechAdvancedCount;
 						HigherTechAdvancedClient = owner;
-						HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false, true);
+						HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
 						char buffer_pap[36];
 						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 						{
@@ -1313,7 +1317,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 									if(IsValidClient(ownerTech) && ownerTech != owner)
 									{
 										int TechCount;
-										TechCount = MaxSupportBuildingsAllowed(ownerTech, false, true);
+										TechCount = MaxSupportBuildingsAllowed(ownerTech, false);
 										if(HigherTechAdvancedCount < TechCount)
 										{
 											HigherTechAdvancedClient = ownerTech;
@@ -1570,7 +1574,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						{
 							break;
 						}
-						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
+						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 						{
 							break;
 						}
@@ -2656,7 +2660,7 @@ public void MenuPage(int client, int section)
 						bool Maxed_Building = false;
 						if(item.MaxBarricadesBuild)
 						{
-							if(i_BarricadesBuild[client] >= MaxBarricadesAllowed(client))
+							if(BarricadeMaxSupply(client) >= MaxBarricadesAllowed(client))
 							{
 								Maxed_Building = true;
 								style = ITEMDRAW_DISABLED;
@@ -2973,7 +2977,7 @@ public void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
 					}
-					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false, true))
+					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 					{
 						FormatEx(buffer, sizeof(buffer), "%s %s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
@@ -4371,6 +4375,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_LeftForDead[client] = false;
 	b_StickyExtraGrenades[client] = false;
 	b_HasMechanic[client] = false;
+	i_MaxSupportBuildingsLimit[client] = 0;
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -4969,6 +4974,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 7) //Mechanic
 					{
 						b_HasMechanic[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 8)
+					{
+						i_MaxSupportBuildingsLimit[client] += info.SpecialAdditionViaNonAttributeInfo;
 					}
 
 #endif

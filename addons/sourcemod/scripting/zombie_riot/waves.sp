@@ -703,8 +703,8 @@ void Waves_RoundStart()
 	}
 	else
 	{
-		SpawnTimer(60.0);
-		CreateTimer(60.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+		SpawnTimer(90.0);
+		CreateTimer(90.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	if(CurrentCash != StartCash)

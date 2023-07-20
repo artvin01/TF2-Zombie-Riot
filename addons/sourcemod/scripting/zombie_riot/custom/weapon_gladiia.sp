@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle HealingTimer[MAXTF2PLAYERS];
+static Handle HealingTimer[MAXTF2PLAYERS] = {INVALID_HANDLE, ...};
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 
-static Handle WeaponTimer[MAXTF2PLAYERS];
+static Handle WeaponTimer[MAXTF2PLAYERS] = {INVALID_HANDLE, ...};
 static int WeaponRef[MAXTF2PLAYERS];
 static int WeaponCharge[MAXTF2PLAYERS];
 static int EliteLevel[MAXTF2PLAYERS];
@@ -23,16 +23,30 @@ void Gladiia_Enable(int client, int weapon)
 	{
 		case WEAPON_OCEAN, WEAPON_SPECTER:
 		{
-			delete HealingTimer[client];
+			if (HealingTimer[client] != INVALID_HANDLE)
+			{
+				KillTimer(HealingTimer[client]);
+			}
+			HealingTimer[client] = INVALID_HANDLE;
+
 			HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
 		}
 		case WEAPON_GLADIIA:
 		{
-			delete HealingTimer[client];
+			if (HealingTimer[client] != INVALID_HANDLE)
+			{
+				KillTimer(HealingTimer[client]);
+			}
+			HealingTimer[client] = INVALID_HANDLE;
+
 			HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
 
 			WeaponRef[client] = EntIndexToEntRef(weapon);
-			delete WeaponTimer[client];
+			if (WeaponTimer[client] != INVALID_HANDLE)
+			{
+				KillTimer(WeaponTimer[client]);
+			}
+			WeaponTimer[client] = INVALID_HANDLE;
 
 			float value = -1.0;
 			Address address = TF2Attrib_GetByDefIndex(weapon, 861);
@@ -151,7 +165,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 		return Plugin_Continue;
 	}
 
-	WeaponTimer[client] = null;
+	HealingTimer[client] = INVALID_HANDLE;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -176,7 +190,7 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = null;
+	WeaponTimer[client] = INVALID_HANDLE;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -201,7 +215,7 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = null;
+	WeaponTimer[client] = INVALID_HANDLE;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -226,7 +240,7 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = null;
+	WeaponTimer[client] = INVALID_HANDLE;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -251,7 +265,7 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = null;
+	WeaponTimer[client] = INVALID_HANDLE;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }

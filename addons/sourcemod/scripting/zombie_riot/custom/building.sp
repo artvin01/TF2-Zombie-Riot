@@ -2667,7 +2667,7 @@ public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer, 
 		i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
-	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
+	if(!IsValidClient(client) && !IsClientInGame(client)) //Are they valid ? no ? DIE!
 	{
 		i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
@@ -4040,15 +4040,11 @@ static void GetBeamDrawStartPoint_Client(int client, float startPoint[3])
 
 static int i_MaxSupportBuildingsAllowed[MAXTF2PLAYERS];
 
-int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat = false)
+int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 {
-	if(GetSavedStat)
-	{
-		return i_MaxSupportBuildingsAllowed[client];
-	}
 	int maxAllowed = 1;
 	
-  	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayerZR(client, 762)); //762 is how many extra buildings are allowed on you.
+  	int Building_health_attribute = i_MaxSupportBuildingsLimit[client];
 	
 	maxAllowed += Building_health_attribute; 
 	
@@ -4071,8 +4067,6 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 		if(!ingore_glass)
 			maxAllowed = 1;
 	}
-	i_MaxSupportBuildingsAllowed[client] = maxAllowedSaveStats;
-
 	return maxAllowed;
 }
 
@@ -4080,11 +4074,7 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass, bool GetSavedStat 
 public int MaxBarricadesAllowed(int client)
 {
 	int maxAllowed = 4;
-	
- //	int Building_health_attribute = RoundToNearest(Attributes_FindOnPlayerZR(client, 762)); //762 is how many extra buildings are allowed on you.
-	
-//	maxAllowed += Building_health_attribute;
-	
+
 	if(maxAllowed < 1)
 	{
 		maxAllowed = 1;
@@ -7492,12 +7482,15 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			}
 		}
 	}
-	
-	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+
+	if(!ignore_barricades)
 	{
-		personal += 1;
-		if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
-			personal -= 1;
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+		{
+			personal += 1;
+			if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+				personal -= 1;
+		}
 	}
 
 	if(personal < 0)
@@ -7514,7 +7507,7 @@ static int GetSupplyLeft(int client)
 	return 3 + Rogue_Barracks_BonusSupply() - personal;
 }
 
-static int BarricadeMaxSupply(int client)
+int BarricadeMaxSupply(int client)
 {
 	int Barricades_Active = i_BarricadesBuild[client];
 	//4 at max
@@ -7525,9 +7518,12 @@ static int BarricadeMaxSupply(int client)
 		Barricades_Active += RoundToCeil((float(personalalive) * 1.1));
 	}
 
-	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+	if(Barricades_Active <= 0)
 	{
-		Barricades_Active -= 1; //allow to always have build atelast 1 barricade when getting this upgrade, unless you have glass builder.
+		if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+		{
+			Barricades_Active -= 1; //allow to always have build atelast 1 barricade when getting this upgrade, unless you have glass builder.
+		}
 	}
 
 	return Barricades_Active;
