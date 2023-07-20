@@ -380,7 +380,7 @@ methodmap Blitzkrieg < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime(npc.index) + 250.0;
+		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		
 		i_NpcCurrentLives[npc.index] = 0;	//Basically tells the npc which life it currently is in
 		
@@ -526,6 +526,7 @@ methodmap Blitzkrieg < CClotBody
 		else if(i_currentwave[npc.index]>=60)
 		{
 			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
+			RaidModeTime = GetGameTime(npc.index) + 250.0;
 		}
 		if(i_currentwave[npc.index]>60)
 		{
