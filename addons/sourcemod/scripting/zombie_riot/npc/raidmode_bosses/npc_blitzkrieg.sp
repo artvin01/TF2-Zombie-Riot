@@ -1777,7 +1777,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 					GetClientEyePosition(i, vClientPosition);
 	
 					dist = GetVectorDistance(vClientPosition, position, false);
-					if (dist < Ionrange)
+					if (dist < 150.0)
 					{
 						Client_Shake(i, 0, 10.0, 25.0, 7.5);
 					}
