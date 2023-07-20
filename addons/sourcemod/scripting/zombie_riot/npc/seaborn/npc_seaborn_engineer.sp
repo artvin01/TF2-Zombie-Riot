@@ -83,12 +83,11 @@ methodmap SeabornEngineer < CClotBody
 
 		SDKHook(npc.index, SDKHook_Think, SeabornEngineer_ClotThink);
 		
-		Is_a_Medic[npc.index] = true;
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + GetRandomFloat(8.0, 12.0);
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + GetRandomFloat(4.0, 6.0);
 		npc.m_fbRangedSpecialOn = false;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

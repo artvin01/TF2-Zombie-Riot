@@ -1,43 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
- 
-static const char g_DeathSounds[][] =
-{
-	"npc/combine_soldier/die1.wav",
-	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav"
-};
 
-static const char g_HurtSounds[][] =
-{
-	")physics/metal/metal_box_impact_bullet1.wav",
-	")physics/metal/metal_box_impact_bullet2.wav",
-	")physics/metal/metal_box_impact_bullet3.wav"
-};
+static float RaidModeScalingBase;
 
-static const char g_IdleAlertedSounds[][] =
-{
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav"
-};
-
-static const char g_MeleeHitSounds[][] =
-{
-	"weapons/halloween_boss/knight_axe_hit.wav"
-};
-
-static const char g_MeleeAttackSounds[][] =
-{
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav"
-};
-
-static int PeaceKnight;
-
-methodmap LastKnight < CClotBody
+methodmap Marxvee < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -64,69 +30,65 @@ methodmap LastKnight < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public LastKnight(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Marxvee(int client, float vecPos[3], float vecAng[3])
 	{
-		if(data[0] == 'R')
-		{
-			PeaceKnight = -1;
-		}
-		else if(data[0])
-		{
-			PeaceKnight = 0;
-		}
-		else if(PeaceKnight > 0)
-		{
-			return view_as<LastKnight>(-1);
-		}
+		Marxvee npc = view_as<Marxvee>(CClotBody(vecPos, vecAng, "models/vee/marxvee/marxveeomega4.mdl", "0.5", "10000", false, false));
 		
-		LastKnight npc = view_as<LastKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "125000", ally, false));
-		// 125000 x 1.0
-
-		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+		i_NpcInternalId[npc.index] = MARXVEE;
+		i_NpcWeight[npc.index] = 0;
+		npc.SetActivity("ref", true);
 		
-		i_NpcInternalId[npc.index] = LASTKNIGHT;
-		i_NpcWeight[npc.index] = 5;
-		npc.SetActivity("ACT_LAST_KNIGHT_WALK");
-		KillFeed_SetKillIcon(npc.index, "spy_cicle");
-		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, LastKnight_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, Marxvee_ClotThink);
 		
-		npc.m_flSpeed = 150.0;	// 0.6 x 250
+		RaidModeTime = GetGameTime(npc.index) + 300.0;
+
+		RaidModeScaling = float(ZR_GetWaveCount()+1) * 0.1;
+		if(RaidModeScaling > 54)
+			RaidModeScaling *= 2.0;
+		
+		float amount_of_people = CountPlayersOnRed() * 0.12;
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people;
+		RaidModeScalingBase = RaidModeScaling;
+		
+		Raidboss_Clean_Everyone();
+		
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_bThisNpcIsABoss = true;
+		
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		SetVariantColor(view_as<int>({200, 40, 200, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
+		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_iPhase = 0;
+		npc.m_flNextRangedSpecialAttack = 0.0;
+		npc.m_flNextRangedSpecialAttackHappens = 0.0;
+		npc.m_flRangedSpecialDelay = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_iLevel = (ZR_GetWaveCount() - 10) / 15;
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-		SetVariantString("5.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/sbox2014_knight_helmet/sbox2014_knight_helmet_demo.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-
-		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
-		vecMe[2] += 100.0;
-
-		npc.m_iWearable5 = ParticleEffectAt(vecMe, "powerup_icon_reflect", -1.0);
-		SetParent(npc.index, npc.m_iWearable5);
+		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
 		
 		return npc;
 	}
-	property int m_iPhase
+	property bool m_flDamageMulti
+	{
+		public get()
+		{
+			return RaidModeScalingBase * 2.0 * GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
+		}
+	}
+	property int m_iLevel
 	{
 		public get()
 		{
@@ -139,9 +101,9 @@ methodmap LastKnight < CClotBody
 	}
 }
 
-public void LastKnight_ClotThink(int iNPC)
+public void Marxvee_ClotThink(int iNPC)
 {
-	LastKnight npc = view_as<LastKnight>(iNPC);
+	Marxvee npc = view_as<Marxvee>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -224,7 +186,7 @@ public void LastKnight_ClotThink(int iNPC)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
-				int ally = Npc_Create(BARRACK_LASTKNIGHT, owner, pos, ang, true);
+				int ally = Npc_Create(BARRACK_Marxvee, owner, pos, ang, true);
 				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
 				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
 				view_as<BarrackBody>(ally).m_iSupplyCount = 0;
@@ -368,9 +330,9 @@ public void LastKnight_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon)
+void Marxvee_OnTakeDamage(int victim, int attacker, float &damage, int weapon)
 {
-	LastKnight npc = view_as<LastKnight>(victim);
+	Marxvee npc = view_as<Marxvee>(victim);
 
 	if(attacker < 1)
 		return;
@@ -420,7 +382,7 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 		{
 			char buffer[36];
 			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
-				ApplyTempAttrib(weapon, 6, 1.2, npc.m_iPhase ? 2.0 : 1.0);
+				ApplyTempAttrib(weapon, 6, 0.8, npc.m_iPhase ? 2.0 : 1.0);
 		}
 	}
 	else if(f_LowIceDebuff[attacker] < gameTime)
@@ -432,7 +394,7 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 		{
 			char buffer[36];
 			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
-				ApplyTempAttrib(weapon, 6, 1.2, npc.m_iPhase ? 2.0 : 1.0);
+				ApplyTempAttrib(weapon, 6, 0.8, npc.m_iPhase ? 2.0 : 1.0);
 		}
 	}
 	else if(f_HighIceDebuff[attacker] < gameTime)
@@ -445,7 +407,7 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 		{
 			char buffer[36];
 			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
-				ApplyTempAttrib(weapon, 6, 1.2, npc.m_iPhase ? 2.0 : 1.0);
+				ApplyTempAttrib(weapon, 6, 0.8, npc.m_iPhase ? 2.0 : 1.0);
 		}
 	}
 	else if(attacker > MaxClients)
@@ -461,18 +423,18 @@ void LastKnight_OnTakeDamage(int victim, int attacker, float &damage, int weapon
 		{
 			char buffer[36];
 			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
-				ApplyTempAttrib(weapon, 6, 1.4, f_HighIceDebuff[attacker] - gameTime);
+				ApplyTempAttrib(weapon, 6, 0.6, f_HighIceDebuff[attacker] - gameTime);
 		}
 	}
 }
 
-void LastKnight_NPCDeath(int entity)
+void Marxvee_NPCDeath(int entity)
 {
-	LastKnight npc = view_as<LastKnight>(entity);
+	Marxvee npc = view_as<Marxvee>(entity);
 	if(!npc.m_bGib && !npc.m_bDissapearOnDeath)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, LastKnight_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, Marxvee_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

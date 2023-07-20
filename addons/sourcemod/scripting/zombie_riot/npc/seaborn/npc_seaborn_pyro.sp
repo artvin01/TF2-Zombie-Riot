@@ -167,6 +167,7 @@ public void SeabornPyro_ClotThink(int iNPC)
 							else
 							{
 								TF2_AddCondition(target, TFCond_Gas, 1.5);
+								TF2_MakeBleed(target, npc.index, 10.0);
 							}
 						}
 						

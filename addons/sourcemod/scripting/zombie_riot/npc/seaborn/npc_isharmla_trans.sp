@@ -81,7 +81,7 @@ methodmap IsharmlaTrans < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, IsharmlaTrans_ClotThink);
 		
-		npc.m_flSpeed = 100.0;	// 0.6 - 0.2 x 250
+		npc.m_flSpeed = 250.0;//100.0;	// 0.6 - 0.2 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -147,8 +147,8 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 				}
 				else
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 700.0);
-					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 700.0, 275.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
+					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
+					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
 				}
 			}
 
@@ -213,4 +213,8 @@ void IsharmlaTrans_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	
+	float pos[3];
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+	SeaFounder_SpawnNethersea(pos);
 }

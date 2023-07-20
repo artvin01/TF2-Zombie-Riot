@@ -183,7 +183,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 
 		if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
-			npc.m_flNextRangedAttack = gameTime + 10.0;
+			npc.m_flNextRangedAttack = gameTime + 5.0;
 
 			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 5;
 

@@ -123,10 +123,6 @@ public void Isharmla_ClotThink(int iNPC)
 
 		// Recover 2% HP
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 50));
-		
-		float pos[3];
-		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-		SeaFounder_SpawnNethersea(pos);
 		return;
 	}
 
@@ -139,10 +135,12 @@ public void Isharmla_ClotThink(int iNPC)
 	if(npc.m_bSpeed)
 		npc.m_iPoints += ((GetURandomInt() % 2) ? 17 : 16);
 	
-	if(npc.m_iPoints > 12000)
+	if(npc.m_iPoints > 1200)
 	{
 		if(isRaid)
 			RaidModeScaling = 1.0;
+		
+		npc.m_iPoints = 0;
 		
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -176,7 +174,7 @@ public void Isharmla_ClotThink(int iNPC)
 	}
 	else if(isRaid)
 	{
-		RaidModeScaling = float(npc.m_iPoints) / 12000.0;
+		RaidModeScaling = float(npc.m_iPoints) / 1200.0;
 	}
 	
 	b_NpcIsInvulnerable[npc.index] = false;

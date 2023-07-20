@@ -129,11 +129,7 @@ public void SeabornSpy_ClotThink(int iNPC)
 		Building_CamoOrRegrowBlocker(npc.index, camo);
 		if(camo)
 		{
-			npc.m_bCamo = false;
-		}
-		else
-		{
-			alpha = RoundFloat((npc.m_flNextRangedAttack - gameTime) * 200.0);
+			alpha = RoundFloat((gameTime - npc.m_flNextRangedAttack) * 200.0);
 			if(NpcStats_IsEnemySilenced(npc.index))
 			{
 				if(alpha < 50)
@@ -147,6 +143,10 @@ public void SeabornSpy_ClotThink(int iNPC)
 				alpha = 0;
 				npc.m_bCamo = true;
 			}
+		}
+		else
+		{
+			npc.m_bCamo = false;
 		}
 		
 		SetEntityRenderColor(npc.index, 100, 100, 255, alpha);
@@ -195,18 +195,18 @@ public void SeabornSpy_ClotThink(int iNPC)
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bCamo ? 300.0 : 100.0, DMG_CLUB);
-						
-						if(npc.m_flNextRangedAttack < gameTime)
-						{
-							SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-							npc.m_bCamo = false;
-						}
-
-						npc.m_flNextRangedAttack = gameTime + 4.0;
 					}
 				}
 
 				delete swingTrace;
+
+				if(npc.m_flNextRangedAttack < gameTime)
+				{
+					SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+					npc.m_bCamo = false;
+				}
+
+				npc.m_flNextRangedAttack = gameTime + 4.0;
 			}
 		}
 

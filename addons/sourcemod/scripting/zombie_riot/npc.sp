@@ -1925,7 +1925,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = BarrackLastKnight(client, vecPos, vecAng, ally);
 		
 		case SAINTCARMEN:
-			entity = BarrackLastKnight(client, vecPos, vecAng, ally);
+			entity = SaintCarmen(client, vecPos, vecAng, ally);
 		
 		case PATHSHAPER:
 			entity = Pathshaper(client, vecPos, vecAng, ally);
@@ -1946,7 +1946,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = TidelinkedBishop(client, vecPos, vecAng, ally);
 
 		case TIDELINKED_ARCHON:
-			entity = TidelinkedBishop(client, vecPos, vecAng, ally);
+			entity = TidelinkedArchon(client, vecPos, vecAng, ally);
 			
 		case ALT_BARRACK_SCIENTIFIC_WITCHERY:
 			entity = Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);

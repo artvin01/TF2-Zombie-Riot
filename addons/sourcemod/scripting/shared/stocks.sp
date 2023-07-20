@@ -2950,6 +2950,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				else
 				{
 					TF2_AddCondition(ClosestTarget, TFCond_Gas, 1.5);
+					TF2_MakeBleed(ClosestTarget, entityToEvaluateFrom, 10.0);
 				}
 			}
 			static float damage_1;

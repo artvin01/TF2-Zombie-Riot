@@ -71,7 +71,7 @@ methodmap Pathshaper < CClotBody
 
 		i_NpcInternalId[npc.index] = PATHSHAPER;
 		i_NpcWeight[npc.index] = 4;
-		npc.SetActivity("ACT_MP_RUN_MELEE");
+		npc.SetActivity("ACT_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

@@ -4396,7 +4396,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 		if(closeNav != NULL_AREA)
 		{
-			closeDist = FAR_FUTURE;
+			closeDist = maxDistance * maxDistance;
 			//float minDistance1 = fldistancelimit * fldistancelimit;
 			//float minDistance2 = fldistancelimitAllyNPC * fldistancelimitAllyNPC;
 
@@ -6132,6 +6132,8 @@ stock bool makeexplosion(
 				FromBlueNpc = true;
 			}
 		}
+
+		i_ExplosiveProjectileHexArray[owner] = flags;
 		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _, _, dmg_against_entity_multiplier);
 
 	}
@@ -7423,6 +7425,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 		
 		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
 		{
+			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
 			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 		}
 		else
