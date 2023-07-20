@@ -58,15 +58,19 @@ static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_EntityInCrouchSpot[MAXENTITIES];
 static bool b_NpcResizedForCrouch[MAXENTITIES];
 
-public Action Command_PetMenu(int client, int argc)
+public Action Command_PetMenu(int client, int args)
 {
 	//What are you.
 	if(!(client > 0 && client <= MaxClients && IsClientInGame(client)))
 		return Plugin_Handled;
 	
-	if(argc < 1)
+	if(args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [rpg level] (All of the following parameters have a default of 1.0) [damage multi] [speed multi] [ranged armour] [melee armour]");
+#if defined RPG
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [level] [damage multi] [speed multi] [ranged armour] [melee armour]");
+#else
+		ReplyToCommand(client, "[SM] Usage: sm_spawn_npc <index> [health] [data] [ally] [damage multi] [speed multi] [ranged armour] [melee armour]");
+#endif
 		return Plugin_Handled;
 	}
 	
@@ -82,10 +86,9 @@ public Action Command_PetMenu(int client, int argc)
 	char buffer[64];
 	GetCmdArg(3, buffer, sizeof(buffer));
 
-	
 	bool ally;
-	if(argc > 2)	//data
-		ally = view_as<bool>(GetCmdArgInt(3));
+	if(args > 3)	//data
+		ally = view_as<bool>(GetCmdArgInt(4));
 	
 #if defined ZR
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
@@ -96,30 +99,50 @@ public Action Command_PetMenu(int client, int argc)
 			Zombies_Currently_Still_Ongoing += 1;
 		}
 		
-		int health = argc > 1 ? GetCmdArgInt(2) : GetEntProp(entity, Prop_Data, "m_iMaxHealth");	//set the custom hp of the npc, if none, just sets the plugin hp
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		if(args > 1)
+		{
+			int health = GetCmdArgInt(2);
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		}
 		
-		fl_Extra_Damage[entity] 		= argc > 5 ? GetCmdArgFloat(6) : fl_Extra_Damage[entity];
-		fl_Extra_Speed[entity] 			= argc > 6 ? GetCmdArgFloat(7) : fl_Extra_Speed[entity];
-		fl_Extra_RangedArmor[entity] 	= argc > 7 ? GetCmdArgFloat(8) : fl_Extra_RangedArmor[entity];
-		fl_Extra_MeleeArmor[entity] 	= argc > 8 ? GetCmdArgFloat(9) : fl_Extra_MeleeArmor[entity];
+		if(args > 4)
+			fl_Extra_Damage[entity] = GetCmdArgFloat(5);
+		
+		if(args > 5)
+			fl_Extra_Speed[entity] = GetCmdArgFloat(6);
+		
+		if(args > 6)
+			fl_Extra_RangedArmor[entity] = GetCmdArgFloat(7);
+		
+		if(args > 7)
+			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(8);
 	}
 #elseif defined RPG
 	int entity = Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
 	if(IsValidEntity(entity))
 	{
-		Level[entity] = argc > 4 ? GetCmdArgInt(5) : 0;
+		Level[entity] = args > 4 ? GetCmdArgInt(5) : 0;
 		Apply_Text_Above_Npc(entity, 0, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 		
-		int health = argc > 1 ? GetCmdArgInt(2) : GetEntProp(entity, Prop_Data, "m_iMaxHealth");	//set the custom hp of the npc, if none, just sets the plugin hp
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		if(args > 1)
+		{
+			int health = GetCmdArgInt(2);
+			SetEntProp(entity, Prop_Data, "m_iHealth", health);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		}
 		
-		fl_Extra_Damage[entity] 		= argc > 5 ? GetCmdArgFloat(6) : fl_Extra_Damage[entity];
-		fl_Extra_Speed[entity] 			= argc > 6 ? GetCmdArgFloat(7) : fl_Extra_Speed[entity];
-		fl_Extra_RangedArmor[entity] 	= argc > 7 ? GetCmdArgFloat(8) : fl_Extra_RangedArmor[entity];
-		fl_Extra_MeleeArmor[entity] 	= argc > 8 ? GetCmdArgFloat(9) : fl_Extra_MeleeArmor[entity];
+		if(args > 5)
+			fl_Extra_Damage[entity] = GetCmdArgFloat(6);
+		
+		if(args > 6)
+			fl_Extra_Speed[entity] = GetCmdArgFloat(7);
+		
+		if(args > 7)
+			fl_Extra_RangedArmor[entity] = GetCmdArgFloat(8);
+		
+		if(args > 8)
+			fl_Extra_MeleeArmor[entity] = GetCmdArgFloat(9);
 	}
 #else
 	Npc_Create(GetCmdArgInt(1), client, flPos, flAng, ally, buffer);
