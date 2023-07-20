@@ -2667,7 +2667,7 @@ public Action Timer_ClaimedBuildingremoveBarricadeCounterOnDeath(Handle htimer, 
 		i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
 	}
-	if(!IsValidClient(client) && !IsClientInGame(client)) //Are they valid ? no ? DIE!
+	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_BarricadesBuild[client_original_index] -= 1;
 		return Plugin_Stop;
