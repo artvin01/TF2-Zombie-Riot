@@ -334,7 +334,7 @@ enum struct ItemInfo
 		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
 
 		Format(buffer, sizeof(buffer), "%sspecial_attribute_info", prefix);
-		this.SpecialAdditionViaNonAttributeInfo			= kv.GetNum(buffer);
+		this.SpecialAdditionViaNonAttributeInfo			= kv.GetNum(buffer, 0);
 		
 		static char buffers[32][16];
 		Format(buffer, sizeof(buffer), "%sattributes", prefix);
@@ -4920,6 +4920,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #endif
 	
 	{
+		i_MaxSupportBuildingsLimit[client] = 0;
 		for(int i; i<length; i++)
 		{
 			

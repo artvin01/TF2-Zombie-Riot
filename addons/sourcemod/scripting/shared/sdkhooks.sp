@@ -1674,7 +1674,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
-		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime)
+		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
 		{
 			damage = float(flHealth - 1); //survive with 1 hp!
 			GiveCompleteInvul(victim, 2.0);
@@ -1684,7 +1684,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
-		else if(!LastMann && !b_IsAloneOnServer)
+		else if(!LastMann && !b_IsAloneOnServer && !SpecterCheckIfAutoRevive(victim))
 		{
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)

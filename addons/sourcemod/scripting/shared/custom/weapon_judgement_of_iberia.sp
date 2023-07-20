@@ -23,6 +23,7 @@ Handle h_TimerIreneManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
 static bool b_WeaponAttackSpeedModified[MAXENTITIES];
+static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
 static float f_TargetAirtimeDelayHit[MAXENTITIES];
@@ -85,6 +86,7 @@ void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
 	b_WeaponAttackSpeedModified[weapon] = false;
+	b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
 }
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
@@ -118,12 +120,37 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
 		b_WeaponAttackSpeedModified[weapon] = true;
-		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed * 0.15));
+		attackspeed = (attackspeed * 0.15);
+		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
 	}
 	else
 	{
 		b_WeaponAttackSpeedModified[weapon] = false;
-		TF2Attrib_SetByDefIndex(weapon, 6, (attackspeed / 0.15)); //Make it really fast for 1 hit!
+		attackspeed = (attackspeed / 0.15);
+		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed); //Make it really fast for 1 hit!
+	}
+	bool ThereWasSeaborn = false;
+	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+		if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
+		{
+			ThereWasSeaborn = true;
+			break;
+		}
+	}
+
+	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
+	{
+		attackspeed = (attackspeed / 0.85);
+		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
+	}
+	else if(!b_WeaponAttackSpeedModifiedSeaborn[weapon] && ThereWasSeaborn)
+	{
+		attackspeed = (attackspeed * 0.85);
+		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		b_WeaponAttackSpeedModifiedSeaborn[weapon] = true;
 	}
 }
 

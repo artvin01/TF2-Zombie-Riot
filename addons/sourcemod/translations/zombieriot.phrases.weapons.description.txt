@@ -1811,9 +1811,7 @@
 	
 	"Irene Weapon Desc"
 	{
-		"en"	"You double attack with each attack.\nHitting any enemy 64 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks."
-		"ru"	"Вы удваиваете атаку при каждой атаке.\nУдарив любого врага 64 раза, вы получите способность.\nСпособность подбрасывает врагов в воздух и бомбардирует их атаками с уроном по области."
-		"chi"   "每次攻击都是双倍攻击。\n击中任何敌人64次将获得一个技能。\n此技能将敌人踢到空中并用AOE攻击轰炸他们。"
+		"en"	"You double attack with each attack.\nHitting any enemy 42 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks.\nIf seaborn enemies exist, gain 15%% bonus attackspeed."
 	}
 	
 	"Cosmic Terror Desc"
