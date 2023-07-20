@@ -72,7 +72,7 @@ methodmap SaintCarmen < CClotBody
 		
 		i_NpcInternalId[npc.index] = SAINTCARMEN;
 		i_NpcWeight[npc.index] = 4;
-		npc.SetActivity("ACT_WALK_PISTOL");
+		npc.SetActivity("ACT_DARIO_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -87,12 +87,12 @@ methodmap SaintCarmen < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_ambassador/c_ambassador.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_pistol.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("anim_attachment_LH", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-		SetVariantString("1.0");
+		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/short2014_deadhead/short2014_deadhead.mdl");
@@ -201,6 +201,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 								vecHit = WorldSpaceCenter(target);
 								vecHit[2] += 250.0; //Jump up.
 								PluginBot_Jump(target, vecHit);
+								npc.AddGesture("ACT_DARIO_ATTACK_GUN_1");
 								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
 								npc.m_flNextMeleeAttack += 1.0;

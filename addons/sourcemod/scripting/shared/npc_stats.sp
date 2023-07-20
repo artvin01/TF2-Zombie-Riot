@@ -6133,7 +6133,7 @@ stock bool makeexplosion(
 			}
 		}
 
-		i_ExplosiveProjectileHexArray[owner] = flags;
+		i_ExplosiveProjectileHexArray[attacker] = flags;
 		Explode_Logic_Custom(float(Damage_for_boom), attacker, attacker, -1, attackposition, float(Range_for_boom), _, _, FromBlueNpc, _, _, dmg_against_entity_multiplier);
 
 	}
