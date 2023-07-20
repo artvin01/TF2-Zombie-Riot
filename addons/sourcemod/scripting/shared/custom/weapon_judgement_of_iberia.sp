@@ -129,6 +129,8 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 		attackspeed = (attackspeed / 0.15);
 		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 	}
+
+	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 	{
