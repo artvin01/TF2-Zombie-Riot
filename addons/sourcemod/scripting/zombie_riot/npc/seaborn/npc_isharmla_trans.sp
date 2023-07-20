@@ -71,7 +71,7 @@ methodmap IsharmlaTrans < CClotBody
 		IsharmlaTrans npc = view_as<IsharmlaTrans>(CClotBody(vecPos, vecAng, "models/bots/headless_hatman.mdl", "1.5", "45000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = ISHARMLA_TRANS;
-		i_NpcWeight[npc.index] = 999;	// 6
+		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_MP_STAND_ITEM1");
 		KillFeed_SetKillIcon(npc.index, "headtaker");
 		

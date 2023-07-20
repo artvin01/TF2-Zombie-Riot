@@ -137,7 +137,7 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 			}
 			
 			int weight = i_NpcWeight[EnemiesHit[i]];
-			if(weight > 998)
+			if(weight > 5)
 				continue;
 			
 			if(weight < 0)

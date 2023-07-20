@@ -34,7 +34,7 @@ methodmap Isharmla < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		i_NpcInternalId[npc.index] = ISHARMLA;
-		i_NpcWeight[npc.index] = 999;	// 6
+		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_MONK_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

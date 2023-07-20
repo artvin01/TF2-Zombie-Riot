@@ -180,7 +180,7 @@ public Action Specter_DrainTimer(Handle timer, int userid)
 	{
 		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_UberchargedHidden))
 		{
-			int health = GetClientHealth(client) * 39 / 40;
+			int health = GetClientHealth(client) * 9 / 10;
 			if(health < 1)
 				health = 1;
 			
@@ -200,7 +200,8 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		TF2_RemoveCondition(client, TFCond_UberchargedHidden);
 		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
-		SetEntityHealth(client, 1);
+		if(!dieingstate[client])
+			SetEntityHealth(client, 1);
 		
 		TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
 		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");

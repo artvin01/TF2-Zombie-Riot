@@ -171,7 +171,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
 		i_NpcInternalId[npc.index] = BOB_THE_FIRST;
-		i_NpcWeight[npc.index] = 4;
+		i_NpcWeight[npc.index] = 6;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
