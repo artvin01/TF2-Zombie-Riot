@@ -35,7 +35,7 @@ methodmap Isharmla < CClotBody
 		
 		i_NpcInternalId[npc.index] = ISHARMLA;
 		i_NpcWeight[npc.index] = 6;
-		npc.SetActivity("ACT_MONK_WALK");
+		npc.SetActivity("ACT_SKADI_WALK");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -119,8 +119,10 @@ public void Isharmla_ClotThink(int iNPC)
 		npc.m_iTargetAlly = -1;
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
-		FreezeNpcInTime(npc.index, 5.0);
 
+		npc.SetActivity("ACT_SKADI_REVERT");
+		npc.m_flNextThinkTime = gameTime + 1.25;
+		
 		// Recover 2% HP
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 50));
 		return;
@@ -135,7 +137,7 @@ public void Isharmla_ClotThink(int iNPC)
 	if(npc.m_bSpeed)
 		npc.m_iPoints += ((GetURandomInt() % 2) ? 17 : 16);
 	
-	if(npc.m_iPoints > 1200)
+	if(npc.m_iPoints == 99999)
 	{
 		if(isRaid)
 			RaidModeScaling = 1.0;
@@ -171,6 +173,16 @@ public void Isharmla_ClotThink(int iNPC)
 			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 64);
 			return;
 		}
+	}
+	else if(npc.m_iPoints > 1200)
+	{
+		npc.m_iPoints = 99999;
+		npc.SetActivity("ACT_SKADI_TRANSFORM");
+		npc.m_flNextThinkTime = gameTime + 1.25;
+
+		npc.m_iTarget = 0;
+		npc.StopPathing();
+		return;
 	}
 	else if(isRaid)
 	{
@@ -285,27 +297,27 @@ public void Isharmla_ClotThink(int iNPC)
 		{
 			npc.m_flNextMeleeAttack = gameTime + 6.0;
 
-			npc.AddGesture("ACT_MONK_ATTACK");
-			npc.m_flAttackHappens = gameTime + 0.85;
+			npc.AddGesture("ACT_SKADI_ATTACK");
+			npc.m_flAttackHappens = gameTime + 1.25;
 			//npc.m_flDoingAnimation = gameTime + 1.25;
 		}
 		
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			npc.StopPathing();
-			npc.SetActivity("ACT_MONK_IDLE");
+			//npc.SetActivity("ACT_SKADI_WALK");
 		}
 		else
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			npc.StartPathing();
-			npc.SetActivity("ACT_MONK_WALK");
+			//npc.SetActivity("ACT_SKADI_WALK");
 		}
 	}
 	else
 	{
 		npc.StopPathing();
-		npc.SetActivity("ACT_MONK_IDLE");
+		//npc.SetActivity("ACT_SKADI_WALK");
 	}
 }
 
