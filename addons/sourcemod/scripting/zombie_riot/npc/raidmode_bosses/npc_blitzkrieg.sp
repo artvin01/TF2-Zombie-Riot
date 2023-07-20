@@ -1746,7 +1746,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		{
 
 			startPosition[2] += 25.0;
-			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, float(Ionrange) , _ , _ , true);
+			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 150.0 , _ , _ , true);
 			startPosition[2] -= 25.0;
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
