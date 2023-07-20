@@ -39,7 +39,7 @@ methodmap StalkerGoggles < StalkerShared
 	
 	public StalkerGoggles(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "46664666", ally));
+		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "66666666", ally));
 		
 		i_NpcInternalId[npc.index] = STALKER_GOGGLES;
 		i_NpcWeight[npc.index] = 5;
@@ -531,7 +531,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Changed;
 	}
 
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 1100000 && Waves_GetRound() < 59)
+	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 26000000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
