@@ -46,8 +46,8 @@ methodmap StalkerFather < StalkerShared
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
-		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 		Zero(fl_AlreadyStrippedMusic);

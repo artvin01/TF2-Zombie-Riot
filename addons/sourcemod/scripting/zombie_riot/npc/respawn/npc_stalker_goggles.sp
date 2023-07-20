@@ -62,8 +62,8 @@ methodmap StalkerGoggles < StalkerShared
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 
-		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 
 		Zero(fl_AlreadyStrippedMusic);
 

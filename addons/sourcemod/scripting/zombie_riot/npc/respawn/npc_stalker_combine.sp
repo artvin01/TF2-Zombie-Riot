@@ -224,8 +224,8 @@ methodmap StalkerCombine < StalkerShared
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_bDissapearOnDeath = false;
+		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		GiveNpcOutLineLastOrBoss(npc.index, true);
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 		i_PlayMusicSound = 0;
