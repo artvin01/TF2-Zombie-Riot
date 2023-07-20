@@ -882,11 +882,11 @@
 	}
 	"Fractured Ark Pap 9"
 	{
-		"en"	"Ability pulls heavier enemies, main attack fires faster."
+		"en"	"Ability pulls heavier enemies."
 	}
 	"Fractured Ark Pap 10"
 	{
-		"en"	"Ability pulls even heavier enemies, main attack fires even faster."
+		"en"	"Ability pulls even heavier enemies."
 	}
 	
 	"Longsword Desc"
