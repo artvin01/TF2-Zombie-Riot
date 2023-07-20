@@ -336,7 +336,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > 4)
+	if(++SpreadTicks > (CurrentRound == 59 ? 12 : 4))
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
