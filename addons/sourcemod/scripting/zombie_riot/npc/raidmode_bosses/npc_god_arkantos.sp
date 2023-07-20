@@ -237,6 +237,11 @@ methodmap GodArkantos < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+
+		SetVariantColor(view_as<int>({255, 255, 255, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		if(ZR_GetWaveCount()+1 >= 59)
 		{
