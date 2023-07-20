@@ -321,6 +321,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 	
 	float time = 1.25;
 	
+	Scientific_Witchery_BEAM_BuildingHit[client] = 0;
 	H_i_Slicer_Throttle[client] = 0;
 
 	H_Tick_Count[client] = 0;
@@ -330,7 +331,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 }
 static Action Scientific_Witchery_TBB_Ability_Two(int client)
 {
-	if(!IsValidEntity(client) || H_Tick_Count_Max[client]<H_Tick_Count[client])
+	if(!IsValidEntity(client) || H_Tick_Count_Max[client]<H_Tick_Count[client] || Scientific_Witchery_BEAM_BuildingHit[client] >=11)
 	{
 		H_Tick_Count[client] = 0;
 		SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
@@ -426,6 +427,7 @@ static void Create_Laser_Hell(int client, float vecTarget[3])
 	colour[3] = 255;
 	skyloc = Npc_Vec;
 	skyloc[2] += 300.0;
+	Scientific_Witchery_BEAM_BuildingHit[client] = 0;
 	TE_SetupBeamPoints(Npc_Vec, skyloc, gLaser2, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll(0.0);
 	
@@ -440,7 +442,7 @@ static void Create_Laser_Hell(int client, float vecTarget[3])
 }
 static Action Scientific_Witchery_TBB_Ability(int client)
 {
-	if(!IsValidEntity(client) || Tick_Count_Max[client]<Tick_Count[client])
+	if(!IsValidEntity(client) || Tick_Count_Max[client]<Tick_Count[client] || Scientific_Witchery_BEAM_BuildingHit[client] >=11)
 	{
 		Tick_Count[client] = 0;
 		SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
@@ -506,7 +508,6 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 			hullMax[0] = -hullMin[0];
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
-			Scientific_Witchery_BEAM_BuildingHit[client] = 0;
 			Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Scientific_Witchery_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			
