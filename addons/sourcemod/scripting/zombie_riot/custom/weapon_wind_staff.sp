@@ -5,6 +5,10 @@ static float Strength[MAXTF2PLAYERS];
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};
 static float Damage_Tornado[MAXENTITIES]={0.0, ...};
 static float Duration_Tornado[MAXENTITIES]={0.0, ...};
+static float f_TornadoM2CooldownTimer[MAXENTITIES]={0.0, ...};
+static int i_WeaponRefM2[MAXENTITIES]={0, ...};
+static float f_TornadoDamage[MAXENTITIES]={0.0, ...};
+static int i_TornadoManaCost[MAXENTITIES]={0, ...};
 static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
@@ -36,6 +40,7 @@ static float BEAM_Targets_Hit[MAXTF2PLAYERS];
 public void WindStaff_ClearAll()
 {
 	Zero(Damage_Tornado);
+	Zero(f_TornadoM2CooldownTimer);
 }
 void Wind_Staff_MapStart()
 {
@@ -228,6 +233,105 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
+}
+
+
+public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, bool &result)
+{
+	int mana_cost;
+	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
+	if(address != Address_Null)
+		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		switch(GetRandomInt(1, 4))
+		{
+			case 1:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, 80, _, _, 1.0);					
+			}
+			case 2:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, 80, _, _, 1.0);
+			}
+			case 3:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, 80, _, _, 1.0);			
+			}
+			case 4:
+			{
+				EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, 80, _, _, 1.0);
+			}		
+		}
+		float damage = 125.0;
+		address = TF2Attrib_GetByDefIndex(weapon, 410);
+		if(address != Address_Null)
+			damage *= TF2Attrib_GetValue(address);
+
+		i_WeaponRefM2[client] = EntIndexToEntRef(weapon);
+		
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Hud_Delay[client] = 0.0;
+		i_TornadoManaCost[client] = mana_cost / 8;
+		f_TornadoDamage[client] = damage * 0.25;
+
+		Current_Mana[client] -= mana_cost;
+		
+		delay_hud[client] = 0.0;
+		
+		SDKUnhook(client, SDKHook_PreThink, WindStaffM2_Think);
+		SDKHook(client, SDKHook_PreThink, WindStaffM2_Think);
+	}
+	else
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+	}
+}
+
+public void WindStaffM2_Think(int client)
+{
+	if(GetGameTime() > f_TornadoM2CooldownTimer[client])
+	{
+		f_TornadoM2CooldownTimer[client] = GetGameTime() + 0.1;
+		int buttons = GetClientButtons(client);
+		int weapon = EntRefToEntIndex(i_WeaponRefM2[client]);
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != weapon_active)
+		{
+			SDKUnhook(client, SDKHook_PreThink, WindStaffM2_Think);
+			return;
+		}
+		if (buttons & IN_ATTACK2)
+		{
+			if(i_TornadoManaCost[client] <= Current_Mana[client])
+			{
+				Current_Mana[client] -= i_TornadoManaCost[client];
+				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+				Mana_Hud_Delay[client] = 0.0;
+				int TornadoRange = 300.0;
+				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,1.9,_,false);
+				float flCarrierPos[3];//, targPos[3];
+				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flCarrierPos);
+				flCarrierPos[2] += 15.0;
+				TE_SetupBeamRingPoint(flCarrierPos, TornadoRange*2.0, (TornadoRange*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 0.11, 25.0, 0.8, {50, 50, 250, 250}, 10, 0);
+				TE_SendToAll(0.0);
+				return;
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", i_TornadoManaCost[client]);
+			}
+		}
+		SDKUnhook(client, SDKHook_PreThink, WindStaffM2_Think);
+		return;
+	}	
 }
 
 void TBB_Precache_Wind_Staff()

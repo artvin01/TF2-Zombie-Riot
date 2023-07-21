@@ -401,8 +401,8 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 
 public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, bool &result)
 {
-	static float ang[3];
-	GetClientEyeAngles(client, ang);
+	static float angles[3];
+	GetClientEyeAngles(client, angles);
 	if(angles[0] < -85.0)
 	{
 		if(f_DeleteAllSpikesDelay[client] > GetGameTime())
