@@ -1137,9 +1137,7 @@
 	
 	"Ranged Spike Layer Desc"
 	{
-		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this." 
-		"ru"	"Чем больше у вашей турели урона, тем больше урона наносит это оружие.\nУлучшения оружия, такие как урон, не влияют на это."
-		"chi"   "你的自动哨兵伤害越大，这个武器的伤害就越大。武器升级不会带来改变"
+		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this.\nPress m2 while looking up twice to pick up all your spikes at once." 
 	}
 	
 	"Aresenal's Tripmine Layer Desc"

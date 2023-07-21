@@ -64,6 +64,7 @@ static bool Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
 Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
+static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
 
 
 bool IsEntitySpike(int entity)
@@ -84,6 +85,7 @@ void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
 	}	
 	h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
 	f_SpikeLayerHudDelay[client] = 0.0;
+	f_DeleteAllSpikesDelay[client] = 0.0;
 }
 
 public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
@@ -399,6 +401,64 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 
 public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, bool &result)
 {
+	static float ang[3];
+	GetClientEyeAngles(client, ang);
+	if(angles[0] < -85.0)
+	{
+		if(f_DeleteAllSpikesDelay[client] > GetGameTime())
+		{
+			bool PlaySound = false;
+			for( int entity = 1; entity <= MAXENTITIES; entity++ ) 
+			{
+				if (IsValidEntity(entity))
+				{
+					static char buffer[64];
+					GetEntityClassname(entity, buffer, sizeof(buffer));
+					if(Is_Spike[entity] && !StrContains(buffer, "tf_projectile_pipe_remote"))
+					{
+						int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+						if(owner == client) //Hardcode to this index.
+						{
+							Is_Spike[entity] = false;
+							if(Spike_Health[entity] == Spike_MaxHealth[entity])
+							{
+								//ONLY give back ammo IF the Spike has full health.
+								int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+								PlaySound = true;
+								SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
+								for(int i; i<Ammo_MAX; i++)
+								{
+									CurrentAmmo[client][i] = GetAmmo(client, i);
+								}	
+							}
+							RemoveEntity(entity);
+						}
+					}
+				}
+			}
+			if(PlaySound)
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup Done");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			}
+			else
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup None");
+			}
+			return;
+		}
+		f_DeleteAllSpikesDelay[client] = GetGameTime() + 0.2;
+		
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup Confirm");
+		return;
+	}
 	int entity = GetClientPointVisible(client);
 	if(entity > 0)
 	{

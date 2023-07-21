@@ -201,7 +201,6 @@ public void SaintCarmen_ClotThink(int iNPC)
 								vecHit = WorldSpaceCenter(target);
 								vecHit[2] += 250.0; //Jump up.
 								PluginBot_Jump(target, vecHit);
-								npc.AddGesture("ACT_DARIO_ATTACK_GUN_1");
 								EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
 								npc.m_flNextMeleeAttack += 1.0;

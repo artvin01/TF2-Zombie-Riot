@@ -3551,4 +3551,43 @@
 		//"it"		""
 		//"fr"		""	
 	}
+	"Spike Masspickup Confirm"
+	{
+		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
+	"Spike Masspickup Done"
+	{
+		"en"		"Picked up all your spikes!"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
+	"Spike Masspickup None"
+	{
+		"en"		"There are no spikes left to pick up."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
 }
