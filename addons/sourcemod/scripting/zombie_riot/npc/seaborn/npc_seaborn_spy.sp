@@ -86,7 +86,7 @@ methodmap SeabornSpy < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
@@ -206,7 +206,7 @@ public void SeabornSpy_ClotThink(int iNPC)
 					npc.m_bCamo = false;
 				}
 
-				npc.m_flNextRangedAttack = gameTime + 4.0;
+				npc.m_flNextRangedAttack = gameTime + 2.0;
 			}
 		}
 
