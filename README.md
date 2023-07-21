@@ -154,12 +154,13 @@ Credits go to - [Arthurdead](https://github.com/arthurdead) for the original plu
 I just got windows gamedata.
 To edit the nav live, do sm_nav_edit_mode 
 
-
-If you wish to donate to support this project then concider subscribing to the patron
-https://www.patreon.com/user?u=95717000
-
 BEWARE, THIS SETS sv_cheats TO 1, Do it again to disable, you must also run sm_rcon for any nav command
 (Zr will hide that sv_cheats got set and other stuff, and will also hide it from players, i will in the future code an anti cheat in zr to prevent this)
 The server WILL crashwhen editing, beware, no idea how to fix it, too lazy.
 
 Just dont announce that youll do it.
+
+
+If you wish to donate to support this project then concider subscribing to the patron
+
+[Patreon](https://www.patreon.com/user?u=95717000)
