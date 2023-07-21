@@ -288,7 +288,7 @@ enum
 	SEABORN_MEDIC		= 251,
 	SEABORN_SNIPER		= 252,
 	SEABORN_SPY		= 253,
-	ALT_BARRACKS_SCHWERTKRIEG = 254,	//warp
+	ALT_BARRACKS_SCHWERTKRIEG = 254,
 	ALT_BARRACK_IKUNAGAE = 255,
 	ALT_BARRACK_RAILGUNNER = 256,
 	ALT_BARRACK_BASIC_MAGE = 257,
@@ -600,7 +600,7 @@ public const char NPC_Names[][] =
 	"Seaborn Medic",
 	"Seaborn Sniper",
 	"Seaborn Spy",
-	"Barracks SchwertKrieg",	//warp
+	"Barracks SchwertKrieg",	
 	"Barracks Ikunagae",
 	"Barracks Railgunner",
 	"Barracks Basic Mage",
@@ -1141,7 +1141,9 @@ void NPC_MapStart()
 	IsharmlaTrans_MapStart();
 	
 	//Ruina waves	//warp
+	Ruina_Ai_Core_Mapstart();
 	Theocracy_OnMapStart_NPC();
+	
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2810,9 +2812,9 @@ public void NPCDeath(int entity)
 		
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
-		
-		case RUINA_THEOCRACY:	//warp
-			Theocracy_NPCDeath(entity);
+			
+		case RUINA_THEOCRACY:
+			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3554,11 +3556,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
 			
-		case RUINA_THEOCRACY:
+		case RUINA_THEOCRACY:	//warp
 			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
+
 
 //NORMAL
 
@@ -3671,6 +3674,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_god_arkantos.sp"
 
+
+//Ruina
+
+#include "zombie_riot/npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
+//stage 1
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_theocracy.sp"
+
+
 //Alt
 
 #include "zombie_riot/npc/alt/npc_alt_medic_charger.sp"
@@ -3694,10 +3705,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/alt/npc_alt_ikunagae.sp"
 #include "zombie_riot/npc/alt/npc_alt_mecha_soldier_barrager.sp"
 
-//Ruina
-
-//stage 1
-#include "zombie_riot/npc/ruina/stage1/npc_ruina_theocracy.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"

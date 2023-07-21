@@ -218,6 +218,8 @@ methodmap Theocracy < CClotBody
 
 		npc.StartPathing();
 		
+		Ruina_Set_Heirarchy(npc.index, 2, true);	//is a master and attracts melee's
+		
 		bl_string_theory_active[npc.index] = false;
 		
 		npc.m_flDoingAnimation = 0.0;
@@ -289,23 +291,12 @@ public void Theocracy_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+			
+			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
+			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			npc.StartPathing();
 			
 			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index))
 			{	
