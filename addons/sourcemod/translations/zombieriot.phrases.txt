@@ -3590,4 +3590,17 @@
 		//"it"		""
 		//"fr"		""			
 	}
+	"Pre Round Pap Limit"
+	{
+		"en"		"The PAP is still booting up, wait untill the round starts."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
 }

@@ -1286,6 +1286,10 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					CashSpent[client] += info.Cost;
 					CashSpentTotal[client] += info.Cost;
 					item.Owned[client] = values[1] + 1;
+					if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+					{
+						item.Sell[client] = 0;
+					}
 					item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
 					item.BuyWave[client] = -1;
 					StoreItems.SetArray(values[0], item);

@@ -2509,7 +2509,18 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							{
 								if(Store_CanPapItem(client, StoreWeapon[weapon]))
 								{
-									Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+									bool started = Waves_Started();
+									if(started || Rogue_Mode() || CvarNoRoundStart.BoolValue)
+									{
+										Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
+									}
+									else
+									{
+										ClientCommand(client, "playgamesound items/medshotno1.wav");
+										SetDefaultHudPosition(client);
+										SetGlobalTransTarget(client);
+										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Pre Round Pap Limit");											
+									}
 								}
 								else
 								{

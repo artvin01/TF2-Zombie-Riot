@@ -1860,7 +1860,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	if(StrContains(sample, "misc/halloween/spell_") != -1)
 	{
 		volume *= 0.75;
-		level = SNDLEVEL_NORMAL;
+		level = 85;
 		return Plugin_Changed;
 	}
 	if(StrContains(sample, "vo/", true) != -1)
@@ -1876,6 +1876,12 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				return Plugin_Handled;
 			}
 		}
+	}
+	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
+	{
+		volume *= 0.75;
+		level = 85;
+		return Plugin_Changed;
 	}
 	return Plugin_Continue;
 }

@@ -131,6 +131,14 @@ bool Waves_InSetup()
 	return (InSetup || !Waves_Started());
 }
 
+bool Waves_TotalInSetup()
+{
+	if(Rogue_Mode())
+		return Rogue_InSetup();
+	
+	return (InSetup);
+}
+
 void Waves_MapStart()
 {
 	FogEntity = INVALID_ENT_REFERENCE;
