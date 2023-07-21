@@ -775,7 +775,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
 			{
 				float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.35);
+				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
 
 				if(b_thisNpcIsABoss[i] || b_StaticNPC[i] || b_thisNpcIsARaid[i])
 				{
@@ -813,7 +813,7 @@ public Action Weapon_Wand_PotionEndShrink(Handle timer, int ref)
 	if(entity != -1)
 	{
 		float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.35);
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.5);
 	}
 	return Plugin_Continue;
 }
