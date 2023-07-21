@@ -177,6 +177,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		}
 		else	//if its a master buisness as usual
 		{
+			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 					
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -195,4 +196,68 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 					
 			return;
 		}
+}
+
+public void Apply_Master_Buff(int iNPC, int buff_type, float range, float time)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	float pos1[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			if(baseboss_index!=npc.index)
+			{
+				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || i_npc_type[baseboss_index]==3)	//same type of npc, or a global type
+				{
+					if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
+					{
+						static float pos2[3];
+						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(pos1, pos2, true) < Pow(range, 2.0))
+						{
+							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
+							{
+								switch(buff_type)
+								{
+									case 1:
+									{
+										Apply_Defense_buff(time, baseboss_index);
+									}
+									case 2:
+									{
+										Apply_Speed_buff(time, baseboss_index);
+									}
+									case 3:
+									{
+										Apply_Attack_buff(time, baseboss_index);
+									}
+								}
+								//buffed_anyone = true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+/*
+	f_Ruina_Speed_Buff[entity] = 0.0;
+	f_Ruina_Defense_Buff[entity] = 0.0;
+	f_Ruina_Attack_Buff[entity] = 0.0;
+*/
+static void Apply_Defense_buff(float time, int Other_Npc)
+{
+	f_Ruina_Defense_Buff[Other_Npc] = GetGameTime() + time;
+}
+static void Apply_Speed_buff(float time, int Other_Npc)
+{
+	f_Ruina_Speed_Buff[Other_Npc] = GetGameTime() + time;
+}
+static void Apply_Attack_buff(float time, int Other_Npc)
+{
+	f_Ruina_Attack_Buff[Other_Npc] = GetGameTime() + time;
 }

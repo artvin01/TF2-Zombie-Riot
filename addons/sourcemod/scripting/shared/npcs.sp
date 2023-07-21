@@ -1526,6 +1526,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage += BaseDamageBeforeBuffs * 0.35;
 		}
+		if(f_Ruina_Attack_Buff[attacker] > GameTime)
+		{
+			damage += BaseDamageBeforeBuffs * 0.25;	//25% dmg bonus
+		}
+		if(f_Ruina_Defense_Buff[victim] > GameTime)
+		{
+			damage -= BaseDamageBeforeBuffs * 0.25;	//25% dmg resist
+		}
 		
 		if(f_HighIceDebuff[victim] > GameTime)
 		{
@@ -2368,7 +2376,38 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "↖%s", Debuff_Adder);
 	}
-
+	
+	if(f_Ruina_Defense_Buff[victim] > GameTime)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "♜%s", Debuff_Adder);
+	}
+	if(f_Ruina_Speed_Buff[victim] > GameTime)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "♝%s", Debuff_Adder);
+	}
+	if(f_Ruina_Attack_Buff[victim] > GameTime)
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "♟%s", Debuff_Adder);
+	}
+	
 	if(Debuff_added)
 	{
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);

@@ -294,6 +294,10 @@ public void Theocracy_ClotThink(int iNPC)
 			
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
+			Apply_Master_Buff(npc.index, 1, 250.0, 5.0);
+			Apply_Master_Buff(npc.index, 2, 250.0, 5.0);
+			Apply_Master_Buff(npc.index, 3, 250.0, 5.0);
+			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
