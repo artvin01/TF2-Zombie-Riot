@@ -317,7 +317,10 @@ enum
 	SEABORN_SPECIALIST	= 280,
 	SEABORN_SUPPORTER	= 281,
 	ISHARMLA		= 282,
-	ISHARMLA_TRANS		= 283
+	ISHARMLA_TRANS		= 283,
+	
+	//ruina
+	RUINA_THEOCRACY = 284
 }
 
 public const char NPC_Names[][] =
@@ -626,7 +629,8 @@ public const char NPC_Names[][] =
 	"Seaborn Specialist",
 	"Seaborn Supporter",
 	"Ishar'mla, Heart of Corruption",
-	"Ishar'mla, Heart of Corruption"
+	"Ishar'mla, Heart of Corruption",
+	"Theocracy"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -902,7 +906,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_seaborn_sniper",
 	"npc_seaborn_spy",
 	
-	"",	//schwert	//warp
+	"",	//schwert
 	"",	//Iku
 	"",	//Railgunner
 	"",	//Basic Mage
@@ -932,7 +936,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_seaborn_specialist",
 	"npc_seaborn_supporter",
 	"npc_isharmla",
-	"npc_isharmla_trans"
+	"npc_isharmla_trans",
+	
+	"npc_ruina_theocracy"	//warp
 };
 
 void NPC_MapStart()
@@ -1134,7 +1140,10 @@ void NPC_MapStart()
 	KazimierzKnightAssasin_OnMapStart_NPC();
 	IsharmlaTrans_MapStart();
 	
-	//Alt Barracks	//warp
+	//Ruina waves	//warp
+	Theocracy_OnMapStart_NPC();
+	
+	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
 	Barrack_Railgunner_MapStart();
@@ -1885,7 +1894,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case SEABORN_SPY:
 			entity = SeabornSpy(client, vecPos, vecAng, ally);
 		
-		case ALT_BARRACKS_SCHWERTKRIEG:	//warp
+		case ALT_BARRACKS_SCHWERTKRIEG:
 			entity = Barrack_Alt_Shwertkrieg(client, vecPos, vecAng, ally);
 			
 		case ALT_BARRACK_IKUNAGAE:
@@ -1974,6 +1983,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case ISHARMLA_TRANS:
 			entity = IsharmlaTrans(client, vecPos, vecAng, ally);
+			
+		case RUINA_THEOCRACY:	//warp
+			entity = Theocracy(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2709,7 +2721,7 @@ public void NPCDeath(int entity)
 		case SEABORN_SPY:
 			SeabornSpy_NPCDeath(entity);
 			
-		case ALT_BARRACKS_SCHWERTKRIEG:	//warp
+		case ALT_BARRACKS_SCHWERTKRIEG:
 			Barrack_Alt_Shwertkrieg_NPCDeath(entity);
 			
 		case ALT_BARRACK_IKUNAGAE:
@@ -2798,6 +2810,9 @@ public void NPCDeath(int entity)
 		
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
+		
+		case RUINA_THEOCRACY:	//warp
+			Theocracy_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3538,6 +3553,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
+			
+		case RUINA_THEOCRACY:
+			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
@@ -3675,6 +3693,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/alt/npc_alt_medic_constructor.sp"
 #include "zombie_riot/npc/alt/npc_alt_ikunagae.sp"
 #include "zombie_riot/npc/alt/npc_alt_mecha_soldier_barrager.sp"
+
+//Ruina
+
+//stage 1
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_theocracy.sp"
 
 #include "zombie_riot/npc/medival/npc_medival_militia.sp"
 #include "zombie_riot/npc/medival/npc_medival_archer.sp"
