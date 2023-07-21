@@ -312,7 +312,7 @@ public void WindStaffM2_Think(int client)
 				Current_Mana[client] -= i_TornadoManaCost[client];
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
-				int TornadoRange = 300.0;
+				float TornadoRange = 300.0;
 				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,1.9,_,false);
 				float flCarrierPos[3];//, targPos[3];
 				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flCarrierPos);
