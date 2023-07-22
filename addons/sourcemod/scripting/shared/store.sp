@@ -870,8 +870,13 @@ void Store_OpenItemPage(int client)
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1 && StoreWeapon[weapon] > 0)
 	{
-		NPCOnly[client] = 0;
-		MenuPage(client, StoreWeapon[weapon]);
+		static Item item;
+		StoreItems.GetArray(StoreWeapon[weapon], item);
+		if(!item.Hidden)
+		{
+			NPCOnly[client] = 0;
+			MenuPage(client, StoreWeapon[weapon]);
+		}
 	}
 }
 #endif
@@ -5751,3 +5756,36 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 	
 }
 #endif	// ZR
+
+
+bool IsAttributeClientside(int Attribute)
+{
+	switch(Attribute)
+	{
+		case 1,2,3,4,5,6,26,96,97,303,298,49,252,201,
+		396,116,821,128,231,263,264,54,
+		353,107,465,464,740,169,314,178,287:
+		{
+			return true;
+		}
+		/*
+			This includes
+			damage attributes					-ingame dmg code, can be fixed though.
+			attackspeed
+			clip size
+			ammo override
+			Max ammo override
+			Reload speed
+			no doublejump
+			damage force reduction				- as its internal in tf2 too much
+			Animation speed/gesture speed
+			Buff banner type
+			No_Attack
+			provide on active
+			Medigun provide						- due to speed and stuff, vaccinator too
+			Attackrange and attack fatness		- due to clientside melee hit registration
+			speed penalty
+		*/
+	}
+	return false;
+}
