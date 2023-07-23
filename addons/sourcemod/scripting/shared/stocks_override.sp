@@ -452,3 +452,8 @@ void Edited_EmitSoundToAll(const char[] sample,
 
 #define EmitSoundToAll Edited_EmitSoundToAll
 #endif	// ZR
+
+#define TF2Attrib_GetByDefIndex OLD_CODE_FIX_IT
+#define TF2Items_SetAttribute OLD_CODE_FIX_IT
+#define Attributes_FindOnWeapon IS_NOW_Attributes_GetOnWeapon
+#define Attributes_FindOnPlayerZR IS_NOW_Attributes_GetOnPlayer

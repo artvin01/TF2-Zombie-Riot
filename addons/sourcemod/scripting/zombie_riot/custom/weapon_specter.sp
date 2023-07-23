@@ -486,7 +486,7 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 		{
 			if(h_TimerSpecterAlterManagement[i])
 			{
-				TF2Attrib_SetByDefIndex(weapon, 26, 200.0);
+				Attributes_Set(weapon, 26, 200.0);
 				break;
 			}
 		}

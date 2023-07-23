@@ -206,7 +206,7 @@ public void Weapon_EliteDefender(int client, int weapon, bool &result, int slot)
 		}
 	}
 	
-	TF2Attrib_SetByDefIndex(weapon, 396, value);
+	Attributes_Set(weapon, 396, value);
 }
 
 public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)

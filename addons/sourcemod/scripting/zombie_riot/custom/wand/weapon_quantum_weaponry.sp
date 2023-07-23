@@ -67,5 +67,5 @@ public void Quantum_Fists_Main_Attack(int client, int weapon, bool crit)
 	float damageMulti = float(CashSpentTotal[client]);
 	damageMulti = Pow(damageMulti, 1.15);
 	damageMulti = damageMulti / 850.0;
-	TF2Attrib_SetByDefIndex(weapon, 2, damageMulti);
+	Attributes_Set(weapon, 2, damageMulti);
 }

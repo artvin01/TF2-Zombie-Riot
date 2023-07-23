@@ -23,12 +23,12 @@ public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool 
 		
 		int particlel = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
 		
-		TF2Attrib_SetByDefIndex(weapon, 1, 3.0);
+		Attributes_Set(weapon, 1, 3.0);
 				
 		SetParent(client, particlel, "effect_hand_l");		
 		
 		CreateTimer(0.2, Apply_cool_effects_kahml, client, TIMER_FLAG_NO_MAPCHANGE);
-		TF2Attrib_SetByDefIndex(weapon, 1, 3.0);
+		Attributes_Set(weapon, 1, 3.0);
 		how_many_times_fisted[client] = 0;
 	}
 	else
@@ -46,7 +46,7 @@ public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool 
 				
 		SetParent(client, particlel, "effect_hand_l");	
 				
-		TF2Attrib_SetByDefIndex(weapon, 1, 1.0);
+		Attributes_Set(weapon, 1, 1.0);
 		how_many_times_fisted[client] += 1;
 	}
 }

@@ -55,9 +55,9 @@ public void Glitched_Attack(int client, int weapon, bool crit)
 		{
 			int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 			if(clip>=4)
-				TF2Attrib_SetByDefIndex(weapon, 298, GetRandomInt(0,2)*1.0); // Ammo per shot
+				Attributes_Set(weapon, 298, GetRandomInt(0,2)*1.0); // Ammo per shot
 			else
-				TF2Attrib_SetByDefIndex(weapon, 298, 1.0);	// prevent being stuck (rare but can happen)
+				Attributes_Set(weapon, 298, 1.0);	// prevent being stuck (rare but can happen)
 			
 			int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
 			if (ammoType!=-1)
@@ -87,14 +87,14 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 		// high dmg but slow firerate
 		case 2:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 2, glitchBaseDMG[client]*1.3); // dmg
-			TF2Attrib_SetByDefIndex(weapon, 6, glitchBaseFireRate[client]*1.2); // fire rate
-			TF2Attrib_SetByDefIndex(weapon, 4, glitchBaseClip[client]); // clip size
-			TF2Attrib_SetByDefIndex(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
-			TF2Attrib_SetByDefIndex(weapon, 106, 0.5); // spread
-			TF2Attrib_SetByDefIndex(weapon, 45, 1.0);  // bullet per shot
-			TF2Attrib_SetByDefIndex(weapon, 298, 1.0); // Ammo per shot
-			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
+			Attributes_Set(weapon, 2, glitchBaseDMG[client]*1.3); // dmg
+			Attributes_Set(weapon, 6, glitchBaseFireRate[client]*1.2); // fire rate
+			Attributes_Set(weapon, 4, glitchBaseClip[client]); // clip size
+			Attributes_Set(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
+			Attributes_Set(weapon, 106, 0.5); // spread
+			Attributes_Set(weapon, 45, 1.0);  // bullet per shot
+			Attributes_Set(weapon, 298, 1.0); // Ammo per shot
+			Attributes_Set(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_base.wav");
 			SetDefaultHudPosition(client);
@@ -105,14 +105,14 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 		// high firerate + precision but cannot switch weapon
 		case 4:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 2, glitchBaseDMG[client]); // dmg
-			TF2Attrib_SetByDefIndex(weapon, 6, glitchBaseFireRate[client]*0.5); // fire rate
-			TF2Attrib_SetByDefIndex(weapon, 4, glitchBaseClip[client]*2); // clip size
-			TF2Attrib_SetByDefIndex(weapon, 413, 1.0); // autofire shot (prevent weapon switch)
-			TF2Attrib_SetByDefIndex(weapon, 106, 0.01); // spread
-			TF2Attrib_SetByDefIndex(weapon, 45, 1.0);  // bullet per shot
-			TF2Attrib_SetByDefIndex(weapon, 298, 1.0); // Ammo per shot
-			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
+			Attributes_Set(weapon, 2, glitchBaseDMG[client]); // dmg
+			Attributes_Set(weapon, 6, glitchBaseFireRate[client]*0.5); // fire rate
+			Attributes_Set(weapon, 4, glitchBaseClip[client]*2); // clip size
+			Attributes_Set(weapon, 413, 1.0); // autofire shot (prevent weapon switch)
+			Attributes_Set(weapon, 106, 0.01); // spread
+			Attributes_Set(weapon, 45, 1.0);  // bullet per shot
+			Attributes_Set(weapon, 298, 1.0); // Ammo per shot
+			Attributes_Set(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_haste.wav");
 			SetDefaultHudPosition(client);
@@ -124,14 +124,14 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 		// all in (1 shot with high dmg + low reload speed)
 		case 6:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 2, glitchBaseDMG[client]*(glitchBaseClip[client]*12)); // dmg
-			TF2Attrib_SetByDefIndex(weapon, 6, glitchBaseFireRate[client]); // fire rate
-			TF2Attrib_SetByDefIndex(weapon, 4, glitchBaseClip[client]); // clip size
-			TF2Attrib_SetByDefIndex(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
-			TF2Attrib_SetByDefIndex(weapon, 106, 0.5); // spread
-			TF2Attrib_SetByDefIndex(weapon, 45, 1.0);  // bullet per shot
-			TF2Attrib_SetByDefIndex(weapon, 298, 24.0); // Ammo per shot
-			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]*1.5); // Reload rate
+			Attributes_Set(weapon, 2, glitchBaseDMG[client]*(glitchBaseClip[client]*12)); // dmg
+			Attributes_Set(weapon, 6, glitchBaseFireRate[client]); // fire rate
+			Attributes_Set(weapon, 4, glitchBaseClip[client]); // clip size
+			Attributes_Set(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
+			Attributes_Set(weapon, 106, 0.5); // spread
+			Attributes_Set(weapon, 45, 1.0);  // bullet per shot
+			Attributes_Set(weapon, 298, 24.0); // Ammo per shot
+			Attributes_Set(weapon, 97, glitchBaseReloadRate[client]*1.5); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_king.wav");
 			SetDefaultHudPosition(client);
@@ -142,14 +142,14 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 		// more bullet less dmg
 		case 8:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 2, glitchBaseDMG[client]/(glitchBaseClip[client]-3)); // dmg
-			TF2Attrib_SetByDefIndex(weapon, 6, glitchBaseFireRate[client]); // fire rate
-			TF2Attrib_SetByDefIndex(weapon, 4, glitchBaseClip[client]); // clip size
-			TF2Attrib_SetByDefIndex(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
-			TF2Attrib_SetByDefIndex(weapon, 106, 1.5); // spread
-			TF2Attrib_SetByDefIndex(weapon, 45, 20.0);  // bullet per shot
-			TF2Attrib_SetByDefIndex(weapon, 298, 1.0); // Ammo per shot
-			TF2Attrib_SetByDefIndex(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
+			Attributes_Set(weapon, 2, glitchBaseDMG[client]/(glitchBaseClip[client]-3)); // dmg
+			Attributes_Set(weapon, 6, glitchBaseFireRate[client]); // fire rate
+			Attributes_Set(weapon, 4, glitchBaseClip[client]); // clip size
+			Attributes_Set(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
+			Attributes_Set(weapon, 106, 1.5); // spread
+			Attributes_Set(weapon, 45, 20.0);  // bullet per shot
+			Attributes_Set(weapon, 298, 1.0); // Ammo per shot
+			Attributes_Set(weapon, 97, glitchBaseReloadRate[client]); // Reload rate
 			
 			ClientCommand(client, "playgamesound items/powerup_pickup_regeneration.wav");
 			SetDefaultHudPosition(client);
@@ -159,14 +159,14 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 		
 		default:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 2, glitchBaseDMG[client]); // dmg
-			TF2Attrib_SetByDefIndex(weapon, 6, glitchBaseFireRate[client]); // fire rate
-			TF2Attrib_SetByDefIndex(weapon, 4, glitchBaseClip[client]); // clip size
-			TF2Attrib_SetByDefIndex(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
-			TF2Attrib_SetByDefIndex(weapon, 106, 0.5); // spread
-			TF2Attrib_SetByDefIndex(weapon, 45, 1.0);  // bullet per shot
-			TF2Attrib_SetByDefIndex(weapon, 298, 1.0); // Ammo per shot
-			TF2Attrib_SetByDefIndex(weapon, 96, glitchBaseReloadRate[client]); // Reload rate
+			Attributes_Set(weapon, 2, glitchBaseDMG[client]); // dmg
+			Attributes_Set(weapon, 6, glitchBaseFireRate[client]); // fire rate
+			Attributes_Set(weapon, 4, glitchBaseClip[client]); // clip size
+			Attributes_Set(weapon, 413, 0.0); // autofire shot (prevent weapon switch)
+			Attributes_Set(weapon, 106, 0.5); // spread
+			Attributes_Set(weapon, 45, 1.0);  // bullet per shot
+			Attributes_Set(weapon, 298, 1.0); // Ammo per shot
+			Attributes_Set(weapon, 96, glitchBaseReloadRate[client]); // Reload rate
 		}
 	}
 	int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
@@ -186,9 +186,9 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 		{
 			int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 			if(clip>=4)
-				TF2Attrib_SetByDefIndex(weapon, 298, GetRandomInt(0,2)*1.0); // Ammo per shot
+				Attributes_Set(weapon, 298, GetRandomInt(0,2)*1.0); // Ammo per shot
 			else
-				TF2Attrib_SetByDefIndex(weapon, 298, 1.0);	// prevent being stuck (rare but can happen)
+				Attributes_Set(weapon, 298, 1.0);	// prevent being stuck (rare but can happen)
 			
 			int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));
 			if (ammoType!=-1)
@@ -309,22 +309,22 @@ public void Glitched_Reload2(int client, int weapon, const char[] classname)
 	{
 		case 1:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 280, 2.0); // Rocket
+			Attributes_Set(weapon, 280, 2.0); // Rocket
 		}
 		
 		case 3:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 280, 5.0); // Syringe
+			Attributes_Set(weapon, 280, 5.0); // Syringe
 		}
 		
 		case 5:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 280, 6.0); // Flare
+			Attributes_Set(weapon, 280, 6.0); // Flare
 		}
 		
 		default:
 		{
-			TF2Attrib_SetByDefIndex(weapon, 280, 1.0); // Normal
+			Attributes_Set(weapon, 280, 1.0); // Normal
 			// normalBullets = true;
 		}
 	}
@@ -337,14 +337,14 @@ public void Glitched_Reload2(int client, int weapon, const char[] classname)
 	if (GetRandomInt(0, 5)==3)
 		shotAll = 1.0;
 	
-	TF2Attrib_SetByDefIndex(weapon, 2, (glitchBaseDMG[client]*GetRandomFloat(0.5,2.5))/bulletPerShot); // dmg
-	TF2Attrib_SetByDefIndex(weapon, 6, glitchBaseFireRate[client]*GetRandomFloat(0.70,1.25)); // fire rate
-	TF2Attrib_SetByDefIndex(weapon, 4, glitchBaseClip[client]*GetRandomFloat(0.5,2.0)); // clip size
-	TF2Attrib_SetByDefIndex(weapon, 413, shotAll); // autofire shot (prevent weapon switch)
-	TF2Attrib_SetByDefIndex(weapon, 106, GetRandomFloat(0.25,1.25)); // spread
-	TF2Attrib_SetByDefIndex(weapon, 45, bulletPerShot);  // bullet per shot
-	TF2Attrib_SetByDefIndex(weapon, 298, 1.0); // Ammo per shot
-	TF2Attrib_SetByDefIndex(weapon, 96, glitchBaseReloadRate[client]*GetRandomFloat(0.5,1.5)); // Reload rate
+	Attributes_Set(weapon, 2, (glitchBaseDMG[client]*GetRandomFloat(0.5,2.5))/bulletPerShot); // dmg
+	Attributes_Set(weapon, 6, glitchBaseFireRate[client]*GetRandomFloat(0.70,1.25)); // fire rate
+	Attributes_Set(weapon, 4, glitchBaseClip[client]*GetRandomFloat(0.5,2.0)); // clip size
+	Attributes_Set(weapon, 413, shotAll); // autofire shot (prevent weapon switch)
+	Attributes_Set(weapon, 106, GetRandomFloat(0.25,1.25)); // spread
+	Attributes_Set(weapon, 45, bulletPerShot);  // bullet per shot
+	Attributes_Set(weapon, 298, 1.0); // Ammo per shot
+	Attributes_Set(weapon, 96, glitchBaseReloadRate[client]*GetRandomFloat(0.5,1.5)); // Reload rate
 	
 	
 	int ammoType = (GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType"));

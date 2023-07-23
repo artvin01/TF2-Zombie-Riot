@@ -87,15 +87,15 @@ public void Rogue_Spearhead_Weapon(int entity)
 	// +15% damage bonus
 	Address address = TF2Attrib_GetByDefIndex(entity, 2);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 1.15);
 	
 	address = TF2Attrib_GetByDefIndex(entity, 410);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * 1.15);
 
 	address = TF2Attrib_GetByDefIndex(entity, 1);	//Extra damage for mediguns.
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_Set(entity, 1, TF2Attrib_GetValue(address) * 1.15);
 	
 }
 

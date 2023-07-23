@@ -2059,7 +2059,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			if(f_DelayAttackspeedPreivous[client] != attack_speed) //Its not the exact same as before, dont set, no need.
 			{
-				TF2Attrib_SetByDefIndex(client, 201, attack_speed);
+				Attributes_Set(client, 201, attack_speed);
 			}
 			f_DelayAttackspeedPreivous[client] = attack_speed;
 		}
@@ -2093,7 +2093,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				*/
 				if(f_DelayAttackspeedPanicAttack[weapon] != Attack_speed) //Its not the exact same as before, dont set, no need.
 				{
-					TF2Attrib_SetByDefIndex(weapon, 396, Attack_speed);
+					Attributes_Set(weapon, 396, Attack_speed);
 				}
 				f_DelayAttackspeedPanicAttack[weapon] = Attack_speed;
 			}
@@ -2101,7 +2101,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			{
 				if(f_DelayAttackspeedPanicAttack[weapon] != 1.0) //Its not the exact same as before, dont set, no need.
 				{
-					TF2Attrib_SetByDefIndex(weapon, 396, 1.0);
+					Attributes_Set(weapon, 396, 1.0);
 				}
 				f_DelayAttackspeedPanicAttack[weapon] = 1.0;				
 			}
@@ -2137,7 +2137,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		if(f_DelayAttackspeedAnimation[client] < GameTime)
 		{
 			f_DelayAttackspeedAnimation[client] = GameTime + 0.25;
-			TF2Attrib_SetByDefIndex(client, 201, 1.0);
+			Attributes_Set(client, 201, 1.0);
 			f_DelayAttackspeedPreivous[client] = 1.0;
 		}
 	}

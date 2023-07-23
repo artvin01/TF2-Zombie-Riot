@@ -99,15 +99,15 @@ public void Rogue_Blademace_Weapon(int entity)
 	// +15% damage bonus
 	Address address = TF2Attrib_GetByDefIndex(entity, 2);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 1.15);
 	
 	address = TF2Attrib_GetByDefIndex(entity, 410);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * 1.15);
 	
 	address = TF2Attrib_GetByDefIndex(entity, 1);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_Set(entity, 1, TF2Attrib_GetValue(address) * 1.15);
 }
 
 public void Rogue_Brokenblade_Collect()
@@ -184,15 +184,15 @@ public void Rogue_Bladedance_Weapon(int entity)
 		// +100% damage bonus
 		Address address = TF2Attrib_GetByDefIndex(entity, 2);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * 2.0);
+			Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 2.0);
 		
 		address = TF2Attrib_GetByDefIndex(entity, 410);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * 2.0);
+			Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * 2.0);
 		
 		address = TF2Attrib_GetByDefIndex(entity, 1);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 1, TF2Attrib_GetValue(address) * 2.0);
+			Attributes_Set(entity, 1, TF2Attrib_GetValue(address) * 2.0);
 	}
 }
 

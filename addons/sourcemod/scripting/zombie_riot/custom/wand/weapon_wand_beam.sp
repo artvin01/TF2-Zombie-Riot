@@ -154,7 +154,7 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 				if(address != Address_Null)
 					Original_Atackspeed = TF2Attrib_GetValue(address);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -216,7 +216,7 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, bool &result, int slo
 				if(address != Address_Null)
 					Original_Atackspeed = TF2Attrib_GetValue(address);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -265,7 +265,7 @@ public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int ref)
 		if(address != Address_Null)
 			Original_Atackspeed = TF2Attrib_GetValue(address);
 
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.25);
+		Attributes_Set(weapon, 6, Original_Atackspeed / 0.25);
 	}
 	return Plugin_Handled;
 }

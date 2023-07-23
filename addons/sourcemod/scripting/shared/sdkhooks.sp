@@ -1736,9 +1736,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-				TF2Attrib_SetByDefIndex(victim, 489, 0.15);
-			//	TF2Attrib_SetByDefIndex(victim, 820, 1.0);
-			//	TF2Attrib_SetByDefIndex(victim, 819, 1.0);	
+				Attributes_Set(victim, 489, 0.15);
+			//	Attributes_Set(victim, 820, 1.0);
+			//	Attributes_Set(victim, 819, 1.0);	
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
 
@@ -1911,7 +1911,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			int slot = TF2_GetClassnameSlot(classname);
 			if(i_SemiAutoWeapon_AmmoCount[client][slot] > 0)
 			{
-				TF2Attrib_SetByDefIndex(weapon, 821, 0.0);
+				Attributes_Set(weapon, 821, 0.0);
 			}
 		}
 	}
@@ -1921,7 +1921,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 	RequestFrame(OnWeaponSwitchFrame, GetClientUserId(client));
 
 #if defined RPG
-	//TF2Attrib_SetByDefIndex(client, 698, 1.0);
+	//Attributes_Set(client, 698, 1.0);
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
 #endif
 
@@ -1956,7 +1956,7 @@ public void OnWeaponSwitchPre(int client, int weapon)
 	{
 		if(i_SemiAutoWeapon[weapon])
 		{
-			TF2Attrib_SetByDefIndex(weapon, 821, 0.0);
+			Attributes_Set(weapon, 821, 0.0);
 		}
 	}
 }

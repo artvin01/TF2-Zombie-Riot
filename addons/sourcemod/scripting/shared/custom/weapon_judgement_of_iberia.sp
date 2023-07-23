@@ -121,13 +121,13 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	{
 		b_WeaponAttackSpeedModified[weapon] = true;
 		attackspeed = (attackspeed * 0.15);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		Attributes_Set(weapon, 6, attackspeed);
 	}
 	else
 	{
 		b_WeaponAttackSpeedModified[weapon] = false;
 		attackspeed = (attackspeed / 0.15);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed); //Make it really fast for 1 hit!
+		Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 	}
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
@@ -145,13 +145,13 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
 	{
 		attackspeed = (attackspeed / 0.85);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		Attributes_Set(weapon, 6, attackspeed);
 		b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
 	}
 	else if(!b_WeaponAttackSpeedModifiedSeaborn[weapon] && ThereWasSeaborn)
 	{
 		attackspeed = (attackspeed * 0.85);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		Attributes_Set(weapon, 6, attackspeed);
 		b_WeaponAttackSpeedModifiedSeaborn[weapon] = true;
 	}
 }

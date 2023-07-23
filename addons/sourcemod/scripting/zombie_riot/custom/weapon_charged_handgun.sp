@@ -183,9 +183,9 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		
 		Address address = TF2Attrib_GetByDefIndex(weapon, 670);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(weapon, 670, -1.0);
+			Attributes_Set(weapon, 670, -1.0);
 		else
-			TF2Attrib_SetByDefIndex(weapon, 466, -1.0);
+			Attributes_Set(weapon, 466, -1.0);
 		
 		float speed = 1100.0;
 		address = TF2Attrib_GetByDefIndex(weapon, 103);
@@ -694,12 +694,12 @@ public Action Reset_weapon_charged_handgun(Handle cut_timer, DataPack pack)
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
 			if(TF2_GetClassnameSlot(buffer) == TFWeaponSlot_Secondary)
 			{
-				TF2Attrib_SetByDefIndex(weapon, 670, base_chargetime[client]);
+				Attributes_Set(weapon, 670, base_chargetime[client]);
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 			}
 			else 
 			{
-				TF2Attrib_SetByDefIndex(weapon, 466, base_chargetime[client]);
+				Attributes_Set(weapon, 466, base_chargetime[client]);
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 			}
 		}

@@ -62,10 +62,10 @@ public void Rogue_ThumbRing_Weapon(int entity)
 	{
 		Address address = TF2Attrib_GetByDefIndex(entity, 6);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 0.85);
+			Attributes_Set(entity, 6, TF2Attrib_GetValue(address) * 0.85);
 		
 		address = TF2Attrib_GetByDefIndex(entity, 97);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(address) * 0.85);
+			Attributes_Set(entity, 97, TF2Attrib_GetValue(address) * 0.85);
 	}
 }

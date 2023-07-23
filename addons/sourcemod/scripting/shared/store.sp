@@ -888,7 +888,7 @@ void Store_SwapToItem(int client, int swap)
 	
 #if defined RPG
 	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-	//TF2Attrib_SetByDefIndex(client, 698, 0.0);
+	//Attributes_Set(client, 698, 0.0);
 #endif
 
 	char classname[36], buffer[36];
@@ -3925,7 +3925,7 @@ void Store_ApplyAttribs(int client)
 		return;
 #endif
 
-	TF2Attrib_RemoveAll(client);
+	Attributes_RemoveAll(client);
 	
 	TFClassType ClassForStats = WeaponClass[client];
 	
@@ -3961,7 +3961,6 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 
-	/*TF2Attrib_SetByDefIndex(client, 201, */
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
@@ -4135,6 +4134,35 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+/*
+	if(b_ChickenNuggetBox) //probably needs rewriting cus idk how to do it
+	{
+		//15%% more health
+		int MaxHealth = SDKCall_GetMaxHealth(client);
+
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.15);
+
+		Address address = Attributes_Get(client, 26, false);
+		if(address != Address_Null)
+		{
+			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
+			Attributes_Set(client, 26, float(HealthToAdd));
+		}
+	}
+	if(b_CrudeFlute) //probably needs rewriting cus idk how to do it
+	{
+		//3%% more health
+		int MaxHealth = SDKCall_GetMaxHealth(client);
+		
+		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.03);
+
+		Address address = TF2Attrib_GetByDefIndex(client, 26);
+		if(address != Address_Null)
+		{
+			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
+			Attributes_Set(client, 26, float(HealthToAdd));
+		}
+	}*/
 #endif
 
 #if defined RPG
@@ -4144,18 +4172,8 @@ void Store_ApplyAttribs(int client)
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
 	int length = snapshot.Length;
-	int attribs;
 	for(int i; i < length; i++)
 	{
-		if(attribs && !(attribs % 16))
-		{
-			if(!TF2_GetWearable(client, entity))
-				break;
-			
-		//	RemoveAllDefaultAttribsExceptStrings(entity);
-			TF2Attrib_RemoveAll(entity);
-		}
-		
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
 		{
@@ -4170,8 +4188,7 @@ void Store_ApplyAttribs(int client)
 #endif
 
 			{
-				TF2Attrib_SetByDefIndex(entity, index, value);
-				attribs++;
+				Attributes_Set(entity, index, value);
 				
 #if defined ZR
 				if(index == 701)
@@ -4200,43 +4217,14 @@ void Store_ApplyAttribs(int client)
 #if defined ZR
 	if(dieingstate[client] > 0)
 	{
-		TF2Attrib_SetByDefIndex(client, 489, 0.15);
+		Attributes_Set(client, 489, 0.15);
 	}
 #endif
 	
-	Mana_Regen_Level[client] = Attributes_FindOnPlayerZR(client, 405, true, 1.0);
+	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
 	
 	delete snapshot;
 	delete map;
-
-	if(b_ChickenNuggetBox) //probably needs rewriting cus idk how to do it
-	{
-		//15%% more health
-		int MaxHealth = SDKCall_GetMaxHealth(client);
-
-		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.15);
-
-		Address address = TF2Attrib_GetByDefIndex(client, 26);
-		if(address != Address_Null)
-		{
-			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
-			TF2Attrib_SetByDefIndex(client, 26, float(HealthToAdd));
-		}
-	}
-	if(b_CrudeFlute) //probably needs rewriting cus idk how to do it
-	{
-		//3%% more health
-		int MaxHealth = SDKCall_GetMaxHealth(client);
-		
-		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.03);
-
-		Address address = TF2Attrib_GetByDefIndex(client, 26);
-		if(address != Address_Null)
-		{
-			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
-			TF2Attrib_SetByDefIndex(client, 26, float(HealthToAdd));
-		}
-	}
 
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 }
@@ -4358,12 +4346,12 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_RemoveWearable(client, watch_entity_attribs);
 
 	watch_entity_attribs = GiveWearable(client, 0);
-	TF2Attrib_SetByDefIndex(watch_entity_attribs, 221, -99.0);
-	TF2Attrib_SetByDefIndex(watch_entity_attribs, 160, 1.0);
-	TF2Attrib_SetByDefIndex(watch_entity_attribs, 35, 0.0);
-	TF2Attrib_SetByDefIndex(watch_entity_attribs, 816, 1.0);
-	TF2Attrib_SetByDefIndex(watch_entity_attribs, 671, 1.0);
-	TF2Attrib_SetByDefIndex(watch_entity_attribs, 34, 999.0);
+	Attributes_Set(watch_entity_attribs, 221, -99.0);
+	Attributes_Set(watch_entity_attribs, 160, 1.0);
+	Attributes_Set(watch_entity_attribs, 35, 0.0);
+	Attributes_Set(watch_entity_attribs, 816, 1.0);
+	Attributes_Set(watch_entity_attribs, 671, 1.0);
+	Attributes_Set(watch_entity_attribs, 34, 999.0);
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(watch_entity_attribs);
 	
 #if defined ZR
@@ -4875,27 +4863,27 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 			i_InternalMeleeTrace[entity] = true;
 #if defined ZR
-			TF2Attrib_SetByDefIndex(entity, 1, 0.623);
-		//	TF2Attrib_SetByDefIndex(entity, 124, 1.0); //Mini sentry
+			Attributes_Set(entity, 1, 0.623);
+		//	Attributes_Set(entity, 124, 1.0); //Mini sentry
 			
 			if(CurrentClass[client] != TFClass_Spy)
-				TF2Attrib_SetByDefIndex(entity, 15, 0.0);
+				Attributes_Set(entity, 15, 0.0);
 			
 			if(CurrentClass[client] == TFClass_Engineer)
 			{
-				TF2Attrib_SetByDefIndex(entity, 93, 0.0);
-				TF2Attrib_SetByDefIndex(entity, 95, 0.0);
-				TF2Attrib_SetByDefIndex(entity, 2043, 0.0);
+				Attributes_Set(entity, 93, 0.0);
+				Attributes_Set(entity, 95, 0.0);
+				Attributes_Set(entity, 2043, 0.0);
 			}
 #endif
 
 #if defined RPG
-			TF2Attrib_SetByDefIndex(entity, 1, 0.02);
-			TF2Attrib_SetByDefIndex(entity, 5, 1.34);
+			Attributes_Set(entity, 1, 0.02);
+			Attributes_Set(entity, 5, 1.34);
 #endif
 
-			TF2Attrib_SetByDefIndex(entity, 263, 0.0);
-			TF2Attrib_SetByDefIndex(entity, 264, 0.0);
+			Attributes_Set(entity, 263, 0.0);
+			Attributes_Set(entity, 264, 0.0);
 			EquipPlayerWeapon(client, entity);
 #if defined RPG			
 			strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Fists");
@@ -5042,8 +5030,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 #endif
 								bool ignore_rest = false;
-								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib[a]);
-								if(address == Address_Null)
+								if(!Attributes_Has(entity, info.Attrib[a]))
 								{
 									if(info.SpecialAttribRules == 1)
 									{
@@ -5051,16 +5038,16 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									}
 									else
 									{
-										TF2Attrib_SetByDefIndex(entity, info.Attrib[a], info.Value[a]);
+										Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 									}
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetByDefIndex(entity, info.Attrib[a],TF2Attrib_GetValue(address) + info.Value[a]);
+									Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetByDefIndex(entity, info.Attrib[a],TF2Attrib_GetValue(address) * info.Value[a]);
+									Attributes_SetMulti(entity, info.Attrib[a], info.Value[a]);
 								}
 							}
 						}
@@ -5111,8 +5098,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 #endif
 								bool ignore_rest = false;
-								Address address = TF2Attrib_GetByDefIndex(entity, info.Attrib2[a]);
-								if(address == Address_Null)
+								if(!Attributes_Has(entity, info.Attrib2[a]))
 								{
 									if(info.SpecialAttribRules_2 == 1)
 									{
@@ -5120,16 +5106,16 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									}
 									else
 									{
-										TF2Attrib_SetByDefIndex(entity, info.Attrib2[a], info.Value2[a]);
+										Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 									}
 								}
 								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
 								{
-									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a],TF2Attrib_GetValue(address) + info.Value2[a]);
+									Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
 								}
 								else if(!ignore_rest)
 								{
-									TF2Attrib_SetByDefIndex(entity, info.Attrib2[a],TF2Attrib_GetValue(address) * info.Value2[a]);
+									Attributes_SetMulti(entity, info.Attrib2[a], info.Value2[a]);
 								}
 							}
 						}
@@ -5146,71 +5132,40 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #if defined RPG
 		if(b_DungeonContracts_SlowerAttackspeed[client])
 		{
-			Address address = TF2Attrib_GetByDefIndex(entity, 6);
-			if(address == Address_Null)
-			{
-				TF2Attrib_SetByDefIndex(entity, 6, 1.3);
-			}
-			else
-			{
-				TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 1.3);
-			}
+			Attributes_SetMulti(entity, 6, 1.3);
 		}
 #endif
 #if defined ZR
 		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
-			Address address = TF2Attrib_GetByDefIndex(entity, 97);
-			if(address == Address_Null)
-			{
-				TF2Attrib_SetByDefIndex(entity, 97, 0.65);
-			}
-			else
-			{
-				TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(address) * 0.65);
-			}
+			Attributes_SetMulti(entity, 97, 0.65);
 		}
+
 		//DOUBLE TAP!
 		if(i_CurrentEquippedPerk[client] == 3)
-		{		
-			Address address = TF2Attrib_GetByDefIndex(entity, 6);
-			if(address == Address_Null)
-			{
-				TF2Attrib_SetByDefIndex(entity, 6, 0.85);
-			}
-			else
-			{
-				TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 0.85);
-			}
+		{
+			Attributes_SetMulti(entity, 6, 0.85);
 		}
+
 		//DEADSHOT!
 		if(i_CurrentEquippedPerk[client] == 5)
 		{		
-			Address address = TF2Attrib_GetByDefIndex(entity, 106);
-			if(address == Address_Null)
-			{
-				TF2Attrib_SetByDefIndex(entity, 106, 0.65);
-			}
-			else
-			{
-				TF2Attrib_SetByDefIndex(entity, 106, TF2Attrib_GetValue(address) * 0.65);
-			}
+			Attributes_SetMulti(entity, 106, 0.65);
 		}
+
 		//QUICK REVIVE!
 		if(i_CurrentEquippedPerk[client] == 1)
-		{		
-			Address address = TF2Attrib_GetByDefIndex(entity, 8);
+		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
-			if(address != Address_Null)
+			if(Attributes_Has(entity, 8))
 			{
-				TF2Attrib_SetByDefIndex(client, 8, TF2Attrib_GetValue(address) * 1.15);
+				Attributes_SetMulti(entity, 8, 1.5);
 			}
 			
-			address = TF2Attrib_GetByDefIndex(client, 8); //set it for client too if existant.
-			if(address != Address_Null)
+			if(Attributes_Has(client, 8)) //set it for client too if existant.
 			{
-				TF2Attrib_SetByDefIndex(client, 8, TF2Attrib_GetValue(address) * 1.15);
+				Attributes_SetMulti(entity, 8, 1.5);
 			}
 
 			// Note: This can stack with multi weapons :|
@@ -5219,8 +5174,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
 		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])
-		{		
-			TF2Attrib_SetByDefIndex(entity, 49, 1.0);
+		{
+			Attributes_Set(entity, 49, 1.0);
 		}
 
 		Rogue_GiveItem(entity);
@@ -5228,22 +5183,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		/*
 			Attributes to Arrays Here
 		*/
-		Panic_Attack[entity] = Attributes_FindOnWeapon(client, entity, 651);
-		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 33));
-		i_GlitchedGun[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 731));
-		i_AresenalTrap[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 719));
-		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 544));
-		i_NoBonusRange[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 410));
-		i_BuffBannerPassively[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 786));
+		Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651);
+		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 33, false));
+		i_GlitchedGun[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 731, false));
+		i_AresenalTrap[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 719, false));
+		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 544, false));
+		i_NoBonusRange[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 410, false));
+		i_BuffBannerPassively[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 786, false));
 		
-		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3002));
-		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 3000));
+		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 3002, false));
+		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 3000, false));
 
 		
-		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 149));
-		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 208));
-		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_FindOnWeapon(client, entity, 638));
-		f_UberOnHitWeapon[entity] = Attributes_FindOnWeapon(client, entity, 17);
+		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 149, false));
+		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 208, false));
+		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 638, false));
+		f_UberOnHitWeapon[entity] = Attributes_GetOnWeapon(client, entity, 17, false);
 		
 #if defined ZR
 		Enable_Management_Knife(client, entity);
@@ -5756,36 +5711,3 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 	
 }
 #endif	// ZR
-
-
-bool IsAttributeClientside(int Attribute)
-{
-	switch(Attribute)
-	{
-		case 1,2,3,4,5,6,26,96,97,303,298,49,252,201,
-		396,116,821,128,231,263,264,54,
-		353,107,465,464,740,169,314,178,287:
-		{
-			return true;
-		}
-		/*
-			This includes
-			damage attributes					-ingame dmg code, can be fixed though.
-			attackspeed
-			clip size
-			ammo override
-			Max ammo override
-			Reload speed
-			no doublejump
-			damage force reduction				- as its internal in tf2 too much
-			Animation speed/gesture speed
-			Buff banner type
-			No_Attack
-			provide on active
-			Medigun provide						- due to speed and stuff, vaccinator too
-			Attackrange and attack fatness		- due to clientside melee hit registration
-			speed penalty
-		*/
-	}
-	return false;
-}

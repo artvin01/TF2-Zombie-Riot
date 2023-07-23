@@ -53,7 +53,7 @@ public void Ability_QuickReflex(int client, int level, int weapon)
 	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 	ApplyTempAttrib(weapon, 6, 0.65, 5.0);
 	ApplyTempAttrib(weapon, 97, 0.65, 5.0);
-	TF2Attrib_SetByDefIndex(client, 442, 1.35);
+	Attributes_Set(client, 442, 1.35);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	CreateTimer(5.0, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
@@ -63,7 +63,7 @@ public Action Timer_UpdateMovementSpeed(Handle timer, int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		TF2Attrib_SetByDefIndex(client, 442, 1.0);
+		Attributes_Set(client, 442, 1.0);
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
 	return Plugin_Handled;

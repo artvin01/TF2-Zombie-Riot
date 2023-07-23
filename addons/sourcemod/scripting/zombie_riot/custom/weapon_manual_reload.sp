@@ -35,7 +35,7 @@ public void SemiAutoWeapon(int client, int buttons)
 							SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + Fire_rate);
 							SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Fire_rate);
 							
-							TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+							Attributes_Set(entity, 821, 1.0);
 							holding_semiauto[client] = true;
 						}
 					}
@@ -49,7 +49,7 @@ public void SemiAutoWeapon(int client, int buttons)
 								SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.2);
 								holding_semiauto[client] = true;
 								EmitSoundToAll("weapons/shotgun_empty.wav", client, _, 70);
-								TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+								Attributes_Set(entity, 821, 1.0);
 								Reload_Me(client);
 								i_EmptyBulletboop[client] = 0;
 							}
@@ -59,7 +59,7 @@ public void SemiAutoWeapon(int client, int buttons)
 								SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.2);
 								holding_semiauto[client] = true;
 								EmitSoundToAll("weapons/shotgun_empty.wav", client, _, 70);
-								TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+								Attributes_Set(entity, 821, 1.0);
 								i_EmptyBulletboop[client] += 1;
 							}
 							else
@@ -67,7 +67,7 @@ public void SemiAutoWeapon(int client, int buttons)
 								SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 0.2);
 								SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.2);
 								holding_semiauto[client] = true;
-								TF2Attrib_SetByDefIndex(entity, 821, 1.0);
+								Attributes_Set(entity, 821, 1.0);
 								i_EmptyBulletboop[client] = 1;
 							}
 						}
@@ -87,7 +87,7 @@ public void SemiAutoWeapon(int client, int buttons)
 				{
 					if(i_SemiAutoWeapon_AmmoCount[entity] > 0)
 					{
-						TF2Attrib_SetByDefIndex(entity, 821, 0.0);
+						Attributes_Set(entity, 821, 0.0);
 					}
 				}
 				holding_semiauto[client] = false;
@@ -144,7 +144,7 @@ void Reload_Me(int client)
 					SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Reload_Rate);
 							
 					ShowClientManualAmmoCount(client, entity);
-					TF2Attrib_SetByDefIndex(entity, 821, 0.0);
+					Attributes_Set(entity, 821, 0.0);
 					
 				}
 			}

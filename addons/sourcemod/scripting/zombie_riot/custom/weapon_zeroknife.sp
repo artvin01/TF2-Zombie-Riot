@@ -279,7 +279,7 @@ public void ZeroRage(int client, int weapon, bool crit, int slot)
 						if(address != Address_Null)
 							Original_Attackspeed = TF2Attrib_GetValue(address);
 
-						TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed * MultiWrathRageSpeed);
+						Attributes_Set(weapon, 6, Original_Attackspeed * MultiWrathRageSpeed);
 						CreateTimer(MultiRageCooldown, Ability_charged, client, TIMER_FLAG_NO_MAPCHANGE);
 			
 						TF2_StunPlayer(client, MultiWrathStunTimer, _, TF_STUNFLAG_BONKSTUCK, 0);
@@ -373,7 +373,7 @@ public void ZeroWrathRage(int client, int weapon, bool crit, int slot)
 			if(address != Address_Null)
 				Original_Attackspeed= TF2Attrib_GetValue(address);
 
-			TF2Attrib_SetByDefIndex(weapon, 6, Original_Attackspeed * FinalWrathRagePapSpeed);
+			Attributes_Set(weapon, 6, Original_Attackspeed * FinalWrathRagePapSpeed);
 			
 			TF2_StunPlayer(client, FinalWrathRageStunTimer, _, TF_STUNFLAG_BONKSTUCK, 0);
 			TF2_AddCondition(client, TFCond_UberchargedHidden, FinalWrathRageUberTimer, 0);
@@ -438,7 +438,7 @@ public Action Reset_Attackspeed(Handle cut_timer, int ref)
 		if(address != Address_Null)
 			Original_Atackspeed = TF2Attrib_GetValue(address);
 
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / MultiWrathRageSpeed);
+		Attributes_Set(weapon, 6, Original_Atackspeed / MultiWrathRageSpeed);
 	}
 	return Plugin_Handled;
 }
@@ -455,7 +455,7 @@ public Action Reset_Attackspeed_Final(Handle cut_timer, int ref)
 		if(address != Address_Null)
 			Original_Atackspeed = TF2Attrib_GetValue(address);
 
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / FinalWrathRagePapSpeed);
+		Attributes_Set(weapon, 6, Original_Atackspeed / FinalWrathRagePapSpeed);
 	}
 	return Plugin_Handled;
 }

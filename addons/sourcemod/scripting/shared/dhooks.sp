@@ -1929,7 +1929,7 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
-	TF2Attrib_SetByDefIndex(entity, 698, 1.0); // disable weapon switch
+	Attributes_Set(entity, 698, 1.0); // disable weapon switch
 	return MRES_Ignored;
 }
 public MRESReturn Dhook_RaiseFlag_Post(int entity)
@@ -1947,7 +1947,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	i_ExtraPlayerPoints[client] += 15;
 #endif
 	
-	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
+	Attributes_Set(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
 }
 

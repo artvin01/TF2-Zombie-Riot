@@ -293,7 +293,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 			{
 				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 				if(address != Address_Null)
-					TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+					Attributes_Set(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
 			}
 
 			BuffTimer[weapon] = CreateTimer(5.5, Weapon_Wand_PotionBuffRemove, weapon);
@@ -321,7 +321,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 						{
 							Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 							if(address != Address_Null)
-								TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+								Attributes_Set(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
 						}
 
 						BuffTimer[weapon] = CreateTimer(5.5, Weapon_Wand_PotionBuffRemove, weapon);
@@ -372,7 +372,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 					{
 						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 						if(address != Address_Null)
-							TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+							Attributes_Set(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
 					}
 
 					BuffTimer[weapon] = CreateTimer(7.5, Weapon_Wand_PotionBuffRemove, weapon);
@@ -421,7 +421,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 					{
 						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 						if(address != Address_Null)
-							TF2Attrib_SetByDefIndex(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
+							Attributes_Set(weapon, 6, TF2Attrib_GetValue(address) * 0.8);
 					}
 
 					BuffTimer[weapon] = CreateTimer(999.9, Weapon_Wand_PotionBuffRemove, weapon);
@@ -439,7 +439,7 @@ public Action Weapon_Wand_PotionBuffRemove(Handle timer, int entity)
 	{
 		Address address = TF2Attrib_GetByDefIndex(entity, 6);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) / 0.8);
+			Attributes_Set(entity, 6, TF2Attrib_GetValue(address) / 0.8);
 	}
 
 	BuffTimer[entity] = null;
@@ -592,11 +592,11 @@ static void ApplyTempAttrib(int entity, int index, float multi, bool force)
 	Address address = TF2Attrib_GetByDefIndex(entity, index);
 	if(address != Address_Null)
 	{
-		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
+		Attributes_Set(entity, index, TF2Attrib_GetValue(address) * multi);
 	}
 	else if(force)
 	{
-		TF2Attrib_SetByDefIndex(entity, index, multi);
+		Attributes_Set(entity, index, multi);
 	}
 	else
 	{
@@ -619,7 +619,7 @@ public Action Weapon_Wand_PotionRestoreAttrib(Handle timer, DataPack pack)
 		int index = pack.ReadCell();
 		Address address = TF2Attrib_GetByDefIndex(entity, index);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
+			Attributes_Set(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
 	}
 	return Plugin_Stop;
 }

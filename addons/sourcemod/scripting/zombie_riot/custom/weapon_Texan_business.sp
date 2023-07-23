@@ -33,8 +33,8 @@ public void Texan_business_attack(int client, int weapon, const char[] classname
 	else
 	{
 		// attribute revert for normal hits
-		TF2Attrib_SetByDefIndex(weapon, 1, 1.0);
-//		TF2Attrib_SetByDefIndex(weapon, 264, 1.5);
+		Attributes_Set(weapon, 1, 1.0);
+//		Attributes_Set(weapon, 264, 1.5);
 	}
 }
 
@@ -70,8 +70,8 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 
 			how_many_times_fisted[client] = 1;
 			// attribute changes for the special punch
-			TF2Attrib_SetByDefIndex(weapon, 1, 2.0);
-	//		TF2Attrib_SetByDefIndex(weapon, 264, 5.0);
+			Attributes_Set(weapon, 1, 2.0);
+	//		Attributes_Set(weapon, 264, 5.0);
 
 			CreateTimer(1.5, Reset_hitcounter, client, TIMER_FLAG_NO_MAPCHANGE);    // timer to reset the bonus stuff after a certain time has passes
 		

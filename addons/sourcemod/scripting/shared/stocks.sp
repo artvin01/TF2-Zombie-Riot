@@ -585,6 +585,8 @@ stock void SetAmmo(int client, int type, int ammo)
 
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
 {
+	// TODO: THIS IS BAD PERFORMANCE
+	// We spawn a weapon, give attributes, remove attributes, give attributes
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
 	if(IsValidEntity(weapon))
 	{
@@ -603,7 +605,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetItemIndex(weapon, index);
 	TF2Items_SetLevel(weapon, level);
 	TF2Items_SetQuality(weapon, qual);
+	TF2Items_SetNumAttributes(weapon, 0);
 
+/*
 	int found;
 	for(int i; i < count; i++)
 	{
@@ -612,20 +616,28 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	}
 	
 	TF2Items_SetNumAttributes(weapon, found);
-	
+*/
+
 	TF2_SetPlayerClass(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
 	if(entity > MaxClients)
 	{
-#if defined RPG
 		for(int i; i < count; i++)
 		{
+#if defined RPG
 			if(attrib[i] < 0)
+			{
 				Stats_GetCustomStats(entity, attrib[i], value[i]);
-		}
+			}
+			else
 #endif
+			{
+				Attributes_Set(entity, attrib[i], value[i]);
+			}
+		}
+		
 		if(StrEqual(name, "tf_weapon_sapper"))
 		{
 			SetEntProp(entity, Prop_Send, "m_iObjectType", 3);
@@ -658,13 +670,13 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	
 	for(int i = 0; i < count; i++) 
 	{
-		TF2Attrib_SetByDefIndex(weapon, attributes[i], values[i]);
+		Attributes_Set(weapon, attributes[i], values[i]);
 	}
 }
 
 void RemoveAllDefaultAttribsExceptStrings(int entity, int index, int client)
 {
-	TF2Attrib_RemoveAll(entity);
+	Attributes_RemoveAll(entity);
 	
 	char valueType[2];
 	char valueFormat[64];
@@ -698,16 +710,16 @@ void RemoveAllDefaultAttribsExceptStrings(int entity, int index, int client)
 		
 		if(valueFormat[9] == 'a' && valueFormat[10] == 'd') // value_is_additive & value_is_additive_percentage
 		{
-			TF2Attrib_SetByDefIndex(entity, currentAttrib, 0.0);
+			Attributes_Set(entity, currentAttrib, 0.0);
 		}
 		else if((valueFormat[9] == 'i' && valueFormat[18] == 'p')
 			|| (valueFormat[9] == 'p' && valueFormat[10] == 'e')) // value_is_percentage & value_is_inverted_percentage
 		{
-			TF2Attrib_SetByDefIndex(entity, currentAttrib, 1.0);
+			Attributes_Set(entity, currentAttrib, 1.0);
 		}
 		else if(valueFormat[9] == 'o' && valueFormat[10] == 'r') // value_is_or
 		{
-			TF2Attrib_SetByDefIndex(entity, currentAttrib, 0.0);
+			Attributes_Set(entity, currentAttrib, 0.0);
 		}
 		
 		NullifySpecificAttributes(entity,currentAttrib);
@@ -722,11 +734,11 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 	{
 		case 781: //Is sword
 		{
-			TF2Attrib_SetByDefIndex(entity, attribute, 0.0);	
+			Attributes_Set(entity, attribute, 0.0);	
 		}
 		case 128: //Provide on active
 		{
-			TF2Attrib_SetByDefIndex(entity, attribute, 0.0);	
+			Attributes_Set(entity, attribute, 0.0);	
 		}
 	}
 	
@@ -2210,7 +2222,7 @@ stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 	{
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
-		TF2Attrib_SetByDefIndex(entity, 148, 0.0);
+		Attributes_Set(entity, 148, 0.0);
 		
 		if(AllowBuilding == -1)
 		{
@@ -2243,11 +2255,11 @@ stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 		
 	//	PrintToChatAll("%i",GetEntPropEnt(entity, Prop_Send, "m_hOwner"));
 		
-		TF2Attrib_SetByDefIndex(client, 353, 1.0);
+		Attributes_Set(client, 353, 1.0);
 		
-		TF2Attrib_SetByDefIndex(entity, 292, 3.0);
-		TF2Attrib_SetByDefIndex(entity, 293, 59.0);
-		TF2Attrib_SetByDefIndex(entity, 495, 60.0); //Kill eater score shit, i dont know.
+		Attributes_Set(entity, 292, 3.0);
+		Attributes_Set(entity, 293, 59.0);
+		Attributes_Set(entity, 495, 60.0); //Kill eater score shit, i dont know.
 	//	TF2_SetPlayerClass(client, TFClass_Engineer);
 		return entity;
 	}	
@@ -3774,7 +3786,7 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 	Address address = TF2Attrib_GetByDefIndex(entity, index);
 	if(address != Address_Null)
 	{
-		TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
+		Attributes_Set(entity, index, TF2Attrib_GetValue(address) * multi);
 
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -3793,7 +3805,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 		int index = pack.ReadCell();
 		Address address = TF2Attrib_GetByDefIndex(entity, index);
 		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
+			Attributes_Set(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
 	}
 	return Plugin_Stop;
 }
