@@ -151,52 +151,38 @@ stock float Config_GetDPSOfEntity(int entity)
 	}
 	
 	// Damage and Pellets
-	Address address = TF2Attrib_GetByDefIndex(entity, 410);
-	if(address == Address_Null)
+	if(Attributes_Has(entity, 410))	// Mage
 	{
-		address = TF2Attrib_GetByDefIndex(entity, 2);
-		if(address != Address_Null)
-			data.Damage *= TF2Attrib_GetValue(address);
+		data.Damage *= Attributes_Get(entity, 410, 1.0);
 	}
 	else
 	{
-		data.Damage *= TF2Attrib_GetValue(address);
+		data.Damage *= Attributes_Get(entity, 2, 1.0);
 	}
 
-	address = TF2Attrib_GetByDefIndex(entity, 45);
-	if(address != Address_Null)
-		data.Pellets *= TF2Attrib_GetValue(address);
+	data.Pellets *= Attributes_Get(entity, 45, 1.0);
 	
 	data.Damage *= data.Pellets;
 
-	address = TF2Attrib_GetByDefIndex(entity, 6);
-	if(address != Address_Null)
-		data.FireRate *= TF2Attrib_GetValue(address);
+	data.FireRate *= Attributes_Get(entity, 6, 1.0);
 
 	if(!data.Reload)
 		return data.Damage / data.FireRate;
 
-	address = TF2Attrib_GetByDefIndex(entity, 96);
-	if(address != Address_Null)
-		data.Reload *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(entity, 97);
-	if(address != Address_Null)
-		data.Reload *= TF2Attrib_GetValue(address);
+	data.Reload *= Attributes_Get(entity, 96, 1.0);
+
+	data.Reload *= Attributes_Get(entity, 97, 1.0);
 	
 	float clip = data.Clip;
 
 	//there is technically less clip.
-	address = TF2Attrib_GetByDefIndex(entity, 298);
-	if(address != Address_Null)
-		data.Clip *= TF2Attrib_GetValue(address);
+	
+	data.Clip *= Attributes_Get(entity, 298, 1.0);
 
 	if(GetEntProp(entity, Prop_Data, "m_bReloadsSingly"))
 		data.Reload *= clip;
 
-	address = TF2Attrib_GetByDefIndex(entity, 876);
-	if(address != Address_Null)
-		data.Damage *= TF2Attrib_GetValue(address);
+	data.Damage *= Attributes_Get(entity, 876, 1.0);
 
 	// Example:
 	// 300 Damage, 2.5 Reload Time, 0.5 Fire Rate, 25 Clip

@@ -241,7 +241,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			ViewChange_PlayerModel(client);
 			
 			TF2Attrib_RemoveAll(client);
-			TF2Attrib_SetByDefIndex(client, 68, -1.0);
+			Attributes_Set(client, 68, -1.0);
 			SetVariantString(COMBINE_CUSTOM_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModel");
 	   		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
@@ -313,16 +313,16 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				damage *= 0.25;
 			}
 			
-	   		TF2Attrib_SetByDefIndex(weapon_index, 2, damage);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 264, 0.0);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 263, 0.0);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 6, 1.2);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 412, 0.0);
-	   		TF2Attrib_SetByDefIndex(weapon_index, 442, 1.1);
+	   		Attributes_Set(weapon_index, 2, damage);
+	   		Attributes_Set(weapon_index, 264, 0.0);
+	   		Attributes_Set(weapon_index, 263, 0.0);
+	   		Attributes_Set(weapon_index, 6, 1.2);
+	   		Attributes_Set(weapon_index, 412, 0.0);
+	   		Attributes_Set(weapon_index, 442, 1.1);
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
-	   		TF2Attrib_SetByDefIndex(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
-	   		TF2Attrib_SetByDefIndex(weapon_index, 476, 0.0);
+	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
+	   		Attributes_Set(weapon_index, 476, 0.0);
 	   		SetEntityCollisionGroup(client, 1);
 	   		SetEntityCollisionGroup(weapon_index, 1);
 	   		

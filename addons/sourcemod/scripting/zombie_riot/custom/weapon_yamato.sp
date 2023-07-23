@@ -629,23 +629,14 @@ static void Yamato_Update_Stats(int client, int weapon)
 	float damage = 1.0;
 	float speed = 1.0;
 
-	Address address;
-	address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+
+	damage *= Attributes_Get(weapon, 1, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 2, 1.0);
 	
 	//reloadrate of rainsword. also how fast the passive drain is.
-	address = TF2Attrib_GetByDefIndex(weapon, 5);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-					
-	address = TF2Attrib_GetByDefIndex(weapon, 6);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 5, 1.0);
+	speed *= Attributes_Get(weapon, 6, 1.0);
 					
 	int maxhealth = SDKCall_GetMaxHealth(client);
 	float tmp=maxhealth/200.0;

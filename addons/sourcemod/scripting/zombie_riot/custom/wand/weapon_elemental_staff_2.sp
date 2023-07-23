@@ -43,9 +43,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				
 				delay_hud[client] = 0.0;
 				float damage = 160.0;
-				Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
+				damage *= Attributes_Get(weapon, 410, 1.0);
 					
 				f_OriginalDamage[client] = damage;
 				client_slammed_how_many_times_limit[client] = 5;
@@ -223,9 +221,7 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 			static float belowBossEyes[3];
 
 			float damage = 65.0;
-			Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address); //massive damage!
+			damage *= Attributes_Get(weapon, 410, 1.0);
 
 			EmitSoundToAll(SOUND_WAND_PASSANGER, client, SNDCHAN_AUTO, 80, _, 0.9, GetRandomInt(95, 110));
 
@@ -625,9 +621,7 @@ void Passanger_CauseCoolSoundEffect(float StartLightningPos[3])
 void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
 	float damage = 165.0;
-	Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address); //massive damage!
+	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
 
 
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!

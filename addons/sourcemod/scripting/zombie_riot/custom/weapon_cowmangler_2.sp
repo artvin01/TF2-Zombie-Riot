@@ -77,26 +77,18 @@ public MRESReturn Mangler_2nd(int entity, DHookReturn ret, DHookParam param)
 			
 			Strength[client] = 112.0;
 
-			Strength[client] *= 2.5; //tiny penalty.
+			Strength[client] *= 1.3; //tiny penalty.
 
-			Address address = TF2Attrib_GetByDefIndex(entity, 335);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);	
+			Strength[client] *= Attributes_Get(entity, 335, 1.0);
 
 					
-			address = TF2Attrib_GetByDefIndex(entity, 1);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(entity, 1, 1.0);
 						
-			address = TF2Attrib_GetByDefIndex(entity, 2);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(entity, 2, 1.0);
 	
 			float reverse_attackspeed = 1.0;
 			
-			address = TF2Attrib_GetByDefIndex(entity, 6);
-			if(address != Address_Null)
-				reverse_attackspeed = TF2Attrib_GetValue(address);
+			reverse_attackspeed = Attributes_Get(entity, 6, 1.0);
 			
 			Strength[client] /= reverse_attackspeed;
 			

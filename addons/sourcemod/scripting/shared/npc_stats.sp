@@ -4370,6 +4370,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 					if(dist == -5.5)
 						dist = area2.GetCostSoFar();
 					
+				//	PrintToChatAll("%f > %f", dist, fldistancelimit);
 					if(GetClosestTarget_Enemy_Type[i] > 2)	// Distance limit
 					{
 						if(dist > fldistancelimitAllyNPC)
@@ -5698,9 +5699,7 @@ public void GibCollidePlayerInteraction(int gib, int player)
 					{
 						float Heal_Amount = 0.0;
 						
-						Address address = TF2Attrib_GetByDefIndex(weapon, 180);
-						if(address != Address_Null)
-							Heal_Amount = TF2Attrib_GetValue(address);
+						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
 				
 						
 						int Heal_Amount_calc;

@@ -103,13 +103,13 @@ void Saga_Enable(int client, int weapon)
 		WeaponRef[client] = EntIndexToEntRef(weapon);
 		delete WeaponTimer[client];
 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 861);
-		if(address == Address_Null)
+		float value = Attributes_Get(weapon, 861, -1.0);
+		if(value == -1.0)
 		{
 			// Elite 0 Special 1
 			WeaponTimer[client] = CreateTimer(3.5, Saga_Timer1, client, TIMER_REPEAT);
 		}
-		else if(!TF2Attrib_GetValue(address))
+		else if(value == 0.0)
 		{
 			// Elite 1 Special 2
 			WeaponTimer[client] = CreateTimer(1.0, Saga_Timer2, client, TIMER_REPEAT);
@@ -241,9 +241,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		CashSpent[client] -= 4;
 		
 		float damage = mastery ? 260.0 : 208.0;	// 400%, 320%
-		Address	address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
 		
 		int value = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
@@ -280,9 +278,7 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
 			float damage = 0.1;
-			Address	address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
+			damage *= Attributes_Get(weapon, 2, 1.0);
 			
 			int value = i_ExplosiveProjectileHexArray[client];
 			i_ExplosiveProjectileHexArray[client] = EP_DEALS_SLASH_DAMAGE;
@@ -307,7 +303,7 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon)
 	{
 		damage = float(GetEntProp(victim, Prop_Data, "m_iHealth") - 1);
 
-		SagaCrippled[victim] = TF2Attrib_GetByDefIndex(weapon, 861) == Address_Null ? 1.0 : 2.0;
+		SagaCrippled[victim] = Attributes_Get(weapon, 861, -1.0) == -1.0 ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);

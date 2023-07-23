@@ -11,6 +11,6 @@ public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 {
 	if(HasNamedItem(client, "Head Equipped Blue Goggles"))
 	{
-		TF2Attrib_SetByDefIndex(weapon, 304, 1.1);
+		Attributes_Set(weapon, 304, 1.1);
 	}
 }

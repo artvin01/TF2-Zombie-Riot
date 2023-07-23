@@ -29,6 +29,10 @@ static const char g_MeleeAttackSounds[][] =
 	"vo/halloween_boss/knight_attack04.mp3"
 };
 
+static char gGlow1;
+static char gExplosive1;
+static char gLaser1;
+
 void IsharmlaTrans_MapStart()
 {
 	PrecacheModel("models/bots/headless_hatman.mdl");
@@ -37,6 +41,8 @@ void IsharmlaTrans_MapStart()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 }
 
 methodmap IsharmlaTrans < CClotBody
@@ -87,13 +93,14 @@ methodmap IsharmlaTrans < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		npc.Anger = false;
+		npc.m_flMeleeArmor = 1.5;
 
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 55, 55, 255, 255);
-
+		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -108,6 +115,8 @@ methodmap IsharmlaTrans < CClotBody
 public void IsharmlaTrans_ClotThink(int iNPC)
 {
 	IsharmlaTrans npc = view_as<IsharmlaTrans>(iNPC);
+
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 5.0);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -143,17 +152,32 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 				
 				if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 				{
-					SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 500000.0, DMG_DROWN);
+					SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 500000.0, DMG_SLASH);
+					float pos[3];
+					GetEntPropVector(npc.m_iTarget, Prop_Send, "m_vecOrigin", pos);
+					pos[2] += 25.0;
+					IsharmlaEffect(npc.index, pos);
 				}
 				else
 				{
+					int enemy[6];
+					UnderTides npc1 = view_as<UnderTides>(iNPC);
+					GetHighDefTargets(npc1, enemy, sizeof(enemy));
+					for(int i; i < sizeof(enemy); i++)
+					{
+						if(enemy[i])
+						{
+							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
+						}
+					}
 					vecTarget = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0);
-					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
+					npc.FireParticleRocket(vecTarget, npc.Anger ? 750.0 : 500.0, 1000.0, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
 				}
 			}
 
 			npc.FaceTowards(vecTarget, 15000.0);
 		}
+
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -217,4 +241,108 @@ void IsharmlaTrans_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	SeaFounder_SpawnNethersea(pos);
+}
+
+
+static void IsharmlaEffect(int entity = -1, float VecPos_target[3] = {0.0,0.0,0.0})
+{	
+	int r = 65; //Blue.
+	int g = 65;
+	int b = 255;
+	int laser;
+
+	laser = ConnectWithBeam(entity, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, _, VecPos_target,"effect_hand_l");
+
+	CreateTimer(1.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+
+
+public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		IsharmlaTrans npc = view_as<IsharmlaTrans>(entity);
+		float Time=1.5;	//how long before kaboom
+			
+					
+		
+		float Range=150.0;
+		float Dmg=500.0;
+		
+		float vecTarget[3];
+		vecTarget = WorldSpaceCenter(enemy);
+		vecTarget[2] += 1.0;
+		
+		
+		int color[4];
+		color[0] = 65;
+		color[1] = 65;
+		color[2] = 255;
+		color[3] = 255;
+		float UserLoc[3];
+		UserLoc = GetAbsOrigin(entity);
+		
+		UserLoc[2]+=75.0;
+		
+		int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
+					
+		TE_SetupBeamPoints(vecTarget, UserLoc, SPRITE_INT_2, 0, 0, 0, 0.8, 22.0, 10.2, 1, 8.0, color, 0);
+		TE_SendToAll();
+
+		EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vecTarget);
+		
+		Handle data;
+		CreateDataTimer(Time, Smite_Timer_IsharMlar, data, TIMER_FLAG_NO_MAPCHANGE);
+		WritePackFloat(data, vecTarget[0]);
+		WritePackFloat(data, vecTarget[1]);
+		WritePackFloat(data, vecTarget[2]);
+		WritePackCell(data, Range); // Range
+		WritePackCell(data, Dmg); // Damge
+		WritePackCell(data, ref);
+		
+		spawnRing_Vectors(vecTarget, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 65, 65, 255, 200, 1, Time, 6.0, 0.1, 1, 1.0);
+	}
+}
+
+public Action Smite_Timer_IsharMlar(Handle Smite_Logic, DataPack data)
+{
+	ResetPack(data);
+		
+	float startPosition[3];
+	float position[3];
+	startPosition[0] = ReadPackFloat(data);
+	startPosition[1] = ReadPackFloat(data);
+	startPosition[2] = ReadPackFloat(data);
+	float Ionrange = ReadPackCell(data);
+	float Iondamage = ReadPackCell(data);
+	int client = EntRefToEntIndex(ReadPackCell(data));
+	
+	if (!IsValidEntity(client))
+	{
+		return Plugin_Stop;
+	}
+				
+	Explode_Logic_Custom(Iondamage, client, client, -1, startPosition, Ionrange , _ , _ , true);
+	
+	TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+	TE_SendToAll();
+			
+	position[0] = startPosition[0];
+	position[1] = startPosition[1];
+	position[2] += startPosition[2] + 900.0;
+	startPosition[2] += -200;
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {65, 65, 255, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {65, 65, 255, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {65, 65, 255, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {65, 65, 255, 255}, 3);
+	TE_SendToAll();
+	
+	position[2] = startPosition[2] + 50.0;
+	EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+	return Plugin_Continue;
 }

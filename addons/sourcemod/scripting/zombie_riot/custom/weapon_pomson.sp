@@ -42,14 +42,8 @@ public void Weapon_Pomson(int client, int weapon, const char[] classname, bool &
 	BEAM_Targets_Hit[client] = 0.0;
 	
 	Strength[client] = 18.0;
-			
-	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
-				
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
+	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 		
 //	TBB_Ability(client);
 	TBB_Ability_Pomson(client);

@@ -516,9 +516,7 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 				{
 					EmitSoundToAll(TRIP_ARMED, npc, _, 85);
 					float damage = 50.0;
-					Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-					if(address != Address_Null)
-						damage *= RoundToCeil(TF2Attrib_GetValue(address));
+					damage *= Attributes_Get(weapon, 2, 1.0);
 
 					damage *= i_HowManyBombsOnThisEntity[npc][client];
 

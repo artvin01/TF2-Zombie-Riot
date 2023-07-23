@@ -179,9 +179,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 				float damage = 500.0;
-				Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
+				damage *= Attributes_Get(weapon, 2, 1.0);
 
 				i_ExplosiveProjectileHexArray[weapon] = 0;
 				i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;

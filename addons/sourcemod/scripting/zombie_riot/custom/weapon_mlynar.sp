@@ -163,17 +163,9 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		
 		float damage = 250.0;
 		
-		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
-
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);	
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 476);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);	
+		damage *= Attributes_Get(weapon, 1, 1.0);
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= Attributes_Get(weapon, 476, 1.0);
 
 
 		damage *= f_MlynarDmgMultiPassive[client];
@@ -478,17 +470,9 @@ public float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker,
 
 		float damageModif = 15.0;
 			
-		Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-		if(address != Address_Null)
-			damageModif *= TF2Attrib_GetValue(address);
-
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damageModif *= TF2Attrib_GetValue(address);	
-				
-		address = TF2Attrib_GetByDefIndex(weapon, 476);
-		if(address != Address_Null)
-			damageModif *= TF2Attrib_GetValue(address);	
+		damage *= Attributes_Get(weapon, 1, 1.0);
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		damage *= Attributes_Get(weapon, 476, 1.0);
 
 		damageModif *= f_MlynarDmgMultiPassive[victim];
 		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];

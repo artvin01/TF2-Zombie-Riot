@@ -242,7 +242,7 @@ public void LastKnight_ClotThink(int iNPC)
 		if(npc.m_iTarget < 1)
 		{
 			// No nearby targets, kill the ocean
-			npc.m_iTarget = GetClosestAlly(npc.index, 100.0);
+			npc.m_iTarget = GetClosestAlly(npc.index, 10000.0);
 		}
 
 		// Won't attack runners, find players
@@ -291,7 +291,11 @@ public void LastKnight_ClotThink(int iNPC)
 						
 						if(target > MaxClients)
 						{
-							damage = 3000.0;
+							if(ShouldNpcDealBonusDamage(target))
+								damage *= 3.0;
+							
+							if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
+								damage *= 10.0;
 
 							if(f_TimeFrozenStill[target] > gameTime)
 								damage *= 1.75;

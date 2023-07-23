@@ -48,10 +48,8 @@ void         Atomic_MapStart()
 // main attack stuff
 public void Weapon_Atomic_Beam(int client, int weapon, bool crit)
 {
-	int     mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if (address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	int	mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if (mana_cost <= Current_Mana[client])
 	{
@@ -78,9 +76,7 @@ public void Weapon_Atomic_Beam(int client, int weapon, bool crit)
 			
 		}
 
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if (address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
+		Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 
 		red   = 255;
 		green = 0;
@@ -105,9 +101,7 @@ public void Weapon_Atomic_Beam_m2(int client, int weapon, bool crit, int slot)
 	{
 
 		int     mana_cost;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-		if (address != Address_Null)
-			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 		if (mana_cost <= Current_Mana[client])
 		{
@@ -133,15 +127,11 @@ public void Weapon_Atomic_Beam_m2(int client, int weapon, bool crit, int slot)
 				EmitSoundToAll("weapons/bison_main_shot_02.wav", client, SNDCHAN_STATIC, 65, _, 0.45, 100);
 			}
 
-			address = TF2Attrib_GetByDefIndex(weapon, 410);
-			if (address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				
 			float cooldown = 0.5;
-			address = TF2Attrib_GetByDefIndex(weapon, 6);
-			if (address != Address_Null)
-				cooldown *= TF2Attrib_GetValue(address);
+			cooldown *= Attributes_Get(weapon, 6, 1.0);
 
 			red   = 0;
 			green = 0;

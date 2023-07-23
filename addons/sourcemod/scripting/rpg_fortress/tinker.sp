@@ -583,11 +583,11 @@ void Tinker_SpawnItem(int client, int index, int entity)
 
 					Address address = TF2Attrib_GetByDefIndex(entity, 2);
 					if(address != Address_Null)
-						TF2Attrib_SetByDefIndex(entity, 2, TF2Attrib_GetValue(address) * multi);
+						Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * multi);
 
 					address = TF2Attrib_GetByDefIndex(entity, 410);
 					if(address != Address_Null)
-						TF2Attrib_SetByDefIndex(entity, 410, TF2Attrib_GetValue(address) * multi);
+						Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * multi);
 				}
 				
 				static TinkerEnum tinker;
@@ -606,15 +606,15 @@ void Tinker_SpawnItem(int client, int index, int entity)
 							Address address = TF2Attrib_GetByDefIndex(entity, tinker.Attrib[a]);
 							if(address == Address_Null)
 							{
-								TF2Attrib_SetByDefIndex(entity, tinker.Attrib[a], tinker.Value[a]);
+								Attributes_Set(entity, tinker.Attrib[a], tinker.Value[a]);
 							}
 							else if(TF2Econ_GetAttributeDefinitionString(tinker.Attrib[a], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
 							{
-								TF2Attrib_SetByDefIndex(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) + tinker.Value[a]);
+								Attributes_Set(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) + tinker.Value[a]);
 							}
 							else
 							{
-								TF2Attrib_SetByDefIndex(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) * tinker.Value[a]);
+								Attributes_Set(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) * tinker.Value[a]);
 							}
 						}
 					}
@@ -652,18 +652,18 @@ void Tinker_SpawnItem(int client, int index, int entity)
 						Address address = TF2Attrib_GetByDefIndex(entity, weapon.Forge[i]);
 						if(address == Address_Null)
 						{
-							TF2Attrib_SetByDefIndex(entity, weapon.Forge[i], weapon.Value[i]);
+							Attributes_Set(entity, weapon.Forge[i], weapon.Value[i]);
 						}
 						else if(TF2Econ_GetAttributeDefinitionString(weapon.Forge[i], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
 						{
-							TF2Attrib_SetByDefIndex(entity, weapon.Forge[i], TF2Attrib_GetValue(address) + weapon.Value[i]);
+							Attributes_Set(entity, weapon.Forge[i], TF2Attrib_GetValue(address) + weapon.Value[i]);
 						}
 						else
 						{
-							TF2Attrib_SetByDefIndex(entity, weapon.Forge[i], TF2Attrib_GetValue(address) * weapon.Value[i]);
+							Attributes_Set(entity, weapon.Forge[i], TF2Attrib_GetValue(address) * weapon.Value[i]);
 						}
 
-						TF2Attrib_SetByDefIndex(entity, 128, 1.0);
+						Attributes_Set(entity, 128, 1.0);
 					}
 				}
 
@@ -1489,15 +1489,15 @@ public void Tinker_XP_Glassy(int client, int weapon)
 {
 	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(weapon, 2, TF2Attrib_GetValue(address) * 0.99);
+		Attributes_Set(weapon, 2, TF2Attrib_GetValue(address) * 0.99);
 	
 	address = TF2Attrib_GetByDefIndex(weapon, 410);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(weapon, 410, TF2Attrib_GetValue(address) * 0.99);
+		Attributes_Set(weapon, 410, TF2Attrib_GetValue(address) * 0.99);
 	
 	address = TF2Attrib_GetByDefIndex(weapon, 2016);
 	if(address != Address_Null)
-		TF2Attrib_SetByDefIndex(weapon, 2016, TF2Attrib_GetValue(address) * 0.99);
+		Attributes_Set(weapon, 2016, TF2Attrib_GetValue(address) * 0.99);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)

@@ -263,9 +263,7 @@ public Action flip_extra(Handle timer, int client)
 			
 			damage_multiplier[entity] = 40.0;
 			
-			Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				damage_multiplier[entity] *= TF2Attrib_GetValue(address);
+			damage_multiplier[entity] *= Attributes_Get(weapon, 2, 1.0);
 				
 			damage_multiplier[entity] *= 2.0;
 			

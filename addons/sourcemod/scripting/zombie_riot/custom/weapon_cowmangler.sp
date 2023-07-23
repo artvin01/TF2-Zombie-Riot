@@ -55,13 +55,9 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 			
 			Strength[client] = 112.0;
 					
-			Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 						
-			address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				Strength[client] *= TF2Attrib_GetValue(address);
+			Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 				
 			//TBB_Ability(client);
 			TBB_Ability_Mangler_1(client);

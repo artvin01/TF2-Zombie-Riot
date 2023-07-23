@@ -168,17 +168,9 @@ public void Cosmic_Activate(int client, int weapon)
 		if(weapon >= MaxClients)
 		{
 			Cosmic_DMG[client]=100.0;
-			Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-			if(address != Address_Null)
-				Cosmic_DMG[client] *= TF2Attrib_GetValue(address);
-					
-			address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				Cosmic_DMG[client] *= TF2Attrib_GetValue(address);
-			
-			address = TF2Attrib_GetByDefIndex(weapon, 476);
-			if(address != Address_Null)
-				Cosmic_DMG[client] *= TF2Attrib_GetValue(address);
+			Cosmic_DMG[client] *= Attributes_Get(weapon, 1, 1.0);
+			Cosmic_DMG[client] *= Attributes_Get(weapon, 2, 1.0);
+			Cosmic_DMG[client] *= Attributes_Get(weapon, 476, 1.0);
 			
 			CosmicActualDamage[client] = Cosmic_DMG[client];
 			

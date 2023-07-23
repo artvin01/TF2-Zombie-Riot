@@ -115,9 +115,7 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 public void Marksman_boom_rifle(int client, int weapon, const char[] classname, bool &result)
 {
 	float damage = 100.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= RoundToCeil(TF2Attrib_GetValue(address));
+	damage *= RoundToCeil(Attributes_Get(weapon, 2, 1.0));
 		
 	float spawnLoc[3];
 	float eyePos[3];
@@ -179,21 +177,15 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 	
 	Strength[client] = 6.0;
 				
-	Address address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
 					
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		Strength[client] *= TF2Attrib_GetValue(address);
+	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
 		
 	float extra_accuracy = 6.5;
 		
 	Accuracy[client] = extra_accuracy;
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 106);
-	if(address != Address_Null)
-		Accuracy[client] *= TF2Attrib_GetValue(address);
+	Accuracy[client] *= Attributes_Get(weapon, 106, 1.0);
 			
 	TBB_Ability_Boomstick(client);
 }

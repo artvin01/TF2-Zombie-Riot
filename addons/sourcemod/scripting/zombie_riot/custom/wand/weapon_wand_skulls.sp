@@ -186,25 +186,15 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 
 public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 {
-	Address address;
-	
 	float damage = Skulls_LaunchDMG[tier];
-	address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 410, 1.0);
 			
 	float velocity = Skulls_LaunchVel[tier];
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		velocity *= TF2Attrib_GetValue(address);
+	velocity *= Attributes_Get(weapon, 103, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		velocity *= TF2Attrib_GetValue(address);
+	velocity *= Attributes_Get(weapon, 104, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-		velocity *= TF2Attrib_GetValue(address);
+	velocity *= Attributes_Get(weapon, 475, 1.0);
 		
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
 	
@@ -471,25 +461,7 @@ public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 {
 //	Address address;
 	float damage = Skulls_ShootDMG[tier];
-	/*
-	address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-	*/
 	float velocity = Skulls_ShootVelocity[tier];
-	/*
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		velocity *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		velocity *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-		velocity *= TF2Attrib_GetValue(address);
-	*/
 	
 	Skull_ShootDMG[prop] = damage;
 	Skull_ShootVelocity[prop] = velocity;
@@ -607,22 +579,13 @@ void Skull_AutoFire(int ent, int target, int client)
 	
 	if (IsValidEntity(weapon))
 	{
-		Address address;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 410, 1.0);
 
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			velocity *= TF2Attrib_GetValue(address);
+		velocity *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			velocity *= TF2Attrib_GetValue(address);
+		velocity *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			velocity *= TF2Attrib_GetValue(address);
+		velocity *= Attributes_Get(weapon, 475, 1.0);
 	}
 
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
@@ -688,10 +651,7 @@ void Skull_SetNextShootTime(int ent)
 	
 	if (IsValidEntity(weapon))
 	{
-		Address address;
-		address = TF2Attrib_GetByDefIndex(weapon, 6);
-		if(address != Address_Null)
-			BuffAmt = TF2Attrib_GetValue(address);
+		BuffAmt = Attributes_Get(weapon, 6, 1.0);
 	}
 	
 	if (LastMann)

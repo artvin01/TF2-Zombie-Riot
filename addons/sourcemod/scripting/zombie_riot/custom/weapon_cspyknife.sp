@@ -60,7 +60,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 					if(address != Address_Null)
 					fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
-					TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed);*/
+					Attributes_Set(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed);*/
 					ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed, 0.1);
 					//CreateTimer(0.88, Reset_ToNormalAttackSpeed, client, TIMER_FLAG_NO_MAPCHANGE);
 					//PrintToChat(client, "AttackSpeed bonus")
@@ -81,7 +81,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 					if(address != Address_Null)
 					fl_IncreaseDamage[client] = TF2Attrib_GetValue(address);
-					TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client] * DamageMultiplier);*/
+					Attributes_Set(weapon, 2, fl_IncreaseDamage[client] * DamageMultiplier);*/
 					ApplyTempAttrib(weapon, 2, DamageMultiplier);
 					//CreateTimer(0.88, Reset_fl_IncreaseDamage, client, TIMER_FLAG_NO_MAPCHANGE);
 					//PrintToChat(client, "More Dmg")
@@ -92,7 +92,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 					if(address != Address_Null)
 					fl_IncreaseDamage[client] = TF2Attrib_GetValue(address);
-					TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client] * LessDamageMultiplier);*/
+					Attributes_Set(weapon, 2, fl_IncreaseDamage[client] * LessDamageMultiplier);*/
 					ApplyTempAttrib(weapon, 2, LessDamageMultiplier);
 					//CreateTimer(0.88, Reset_fl_DecreaseDamage, client, TIMER_FLAG_NO_MAPCHANGE);
 					//PrintToChat(client, "Less Dmg")
@@ -103,7 +103,7 @@ public void Weapon_CspyKnife(int client, int weapon, bool crit, int slot)
 					Address address = TF2Attrib_GetByDefIndex(weapon, 412);
 					if(address != Address_Null)
 					fl_IncreaseDamageTaken[client] = TF2Attrib_GetValue(address);
-					TF2Attrib_SetByDefIndex(weapon, 412, fl_IncreaseDamageTaken[client] * TakeMoreDamageMultiplier);
+					Attributes_Set(weapon, 412, fl_IncreaseDamageTaken[client] * TakeMoreDamageMultiplier);
 					CreateTimer(0.88, Reset_TakeMoreDmg, client, TIMER_FLAG_NO_MAPCHANGE);*/
 					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, MinicritTimer, 0);
 					//PrintToChat(client, "Take More Dmg")
@@ -212,7 +212,7 @@ public Action LessAttackSpeed(Handle cut_timer, int client)
 		/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
-		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * DecreaseAttackSpeed_Pap);*/
+		Attributes_Set(weapon, 6, fl_IncreaseAttackSpeed[client] * DecreaseAttackSpeed_Pap);*/
 		ApplyTempAttrib(weapon, 6, DecreaseAttackSpeed_Pap);
 		//CreateTimer(ResetAttackSpeedTimer, Reset_ToNormalAttackSpeed2_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "Less Attack Speed works!")
@@ -229,7 +229,7 @@ public Action MoreAttackSpeed(Handle cut_timer, int client)
 		/*Address address = TF2Attrib_GetByDefIndex(weapon, 6);
 		if(address != Address_Null)
 		fl_IncreaseAttackSpeed[client] = TF2Attrib_GetValue(address);
-		TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed_Pap);*/
+		Attributes_Set(weapon, 6, fl_IncreaseAttackSpeed[client] * IncreaseAttackSpeed_Pap);*/
 		ApplyTempAttrib(weapon, 6, IncreaseAttackSpeed_Pap, 0.1);
 		//CreateTimer(ResetLessAttackSpeedTimer, Reset_ToNormalAttackSpeed_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "More Attack Speed works!")
@@ -246,7 +246,7 @@ public Action DealMoreDmg(Handle cut_timer, int client)
 		/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		if(address != Address_Null)
 		fl_IncreaseDamage[client] = TF2Attrib_GetValue(address);
-		TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client] * DamageMultiplier_Pap);*/
+		Attributes_Set(weapon, 2, fl_IncreaseDamage[client] * DamageMultiplier_Pap);*/
 		ApplyTempAttrib(weapon, 2, DamageMultiplier_Pap);
 		//CreateTimer(ResetDealMoreDmgTimer, Reset_fl_IncreaseDamage_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "More Attack Damage works!")
@@ -263,7 +263,7 @@ public Action DealLessDmg(Handle cut_timer, int client)
 		/*Address address = TF2Attrib_GetByDefIndex(weapon, 2);
 		if(address != Address_Null)
 		fl_IncreaseDamage[client] = TF2Attrib_GetValue(address);
-		TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client] * LessDamageMultiplier_Pap);*/
+		Attributes_Set(weapon, 2, fl_IncreaseDamage[client] * LessDamageMultiplier_Pap);*/
 		ApplyTempAttrib(weapon, 2, LessDamageMultiplier_Pap);
 		//CreateTimer(ResetDealLessDmgTimer, Reset_fl_DecreaseDamage_Pap, client, TIMER_FLAG_NO_MAPCHANGE);
 		//PrintToChat(client, "More Attack Damage works!")
@@ -292,7 +292,7 @@ public Action Reset_ToNormalAttackSpeed(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			//TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client]);
+			//Attributes_Set(weapon, 6, fl_IncreaseAttackSpeed[client]);
 			ApplyTempAttrib(weapon, 6, fl_IncreaseAttackSpeed[client] / IncreaseAttackSpeed, false);
 		}
 		//PrintToChat(client, "Reset AttackSpeed")
@@ -307,7 +307,7 @@ public Action Reset_ToNormalAttackSpeed2_Pap(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			//TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client]);
+			//Attributes_Set(weapon, 6, fl_IncreaseAttackSpeed[client]);
 			ApplyTempAttrib(weapon, 6, fl_IncreaseAttackSpeed[client] / DecreaseAttackSpeed_Pap, false);
 		}
 		//PrintToChat(client, "Reset AttackSpeed")
@@ -322,7 +322,7 @@ public Action Reset_ToNormalAttackSpeed_Pap(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			//TF2Attrib_SetByDefIndex(weapon, 6, fl_IncreaseAttackSpeed[client]);
+			//Attributes_Set(weapon, 6, fl_IncreaseAttackSpeed[client]);
 			ApplyTempAttrib(weapon, 6, fl_IncreaseAttackSpeed[client] / IncreaseAttackSpeed_Pap, false);
 		}
 		//PrintToChat(client, "Reset AttackSpeed")
@@ -337,7 +337,7 @@ public Action Reset_fl_IncreaseDamage(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			//TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client]);
+			//Attributes_Set(weapon, 2, fl_IncreaseDamage[client]);
 			ApplyTempAttrib(weapon, 2, fl_IncreaseDamage[client] / DamageMultiplier, false);
 		}
 		//PrintToChat(client, "Reset Damage")
@@ -352,7 +352,7 @@ public Action Reset_fl_DecreaseDamage(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			//TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client]);
+			//Attributes_Set(weapon, 2, fl_IncreaseDamage[client]);
 			ApplyTempAttrib(weapon, 2, fl_IncreaseDamage[client] / LessDamageMultiplier, false);
 		}
 		//PrintToChat(client, "Reset Damage")
@@ -367,7 +367,7 @@ public Action Reset_fl_IncreaseDamage_Pap(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			//TF2Attrib_SetByDefIndex(weapon, 2, fl_IncreaseDamage[client]);
+			//Attributes_Set(weapon, 2, fl_IncreaseDamage[client]);
 			ApplyTempAttrib(weapon, 2, fl_IncreaseDamage[client] / DamageMultiplier_Pap, false);
 		}
 		//PrintToChat(client, "Reset Damage")
@@ -396,7 +396,7 @@ public Action Reset_TakeMoreDmg(Handle cut_timer, int client)
 		int weapon = EntRefToEntIndex(weapon_id[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			TF2Attrib_SetByDefIndex(weapon, 412, fl_IncreaseDamageTaken[client]);
+			Attributes_Set(weapon, 412, fl_IncreaseDamageTaken[client]);
 		}
 		//PrintToChat(client, "Reset Take More Dmg")
 	}

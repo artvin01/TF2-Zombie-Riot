@@ -30,22 +30,20 @@ public void Weapon_Necro_FireBallSpell(int client, int weapon, bool &result, int
 				
 				Necro_Damage[client] = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-				if(address != Address_Null)
-					Necro_Damage[client] = TF2Attrib_GetValue(address);
+				Necro_Damage[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				Necro_Damage[client] *= 1.15;
 				
 				Necro_Damage[client] *= 2.0; //Two times so i can half minions.
 				
-				TF2Attrib_SetByDefIndex(client, 698, 0.0);
+				Attributes_Set(client, 698, 0.0);
 								
 				TF2_RemoveWeaponSlot(client, 5);
 				
 				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "13 ; 9999");
-				TF2Attrib_SetByDefIndex(client, 178, 0.25);
+				Attributes_Set(client, 178, 0.25);
 				FakeClientCommand(client, "use tf_weapon_spellbook");
-				TF2Attrib_SetByDefIndex(client, 698, 1.0);
+				Attributes_Set(client, 698, 1.0);
 				
 				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
@@ -112,9 +110,9 @@ public Action Necro_Remove_Spell(Handle Necro_Remove_SpellHandle, int client)
 		{
 			Spawn_Necromancy(client);			
 		}
-		TF2Attrib_SetByDefIndex(client, 698, 0.0);
+		Attributes_Set(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
-		TF2Attrib_SetByDefIndex(client, 178, 1.0);
+		Attributes_Set(client, 178, 1.0);
 		TF2_RemoveWeaponSlot(client, 5);
 	}	
 	return Plugin_Handled;

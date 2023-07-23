@@ -606,8 +606,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			EmitGameSoundToAll(SoundStringToPlay, client);
 		}
 
-		Address address;
-		
 		float damage = 65.0;
 		if(!StrContains(classname, "tf_weapon_bat"))
 		{
@@ -620,10 +618,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 		if(Item_Index != 155)
 		{
-			address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
-			
+			damage *= Attributes_Get(weapon, 2, 1.0);
 		}
 		else
 		{
@@ -636,9 +631,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}
 		
 			
-		address = TF2Attrib_GetByDefIndex(weapon, 1);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 1, 1.0);
 				
 		
 		bool PlayOnceOnly = false;

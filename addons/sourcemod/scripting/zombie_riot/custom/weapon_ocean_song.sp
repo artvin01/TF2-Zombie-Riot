@@ -536,14 +536,8 @@ public void Weapon_Ocean_Attack(int client, int weapon, bool crit, int slot)
 	TR_GetEndPosition(vecHit, swingTrace);	
 
 	delete swingTrace;
-/*
-	static float belowBossEyes[3];
-	float damage = 65.0;
-	Address	address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address); //massive damage!
-*/
-//	EmitSoundToAll(SOUND_WAND_PASSANGER, client, SNDCHAN_AUTO, 80, _, 0.9, GetRandomInt(95, 110));
+
+
 	if(IsValidAlly(client, target))
 	{
 		int pitch = GetRandomInt(90,110);

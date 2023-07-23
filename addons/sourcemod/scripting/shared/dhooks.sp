@@ -596,9 +596,7 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 			{
 				float damage = 300.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
+				damage *= Attributes_Get(weapon, 410, 1.0);
 				
 				Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true);
 				break;
@@ -1760,17 +1758,15 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	if(ammo_amount_left > 0)
 	{
 		float HealAmmount = 20.0;
-		Address address = TF2Attrib_GetByDefIndex(originalLauncher, 8);
-		if(address != Address_Null)
+		if(Attributes_Has(originalLauncher, 8))
 		{
-			HealAmmount *= TF2Attrib_GetValue(address);
+			HealAmmount *= Attributes_Get(originalLauncher, 8, 1.0);
 		}
 		else
 		{
-			HealAmmount = 20.0;
+			HealAmmount *= Attributes_GetOnPlayer(owner, 8, true);
 		}
 
-		HealAmmount *= Attributes_FindOnPlayerZR(owner, 8, true, 1.0);
 		
 		float GameTime = GetGameTime();
 		if(f_TimeUntillNormalHeal[target] > GameTime)
@@ -1929,7 +1925,7 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
-	TF2Attrib_SetByDefIndex(entity, 698, 1.0); // disable weapon switch
+	Attributes_Set(entity, 698, 1.0); // disable weapon switch
 	return MRES_Ignored;
 }
 public MRESReturn Dhook_RaiseFlag_Post(int entity)
@@ -1947,7 +1943,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	i_ExtraPlayerPoints[client] += 15;
 #endif
 	
-	TF2Attrib_SetByDefIndex(entity, 698, 0.0); // disable weapon switch
+	Attributes_Set(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
 }
 

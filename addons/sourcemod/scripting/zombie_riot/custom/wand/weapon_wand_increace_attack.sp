@@ -31,11 +31,9 @@ public void Weapon_Wand_AttackSpeed(int client, int weapon, bool &result, int sl
 				
 				float Original_Atackspeed = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					Original_Atackspeed = TF2Attrib_GetValue(address);
+				Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_WAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -80,11 +78,9 @@ public Action Reset_Wand_Attackspeed(Handle cut_timer, int ref)
 	{
 		float Original_Atackspeed;
 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-		if(address != Address_Null)
-			Original_Atackspeed = TF2Attrib_GetValue(address);
+		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.25);
+		Attributes_Set(weapon, 6, Original_Atackspeed / 0.25);
 	}
 	return Plugin_Handled;
 }

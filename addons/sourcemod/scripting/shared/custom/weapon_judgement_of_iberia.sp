@@ -121,13 +121,13 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	{
 		b_WeaponAttackSpeedModified[weapon] = true;
 		attackspeed = (attackspeed * 0.15);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		Attributes_Set(weapon, 6, attackspeed);
 	}
 	else
 	{
 		b_WeaponAttackSpeedModified[weapon] = false;
 		attackspeed = (attackspeed / 0.15);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed); //Make it really fast for 1 hit!
+		Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 	}
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
@@ -145,13 +145,13 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
 	{
 		attackspeed = (attackspeed / 0.85);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		Attributes_Set(weapon, 6, attackspeed);
 		b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
 	}
 	else if(!b_WeaponAttackSpeedModifiedSeaborn[weapon] && ThereWasSeaborn)
 	{
 		attackspeed = (attackspeed * 0.85);
-		TF2Attrib_SetByDefIndex(weapon, 6, attackspeed);
+		Attributes_Set(weapon, 6, attackspeed);
 		b_WeaponAttackSpeedModifiedSeaborn[weapon] = true;
 	}
 }
@@ -275,9 +275,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		//Attackspeed wont affect this calculation.
 
 		float damage = 40.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= RoundToCeil(TF2Attrib_GetValue(address));
+		damage *= Attributes_Get(weapon, 2, 1.0);
 
 		f_WeaponDamageCalculated[client] = damage;
 

@@ -47,9 +47,7 @@ public void BeamWand_m2_ClearAll()
 public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -65,9 +63,7 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 
 		Strength[client] = 65.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
+		Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 					
 	//	TBB_Ability(client);
 		TBB_Ability_BeamWand(client);
@@ -85,9 +81,7 @@ public void Weapon_Wand_Beam(int client, int weapon, bool crit)
 public void Weapon_Wand_Beam_pap(int client, int weapon, bool crit)
 {
 	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -103,9 +97,7 @@ public void Weapon_Wand_Beam_pap(int client, int weapon, bool crit)
 
 		Strength[client] = 65.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			Strength[client] *= TF2Attrib_GetValue(address);
+		Strength[client] *= Attributes_Get(weapon, 410, 1.0);
 			
 					
 	//	TBB_Ability(client);
@@ -150,11 +142,9 @@ public void Weapon_BeamWand_M2(int client, int weapon, bool &result, int slot)
 				
 				float Original_Atackspeed = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					Original_Atackspeed = TF2Attrib_GetValue(address);
+				Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -212,11 +202,9 @@ public void Weapon_BeamWand_M2_pap(int client, int weapon, bool &result, int slo
 				
 				float Original_Atackspeed = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					Original_Atackspeed = TF2Attrib_GetValue(address);
+				Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 				
-				TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed * 0.25);
+				Attributes_Set(weapon, 6, Original_Atackspeed * 0.25);
 				
 				EmitSoundToAll(SOUND_BEAMWAND_ATTACKSPEED_ABILITY, client, SNDCHAN_STATIC, 80, _, 0.9);
 				
@@ -261,11 +249,9 @@ public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int ref)
 	{
 		float Original_Atackspeed;
 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-		if(address != Address_Null)
-			Original_Atackspeed = TF2Attrib_GetValue(address);
+		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 
-		TF2Attrib_SetByDefIndex(weapon, 6, Original_Atackspeed / 0.25);
+		Attributes_Set(weapon, 6, Original_Atackspeed / 0.25);
 	}
 	return Plugin_Handled;
 }

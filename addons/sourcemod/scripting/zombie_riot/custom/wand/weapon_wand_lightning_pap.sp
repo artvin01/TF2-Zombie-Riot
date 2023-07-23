@@ -41,9 +41,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 				
 				damage *= Smite_DMGMult;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
+				damage *= Attributes_Get(weapon, 410, 1.0);
 			
 				Smite_Damage[client] = damage;
 					

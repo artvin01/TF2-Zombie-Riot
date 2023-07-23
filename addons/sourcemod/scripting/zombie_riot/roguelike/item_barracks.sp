@@ -60,12 +60,13 @@ public void Rogue_ThumbRing_Weapon(int entity)
 	GetEntityClassname(entity, buffer, sizeof(buffer));
 	if(!StrContains(buffer, "bow"))
 	{
-		Address address = TF2Attrib_GetByDefIndex(entity, 6);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 6, TF2Attrib_GetValue(address) * 0.85);
-		
-		address = TF2Attrib_GetByDefIndex(entity, 97);
-		if(address != Address_Null)
-			TF2Attrib_SetByDefIndex(entity, 97, TF2Attrib_GetValue(address) * 0.85);
+		if(Attributes_Has(entity,6))
+		{
+			Attributes_Set(entity, 6, Attributes_Get(entity, 6, 1.0) * 0.85);
+		}
+		if(Attributes_Has(entity,97))
+		{
+			Attributes_Set(entity, 97, Attributes_Get(entity, 97, 1.0) * 0.85);
+		}
 	}
 }

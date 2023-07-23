@@ -48,10 +48,7 @@ void Gladiia_Enable(int client, int weapon)
 			}
 			WeaponTimer[client] = INVALID_HANDLE;
 
-			float value = -1.0;
-			Address address = TF2Attrib_GetByDefIndex(weapon, 861);
-			if(address != Address_Null)
-				value = TF2Attrib_GetValue(address);
+			float value = Attributes_Get(weapon, 861, -1.0);
 			
 			switch(RoundFloat(value))
 			{
@@ -425,9 +422,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			}
 
 			float damage = 65.0 * damagemulti;
-			Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-			if(address != Address_Null)
-				damage *= TF2Attrib_GetValue(address);
+			damage *= Attributes_Get(weapon, 2, 1.0);
 			
 			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
 
@@ -463,36 +458,21 @@ void Gladiia_RangedAttack(int client, int weapon)
 
 	float damage = 65.0;
 	
-	Address address;
-	address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 1, 1.0);
 
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 2, 1.0);
 			
 	float speed = 1100.0;
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 103, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 104, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	float time = 500.0 / speed;
-	address = TF2Attrib_GetByDefIndex(weapon, 101);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
+	time *= Attributes_Get(weapon, 101, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 102);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
+	time *= Attributes_Get(weapon, 102, 1.0);
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GLADIIA, weapon, "rockettrail_bubbles");
 

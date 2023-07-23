@@ -30,14 +30,14 @@ public void Weapon_Wand_FireBallSpell(int client, int weapon, bool &result, int 
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 5.0);
 				
-				TF2Attrib_SetByDefIndex(client, 698, 0.0);
+				Attributes_Set(client, 698, 0.0);
 								
 				TF2_RemoveWeaponSlot(client, 5);
 				
 				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "");
-				TF2Attrib_SetByDefIndex(client, 178, 0.25);
+				Attributes_Set(client, 178, 0.25);
 				FakeClientCommand(client, "use tf_weapon_spellbook");
-				TF2Attrib_SetByDefIndex(client, 698, 1.0);
+				Attributes_Set(client, 698, 1.0);
 				
 				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
@@ -88,14 +88,14 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 10.0);
 				
-				TF2Attrib_SetByDefIndex(client, 698, 0.0);
+				Attributes_Set(client, 698, 0.0);
 								
 				TF2_RemoveWeaponSlot(client, 5);
 				
 				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "");
-				TF2Attrib_SetByDefIndex(client, 178, 0.25);
+				Attributes_Set(client, 178, 0.25);
 				FakeClientCommand(client, "use tf_weapon_spellbook");
-				TF2Attrib_SetByDefIndex(client, 698, 1.0);
+				Attributes_Set(client, 698, 1.0);
 				
 				SetEntProp(spellbook, Prop_Send, "m_iSpellCharges", 1);
 				SetEntProp(spellbook, Prop_Send, "m_iSelectedSpellIndex", 0);	
@@ -142,9 +142,9 @@ public Action Fireball_Remove_Spell(Handle Fireball_Remove_SpellHandle, int clie
 {
 	if (IsValidClient(client))
 	{
-		TF2Attrib_SetByDefIndex(client, 698, 0.0);
+		Attributes_Set(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
-		TF2Attrib_SetByDefIndex(client, 178, 1.0);
+		Attributes_Set(client, 178, 1.0);
 	}	
 	return Plugin_Handled;
 }
