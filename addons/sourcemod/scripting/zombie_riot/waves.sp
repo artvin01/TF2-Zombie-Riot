@@ -1065,7 +1065,7 @@ void Waves_Progress()
 			if(round.FogChange)
 			{
 				int entity = -1;
-				if(FogEntity == INVALID_ENT_REFERENCE)
+				if(FogEntity != INVALID_ENT_REFERENCE)
 					entity = EntRefToEntIndex(FogEntity);
 				
 				if(FogEntity == INVALID_ENT_REFERENCE)
