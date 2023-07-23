@@ -3,17 +3,51 @@
 
 static StringMap WeaponAttributes[MAXENTITIES + 1];
 
+bool Attribute_ServerSide(int attribute)
+{
+	switch(attribute)
+	{
+		case 206,205:
+		{
+			return true;
+		}
+		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17:
+		{
+			return true;
+		}
+		/*
+				Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651);
+		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 33, false));
+		i_GlitchedGun[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 731, false));
+		i_AresenalTrap[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 719, false));
+		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 544, false));
+		i_NoBonusRange[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 410, false));
+		i_BuffBannerPassively[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 786, false));
+		
+		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 3002, false));
+		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 3000, false));
+
+		
+		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 149, false));
+		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 208, false));
+		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 638, false));
+		f_UberOnHitWeapon[entity] = Attributes_GetOnWeapon(client, entity, 17, false);
+		*/
+	}
+	return false;
+}
+/*
 bool Attribute_ClientSide(int attribute)
 {
 	switch(attribute)
 	{
 		case 1,2,3,4,5,6,26,96,97,303,298,49,252,201,
-		396,116,821,128,231,263,264,54,
+		396,116,821,128,231,263,264,54,47,41,45,
 		353,107,465,464,740,169,314,178,287:
 		{
 			return true;
 		}
-		/*
+		
 			This includes
 			damage attributes					-ingame dmg code, can be fixed though.
 			attackspeed
@@ -30,11 +64,13 @@ bool Attribute_ClientSide(int attribute)
 			Medigun provide						- due to speed and stuff, vaccinator too
 			Attackrange and attack fatness		- due to clientside melee hit registration
 			speed penalty
-		*/
+			Sniper charge
+			Bullets per shot
+		
 	}
 	return false;
 }
-
+*/
 void Attributes_EntityDestroyed(int entity)
 {
 	delete WeaponAttributes[entity];
