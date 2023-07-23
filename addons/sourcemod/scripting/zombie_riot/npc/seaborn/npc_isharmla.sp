@@ -139,7 +139,7 @@ public void Isharmla_ClotThink(int iNPC)
 	if(npc.m_bSpeed)
 		npc.m_iPoints += ((GetURandomInt() % 2) ? 17 : 16);
 	
-	if(npc.m_iPoints == 99999)
+	if(npc.m_iPoints >= 99999)
 	{
 		if(isRaid)
 			RaidModeScaling = 1.0;
