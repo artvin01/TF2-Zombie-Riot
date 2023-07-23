@@ -607,23 +607,14 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-/*
-	int found;
-	for(int i; i < count; i++)
-	{
-		if(attrib[i] > 0)
-			TF2Items_SetAttribute(weapon, found++, attrib[i], value[i]);
-	}
-	
-	TF2Items_SetNumAttributes(weapon, found);
-*/
-
 	TF2_SetPlayerClass(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
 	if(entity > MaxClients)
 	{
+		Attributes_EntityDestroyed(entity);
+
 		for(int i; i < count; i++)
 		{
 #if defined RPG
@@ -1062,11 +1053,8 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	}
 		
 	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(entity<=MaxClients || !IsValidEntity(entity))
-	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		return Plugin_Stop;
-	}
+	if(entity == -1)
+		entity = 0;
 
 	float pos[3], ang[3];
 	
@@ -2102,38 +2090,29 @@ stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int
 	TF2Items_SetItemIndex(hWeapon, index);
 	TF2Items_SetLevel(hWeapon, level);
 	TF2Items_SetQuality(hWeapon, qual);
-	char atts[32][32];
-	int count = ExplodeString(att, ";", atts, 32, 32);
-
-	if(count % 2)
-		--count;
-
-	if(count > 0)
-	{
-		TF2Items_SetNumAttributes(hWeapon, count/2);
-		int i2;
-		for(int i; i<count; i+=2)
-		{
-			int attrib = StringToInt(atts[i]);
-			if(!attrib)
-			{
-				delete hWeapon;
-				return -1;
-			}
-
-			TF2Items_SetAttribute(hWeapon, i2, attrib, StringToFloat(atts[i+1]));
-			i2++;
-		}
-	}
-	else
-	{
-		TF2Items_SetNumAttributes(hWeapon, 0);
-	}
+	TF2Items_SetNumAttributes(hWeapon, 0);
 
 	int entity = TF2Items_GiveNamedItem(client, hWeapon);
 	delete hWeapon;
 	if(entity == -1)
 		return -1;
+	
+	Attributes_EntityDestroyed(entity);
+	
+	char atts[32][32];
+	int count = ExplodeString(att, ";", atts, 32, 32);
+
+	if(count % 2)
+		--count;
+	
+	for(int i; i < count; i += 2)
+	{
+		int attrib = StringToInt(atts[i]);
+		if(attrib)
+		{
+			Attributes_Set(entity, attrib, StringToFloat(atts[i+1]));
+		}
+	}
 
 	EquipPlayerWeapon(client, entity);
 
@@ -2962,7 +2941,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 				else
 				{
 					TF2_AddCondition(ClosestTarget, TFCond_Gas, 1.5);
-					TF2_MakeBleed(ClosestTarget, entityToEvaluateFrom, 10.0);
+					StartBleedingTimer_Against_Client(ClosestTarget, entityToEvaluateFrom, 4.0, 20);
 				}
 			}
 			static float damage_1;
@@ -3783,10 +3762,10 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
-	Address address = TF2Attrib_GetByDefIndex(entity, index);
-	if(address != Address_Null)
+	if(Attributes_Has(entity,index))
 	{
-		Attributes_Set(entity, index, TF2Attrib_GetValue(address) * multi);
+		Attributes_SetMulti(entity, index, multi);
+		//Attributes_Get(weapon, 466, 1.0);
 
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -3796,6 +3775,25 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 	}
 }
 
+/*
+	float damage = 65.0;
+	
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+			
+	float speed = 1100.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	
+	float time = 500.0 / speed;
+	time *= Attributes_Get(weapon, 101, 1.0);
+	
+	time *= Attributes_Get(weapon, 102, 1.0);
+	*/
 public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -3803,9 +3801,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	if(entity != INVALID_ENT_REFERENCE)
 	{
 		int index = pack.ReadCell();
-		Address address = TF2Attrib_GetByDefIndex(entity, index);
-		if(address != Address_Null)
-			Attributes_Set(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
+		Attributes_SetMulti(entity, index, 1.0 / pack.ReadFloat());
 	}
 	return Plugin_Stop;
 }

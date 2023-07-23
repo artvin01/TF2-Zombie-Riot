@@ -63,27 +63,22 @@ public void Super_Star_Shooter_Main(int client, int weapon, bool crit, int slot)
 		SSS_overheat[client] = 25;
 	}
 
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-
 	float speed = 1750.0;
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
 	float time = 5000.0/speed;
-	address = TF2Attrib_GetByDefIndex(weapon, 101);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 102);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+			
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	
+	time *= Attributes_Get(weapon, 101, 1.0);
+	
+	time *= Attributes_Get(weapon, 102, 1.0);
 		
 	int iRot = CreateEntityByName("func_door_rotating");
 	if(iRot == -1) return;

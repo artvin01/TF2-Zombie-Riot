@@ -148,10 +148,7 @@ public Action Timer_Management_Fantasy(Handle timer, DataPack pack)
 static int Fantasy_Blade_Get_Pap(int weapon)
 {
 	int pap=0;
-	Address address;
-	address = TF2Attrib_GetByDefIndex(weapon, 122);
-	if(address != Address_Null)
-		pap = RoundFloat(TF2Attrib_GetValue(address));
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 	return pap;
 }
 
@@ -172,15 +169,11 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 					if(fl_Shard_Ammount[client]>=3)
 					{
 						float damage = 500.0;
-						Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-						if(address != Address_Null)
-							damage *= TF2Attrib_GetValue(address);
+						damage *= Attributes_Get(weapon, 2, 1.0);
 							
 						float time = Fantasy_Blade_Tele(client, weapon, damage, 1000.0);
 						
-						address = TF2Attrib_GetByDefIndex(weapon, 6);
-						if(address != Address_Null)
-							time *= TF2Attrib_GetValue(address);
+						time *= Attributes_Get(weapon, 6, 1.0);
 							
 						fl_teleport_recharge_time[client] = GameTime + time;
 						if(time>2.0)
@@ -202,13 +195,11 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 			if(fl_Shard_Ammount[client]>=1)
 			{
 				float time = 3.5;
-				Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-				if(address != Address_Null)
-					time *= TF2Attrib_GetValue(address);
+				time *= Attributes_Get(weapon, 6, 1.0);
+
 				float damage = 100.0;
-				address = TF2Attrib_GetByDefIndex(weapon, 2);
-				if(address != Address_Null)
-					damage *= TF2Attrib_GetValue(address);
+				damage *= Attributes_Get(weapon, 2, 1.0);
+
 				fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
 				float look_vec[3];
 				Get_Fake_Forward_Vec(client, 1125.0, look_vec);
@@ -252,14 +243,10 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 					if(fl_Shard_Ammount[client]>=1)
 					{
 						float time = 1.75;
-						Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-						if(address != Address_Null)
-							time *= TF2Attrib_GetValue(address);
+						time *= Attributes_Get(weapon, 6, 1.0);
 							
 						float damage = 75.0;
-						address = TF2Attrib_GetByDefIndex(weapon, 2);
-						if(address != Address_Null)
-							damage *= TF2Attrib_GetValue(address);
+						damage *= Attributes_Get(weapon, 2, 1.0);
 						fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
 						float look_vec[3];
 						float range = 250.0;

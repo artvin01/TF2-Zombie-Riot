@@ -275,9 +275,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		//Attackspeed wont affect this calculation.
 
 		float damage = 40.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= RoundToCeil(TF2Attrib_GetValue(address));
+		damage *= Attributes_Get(weapon, 2, 1.0);
 
 		f_WeaponDamageCalculated[client] = damage;
 

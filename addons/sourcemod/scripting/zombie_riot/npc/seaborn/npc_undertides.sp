@@ -342,7 +342,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-static void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
 {
 	// Prio:
 	// 1. Highest Defense Stat

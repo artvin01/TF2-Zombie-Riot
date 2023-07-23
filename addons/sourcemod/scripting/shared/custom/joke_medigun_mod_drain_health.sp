@@ -841,9 +841,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (flChargeLevel > 0.0) 
 				{
 					float heatrefresh = 0.05;
-					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
-					if(address != Address_Null)
-						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
+					
+					heatrefresh *= 1.0+(Attributes_Get(medigun, 314, 1.0)-9.0)/3;
 					
 					flChargeLevel -= heatrefresh*GetGameFrameTime();
 					
@@ -866,9 +865,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (flChargeLevel > 0.0) 
 				{
 					float heatrefresh = 0.05;
-					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
-					if(address != Address_Null)
-						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
+
+					heatrefresh *= 1.0+(Attributes_Get(medigun, 314, 1.0)-9.0)/3;
 					
 					flChargeLevel -= heatrefresh*GetGameFrameTime();
 					
@@ -888,9 +886,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (flChargeLevel > 0.0) 
 				{
 					float heatrefresh = 0.2;
-					Address address = TF2Attrib_GetByDefIndex(medigun, 314);
-					if(address != Address_Null)
-						heatrefresh *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
+					
+					heatrefresh *= 1.0+(Attributes_Get(medigun, 314, 1.0)-9.0)/3;
 					
 					flChargeLevel -= heatrefresh*GetGameFrameTime();
 					

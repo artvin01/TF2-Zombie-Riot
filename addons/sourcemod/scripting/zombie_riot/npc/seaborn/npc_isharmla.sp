@@ -64,12 +64,14 @@ methodmap Isharmla < CClotBody
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 
+		/*
 		if(!ally && !IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime(npc.index) + 900.0;
 			RaidModeScaling = 0.0;
 		}
+		*/
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
@@ -299,7 +301,7 @@ public void Isharmla_ClotThink(int iNPC)
 
 			npc.AddGesture("ACT_SKADI_ATTACK");
 			npc.m_flAttackHappens = gameTime + 1.25;
-			//npc.m_flDoingAnimation = gameTime + 1.25;
+			npc.m_flDoingAnimation = gameTime + 1.75;
 		}
 		
 		if(npc.m_flDoingAnimation > gameTime)

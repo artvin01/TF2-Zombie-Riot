@@ -74,7 +74,7 @@ methodmap TidelinkedArchon < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
 		
-		npc.m_flSpeed = 150.0;	// 0.6 x 250
+		npc.m_flSpeed = 300.0;//150.0;	// 0.6 x 250
 		npc.m_flMeleeArmor = 0.5;
 		npc.m_flRangedArmor = 1.25;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -248,6 +248,14 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public void TidelinkedArchon_DownedThink(int entity)
+{
+	TidelinkedArchon npc = view_as<TidelinkedArchon>(entity);
+	npc.SetActivity("ACT_DIESIMPLE");
+	npc.SetPlaybackRate(0.5);
+	SDKUnhook(entity, SDKHook_Think, TidelinkedArchon_DownedThink);
+}
+
 void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 {
 	if(attacker > 0)
@@ -259,8 +267,9 @@ void TidelinkedArchon_OnTakeDamage(int victim, int attacker, float damage)
 			npc.m_iTarget = 0;
 			npc.m_bisWalking = false;
 			b_NpcIsInvulnerable[npc.index] = true;
-			npc.SetActivity("ACT_DIESIMPLE");
-			npc.SetPlaybackRate(0.5);
+			npc.StopPathing();
+
+			SDKHook(victim, SDKHook_Think, TidelinkedArchon_DownedThink);
 		}
 		
 		if(b_NpcIsInvulnerable[npc.index])

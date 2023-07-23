@@ -482,9 +482,7 @@ public void Throw_Knife(int client, int weapon, float speed, int iModel)
 {
 	f_KnifeHudDelay[client] = 0.0;
 	float damage = 75.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= RoundToCeil(TF2Attrib_GetValue(address));
+	damage *= Attributes_Get(weapon, 2, 1.0);
 	
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);

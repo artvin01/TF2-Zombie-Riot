@@ -150,21 +150,15 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		
 		
 		//note: redo attributes for better customizability
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			dmgProjectile *= TF2Attrib_GetValue(address);
-			
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speedMult *= TF2Attrib_GetValue(address);
+		dmgProjectile *= Attributes_Get(weapon, 1, 1.0);
+
+		dmgProjectile *= Attributes_Get(weapon, 2, 1.0);
+				
+		speedMult *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speedMult *= TF2Attrib_GetValue(address);
+		speedMult *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speedMult *= TF2Attrib_GetValue(address);
+		speedMult *= Attributes_Get(weapon, 475, 1.0);
 			
 		float damage=dmgProjectile;
 		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");

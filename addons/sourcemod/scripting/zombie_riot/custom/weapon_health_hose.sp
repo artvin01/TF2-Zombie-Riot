@@ -129,26 +129,27 @@ public Action Hose_RemoveUber(Handle remove, int id)
 
 public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, int loss, int minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
-	Address address;
+	float healmult = 1.0;
+	if(Attributes_Has(weapon, 8))
+	{
+		healmult = Attributes_Get(weapon, 8, 1.0);
+	}
+	else
+	{
+		healmult = Attributes_GetOnPlayer(client, 8, true);
+	}
 	
-	float healmult = Attributes_FindOnPlayerZR(client, 8, true, 1.0, true);
-		
 	if (Hose_ShotgunCharge[client])
 	{
 		healmult *= Hose_ShotgunChargeMult;
 	}
 		
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-	speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 103, 1.0);
 		
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-	speed *= TF2Attrib_GetValue(address);
-		
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-	speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	
 		
 	int FinalHeal = RoundFloat(baseHeal * healmult);
 		

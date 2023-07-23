@@ -396,6 +396,8 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		npc.m_flDead_Ringer_Invis_bool = false;
 		b_IsEntityNeverTranmitted[npc.index] = false;
+		npc.m_bTeamGlowDefault = true;
+		GiveNpcOutLineLastOrBoss(npc.index, true);
 			
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -744,6 +746,8 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_flDead_Ringer = GetGameTime(npc.index) + 13.0;
 		npc.m_flDead_Ringer_Invis_bool = true;
 		b_IsEntityNeverTranmitted[npc.index] = true;
+		GiveNpcOutLineLastOrBoss(npc.index, false);
+		npc.m_bTeamGlowDefault = false;
 		npc.PlayDeathSound();	
 	}
 	

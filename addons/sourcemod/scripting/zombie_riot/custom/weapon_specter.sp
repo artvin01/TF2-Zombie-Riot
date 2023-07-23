@@ -58,10 +58,7 @@ void PlayCustomSoundSpecter(int client)
 
 static int Specter_GetSpecterFlags(int weapon)
 {
-	int flags;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 122);
-	if(address != Address_Null)
-		flags = RoundFloat(TF2Attrib_GetValue(address));
+	int flags = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 	
 	return flags;
 }
@@ -458,14 +455,9 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 	{
 		float damage = 65.0;
 
-		Address address;
-		address = TF2Attrib_GetByDefIndex(weapon, 1);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 1, 1.0);
 
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
 
 		f_SpecterDeadDamage[client] = damage;
 		int flags = Specter_GetSpecterFlags(weapon);

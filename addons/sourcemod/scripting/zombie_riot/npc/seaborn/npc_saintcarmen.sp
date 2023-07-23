@@ -136,7 +136,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 		if(npc.m_iTarget < 1)
 		{
 			// No nearby targets, kill the ocean
-			npc.m_iTarget = GetClosestAlly(npc.index, 100.0);
+			npc.m_iTarget = GetClosestAlly(npc.index, 10000.0);
 		}
 
 		if(npc.m_iTarget < 1)
@@ -173,8 +173,12 @@ public void SaintCarmen_ClotThink(int iNPC)
 
 					if(target > 0)
 					{
+						float damage = 300.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damage *= 3.0;
+						
 						KillFeed_SetKillIcon(npc.index, "taunt_spy");
-						SDKHooks_TakeDamage(target, npc.index, npc.index, target > MaxClients ? 900.0 : 300.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						// 1200 x 0.5 x 0.5
 
 						npc.PlayMeleeHitSound();
@@ -205,7 +209,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 
 								npc.m_flNextMeleeAttack += 1.0;
 
-								StartHealingTimer(target, 0.4, -900.0);
+								StartHealingTimer(target, 0.4, team == GetEntProp(target, Prop_Send, "m_iTeamNum") ? -3000.0 : -300.0);
 							}
 						}
 					}

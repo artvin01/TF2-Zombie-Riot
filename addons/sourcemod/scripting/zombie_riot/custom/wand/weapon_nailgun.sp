@@ -24,26 +24,20 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 		
 	float attack_speed;
 		
-	attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true); //Sentry attack speed bonus
 				
-	damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+	damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 		
 	float sentry_range;
 			
-	sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
+	sentry_range = Attributes_GetOnPlayer(client, 344, true);			//Sentry Range bonus
 			
 	float speed = 1100.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 103, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 104, 1.0);
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	speed *= sentry_range;
 		

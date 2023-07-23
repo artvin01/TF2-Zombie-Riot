@@ -200,32 +200,21 @@ public void Ark_attack0(int client, int weapon, bool crit, int slot) // stats fo
 		Ark_Hits[client] -= 1;
 		float damage = 25.0;
 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
 			
 		float speed = 500.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+
+		speed *= Attributes_Get(weapon, 103, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	
 		float time = 1000.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 101, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 102, 1.0);
 
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 
@@ -238,32 +227,21 @@ public void Ark_attack1(int client, int weapon, bool crit, int slot) //first pap
 	{
 		Ark_Hits[client] -= 1;
 		float damage = 50.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
 			
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
+
+		speed *= Attributes_Get(weapon, 103, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	
 		float time = 1000.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 101, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 102, 1.0);
 
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		Ark_Lauch_projectile(client, weapon, false, speed, time, damage);
@@ -279,32 +257,21 @@ public void Ark_attack2(int client, int weapon, bool crit, int slot) //second pa
 		Ark_Hits[client] -= 1;
 
 		float damage = 50.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
 			
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
+
+		speed *= Attributes_Get(weapon, 103, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 	
 		float time = 1000.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 101, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		time *= Attributes_Get(weapon, 102, 1.0);
 			
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		Ark_Lauch_projectile(client, weapon, false, speed, time, damage);
@@ -662,37 +629,20 @@ void Weapon_ark_LapplandRangedAttack(int client, int weapon)
 	{
 		damage *= 2.0;
 	}
-	Address address;
-	address = TF2Attrib_GetByDefIndex(weapon, 1);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
-
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
 			
 	float speed = 1100.0;
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 104);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 475);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
-	
-	
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	speed *= Attributes_Get(weapon, 103, 1.0);
+
+	speed *= Attributes_Get(weapon, 104, 1.0);
+
+	speed *= Attributes_Get(weapon, 475, 1.0);
+
+
 	float time = 2000.0/speed;
-	address = TF2Attrib_GetByDefIndex(weapon, 101);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 102);
-	if(address != Address_Null)
-		time *= TF2Attrib_GetValue(address);
+	time *= Attributes_Get(weapon, 101, 1.0);
+
+	time *= Attributes_Get(weapon, 102, 1.0);
 
 	if(IsValidEnemy(client, target))
 	{

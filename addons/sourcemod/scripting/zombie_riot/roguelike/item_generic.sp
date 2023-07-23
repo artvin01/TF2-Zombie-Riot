@@ -51,22 +51,12 @@ public void Rogue_Item_GrigoriCoinPurse_Weapon(int entity)
 {
 	float Multi = GrigoriCoinPurseCalc();
 
-	Address address = TF2Attrib_GetByDefIndex(entity, 6);
-	if(address != Address_Null)
-		Attributes_Set(entity, 6, TF2Attrib_GetValue(address) * Multi);
-	
-	address = TF2Attrib_GetByDefIndex(entity, 97);
-	if(address != Address_Null)
-		Attributes_Set(entity, 97, TF2Attrib_GetValue(address) * Multi);
 
-	address = TF2Attrib_GetByDefIndex(entity, 733);
-	if(address != Address_Null)
-		Attributes_Set(entity, 733, TF2Attrib_GetValue(address) * Multi);
-
-	address = TF2Attrib_GetByDefIndex(entity, 8);
-	if(address != Address_Null)
-		Attributes_Set(entity, 8, TF2Attrib_GetValue(address) * (1.0 / Multi)); //invert it for this.
-
+	Attributes_SetMulti(entity, 6, Multi);
+	Attributes_SetMulti(entity, 97, Multi);
+	Attributes_SetMulti(entity, 733, Multi);
+	Attributes_SetMulti(entity, 8, Multi);
+	Attributes_SetMulti(entity, 6, (1.0 / Multi));
 }
 
 public void Rogue_Item_Provoked_Anger()
@@ -171,9 +161,7 @@ public void Rogue_SteelRazor_Weapon(int entity)
 			
 	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 	{
-		Address address = TF2Attrib_GetByDefIndex(entity, 2);
-		if(address != Address_Null)
-			Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_SetMulti(entity, 2, 1.15);
 	}
 }
 public void Rogue_Item_SteelRazor()
@@ -349,21 +337,13 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 {
 	// +3% damage bonus
-	Address address = TF2Attrib_GetByDefIndex(entity, 2);
-	if(address != Address_Null)
-		Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 1.03);
-	
-	address = TF2Attrib_GetByDefIndex(entity, 410);
-	if(address != Address_Null)
-		Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * 1.03);
-
+	Attributes_SetMulti(entity, 2, 1.03);
+	Attributes_SetMulti(entity, 410, 1.03);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
 	if(!StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		address = TF2Attrib_GetByDefIndex(entity, 1);
-		if(address != Address_Null)
-			Attributes_Set(entity, 1, TF2Attrib_GetValue(address) * 1.03);
+		Attributes_SetMulti(entity, 1, 1.03);
 	}
 	//Extra damage for mediguns.
 }
@@ -440,21 +420,13 @@ public void Rogue_Item_ScrappedWallet()
 public void Rogue_Item_ScrappedWallet_Weapon(int entity)
 {
 	// +1% damage bonus
-	Address address = TF2Attrib_GetByDefIndex(entity, 2);
-	if(address != Address_Null)
-		Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 1.01);
-	
-	address = TF2Attrib_GetByDefIndex(entity, 410);
-	if(address != Address_Null)
-		Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * 1.01);
-
+	Attributes_SetMulti(entity, 2, 1.01);
+	Attributes_SetMulti(entity, 410, 1.01);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(!StrContains(buffer, "tf_weapon_medigun"))
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		address = TF2Attrib_GetByDefIndex(entity, 1);
-		if(address != Address_Null)
-			Attributes_Set(entity, 1, TF2Attrib_GetValue(address) * 1.01);
+		Attributes_SetMulti(entity, 1, 1.01);
 	}
 	//Extra damage for mediguns.
 }
@@ -520,24 +492,17 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Weapon(int entity)
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
 
-	Address address;
-			
+
 	if(TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee) //anything that isnt melee
 	{
-		address = TF2Attrib_GetByDefIndex(entity, 2);
-		if(address != Address_Null)
-			Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_SetMulti(entity, 2, 1.15);
 	}
 
-	address = TF2Attrib_GetByDefIndex(entity, 410);
-	if(address != Address_Null)
-		Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * 1.15);
+	Attributes_SetMulti(entity, 410, 1.15);
 
 	if(!StrContains(classname, "tf_weapon_medigun"))
 	{
-		address = TF2Attrib_GetByDefIndex(entity, 1);
-		if(address != Address_Null)
-			Attributes_Set(entity, 1, TF2Attrib_GetValue(address) * 1.15);
+		Attributes_SetMulti(entity, 1, 1.15);
 	}
 }
 public void Rogue_Item_SpanishSpecialisedGunpowder()

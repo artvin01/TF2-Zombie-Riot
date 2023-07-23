@@ -663,7 +663,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_211.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_212.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT -0.02 //Make it 0 for now
 
@@ -949,13 +949,13 @@ int i_CreditsOnKill[MAXENTITIES];
 float f_CreditsOnKill[MAXENTITIES];
 
 int i_InSafeZone[MAXENTITIES];
-float fl_MeleeArmor[MAXENTITIES];
-float fl_RangedArmor[MAXENTITIES];
+float fl_MeleeArmor[MAXENTITIES] = {1.0, ...};
+float fl_RangedArmor[MAXENTITIES] = {1.0, ...};
 
-float fl_Extra_MeleeArmor[MAXENTITIES];
-float fl_Extra_RangedArmor[MAXENTITIES];
-float fl_Extra_Speed[MAXENTITIES];
-float fl_Extra_Damage[MAXENTITIES];
+float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
+float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
+float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
+float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -2853,6 +2853,7 @@ public void OnEntityDestroyed(int entity)
 		
 		if(entity > MaxClients)
 		{
+			Attributes_EntityDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
 			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
@@ -3190,20 +3191,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 			}
 		}
 	}
-	/*else if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
-	{
-		if(!item)
-			return Plugin_Stop;
-		
-		TF2Items_SetFlags(item, OVERRIDE_ATTRIBUTES);
-		TF2Items_SetNumAttributes(item, 5);
-		TF2Items_SetAttribute(item, 0, 1, 0.623);
-		TF2Items_SetAttribute(item, 1, 15, 0.0);
-		TF2Items_SetAttribute(item, 2, 93, 0.0);
-		TF2Items_SetAttribute(item, 3, 95, 0.0);
-		TF2Items_SetAttribute(item, 4, 2043, 0.0);
-		return Plugin_Changed;
-	}*/
 	else
 	{
 		return Plugin_Stop;

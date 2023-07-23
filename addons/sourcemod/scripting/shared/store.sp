@@ -4134,35 +4134,7 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
-/*
-	if(b_ChickenNuggetBox) //probably needs rewriting cus idk how to do it
-	{
-		//15%% more health
-		int MaxHealth = SDKCall_GetMaxHealth(client);
-
-		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.15);
-
-		Address address = Attributes_Get(client, 26, false);
-		if(address != Address_Null)
-		{
-			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
-			Attributes_Set(client, 26, float(HealthToAdd));
-		}
-	}
-	if(b_CrudeFlute) //probably needs rewriting cus idk how to do it
-	{
-		//3%% more health
-		int MaxHealth = SDKCall_GetMaxHealth(client);
-		
-		int HealthToAdd = RoundToCeil(float(MaxHealth) * 0.03);
-
-		Address address = TF2Attrib_GetByDefIndex(client, 26);
-		if(address != Address_Null)
-		{
-			HealthToAdd += RoundToCeil(TF2Attrib_GetValue(address));
-			Attributes_Set(client, 26, float(HealthToAdd));
-		}
-	}*/
+	
 #endif
 
 #if defined RPG
@@ -4172,8 +4144,17 @@ void Store_ApplyAttribs(int client)
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
 	int length = snapshot.Length;
+	int attribs;
 	for(int i; i < length; i++)
 	{
+		if(attribs && !(attribs % 16))
+		{
+			if(!TF2_GetWearable(client, entity))
+				break;
+			
+			Attributes_RemoveAll(entity);
+		}
+
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
 		{

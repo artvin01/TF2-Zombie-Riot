@@ -4063,18 +4063,15 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 	{
 		maxAllowed = 1;
 	}
-	int maxAllowedSaveStats = maxAllowed;
 
 	if(b_HasGlassBuilder[client])
 	{
-		maxAllowedSaveStats = 1;
 		if(!ingore_glass)
 			maxAllowed = 1;
 	}
 
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 	{
-		maxAllowedSaveStats = 1;
 		if(!ingore_glass)
 			maxAllowed = 1;
 	}
@@ -5249,65 +5246,52 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					{
 						case VILLAGE_000:
 						{
-							Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 101, TF2Attrib_GetValue(attrib) * 1.1);
+							if(Attributes_Has(entity, 101))
+								Attributes_SetMulti(entity, 101, 1.1);	// Projectile Range
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 103, TF2Attrib_GetValue(attrib) * 1.1);
+							if(Attributes_Has(entity, 103))
+								Attributes_SetMulti(entity, 103, 1.1);	// Projectile Speed
 						}
 						case VILLAGE_200:
 						{
-							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 6, TF2Attrib_GetValue(attrib) * 0.95);
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 0.95);	// Fire Rate
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 97, TF2Attrib_GetValue(attrib) * 0.95);
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 0.95);	// Reload Time
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 8, TF2Attrib_GetValue(attrib) * 1.06);
+							if(Attributes_Has(entity, 8))
+								Attributes_SetMulti(entity, 8, 1.06);	// Heal Rate
 						}
 						case VILLAGE_030:
 						{
-							Address attrib = TF2Attrib_GetByDefIndex(entity, 2);	// Damage
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 2, TF2Attrib_GetValue(attrib) * 1.1);
+							if(Attributes_Has(entity, 2))
+								Attributes_SetMulti(entity, 2, 1.1);	// Damage
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 410);	// Mage Damage
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 410, TF2Attrib_GetValue(attrib) * 1.1);
+							if(Attributes_Has(entity, 410))
+								Attributes_SetMulti(entity, 410, 1.1);	// Mage Damage
 						}
 						case VILLAGE_040, VILLAGE_050:
 						{
-							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 6, TF2Attrib_GetValue(attrib) * 0.875);
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 0.875);	// Fire Rate
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 97, TF2Attrib_GetValue(attrib) * 0.875);
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 0.875);	// Reload Time
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 8, TF2Attrib_GetValue(attrib) * 1.25);
+							if(Attributes_Has(entity, 8))
+								Attributes_SetMulti(entity, 8, 1.25);	// Heal Rate
 						}
 						case VILLAGE_005:
 						{
-							Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 6, TF2Attrib_GetValue(attrib) * 0.75);
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 0.75);	// Fire Rate
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 97, TF2Attrib_GetValue(attrib) * 0.75);
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 0.75);	// Reload Time
 							
-							attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
-							if(attrib != Address_Null)
-								Attributes_Set(entity, 8, TF2Attrib_GetValue(attrib) * 1.5);
+							if(Attributes_Has(entity, 8))
+								Attributes_SetMulti(entity, 8, 1.5);	// Heal Rate
 						}
 					}
 				}
@@ -5318,65 +5302,52 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 				{
 					case VILLAGE_000:
 					{
-						Address attrib = TF2Attrib_GetByDefIndex(entity, 101);	// Projectile Range
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 101, TF2Attrib_GetValue(attrib) / 1.1);
+						if(Attributes_Has(entity, 101))
+							Attributes_SetMulti(entity, 101, 1.0 / 1.1);	// Projectile Range
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 103);	// Projectile Speed
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 103, TF2Attrib_GetValue(attrib) / 1.1);
+						if(Attributes_Has(entity, 103))
+							Attributes_SetMulti(entity, 103, 1.0 / 1.1);	// Projectile Speed
 					}
 					case VILLAGE_200:
 					{
-						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 6, TF2Attrib_GetValue(attrib) / 0.95);
+						if(Attributes_Has(entity, 6))
+							Attributes_SetMulti(entity, 6, 1.0 / 0.95);	// Fire Rate
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 97, TF2Attrib_GetValue(attrib) / 0.95);
+						if(Attributes_Has(entity, 97))
+							Attributes_SetMulti(entity, 97, 1.0 / 0.95);	// Reload Time
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 8, TF2Attrib_GetValue(attrib) / 1.06);
+						if(Attributes_Has(entity, 8))
+							Attributes_SetMulti(entity, 8, 1.0 / 1.06);	// Heal Rate
 					}
 					case VILLAGE_030:
 					{
-						Address attrib = TF2Attrib_GetByDefIndex(entity, 2);	// Damage
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 2, TF2Attrib_GetValue(attrib)/ 1.1);
-						
-						attrib = TF2Attrib_GetByDefIndex(entity, 410);	// Mage Damage
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 410, TF2Attrib_GetValue(attrib) / 1.1);
+						if(Attributes_Has(entity, 2))
+								Attributes_SetMulti(entity, 2, 1.0 / 1.1);	// Damage
+					
+						if(Attributes_Has(entity, 410))
+							Attributes_SetMulti(entity, 410, 1.0 / 1.1);	// Mage Damage
 					}
-					case VILLAGE_040, VILLAGE_050:	// 1.0 * 1.5 / 1.5
+					case VILLAGE_040, VILLAGE_050:
 					{
-						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 6, TF2Attrib_GetValue(attrib) / 0.875);
+						if(Attributes_Has(entity, 6))
+							Attributes_SetMulti(entity, 6, 1.0 / 0.875);	// Fire Rate
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 97, TF2Attrib_GetValue(attrib) / 0.875);
+						if(Attributes_Has(entity, 97))
+							Attributes_SetMulti(entity, 97, 1.0 / 0.875);	// Reload Time
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 8, TF2Attrib_GetValue(attrib) / 1.25);
+						if(Attributes_Has(entity, 8))
+							Attributes_SetMulti(entity, 8, 1.0 / 1.25);	// Heal Rate
 					}
 					case VILLAGE_005:
 					{
-						Address attrib = TF2Attrib_GetByDefIndex(entity, 6);	// Fire Rate
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 6, TF2Attrib_GetValue(attrib) / 0.75);
+						if(Attributes_Has(entity, 6))
+							Attributes_SetMulti(entity, 6, 1.0 / 0.75);	// Fire Rate
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 97);	// Reload Time
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 97, TF2Attrib_GetValue(attrib) / 0.75);
+						if(Attributes_Has(entity, 97))
+							Attributes_SetMulti(entity, 97, 1.0 / 0.75);	// Reload Time
 						
-						attrib = TF2Attrib_GetByDefIndex(entity, 8);	// Heal Rate
-						if(attrib != Address_Null)
-							Attributes_Set(entity, 8, TF2Attrib_GetValue(attrib) / 1.5);
+						if(Attributes_Has(entity, 8))
+							Attributes_SetMulti(entity, 8, 1.0 / 1.5);	// Heal Rate
 					}
 				}
 			}

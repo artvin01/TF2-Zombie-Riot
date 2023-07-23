@@ -135,9 +135,7 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 			float Original_Atackspeed = 1.0;
 
-			Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-			if(address != Address_Null)
-				Original_Atackspeed = TF2Attrib_GetValue(address);
+			Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 				
 			Attributes_Set(weapon, 6, Original_Atackspeed * 0.25); //Make them attack WAY faster.
 			EmitSoundToAll(SOUND_RIOTSHIELD_ACTIVATION, client, SNDCHAN_STATIC, 80, _, 0.9);
@@ -303,9 +301,7 @@ public Action RiotShieldAbilityEnd_M2(Handle cut_timer, int ref)
 	{
 		float Original_Atackspeed;
 
-		Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-		if(address != Address_Null)
-			Original_Atackspeed = TF2Attrib_GetValue(address);
+		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 
 		Attributes_Set(weapon, 6, Original_Atackspeed / 0.25);
 	}

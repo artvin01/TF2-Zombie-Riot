@@ -52,9 +52,7 @@ public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, 
 		}
 		
 		float speed = 1100.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed /= TF2Attrib_GetValue(address);
+		speed /= Attributes_Get(weapon, 103, 1.0);
 		
 		int iRot = CreateEntityByName("func_door_rotating");
 		if(iRot == -1) return;
@@ -74,9 +72,7 @@ public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, 
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
 		float damage = 50.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
 		
 		Wand_Launch_IEM(client, iRot, speed, 5.0, damage, false);
 	}
@@ -102,9 +98,7 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 		}
 		
 		float speed = 1100.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed /= TF2Attrib_GetValue(address);
+		speed /= Attributes_Get(weapon, 103, 1.0);
 		
 		int iRot = CreateEntityByName("func_door_rotating");
 		if(iRot == -1) return;
@@ -124,9 +118,7 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 		
 		float damage = 50.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
 		
 		Wand_Launch_IEM(client, iRot, speed, 5.0, damage, true);
 	}
@@ -143,13 +135,10 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		}
 		else 
 		{
-			Address address = TF2Attrib_GetByDefIndex(weapon, 670);
-			if(address != Address_Null)
-				base_chargetime[client] = TF2Attrib_GetValue(address);
+			base_chargetime[client] = Attributes_Get(weapon, 670, 1.0);
 				
-			address = TF2Attrib_GetByDefIndex(weapon, 466);
-			if(address != Address_Null)
-				base_chargetime[client] = TF2Attrib_GetValue(address);
+			if(Attributes_Has(weapon,466))
+				base_chargetime[client] = Attributes_Get(weapon, 466, 1.0);
 			
 			float flMultiplier = GetGameTime(); // 4.0 is the default one
 			
@@ -181,16 +170,13 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		
 		Handle_on[client] = true;
 		
-		Address address = TF2Attrib_GetByDefIndex(weapon, 670);
-		if(address != Address_Null)
+		if(Attributes_Has(weapon, 670))
 			Attributes_Set(weapon, 670, -1.0);
 		else
 			Attributes_Set(weapon, 466, -1.0);
 		
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
 		
 		int iRot = CreateEntityByName("func_door_rotating");
 		if(iRot == -1) return;
@@ -213,9 +199,7 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		if (HasEntProp(weapon, Prop_Send, "m_flChargeBeginTime"))
 			damage = 120.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 2, 1.0);
 		
 		Wand_Launch(client, iRot, speed, 2.0, damage);
 	}

@@ -61,15 +61,11 @@ public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
 	}
 	
 	float damage = 6.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= TF2Attrib_GetValue(address);
+	damage *= Attributes_Get(weapon, 2, 1.0);
 		
 	float speed = 2000.0;
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 103);
-	if(address != Address_Null)
-		speed *= TF2Attrib_GetValue(address);
+	speed *= Attributes_Get(weapon, 103, 1.0);
 		
 	float time = 500.0/speed;
 	

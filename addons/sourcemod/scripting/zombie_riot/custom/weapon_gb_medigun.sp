@@ -29,15 +29,10 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 			damage *= 2.0;
 
 		float speed = 1100.0;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 314);
-		if(address != Address_Null)
-			speed *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
-	
-	
+		speed *= 1.0+(Attributes_Get(weapon, 314, 1.0)-9.0)/3;
+
 		float time = 500.0/speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 314);
-		if(address != Address_Null)
-			time *= 1.0+(TF2Attrib_GetValue(address)-9.0)/3;
+		time *= 1.0+(Attributes_Get(weapon, 314, 1.0)-9.0)/3;
 		
 		int iRot = CreateEntityByName("func_door_rotating");
 		if(iRot == -1) return;

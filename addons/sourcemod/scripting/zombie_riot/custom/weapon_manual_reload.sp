@@ -23,9 +23,7 @@ public void SemiAutoWeapon(int client, int buttons)
 						{
 							float Fire_rate = f_SemiAutoStats_FireRate[entity];
 							
-							Address address = TF2Attrib_GetByDefIndex(entity, 6);
-							if(address != Address_Null)
-							Fire_rate *= TF2Attrib_GetValue(address);
+							Fire_rate *= Attributes_Get(entity, 6, 1.0);
 		
 							if(LastMann)
 							{
@@ -131,9 +129,7 @@ void Reload_Me(int client)
 						
 					float Reload_Rate = f_SemiAutoStats_ReloadTime[entity];
 						
-					Address address = TF2Attrib_GetByDefIndex(entity, 97);
-					if(address != Address_Null)
-					Reload_Rate *= TF2Attrib_GetValue(address);
+					Reload_Rate *= Attributes_Get(entity, 97, 1.0);
 	
 					if(LastMann)
 					{

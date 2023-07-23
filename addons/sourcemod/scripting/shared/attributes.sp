@@ -7,7 +7,7 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 206,205:
+		case 733:
 		{
 			return true;
 		}
@@ -100,7 +100,7 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 
 		char buffer[6];
 		IntToString(attrib, buffer, sizeof(buffer));
-		if(WeaponAttributes[entity].Get(buffer, value))
+		if(WeaponAttributes[entity].GetValue(buffer, value))
 			return value;
 	}
 	
@@ -114,13 +114,13 @@ void Attributes_Set(int entity, int attrib, float value)
 	
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
-	WeaponAttributes[entity].Set(buffer, value);
+	WeaponAttributes[entity].SetValue(buffer, value);
 
-	if(Attribute_ClientSide(attrib))
-		Attributes_Set(entity, attrib, value);
+	if(!Attribute_ServerSide(attrib))
+		TF2Attrib_SetByDefIndex(entity, attrib, value);
 }
 
-void Attributes_SetAdd(int entity, int attrib, float amount)
+stock void Attributes_SetAdd(int entity, int attrib, float amount)
 {
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
@@ -129,7 +129,7 @@ void Attributes_SetAdd(int entity, int attrib, float amount)
 
 	if(WeaponAttributes[entity])
 	{
-		WeaponAttributes[entity].Get(buffer, value);
+		WeaponAttributes[entity].GetValue(buffer, value);
 	}
 	else
 	{
@@ -138,12 +138,12 @@ void Attributes_SetAdd(int entity, int attrib, float amount)
 
 	value += amount;
 
-	WeaponAttributes[entity].Set(buffer, value);
-	if(Attribute_ClientSide(attrib))
+	WeaponAttributes[entity].SetValue(buffer, value);
+	if(!Attribute_ServerSide(attrib))
 		Attributes_Set(entity, attrib, value);
 }
 
-void Attributes_SetMulti(int entity, int attrib, float amount)
+stock void Attributes_SetMulti(int entity, int attrib, float amount)
 {
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
@@ -152,7 +152,7 @@ void Attributes_SetMulti(int entity, int attrib, float amount)
 
 	if(WeaponAttributes[entity])
 	{
-		WeaponAttributes[entity].Get(buffer, value);
+		WeaponAttributes[entity].GetValue(buffer, value);
 	}
 	else
 	{
@@ -161,24 +161,22 @@ void Attributes_SetMulti(int entity, int attrib, float amount)
 
 	value *= amount;
 
-	WeaponAttributes[entity].Set(buffer, value);
-	if(Attribute_ClientSide(attrib))
+	WeaponAttributes[entity].SetValue(buffer, value);
+	if(!Attribute_ServerSide(attrib))
 		Attributes_Set(entity, attrib, value);
 }
 
-bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)
+stock bool Attributes_GetString(int entity, int attrib, char[] value, int length, int &size = 0)
 {
 	if(!WeaponAttributes[entity])
 		return false;
-
-	float value = defaul;
 
 	char buffer[6];
 	IntToString(attrib, buffer, sizeof(buffer));
 	return WeaponAttributes[entity].GetString(buffer, value, length, size);
 }
 
-void Attributes_SetString(int entity, int attrib, const char[] value)
+stock void Attributes_SetString(int entity, int attrib, const char[] value)
 {
 	if(!WeaponAttributes[entity])
 		WeaponAttributes[entity] = new StringMap();
@@ -238,7 +236,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
 
-				value = Attributes_GetOnWeapon(client, weapon, , false) +
+				value = Attributes_GetOnWeapon(client, weapon, 16, false) +
 					Attributes_GetOnWeapon(client, weapon, 98, false) +
 					Attributes_GetOnWeapon(client, weapon, 110, false) +
 					Attributes_GetOnWeapon(client, weapon, 111, false);	// add_onhit_addhealth
@@ -419,65 +417,11 @@ void Attributes_OnKill(int client, int weapon)
 		
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
 	}
-	
-//	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	/*
-	if(Attributes_GetOnWeapon(client, weapon, 30))	// fists have radial buff
-	{
-		int entity;
-		float pos1[3], pos2[3];
-		GetClientAbsOrigin(client, pos1);
-		for(int target=1; target<=MaxClients; target++)
-		{
-			if(client!=target && IsClientInGame(target) && IsPlayerAlive(target))
-			{
-				GetClientAbsOrigin(target, pos2);
-				if(GetVectorDistance(pos1, pos2, true) < 249999)
-				{
-					StartHealingTimer(target, 0.1, 1, 50);
-					
-					int i;
-					while(TF2_GetItem(client, entity, i))
-					{
-						Address attrib = TF2Attrib_GetByDefIndex(entity, 28);
-						if(attrib != Address_Null)
-						{
-							TF2Attrib_SetValue(attrib, TF2Attrib_GetValue(attrib)*1.1);
-						}
-						else
-						{
-							Attributes_Set(entity, 28, 1.1);
-						}
-					}
-				}
-			}
-		}
-	}
-	*/
-	/*
-	value = Attributes_GetOnWeapon(client, weapon, 31, false);	// critboost on kill
-	if(value)
-		TF2_AddCondition(client, TFCond_CritOnKill, value);
-	
-	value = Attributes_GetOnWeapon(client, weapon, false);	// add cloak on kill
-	if(value)
-	{
-		float cloak = GetEntPropFloat(client, Prop_Send, "m_flCloakMeter") + value*100.0;
-		if(cloak > 100)
-		{
-			cloak = 100.0;
-		}
-		else if(cloak < 0.0)
-		{
-			cloak = 0.0;
-		}
-		
-		SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", cloak);
-	}
-	*/
+
 	if(IsValidEntity(weapon) && weapon > MaxClients)
 	{
-		value = Attributes_GetOnWeapon(client, weapon, 180, false);	// heal on kill
+		value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
+
 		if(value)
 			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
 		
@@ -538,11 +482,10 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 	float defaul = multi ? 1.0 : 0.0;
 	float result = Attributes_Get(client, index, defaul);
 	
-	float value;
-	int i = MaxClients + 1;
-	while(TF2_GetWearable(client, i))
+	int entity = MaxClients + 1;
+	while(TF2_GetWearable(client, entity))
 	{
-		float value = Attributes_Get(i, index, defaul);
+		float value = Attributes_Get(entity, index, defaul);
 		if(value != defaul)
 		{
 			if(multi)
@@ -584,7 +527,7 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 		}
 	}
 	
-	return value;
+	return result;
 }
 
 float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = true)
@@ -592,10 +535,10 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 	float defaul = multi ? 1.0 : 0.0;
 	float result = Attributes_Get(client, index, defaul);
 	
-	int i = MaxClients + 1;
-	while(TF2_GetWearable(client, i))
+	int wearable = MaxClients + 1;
+	while(TF2_GetWearable(client, wearable))
 	{
-		float value = Attributes_Get(i, index, defaul);
+		float value = Attributes_Get(wearable, index, defaul);
 		if(value != defaul)
 		{
 			if(multi)
@@ -625,5 +568,18 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 		}
 	}
 	
-	return value;
+	return result;
+}
+
+stock float Attributes_FindOnWeapon(int client, int entity, int index, bool multi=false, float defaul=0.0)
+{
+	return Attributes_GetOnWeapon(client, entity, index, multi);
+}
+
+stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)
+{
+	if(IgnoreWeaponsEquipped && DoNotIngoreEquippedWeapon)
+		return Attributes_GetOnWeapon(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), index, multi);
+	
+	return Attributes_GetOnPlayer(client, index, multi, IgnoreWeaponsEquipped);
 }

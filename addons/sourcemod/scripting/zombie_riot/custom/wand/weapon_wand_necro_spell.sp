@@ -30,9 +30,7 @@ public void Weapon_Necro_FireBallSpell(int client, int weapon, bool &result, int
 				
 				Necro_Damage[client] = 1.0;
 				
-				Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-				if(address != Address_Null)
-					Necro_Damage[client] = TF2Attrib_GetValue(address);
+				Necro_Damage[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				Necro_Damage[client] *= 1.15;
 				

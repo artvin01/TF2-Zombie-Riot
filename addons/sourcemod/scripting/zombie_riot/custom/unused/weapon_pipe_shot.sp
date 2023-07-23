@@ -13,9 +13,7 @@ public void Weapon_Pipe_Shoot_Map_Precache()
 public void Weapon_Shoot_Pipe(int client, int weapon, bool crit)
 {
 	float damage = 100.0;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		damage *= RoundToCeil(TF2Attrib_GetValue(address));
+	damage *= Attributes_Get(weapon, 2, 1.0);
 		
 	float fAng[3],angVelocity, fPos[3];
 	GetClientEyeAngles(client, fAng);

@@ -326,10 +326,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_glitched.sp"
 //#include "zombie_riot/custom/weimage.pngapon_minecraft.sp"
 #include "zombie_riot/custom/arse_enal_layer_tripmine.sp"
-#include "zombie_riot/custom/weapon_serioussam2_shooter.sp"
 #include "zombie_riot/custom/wand/weapon_elemental_staff.sp"
 #include "zombie_riot/custom/wand/weapon_elemental_staff_2.sp"
-#include "zombie_riot/custom/weapon_infinity_blade.sp"
 //#include "zombie_riot/custom/weapon_black_fire_wand.sp"
 #include "zombie_riot/custom/wand/weapon_chlorophite.sp"
 #include "zombie_riot/custom/wand/weapon_chlorophite_heavy.sp"
@@ -522,7 +520,6 @@ void ZR_MapStart()
 	Building_MapStart();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
-	SS2_Map_Precache();
 	Wand_Elemental_Map_Precache();
 	Wand_Elemental_2_Map_Precache();
 	Map_Precache_Zombie_Drops();

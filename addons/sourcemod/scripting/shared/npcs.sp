@@ -1253,10 +1253,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 		
 		float GameTime = GetGameTime();
-		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
+		if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
 		{
-			damage = 0.0;
-			return Plugin_Handled;
+			if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
+			{
+				damage = 0.0;
+				return Plugin_Handled;
+			}
 		}
 
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
@@ -1772,9 +1775,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					if(i_ArsenalBombImplanter[weapon] > 0)
 					{
 						float damage_save = 50.0;
-						Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-						if(address != Address_Null)
-							damage_save *= RoundToCeil(TF2Attrib_GetValue(address));
+
+						damage_save *= Attributes_Get(weapon, 2, 1.0);
 
 						f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 

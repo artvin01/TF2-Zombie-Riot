@@ -77,27 +77,19 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 		float speed = 1500.0;
 		float damage = 100.0;
 			
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
 			
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 			
 		float extra_accuracy = 5.0;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 106);
-		if(address != Address_Null)
-			extra_accuracy *= TF2Attrib_GetValue(address);
+		extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 			
 		int team = GetClientTeam(client);
 			
@@ -193,27 +185,19 @@ public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char
 		float speed = 1500.0;
 		float damage = 100.0;
 			
-		Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
 			
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 104, 1.0);
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 			
 		float extra_accuracy = 3.5;
 		
-		address = TF2Attrib_GetByDefIndex(weapon, 106);
-		if(address != Address_Null)
-			extra_accuracy *= TF2Attrib_GetValue(address);
+		extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 			
 		int team = GetClientTeam(client);
 			

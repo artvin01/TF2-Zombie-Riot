@@ -163,19 +163,11 @@ public void Activate_Beam_Wand_Pap(int client, int weapon)
 		SDKUnhook(client, SDKHook_PreThink, Beam_Wand_pap_Tick);
 		
 		int pap;
-		Address address = TF2Attrib_GetByDefIndex(weapon, 122);
-		if(address != Address_Null)
-		{
-			pap = RoundFloat(TF2Attrib_GetValue(address));
-		}
-		else
-		{
-			pap = 1;	//incase SOMEHOW its invalid...
-		}
+
+		pap = RoundFloat(Attributes_Get(weapon, 122, 1.0));
+
 		int mana_cost;
-		address = TF2Attrib_GetByDefIndex(weapon, 733);
-		if(address != Address_Null)
-			mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
+		mana_cost = RoundFloat(Attributes_Get(weapon, 733, 1.0));
 			
 		i_mana_cost_base[client] = mana_cost;	//as far as I am aware there are no effects currently that can affect a weapons mana cost realtime, so rather than getting the attribute every time the weapon fires, we only need to get it if a refresh happens
 		i_weapon_pap_tier[client] = pap;
@@ -366,9 +358,7 @@ public Action Beam_Wand_pap_Tick(int client)
 				if(FIRE)
 				{
 					float damage = 65.0;
-					Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-					if(address != Address_Null)
-						damage *= TF2Attrib_GetValue(address);
+					damage *= Attributes_Get(weapon, 410, 1.0);
 						
 					Beam_Wand_Oribtal_Cannon_Fire(client, target_vec, damage*BEAM_WAND_CANNON_ABILITY_DMG_MULTI, colour);
 				}
@@ -407,9 +397,7 @@ public Action Beam_Wand_pap_Tick(int client)
 									Particle_Beam(client, pap, target_vec, colour, fl_beam_overdrive_damage[client], false);
 									
 									float delay = 1.0;
-									Address address = TF2Attrib_GetByDefIndex(weapon, 6);
-									if(address != Address_Null)
-										delay = TF2Attrib_GetValue(address);
+									delay = Attributes_Get(weapon, 6, 1.0);
 										
 									i_tick_attack_delay[client] = RoundToFloor((6.0/(BEAM_WAND_BEAM_OVERDRIVE_COUNT/2))*delay);
 									if(!bl_sound_active[client])
@@ -431,13 +419,9 @@ public Action Beam_Wand_pap_Tick(int client)
 							{
 								float damage = 65.0;
 								float delay = 1.0;
-								Address address = TF2Attrib_GetByDefIndex(weapon, 410);
-								if(address != Address_Null)
-									damage *= TF2Attrib_GetValue(address);
+								damage *= Attributes_Get(weapon, 410, 1.0);
 								
-								address = TF2Attrib_GetByDefIndex(weapon, 6);
-								if(address != Address_Null)
-									delay = TF2Attrib_GetValue(address);
+								delay = Attributes_Get(weapon, 6, 1.0);
 														
 								fl_beam_overdrive_damage[client] = damage;
 								

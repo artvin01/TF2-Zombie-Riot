@@ -14,44 +14,45 @@ public void OnPluginStart_Glitched_Weapon()
 
 public void On_Glitched_Give(int client, int weapon)
 {
-	Address address = TF2Attrib_GetByDefIndex(weapon, 731);
-	if (address == Address_Null)
+	if(!Attributes_Has(weapon,731))
+	{
 		return;
+	}
 	
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		glitchBaseDMG[client] = TF2Attrib_GetValue(address);
+	if(Attributes_Has(weapon, 2))
+		glitchBaseDMG[client] = Attributes_Get(weapon, 2, 1.0);
 	else
 		glitchBaseDMG[client] = 1.0;
-		
-	address = TF2Attrib_GetByDefIndex(weapon, 6);
-	if(address != Address_Null)
-		glitchBaseFireRate[client] = TF2Attrib_GetValue(address);
+
+	if(Attributes_Has(weapon, 6))
+		glitchBaseFireRate[client] = Attributes_Get(weapon, 6, 1.0);
 	else
 		glitchBaseFireRate[client] = 1.0;
+
 		
-	address = TF2Attrib_GetByDefIndex(weapon, 4);
-	if(address != Address_Null)
-		glitchBaseClip[client] = TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 106);
-	if(address != Address_Null)
-		glitchBaseSpread[client] = TF2Attrib_GetValue(address);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 97);
-	if(address != Address_Null)
-		glitchBaseReloadRate[client] = TF2Attrib_GetValue(address);
+	if(Attributes_Has(weapon, 4))
+		glitchBaseClip[client] = Attributes_Get(weapon, 4, 1.0);
+	else
+		glitchBaseClip[client] = 1.0;
+
+		
+	if(!Attributes_Has(weapon, 106))
+		glitchBaseSpread[client] = Attributes_Get(weapon, 106, 1.0);
+	else
+		glitchBaseSpread[client] = 1.0;
+
+		
+	if(!Attributes_Has(weapon, 97))
+		glitchBaseReloadRate[client] = Attributes_Get(weapon, 97, 1.0);
 	else
 		glitchBaseReloadRate[client] = 1.0;
 }
 
 public void Glitched_Attack(int client, int weapon, bool crit)
 {
-	Address address = TF2Attrib_GetByDefIndex(weapon, 298);
-	if(address != Address_Null)
+	if(Attributes_Has(weapon,298))
 	{
-		if (RoundToCeil(TF2Attrib_GetValue(address))!=24.0)
+		if (RoundToCeil(Attributes_Get(weapon, 298, 1.0))!=24.0)
 		{
 			int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 			if(clip>=4)
@@ -179,10 +180,9 @@ public void Glitched_Reload(int client, int weapon, const char[] classname)
 
 public void Glitched_Attack2(int client, int weapon, bool crit)
 {
-	Address address = TF2Attrib_GetByDefIndex(weapon, 298);
-	if(address != Address_Null)
+	if(Attributes_Has(weapon,298))
 	{
-		if (RoundToCeil(TF2Attrib_GetValue(address))!=24.0)
+		if (RoundToCeil(Attributes_Get(weapon, 298, 1.0))!=24.0)
 		{
 			int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
 			if(clip>=4)
@@ -209,32 +209,27 @@ public void Glitched_Attack2(int client, int weapon, bool crit)
 		}
 	}
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 280);
-	if (address == Address_Null)
+	if(!Attributes_Has(weapon,298))
 		return;
 	
-	float typeProjectile = TF2Attrib_GetValue(address);
-	if (typeProjectile==1)
+	float typeProjectile = Attributes_Get(weapon, 298, 1.0);
+	if (typeProjectile == 1.0)
 		return; 
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 45);
-	if (address == Address_Null)
+
+	if(!Attributes_Has(weapon, 45))
 		return;
 	
-	int numberProjectile = RoundToCeil(TF2Attrib_GetValue(address));
+	int numberProjectile = RoundToCeil(Attributes_Get(weapon, 45, 1.0));
 	if (numberProjectile==1.0)
 		return;
 		
 	float dmgProjectile = 12.0;
 	
-	address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		dmgProjectile *= TF2Attrib_GetValue(address);
+	dmgProjectile *= Attributes_Get(weapon, 2, 1.0);
 	
 	float positiveAngleModifier = 3.0;
-	address = TF2Attrib_GetByDefIndex(weapon, 106);
-	if(address != Address_Null)
-		positiveAngleModifier *= TF2Attrib_GetValue(address);
+		
+	positiveAngleModifier *= Attributes_Get(weapon, 106, 1.0);
 	
 	
 	float fAng[3], fPos[3];

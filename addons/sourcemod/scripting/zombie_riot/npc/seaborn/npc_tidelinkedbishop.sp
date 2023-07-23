@@ -57,7 +57,7 @@ methodmap TidelinkedBishop < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, TidelinkedBishop_ClotThink);
 		
-		npc.m_flSpeed = 100.0;	// 0.4 x 250
+		npc.m_flSpeed = 200.0;//100.0;	// 0.4 x 250
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 0.5;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -251,6 +251,14 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
+public void TidelinkedBishop_DownedThink(int entity)
+{
+	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
+	npc.SetActivity("ACT_MUDROCK_RAGE");
+	npc.SetPlaybackRate(0.5);
+	SDKUnhook(entity, SDKHook_Think, TidelinkedBishop_DownedThink);
+}
+
 void TidelinkedBishop_OnTakeDamage(int victim, int attacker, float damage)
 {
 	if(attacker > 0)
@@ -262,8 +270,8 @@ void TidelinkedBishop_OnTakeDamage(int victim, int attacker, float damage)
 			npc.m_iTarget = 0;
 			npc.m_bisWalking = false;
 			b_NpcIsInvulnerable[npc.index] = true;
-			npc.SetActivity("ACT_MUDROCK_RAGE");
-			npc.SetPlaybackRate(0.5);
+
+			SDKHook(victim, SDKHook_Think, TidelinkedBishop_DownedThink);
 		}
 		
 		if(b_NpcIsInvulnerable[npc.index])

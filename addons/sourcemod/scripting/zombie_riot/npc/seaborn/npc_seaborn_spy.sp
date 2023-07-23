@@ -129,7 +129,7 @@ public void SeabornSpy_ClotThink(int iNPC)
 		Building_CamoOrRegrowBlocker(npc.index, camo);
 		if(camo)
 		{
-			alpha = 255 - RoundFloat((gameTime - npc.m_flNextRangedAttack) * 200.0);
+			alpha = 255 - RoundFloat((gameTime - npc.m_flNextRangedAttack) * 350.0);
 			if(NpcStats_IsEnemySilenced(npc.index))
 			{
 				if(alpha < 50)
@@ -138,9 +138,9 @@ public void SeabornSpy_ClotThink(int iNPC)
 					npc.m_bCamo = false;
 				}
 			}
-			else if(alpha < 0)
+			else if(alpha < 1)
 			{
-				alpha = 0;
+				alpha = 1;
 				npc.m_bCamo = true;
 			}
 		}
