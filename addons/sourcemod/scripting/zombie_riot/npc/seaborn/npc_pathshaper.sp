@@ -156,7 +156,7 @@ public void Pathshaper_ClotThink(int iNPC)
 					if(target > 0)
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 1200.0 : 400.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 8000.0 : 400.0, DMG_CLUB);
 						// 800 x 0.5
 
 						Custom_Knockback(npc.index, target, 750.0);
@@ -259,7 +259,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
 		{
 			if(++count == limit)
-				break;
+				return;
 		}
 	}
 
@@ -269,7 +269,7 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == PATHSHAPER_FRACTAL && IsEntityAlive(entity))
 		{
 			if(++count == limit)
-				break;
+				return;
 		}
 	}
 

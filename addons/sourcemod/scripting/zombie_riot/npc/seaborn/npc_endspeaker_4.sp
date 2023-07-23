@@ -100,7 +100,7 @@ public void EndSpeaker4_ClotThink(int iNPC)
 							failed = false;
 
 							if(ShouldNpcDealBonusDamage(target))
-								attack *= 10.0;
+								attack *= 15.0;
 							
 							KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);

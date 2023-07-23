@@ -155,7 +155,7 @@ public void PathshaperFractal_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 900.0 : 300.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 6000.0 : 300.0, DMG_CLUB);
 						// 600 x 0.5
 
 						Custom_Knockback(npc.index, target, 562.5);

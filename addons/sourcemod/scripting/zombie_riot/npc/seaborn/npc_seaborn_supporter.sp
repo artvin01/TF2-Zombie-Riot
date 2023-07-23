@@ -56,7 +56,7 @@ methodmap SeabornSupporter < CClotBody
 	
 	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "14000"/*"7000"*/, ally, false));
+		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "22500", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

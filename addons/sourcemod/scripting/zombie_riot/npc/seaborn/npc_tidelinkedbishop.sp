@@ -181,8 +181,8 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				int entity = npc.FireArrow(vecTarget, 300.0, 900.0, "models/weapons/w_bugbait.mdl");
-				// 600 x 0.5
+				int entity = npc.FireArrow(vecTarget, 600.0, 900.0, "models/weapons/w_bugbait.mdl");
+				// 600 x 1.0
 
 				if(entity != -1)
 				{

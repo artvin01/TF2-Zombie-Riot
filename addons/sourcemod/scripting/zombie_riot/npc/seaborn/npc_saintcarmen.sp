@@ -175,7 +175,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 					{
 						float damage = 300.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damage *= 3.0;
+							damage *= 20.0;
 						
 						KillFeed_SetKillIcon(npc.index, "taunt_spy");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);

@@ -211,7 +211,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 6000.0 : 300.0, DMG_CLUB);
 						// 600 x 0.5
 
 						SeaSlider_AddNeuralDamage(target, npc.index, 150);

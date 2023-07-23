@@ -292,7 +292,7 @@ public void LastKnight_ClotThink(int iNPC)
 						if(target > MaxClients)
 						{
 							if(ShouldNpcDealBonusDamage(target))
-								damage *= 3.0;
+								damage *= 20.0;
 							
 							if(team == GetEntProp(target, Prop_Send, "m_iTeamNum"))
 								damage *= 10.0;

@@ -105,7 +105,7 @@ methodmap SeabornSpecialist < CClotBody
 			}
 		}
 
-		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "7000", ally, false));
+		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
