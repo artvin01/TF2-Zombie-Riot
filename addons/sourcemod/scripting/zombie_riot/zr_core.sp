@@ -397,8 +397,11 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
-	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_GENERIC, "BRB GONNA MURDER MY MOM'S DISHES");
-	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_GENERIC, "Forcefully summon grigori");
+	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");
+	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
+	
+	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
+	RegAdminCmd("sm_kill_ruina_ion", Command_Kill_Ruina_Cannon, ADMFLAG_ROOT, "Kills all ruina Ion Cannon"); 
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);

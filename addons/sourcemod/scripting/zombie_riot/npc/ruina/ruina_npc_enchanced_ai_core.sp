@@ -9,7 +9,18 @@ static float fl_master_change_timer[MAXENTITIES];
 static bool b_master_exists[MAXENTITIES];
 static int i_master_attracts[MAXENTITIES];
 
+static char gLaser1;
+static int BeamWand_Laser;
+static char gGlow1;	//blue
+
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
+
+#define RUINA_ION_CANNON_SOUND_SPAWN "ambient/machines/thumper_startup1.wav"
+#define RUINA_ION_CANNON_SOUND_TOUCHDOWN "mvm/ambient_mp3/mvm_siren.mp3"
+#define RUINA_ION_CANNON_SOUND_ATTACK "ambient/machines/thumper_hit.wav"
+#define RUINA_ION_CANNON_SOUND_SHUTDOWN "ambient/machines/thumper_shutdown1.wav"
+#define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
+#define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
 public void Ruina_Ai_Core_Mapstart()
 {
@@ -18,6 +29,19 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(b_master_exists);
 	Zero(i_master_id);
 	Zero(i_npc_type);
+	
+	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
+	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
+	PrecacheSound(RUINA_ION_CANNON_SOUND_ATTACK);
+	PrecacheSound(RUINA_ION_CANNON_SOUND_SHUTDOWN);
+	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE);
+	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING);
+	
+	
+	
+	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
+	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 }
 public void Ruina_Set_Heirarchy(int client, int type, bool master)
 {
@@ -260,4 +284,333 @@ static void Apply_Speed_buff(float time, int Other_Npc)
 static void Apply_Attack_buff(float time, int Other_Npc)
 {
 	f_Ruina_Attack_Buff[Other_Npc] = GetGameTime() + time;
+}
+
+/*
+float speed = kv.GetFloat("ruina_ion_cannon_speed", 9.0);
+float damage = kv.GetFloat("ruina_ion_cannon_damage", 1000.0);
+float range = kv.GetFloat("ruina_ion_cannon_range", 250.0);
+float charge_time = kv.GetFloat("ruina_ion_cannon_charge_time", 5.0);
+int red = kv.GetNum("ruina_ion_cannon_red", 255);
+int green = kv.GetNum("ruina_ion_cannon_green", 255);
+int blue = kv.GetNum("ruina_ion_cannon_blue", 255);
+int ion_amt = kv.GetNum("ruina_ion_cannon_spawn_amt", 1);	//if set to -1 it will spawn as many ions as there are players on red	
+*/
+
+static float fl_ion_current_location[MAXTF2PLAYERS+1][3];
+static float fl_angle[MAXTF2PLAYERS + 1];
+static float fl_ion_sound_delay[MAXTF2PLAYERS + 1];
+static float fl_ion_attack_sound_delay[MAXTF2PLAYERS + 1];
+static bool b_touchdown;
+static bool b_kill;
+
+public Action Command_Spawn_Ruina_Cannon(int client, int args)
+{
+	
+	CPrintToChatAll("Ruina Ion Cannon's Summoned");
+	Ruina_Create_Ion_Cannon(-1, 100.0, 7.5, 100.0, 255, 255, 255, 5.0);
+	
+	return Plugin_Handled;
+}
+public Action Command_Kill_Ruina_Cannon(int client, int args)
+{
+	
+	CPrintToChatAll("Killed Ruina Ion Cannon's");
+	b_kill = true;
+	
+	return Plugin_Handled;
+}
+
+public void Ruina_Create_Ion_Cannon(int amt, float damage, float speed, float range, int r, int g, int b, float charge_time)
+{
+	
+		b_kill = false;
+		for(int ion=0 ; ion< MAXTF2PLAYERS ; ion++)
+		{
+			if(IsValidClient(ion))
+			{
+				fl_ion_sound_delay[ion] = 0.0;
+				fl_ion_attack_sound_delay[ion] = 0.0;
+				float loc[3]; GetEntPropVector(ion, Prop_Data, "m_vecAbsOrigin", loc);
+				loc[0] += GetRandomFloat(350.0, -350.0);
+				loc[1] += GetRandomFloat(350.0, -350.0);
+				fl_ion_current_location[ion] = loc;
+			}
+		}
+		b_touchdown = false;
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN);
+		DataPack pack;
+		CreateDataTimer(0.1, Ruina_Ion_Timer, pack, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		pack.WriteCell(amt);
+		pack.WriteCell(damage);
+		pack.WriteCell(speed);
+		pack.WriteCell(range);
+		pack.WriteCell(r);
+		pack.WriteCell(g);
+		pack.WriteCell(b);
+		pack.WriteCell(ZR_GetWaveCount()+1);
+		pack.WriteCell(charge_time+GetGameTime());
+		pack.WriteCell(charge_time);
+		
+		
+}
+
+static Action Ruina_Ion_Timer(Handle time, DataPack pack)
+{
+	int true_current_round = ZR_GetWaveCount() + 1;
+	
+	
+	pack.Reset();
+	int amt = pack.ReadCell();
+	float damage =pack.ReadCell();
+	float speed =pack.ReadCell();
+	float range =pack.ReadCell();
+	int r =pack.ReadCell();
+	int g =pack.ReadCell();
+	int b =pack.ReadCell();
+	int current_round = pack.ReadCell();
+	int a = 155;
+	float charge_time = pack.ReadCell();
+	float base_charge_time= pack.ReadCell();
+	
+	if(amt==-1)
+		amt = CountPlayersOnRed();
+		
+	if(charge_time>GetGameTime())
+	{
+		Ruina_Ion_Cannon_Charging(charge_time, range, r, g, b, a, base_charge_time, amt);
+		return Plugin_Continue;
+	}
+	else
+	{
+		if(!b_touchdown)
+		{
+			b_touchdown = true;
+			EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
+		}
+	}
+	if(true_current_round!=current_round || b_kill)
+	{
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SHUTDOWN);
+		return Plugin_Stop;	//kill ion if its not the same round anymore 
+	}
+	
+	
+	
+	float start_size = 15.0;
+	float end_size = 30.0;
+	int colour[4];
+	colour[0] = r;
+	colour[1] = g;
+	colour[2] = b;
+	colour[3] = a;
+	
+	
+	int ions_active = 0;
+	for(int ion=1 ; ion<= MAXTF2PLAYERS ; ion++)
+	{
+		if(IsValidClient(ion) && IsClientInGame(ion) && GetClientTeam(ion) != 3 && IsEntityAlive(ion) && TeutonType[ion] == TEUTON_NONE && dieingstate[ion] == 0)
+		{
+			if(ions_active<amt)
+			{
+				float cur_vec[3]; cur_vec = fl_ion_current_location[ion];
+				float loc[3]; GetEntPropVector(ion, Prop_Data, "m_vecAbsOrigin", loc);
+				ions_active++;
+				float vecAngles[3], Direction[3];
+				
+				
+				MakeVectorFromPoints(cur_vec, loc, vecAngles);
+				GetVectorAngles(vecAngles, vecAngles);
+					
+				GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+				ScaleVector(Direction, speed);
+				AddVectors(cur_vec, Direction, cur_vec);
+				
+				fl_ion_current_location[ion] = cur_vec;
+				
+				
+				
+				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
+				float skyloc[3]; skyloc = cur_vec; skyloc[2] += 3000.0;
+				
+				Ruina_spawnRing_Vector(cur_vec, 2.0*range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 8.0, 0.1, 1);
+				
+				fl_ion_sound_delay[ion]++;
+				if(fl_ion_sound_delay[ion]>1.0)
+				{
+					fl_ion_sound_delay[ion] = 0.0;
+					EmitSoundToAll(RUINA_ION_CANNON_SOUND_PASSIVE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.25, SNDPITCH_NORMAL, -1, cur_vec);
+				}
+					
+				for(int client=1 ; client<= MAXTF2PLAYERS ; client++)
+				{
+					if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						float loc2[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", loc2);
+						float dist = GetVectorDistance(loc2, cur_vec, true);
+						
+						if(dist < Pow(range, 2.0))
+						{
+							float fake_damage = damage*(1.01 - (dist / Pow(range, 2.0)));	//reduce damage if the target just grazed it.
+							
+							fl_ion_attack_sound_delay[ion]++;
+							if(fl_ion_attack_sound_delay[ion]>1.0)
+							{
+								fl_ion_attack_sound_delay[ion] = 0.0;
+								EmitSoundToAll(RUINA_ION_CANNON_SOUND_ATTACK, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, cur_vec);
+							}/*
+							int health = GetClientHealth(client);
+							health -= RoundToFloor(fake_damage);	//FUCKING TAKE DAMAGE GOD DAMMIT
+							if((health) < 1)
+							{
+								health = 1;
+							}
+					
+							SetEntityHealth(client, health); // Self dmg
+							
+							CPrintToChatAll("hit %N with %f dmg", client, fake_damage);*/
+							SDKHooks_TakeDamage(client, 0, 0, fake_damage, DMG_CLUB, _, _, cur_vec);
+						}
+					}
+				}
+				cur_vec[2] -= 50.0;
+				TE_SetupBeamPoints(cur_vec, skyloc, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+				TE_SendToAll();
+				TE_SetupBeamPoints(cur_vec, skyloc, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+				TE_SendToAll();
+			}
+		}
+	}
+	
+	
+	return Plugin_Continue;
+}
+static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int g, int b, int a, float base_charge_time, int amt)
+{
+	range *= 5.0;
+	int colour[4];
+	colour[0] = r;
+	colour[1] = g;
+	colour[2] = b;
+	colour[3] = a;
+	int ions_active = 0;
+	float GameTime = GetGameTime();
+	float duration = charge_time - GameTime;
+	
+	range *= duration / base_charge_time;
+	
+	float start_size = 15.0;
+	float end_size = 30.0;
+	
+	for(int ion=1 ; ion<= MAXTF2PLAYERS ; ion++)
+	{
+		if(IsValidClient(ion) && IsClientInGame(ion) && GetClientTeam(ion) != 3 && IsEntityAlive(ion) && TeutonType[ion] == TEUTON_NONE && dieingstate[ion] == 0)
+		{
+			if(ions_active<amt)
+			{
+				ions_active++;
+				
+				float cur_vec[3]; cur_vec = fl_ion_current_location[ion];
+				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
+				Ruina_spawnRing_Vector(cur_vec, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.1, 2.0, 1.25, 1);
+				
+				fl_ion_sound_delay[ion]++;
+				if(fl_ion_sound_delay[ion]>2.0)
+				{
+					fl_ion_sound_delay[ion] = 0.0;
+					EmitSoundToAll(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.25, SNDPITCH_NORMAL, -1, cur_vec);
+				}
+				
+				if(fl_angle[ion]>=360.0)
+				{
+					fl_angle[ion] = 0.0;
+				}
+				fl_angle[ion] += 2.5;
+				float EndLoc[3];
+				int amt2 = 5;
+				for (int j = 0; j < amt2; j++)
+				{
+					float tempAngles[3], Direction[3];
+					tempAngles[0] = 0.0;
+					tempAngles[1] = fl_angle[ion] + (float(j) * 360.0/amt2);
+					tempAngles[2] = 0.0;
+						
+					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+					ScaleVector(Direction, range);
+					AddVectors(cur_vec, Direction, EndLoc);
+					
+					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc);
+					
+					float skyloc[3]; skyloc = EndLoc; skyloc[2] += 3000.0; EndLoc[2] -= 50.0;
+					TE_SetupBeamPoints(EndLoc, skyloc, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+					TE_SendToAll();
+					
+					EndLoc[2] += 50.0;
+					
+					cur_vec[2] = EndLoc[2];
+					TE_SetupBeamPoints(EndLoc, cur_vec, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+					TE_SendToAll();
+				}
+			}
+		}
+	}
+}
+public void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
+{
+	float originalPostionTrace[3];
+	float startPostionTrace[3];
+	float endPostionTrace[3];
+	endPostionTrace = vecorigin;
+	startPostionTrace = vecorigin;
+	originalPostionTrace = vecorigin;
+	startPostionTrace[2] += StepHeight;
+	endPostionTrace[2] -= 5000.0;
+
+	float vecHullMins[3];
+	vecHullMins = vecHull;
+
+	vecHullMins[0] *= -1.0;
+	vecHullMins[1] *= -1.0;
+	vecHullMins[2] *= -1.0;
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID,HitOnlyWorld, 0);
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		// This is the point on the actual surface (the hull could have hit space)
+		TR_GetEndPosition(vecorigin, trace);	
+	}
+	vecorigin[0] = originalPostionTrace[0];
+	vecorigin[1] = originalPostionTrace[1];
+
+	float VecCalc = (vecorigin[2] - startPostionTrace[2]);
+	if(VecCalc > (StepHeight - (vecHull[2] + 2.0)) || VecCalc > (StepHeight - (vecHull[2] + 2.0)) ) //This means it was inside something, in this case, we take the normal non traced position.
+	{
+		vecorigin[2] = originalPostionTrace[2];
+	}
+
+	delete trace;
+	//if it doesnt hit anything, then it just does buisness as usual
+}
+static void Ruina_spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+{
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
+	
+	int ICE_INT = PrecacheModel(sprite);
+	
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = alpha;
+	
+	if (endRange == -69.0)
+	{
+		endRange = range + 0.5;
+	}
+	
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SendToAll();
 }
