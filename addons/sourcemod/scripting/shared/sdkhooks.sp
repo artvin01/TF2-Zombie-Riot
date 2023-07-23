@@ -1684,7 +1684,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
-		else if(!LastMann && !b_IsAloneOnServer && !SpecterCheckIfAutoRevive(victim))
+		else if(!LastMann && !b_IsAloneOnServer || SpecterCheckIfAutoRevive(victim))
 		{
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
@@ -1879,8 +1879,8 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
-		volume *= 0.75;
-		level = 85;
+		volume *= 0.65;
+		level = 75;
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
