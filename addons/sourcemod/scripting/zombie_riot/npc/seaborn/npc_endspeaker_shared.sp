@@ -211,7 +211,7 @@ methodmap EndSpeaker < CClotBody
 							continue;
 					}
 
-					this.m_hBuffs |= view_as<Remains>(remain[b]).m_iBuffType;
+					this.m_hBuffs |= (1 << view_as<Remains>(remain[b]).m_iBuffType);
 					ParticleEffectAt(vecOther, "water_bulletsplash01", 3.0);
 					spawnRing_Vectors(vecOther, 500.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
 				}

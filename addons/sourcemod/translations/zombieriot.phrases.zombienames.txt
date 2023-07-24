@@ -1657,4 +1657,16 @@
 	{
 		"en"		"Theocracy"
 	}
+	"Benera"
+	{
+		"en" 		"Benera"
+	}
+	"Pental"
+	{
+		"en" 		"Pental"
+	}
+	"Defanda"
+	{
+		"en" 		"Defanda"
+	}
 }
