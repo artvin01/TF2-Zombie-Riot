@@ -135,7 +135,7 @@ public void Isharmla_ClotThink(int iNPC)
 	// Passive +1 SP
 	// Touching Nethersea +25 SP per 3 sec
 	// First Anger +50 SP per 3 sec
-	npc.m_iPoints += SeaFounder_TouchingNethersea(npc.index) ? ((GetURandomInt() % 2) ? 9 : 10) : 1;
+	npc.m_iPoints += /*SeaFounder_TouchingNethersea(npc.index) ? ((GetURandomInt() % 2) ? 9 : 10) : */1;
 	if(npc.m_bSpeed)
 		npc.m_iPoints += ((GetURandomInt() % 2) ? 17 : 16);
 	
