@@ -47,6 +47,7 @@ static char gExplosive1;
 
 static int i_LaserEntityIndex[MAXENTITIES+1]={-1, ...};
 
+
 #define LASERBEAM "sprites/laserbeam.vmt"
 
 
@@ -221,6 +222,9 @@ methodmap Theocracy < CClotBody
 		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, true, false, true, 15, 3);
 		
+		fl_rally_timer[npc.index] = GetGameTime(npc.index) + 5.0;
+		b_rally_active[npc.index] = false;
+		
 		bl_string_theory_active[npc.index] = false;
 		
 		npc.m_flDoingAnimation = 0.0;
@@ -300,6 +304,19 @@ public void Theocracy_ClotThink(int iNPC)
 			buff_array[1] = true;
 			buff_array[2] = true;
 			Apply_Master_Buff(npc.index, buff_array, 250.0, 5.0);
+			
+			if(fl_rally_timer[npc.index]<=GetGameTime(npc.index) && !b_rally_active[npc.index])
+			{
+				Ruina_Master_Rally(npc.index, true, false);		//start rally
+				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 5.0;
+				b_rally_active[npc.index] = true;
+			}
+			else if(b_rally_active[npc.index] && fl_rally_timer[npc.index]<=GetGameTime(npc.index))
+			{
+				Ruina_Master_Rally(npc.index, false, false);	//no more rally
+				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 15.0;
+				b_rally_active[npc.index] = false;
+			}
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			

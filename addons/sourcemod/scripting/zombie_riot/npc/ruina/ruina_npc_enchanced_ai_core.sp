@@ -11,8 +11,10 @@ static int i_master_attracts[MAXENTITIES];
 
 static char gLaser1;
 static int BeamWand_Laser;
-static char gGlow1;	//blue
+//static char gGlow1;	//blue
 
+float fl_rally_timer[MAXENTITIES];
+bool b_rally_active[MAXENTITIES];
 
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_overlord_is_rallying[MAXENTITIES];
@@ -45,6 +47,9 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(i_master_max_slaves);
 	Zero(b_master_is_acepting);
 	
+	Zero(fl_rally_timer);
+	Zero(b_rally_active);
+	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_ATTACK);
@@ -55,7 +60,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
-	gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
+	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 }
 public void Ruina_Set_Heirarchy(int client, int type)
@@ -89,23 +94,28 @@ public void Ruina_Master_Release_Slaves(int client)
 	i_master_current_slaves[client] = 0;	//reset
 	b_force_reasignment[client]=true;
 	b_master_is_acepting[client] = false;
+	CPrintToChatAll("Master Released Slaves");
 }
 public void Ruina_Master_Accpet_Slaves(int client)
 {
 	i_master_current_slaves[client] = 0;	//reset
 	b_force_reasignment[client]=false;
 	b_master_is_acepting[client] = true;
+	CPrintToChatAll("Master Accepting Slaves");
 }
 
 public void Ruina_NPCDeath_Override(int entity)
 {
-	b_master_exists[entity] = false;
 	
-	if(IsValidEntity(i_master_id[entity]))	//check if the master is still valid
+	b_master_exists[entity] = false;
+	if(IsValidEntity(i_master_id[entity]) && i_master_id[entity]!=entity)	//check if the master is still valid, but block the master itself
 	{
 		//if so we remove a slave from there list
 		i_master_current_slaves[i_master_id[entity]]--;
+		CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[i_master_id[entity]]);
 	}
+	
+	
 	
 	switch(i_NpcInternalId[entity])
 	{
@@ -163,6 +173,10 @@ static bool Check_If_I_Am_The_Right_Slave(int client, int other_client)
 public void Ruina_Master_Rally(int client, bool rally, bool overlord)
 {
 	b_master_is_rallying[client] = rally;
+	if(rally)
+		CPrintToChatAll("Master %i has initiated rally", client);
+	else
+		CPrintToChatAll("Master %i has stoped the rally", client);
 	if(overlord)
 		b_overlord_is_rallying[client] = rally;	//This will also rally "master" npc's. to be used for wave bosses
 }
@@ -177,13 +191,13 @@ public void Ruina_Master_Rally(int client, bool rally, bool overlord)
 	Phase 2: 
 	Test it thoroughly, 
 	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)
-	- does rally work?
+	- does rally work?		
 	- does overlord rally work?
-	- does melee rally work?
+	- does melee rally work?	- Yes!
 	- does ranged rally work?
 	- does both rally work?
-	- does release work?
-	- is there any leaking of npc slave count?
+	- does release work?	
+	- is there any leaking of npc slave count? - seems so, but only by 1, seems to happen on pickup, somehow it triggers twice?
 */
 
 public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
@@ -199,28 +213,64 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 			
 			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
 			{
-				if(fl_master_change_timer[npc.index]<=GameTime)	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+				if(fl_master_change_timer[npc.index]<=GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+				{
 					i_master_current_slaves[i_master_id[npc.index]]--;
+					CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+				}
+					
 				
 				i_master_id[npc.index] = GetRandomMaster(npc.index);
-				i_master_current_slaves[i_master_id[npc.index]]++;
+				
+				if(IsValidEntity(i_master_id[npc.index]))	//only add if the master id is valid
+					i_master_current_slaves[i_master_id[npc.index]]++;
+				
+				if(IsValidEntity(i_master_id[npc.index]))				
+					CPrintToChatAll("Master %i has gained a slave. current count %i",i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+				
 				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
 				
 			}
+			bool b_return = false;
 			if(IsValidEntity(i_master_id[npc.index]))	//get master's target
 			{
 				CClotBody npc2 = view_as<CClotBody>(i_master_id[npc.index]);
 				PrimaryThreatIndex = npc2.m_iTarget;
 			}
+			else
+			{
+				PrimaryThreatIndex = Backup_Target;
+				//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
+				b_return = true;
+			}
+			
 			
 			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
 			{
 				PrimaryThreatIndex = Backup_Target;
-				return;
+				//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
+				b_return = true;
 			}
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 					
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+			if(b_return)	//basic movement logic for when a npc no longer possese a master
+			{
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+									
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+						
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				}
+				npc.StartPathing();
+				return;
+			}
 			if(IsValidEntity(i_master_id[npc.index]))
 			{
 				switch(i_npc_type[npc.index])
@@ -234,7 +284,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 							
 							float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 							
-							if(dist > Pow(100.0, 2.0))	//go to master until we reach this distance from master
+							if(dist > Pow(150.0, 2.0))	//go to master until we reach this distance from master
 							{
 								NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
 								npc.StartPathing();
@@ -243,7 +293,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 							}
 							else
 							{
-								if(flDistanceToTarget>Pow(100.0, 2.0))	//if master is within range we stop moving and stand still
+								if(flDistanceToTarget>Pow(300.0, 2.0))	//if master is within range we stop moving and stand still
 								{
 									NPC_StopPathing(npc.index);
 									npc.m_bPathing = false;
@@ -352,11 +402,21 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		{
 			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
 			{
-				if(fl_master_change_timer[npc.index]<=GameTime)	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+				if(fl_master_change_timer[npc.index]<=GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+				{
 					i_master_current_slaves[i_master_id[npc.index]]--;
+					CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+				}
+					
 				
 				i_master_id[npc.index] = GetRandomMaster(npc.index);
-				i_master_current_slaves[i_master_id[npc.index]]++;
+				
+				if(IsValidEntity(i_master_id[npc.index]))	//only add if the master id is valid
+					i_master_current_slaves[i_master_id[npc.index]]++;
+				
+				if(IsValidEntity(i_master_id[npc.index]))				
+					CPrintToChatAll("Master %i has gained a slave. current count %i",i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+				
 				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
 				
 			}
@@ -450,7 +510,7 @@ public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float ti
 		{
 			if(baseboss_index!=npc.index)
 			{
-				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || i_npc_type[baseboss_index]==3)	//same type of npc, or a global type
+				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || i_master_attracts[npc.index]==3)	//same type of npc, or a global type
 				{
 					if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
 					{
@@ -491,7 +551,9 @@ static void Apply_Attack_buff(float time, int Other_Npc)
 {
 	f_Ruina_Attack_Buff[Other_Npc] = GetGameTime() + time;
 }
-
+				 ///////////////////
+				/// Wave Events ///
+			   ///////////////////
 /*
 float speed = kv.GetFloat("ruina_ion_cannon_speed", 9.0);
 float damage = kv.GetFloat("ruina_ion_cannon_damage", 1000.0);
@@ -579,11 +641,11 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 	float charge_time = pack.ReadCell();
 	float base_charge_time= pack.ReadCell();
 	
-	int loop_for=amt;
+	//int loop_for=amt;
 	if(amt==-1)
 	{
 		amt = CountPlayersOnRed();
-		loop_for = MAXTF2PLAYERS;
+		//loop_for = MAXTF2PLAYERS;
 	}
 		
 		
@@ -759,7 +821,7 @@ static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int
 					EndLoc[2] += 50.0;
 					
 					cur_vec[2] = EndLoc[2];
-					TE_SetupBeamPoints(EndLoc, cur_vec, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+					TE_SetupBeamPoints(EndLoc, cur_vec, gLaser1, 0, 0, 0, 0.1, start_size, end_size, 0, 0.1, colour, 0);
 					TE_SendToAll();
 				}
 			}
