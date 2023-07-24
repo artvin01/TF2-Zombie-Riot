@@ -320,7 +320,10 @@ enum
 	ISHARMLA_TRANS		= 283,
 	
 	//ruina
-	RUINA_THEOCRACY = 284
+	RUINA_THEOCRACY = 284,
+	EXPIDONSA_BENERA = 285,
+	EXPIDONSA_PENTAL = 286,
+	EXPIDONSA_DEFANDA = 287,
 }
 
 public const char NPC_Names[][] =
@@ -630,7 +633,10 @@ public const char NPC_Names[][] =
 	"Seaborn Supporter",
 	"Ishar'mla, Heart of Corruption",
 	"Ishar'mla, Heart of Corruption",
-	"Theocracy"
+	"Theocracy",
+	"Benera",
+	"Pental",
+	"Defanda"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -938,7 +944,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_isharmla",
 	"npc_isharmla_trans",
 	
-	"npc_ruina_theocracy"	//warp
+	"npc_ruina_theocracy",	//warp
+	"npc_benera",
+	"npc_pental",
+	"npc_defanda"
 };
 
 void NPC_MapStart()
@@ -1144,6 +1153,11 @@ void NPC_MapStart()
 	Ruina_Ai_Core_Mapstart();
 	Theocracy_OnMapStart_NPC();
 	
+
+	//Expidonsa Waves
+	Benera_OnMapStart_NPC();
+	Pental_OnMapStart_NPC();
+	Defanda_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1988,6 +2002,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case RUINA_THEOCRACY:	//warp
 			entity = Theocracy(client, vecPos, vecAng, ally);
+
+
+			
+		case EXPIDONSA_BENERA:
+			entity = Benera(client, vecPos, vecAng, ally);
+			
+		case EXPIDONSA_PENTAL:
+			entity = Pental(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_DEFANDA:
+			entity = Defanda(client, vecPos, vecAng, ally);
+
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2816,6 +2842,17 @@ public void NPCDeath(int entity)
 		case RUINA_THEOCRACY:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 
+
+
+		case EXPIDONSA_BENERA:
+			Benera_NPCDeath(entity); 
+
+		case EXPIDONSA_PENTAL:
+			Pental_NPCDeath(entity);
+
+		case EXPIDONSA_DEFANDA:
+			Defanda_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -3558,6 +3595,19 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 		case RUINA_THEOCRACY:	//warp
 			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+
+
+
+
+
+
+		case EXPIDONSA_BENERA:
+			Benera_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		case EXPIDONSA_PENTAL:
+			Pental_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		case EXPIDONSA_DEFANDA:
+			Defanda_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
@@ -3857,3 +3907,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_supporter.sp"
 #include "zombie_riot/npc/seaborn/npc_isharmla.sp"
 #include "zombie_riot/npc/seaborn/npc_isharmla_trans.sp"
+
+
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
+#include "zombie_riot/npc/expidonsa/npc_benera.sp"
+#include "zombie_riot/npc/expidonsa/npc_pental.sp"
+#include "zombie_riot/npc/expidonsa/npc_defanda.sp"

@@ -29,7 +29,6 @@ static const char g_MeleeAttackSounds[][] =
 	"vo/halloween_boss/knight_attack04.mp3"
 };
 
-static char gGlow1;
 static char gExplosive1;
 static char gLaser1;
 
@@ -42,7 +41,6 @@ void IsharmlaTrans_MapStart()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 }
 
 methodmap IsharmlaTrans < CClotBody

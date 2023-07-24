@@ -90,6 +90,7 @@ enum struct Vote
 
 static ArrayList Rounds;
 static ArrayList Voting;
+static bool CanReVote;
 static ArrayList MiniBosses;
 static ArrayStack Enemies;
 static Handle WaveTimer;
@@ -403,6 +404,8 @@ void Waves_SetupVote(KeyValues map)
 		Voting.PushArray(vote);
 	} while(kv.GotoNextKey());
 
+	CanReVote = Voting.Length > 1;
+
 	CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	for(int client=1; client<=MaxClients; client++)
@@ -688,7 +691,10 @@ void Waves_RoundStart()
 	else if(Voting)
 	{
 		float wait = zr_waitingtime.FloatValue;
-		float time = wait - 30.0;
+		if(wait < 90.0)
+			CanReVote = false;
+		
+		float time = wait - (CanReVote ? 60.0 : 30.0);
 		if(time < 20.0)
 			time = 20.0;
 		
@@ -778,39 +784,75 @@ public Action Waves_EndVote(Handle timer, float time)
 					}
 				}
 			}
-			
-			int highest;
-			for(int i=1; i<length; i++)
-			{
-				if(votes[i] > votes[highest])
-					highest = i;
-			}
-			
-			//if(votes[highest])
-			{
-				Vote vote;
-				Voting.GetArray(highest, vote);
-				
-				delete Voting;
-				Voting = null;
-				
-				strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
-				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
-				Queue_DifficultyVoteEnded();
+			if(CanReVote)
+			{
+				int high1 = 0;
+				int high2 = 1;
+				for(int i = 2; i < length; i++)
+				{
+					if(votes[i] > votes[high1])
+					{
+						high2 = high1;
+						high1 = i;
+					}
+					else if(votes[i] > votes[high2])
+					{
+						high2 = i;
+					}
+				}
+
+				high1 = votes[high2];
+				for(int i; i < length; i++)
+				{
+					if(votes[i] < high1)
+					{
+						Voting.Erase(i);
+						i--;
+						length--;
+					}
+				}
+
+				Zero(VotedFor);
+				CanReVote = false;
+				VoteEndTime = GetGameTime() + 30.0;
+				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			else
+			{
+				int highest;
+				for(int i=1; i<length; i++)
+				{
+					if(votes[i] > votes[highest])
+						highest = i;
+				}
 				
-				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
-				ExcuteRelay("zr_waveselected", WhatDifficultySetting);
-				
-				vote.Name[0] = CharToUpper(vote.Name[0]);
-				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
-				
-				char buffer[PLATFORM_MAX_PATH];
-				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-				KeyValues kv = new KeyValues("Waves");
-				kv.ImportFromFile(buffer);
-				Waves_SetupWaves(kv, false);
-				delete kv;
+				//if(votes[highest])
+				{
+					Vote vote;
+					Voting.GetArray(highest, vote);
+					
+					delete Voting;
+					Voting = null;
+					
+					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
+					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
+
+					Queue_DifficultyVoteEnded();
+					
+					Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
+					ExcuteRelay("zr_waveselected", WhatDifficultySetting);
+					
+					vote.Name[0] = CharToUpper(vote.Name[0]);
+					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), vote.Name);
+					
+					char buffer[PLATFORM_MAX_PATH];
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+					KeyValues kv = new KeyValues("Waves");
+					kv.ImportFromFile(buffer);
+					Waves_SetupWaves(kv, false);
+					delete kv;
+				}
 			}
 		}
 	}
