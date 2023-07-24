@@ -207,7 +207,7 @@ public void VausMagica_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VausMagica_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Vausmagica_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VausMagica npc = view_as<VausMagica>(victim);
 		

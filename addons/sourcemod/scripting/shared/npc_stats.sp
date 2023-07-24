@@ -54,6 +54,8 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
+int Shared_BEAM_Laser;
+int Shared_BEAM_Glow;
 static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_EntityInCrouchSpot[MAXENTITIES];
 static bool b_NpcResizedForCrouch[MAXENTITIES];
@@ -176,6 +178,8 @@ void OnMapStart_NPC_Base()
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
+	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
+	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);

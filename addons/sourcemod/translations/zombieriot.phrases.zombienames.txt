@@ -1677,4 +1677,8 @@
 	{
 		"en" 		"Vaus Magica"
 	}
+	"Pistoleer"
+	{
+		"en" 		"Pistoleer"
+	}
 }
