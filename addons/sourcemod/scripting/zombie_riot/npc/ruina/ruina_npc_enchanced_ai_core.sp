@@ -755,7 +755,7 @@ static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int
 					EndLoc[2] += 50.0;
 					
 					cur_vec[2] = EndLoc[2];
-					TE_SetupBeamPoints(EndLoc, cur_vec, gLaser1, 0, 0, 0, 0.1, start_size, end_size, 0, 0.1, colour, 0);
+					TE_SetupBeamPoints(EndLoc, cur_vec, gLaser1, 0, 0, 0, 0.1, 5.0, 2.0, 0, 0.1, colour, 0);
 					TE_SendToAll();
 				}
 			}
