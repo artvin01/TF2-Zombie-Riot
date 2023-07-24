@@ -666,6 +666,8 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][3] = EntIndexToEntRef(particle_3);
 	i_wing_particles[client][4] = EntIndexToEntRef(particle_3_1);
 	
+	i_wing_particles[client][4] = EntIndexToEntRef(particle_0);
+	
 }
 static void Destroy_Halo_And_Wings(int client, int type)
 {
@@ -681,7 +683,7 @@ static void Destroy_Halo_And_Wings(int client, int type)
 				RemoveEntity(wing_laser);
 			}
 		}	
-		for(int i=0 ; i < 5 ; i++)
+		for(int i=0 ; i < 6 ; i++)
 		{
 			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
 			if(IsValidEntity(wing_particle))

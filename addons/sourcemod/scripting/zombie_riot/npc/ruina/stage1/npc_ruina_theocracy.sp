@@ -219,6 +219,8 @@ methodmap Theocracy < CClotBody
 
 		npc.StartPathing();
 		
+		Theocracy_Create_Wings(npc.index);
+		
 		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, true, false, true, 15, 3);
 		
@@ -312,7 +314,7 @@ public void Theocracy_ClotThink(int iNPC)
 				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 15.0;
 				b_rally_active[npc.index] = true;
 			}
-			else if(b_rally_active[npc.index] && fl_rally_timer[npc.index]<=GetGameTime(npc.index))
+			if(b_rally_active[npc.index] && fl_rally_timer[npc.index]<=GetGameTime(npc.index))
 			{
 				Ruina_Master_Rally(npc.index, false);	//end rally
 				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 10.0;
@@ -330,6 +332,9 @@ public void Theocracy_ClotThink(int iNPC)
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
 				
+				npc.SetPlaybackRate(1.0);	
+				npc.SetCycle(0.0);
+						
 				npc.AddActivityViaSequence("taunt_yetipunch");
 				npc.m_flRangedArmor = 0.5;
 				npc.m_flMeleeArmor = 0.5;
@@ -661,7 +666,76 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 		}
 	}
 }
+static int i_particle_wings_index[MAXENTITIES][10];
+static int i_laser_wings_index[MAXENTITIES][10];
 
+static void Theocracy_Create_Wings(int client)
+{
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(client, "flag", flPos, flAng);
+	
+	
+	int r, g, b;
+	float f_start, f_end, amp;
+	r = 255;
+	g = 1;
+	b = 1;
+	f_start = 1.0;
+	f_end = 1.0;
+	amp = 1.0;
+	
+	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	
+	
+	int particle_1 = ParticleEffectAt({0.0,15.0,-12.5}, "", 0.0);
+	
+	SetParent(particle_0, particle_1);
+	
+	
+	//X axis- Left, Right	//this one im almost fully sure of
+	//Y axis - Up down, for once
+	//Z axis - Forward backwards.????????
+	
+	//ALL OF THESE ARE RELATIVE TO THE BACKPACK POINT THINGY, or well the viewmodel, but its easier to visualise if using the back
+	//Left?
+
+
+	//Right? probably right?
+	int particle_2 = ParticleEffectAt({-35.0, 10.5, 2.5}, "", 0.0);
+	int particle_2_1 = ParticleEffectAt({-90.0, 35.0, -5.0}, "", 0.0);
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_2, particle_2_1, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
+	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
+	SetParent(client, particle_0, "flag",_);
+
+	i_laser_wings_index[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_wings_index[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_wings_index[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	
+	i_particle_wings_index[client][0] = EntIndexToEntRef(particle_0);
+	i_particle_wings_index[client][1] = EntIndexToEntRef(particle_1);
+	i_particle_wings_index[client][2] = EntIndexToEntRef(particle_2);
+	i_particle_wings_index[client][3] = EntIndexToEntRef(particle_2_1);
+	
+}
+static void Theocracy_Destroy_Wings(int client)
+{
+	for(int wing=1 ; wing<=3 ; wing++)
+	{
+		int entity = EntRefToEntIndex(i_laser_wings_index[client][wing]);
+		if(IsValidEntity(entity))
+			RemoveEntity(entity);
+	}
+	for(int particle=0 ; particle<=3 ; particle++)
+	{
+		int entity = EntRefToEntIndex(i_particle_wings_index[client][particle]);
+		if(IsValidEntity(entity))
+			RemoveEntity(entity);
+	}
+}
 static Action Theocracy_String_Theory_Remove_Laser(Handle timer, int ref)
 {
 	int laser = EntRefToEntIndex(ref);
@@ -742,6 +816,8 @@ public Action Theocracy_ClotDamaged(int victim, int &attacker, int &inflictor, f
 public void Theocracy_NPCDeath(int entity)
 {
 	Theocracy npc = view_as<Theocracy>(entity);
+	
+	Theocracy_Destroy_Wings(entity);
 	
 	npc.PlayDeathSound();
 	

@@ -328,6 +328,7 @@ enum
 	EXPIDONSA_VAUSMAGICA = 289,
 	EXPIDONSA_PISTOLEER = 290,
 	EXPIDONSA_DIVERSIONISTICO = 291,
+	RUINA_ADIANTUM = 292,
 }
 
 public const char NPC_Names[][] =
@@ -644,7 +645,8 @@ public const char NPC_Names[][] =
 	"Selfam Ire",
 	"Vaus Magica",
 	"Pistoleer",
-	"Diversionistico"
+	"Diversionistico",
+	"Adiantum"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -959,7 +961,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_selfam_ire",
 	"npc_vaus_magica",
 	"npc_benera_pistoleer",
-	"npc_diversionistico"
+	"npc_diversionistico",
+	"npc_ruina_adiantum"
 };
 
 void NPC_MapStart()
@@ -1164,6 +1167,7 @@ void NPC_MapStart()
 	//Ruina waves	//warp
 	Ruina_Ai_Core_Mapstart();
 	Theocracy_OnMapStart_NPC();
+	Adiantum_OnMapStart_NPC();
 	
 
 	//Expidonsa Waves
@@ -2018,7 +2022,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case RUINA_THEOCRACY:	//warp
 			entity = Theocracy(client, vecPos, vecAng, ally);
-
+		
+		case RUINA_ADIANTUM:
+			entity = Adiantum(client, vecPos, vecAng, ally);
 
 			
 		case EXPIDONSA_BENERA:
@@ -2868,7 +2874,7 @@ public void NPCDeath(int entity)
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
 			
-		case RUINA_THEOCRACY:
+		case RUINA_THEOCRACY, RUINA_ADIANTUM:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 
 
@@ -3636,7 +3642,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case RUINA_THEOCRACY:	//warp
 			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-
+		case RUINA_ADIANTUM:
+			Adiantum_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 
 
@@ -3784,6 +3791,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
 //stage 1
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_theocracy.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_adiantum.sp"
 
 
 //Alt

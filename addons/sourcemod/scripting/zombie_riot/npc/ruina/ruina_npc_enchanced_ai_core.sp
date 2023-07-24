@@ -122,6 +122,9 @@ public void Ruina_NPCDeath_Override(int entity)
 		case RUINA_THEOCRACY:
 			Theocracy_NPCDeath(entity);
 			
+		case RUINA_ADIANTUM:
+			Adiantum_NPCDeath(entity);
+			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 	}
@@ -186,7 +189,7 @@ public void Ruina_Master_Rally(int client, bool rally)
 	allow an ability to "release" slave npc's, eg: master calls in a group and then warps them into an enemy base - Done!
 	add a "rally" ability	- Done!
 	
-	Phase 2: 
+	Phase 2: Stable enough to begin making npc's.
 	Test it thoroughly, 
 	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)	- yes!
 	- does rally work?		
@@ -195,6 +198,9 @@ public void Ruina_Master_Rally(int client, bool rally)
 	- does both rally work?		- most likely
 	- does release work?	
 	- is there any leaking of npc slave count? - works.
+	
+	Phase 3:
+	- Make the npc's :)
 */
 
 public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)

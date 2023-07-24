@@ -1685,4 +1685,8 @@
 	{
 		"en" 		"Diversionistico"
 	}
+	"Adiantum"
+	{
+		"en"	"Adiantum"
+	}
 }

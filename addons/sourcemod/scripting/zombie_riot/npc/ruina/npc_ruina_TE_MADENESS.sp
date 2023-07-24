@@ -42,7 +42,7 @@ static float TE_Madness_END_BEAM_LOC[MAXENTITIES][2][50][3];	//how funny this wi
 static char gLaser1;
 static char gExplosive1;
 
-public void AltMedicCharger_OnMapStart_NPC()
+public void Adiantum_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -56,7 +56,7 @@ public void AltMedicCharger_OnMapStart_NPC()
 }
 
 
-methodmap AltMedicCharger < CClotBody
+methodmap Adiantum < CClotBody
 {
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -104,15 +104,15 @@ methodmap AltMedicCharger < CClotBody
 		PrintToServer("CClot::PlayHurtSound()");
 		#endif
 	}
-	public AltMedicCharger(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Adiantum(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		AltMedicCharger npc = view_as<AltMedicCharger>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
+		Adiantum npc = view_as<Adiantum>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_NpcInternalId[npc.index] = ALT_MEDIC_CHARGER;
+		i_NpcInternalId[npc.index] = RUINA_ADIANTUM;
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -122,8 +122,8 @@ methodmap AltMedicCharger < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, AltMedicCharger_ClotDamaged);
-		SDKHook(npc.index, SDKHook_Think, AltMedicCharger_ClotThink);				
+		SDKHook(npc.index, SDKHook_OnTakeDamage, Adiantum_ClotDamaged);
+		SDKHook(npc.index, SDKHook_Think, Adiantum_ClotThink);				
 		
 		
 		
@@ -175,6 +175,9 @@ methodmap AltMedicCharger < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 7, 255, 255, 255);
 		
+		
+		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		
 		npc.m_flSpeed = 0.0;
 		
 		npc.m_flCharge_Duration = 0.0;
@@ -190,9 +193,9 @@ methodmap AltMedicCharger < CClotBody
 
 //TODO 
 //Rewrite
-public void AltMedicCharger_ClotThink(int iNPC)
+public void Adiantum_ClotThink(int iNPC)
 {
-	AltMedicCharger npc = view_as<AltMedicCharger>(iNPC);
+	Adiantum npc = view_as<Adiantum>(iNPC);
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -230,41 +233,8 @@ public void AltMedicCharger_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			/*
-			if(npc.m_flCharge_Duration < GetGameTime(npc.index))
-			{
-				npc.m_flSpeed = 300.0;
-				if(npc.m_flCharge_delay < GetGameTime(npc.index))
-				{
-					int Enemy_I_See;
-					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-					//Target close enough to hit
-					if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
-					{
-						npc.PlayChargeSound();
-						npc.m_flCharge_delay = GetGameTime(npc.index) + 5.0;
-						npc.m_flCharge_Duration = GetGameTime(npc.index) + 2;
-						PluginBot_Jump(npc.index, vecTarget);
-					}
-				}
-			}
-			else
-			{
-				npc.m_flSpeed = 500.0;
-			}
-			*/
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				
-				PF_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				PF_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			npc.StartPathing();
+			
+			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
 			if(!TE_Madness_Used[npc.index])
 			{
@@ -338,7 +308,7 @@ public void AltMedicCharger_ClotThink(int iNPC)
 	}
 	else
 	{
-		PF_StopPathing(npc.index);
+		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -364,7 +334,7 @@ static bool TE_Madness_Stop[MAXENTITIES]={false,...};
 /*
 public Action TE_Madness_Secondary_TBB_Tick(int client)
 {
-	AltMedicCharger npc = view_as<AltMedicCharger>(client);
+	Adiantum npc = view_as<Adiantum>(client);
 	if(!IsValidEntity(client) || TE_Madness_Stop[npc.index])
 	{
 		SDKUnhook(client, SDKHook_Think, TE_Madness_Secondary_TBB_Tick);
@@ -411,7 +381,7 @@ static bool TE_Madness_Inverted[MAXENTITIES]={false,...};
 
 public Action TE_Madness_Primary_TBB_Tick(int client)
 {
-	AltMedicCharger npc = view_as<AltMedicCharger>(client);
+	Adiantum npc = view_as<Adiantum>(client);
 	if(!IsValidEntity(client) || TE_Madness_Stop[npc.index])
 	{
 		SDKUnhook(client, SDKHook_Think, TE_Madness_Primary_TBB_Tick);
@@ -519,7 +489,7 @@ public Action TE_Madness_Primary_TBB_Tick(int client)
 void TE_Madness_spawn_beams(int client, int colour[4], int o)
 {
 	int testing=12, y=0;
-	AltMedicCharger npc = view_as<AltMedicCharger>(client);
+	Adiantum npc = view_as<Adiantum>(client);
 	for(int m=1; m<= testing ; m++)
 	{
 		int x=0;
@@ -547,7 +517,7 @@ void TE_Madness_spawn_beams(int client, int colour[4], int o)
 }
 public void TE_Madness_Attack(float vecTarget[3], int m, int client, int colour[4])
 {
-	AltMedicCharger npc = view_as<AltMedicCharger>(client);
+	Adiantum npc = view_as<Adiantum>(client);
 
 	EmitSoundToAll("misc/halloween/gotohell.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vecTarget);
 	
@@ -577,7 +547,7 @@ public Action Smite_Timer_TE_Madness(Handle Smite_Logic, DataPack data)
 	float Iondamage = ReadPackCell(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
 	
-	AltMedicCharger npc = view_as<AltMedicCharger>(client);
+	Adiantum npc = view_as<Adiantum>(client);
 	
 	if (!IsValidEntity(client))
 	{
@@ -601,7 +571,7 @@ public Action Smite_Timer_TE_Madness(Handle Smite_Logic, DataPack data)
 }
 public Action TE_Madness_TBB_Timer(Handle timer, int client)
 {
-	AltMedicCharger npc = view_as<AltMedicCharger>(client);
+	Adiantum npc = view_as<Adiantum>(client);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
@@ -631,12 +601,12 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
-public Action AltMedicCharger_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Adiantum_ClotDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
-	AltMedicCharger npc = view_as<AltMedicCharger>(victim);
+	Adiantum npc = view_as<Adiantum>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -647,14 +617,14 @@ public Action AltMedicCharger_ClotDamaged(int victim, int &attacker, int &inflic
 	return Plugin_Changed;
 }
 
-public void AltMedicCharger_NPCDeath(int entity)
+public void Adiantum_NPCDeath(int entity)
 {
-	AltMedicCharger npc = view_as<AltMedicCharger>(entity);
+	Adiantum npc = view_as<Adiantum>(entity);
 	
 	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_OnTakeDamage, AltMedicCharger_ClotDamaged);
-	SDKUnhook(npc.index, SDKHook_Think, AltMedicCharger_ClotThink);	
+	SDKUnhook(npc.index, SDKHook_OnTakeDamage, Adiantum_ClotDamaged);
+	SDKUnhook(npc.index, SDKHook_Think, Adiantum_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
