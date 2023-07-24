@@ -1758,14 +1758,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	if(ammo_amount_left > 0)
 	{
 		float HealAmmount = 20.0;
-		if(Attributes_Has(originalLauncher, 8))
-		{
-			HealAmmount *= Attributes_Get(originalLauncher, 8, 1.0);
-		}
-		else
-		{
-			HealAmmount *= Attributes_GetOnPlayer(owner, 8, true);
-		}
+
+		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true);
 
 		
 		float GameTime = GetGameTime();

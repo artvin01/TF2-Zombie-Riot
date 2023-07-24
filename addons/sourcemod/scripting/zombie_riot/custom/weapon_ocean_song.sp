@@ -291,7 +291,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 
 	if(!HordingsBuff)
 	{
-		flHealMulti = Attributes_FindOnPlayerZR(client, 8, true, 1.0, true);
+		flHealMulti = Attributes_GetOnPlayer(client, 8, true, 1.0);
 
 	}
 	else
