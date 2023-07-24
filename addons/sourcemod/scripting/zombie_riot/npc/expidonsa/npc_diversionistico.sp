@@ -85,9 +85,13 @@ methodmap Diversionistico < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeBackstabSound()
+	public void PlayMeleeBackstabSound(int target)
 	{
-		EmitSoundToAll(g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(target <= MaxClients)
+		{
+			EmitSoundToClient(target, g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], target, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		}
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -319,7 +323,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 					if(BackstabDone)
 					{
-						npc.PlayMeleeBackstabSound();
+						npc.PlayMeleeBackstabSound(target);
 						damageDealt *= 3.0;
 					}
 
