@@ -1689,4 +1689,8 @@
 	{
 		"en"	"Adiantum"
 	}
+	"Lanius"
+	{
+		"en"	"Lanius"
+	}
 }

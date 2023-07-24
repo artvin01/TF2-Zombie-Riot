@@ -57,7 +57,7 @@ methodmap Adiantum < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -68,7 +68,7 @@ methodmap Adiantum < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
 		#if defined DEBUG_SOUND
@@ -77,7 +77,7 @@ methodmap Adiantum < CClotBody
 	}
 	
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -87,7 +87,7 @@ methodmap Adiantum < CClotBody
 		
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
-		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
+		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	
 	public void PlayHurtSound() {
@@ -96,7 +96,7 @@ methodmap Adiantum < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 		#if defined DEBUG_SOUND
@@ -253,7 +253,12 @@ public void Adiantum_ClotThink(int iNPC)
 				buff_array[0] = true;	//defense
 				buff_array[1] = false;	//speed
 				buff_array[2] = true;	//attack
-				Apply_Master_Buff(npc.index, buff_array, 250.0, 5.0);
+				float buff_array_amt[3];
+				buff_array_amt[0] = 0.2;	//20% dmg bonus
+				buff_array_amt[1] = 1.25;	//going bellow 1.0 will reduce speed
+				buff_array_amt[2] = 0.05;	//5% dmg resist
+			
+				Apply_Master_Buff(npc.index, buff_array, 250.0, 5.0, buff_array_amt);
 				Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
 				npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
 			}
