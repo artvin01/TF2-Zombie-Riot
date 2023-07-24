@@ -182,7 +182,6 @@ StringMap HookListMap;
 StringMap HookIdMap;
 
 bool DoingLagCompensation;
-OSType OperationSystem;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
@@ -1146,7 +1145,6 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
-	checkOS();
 }
 
 public Action Timer_Temp(Handle timer)
@@ -3315,25 +3313,6 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 	return Plugin_Continue;
 }
 
-
-void checkOS()
-{
-    char cmdline[256];
-    GetCommandLine(cmdline, sizeof(cmdline));
-
-    if (StrContains(cmdline, "./srcds_linux ", false) != -1)
-    {
-        OperationSystem = OS_Linux;
-    }
-    else if (StrContains(cmdline, ".exe", false) != -1)
-    {
-        OperationSystem = OS_Windows;
-    }
-    else
-    {
-        OperationSystem = OS_Unknown;
-    }
-}
 
 void HideWallWeaponsExceptActive(int client)
 {

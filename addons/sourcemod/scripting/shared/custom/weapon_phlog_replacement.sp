@@ -175,7 +175,7 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 	//This ability has no cooldown in itself, it just relies on hits you do.
 	if(i_PHLOGHitsDone[client] >= PHLOG_JUDGEMENT_MAX_HITS_NEEDED || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(client, weapon);
+		Rogue_OnAbilityUse(weapon);
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);

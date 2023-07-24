@@ -279,9 +279,7 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
 		{
 			int Enemy_I_See;
 								

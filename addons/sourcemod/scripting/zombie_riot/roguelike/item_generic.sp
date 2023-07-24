@@ -182,15 +182,6 @@ public void Rogue_Item_HealthyEssenceRemove()
 	b_HealthyEssence = false;
 }
 
-public void Rogue_Item_ChickenNuggetBox()
-{
-	b_ChickenNuggetBox = true;
-}
-public void Rogue_Item_ChickenNuggetBoxRemove()
-{
-	b_ChickenNuggetBox = false;
-}
-
 public void Rogue_Item_FizzyDrink()
 {
 	b_FizzyDrink = true;
@@ -352,7 +343,6 @@ public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 
 public void Rogue_Item_CrudeFlute()
 {
-	b_CrudeFlute = true;
 	CurrentCash += 500;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -361,10 +351,6 @@ public void Rogue_Item_CrudeFlute()
 			CashRecievedNonWave[client] += 500;
 		}
 	}	
-}
-public void Rogue_Item_CrudeFluteRemove()
-{
-	b_CrudeFlute = false;
 }
 public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 {

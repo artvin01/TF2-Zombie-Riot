@@ -252,13 +252,13 @@ void SelfamIreSprint(SelfamIre npc, float gameTime, int target, float distance)
 	if(npc.m_flNextRangedSpecialAttackHappens)
 	{
 		npc.m_flSpeed = 450.0;
-		if(npc.m_flNextRangedSpecialAttackHappens < GetGameTime(npc.index))
+		if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 		{
 			npc.m_flNextRangedSpecialAttackHappens = 0.0;
 			
 		}
 	}
-	if(GetGameTime(npc.index) > npc.m_flNextRangedSpecialAttack)
+	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
 		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0, 2.0))
 		{
@@ -266,8 +266,8 @@ void SelfamIreSprint(SelfamIre npc, float gameTime, int target, float distance)
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 20.0;
-				npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 3.0;
+				npc.m_flNextRangedSpecialAttack = gameTime + 20.0;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 3.0;
 				float flPos[3];
 				float flAng[3];
 				GetAttachment(npc.index, "head", flPos, flAng);		
@@ -316,9 +316,7 @@ void SelfamIreSelfDefense(SelfamIre npc, float gameTime, int target, float dista
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
 		{
 			int Enemy_I_See;
 								

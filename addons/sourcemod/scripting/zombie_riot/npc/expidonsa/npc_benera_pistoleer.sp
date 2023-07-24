@@ -264,9 +264,6 @@ void PistoleerSelfDefense(Pistoleer npc, float gameTime)
 		}	
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
-
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0))
 			{	
 

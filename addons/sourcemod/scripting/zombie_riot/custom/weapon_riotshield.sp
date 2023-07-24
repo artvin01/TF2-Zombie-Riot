@@ -130,7 +130,7 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 		if(find)
 		{
-			Rogue_OnAbilityUse(client, weapon);
+			Rogue_OnAbilityUse(weapon);
 			//Boom! Do effects and buff weapon!
 
 			float Original_Atackspeed = 1.0;

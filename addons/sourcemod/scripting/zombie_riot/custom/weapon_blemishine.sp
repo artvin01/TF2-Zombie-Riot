@@ -36,7 +36,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(client, weapon);
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
 		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
 		float flPos[3];
@@ -80,7 +80,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 	//This melee is too unique, we have to code it in a different way.
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
-		Rogue_OnAbilityUse(client, weapon);
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
 		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
 		float flPos[3];
@@ -94,7 +94,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit);
+		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit2);
 		FinishLagCompensation_Base_boss();
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_FindOnWeapon(client, weapon, 180);

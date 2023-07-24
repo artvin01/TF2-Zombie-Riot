@@ -261,7 +261,7 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		IsharmlaTrans npc = view_as<IsharmlaTrans>(entity);
+	//	IsharmlaTrans npc = view_as<IsharmlaTrans>(entity);
 		float Time=1.5;	//how long before kaboom
 			
 					

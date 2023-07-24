@@ -52,7 +52,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		Rogue_OnAbilityUse(client, weapon);
+		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 
 		Duration[client] = GetGameTime() + 10.0; //Just a test.
@@ -176,7 +176,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 
 			if(validpos)
 			{
-				Rogue_OnAbilityUse(client, weapon);
+				Rogue_OnAbilityUse(weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 				float damage = 500.0;
 				damage *= Attributes_Get(weapon, 2, 1.0);

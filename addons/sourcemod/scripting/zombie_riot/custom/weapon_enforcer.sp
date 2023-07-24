@@ -195,7 +195,7 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 			Ability_Apply_Cooldown(client, slot, 40.0);
 			i_SemiAutoWeapon_AmmoCount[weapon] -= ammo;
 
-			Rogue_OnAbilityUse(client, weapon);
+			Rogue_OnAbilityUse(weapon);
 			ShowClientManualAmmoCount(client, weapon);
 		}
 		else

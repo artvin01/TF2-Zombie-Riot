@@ -1980,10 +1980,8 @@ bool b_BraceletsOfAgility; 				//shield items
 bool b_ElasticFlyingCape; 				//shield items
 bool b_HealingSalve; 					//see sdkhooks think and item_generic
 bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
-bool b_ChickenNuggetBox; 			 	//see store GiveAll
 bool b_FizzyDrink; 			 			//see npc.sp ontakedamage
 bool b_HoverGlider; 			 		//see npc.sp ontakedamage
-bool b_CrudeFlute; 				 		//see store GiveAll
 bool b_NickelInjectedPack; 				 //see store GiveAll
 bool b_SteelRazor; 				 		
 bool b_SpanishSpecialisedGunpowder; 	

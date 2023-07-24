@@ -219,18 +219,18 @@ public void BarrackThorns_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < (1200.0 * 1200.0) || ThornsDecidedOnAttack[npc.index] == 3)
 				{
-					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),client,EnemyToAttack); 
+					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),EnemyToAttack); 
 				}
 			}
 			else
 			{
 				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
 				{
-					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),client,EnemyToAttack); 
+					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),EnemyToAttack); 
 				}
 				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
 				{
-					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),client,EnemyToAttack); 
+					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),EnemyToAttack); 
 				}				
 			}
 
@@ -286,7 +286,7 @@ void BarrackThorns_NPCDeath(int entity)
 	}
 }
 
-void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int client, int EnemyToAttack)
+void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAttack)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -319,7 +319,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int client, int
 						{
 							damage *= 1.5;
 						}
-						SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);						
+						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);						
 
 						npc.PlayMeleeHitSound();
 					} 
@@ -363,7 +363,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int client, int
 
 
 
-void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int client, int EnemyToAttack)
+void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAttack)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -450,7 +450,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int client, in
 
 
 
-void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int client, int EnemyToAttack)
+void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAttack)
 {
 	if(npc.m_flAttackHappens)
 	{

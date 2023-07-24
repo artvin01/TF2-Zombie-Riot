@@ -184,7 +184,7 @@ static void StreetFighter(int client, int weapon, int slot, int buttons, int CD)
 				}
 				else
 				{
-					Rogue_OnAbilityUse(client, weapon);
+					Rogue_OnAbilityUse(weapon);
 				}
 
 				for(int i = sizeof(LastCombos[]) - 1; i > 0; i--)

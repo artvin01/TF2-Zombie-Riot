@@ -3022,7 +3022,7 @@ public void OnNpcHurt(Event event, const char[] name, bool dontBroadcast)
 }*/
 
 
-void OnKillUniqueWeapon(int attacker, int victim, int weapon)
+void OnKillUniqueWeapon(int attacker, int weapon)
 {
 	if(!IsValidEntity(weapon))
 		return;

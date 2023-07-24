@@ -6,7 +6,7 @@ void Rogue_OnAbilityUseMapStart()
 {
 	Zero(f_WrathOfItallians);
 }
-void Rogue_OnAbilityUse(int client, int weapon)
+void Rogue_OnAbilityUse(int weapon)
 {
 	if(b_WrathOfItallians)
 	{

@@ -250,9 +250,9 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 	{
 		return;
 	}
-	if(npc.m_flNextRangedSpecialAttack > GetGameTime(npc.index) + 990.0)
+	if(npc.m_flNextRangedSpecialAttack > gameTime + 990.0)
 	{
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 30.0;
+		npc.m_flNextRangedSpecialAttack = gameTime + 15.0;
 		float flPos[3];
 		float flAng[3];
 		GetAttachment(npc.index, "head", flPos, flAng);		
@@ -261,9 +261,9 @@ void VausMagicaShieldGiving(VausMagica npc, float gameTime)
 		npc.PlayShieldSound();
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextRangedSpecialAttack)
+	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 1.0; //Retry in 1 second.
+		npc.m_flNextRangedSpecialAttack = gameTime + 1.0; //Retry in 1 second.
 		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 		Explode_Logic_Custom(0.0,
@@ -293,18 +293,17 @@ void VausMagicaSelfDefense(VausMagica npc, float gameTime, int target, float dis
 	{
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
 			npc.m_flAttackHappens = 0.0;
 			
-			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-			npc.FireParticleRocket(WorldSpaceCenter(npc.m_iTarget), 50.0 , 1000.0 , 100.0 , "raygun_projectile_blue");
+			npc.FaceTowards(vecTarget, 15000.0);
+			npc.FireParticleRocket(vecTarget, 50.0 , 1000.0 , 100.0 , "raygun_projectile_blue");
 		}
 	}
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-		if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0))
+		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0))
 		{
 			int Enemy_I_See;
 								
@@ -333,19 +332,19 @@ void VausMagicaShield(int entity, int victim, float damage, int weapon)
 	{
 		if (b_IsAlliedNpc[victim])
 		{
-			VausMagicaShieldInternal(entity,victim, 50.0);
+			VausMagicaShieldInternal(entity,victim);
 		}
 	}
 	else
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			VausMagicaShieldInternal(entity,victim, 250.0);
+			VausMagicaShieldInternal(entity,victim);
 		}
 	}
 }
 
-void VausMagicaShieldInternal(int shielder, int victim, float heal)
+void VausMagicaShieldInternal(int shielder, int victim)
 {
 	VausMagica npc = view_as<VausMagica>(shielder);
 	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 999.0;
