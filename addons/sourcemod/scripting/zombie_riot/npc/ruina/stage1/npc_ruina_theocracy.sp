@@ -297,7 +297,8 @@ public void Theocracy_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			
-			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
+			if(npc.m_flDoingAnimation<=GetGameTime(npc.index))
+				Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
 			bool buff_array[3];
 			buff_array[0] = true;
@@ -307,14 +308,14 @@ public void Theocracy_ClotThink(int iNPC)
 			
 			if(fl_rally_timer[npc.index]<=GetGameTime(npc.index) && !b_rally_active[npc.index])
 			{
-				Ruina_Master_Rally(npc.index, true, false);		//start rally
-				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 5.0;
+				Ruina_Master_Rally(npc.index, true);	//start rally
+				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 15.0;
 				b_rally_active[npc.index] = true;
 			}
 			else if(b_rally_active[npc.index] && fl_rally_timer[npc.index]<=GetGameTime(npc.index))
 			{
-				Ruina_Master_Rally(npc.index, false, false);	//no more rally
-				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 15.0;
+				Ruina_Master_Rally(npc.index, false);	//end rally
+				fl_rally_timer[npc.index] = GetGameTime(npc.index) + 10.0;
 				b_rally_active[npc.index] = false;
 			}
 			
@@ -328,6 +329,7 @@ public void Theocracy_ClotThink(int iNPC)
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
+				
 				npc.AddActivityViaSequence("taunt_yetipunch");
 				npc.m_flRangedArmor = 0.5;
 				npc.m_flMeleeArmor = 0.5;
@@ -611,14 +613,15 @@ static void Theocracy_Melee_Hit(int ref, int enemy, float vecHit[3])
 						SDKHooks_TakeDamage(entity, client, client, damage*1.25, DMG_CLUB, -1, _, vecHit);	//kill!
 					}
 					
-					if(!IsValidEntity(i_LaserEntityIndex[entity]))
+					int laser_entity = EntRefToEntIndex(i_LaserEntityIndex[entity]);
+					if(!IsValidEntity(laser_entity))
 					{
 						int red = r;
 						int green = g;
 						int blue = b;
-						if(IsValidEntity(i_LaserEntityIndex[entity]))
+						if(IsValidEntity(laser_entity))
 						{
-							RemoveEntity(i_LaserEntityIndex[entity]);
+							RemoveEntity(laser_entity);
 						}
 
 						int laser;
@@ -760,9 +763,10 @@ public void Theocracy_NPCDeath(int entity)
 		
 	for(int entity1=1 ; entity1<=MAXENTITIES ; entity1++)
 	{
-		if(IsValidEntity(i_LaserEntityIndex[entity1]))
+		int laser_entity = EntRefToEntIndex(i_LaserEntityIndex[entity1]);
+		if(IsValidEntity(laser_entity))
 		{
-			RemoveEntity(i_LaserEntityIndex[entity1]);
+			RemoveEntity(laser_entity);
 		}
 	}
 }

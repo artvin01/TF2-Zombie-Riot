@@ -2671,6 +2671,12 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
 		return true;
+	else if(f_Ruina_Defense_Buff[npc] > GameTime)
+		return true;
+	else if(f_Ruina_Speed_Buff[npc] > GameTime)
+		return true;
+	else if(f_Ruina_Attack_Buff[npc] > GameTime)
+		return true;
 
 	return false;
 }

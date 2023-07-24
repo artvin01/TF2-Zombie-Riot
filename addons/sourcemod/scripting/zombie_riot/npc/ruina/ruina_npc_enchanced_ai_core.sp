@@ -17,7 +17,6 @@ float fl_rally_timer[MAXENTITIES];
 bool b_rally_active[MAXENTITIES];
 
 static bool b_master_is_rallying[MAXENTITIES];
-static bool b_overlord_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
 static int i_master_priority[MAXENTITIES];		//when searching for a master, the master with highest priority will get minnion's first. eg npc with Priority 1 will have lower priority then npc with priority 2
 static int i_master_max_slaves[MAXENTITIES];	//how many npc's a master can hold before they stop accepting slaves
@@ -113,7 +112,7 @@ public void Ruina_NPCDeath_Override(int entity)
 	{
 		//if so we remove a slave from there list
 		i_master_current_slaves[i_master_id[entity]]--;
-		CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[i_master_id[entity]]);
+		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[i_master_id[entity]]);
 	}
 	
 	
@@ -171,15 +170,13 @@ static bool Check_If_I_Am_The_Right_Slave(int client, int other_client)
 		return false;
 }
 
-public void Ruina_Master_Rally(int client, bool rally, bool overlord)
+public void Ruina_Master_Rally(int client, bool rally)
 {
 	b_master_is_rallying[client] = rally;
-	if(rally)
+	/*if(rally)
 		CPrintToChatAll("Master %i has initiated rally", client);
 	else
-		CPrintToChatAll("Master %i has stoped the rally", client);
-	if(overlord)
-		b_overlord_is_rallying[client] = rally;	//This will also rally "master" npc's. to be used for wave bosses
+		CPrintToChatAll("Master %i has stoped the rally", client);*/
 }
 
 /*
@@ -193,7 +190,6 @@ public void Ruina_Master_Rally(int client, bool rally, bool overlord)
 	Test it thoroughly, 
 	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)	- yes!
 	- does rally work?		
-	- does overlord rally work?	No. need to redo overlord system
 	- does melee rally work?	- Yes!
 	- does ranged rally work?	- most likely
 	- does both rally work?		- most likely
@@ -217,7 +213,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 				if(fl_master_change_timer[npc.index]<GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
 				{
 					i_master_current_slaves[i_master_id[npc.index]]--;
-					CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+					//CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
 				}
 				
 				i_master_id[npc.index] = GetRandomMaster(npc.index);
@@ -225,8 +221,8 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 				if(IsValidEntity(i_master_id[npc.index]))	//only add if the master id is valid
 					i_master_current_slaves[i_master_id[npc.index]]++;
 				
-				if(IsValidEntity(i_master_id[npc.index]))				
-					CPrintToChatAll("Master %i has gained a slave. current count %i",i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+				//if(IsValidEntity(i_master_id[npc.index]))				
+				//	CPrintToChatAll("Master %i has gained a slave. current count %i",i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
 				
 				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
 				
@@ -400,105 +396,27 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		}
 		else	//if its a master buisness as usual
 		{
-		/*	if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				if(fl_master_change_timer[npc.index]<=GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
-				{
-					i_master_current_slaves[i_master_id[npc.index]]--;
-					CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
-				}
-					
-				
-				i_master_id[npc.index] = GetRandomMaster(npc.index);
-				
-				if(IsValidEntity(i_master_id[npc.index]))	//only add if the master id is valid
-					i_master_current_slaves[i_master_id[npc.index]]++;
-				
-				if(IsValidEntity(i_master_id[npc.index]))				
-					CPrintToChatAll("Master %i has gained a slave. current count %i",i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
-				
-				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
-				
-			}
-			if(b_overlord_is_rallying[i_master_id[npc.index]])	//if an overlord is rallying use melee rally logic 
-			{
-				if(IsValidEntity(i_master_id[npc.index]))	//get master's target
-				{
-					CClotBody npc2 = view_as<CClotBody>(i_master_id[npc.index]);
-					PrimaryThreatIndex = npc2.m_iTarget;
-				}
-				
-				if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
-				{
-					PrimaryThreatIndex = Backup_Target;
-					return;
-				}
-				
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-					
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				float Master_Loc[3]; Master_Loc = WorldSpaceCenter(i_master_id[npc.index]);
-				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 						
-				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
-							
-				if(dist > Pow(100.0, 2.0))	//go to master until we reach this distance from master
-				{
-					NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
-					npc.StartPathing();
-					npc.m_bPathing = true;
-								
-				}
-				else
-				{
-					if(flDistanceToTarget>Pow(100.0, 2.0))	//if master is within range we stop moving and stand still
-					{
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
-					}
-					else	//but if master's target is too close we attack them
-					{
-						//Predict their pos.
-						if(flDistanceToTarget < npc.GetLeadRadius()) 
-						{
-							
-							float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-										
-							NPC_SetGoalVector(npc.index, vPredictedPos);
-						}
-						else 
-						{
-							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-						}
-						npc.StartPathing();
-					}
-				}
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+						
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
-			else*/	//otherwise buisness as usual
+			else 
 			{
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-					
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
-				{
-							
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-							
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				}
-				else 
-				{
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
-				npc.StartPathing();
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			
-					
+			npc.StartPathing();
+						
 			return;
 		}
 }
 
-public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time)
+public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time)	//only works with npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -571,19 +489,27 @@ static float fl_ion_sound_delay[MAXTF2PLAYERS + 1];
 static float fl_ion_attack_sound_delay[MAXTF2PLAYERS + 1];
 static bool b_touchdown;
 static bool b_kill;
+static bool b_ion_active;
 
 public Action Command_Spawn_Ruina_Cannon(int client, int args)
 {
+	if(b_ion_active)
+	{
+		CPrintToChat(client,"Ruina Ion cannon's area already active!");
+	}
+	else
+	{
+		CPrintToChat(client, "Ruina Ion Cannon's Summoned");
+		Ruina_Create_Ion_Cannon(-1, 100.0, 7.5, 100.0, 255, 255, 255, 5.0);
+	}
 	
-	CPrintToChatAll("Ruina Ion Cannon's Summoned");
-	Ruina_Create_Ion_Cannon(-1, 100.0, 7.5, 100.0, 255, 255, 255, 5.0);
 	
 	return Plugin_Handled;
 }
 public Action Command_Kill_Ruina_Cannon(int client, int args)
 {
 	
-	CPrintToChatAll("Killed Ruina Ion Cannon's");
+	CPrintToChat(client, "Killed Ruina Ion Cannon's");
 	b_kill = true;
 	
 	return Plugin_Handled;
@@ -592,6 +518,7 @@ public Action Command_Kill_Ruina_Cannon(int client, int args)
 public void Ruina_Create_Ion_Cannon(int amt, float damage, float speed, float range, int r, int g, int b, float charge_time)
 {
 	
+		b_ion_active = true;
 		b_kill = false;
 		for(int ion=0 ; ion< MAXTF2PLAYERS ; ion++)
 		{
@@ -664,6 +591,7 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 	}
 	if(true_current_round!=current_round || b_kill)
 	{
+		b_ion_active = false;
 		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SHUTDOWN);
 		return Plugin_Stop;	//kill ion if its not the same round anymore 
 	}
@@ -731,7 +659,7 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 								fl_ion_attack_sound_delay[ion] = 0.0;
 								EmitSoundToAll(RUINA_ION_CANNON_SOUND_ATTACK, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, cur_vec);
 							}
-							int health = GetClientHealth(client);
+							/*int health = GetClientHealth(client);
 							health -= RoundToFloor(fake_damage);	//FUCKING TAKE DAMAGE GOD DAMMIT
 							if((health) < 1)
 							{
@@ -740,7 +668,7 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 					
 							SetEntityHealth(client, health); // Self dmg
 							
-							CPrintToChatAll("hit %N with %f dmg", client, fake_damage);
+							CPrintToChatAll("hit %N with %f dmg", client, fake_damage);*/
 							SDKHooks_TakeDamage(client, 0, 0, fake_damage, DMG_CLUB, _, _, cur_vec);
 						}
 					}
