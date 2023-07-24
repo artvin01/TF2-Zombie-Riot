@@ -694,7 +694,7 @@ enum
 
 //I put these here so we can change them on fly if we need to, cus zombies can be really loud, or quiet.
 
-#define NORMAL_ZOMBIE_SOUNDLEVEL	 70
+#define NORMAL_ZOMBIE_SOUNDLEVEL	 80
 #define NORMAL_ZOMBIE_VOLUME	 0.8
 
 #define BOSS_ZOMBIE_SOUNDLEVEL	 90

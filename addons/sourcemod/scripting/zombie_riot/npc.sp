@@ -324,6 +324,8 @@ enum
 	EXPIDONSA_BENERA = 285,
 	EXPIDONSA_PENTAL = 286,
 	EXPIDONSA_DEFANDA = 287,
+	EXPIDONSA_SELFAM_IRE = 288,
+	EXPIDONSA_VAUSMAGICA = 289,
 }
 
 public const char NPC_Names[][] =
@@ -636,7 +638,9 @@ public const char NPC_Names[][] =
 	"Theocracy",
 	"Benera",
 	"Pental",
-	"Defanda"
+	"Defanda",
+	"Selfam Ire",
+	"Vaus Magica"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -947,7 +951,9 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_ruina_theocracy",	//warp
 	"npc_benera",
 	"npc_pental",
-	"npc_defanda"
+	"npc_defanda",
+	"npc_selfam_ire",
+	"npc_vaus_magica"
 };
 
 void NPC_MapStart()
@@ -1158,6 +1164,8 @@ void NPC_MapStart()
 	Benera_OnMapStart_NPC();
 	Pental_OnMapStart_NPC();
 	Defanda_OnMapStart_NPC();
+	SelfamIre_OnMapStart_NPC();
+	VausMagica_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2014,6 +2022,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case EXPIDONSA_DEFANDA:
 			entity = Defanda(client, vecPos, vecAng, ally);
 
+		case EXPIDONSA_SELFAM_IRE:
+			entity = SelfamIre(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_VAUSMAGICA:
+			entity = VausMagica(client, vecPos, vecAng, ally);
+
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2852,6 +2866,12 @@ public void NPCDeath(int entity)
 
 		case EXPIDONSA_DEFANDA:
 			Defanda_NPCDeath(entity);
+
+		case EXPIDONSA_SELFAM_IRE:
+			Defanda_NPCDeath(entity);
+
+		case EXPIDONSA_VAUSMAGICA:
+			VausMagica_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3913,3 +3933,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
 #include "zombie_riot/npc/expidonsa/npc_defanda.sp"
+#include "zombie_riot/npc/expidonsa/npc_selfam_ire.sp"
+#include "zombie_riot/npc/expidonsa/npc_vaus_magica.sp"

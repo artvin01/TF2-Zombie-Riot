@@ -2,51 +2,64 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
+	"vo/soldier_painsharp01.mp3",
+	"vo/soldier_painsharp02.mp3",
+	"vo/soldier_painsharp03.mp3",
+	"vo/soldier_painsharp04.mp3",
+	"vo/soldier_painsharp05.mp3",
+	"vo/soldier_painsharp06.mp3",
+	"vo/soldier_painsharp07.mp3",
+	"vo/soldier_painsharp08.mp3"
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
+	"vo/taunts/soldier_taunts19.mp3",
+	"vo/taunts/soldier_taunts20.mp3",
+	"vo/taunts/soldier_taunts21.mp3",
+	"vo/taunts/soldier_taunts18.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/samurai/tf_katana_01.wav",
+	"weapons/samurai/tf_katana_02.wav",
+	"weapons/samurai/tf_katana_03.wav",
+	"weapons/samurai/tf_katana_04.wav",
+	"weapons/samurai/tf_katana_05.wav",
+	"weapons/samurai/tf_katana_06.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/airboat/airboat_gun_energy1.wav",
-	"weapons/airboat/airboat_gun_energy2.wav",
+	"weapons/samurai/tf_katana_slice_01.wav",
+	"weapons/samurai/tf_katana_slice_02.wav",
+	"weapons/samurai/tf_katana_slice_03.wav",
 };
 
-void Defanda_OnMapStart_NPC()
+static const char g_DashSound[][] = {
+	"vo/soldier_moveup01.mp3",
+	"vo/soldier_moveup02.mp3",
+	"vo/soldier_moveup03.mp3",
+};
+
+void SelfamIre_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
+	for (int i = 0; i < (sizeof(g_DashSound)); i++) { PrecacheSound(g_DashSound[i]); }
+	PrecacheModel("models/player/soldier.mdl");
 }
 
 
-methodmap Defanda < CClotBody
+methodmap SelfamIre < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -83,20 +96,24 @@ methodmap Defanda < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
-	
-	
-	public Defanda(int client, float vecPos[3], float vecAng[3], bool ally)
+	public void PlayDashSound() 
 	{
-		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
+		EmitSoundToAll(g_DashSound[GetRandomInt(0, sizeof(g_DashSound) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	
+	
+	public SelfamIre(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		SelfamIre npc = view_as<SelfamIre>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_DEFANDA;
+		i_NpcInternalId[npc.index] = EXPIDONSA_SELFAM_IRE;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
@@ -107,35 +124,40 @@ methodmap Defanda < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Defanda_ClotThink);
+		SDKHook(npc.index, SDKHook_Think, SelfamIre_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 180.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
-		DefandaEffects(npc.index);
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/all_reckoning_eagonn_medic.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/gunpointcoilhat/gunpointcoilhat_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/eotl_winter_coat/eotl_winter_coat.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void Defanda_ClotThink(int iNPC)
+public void SelfamIre_ClotThink(int iNPC)
 {
-	Defanda npc = view_as<Defanda>(iNPC);
+	SelfamIre npc = view_as<SelfamIre>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -177,7 +199,8 @@ public void Defanda_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DefandaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SelfamIreSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SelfamIreSprint(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -187,9 +210,9 @@ public void Defanda_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Defanda_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SelfamIre_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Defanda npc = view_as<Defanda>(victim);
+	SelfamIre npc = view_as<SelfamIre>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -203,17 +226,15 @@ public Action Defanda_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Defanda_NPCDeath(int entity)
+public void SelfamIre_NPCDeath(int entity)
 {
-	Defanda npc = view_as<Defanda>(entity);
+	SelfamIre npc = view_as<SelfamIre>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Defanda_ClotThink);
+	SDKUnhook(npc.index, SDKHook_Think, SelfamIre_ClotThink);
 		
-	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -224,8 +245,41 @@ public void Defanda_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 
 }
+void SelfamIreSprint(SelfamIre npc, float gameTime, int target, float distance)
+{
+	npc.m_flSpeed = 250.0;
 
-void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
+	if(npc.m_flNextRangedSpecialAttackHappens)
+	{
+		npc.m_flSpeed = 450.0;
+		if(npc.m_flNextRangedSpecialAttackHappens < GetGameTime(npc.index))
+		{
+			npc.m_flNextRangedSpecialAttackHappens = 0.0;
+			
+		}
+	}
+	if(GetGameTime(npc.index) > npc.m_flNextRangedSpecialAttack)
+	{
+		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0, 2.0))
+		{
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 20.0;
+				npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 3.0;
+				float flPos[3];
+				float flAng[3];
+				GetAttachment(npc.index, "head", flPos, flAng);		
+				int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 3.0);
+				SetParent(npc.index, particler, "head");
+				npc.m_iWearable4 = particler;
+			}
+		}
+	}
+
+}
+void SelfamIreSelfDefense(SelfamIre npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -245,32 +299,15 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 40.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 					// Hit sound
 					npc.PlayMeleeHitSound();
-					//on hit, we heal all allies around us
-					Explode_Logic_Custom(0.0,
-					npc.index,
-					npc.index,
-					-1,
-					_,
-					150.0,
-					_,
-					_,
-					true,
-					99,
-					false,
-					_,
-					DefandaAllyHeal);
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
 				delete swingTrace;
 			}
@@ -291,7 +328,7 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
@@ -299,69 +336,4 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 			}
 		}
 	}
-}
-
-
-void DefandaEffects(int iNpc)
-{
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-
-	
-	int particle_2 = ParticleEffectAt({0.0,0.0,20.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({0.0,0.0,-40.0}, "eyeboss_projectile", 0.0); //First offset we go by
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, "effect_hand_r",_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 165, 32, 240, 3.0, 1.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
-}
-
-
-void DefandaAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if(victim <= MaxClients)
-		{
-			DefandaAllyHealInternal(victim, 50.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			DefandaAllyHealInternal(victim, 50.0);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			DefandaAllyHealInternal(victim, 250.0);
-		}
-	}
-}
-
-void DefandaAllyHealInternal(int victim, float heal)
-{
-	HealEntityViaFloat(victim, heal, 1.0);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	ParticleEffectAt(ProjLoc, "healthgained_blu", 0.1);
 }

@@ -214,7 +214,7 @@ public void Benera_NPCDeath(int entity)
 
 void BeneraSelfDefense(Benera npc, float gameTime, int target, float distance)
 {
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.75, 2.0))
 		{
@@ -237,7 +237,7 @@ void BeneraSelfDefense(Benera npc, float gameTime, int target, float distance)
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
+					npc.m_flNextMeleeAttack = gameTime + 2.0;
 
 					if(IsValidEnemy(npc.index, target))
 					{

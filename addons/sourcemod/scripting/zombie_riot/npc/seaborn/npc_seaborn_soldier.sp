@@ -37,7 +37,12 @@ static const char g_MeleeHitSounds[][] =
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/machete_swing.wav"
+	"weapons/samurai/tf_katana_01.wav",
+	"weapons/samurai/tf_katana_02.wav",
+	"weapons/samurai/tf_katana_03.wav",
+	"weapons/samurai/tf_katana_04.wav",
+	"weapons/samurai/tf_katana_05.wav",
+	"weapons/samurai/tf_katana_06.wav",
 };
 
 methodmap SeabornSoldier < CClotBody

@@ -2816,6 +2816,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{
 			Raidboss_Clean_Everyone();
 		}
+		VausMagicaRemoveShield(pThis);
 #endif
 		b_NpcHasDied[pThis] = true;
 #if defined ZR
@@ -7122,6 +7123,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_ThisNpcIsSawrunner[entity] = false;
+	Expidonsa_SetToZero(entity);
 #endif
 	
 #if defined RPG

@@ -1669,4 +1669,12 @@
 	{
 		"en" 		"Defanda"
 	}
+	"Selfam Ire"
+	{
+		"en" 		"Selfam Ire"
+	}
+	"Vaus Magica"
+	{
+		"en" 		"Vaus Magica"
+	}
 }

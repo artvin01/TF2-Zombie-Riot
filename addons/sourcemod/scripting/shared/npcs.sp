@@ -1419,6 +1419,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage *= fl_Extra_RangedArmor[victim];
 		}
 		damage *= fl_Extra_Damage[attacker];
+#if defined ZR
+		VausMagicaShieldLogicNpcOnTakeDamage(victim, damage);
+#endif
 		if(i_CurrentEquippedPerk[victim] == 6)
 		{
 			if(f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
