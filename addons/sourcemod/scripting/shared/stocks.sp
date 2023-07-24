@@ -1537,7 +1537,7 @@ bool IsBehindAndFacingTarget(int owner, int target)
 	
 	float vecEyeAngles[3];
 	
-	GetClientEyeAngles(owner, vecEyeAngles);
+	GetEntPropVector(owner, Prop_Data, "m_angRotation", vecEyeAngles);
 	float vecOwnerForward[3];
 	GetAngleVectors(vecEyeAngles, vecOwnerForward, NULL_VECTOR, NULL_VECTOR);
 	vecOwnerForward[2] = 0.0;

@@ -327,6 +327,7 @@ enum
 	EXPIDONSA_SELFAM_IRE = 288,
 	EXPIDONSA_VAUSMAGICA = 289,
 	EXPIDONSA_PISTOLEER = 290,
+	EXPIDONSA_DIVERSIONISTICO = 291,
 }
 
 public const char NPC_Names[][] =
@@ -642,7 +643,8 @@ public const char NPC_Names[][] =
 	"Defanda",
 	"Selfam Ire",
 	"Vaus Magica",
-	"Pistoleer"
+	"Pistoleer",
+	"Diversionistico"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -956,7 +958,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_defanda",
 	"npc_selfam_ire",
 	"npc_vaus_magica",
-	"npc_benera_pistoleer"
+	"npc_benera_pistoleer",
+	"npc_diversionistico"
 };
 
 void NPC_MapStart()
@@ -1170,6 +1173,7 @@ void NPC_MapStart()
 	SelfamIre_OnMapStart_NPC();
 	VausMagica_OnMapStart_NPC();
 	Pistoleer_OnMapStart_NPC();
+	Diversionistico_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2034,6 +2038,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case EXPIDONSA_PISTOLEER:
 			entity = Pistoleer(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_DIVERSIONISTICO:
+			entity = Diversionistico(client, vecPos, vecAng, ally);
 			
 
 			
@@ -2882,6 +2889,10 @@ public void NPCDeath(int entity)
 			VausMagica_NPCDeath(entity);
 		case EXPIDONSA_PISTOLEER:
 			Pistoleer_NPCDeath(entity);
+
+		case EXPIDONSA_DIVERSIONISTICO:
+			Diversionistico_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -3648,6 +3659,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_PISTOLEER:
 			Pistoleer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_DIVERSIONISTICO:
+			Diversionistico_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
@@ -3956,3 +3970,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_selfam_ire.sp"
 #include "zombie_riot/npc/expidonsa/npc_vaus_magica.sp"
 #include "zombie_riot/npc/expidonsa/npc_benera_pistoleer.sp"
+#include "zombie_riot/npc/expidonsa/npc_diversionistico.sp"

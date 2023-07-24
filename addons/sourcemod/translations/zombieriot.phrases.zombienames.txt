@@ -1681,4 +1681,8 @@
 	{
 		"en" 		"Pistoleer"
 	}
+	"Diversionistico"
+	{
+		"en" 		"Diversionistico"
+	}
 }

@@ -87,11 +87,11 @@ methodmap Diversionistico < CClotBody
 	}
 	public void PlayMeleeBackstabSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
 
@@ -119,7 +119,7 @@ methodmap Diversionistico < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
@@ -133,11 +133,11 @@ methodmap Diversionistico < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/bak_caped_crusader/bak_caped_crusader.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "mmodels/workshop/player/items/spy/dec15_chicago_overcoat/dec15_chicago_overcoat.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/dec15_chicago_overcoat/dec15_chicago_overcoat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
@@ -173,6 +173,7 @@ methodmap Diversionistico < CClotBody
 			}
 		}
 		LastSpawnDiversio = GetGameTime() + 20.0;
+		TeleportDiversioToRandLocation(npc.index);
 		return npc;
 	}
 }
@@ -194,21 +195,6 @@ public void Diversionistico_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flDoingAnimation)
-	{
-		npc.m_flSpeed = 0.0;
-		if(npc.m_flDoingAnimation < GetGameTime(npc.index))
-		{
-			npc.m_flDoingAnimation = 0.0;
-
-			npc.m_flSpeed = 150.0;
-			npc.StartPathing();
-		}
-	}
-	else
-	{
-		npc.m_flSpeed = 150.0;
-	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -288,7 +274,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 	bool BackstabDone = false;
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.0, 2.0))
 		{
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -297,10 +283,10 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();
-				if(BehindAndFacingTarget(attacker, victim))
+				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget))
 				{
 					BackstabDone = true;
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_U");	
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");	
 				}
 				else
 				{
@@ -320,7 +306,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget),_,_, _, _, 1) //Ignore barricades
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_, _, _, 1)) //Ignore barricades
 			{
 				target = TR_GetEntityIndex(swingTrace);	
 				
@@ -345,5 +331,71 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 				delete swingTrace;
 			}
 		}
+	}
+}
+
+
+
+void TeleportDiversioToRandLocation(int iNPC)
+{
+	Diversionistico npc = view_as<Diversionistico>(iNPC);
+	for( int loop = 1; loop <= 500; loop++ ) 
+	{
+		float AproxRandomSpaceToWalkTo[3];
+		CNavArea RandomArea = PickRandomArea();	
+			
+		if(RandomArea == NULL_AREA) 
+			break; //No nav?
+
+		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
+		bool DoNotTeleport = false;
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+			{		
+				float f3_PositionTemp[3];
+				GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
+				float flDistanceToTarget = GetVectorDistance(AproxRandomSpaceToWalkTo, f3_PositionTemp, true);	
+				if(flDistanceToTarget > (1250.0 * 1250.0))
+				{
+					DoNotTeleport = true;
+					break;
+				}
+				if(flDistanceToTarget < (750.0 * 750.0))
+				{
+					DoNotTeleport = true;
+					break;
+				}
+			}
+		}
+		if(DoNotTeleport)
+			continue;
+
+		AproxRandomSpaceToWalkTo[2] += 20.0;
+		static float hullcheckmaxs_Player_Again[3];
+		static float hullcheckmins_Player_Again[3];
+		hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+		hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
+			continue;
+			
+		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+			continue;
+		
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+			continue;
+		
+		AproxRandomSpaceToWalkTo[2] -= 18.0;
+		AproxRandomSpaceToWalkTo[2] -= 18.0;
+		AproxRandomSpaceToWalkTo[2] -= 18.0;
+		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+			continue;
+		
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+		AproxRandomSpaceToWalkTo[2] += 18.0;
+		//everything is valid, now we check if we are too close to the enemy, or too far away.
+		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+		break;
 	}
 }
