@@ -803,13 +803,11 @@ public Action Waves_EndVote(Handle timer, float time)
 				}
 
 				high1 = votes[high2];
-				for(int i; i < length; i++)
+				for(int i = length - 1; i >= 0; i--)
 				{
 					if(votes[i] < high1)
 					{
 						Voting.Erase(i);
-						i--;
-						length--;
 					}
 				}
 
