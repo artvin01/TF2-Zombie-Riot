@@ -307,19 +307,19 @@ public void Isharmla_ClotThink(int iNPC)
 		if(npc.m_flDoingAnimation > gameTime)
 		{
 			npc.StopPathing();
-			//npc.SetActivity("ACT_SKADI_WALK");
+			npc.SetActivity("ACT_SKADI_WALK");
 		}
 		else
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 			npc.StartPathing();
-			//npc.SetActivity("ACT_SKADI_WALK");
+			npc.SetActivity("ACT_SKADI_WALK");
 		}
 	}
 	else
 	{
 		npc.StopPathing();
-		//npc.SetActivity("ACT_SKADI_WALK");
+		npc.SetActivity("ACT_SKADI_WALK");
 	}
 }
 
