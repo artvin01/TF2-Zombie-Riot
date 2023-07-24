@@ -66,6 +66,7 @@ public void Ruina_Ai_Core_Mapstart()
 public void Ruina_Set_Heirarchy(int client, int type)
 {
 	i_npc_type[client] = type;
+	b_master_exists[client] = false;
 }
 public void Ruina_Set_Master_Heirarchy(int client, bool melee, bool ranged, bool accepting, int max_slaves, int priority)
 {
@@ -190,14 +191,14 @@ public void Ruina_Master_Rally(int client, bool rally, bool overlord)
 	
 	Phase 2: 
 	Test it thoroughly, 
-	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)
+	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)	- yes!
 	- does rally work?		
-	- does overlord rally work?
+	- does overlord rally work?	No. need to redo overlord system
 	- does melee rally work?	- Yes!
-	- does ranged rally work?
-	- does both rally work?
+	- does ranged rally work?	- most likely
+	- does both rally work?		- most likely
 	- does release work?	
-	- is there any leaking of npc slave count? - seems so, but only by 1, seems to happen on pickup, somehow it triggers twice?
+	- is there any leaking of npc slave count? - works.
 */
 
 public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
@@ -211,14 +212,13 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		if(!b_master_exists[npc.index])	//check if the npc is a master or not
 		{	
 			
-			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
+			if(fl_master_change_timer[npc.index]<GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
 			{
-				if(fl_master_change_timer[npc.index]<=GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+				if(fl_master_change_timer[npc.index]<GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
 				{
 					i_master_current_slaves[i_master_id[npc.index]]--;
 					CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
 				}
-					
 				
 				i_master_id[npc.index] = GetRandomMaster(npc.index);
 				
@@ -400,7 +400,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		}
 		else	//if its a master buisness as usual
 		{
-			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
+		/*	if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
 			{
 				if(fl_master_change_timer[npc.index]<=GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
 				{
@@ -474,7 +474,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 					}
 				}
 			}
-			else	//otherwise buisness as usual
+			else*/	//otherwise buisness as usual
 			{
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 					
