@@ -218,7 +218,8 @@ methodmap Theocracy < CClotBody
 
 		npc.StartPathing();
 		
-		Ruina_Set_Heirarchy(npc.index, 2, true);	//is a master and attracts melee's
+		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
+		Ruina_Set_Master_Heirarchy(npc.index, true, false, true, 15, 3);
 		
 		bl_string_theory_active[npc.index] = false;
 		
@@ -294,9 +295,11 @@ public void Theocracy_ClotThink(int iNPC)
 			
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
-			Apply_Master_Buff(npc.index, 1, 250.0, 5.0);
-			Apply_Master_Buff(npc.index, 2, 250.0, 5.0);
-			Apply_Master_Buff(npc.index, 3, 250.0, 5.0);
+			bool buff_array[3];
+			buff_array[0] = true;
+			buff_array[1] = true;
+			buff_array[2] = true;
+			Apply_Master_Buff(npc.index, buff_array, 250.0, 5.0);
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			

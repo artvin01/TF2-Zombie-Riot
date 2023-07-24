@@ -13,6 +13,15 @@ static char gLaser1;
 static int BeamWand_Laser;
 static char gGlow1;	//blue
 
+
+static bool b_master_is_rallying[MAXENTITIES];
+static bool b_overlord_is_rallying[MAXENTITIES];
+static bool b_force_reasignment[MAXENTITIES];
+static int i_master_priority[MAXENTITIES];		//when searching for a master, the master with highest priority will get minnion's first. eg npc with Priority 1 will have lower priority then npc with priority 2
+static int i_master_max_slaves[MAXENTITIES];	//how many npc's a master can hold before they stop accepting slaves
+static int i_master_current_slaves[MAXENTITIES];
+static bool b_master_is_acepting[MAXENTITIES];	//if a master npc no longer wants slaves this is set to false
+
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
 
 #define RUINA_ION_CANNON_SOUND_SPAWN "ambient/machines/thumper_startup1.wav"
@@ -30,6 +39,12 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(i_master_id);
 	Zero(i_npc_type);
 	
+	Zero(b_master_is_rallying);
+	Zero(b_force_reasignment);
+	Zero(i_master_priority);
+	Zero(i_master_max_slaves);
+	Zero(b_master_is_acepting);
+	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_ATTACK);
@@ -43,21 +58,54 @@ public void Ruina_Ai_Core_Mapstart()
 	gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 }
-public void Ruina_Set_Heirarchy(int client, int type, bool master)
+public void Ruina_Set_Heirarchy(int client, int type)
 {
-	if(master)
-	{
-		b_master_exists[client] = true;
-		i_master_attracts[client] = type;
-	}
-	else
-	{
-		i_npc_type[client] = type;
-	}
+	i_npc_type[client] = type;
 }
+public void Ruina_Set_Master_Heirarchy(int client, bool melee, bool ranged, bool accepting, int max_slaves, int priority)
+{
+	b_master_exists[client] = true;
+	
+	b_force_reasignment[client]=false;
+	
+	i_master_max_slaves[client] = max_slaves;
+	
+	b_master_is_acepting[client] = accepting;
+	
+	i_master_current_slaves[client] = 0;
+	
+	i_master_priority[client] = priority;
+	
+	if(melee)
+		i_master_attracts[client] = 1;
+	if(ranged)
+		i_master_attracts[client] = 2;
+	if(ranged && melee)
+		i_master_attracts[client] = 3;
+}
+
+public void Ruina_Master_Release_Slaves(int client)
+{
+	i_master_current_slaves[client] = 0;	//reset
+	b_force_reasignment[client]=true;
+	b_master_is_acepting[client] = false;
+}
+public void Ruina_Master_Accpet_Slaves(int client)
+{
+	i_master_current_slaves[client] = 0;	//reset
+	b_force_reasignment[client]=false;
+	b_master_is_acepting[client] = true;
+}
+
 public void Ruina_NPCDeath_Override(int entity)
 {
 	b_master_exists[entity] = false;
+	
+	if(IsValidEntity(i_master_id[entity]))	//check if the master is still valid
+	{
+		//if so we remove a slave from there list
+		i_master_current_slaves[i_master_id[entity]]--;
+	}
 	
 	switch(i_NpcInternalId[entity])
 	{
@@ -70,21 +118,73 @@ public void Ruina_NPCDeath_Override(int entity)
 		
 		
 }
-static int GetRandomMaster()
+static int i_previus_priority[MAXENTITIES];
+static int GetRandomMaster(int client)
 {
+	i_previus_priority[client] = -1;
 	int valid = -1;
 	for(int targ; targ<i_MaxcountNpc; targ++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
 		{
-			if(b_master_exists[baseboss_index])
+			if(Check_If_I_Am_The_Right_Slave(client, baseboss_index))
 				valid=baseboss_index;
 		}
 	}
 	return valid;
 }
 
+static bool Check_If_I_Am_The_Right_Slave(int client, int other_client)
+{
+	if(!b_master_exists[other_client])
+		return false;
+		
+	if(!b_master_is_acepting[other_client])	//is the master accepting?
+		return false;
+
+	if(i_master_max_slaves[other_client]<=i_master_current_slaves[other_client])	//has the master maxed out npc's?
+		return false;
+		
+	if(i_previus_priority[client]<i_master_priority[other_client])	//finds the one with highest priority
+	{
+		if(i_npc_type[client]==i_master_attracts[other_client] || i_master_attracts[other_client]==3)	//checks if the type is valid, if its 3 then both are attracted
+		{
+			i_previus_priority[client] = i_master_priority[other_client];
+			return true;	//ayo we found a new home
+		}
+		else
+			return false;
+	}
+	else
+		return false;
+}
+
+public void Ruina_Master_Rally(int client, bool rally, bool overlord)
+{
+	b_master_is_rallying[client] = rally;
+	if(overlord)
+		b_overlord_is_rallying[client] = rally;	//This will also rally "master" npc's. to be used for wave bosses
+}
+
+/*
+	TODO: 
+	phase 1: Done
+	Add a priority system, to prevent say bosses from losing guards. - Done!
+	allow an ability to "release" slave npc's, eg: master calls in a group and then warps them into an enemy base - Done!
+	add a "rally" ability	- Done!
+	
+	Phase 2: 
+	Test it thoroughly, 
+	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)
+	- does rally work?
+	- does overlord rally work?
+	- does melee rally work?
+	- does ranged rally work?
+	- does both rally work?
+	- does release work?
+	- is there any leaking of npc slave count?
+*/
 
 public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 {
@@ -92,21 +192,28 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		
 		float GameTime = GetGameTime(npc.index);
 		
-		if(!b_master_exists[npc.index])
+		int Backup_Target = PrimaryThreatIndex;
+		
+		if(!b_master_exists[npc.index])	//check if the npc is a master or not
 		{	
-			int Backup_Target = PrimaryThreatIndex;
-			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]))
+			
+			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
 			{
-				i_master_id[npc.index] = GetRandomMaster();
+				if(fl_master_change_timer[npc.index]<=GameTime)	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+					i_master_current_slaves[i_master_id[npc.index]]--;
+				
+				i_master_id[npc.index] = GetRandomMaster(npc.index);
+				i_master_current_slaves[i_master_id[npc.index]]++;
 				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
 				
 			}
-			if(IsValidEntity(i_master_id[npc.index]))
+			if(IsValidEntity(i_master_id[npc.index]))	//get master's target
 			{
-				PrimaryThreatIndex = GetClosestTarget(i_master_id[npc.index]);
+				CClotBody npc2 = view_as<CClotBody>(i_master_id[npc.index]);
+				PrimaryThreatIndex = npc2.m_iTarget;
 			}
 			
-			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
+			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
 			{
 				PrimaryThreatIndex = Backup_Target;
 				return;
@@ -120,22 +227,64 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 				{
 					case 1:	//melee, buisness as usual, just the target is the same as the masters
 					{
-						
-						
-						
-						//Predict their pos.
-						if(flDistanceToTarget < npc.GetLeadRadius()) 
+						if(b_master_is_rallying[i_master_id[npc.index]])	//is master rallying targets to be near it?
 						{
+							float Master_Loc[3]; Master_Loc = WorldSpaceCenter(i_master_id[npc.index]);
+							float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 							
-							float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+							float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 							
-							NPC_SetGoalVector(npc.index, vPredictedPos);
+							if(dist > Pow(100.0, 2.0))	//go to master until we reach this distance from master
+							{
+								NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
+								npc.StartPathing();
+								npc.m_bPathing = true;
+								
+							}
+							else
+							{
+								if(flDistanceToTarget>Pow(100.0, 2.0))	//if master is within range we stop moving and stand still
+								{
+									NPC_StopPathing(npc.index);
+									npc.m_bPathing = false;
+								}
+								else	//but if master's target is too close we attack them
+								{
+									//Predict their pos.
+									if(flDistanceToTarget < npc.GetLeadRadius()) 
+									{
+										
+										float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+										
+										NPC_SetGoalVector(npc.index, vPredictedPos);
+									}
+									else 
+									{
+										NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+									}
+									npc.StartPathing();
+								}
+							}
 						}
-						else 
+						else	//no? buisness as usual
 						{
-							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+							//Predict their pos.
+							if(flDistanceToTarget < npc.GetLeadRadius()) 
+							{
+								
+								float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+								
+								NPC_SetGoalVector(npc.index, vPredictedPos);
+							}
+							else 
+							{
+								NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+							}
+							npc.StartPathing();
 						}
-						npc.StartPathing();
+						
+						
+						
 						
 						return;
 					}
@@ -201,28 +350,95 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		}
 		else	//if its a master buisness as usual
 		{
-			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			if(fl_master_change_timer[npc.index]<=GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
+			{
+				if(fl_master_change_timer[npc.index]<=GameTime)	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+					i_master_current_slaves[i_master_id[npc.index]]--;
+				
+				i_master_id[npc.index] = GetRandomMaster(npc.index);
+				i_master_current_slaves[i_master_id[npc.index]]++;
+				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
+				
+			}
+			if(b_overlord_is_rallying[i_master_id[npc.index]])	//if an overlord is rallying use melee rally logic 
+			{
+				if(IsValidEntity(i_master_id[npc.index]))	//get master's target
+				{
+					CClotBody npc2 = view_as<CClotBody>(i_master_id[npc.index]);
+					PrimaryThreatIndex = npc2.m_iTarget;
+				}
+				
+				if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
+				{
+					PrimaryThreatIndex = Backup_Target;
+					return;
+				}
+				
+				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 					
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			if(flDistanceToTarget < npc.GetLeadRadius()) 
-			{
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				float Master_Loc[3]; Master_Loc = WorldSpaceCenter(i_master_id[npc.index]);
+				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 						
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-						
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
+							
+				if(dist > Pow(100.0, 2.0))	//go to master until we reach this distance from master
+				{
+					NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
+					npc.StartPathing();
+					npc.m_bPathing = true;
+								
+				}
+				else
+				{
+					if(flDistanceToTarget>Pow(100.0, 2.0))	//if master is within range we stop moving and stand still
+					{
+						NPC_StopPathing(npc.index);
+						npc.m_bPathing = false;
+					}
+					else	//but if master's target is too close we attack them
+					{
+						//Predict their pos.
+						if(flDistanceToTarget < npc.GetLeadRadius()) 
+						{
+							
+							float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+										
+							NPC_SetGoalVector(npc.index, vPredictedPos);
+						}
+						else 
+						{
+							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+						}
+						npc.StartPathing();
+					}
+				}
 			}
-			else 
+			else	//otherwise buisness as usual
 			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+					
+				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+							
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+							
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				}
+				npc.StartPathing();
 			}
-			npc.StartPathing();
+			
 					
 			return;
 		}
 }
 
-public void Apply_Master_Buff(int iNPC, int buff_type, float range, float time)
+public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -244,23 +460,13 @@ public void Apply_Master_Buff(int iNPC, int buff_type, float range, float time)
 						{
 							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
 							{
-								switch(buff_type)
-								{
-									case 1:
-									{
-										Apply_Defense_buff(time, baseboss_index);
-									}
-									case 2:
-									{
-										Apply_Speed_buff(time, baseboss_index);
-									}
-									case 3:
-									{
-										Apply_Attack_buff(time, baseboss_index);
-									}
-								}
-								//buffed_anyone = true;
-							}
+								if(buff_type[0])
+									Apply_Defense_buff(time, baseboss_index);
+								if(buff_type[1])
+									Apply_Speed_buff(time, baseboss_index);
+								if(buff_type[2])
+									Apply_Attack_buff(time, baseboss_index);
+							}		
 						}
 					}
 				}
@@ -373,8 +579,13 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 	float charge_time = pack.ReadCell();
 	float base_charge_time= pack.ReadCell();
 	
+	int loop_for=amt;
 	if(amt==-1)
+	{
 		amt = CountPlayersOnRed();
+		loop_for = MAXTF2PLAYERS;
+	}
+		
 		
 	if(charge_time>GetGameTime())
 	{
@@ -432,7 +643,6 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 				
 				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
 				float skyloc[3]; skyloc = cur_vec; skyloc[2] += 3000.0;
-				
 				Ruina_spawnRing_Vector(cur_vec, 2.0*range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 8.0, 0.1, 1);
 				
 				fl_ion_sound_delay[ion]++;
@@ -458,7 +668,7 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 							{
 								fl_ion_attack_sound_delay[ion] = 0.0;
 								EmitSoundToAll(RUINA_ION_CANNON_SOUND_ATTACK, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, cur_vec);
-							}/*
+							}
 							int health = GetClientHealth(client);
 							health -= RoundToFloor(fake_damage);	//FUCKING TAKE DAMAGE GOD DAMMIT
 							if((health) < 1)
@@ -468,7 +678,7 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 					
 							SetEntityHealth(client, health); // Self dmg
 							
-							CPrintToChatAll("hit %N with %f dmg", client, fake_damage);*/
+							CPrintToChatAll("hit %N with %f dmg", client, fake_damage);
 							SDKHooks_TakeDamage(client, 0, 0, fake_damage, DMG_CLUB, _, _, cur_vec);
 						}
 					}
@@ -512,7 +722,8 @@ static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int
 				
 				float cur_vec[3]; cur_vec = fl_ion_current_location[ion];
 				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
-				Ruina_spawnRing_Vector(cur_vec, range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.1, 2.0, 1.25, 1);
+				Ruina_spawnRing_Vector(cur_vec, range/2.5, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.1, 2.0, 1.25, 1);
+				
 				
 				fl_ion_sound_delay[ion]++;
 				if(fl_ion_sound_delay[ion]>2.0)
