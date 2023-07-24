@@ -1106,15 +1106,21 @@ void Waves_Progress()
 
 			if(round.FogChange)
 			{
-				int entity = -1;
 				if(FogEntity != INVALID_ENT_REFERENCE)
-					entity = EntRefToEntIndex(FogEntity);
+				{
+					int entity = EntRefToEntIndex(FogEntity);
+					if(entity > MaxClients)
+						RemoveEntity(entity);
+					
+					FogEntity = INVALID_ENT_REFERENCE;
+				}
 				
-				if(FogEntity == INVALID_ENT_REFERENCE)
-					entity = CreateEntityByName("env_fog_controller");
-				
+				int entity = CreateEntityByName("env_fog_controller");
 				if(entity != -1)
 				{
+					char name[64];
+					FormatEx(name, sizeof(name), "rpg_fortress_envfog_%d", CurrentRound);
+
 					DispatchKeyValue(entity, "fogblend", round.FogBlend);
 					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
 					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
@@ -1122,22 +1128,19 @@ void Waves_Progress()
 					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
 					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
 
-					if(FogEntity == INVALID_ENT_REFERENCE)
-					{
-						DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-						DispatchKeyValue(entity, "fogenable", "1");
-						DispatchKeyValue(entity, "spawnflags", "1");
-						DispatchSpawn(entity);
-						AcceptEntityInput(entity, "TurnOn");
+					DispatchKeyValue(entity, "targetname", name);
+					DispatchKeyValue(entity, "fogenable", "1");
+					DispatchKeyValue(entity, "spawnflags", "1");
+					DispatchSpawn(entity);
+					AcceptEntityInput(entity, "TurnOn");
 
-						FogEntity = EntIndexToEntRef(entity);
-					}
+					FogEntity = EntIndexToEntRef(entity);
 
 					for(int client = 1; client <= MaxClients; client++)
 					{
 						if(IsClientInGame(client))
 						{
-							SetVariantString("rpg_fortress_envfog");
+							SetVariantString(name);
 							AcceptEntityInput(client, "SetFogController");
 						}
 					}
