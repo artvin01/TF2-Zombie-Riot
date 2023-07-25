@@ -969,7 +969,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_diversionistico",
 	"npc_ruina_adiantum",
 	"npc_ruina_lanius",
-	"npc_heavy_punuel"
+	"npc_heavy_punuel",
 	"npc_ruina_magia"
 };
 
