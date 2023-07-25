@@ -114,7 +114,7 @@ methodmap HeavyPunuel < CClotBody
 	
 	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
+		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.25", "1000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_HEAVYPUNUEL;
 		i_NpcWeight[npc.index] = 1;
@@ -320,7 +320,7 @@ void HeavyPunuelSelfDefense(HeavyPunuel npc, float gameTime, int target, float d
 			
 			Handle swingTrace;
 			npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -347,7 +347,7 @@ void HeavyPunuelSelfDefense(HeavyPunuel npc, float gameTime, int target, float d
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.55, 2.0))
 		{
 			int Enemy_I_See;
 								
