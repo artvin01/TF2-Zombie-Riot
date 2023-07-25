@@ -20,6 +20,11 @@ float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 
+float fl_ruina_shield_power[MAXENTITIES];
+float fl_ruina_shield_strenght[MAXENTITIES];
+float fl_ruina_shield_timer[MAXENTITIES];
+bool b_ruina_shield_active[MAXENTITIES];
+
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
 static int i_master_priority[MAXENTITIES];		//when searching for a master, the master with highest priority will get minnion's first. eg npc with Priority 1 will have lower priority then npc with priority 2
@@ -60,6 +65,10 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_battery);
 	Zero(b_ruina_battery_ability_active);
 	Zero(fl_ruina_battery_timer);
+	Zero(fl_ruina_shield_power);
+	Zero(fl_ruina_shield_timer);
+	Zero(fl_ruina_shield_strenght);
+	Zero(b_ruina_shield_active);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -115,6 +124,43 @@ public void Ruina_Master_Accpet_Slaves(int client)
 	b_master_is_acepting[client] = true;
 	CPrintToChatAll("Master Accepting Slaves");
 }
+public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	
+	if(fl_ruina_shield_power[victim]>0.0)	//does this npc have shield power?
+	{
+		fl_ruina_shield_power[victim] -= damage*fl_ruina_shield_strenght[victim];	//remove shield damage dependant on damage dealt
+		if(fl_ruina_shield_power[victim]>=0.0)		//if the shield is still intact remove all damage
+		{
+			damage -= damage*fl_ruina_shield_strenght[victim];
+			b_ruina_shield_active[victim] = true;
+			damageForce[0] -= damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
+			damageForce[1] -= damageForce[1]*fl_ruina_shield_strenght[victim];
+			damageForce[2] -= damageForce[2]*fl_ruina_shield_strenght[victim];
+		}
+		else	//if not, remove shield, deal the remaining damage 
+		{
+			damage = fl_ruina_shield_power[victim] * -1.0;
+			fl_ruina_shield_power[victim] = 0.0;
+			b_ruina_shield_active[victim] = false;
+		}
+	}
+	switch(i_NpcInternalId[victim])
+	{
+		case RUINA_THEOCRACY:
+			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_ADIANTUM:
+			Adiantum_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_LANIUS:
+			Lanius_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case RUINA_MAGIA:
+			Magia_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	}
+		
+}
 
 public void Ruina_NPCDeath_Override(int entity)
 {
@@ -139,6 +185,9 @@ public void Ruina_NPCDeath_Override(int entity)
 			
 		case RUINA_LANIUS:
 			Lanius_NPCDeath(entity);
+			
+		case RUINA_MAGIA:
+			Magia_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -435,6 +484,29 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 						
 			return;
 		}
+}
+
+public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	
+	if(IsValidEntity(i_master_id[npc.index]))//do we have a master?
+	{
+		if(!b_master_is_rallying[i_master_id[npc.index]])	//is master rallying targets to be near it?
+		{
+			npc.StartPathing();
+			float vBackoffPos[3];
+			vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+		}
+	}
+	else	//no?
+	{
+		npc.StartPathing();
+		float vBackoffPos[3];
+		vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
+		NPC_SetGoalVector(npc.index, vBackoffPos, true);
+	}
 }
 
 public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time, float amt[3])	//only works with npc's
