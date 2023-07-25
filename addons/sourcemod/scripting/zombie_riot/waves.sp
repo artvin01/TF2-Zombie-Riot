@@ -960,11 +960,11 @@ void Waves_Progress()
 				
 				if(ScaleWithHpMore)
 				{
-					multi_health = 1.11;
+					multi_health = 1.185;
 				}
 				else
 				{
-					multi_health = 1.06;
+					multi_health = 1.07;
 				}
 
 				multi = Pow(multi_health, playercount);
