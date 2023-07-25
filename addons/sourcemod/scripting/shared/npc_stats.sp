@@ -2523,7 +2523,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				PlaybackSpeed *= this.m_bisGiantWalkCycle;
 				if(PlaybackSpeed > 2.0)
 					PlaybackSpeed = 2.0;
-				
+					
 				this.SetPlaybackRate(PlaybackSpeed);
 			}
 		}

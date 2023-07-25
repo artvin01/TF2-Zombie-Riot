@@ -2569,10 +2569,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "point_worldtext"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
+			b_ThisEntityIgnored[entity] = true;
 		}
 		else if(!StrContains(classname, "info_particle_system"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
+			b_ThisEntityIgnored[entity] = true;
 		}
 		else if(!StrContains(classname, "func_regenerate"))
 		{

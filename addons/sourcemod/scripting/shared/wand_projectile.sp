@@ -57,7 +57,8 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 	if(IsValidEntity(entity))
 	{
 		i_WandOwner[entity] = EntIndexToEntRef(client);
-		i_WandWeapon[entity] = EntIndexToEntRef(weapon);
+		if(IsValidEntity(weapon))
+			i_WandWeapon[entity] = EntIndexToEntRef(weapon);
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;

@@ -675,7 +675,7 @@ static void Destroy_Halo_And_Wings(int client, int type)
 	{
 		
 		
-		for(int i=0 ; i < 6 ; i++)
+		for(int i=0 ; i < 5 ; i++)
 		{
 			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
 			if(IsValidEntity(wing_laser))
@@ -683,7 +683,7 @@ static void Destroy_Halo_And_Wings(int client, int type)
 				RemoveEntity(wing_laser);
 			}
 		}	
-		for(int i=0 ; i < 6 ; i++)
+		for(int i=0 ; i < 5 ; i++)
 		{
 			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
 			if(IsValidEntity(wing_particle))
