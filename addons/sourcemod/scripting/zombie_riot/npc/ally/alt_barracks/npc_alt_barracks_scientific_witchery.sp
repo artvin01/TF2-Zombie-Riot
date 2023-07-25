@@ -523,7 +523,7 @@ static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[
 						inflictor=client;
 					}
 					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),dmg, 1))/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+					BEAM_Targets_Hit[client] *= 1.2;
 				}
 			}
 
