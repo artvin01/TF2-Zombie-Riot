@@ -496,7 +496,7 @@ static bool Check_if_targets_exist(int client, float range)
 			///
 			
 static int i_wing_lasers[MAXTF2PLAYERS+1][6];
-static int i_wing_particles[MAXTF2PLAYERS+1][5];
+static int i_wing_particles[MAXTF2PLAYERS+1][6];
 
 static int i_halo_particles[MAXTF2PLAYERS+1];
 			
@@ -534,7 +534,7 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 					do_new = true;
 				}
 			}	
-			for(int i=0 ; i < 5 ; i++)
+			for(int i=0 ; i < 6 ; i++)
 			{
 				int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
 				if(!IsValidEntity(wing_particle))
@@ -573,7 +573,7 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 				do_new = true;
 			}
 		}	
-		for(int i=0 ; i < 5 ; i++)
+		for(int i=0 ; i < 6 ; i++)
 		{
 			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
 			if(!IsValidEntity(wing_particle))
@@ -666,7 +666,7 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][3] = EntIndexToEntRef(particle_3);
 	i_wing_particles[client][4] = EntIndexToEntRef(particle_3_1);
 	
-	i_wing_particles[client][4] = EntIndexToEntRef(particle_0);
+	i_wing_particles[client][5] = EntIndexToEntRef(particle_0);
 	
 }
 static void Destroy_Halo_And_Wings(int client, int type)
@@ -675,7 +675,7 @@ static void Destroy_Halo_And_Wings(int client, int type)
 	{
 		
 		
-		for(int i=0 ; i < 5 ; i++)
+		for(int i=0 ; i < 6 ; i++)
 		{
 			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
 			if(IsValidEntity(wing_laser))
@@ -683,7 +683,7 @@ static void Destroy_Halo_And_Wings(int client, int type)
 				RemoveEntity(wing_laser);
 			}
 		}	
-		for(int i=0 ; i < 5 ; i++)
+		for(int i=0 ; i < 6 ; i++)
 		{
 			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
 			if(IsValidEntity(wing_particle))
