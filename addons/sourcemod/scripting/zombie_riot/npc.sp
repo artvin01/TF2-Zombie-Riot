@@ -330,6 +330,7 @@ enum
 	EXPIDONSA_DIVERSIONISTICO 	= 291,
 	RUINA_ADIANTUM 				= 292,
 	RUINA_LANIUS				= 293,
+	RUINA_MAGIA					= 294,
 }
 
 public const char NPC_Names[][] =
@@ -648,7 +649,8 @@ public const char NPC_Names[][] =
 	"Pistoleer",
 	"Diversionistico",
 	"Adiantum",
-	"Lanius"
+	"Lanius",
+	"Magia"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -965,7 +967,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_benera_pistoleer",
 	"npc_diversionistico",
 	"npc_ruina_adiantum",
-	"npc_ruina_lanius"
+	"npc_ruina_lanius",
+	"npc_ruina_magia"
 };
 
 void NPC_MapStart()
@@ -1172,6 +1175,7 @@ void NPC_MapStart()
 	Theocracy_OnMapStart_NPC();
 	Adiantum_OnMapStart_NPC();
 	Lanius_OnMapStart_NPC();
+	Magia_OnMapStart_NPC();
 	
 
 	//Expidonsa Waves
@@ -2032,6 +2036,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case RUINA_LANIUS:
 			entity = Lanius(client, vecPos, vecAng, ally);
+			
+		case RUINA_MAGIA:
+			entity = Magia(client, vecPos, vecAng, ally);
 
 			
 		case EXPIDONSA_BENERA:
@@ -2881,7 +2888,7 @@ public void NPCDeath(int entity)
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
 			
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS:
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 
 
@@ -3646,14 +3653,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case ISHARMLA:
 			Isharmla_OnTakeDamage(victim, attacker, damage);
 			
-		case RUINA_THEOCRACY:	//warp
-			Theocracy_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_ADIANTUM:
-			Adiantum_ClotDamaged(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-		case RUINA_LANIUS:
-			Lanius_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA:	//warp
+			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 
 
@@ -3801,6 +3803,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_theocracy.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_adiantum.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_lanius.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_magia.sp"
 
 
 //Alt

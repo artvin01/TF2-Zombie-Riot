@@ -1693,4 +1693,8 @@
 	{
 		"en"	"Lanius"
 	}
+	"Magia"
+	{
+		"en"	"Magia"
+	}
 }
