@@ -5218,7 +5218,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		/*
 			Attributes to Arrays Here
 		*/
-		Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651);
+		Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651, true, 0.0);
 		i_SurvivalKnifeCount[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 33, false));
 		i_GlitchedGun[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 731, false));
 		i_AresenalTrap[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 719, false));

@@ -530,9 +530,13 @@ float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWe
 	return result;
 }
 
-float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = true)
+float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = true, float defaultstat = -1.0)
 {
 	float defaul = multi ? 1.0 : 0.0;
+	if(defaultstat != -1.0)
+	{	
+		defaul = defaultstat;
+	}
 	float result = Attributes_Get(client, index, defaul);
 	
 	int wearable = MaxClients + 1;

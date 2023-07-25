@@ -286,13 +286,11 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 {
 	float BannerPos[3];
 	GetEntPropVector(target, Prop_Data, "m_vecOrigin", BannerPos);
-	float flHealMulti;
+	float flHealMulti = 1.0;
 	float flHealMutli_Calc;
-
 	if(!HordingsBuff)
 	{
 		flHealMulti = Attributes_GetOnPlayer(client, 8, true);
-
 	}
 	else
 	{
@@ -322,7 +320,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					}
 				}
 
-				if(healingMulti)
+				if(healingMulti > 0.0)
 				{	
 					if(f_TimeUntillNormalHeal[ally] > GetGameTime())
 					{
