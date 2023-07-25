@@ -54,10 +54,11 @@ static bool b_Severity_Spin_To_Win[MAXENTITIES];
 
 static int i_Severity_Barrage[MAXENTITIES];
 
+/*
 static float fl_Severity_Scaramouche[MAXENTITIES];
 
 static float fl_Scaramouche_Ability_Timer[MAXENTITIES];
-static float fl_Scaramouche_Global_Ability_Timer;
+static float fl_Scaramouche_Global_Ability_Timer;*/
 
 static float fl_Spin_To_Win_Ability_Timer[MAXENTITIES];
 static float fl_Spin_To_Win_Global_Ability_Timer;
@@ -261,9 +262,9 @@ methodmap Ikunagae < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
-		fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
+		//fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
 
-		fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+		//fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
 		
 		clearance[npc.index] = false;
 		b_Severity_Spin_To_Win[npc.index] = false;
@@ -379,7 +380,7 @@ public void Ikunagae_ClotThink(int iNPC)
 				}
 			}
 		}
-		if(fl_Scaramouche_Global_Ability_Timer < GetGameTime(npc.index))
+		/*if(fl_Scaramouche_Global_Ability_Timer < GetGameTime(npc.index))
 		{
 			if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
 			{
@@ -387,7 +388,7 @@ public void Ikunagae_ClotThink(int iNPC)
 				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 12.5;
 				Scaramouche_Activate(npc.index);
 			}
-		}
+		}*/
 		//Target close enough to hit
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
@@ -511,7 +512,7 @@ public void Ikunagae_NPCDeath(int entity)
 	
 	npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, Scaramouche_TBB_Tick);
+	//SDKUnhook(npc.index, SDKHook_Think, Scaramouche_TBB_Tick);
 	
 	SDKUnhook(npc.index, SDKHook_Think, Ikunagae_ClotThink);	
 		
@@ -529,6 +530,7 @@ public void Ikunagae_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
+/*
 ///Scara-attack-core
 
 static float fl_Scaramouche_Trace_Max_Range[MAXENTITIES];
@@ -650,11 +652,11 @@ public Action Scaramouche_TBB_Tick(int client)
 	}
 	return Plugin_Continue;
 
-}
+}*/
 static bool Scaramouche_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
-}
+}/*
 static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], int type)
 {
 	float startPoint[3];
@@ -702,7 +704,7 @@ static void Scaramouche_Do_Effect_And_Attack(int client, float EndLoc[3])
 	fl_Scaramouche_Vortex_Vec[client][i_Scaramouche_Vortex_Total[client]] = EndLoc;
 	
 
-}
+}*/
 ///SPIN_TO_WIN Core
 
 static float fl_Spin_to_win_Angle[MAXENTITIES];
@@ -1093,31 +1095,31 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 		i_Severity_Spin_To_Win[npc.index] = 2;
 		b_Severity_Spin_To_Win[npc.index] = false;
 		i_Severity_Barrage[npc.index] = 6;
-		fl_Severity_Scaramouche[npc.index] = 3.0; //The timer thats used to attack on this ability
+		//fl_Severity_Scaramouche[npc.index] = 3.0; //The timer thats used to attack on this ability
 		Spin_To_Win_Damage_Multi[npc.index] = 1;
 	}
 	else if(Health_Current>80)
 	{
 		i_Severity_Barrage[npc.index] = 8;
-		fl_Severity_Scaramouche[npc.index] = 2.9;
+		//fl_Severity_Scaramouche[npc.index] = 2.9;
 	}
 	else if(Health_Current>70)
 	{
 		i_Severity_Spin_To_Win[npc.index] = 3;
 		i_Severity_Barrage[npc.index] = 10;
-		fl_Severity_Scaramouche[npc.index] = 2.85;
+		//fl_Severity_Scaramouche[npc.index] = 2.85;
 	}
 	else if(Health_Current>60)
 	{
 		i_Severity_Barrage[npc.index] = 12;
-		fl_Severity_Scaramouche[npc.index] = 2.8;
+		//fl_Severity_Scaramouche[npc.index] = 2.8;
 		i_Severity_Spin_To_Win[npc.index] = 4;
 	}
 	else if(Health_Current>50)
 	{
 		i_Severity_Spin_To_Win[npc.index] = 4;
 		i_Severity_Barrage[npc.index] = 12;
-		fl_Severity_Scaramouche[npc.index] = 2.75;
+		//fl_Severity_Scaramouche[npc.index] = 2.75;
 		Spin_To_Win_Damage_Multi[npc.index] = 2;
 	}
 	else if(Health_Current>40)
@@ -1125,30 +1127,30 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 		i_Severity_Spin_To_Win[npc.index] = 2;
 		b_Severity_Spin_To_Win[npc.index] = true;
 		i_Severity_Barrage[npc.index] = 13;
-		fl_Severity_Scaramouche[npc.index] = 2.70;
+		//fl_Severity_Scaramouche[npc.index] = 2.70;
 	}
 	else if(Health_Current>30)
 	{
 		Spin_To_Win_Damage_Multi[npc.index] = 3;
 		i_Severity_Barrage[npc.index] = 13;
-		fl_Severity_Scaramouche[npc.index] = 2.60;
+		//fl_Severity_Scaramouche[npc.index] = 2.60;
 	}
 	else if(Health_Current>20)
 	{
 		Spin_To_Win_Damage_Multi[npc.index] = 6;
 		i_Severity_Spin_To_Win[npc.index] = 4;
-		fl_Severity_Scaramouche[npc.index] = 2.25;
+		//fl_Severity_Scaramouche[npc.index] = 2.25;
 		i_Severity_Barrage[npc.index] = 14;
 	}
 	else if(Health_Current>10)
 	{
-		fl_Severity_Scaramouche[npc.index] = 1.75;
+		//fl_Severity_Scaramouche[npc.index] = 1.75;
 		Spin_To_Win_Damage_Multi[npc.index] = 6;
 		i_Severity_Barrage[npc.index] = 16;
 	}
 	else	// THATS IT YOU FUCKERS
 	{
-		fl_Severity_Scaramouche[npc.index] = 0.5;
+		//fl_Severity_Scaramouche[npc.index] = 0.5;
 		Spin_To_Win_Damage_Multi[npc.index] = 6;
 		i_Severity_Barrage[npc.index] = 24;
 	}
