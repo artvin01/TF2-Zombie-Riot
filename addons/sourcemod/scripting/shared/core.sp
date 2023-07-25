@@ -361,8 +361,11 @@ float f_StunExtraGametimeDuration[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_Ruina_Speed_Buff[MAXENTITIES];
+float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
 float f_Ruina_Defense_Buff[MAXENTITIES];
+float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
 float f_Ruina_Attack_Buff[MAXENTITIES];
+float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
 float f_GodArkantosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
@@ -1512,6 +1515,9 @@ public void OnClientPutInServer(int client)
 	f_Ruina_Speed_Buff[client] = 0.0;
 	f_Ruina_Defense_Buff[client] = 0.0;
 	f_Ruina_Attack_Buff[client] = 0.0;
+	f_Ruina_Speed_Buff_Amt[client] = 0.0;
+	f_Ruina_Defense_Buff_Amt[client] = 0.0;
+	f_Ruina_Attack_Buff_Amt[client] = 0.0;
 	f_ShowHudDelayForServerMessage[client] = GetGameTime() + 50.0;
 	
 #if defined ZR
@@ -2193,6 +2199,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ruina_Speed_Buff[entity] = 0.0;
 		f_Ruina_Defense_Buff[entity] = 0.0;
 		f_Ruina_Attack_Buff[entity] = 0.0;
+		f_Ruina_Speed_Buff_Amt[entity] = 0.0;
+		f_Ruina_Defense_Buff_Amt[entity] = 0.0;
+		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
 		f_GodArkantosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
 		HasMechanic[entity] = false;

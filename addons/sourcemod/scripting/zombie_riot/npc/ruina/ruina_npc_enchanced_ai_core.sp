@@ -16,6 +16,10 @@ static int BeamWand_Laser;
 float fl_rally_timer[MAXENTITIES];
 bool b_rally_active[MAXENTITIES];
 
+float fl_ruina_battery[MAXENTITIES];
+bool b_ruina_battery_ability_active[MAXENTITIES];
+float fl_ruina_battery_timer[MAXENTITIES];
+
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
 static int i_master_priority[MAXENTITIES];		//when searching for a master, the master with highest priority will get minnion's first. eg npc with Priority 1 will have lower priority then npc with priority 2
@@ -24,6 +28,11 @@ static int i_master_current_slaves[MAXENTITIES];
 static bool b_master_is_acepting[MAXENTITIES];	//if a master npc no longer wants slaves this is set to false
 
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
+
+#define RUINA_NPC_PITCH 115
+
+
+#define RUINA_BALL_PARTICLE_BLUE "drg_manmelter_trail_blue"
 
 #define RUINA_ION_CANNON_SOUND_SPAWN "ambient/machines/thumper_startup1.wav"
 #define RUINA_ION_CANNON_SOUND_TOUCHDOWN "mvm/ambient_mp3/mvm_siren.mp3"
@@ -48,6 +57,9 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	Zero(fl_rally_timer);
 	Zero(b_rally_active);
+	Zero(fl_ruina_battery);
+	Zero(b_ruina_battery_ability_active);
+	Zero(fl_ruina_battery_timer);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -124,6 +136,9 @@ public void Ruina_NPCDeath_Override(int entity)
 			
 		case RUINA_ADIANTUM:
 			Adiantum_NPCDeath(entity);
+			
+		case RUINA_LANIUS:
+			Lanius_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -422,7 +437,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		}
 }
 
-public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time)	//only works with npc's
+public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time, float amt[3])	//only works with npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -445,11 +460,11 @@ public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float ti
 							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
 							{
 								if(buff_type[0])
-									Apply_Defense_buff(time, baseboss_index);
+									Apply_Defense_buff(time, baseboss_index, amt[0]);
 								if(buff_type[1])
-									Apply_Speed_buff(time, baseboss_index);
+									Apply_Speed_buff(time, baseboss_index, amt[1]);
 								if(buff_type[2])
-									Apply_Attack_buff(time, baseboss_index);
+									Apply_Attack_buff(time, baseboss_index, amt[2]);
 							}		
 						}
 					}
@@ -463,18 +478,77 @@ public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float ti
 	f_Ruina_Defense_Buff[entity] = 0.0;
 	f_Ruina_Attack_Buff[entity] = 0.0;
 */
-static void Apply_Defense_buff(float time, int Other_Npc)
+static void Apply_Defense_buff(float time, int Other_Npc, float amt)
 {
-	f_Ruina_Defense_Buff[Other_Npc] = GetGameTime() + time;
+	float GameTime = GetGameTime();
+	if(f_Ruina_Defense_Buff[Other_Npc]>GameTime)
+	{
+		if(amt>f_Ruina_Defense_Buff_Amt[Other_Npc])	//higher is better
+		{
+			f_Ruina_Defense_Buff_Amt[Other_Npc] = amt;
+		}
+	}
+	else
+	{
+		f_Ruina_Defense_Buff[Other_Npc] = GameTime + time;
+		f_Ruina_Defense_Buff_Amt[Other_Npc] = amt;
+	}
+	
 }
-static void Apply_Speed_buff(float time, int Other_Npc)
+static void Apply_Speed_buff(float time, int Other_Npc, float amt)
 {
-	f_Ruina_Speed_Buff[Other_Npc] = GetGameTime() + time;
+	float GameTime = GetGameTime();
+	if(f_Ruina_Speed_Buff[Other_Npc]>GameTime)
+	{
+		if(amt>f_Ruina_Speed_Buff_Amt[Other_Npc])	//higher is better
+		{
+			f_Ruina_Speed_Buff_Amt[Other_Npc] = amt;
+		}
+	}
+	else
+	{
+		f_Ruina_Speed_Buff[Other_Npc] = GameTime + time;
+		f_Ruina_Speed_Buff_Amt[Other_Npc] = amt;
+	}
 }
-static void Apply_Attack_buff(float time, int Other_Npc)
+static void Apply_Attack_buff(float time, int Other_Npc, float amt)
 {
-	f_Ruina_Attack_Buff[Other_Npc] = GetGameTime() + time;
+	float GameTime = GetGameTime();
+	if(f_Ruina_Attack_Buff[Other_Npc]>GameTime)
+	{
+		if(amt>f_Ruina_Attack_Buff_Amt[Other_Npc])	//higher is better
+		{
+			f_Ruina_Attack_Buff_Amt[Other_Npc] = amt;
+		}
+	}
+	else
+	{
+		f_Ruina_Attack_Buff[Other_Npc] = GameTime + time;
+		f_Ruina_Attack_Buff_Amt[Other_Npc] = amt;
+	}
 }
+
+public Action Timer_Move_Particle(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float end_point[3];
+	end_point[0] = pack.ReadCell();
+	end_point[1] = pack.ReadCell();
+	end_point[2] = pack.ReadCell();
+	float duration = pack.ReadCell();
+	
+	if(IsValidEntity(entity) && entity > MaxClients)
+	{
+		TeleportEntity(entity, end_point, NULL_VECTOR, NULL_VECTOR);
+		if (duration > 0.0)
+		{
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	return Plugin_Continue;
+}
+
 				 ///////////////////
 				/// Wave Events ///
 			   ///////////////////

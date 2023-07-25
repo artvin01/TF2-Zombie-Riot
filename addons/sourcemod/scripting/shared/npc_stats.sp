@@ -1185,6 +1185,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 0.33333;
 		}
+		if(f_Ruina_Speed_Buff[this.index]> Gametime)
+		{
+			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
+		}
 
 #if defined ZR
 		SeabornVanguard_SpeedBuff(this, speed_for_return);	

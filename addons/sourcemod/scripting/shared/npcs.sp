@@ -1534,11 +1534,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 		if(f_Ruina_Attack_Buff[attacker] > GameTime)
 		{
-			damage += BaseDamageBeforeBuffs * 0.25;	//25% dmg bonus
+			damage += BaseDamageBeforeBuffs * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus
 		}
 		if(f_Ruina_Defense_Buff[victim] > GameTime)
 		{
-			damage -= BaseDamageBeforeBuffs * 0.25;	//25% dmg resist
+			damage -= BaseDamageBeforeBuffs * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 		}
 		
 		if(f_HighIceDebuff[victim] > GameTime)

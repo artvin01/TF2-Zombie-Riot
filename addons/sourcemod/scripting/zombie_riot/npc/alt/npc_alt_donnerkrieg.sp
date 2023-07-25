@@ -784,17 +784,19 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		if(b_angered)
 		{
-			f_NpcTurnPenalty[npc.index] = 0.075;	//:)
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.075);
+			//f_NpcTurnPenalty[npc.index] = 0.075;	//:)
 		}
 		else
 		{
-			f_NpcTurnPenalty[npc.index] = 0.0085;	//:)
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.0085);
+			//f_NpcTurnPenalty[npc.index] = 0.0085;	//:)
 		}
 		
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
-		npc.m_bPathing = true;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
