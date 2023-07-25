@@ -296,7 +296,6 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				}
-						
 				npc.m_flAttackHappens = 1.0;
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
