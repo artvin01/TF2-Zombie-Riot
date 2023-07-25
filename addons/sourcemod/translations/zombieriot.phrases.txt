@@ -3603,4 +3603,57 @@
 		//"it"		""
 		//"fr"		""			
 	}
+	"Zombie Volume Setting Show"
+	{
+		"en"		"Zombie Volume Setting"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Zombie Volume Setting"
+	{
+		"#format"	"{1:d}"
+		"en"		"Zombie Volume: [{1}%%]"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""
+	}
+	"Turn up volume"
+	{
+		"en"		"Turn up volume"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
+	"Turn down volume"
+	{
+		"en"		"Turn down volume"
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
 }

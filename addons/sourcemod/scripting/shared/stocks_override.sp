@@ -435,7 +435,20 @@ void Edited_EmitSoundToAll(const char[] sample,
 	*/
 	if(sample[0] != '#')
 	{
-		EmitSoundToAll(sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
+
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client) && f_ClientMusicVolume[client] > 0.05)
+			{
+				float volumeedited = volume;
+				if(entity > 0 && !b_NpcHasDied[entity])
+				{
+					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
+				}
+				if(volumeedited > 0.0)
+					EmitSoundToClient(client, sample,entity,channel,level,flags,volumeedited,pitch,speakerentity,origin,dir,updatePos,soundtime);
+			}
+		}		
 	}
 	else
 	{

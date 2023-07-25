@@ -1773,6 +1773,7 @@ void Store_ClientDisconnect(int client)
 public void ReShowSettingsHud(int client)
 {
 	char buffer [128];
+	SetGlobalTransTarget(client);
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Settings Page");
 #if defined ZR
@@ -1787,6 +1788,9 @@ public void ReShowSettingsHud(int client)
 #if defined ZR
 	FormatEx(buffer, sizeof(buffer), "%t", "Notif Hud Setting");
 	menu2.AddItem("-20", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Zombie Volume Setting Show");
+	menu2.AddItem("-55", buffer);
 
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Low Health Shake");
@@ -1826,6 +1830,7 @@ public void ReShowSettingsHud(int client)
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
 	menu2.AddItem("-999", buffer);
+	menu2.Pagination = 0;
 	
 	menu2.Display(client, MENU_TIME_FOREVER);
 }
@@ -1834,6 +1839,7 @@ public void ReShowSettingsHud(int client)
 public void ReShowArmorHud(int client)
 {
 	char buffer[24];
+	SetGlobalTransTarget(client);
 
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
@@ -1862,6 +1868,7 @@ public void ReShowArmorHud(int client)
 public void ReShowHurtHud(int client)
 {
 	char buffer[24];
+	SetGlobalTransTarget(client);
 
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Hurt Hud Setting Inside",f_HurtHudOffsetX[client],f_HurtHudOffsetY[client]);
@@ -1892,6 +1899,7 @@ public void ReShowHurtHud(int client)
 public void ReShowWeaponHud(int client)
 {
 	char buffer[24];
+	SetGlobalTransTarget(client);
 
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Weapon Hud Setting Inside",f_WeaponHudOffsetX[client],f_WeaponHudOffsetY[client]);
@@ -1920,6 +1928,7 @@ public void ReShowWeaponHud(int client)
 public void ReShowNotifHud(int client)
 {
 	char buffer[24];
+	SetGlobalTransTarget(client);
 
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Notif Hud Setting Inside",f_NotifHudOffsetX[client],f_NotifHudOffsetY[client]);
@@ -1945,6 +1954,29 @@ public void ReShowNotifHud(int client)
 	SetDefaultHudPosition(client);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "nothing");
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+}
+
+
+public void ReShowVolumeHud(int client)
+{
+	char buffer[24];
+	SetGlobalTransTarget(client);
+
+	Menu menu2 = new Menu(Settings_MenuPage);
+	int volumeSettingShow = RoundToNearest(((f_ZombieVolumeSetting[client] + 1.0) * 100.0));
+	
+	menu2.SetTitle("%t", "Zombie Volume Setting",volumeSettingShow);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Turn up volume");
+	menu2.AddItem("-63", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Turn down volume");
+	menu2.AddItem("-64", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Back");
+	menu2.AddItem("-1", buffer);
 
 	menu2.Display(client, MENU_TIME_FOREVER);
 }
@@ -2238,6 +2270,28 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 						b_HudHitMarker[client] = true;
 					}
 					ReShowSettingsHud(client);
+				}
+				case -64: //Lower Volume
+				{
+					f_ZombieVolumeSetting[client] -= 0.05;
+					if(f_ZombieVolumeSetting[client] < -1.0)
+					{
+						f_ZombieVolumeSetting[client] = -1.0;
+					}
+					ReShowVolumeHud(client);
+				}
+				case -63: //Up volume
+				{
+					f_ZombieVolumeSetting[client] += 0.05;
+					if(f_ZombieVolumeSetting[client] > 0.0)
+					{
+						f_ZombieVolumeSetting[client] = 0.0;
+					}
+					ReShowVolumeHud(client);
+				}
+				case -55: //Show Volume Hud
+				{
+					ReShowVolumeHud(client);
 				}
 
 				case -1: //Move Armor Hud right

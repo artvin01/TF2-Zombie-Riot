@@ -229,6 +229,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_HudLowHealthShake[client] = view_as<bool>(results[2].FetchInt(11));
 			b_HudHitMarker[client] = view_as<bool>(results[2].FetchInt(12));
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
+			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -296,6 +297,7 @@ void DataBase_ClientDisconnect(int client)
 			b_HudLowHealthShake[client],
 			b_HudHitMarker[client],
 			thirdperson[client],
+			f_ZombieVolumeSetting[client],
 			id);
 
 			tr.AddQuery(buffer);
