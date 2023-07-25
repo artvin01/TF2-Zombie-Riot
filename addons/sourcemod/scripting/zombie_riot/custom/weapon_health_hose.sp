@@ -276,7 +276,7 @@ public void Hose_Heal(int owner, int entity, int amt)
 	
 	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
-		amt /= 4;
+		amt /= 3;
 		if (amt < 1)
 		{
 			amt = 1;

@@ -148,20 +148,20 @@ methodmap Diversionistico < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
 
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 500.0);
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 750.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 500.0);
-		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 750.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 500.0);
-		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 750.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 500.0);
-		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 750.0);
+		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 500.0);
 		
-		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 500.0);
-		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 750.0);
+		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 350.0);
+		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 500.0);
 
 		if(LastSpawnDiversio < GetGameTime())
 		{
@@ -352,19 +352,21 @@ void TeleportDiversioToRandLocation(int iNPC)
 
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
 		bool DoNotTeleport = false;
+		int WasTooFarAway = 0;
+		int PlayersCount = 0;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
 			{		
+				PlayersCount += 1;
 				float f3_PositionTemp[3];
 				GetEntPropVector(client_check, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
 				float flDistanceToTarget = GetVectorDistance(AproxRandomSpaceToWalkTo, f3_PositionTemp, true);	
 				if(flDistanceToTarget > (1250.0 * 1250.0))
 				{
-					DoNotTeleport = true;
-					break;
+					WasTooFarAway += 1;
 				}
-				if(flDistanceToTarget < (750.0 * 750.0))
+				if(flDistanceToTarget < (500.0 * 500.0))
 				{
 					DoNotTeleport = true;
 					break;
@@ -372,6 +374,9 @@ void TeleportDiversioToRandLocation(int iNPC)
 			}
 		}
 		if(DoNotTeleport)
+			continue;
+
+		if(WasTooFarAway >= PlayersCount) //they arent even near to being close to anyone.
 			continue;
 
 		AproxRandomSpaceToWalkTo[2] += 20.0;

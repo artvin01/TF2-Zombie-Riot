@@ -1078,13 +1078,22 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
+					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(f_ChargeTerroriserSniper[weapon] > 149.0)
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += 2;
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject * 2;
 					}
 					else
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += 1;
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+					}
+					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+					{
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+					}
+					if(i_HeadshotAffinity[attacker] == 1)
+					{
+						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 					}
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
@@ -1124,6 +1133,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			else
 			{
+				if(i_ArsenalBombImplanter[weapon] > 0)
+				{
+					int BombsToInject = i_ArsenalBombImplanter[weapon];
+					if(i_HeadshotAffinity[attacker] == 1)
+					{
+						i_HowManyBombsOnThisEntity[victim][attacker] -= BombsToInject;
+					}
+				}
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 0.65;
@@ -1777,6 +1794,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 					
 					if(i_ArsenalBombImplanter[weapon] > 0)
 					{
+						int BombsToInject = i_ArsenalBombImplanter[weapon];
 						float damage_save = 50.0;
 
 						damage_save *= Attributes_Get(weapon, 2, 1.0);
@@ -1785,11 +1803,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 						if(f_ChargeTerroriserSniper[weapon] > 149.0)
 						{
-							i_HowManyBombsOnThisEntity[victim][attacker] += 2;
+							i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject * 2;
 						}
 						else
 						{
-							i_HowManyBombsOnThisEntity[victim][attacker] += 1;
+							i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
 						}
 						Apply_Particle_Teroriser_Indicator(victim);
 						damage = 0.0;
@@ -2985,6 +3003,13 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_FANTASY_BLADE:
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
+		}
+		case WEAPON_BOOMSTICK:
+		{
+			if(b_thisNpcIsARaid[victim])
+			{
+				damage *= 2.0; //due to how dangerous it is to get closer.
+			}
 		}
 	}
 #endif

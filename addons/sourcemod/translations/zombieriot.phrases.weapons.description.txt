@@ -204,6 +204,11 @@
 		"chi"       "增加伤害和攻击速度，鼠标右键可以激活技能。普通攻击现在发射3支箭。"
 	}
 	
+	"Huntsman Pap 3"
+	{
+		"en"		"Increased damage and attackspeed."
+	}
+	
 	"Deagle Desc"
 	{
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
@@ -404,9 +409,7 @@
 	}
 	"Boomstick Pap 2"
 	{
-		"en"		"Less Damage but bullets turn into piercing lasers with damage falloff."
-		"ru"		"Урон меньше, но пули превращаются в пронзительные лазеры с падением урона на расстоянии."
-		"chi"       "伤害减少，但子弹变成穿透激光，伤害随着穿透目标数量下降。"
+		"en"		"bullets turn into piercing lasers with damage falloff."
 	}
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
@@ -414,6 +417,10 @@
 		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs"
 		"ru"	"Устанавливает бомбу на цель, в которую вы попали, нажмите R, чтобы взорвать её.\nУстановите несколько бомб для большего урона. Больше зарядов = больше бомб, выстрел в голову = больше бомб."
 		"chi"   "射击将会发出黏弹，按R引爆它们。\n部下多颗黏弹可造成更多伤害.更多的冲锋=更多的炸弹，爆头=更多的炸弹"
+	}
+	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
+	{
+		"en"	"Increaces firerare, chargetime, and bombs planted at once"
 	}
 	
 	"Rampager Automatic Rifle Desc"
