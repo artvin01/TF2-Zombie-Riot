@@ -438,7 +438,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && !IsFakeClient(client) && f_ClientMusicVolume[client] > 0.05)
+			if(IsClientInGame(client) && !IsFakeClient(client))
 			{
 				float volumeedited = volume;
 				if(entity > 0 && !b_NpcHasDied[entity])
