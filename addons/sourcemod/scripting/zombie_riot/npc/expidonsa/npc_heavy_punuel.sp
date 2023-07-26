@@ -331,7 +331,7 @@ void HeavyPunuelSelfDefense(HeavyPunuel npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 55.0;
+					float damageDealt = 65.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 
