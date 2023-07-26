@@ -11,11 +11,13 @@ public void Vampire_Knives_Precache()
 
 //Both pap paps inflict X stacks of Bloodlust on hit. Each stack of Bloodlust deals some bleed damage per Y seconds, then heals the user for a portion of
 //that damage, up to a cap.
-static float Vamp_BleedDMG[3] = { 5.0, 8.0, 12.0 }; //The base damage dealt per Bloodlust tick.
+static float Vamp_BleedDMG[3] = { 15.0, 30.0, 60.0 }; //The base damage dealt per Bloodlust tick.
 static float Vamp_BleedRate[3] = { 0.33, 0.275, 0.25 }; //The rate at which Bloodlust deals damage.
-static float Vamp_BleedHeal[3] = { 0.5, 0.5, 0.5 };	//Portion of Bloodlust damage to heal the user for.
+static float Vamp_BleedHeal[3] = { 0.17, 0.085, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
 static float Vamp_HealRadius[3] = { 300.0, 330.0, 360.0 };	//Max distance from the victim to heal the user in.
-static int Vamp_MaxHeal[3] = { 4, 3, 2 };	//Max heal per tick.
+static int Vamp_MaxHeal[3] = { 6, 5, 4 };	//Max heal per tick.
+static int Vamp_MinHeal[3] = { 2, 2, 1 };	//Minimum healing received per Bloodlust tick.
+static float Vamp_HealMultIfHurt[3] = { 0.75, 0.66, 0.5 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
 static int Vamp_BleedStacksOnMelee_Normal[3] = { 6, 8, 10 }; //Number of Bloodlust stacks applied on a melee hit.
@@ -103,6 +105,8 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 	float BleedRate = Vamp_BleedRate[VampType - 1];
 	float BleedHeal = Vamp_BleedHeal[VampType - 1];
 	float Radius = Vamp_HealRadius[VampType - 1];
+	float HealMultIfHurt = Vamp_HealMultIfHurt[VampType - 1];
+	int MinHeal = Vamp_MinHeal[VampType - 1];
 	
 	if (IsThrow)
 	{
@@ -120,6 +124,8 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 	WritePackFloat(pack, BleedRate);
 	WritePackFloat(pack, BleedHeal);
 	WritePackFloat(pack, Radius);
+	WritePackFloat(pack, HealMultIfHurt);
+	WritePackCell(pack, MinHeal);
 }
 
 public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
@@ -143,6 +149,8 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	float Rate = ReadPackFloat(pack);
 	float HealMult = ReadPackFloat(pack);
 	float Radius = ReadPackFloat(pack);
+	float HealMultIfHurt = ReadPackFloat(pack);
+	int MinHeal = ReadPackCell(pack);
 	
 	float DMG_Final = DMG;
 	
@@ -172,7 +180,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		
 		if(f_TimeUntillNormalHeal[attacker] > GetGameTime())
 		{
-			mult *= 0.66;
+			mult *= HealMultIfHurt;
 		}
 		
 		int heal = RoundToFloor(DMG_Final * HealMult);
@@ -180,9 +188,10 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		{
 			heal = MaxHeal;
 		}
-		if (heal < 1)
+		
+		if (heal < MinHeal)
 		{
-			heal = 1;
+			heal = MinHeal;
 		}
 		
 		int hp = GetEntProp(attacker, Prop_Data, "m_iHealth");
@@ -214,6 +223,8 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	WritePackFloat(pack2, Rate);
 	WritePackFloat(pack2, HealMult);
 	WritePackFloat(pack2, Radius);
+	WritePackFloat(pack2, HealMultIfHurt);
+	WritePackCell(pack2, MinHeal);
 	
 	return Plugin_Continue;
 }
