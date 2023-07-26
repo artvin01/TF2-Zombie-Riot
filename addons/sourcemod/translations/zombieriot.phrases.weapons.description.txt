@@ -2166,6 +2166,10 @@
 		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nYou cannot attack normally and reflect damage onto enemies depending on your damage\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."
 		"ru"	"Урон на 30%% и на 50%% меньше, отдача на 10% медл.\nВы не можете нормально атаковать и отражаете урон во врагов в зависимости от своего урона.\nВы накапл. урон, стоя рядом с врагами и получая повреждения.\nУ оружия нет спада урона на расстоянии при большем кол-ве поражённых врагов."
 	}
+	"Mlynar Sword Desc pap"
+	{
+		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
+	}
 	"Barracks Railgunner Desc"
 	{
 		"en"	"A long ranged Sniper unit, fragile!"
