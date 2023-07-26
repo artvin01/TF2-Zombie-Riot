@@ -3718,10 +3718,18 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		if(i_IsABuilding[other_entidx])
 		{
 			return true;
-		}	
+		}
 		if(other_entidx > 0 && other_entidx <= MaxClients)
 		{
+			if(b_TryToAvoidTraverse[bot_entidx])
+			{
+				return false;
+			}
 			return true;
+		}
+		if(!b_IsAlliedNpc[bot_entidx])
+		{
+			return false;
 		}
 		if(b_CantCollidie[other_entidx])
 		{
@@ -3737,7 +3745,15 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		}	
 		if(other_entidx > 0 && other_entidx <= MaxClients)
 		{
+			if(b_TryToAvoidTraverse[bot_entidx])
+			{
+				return false;
+			}
 			return true;
+		}
+		if(!b_IsAlliedNpc[bot_entidx])
+		{
+			return false;
 		}
 		if(b_CantCollidieAlly[other_entidx])
 		{
@@ -4927,7 +4943,7 @@ public void NpcBaseThink(int iNPC)
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
 		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
-
+	
 		if(b_thisNpcIsARaid[iNPC])
 		{
 			HealingAmount /= 10;
@@ -7217,6 +7233,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_AttackHappenswillhappen[entity] = false;
 	b_thisNpcIsABoss[entity] = false;
 	b_thisNpcIsARaid[entity] = false;
+	b_TryToAvoidTraverse[entity] = false;
 	b_StaticNPC[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	b_NPCTeleportOutOfStuck[entity] = false;

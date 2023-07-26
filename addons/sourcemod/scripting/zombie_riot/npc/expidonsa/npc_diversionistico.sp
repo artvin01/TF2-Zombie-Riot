@@ -124,6 +124,7 @@ methodmap Diversionistico < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
+		b_TryToAvoidTraverse[npc.index] = true;
 		
 		
 		int skin = 1;
@@ -219,8 +220,12 @@ public void Diversionistico_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
+			b_TryToAvoidTraverse[npc.index] = false;
 			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			vPredictedPos = GetBehindTarget(npc.m_iTarget, 40.0 ,vPredictedPos);
+			b_TryToAvoidTraverse[npc.index] = true;
+			NPC_SetGoalVector(npc.index, vPredictedPos, true);
+
 		}
 		else 
 		{
@@ -406,4 +411,20 @@ void TeleportDiversioToRandLocation(int iNPC)
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
 		break;
 	}
+}
+
+float[] GetBehindTarget(int target, float Distance, float origin[3])
+{
+	float VecForward[3];
+	float vecRight[3];
+	float vecUp[3];
+	
+	GetVectors(target, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
+	
+	float vecSwingEnd[3];
+	vecSwingEnd[0] = origin[0] - VecForward[0] * (Distance);
+	vecSwingEnd[1] = origin[1] - VecForward[1] * (Distance);
+	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+
+	return vecSwingEnd;
 }
