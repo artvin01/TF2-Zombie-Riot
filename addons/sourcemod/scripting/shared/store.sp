@@ -4032,38 +4032,34 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 
 #if defined ZR
-	int wave_count = Rogue_GetRoundScale() + 1;
-	
-	if(wave_count > 15 && wave_count < 30)
+	float KnockbackResistance;
+	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
+
+	if(KnockbackResistance > 1.0)
 	{
-		map.SetValue("252", 0.75);
-	}
-	else if(wave_count >= 30 && wave_count < 45)
-	{
-		map.SetValue("252", 0.65);
-	}
-	else if(wave_count >= 45 && wave_count < 60)
-	{
-		map.SetValue("252", 0.50);
-	}
-	else if(wave_count >= 60)
-	{
-		map.SetValue("252", 0.40);
-	}
-	
-	if(i_CurrentEquippedPerk[client] == 4)
-	{
-//		map.SetValue("96", 0.1); //Cash equals Health!!!!
-		map.SetValue("178", 0.65); //Faster Weapon Switch
-	}
-	/*if(TF2_GetPlayerClass(client) == TFClass_Scout) //make scout have the same capture rate!
-	{
-		map.SetValue("68", 1.0);
+		KnockbackResistance = 0.4;
 	}
 	else
 	{
-		map.SetValue("68", 2.0);
-	}*/
+		KnockbackResistance -= 1.0;
+		KnockbackResistance *= -1.0;
+	}
+
+	if(KnockbackResistance <= 0.40)
+	{
+		KnockbackResistance = 0.40;
+	}
+	if(KnockbackResistance > 1.0)
+	{
+		KnockbackResistance = 1.0;
+	}
+
+	map.SetValue("252", KnockbackResistance);
+
+	if(i_CurrentEquippedPerk[client] == 4)
+	{
+		map.SetValue("178", 0.65); //Faster Weapon Switch
+	}
 	
 	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.

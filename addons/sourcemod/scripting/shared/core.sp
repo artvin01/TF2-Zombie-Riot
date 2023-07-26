@@ -439,6 +439,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_GIB_REGARDLESS				(1 << 4)
 #define ZR_DAMAGE_IGNORE_DEATH_PENALTY			(1 << 5)
 #define ZR_DAMAGE_REFLECT_LOGIC					(1 << 6)
+#define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

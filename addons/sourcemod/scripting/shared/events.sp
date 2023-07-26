@@ -259,58 +259,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 	   		TF2Attrib_RemoveAll(weapon_index);
 	   		
-	   		float damage;
-	   		
-	   		int Wave_Count = Waves_GetRound() + 1;
+	   		float damage = 1.0;
 			
-			if(Wave_Count < 5)
-				damage = 0.25;
-				
-			if(Wave_Count < 10)
-				damage = 0.4;
-						
-			else if(Wave_Count < 15)
-				damage = 1.0;
-					
-			else if(Wave_Count < 20)
-				damage = 1.5;
-						
-			else if(Wave_Count < 25)
-				damage = 2.5;
-						
-			else if(Wave_Count < 30)
-				damage = 5.0;
-						
-			else if(Wave_Count < 40)
-				damage = 7.0;
-						
-			else if(Wave_Count < 45)
-				damage = 25.0;
-					
-			else if(Wave_Count < 50)
-				damage = 35.0;
-				
-			else if(Wave_Count < 55)
-				damage = 45.0;
-					
-			else if(Wave_Count < 60)
-				damage = 50.0;
-				
-			else if(Wave_Count < 70)
-				damage = 60.0;
-				
-			else if(Wave_Count < 80)
-				damage = 80.0;
-				
-			else if(Wave_Count < 90)
-				damage = 90.0;
-					
-			else
-				damage = 100.0;
-
 			if(TeutonType[client] == TEUTON_WAITING)
 			{
-				damage *= 0.25;
+				damage *= 0.33;
 			}
 			
 	   		Attributes_Set(weapon_index, 2, damage);

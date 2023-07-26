@@ -6095,21 +6095,28 @@ stock int FireBullet(int m_pAttacker, int iWeapon, float m_vecSrc[3], float m_ve
 	//	TE_SetupBeamPoints(m_vecSrc, endpos, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 0.1, 0.1, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
 	//	TE_SendToAll();
 
-		if(!ShouldNpcDealBonusDamage(TR_GetEntityIndex(trace)))
+		int hurt_who = TR_GetEntityIndex(trace);
+		if(!IsValidEntity(hurt_who))
+		{
+			delete trace;
+			return -1;
+		}
+		 
+		if(!ShouldNpcDealBonusDamage(hurt_who))
 		{
 			bonus_entity_damage = 1.0;
 		}
 		if(client > 0)
 		{
-			if(IsValidEnemy(m_pAttacker, TR_GetEntityIndex(trace)))
-				SDKHooks_TakeDamage(TR_GetEntityIndex(trace), m_pAttacker, client, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually
+			if(IsValidEnemy(m_pAttacker, hurt_who))
+				SDKHooks_TakeDamage(hurt_who, m_pAttacker, client, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually
 		}
 		else
 		{
-			if(IsValidEnemy(m_pAttacker, TR_GetEntityIndex(trace)) && TR_GetEntityIndex(trace) <= MaxClients)
-				SDKHooks_TakeDamage(TR_GetEntityIndex(trace), m_pAttacker, m_pAttacker, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos);
-			else if(IsValidEnemy(m_pAttacker, TR_GetEntityIndex(trace)) && TR_GetEntityIndex(trace) > MaxClients)
-				SDKHooks_TakeDamage(TR_GetEntityIndex(trace), m_pAttacker, m_pAttacker, m_flDamage * bonus_entity_damage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually
+			if(IsValidEnemy(m_pAttacker, hurt_who) && hurt_who <= MaxClients)
+				SDKHooks_TakeDamage(hurt_who, m_pAttacker, m_pAttacker, m_flDamage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos);
+			else if(IsValidEnemy(m_pAttacker, hurt_who) && hurt_who > MaxClients)
+				SDKHooks_TakeDamage(hurt_who, m_pAttacker, m_pAttacker, m_flDamage * bonus_entity_damage, nDamageType, -1, CalculateBulletDamageForce(m_vecDirShooting, 1.0), endpos); //any bullet type will deal 5x the damage, usually
 		}
 		
 	}

@@ -42,7 +42,7 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 int SeargentIdeal_Alive;
-#define SEARGENT_IDEAL_RANGE 400.0
+#define SEARGENT_IDEAL_RANGE 300.0
 
 bool SeargentIdeal_Existant()
 {
@@ -52,6 +52,7 @@ bool SeargentIdeal_Existant()
 	}
 	return false;
 }
+
 void SeargentIdeal_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -346,7 +347,7 @@ Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &d
 		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
 		if(npc.m_iGetSeargentProtector)
 		{
-			SDKHooks_TakeDamage(npc.m_iGetSeargentProtector, attacker, inflictor, damage * 0.25, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			SDKHooks_TakeDamage(npc.m_iGetSeargentProtector, attacker, inflictor, damage * 0.25, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 			damage = 0.0;
 		}
 	}
