@@ -275,11 +275,14 @@ void Pathshaper_SpawnFractal(CClotBody npc, int health, int limit)
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 	
-	int entity = Npc_Create(PATHSHAPER_FRACTAL, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+	int entity = Npc_Create(PATHSHAPER_FRACTAL, -1, pos, ang, ally);
 	if(entity > MaxClients)
 	{
-		Zombies_Currently_Still_Ongoing++;
+		if(!ally)
+			Zombies_Currently_Still_Ongoing++;
+		
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 
