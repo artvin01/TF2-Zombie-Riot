@@ -456,7 +456,7 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 					vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 				}
 				float DamageDone = 25.0;
-				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 275.0, "drg_cow_rockettrail_burst_charged_blue", true, true);
+				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "drg_cow_rockettrail_burst_charged_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.5;
 			}
