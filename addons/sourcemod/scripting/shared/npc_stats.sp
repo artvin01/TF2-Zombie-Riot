@@ -2005,7 +2005,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	const char[] anim = "",
 	int skin = 0,
 	float model_size = 1.0,
-	float offset = 0.0)
+	float offset = 0.0,
+	bool DontParent = false)
 	{
 		int item = CreateEntityByName("prop_dynamic");
 		DispatchKeyValue(item, "model", model);
@@ -2031,6 +2032,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		VecOrigin[2] += offset;
 
 		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		if(DontParent)
+		{
+			return item;
+		}
 		
 
 		if(!StrEqual(anim, ""))
@@ -2732,6 +2737,10 @@ public void NPC_Base_InitGamedata()
 	EntityFactory.DeriveFromNPC();
 	EntityFactory.BeginDataMapDesc()
 		.DefineIntField("zr_pPath")
+	
+		//Seargent Ideal Shield Netprops
+		.DefineIntField("zr_iRefSeargentProtect")
+		.DefineFloatField("zr_fSeargentProtectTime")
 	.EndDataMapDesc(); 
 
 	EntityFactory.Install();

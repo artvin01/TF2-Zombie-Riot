@@ -146,7 +146,7 @@ public void Weapon_Wind_Laser_Builder(int client, int weapon, const char[] class
 public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bool &result)
 {
 	int mana_cost;
-	mana_cost = RoundToCeil(Attributes_Get(weapon, 773, 1.0));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -225,7 +225,7 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, bool &result)
 {
 	int mana_cost;
-	mana_cost = RoundToCeil(Attributes_Get(weapon, 773, 1.0));
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{

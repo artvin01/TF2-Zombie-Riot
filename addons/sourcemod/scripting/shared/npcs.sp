@@ -2012,7 +2012,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR	
 	if(SeargentIdeal_Existant())
 	{
-		SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		if(damage == 0.0)
+			return Plugin_Handled;
 	}
 #endif
 	if(WeaponWasValid)
