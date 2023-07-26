@@ -469,6 +469,10 @@ int i_AresenalTrap[MAXENTITIES]={0, ...}; 				//719
 int i_ArsenalBombImplanter[MAXENTITIES]={0, ...}; 				//544
 int i_NoBonusRange[MAXENTITIES]={0, ...}; 				//410
 int i_BuffBannerPassively[MAXENTITIES]={0, ...}; 				//786
+int i_VampType[MAXENTITIES]={0, ...}; //Type of Vampire Knives knife this weapon is, 0: none, 1: normal melee, 2: normal melee pap 1, 
+										//3: normal melee pap 2
+bool b_VampCleaver[MAXENTITIES]={false, ...}; //If this is a Vampire Knives knife: is it the cleaver variant?
+bool b_VampThrow[MAXENTITIES]={false, ...}; //If this is a Vampire Knives knife: is it a thrown knife?
 
 int i_BleedDurationWeapon[MAXENTITIES]={0, ...}; 				//149
 int i_BurnDurationWeapon[MAXENTITIES]={0, ...}; 				//208

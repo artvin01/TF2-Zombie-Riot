@@ -149,14 +149,17 @@ public void Isharmla_ClotThink(int iNPC)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
+		bool ally = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
 		
-		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+		int entity = Npc_Create(ISHARMLA_TRANS, -1, pos, ang, ally);
 		if(entity > MaxClients)
 		{
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 			view_as<CClotBody>(entity).Anger = npc.Anger;
 
-			Zombies_Currently_Still_Ongoing++;
+			if(!ally)
+				Zombies_Currently_Still_Ongoing++;
+			
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			

@@ -1594,6 +1594,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			damage += BaseDamageBeforeBuffs * 0.4;
 		}
+		
+#if defined ZR
+		if (i_VampType[weapon] > 0 && !b_NpcIsInvulnerable[victim])
+		{
+			Vamp_ApplyBloodlust(attacker, victim, i_VampType[weapon], b_VampCleaver[weapon], b_VampThrow[weapon]);
+			i_VampType[weapon] = 0;
+		}
+#endif
 
 		//Resistance buffs will not count towards this flat decreace, they will be universal!
 		if(!NpcStats_IsEnemySilenced(victim))

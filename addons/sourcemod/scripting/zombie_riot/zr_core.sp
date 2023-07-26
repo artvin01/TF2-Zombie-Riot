@@ -376,6 +376,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_enforcer.sp"
 #include "zombie_riot/custom/weapon_blemishine.sp"
 #include "zombie_riot/custom/weapon_gladiia.sp"
+#include "zombie_riot/custom/weapon_vampire_knives.sp"
 
 void ZR_PluginLoad()
 {
@@ -550,6 +551,7 @@ void ZR_MapStart()
 	Wand_Cryo_Precache();
 	Abiltity_Coin_Flip_Map_Change();
 	Wand_Cryo_Precache();
+	Vampire_Knives_Precache();
 	Fusion_Melee_OnMapStart();
 	Atomic_MapStart();
 	SSS_Map_Precache();
