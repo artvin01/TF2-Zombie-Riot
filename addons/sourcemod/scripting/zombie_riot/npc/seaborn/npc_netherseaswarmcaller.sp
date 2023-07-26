@@ -163,7 +163,7 @@ public void SeaSwarmcaller_ClotThink(int iNPC)
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 640.0);
 			// 200 x 1.6
 			
-			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEASWARMCALLER_ALT ? 19.0 : 16.0, -1, npc.index, -1, vecMe, 320.0, _, _, true, _, false, _, SeaSwarmcaller_ExplodePost);
+			Explode_Logic_Custom(i_NpcInternalId[npc.index] == SEASWARMCALLER_ALT ? 24.0 : 21.0, -1, npc.index, -1, vecMe, 320.0, _, _, true, _, false, _, SeaSwarmcaller_ExplodePost);
 			// 140 x 0.15
 			// 160 x 0.15
 		}

@@ -190,7 +190,7 @@ public void SeaPredator_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 72.5 : 57.5;
+						float attack = i_NpcInternalId[npc.index] == SEAPREDATOR_ALT ? 82.5 : 67.5;
 						// 450 x 0.15
 						// 550 x 0.15
 

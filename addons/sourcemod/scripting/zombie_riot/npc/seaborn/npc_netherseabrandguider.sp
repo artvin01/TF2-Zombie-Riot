@@ -198,7 +198,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEABRANDGUIDER_ALT ? 125.0 : 110.0;
+						float attack = i_NpcInternalId[npc.index] == SEABRANDGUIDER_ALT ? 135.0 : 120.0;
 						// 800 x 0.15
 						// 900 x 0.15
 

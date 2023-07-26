@@ -214,7 +214,7 @@ public void SeaReaper_ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 32.5 : 25.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAREAPER_ALT ? 37.5 : 30.0, DMG_CLUB);
 						// 400 x 0.15 x 0.5
 						// 500 x 0.15 x 0.5
 

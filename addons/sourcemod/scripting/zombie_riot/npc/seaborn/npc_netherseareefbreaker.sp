@@ -252,7 +252,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 
-				float attack = (i_NpcInternalId[npc.index] == SEAREEFBREAKER_ALT ? 110.0 : 80.0) * npc.Attack(gameTime);
+				float attack = (i_NpcInternalId[npc.index] == SEAREEFBREAKER_ALT ? 120.0 : 90.0) * npc.Attack(gameTime);
 				// 300 x 0.3
 				// 400 x 0.3
 

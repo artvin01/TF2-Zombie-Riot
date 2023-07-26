@@ -175,7 +175,7 @@ public void SeaPiercer_ClotThink(int iNPC)
 						}
 						else
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAPIERCER_ALT ? 47.5 : 36.25, DMG_DROWN);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEAPIERCER_ALT ? 52.5 : 41.25, DMG_DROWN);
 							// 550 x 0.15 x 0.5
 							// 700 x 0.15 x 0.5
 						}

@@ -179,7 +179,7 @@ public void SeaFounder_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 80.0 : 57.5;
+						float attack = i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 90.0 : 67.5;
 						// 450 x 0.15
 						// 600 x 0.15
 						
@@ -336,7 +336,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > (CurrentRound == 59 ? 12 : 4))
+	if(++SpreadTicks > (CurrentRound == 59 ? 24 : 8))
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
