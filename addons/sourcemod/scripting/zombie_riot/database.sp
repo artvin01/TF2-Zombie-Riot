@@ -111,7 +111,8 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "screenshake INTEGER NOT NULL DEFAULT 1, "
 		... "lowhealthshake INTEGER NOT NULL DEFAULT 1, "
 		... "hitmarker INTEGER NOT NULL DEFAULT 1, "
-		... "tp INTEGER NOT NULL DEFAULT 0);");
+		... "tp INTEGER NOT NULL DEFAULT 0, "
+		... "zomvol FLOAT NOT NULL DEFAULT 0.0);");
 		
 		db.Execute(tr, Database_GlobalSetup, Database_FailHandle, db);
 	}
