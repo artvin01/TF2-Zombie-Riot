@@ -177,9 +177,9 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
-					vecTarget = PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0);
+					vecTarget = PredictSubjectPositionForProjectiles(npc, enemy[i], 1000.0);
 
-					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 240.0 : 195.0, 1200.0, "models/weapons/w_bugbait.mdl");
+					int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPEWER_ALT ? 230.0 : 185.0, 1000.0, "models/weapons/w_bugbait.mdl");
 					// 650 * 0.3
 					// 800 * 0.3
 

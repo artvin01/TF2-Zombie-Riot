@@ -145,7 +145,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 24.0 : 21.0, 800.0, "models/weapons/w_bugbait.mdl");
+				int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 19.0 : 16.0, 800.0, "models/weapons/w_bugbait.mdl");
 				// 280 * 0.15
 				// 320 * 0.15
 				
