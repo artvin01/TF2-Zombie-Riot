@@ -2647,12 +2647,15 @@ bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage,
 			damage *= ExtraDamageDealt;
 		}
 	}
-	if(b_IsAlliedNpc[inflictor]) 
+	if(IsValidEntity(inflictor))
 	{
-		CClotBody npc = view_as<CClotBody>(inflictor);
-		if(npc.m_bScalesWithWaves)
+		if(b_IsAlliedNpc[inflictor]) 
 		{
-			damage *= ExtraDamageDealt;
+			CClotBody npc = view_as<CClotBody>(inflictor);
+			if(npc.m_bScalesWithWaves)
+			{
+				damage *= ExtraDamageDealt;
+			}
 		}
 	}
 	return false;
