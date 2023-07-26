@@ -3071,6 +3071,10 @@ void OnKillUniqueWeapon(int attacker, int weapon)
 		{
 			MlynarReduceDamageOnKill(attacker);
 		}
+		case WEAPON_MLYNAR_PAP:
+		{
+			MlynarReduceDamageOnKill(attacker, 1);
+		}
 	}
 }
 void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_custom_zr)
@@ -3087,6 +3091,11 @@ void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_c
 		{
 			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
 				MlynarTakeDamagePostRaid(attacker);
+		}
+		case WEAPON_MLYNAR_PAP:
+		{
+			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
+				MlynarTakeDamagePostRaid(attacker, 1);
 		}
 	}
 }
