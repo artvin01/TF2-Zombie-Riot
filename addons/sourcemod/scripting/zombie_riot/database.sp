@@ -282,8 +282,8 @@ void DataBase_ClientDisconnect(int client)
 			... "screenshake = %d, "
 			... "lowhealthshake = %d, "
 			... "hitmarker = %d, "
-			... "tp = %d "
-			... "zom vol = %.1f "
+			... "tp = %d, "
+			... "zomvol = %.1f, "
 			... "WHERE steamid = %d;",
 			b_IsPlayerNiko[client],
 			f_ArmorHudOffsetX[client],

@@ -2009,6 +2009,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 
 	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+#if defined ZR	
+	if(SeargentIdeal_Existant())
+	{
+		SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	}
+#endif
 	if(WeaponWasValid)
 	{
 		float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	

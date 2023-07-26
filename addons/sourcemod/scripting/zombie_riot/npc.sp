@@ -332,6 +332,7 @@ enum
 	RUINA_LANIUS				= 293,
 	EXPIDONSA_HEAVYPUNUEL		= 294,
 	RUINA_MAGIA					= 295,
+	EXPIDONSA_SEARGENTIDEAL		= 296,
 }
 
 public const char NPC_Names[][] =
@@ -651,7 +652,9 @@ public const char NPC_Names[][] =
 	"Diversionistico",
 	"Adiantum",
 	"Lanius",
-	"Magia"
+	"Heavy Punuel",
+	"Magia",
+	"Seargent Ideal"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -970,7 +973,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_ruina_adiantum",
 	"npc_ruina_lanius",
 	"npc_heavy_punuel",
-	"npc_ruina_magia"
+	"npc_ruina_magia",
+	"npc_seargent_ideal"
 };
 
 void NPC_MapStart()
@@ -1189,6 +1193,7 @@ void NPC_MapStart()
 	Pistoleer_OnMapStart_NPC();
 	Diversionistico_OnMapStart_NPC();
 	HeavyPunuel_OnMapStart_NPC();
+	SeargentIdeal_OnMapStart_NPC();	
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2067,7 +2072,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case EXPIDONSA_HEAVYPUNUEL:
 			entity = HeavyPunuel(client, vecPos, vecAng, ally);
-			
+
+		case EXPIDONSA_SEARGENTIDEAL:
+			entity = SeargentIdeal(client, vecPos, vecAng, ally);
 
 			
 		default:
@@ -2909,10 +2916,11 @@ public void NPCDeath(int entity)
 			Defanda_NPCDeath(entity);
 
 		case EXPIDONSA_SELFAM_IRE:
-			Defanda_NPCDeath(entity);
+			SelfamIre_NPCDeath(entity);
 
 		case EXPIDONSA_VAUSMAGICA:
 			VausMagica_NPCDeath(entity);
+
 		case EXPIDONSA_PISTOLEER:
 			Pistoleer_NPCDeath(entity);
 
@@ -2921,6 +2929,9 @@ public void NPCDeath(int entity)
 
 		case EXPIDONSA_HEAVYPUNUEL:
 			HeavyPunuel_NPCDeath(entity);
+
+		case EXPIDONSA_SEARGENTIDEAL:
+			SeargentIdeal_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3689,8 +3700,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case EXPIDONSA_DIVERSIONISTICO:
 			Diversionistico_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-		case  EXPIDONSA_HEAVYPUNUEL:
+		case EXPIDONSA_HEAVYPUNUEL:
 			HeavyPunuel_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_SEARGENTIDEAL:
+			SeargentIdeal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
@@ -4004,3 +4018,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_benera_pistoleer.sp"
 #include "zombie_riot/npc/expidonsa/npc_diversionistico.sp"
 #include "zombie_riot/npc/expidonsa/npc_heavy_punuel.sp"
+#include "zombie_riot/npc/expidonsa/npc_seargent_ideal.sp"

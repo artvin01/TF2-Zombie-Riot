@@ -1697,4 +1697,13 @@
 	{
 		"en"	"Magia"
 	}
+	"Heavy Punuel"
+	{
+		"en"	"Heavy Punuel"
+	}
+	"Seargent Ideal"
+	{
+		"en"	"Seargent Ideal"
+	}
+	
 }

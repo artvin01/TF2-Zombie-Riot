@@ -115,7 +115,7 @@ methodmap HeavyPunuel < CClotBody
 	
 	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.25", "1000", ally, false, true));
+		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "1500", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_HEAVYPUNUEL;
 		i_NpcWeight[npc.index] = 1;
@@ -157,7 +157,7 @@ methodmap HeavyPunuel < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/demo/qc_glove.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 

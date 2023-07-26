@@ -83,7 +83,9 @@ public void Weapon_Health_Hose_Uber_Sprayer(int client, int weapon, bool crit, i
 		CreateTimer(dur, Hose_RemoveUber, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		
 		TF2_AddCondition(client, TFCond_MegaHeal, dur);
-		TF2_AddCondition(client, TFCond_RuneHaste, dur);
+		ApplyTempAttrib(weapon, 6, 0.5, dur);
+		ApplyTempAttrib(weapon, 97, 0.5, dur);
+		ApplyTempAttrib(weapon, 4, 2.0, dur);
 		
 		Hose_UpdateText(client);
 	}
