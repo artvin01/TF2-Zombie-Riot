@@ -333,11 +333,12 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 		EmitSoundToClient(attacker, IsCleaver ? SND_BLOODLUST_CLEAVER : SND_BLOODLUST_KNIFE, _, _, _, _, _, GetRandomInt(80, 110));
 		f_VampNextHitSound[attacker] = GetGameTime() + 0.1;
 	}
-	
+	BleedAmountCountStack[victim] += 1;
 	Handle pack;
 	CreateDataTimer(BleedRate, Vamp_BloodlustTick, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, GetClientUserId(attacker));
 	WritePackCell(pack, EntIndexToEntRef(victim));
+	WritePackCell(pack, victim);
 	WritePackCell(pack, 0);
 	WritePackCell(pack, NumStacks);
 	WritePackCell(pack, MaxHeal);
@@ -355,12 +356,17 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	ResetPack(pack);
 	int attacker = GetClientOfUserId(ReadPackCell(pack));
 	int victim = EntRefToEntIndex(ReadPackCell(pack));
+	int victimOriginalId = ReadPackCell(pack);
 	
 	if (!IsValidClient(attacker) || !IsValidEntity(victim))
+	{
+		BleedAmountCountStack[victimOriginalId] -= 1;
 		return Plugin_Continue;
+	}
 		
 	if (b_NpcIsInvulnerable[victim]) //If the NPC is invulnerable, stop all bleeding.
 	{
+		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Continue;
 	}
 	
@@ -438,12 +444,15 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	
 	NumHits++;
 	if (NumHits >= HitQuota)
+	{
+		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Continue;
-		
+	}
 	Handle pack2;
 	CreateDataTimer(Rate, Vamp_BloodlustTick, pack2, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack2, GetClientUserId(attacker));
 	WritePackCell(pack2, EntIndexToEntRef(victim));
+	WritePackCell(pack2, victim);
 	WritePackCell(pack2, NumHits);
 	WritePackCell(pack2, HitQuota);
 	WritePackCell(pack2, MaxHeal);
