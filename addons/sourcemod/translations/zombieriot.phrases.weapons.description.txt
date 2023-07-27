@@ -109,6 +109,14 @@
 	{
 		"en"		"Archetype: Kazimierz"
 	}
+	"Bloodletter"
+	{
+		"en"		"Archetype: Bloodletter"
+	}
+	"Bloody Butcher"
+	{
+		"en"		"Archetype: Bloody Butcher"
+	}
 	"Syringe Gun Desc"
 	{
 		"en"		"Low Damage but very high bleed duration"
