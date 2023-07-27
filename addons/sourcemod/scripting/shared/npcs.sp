@@ -2354,6 +2354,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
 		}
+		case WEAPON_SPEEDFISTS:
+		{
+			Npc_OnTakeDamage_SpeedFists(attacker);
+		}
 		case WEAPON_BOOMSTICK:
 		{
 			if(b_thisNpcIsARaid[victim])

@@ -44,8 +44,23 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
+			Handle swingTrace;
+			b_LagCompNPC_No_Layers = true;
+			float vecSwingForward[3];
+			StartLagCompensation_Base_Boss(client);
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 700.0, false, 45.0, true); //infinite range, and ignore walls!
+			FinishLagCompensation_Base_boss();
+
+			int target = TR_GetEntityIndex(swingTrace);	
+			delete swingTrace;
+			if(!IsValidEnemy(client, target, true))
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
+			
 			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 20.0);
+			Ability_Apply_Cooldown(client, slot, 40.0);
 			static float EntLoc[3];
 
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", EntLoc);
@@ -70,7 +85,7 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 
 			how_many_times_fisted[client] = 1;
 			// attribute changes for the special punch
-			Attributes_Set(weapon, 1, 2.0);
+			Attributes_Set(weapon, 1, 12.0);
 	//		Attributes_Set(weapon, 264, 5.0);
 
 			CreateTimer(1.5, Reset_hitcounter, client, TIMER_FLAG_NO_MAPCHANGE);    // timer to reset the bonus stuff after a certain time has passes

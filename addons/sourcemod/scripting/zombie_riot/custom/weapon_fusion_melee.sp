@@ -14,6 +14,9 @@ static float f_NearlDurationCheckApply[MAXTF2PLAYERS];
 static float f_NearlThinkDelay[MAXTF2PLAYERS];
 static int i_NearlWeaponUsedWith[MAXTF2PLAYERS];
 
+static float f_SpeedFistsOfSpeed[MAXTF2PLAYERS];
+static int i_SpeedFistsOfSpeedHit[MAXTF2PLAYERS];
+
 public void Fusion_Melee_OnMapStart()
 {
 	Zero(Duration);
@@ -23,6 +26,7 @@ public void Fusion_Melee_OnMapStart()
 	PrecacheSound(NEARL_EXTRA_DAMAGE_SOUND);
 	Zero(f_NearlDurationCheckApply);
 	Zero(f_NearlThinkDelay);
+	Zero(f_SpeedFistsOfSpeed);
 }
 
 public float Npc_OnTakeDamage_Fusion(int victim, float damage, int weapon)
@@ -392,4 +396,22 @@ public Action Nearl_Falling_Shot(Handle timer, int ref)
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 	}
 	return Plugin_Handled;
+}
+
+
+void Npc_OnTakeDamage_SpeedFists(int attacker)
+{
+	if(f_SpeedFistsOfSpeed[attacker] > GetGameTime())
+	{
+		i_SpeedFistsOfSpeedHit[attacker] += 1;
+		if(i_SpeedFistsOfSpeedHit[attacker] > 10)
+		{
+			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
+		}
+	}
+	else
+	{
+		i_SpeedFistsOfSpeedHit[attacker] = 1;
+	}
+	f_SpeedFistsOfSpeed[attacker] = GetGameTime() + 0.5;
 }

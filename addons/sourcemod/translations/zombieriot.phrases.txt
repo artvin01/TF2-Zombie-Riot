@@ -3656,4 +3656,17 @@
 		//"it"		""
 		//"fr"		""			
 	}
+	"Burstpack Already Used This Round, Recharging"
+	{
+		"en"		"Burstpack already used this round, recharging..."
+		//"de"		""
+		//"ru"		""
+		//"pt"		""
+		//"nl"		""
+		//"chi"		""
+		//"pl"		""
+		//"es"		""
+		//"it"		""
+		//"fr"		""			
+	}
 }
