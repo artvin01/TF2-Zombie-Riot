@@ -2003,11 +2003,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_MLYNAR: // weapon_ark
 		{
-			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
 		}
 		case WEAPON_MLYNAR_PAP: // weapon_ark
 		{
-			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, damagePosition, 1);
+			return Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
 		case WEAPON_OCEAN, WEAPON_SPECTER:
 		{

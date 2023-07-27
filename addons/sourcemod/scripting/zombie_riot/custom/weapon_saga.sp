@@ -50,6 +50,9 @@ void Saga_DeadEffects(int victim, int attacker, int weapon)
 
 bool Saga_IsChargeWeapon(int client, int weapon)
 {
+	if(!IsValidEntity(weapon))
+		return false;
+
 	if(f_UberOnHitWeapon[weapon])
 		return true;
 	

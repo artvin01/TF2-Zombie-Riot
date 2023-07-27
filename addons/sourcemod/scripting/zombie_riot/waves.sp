@@ -277,7 +277,7 @@ void Waves_DisplayHintVote()
 				{
 					count++;
 
-					if(VotedFor[client] > 0)
+ 					if(VotedFor[client] > 0 && VotedFor[client] <= length)
 						votes[VotedFor[client] - 1]++;
 				}
 			}

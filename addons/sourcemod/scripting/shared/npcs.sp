@@ -2437,9 +2437,12 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 		}
 	}
 	//should not steal.
-	if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE && Saga_IsChargeWeapon(attacker, weapon))
+	if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
 	{
-		return true;
+		if(Saga_IsChargeWeapon(attacker, weapon))
+		{
+			return true;
+		}
 	}
 	if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
 	{

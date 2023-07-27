@@ -64,9 +64,28 @@ static float Vamp_ThrowDMGMultPerKill[3] = { 0.0, 0.66, 0.8 }; //Amount to multi
 int i_VampThrowType[MAXENTITIES] = { 0, ... };
 int i_VampThrowProp[MAXENTITIES] = { 0, ... };
 static float f_CleaverMultOnKill[MAXENTITIES] = { 0.0, ... };
+static int i_VampKnivesMelee[MAXPLAYERS + 1] = { 0, ... };
 
 static float f_VampNextHitSound[MAXPLAYERS + 1] = { 0.0, ... };
 
+/*
+	WEAPON_VAMPKNIVES_1 = 29,
+	WEAPON_VAMPKNIVES_2 = 30,
+	WEAPON_VAMPKNIVES_2_CLEAVER = 31,
+	WEAPON_VAMPKNIVES_3 = 32,
+	WEAPON_VAMPKNIVES_3_CLEAVER = 33
+*/
+void Vampire_KnifesDmgMulti(int client, int weapon)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_1
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_2
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_2_CLEAVER
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_3
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_3_CLEAVER) 
+	{
+		i_VampKnivesMelee[client] = EntIndexToEntRef(weapon);
+	}
+}
 public void Vampire_Knives_Throw(int client, int weapon, bool crit, int slot)
 {
 	Vamp_ActivateThrow(client, weapon, 0, false);
@@ -358,8 +377,8 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	
 	float DMG_Final = DMG;
 	
-	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
-	if (IsValidEntity(weapon) && weapon == GetPlayerWeaponSlot(attacker, 2))
+	int weapon = EntRefToEntIndex(i_VampKnivesMelee[attacker]);
+	if (IsValidEntity(weapon))
 	{
 		DMG_Final *= Attributes_Get(weapon, 1, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
@@ -525,7 +544,7 @@ public bool Vamp_CleaverHit(int entity, int other)
 
 	if (dmg >= hp)
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_SLASH|DMG_ALWAYSGIB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_SLASH, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
 		f_WandDamage[entity] *= f_CleaverMultOnKill[entity];
 		return false;
 	}

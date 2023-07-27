@@ -497,7 +497,7 @@ public bool TraceEntityEnumerator_Mlynar(int entity, int filterentity)
 }
 
 
-float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int weapon, float damagePosition[3], int pap = 0)
+float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int weapon, int pap = 0)
 {
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
