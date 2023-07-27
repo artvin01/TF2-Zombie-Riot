@@ -206,9 +206,17 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Wand_Skulls_Touch_Launched(entity, target);
 		}
-		case 19: //Staff of the Skull Servants launched skull.
+		case 19: //Health Hose particle
 		{
 			Wand_Health_Hose_Touch_World(entity, target);
+		}
+		case 20: //Vampire Knives thrown knife
+		{
+			Vamp_Knife_Touch(entity, target);
+		}
+		case 21: //Vampire Knives thrown cleaver
+		{
+			Vamp_Cleaver_Touch_World(entity, target);
 		}
 		/*		
 		case WEAPON_LANTEAN:

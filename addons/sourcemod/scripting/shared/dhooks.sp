@@ -797,6 +797,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				Hose_Touch(entity1, entity2);
 				return false;
 			}
+			else if (i_WandIdNumber[entity1] == 21 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2])
+			{
+				return Vamp_CleaverHit(entity1, entity2);
+			}
 			if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;
