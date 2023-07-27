@@ -46,57 +46,6 @@ static float Vamp_ThrowDMGMultPerKill[3] = { 0.0, 0.66, 0.8 }; //Amount to multi
 
 static float Vamp_EndTime[MAXENTITIES] = { 0.0, ... };
 
-public void Vampire_Knives_Melee(int client, int weapon, bool crit, int slot)
-{
-	VampireKnives_ApplyEffect(weapon, 1, false, false);
-}
-
-public void Vampire_Knives_Melee_2(int client, int weapon, bool crit, int slot)
-{
-	VampireKnives_ApplyEffect(weapon, 2, false, false);
-}
-
-public void Vampire_Knives_Melee_3(int client, int weapon, bool crit, int slot)
-{
-	VampireKnives_ApplyEffect(weapon, 3, false, false);
-}
-
-public void Vampire_Knives_Melee_2_Cleaver(int client, int weapon, bool crit, int slot)
-{
-	VampireKnives_ApplyEffect(weapon, 2, true, false);
-}
-
-public void Vampire_Knives_Melee_3_Cleaver(int client, int weapon, bool crit, int slot)
-{
-	VampireKnives_ApplyEffect(weapon, 3, true, false);
-}
-
-public void VampireKnives_ApplyEffect(int weapon, int vampType, bool cleaver, bool isThrow)
-{
-	if (IsValidEntity(weapon))
-	{
-		i_VampType[weapon] = vampType;
-		b_VampCleaver[weapon] = cleaver;
-		b_VampThrow[weapon] = isThrow;
-		Vamp_EndTime[weapon] = GetGameTime() + 0.66;
-		CreateTimer(0.69, VampireKnives_RemoveEffect, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-	}
-}
-
-public Action VampireKnives_RemoveEffect(Handle remove, int ref)
-{
-	int weapon = EntRefToEntIndex(ref);
-	if (IsValidEntity(weapon))
-	{
-		if (GetGameTime() > Vamp_EndTime[weapon])
-		{
-			i_VampType[weapon] = 0;
-		}
-	}
-	
-	return Plugin_Continue;
-}
-
 public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsCleaver, bool IsThrow)
 {
 	int NumStacks = IsCleaver ? Vamp_BleedStacksOnMelee_Cleaver[VampType - 1] : Vamp_BleedStacksOnMelee_Normal[VampType - 1];
@@ -172,7 +121,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		vicloc[i] += GetRandomFloat(-45.0, 45.0);
 	}
 	
-	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, _, _, _, vicloc, true);
+	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_SLASH, _, _, vicloc, true);
 	
 	if (dist <= Radius)
 	{

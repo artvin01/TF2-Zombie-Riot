@@ -2356,6 +2356,26 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 				damage *= 2.0; //due to how dangerous it is to get closer.
 			}
 		}
+		case WEAPON_VAMPKNIVES_1:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 1, false, false);
+		}
+		case WEAPON_VAMPKNIVES_2:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 2, false, false);
+		}
+		case WEAPON_VAMPKNIVES_2_CLEAVER:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 2, true, false);
+		}
+		case WEAPON_VAMPKNIVES_3:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 3, false, false);
+		}
+		case WEAPON_VAMPKNIVES_3_CLEAVER:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 3, true, false);
+		}
 	}
 #endif
 
@@ -2733,13 +2753,7 @@ bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, floa
 	{
 		f_LowTeslarDebuff[victim] = GameTime + 5.0;
 	}
-#if defined ZR
-	if (i_VampType[weapon] > 0 && !b_NpcIsInvulnerable[victim])
-	{
-		Vamp_ApplyBloodlust(attacker, victim, i_VampType[weapon], b_VampCleaver[weapon], b_VampThrow[weapon]);
-		i_VampType[weapon] = 0;
-	}
-#endif
+	
 	return false;
 }
 
