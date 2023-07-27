@@ -335,14 +335,17 @@ methodmap RaidbossSilvester < CClotBody
 		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
+		if(amount_of_people > 14.0)
+		{
+			amount_of_people = 14.0;
+		}
+
 		
 		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 
-			
-			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		Raidboss_Clean_Everyone();

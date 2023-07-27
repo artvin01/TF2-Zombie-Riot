@@ -269,6 +269,11 @@ methodmap GodArkantos < CClotBody
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		
+		if(amount_of_people > 14.0)
+		{
+			amount_of_people = 14.0;
+		}
+		
 		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)

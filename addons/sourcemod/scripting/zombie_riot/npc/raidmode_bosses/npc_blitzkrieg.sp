@@ -420,6 +420,10 @@ methodmap Blitzkrieg < CClotBody
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		
+		if(amount_of_people > 14.0)
+		{
+			amount_of_people = 14.0;
+		}
 		if(amount_of_people<8)	//This is to avoid blitz taking so much damage at low player counts that certain abilities just don't trigger
 		{
 			b_lowplayercount[npc.index]=true;
