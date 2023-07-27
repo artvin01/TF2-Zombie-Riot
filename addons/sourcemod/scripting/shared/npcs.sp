@@ -2381,6 +2381,14 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Vamp_ApplyBloodlust(attacker, victim, 3, true, false);
 		}
+		case WEAPON_VAMPKNIVES_4:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 4, false, false);
+		}
+		case WEAPON_VAMPKNIVES_4_CLEAVER:
+		{
+			Vamp_ApplyBloodlust(attacker, victim, 4, true, false);
+		}
 	}
 #endif
 

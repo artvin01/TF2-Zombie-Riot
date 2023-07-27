@@ -27,40 +27,41 @@ public void Vampire_Knives_Precache()
 
 //Both pap paps inflict X stacks of Bloodlust on hit. Each stack of Bloodlust deals some bleed damage per Y seconds, then heals the user for a portion of
 //that damage, up to a cap.
-static float Vamp_BleedDMG[3] = { 15.0, 30.0, 60.0 }; //The base damage dealt per Bloodlust tick.
-static float Vamp_BleedDMGMax[3] = { 99999.0, 99999.0, 99999.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
-static float Vamp_BleedRate[3] = { 0.33, 0.275, 0.25 }; //The rate at which Bloodlust deals damage.
-static float Vamp_BleedHeal[3] = { 0.17, 0.085, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
-static float Vamp_HealRadius[3] = { 300.0, 330.0, 360.0 };	//Max distance from the victim to heal the user in.
-static int Vamp_MaxHeal[3] = { 3, 2, 1 };	//Max heal per tick.
-static int Vamp_MinHeal[3] = { 1, 1, 1 };	//Minimum healing received per Bloodlust tick.
-static float Vamp_HealMultIfHurt[3] = { 0.75, 0.66, 0.5 };	//Amount to multiply healing received by Bloodlust if recently harmed.
+static float Vamp_BleedDMGMax[4] = { 99999.0, 99999.0, 99999.0, 99999.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
+static float Vamp_BleedRate[4] = { 0.33, 0.275, 0.25, 0.2 }; //The rate at which Bloodlust deals damage.
+static float Vamp_BleedHeal[4] = { 0.17, 0.085, 0.0475, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
+static float Vamp_HealRadius[4] = { 300.0, 330.0, 360.0, 390.0 };	//Max distance from the victim to heal the user in.
+static int Vamp_MaxHeal[4] = { 3, 2, 1, 1 };	//Max heal per tick.
+static int Vamp_MinHeal[4] = { 1, 1, 1, 1 };	//Minimum healing received per Bloodlust tick.
+static float Vamp_HealMultIfHurt[4] = { 0.75, 0.66, 0.5, 0.5 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
-static int Vamp_BleedStacksOnMelee_Normal[3] = { 7, 10, 12 }; //Number of Bloodlust stacks applied on a melee hit.
-static int Vamp_BleedStacksOnThrow_Normal[3] = { 5, 7, 10 }; //Number of Bloodlust stacks applied on a throw hit.
-static float Vamp_ThrowMultiplier_Normal[3] = { 2.0, 3.25, 3.75 }; //Amount to multiply damage dealt by thrown knives.
-static float Vamp_ThrowCD_Normal[3] = { 6.0, 9.0, 14.0 }; //Knife throw cooldown.
-static int Vamp_ThrowKnives_Normal[3] = { 1, 3, 5 }; //Number of knives thrown by M2.
-static int Vamp_ThrowWaves_Normal[3] = { 2, 2, 4 }; //Number of times to throw knives with M2.
-static float Vamp_ThrowRate_Normal[3] = { 0.15, 0.1, 0.05 }; //Time between throws if more than one wave in M2.
-static float Vamp_ThrowSpread_Normal[3] = { 0.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
-static float Vamp_ThrowVelocity_Normal[3] = { 1800.0, 2200.0, 2600.0 };	//Velocity of thrown knives.w 
+static float Vamp_BleedDMG_Normal[4] = { 10.0, 12.5, 15.0, 17.5 }; //The base damage dealt per Bloodlust tick.
+static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
+static int Vamp_BleedStacksOnThrow_Normal[4] = { 5, 7, 10, 12 }; //Number of Bloodlust stacks applied on a throw hit.
+static float Vamp_ThrowMultiplier_Normal[4] = { 2.0, 3.0, 3.75, 4.25 }; //Amount to multiply damage dealt by thrown knives.
+static float Vamp_ThrowCD_Normal[4] = { 6.0, 9.0, 14.0, 14.0 }; //Knife throw cooldown.
+static int Vamp_ThrowKnives_Normal[4] = { 1, 3, 5, 6 }; //Number of knives thrown by M2.
+static int Vamp_ThrowWaves_Normal[4] = { 2, 2, 4, 4 }; //Number of times to throw knives with M2.
+static float Vamp_ThrowRate_Normal[4] = { 0.15, 0.1, 0.05, 0.05 }; //Time between throws if more than one wave in M2.
+static float Vamp_ThrowSpread_Normal[4] = { 0.0, 30.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
+static float Vamp_ThrowVelocity_Normal[4] = { 1800.0, 2200.0, 2600.0, 2600.0 };	//Velocity of thrown knives.w 
 
 //Pap Route 2 - Bloody Butcher: Becomes a slow but deadly cleaver which inflicts heavy damage and gibs zombies on kill. Inflicts more Bloodlust on hit to balance out the
 //slower swing speed. M2 has a longer cooldown and throws fewer knives, but knives become extremely powerful cleavers which keep flying if they kill the
 //zombie they hit.
 
-static int Vamp_BleedStacksOnMelee_Cleaver[3] = { 12, 16, 20 }; //Same as pap route 1, but for pap route 2.
-static int Vamp_BleedStacksOnThrow_Cleaver[3] = { 16, 20, 24 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowMultiplier_Cleaver[3] = { 2.0, 1.0, 0.6 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowCD_Cleaver[3] = { 10.0, 9.0, 16.0 }; //Same as pap route 1, but for pap route 2.
-static int Vamp_ThrowKnives_Cleaver[3] = { 1, 1, 2 }; //Same as pap route 1, but for pap route 2.
-static int Vamp_ThrowWaves_Cleaver[3] = { 1, 2, 2 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowRate_Cleaver[3] = { 0.0, 0.66, 0.4 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowSpread_Cleaver[3] = { 0.0, 0.0, 20.0 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowVelocity_Cleaver[3] = { 1800.0, 2200.0, 2600.0 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowDMGMultPerKill[3] = { 0.0, 0.66, 0.8 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
+static float Vamp_BleedDMG_Cleaver[4] = { 15.0, 30.0, 45.0, 52.0 }; //The base damage dealt per Bloodlust tick.
+static int Vamp_BleedStacksOnMelee_Cleaver[4] = { 12, 16, 20, 24 }; //Same as pap route 1, but for pap route 2.
+static int Vamp_BleedStacksOnThrow_Cleaver[4] = { 16, 20, 24, 28 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowMultiplier_Cleaver[4] = { 2.0, 1.0, 0.6, 0.6 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowCD_Cleaver[4] = { 10.0, 9.0, 16.0, 16.0 }; //Same as pap route 1, but for pap route 2.
+static int Vamp_ThrowKnives_Cleaver[4] = { 1, 1, 2, 3 }; //Same as pap route 1, but for pap route 2.
+static int Vamp_ThrowWaves_Cleaver[4] = { 1, 2, 2, 2 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowRate_Cleaver[4] = { 0.0, 0.66, 0.4, 0.3 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowSpread_Cleaver[4] = { 0.0, 0.0, 20.0, 20.0 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowVelocity_Cleaver[4] = { 1800.0, 2200.0, 2600.0, 2600.0 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.66, 0.8, 0.8 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
 
 int i_VampThrowType[MAXENTITIES] = { 0, ... };
 int i_VampThrowProp[MAXENTITIES] = { 0, ... };
@@ -82,7 +83,9 @@ void Vampire_KnifesDmgMulti(int client, int weapon)
 	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_2
 	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_2_CLEAVER
 	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_3
-	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_3_CLEAVER) 
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_3_CLEAVER
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_4
+	|| i_CustomWeaponEquipLogic[weapon] == WEAPON_VAMPKNIVES_4_CLEAVER) 
 	{
 		i_VampKnivesMelee[client] = EntIndexToEntRef(weapon);
 	}
@@ -110,6 +113,16 @@ public void Vampire_Knives_Throw_3(int client, int weapon, bool crit, int slot)
 public void Vampire_Knives_Throw_3_Cleaver(int client, int weapon, bool crit, int slot)
 {
 	Vamp_ActivateThrow(client, weapon, 2, true);
+}
+
+public void Vampire_Knives_Throw_4(int client, int weapon, bool crit, int slot)
+{
+	Vamp_ActivateThrow(client, weapon, 3, false);
+}
+
+public void Vampire_Knives_Throw_4_Cleaver(int client, int weapon, bool crit, int slot)
+{
+	Vamp_ActivateThrow(client, weapon, 3, true);
 }
 
 public void Vampire_Knives_Big_Swing(int client, int weapon, bool crit, int slot)
@@ -319,7 +332,7 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 {
 	int NumStacks = IsCleaver ? Vamp_BleedStacksOnMelee_Cleaver[VampType - 1] : Vamp_BleedStacksOnMelee_Normal[VampType - 1];
 	int MaxHeal = Vamp_MaxHeal[VampType - 1];
-	float BleedDmg = Vamp_BleedDMG[VampType - 1];
+	float BleedDmg = IsCleaver? Vamp_BleedDMG_Cleaver[VampType - 1] : Vamp_BleedDMG_Normal[VampType - 1];
 	float BleedRate = Vamp_BleedRate[VampType - 1];
 	float BleedHeal = Vamp_BleedHeal[VampType - 1];
 	float Radius = Vamp_HealRadius[VampType - 1];
@@ -337,6 +350,7 @@ public void Vamp_ApplyBloodlust(int attacker, int victim, int VampType, bool IsC
 		EmitSoundToClient(attacker, IsCleaver ? SND_BLOODLUST_CLEAVER : SND_BLOODLUST_KNIFE, _, _, _, _, _, GetRandomInt(80, 110));
 		f_VampNextHitSound[attacker] = GetGameTime() + 0.1;
 	}
+	
 	BleedAmountCountStack[victim] += 1;
 	Handle pack;
 	CreateDataTimer(BleedRate, Vamp_BloodlustTick, pack, TIMER_FLAG_NO_MAPCHANGE);
