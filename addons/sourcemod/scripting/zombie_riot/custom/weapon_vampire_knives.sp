@@ -413,9 +413,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		vicloc[i] += GetRandomFloat(-45.0, 45.0);
 	}
 	
-	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_SLASH, _, _, vicloc, true);
-	//argument type mismatch (argument 5), can't be bothered:
-	//OnTakeDamageBleedNpc(victim, attacker, attacker, DMG_Final, DMG_SLASH, attacker, vicloc, GetGameTime());
+	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_CLUB, _, _, vicloc, false);
 	
 	if (dist <= Radius && dieingstate[attacker] == 0)
 	{
@@ -512,7 +510,7 @@ public void Vamp_Knife_Touch(int entity, int target)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_SLASH, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -563,13 +561,13 @@ public bool Vamp_CleaverHit(int entity, int other)
 
 	if (dmg >= hp)
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_SLASH, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
 		f_WandDamage[entity] *= f_CleaverMultOnKill[entity];
 		return false;
 	}
 	else
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_SLASH, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))

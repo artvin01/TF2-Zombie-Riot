@@ -1382,6 +1382,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		npcBase.m_bGib = true;
 	}
 
+	if(damage <= 0.0)
+	{
+		return Plugin_Handled;
+	}
+
 	return Plugin_Changed;
 }
 
