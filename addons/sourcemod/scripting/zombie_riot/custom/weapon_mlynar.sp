@@ -357,7 +357,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 		
 	if(IsValidEntity(weapon))
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR)
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP)
 		{
 			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.

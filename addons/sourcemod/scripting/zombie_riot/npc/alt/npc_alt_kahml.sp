@@ -790,15 +790,17 @@ public void Kahmlstein_ClotThink(int iNPC)
 									
 									float Bonus_damage = 1.0;
 									int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-	
-									char classname[32];
-									GetEntityClassname(weapon, classname, 32);
-									
-									int weapon_slot = TF2_GetClassnameSlot(classname);
-									
-									if(weapon_slot != 2)
+									if(IsValidEntity(weapon))
 									{
-										Bonus_damage = 1.5;
+										char classname[32];
+										GetEntityClassname(weapon, classname, 32);
+										
+										int weapon_slot = TF2_GetClassnameSlot(classname);
+										
+										if(weapon_slot != 2)
+										{
+											Bonus_damage = 1.5;
+										}
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
 									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index], DMG_CLUB, -1, _, vecHit);
