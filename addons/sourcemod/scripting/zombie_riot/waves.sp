@@ -899,6 +899,11 @@ void Waves_Progress()
 			{
 				playercount = 0.70;
 			}
+			bool PlayerCountScaleAbove14 = false;
+			if(playercount > 14.0)
+			{
+				PlayerCountScaleAbove14 = true;
+			}
 
 			float multi = Pow(1.08, playercount);
 
@@ -958,7 +963,7 @@ void Waves_Progress()
 			{			
 				float multi_health;
 				
-				if(playercount <= 14.0)
+				if(!PlayerCountScaleAbove14)
 				{
 					if(ScaleWithHpMore)
 					{
@@ -987,16 +992,16 @@ void Waves_Progress()
 				if(ScaleWithHpMore)
 				{
 					multi -= 0.2544; //So if its 2 players, it defaults to 1.0 or less if alone.
-					if(playercount <= 14.0)
+					if(PlayerCountScaleAbove14)
 					{
 						multi += 5.0;
 					}
 				}
 				else //do not save if its not a boss.
 				{
-					if(playercount <= 14.0)
+					if(PlayerCountScaleAbove14)
 					{
-						multi -= 0.35;
+						multi -= 0.15;
 					}
 					MultiGlobalHealth = multi;
 				}

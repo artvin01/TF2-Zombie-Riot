@@ -168,7 +168,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 
 	public RaidbossBobTheFirst(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
+		RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.35", "25000", ally)); //giant!
 		
 		i_NpcInternalId[npc.index] = BOB_THE_FIRST;
 		i_NpcWeight[npc.index] = 6;
@@ -190,7 +190,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Bob the first, the final Savior");
 			}
 		}
 		b_thisNpcIsARaid[npc.index] = true;
