@@ -372,6 +372,12 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	{
 		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Continue;
+	}	
+	
+	if (b_NpcHasDied[victim]) //Npc died, stop bleed and stop life leech
+	{
+		BleedAmountCountStack[victim] -= 1;
+		return Plugin_Continue;
 	}
 	
 	int NumHits = ReadPackCell(pack);

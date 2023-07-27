@@ -1484,7 +1484,8 @@ public Action Command_ToggleReload(int client, int args)
 
 public void OnClientPostAdminCheck(int client)
 {
-	CreateTimer(1.0, AdminCheckKick, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+	return;
+//	CreateTimer(1.0, AdminCheckKick, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 				
 public void OnClientPutInServer(int client)
