@@ -3938,15 +3938,23 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 		}
 	}
 	int newHealth = flHealth + i_TargetHealAmount;
-
-	if(newHealth != flHealth) //Make sure to only set hp when it is actually being overridden.
+	int HealAmount = 0;
+	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
+	if(MaxHeal >= newHealth) //allow 1 tick of overheal.
 	{
-		if(RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti) >= newHealth) //allow 1 tick of overheal.
+		if(newHealth >= MaxHeal)
 		{
-			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);	
+			SetEntProp(entity, Prop_Data, "m_iHealth", MaxHeal);
+			newHealth = MaxHeal;
 		}
+		else
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", newHealth);
+		}
+		
+		HealAmount = newHealth - flHealth;
 	}
-	return i_TargetHealAmount;
+	return HealAmount;
 }
 
 static const char g_ScoutDownedResponse[][] = {
