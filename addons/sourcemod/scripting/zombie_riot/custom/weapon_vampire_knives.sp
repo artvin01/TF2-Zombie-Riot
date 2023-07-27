@@ -28,28 +28,29 @@ public void Vampire_Knives_Precache()
 //Both pap paps inflict X stacks of Bloodlust on hit. Each stack of Bloodlust deals some bleed damage per Y seconds, then heals the user for a portion of
 //that damage, up to a cap.
 static float Vamp_BleedDMG[3] = { 15.0, 30.0, 60.0 }; //The base damage dealt per Bloodlust tick.
-static float Vamp_BleedDMGMax[3] = { 250.0, 375.0, 500.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
+static float Vamp_BleedDMGMax[3] = { 99999.0, 99999.0, 99999.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
 static float Vamp_BleedRate[3] = { 0.33, 0.275, 0.25 }; //The rate at which Bloodlust deals damage.
 static float Vamp_BleedHeal[3] = { 0.17, 0.085, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
 static float Vamp_HealRadius[3] = { 300.0, 330.0, 360.0 };	//Max distance from the victim to heal the user in.
-static int Vamp_MaxHeal[3] = { 6, 4, 2 };	//Max heal per tick.
-static int Vamp_MinHeal[3] = { 2, 2, 1 };	//Minimum healing received per Bloodlust tick.
+static int Vamp_MaxHeal[3] = { 3, 2, 1 };	//Max heal per tick.
+static int Vamp_MinHeal[3] = { 1, 1, 1 };	//Minimum healing received per Bloodlust tick.
 static float Vamp_HealMultIfHurt[3] = { 0.75, 0.66, 0.5 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
 static int Vamp_BleedStacksOnMelee_Normal[3] = { 6, 8, 10 }; //Number of Bloodlust stacks applied on a melee hit.
-static int Vamp_BleedStacksOnThrow_Normal[3] = { 8, 10, 12 }; //Number of Bloodlust stacks applied on a throw hit.
-static float Vamp_ThrowMultiplier_Normal[3] = { 2.0, 2.25, 2.5 }; //Amount to multiply damage dealt by thrown knives.
+static int Vamp_BleedStacksOnThrow_Normal[3] = { 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
+static float Vamp_ThrowMultiplier_Normal[3] = { 2.0, 3.25, 4.5 }; //Amount to multiply damage dealt by thrown knives.
 static float Vamp_ThrowCD_Normal[3] = { 6.0, 9.0, 14.0 }; //Knife throw cooldown.
-static int Vamp_ThrowKnives_Normal[3] = { 1, 3, 6 }; //Number of knives thrown by M2.
-static int Vamp_ThrowWaves_Normal[3] = { 2, 4, 6 }; //Number of times to throw knives with M2.
+static int Vamp_ThrowKnives_Normal[3] = { 1, 2, 3 }; //Number of knives thrown by M2.
+static int Vamp_ThrowWaves_Normal[3] = { 2, 2, 3 }; //Number of times to throw knives with M2.
 static float Vamp_ThrowRate_Normal[3] = { 0.15, 0.1, 0.05 }; //Time between throws if more than one wave in M2.
 static float Vamp_ThrowSpread_Normal[3] = { 0.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
-static float Vamp_ThrowVelocity_Normal[3] = { 1800.0, 2200.0, 2600.0 };	//Velocity of thrown knives.
+static float Vamp_ThrowVelocity_Normal[3] = { 1800.0, 2200.0, 2600.0 };	//Velocity of thrown knives.w 
 
 //Pap Route 2 - Bloody Butcher: Becomes a slow but deadly cleaver which inflicts heavy damage and gibs zombies on kill. Inflicts more Bloodlust on hit to balance out the
 //slower swing speed. M2 has a longer cooldown and throws fewer knives, but knives become extremely powerful cleavers which keep flying if they kill the
 //zombie they hit.
+
 static int Vamp_BleedStacksOnMelee_Cleaver[3] = { 12, 16, 20 }; //Same as pap route 1, but for pap route 2.
 static int Vamp_BleedStacksOnThrow_Cleaver[3] = { 16, 20, 24 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowMultiplier_Cleaver[3] = { 2.25, 2.75, 3.25 }; //Same as pap route 1, but for pap route 2.
@@ -223,7 +224,10 @@ public void Vamp_ThrowKnives(int client, int weapon, int BleedStacks, float DMG_
 			DispatchKeyValue(prop, "model", modelName);
 			DispatchKeyValue(prop, "modelscale", "2.0"); //comically large cleaver :)
 			DispatchSpawn(prop);
-			SetEntityCollisionGroup(prop, 0); //Do not collide.
+			SetEntityCollisionGroup(prop, 1); //Do not collide. //0 doesnt work, use 1
+			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
+			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
+			
 			TeleportEntity(prop, loc, Angles, NULL_VECTOR);
 			SetParent(projectile, prop);
 		}
@@ -408,7 +412,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	//argument type mismatch (argument 5), can't be bothered:
 	//OnTakeDamageBleedNpc(victim, attacker, attacker, DMG_Final, DMG_SLASH, attacker, vicloc, GetGameTime());
 	
-	if (dist <= Radius)
+	if (dist <= Radius && dieingstate[victim] == 0)
 	{
 		float mult = HealMult;
 		
