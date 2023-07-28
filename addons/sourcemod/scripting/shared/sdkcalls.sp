@@ -6,7 +6,6 @@ static Handle SDKGetMaxHealth;
 //static Handle g_hGetAttachment;
 //static Handle g_hStudio_FindAttachment;
 
-static Handle g_hSetLocalAngle;
 static Handle g_hSetAbsOrigin;
 static Handle g_hSetAbsAngle;
 static Handle g_hInvalidateBoneCache;
@@ -106,13 +105,6 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
 	if ((g_hSetAbsVelocity = EndPrepSDKCall()) == null) SetFailState("Failed to create SDKCall for CBaseEntity::SetAbsVelocity");
 
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalAngles");
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
-	g_hSetLocalAngle = EndPrepSDKCall();
-	if(!g_hSetLocalAngle)
-		LogError("[Gamedata] Could not find CBaseEntity::SetLocalAngles");
-		
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetAbsOrigin");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
@@ -280,15 +272,7 @@ void SDKCall_SetLocalOrigin(int index, float localOrigin[3])
 		SDKCall(g_hSetLocalOrigin, index, localOrigin);
 	}
 }
-/*
-void SDKCall_SetLocalAngle(int index, float localAngle[3])
-{
-	if(g_hSetLocalAngle)
-	{
-		SDKCall(g_hSetLocalAngle, index, localAngle);
-	}
-}
-*/
+
 void SDKCall_InvalidateBoneCache(int index)
 {
 	SDKCall(g_hInvalidateBoneCache, index);

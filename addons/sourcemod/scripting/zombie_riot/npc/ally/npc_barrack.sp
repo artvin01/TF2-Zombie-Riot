@@ -886,6 +886,9 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 
 bool BarrackBody_Interact(int client, int entity)
 {
+	if(!IsValidClient(client))
+		return false;
+
 	BarrackBody npc = view_as<BarrackBody>(entity);
 	if(npc.OwnerUserId && npc.OwnerUserId == GetClientUserId(client))
 	{
