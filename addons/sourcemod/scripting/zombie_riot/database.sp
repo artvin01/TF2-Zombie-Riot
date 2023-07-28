@@ -9,7 +9,7 @@
 #define DATABASE_GLOBAL		"zr_global"
 #define DATATABLE_LOADOUT	"zr_loadout"
 #define DATATABLE_MISC		"zr_misc"
-#define DATATABLE_SETTINGS	"zr_settings2"
+#define DATATABLE_SETTINGS	"zr_settings"
 
 static Database Local;
 static Database Global;
@@ -257,7 +257,7 @@ void DataBase_ClientDisconnect(int client)
 		{
 			Transaction tr = new Transaction();
 			
-			char buffer[256];
+			char buffer[512];
 			FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_MISC ... " SET "
 			... "xp = %d, "
 			... "streak = %d, "
