@@ -9,7 +9,7 @@
 #define DATABASE_GLOBAL		"zr_global"
 #define DATATABLE_LOADOUT	"zr_loadout"
 #define DATATABLE_MISC		"zr_misc"
-#define DATATABLE_SETTINGS	"zr_settings"
+#define DATATABLE_SETTINGS	"zr_settings2"
 
 static Database Local;
 static Database Global;
