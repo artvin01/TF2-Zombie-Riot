@@ -53,11 +53,11 @@ static float Vamp_ThrowVelocity_Normal[4] = { 1800.0, 2200.0, 2600.0, 2600.0 };	
 
 static float Vamp_MaxHeal_Cleaver[4] = { 4.0, 4.0, 4.0, 4.0 };	//Max heal per tick.
 static float Vamp_MinHeal_Cleaver[4] = { 2.0, 2.0, 2.0, 2.0 };	//Minimum healing received per Bloodlust tick.
-static float Vamp_BleedDMG_Cleaver[4] = { 7.5, 15.0, 22.5, 26.0 }; //The base damage dealt per Bloodlust tick.
+static float Vamp_BleedDMG_Cleaver[4] = { 7.5, 20.0, 25.0, 30.0 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Cleaver[4] = { 12, 16, 20, 24 }; //Same as pap route 1, but for pap route 2.
 static int Vamp_BleedStacksOnThrow_Cleaver[4] = { 16, 20, 24, 28 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowMultiplier_Cleaver[4] = { 2.0, 1.0, 0.6, 0.6 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowCD_Cleaver[4] = { 10.0, 9.0, 16.0, 16.0 }; //Same as pap route 1, but for pap route 2.
+static float Vamp_ThrowCD_Cleaver[4] = { 10.0, 9.0, 12.0, 12.0 }; //Same as pap route 1, but for pap route 2.
 static int Vamp_ThrowKnives_Cleaver[4] = { 1, 1, 2, 3 }; //Same as pap route 1, but for pap route 2.
 static int Vamp_ThrowWaves_Cleaver[4] = { 1, 2, 2, 2 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowRate_Cleaver[4] = { 0.0, 0.66, 0.4, 0.3 }; //Same as pap route 1, but for pap route 2.
