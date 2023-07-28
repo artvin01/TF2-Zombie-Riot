@@ -2356,7 +2356,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case WEAPON_SPEEDFISTS:
 		{
-			Npc_OnTakeDamage_SpeedFists(attacker);
+			Npc_OnTakeDamage_SpeedFists(attacker,victim, damage);
 		}
 		case WEAPON_BOOMSTICK:
 		{

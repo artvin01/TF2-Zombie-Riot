@@ -405,9 +405,7 @@
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once"
-		"ru"		"Зарядите 4 патрона и выстрелите всеми сразу."
-		"chi"       "4颗子弹一起射击"
+		"en"		"Load 4 bullets and shoot all at once\nDeals 2x dmg against raids."
 	}
 	"Boomstick Pap 1"
 	{
@@ -931,7 +929,7 @@
 	
 	"Speed Fists Of Speed Desc"
 	{
-		"en"	"Attack incredibly fast, attack enough times to keep a speed bonus."
+		"en"	"Attack incredibly fast, attack enough times to keep a speed bonus.\nDeals 10%% Extra dmg against raids."
 	}
 	"Speed Fists Of Speed Pap 1"
 	{
@@ -1991,8 +1989,8 @@
 	}
 	"Fish Melee Desc"
 	{
-		"en" 	"Heals allies slowly around you and gives them a 10% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25% dmg buff to all allies for 15 sec."
-		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25% на всех союзников на 15 сек."
+		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec."
+		"ru" 	"Медленно исцеляет союзников вокруг вас и даёт им 10%% усиление урона.\nУвеличивается с улучшением медицинской пушки.\nM1 - доп. исцеление на союзников.\nM2 - более сильное усиление урона на 25%% на всех союзников на 15 сек."
 		"chi"   "可以缓慢治疗你附近的队友，并给予他们10%%的伤害buff。\n收到医疗属性升级影响。\nM1对盟友施放额外治疗值。M2释放光波对所有队友添加25%%的伤害加成buff，持续15秒。"
 	}
 	"Lantean Staff Desc"
@@ -2009,7 +2007,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nArchetype changes to ''Abyssal Hunter''"
+		"en"	"Attacks slower but hits two targets at once.\nDeals 25%% more damage againts raids.\nArchetype changes to ''Abyssal Hunter''"
 	}
 	"Specter Pap 2a"
 	{

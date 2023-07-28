@@ -899,11 +899,6 @@ void Waves_Progress()
 			{
 				playercount = 0.70;
 			}
-			bool PlayerCountScaleAbove14 = false;
-			if(playercount > 14.0)
-			{
-				PlayerCountScaleAbove14 = true;
-			}
 
 			float multi = Pow(1.08, playercount);
 
@@ -961,53 +956,22 @@ void Waves_Progress()
 			
 			if(Is_a_boss >= 1 || Is_Health_Scaling >= 1)
 			{			
-				float multi_health;
-				
-				if(!PlayerCountScaleAbove14)
+				float multiBoss;
+				//note: do not use exponential formulars
+				/*
+					They are just too unbalanced.
+					Lets treat each player as just more hp flat.
+				*/
+				if(ScaleWithHpMore)
 				{
-					if(ScaleWithHpMore)
-					{
-						multi_health = 1.185;
-					}
-					else
-					{
-						multi_health = 1.07;
-					}
+					multiBoss = playercount * 0.65;
 				}
 				else
 				{
-					if(ScaleWithHpMore)
-					{
-						multi_health = 1.135;
-					}
-					else
-					{
-						multi_health = 1.07;
-					}					
-				}
-
-				multi = Pow(multi_health, playercount);
-
-				//Do not downscale boss hp! Makes bosses a joke on low player counts, unless its a raid, then do that!
-				if(ScaleWithHpMore)
-				{
-					multi -= 0.2544; //So if its 2 players, it defaults to 1.0 or less if alone.
-					if(PlayerCountScaleAbove14)
-					{
-						multi += 5.0;
-					}
-				}
-				else //do not save if its not a boss.
-				{
-					if(PlayerCountScaleAbove14)
-					{
-						multi -= 0.15;
-					}
-					MultiGlobalHealth = multi;
+					multiBoss = playercount * 0.25;
 				}
 				
-				
-				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multi);
+				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
 				wave.EnemyData.Health = Tempomary_Health;
 			}
 		

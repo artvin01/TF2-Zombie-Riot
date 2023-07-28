@@ -399,8 +399,12 @@ public Action Nearl_Falling_Shot(Handle timer, int ref)
 }
 
 
-void Npc_OnTakeDamage_SpeedFists(int attacker)
+void Npc_OnTakeDamage_SpeedFists(int attacker, int victim, float &damage)
 {
+	if(b_thisNpcIsARaid[victim])
+	{
+		damage *= 1.10;
+	}
 	if(f_SpeedFistsOfSpeed[attacker] > GetGameTime())
 	{
 		i_SpeedFistsOfSpeedHit[attacker] += 1;

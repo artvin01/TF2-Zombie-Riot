@@ -1257,9 +1257,7 @@
 	}
 	"Special Zombies Explained"
 	{
-		"en" 		"These are mini-bosses that spawn randomly after wave 12."
-		"ru" 		"Это мини-боссы, которые появляются случайным образом после 12-й волны."
-		"chi"       "这些是12波后随机生成的小boss。"
+		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25%% more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
 	}
 	"Revival Zombies Explained"
 	{
