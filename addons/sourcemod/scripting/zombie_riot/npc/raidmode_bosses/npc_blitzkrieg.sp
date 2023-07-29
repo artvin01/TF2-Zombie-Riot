@@ -106,6 +106,8 @@ static float fl_BlitzLight_Throttle[MAXENTITIES];
 #define BLITZLIGHT_ACTIVATE	  "vo/medic_sf13_influx_big02.mp3"
 #define BLITZLIGHT_ATTACK	  "mvm/ambient_mp3/mvm_siren.mp3"
 
+static int g_particleImpactTornado;
+
 static bool b_life1[MAXENTITIES];
 static bool b_life2[MAXENTITIES];
 static bool b_life3[MAXENTITIES];
@@ -168,6 +170,8 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   				}
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	
+	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
@@ -424,6 +428,7 @@ methodmap Blitzkrieg < CClotBody
 		{
 			amount_of_people = 14.0;
 		}
+		
 		if(amount_of_people<8)	//This is to avoid blitz taking so much damage at low player counts that certain abilities just don't trigger
 		{
 			b_lowplayercount[npc.index]=true;
@@ -817,7 +822,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			{	
 			 	npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
-				npc.FireRocket(vPredictedPos, 7.5 * i_HealthScale[npc.index], (300.0*i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+				FireBlitzRocket(npc.index,vPredictedPos, 7.5 * i_HealthScale[npc.index], (300.0*i_HealthScale[npc.index]), "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 				npc.m_iAmountProjectiles += 1;
 				npc.PlayRangedSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -958,7 +963,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						float projectile_speed = 500.0*(1.0+(1-(Health/MaxHealth))*1.5);	//Rocket speed, scales on current health.
 						vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0, EP_NO_KNOCKBACK); //remove the no kb if people cant escape, or just lower the dmg
+						FireBlitzRocket(npc.index,vecTarget, fl_rocket_base_dmg[npc.index] * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0); //remove the no kb if people cant escape, or just lower the dmg
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + fl_rocket_firerate[npc.index];
 						i_PrimaryRocketsFired[npc.index]++;	//Adds 1 extra rocket to the shoping list for when we go out shoping in the reload store.
 						npc.m_flAttackHappens = 0.0;
@@ -1483,7 +1488,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 
 	Citizen_MiniBossDeath(entity);
 }
-
+static float fl_blitz_punish_dmg;
 public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -1499,12 +1504,9 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 			fl_blitz_ioc_punish_timer[entity][enemy]=GetGameTime(npc.index)+1.0;	//Punishment be upon thee
 			Time = 0.75;
 		}
-			
-					
+		fl_blitz_punish_dmg=25.0*i_HealthScale[npc.index];
 		
-		float Range=250.0;
-		float Dmg=50.0*i_HealthScale[npc.index];
-		
+		float Range = 200.0;
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(enemy);
 		vecTarget[2] += 1.0;
@@ -1546,12 +1548,13 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		WritePackFloat(data, vecTarget[1]);
 		WritePackFloat(data, vecTarget[2]);
 		WritePackCell(data, Range); // Range
-		WritePackCell(data, Dmg); // Damge
 		WritePackCell(data, ref);
+		WritePackCell(data, enemy);
 		
 		spawnRing_Vectors(vecTarget, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, Time, 6.0, 0.1, 1, 1.0);
 	}
 }
+static float fl_punish_dmg_multi[MAXENTITIES + 1];
 public Action Smite_Timer_Blitz(Handle Smite_Logic, DataPack data)
 {
 	ResetPack(data);
@@ -1562,15 +1565,27 @@ public Action Smite_Timer_Blitz(Handle Smite_Logic, DataPack data)
 	startPosition[1] = ReadPackFloat(data);
 	startPosition[2] = ReadPackFloat(data);
 	float Ionrange = ReadPackCell(data);
-	float Iondamage = ReadPackCell(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
+	int target = ReadPackCell(data);
+	
+	for(int player=1 ; player<= MAXENTITIES ; player++)
+	{
+		if(IsValidClient(player))
+		{
+			fl_punish_dmg_multi[player] = 0.5;	//damage is halfed for the non punisher initiator
+		}
+	}
+	if(IsValidClient(target))
+	{
+		fl_punish_dmg_multi[target] = 1.0;		//full damage for the initiator
+	}
 	
 	if (!IsValidEntity(client))
 	{
 		return Plugin_Stop;
 	}
 				
-	Explode_Logic_Custom(Iondamage*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, Ionrange , _ , _ , true);
+	Explode_Logic_Custom(0.0, client, client, -1, startPosition, Ionrange , _ , _ , true, _, _, 1.0, Blitzkrieg_Punishment_Tweak);	//this moreso acts like a distance trace
 	
 	TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 	TE_SendToAll();
@@ -1591,6 +1606,13 @@ public Action Smite_Timer_Blitz(Handle Smite_Logic, DataPack data)
 	position[2] = startPosition[2] + 50.0;
 	EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 	return Plugin_Continue;
+}
+void Blitzkrieg_Punishment_Tweak(int entity, int victim, float damage, int weapon)	//while this function actually does the damage
+{
+	if(IsValidClient(victim))
+	{
+		SDKHooks_TakeDamage(victim, entity, entity, (fl_blitz_punish_dmg*fl_punish_dmg_multi[victim])*zr_smallmapbalancemulti.FloatValue, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+	}
 }
 public void Blitzkrieg_IOC_Invoke(int ref, int enemy)	//Ion cannon from above
 {
@@ -1750,7 +1772,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		{
 
 			startPosition[2] += 25.0;
-			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 150.0 , _ , _ , true);
+			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 250.0 , _ , _ , true);
 			startPosition[2] -= 25.0;
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -1781,7 +1803,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 					GetClientEyePosition(i, vClientPosition);
 	
 					dist = GetVectorDistance(vClientPosition, position, false);
-					if (dist < 150.0)
+					if (dist < 250.0)
 					{
 						Client_Shake(i, 0, 10.0, 25.0, 7.5);
 					}
@@ -2138,4 +2160,91 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 	
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
+}
+static float fl_blitz_rocket_dmg[MAXENTITIES];
+
+static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0) //No defaults, otherwise i cant even judge.
+{
+	Blitzkrieg npc = view_as<Blitzkrieg>(client);
+	float vecForward[3], vecSwingStart[3], vecAngles[3];
+	npc.GetVectors(vecForward, vecSwingStart, vecAngles);
+																					
+	vecSwingStart = GetAbsOrigin(npc.index);
+	vecSwingStart[2] += 54.0;
+																					
+	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+																					
+																					
+	
+	vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
+	vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
+	vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
+																					
+	int entity = CreateEntityByName("tf_projectile_rocket");
+	if(IsValidEntity(entity))
+	{
+		fl_blitz_rocket_dmg[entity] = rocket_damage;
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", view_as<int>(GetEntProp(npc.index, Prop_Send, "m_iTeamNum")));
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+																					
+		TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR, true);
+		DispatchSpawn(entity);
+		if(rocket_model[0])
+		{
+			int g_ProjectileModelRocket = PrecacheModel(rocket_model);
+			for(int i; i<4; i++)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModelRocket, _, i);
+			}
+		}
+		if(model_scale != 1.0)
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", model_scale); // ZZZZ i sleep
+		}
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+		SetEntityCollisionGroup(entity, 24); //our savior
+		Set_Projectile_Collision(entity); //If red, set to 27
+		See_Projectile_Team(entity);
+		
+		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Blitz_DHook_RocketExplodePre); //*yawn*
+		
+		SDKHook(entity, SDKHook_StartTouch, Rocket_Blitz_StartTouch);
+	}
+}
+
+public MRESReturn Rocket_Blitz_DHook_RocketExplodePre(int entity)
+{
+	return MRES_Supercede;	//Don't even think about it mate
+}
+
+public void Rocket_Blitz_StartTouch(int entity, int target)
+{
+	
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_blitz_rocket_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= 2.0;
+
+		
+		SDKHooks_TakeDamage(target, owner, owner, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+
+	}
+	float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	TE_ParticleInt(g_particleImpactTornado, pos1);
+	TE_SendToAll();
+	RemoveEntity(entity);
 }
