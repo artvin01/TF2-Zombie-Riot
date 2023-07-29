@@ -1154,6 +1154,11 @@ public void OnPluginStart()
 	}
 }
 
+public void OnAllPluginsLoaded()
+{
+	NPC_OnAllPluginsLoaded();
+}
+
 public Action Timer_Temp(Handle timer)
 {
 	if(CvarDisableThink.BoolValue)

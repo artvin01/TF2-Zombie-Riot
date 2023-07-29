@@ -63,9 +63,11 @@ void NPC_PluginStart()
 
 	SyncHud = CreateHudSynchronizer();
 	
+}
+void NPC_OnAllPluginsLoaded()
+{
 	LF_HookSpawn("", NPC_OnCreatePre, false);
 	LF_HookSpawn("", NPC_OnCreatePost, true);
-	
 }
 
 #if defined ZR

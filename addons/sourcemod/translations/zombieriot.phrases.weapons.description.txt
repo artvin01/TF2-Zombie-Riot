@@ -407,6 +407,7 @@
 	{
 		"en"		"Load 4 bullets and shoot all at once\nDeals 2x dmg against raids."
 	}
+	
 	"Boomstick Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, loads up to 6 shells."
