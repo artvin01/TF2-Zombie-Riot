@@ -1529,7 +1529,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		}
 		fl_blitz_punish_dmg=25.0*i_HealthScale[npc.index];
 		
-		float Range = 200.0;
+		float Range = 225.0;
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(enemy);
 		vecTarget[2] += 1.0;
