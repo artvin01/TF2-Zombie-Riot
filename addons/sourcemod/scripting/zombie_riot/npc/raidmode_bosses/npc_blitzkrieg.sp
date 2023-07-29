@@ -1609,7 +1609,7 @@ public Action Smite_Timer_Blitz(Handle Smite_Logic, DataPack data)
 }
 void Blitzkrieg_Punishment_Tweak(int entity, int victim, float damage, int weapon)	//while this function actually does the damage
 {
-	if(IsValidClient(victim))
+	if(IsValidEntity(victim))
 	{
 		SDKHooks_TakeDamage(victim, entity, entity, (fl_blitz_punish_dmg*fl_punish_dmg_multi[victim])*zr_smallmapbalancemulti.FloatValue, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 	}
