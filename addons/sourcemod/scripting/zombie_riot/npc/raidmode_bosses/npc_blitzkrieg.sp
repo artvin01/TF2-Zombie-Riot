@@ -62,6 +62,17 @@ static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
+#define SOUND_BLITZ_IMPACT_1 					"physics/flesh/flesh_BLITZ_IMPACT_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
+#define SOUND_BLITZ_IMPACT_2 					"physics/flesh/flesh_BLITZ_IMPACT_bullet2.wav"
+#define SOUND_BLITZ_IMPACT_3 					"physics/flesh/flesh_BLITZ_IMPACT_bullet3.wav"
+#define SOUND_BLITZ_IMPACT_4 					"physics/flesh/flesh_BLITZ_IMPACT_bullet4.wav"
+#define SOUND_BLITZ_IMPACT_5 					"physics/flesh/flesh_BLITZ_IMPACT_bullet5.wav"
+
+#define SOUND_BLITZ_IMPACT_CONCRETE_1			"physics/concrete/concrete_BLITZ_IMPACT_bullet1.wav"//we hit the ground? HOW DARE YOU MISS?
+#define SOUND_BLITZ_IMPACT_CONCRETE_2 		"physics/concrete/concrete_BLITZ_IMPACT_bullet2.wav"
+#define SOUND_BLITZ_IMPACT_CONCRETE_3 		"physics/concrete/concrete_BLITZ_IMPACT_bullet3.wav"
+#define SOUND_BLITZ_IMPACT_CONCRETE_4 		"physics/concrete/concrete_BLITZ_IMPACT_bullet4.wav"
+
 static char gGlow1;
 static char gExplosive1;
 static char gLaser1;
@@ -106,7 +117,7 @@ static float fl_BlitzLight_Throttle[MAXENTITIES];
 #define BLITZLIGHT_ACTIVATE	  "vo/medic_sf13_influx_big02.mp3"
 #define BLITZLIGHT_ATTACK	  "mvm/ambient_mp3/mvm_siren.mp3"
 
-static int g_particleImpactTornado;
+static int g_particleBLITZ_IMPACTTornado;
 
 static bool b_life1[MAXENTITIES];
 static bool b_life2[MAXENTITIES];
@@ -171,7 +182,19 @@ public void Blitzkrieg_OnMapStart()
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
-	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
+	
+	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_1);
+	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_2);
+	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_3);
+	PrecacheSound(SOUND_BLITZ_IMPACT_CONCRETE_4);
+	
+	PrecacheSound(SOUND_BLITZ_IMPACT_1);
+	PrecacheSound(SOUND_BLITZ_IMPACT_2);
+	PrecacheSound(SOUND_BLITZ_IMPACT_3);
+	PrecacheSound(SOUND_BLITZ_IMPACT_4);
+	PrecacheSound(SOUND_BLITZ_IMPACT_5);
+	
+	g_particleBLITZ_IMPACTTornado = PrecacheParticleSystem("lowV_debrischunks");
 	
 	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
 	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
@@ -1772,7 +1795,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		{
 
 			startPosition[2] += 25.0;
-			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 250.0 , _ , _ , true);
+			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 350.0 , _ , _ , true);
 			startPosition[2] -= 25.0;
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -2239,12 +2262,35 @@ public void Rocket_Blitz_StartTouch(int entity, int target)
 			DamageDeal *= 2.0;
 
 		
+		switch(GetRandomInt(1,5)) 
+		{
+			case 1:EmitSoundToAll(SOUND_BLITZ_IMPACT_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 2:EmitSoundToAll(SOUND_BLITZ_IMPACT_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 3:EmitSoundToAll(SOUND_BLITZ_IMPACT_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 4:EmitSoundToAll(SOUND_BLITZ_IMPACT_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 5:EmitSoundToAll(SOUND_BLITZ_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+	   	}
 		SDKHooks_TakeDamage(target, owner, owner, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 
 	}
+	switch(GetRandomInt(1,4)) 
+	{
+		case 1:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+		case 2:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+		case 3:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		
+		case 4:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+	}
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-	TE_ParticleInt(g_particleImpactTornado, pos1);
+	TE_ParticleInt(g_particleBLITZ_IMPACTTornado, pos1);
 	TE_SendToAll();
 	RemoveEntity(entity);
 }
