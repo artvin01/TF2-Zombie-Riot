@@ -308,16 +308,20 @@ public void Blemishine_Think(int client)
 	if(GetGameTime() < f_Blemishine_AbilityActive[client])
 	{
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_BLEMISHINE) 
-		{
-			f_Blemishine_AbilityActive[client] = 0.0; //reset.
-			SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
-			return;
-		}
-		if(f_AbilityHealAmmount[client] > 0)
-		{
-			DoHealingOcean(client, client, (150.0 * 150.0), f_AbilityHealAmmount[client], true);
-			return;
+		if(weapon_holding > 0)
+		{		
+			if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_BLEMISHINE) 
+			{
+				f_Blemishine_AbilityActive[client] = 0.0; //reset.
+				SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
+				return;
+			}
+			if(f_AbilityHealAmmount[client] > 0)
+			{
+				DoHealingOcean(client, client, (150.0 * 150.0), f_AbilityHealAmmount[client], true);
+				return;
+			}
+			
 		}
 		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
 		return;
