@@ -655,15 +655,15 @@ public void Blitzkrieg_ClotThink(int iNPC)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}:It is already {crimson}too late,{default} my army has arrived...");
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: It is already {crimson}too late,{default} my army has arrived...");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}:My army has completely secured the area{crimson} surrender now{default} or perish");
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: My army has completely secured the area{crimson} surrender now{default} or perish");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}:You all will make {crimson}excellent{default} additions to my army...");
+				CPrintToChatAll("{crimson}Blitzkrieg{default}: You all will make {crimson}excellent{default} additions to my army...");
 			}
 		}
 	}
@@ -1529,7 +1529,7 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 		}
 		fl_blitz_punish_dmg=25.0*i_HealthScale[npc.index];
 		
-		float Range = 225.0;
+		float Range = 200.0;
 		float vecTarget[3];
 		vecTarget = WorldSpaceCenter(enemy);
 		vecTarget[2] += 1.0;
