@@ -2082,13 +2082,16 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 	}
 
-	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+	if(entity > 0)
 	{
-		Rogue_AllySpawned(entity);
-	}
-	else
-	{
-		Rogue_EnemySpawned(entity);
+		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2)
+		{
+			Rogue_AllySpawned(entity);
+		}
+		else
+		{
+			Rogue_EnemySpawned(entity);
+		}
 	}
 	
 	return entity;
