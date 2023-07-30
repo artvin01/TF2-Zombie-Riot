@@ -104,7 +104,8 @@ enum
 	WEAPON_VAMPKNIVES_3_CLEAVER = 33,
 	WEAPON_VAMPKNIVES_4 = 34,
 	WEAPON_VAMPKNIVES_4_CLEAVER = 35,
-	WEAPON_SPEEDFISTS = 36
+	WEAPON_SPEEDFISTS = 36,
+	WEAPON_QUINCY_BOW = 37
 }
 
 ArrayList SpawnerList;
@@ -379,6 +380,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_lantean_wand.sp"
 #include "zombie_riot/custom/weapon_specter.sp"
 #include "zombie_riot/custom/weapon_yamato.sp"
+#include "zombie_riot/custom/wand/weapon_quincy_bow.sp"
 #include "zombie_riot/custom/weapon_fantasy_blade.sp"
 #include "zombie_riot/custom/weapon_saga.sp"
 #include "zombie_riot/custom/wand/weapon_wand_beam_pap.sp"
@@ -575,6 +577,7 @@ void ZR_MapStart()
 	ResetMapStartOcean();
 	Specter_MapStart();
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
+	QuincyMapStart();
 	Fantasy_Blade_MapStart();
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();

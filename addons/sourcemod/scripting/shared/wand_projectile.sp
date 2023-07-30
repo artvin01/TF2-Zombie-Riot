@@ -218,6 +218,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Vamp_Cleaver_Touch_World(entity, target);
 		}
+		case WEAPON_QUINCY_BOW:
+		{
+			Quincy_Touch(entity, target);
+		}
 		/*		
 		case WEAPON_LANTEAN:
 		{
