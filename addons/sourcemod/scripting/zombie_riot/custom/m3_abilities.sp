@@ -684,6 +684,12 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			
 			SetAmmo(client, 1, 9999);
 			SetAmmo(client, 2, 9999);
+			SetConVarInt(sv_cheats, 1, false, false);
+			SDKCall(g_hImpulse, client, 101);
+			if(nav_edit.IntValue != 1)
+			{
+				SetConVarInt(sv_cheats, 0, false, false);
+			}
 		
 			startPosition[2] += 25.0;
 			makeexplosion(client, client, startPosition, "", 0, 0);

@@ -22,7 +22,6 @@ static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 static Handle g_hSDKUpdateBlocked;
 
-static Handle g_hImpulse;
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;

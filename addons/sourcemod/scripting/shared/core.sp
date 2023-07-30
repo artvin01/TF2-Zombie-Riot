@@ -173,6 +173,7 @@ public const int RenderColors_RPG[][] =
 
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
+Handle g_hImpulse;
 
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
@@ -2026,7 +2027,10 @@ public void Update_Ammo(int  client)
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
-	RequestFrame(Update_Ammo, client);
+	if(i_HealthBeforeSuit[client] == 0)
+	{
+		RequestFrame(Update_Ammo, client);
+	}
 
 	Action action = Plugin_Continue;
 	Function func = EntityFuncAttack[weapon];

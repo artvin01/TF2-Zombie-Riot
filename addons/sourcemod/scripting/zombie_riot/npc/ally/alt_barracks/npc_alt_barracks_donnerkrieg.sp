@@ -468,7 +468,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		GetAttachment(npc.index, "effect_hand_r", startPoint, flAng);
 		
 		int target = npc.m_iTarget;
-		if(target > 0)
+		if(IsValidEntity(target))
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
 		

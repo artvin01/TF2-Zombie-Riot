@@ -537,6 +537,7 @@ public void Mlynar_Think(int client)
 	if(GetGameTime() > f_MlynarAbilityActiveTime[client])
 	{
 		Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
+		Store_RemoveSpecificItem(client, "Mlynar's Greatsword Pap");
 		//We are Done, kill think.
 		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
 		if(IsValidEntity(TemomaryGun))
