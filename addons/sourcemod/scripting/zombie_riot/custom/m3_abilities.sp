@@ -684,6 +684,9 @@ public Action QuantumActivate(Handle cut_timer, int ref)
 			
 			SetAmmo(client, 1, 9999);
 			SetAmmo(client, 2, 9999);
+
+			//somehow the new tf2 update broke its infinite ammo, i have to set it like this
+			//TODO: Find a different fix, 30/07/2023
 			SetConVarInt(sv_cheats, 1, false, false);
 			SDKCall(g_hImpulse, client, 101);
 			if(nav_edit.IntValue != 1)
