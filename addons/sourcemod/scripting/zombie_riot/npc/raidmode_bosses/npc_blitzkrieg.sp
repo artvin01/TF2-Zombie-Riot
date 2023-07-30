@@ -62,16 +62,16 @@ static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-#define SOUND_BLITZ_IMPACT_1 					"physics/flesh/flesh_BLITZ_IMPACT_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
-#define SOUND_BLITZ_IMPACT_2 					"physics/flesh/flesh_BLITZ_IMPACT_bullet2.wav"
-#define SOUND_BLITZ_IMPACT_3 					"physics/flesh/flesh_BLITZ_IMPACT_bullet3.wav"
-#define SOUND_BLITZ_IMPACT_4 					"physics/flesh/flesh_BLITZ_IMPACT_bullet4.wav"
-#define SOUND_BLITZ_IMPACT_5 					"physics/flesh/flesh_BLITZ_IMPACT_bullet5.wav"
+#define SOUND_BLITZ_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
+#define SOUND_BLITZ_IMPACT_2 					"physics/flesh/flesh_impact_bullet2.wav"
+#define SOUND_BLITZ_IMPACT_3 					"physics/flesh/flesh_impact_bullet3.wav"
+#define SOUND_BLITZ_IMPACT_4 					"physics/flesh/flesh_impact_bullet4.wav"
+#define SOUND_BLITZ_IMPACT_5 					"physics/flesh/flesh_impact_bullet5.wav"
 
-#define SOUND_BLITZ_IMPACT_CONCRETE_1			"physics/concrete/concrete_BLITZ_IMPACT_bullet1.wav"//we hit the ground? HOW DARE YOU MISS?
-#define SOUND_BLITZ_IMPACT_CONCRETE_2 		"physics/concrete/concrete_BLITZ_IMPACT_bullet2.wav"
-#define SOUND_BLITZ_IMPACT_CONCRETE_3 		"physics/concrete/concrete_BLITZ_IMPACT_bullet3.wav"
-#define SOUND_BLITZ_IMPACT_CONCRETE_4 		"physics/concrete/concrete_BLITZ_IMPACT_bullet4.wav"
+#define SOUND_BLITZ_IMPACT_CONCRETE_1		"physics/concrete/concrete_impact_bullet1.wav"//we hit the ground? HOW DARE YOU MISS?
+#define SOUND_BLITZ_IMPACT_CONCRETE_2 		"physics/concrete/concrete_impact_bullet2.wav"
+#define SOUND_BLITZ_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
+#define SOUND_BLITZ_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
 
 static char gGlow1;
 static char gExplosive1;
