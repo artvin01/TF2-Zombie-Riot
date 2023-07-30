@@ -48,7 +48,7 @@ static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Fantasy_Blade_BEAM_HitDetected[MAXENTITIES];
 static int Fantasy_Blade_BEAM_BuildingHit[MAXENTITIES];
 
-static float fl_trace_target_timeout[MAXENTITIES][MAXENTITIES];
+static float fl_trace_target_timeout[MAXTF2PLAYERS+1][MAXENTITIES];
 
 
 #define WAND_TELEPORT_SOUND "weapons/bison_main_shot.wav"
