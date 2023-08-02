@@ -279,3 +279,96 @@ public void Kill_Timer_Management_Banner_2(int client)
 		Timer_Banner_Management_2[client] = INVALID_HANDLE;
 	}
 }
+
+
+
+
+Handle Timer_Banner_Management_3[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+
+public void Enable_Management_Banner_3(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (Timer_Banner_Management_3[client] != INVALID_HANDLE)
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANCIENT_BANNER)
+		{
+			Kill_Timer_Management_Banner_3(client);
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANCIENT_BANNER)
+	{	
+		DataPack pack;
+		//The delay is usually 0.2 seconds.
+		Timer_Banner_Management_3[client] = CreateDataTimer(0.1, Timer_Management_Banner_3, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+
+public Action Timer_Management_Banner_3(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if (IsClientInGame(client))
+	{
+		if (IsPlayerAlive(client))
+		{
+			if(IsValidEntity(weapon))
+			{
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANCIENT_BANNER)
+				{
+					if(TF2_IsPlayerInCondition(client, TFCond_DefenseBuffed))
+					{
+						float BannerPos[3];
+						float targPos[3];
+						GetClientAbsOrigin(client, BannerPos);
+						for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+						{
+							int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+							if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+							{
+								GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+								if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+								{
+									f_BattilonsNpcBuff[ally] = GetGameTime() + 0.5;
+									i_ExtraPlayerPoints[client] += 1;
+								}
+							}
+						}
+					}
+				}
+			}
+			else
+				Kill_Timer_Management_Banner_3(client);
+		}
+		else
+			Kill_Timer_Management_Banner_3(client);
+	}
+	else
+		Kill_Timer_Management_Banner_3(client);
+		
+	return Plugin_Continue;
+}
+
+public void Kill_Timer_Management_Banner_3(int client)
+{
+	if (Timer_Banner_Management_3[client] != INVALID_HANDLE)
+	{
+		KillTimer(Timer_Banner_Management_3[client]);
+		Timer_Banner_Management_3[client] = INVALID_HANDLE;
+	}
+}
+
+void AncientBannerActivate(int client, int weapon)
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANCIENT_BANNER)
+	{
+		PrintToChatAll("activated Banner");
+	}
+}

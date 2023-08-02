@@ -446,7 +446,6 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		SetEntPropEnt(glow, Prop_Send, "m_hOwnerEntity", client);
 		SetEntPropEnt(m_iGift, Prop_Send, "m_hOwnerEntity", client);
 			
-	//	i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
 		
 		f_RingDelayGift[m_iGift] = GetGameTime() + 2.0;
 

@@ -104,7 +104,8 @@ enum
 	WEAPON_VAMPKNIVES_3_CLEAVER = 33,
 	WEAPON_VAMPKNIVES_4 = 34,
 	WEAPON_VAMPKNIVES_4_CLEAVER = 35,
-	WEAPON_SPEEDFISTS = 36
+	WEAPON_SPEEDFISTS = 36,
+	WEAPON_ANCIENT_BANNER = 37
 }
 
 ArrayList SpawnerList;
@@ -271,7 +272,9 @@ bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
-int i_DyingParticleIndication[MAXPLAYERS + 1]={-1, ...};
+int i_DyingParticleIndication[MAXPLAYERS + 1][2];
+float f_DyingTextTimer[MAXPLAYERS + 1];
+bool b_DyingTextOff[MAXPLAYERS + 1];
 
 float GlobalCheckDelayAntiLagPlayerScale;
 bool AllowSpecialSpawns;
@@ -494,6 +497,7 @@ void ZR_MapStart()
 	Zero(f_BuildingIsNotReady);
 	Zero(f_TerroriserAntiSpamCd);
 	Zero(f_DisableDyingTimer);
+	Zero(f_DyingTextTimer);
 	Zero(healing_cooldown);
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
@@ -1013,28 +1017,55 @@ public Action Timer_Dieing(Handle timer, int client)
 		
 		if(!b_LeftForDead[client])
 		{
-			int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			int color[4];
+			color[0] = 255;
+			color[1] = 255;
+			color[2] = 0;
+			color[3] = 255;
+				
+			color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
+			color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+					
+			color[0] = 255 - color[0];
+
+			int particle = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(IsValidEntity(particle))
 			{
-				int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-				
-				color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
-				color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
-					
-				color[0] = 255 - color[0];
-				
 				SetVariantColor(color);
 				AcceptEntityInput(particle, "SetGlowColor");
+			}
+			int TextFormat = EntRefToEntIndex(i_DyingParticleIndication[client][1]);
+			if(IsValidEntity(TextFormat))
+			{
+				if(f_DyingTextTimer[client] < GetGameTime())
+				{
+					if(b_DyingTextOff[client])
+					{
+						b_DyingTextOff[client] = false;
+						SetVariantString("DOWN [R]");
+						AcceptEntityInput(TextFormat, "SetColor");
+					}
+					else
+					{
+						SetVariantString("REVIVE [R]");
+						AcceptEntityInput(TextFormat, "SetColor");
+						b_DyingTextOff[client] = true;
+					}
+					f_DyingTextTimer[client] = GetGameTime() + 1.0;
+				}
+				SetVariantColor(color);
+				AcceptEntityInput(TextFormat, "SetColor");
 			}
 		}
 			
 		return Plugin_Continue;
 	}
-	int particle = EntRefToEntIndex(i_DyingParticleIndication[client]);
+	int particle = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+	}
+	particle = EntRefToEntIndex(i_DyingParticleIndication[client][1]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);
@@ -1559,7 +1590,12 @@ void ReviveAll(bool raidspawned = false)
 	{
 		if(IsClientInGame(client))
 		{
-			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
+			if(glowentity > MaxClients)
+				RemoveEntity(glowentity);
+
+			
+			glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][1]);
 			if(glowentity > MaxClients)
 				RemoveEntity(glowentity);
 

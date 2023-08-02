@@ -22,7 +22,20 @@ Handle h_TimerSpecterAlterManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_SpecterAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_SpecterDeadDamage[MAXPLAYERS+1]={0.0, ...};
 static float f_SpecterDyingTime[MAXPLAYERS+1]={0.0, ...};
+static int i_SpecterExtraHitsNeeded[MAXPLAYERS+1]={0, ...};
 
+
+int SpecterMaxCharge(int client)
+{
+	int charges = SPECTER_MAXCHARGE;
+	charges += i_SpecterExtraHitsNeeded[client];
+
+	return charges;
+}
+void Specter_AbilitiesWaveEnd()
+{
+	Zero(i_SpecterExtraHitsNeeded);
+}
 void Specter_MapStart()
 {
 	PrecacheSound(SPECTER_DAMAGE_1);
@@ -36,6 +49,7 @@ void Specter_MapStart()
 	Zero(SpecterExpireIn);
 
 	Zero(SpecterSurviveFor);
+	Zero(i_SpecterExtraHitsNeeded);
 }
 
 void PlayCustomSoundSpecter(int client)
@@ -94,11 +108,11 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			// If victim has more health %, bonus damage (+70% damage)
 			damage *= 1.7;
 			DisplayCritAboveNpc(victim, attacker, false);
-			if((flags & SPECTER_REVIVE) &&  dieingstate[attacker] < 1 && SpecterCharge[attacker] < SPECTER_MAXCHARGE)
+			if((flags & SPECTER_REVIVE) &&  dieingstate[attacker] < 1 && SpecterCharge[attacker] < SpecterMaxCharge(attacker))
 				SpecterCharge[attacker] += 5;
 		}
 	}
-	else if((flags & SPECTER_REVIVE) && dieingstate[attacker] < 1 && SpecterCharge[attacker] < SPECTER_MAXCHARGE)
+	else if((flags & SPECTER_REVIVE) && dieingstate[attacker] < 1 && SpecterCharge[attacker] < SpecterMaxCharge(attacker))
 	{
 		SpecterCharge[attacker]++;
 	}
@@ -110,12 +124,12 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		SpecterExpireIn[attacker] = gameTime + 30.0;
 
 		if(CvarInfiniteCash.BoolValue)
-			SpecterCharge[attacker] = SPECTER_MAXCHARGE;
+			SpecterCharge[attacker] = SpecterMaxCharge(attacker);
 	}
 
-	if(SpecterCharge[attacker] > SPECTER_MAXCHARGE)
+	if(SpecterCharge[attacker] > SpecterMaxCharge(attacker))
 	{
-		SpecterCharge[attacker] = SPECTER_MAXCHARGE;
+		SpecterCharge[attacker] = SpecterMaxCharge(attacker);
 	}
 }
 
@@ -301,7 +315,7 @@ public void Kill_Timer_SpecterAlter(int client)
 
 bool SpecterCheckIfAutoRevive(int client)
 {
-	if(SpecterCharge[client] >= SPECTER_MAXCHARGE)
+	if(SpecterCharge[client] >= SpecterMaxCharge(client))
 	{
 		if(f_SpecterDeadDamage[client] == 0.0)
 		{
@@ -327,7 +341,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 			if(f_SpecterAlterhuddelay[client] < GetGameTime())
 			{
 				f_SpecterAlterhuddelay[client] = GetGameTime() + 0.5;
-				if(SpecterCharge[client] < SPECTER_MAXCHARGE && SpecterExpireIn[client] < GetGameTime())
+				if(SpecterCharge[client] < SpecterMaxCharge(client) && SpecterExpireIn[client] < GetGameTime())
 				{
 					SpecterCharge[client]--;
 					SpecterExpireIn[client] = GetGameTime() + 5.0;
@@ -338,7 +352,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 				}
 				if(dieingstate[client] > 159 || (dieingstate[client] > 0 && !b_LeftForDead[client]))
 				{
-					if(SpecterCharge[client] >= SPECTER_MAXCHARGE)
+					if(SpecterCharge[client] >= SpecterMaxCharge(client))
 					{
 						float flPos[3];
 						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
@@ -352,7 +366,8 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 						b_LeftForDead[client] = true;
 						dieingstate[client] = 159; // 5 seconds
 						i_AmountDowned[client]--;
-						SpecterCharge[client] -= SPECTER_MAXCHARGE;
+						SpecterCharge[client] -= SpecterMaxCharge(client);
+						i_SpecterExtraHitsNeeded[client] += 30;
 
 						PrintHintText(client, "Specter Revive Activated");
 						f_SpecterDyingTime[client] = GetGameTime() + 6.0;
@@ -361,7 +376,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 
 				if(dieingstate[client] > 0)
 				{
-					if(SpecterCharge[client] < SPECTER_MAXCHARGE)
+					if(SpecterCharge[client] < SpecterMaxCharge(client))
 					{
 						if(f_SpecterDyingTime[client] > GetGameTime())
 						{
@@ -409,7 +424,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 				{
-					PrintHintText(client, "Specter Revive [%d / %i]", SpecterCharge[client], SPECTER_MAXCHARGE);
+					PrintHintText(client, "Specter Revive [%d / %i]", SpecterCharge[client], SpecterMaxCharge(client));
 					StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
 				}
 			}

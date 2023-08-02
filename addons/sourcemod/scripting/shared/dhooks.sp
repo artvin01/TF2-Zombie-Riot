@@ -1940,6 +1940,11 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
 	i_ExtraPlayerPoints[client] += 15;
 #endif
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(weapon))
+	{
+		AncientBannerActivate(client, weapon);
+	}
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;

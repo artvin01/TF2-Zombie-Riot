@@ -11,11 +11,12 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17:
+		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71:
 		{
 			return true;
 		}
 		/*
+		71 is afterburn
 				Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651);
 		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 33, false));
 		i_GlitchedGun[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 731, false));

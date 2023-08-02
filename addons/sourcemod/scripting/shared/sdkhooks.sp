@@ -1745,15 +1745,25 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				bool autoRevive = (b_LeftForDead[victim] || SpecterCheckIfAutoRevive(victim));
 				if(!autoRevive)
 				{
-					entity = EntRefToEntIndex(i_DyingParticleIndication[victim]);
+					entity = EntRefToEntIndex(i_DyingParticleIndication[victim][0]);
 					if(entity > MaxClients)
 						RemoveEntity(entity);
 					
-					entity = TF2_CreateGlow(victim);
-					i_DyingParticleIndication[victim] = EntIndexToEntRef(entity);
+					entity = EntRefToEntIndex(i_DyingParticleIndication[victim][1]);
+					if(entity > MaxClients)
+						RemoveEntity(entity);
+
+
 					
+					entity = TF2_CreateGlow(victim);
+					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
+
+					entity = SpawnFormattedWorldText("DOWN [R]", {0.0,0.0,80.0}, 10, {0, 255, 0, 255}, victim);
+					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
+					b_DyingTextOff[victim] = false;
+					
 				}
 				CreateTimer(0.1, Timer_Dieing, victim, TIMER_REPEAT);
 				

@@ -915,6 +915,7 @@ void Waves_Progress()
 				ReviveAll(true);
 				Music_EndLastmann();
 				CheckAlivePlayers();
+				WaveEndLogicExtra();
 			}
 			
 			int count = wave.Count;
@@ -985,9 +986,7 @@ void Waves_Progress()
 		}
 		else
 		{
-			SeaFounder_ClearnNethersea();
-			M3_AbilitiesWaveEnd();
-			
+			WaveEndLogicExtra();
 			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 			CurrentCash += round.Cash;
 			if(round.Cash)
@@ -1471,8 +1470,7 @@ void Waves_Progress()
 		}
 		else
 		{
-			SeaFounder_ClearnNethersea();
-			M3_AbilitiesWaveEnd();
+			WaveEndLogicExtra();
 
 			int postWaves = CurrentRound - length;
 			Freeplay_OnEndWave(postWaves, round.Cash);
@@ -1705,4 +1703,12 @@ void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 		CvarSkyName.SetString(SkyNameRestore, true);
 		SkyNameRestore[0] = 0;
 	}
+}
+
+
+void WaveEndLogicExtra()
+{
+	SeaFounder_ClearnNethersea();
+	M3_AbilitiesWaveEnd();
+	Specter_AbilitiesWaveEnd();	
 }

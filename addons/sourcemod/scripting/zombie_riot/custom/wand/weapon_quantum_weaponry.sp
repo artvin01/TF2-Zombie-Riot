@@ -23,12 +23,6 @@ public void Quantum_Repeater_Main_Attack(int client, int weapon, bool crit)
 	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
 	Wand_Projectile_Spawn(client, speed, time, damage, 8/*Default wand*/, weapon, "raygun_projectile_blue_trail");
 
-	SetConVarInt(sv_cheats, 1, false, false);
-	SDKCall(g_hImpulse, client, 101);
-	if(nav_edit.IntValue != 1)
-	{
-		SetConVarInt(sv_cheats, 0, false, false);
-	}
 }
 
 public void Gun_QuantumTouch(int entity, int target)

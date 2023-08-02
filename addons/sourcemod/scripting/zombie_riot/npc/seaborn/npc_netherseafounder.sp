@@ -615,20 +615,20 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					// 20 x 0.25 x 0.2
 				*/
 
-				int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+				int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 				if(!IsValidEntity(entity))
 				{
 					float flPos[3];
 					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 					int particle_Sing = ParticleEffectAt(flPos, "utaunt_hands_teamcolor_blue", -1.0);
 					SetParent(client, particle_Sing);
-					i_DyingParticleIndication[client] = EntIndexToEntRef(particle_Sing);
+					i_DyingParticleIndication[client][0] = EntIndexToEntRef(particle_Sing);
 				}
 				NervousTouching[client] = NervousTouching[0];
 			}
 			else
 			{
-				int entity = EntRefToEntIndex(i_DyingParticleIndication[client]);
+				int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 				if(IsValidEntity(entity))
 				{
 					RemoveEntity(entity);

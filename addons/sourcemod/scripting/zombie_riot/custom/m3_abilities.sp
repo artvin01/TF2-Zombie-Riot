@@ -10,7 +10,7 @@ static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 static int g_BeamIndex_heal = -1;
-static bool b_BurstpackUsedThisRound [MAXPLAYERS+1];
+static int i_BurstpackUsedThisRound [MAXPLAYERS+1];
 
 static char gExplosive1;
 static char gLaser1;
@@ -81,10 +81,12 @@ public void M3_Abilities(int client)
 		}
 	}
 }
+
 void M3_AbilitiesWaveEnd()
 {
-	Zero(b_BurstpackUsedThisRound);
+	Zero(i_BurstpackUsedThisRound);
 }
+
 public void WeakDash(int client)
 {
 	if(dieingstate[client] > 0)
@@ -111,7 +113,7 @@ public void WeakDash(int client)
 	{
 		if (ability_cooldown[client] < GetGameTime())
 		{
-			if(b_BurstpackUsedThisRound[client])
+			if(i_BurstpackUsedThisRound[client] >= 2)
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
@@ -119,9 +121,9 @@ public void WeakDash(int client)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Burstpack Already Used This Round, Recharging");	
 				return;
 			}
-			b_BurstpackUsedThisRound[client] = true;
-			ability_cooldown[client] = GetGameTime() + 30.0;
-			CreateTimer(30.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			i_BurstpackUsedThisRound[client] += 1;
+			ability_cooldown[client] = GetGameTime() + 60.0;
+			CreateTimer(60.0, M3_Ability_Is_Back, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			WeakDashLogic(client);
 		}
 		else
