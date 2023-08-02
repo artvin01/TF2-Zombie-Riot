@@ -16,7 +16,8 @@ static bool b_quincy_battery_special_two[MAXTF2PLAYERS + 1];
 static int Beam_Laser;
 static int Beam_Glow;
 
-#define QUINCY_BOW_HYPER_SHOT_SOUND "misc/sniper_railgun_double_kill.wav"		//try using machine penetration shot
+#define QUINCY_BOW_HYPER_SHOT_SOUND "ambient/machines/floodgate_stop1.wav"	//I cast floodgate!
+#define QUINCY_BOW_HYPER_SHOT_CHARGE "weapons/cguard/charging.wav"
 #define QUINCY_BOW_PENETRATING_SHOT_SOUND "freak_fortress_2/bvb_kapdok_duo/doktor/fatal_overdose_teleport.mp3"
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"	//who needs friends anyway... :(
 
@@ -53,7 +54,7 @@ static const char Zap_Sound[][] = {
 #define QUINCY_BOW_BATTERY_3		(1 << 7)
 #define QUINCY_BOW_BATTERY_4		(1 << 8)
 
-static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][4];
+static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][6];
 
 static int Quincy_Bow_Hex_Array[MAXTF2PLAYERS+1];
 
@@ -65,6 +66,7 @@ public void QuincyMapStart()
 	PrecacheSound(QUINCY_BOW_HYPER_SHOT_SOUND);
 	PrecacheSound(QUINCY_BOW_PENETRATING_SHOT_SOUND);
 	PrecacheSound(QUINCY_BOW_ARROW_TOUCH_SOUND);
+	PrecacheSound(QUINCY_BOW_HYPER_SHOT_CHARGE);
 	
 	for (int i = 0; i < (sizeof(Zap_Sound));	   i++) { PrecacheSound(Zap_Sound[i]);	   }
 	for (int i = 0; i < (sizeof(Spark_Sound));	   i++) { PrecacheSound(Spark_Sound[i]);	   }
@@ -415,7 +417,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	float speed = 3000.0*(charge_percent/100.0);
 	if(b_quincy_battery_special_two[client])
 	{
-		
+		//EmitSoundToAll(QUINCY_BOW_HYPER_SHOT_CHARGE, client, SNDCHAN_STATIC, 100, _, 1.0);
 		Quincy_Hyper_Arrow(client, charge_percent, weapon);
 		return;
 	}
@@ -634,7 +636,7 @@ public void Quincy_Touch(int entity, int target)
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
-		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, _, _, 1.0);
 	}
 	else if(target == 0)
 	{
@@ -642,7 +644,7 @@ public void Quincy_Touch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
+		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, _, _, 1.0);
 		RemoveEntity(entity);
 	}
 }
@@ -1115,9 +1117,27 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
  	float damage = 1.0*fl_Quincy_Charge[client]*(charge_percent/100.0);
  	Client_Shake(client, 0, 50.0, 25.0, 1.5);
  	damage *= Attributes_Get(weapon, 410, 1.0);
- 	Quincy_Blade_Damage_Trace(client, 20.0, damage);
- }
- static void Quincy_Blade_Damage_Trace(int client, float radius, float dmg)
+ 	Quincy_Damage_Trace(client, 20.0, damage);
+ 	/*
+ 	DataPack pack;
+	CreateDataTimer(0.5, Quincy_Hyper_Shot_Offset, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(charge_percent);
+	pack.WriteCell(EntIndexToEntRef(weapon));*/
+ }/*
+ static Action Quincy_Hyper_Shot_Offset(Handle timer, DataPack pack)
+ {
+ 	pack.Reset();
+ 	int client = EntRefToEntIndex(pack.ReadCell());
+ 	float charge_percent = pack.ReadCell();
+ 	int weapon = EntRefToEntIndex(pack.ReadCell());
+ 	float damage = 1.0*fl_Quincy_Charge[client]*(charge_percent/100.0);
+ 	Client_Shake(client, 0, 50.0, 25.0, 1.5);
+ 	damage *= Attributes_Get(weapon, 410, 1.0);
+ 	Quincy_Damage_Trace(client, 20.0, damage);
+ 	return Plugin_Handled;
+ }*/
+ static void Quincy_Damage_Trace(int client, float radius, float dmg)
 {
 	
 	EmitSoundToAll(QUINCY_BOW_HYPER_SHOT_SOUND, client, SNDCHAN_STATIC, 100, _, 1.0);
