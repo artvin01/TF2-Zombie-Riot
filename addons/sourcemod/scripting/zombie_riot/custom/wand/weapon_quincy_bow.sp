@@ -16,10 +16,11 @@ static bool b_quincy_battery_special_two[MAXTF2PLAYERS + 1];
 static int Beam_Laser;
 static int Beam_Glow;
 
-#define QUINCY_BOW_HYPER_SHOT_SOUND "ambient/machines/floodgate_stop1.wav"	//I cast floodgate!
-#define QUINCY_BOW_HYPER_SHOT_CHARGE "weapons/cguard/charging.wav"
-#define QUINCY_BOW_PENETRATING_SHOT_SOUND "freak_fortress_2/bvb_kapdok_duo/doktor/fatal_overdose_teleport.mp3"
+#define QUINCY_BOW_HYPER_SHOT_SOUND "ambient_mp3/halloween/thunder_01.mp3"	//I cast floodgate!
+#define QUINCY_BOW_PENETRATING_SHOT_SOUND "ambient_mp3/halloween/thunder_07.mp3"
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"	//who needs friends anyway... :(
+#define QUINCY_BOW_MENU_SOUND1 "misc/halloween/spelltick_02.wav"
+#define QUINCY_BOW_MENU_SOUND2 "misc/halloween/spelltick_01.wav"
 
 static float fl_sound_timer[MAXTF2PLAYERS + 1];
 
@@ -54,7 +55,7 @@ static const char Zap_Sound[][] = {
 #define QUINCY_BOW_BATTERY_3		(1 << 7)
 #define QUINCY_BOW_BATTERY_4		(1 << 8)
 
-static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][6];
+static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][7];
 
 static int Quincy_Bow_Hex_Array[MAXTF2PLAYERS+1];
 
@@ -66,7 +67,8 @@ public void QuincyMapStart()
 	PrecacheSound(QUINCY_BOW_HYPER_SHOT_SOUND);
 	PrecacheSound(QUINCY_BOW_PENETRATING_SHOT_SOUND);
 	PrecacheSound(QUINCY_BOW_ARROW_TOUCH_SOUND);
-	PrecacheSound(QUINCY_BOW_HYPER_SHOT_CHARGE);
+	PrecacheSound(QUINCY_BOW_MENU_SOUND1);
+	PrecacheSound(QUINCY_BOW_MENU_SOUND2);
 	
 	for (int i = 0; i < (sizeof(Zap_Sound));	   i++) { PrecacheSound(Zap_Sound[i]);	   }
 	for (int i = 0; i < (sizeof(Spark_Sound));	   i++) { PrecacheSound(Spark_Sound[i]);	   }
@@ -133,7 +135,8 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			//Update_Quincy(client);
 			
 			int pap = Get_Quincy_Pap(weapon);
-			Give_Skill_Points(client, pap);
+			if(pap!=0)
+				Give_Skill_Points(client, pap);
 			
 			DataPack pack;
 			h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -146,7 +149,9 @@ public void Activate_Quincy_Bow(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)
 	{
 		int pap = Get_Quincy_Pap(weapon);
-		Give_Skill_Points(client, pap);
+		if(pap!=0)
+			Give_Skill_Points(client, pap);
+
 		
 		//Update_Quincy(client);
 		
@@ -384,7 +389,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 									fl_speed = 3000.0;
 									
 								float damage;
-								damage = fl_Quincy_Charge[client]*(charge_percent/100.0);
+								damage = 500.0*(charge_percent/100.0);
 								damage *= Attributes_Get(weapon, 410, 1.0);
 								Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
 							}
@@ -417,7 +422,6 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	float speed = 3000.0*(charge_percent/100.0);
 	if(b_quincy_battery_special_two[client])
 	{
-		//EmitSoundToAll(QUINCY_BOW_HYPER_SHOT_CHARGE, client, SNDCHAN_STATIC, 100, _, 1.0);
 		Quincy_Hyper_Arrow(client, charge_percent, weapon);
 		return;
 	}
@@ -518,8 +522,8 @@ public void Quincy_Bow_Debug(int client, int weapon, bool crit, int slot)
 {
 	int flags = Quincy_Bow_Hex_Array[client];
 	CPrintToChatAll("flags: %i", flags);
-	i_Quincy_Skill_Points[client]++;
-	CPrintToChatAll("Gave points, now total %i", i_Quincy_Skill_Points[client]);
+	//i_Quincy_Skill_Points[client]++;
+	CPrintToChatAll("points, now total %i", i_Quincy_Skill_Points[client]);
 	
 }
 static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])
@@ -802,12 +806,14 @@ static int Quincy_Menu_Selection(Menu menu, MenuAction action, int client, int c
 			{
 				return 0;	//do nothing
 			}
+			
 			i_Quincy_Skill_Points[client]--;
 			//CPrintToChatAll("Skill Points Left: %i", i_Quincy_Skill_Points[client]);
 			switch(id)
 			{
 				case 1:	//speed
 				{
+					EmitSoundToClient(client, QUINCY_BOW_MENU_SOUND1);
 					if(!(flags & QUINCY_BOW_FAST_CHARGE_1))
 					{
 						//CPrintToChatAll("Speed1");
@@ -841,6 +847,7 @@ static int Quincy_Menu_Selection(Menu menu, MenuAction action, int client, int c
 				}
 				case 2:	//battery
 				{
+					EmitSoundToClient(client, QUINCY_BOW_MENU_SOUND2);
 					if(!(flags & QUINCY_BOW_BATTERY_1))
 					{
 						//CPrintToChatAll("Battery1");
@@ -1118,25 +1125,8 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
  	Client_Shake(client, 0, 50.0, 25.0, 1.5);
  	damage *= Attributes_Get(weapon, 410, 1.0);
  	Quincy_Damage_Trace(client, 20.0, damage);
- 	/*
- 	DataPack pack;
-	CreateDataTimer(0.5, Quincy_Hyper_Shot_Offset, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(client));
-	pack.WriteCell(charge_percent);
-	pack.WriteCell(EntIndexToEntRef(weapon));*/
- }/*
- static Action Quincy_Hyper_Shot_Offset(Handle timer, DataPack pack)
- {
- 	pack.Reset();
- 	int client = EntRefToEntIndex(pack.ReadCell());
- 	float charge_percent = pack.ReadCell();
- 	int weapon = EntRefToEntIndex(pack.ReadCell());
- 	float damage = 1.0*fl_Quincy_Charge[client]*(charge_percent/100.0);
- 	Client_Shake(client, 0, 50.0, 25.0, 1.5);
- 	damage *= Attributes_Get(weapon, 410, 1.0);
- 	Quincy_Damage_Trace(client, 20.0, damage);
- 	return Plugin_Handled;
- }*/
+ 	
+ }
  static void Quincy_Damage_Trace(int client, float radius, float dmg)
 {
 	

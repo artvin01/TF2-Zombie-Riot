@@ -2263,4 +2263,32 @@
 	{
 		"en"	"Fantasy and reality, its all the same\nBy Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy\nYou gain wings of Fantasy\n(They don't allow you to fly unfortunately)"
 	}
+	"quincy pap0"	//todo: make the desc's abit cooler sounding
+	{
+		"en"	"Your weapon has the ability to specialise into 2 tress's, Charge rate and Battery capacity\nWith higher battery - more damage but longer charge time\nWith charge - Dmg potential is lower but faster charge rate\nHold MOUSE2 and press RELOAD on a pap to open a menu"
+	}
+	"quincy pap1"
+	{
+		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+	}
+	"quincy pap2"
+	{
+		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+	}
+	"quincy pap3"
+	{
+		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+	}
+	"quincy pap4"
+	{
+		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+	}
+	"quincy pap5"
+	{
+		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+	}
+	"quincy pap6"
+	{
+		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
+	}
 }
