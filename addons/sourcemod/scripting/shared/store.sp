@@ -5055,7 +5055,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							}
 							case 8:
 							{
-								if(slot == TFWeaponSlot_Melee && i_IsWandWeapon[entity])
+								if(i_IsWandWeapon[entity])
 									apply = true;
 							}
 							case 9:
