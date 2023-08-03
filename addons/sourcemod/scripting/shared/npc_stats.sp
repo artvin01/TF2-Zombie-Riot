@@ -3712,6 +3712,11 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		return false;
 	}
 
+	if(b_ThisEntityIsAProjectileForUpdateContraints[other_entidx])
+	{
+		return true;
+	}
+
 	if(b_IsAlliedNpc[bot_entidx]) //ally!
 	{
 		if(b_CollidesWithEachother[bot_entidx])

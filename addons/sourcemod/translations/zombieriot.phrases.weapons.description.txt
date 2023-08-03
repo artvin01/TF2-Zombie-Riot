@@ -2265,7 +2265,7 @@
 	}
 	"Ancient Banner Desc"
 	{
-		"en"	"Give everyone 25% more attackspeed, reloadspeed and healspeed during the duration of the banner."
+		"en"	"Give everyone 25%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
 	}
 	"quincy pap0"	//todo: make the desc's abit cooler sounding
 	{

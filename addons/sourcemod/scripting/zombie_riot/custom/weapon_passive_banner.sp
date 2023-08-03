@@ -380,12 +380,12 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.75, true);
+					ModifyEntityAncientBuff(ally, 1, 0.75, true, 1.25);
 
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.75, false);
+					ModifyEntityAncientBuff(ally, 1, 0.75, false, 1.25);
 				}
 			}
 		}
@@ -396,11 +396,11 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.75, true);
+					ModifyEntityAncientBuff(ally, 2, 0.75, true, 1.25);
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.75, false);
+					ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
 				}
 			}
 		}
@@ -411,7 +411,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				ModifyEntityAncientBuff(ally, 1, 0.75, false);
+				ModifyEntityAncientBuff(ally, 1, 0.75, false, 1.25);
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
@@ -419,7 +419,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
-				ModifyEntityAncientBuff(ally, 2, 0.75, false);
+				ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
 			}
 		}
 		Kill_Timer_AncientBanner_Buff();
@@ -466,7 +466,7 @@ void BuffBattilonsActivate(int client, int weapon)
 	1: client
 	2: entity
 */
-void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true)
+void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
 {
 	if(type == 1)
 	{
@@ -485,7 +485,7 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 						Attributes_SetMulti(weapon, 97, buffammount);	// Reload Time
 					
 					if(Attributes_Has(weapon, 8))
-						Attributes_SetMulti(weapon, 8, (buffammount * -1.0) + 1.0);	// Heal Rate
+						Attributes_SetMulti(weapon, 8, buffammount2);	// Heal Rate
 				}
 			}
 			else
@@ -502,7 +502,7 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 							Attributes_SetMulti(weapon, 97, 1.0 / buffammount);	// Reload Time
 						
 						if(Attributes_Has(weapon, 8))
-							Attributes_SetMulti(weapon, 8, 1.0 / ((buffammount * -1.0) + 1.0));	// Heal Rate
+							Attributes_SetMulti(weapon, 8, 1.0 / buffammount2);	// Heal Rate
 					}
 				}
 			}

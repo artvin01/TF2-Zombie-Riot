@@ -969,7 +969,7 @@ void Waves_Progress()
 				}
 				else
 				{
-					multiBoss = playercount * 0.25;
+					multiBoss = playercount * 0.2;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);

@@ -69,16 +69,16 @@ methodmap BarrackThorns < BarrackBody
 		
 		char healthSize[10];
 
-		Format(healthSize, sizeof(healthSize), "1500");
+		Format(healthSize, sizeof(healthSize), "1000");
 
 		if(elite)
 		{
-			Format(healthSize, sizeof(healthSize), "2500");
+			Format(healthSize, sizeof(healthSize), "2000");
 		}
 
 		if(MaxPot)
 		{
-			Format(healthSize, sizeof(healthSize), "4000");
+			Format(healthSize, sizeof(healthSize), "3000");
 		}
 
 		BarrackThorns npc = view_as<BarrackThorns>(BarrackBody(client, vecPos, vecAng, healthSize,_,_,"0.75",_,"models/pickups/pickup_powerup_thorns.mdl"));
@@ -473,20 +473,20 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 				{
 					npc.PlayRangedSoundAbility();
 
-					float damage = 4500.0;
+					float damage = 2000.0;
 
 					if(ThornsAbilityActiveTimes[npc.index] > 1)
 					{
-						damage = 8000.0;
+						damage = 3000.0;
 					}
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 2.5;
+						damage *= 3.5;
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{
-						damage *= 1.5;
+						damage *= 2.0;
 					}
 							
 					float flPos[3]; // original
