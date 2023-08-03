@@ -1708,7 +1708,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 			}
 			
-			if(!Any_Left)
+			if(!Any_Left && !SpecterCheckIfAutoRevive(victim))
 			{
 				CheckAlivePlayers(_, victim);
 

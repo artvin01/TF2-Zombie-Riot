@@ -3638,6 +3638,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
 										Store_RemoveNullWeapons(client);
 									
+									CheckInvalidSlots(client);
 									CheckMultiSlots(client);
 									Manual_Impulse_101(client, GetClientHealth(client));
 								}
@@ -4512,6 +4513,22 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	HideWallWeaponsExceptActive(client);
 }
 
+void CheckInvalidSlots(int client)
+{
+	int i, entity;
+	while(TF2_GetItem(client, entity, i))
+	{
+		if(StoreWeapon[entity] > 0)
+		{
+			static Item item;
+			StoreItems.GetArray(StoreWeapon[entity], item);
+			if(!item.Equipped[client])
+			{
+				TF2_RemoveItem(client, entity);
+			}
+		}
+	}
+}
 static void CheckMultiSlots(int client)
 {
 	ResetToZero(HasMultiInSlot[client], sizeof(HasMultiInSlot[]));
