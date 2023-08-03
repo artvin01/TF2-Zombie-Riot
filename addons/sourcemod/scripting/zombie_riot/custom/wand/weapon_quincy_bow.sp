@@ -7,11 +7,10 @@ static int i_Quincy_Skill_Points[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Charge[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Max_Battery[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
-static float fl_Quincy_Battery_Multi[MAXTF2PLAYERS + 1];
-static float fl_Quincy_Barrage_Firerate[MAXTF2PLAYERS + 1][11];
 
 static bool b_quincy_battery_special_one[MAXTF2PLAYERS + 1];
 static bool b_quincy_battery_special_two[MAXTF2PLAYERS + 1];
+static int i_quincy_pap[MAXTF2PLAYERS + 1];
 
 static int Beam_Laser;
 static int Beam_Glow;
@@ -43,6 +42,33 @@ static const char Zap_Sound[][] = {
 	"ambient/energy/zap8.wav",
 	"ambient/energy/zap9.wav",
 };
+#define QUINCY_BOW_BASELINE_BATTERY 300.0
+
+
+/*
+	How much mana the bow can store
+	
+	100% = 300	//baseline.
+	800	//battery1
+	1300	//battery2
+	1800	//battery3
+	750% = 2300	//battery4
+	
+	Baseline damage is 100*charge%
+	
+	so if charge is 500%
+	dmg = 100*5.0
+	baseline dmg = 500.0*upgrades
+
+*/
+#define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
+#define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 25.0	//what % of charge does the battery need to start firing
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 15			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
+
+#define QUINCY_BOW_HYPER_ARROW_MINIMUM	700.0		//what % of charge does the battery need to be before hyper arrow is triggerable
+#define QUINCY_BOW_PENETRATING_ARROW_MINIMUM 425.0	//same thing as hyper arrow
+
 
 
 #define QUINCY_BOW_FAST_CHARGE_1	(1 << 1)
@@ -58,9 +84,21 @@ static const char Zap_Sound[][] = {
 static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][7];
 
 static int Quincy_Bow_Hex_Array[MAXTF2PLAYERS+1];
+static float fl_Quincy_Barrage_Firerate[MAXTF2PLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
 
 static int g_rocket_particle;
 static int g_particleImpactTornado;
+
+public void Quincy_On_Buy_Reset(int client)
+{
+	Quincy_Bow_Hex_Array[client] = 0;
+	i_Quincy_Skill_Points[client] = 0;
+	for(int i=0 ; i < 7 ; i++)
+	{
+		b_skill_points_give_at_pap[client][i] = false;
+	}
+	//CPrintToChatAll("client %N, Stats RESET", client);
+}
 
 public void QuincyMapStart()
 {
@@ -73,11 +111,11 @@ public void QuincyMapStart()
 	for (int i = 0; i < (sizeof(Zap_Sound));	   i++) { PrecacheSound(Zap_Sound[i]);	   }
 	for (int i = 0; i < (sizeof(Spark_Sound));	   i++) { PrecacheSound(Spark_Sound[i]);	   }
 	
+	Zero(i_quincy_pap);
 	Zero2(fl_Quincy_Barrage_Firerate);
 	Zero(fl_sound_timer);
 	Zero(b_quincy_battery_special_one);
 	Zero(b_quincy_battery_special_two);
-	Zero(fl_Quincy_Battery_Multi);
 	Zero(fl_Quincy_Charge_Multi);
 	Zero(fl_Quincy_Charge);
 	Zero(i_Quincy_Skill_Points);
@@ -94,7 +132,6 @@ public void QuincyMapStart()
 	
 	for(int client=1 ; client <= MAXTF2PLAYERS ; client++)
 	{
-		fl_Quincy_Battery_Multi[client] = 1.0;
 		fl_Quincy_Charge_Multi[client] = 1.0;
 		fl_Quincy_Max_Battery[client] = 300.0;
 	}
@@ -129,15 +166,11 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			Create_Quincy_Weapon(client, true, weapon);
 			
 			SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
-			//SetEntityRenderMode(weapon, RENDER_TRANSCOLOR);
-		//	SetEntityRenderColor(weapon, 0, 0, 0, 0);
-			
-			//Update_Quincy(client);
 			
 			int pap = Get_Quincy_Pap(weapon);
 			if(pap!=0)
 				Give_Skill_Points(client, pap);
-			
+			i_quincy_pap[client] = pap;
 			DataPack pack;
 			h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -151,15 +184,12 @@ public void Activate_Quincy_Bow(int client, int weapon)
 		int pap = Get_Quincy_Pap(weapon);
 		if(pap!=0)
 			Give_Skill_Points(client, pap);
+		i_quincy_pap[client] = pap;
 
-		
-		//Update_Quincy(client);
 		
 		Create_Quincy_Weapon(client, true, weapon);
 
 		SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
-		//SetEntityRenderMode(weapon, RENDER_TRANSCOLOR);
-		//SetEntityRenderColor(weapon, 0, 0, 0, 0);
 		
 		DataPack pack;
 		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -211,7 +241,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 				bool attack = (buttons & IN_ATTACK) != 0;
 				bool attack2 = (buttons & IN_ATTACK2) != 0;
 				
-				float charge_percent = (fl_Quincy_Charge[client] / fl_Quincy_Max_Battery[client]) * 100.0;
+				float charge_percent = (fl_Quincy_Charge[client] / QUINCY_BOW_BASELINE_BATTERY) * 100.0;
 				
 				if(fl_hud_timer[client]<GameTime)
 				{
@@ -237,6 +267,8 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 					Mana_Regen_Delay[client] = GameTime + 1.0;
 					Mana_Hud_Delay[client] = 0.0;
 					
+					float charge_percent_sound = (fl_Quincy_Charge[client] / fl_Quincy_Max_Battery[client]) * 100.0;
+					
 					if(fl_sound_timer[client]<GameTime)
 					{
 						fl_sound_timer[client] = GameTime + 0.1;
@@ -245,11 +277,11 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 						{
 							case 1:
 							{
-								EmitSoundToAll(Zap_Sound[GetRandomInt(0, sizeof(Zap_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent)+25);
+								EmitSoundToAll(Zap_Sound[GetRandomInt(0, sizeof(Zap_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
 							}
 							case 2:
 							{
-								EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent)+25);
+								EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
 							}
 							
 						}
@@ -264,18 +296,9 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 						
 						mana_cost = RoundToCeil(mana_cost*fl_Quincy_Charge_Multi[client]);
 						
-						if (fl_Quincy_Battery_Multi[client] != 1.0)
-							mana_cost = RoundToCeil(mana_cost*fl_Quincy_Battery_Multi[client]);
-						
 						if(Current_Mana[client]>=mana_cost)
 						{
-							if (fl_Quincy_Battery_Multi[client] != 1.0)
-								fl_Quincy_Charge[client] += mana_cost*(fl_Quincy_Battery_Multi[client]/2.0);
-							else
-								fl_Quincy_Charge[client] += mana_cost;
-							
-							
-								
+							fl_Quincy_Charge[client] += mana_cost;					
 							Current_Mana[client] -=mana_cost;
 						}
 					}
@@ -297,7 +320,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 				int flags = Quincy_Bow_Hex_Array[client];
 				if(flags & QUINCY_BOW_FAST_CHARGE_4)	//Hyper Barrage
 				{
-					if(charge_percent>25.0)
+					if(charge_percent>QUINCY_BOW_HYPER_BARRAGE_MINIMUM)
 					{
 						float angles[3];
 						float UserLoc[3];
@@ -340,13 +363,8 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 						
 						UserLoc[2] -= 50.0;
 						
-						float mana_cost;
-						mana_cost = Attributes_Get(weapon, 733, 1.0);
-						
-						mana_cost *= 1.5;
-						
-						if(speed>5)
-							speed = 5;
+						if(speed>QUINCY_BOW_MAX_HYPER_BARRAGE)
+							speed = QUINCY_BOW_MAX_HYPER_BARRAGE;
 						for(int i=1 ; i<=speed ; i++)
 						{	
 							if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
@@ -357,11 +375,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 								
 								fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
 								
-								fl_Quincy_Charge[client] -= mana_cost;
-								if(Current_Mana[client]>=RoundToFloor(mana_cost))
-								{
-									Current_Mana[client] -=RoundToFloor(mana_cost*2.0);
-								}
+								fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
 								
 								
 								tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
@@ -389,7 +403,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 									fl_speed = 3000.0;
 									
 								float damage;
-								damage = 500.0*(charge_percent/100.0);
+								damage = 100.0*(charge_percent/100.0);
 								damage *= Attributes_Get(weapon, 410, 1.0);
 								Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
 							}
@@ -428,7 +442,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	float damage;
 	if(b_quincy_battery_special_one[client])
 	{
-		damage = fl_Quincy_Charge[client]*(charge_percent/75.0);
+		damage = 200.0*(charge_percent/75.0);
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		Penetrating_Shot(client, 10.0, damage, 1500.0);
 		fl_Quincy_Charge[client] = 0.0;
@@ -441,7 +455,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 		float charge_debuff = (charge_percent / 100.0);
 		if(charge_debuff<0.5)
 			charge_debuff = 0.5;
-		damage = fl_Quincy_Charge[client]*charge_debuff*1.5;
+		damage = 100.0*charge_debuff*1.5;
 		
 		speed = 3000.0*(charge_percent/25.0);
 		
@@ -496,7 +510,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	}
 	else
 	{
-		damage = fl_Quincy_Charge[client]*(charge_percent/100.0);	//this at max battery at max charge would deal like 6k, However, due to the penetrating arrow at 50% the most this can deal is like 3k base
+		damage = 100.0*(charge_percent/100.0);	//this at max battery at max charge would deal like 6k, However, due to the penetrating arrow at 50% the most this can deal is like 3k base
 	}
 	
 	damage *= Attributes_Get(weapon, 410, 1.0);
@@ -548,14 +562,14 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 	
 	if(flags & QUINCY_BOW_FAST_CHARGE_3 && !(flags & QUINCY_BOW_FAST_CHARGE_4))
 	{
-		if(charge_percent>50.0)
+		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
-			float amt = charge_percent / 25.0;
+			float amt = charge_percent / (QUINCY_BOW_MULTI_SHOT_MINIMUM/2.0);
 			Format(HUDText, sizeof(HUDText), "%s\nExtra Shoots: [%i]", HUDText, RoundToFloor(amt));
 		}
 		else
 		{
-			Format(HUDText, sizeof(HUDText), "%s\nMulti Shot: Inactive [%.1f％/50％]", HUDText, charge_percent);
+			Format(HUDText, sizeof(HUDText), "%s\nMulti Shot: Inactive [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_MULTI_SHOT_MINIMUM);
 		}
 		
 	}
@@ -563,7 +577,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 	{
 		if(charge_percent<25.0)
 		{
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Barrage Not Active!\nInsufficient Raishi! [%.1f％/25％]", HUDText, charge_percent);
+			Format(HUDText, sizeof(HUDText), "%s\nHyper Barrage Not Active!\nInsufficient Raishi! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_HYPER_BARRAGE_MINIMUM);
 		}
 		else
 		{
@@ -573,7 +587,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 	
 	if(flags & QUINCY_BOW_BATTERY_3)
 	{
-		if(charge_percent>50.0)
+		if(charge_percent>QUINCY_BOW_PENETRATING_ARROW_MINIMUM)
 		{
 			b_quincy_battery_special_one[client] = true;
 			Format(HUDText, sizeof(HUDText), "%s\nPenetrating Arrow Ready!", HUDText);
@@ -581,13 +595,13 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 		else
 		{
 			b_quincy_battery_special_one[client] = false;
-			Format(HUDText, sizeof(HUDText), "%s\nPenetrating Arrow Not Ready! [%.1f％/50％]", HUDText, charge_percent);
+			Format(HUDText, sizeof(HUDText), "%s\nPenetrating Arrow Not Ready! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_PENETRATING_ARROW_MINIMUM);
 		}
 			
 	}
 	if(flags & QUINCY_BOW_BATTERY_4)
 	{
-		if(charge_percent>90.0)
+		if(charge_percent>QUINCY_BOW_HYPER_ARROW_MINIMUM)
 		{
 			b_quincy_battery_special_two[client] = true;
 			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow Ready!", HUDText);
@@ -596,7 +610,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 		else
 		{
 			b_quincy_battery_special_two[client] = false;
-			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow Not Ready! [%.1f％/90％]", HUDText, charge_percent);
+			Format(HUDText, sizeof(HUDText), "%s\nHyper Arrow Not Ready! [%.1f％/%.1f％]", HUDText, charge_percent, QUINCY_BOW_HYPER_ARROW_MINIMUM);
 				
 		}
 	}
@@ -818,25 +832,25 @@ static int Quincy_Menu_Selection(Menu menu, MenuAction action, int client, int c
 					{
 						//CPrintToChatAll("Speed1");
 						Quincy_Bow_Hex_Array[client] |= QUINCY_BOW_FAST_CHARGE_1;
-						fl_Quincy_Charge_Multi[client] = 1.25;
+						fl_Quincy_Charge_Multi[client] = 1.5;
 					}
 					else if(!(flags & QUINCY_BOW_FAST_CHARGE_2))
 					{
 						//CPrintToChatAll("Speed2");
 						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_FAST_CHARGE_2;
-						fl_Quincy_Charge_Multi[client] = 1.5;
+						fl_Quincy_Charge_Multi[client] = 1.75;
 					}
 					else if(!(flags & QUINCY_BOW_FAST_CHARGE_3))
 					{
 						//CPrintToChatAll("Speed3");
 						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_FAST_CHARGE_3;
-						fl_Quincy_Charge_Multi[client] = 2.25;
+						fl_Quincy_Charge_Multi[client] = 3.0;
 					}
 					else if(!(flags & QUINCY_BOW_FAST_CHARGE_4))
 					{
 						//CPrintToChatAll("Speed4");
 						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_FAST_CHARGE_4;
-						fl_Quincy_Charge_Multi[client] = 3.5;
+						fl_Quincy_Charge_Multi[client] = 4.5;
 					}
 					else
 					{
@@ -851,29 +865,25 @@ static int Quincy_Menu_Selection(Menu menu, MenuAction action, int client, int c
 					if(!(flags & QUINCY_BOW_BATTERY_1))
 					{
 						//CPrintToChatAll("Battery1");
-						fl_Quincy_Max_Battery[client] = 600.0;
-						fl_Quincy_Battery_Multi[client] = 1.0;
+						fl_Quincy_Max_Battery[client] = 800.0;
 						Quincy_Bow_Hex_Array[client] |= QUINCY_BOW_BATTERY_1;
 					}
 					else if(!(flags & QUINCY_BOW_BATTERY_2))
 					{
 						//CPrintToChatAll("Battery2");
-						fl_Quincy_Max_Battery[client] = 1200.0;
-						fl_Quincy_Battery_Multi[client] = 1.0;
+						fl_Quincy_Max_Battery[client] = 1300.0;
 						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_BATTERY_2;
 					}
 					else if(!(flags & QUINCY_BOW_BATTERY_3))
 					{
 						//CPrintToChatAll("Battery3");
-						fl_Quincy_Max_Battery[client] = 2000.0;
-						fl_Quincy_Battery_Multi[client] = 3.0;	//you can dump more mana at the cost of less mana, but it means your damage penalty is harsher on lower charges
+						fl_Quincy_Max_Battery[client] = 1800.0;
 						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_BATTERY_3;
 					}
 					else if(!(flags & QUINCY_BOW_BATTERY_4))
 					{
 						//CPrintToChatAll("Battery4");
-						fl_Quincy_Max_Battery[client] = 6000.0;
-						fl_Quincy_Battery_Multi[client] = 6.0;
+						fl_Quincy_Max_Battery[client] = 2300.0;
 						Quincy_Bow_Hex_Array[client]  |= QUINCY_BOW_BATTERY_4;
 					}
 					else
@@ -887,8 +897,14 @@ static int Quincy_Menu_Selection(Menu menu, MenuAction action, int client, int c
 	return 0;	//do nothing
 }
 
-static int i_particle[MAXENTITIES][9];
-static int i_laser[MAXENTITIES][7];
+static int i_particle[MAXPLAYERS+1][9];
+static int i_laser[MAXPLAYERS+1][7];
+/*
+static int i_charge_particle[MAXPLAYERS+1][2][9];
+static int i_charge_laser[MAXPLAYERS+1][2][9];
+
+static int i_battery_particle[MAXPLAYERS+1][2][9];
+static int i_battery_laser[MAXPLAYERS+1][2][9];*/
 
 static void test(float vec[3], float vec2[3], float Direction[3])
 {
@@ -907,6 +923,7 @@ static void Create_Quincy_Weapon(int client, bool first = false, int weapon)
 	
 	if(!IsValidEntity(viewmodelModel))
 		return;
+	
 		
 	if(first)
 	{
@@ -958,6 +975,8 @@ static void Create_Quincy_Weapon(int client, bool first = false, int weapon)
 		Delete_Quincy_Weapon(client);
 		Spawn_Weapon(client,viewmodelModel);
 	}
+	
+	
 		
 		
 		
@@ -975,9 +994,6 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	GetAttachment(viewmodelModel, "effect_hand_r", flPos_2, flAng_2);
 	
 	int i_particle_right = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);
-	Custom_SDKCall_SetLocalOrigin(i_particle_right, flPos_2);
-	SetEntPropVector(i_particle_right, Prop_Data, "m_angRotation", flAng_2); 
-	SetParent(viewmodelModel, i_particle_right, "effect_hand_r",_);
 	
 	float Direction[3], zero_zero[3] = {0.0, 100.0, 0.0};	//use this to get a "fake" forward vec
 	
@@ -1064,30 +1080,36 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	SetParent(particle_1, particle_7, "",_, true);
 	SetParent(particle_7, particle_7_1, "",_, true);
 	
-	int particle_8 = ParticleEffectAt(part_3, "", 0.0);
+	int particle_8 = ParticleEffectAt(part_3, "", 0.0);	//hadle
 	int particle_8_1 = ParticleEffectAt(part_3_1, "", 0.0);
 	SetParent(particle_1, particle_8, "",_, true);
 	SetParent(particle_8, particle_8_1, "",_, true);
+	
+	
+
 	
 	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
 	SetParent(viewmodelModel, particle_0, "effect_hand_l",_);
 	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+	Custom_SDKCall_SetLocalOrigin(i_particle_right, flPos_2);
+	SetEntPropVector(i_particle_right, Prop_Data, "m_angRotation", flAng_2); 
+	SetParent(viewmodelModel, i_particle_right, "effect_hand_r",_);
 	
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));			//inner stick	//base
 	
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_7, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));		//inner stick	//base
 	
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_7_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
 	
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_8, particle_8_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
+		
+	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_8, particle_8_1, r, g, b, f_start, f_end, amp, LASERBEAM));			//handle	//base
+
+	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_7, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));			//outer stick	//base
 	
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	
+	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_7_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));		//outer stick	//base
+
 	i_particle[client][0] = EntIndexToEntRef(particle_0);
 	i_particle[client][1] = EntIndexToEntRef(particle_1);
 	i_particle[client][2] = EntIndexToEntRef(particle_6);
