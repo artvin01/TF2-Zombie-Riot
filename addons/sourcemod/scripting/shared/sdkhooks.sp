@@ -721,6 +721,16 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "↖%s", bufferbuffs);
 		}
+		if(f_BattilonsNpcBuff[client] > GameTime) 
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⛨%s", bufferbuffs);
+		}
+		if(f_AncientBannerNpcBuff[client] > GameTime) 
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "➤%s", bufferbuffs);
+		}
 		if(had_An_ability)
 		{
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
@@ -1760,7 +1770,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWN [R]", {0.0,0.0,80.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED [R]", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					

@@ -84,6 +84,9 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
+	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
+	//nosoop
 
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
@@ -1926,6 +1929,16 @@ public MRESReturn Dhook_BlowHorn_Post(int entity)
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
 	return MRES_Ignored;
 }
+
+public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
+{
+	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
+	if(IsValidClient(client))
+		f_BannerDurationActive[client] = GetGameTime() + 1.1;
+
+	return MRES_Supercede;
+}
+
 public MRESReturn Dhook_RaiseFlag_Post(int entity)
 {
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1944,6 +1957,8 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	if(IsValidEntity(weapon))
 	{
 		AncientBannerActivate(client, weapon);
+		BuffBannerActivate(client, weapon);
+		BuffBattilonsActivate(client, weapon);
 	}
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch

@@ -569,6 +569,12 @@ public void MedivalVillager_ClotThink(int iNPC)
 				CNavArea area = TheNavMesh.GetNearestNavArea(AproxRandomSpaceToWalkTo, true);
 				if(area == NULL_AREA)
 					return;
+
+				int NavAttribs = area.GetAttributes();
+				if(NavAttribs & NAV_MESH_AVOID)
+				{
+					return;
+				}
 					
 			
 				area.GetCenter(AproxRandomSpaceToWalkTo);

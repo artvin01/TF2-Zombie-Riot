@@ -371,7 +371,9 @@ float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
 float f_GodArkantosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
+float f_BannerDurationActive[MAXENTITIES];
 float f_BuffBannerNpcBuff[MAXENTITIES];
+float f_AncientBannerNpcBuff[MAXENTITIES];
 float f_BattilonsNpcBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
@@ -2276,8 +2278,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		h_NpcCollissionHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
+		f_BannerDurationActive[entity] = 0.0;
 		f_BuffBannerNpcBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
+		f_AncientBannerNpcBuff[entity] = 0.0;
 		b_NpcHasDied[entity] = true;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
@@ -2317,6 +2321,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
 #endif
+		BannerOnEntityCreated(entity);
 
 #if defined RPG
 		RPG_EntityCreated(entity, classname);
@@ -3011,11 +3016,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	//Idea got from a client dump.
 	{
 		TF2_RemoveCondition(client, TFCond_SpawnOutline);
-	}
-	else if(condition == TFCond_Buffed)
-	{
-		f_BuffBannerNpcBuff[client] = GetGameTime() + 1.1;
-		TF2_RemoveCondition(client, TFCond_Buffed);
 	}
 	else if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
 	{

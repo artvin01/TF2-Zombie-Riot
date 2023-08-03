@@ -28,6 +28,7 @@ methodmap StalkerFather < StalkerShared
 		
 		i_NpcInternalId[npc.index] = STALKER_FATHER;
 		i_NpcWeight[npc.index] = 5;
+		b_DoNotChangeTargetTouchNpc[npc.index] = true;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

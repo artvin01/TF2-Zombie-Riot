@@ -4406,6 +4406,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_StickyExtraGrenades[client] = false;
 	b_HasMechanic[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
+	BannerOnEntityCreated(client);
 	
 	if(!IsFakeClient(client) && Was_phasing)
 	{
@@ -5105,7 +5106,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							}
 							case 8:
 							{
-								if(slot == TFWeaponSlot_Melee && i_IsWandWeapon[entity])
+								if(i_IsWandWeapon[entity])
 									apply = true;
 							}
 							case 9:
@@ -5237,9 +5238,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
 		On_Glitched_Give(client, entity);
-		Enable_Management_Banner(client, entity);
-		Enable_Management_Banner_1(client, entity);
-		Enable_Management_Banner_2(client, entity);
+		Enable_Management_Banner(client, entity);		//Buffbanner
+		Enable_Management_Banner_1(client, entity);		//Buffbanner PAP
+		Enable_Management_Banner_2(client, entity); 	//Battilons
+		Enable_Management_Banner_3(client, entity); 	//Ancient Banner
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);

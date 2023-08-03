@@ -11,6 +11,12 @@ enum
 	TEUTON_WAITING
 }
 
+/*
+	
+	NAV_MESH_AVOID : Cant build here, for stuff like villages
+	NAV_MESH_WALK : Walk, do not avoid obstacles
+*/
+
 int dieingstate[MAXTF2PLAYERS];
 int TeutonType[MAXTF2PLAYERS];
 int i_TeamGlow[MAXENTITIES]={-1, ...};

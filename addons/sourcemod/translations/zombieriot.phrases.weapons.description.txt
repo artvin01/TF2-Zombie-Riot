@@ -2263,4 +2263,8 @@
 	{
 		"en"	"Fantasy and reality, its all the same\nBy Crouching And pressing Mouse 2 you can teleport to a npc, Costs 3 shards to use\nNote: This ability WILL only work if you are looking at an enemy\nYou gain wings of Fantasy\n(They don't allow you to fly unfortunately)"
 	}
+	"Ancient Banner Desc"
+	{
+		"en"	"Give everyone 25% more attackspeed, reloadspeed and healspeed during the duration of the banner."
+	}
 }

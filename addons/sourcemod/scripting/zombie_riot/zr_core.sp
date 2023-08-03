@@ -1045,13 +1045,13 @@ public Action Timer_Dieing(Handle timer, int client)
 					if(b_DyingTextOff[client])
 					{
 						b_DyingTextOff[client] = false;
-						SetVariantString("DOWN [R]");
-						AcceptEntityInput(TextFormat, "SetColor");
+						SetVariantString("DOWNED [R]");
+						AcceptEntityInput(TextFormat, "SetText");
 					}
 					else
 					{
 						SetVariantString("REVIVE [R]");
-						AcceptEntityInput(TextFormat, "SetColor");
+						AcceptEntityInput(TextFormat, "SetText");
 						b_DyingTextOff[client] = true;
 					}
 					f_DyingTextTimer[client] = GetGameTime() + 1.0;

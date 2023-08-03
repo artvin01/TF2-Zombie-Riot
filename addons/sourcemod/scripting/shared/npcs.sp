@@ -1751,6 +1751,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "↖%s", Debuff_Adder);
 	}
+	if(f_AncientBannerNpcBuff[victim] > GameTime) //hussar!
+	{
+		if(Debuff_added_hud)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), " |%s ", Debuff_Adder);
+			Debuff_added_hud = false;
+		}
+		Debuff_added = true;
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "➤%s", Debuff_Adder);
+	}
 	
 	if(f_Ruina_Defense_Buff[victim] > GameTime)
 	{
@@ -2040,6 +2050,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	else if(f_BattilonsNpcBuff[npc] > GameTime)
 		return true;
 	else if(f_BuffBannerNpcBuff[npc] > GameTime)
+		return true;
+	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Defense_Buff[npc] > GameTime)
 		return true;

@@ -297,9 +297,30 @@
 				"windows"	"\x55\x8B\xEC\x8B\x01\x8D\x55\xD0\x83\xEC\x30\x8B\x80\x5C\x03\x00\x00\x53\x52\xFF\x75\x08\xFF\xD0\xFF\x75\x10"
 				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
 			}	
+			"CTFPlayerShared::PulseRageBuff()"
+			{
+				// last call in assembly block containing unique string "mod_soldier_buff_range"
+				"library"	"server"
+				"linux"		"@_ZN15CTFPlayerShared13PulseRageBuffENS_13ERageBuffSlotE"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x33\xC0\xC7\x45\xF8\x2A\x00\x00\x00"
+			}
 		}
 		"Functions"
 		{
+			"CTFPlayerShared::PulseRageBuff()"
+			{
+				"signature"		"CTFPlayerShared::PulseRageBuff()"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"address"
+				"arguments"
+				{
+					"buff_slot"
+					{
+						"type"	"int"
+					}
+				}
+			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
 				"signature"	"NextBotGroundLocomotion::UpdateGroundConstraint"
