@@ -948,10 +948,10 @@ stock void SetParent(int iParent, int iChild, const char[] szAttachment = "", co
 			{
 				if(!maintain_anyways)
 				{
-					float vPos[3];
-					GetEntPropVector(iParent, Prop_Send, "m_vecOrigin", vPos);
-					AddVectors(vPos, vOffsets, vPos);
-					TeleportEntity(iChild, vPos, NULL_VECTOR, NULL_VECTOR);
+					float Vecpos[3];
+
+					Vecpos = vOffsets;
+					SDKCall_SetLocalOrigin(iChild,Vecpos);
 				}
 				AcceptEntityInput(iChild, "SetParentAttachmentMaintainOffset", iParent, iChild);
 			}
