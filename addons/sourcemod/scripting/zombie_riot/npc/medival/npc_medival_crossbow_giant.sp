@@ -162,6 +162,9 @@ methodmap MedivalCrossbowGiant < CClotBody
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		
 		
 		SDKHook(npc.index, SDKHook_Think, MedivalCrossbowGiant_ClotThink);
@@ -199,9 +202,7 @@ methodmap MedivalCrossbowGiant < CClotBody
 public void MedivalCrossbowGiant_ClotThink(int iNPC)
 {
 	MedivalCrossbowGiant npc = view_as<MedivalCrossbowGiant>(iNPC);
-	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
