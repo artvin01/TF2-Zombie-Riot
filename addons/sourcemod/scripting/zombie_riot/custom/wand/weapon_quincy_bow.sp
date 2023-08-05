@@ -1143,7 +1143,7 @@ static void Delete_Quincy_Weapon(int client)
 static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
  static void Quincy_Hyper_Arrow(int client, float charge_percent, int weapon)
  {
- 	float damage = 1.0*fl_Quincy_Charge[client]*(charge_percent/100.0);
+ 	float damage = 500.0*(charge_percent/100.0);
  	Client_Shake(client, 0, 50.0, 25.0, 1.5);
  	damage *= Attributes_Get(weapon, 410, 1.0);
  	Quincy_Damage_Trace(client, 20.0, damage);
