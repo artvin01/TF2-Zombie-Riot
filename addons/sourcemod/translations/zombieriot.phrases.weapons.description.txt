@@ -753,9 +753,7 @@
 	
 	"Knife Desc"
 	{
-		"en"	"Can backstab and inflicts bleed for a LONG time"
-		"ru"	"Может ударить в спину и наносит кровотечение в течение ДЛИТЕЛЬНОГО времени."
-		"chi"   "背刺会造成流血"
+		"en"	"Can backstab and inflicts bleed for a LONG time\n2x backstab dmg against raids."
 	}
 	"Knife Pap 1"
 	{

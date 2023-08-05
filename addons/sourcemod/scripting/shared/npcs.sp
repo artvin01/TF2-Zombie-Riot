@@ -2863,8 +2863,12 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 							TE_SendToAll();
 						}
 					}
-					
-					BackstabNpcInternalModifExtra(weapon, attacker, victim, damage, 1.0);
+					if(b_thisNpcIsARaid[victim])
+					{
+						damage *= 2.0;
+					}
+
+					BackstabNpcInternalModifExtra(weapon, attacker, victim, 1.0);
 					if(f_BackstabCooldown[weapon] != 0.0)
 					{
 						SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GameTime+(attack_speed));
@@ -2904,7 +2908,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 #endif
 	return false;
 }
-void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float &damage, float multi)
+void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)
 {
 	int heal_amount = i_BackstabHealEachTick[weapon];
 	int heal_ticks = i_BackstabHealTicks[weapon];
@@ -2913,7 +2917,6 @@ void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float &
 		//If against raids, heal more and damage more.
 		if(b_thisNpcIsARaid[victim])
 		{
-			damage *= 2.0; 
 			heal_amount *= 2.0;
 		}
 		heal_amount *= multi;
@@ -3124,7 +3127,9 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		return;
 		
 	if(i_HasBeenBackstabbed[victim])
-		BackstabNpcInternalModifExtra(weapon, attacker, victim, 0.0, 2.0);
+	{
+		BackstabNpcInternalModifExtra(weapon, attacker, victim, 2.0);
+	}
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
