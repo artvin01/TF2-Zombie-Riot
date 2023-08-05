@@ -15,25 +15,6 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		/*
-		71 is afterburn
-				Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651);
-		i_SurvivalKnifeCount[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 33, false));
-		i_GlitchedGun[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 731, false));
-		i_AresenalTrap[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 719, false));
-		i_ArsenalBombImplanter[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 544, false));
-		i_NoBonusRange[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 410, false));
-		i_BuffBannerPassively[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 786, false));
-		
-		i_LowTeslarStaff[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 3002, false));
-		i_HighTeslarStaff[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 3000, false));
-
-		
-		i_BleedDurationWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 149, false));
-		i_BurnDurationWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 208, false));
-		i_ExtinquisherWeapon[entity] = RoundToCeil(Attributes_GetOnWeapon(client, entity, 638, false));
-		f_UberOnHitWeapon[entity] = Attributes_GetOnWeapon(client, entity, 17, false);
-		*/
 	}
 	return false;
 }
@@ -195,7 +176,7 @@ bool Attributes_Fire(int client, int weapon)
 		float gameTime = GetGameTime();
 		if(gameTime < GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack"))
 		{
-			float value = Attributes_GetOnWeapon(client, weapon, 298, false);	// mod ammo per shot
+			float value = Attributes_Get(weapon, 298, 0.0);	// mod ammo per shot
 			if(value && clip < RoundFloat(value))
 			{
 				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", gameTime + 0.2);
@@ -210,21 +191,12 @@ bool Attributes_Fire(int client, int weapon)
 int Attributes_Airdashes(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	return RoundFloat(Attributes_GetOnWeapon(client, weapon, 250, false) + Attributes_GetOnPlayer(client, 393, false));	// air dash count, sniper rage DISPLAY ONLY
+	return RoundFloat(Attributes_Get(weapon, 250, 0.0) + Attributes_GetOnPlayer(client, 393, false));	// air dash count, sniper rage DISPLAY ONLY
 },
 #endif
 
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
-	/*
-	if(GetClientTeam(client) == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-	{
-		float value = Attributes_GetOnWeapon(client, weapon, 251, false);	// speed buff ally
-		if(value)
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
-	}
-	else
-	*/
 	{
 		if(weapon < 1)
 		{
@@ -237,21 +209,17 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
 
-				value = Attributes_GetOnWeapon(client, weapon, 16, false) +
-					Attributes_GetOnWeapon(client, weapon, 98, false) +
-					Attributes_GetOnWeapon(client, weapon, 110, false) +
-					Attributes_GetOnWeapon(client, weapon, 111, false);	// add_onhit_addhealth
+				value = Attributes_Get(weapon, 16, 0.0) +
+					Attributes_Get(weapon, 98, 0.0) +
+					Attributes_Get(weapon, 110, 0.0) +
+					Attributes_Get(weapon, 111, 0.0);	// add_onhit_addhealth
 					
 				if(value)
 					StartHealingTimer(client, 0.1, value > 0 ? 1.0 : -1.0, value > 0 ? RoundFloat(value) : RoundFloat(-value));
-/*		
-				value = Attributes_GetOnWeapon(client, weapon, 19, false);	//  tmp dmgbuff on hit
-				if(value)
-					TF2_AddCondition(client, TFCond_TmpDamageBonus, 0.2);	// TODO: Set this to 1.0 and remove on miss
-*/
+
 				value = float(i_BleedDurationWeapon[weapon]);	// bleeding duration
 				if(value)
-					StartBleedingTimer(victim, client, Attributes_GetOnWeapon(client, weapon, 2) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
+					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 0.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
 
 					
 				value = float(i_BurnDurationWeapon[weapon]);	// Set DamageType Ignite
@@ -310,7 +278,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 							{
 								entity = list.Get(i);
 								float uber = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-								if(Attributes_GetOnWeapon(client, entity, 2046) == 4.0)
+								if(Attributes_Get(entity, 2046, 0.0) == 4.0)
 								{
 									uber -= value + extra;
 								}
@@ -340,43 +308,9 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 						delete list;
 					}
 				}
-			
-/*			
-				if(Attributes_GetOnWeapon(client, weapon, 368, false))	// rage on Hit
-				{
-					if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
-					{
-						float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter")+0.5;
-						if(rage > 100.0)
-							rage = 100.0;
-						
-						SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
-					}
-				}
-*/
 			}
 		}
-		/*
-		value = Attributes_GetOnWeapon(client, weapon, 166, false);	// add cloak on hit
-		if(value)
-		{
-			float cloak = GetEntPropFloat(client, Prop_Send, "m_flCloakMeter") + value*100.0;
-			if(cloak > 100.0)
-			{
-				cloak = 100.0;
-			}
-			else if(cloak < 0.0)
-			{
-				cloak = 0.0;
-			}
-			
-			SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", cloak);
-		}
-		
-		if(Attributes_GetOnWeapon(client, weapon, 540))	// add head on hit
-			SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-		*/
-		float value = Attributes_GetOnWeapon(client, weapon, 877, false);	// speed_boost_on_hit_enemy
+		float value = Attributes_Get(weapon, 877, 0.0);	// speed_boost_on_hit_enemy
 		if(value)
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);
 		/*
@@ -427,55 +361,13 @@ void Attributes_OnKill(int client, int weapon)
 			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
 		
 	}
-	/*
-	value = Attributes_GetOnWeapon(client, weapon, 220, false);	// restore health on kill
-	if(value)
-		StartHealingTimer(client, 0.1, 1, RoundFloat(float(SDKCall_GetMaxHealth(client))*value/100.0));
-	*/
-	/*
-	if(weapon > MaxClients && Attributes_GetOnWeapon(client, weapon, 226))	// honorbound
-	{
-		SetEntProp(weapon, Prop_Send, "m_bIsBloody", 1);
-		SetEntProp(client, Prop_Send, "m_iKillCountSinceLastDeploy", GetEntProp(client, Prop_Send, "m_iKillCountSinceLastDeploy")+1);
-	}
-	
-	if(Attributes_GetOnWeapon(client, weapon, 292) == 6.0)	// Eyelander
-	{
-		SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
-		TF2_AddCondition(client, TFCond_DemoBuff);
-	}
-	
-	if(Attributes_GetOnWeapon(client, weapon, 409))	// kill forces attacker to laugh
-		TF2_StunPlayer(client, 2.0, 1.0, TF_STUNFLAGS_NORMALBONK);
-*/
-	value = Attributes_GetOnWeapon(client, weapon, 613, false);	// minicritboost on kill
+	value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
 	if(value)
 		TF2_AddCondition(client, TFCond_MiniCritOnKill, value);
 
-	if(Attributes_GetOnWeapon(client, weapon, 644) || Attributes_GetOnWeapon(client, weapon, 807))	// clipsize increase on kill, add_head_on_kill
+	if(Attributes_Get(weapon, 644,0.0) || Attributes_Get(weapon, 807,0.0))	// clipsize increase on kill, add_head_on_kill
 		SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
-/*
-	value = Attributes_GetOnWeapon(client, weapon, 736);	// speed_boost_on_kill
-	if(value)
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);
-	
-	value = Attributes_GetOnWeapon(client, weapon, 2025);	// killstreak tier
-	if(value)
-		SetEntProp(client, Prop_Send, "m_nStreaks", GetEntProp(client, Prop_Send, "m_nStreaks")+1);
-	*/
-	/*value = Attributes_GetOnWeapon(client, weapon, 2067);	// attack_minicrits_and_consumes_burning
-	if(value)
-	{
-		char buffer[16];
-		if(GetCustomKeyValue(victim, "m_flIgniteFor", buffer, sizeof(buffer)))
-		{
-			float gameTime = GetGameTime();
-			float time = StringToFloat(buffer);
-			if(time >= gameTime)
-				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 4.0);
-		}
-	}*/
+
 }
 
 float Attributes_GetOnPlayer(int client, int index, bool multi = true, bool noWeapons = false)
@@ -578,7 +470,7 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 
 stock float Attributes_FindOnWeapon(int client, int entity, int index, bool multi=false, float defaul=0.0)
 {
-	return Attributes_GetOnWeapon(client, entity, index, multi);
+	return Attributes_Get(entity, index, defaul);
 }
 
 stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, float defaul=0.0, bool IgnoreWeaponsEquipped = false, bool DoNotIngoreEquippedWeapon = false)

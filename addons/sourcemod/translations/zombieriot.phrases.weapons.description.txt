@@ -837,9 +837,7 @@
 	}
 	"Kunai Desc"
 	{
-		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not."
-		"ru"	"Может нанести удар в спину и кровотечение, удар в спину даёт здоровье, независимо от того, убивает он или нет."
-		"chi"   "背刺可以造成流血，背刺成功后将吸收生命，无论目标是否死亡。"
+		"en"	"Can backstab and bleed, backstab gives health, no matter if it kills or not.\nKills reward 2x heal, Raids heal 2x the hp, against raids backstabs deal 2x dmg overall."
 	}
 	"Kunai Pap 1"
 	{

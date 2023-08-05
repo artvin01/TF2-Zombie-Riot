@@ -2864,27 +2864,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						}
 					}
 					
-				
-					int heal_amount = i_BackstabHealEachTick[weapon];
-					int heal_ticks = i_BackstabHealTicks[weapon];
-					if(heal_amount && heal_ticks)
-					{
-						if(b_FaceStabber[attacker])
-						{
-							heal_amount /= 4;
-							heal_ticks	/= 4;
-							if(heal_amount < 1)
-							{
-								heal_amount = 1;
-							}
-							if(heal_ticks < 1)
-							{
-								heal_ticks = 1;
-							}
-
-						}
-						StartHealingTimer(attacker, 0.1, float(heal_amount), heal_ticks);
-					}
+					BackstabNpcInternalModifExtra(weapon, attacker, victim, damage, 1.0);
 					if(f_BackstabCooldown[weapon] != 0.0)
 					{
 						SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GameTime+(attack_speed));
@@ -2924,6 +2904,36 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 #endif
 	return false;
 }
+void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float &damage, float multi)
+{
+	int heal_amount = i_BackstabHealEachTick[weapon];
+	int heal_ticks = i_BackstabHealTicks[weapon];
+	if(heal_amount && heal_ticks)
+	{
+		//If against raids, heal more and damage more.
+		if(b_thisNpcIsARaid[victim])
+		{
+			damage *= 2.0; 
+			heal_amount *= 2.0;
+		}
+		heal_amount *= multi;
+		if(b_FaceStabber[attacker])
+		{
+			heal_amount /= 4;
+			heal_ticks	/= 4;
+			if(heal_amount < 1)
+			{
+				heal_amount = 1;
+			}
+			if(heal_ticks < 1)
+			{
+				heal_ticks = 1;
+			}
+		}
+		StartHealingTimer(attacker, 0.1, float(heal_amount), heal_ticks);
+	}
+}
+
 bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {	
 	if(IsValidEntity(inflictor) && inflictor>MaxClients)// && attacker<=MaxClients)
@@ -3105,7 +3115,7 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		damage -= BaseDamageBeforeBuffs * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
 }
-void OnKillUniqueWeapon(int attacker, int weapon)
+void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 {
 	if(!IsValidEntity(weapon))
 		return;
@@ -3113,6 +3123,9 @@ void OnKillUniqueWeapon(int attacker, int weapon)
 	if(!IsValidClient(attacker))
 		return;
 		
+	if(i_HasBeenBackstabbed[victim])
+		BackstabNpcInternalModifExtra(weapon, attacker, victim, 0.0, 2.0);
+
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_MLYNAR:

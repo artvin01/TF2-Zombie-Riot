@@ -5234,22 +5234,22 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		/*
 			Attributes to Arrays Here
 		*/
-		Panic_Attack[entity] = Attributes_GetOnWeapon(client, entity, 651, true, 0.0);
-		i_SurvivalKnifeCount[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 33, false));
-		i_GlitchedGun[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 731, false));
-		i_AresenalTrap[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 719, false));
-		i_ArsenalBombImplanter[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 544, false));
-		i_NoBonusRange[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 410, false));
-		i_BuffBannerPassively[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 786, false));
+		Panic_Attack[entity] = Attributes_Get(entity, 651, 0.0);
+		i_SurvivalKnifeCount[entity] = RoundToNearest(Attributes_Get(entity, 33, 0.0));
+		i_GlitchedGun[entity] = RoundToNearest(Attributes_Get(entity, 731, 0.0));
+		i_AresenalTrap[entity] = RoundToNearest(Attributes_Get(entity, 719, 0.0));
+		i_ArsenalBombImplanter[entity] = RoundToNearest(Attributes_Get(entity, 544, 0.0));
+		i_NoBonusRange[entity] = RoundToNearest(Attributes_Get(entity, 410, 0.0));
+		i_BuffBannerPassively[entity] = RoundToNearest(Attributes_Get(entity, 786, 0.0));
 		
-		i_LowTeslarStaff[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 3002, false));
-		i_HighTeslarStaff[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 3000, false));
+		i_LowTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3002, 0.0));
+		i_HighTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3000, 0.0));
 
 		
-		i_BleedDurationWeapon[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 149, false));
-		i_BurnDurationWeapon[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 208, false));
-		i_ExtinquisherWeapon[entity] = RoundToNearest(Attributes_GetOnWeapon(client, entity, 638, false));
-		f_UberOnHitWeapon[entity] = Attributes_GetOnWeapon(client, entity, 17, false);
+		i_BleedDurationWeapon[entity] = RoundToNearest(Attributes_Get(entity, 149, 0.0));
+		i_BurnDurationWeapon[entity] = RoundToNearest(Attributes_Get(entity, 208, 0.0));
+		i_ExtinquisherWeapon[entity] = RoundToNearest(Attributes_Get(entity, 638, 0.0));
+		f_UberOnHitWeapon[entity] = Attributes_Get(entity, 17, 0.0);
 		
 #if defined ZR
 		Enable_Management_Knife(client, entity);

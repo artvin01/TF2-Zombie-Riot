@@ -2087,7 +2087,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 
 		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
 		{
-			if(Panic_Attack[weapon] && !i_IsWrench[weapon])
+			if(Panic_Attack[weapon] != 0.0 && !i_IsWrench[weapon])
 			{
 				float flHealth = float(GetEntProp(client, Prop_Send, "m_iHealth"));
 				float flpercenthpfrommax = flHealth / SDKCall_GetMaxHealth(client);
