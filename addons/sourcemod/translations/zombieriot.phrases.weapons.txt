@@ -2243,4 +2243,9 @@
 		"en"	"The Enforcer Mastery 5"
 		"ru"	"Мастерство головореза 5"
 	}
+	"Quincy's Bow"
+	{
+		"en"	"Quincy's Bow"
+	}
+	
 }

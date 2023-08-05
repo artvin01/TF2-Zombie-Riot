@@ -737,62 +737,62 @@ public void Quincy_Menu(int client, int weapon)
 		if(!(flags & QUINCY_BOW_FAST_CHARGE_1))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Fast1");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Charge_0");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else if(!(flags & QUINCY_BOW_FAST_CHARGE_2))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Fast2");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Charge_1");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else if(!(flags & QUINCY_BOW_FAST_CHARGE_3))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Fast3");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Charge_2");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else if(!(flags & QUINCY_BOW_FAST_CHARGE_4))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t","Quincy Fast4");
+			FormatEx(buffer, sizeof(buffer), "%t","Quincy Charge_3");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t","Quincy Fast4");
+			FormatEx(buffer, sizeof(buffer), "%t","Quincy Charge_4");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		
 		if(!(flags & QUINCY_BOW_BATTERY_1))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat1");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_0");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else if(!(flags & QUINCY_BOW_BATTERY_2))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat2");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_1");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else if(!(flags & QUINCY_BOW_BATTERY_3))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat3");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_2");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else if(!(flags & QUINCY_BOW_BATTERY_4))
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat4");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_3");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			char buffer[255];
-			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat4");
+			FormatEx(buffer, sizeof(buffer), "%t", "Quincy Bat_4");
 			menu2.AddItem("3", buffer, ITEMDRAW_DISABLED);
 		}
 
