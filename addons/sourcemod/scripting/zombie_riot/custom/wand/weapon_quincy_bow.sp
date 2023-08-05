@@ -403,7 +403,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 									fl_speed = 3000.0;
 									
 								float damage;
-								damage = 100.0*(charge_percent/100.0);
+								damage = 33.0*(charge_percent/100.0);
 								damage *= Attributes_Get(weapon, 410, 1.0);
 								Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
 							}
