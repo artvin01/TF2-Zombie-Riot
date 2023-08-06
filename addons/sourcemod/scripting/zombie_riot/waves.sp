@@ -970,6 +970,7 @@ void Waves_Progress()
 				else
 				{
 					multiBoss = playercount * 0.2;
+					MultiGlobalHealth = multiBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -982,7 +983,7 @@ void Waves_Progress()
 			}
 			
 			if(wave.Delay > 0.0)
-				WaveTimer = CreateTimer(wave.Delay * MultiGlobal, Waves_ProgressTimer);
+				WaveTimer = CreateTimer(wave.Delay * (MultiGlobal * 0.75), Waves_ProgressTimer);
 		}
 		else
 		{

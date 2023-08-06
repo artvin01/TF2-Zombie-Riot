@@ -75,7 +75,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"items/powerup_pickup_crits.wav",
 };
 
-#define SON_OF_OSIRIS_RANGE 200.0
+#define SON_OF_OSIRIS_RANGE 300.0
 
 void MedivalSonOfOsiris_OnMapStart_NPC()
 {
@@ -268,7 +268,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						
 					if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.5, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
-						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 450.0, b_IsAlliedNpc[npc.index]);
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, b_IsAlliedNpc[npc.index]);
 					}
 				}
 			}

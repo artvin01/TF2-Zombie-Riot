@@ -262,11 +262,14 @@ public void IsharMlarWaterAttack_Invoke(int ref, int enemy)
 	if(IsValidEntity(entity))
 	{
 	//	IsharmlaTrans npc = view_as<IsharmlaTrans>(entity);
-		float Time=1.5;	//how long before kaboom
+		float Time=2.5;	//how long before kaboom
 			
 					
 		
 		float Range=150.0;
+		if(LastMann)
+			Range = 75.0;
+
 		float Dmg=500.0;
 		
 		float vecTarget[3];

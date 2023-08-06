@@ -2863,9 +2863,19 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 							TE_SendToAll();
 						}
 					}
-					if(b_thisNpcIsARaid[victim])
+					if(!b_FaceStabber[attacker])
 					{
-						damage *= 2.0;
+						if(b_thisNpcIsARaid[victim])
+						{
+							damage *= 2.0;
+						}
+					}
+					else
+					{
+						if(b_thisNpcIsARaid[victim])
+						{
+							damage *= 1.35;
+						}
 					}
 
 					BackstabNpcInternalModifExtra(weapon, attacker, victim, 1.0);
