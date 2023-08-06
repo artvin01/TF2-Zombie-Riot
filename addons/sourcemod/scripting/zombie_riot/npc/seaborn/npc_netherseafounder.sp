@@ -298,9 +298,11 @@ void SeaFounder_SpawnNethersea(const float pos[3])
 	{
 		if(NavList.FindValue(nav) == -1)
 		{
-			NavList.Push(nav);
-
-			TriggerTimer(RenderTimer, true);
+			if(!nav.HasAttributes(NAV_MESH_NO_HOSTAGES))
+			{
+				NavList.Push(nav);
+				TriggerTimer(RenderTimer, true);
+			}
 		}
 	}
 }
@@ -364,7 +366,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 					for(int c; c < count; c++)
 					{
 						CNavArea nav2 = nav1.GetAdjacentArea(b, c);
-						if(nav2 != NULL_AREA && NavList.FindValue(nav2) == -1)
+						if(nav2 != NULL_AREA && !nav2.HasAttributes(NAV_MESH_NO_HOSTAGES) && NavList.FindValue(nav2) == -1)
 							NavList.Push(nav2);
 					}
 				}
