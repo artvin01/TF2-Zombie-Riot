@@ -5051,6 +5051,8 @@ public void NpcBaseThink(int iNPC)
 			{
 				hullcheckmaxs_Player[2] = 41.0;
 			}
+		
+
 			int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
 			if (Hit_player) //The boss will start to merge with player, STOP!
 			{
@@ -5210,6 +5212,7 @@ public void NpcBaseThink(int iNPC)
 				return;
 			}
 		}
+		f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; //they were in the air regardless, add time.
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
 		if(b_IsGiant[iNPC])
@@ -5237,6 +5240,15 @@ public void NpcBaseThink(int iNPC)
 			hullcheckmaxs[2] = 41.0;
 		}
 		hullcheckmins[2] += 17.0;
+
+		//Floating point imprecision.
+		hullcheckmaxs[0] += 0.001;
+		hullcheckmaxs[1] += 0.001;
+		hullcheckmaxs[2] += 0.001;
+
+		hullcheckmins[0] -= 0.001;
+		hullcheckmins[1] -= 0.001;
+		hullcheckmins[2] -= 0.001;
 
 		if (!npc.g_bNPCTeleportOutOfStuck) //We have tried caneling the velocity, now we do extra checks on if they are still inside world walls
 		{
