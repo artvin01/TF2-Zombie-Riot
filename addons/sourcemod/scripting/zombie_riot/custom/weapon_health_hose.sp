@@ -162,6 +162,13 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
 		int projectile = Wand_Projectile_Spawn(client, speed, 1.66, 0.0, 19, weapon, Hose_Charged[client] ? HOSE_PARTICLE_CHARGED : ParticleName, Angles);
 
+		Hose_Owner[projectile] = -1;
+		for (int i2 = 0; i2 < MAXENTITIES; i2++)
+		{
+			Hose_AlreadyHealed[i2][projectile] = false;
+			Hose_AlreadyHealed[projectile][i2] = false;
+		}
+
 		Hose_Healing[projectile] = FinalHeal;
 		Hose_HealLoss[projectile] = loss;
 		Hose_HealMin[projectile] = minHeal;
@@ -357,16 +364,5 @@ public void Hose_UpdateText(int owner)
 		PrintHintText(owner, "[CHARGE: %.2f]", Hose_Uber[owner]);
 	}
 }
-
-public void Hose_OnDestroyed(int entity)
-{
-	Hose_Owner[entity] = -1;
-	for (int i = 0; i < MAXENTITIES; i++)
-	{
-		Hose_AlreadyHealed[i][entity] = false;
-		Hose_AlreadyHealed[entity][i] = false;
-	}
-}
-
 
 

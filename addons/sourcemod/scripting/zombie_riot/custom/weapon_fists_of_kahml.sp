@@ -6,26 +6,31 @@ static int how_many_times_fisted[MAXTF2PLAYERS];
 
 public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool &result)
 {
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+	if(!IsValidEntity(viewmodelModel))
+		return;
 	
 	float flPos[3]; // original
 	float flAng[3]; // original
-	
+
 	if(how_many_times_fisted[client] >= 3)
 	{
 		Rogue_OnAbilityUse(weapon);
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
+		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 				
 		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
 				
-		SetParent(client, particler, "effect_hand_r");
+		SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-		GetAttachment(client, "effect_hand_l", flPos, flAng);
+		GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
 		
 		int particlel = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.25);
 		
 		Attributes_Set(weapon, 1, 3.0);
 				
-		SetParent(client, particlel, "effect_hand_l");		
+		SetParent(viewmodelModel, particlel, "effect_hand_l");		
 		
 		CreateTimer(0.2, Apply_cool_effects_kahml, client, TIMER_FLAG_NO_MAPCHANGE);
 		Attributes_Set(weapon, 1, 3.0);
@@ -34,17 +39,17 @@ public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool 
 	else
 	{
 		
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
+		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 				
 		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
 				
-		SetParent(client, particler, "effect_hand_r");
+		SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-		GetAttachment(client, "effect_hand_l", flPos, flAng);
+		GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
 		
 		int particlel = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
 				
-		SetParent(client, particlel, "effect_hand_l");	
+		SetParent(viewmodelModel, particlel, "effect_hand_l");	
 				
 		Attributes_Set(weapon, 1, 1.0);
 		how_many_times_fisted[client] += 1;

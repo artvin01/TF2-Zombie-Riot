@@ -178,9 +178,6 @@ Handle g_hImpulse;
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
-//MUST BE HERE!
-StringMap HookListMap;
-StringMap HookIdMap;
 
 bool DoingLagCompensation;
 
@@ -533,6 +530,7 @@ bool b_IsInUpdateGroundConstraintLogic;
 
 int i_ExplosiveProjectileHexArray[MAXENTITIES];
 int h_NpcCollissionHookType[MAXENTITIES];
+int h_NpcSolidHookType[MAXENTITIES];
 #define EP_GENERIC                  		0          					// Nothing special.
 #define EP_NO_KNOCKBACK              		(1 << 0)   					// No knockback
 #define EP_DEALS_SLASH_DAMAGE              	(1 << 1)   					// Slash Damage (For no npc scaling, or ignoring resistances.)
@@ -1639,7 +1637,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif
 			
 			bool cancel_attack = false;
-			cancel_attack = Attributes_Fire(client, entity);
+			cancel_attack = Attributes_Fire(entity);
 			
 			if(cancel_attack)
 			{
@@ -2278,6 +2276,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_IsABuilding[entity] = false;
 		i_InSafeZone[entity] = 0;
 		h_NpcCollissionHookType[entity] = 0;
+		h_NpcSolidHookType[entity] = 0;
 		SetDefaultValuesToZeroNPC(entity);
 		i_SemiAutoWeapon[entity] = false;
 		f_BannerDurationActive[entity] = 0.0;
@@ -2690,7 +2689,6 @@ public void Check_For_Team_Npc(int entity)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2714,6 +2712,7 @@ public void Check_For_Team_Npc(int entity)
 					i = ZR_MAX_NPCS_ALLIED;
 				}
 			}
+			AddEntityToLagCompList(entity);
 			
 		}	
 		else
@@ -2733,7 +2732,6 @@ public void Check_For_Team_Npc(int entity)
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}
-			
 			else
 			{
 				SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);	
@@ -2751,14 +2749,7 @@ public void Check_For_Team_Npc(int entity)
 					i = ZR_MAX_NPCS;
 				}
 			}
-			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
-			{
-				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
-				{
-					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_LAG_COMP;
-				}
-			}
+			AddEntityToLagCompList(entity);
 		}
 	}
 }
@@ -2776,7 +2767,6 @@ public void Check_For_Team_Npc_Delayed(int ref)
 		{
 		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamageAlivePost, NPC_OnTakeDamage_Post);
 			npcstats.bCantCollidieAlly = true;
 			npcstats.bCantCollidie = false;
 			b_IsAlliedNpc[entity] = true;
@@ -2800,6 +2790,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 					i = ZR_MAX_NPCS_ALLIED;
 				}
 			}
+			AddEntityToLagCompList(entity);
 			
 		}	
 		else
@@ -2836,15 +2827,7 @@ public void Check_For_Team_Npc_Delayed(int ref)
 					i = ZR_MAX_NPCS;
 				}
 			}
-			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
-			{
-				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
-				{
-					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_LAG_COMP;
-				}
-			}
-			
+			AddEntityToLagCompList(entity);
 		}
 	}
 }
@@ -2877,9 +2860,10 @@ public void Delete_instantly_Laser_ball(int entity)
 	}
 }
 */
+
 public void OnEntityDestroyed(int entity)
 {
-	if(IsValidEntity(entity))
+	if(entity > 0 && entity < MAXENTITIES)
 	{
 		OnEntityDestroyed_LagComp(entity);
 		
@@ -2891,16 +2875,12 @@ public void OnEntityDestroyed(int entity)
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 			SkyboxProps_OnEntityDestroyed(entity);
-			
 #if defined ZR
 			OnEntityDestroyed_BackPack(entity);
 			BuildingHordingsRemoval(entity);
-			Hose_OnDestroyed(entity);
 #endif
-			
 			RemoveNpcThingsAgain(entity);
 			IsCustomTfGrenadeProjectile(entity, 0.0);
-			
 			if(h_NpcCollissionHookType[entity] != 0)
 			{
 				if(!DHookRemoveHookID(h_NpcCollissionHookType[entity]))
@@ -2908,13 +2888,18 @@ public void OnEntityDestroyed(int entity)
 					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
 				}
 			}
+			if(h_NpcSolidHookType[entity] != 0)
+			{
+				if(!DHookRemoveHookID(h_NpcSolidHookType[entity]))
+				{
+					PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+				}
+			}
 		}
+		#if defined ZR
+		OnEntityDestroyed_Build_On_Build(entity);
+		#endif
 	}
-	
-#if defined ZR
-	OnEntityDestroyed_Build_On_Build(entity);
-#endif
-	NPC_Base_OnEntityDestroyed();
 }
 
 public void RemoveNpcThingsAgain(int entity)
@@ -3187,6 +3172,7 @@ static void MapStartResetAll()
 	CleanAllNpcArray();
 	Zero(f_ClientServerShowMessages);
 	Zero(h_NpcCollissionHookType);
+	Zero(h_NpcSolidHookType);
 	Zero2(i_StickyToNpcCount);
 	Zero(f_DelayBuildNotif);
 	Zero(f_ClientInvul);

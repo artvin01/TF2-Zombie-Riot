@@ -659,49 +659,30 @@ stock void EquipDispenser(int client, int target, int building_variant)
 
 public void OnEntityDestroyed_BackPack(int iEntity)
 {
-		char classname[64];
-		GetEntityClassname(iEntity, classname, sizeof(classname));
-		
-		if(!StrContains(classname, "obj_"))
+	if(i_IsABuilding[iEntity])
+	{
+		SetEntProp(iEntity, Prop_Send, "m_bCarried", false);
+		int builder = GetEntPropEnt(iEntity, Prop_Send, "m_hBuilder");
+		if(builder > 0 && builder <= MaxClients && IsClientInGame(builder) && iEntity == EntRefToEntIndex(g_CarriedDispenser[builder]))
 		{
-			SetEntProp(iEntity, Prop_Send, "m_bCarried", false);
-			int builder = GetEntPropEnt(iEntity, Prop_Send, "m_hBuilder");
-			if(builder > 0 && builder <= MaxClients && IsClientInGame(builder) && iEntity == EntRefToEntIndex(g_CarriedDispenser[builder]))
+			if(g_CarriedDispenser[builder] != INVALID_ENT_REFERENCE)
 			{
-				if(g_CarriedDispenser[builder] != INVALID_ENT_REFERENCE)
+				int Dispenser = EntRefToEntIndex(g_CarriedDispenser[builder]);
+				
+				int converted_ref = EntRefToEntIndex(Building_particle[builder]);
+				if(converted_ref > 0 && IsValidEntity(converted_ref))
 				{
-					int Dispenser = EntRefToEntIndex(g_CarriedDispenser[builder]);
-					/*
-					int iLink = GetEntPropEnt(Dispenser, Prop_Send, "m_hEffectEntity");
-					if(IsValidEntity(iLink))
-					{
-						AcceptEntityInput(iLink, "ClearParent");
-						AcceptEntityInput(iLink, "Kill");
-					}
-					*/
-					int converted_ref = EntRefToEntIndex(Building_particle[builder]);
-					if(converted_ref > 0 && IsValidEntity(converted_ref))
-					{
-						SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmit);
-						AcceptEntityInput(converted_ref, "Stop");
-						AcceptEntityInput(converted_ref, "Kill");
-					}
-					/*
-					converted_ref = EntRefToEntIndex(Building_particle_2[builder]);
-					if(converted_ref > 0 && IsValidEntity(converted_ref))
-					{
-						SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmitSelf);
-						AcceptEntityInput(converted_ref, "Stop");
-						AcceptEntityInput(converted_ref, "Kill");
-					}
-					*/
-					Building_Mounted[builder] = 0;
-					i_BeingCarried[Dispenser] = false;
-					Player_Mounting_Building[builder] = false;
-					g_CarriedDispenser[builder] = INVALID_ENT_REFERENCE;
+					SDKUnhook(converted_ref, SDKHook_SetTransmit, ParticleTransmit);
+					AcceptEntityInput(converted_ref, "Stop");
+					AcceptEntityInput(converted_ref, "Kill");
 				}
+				Building_Mounted[builder] = 0;
+				i_BeingCarried[Dispenser] = false;
+				Player_Mounting_Building[builder] = false;
+				g_CarriedDispenser[builder] = INVALID_ENT_REFERENCE;
 			}
 		}
+	}
 }
 
 stock void DestroyDispenser(int client)

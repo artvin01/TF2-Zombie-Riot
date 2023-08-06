@@ -174,15 +174,13 @@ public Action Coin_on_ground(Handle timer, int ref)
 		if (TR_DidHit())
 		{
 			AcceptEntityInput(entity, "break");
-			return Plugin_Handled;
+			return Plugin_Stop;
 		}
-				
 		return Plugin_Continue;
 	}
 	else
 	{
-		KillTimer(timer);
-		return Plugin_Handled;
+		return Plugin_Stop;
 	}
 }
 
@@ -211,14 +209,7 @@ public Action flip_extra(Handle timer, int client)
 		{
 		//	SetEntityCollisionGroup(entity, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 		//	SDKHook(entity, SDKHook_ShouldCollide, Gib_ShouldCollide);
-			for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
-			{
-				if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
-				{
-					i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_LAG_COMP;
-				}
-			}
+			AddEntityToLagCompList(entity);
 			b_IsAlliedNpc[entity] = true;
 			b_DoNotIgnoreDuringLagCompAlly[entity] = true;
 			Entity_Owner[entity] = client;

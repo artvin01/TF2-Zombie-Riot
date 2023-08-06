@@ -482,14 +482,10 @@ public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int 
 
 stock bool IsValidCurrentWeapon(int client, int weapon)
 {
-	if(IsValidEntity(weapon))
+	int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon == Active_weapon)
 	{
-		int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon == Active_weapon)
-		{
-			return true;
-			
-		}
+		return true;
 	}
 	return false;
 }
@@ -546,9 +542,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	char classname[32];
 	pack.ReadString(classname, 32);
-	if(IsValidClient(client) && IsValidCurrentWeapon(client, weapon))
+	if(client && weapon != -1 && IsValidCurrentWeapon(client, weapon))
 	{
-		
 		int aoeSwing = 1;
 
 		Handle swingTrace;

@@ -1388,13 +1388,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		return Plugin_Handled;
 	}
-
+	NPC_OnTakeDamage_Post(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+	
 	return Plugin_Changed;
 }
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
-	
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
 		GiveRageOnDamage(inflictor, damage);
@@ -1405,12 +1405,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		GiveRageOnDamage(attacker, damage);
 		Calculate_And_Display_hp(attacker, victim, damage, false);	
 	}
-	/*
-	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-	{
-		return;
-	}
-	*/
 	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -2249,9 +2243,6 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 	for (int client = 1; client <= MaxClients; client++)
 	{
 #if defined ZR
-		float flPos[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
-		flPos[2] += 40.0;
 		if(do_boom)
 		{
 			//Its 0 for no reason, i only ever set it to 0 here or in the m2 terroiser one
@@ -2259,6 +2250,9 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 			{
 				if(IsValidClient(client))
 				{
+					float flPos[3];
+					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
+					flPos[2] += 40.0;
 					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
 					i_HowManyBombsOnThisEntity[entity][client] = 0;
 					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;

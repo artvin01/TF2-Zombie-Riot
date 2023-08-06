@@ -286,10 +286,7 @@ public Action ResetSkybox(int client, int args)
 
 public void SkyboxProps_OnEntityDestroyed(int entity)
 {
-	if (entity > 0 && entity < 2049)
-	{
-		b_IsSkyboxProp[entity] = false;
-	}
+	b_IsSkyboxProp[entity] = false;
 }
 
 void PrintMessageToClient(int client, char message[255])

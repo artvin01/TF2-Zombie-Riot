@@ -768,10 +768,10 @@ public Action PerfectHomingShot(Handle timer, DataPack pack)
 		}
 		else
 		{
-			return Plugin_Handled;
+			return Plugin_Stop;
 		}
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 void HomingProjectile_TurnToTarget(int enemy, int Projectile)

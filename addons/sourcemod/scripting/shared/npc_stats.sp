@@ -365,31 +365,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		view_as<CBaseAnimating>(npc).Hook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 		
 		//so map makers can choose between NPCs and Clients
-
-		ArrayList list = new ArrayList();
 		
 		if(!Ally)
-			list.Push(DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody())));
+			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 		else
-			list.Push(DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody())));
+			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
 
-		char buffer[12];
-		int id = list.Length;
-		for(int i; i<id; i++)
-		{
-			int hook = list.Get(i);
-			IntToString(hook, buffer, sizeof(buffer));
-			int value = 0;
-			if(HookListMap.GetValue(buffer, value))
-			{
-		//		LogError("Duplicate raw hook found %d", hook); Yeah we get it, just dont do this.		
-			}
-			
-			HookListMap.SetValue(buffer, value+1);
-		}
-		
-		IntToString(EntIndexToEntRef(npc), buffer, sizeof(buffer));
-		HookIdMap.SetValue(buffer, list);
 
 		SetEntityFlags(npc, FL_NPC);
 		
@@ -2748,9 +2729,6 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupSequence");
-
-	HookListMap = new StringMap();
-	HookIdMap = new StringMap();
 
 	delete gamedata;
 
@@ -8641,66 +8619,6 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 	DHookSetReturn(hReturn, true);
 	return MRES_ChangedOverride;
 }
-
-
-
-void NPC_Base_OnEntityDestroyed()
-{
-	RequestFrame(DHookCleanIds);
-}
-
-public void DHookCleanIds()
-{
-	StringMapSnapshot snap = HookIdMap.Snapshot();
-	if(snap)
-	{
-		char buffer[12];
-		int length2 = snap.Length;
-		for(int a; a<length2; a++)
-		{
-			snap.GetKey(a, buffer, sizeof(buffer));
-			if(EntRefToEntIndex(StringToInt(buffer)) <= MaxClients)
-			{
-				ArrayList list;
-				
-				HookIdMap.GetValue(buffer, list);
-				HookIdMap.Remove(buffer);
-				
-				if(list)
-				{
-					int length = list.Length;
-					for(int i; i<length; i++)
-					{
-						int id2 = list.Get(i);
-						if(id2 != INVALID_HOOK_ID)
-						{
-							int value = 1;
-							IntToString(id2, buffer, sizeof(buffer));
-							if(HookListMap.GetValue(buffer, value) && value > 1)
-							{
-								HookListMap.SetValue(buffer, value-1);
-						//		LogError("Raw hook %d removed dupe (%s %d)", id2, HookName[i], i);
-							}
-							else
-							{
-								if(!DHookRemoveHookID(id2))
-								{
-							//			LogError("Raw hook %d somehow was removed (%s %d)", id2, HookName[i], i);	
-								}
-								
-								HookListMap.Remove(buffer);
-							}
-						}
-					}
-					
-					delete list;
-				}
-			}
-		}
-		delete snap;
-	}
-}
-
 
 void RemoveNpcFromEnemyList(int npc)
 {

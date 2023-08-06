@@ -616,11 +616,11 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 	int Client = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(Client))
 	{
-		return Plugin_Handled;
+		return Plugin_Stop;
 	}
 	if(!IsValidEntity(Projectile))
 	{
-		return Plugin_Handled;
+		return Plugin_Stop;
 	}
 	int weapon = GetEntPropEnt(Client, Prop_Send, "m_hActiveWeapon");
 	if(!IsValidEntity(weapon))
@@ -654,7 +654,7 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 		}
 		return Plugin_Continue;
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 static void LanternFindVecToBotTo(int client)
 {

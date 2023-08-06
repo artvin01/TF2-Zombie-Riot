@@ -816,21 +816,21 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
 	DataPack pack = new DataPack();
+	pack.WriteCell(frames);
 	pack.WriteFunction(func);
 	pack.WriteCell(data);
-	pack.WriteCell(frames);
 	RequestFrame(RequestFramesCallback, pack);
 }
 
 public void RequestFramesCallback(DataPack pack)
 {
 	pack.Reset();
-	Function func = pack.ReadFunction();
-	any data = pack.ReadCell();
 
 	int frames = pack.ReadCell();
 	if(frames < 1)
 	{
+		Function func = pack.ReadFunction();
+		any data = pack.ReadCell();
 		delete pack;
 		
 		Call_StartFunction(null, func);
@@ -2557,29 +2557,17 @@ float[] CalculateBulletDamageForce( const float vecBulletDir[3], float flScale )
 
 int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
-	if(owner_projectile == 0)
+	if(owner_projectile < 1)
 	{
 		return -1; //I dont exist?
 	}
-	else if(owner_projectile < 1)
-	{
-		return -1; //I dont exist?
-	}
-	if(other_entity == 0)
+	else if(other_entity == 0)
 	{
 		return 0;
-	}
-	else if(other_entity < 1)
-	{
-		return -1;
 	}
 	else if(b_ThisEntityIsAProjectileForUpdateContraints[owner_projectile] && b_ThisEntityIsAProjectileForUpdateContraints[other_entity])
 	{
 		return -1;
-	}
-	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
-	{
-		return other_entity;
 	}
 	else if(i_IsABuilding[other_entity])
 	{
@@ -2592,6 +2580,11 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	else if(other_entity <= MaxClients)
 	{
 		return -1;
+	}
+//	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
+	else if(!b_NpcHasDied[other_entity]) //way less cheap, lets see how that goes.
+	{
+		return other_entity;
 	}
 	return 0;
 }

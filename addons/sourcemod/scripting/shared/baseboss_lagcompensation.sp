@@ -46,6 +46,7 @@ static StringMap EntityTrack;
 static StringMap EntityRestore;
 static int TickCount[MAXTF2PLAYERS];
 static float ViewAngles[MAXTF2PLAYERS][3];
+static bool b_EntityIsLagComp[MAXENTITIES];
 
 void OnPluginStart_LagComp()
 {
@@ -82,42 +83,52 @@ void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		if(!b_EntityIsLagComp[entity])
+		{
+			return;
+		}
+		b_EntityIsLagComp[entity] = false;
+		
 		b_LagCompensationDeletedArrayList[entity] = true;
 		int ref = EntIndexToEntRef(entity);
-		char key[13];
+		static char key[13];
 		IntToString(ref, key, sizeof(key));
 		
 		ArrayList list;
-		EntityTrack.GetValue(key, list);
-		EntityTrack.Remove(key);
-		if(list)
+		if(EntityTrack.GetValue(key, list))
 		{
-			LagRecord record;
-			int length2 = list.Length;
-			for(int a; a<length2; a++)
+			EntityTrack.Remove(key);
+			if(list)
 			{
-				list.GetArray(a, record);
-				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+				static LagRecord record;
+				int length2 = list.Length;
+				for(int a; a<length2; a++)
 				{
-					if(record.m_layerRecords)
+					list.GetArray(a, record);
+					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 					{
-						delete record.m_layerRecords;
+						if(record.m_layerRecords)
+						{
+							delete record.m_layerRecords;
+						}
 					}
 				}
+				delete list;
 			}
-			delete list;
 		}
 	
-		LagRecord restore;
-		EntityRestore.GetArray(key, restore, sizeof(restore));
-		if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+		static LagRecord restore;
+		if(EntityRestore.GetArray(key, restore, sizeof(restore)))
 		{
-			if(restore.m_layerRecords)
+			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
-				delete restore.m_layerRecords;
+				if(restore.m_layerRecords)
+				{
+					delete restore.m_layerRecords;
+				}
 			}
+			EntityRestore.Remove(key);
 		}
-		EntityRestore.Remove(key);
 	}
 }
 
@@ -692,3 +703,16 @@ stock float fabs(float value)
 	return value < 0 ? -value : value;
 }
 */
+
+void AddEntityToLagCompList(int entity)
+{
+	b_EntityIsLagComp[entity] = true;
+	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+	{
+		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
+		{
+			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+			i = ZR_MAX_LAG_COMP;
+		}
+	}	
+}

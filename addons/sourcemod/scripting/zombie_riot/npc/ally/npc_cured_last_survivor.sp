@@ -373,11 +373,13 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(CurrentPlayers <= 4)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);
+			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		}
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -389,7 +391,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		return;
 	}
 						
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex) && CurrentPlayers <= 4)
+	if(CurrentPlayers <= 4 && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			
@@ -581,12 +583,15 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 	{
 		if(CurrentPlayers <= 4)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 			{
-				return;
-			}	
+				npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);
+				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+				if(IsValidEnemy(npc.index, npc.m_iTarget))
+				{
+					return;
+				}	
+			}
 		}
 		if(!npc.m_bGetClosestTargetTimeAlly)
 		{

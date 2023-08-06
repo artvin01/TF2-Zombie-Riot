@@ -563,15 +563,6 @@ void CleanAllApplied_Aresenal(int entity, bool force = false)
 	{
 		b_HasBombImplanted[entity] = false;	
 	}
-	/*
-			int particle_index;
-		particle_index = EntRefToEntIndex(Terroriser_Bomb_Implant_Particle[entity]);
-
-		if(IsValidEntity(particle_index))
-		{
-			RemoveEntity(particle_index);
-		}		
-		*/
 }
 
 void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2[3], bool allowLagcomp = false)
