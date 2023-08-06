@@ -330,6 +330,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 void Attributes_OnKill(int client, int weapon)
 {
+
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills") + 1);
 
 	float value;
@@ -360,13 +361,15 @@ void Attributes_OnKill(int client, int weapon)
 		if(value)
 			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
 		
-	}
-	value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
-	if(value)
-		TF2_AddCondition(client, TFCond_MiniCritOnKill, value);
+		value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
+		if(value)
+			TF2_AddCondition(client, TFCond_MiniCritOnKill, value);
 
-	if(Attributes_Get(weapon, 644,0.0) || Attributes_Get(weapon, 807,0.0))	// clipsize increase on kill, add_head_on_kill
-		SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
+		if(Attributes_Get(weapon, 644,0.0) || Attributes_Get(weapon, 807,0.0))	// clipsize increase on kill, add_head_on_kill
+			SetEntProp(client, Prop_Send, "m_iDecapitations", GetEntProp(client, Prop_Send, "m_iDecapitations")+1);
+			
+	}
+
 
 }
 

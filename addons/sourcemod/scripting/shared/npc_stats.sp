@@ -2568,12 +2568,15 @@ methodmap CClotBody < CBaseCombatCharacter
 			CNavArea areaNavget2;
 			Segment segment;
 			Segment segment2;
-
-			if(this.GetPathFollower().FirstSegment() != NULL_PATH_SEGMENT && this.GetPathFollower().NextSegment(this.GetPathFollower().FirstSegment()) != NULL_PATH_SEGMENT)
+			segment = this.GetPathFollower().FirstSegment();
+			if(segment != NULL_PATH_SEGMENT)
 			{
-				segment2 = this.GetPathFollower().FirstSegment();
-				segment = this.GetPathFollower().NextSegment(this.GetPathFollower().FirstSegment());
+				segment2 = this.GetPathFollower().NextSegment(segment);
+				segment2 = this.GetPathFollower().NextSegment(segment2);
+			}
 
+			if(segment != NULL_PATH_SEGMENT && segment2 != NULL_PATH_SEGMENT)
+			{
 				areaNavget = segment.area;
 				areaNavget2 = segment2.area;
 			}
@@ -2588,8 +2591,19 @@ methodmap CClotBody < CBaseCombatCharacter
 				{
 					b_AvoidObstacleType[this.index] = true;
 				}
+				if(NavAttribs & NAV_MESH_JUMP && NavAttribs2 & NAV_MESH_JUMP)
+				{
+					//They are in some position where we need to jump, lets jump.
+					if(this.m_flJumpStartTimeInternal < GetGameTime())
+					{
+						this.m_flJumpStartTimeInternal = GetGameTime() + 2.0;
+						float VecPos[3];
+						areaNavget2.GetCenter(VecPos);
+						PluginBot_Jump(this.index,VecPos);
+					}
+				}
 			}
-			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
+		//	f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
 		}
 
 		//increace the size of the avoid box by 2x
@@ -5203,8 +5217,21 @@ public void NpcBaseThink(int iNPC)
 
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
-	if (!npc.IsOnGround() && !b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
+	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
+	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
+		if (npc.IsOnGround())
+		{
+			if(f_UnstuckTimerCheck[iNPC] < GetGameTime())
+			{
+				f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; 
+				//every 3 seconds we shall do an emenergency check
+			}
+			else
+			{
+				return;
+			}
+		}
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
 		if(b_IsGiant[iNPC])
@@ -5232,43 +5259,7 @@ public void NpcBaseThink(int iNPC)
 			hullcheckmaxs[2] = 41.0;
 		}
 		hullcheckmins[2] += 17.0;
-		
-		//god i love floating point imprecision
-		hullcheckmaxs[0] += 0.001;
-		hullcheckmaxs[1] += 0.001;
-		hullcheckmaxs[2] += 0.001;
 
-		hullcheckmins[0] -= 0.001;
-		hullcheckmins[1] -= 0.001;
-		hullcheckmins[2] -= 0.001;
-		
-		//invert to save 1 frame per 3 minutes
-		/*
-		static float hullcheckmaxs_Resized[3];
-		static float hullcheckmins_Resized[3];
-
-		hullcheckmaxs_Resized = hullcheckmaxs;
-		hullcheckmins_Resized = hullcheckmins;
-		hullcheckmaxs_Resized[0] -= 15.0;
-		hullcheckmaxs_Resized[1] -= 15.0;
-		
-		hullcheckmaxs_Resized[0] += 15.0;
-		hullcheckmaxs_Resized[1] += 15.0;
-		
-		hullcheckmaxs_Resized[2] -= 20.0; //STEP HEIGHT
-		hullcheckmaxs_Resized[2] += 20.0;
-		
-		if (!npc.g_bNPCVelocityCancel)//The boss will start to merge with shits, cancel out velocity.
-		{
-			if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins_Resized, hullcheckmaxs_Resized, iNPC))
-			{
-				static float vec3Origin[3];
-				npc.SetVelocity(vec3Origin);
-				npc.g_bNPCVelocityCancel = true;
-			}
-		}
-		else 
-		*/
 		if (!npc.g_bNPCTeleportOutOfStuck) //We have tried caneling the velocity, now we do extra checks on if they are still inside world walls
 		{
 			if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
@@ -5297,8 +5288,6 @@ public void NpcBaseThink(int iNPC)
 		npc.g_bNPCVelocityCancel = false;
 		npc.g_bNPCTeleportOutOfStuck = false;
 	}
-	
-	
 }
 float f3_KnockbackToTake[MAXENTITIES][3];
 
@@ -5909,7 +5898,6 @@ public void PluginBot_Jump_Now_old(int bot_index)
 
 	float Jump_1_frame[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
-	Jump_1_frame[2] += 20.0;
 	
 	static float hullcheckmaxs[3];
 	static float hullcheckmins[3];
@@ -5931,13 +5919,11 @@ public void PluginBot_Jump_Now_old(int bot_index)
 		npc.m_vecLastValidPosJump(Save_Old_Pos, true);
 		float vecJumpVel[3];
 		npc.m_flJumpCooldown = GetGameTime() + 1.5;
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsVelocity", vecJumpVel);
+		npc.GetVelocity(vecJumpVel);
 		
-		vecJumpVel[2] = 350.0;
+		vecJumpVel[2] = 450.0;
 		
 		npc.Jump();
-	//	vecJumpVel[0] = 0.0;
-	//	vecJumpVel[1] = 0.0;
 		SetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Jump_1_frame);
 		CreateTimer(0.1, Did_They_Get_Suck, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		npc.SetVelocity(vecJumpVel);

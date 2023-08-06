@@ -2910,8 +2910,8 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 }
 void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)
 {
-	int heal_amount = i_BackstabHealEachTick[weapon];
-	int heal_ticks = i_BackstabHealTicks[weapon];
+	float heal_amount = float(i_BackstabHealEachTick[weapon]);
+	float heal_ticks = float(i_BackstabHealTicks[weapon]);
 	if(heal_amount && heal_ticks)
 	{
 		//If against raids, heal more and damage more.
@@ -2922,18 +2922,18 @@ void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float m
 		heal_amount *= multi;
 		if(b_FaceStabber[attacker])
 		{
-			heal_amount /= 4;
-			heal_ticks	/= 4;
-			if(heal_amount < 1)
+			heal_amount *= 0.25;
+			heal_ticks	*= 0.25;
+			if(heal_amount < 1.0)
 			{
-				heal_amount = 1;
+				heal_amount = 1.0;
 			}
-			if(heal_ticks < 1)
+			if(heal_ticks < 1.0)
 			{
-				heal_ticks = 1;
+				heal_ticks = 1.0;
 			}
 		}
-		StartHealingTimer(attacker, 0.1, float(heal_amount), heal_ticks);
+		StartHealingTimer(attacker, 0.1, heal_amount, RoundToNearest(heal_ticks));
 	}
 }
 

@@ -395,6 +395,7 @@ float BurnDamage[MAXENTITIES];
 int i_NervousImpairmentArrowAmount[MAXENTITIES];
 float f_KnockbackPullDuration[MAXENTITIES];
 float f_DoNotUnstuckDuration[MAXENTITIES];
+float f_UnstuckTimerCheck[MAXENTITIES];
 int i_PullTowardsTarget[MAXENTITIES];
 float f_PullStrength[MAXENTITIES];
 
@@ -2192,6 +2193,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		f_BackstabDmgMulti[entity] = 0.0;
 		f_KnockbackPullDuration[entity] = 0.0;
 		f_DoNotUnstuckDuration[entity] = 0.0;
 		i_PullTowardsTarget[entity] = 0;
