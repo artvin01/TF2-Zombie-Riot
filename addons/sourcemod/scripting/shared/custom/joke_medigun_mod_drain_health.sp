@@ -113,7 +113,7 @@ static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
 public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle hParams) {
 	int target = DHookGetParam(hParams, 1);
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
-	float What_type_Heal = Attributes_FindOnWeapon(owner, medigun, 2046);
+	float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
 	
 	
 	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
@@ -236,7 +236,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
 		
-		float What_type_Heal = Attributes_FindOnWeapon(owner, medigun, 2046);
+		float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
 		
 		if(What_type_Heal == 2.0)
 		{
@@ -263,7 +263,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
 #if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
@@ -388,7 +388,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if(team)
 				{
 					int healing_Amount;
-					int how_high_is_attribute_medigun = RoundToCeil(Attributes_FindOnWeapon(owner, medigun, 95));
+					int how_high_is_attribute_medigun = RoundToCeil(Attributes_Get(medigun, 95, 1.0));
 					
 					if (how_high_is_attribute_medigun == 0)
 						how_high_is_attribute_medigun = 1;
@@ -551,7 +551,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						Is_Allied_Npc = true;
 					}
 					
-					float Healing_Value = Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
+					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
 #if defined ZR					
 					if(b_HealthyEssence)
 						Healing_Value *= 1.25;
@@ -783,8 +783,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 
-					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 8, true, 1.0);
-					flDrainRate *= Attributes_FindOnWeapon(owner, medigun, 1, true, 1.0);
+					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
+					flDrainRate *= Attributes_Get(medigun, 1, 1.0);
 					//there are some updgras that require medigun damage only!
 #if defined ZR
 					if(LastMann)	
