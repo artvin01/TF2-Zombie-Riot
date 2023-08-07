@@ -333,6 +333,18 @@ enum
 	EXPIDONSA_HEAVYPUNUEL		= 294,
 	RUINA_MAGIA					= 295,
 	EXPIDONSA_SEARGENTIDEAL		= 296,
+
+	SEA_RAIDBOSS_SILVESTER		= 297,
+	SEA_RAIDBOSS_GOGGLES		= 298,
+	SEA_RAIDBOSS_DONNERKRIEG	= 299,
+	SEA_RAIDBOSS_SCHWERTKRIEG	= 300,
+	SEA_RAIDBOSS_GOD_ARKANTOS	= 301,
+	BOB_THE_FIRST			= 302,
+	SEA_ALLY_SILVESTER		= 303,
+	SEA_ALLY_GOGGLES		= 304,
+	SEA_ALLY_DONNERKRIEG		= 305,
+	SEA_ALLY_SCHWERTKRIEG		= 306,
+	SEA_ALLY_GOD_ARKANTOS		= 307
 }
 
 public const char NPC_Names[][] =
@@ -654,7 +666,19 @@ public const char NPC_Names[][] =
 	"Lanius",
 	"Heavy Punuel",
 	"Magia",
-	"Seargent Ideal"
+	"Seargent Ideal",
+
+	"Silvester",
+	"Blue Goggles",
+	"Donnerkrieg",
+	"Schwertkreig",
+	"God Arkantos",
+	"Bob",
+	"Seaborn Silvester",
+	"Seaborn Blue Goggles",
+	"Seaborn Donnerkrieg",
+	"Seaborn Schwertkreig",
+	"Seaborn God Arkantos"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -974,7 +998,19 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_ruina_lanius",
 	"npc_heavy_punuel",
 	"npc_ruina_magia",
-	"npc_seargent_ideal"
+	"npc_seargent_ideal",
+	
+	"npc_sea_silvester",
+	"npc_sea_goggles",
+	"Donnerkrieg",
+	"Schwertkreig",
+	"God Arkantos",
+	"npc_bob_the_first_last_savior",
+	"Seaborn Silvester",
+	"Seaborn Blue Goggles",
+	"Seaborn Donnerkrieg",
+	"Seaborn Schwertkreig",
+	"Seaborn God Arkantos"
 };
 
 void NPC_MapStart()

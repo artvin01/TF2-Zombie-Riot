@@ -270,6 +270,7 @@ void TidelinkedBishop_OnTakeDamage(int victim, int attacker, float damage)
 			npc.m_iTarget = 0;
 			npc.m_bisWalking = false;
 			b_NpcIsInvulnerable[npc.index] = true;
+			npc.StopPathing();
 
 			SDKHook(victim, SDKHook_Think, TidelinkedBishop_DownedThink);
 		}

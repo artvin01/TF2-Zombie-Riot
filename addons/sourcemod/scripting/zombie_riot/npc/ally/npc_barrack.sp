@@ -129,6 +129,7 @@ static float FireRateBonus[MAXENTITIES];
 static float DamageBonus[MAXENTITIES];
 static int CommandOverride[MAXENTITIES];
 static bool NpcSpecialCommand[MAXENTITIES];
+static bool FreeToSelect[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
@@ -359,6 +360,17 @@ methodmap BarrackBody < CClotBody
 			NpcSpecialCommand[view_as<int>(this)] = value;
 		}
 	}
+	property bool m_bSelectableByAll
+	{
+		public get()
+		{
+			return FreeToSelect[view_as<int>(this)];
+		}
+		public set(bool value)
+		{
+			FreeToSelect[view_as<int>(this)] = value;
+		}
+	}
 	property int m_iSupplyCount
 	{
 		public get()
@@ -404,6 +416,7 @@ methodmap BarrackBody < CClotBody
 		DamageBonus[npc.index] = 1.0;
 		CommandOverride[npc.index] = -1;
 		NpcSpecialCommand[npc.index] = false;
+		FreeToSelect[npc.index] = false;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -889,21 +902,31 @@ bool BarrackBody_Interact(int client, int entity)
 	if(!IsValidClient(client))
 		return false;
 
-	BarrackBody npc = view_as<BarrackBody>(entity);
-	if(npc.OwnerUserId && npc.OwnerUserId == GetClientUserId(client))
+	if(i_NpcInternalId[entity] != BARRACKS_BUILDING)
 	{
-		if(i_NpcInternalId[entity] != BARRACKS_BUILDING)
+		BarrackBody npc = view_as<BarrackBody>(entity);
+		if(npc.OwnerUserId)
 		{
-			ShowMenu(client, entity);
+			if(npc.m_bSelectableByAll)
+			{
+				//if(IsValidEntity(i_HasSentryGunAlive[client]))
+					ShowMenu(client, entity);
+			}
+			else if(npc.OwnerUserId == GetClientUserId(client))
+			{
+				ShowMenu(client, entity);
+			}
 		}
 		return true;
 	}
 	return false;
 }
+
 void BarracksEntityCreated(int entity)
 {
 	BarrackOwner[entity] = 0;
 }
+
 static void ShowMenu(int client, int entity)
 {
 	BarrackBody npc = view_as<BarrackBody>(entity);
@@ -922,7 +945,7 @@ static void ShowMenu(int client, int entity)
 //	menu.AddItem(num, "Hold Position", npc.CmdOverride == Command_HoldPos ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Walk to Position and Hold\n ");
 	menu.AddItem(num, "Npc Special Commands\n ", npc.b_NpcSpecialCommand ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
-	menu.AddItem(num, "Sacrifice\n ", npc.m_iSupplyCount < 1 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Sacrifice\n ", npc.m_bSelectableByAll ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 	menu.Pagination = 0;
 	menu.ExitButton = true;
@@ -947,6 +970,9 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 			{
 				BarrackBody npc = view_as<BarrackBody>(entity);
 				npc.m_flComeToMe = GetGameTime();
+
+				if(npc.m_bSelectableByAll)
+					BarrackOwner[npc.index] = GetClientUserId(client);
 
 				switch(choice)
 				{

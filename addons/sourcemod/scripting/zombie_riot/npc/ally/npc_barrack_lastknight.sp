@@ -11,6 +11,7 @@ methodmap BarrackLastKnight < BarrackBody
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
+		npc.m_bSelectableByAll = true;
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		
 		SDKHook(npc.index, SDKHook_Think, BarrackLastKnight_ClotThink);
