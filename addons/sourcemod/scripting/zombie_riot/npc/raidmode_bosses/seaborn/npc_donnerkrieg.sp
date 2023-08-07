@@ -98,6 +98,7 @@ static int DonnerKriegCannon_BEAM_BuildingHit[MAXENTITIES];
 static bool DonnerKriegCannon_BEAM_UseWeapon[MAXENTITIES];
 
 
+static int Heavens_Beam;
 
 //Logic for duo raidboss
 
@@ -133,7 +134,9 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	PrecacheSound("#zombiesurvival/seaborn/donner_schwert.mp3");
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert.mp3");
+	
+	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
 }
 
@@ -247,7 +250,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		RaidModeTime = GetGameTime(npc.index) + 2000.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
@@ -279,7 +282,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-			
+			/*
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -289,7 +292,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Donnerkrieg And Schwertkrieg Have returned.");
 			}
 		}
-		
+		*/
 		Citizen_MiniBossSpawn(npc.index);
 		Building_RaidSpawned(npc.index);
 		
@@ -353,6 +356,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
 		
+		Invoke_Heavens_Light(npc.index);
+		
 		shared_goal = false;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
@@ -380,8 +385,8 @@ void Donnerkrieg_SpawnAllyDuoRaid(int ref)
 		int maxhealth;
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-			
-		maxhealth *=5;
+		
+		maxhealth = RoundToFloor(maxhealth*2.5);
 
 		int spawn_index = Npc_Create(SEA_RAIDBOSS_SCHWERTKRIEG, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)
@@ -402,7 +407,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
 	
 	if(b_raidboss_donnerkrieg_alive)	//I don't need this here, but I still added it...
-		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(npc.index, i_ally_index, true);	//donner first, schwert second
+		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(npc.index, EntRefToEntIndex(i_ally_index), true);	//donner first, schwert second
 		
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -626,7 +631,256 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(int donner, int schwert
 		
 	}
 }
+#define HEAVENS_LIGHT_MAXIMUM_IONS 18
 
+static float fl_heavens_damage;
+static float fl_heavens_charge_time;
+static float fl_heavens_charge_gametime;
+static float fl_heavens_radius;
+static float fl_heavens_speed;
+
+static float fl_Heavens_Loc[HEAVENS_LIGHT_MAXIMUM_IONS+1][3];
+static float fl_Heavens_Angle;
+
+static void Invoke_Heavens_Light(int ref)
+{
+	float Heavens_Duration, GameTime = GetGameTime();
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
+	fl_heavens_damage = 100.0;
+	fl_heavens_charge_time = 7.5;
+	Heavens_Duration = 25.0;
+	fl_heavens_radius = 200.0;	//This is per individual beam
+	fl_heavens_speed = 2.5;
+	
+	
+	fl_Heavens_Angle = 0.0;
+	float time = Heavens_Duration + fl_heavens_charge_time;
+	
+	fl_heavens_charge_gametime = fl_heavens_charge_time + GameTime;
+	
+	CreateTimer(time, Heavens_End_Timer, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+	SDKHook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
+}
+public Action Heavens_End_Timer(Handle timer, int client)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+	if(!IsValidEntity(client))
+		return Plugin_Continue;
+
+	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
+
+	
+	return Plugin_Continue;
+}
+public Action Heavens_TBB_Tick(int client)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+	
+	if(!IsValidEntity(client))
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
+	}
+	float GameTime = GetGameTime();
+	
+	if(fl_heavens_charge_gametime>GameTime)
+	{
+		float Ratio =(fl_heavens_charge_gametime - GameTime) / fl_heavens_charge_time;	//L + Ratio
+		Heavens_Light_Charging(npc.index, Ratio);
+	}
+	else
+	{
+		Heavens_Full_Charge(npc.index);
+	}
+	
+	return Plugin_Continue;
+}
+static void Heavens_Full_Charge(int ref)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
+	for(int i=0 ; i< HEAVENS_LIGHT_MAXIMUM_IONS ; i++)
+	{
+		float loc[3]; loc = fl_Heavens_Loc[i];
+		float Dist = -1.0;
+		float Target_Loc[3]; Target_Loc = loc;
+		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+		{
+			if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			{
+				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+				float distance = GetVectorDistance(client_loc, loc, true);
+				{
+					if(distance<Dist || Dist==-1)
+					{
+						Target_Loc = client_loc;
+					}
+				}
+	
+			}
+		}
+		
+		float Direction[3], vecAngles[3];
+		MakeVectorFromPoints(loc, Target_Loc, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+						
+		GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, fl_heavens_speed);
+		AddVectors(loc, Direction, loc);
+		
+		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
+		
+		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+		{
+			if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			{
+				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+				float distance = GetVectorDistance(client_loc, loc, true);
+				{
+					if(distance<Pow(fl_heavens_radius, 2.0))
+					{
+						float fake_damage = fl_heavens_damage*(1.01 - (distance / Pow(fl_heavens_radius, 2.0)));	//reduce damage if the target just grazed it.
+						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
+						Client_Shake(client, 0, 5.0, 15.0, 0.1);
+					}
+				}
+	
+			}
+		}
+		
+		fl_Heavens_Loc[i] = loc;
+		
+		int color[4];
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
+		color[3] = 75;
+		Heavens_SpawnBeam(loc, color, 7.5);
+	}
+}
+static void Heavens_Light_Charging(int ref, float ratio)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
+	
+	float Base_Dist = 500.0 * ratio;
+	if(Base_Dist<150.0)
+		Base_Dist = 150.0;
+		
+	float UserLoc[3], UserAng[3];
+	UserLoc = GetAbsOrigin(npc.index);
+	
+	UserAng[0] = 0.0;
+	UserAng[1] = fl_Heavens_Angle;
+	UserAng[2] = 0.0;
+	
+	fl_Heavens_Angle += 1.5*ratio;
+	
+	if(fl_Heavens_Angle>=360.0)
+	{
+		fl_Heavens_Angle = 0.0;
+	}
+	
+	for (int i = 0; i < 3; i++)
+	{
+		float distance = 0.0;
+		float angMult = 1.0;
+		
+		switch(i)
+		{
+			case 0:
+			{
+				distance = Base_Dist;
+			}
+			case 1:
+			{
+				distance = Base_Dist*1.5;
+				angMult = -1.0;
+			}
+			case 2:
+			{
+				distance = Base_Dist*2.0;
+				angMult = 1.0;
+			}
+		}
+		
+		for (int j = 0; j < 6; j++)
+		{
+			float tempAngles[3], endLoc[3], Direction[3];
+			tempAngles[0] = 0.0;
+			tempAngles[1] = angMult * (UserAng[1] + (float(j) * 60.0));
+			tempAngles[2] = 0.0;
+			
+			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, distance);
+			AddVectors(UserLoc, Direction, endLoc);
+			
+			Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
+			
+			
+
+			
+			if(ratio <=0.2)
+			{
+				int color[4];
+				color[0] = 255;
+				color[1] = 50;
+				color[2] = 50;
+				color[3] = 75;
+				Heavens_SpawnBeam(endLoc, color, 7.5);
+			}
+			else
+			{
+				Heavens_Spawn8(endLoc, 150.0*ratio, npc.index, ratio);
+			}
+			int beam_index = (i*6)+j;
+			
+			fl_Heavens_Loc[beam_index] = endLoc;
+		}
+	}
+}
+public void Heavens_Spawn8(float startLoc[3], float space, int entity, float ratio)
+{
+	for (int i = 0; i < 2 ; i++)
+	{
+		float tempAngles[3], endLoc[3], Direction[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = float(i) * 180.0 + fl_Heavens_Angle;
+		tempAngles[2] = 0.0;
+		
+		if(tempAngles[1]>=360.0)
+		{
+			tempAngles[1] = -360.0;
+			
+		}
+			
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, space);
+		AddVectors(startLoc, Direction, endLoc);
+		int color[4];
+		color[0] = 255;
+		color[1] = RoundFloat(255.0 * ratio);
+		color[2] = RoundFloat(255.0 * ratio);
+		color[3] = 150;
+		Heavens_SpawnBeam(endLoc, color, 2.0);
+	}
+	int color[4];
+	color[0] = 255;
+	color[1] = RoundFloat(255.0 * ratio);
+	color[2] = RoundFloat(255.0 * ratio);
+	color[3] = 150;
+	
+	TE_SetupBeamRingPoint(startLoc, space * 2.0, space * 2.0, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, 2.0, 0.1, color, 1, 0);
+	TE_SendToAll();
+}
+void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size)
+{
+
+	float skyLoc[3];
+	skyLoc[0] = beamLoc[0];
+	skyLoc[1] = beamLoc[1];
+	skyLoc[2] = 9999.0;
+		
+	TE_SetupBeamPoints(skyLoc, beamLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
+	TE_SendToAll();
+}
 static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 {
 
@@ -714,7 +968,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 				if(fl_nightmare_grace_period[npc.index]<GameTime)
 				{
 					fl_nightmare_grace_period[npc.index] = GameTime + 99.0;
-					if(!b_fuck_you_line_used[npc.index] || !b_train_line_used[npc.index])
+					if(!b_fuck_you_line_used[npc.index] && !b_train_line_used[npc.index])
 					{	
 						switch(GetRandomInt(1,4))
 						{
@@ -873,7 +1127,7 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	
 	if(b_raidboss_schwertkrieg_alive)	//handover the hud to schwert
 	{
-		RaidBossActive = EntIndexToEntRef(i_ally_index);
+		RaidBossActive = EntRefToEntIndex(i_ally_index);
 	}
 	
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");

@@ -683,7 +683,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				if(fl_nightmare_grace_period[npc.index]<GameTime)
 				{
 					fl_nightmare_grace_period[npc.index] = GameTime + 99.0;
-					if(!b_fuck_you_line_used[npc.index] || !b_train_line_used[npc.index])
+					if(!b_fuck_you_line_used[npc.index] && !b_train_line_used[npc.index])
 					{	
 						switch(GetRandomInt(1,4))
 						{

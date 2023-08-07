@@ -671,7 +671,7 @@ public const char NPC_Names[][] =
 	"Silvester",
 	"Blue Goggles",
 	"Donnerkrieg",
-	"Schwertkreig",
+	"Schwertkrieg",
 	"God Arkantos",
 	"Bob",
 	"Seaborn Silvester",
