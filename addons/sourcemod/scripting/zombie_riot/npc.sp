@@ -1254,6 +1254,8 @@ void NPC_MapStart()
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
 	GodArkantos_OnMapStart();
+	Raidboss_Schwertkrieg_OnMapStart_NPC();
+	Raidboss_Donnerkrieg_OnMapStart_NPC();
 
 	// Bloon Low Prio
 	Bloon_MapStart();
@@ -2083,6 +2085,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case RUINA_MAGIA:
 			entity = Magia(client, vecPos, vecAng, ally);
+			
+		case SEA_RAIDBOSS_DONNERKRIEG:
+			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally);
+			
+		case SEA_RAIDBOSS_SCHWERTKRIEG:
+			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
 
 			
 		case EXPIDONSA_BENERA:
@@ -2944,6 +2952,11 @@ public void NPCDeath(int entity)
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 
 
+		case SEA_RAIDBOSS_DONNERKRIEG:
+			Raidboss_Donnerkrieg_NPCDeath(entity);
+			
+		case SEA_RAIDBOSS_SCHWERTKRIEG:
+			Raidboss_Schwertkrieg_NPCDeath(entity);
 
 		case EXPIDONSA_BENERA:
 			Benera_NPCDeath(entity); 
@@ -3715,6 +3728,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA:	//warp
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case SEA_RAIDBOSS_DONNERKRIEG:
+			Raidboss_Donnerkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case SEA_RAIDBOSS_SCHWERTKRIEG:
+			Raidboss_Schwertkrieg_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 
 
@@ -4046,6 +4065,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_supporter.sp"
 #include "zombie_riot/npc/seaborn/npc_isharmla.sp"
 #include "zombie_riot/npc/seaborn/npc_isharmla_trans.sp"
+
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
+#include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
 
 
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
