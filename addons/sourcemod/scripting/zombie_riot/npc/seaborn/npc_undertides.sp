@@ -154,8 +154,8 @@ public void UnderTides_ClotThink(int iNPC)
 
 		AproxRandomSpaceToWalkTo[2] += 50.0;
 
-		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
-		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
+		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 1000.0),(AproxRandomSpaceToWalkTo[0] + 1000.0));
+		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 1000.0),(AproxRandomSpaceToWalkTo[1] + 1000.0));
 
 		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
@@ -165,6 +165,12 @@ public void UnderTides_ClotThink(int iNPC)
 		CNavArea area = TheNavMesh.GetNearestNavArea(AproxRandomSpaceToWalkTo, true);
 		if(area == NULL_AREA)
 			return;
+
+		int NavAttribs = area.GetAttributes();
+		if(NavAttribs & NAV_MESH_AVOID)
+		{
+			return;
+		}
 		
 		area.GetCenter(AproxRandomSpaceToWalkTo);
 
