@@ -8,8 +8,9 @@ shared:
 
 Group Tele: the 2 run at one another, once in range, they both teleport to a random player.
 
+Behvior:
 Backup - Schwertkrieg runs and protects donnerkrieg when he is using nightmare cannon
-
+Cover - If Donnerkriegs "sniper threat" value reaches 25% schwert will switch to attacking "sniper" players which are defined by donnerkrieg. if this value reaches 100% schwert WILL murder the snipers, and teleport to them
 Shared Goal - Both have the same PrimaryThreatIndex
 
 schwert:
@@ -104,6 +105,9 @@ static int Heavens_Beam;
 
 bool shared_goal;
 int schwert_target;
+float fl_donner_sniper_threat_value;
+bool b_donner_valid_sniper_threats[MAXTF2PLAYERS];
+bool b_schwert_focus_snipers;
 
 static int i_ally_index;
 
@@ -137,6 +141,8 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	//PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert.mp3");
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
+	
+	Zero(b_donner_valid_sniper_threats);
 	
 }
 
@@ -280,8 +286,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		//EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		//EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 			/*
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -359,6 +365,9 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		Invoke_Heavens_Light(npc.index);
 		
 		shared_goal = false;
+		
+		fl_donner_sniper_threat_value = 0.0;
+		b_schwert_focus_snipers = false;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
@@ -828,7 +837,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 			}
 			else
 			{
-				Heavens_Spawn8(endLoc, 150.0*ratio, npc.index, ratio);
+				Heavens_Spawn8(endLoc, 150.0*ratio, ratio);
 			}
 			int beam_index = (i*6)+j;
 			
@@ -836,7 +845,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 		}
 	}
 }
-public void Heavens_Spawn8(float startLoc[3], float space, int entity, float ratio)
+static void Heavens_Spawn8(float startLoc[3], float space, float ratio)
 {
 	for (int i = 0; i < 2 ; i++)
 	{
@@ -1101,6 +1110,8 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+		
+	Donnerkrieg_Set_Sniper_Threat_Value(victim, attacker, damage, weapon);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -1109,6 +1120,37 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 	}
 	
 	return Plugin_Changed;
+}
+static void Donnerkrieg_Set_Sniper_Threat_Value(int ref, int PrimaryThreatIndex, float damage, int weapon)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
+	
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+	
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	
+	if(flDistanceToTarget > Pow(2000.0, 2.0))
+	{
+		char classname[32];
+		GetEntityClassname(weapon, classname, 32);
+	
+		int weapon_slot = TF2_GetClassnameSlot(classname);
+	
+		if(weapon_slot == 0)	//check if its a primary, primarly checking if the player is using a long range weapon
+		{
+			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			
+			float amt = damage / (MaxHealth/10.0);
+			
+			fl_donner_sniper_threat_value += amt;
+			b_donner_valid_sniper_threats[PrimaryThreatIndex] = true;	//this player is now a valid target for schwert to focus if schwert goes into anti sniper mode
+		}
+	}
+	
+	if(fl_donner_sniper_threat_value>0.25 && !b_schwert_focus_snipers)
+	{
+		b_schwert_focus_snipers = true;
+	}
 }
 
 public void Raidboss_Donnerkrieg_NPCDeath(int entity)
