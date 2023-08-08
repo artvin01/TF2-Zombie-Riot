@@ -2123,7 +2123,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					int HealTime = 30;
 					if(IsValidClient(owner))
 					{
-						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayerZR(owner, 8, true, 1.0, true));
+						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_GetOnPlayer(client, 8, true, true));
 					}
 					/*
 					if(f_TimeUntillNormalHeal[client])
@@ -3289,7 +3289,7 @@ public bool BuildingCustomCommand(int client)
 						int HealTime = 30;
 						if(IsValidClient(client))
 						{
-							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayerZR(client, 8, true, 1.0, true));
+							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_GetOnPlayer(client, 8, true, true));
 						}
 						StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
 					}

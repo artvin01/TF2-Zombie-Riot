@@ -1766,7 +1766,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		float HealAmmount = 20.0;
 
-		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true);
+		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
 
 		
 		float GameTime = GetGameTime();

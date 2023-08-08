@@ -494,9 +494,9 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 
 	EmitSoundToClient(client, SOUND_TRANSFORM1);
 
-	ApplyTempAttrib(weapon, 6, 0.2);
-	ApplyTempAttrib(weapon, 410, 0.5);
-	ApplyTempAttrib(weapon, 733, 0.2);
+	ApplyTempAttrib(weapon, 6, 0.2, 10.0);
+	ApplyTempAttrib(weapon, 410, 0.5, 10.0);
+	ApplyTempAttrib(weapon, 733, 0.2, 10.0);
 }
 
 public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, int slot)
@@ -517,9 +517,9 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 
 	EmitSoundToClient(client, SOUND_TRANSFORM2);
 
-	ApplyTempAttrib(weapon, 6, 0.2);
-	ApplyTempAttrib(weapon, 410, 0.5);
-	ApplyTempAttrib(weapon, 733, 0.2);
+	ApplyTempAttrib(weapon, 6, 0.2, 10.0);
+	ApplyTempAttrib(weapon, 410, 0.5, 10.0);
+	ApplyTempAttrib(weapon, 733, 0.2, 10.0);
 
 	float pos1[3], pos2[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -537,11 +537,11 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 2, 0.666);
-					ApplyTempAttrib(entity, 6, 0.333);
-					ApplyTempAttrib(entity, 97, 0.333);
-					ApplyTempAttrib(entity, 410, 0.666);
-					ApplyTempAttrib(entity, 733, 0.333);
+					ApplyTempAttrib(entity, 2, 0.666, 10.0);
+					ApplyTempAttrib(entity, 6, 0.333, 10.0);
+					ApplyTempAttrib(entity, 97, 0.333, 10.0);
+					ApplyTempAttrib(entity, 410, 0.666, 10.0);
+					ApplyTempAttrib(entity, 733, 0.333, 10.0);
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];

@@ -264,6 +264,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 
 					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
+					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
 #if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
@@ -552,6 +553,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
+					Healing_Value *= Attributes_GetOnPlayer(owner, 8, true, true);
 #if defined ZR					
 					if(b_HealthyEssence)
 						Healing_Value *= 1.25;
@@ -785,6 +787,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
 					flDrainRate *= Attributes_Get(medigun, 1, 1.0);
+					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
 					//there are some updgras that require medigun damage only!
 #if defined ZR
 					if(LastMann)	

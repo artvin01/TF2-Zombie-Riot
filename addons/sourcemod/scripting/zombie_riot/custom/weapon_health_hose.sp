@@ -132,7 +132,7 @@ public Action Hose_RemoveUber(Handle remove, int id)
 public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, int loss, int minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
 	float healmult = 1.0;
-	healmult = Attributes_GetOnPlayer(client, 8, true);
+	healmult = Attributes_GetOnPlayer(client, 8, true, true);
 
 	if (Hose_ShotgunCharge[client])
 	{
