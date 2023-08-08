@@ -1388,7 +1388,6 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		return Plugin_Handled;
 	}
-	NPC_OnTakeDamage_Post(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 	
 	return Plugin_Changed;
 }

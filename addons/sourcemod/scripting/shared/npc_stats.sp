@@ -1129,6 +1129,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.25;
 		}
+		if(b_npcspawnprotection[this.index])
+		{
+			speed_for_return *= 1.35;
+		}
 		if(!this.m_bThisNpcIsABoss)
 		{
 			
