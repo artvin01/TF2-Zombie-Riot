@@ -142,7 +142,6 @@ void NPC_MapStart()
 	CombineTurtle_MapStart();
 	FarmBear_OnMapStart_NPC();
 }
-
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
 // 120 * 120
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 14400.0

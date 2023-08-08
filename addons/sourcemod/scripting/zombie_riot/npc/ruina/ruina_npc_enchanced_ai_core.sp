@@ -527,7 +527,7 @@ public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float ti
 					{
 						static float pos2[3];
 						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (Range * Range))
+						if(GetVectorDistance(pos1, pos2, true) < (range * range))
 						{
 							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
 							{
@@ -801,9 +801,9 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 						float loc2[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", loc2);
 						float dist = GetVectorDistance(loc2, cur_vec, true);
 						
-						if(dist < (Range * Range))
+						if(dist < (range * range))
 						{
-							float fake_damage = damage*(1.01 - (dist / (Range * Range)));	//reduce damage if the target just grazed it.
+							float fake_damage = damage*(1.01 - (dist / (range * range)));	//reduce damage if the target just grazed it.
 							
 							fl_ion_attack_sound_delay[ion]++;
 							if(fl_ion_attack_sound_delay[ion]>1.0)

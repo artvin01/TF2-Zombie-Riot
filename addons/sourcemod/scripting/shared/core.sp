@@ -44,7 +44,6 @@ enum OSType
     OS_Unknown
 }
 
-
 #define LagCompensation
 
 #define HaveLayersForLagCompensation

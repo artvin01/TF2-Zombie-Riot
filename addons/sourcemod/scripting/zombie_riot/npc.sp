@@ -2,7 +2,14 @@
 #pragma newdecls required
 
 #define ITSTILIVES 666
+
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 100.0
+// 120 * 120
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 10000.0
+
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT 140.0
+// 140 * 140
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 16900.0
 
 static float f_FactionCreditGain;
 static float f_FactionCreditGainReduction[MAXTF2PLAYERS];

@@ -7,32 +7,9 @@ static int attacks_made[MAXPLAYERS+1]={12, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
-/*
-#define SOUND_AUTOAIM_IMPACT_FLESH_1 		"physics/flesh/flesh_impact_bullet1.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_2 		"physics/flesh/flesh_impact_bullet2.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_3 		"physics/flesh/flesh_impact_bullet3.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_4 		"physics/flesh/flesh_impact_bullet4.wav"
-#define SOUND_AUTOAIM_IMPACT_FLESH_5 		"physics/flesh/flesh_impact_bullet5.wav"
+static int RMR_CurrentHomingTarget[MAXENTITIES];
+static int RMR_RocketOwner[MAXENTITIES];
 
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_1 		"physics/concrete/concrete_impact_bullet1.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_2 		"physics/concrete/concrete_impact_bullet2.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
-#define SOUND_AUTOAIM_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
-
-void Wand_Chlorophite_Map_Precache()
-{
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_1);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_2);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_3);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_4);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_FLESH_5);
-	
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_1);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_2);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_3);
-	PrecacheSound(SOUND_AUTOAIM_IMPACT_CONCRETE_4);
-}
-*/
 public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
 {
 	if(weapon >= MaxClients)
@@ -66,6 +43,8 @@ public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
 	
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 9/*Default wand*/, weapon, "raygun_projectile_red_trail");
 	
+	RMR_CurrentHomingTarget[projectile] = -1;
+	RMR_RocketOwner[projectile] = client;
 	CreateTimer(0.1, Homing_Shots_Repeat_Timer_Chlorophite_Heavy, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 

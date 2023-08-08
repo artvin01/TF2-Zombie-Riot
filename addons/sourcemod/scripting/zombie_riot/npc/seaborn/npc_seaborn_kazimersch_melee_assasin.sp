@@ -436,7 +436,7 @@ public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
 			float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-			if(flDistanceToTarget < (Range * Range))
+			if(flDistanceToTarget < (range * range))
 			{
 				if(Can_I_See_Enemy_Only(npc.index, client))
 				{
@@ -455,7 +455,7 @@ public bool KazimierzMeleeAssasinRange(KazimierzKnightAssasin npc, float range)
 			{
 				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 				float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-				if(flDistanceToTarget < (Range * Range))
+				if(flDistanceToTarget < (range * range))
 				{
 					if(Can_I_See_Enemy_Only(npc.index, entity_close))
 					{

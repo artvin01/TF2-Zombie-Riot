@@ -491,8 +491,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int iCarrier)
 						GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 						//Code to do damage position and ragdolls
 						
-						float distance_1 = GetVectorDistance(flCarrierPos, targPos);
-						float damage_1 = Custom_Explosive_Logic(client, distance_1, 0.75, Damage_Tornado[iCarrier], TORNADO_Radius[client]+1.0);				
+						float damage_1 = Damage_Tornado[iCarrier];
 						damage_1 /= Damage_Reduction[iCarrier];
 						
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, CalculateDamageForce(vecForward, 10000.0), targPos);
@@ -609,7 +608,6 @@ public Action Timer_Electric_Think(Handle timer, int iCarrier)
 						GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 						//Code to do damage position and ragdolls
 						
-						float distance_1 = GetVectorDistance(flCarrierPos, targPos);
 						float damage_1 = Damage_Tornado[iCarrier];			
 						damage_1 /= Damage_Reduction[iCarrier];
 						
