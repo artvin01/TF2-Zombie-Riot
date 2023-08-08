@@ -34,6 +34,9 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
+static char g_TeleportSounds[][] = {
+	"weapons/bison_main_shot.wav",
+};
 
 
 
@@ -59,6 +62,7 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
 	
 	
 	PrecacheSound(TELEPORT_STRIKE_ACTIVATE, true);
@@ -130,6 +134,13 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
+		#endif
+	}
+	public void PlayTeleportSound() {
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
 	
@@ -208,8 +219,37 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 }
 
 public void Schwertkrieg_Set_Ally_Index(int ref)
-{
+{	
 	i_ally_index = EntIndexToEntRef(ref);
+}
+static void Schwertkrieg_Get_Target(int ref, int &PrimaryThreatIndex)
+{
+	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(ref);
+	
+	if(shared_goal)	//yes my master...
+	{
+		PrimaryThreatIndex = schwert_target;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
+	}
+	
+	if(b_schwert_focus_snipers)
+	{
+		float loc[3]; loc = GetAbsOrigin(npc.index);
+		float Dist = -1.0;
+		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)	//get the furthest away valid sniper target
+		{
+			if(IsValidClient(client) && b_donner_valid_sniper_threats[client] && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			{
+				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+				float distance = GetVectorDistance(client_loc, loc, true);
+				{
+					if(distance>Dist)
+					{
+						PrimaryThreatIndex = client;
+					}
+				}
+			}
+		}
+	}
 }
 //TODO 
 //Rewrite
@@ -218,7 +258,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(iNPC);
 	
 	if(!b_raidboss_donnerkrieg_alive)	//While This I do need
-		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(i_ally_index, npc.index, false);	//donner first, schwert second
+		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(EntRefToEntIndex(i_ally_index), npc.index, false);	//donner first, schwert second
 	
 
 
@@ -249,15 +289,15 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
+		
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}	
+	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(shared_goal)	//yes my master...
-	{
-		PrimaryThreatIndex = schwert_target;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
-	}
+	Schwertkrieg_Get_Target(npc.index, PrimaryThreatIndex);
+	
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -268,6 +308,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			
 			Schwert_Movement(npc.index, PrimaryThreatIndex);
 
+			Schwert_Teleport_Core(npc.index, PrimaryThreatIndex);
 			
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
@@ -354,7 +395,63 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-
+static void Schwert_Teleport_Core(int ref, int PrimaryThreatIndex)
+{
+	
+			Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(ref);
+	
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+			{
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+				static float flVel[3];
+				GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
+		
+				if (flVel[0] >= 190.0)
+				{
+					npc.FaceTowards(vPredictedPos);
+					npc.FaceTowards(vPredictedPos);
+					npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
+					float Tele_Check = GetVectorDistance(WorldSpaceCenter(npc.index), vPredictedPos);
+					
+					
+					float start_offset[3], end_offset[3];
+					start_offset = WorldSpaceCenter(npc.index);
+					
+					if(Tele_Check > 200.0)
+					{
+						bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+						if(Succeed)
+						{
+							npc.PlayTeleportSound();
+							
+							float effect_duration = 0.25;
+							
+							
+							end_offset = WorldSpaceCenter(npc.index);
+							
+							start_offset[2]-= 25.0;
+							end_offset[2] -= 25.0;
+							
+							for(int help=1 ; help<=8 ; help++)
+							{	
+								Schwert_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+								
+								start_offset[2] += 12.5;
+								end_offset[2] += 12.5;
+							}
+						}
+						else
+						{
+							npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+						}
+					}
+				}
+			}
+}
 static void Schwert_Movement(int client, int PrimaryThreatIndex)
 {
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(client);
@@ -425,4 +522,25 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+}
+static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
+{
+	int part1 = CreateEntityByName("info_particle_system");
+	if(IsValidEdict(part1))
+	{
+		TeleportEntity(part1, start_point, NULL_VECTOR, NULL_VECTOR);
+		DispatchKeyValue(part1, "effect_name", type);
+		SetVariantString("!activator");
+		DispatchSpawn(part1);
+		ActivateEntity(part1);
+		AcceptEntityInput(part1, "Start");
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(part1));
+		pack.WriteCell(end_point[0]);
+		pack.WriteCell(end_point[1]);
+		pack.WriteCell(end_point[2]);
+		pack.WriteCell(duration);
+	}
 }
