@@ -108,26 +108,6 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 			}
 		}
 
-		/*
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-		{
-			int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if (IsValidEntity(enemy))
-			{
-                //Make sure that it only affects things that recently hurt you
-          	 //  if(f_HowLongAgoDidIHurtThisClient[client][enemy] > GetGameTime() - 1.0)
-		   	//Boom!
-                {
-                    GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", EnemyPos);
-                    if (GetVectorDistance(ClientPos, EnemyPos, true) <= Pow(75.0, 2.0))// Are they even close enough?
-                    {
-                        find = true;
-                    }
-                }
-			}
-		}	
-		*/
-
 		if(find)
 		{
 			Rogue_OnAbilityUse(weapon);

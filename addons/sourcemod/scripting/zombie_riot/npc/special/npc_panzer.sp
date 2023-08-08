@@ -845,7 +845,7 @@ public MRESReturn Panzer_DHook_RocketExplodePre(int entity)
 		{
 			GetEntPropVector(Closest_Player, Prop_Data, "m_vecAbsOrigin", VicLoc);
 			VicLoc[2] += 45;
-			if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= Pow(HookRadius, 2.0))
+			if (GetVectorDistance(ProjectileLoc, VicLoc, true) <= (HookRadius * HookRadius))
 			{
 				int iActivity = npc.LookupActivity("ACT_HOOK_CAUGHT");
 				if(iActivity > 0) npc.StartActivity(iActivity);

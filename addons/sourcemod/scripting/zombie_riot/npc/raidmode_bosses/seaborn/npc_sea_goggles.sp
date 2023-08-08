@@ -416,7 +416,7 @@ public void SeaBlueGoggles_ClotThink(int iNPC)
 		if(!alone && tier > 0 && npc.m_flBuffCooldown < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
 			vecAlly = WorldSpaceCenter(ally);
-			if(GetVectorDistance(vecAlly, vecMe, true) < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, ally))
+			if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, ally))
 			{
 				// Buff Silver
 				npc.m_flBuffCooldown = gameTime + GetRandomFloat(14.0, 19.0);
@@ -506,7 +506,7 @@ public void SeaBlueGoggles_ClotThink(int iNPC)
 							delete swingTrace;
 						}
 					}
-					else if(npc.m_flNextMeleeAttack < gameTime && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+					else if(npc.m_flNextMeleeAttack < gameTime && distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 					{
 						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 						{
@@ -666,7 +666,7 @@ public Action SeaBlueGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
-		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		if(Distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0 * zr_smallmapbalancemulti.FloatValue) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
 			damage *= 0.65;
 			SDKHooks_TakeDamage(AllyEntity, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);

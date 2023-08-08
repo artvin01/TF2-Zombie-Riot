@@ -176,7 +176,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 				npc.PlaySwordDeploy();
 			}
 		}
-		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{
@@ -187,7 +187,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
-		else if(distance < ((NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.5) * (NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.5)))
+		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
 		{
 			if(npc.m_flNextRangedAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{

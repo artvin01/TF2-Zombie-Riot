@@ -455,12 +455,12 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		else if(IsValidEnemy(npc.index, i_TargetToWalkTo[npc.index]))
 		{
-			if(flDistanceToTarget < Pow(500.0, 2.0) && flDistanceToTarget > Pow(250.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+			if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (250.0 * 250.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
 				ActionToTake = 1;
 				//first we try to jump to them if close enough.
 			}
-			else if(flDistanceToTarget < Pow(250.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 15)
+			else if(flDistanceToTarget < (250.0 * 250.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 15)
 			{
 				//We are pretty close, we will do a wirlwind to kick everyone away after a certain amount of delay so they can prepare.
 				ActionToTake = 2;
@@ -468,7 +468,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		else if(IsValidAlly(npc.index, i_TargetToWalkTo[npc.index]))
 		{
-			if(flDistanceToTarget < Pow(125.0, 2.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
+			if(flDistanceToTarget < (125.0* 125.0) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
 			{
 				//can only be above wave 15.
 				ActionToTake = -1;
@@ -992,7 +992,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 			{
 				int Enemy_I_See;
 									
@@ -1150,7 +1150,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 			{
 				GetEntPropVector(EnemyLoop, Prop_Send, "m_vecOrigin", EnemyPos);
 				float Distance = GetVectorDistance(pos, EnemyPos, true);
-				if(Distance < Pow(Range, 2.0))
+				if(Distance < (Range * Range))
 				{
 					//only apply the laser if they are near us.
 					if(IsValidClient(EnemyLoop) && Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
@@ -1212,7 +1212,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 				{
 					GetEntPropVector(entity_close, Prop_Send, "m_vecOrigin", EnemyPos);
 					float Distance = GetVectorDistance(pos, EnemyPos, true);
-					if(Distance < Pow(Range, 2.0))
+					if(Distance < (Range * Range))
 					{
 						//only apply the laser if they are near us.
 						if(Can_I_See_Enemy_Only(npc.index, entity_close) && IsEntityAlive(entity_close))
@@ -1365,7 +1365,7 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 					{
 						GetEntPropVector(entity_close, Prop_Send, "m_vecOrigin", EnemyPos);
 						float Distance = GetVectorDistance(pos, EnemyPos, true);
-						if(Distance < Pow(Range, 2.0))
+						if(Distance < (Range * Range))
 						{
 							//only apply the laser if they are near us.
 							if(Can_I_See_Enemy_Only(npc.index, entity_close) && IsEntityAlive(entity_close))

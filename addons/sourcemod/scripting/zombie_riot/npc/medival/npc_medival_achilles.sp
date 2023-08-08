@@ -321,7 +321,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 				float vecTarget[3];
 				vecTarget = WorldSpaceCenter(npc.m_iTarget);
 
-				if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 8.0, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+				if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 				{
 					PluginBot_Jump(npc.index, vecTarget);
 				}
@@ -352,15 +352,15 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 12.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Throw Spear
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.0, 2.0) && npc.m_flJumpCooldown < gameTime)
+		else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && npc.m_flJumpCooldown < gameTime)
 		{
 			npc.m_iState = 2; //Jump
 		}

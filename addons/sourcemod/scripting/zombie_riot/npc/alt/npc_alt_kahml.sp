@@ -712,7 +712,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 				}
 			}
 		}
-		if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_kahml_teleport_charge[npc.index] > 0)
+		if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0) && i_kahml_teleport_charge[npc.index] > 0)
 		{
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);

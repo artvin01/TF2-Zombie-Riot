@@ -159,7 +159,7 @@ public void CombineOverlord_ClotThink(int iNPC)
 		{
 			canWalk = false;
 		}
-		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{

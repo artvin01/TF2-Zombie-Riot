@@ -499,7 +499,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 							
 					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 				}
-				if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+				if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
 				{	
 
 					npc.FaceTowards(vecTarget);
@@ -735,9 +735,9 @@ static void Heavens_Full_Charge(int ref)
 				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
 				float distance = GetVectorDistance(client_loc, loc, true);
 				{
-					if(distance<Pow(fl_heavens_radius, 2.0))
+					if(distance< (fl_heavens_radius * fl_heavens_radius))
 					{
-						float fake_damage = fl_heavens_damage*(1.01 - (distance / Pow(fl_heavens_radius, 2.0)));	//reduce damage if the target just grazed it.
+						float fake_damage = fl_heavens_damage*(1.01 - (distance / (fl_heavens_radius * fl_heavens_radius)));	//reduce damage if the target just grazed it.
 						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
 						Client_Shake(client, 0, 5.0, 15.0, 0.1);
 					}

@@ -32,6 +32,7 @@ static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 #define LAPPLAND_MAX_HITS_NEEDED 84 //Double the amount because we do double hits.
 #define LAPPLAND_AOE_SILENCE_RANGE 200.0
+#define LAPPLAND_AOE_SILENCE_RANGE_SQUARED 40000.0
 Handle h_TimerLappLandManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static int i_LappLandHitsDone[MAXPLAYERS+1]={0, ...};
 static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
@@ -950,7 +951,7 @@ void Weapon_Ark_SilenceAOE(int enemyStruck)
 		if(IsValidEntity(entity))
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);
-			if (GetVectorDistance(EnemyPos, VictimPos, true) <= Pow(LAPPLAND_AOE_SILENCE_RANGE, 2.0))
+			if (GetVectorDistance(EnemyPos, VictimPos, true) <= (LAPPLAND_AOE_SILENCE_RANGE_SQUARED))
 			{
 				NpcStats_SilenceEnemy(entity, LAPPLAND_SILENCE_DUR_ABILITY);
 			}

@@ -279,7 +279,7 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 		{
 			int Enemy_I_See;
 								

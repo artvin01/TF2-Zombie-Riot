@@ -224,7 +224,7 @@ public Action GetClosestSpawners(Handle timer)
 										
 									float inverting_score_calc;
 
-									inverting_score_calc = ( distance / 100000000.0);
+									inverting_score_calc = ( distance / 1000000.0);
 
 									inverting_score_calc -= 1;
 
@@ -234,8 +234,6 @@ public Action GetClosestSpawners(Handle timer)
 									//	(n*n)^4.0
 									//	So further away spawnpoints gain way less points.
 									//	This should solve the problem of 2 groups of people far away triggering spawnpoints that arent even near them.
-
-									Pow(inverting_score_calc * inverting_score_calc, 5.0);
 
 									Spawner.f_PointScore += inverting_score_calc;
 

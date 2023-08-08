@@ -307,7 +307,7 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.35, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.35) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -455,7 +455,7 @@ public void KazimierzBeserker_AllyDeath(int ally, int self)
 	float SelfPos[3];
 	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", SelfPos);
 	float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-	if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 8.0, 2.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
 	{
 		npc.m_iAlliesDied += 1;
 

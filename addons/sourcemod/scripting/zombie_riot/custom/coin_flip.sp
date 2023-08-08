@@ -653,7 +653,7 @@ stock int GetClosestTarget_Coin(int entity)
 				GetEntPropVector( new_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 				
-				if(distance <= Pow(1300.0, 2.0))
+				if(distance <= (1300.0 * 1300.0))
 				{
 					if( TargetDistance ) 
 					{
@@ -694,7 +694,7 @@ stock int GetClosestTarget_Coin(int entity)
 				
 				HighestHealth = GetEntProp(new_entity, Prop_Data, "m_iHealth");
 				
-				if(distance <= Pow(1300.0, 2.0))
+				if(distance <= (1300.0 * 1300.0))
 				{
 					if( Health ) 
 					{

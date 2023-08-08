@@ -283,8 +283,6 @@ methodmap MedivalVillager < CClotBody
 								inverting_score_calc *= -1.0;					
 							}
 
-							Pow(inverting_score_calc * inverting_score_calc, 5.0);
-
 							Accumulated_Points += inverting_score_calc;
 						}
 					}
@@ -404,7 +402,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
 			{
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(i_ClosestAlly[npc.index]), WorldSpaceCenter(npc.index), true);
-				if(flDistanceToTarget < Pow(125.0, 2.0))
+				if(flDistanceToTarget < (125.0* 125.0))
 				{
 					if(npc.m_iChanged_WalkCycle != 5) 	
 					{
@@ -437,7 +435,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				NPC_SetGoalEntity(npc.index, buildingentity);
 				NPC_StartPathing(iNPC);
 				//Walk to building.
-				if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, buildingentity))
+				if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, buildingentity))
 				{
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
@@ -484,7 +482,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
 				if(i_AttacksTillMegahit[buildingentity] < 255)
 				{
-					if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+					if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, Entity_I_See))
 					{
 						if(npc.m_iChanged_WalkCycle != 3) 	
 						{
@@ -644,7 +642,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			int Entity_I_See;
 			
 			Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
-			if(flDistanceToTarget < Pow(125.0, 2.0) && IsValidAlly(npc.index, Entity_I_See))
+			if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, Entity_I_See))
 			{
 				if(npc.m_iChanged_WalkCycle != 3) 	
 				{
@@ -807,7 +805,7 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0))
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 			{
 				int Enemy_I_See;
 									

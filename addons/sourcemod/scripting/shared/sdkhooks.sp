@@ -1981,33 +1981,6 @@ public void OnWeaponSwitchPre(int client, int weapon)
 	}
 }
 
-/*
-static void ClientViewPunch(int client, const float angleOffset[3])
-{
-	if (g_offsPlayerPunchAngleVel == -1) return;
-	
-	float flOffset[3];
-	for (int i = 0; i < 3; i++) flOffset[i] = angleOffset[i];
-	ScaleVector(flOffset, 20.0);
-	
-	
-	if (!IsFakeClient(client))
-	{
-		// Latency compensation.
-		float flLatency = GetClientLatency(client, NetFlow_Outgoing);
-		float flLatencyCalcDiff = 60.0 * Pow(flLatency, 2.0);
-		
-		for (int i = 0; i < 3; i++) flOffset[i] += (flOffset[i] * flLatencyCalcDiff);
-	}
-	
-	
-	float flAngleVel[3];
-	GetEntDataVector(client, g_offsPlayerPunchAngleVel, flAngleVel);
-	AddVectors(flAngleVel, flOffset, flOffset);
-	SetEntDataVector(client, g_offsPlayerPunchAngleVel, flOffset, true);
-}
-*/
-
 #if defined ZR
 static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
 {

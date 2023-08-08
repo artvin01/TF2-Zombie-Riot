@@ -114,7 +114,7 @@ public void CombineGiant_ClotThink(int iNPC)
 			}
 		}
 
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT * GIANT_ENEMY_MELEE_RANGE_FLOAT))
+		if(distance < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{

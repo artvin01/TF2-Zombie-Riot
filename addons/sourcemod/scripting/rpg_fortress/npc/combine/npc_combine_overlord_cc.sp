@@ -150,7 +150,7 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 2000.0);
 			}
 		}
-		else if(GetVectorDistance(vecTarget, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+		else if(GetVectorDistance(vecTarget, vecMe, true) < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime && IsValidEnemy(npc.index, Can_I_See_Enemy(npc.index, npc.m_iTargetAttack)))
 			{

@@ -655,7 +655,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 		GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 		float Distance = GetVectorDistance(victimPos, partnerPos, true);
-		if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 10.0 * zr_smallmapbalancemulti.FloatValue, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+		if(Distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0 * zr_smallmapbalancemulti.FloatValue) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 		{	
 			if(!IsValidEntity(i_LaserEntityIndex[npc.index]))
 			{
@@ -906,7 +906,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		{
 			ActionToTake = -1;
 		}
-		else if(flDistanceToTarget < Pow(1000.0, 2.0) && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
+		else if(flDistanceToTarget < (1000.0 * 1000.0) && npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 		{
 			npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 			float flPos[3]; // original
@@ -925,11 +925,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 2;
 			}
-			else if(flDistanceToTarget < Pow(500.0, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget < (500.0 * 500.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 4;
 			}
-			else if(flDistanceToTarget < Pow(750.0, 2.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+			else if(flDistanceToTarget < (750.0 * 750.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
 				ActionToTake = 5;
 			}
@@ -957,7 +957,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
 					GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos); 
 					float Distance = GetVectorDistance(victimPos, partnerPos, true);
-					if(Distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 5.0, 2.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
+					if(Distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, AllyEntity))
 					{	
 						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 50.0;
 						if(npc.Anger)
@@ -1319,7 +1319,7 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 			{
 				int Enemy_I_See;
 									
@@ -1403,7 +1403,7 @@ public Action contact_throw_Silvester_entity(int client)
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
-					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(125.0, 2.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		

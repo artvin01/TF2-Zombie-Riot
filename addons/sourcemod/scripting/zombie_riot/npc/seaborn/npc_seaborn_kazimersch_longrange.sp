@@ -328,7 +328,7 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 				{
 					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", AllyPos);
 					float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-					if(flDistanceToTarget < Pow(500.0, 2.0))
+					if(flDistanceToTarget < (500.0 * 500.0))
 					{
 						damage = 25.0;
 						break;
@@ -347,7 +347,7 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 						{
 							GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 							float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-							if(flDistanceToTarget < Pow(500.0, 2.0))
+							if(flDistanceToTarget < (500.0 * 500.0))
 							{
 								damage = 25.0;
 								break;

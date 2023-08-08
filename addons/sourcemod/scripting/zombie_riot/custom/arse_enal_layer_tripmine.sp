@@ -60,7 +60,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 			TR_GetEndPosition(spawnLoc, trace);
 		} 
 		delete trace;
-		if (GetVectorDistance(eyePos, spawnLoc, true) <= Pow(450.0, 2.0))
+		if (GetVectorDistance(eyePos, spawnLoc, true) <= (450.0 * 450.0))
 		{
 			float Calculate_HP_Spikes = 75.0; 
 		
@@ -343,7 +343,7 @@ public void Trip_TrackPlanted(int client)
 							//EntLoc2[2] += 20.0;
 							//Add 20 to the height of both locations to prevent the model from blocking the line of sight check
 							
-							if (GetVectorDistance(EntLoc, EntLoc2, true) <= Pow(Trip_BlastRadius, 2.0)/* && HasLineOfSight(ent, ent2, true, EntLoc, EntLoc2)*/)
+							if (GetVectorDistance(EntLoc, EntLoc2, true) <= (Trip_BlastRadius * Trip_BlastRadius))
 							{
 								bool TriggerExplosion = false;
 								

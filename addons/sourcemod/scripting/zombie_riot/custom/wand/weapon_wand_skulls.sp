@@ -331,7 +331,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					delete trace;
 					
-					if (GetVectorDistance(spawnLoc, eyePos, true) >= Pow(200.0, 2.0)) //Constraint logic, borrowed from Dynamic Point Teleport and converted to a for loop
+					if (GetVectorDistance(spawnLoc, eyePos, true) >= (200.0 * 200.0)) //Constraint logic, borrowed from Dynamic Point Teleport and converted to a for loop
 					{
 						float constraint = 200.0/GetVectorDistance(spawnLoc, eyePos);
 						
@@ -465,7 +465,7 @@ public void Skulls_SetVariables(int prop, int weapon, int tier, int client)
 	
 	Skull_ShootDMG[prop] = damage;
 	Skull_ShootVelocity[prop] = velocity;
-	Skull_ShootRange[prop] = Pow(Skulls_ShootRange[tier], 2.0);
+	Skull_ShootRange[prop] = (Skulls_ShootRange[tier] * Skulls_ShootRange[tier]);
 	Skull_ShootFrequency[prop] = Skulls_ShootFrequency[tier];
 	Skull_Tier[prop] = tier;
 	Skull_Weapon[prop] = EntIndexToEntRef(weapon);
@@ -845,7 +845,7 @@ public void Skulls_UpdateFollowerPositions(int client)
 						
 			delete trace;
 						
-			if (GetVectorDistance(spawnLoc, eyePos, true) >= Pow(80.0, 2.0)) //Constraint logic, borrowed from Dynamic Point Teleport and converted to a for loop
+			if (GetVectorDistance(spawnLoc, eyePos, true) >= (80.0 * 80.0)) //Constraint logic, borrowed from Dynamic Point Teleport and converted to a for loop
 			{
 				float constraint = 80.0/GetVectorDistance(spawnLoc, eyePos);
 							

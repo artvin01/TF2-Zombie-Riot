@@ -283,7 +283,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 	bool BackstabDone = false;
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.0, 2.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);

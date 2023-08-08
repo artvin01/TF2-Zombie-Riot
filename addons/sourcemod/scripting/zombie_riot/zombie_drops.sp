@@ -15,6 +15,8 @@ bool b_ToggleTransparency[MAXENTITIES];
 #define MONEY_MODEL "models/items/currencypack_large.mdl"
 #define MONEY_SOUND "items/powerup_pickup_crits.wav"
 
+#define PLAYER_DETECT_RANGE_DROPS 4096.0
+
 static int i_KilledThisMany_Nuke = 0;
 static bool i_AllowNuke = true;
 static float f_KillTheseManyMorePowerup_base_Nuke = 125.0;
@@ -239,7 +241,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 			{
 				GetClientAbsOrigin(client, client_pos);
 				client_pos[2] += 35.0;
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					int base_boss = -1;
 					ParticleEffectAt(powerup_pos, "hightower_explosion", 1.0);
@@ -332,7 +334,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 			{
 				GetClientAbsOrigin(client, client_pos);
 				client_pos[2] += 35.0;
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(AMMO_SOUND, _, SNDCHAN_STATIC, 100, _);
@@ -511,7 +513,7 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 			{
 				GetClientAbsOrigin(client, client_pos);
 				client_pos[2] += 35.0;
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _);
@@ -598,7 +600,7 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 			{
 				GetClientAbsOrigin(client, client_pos);
 				client_pos[2] += 35.0;
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= Pow(64.0, 2.0))
+				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);

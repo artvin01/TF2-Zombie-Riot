@@ -7,6 +7,8 @@ static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 static float RaidMusicVolume;
 
+#define RANGE_FIRST_MUSIC 6250000
+#define RANGE_SECOND_MUSIC 1000000
 
 /*
 Big thanks to backwards#8236 For pointing me towards GetTime and helping me with this music tgimer,
@@ -365,7 +367,7 @@ void Music_PostThink(int client)
 				GetClientAbsOrigin(client, chargerPos);
 				float distance = GetVectorDistance(chargerPos, targPos, true);
 				CClotBody npcstats = view_as<CClotBody>(entity);
-				if (distance <= Pow(2500.0, 2.0)) //Give way bigger range.
+				if (distance <= RANGE_FIRST_MUSIC) //Give way bigger range.
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
@@ -376,7 +378,7 @@ void Music_PostThink(int client)
 						f_intencity += 6.0;
 					}
 				}
-				if (distance <= Pow(1000.0, 2.0))// If they are very close, cause more havok! more epic music!
+				if (distance <= RANGE_SECOND_MUSIC)// If they are very close, cause more havok! more epic music!
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{

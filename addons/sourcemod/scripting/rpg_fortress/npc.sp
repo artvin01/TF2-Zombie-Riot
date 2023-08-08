@@ -144,7 +144,12 @@ void NPC_MapStart()
 }
 
 #define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
-#define GIANT_ENEMY_MELEE_RANGE_FLOAT 130.0
+// 120 * 120
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 14400.0
+
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT 140.0
+// 140 * 140
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 16900.0
 
 stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
 {
@@ -563,7 +568,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecTarget);
 
 			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
-			if(fl_DistanceToOriginalSpawn > Pow(80.0, 2.0)) //We are too far away from our home! return!
+			if(fl_DistanceToOriginalSpawn > (80.0 * 80.0)) //We are too far away from our home! return!
 			{
 				NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
@@ -647,7 +652,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 					vecMe[2] = vecTarget[2];
 					//Height should not be a factor in this calculation.
 					float f_DistanceForJump = GetVectorDistance(vecMe, vecTarget, true);
-					if(f_DistanceForJump < Pow(200.0, 2.0)) //Are they close enough for us to even jump after them..?
+					if(f_DistanceForJump < (200.0 * 200.0)) //Are they close enough for us to even jump after them..?
 					{
 						if((GetGameTime() - npc.m_flJumpStartTimeInternal) < 2.0)
 							return;

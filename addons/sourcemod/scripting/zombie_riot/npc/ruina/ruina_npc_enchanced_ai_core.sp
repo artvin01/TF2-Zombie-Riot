@@ -350,7 +350,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 							
 							float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 							
-							if(dist > Pow(150.0, 2.0))	//go to master until we reach this distance from master
+							if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
 							{
 								NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
 								npc.StartPathing();
@@ -359,7 +359,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 							}
 							else
 							{
-								if(flDistanceToTarget>Pow(300.0, 2.0))	//if master is within range we stop moving and stand still
+								if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
 								{
 									NPC_StopPathing(npc.index);
 									npc.m_bPathing = false;
@@ -411,7 +411,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 						
 						float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 						
-						if(dist > Pow(100.0, 2.0))
+						if(dist > (100.0 * 100.0))
 						{
 							NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
 							npc.StartPathing();
@@ -527,7 +527,7 @@ public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float ti
 					{
 						static float pos2[3];
 						GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < Pow(range, 2.0))
+						if(GetVectorDistance(pos1, pos2, true) < (Range * Range))
 						{
 							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
 							{
@@ -801,9 +801,9 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 						float loc2[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", loc2);
 						float dist = GetVectorDistance(loc2, cur_vec, true);
 						
-						if(dist < Pow(range, 2.0))
+						if(dist < (Range * Range))
 						{
-							float fake_damage = damage*(1.01 - (dist / Pow(range, 2.0)));	//reduce damage if the target just grazed it.
+							float fake_damage = damage*(1.01 - (dist / (Range * Range)));	//reduce damage if the target just grazed it.
 							
 							fl_ion_attack_sound_delay[ion]++;
 							if(fl_ion_attack_sound_delay[ion]>1.0)

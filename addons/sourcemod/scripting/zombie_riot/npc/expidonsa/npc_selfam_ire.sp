@@ -260,7 +260,7 @@ void SelfamIreSprint(SelfamIre npc, float gameTime, int target, float distance)
 	}
 	if(gameTime > npc.m_flNextRangedSpecialAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 3.0, 2.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 					
@@ -316,7 +316,7 @@ void SelfamIreSelfDefense(SelfamIre npc, float gameTime, int target, float dista
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 		{
 			int Enemy_I_See;
 								

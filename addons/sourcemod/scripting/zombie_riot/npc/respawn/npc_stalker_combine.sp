@@ -415,7 +415,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				state = -1;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT * 0.8) && npc.m_flNextMeleeAttack < gameTime)
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8) && npc.m_flNextMeleeAttack < gameTime)
 			{
 				state = 1;
 			}
@@ -532,7 +532,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		{
 			state = -1;
 		}
-		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT * NORMAL_ENEMY_MELEE_RANGE_FLOAT))
+		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 		{
 			state = 1;
 		}

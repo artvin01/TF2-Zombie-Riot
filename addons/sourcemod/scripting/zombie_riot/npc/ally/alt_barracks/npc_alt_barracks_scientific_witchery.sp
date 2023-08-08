@@ -184,7 +184,7 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 			
 
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
-			if(flDistanceToTarget < Pow(300.0, 2.0) && npc.m_flNextMeleeAttack < GameTime)
+			if(flDistanceToTarget < (300.0 * 300.0) && npc.m_flNextMeleeAttack < GameTime)
 			{
 				npc.AddGesture("ACT_MP_THROW");
 				npc.m_flNextMeleeAttack = GameTime + 1.25 * npc.BonusFireRate;
@@ -193,7 +193,7 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
 			}
-			else if(flDistanceToTarget < Pow(1250.0, 2.0) && npc.m_flNextMeleeAttack < GameTime)
+			else if(flDistanceToTarget < (1250.0 * 1250.0) && npc.m_flNextMeleeAttack < GameTime)
 			{
 				Create_Laser_Hell(npc.index, vecTarget);
 				npc.m_flNextMeleeAttack = GameTime + 2.0 * npc.BonusFireRate;

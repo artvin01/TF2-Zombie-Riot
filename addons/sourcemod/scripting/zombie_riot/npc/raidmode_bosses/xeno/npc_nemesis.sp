@@ -586,7 +586,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 				{
 					int Enemy_I_See;
 						
@@ -684,7 +684,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 					float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-					if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 2.0, 2.0))
+					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
 						if(npc.m_iChanged_WalkCycle != 3) 
@@ -772,11 +772,11 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		}
 		else if(i_GunMode[npc.index] == 0)
 		{
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.50, 2.0) && npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.50) && npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 1;
 			}
-			else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.50, 2.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.50) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 2;
 			}

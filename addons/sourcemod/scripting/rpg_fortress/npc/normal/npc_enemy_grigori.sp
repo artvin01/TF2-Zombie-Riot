@@ -486,23 +486,23 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(!NpcStats_IsEnemySilenced(npc.index) && flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime)
+		else if(!NpcStats_IsEnemySilenced(npc.index) && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			npc.m_iState = 5; //Deploy shield.
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextTeleport < gameTime && npc.m_iOverlordComboAttack >= 3)
+		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextTeleport < gameTime && npc.m_iOverlordComboAttack >= 3)
 		{
 			npc.m_iState = 3; //holy Light
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedBarrage_Spam < gameTime && npc.m_iOverlordComboAttack >= 2)
+		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedBarrage_Spam < gameTime && npc.m_iOverlordComboAttack >= 2)
 		{
 			npc.m_iState = 4; //Pull
 		}
-		else if(flDistanceToTarget > Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0) && flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			if(Can_I_See_Enemy(npc.index, npc.m_iTarget))
 			{

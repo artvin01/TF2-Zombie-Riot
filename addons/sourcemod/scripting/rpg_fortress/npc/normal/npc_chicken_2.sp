@@ -158,7 +158,7 @@ public void StartChicken_ClotThink(int iNPC)
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecTarget);
 
 	float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_PositionArrival[npc.index], true);
-	if(fl_DistanceToOriginalSpawn < Pow(80.0, 2.0)) //We are too far away from our home! return!
+	if(fl_DistanceToOriginalSpawn < (80.0 * 80.0)) //We are too far away from our home! return!
 	{
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_STAND_MELEE");

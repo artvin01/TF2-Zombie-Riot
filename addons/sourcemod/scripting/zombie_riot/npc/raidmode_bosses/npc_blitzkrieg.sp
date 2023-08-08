@@ -841,7 +841,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 			}
 			//Extra rockets during rocket spam, also envokes ioc if blitz is on 3rd life.
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && i_NpcCurrentLives[npc.index]>1 && !b_Are_we_reloading[npc.index])
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0) && i_NpcCurrentLives[npc.index]>1 && !b_Are_we_reloading[npc.index])
 			{	
 			 	npc.FaceTowards(vecTarget);
 				npc.FaceTowards(vecTarget);
@@ -899,7 +899,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 			{
 				if(!b_BlitzLight[npc.index])	//this checks if the npc is in blitzlight, if it is use dash instead of teleport.
 				{
-					if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+					if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
 					{
 						static float flVel[3];
 						GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);

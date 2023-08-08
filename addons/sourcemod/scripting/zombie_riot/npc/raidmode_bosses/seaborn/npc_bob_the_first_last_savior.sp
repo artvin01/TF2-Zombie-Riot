@@ -439,7 +439,7 @@ void RaidbossBobTheFirstSelfDefense(RaidbossBobTheFirst npc, float gameTime)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.25, 2.0))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 			{
 				int Enemy_I_See;
 									
@@ -523,7 +523,7 @@ public Action contact_throw_Silvester_entity(int client)
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
-					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(125.0, 2.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		

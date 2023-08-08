@@ -7,6 +7,7 @@
 
 #define IRENE_JUDGEMENT_MAX_HITS_NEEDED 42 	//Double the amount because we do double hits.
 #define IRENE_JUDGEMENT_MAXRANGE 350.0 		
+#define IRENE_JUDGEMENT_MAXRANGE_SQUARED 122500.0 		
 #define IRENE_JUDGEMENT_EXPLOSION_RANGE 75.0 		
 
 #define IRENE_BOSS_AIRTIME 0.75		
@@ -307,7 +308,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 			{
 				VicLoc = WorldSpaceCenter(target);
 				
-				if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(IRENE_JUDGEMENT_MAXRANGE, 2.0))
+				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
 					bool Hitlimit = true;
 					for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
@@ -426,7 +427,7 @@ public void Npc_Irene_Launch_client(int client)
 				{
 					VicLoc = WorldSpaceCenter(enemy);
 					
-					if (GetVectorDistance(UserLoc, VicLoc,true) <= Pow(IRENE_JUDGEMENT_MAXRANGE, 2.0)) //respect max range.
+					if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED) //respect max range.
 					{
 						if(count < MAX_TARGETS_HIT)
 						{

@@ -348,7 +348,7 @@ void HeavyPunuelSelfDefense(HeavyPunuel npc, float gameTime, int target, float d
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 1.55, 2.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.55))
 		{
 			int Enemy_I_See;
 								

@@ -354,7 +354,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 			else
 			{
 				flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(i_ClosestAlly[npc.index]), WorldSpaceCenter(npc.index), true);
-				if(flDistanceToTarget < Pow(125.0, 2.0) && Can_I_See_Ally(npc.index, i_ClosestAlly[npc.index])) //make sure we can also see them for no unfair bs
+				if(flDistanceToTarget < (125.0* 125.0) && Can_I_See_Ally(npc.index, i_ClosestAlly[npc.index])) //make sure we can also see them for no unfair bs
 				{
 					if(npc.m_iChanged_WalkCycle != 5)
 					{
@@ -518,7 +518,7 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 
-			if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT, 2.0))
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
 			{
 				int Enemy_I_See;
 									

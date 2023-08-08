@@ -264,7 +264,7 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 			GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 			float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 				
-			if(distance <= Pow(PASSANGER_RANGE , 2.0))
+			if(distance <= (PASSANGER_RANGE * PASSANGER_RANGE))
 			{
 				if( TargetDistance ) 
 				{
@@ -672,7 +672,7 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				float distance = GetVectorDistance( lightningpos, TargetLocation, true );  
 					
-				if(distance <= Pow(PASSANGER_ABILITY_RANGE, 2.0))
+				if(distance <= (PASSANGER_ABILITY_RANGE * PASSANGER_ABILITY_RANGE))
 				{
 					targets[count++] = baseboss_index;
 				}

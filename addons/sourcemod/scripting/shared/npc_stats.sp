@@ -6503,7 +6503,7 @@ stock float[] BackoffFromOwnPositionAndAwayFromEnemy(CClotBody npc, int subject,
 	}
 	
 	//Check of on if its too close, if yes, try again, but left or right, randomly chosen!
-	if(flDistanceToTarget < ((Pow(extra_backoff, 2.0)) / 2.0))
+	if(flDistanceToTarget < ((extra_backoff * extra_backoff)) / 2.0)
 	{
 		int Direction = GetRandomInt(1, 2);
 		
@@ -6781,21 +6781,6 @@ stock int Trace_Test(int m_pAttacker, float m_vecSrc[3], float m_vecDirShooting[
 	return enemy;
 }
 
-stock float Custom_Explosion(int clientIdx, float distance, float SS_DamageDecayExponent, float SS_MaxDamage, float SS_Radius) // ty Sarysa.
-{
-	float damage;
-	if (SS_DamageDecayExponent <= 0.0)
-		damage = SS_MaxDamage;
-	else if (SS_DamageDecayExponent == 1.0)
-		damage = SS_MaxDamage * (1.0 - (distance / SS_Radius));
-	
-	else
-	{
-		damage = SS_MaxDamage - (SS_MaxDamage * (Pow(Pow(SS_Radius, SS_DamageDecayExponent) -
-			Pow(SS_Radius - distance, SS_DamageDecayExponent), 1.0 / SS_DamageDecayExponent) / SS_Radius));
-	}
-	return fmax(1.0, damage);
-}
 
 stock int PrecacheParticleSystem(const char[] particleSystem)
 {

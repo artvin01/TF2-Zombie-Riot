@@ -104,7 +104,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 				if (IsValidClient(targ) && IsValidClient(client))
 				{
 					GetClientAbsOrigin(targ, targPos);
-					if (targ != client && GetVectorDistance(chargerPos, targPos, true) <= Pow(EMPOWER_RANGE, 2.0))
+					if (targ != client && GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
 					{
 						f_EmpowerStateOther[targ] = GetGameTime() + 0.6;
 					}
@@ -118,7 +118,7 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 				if (IsValidEntity(baseboss_index_allied))
 				{
 					GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", chargerPos);
-					if (GetVectorDistance(chargerPos, targPos, true) <= Pow(EMPOWER_RANGE, 2.0))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (EMPOWER_RANGE * EMPOWER_RANGE))
 					{
 						f_EmpowerStateOther[baseboss_index_allied] = GetGameTime() + 0.6;
 					}
@@ -235,7 +235,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 						if (IsValidEntity(baseboss_index))
 						{
 							GetEntPropVector(baseboss_index, Prop_Data, "m_vecAbsOrigin", EnemyPos);
-							if (GetVectorDistance(EnemyPos, fPos, true) <= Pow(NEARL_STUN_RANGE, 2.0))
+							if (GetVectorDistance(EnemyPos, fPos, true) <= (NEARL_STUN_RANGE * NEARL_STUN_RANGE))
 							{
 								if(!b_thisNpcIsABoss[baseboss_index] && !RaidActive)
 								{

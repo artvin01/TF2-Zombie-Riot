@@ -382,16 +382,16 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(500.0, 2.0) && npc.m_flNextRangedSpecialAttack < gameTime && !b_IsPhantomFake[npc.index]) //Teleport has first priority, do this!
+		else if(flDistanceToTarget < (500.0 * 500.0) && npc.m_flNextRangedSpecialAttack < gameTime && !b_IsPhantomFake[npc.index]) //Teleport has first priority, do this!
 		{
 			//Fakes cant teleport (would be too much)
 			npc.m_iState = 4; //Do A teleport to behind or atleast close to the enemy! If i get stuck and get teleported back, thats no issue, i will own a clone regardless!
 		}
-		else if(flDistanceToTarget < Pow(150.0, 2.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (150.0 * 150.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 2; //Do Aoe Ranged Attack To everything around him
 		}
-		else if(flDistanceToTarget < Pow(100.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < (100.0 * 100.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -399,7 +399,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 		{
 			npc.m_iState = 3; //Stare at the enemy and into their soul.
 		}
-		else if(flDistanceToTarget > Pow(90.0, 2.0))
+		else if(flDistanceToTarget > (90.0 * 90.0))
 		{
 			npc.m_iState = 0; //Walk to target
 		}

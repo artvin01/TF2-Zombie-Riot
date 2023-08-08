@@ -644,7 +644,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			
-			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
+			if (npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget < (500.0 * 500.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
@@ -769,7 +769,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			}
 									
 									
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget < Pow(500.0, 2.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget < (500.0 * 500.0) || (npc.m_bInKame && npc.m_flNextRangedAttack < GetGameTime(npc.index)))
 			{
 				if (!npc.Anger)
 				{
@@ -811,7 +811,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					}
 				}
 			}
-			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > Pow(125.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
+			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0) && !npc.m_bInKame && ZR_GetWaveCount()+1 > 40)
 			{
 				static float flVel[3];
 				GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
@@ -862,7 +862,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			//Target close enough to hit
-			if(flDistanceToTarget < Pow(125.0, 2.0) && !npc.m_bInKame || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < (125.0* 125.0) && !npc.m_bInKame || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 				//Can we attack right now?

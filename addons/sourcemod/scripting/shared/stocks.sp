@@ -2136,23 +2136,6 @@ stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int
 	return entity;
 }
 
-
-public float Custom_Explosive_Logic(int clientIdx, float distance_calc, float SS_DamageDecayExponent, float SS_MaxDamage, float SS_Radius)
-{
-	float damage;
-	if (SS_DamageDecayExponent <= 0.0)
-		damage = SS_MaxDamage;
-	else if (SS_DamageDecayExponent == 1.0)
-		damage = SS_MaxDamage * (1.0 - (distance_calc / SS_Radius));
-	
-	else
-	{
-		damage = SS_MaxDamage - (SS_MaxDamage * (Pow(Pow(SS_Radius, SS_DamageDecayExponent) -
-			Pow(SS_Radius - distance_calc, SS_DamageDecayExponent), 1.0 / SS_DamageDecayExponent) / SS_Radius));
-	}
-	return fmax(1.0, damage);
-}
-
 stock void GetRayAngles(float startPoint[3], float endPoint[3], float angle[3])
 {
 	static float tmpVec[3];

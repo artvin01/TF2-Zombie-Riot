@@ -515,7 +515,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 							
 					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 				}
-				if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > Pow(110.0, 2.0) && flDistanceToTarget < Pow(500.0, 2.0))
+				if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
 				{	
 
 					npc.FaceTowards(vecTarget);

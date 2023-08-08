@@ -266,7 +266,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 					GetEntPropVector( npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
 					float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 						
-					if(distance <= Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 6.5, 2.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+					if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.5)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
 						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, b_IsAlliedNpc[npc.index]);
 					}
@@ -297,7 +297,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < Pow(NORMAL_ENEMY_MELEE_RANGE_FLOAT * 4.0, 2.0) && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -555,7 +555,7 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 					
-				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
+				if(distance <= (SON_OF_OSIRIS_RANGE * SON_OF_OSIRIS_RANGE ))
 				{
 					bool hitentity = Can_I_See_Enemy_Only(traceentity, baseboss_index);
 					if(hitentity)
@@ -589,7 +589,7 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 				float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 					
-				if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
+				if(distance <= (SON_OF_OSIRIS_RANGE * SON_OF_OSIRIS_RANGE ))
 				{
 					bool hitentity = Can_I_See_Enemy_Only(traceentity, baseboss_index);
 					if(hitentity)
@@ -622,7 +622,7 @@ stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , f
 					GetEntPropVector( client, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 					float distance = GetVectorDistance( EntityLocation, TargetLocation, true );  
 						
-					if(distance <= Pow(SON_OF_OSIRIS_RANGE , 2.0))
+					if(distance <= (SON_OF_OSIRIS_RANGE * SON_OF_OSIRIS_RANGE ))
 					{
 						bool hitentity = Can_I_See_Enemy_Only(traceentity, client);
 						if(hitentity)
