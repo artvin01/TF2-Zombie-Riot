@@ -102,7 +102,7 @@ public void DropPowerupChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
-				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				if(!IsPointHazard(VecOrigin) && !IsPointOutsideMap(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTimeNuke = false;
 					SpawnNuke(entity);
@@ -127,7 +127,7 @@ public void DropPowerupChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
-				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				if(!IsPointHazard(VecOrigin) && !IsPointOutsideMap(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTimeAmmo = false;
 					SpawnMaxAmmo(entity);
@@ -152,7 +152,7 @@ public void DropPowerupChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
-				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				if(!IsPointHazard(VecOrigin) && !IsPointOutsideMap(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTimeHealth = false;
 					SpawnHealth(entity);
@@ -177,7 +177,7 @@ public void DropPowerupChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 54.0;
-				if(!IsPointHazard(VecOrigin)) //Is it valid?
+				if(!IsPointHazard(VecOrigin) && !IsPointOutsideMap(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTimeMoney = false;
 					SpawnMoney(entity);
@@ -668,4 +668,19 @@ public Action Timer_Despawn_Powerup(Handle timer, any entid)
 		RemoveEntity(entity);
 	}
 	return Plugin_Stop;
+}
+
+
+bool IsPointOutsideMap(const float pos1[3])
+{
+	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, true);
+	if(area == NULL_AREA)
+		return true;
+
+	int NavAttribs = area.GetAttributes();
+	if(NavAttribs & NAV_MESH_AVOID)
+	{
+		return true;
+	}
+	return false;
 }

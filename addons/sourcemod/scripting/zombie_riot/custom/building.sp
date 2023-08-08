@@ -2125,7 +2125,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					{
 						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_FindOnPlayerZR(owner, 8, true, 1.0, true));
 					}
-				/*
+					/*
 					if(f_TimeUntillNormalHeal[client])
 					{
 						HealTime =/ 2;
@@ -2134,7 +2134,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							HealTime = 1;
 						}
 					}
-			*/
+					*/
 					StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
 					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
@@ -2735,7 +2735,7 @@ public Action Timer_DroppedBuildingWaitAmmobox(Handle htimer,  DataPack pack)
 		{
 			RemoveEntity(prop1);
 		}
-		if(IsValidEntity(prop2))
+		if(IsValidEntity(prop2))	
 		{
 			RemoveEntity(prop2);
 		}
