@@ -1295,9 +1295,6 @@ static void Penetrating_Shot(int client, float radius, float damage, float range
 				{
 					playerPos = WorldSpaceCenter(BeamWand_BuildingHit[building]);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
-					damage = damage * (distance/range);
-					if (damage < 0)
-						damage *= -1.0;
 					
 					float damage_force[3];
 					damage_force = CalculateDamageForce(vecForward, 10000.0);
