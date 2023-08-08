@@ -442,7 +442,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	float damage;
 	if(b_quincy_battery_special_one[client])
 	{
-		damage = 200.0*(charge_percent/QUINCY_BOW_PENETRATING_ARROW_MINIMUM);
+		damage = 200.0*(charge_percent/100.0);
 		damage *= Attributes_Get(weapon, 410, 1.0);
 		Penetrating_Shot(client, 10.0, damage, 1500.0);
 		fl_Quincy_Charge[client] = 0.0;
