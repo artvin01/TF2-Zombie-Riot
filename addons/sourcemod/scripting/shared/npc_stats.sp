@@ -5254,33 +5254,59 @@ public void NpcBaseThink(int iNPC)
 		hullcheckmins[1] -= 1.0;
 		hullcheckmins[2] -= 1.0;
 
-		if (!npc.g_bNPCTeleportOutOfStuck) //We have tried caneling the velocity, now we do extra checks on if they are still inside world walls
+		if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
 		{
-			if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
+			if(!Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
 			{
-				if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
+				//delete velocity.
+				static float vec3Origin[3];
+				npc.SetVelocity(vec3Origin);
+
+				if(!b_IsAlliedNpc[npc.index])
 				{
-					if (!npc.g_bNPCVelocityCancel)
+					//This was an enemy.
+					int Spawner_entity = GetRandomActiveSpawner();
+					if(IsValidEntity(Spawner_entity))
 					{
-						static float vec3Origin[3];
-						npc.SetVelocity(vec3Origin);
-						npc.g_bNPCVelocityCancel = true;
+						float pos[3];
+						float ang[3];
+						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 					}
-					//we found a valid pos to teleport them to to unstuck them, if need be, reunstuck them.
 				}
 				else
 				{
-					//We have tried 64 differnet spots, yet they are still stuck, let them stay stuck.
-					npc.g_bNPCTeleportOutOfStuck = true;
-
+					//This is an ally.
+					int target = 0;
+					for(int i=1; i<=MaxClients; i++)
+					{
+						if(IsClientInGame(i))
+						{
+							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+							{
+								target = i;
+								break;
+							}
+						}
+					}
+					
+					if(target)
+					{
+						float pos[3], ang[3];
+						GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+						ang[2] = 0.0;
+						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+					}
+					else
+					{
+						RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+					}
 				}
+				//We have tried 64 differnet spots, yet they are still stuck, let them stay stuck.
 			}
 		}
-	}
-	else
-	{
-		npc.g_bNPCVelocityCancel = false;
-		npc.g_bNPCTeleportOutOfStuck = false;
 	}
 }
 float f3_KnockbackToTake[MAXENTITIES][3];
@@ -8003,22 +8029,22 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 		switch(x)
 		{
 			case 0:
-				endPos[2] -= 20.0;
+				endPos[2] -= 5.0;
 
 			case 1:
-				endPos[2] += 20.0;
+				endPos[2] += 5.0;
 
 			case 2:
-				endPos[2] += 30.0;
+				endPos[2] += 10.0;
 
 			case 3:
-				endPos[2] -= 30.0;
+				endPos[2] -= 10.0;
 
 			case 4:
-				endPos[2] += 40.0;
+				endPos[2] += 20.0;
 
 			case 5:
-				endPos[2] -= 40.0;	
+				endPos[2] -= 20.0;	
 		}
 		for (int y = 0; y < 7; y++)
 		{
@@ -8030,22 +8056,22 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 			switch(y)
 			{
 				case 1:
-					endPos[1] += 20.0;
+					endPos[1] += 5.0;
 
 				case 2:
-					endPos[1] -= 20.0;
+					endPos[1] -= 5.0;
 
 				case 3:
-					endPos[1] += 30.0;
+					endPos[1] += 10.0;
 
 				case 4:
-					endPos[1] -= 30.0;
+					endPos[1] -= 10.0;
 
 				case 5:
-					endPos[1] += 40.0;
+					endPos[1] += 20.0;
 
 				case 6:
-					endPos[1] -= 40.0;	
+					endPos[1] -= 20.0;	
 			}
 
 			for (int z = 0; z < 7; z++)
@@ -8058,22 +8084,22 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 				switch(z)
 				{
 					case 1:
-						endPos[0] += 20.0;
+						endPos[0] += 5.0;
 
 					case 2:
-						endPos[0] -= 20.0;
+						endPos[0] -= 5.0;
 
 					case 3:
-						endPos[0] += 30.0;
+						endPos[0] += 10.0;
 
 					case 4:
-						endPos[0] -= 30.0;
+						endPos[0] -= 10.0;
 
 					case 5:
-						endPos[0] += 40.0;
+						endPos[0] += 20.0;
 
 					case 6:
-						endPos[0] -= 40.0;	
+						endPos[0] -= 20.0;	
 				}
 				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 					FoundSafeSpot = true;

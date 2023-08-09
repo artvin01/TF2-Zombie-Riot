@@ -288,14 +288,7 @@ public Action GetClosestSpawners(Handle timer)
 							continue;
 						}
 						Spawner.b_SpawnIsCloseEnough = false;
-						/*
-						PositonBeam = TargetLocation;
-						TargetLocation[2] += 50;
-						PositonBeam[2] += 100;
-						TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
-						TE_SendToAll();
-						*/
-						//i_PointScore[entity]
+						
 						if (TargetDistance) 
 						{
 							if( Spawner.f_PointScore > TargetDistance ) 
@@ -3173,4 +3166,29 @@ void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_c
 				MlynarTakeDamagePostRaid(attacker, 1);
 		}
 	}
+}
+
+
+
+int GetRandomActiveSpawner()
+{
+	int entity_Spawner = -1;
+	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
+	{
+		entity_Spawner = i_ObjectsSpawners[entitycount];
+		if(IsValidEntity(entity_Spawner))
+		{
+			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
+			if(index != -1)
+			{
+				SpawnerData Spawner;
+				SpawnerList.GetArray(index, Spawner);
+				if((!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled")) && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
+				{
+					break;
+				}
+			}
+		}
+	}
+	return entity_Spawner;
 }

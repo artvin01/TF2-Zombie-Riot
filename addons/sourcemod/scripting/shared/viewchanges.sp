@@ -53,6 +53,7 @@ static int PlayerIndex[10];
 static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
+static int WorldRef[MAXTF2PLAYERS];
 static int TeutonModelIndex;
 
 void ViewChange_MapStart()
@@ -147,84 +148,116 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	int entity = EntRefToEntIndex(WeaponRef[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
+	
+	entity = EntRefToEntIndex(WorldRef[client]);
+	if(entity > MaxClients)
+		TF2_RemoveWearable(client, entity);
 
 	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(entity > MaxClients)
 	{
-		SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
 		if(active > MaxClients)
 		{
-			//static char buffer[36];
-			//GetEntityClassname(active, buffer, sizeof(buffer));
-			//if(!StrEqual(buffer, "tf_weapon_sapper"))
+			int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
+			TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+
+			if(i_WeaponForceClass[active] > 0)
 			{
-
-				int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
-				
-				TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
-
-				if(i_WeaponForceClass[active] > 0)
+				if(i_WeaponForceClass[active] > 10) //it is an allclass weapon, we want to force the weapon into the class the person holds
+				//some weapons for engi or spy just don do this and take pyro and look ugly as fuck.
 				{
-					if(i_WeaponForceClass[active] > 10) //it is an allclass weapon, we want to force the weapon into the class the person holds
-					//some weapons for engi or spy just don do this and take pyro and look ugly as fuck.
+					//exception for engineer, hes always bugged, force medic.
+					class = view_as<TFClassType>(CurrentClass[client]);
+					if(class == TFClass_Engineer)
 					{
-						//exception for engineer, hes always bugged, force medic.
-						class = view_as<TFClassType>(CurrentClass[client]);
-						if(class == TFClass_Engineer)
-						{
-							class = TFClass_Medic;
-						}
-					}
-					else
-					{
-						class = view_as<TFClassType>(i_WeaponForceClass[active]);
+						class = TFClass_Medic;
 					}
 				}
-
-
-				SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
-
-				entity = CreateEntityByName("tf_wearable_vm");
-				if(entity > MaxClients)	// Weapon viewmodel
+				else
 				{
-					int team = GetClientTeam(client);
-					if(i_WeaponModelIndexOverride[active] > 0)
-						SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
-					else
-						SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
-					
-					SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-					SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
-					SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
-					SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-					SetEntityCollisionGroup(entity, 11);
-					SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-					
-					DispatchSpawn(entity);
-					SetVariantString("!activator");
-					ActivateEntity(entity);
-					SDKCall_EquipWearable(client, entity);
-					WeaponRef[client] = EntIndexToEntRef(entity);
+					class = view_as<TFClassType>(i_WeaponForceClass[active]);
 				}
-				
-				//if(WeaponClass[client] != class)
-				{
-					WeaponClass[client] = class;
-					
-					TF2_SetPlayerClass(client, WeaponClass[client], _, false);
-					Store_ApplyAttribs(client);
-					
-					ViewChange_DeleteHands(client);
-					ViewChange_UpdateHands(client, CurrentClass[client]);
-				}
-				return;
 			}
+
+			// entity here is m_hViewModel
+			
+			SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+			//SetEntityRenderMode(active, RENDER_TRANSALPHA);
+			//SetEntityRenderColor(active, 0, 0, 0, 0);
+			SetEntProp(active, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
+			
+			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
+
+			entity = CreateEntityByName("tf_wearable_vm");
+			if(entity > MaxClients)	// Weapon viewmodel
+			{
+				int team = GetClientTeam(client);
+				if(i_WeaponModelIndexOverride[active] > 0)
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
+				else
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
+				
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+				SetEntityCollisionGroup(entity, 11);
+				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+				
+				DispatchSpawn(entity);
+				SetVariantString("!activator");
+				ActivateEntity(entity);
+
+				WeaponRef[client] = EntIndexToEntRef(entity);
+				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
+
+				SDKCall_EquipWearable(client, entity);
+			}
+
+			entity = CreateEntityByName("tf_wearable");
+			if(entity > MaxClients)	// Weapon worldmodel
+			{
+				int team = GetClientTeam(client);
+				if(i_WeaponModelIndexOverride[active] > 0)
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
+				else
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
+				
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+				SetEntityCollisionGroup(entity, 11);
+				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+				
+				DispatchSpawn(entity);
+				SetVariantString("!activator");
+				ActivateEntity(entity);
+
+				WorldRef[client] = EntIndexToEntRef(entity);
+				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
+
+				SDKCall_EquipWearable(client, entity);
+			}
+					
+			//if(WeaponClass[client] != class)
+			{
+				WeaponClass[client] = class;
+				
+				TF2_SetPlayerClass(client, WeaponClass[client], _, false);
+				Store_ApplyAttribs(client);
+				
+				ViewChange_DeleteHands(client);
+				ViewChange_UpdateHands(client, CurrentClass[client]);
+			}
+			return;
 		}
 	}
 
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
 	WeaponRef[client] = INVALID_ENT_REFERENCE;
+	WorldRef[client] = INVALID_ENT_REFERENCE;
 }
 
 void ViewChange_DeleteHands(int client)
