@@ -180,12 +180,12 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			}
 
 			// entity here is m_hViewModel
-			
-			//SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
-			SetEntityRenderMode(active, RENDER_TRANSALPHA);
-			SetEntityRenderColor(active, 0, 0, 0, 0);
-			SetEntPropFloat(active, Prop_Send, "m_flModelScale", 0.001);
-			SetEntProp(active, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
+			SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+			/*	
+				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
+			*/
+			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
+			HidePlayerWeaponModel(active);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 
@@ -296,4 +296,14 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		}
 	}
 	return entity;
+}
+
+void HidePlayerWeaponModel(int entity)
+{
+	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
+	SetEntityRenderColor(entity, 0, 0, 0, 0);
+	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
+	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
+	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.1);
 }

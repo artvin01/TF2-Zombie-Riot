@@ -165,7 +165,6 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			
 			Create_Quincy_Weapon(client, true, weapon);
 			
-			SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			int pap = Get_Quincy_Pap(weapon);
 			if(pap!=0)
@@ -188,8 +187,6 @@ public void Activate_Quincy_Bow(int client, int weapon)
 
 		
 		Create_Quincy_Weapon(client, true, weapon);
-
-		SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
 		
 		DataPack pack;
 		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -918,8 +915,6 @@ static void Create_Quincy_Weapon(int client, bool first = false, int weapon)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-
-	SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
 	
 	if(!IsValidEntity(viewmodelModel))
 		return;

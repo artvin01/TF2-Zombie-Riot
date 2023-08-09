@@ -3015,20 +3015,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
-	else if (condition == TFCond_Dazed)
-	{
-		//we have our own viewmodels now, hide
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-			SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
-	}
-	else if (condition == TFCond_Taunting)
-	{
-		//we have our own viewmodels now, hide
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-			SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
-	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
@@ -3044,21 +3030,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 		else if(condition == TFCond_Slowed && IsPlayerAlive(client))
 		{
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if (condition == TFCond_Dazed)
-		{
-			//Fixes full stuns not unhiding the active weapon when the stun ends
-			// ty miku
-			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(IsValidEntity(weapon))
-				SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
-		}
-		else if (condition == TFCond_Taunting)
-		{
-			//we have our own viewmodels now, hide
-			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(IsValidEntity(weapon))
-				SetEntProp(weapon, Prop_Send, "m_fEffects", GetEntProp(weapon, Prop_Send, "m_fEffects") | EF_NODRAW);
 		}
 	}
 }

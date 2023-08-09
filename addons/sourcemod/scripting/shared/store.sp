@@ -4784,6 +4784,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] = info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] = info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] = info.WeaponModelIndexOverride;
+					HidePlayerWeaponModel(entity);
 					/*
 					if(info.WeaponModelOverride[0])
 					{
