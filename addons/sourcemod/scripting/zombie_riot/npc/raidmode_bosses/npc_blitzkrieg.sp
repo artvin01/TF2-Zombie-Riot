@@ -854,7 +854,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
-					if(i_NpcCurrentLives[npc.index]==3)
+					if(i_NpcCurrentLives[npc.index]==2)
 					{
 						EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
@@ -1036,7 +1036,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float meleedmg;
-								meleedmg = 20.0 * i_HealthScale[npc.index];
+								meleedmg = 10.0 * i_HealthScale[npc.index];
 								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 								
 								npc.PlayMeleeHitSound();		
@@ -1270,7 +1270,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}%N {default}are you sure you want to proceed further?", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}%N{default}are you sure you want to proceed further?", closest);
 				}
 				case 4:
 				{
@@ -1312,15 +1312,15 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: Your own foolishness lead you to this {yellow}%N {default} prepare for complete {red}BLITZKRIEG", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Your own foolishness lead you to this {yellow}%N{default} prepare for complete {red}BLITZKRIEG", closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: Thy end is {red} Now {yellow}%N {default} Thou shall feel true {red}BLITZKRIEG", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Thy end is {red} Now {yellow}%N{default} Thou shall feel true {red}BLITZKRIEG", closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red}PREPARE FOR FULL BLITZKRIEG", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N{red}PREPARE FOR FULL BLITZKRIEG", closest);
 				}
 				case 4:
 				{
@@ -1795,7 +1795,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		{
 
 			startPosition[2] += 25.0;
-			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 350.0 , _ , _ , true);
+			Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, 400.0 , _ , _ , true);
 			startPosition[2] -= 25.0;
 				
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -1826,7 +1826,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 					GetClientEyePosition(i, vClientPosition);
 	
 					dist = GetVectorDistance(vClientPosition, position, false);
-					if (dist < 250.0)
+					if (dist < 500.0)
 					{
 						Client_Shake(i, 0, 10.0, 25.0, 7.5);
 					}

@@ -562,6 +562,24 @@ public void Donnerkrieg_ClotThink(int iNPC)
 							npc.m_flAttackHappenswillhappen = true;
 							npc.FaceTowards(vecTarget);
 							Normal_Attack_BEAM_TBB_Ability(npc.index);
+							
+							if(flDistanceToTarget < 100.0*100.0)	//to prevent players from sitting ontop of donnerkrieg and just stabing his head
+							{
+								Handle swingTrace;
+								if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+								{
+									int target = TR_GetEntityIndex(swingTrace);	
+								
+									float vecHit[3];
+									TR_GetEndPosition(vecHit, swingTrace);
+									
+									if(target > 0) 
+									{
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
+									} 
+								}
+								delete swingTrace;
+							}
 						}
 						if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 						{
@@ -784,13 +802,11 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		if(b_angered)
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.075);
-			//f_NpcTurnPenalty[npc.index] = 0.075;	//:)
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.08);
 		}
 		else
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.0085);
-			//f_NpcTurnPenalty[npc.index] = 0.0085;	//:)
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.01);
 		}
 		
 		NPC_StopPathing(npc.index);
@@ -924,7 +940,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 
 	NightmareCannon_BEAM_CanUse[client] = true;
 
-	float dmg = 15.0*RaidModeScaling;
+	float dmg = 20.0*RaidModeScaling;
 	if(b_angered)
 	{
 		dmg *= 1.5;
