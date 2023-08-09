@@ -342,12 +342,7 @@ void OnMapEndWaves()
 void Waves_SetupVote(KeyValues map)
 {
 	Cooldown = 0.0;
-	
-	if(Voting)
-	{
-		delete Voting;
-		Voting = null;
-	}
+	delete Voting;
 	
 	KeyValues kv = map;
 	if(kv)
@@ -831,7 +826,6 @@ public Action Waves_EndVote(Handle timer, float time)
 					Voting.GetArray(highest, vote);
 					
 					delete Voting;
-					Voting = null;
 					
 					strcopy(LastWaveWas, sizeof(LastWaveWas), vote.Config);
 					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
@@ -853,6 +847,10 @@ public Action Waves_EndVote(Handle timer, float time)
 				}
 			}
 		}
+		else
+		{
+			delete Voting;
+		}
 	}
 	return Plugin_Continue;
 }
@@ -868,11 +866,7 @@ void Waves_Progress()
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || Cooldown > GetGameTime())
 		return;
 		
-	if(WaveTimer)
-	{
-		KillTimer(WaveTimer);
-		WaveTimer = null;
-	}
+	delete WaveTimer;
 	
 	Round round;
 	Wave wave;

@@ -73,7 +73,7 @@ methodmap SeabornVanguard < CClotBody
 	
 	public SeabornVanguard(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "10000", ally, false));
+		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

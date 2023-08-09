@@ -56,7 +56,7 @@ methodmap SeabornCaster < CClotBody
 	
 	public SeabornCaster(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornCaster npc = view_as<SeabornCaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "6000", ally, false));
+		SeabornCaster npc = view_as<SeabornCaster>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "12000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

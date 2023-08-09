@@ -56,7 +56,7 @@ methodmap SeabornSupporter < CClotBody
 	
 	public SeabornSupporter(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "22500", ally, false));
+		SeabornSupporter npc = view_as<SeabornSupporter>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "45000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -185,7 +185,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 		{
 			npc.m_flNextRangedAttack = gameTime + 5.0;
 
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3;
+			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
