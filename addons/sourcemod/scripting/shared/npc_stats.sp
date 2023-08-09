@@ -5246,13 +5246,13 @@ public void NpcBaseThink(int iNPC)
 		hullcheckmins[2] += 17.0;
 
 		//Floating point imprecision.
-		hullcheckmaxs[0] += 0.001;
-		hullcheckmaxs[1] += 0.001;
-		hullcheckmaxs[2] += 0.001;
+		hullcheckmaxs[0] += 1.0;
+		hullcheckmaxs[1] += 1.0;
+		hullcheckmaxs[2] += 1.0;
 
-		hullcheckmins[0] -= 0.001;
-		hullcheckmins[1] -= 0.001;
-		hullcheckmins[2] -= 0.001;
+		hullcheckmins[0] -= 1.0;
+		hullcheckmins[1] -= 1.0;
+		hullcheckmins[2] -= 1.0;
 
 		if (!npc.g_bNPCTeleportOutOfStuck) //We have tried caneling the velocity, now we do extra checks on if they are still inside world walls
 		{

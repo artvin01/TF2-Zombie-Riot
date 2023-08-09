@@ -2826,9 +2826,10 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 					}
 					
 					CClotBody npc = view_as<CClotBody>(victim);
-					
+					bool IsTargeter = false;
 					if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
 					{
+						IsTargeter = true;
 						damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
 					}
 
@@ -2858,7 +2859,14 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 					{
 						if(b_thisNpcIsARaid[victim])
 						{
-							damage *= 2.0;
+							if(IsTargeter) //give more dmg if youre targetted
+							{
+								damage *= 2.0;
+							}
+							else //Give less dmg if they arent focusing you, not as risky.
+							{
+								damage *= 1.35;
+							}
 						}
 					}
 					else
