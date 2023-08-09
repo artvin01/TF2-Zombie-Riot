@@ -1278,7 +1278,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}%N{default}are you sure you want to proceed further?", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {yellow}%N {default}are you sure you want to proceed further?", closest);
 				}
 				case 4:
 				{
@@ -1328,11 +1328,11 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N{red}PREPARE FOR FULL BLITZKRIEG", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red}PREPARE FOR FULL BLITZKRIEG", closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: You cannot stop the {crimson}Blitzkrieg{default} with such lacklusteer weapons {yellow}%N{default}!", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: You cannot stop the {crimson}Blitzkrieg{default} with such lackluster weapons {yellow}%N{default}!", closest);
 				}
 			}
 		}
