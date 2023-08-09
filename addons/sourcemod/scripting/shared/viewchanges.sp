@@ -181,9 +181,10 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 			// entity here is m_hViewModel
 			
-			SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
-			//SetEntityRenderMode(active, RENDER_TRANSALPHA);
-			//SetEntityRenderColor(active, 0, 0, 0, 0);
+			//SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
+			SetEntityRenderMode(active, RENDER_TRANSALPHA);
+			SetEntityRenderColor(active, 0, 0, 0, 0);
+			SetEntPropFloat(active, Prop_Send, "m_flModelScale", 0.001);
 			SetEntProp(active, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
