@@ -838,37 +838,6 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				npc.m_flRangedArmor = 1.0;
 				
 			}
-			//Extra rockets during rocket spam, also envokes ioc if blitz is on 3rd life.
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0) && i_NpcCurrentLives[npc.index]>1 && !b_Are_we_reloading[npc.index])
-			{	
-				int Enemy_I_See;		
-				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-				 	npc.FaceTowards(vecTarget);
-					npc.FaceTowards(vecTarget);
-					float projectile_speed = (300.0 * i_HealthScale[npc.index]);
-					if(projectile_speed>=6000.0)
-						projectile_speed = 6000.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
-					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
-					npc.m_iAmountProjectiles += 1;
-					npc.PlayRangedSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15 / i_HealthScale[npc.index];
-					if (npc.m_iAmountProjectiles >= 10.0 * i_HealthScale[npc.index])
-					{
-						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
-						if(i_NpcCurrentLives[npc.index]>=2)
-						{
-							EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-							Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
-						}
-					}
-				}
-			}
 			//emits blitzlight attack sound.
 			if(BlitzLight_Duration_notick[npc.index] <= GetGameTime(npc.index) && !b_BlitzLight_sound[npc.index])
 			{
@@ -955,6 +924,37 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					else
 					{
 						npc.m_flSpeed=325.0;
+					}
+				}
+			}
+			//Extra rockets during rocket spam, also envokes ioc if blitz is on 3rd life.
+			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0) && i_NpcCurrentLives[npc.index]>1 && !b_Are_we_reloading[npc.index])
+			{	
+				int Enemy_I_See;		
+				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				//Target close enough to hit
+				if(IsValidEnemy(npc.index, Enemy_I_See))
+				{
+				 	npc.FaceTowards(vecTarget);
+					npc.FaceTowards(vecTarget);
+					float projectile_speed = (300.0 * i_HealthScale[npc.index]);
+					if(projectile_speed>=6000.0)
+						projectile_speed = 6000.0;
+					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+					npc.m_iAmountProjectiles += 1;
+					npc.PlayRangedSound();
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15 / i_HealthScale[npc.index];
+					if (npc.m_iAmountProjectiles >= 10.0 * i_HealthScale[npc.index])
+					{
+						npc.m_iAmountProjectiles = 0;
+						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
+						if(i_NpcCurrentLives[npc.index]>=2)
+						{
+							EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
+							Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
+						}
 					}
 				}
 			}
