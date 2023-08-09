@@ -852,7 +852,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				{
 					npc.m_iAmountProjectiles = 0;
 					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
-					if(i_NpcCurrentLives[npc.index]==2)
+					if(i_NpcCurrentLives[npc.index]=>2)
 					{
 						EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 						Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
