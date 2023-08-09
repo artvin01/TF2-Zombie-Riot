@@ -98,7 +98,6 @@ static float fl_rocket_base_dmg[MAXENTITIES];
 static int i_wave_life1[MAXENTITIES];
 static int i_wave_life2[MAXENTITIES];
 static int i_wave_life3[MAXENTITIES];
-static int i_wave_life4[MAXENTITIES];
 
 static float fl_blitzscale[MAXENTITIES];
 
@@ -432,7 +431,6 @@ methodmap Blitzkrieg < CClotBody
 		i_wave_life1[npc.index] = 15;
 		i_wave_life2[npc.index] = 30;
 		i_wave_life3[npc.index] = 45;	//fun fact, this just exists, no idea if its used for anything. 
-		i_wave_life4[npc.index] = 60;
 		
 		//i_wave_blitzstorm[npc.index] = 60;	//Blitz storm ability on final wave. | Curently does nothing.
 		
