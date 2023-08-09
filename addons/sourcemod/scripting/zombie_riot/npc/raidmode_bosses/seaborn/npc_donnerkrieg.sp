@@ -19,7 +19,11 @@ Heaven's blade - Fantasmal swings but heavily moddified.
 Heaven's barrage - Quincy Hyper barrage
 
 donner:
-Improved Nightmare Cannon
+Improved Nightmare Cannon:
+	Mirror system:
+		Either schwertkrieg is the mirror. easier to code, not as cool looking, but could be fine anyway
+	Or
+		Several mini npc's spawn that act as anchor mirror points, far harder to code, but way cooler looking
 Heaven Sent Light: Ruina Ion cannon's but modified - They somewhat start out like moonlight
 Heaven's radiance: Jump high into the sky, and spew lasers all around.
 
@@ -381,7 +385,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		CPrintToChatAll("{aliceblue}:Donnerkrieg{snow}:: We have arrived to render judgement");
+		CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: We have arrived to render judgement");
 		
 		
 		//Reused silvester duo code here
@@ -951,15 +955,15 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:Thats it {snow}:i'm going to kill you");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}Thats it {snow}i'm going to kill you");	
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:hm, {snow}:Wonder how this will end...");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}hm, {snow}Wonder how this will end...");	
 				}
 				case 3:
 				{
-					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:PREPARE {snow}:Thyself, {yellow}Judgement {snow}:Is near");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}PREPARE {snow}Thyself, {yellow}Judgement {snow}Is near");	
 				}
 				case 4:
 				{
@@ -967,24 +971,24 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					{
 						case 50:
 						{
-							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now train's gone and {aliceblue}:Left{snow}:.");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now train's gone and {aliceblue}Left{snow}.");	
 							b_train_line_used[npc.index] = true;
 						}				
 						default:
 						{
-							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now cannon's gone and {aliceblue}:recharged{snow}:.");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now cannon's gone and {aliceblue}recharged{snow}.");	
 						}
 							
 					}
 				}
 				case 5:
 				{
-					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Aiming this thing is actually quite {aliceblue}:complex {snow}:ya know.");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Aiming this thing is actually quite {aliceblue}complex {snow}ya know.");	
 					b_fuck_you_line_used[npc.index] = true;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Ya know, im getting quite bored of {aliceblue}:this");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Ya know, im getting quite bored of {aliceblue}this");	
 				}
 			}
 			
@@ -1012,19 +1016,19 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 						{
 							case 1:
 							{
-								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:NIGHTMARE, CANNON!");
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}NIGHTMARE, CANNON!");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:JUDGEMENT BE UPON THEE!");
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}JUDGEMENT BE UPON THEE!");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:Cosmic CANNON");	
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}Ruina CANNON!");	
 							}
 							case 4:
 							{
-								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:You cannot run, You Cannot Hide");	
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}You cannot run, You Cannot Hide");	
 							}
 						}
 					}
@@ -1032,13 +1036,13 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					{
 						if(b_train_line_used[npc.index])
 						{
-							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:And the city's to far to walk to the end while I...");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}And the city's to far to walk to the end while I...");	
 							b_train_line_used[npc.index] = false;
 						}
 						else if(b_fuck_you_line_used[npc.index])
 						{
 							b_fuck_you_line_used[npc.index] = false;
-							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: However its still{aliceblue}: worth the effort");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: However its still{aliceblue} worth the effort");	
 						}
 						
 					}
