@@ -60,6 +60,7 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
 }
+
 public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
 {
 	bl_tornado_barrage_mode[client]=false;
@@ -167,7 +168,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		{
 			for(int i=1; i<=i_tornado_pap[client] ;i++)
 			{
-				BlitzRocket(client, speedMult, damage, weapon);
+				BlitzRocket(client, speedMult, damage * 3.0, weapon);
 			}
 			for(int j=1; j<=i_tornado_pap[client]-1 ;j++)
 			{

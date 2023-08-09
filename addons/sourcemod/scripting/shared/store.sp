@@ -4784,6 +4784,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] = info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] = info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] = info.WeaponModelIndexOverride;
+					/*
 					if(info.WeaponModelOverride[0])
 					{
 						SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[entity]);
@@ -4792,6 +4793,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_WeaponModelIndexOverride[entity], _, i);
 						}
 					}
+					*/
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
