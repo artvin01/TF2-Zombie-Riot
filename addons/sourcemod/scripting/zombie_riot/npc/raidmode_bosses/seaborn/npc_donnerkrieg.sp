@@ -105,9 +105,13 @@ static int Heavens_Beam;
 
 bool shared_goal;
 int schwert_target;
-float fl_donner_sniper_threat_value;
-bool b_donner_valid_sniper_threats[MAXTF2PLAYERS];
+static float fl_donner_sniper_threat_timer_clean[MAXTF2PLAYERS+1];
+#define RAIDBOSS_DONNERKRIEG_SNIPER_CLEAN_TIMER	30.0	//For how long does a "sniper" player have to not attack in "sniper" deffinition for the threat index to be reset
+static float fl_donner_sniper_threat_value[MAXTF2PLAYERS+1];
+bool b_donner_valid_sniper_threats[MAXTF2PLAYERS+1];
 bool b_schwert_focus_snipers;
+float fl_schwertkrieg_sniper_rampage_timer;
+#define RAIDBOSS_DONNERKRIEG_SCHWERTKRIEG_SNIPER_RAMPAGE_REFRESH_TIME 10.0	//tl;dr, if a sniper doesn't attack in 10 seconds, schwertkrieg goes to normal operations
 
 static int i_ally_index;
 
@@ -143,6 +147,8 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
 	Zero(b_donner_valid_sniper_threats);
+	Zero(fl_donner_sniper_threat_value);
+	Zero(fl_donner_sniper_threat_timer_clean);
 	
 }
 
@@ -288,17 +294,20 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 
 		//EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		//EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-			/*
+			
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
+			b_donner_valid_sniper_threats[client_check] = false;
+			fl_donner_sniper_threat_value[client_check] = 0.0;
+			fl_donner_sniper_threat_timer_clean[client_check] = 0.0;
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Donnerkrieg And Schwertkrieg Have returned.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Donnerkrieg And Schwertkrieg Spawn");
 			}
 		}
-		*/
+		
 		Citizen_MiniBossSpawn(npc.index);
 		Building_RaidSpawned(npc.index);
 		
@@ -361,17 +370,18 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
+		fl_schwertkrieg_sniper_rampage_timer = 0.0;
+		
 		
 		Invoke_Heavens_Light(npc.index);
 		
 		shared_goal = false;
-		
-		fl_donner_sniper_threat_value = 0.0;
+
 		b_schwert_focus_snipers = false;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		CPrintToChatAll("{crimson}Donnerkrieg{default}: We have arrived to render judgement");
+		CPrintToChatAll("{aliceblue}:Donnerkrieg{snow}:: We have arrived to render judgement");
 		
 		
 		//Reused silvester duo code here
@@ -418,12 +428,13 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	if(b_raidboss_donnerkrieg_alive)	//I don't need this here, but I still added it...
 		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(npc.index, EntRefToEntIndex(i_ally_index), true);	//donner first, schwert second
 		
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	float GameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -434,30 +445,30 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+			npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
-	if(fl_nightmare_end_timer[npc.index] < GetGameTime(npc.index) && b_nightmare_logic[npc.index])
+	if(fl_nightmare_end_timer[npc.index] < GameTime && b_nightmare_logic[npc.index])
 	{	
 		npc.m_flRangedArmor = 1.0;
 		b_nightmare_logic[npc.index] = false;
 		
 		if(b_angered)
 		{
-			fl_cannon_Recharged[npc.index] = GetGameTime(npc.index) + 60.0;
+			fl_cannon_Recharged[npc.index] = GameTime + 60.0;
 		}
 		else		
 		{		
-			fl_cannon_Recharged[npc.index] = GetGameTime(npc.index) + 90.0;
+			fl_cannon_Recharged[npc.index] = GameTime + 90.0;
 		}
 		npc.m_flSpeed = 300.0;
 		
@@ -472,13 +483,31 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable6);
 		
 	}
+	
+	bool target_neutralized = false;	//if all the valid target timers are no more, just forcefully set schwertkrieg to defaul behavior
+	for(int client=0 ; client <MAXTF2PLAYERS ; client++)
+	{
+		if(fl_donner_sniper_threat_timer_clean[client]<GameTime)	//this "sniper" player hasn't attacked donnerkrieg from a far range in 30 seconds, remove them as a valid target for schwertkrieg and remove the threat
+		{
+			target_neutralized = true;	//a target has been neutralized, check
+			fl_donner_sniper_threat_value[client] = 0.0;
+			b_donner_valid_sniper_threats[client] = false; //NOTE: its likely that players might attack from a far just cause they happened to be there, so I should probably make the valid threat either be set to false sooner, or I should add a "Value" system, range vs threat %.
+		}
+		else
+		{
+			target_neutralized = false;
+		}
+	}
+	if(target_neutralized || fl_schwertkrieg_sniper_rampage_timer < GameTime)
+		b_schwert_focus_snipers = false;	//Target neutralized, returning to HQ
+		
 	int PrimaryThreatIndex = npc.m_iTarget;
 		
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(fl_cannon_Recharged[npc.index]<GetGameTime(npc.index) && !b_nightmare_logic[npc.index])
+		if(fl_cannon_Recharged[npc.index]<GameTime && !b_nightmare_logic[npc.index])
 		{
-			fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + 20.0;
+			fl_nightmare_end_timer[npc.index] = GameTime + 20.0;
 			Raidboss_Donnerkrieg_Nightmare_Logic(npc.index, PrimaryThreatIndex);
 		}
 		if(!b_nightmare_logic[npc.index])
@@ -508,7 +537,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 							
 					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 				}
-				if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index) && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
+				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
 				{	
 
 					npc.FaceTowards(vecTarget);
@@ -528,11 +557,11 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_THROW");
-					npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.15;
+					npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
 					if (npc.m_iAmountProjectiles >= 15.0)
 					{
 						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0;
+						npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
 					}
 				}
 				
@@ -543,23 +572,23 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					
 					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						//Play attack ani
 						if (!npc.m_flAttackHappenswillhappen)
 						{
 							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+							npc.m_flAttackHappens = GameTime+0.4;
+							npc.m_flAttackHappens_bullshit = GameTime+0.54;
 							npc.m_flAttackHappenswillhappen = true;
 							npc.FaceTowards(vecTarget);
 							RAid_Normal_Attack_BEAM_TBB_Ability(npc.index);
 						}
-						if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+						if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 						{
 							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
+							npc.m_flNextMeleeAttack = GameTime + 0.6;
 						}
 					}
 				}
@@ -631,7 +660,7 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(int donner, int schwert
 		if(donner_alive)
 		{
 			SDKUnhook(donner, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
-			CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: You think thats how you fight us two?");
+			CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: You think thats how you fight us two?");
 		}
 		else
 		{
@@ -922,15 +951,15 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}Thats it {default}i'm going to kill you");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:Thats it {snow}:i'm going to kill you");	
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}hm, {default}Wonder how this will end...");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:hm, {snow}:Wonder how this will end...");	
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}PREPARE {default}Thyself, {yellow}Judgement {default}Is near");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:PREPARE {snow}:Thyself, {yellow}Judgement {snow}:Is near");	
 				}
 				case 4:
 				{
@@ -938,24 +967,24 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					{
 						case 50:
 						{
-							CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: Oh not again now train's gone and {crimson}Left{default}.");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now train's gone and {aliceblue}:Left{snow}:.");	
 							b_train_line_used[npc.index] = true;
 						}				
 						default:
 						{
-							CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: Oh not again now cannon's gone and {crimson}recharged{default}.");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now cannon's gone and {aliceblue}:recharged{snow}:.");	
 						}
 							
 					}
 				}
 				case 5:
 				{
-					CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: Aiming this thing is actually quite {crimson}complex {default}ya know.");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Aiming this thing is actually quite {aliceblue}:complex {snow}:ya know.");	
 					b_fuck_you_line_used[npc.index] = true;
 				}
 				case 6:
 				{
-					CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: Ya know, im getting quite bored of {crimson}this");	
+					CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Ya know, im getting quite bored of {aliceblue}:this");	
 				}
 			}
 			
@@ -983,19 +1012,19 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 						{
 							case 1:
 							{
-								CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}NIGHTMARE, CANNON!");
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:NIGHTMARE, CANNON!");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}JUDGEMENT BE UPON THEE!");
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:JUDGEMENT BE UPON THEE!");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}Cosmic CANNON");	
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:Cosmic CANNON");	
 							}
 							case 4:
 							{
-								CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}You cannot run, You Cannot Hide");	
+								CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:You cannot run, You Cannot Hide");	
 							}
 						}
 					}
@@ -1003,13 +1032,13 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					{
 						if(b_train_line_used[npc.index])
 						{
-							CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: {crimson}And the city's to far to walk to the end while I...");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: {aliceblue}:And the city's to far to walk to the end while I...");	
 							b_train_line_used[npc.index] = false;
 						}
 						else if(b_fuck_you_line_used[npc.index])
 						{
 							b_fuck_you_line_used[npc.index] = false;
-							CPrintToChatAll("{crimson}Raidboss_Donnerkrieg{default}: However its still{crimson} worth the effort");	
+							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: However its still{aliceblue}: worth the effort");	
 						}
 						
 					}
@@ -1129,28 +1158,40 @@ static void Donnerkrieg_Set_Sniper_Threat_Value(int ref, int PrimaryThreatIndex,
 	
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 	
-	if(flDistanceToTarget > Pow(2000.0, 2.0))
+	float GameTime = GetGameTime(npc.index);
+	
+	if(flDistanceToTarget >(2000.0 * 2000.0))
 	{
 		char classname[32];
 		GetEntityClassname(weapon, classname, 32);
 	
 		int weapon_slot = TF2_GetClassnameSlot(classname);
 	
-		if(weapon_slot == 0)	//check if its a primary, primarly checking if the player is using a long range weapon
+		if(weapon_slot == 0)	//check if its a primary, primarly checking if the player is using a long range weapon | Ideally if I could I would check if there holding a sniper weapon type, but idk how to do that
 		{
 			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			
 			float amt = damage / (MaxHealth/10.0);
 			
-			fl_donner_sniper_threat_value += amt;
+			fl_schwertkrieg_sniper_rampage_timer = GameTime + RAIDBOSS_DONNERKRIEG_SCHWERTKRIEG_SNIPER_RAMPAGE_REFRESH_TIME;
+			fl_donner_sniper_threat_value[PrimaryThreatIndex]+= amt;
 			b_donner_valid_sniper_threats[PrimaryThreatIndex] = true;	//this player is now a valid target for schwert to focus if schwert goes into anti sniper mode
+			fl_donner_sniper_threat_timer_clean[PrimaryThreatIndex] = GameTime + RAIDBOSS_DONNERKRIEG_SNIPER_CLEAN_TIMER;
 		}
 	}
 	
-	if(fl_donner_sniper_threat_value>0.25 && !b_schwert_focus_snipers)
+	float threat_ammount = 0.0;
+	for(int client=0 ; client <MAXTF2PLAYERS ; client++)
+	{
+		threat_ammount += fl_donner_sniper_threat_value[client];
+	}
+		
+	if(threat_ammount>0.25 && !b_schwert_focus_snipers)
 	{
 		b_schwert_focus_snipers = true;
 	}
+	if(threat_ammount<0.25)
+		b_schwert_focus_snipers = false;
 }
 
 public void Raidboss_Donnerkrieg_NPCDeath(int entity)

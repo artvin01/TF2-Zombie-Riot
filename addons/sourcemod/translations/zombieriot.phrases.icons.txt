@@ -152,13 +152,9 @@
 		"en"		"The golden bloon is what all monkeys wish to pop..."
 		"ru"		"Золотой шар - это то, о чём мечтают все обезьяны..."
 	}
-	"donner anger"
+	"Donnerkrieg And Schwertkrieg Spawn"
 	{
-		"en"	"Donnerkrieg became VERY ANGRY"
-	}
-	"schwert anger"
-	{
-		"en"	"Schwertkrieg has been enraged..."
+		"en"	"Donnerkrieg And Schwertkrieg Have Returned"	//no clue if this is gonna be the actuall line, mostly just here for translations to work within the plugin
 	}
 	"Diversionistico Spawn"
 	{
