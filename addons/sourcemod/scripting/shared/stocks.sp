@@ -4528,3 +4528,12 @@ stock void SpawnTimer(float time)
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
 }
+
+stock int GetOwnerLoop(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(owner > 0 && owner != entity)
+		return GetOwnerLoop(owner);
+	else
+		return entity;
+}

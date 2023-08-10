@@ -582,7 +582,11 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 
 public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
 {
-	if(caller > 0 && caller <= MaxClients)
+	int client = caller;
+	if(client > MaxClients)
+		client = GetOwnerLoop(client);
+
+	if(client > 0 && client <= MaxClients)
 	{
 		char name[32];
 		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
@@ -593,8 +597,10 @@ public Action OnRelayFireUser1(const char[] output, int entity, int caller, floa
 			ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
 			
 			int cash = StringToInt(buffers[2]);
-			CashSpent[caller] -= cash;
-			PrintToChat(caller, "Gained %d cash!", cash);
+			CashSpent[client] -= cash;
+			CashRecievedNonWave[client] += cash;
+			
+			PrintToChat(client, "Gained %d cash!", cash);
 		}
 	}
 	// DO NOT DO 

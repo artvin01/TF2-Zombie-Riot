@@ -568,17 +568,6 @@ void DoGrenadeExplodeLogic(int entity)
 		}
 	}
 }
-//steal from fortress royale
-
-stock int GetOwnerLoop(int entity)
-{
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (owner > 0 && owner != entity)
-		return GetOwnerLoop(owner);
-	else
-		return entity;
-}
 
 public MRESReturn DHook_FireballExplodePre(int entity)
 {
