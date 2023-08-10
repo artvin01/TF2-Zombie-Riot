@@ -575,7 +575,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 									
 									if(target > 0) 
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
 									} 
 								}
 								delete swingTrace;
