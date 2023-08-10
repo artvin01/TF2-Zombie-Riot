@@ -19,12 +19,12 @@ methodmap CitizenRunner < CClotBody
 
 		int seed = GetURandomInt();
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
-
-		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false));
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false,_,_,_,_,_,true));
 		
 		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");
+		Change_Npc_Collision(npc.index, 4); //they go through enemy npcs
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

@@ -8,6 +8,13 @@ static const char g_HurtSounds[][] =
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
 
+static bool IsActive;
+
+void VIPBuilding_MapStart()
+{
+	IsActive = false;
+}
+
 methodmap VIPBuilding < BarrackBody
 {
 	public void PlayHurtSound() 
@@ -33,15 +40,21 @@ methodmap VIPBuilding < BarrackBody
 		i_NpcIsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_flHeadshotCooldown = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, VIPBuilding_OnTakeDamagePost);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		npc.m_flSpeed = 0.0;
-		
+
+		IsActive = true;
 		return npc;
 	}
 }
@@ -49,6 +62,8 @@ methodmap VIPBuilding < BarrackBody
 void VIPBuilding_NPCDeath(int entity)
 {
 	VIPBuilding npc = view_as<VIPBuilding>(entity);
+
+	IsActive = false;
 
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -76,9 +91,18 @@ void VIPBuilding_OnTakeDamagePost(int victim, int attacker)
 	VIPBuilding npc = view_as<VIPBuilding>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
+		}
 		PrintCenterTextAll("VIP BUILDING IS UNDER ATTACK");
 
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.PlayHurtSound();
 	}
+}
+
+bool VIPBuilding_Active()
+{
+	return IsActive;
 }

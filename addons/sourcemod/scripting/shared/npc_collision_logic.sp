@@ -1,9 +1,19 @@
+enum
+{
+	num_ShouldCollideEnemyIngoreBuilding = 1,
+	num_ShouldCollideEnemy,
+	num_ShouldCollideAllyInvince,
+	num_ShouldCollideAlly,
+	num_ShouldCollideEnemyTD,
+	num_ShouldCollideEnemyTDIgnoreBuilding,
+}
+
 public bool ShouldCollideAlly(CBaseNPC_Locomotion loco, int otherindex)
 { 
 	return ShouldCollideAlly_Internal(loco, otherindex); 
 }
-bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
-{ 
+bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
+{
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		return false;
@@ -26,7 +36,7 @@ public bool ShouldCollideAllyInvince(CBaseNPC_Locomotion loco, int otherindex)
 	return ShouldCollideAllyInvince_Internal(loco, otherindex); 
 }
 
-bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
+bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -36,9 +46,13 @@ bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseN
 	{
 		return true;
 	}
-	if(b_CantCollidie[otherindex])
+	//we fire a bullet or melee attack, we want to not ignore this.
+	if(extrarules != num_BulletTraceLogicHandle)
 	{
-		return false;
+		if(b_CantCollidie[otherindex])
+		{
+			return false;
+		}
 	}
 	if(b_CantCollidieAlly[otherindex]) 
 	{
@@ -57,7 +71,7 @@ public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 	return ShouldCollideEnemy_Internal(loco, otherindex);
 }
 
-bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
+bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -90,7 +104,7 @@ public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int other
 	return ShouldCollideEnemyIngoreBuilding_Internal(loco, otherindex);
 }
 
-bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
+bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -125,6 +139,115 @@ bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_a
 	return true;
 }
 
+public bool ShouldCollideEnemyTD(CBaseNPC_Locomotion loco, int otherindex)
+{ 
+	return ShouldCollideEnemyTD_Internal(loco, otherindex);
+}
+
+bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
+{ 
+	//entirely ignore players
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		return false;
+	}
+
+	if(b_is_a_brush[otherindex])
+	{
+		return true;
+	}
+
+	if(!b_NpcHasDied[otherindex])
+	{
+		if(i_NpcInternalId[otherindex] == VIP_BUILDING || i_Target[npc] == otherindex)
+		{
+			if(extrarules == num_TraverseInverse)
+			{
+				return false;
+			}
+			else
+			{
+				if(loco != view_as<CBaseNPC_Locomotion>(0))
+					NpcStartTouch(loco, otherindex);
+				
+				return true;
+			}
+		}
+	}
+	
+	if(b_CantCollidie[otherindex])
+	{
+		return false;
+	}
+	if(b_CantCollidieAlly[otherindex])
+	{
+		if(i_IsABuilding[otherindex])
+		{
+			if(extrarules != num_TraverseInverse)
+			{
+				if(loco != view_as<CBaseNPC_Locomotion>(0))
+					NpcStartTouch(loco,otherindex);
+				
+				return true;
+			}
+		}
+		return false;
+	}
+	if(loco != view_as<CBaseNPC_Locomotion>(0))
+		NpcStartTouch(loco,otherindex);
+
+	return true;
+}
+
+public bool ShouldCollideEnemyTDIgnoreBuilding(CBaseNPC_Locomotion loco, int otherindex)
+{ 
+	return ShouldCollideEnemyTDIgnoreBuilding_Internal(loco, otherindex);
+}
+
+bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
+{ 
+	//entirely ignore players
+	if(otherindex > 0 && otherindex <= MaxClients)
+	{
+		return false;
+	}
+	if(b_is_a_brush[otherindex])
+	{
+		return true;
+	}
+	if(!b_NpcHasDied[otherindex])
+	{
+		if(i_NpcInternalId[otherindex] == VIP_BUILDING || i_Target[npc] == otherindex)
+		{
+			if(extrarules == num_TraverseInverse)
+			{
+				return false;
+			}
+			else
+			{
+				if(loco != view_as<CBaseNPC_Locomotion>(0))
+					NpcStartTouch(loco, otherindex);
+				
+				return true;
+			}
+		}
+	}
+	
+	if(b_CantCollidie[otherindex])
+	{
+		return false;
+	}
+
+	if(b_CantCollidieAlly[otherindex])
+	{
+		return false;
+	}
+
+	if(loco != view_as<CBaseNPC_Locomotion>(0))
+		NpcStartTouch(loco, otherindex);
+
+	return true;
+}
 
 public void Change_Npc_Collision(int npc, int CollisionType)
 {
@@ -151,31 +274,58 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 			{
 				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
 			}
+			case 5:
+			{
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyTD);
+			}
+			case 6:
+			{
+				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyTDIgnoreBuilding);
+			}
 		}
 	}
 }
 
 
-bool NpcCollisionCheck(int npc, int other)
+bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 {
 	switch(b_NpcCollisionType[npc])
 	{
 		case 1:
 		{
-			return ShouldCollideEnemyIngoreBuilding_Internal(_,other);
+			return ShouldCollideEnemyIngoreBuilding_Internal(_,other,extrarules);
 		}
 		case 2:
 		{
-			return ShouldCollideEnemy_Internal(_,other);
+			return ShouldCollideEnemy_Internal(_,other,extrarules);
 		}
 		case 3:
 		{
-			return ShouldCollideAllyInvince_Internal(_,other);
+			return ShouldCollideAllyInvince_Internal(_,other,extrarules);
 		}
 		case 4:
 		{
-			return ShouldCollideAlly_Internal(_,other);
+			return ShouldCollideAlly_Internal(_,other,extrarules);
+		}
+		case 5:
+		{
+			return ShouldCollideEnemyTD_Internal(_,other,extrarules, npc);
+		}
+		case 6:
+		{
+			return ShouldCollideEnemyTDIgnoreBuilding_Internal(_,other,extrarules, npc);
 		}
 	}
 	return true; //somehow nothing happens collide with whatever it was!
+}
+
+
+
+bool IsEntityTowerDefense(int entity)
+{
+	if(b_NpcCollisionType[entity] == num_ShouldCollideEnemyTD || b_NpcCollisionType[entity] == num_ShouldCollideEnemyTDIgnoreBuilding)
+	{
+		return true;
+	}
+	return false;
 }

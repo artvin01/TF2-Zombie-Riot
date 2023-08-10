@@ -874,7 +874,7 @@ void Store_OpenItemPage(int client)
 	{
 		static Item item;
 		StoreItems.GetArray(StoreWeapon[weapon], item);
-		if(!item.Hidden)
+		//if(ItemBuyable(item))
 		{
 			NPCOnly[client] = 0;
 			MenuPage(client, StoreWeapon[weapon]);
@@ -1564,6 +1564,29 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	StoreItems.SetArray(index, item);
 }
 
+static bool ItemBuyable(const Item item)
+{
+	if(item.Hidden)
+		return false;
+	
+	if(item.Section > 0)
+	{
+		static Item item2;
+		StoreItems.GetArray(item.Section, item2);
+		if(item2.Hidden)
+			return false;
+		
+		while(item2.Section > 0)
+		{
+			StoreItems.GetArray(item2.Section, item2);
+			if(item2.Hidden)
+				return false;
+		}
+	}
+
+	return true;
+}
+
 void Store_BuyNamedItem(int client, const char name[64], bool free)
 {
 	static Item item;
@@ -1573,7 +1596,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 		StoreItems.GetArray(a, item);
 		if(StrEqual(name, item.Name))
 		{
-			if(!item.Hidden)
+			if(ItemBuyable(item))
 			{
 				static ItemInfo info;
 				item.GetItemInfo(0, info);
@@ -1583,7 +1606,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 
 				if(info.Cost > 0 && free)
 					return;
-					
+				
 				if(CurrentCash >= base && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())

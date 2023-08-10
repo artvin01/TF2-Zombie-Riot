@@ -981,7 +981,8 @@ float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 
 #include "shared/stocks_override.sp"
 #include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
-#include "shared/npc_collision_logic.sp"	// NPC Stats is required here due to important methodmap
+#include "shared/npc_collision_logic.sp"	// NPC collisions are sepearted for ease
+#include "shared/npc_trace_filters.sp"	// NPC trace filters are sepearted for ease
 
 /*
 	Below Are Variables/Defines That Are Per Gamemode

@@ -2813,7 +2813,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						attack_speed *= 0.5; //extra delay.
 					}
 #endif
-					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
 					{
 						damage *= 0.35; //cut damage in half and then some.
 					}

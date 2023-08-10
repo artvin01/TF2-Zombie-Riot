@@ -88,6 +88,7 @@ void DHook_Setup()
 	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
 	//nosoop
 
+	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -145,6 +146,13 @@ void DHook_Setup()
 
 	delete gamedata_lag_comp;
 	
+}
+
+//cancel melee, we have our own.
+public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHookParam param)
+{
+	returnHook.Value = false;
+	return MRES_Supercede;
 }
 
 void OnWrenchCreated(int entity) 
@@ -698,11 +706,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
 	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1] || !b_NpcHasDied[ent1] || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1])
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1] || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1])
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2] || !b_NpcHasDied[ent2] || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2])
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2] || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2])
 		{
 			return false;
 		}
@@ -727,6 +735,27 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
+		/*
+		if(!b_NpcHasDied[entity1]) //they ignore brushes.
+		{	
+			if(b_is_a_brush[entity2]) //Dont ignore brushes.
+			{
+			//	
+			//		enum BrushSolidities_e {
+			//		BRUSHSOLID_TOGGLE = 0,
+			//		BRUSHSOLID_NEVER  = 1,
+			//		BRUSHSOLID_ALWAYS = 2,
+			//	};
+				
+				int solidity_type = GetEntProp(entity2, Prop_Data, "m_iSolidity");
+				bool SolidOrNot = view_as<bool>(GetEntProp(entity2, Prop_Data, "m_bSolidBsp"));
+
+				PrintToChatAll("%b",SolidOrNot);
+				if(solidity_type == 2 || (SolidOrNot && solidity_type == 0))
+					return true;
+			}
+		}
+		*/
 #if defined ZR
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{

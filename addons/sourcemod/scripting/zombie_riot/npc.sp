@@ -1254,8 +1254,8 @@ void NPC_MapStart()
 	Barrack_Alt_Berserker_MapStart();
 	Barrack_Alt_Crossbowmedic_MapStart();
 	Barrack_Alt_Scientific_Witchery_MapStart();
-	
 	Barracks_Thorns();
+	VIPBuilding_MapStart();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();

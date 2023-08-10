@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static float GiveCashDelay[MAXTF2PLAYERS];
+
 void Events_PluginStart()
 {
 	HookEvent("teamplay_round_start", OnRoundStart, EventHookMode_PostNoCopy);
@@ -42,6 +44,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zero(Resupplies_Supplied);
 	Zero(i_BarricadeHasBeenDamaged);
 	Zero(i_ExtraPlayerPoints);
+	Zero(GiveCashDelay);
 	CurrentGibCount = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -580,6 +583,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 	return Plugin_Continue;
 }
 
+#if defined ZR
 public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
 {
 	int client = caller;
@@ -588,11 +592,19 @@ public Action OnRelayFireUser1(const char[] output, int entity, int caller, floa
 
 	if(client > 0 && client <= MaxClients)
 	{
+
+
 		char name[32];
 		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
 
 		if(!StrContains(name, "zr_cash_", false))
 		{
+			float gameTime = GetGameTime();
+			if(GiveCashDelay[client] > gameTime)
+				return Plugin_Continue;
+		
+			GiveCashDelay[client] = gameTime + 0.5;
+
 			char buffers[4][12];
 			ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
 			
@@ -608,3 +620,4 @@ public Action OnRelayFireUser1(const char[] output, int entity, int caller, floa
 	//This breaks maps.
 	return Plugin_Continue;
 }
+#endif

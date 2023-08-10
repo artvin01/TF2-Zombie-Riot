@@ -268,7 +268,8 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
 						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
-						bool Ally_Collideeachother = false)
+						bool Ally_Collideeachother = false,
+						bool ForceNpcClipping = false)
 	{
 
 		int npc = CreateEntityByName("zr_base_npc");
@@ -301,7 +302,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		Hook_DHook_UpdateTransmitState(npc);
 		Check_For_Team_Npc(npc);
 
-	//	return view_as<CClotBody>(npc);
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
 	
@@ -346,22 +346,40 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(IgnoreBuildings)
 #endif
 			{
-				Change_Npc_Collision(npc, 1);
+#if defined ZR
+				if(VIPBuilding_Active())
+				{
+					Change_Npc_Collision(npc, num_ShouldCollideEnemyTDIgnoreBuilding);
+				}
+				else
+#endif
+				{
+					Change_Npc_Collision(npc, num_ShouldCollideEnemyIngoreBuilding);
+				}
 			}
 			else
 			{
-				Change_Npc_Collision(npc, 2);
+#if defined ZR
+				if(VIPBuilding_Active())
+				{
+					Change_Npc_Collision(npc, num_ShouldCollideEnemyTD);
+				}
+				else
+#endif
+				{
+					Change_Npc_Collision(npc, num_ShouldCollideEnemy);
+				}
 			}
 		}
 		else
 		{
 			if(Ally_Invince)
 			{
-				Change_Npc_Collision(npc, 3);
+				Change_Npc_Collision(npc, num_ShouldCollideAllyInvince);
 			}
 			else
 			{
-				Change_Npc_Collision(npc, 4);
+				Change_Npc_Collision(npc, num_ShouldCollideAlly);
 			}
 		}
 
@@ -370,7 +388,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		//so map makers can choose between NPCs and Clients
 		
-		if(!Ally)
+		if(!Ally || ForceNpcClipping)
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 		else
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMaskAlly, true, view_as<Address>(baseNPC.GetBody()));
@@ -3594,15 +3612,6 @@ public void constrainDistance(const float[] startPoint, float[] endPoint, float 
 	endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
 }
 
-public bool FilterBaseActorsAndData(int entity, int contentsMask, any data)
-{
-	if(!b_NpcHasDied[entity])
-		return true;
-	
-	return !(entity == data);
-}
-
-
 public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, TraverseWhenType when)
 {
 	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
@@ -3611,10 +3620,19 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return false;
 	}
+	if(b_is_a_brush[other_entidx])
+	{
+		return false;
+	}
 
 	if(b_ThisEntityIsAProjectileForUpdateContraints[other_entidx])
 	{
 		return true;
+	}
+
+	if(b_NpcCollisionType[bot_entidx] == num_ShouldCollideEnemyTD || b_NpcCollisionType[bot_entidx] == num_ShouldCollideEnemyTDIgnoreBuilding) //for tower defense, we need entirely custom logic.
+	{
+		return (!NpcCollisionCheck(bot_entidx, other_entidx, num_TraverseInverse));
 	}
 
 	if(b_IsAlliedNpc[bot_entidx]) //ally!
@@ -3698,63 +3716,6 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 	return 0;
 }
 
-public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
-{
-#if defined ZR
-	if(entity > 0 && entity <= MaxClients) 
-	{
-		if(TeutonType[entity])
-		{
-			return false;
-		}
-	}
-#endif
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
-	{
-		return false;
-	}
-	else if(!b_NpcHasDied[entity])
-	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		{
-			return false;
-		}
-		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
-		{
-			return false;
-		}
-	}
-	
-	//if anything else is team
-	if(b_IsARespawnroomVisualiser[entity])
-	{
-		return false;
-	}	
-
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-
-	if(b_ThisEntityIgnored[entity])
-	{
-		return false;
-	}	
-
-
-#if defined ZR
-	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
-	{
-		return false;
-	}
-#endif
-
-	if(!b_NpcHasDied[iExclude])
-	{
-		return NpcCollisionCheck(iExclude, entity);
-	}
-
-	return !(entity == iExclude);
-}
-
 public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 {
 #if defined ZR
@@ -3818,59 +3779,6 @@ public void RemoveEntityToTraceStuckCheck(int entity)
 	Entity_to_Respect = -1;
 }
 
-public bool BulletAndMeleeTracePlayerAndBaseBossOnly(int entity, int contentsMask, any iExclude)
-{
-#if defined ZR
-	if(entity > 0 && entity <= MaxClients) 
-	{
-		if(TeutonType[entity])
-		{
-			return false;
-		}
-	}
-#endif
-
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
-	{
-		return false;
-	}
-	
-	else if(i_IsABuilding[entity])
-	{
-		return false;
-	}
-	
-	//if anything else is team
-	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-	
-	if(b_ThisEntityIgnored[entity])
-	{
-		return false;
-	}
-	if(!b_NpcHasDied[entity])
-	{
-		return true;
-	}
-	return !(entity == iExclude);
-}
-
-public bool BulletAndMeleeTraceDontIgnoreBaseBoss(int entity, int contentsMask, any iExclude)
-{
-
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
-	{
-		return false;
-	}
-	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-		
-	
-	return !(entity == iExclude);
-}
-
 public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadder ladder, int iElevator, float length)
 {
 	float dist;
@@ -3911,6 +3819,10 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 
 public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 {
+	if(IsEntityTowerDefense(bot_entidx)) //do not allow them to jump.
+	{
+		return false;
+	}
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
 	
@@ -4026,6 +3938,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 			return false;
 		}
+		if(b_is_a_brush[enemy])
+		{
+			return false;
+		}
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
@@ -4134,9 +4050,20 @@ stock int GetClosestTarget(int entity,
 		3: player ally npc
 		4: buildings
 	*/
-	
 
-	if(searcher_team != 2 && !IgnorePlayers)
+	//for tower defense, we need entirely custom logic.
+	//we will only override any non get vector distances, becuase those are pathing
+	//anything using get vector distance means that its a ranged attack, so we leave it alone.
+	bool IsTowerdefense = false;
+	if(!UseVectorDistance) 
+	{
+		if(IsEntityTowerDefense(entity))
+		{
+			IsTowerdefense = true;
+		}
+	}
+	
+	if(searcher_team != 2 && !IgnorePlayers && !IsTowerdefense)
 	{
 		for( int i = 1; i <= MaxClients; i++ ) 
 		{
@@ -4159,8 +4086,6 @@ stock int GetClosestTarget(int entity,
 		}
 	}
 	/*
-	
-	
 	enum TFTeam
 	{
 		TFTeam_Unassigned = 0,
@@ -4204,6 +4129,13 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
+					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
+					{
+						if(i_Target[entity] <= 0)
+						{
+							return entity_close; //we found a vip building, go after it.
+						}
+					}
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -4499,15 +4431,23 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 	}
 	return ClosestTarget; 
 }
-/*
-stock bool CheckForSee(int client)
+
+stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
-	if (TF2_IsPlayerInCondition(client,TFCond_Cloaked) || TF2_IsPlayerInCondition(client,TFCond_Disguised) || TF2_IsPlayerInCondition(client,TFCond_Stealthed) || TF2_IsPlayerInCondition(client,TFCond_StealthedUserBuffFade))
-		return false;
-		
-	return true;
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitWorldOnly, entity);
+	}
+	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	return bHit;
 }
-*/
 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
@@ -4564,22 +4504,6 @@ stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], co
 	return ref;
 }
 
-public bool TraceRayHitPlayersOnly(int entity,int mask,any data)
-{
-	if (entity > 0 && entity <= MaxClients)
-	{
-#if defined ZR
-		if(TeutonType[entity] == TEUTON_NONE && dieingstate[entity] == 0)
-#endif
-		{
-			if(!b_DoNotUnStuck[entity] && !b_ThisEntityIgnored[entity])
-				return true;
-		}
-	}
-
-	return false;
-}
-
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
@@ -4589,57 +4513,6 @@ public bool TraceRayHitPlayers(int entity,int mask,any data)
 	return false;
 }
 
-//This is mainly to see if you THE PLAYER!!!!! is stuck inside the WORLD OR BRUSHES OR STUFF LIKE THAT. Not stuck inside an npc, because this code is not made for that.
-public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
-{
-	if(entity == 0)
-	{
-		return true;
-	}
-
-	if(entity > 0 && entity <= MaxClients) 
-	{
-		return false;
-	}
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
-	{
-		return false;
-	}
-	
-	if(!b_NpcHasDied[entity])
-	{
-		return false;
-	}
-	
-	//if anything else is team
-	
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-	
-	if(b_is_a_brush[entity])
-	{
-		return true;//They blockin me
-	}
-	else if(b_IsARespawnroomVisualiser[entity])
-	{
-		return true;//They blockin me and not on same team, otherwsie top filter
-	}
-	
-	if(b_ThisEntityIgnored[entity])
-	{
-		return false;
-	}
-	
-	if(entity == Entity_to_Respect)
-	{
-		return false;
-	}
-	if(!b_NpcHasDied[data])
-	{
-		return NpcCollisionCheck(data, entity);
-	}	
-	return true;
-}
 
 
 public bool TraceRayDontHitRTSAlliedNpc(int entity,int mask,any data)
@@ -4923,7 +4796,7 @@ public void NpcBaseThink(int iNPC)
 	}
 	static float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	if(!b_IsAlliedNpc[iNPC])
+	if(!IsEntityTowerDefense(iNPC) && !b_IsAlliedNpc[iNPC])
 	{
 		float GameTime = GetGameTime();
 		//If NPCs some how get out of bounds
@@ -5065,7 +4938,7 @@ public void NpcBaseThink(int iNPC)
 			//This is a tempomary fix. find a better one for players getting stuck.
 		}
 	}
-	else
+	else if(b_IsAlliedNpc[iNPC])
 	{
 		float GameTime = GetGameTime();
 		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)
@@ -5111,7 +4984,6 @@ public void NpcBaseThink(int iNPC)
 		}
 	}
 	
-
 	//TODO:
 	//Rewrite  ::Update func inside nextbots instead of doing this.
 	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
@@ -5173,17 +5045,20 @@ public void NpcBaseThink(int iNPC)
 		{
 			hullcheckmaxs[2] *= 0.5;
 		}
+		else
+		{
+			//Floating point imprecision.
+			hullcheckmaxs[0] += 1.0;
+			hullcheckmaxs[1] += 1.0;
+			hullcheckmaxs[2] += 1.0;
+
+			hullcheckmins[0] -= 1.0;
+			hullcheckmins[1] -= 1.0;
+			hullcheckmins[2] -= 1.0;			
+		}
 	
-		//Floating point imprecision.
-		hullcheckmaxs[0] += 1.0;
-		hullcheckmaxs[1] += 1.0;
-		hullcheckmaxs[2] += 1.0;
 
-		hullcheckmins[0] -= 1.0;
-		hullcheckmins[1] -= 1.0;
-		hullcheckmins[2] -= 1.0;
-
-		if(IsSpaceOccupiedIgnorePlayers(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
+		if(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
 		{
 			if(!Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
 			{
@@ -5263,8 +5138,8 @@ stock void Custom_Knockback(int attacker,
 	 bool RecieveInfo = false,
 	 float RecievePullInfo[3] = {0.0,0.0,0.0})
 {
-	if(enemy > 0 && !b_NoKnockbackFromSources[enemy])
-	{							
+	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
+	{
 		float vAngles[3], vDirection[3];
 
 		if(attacker <= MaxClients)	
