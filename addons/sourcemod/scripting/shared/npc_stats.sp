@@ -4151,7 +4151,7 @@ stock int GetClosestTarget(int entity,
 	}
 	if(IsTowerdefense)
 	{
-		return -1;
+		return i_Target[entity];
 	}
 	
 #if defined ZR
