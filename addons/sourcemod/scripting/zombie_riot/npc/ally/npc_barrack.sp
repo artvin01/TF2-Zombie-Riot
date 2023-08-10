@@ -446,7 +446,7 @@ methodmap BarrackBody < CClotBody
 		npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
 		SetVariantString("0.65");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		BarrackOwner[npc.m_iWearable7] = client;
+		BarrackOwner[npc.m_iWearable7] = client > 0 ? client : 0;
 		SDKHook(npc.m_iWearable7, SDKHook_SetTransmit, BarrackBody_Transmit);
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable7);
@@ -454,7 +454,7 @@ methodmap BarrackBody < CClotBody
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
-		BarrackOwner[Textentity] = client;
+		BarrackOwner[Textentity] = client > 0 ? client : 0;
 		npc.StartPathing();
 		Barracks_UpdateEntityUpgrades(npc.index,client,true, true);
 		return npc;
