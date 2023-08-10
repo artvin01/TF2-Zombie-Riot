@@ -4896,6 +4896,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
 #endif
+			HidePlayerWeaponModel(entity);
+			//hide original model
 			
 #if defined RPG
 			static int offset;
