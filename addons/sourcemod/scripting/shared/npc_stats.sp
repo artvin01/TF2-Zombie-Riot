@@ -36,6 +36,7 @@ float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
 float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
 float f_AvoidObstacleNavTime[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
+int b_NpcCollisionType[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -334,6 +335,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityCollisionGroup(npc, 24);
 		}
 		
+		b_NpcCollisionType[npc] = 0;
 		if(!Ally)
 		{
 #if defined ZR
@@ -342,22 +344,22 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(IgnoreBuildings)
 #endif
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
+				Change_Npc_Collision(npc, 1);
 			}
 			else
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
+				Change_Npc_Collision(npc, 2);
 			}
 		}
 		else
 		{
 			if(Ally_Invince)
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
+				Change_Npc_Collision(npc, 3);
 			}
 			else
 			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
+				Change_Npc_Collision(npc, 4);
 			}
 		}
 
@@ -3375,106 +3377,6 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
-public bool ShouldCollideAlly(CBaseNPC_Locomotion loco, int otherindex)
-{ 
-	if(otherindex > 0 && otherindex <= MaxClients)
-	{
-		return false;
-	}	
-	if(b_is_a_brush[otherindex])
-	{
-		return true;
-	}
-	if(b_CantCollidieAlly[otherindex])
-	{
-		return false;
-	}
-
-	NpcStartTouch(loco,otherindex);
-	return true;
-}
-
-public bool ShouldCollideAllyInvince(CBaseNPC_Locomotion loco, int otherindex)
-{ 
-
-	if(otherindex > 0 && otherindex <= MaxClients)
-	{
-		return false;
-	}	
-	if(b_is_a_brush[otherindex])
-	{
-		return true;
-	}
-	if(b_CantCollidie[otherindex])
-	{
-		return false;
-	}
-	if(b_CantCollidieAlly[otherindex]) 
-	{
-		return false;
-	}
-	
-	NpcStartTouch(loco,otherindex);
-	return true;
-}
-
-public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
-{ 
-	if(otherindex > 0 && otherindex <= MaxClients)
-	{
-		if(b_ThisEntityIgnored[otherindex])
-		{
-			return false;
-		}
-		NpcStartTouch(loco,otherindex);
-		return true;
-	}
-	if(b_is_a_brush[otherindex])
-	{
-		return true;
-	} 
-	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
-	{
-		return false;
-	}
-	
-	NpcStartTouch(loco,otherindex);
-	return true;
-}
-
-public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int otherindex)
-{ 
-
-	if(otherindex > 0 && otherindex <= MaxClients)
-	{
-		if(b_ThisEntityIgnored[otherindex])
-		{
-			return false;
-		}
-		NpcStartTouch(loco,otherindex);
-		return true;
-	}
-	if(b_is_a_brush[otherindex])
-	{
-		return true;
-	}
-	 
-	if(b_CantCollidie[otherindex])
-	{
-		return false;
-	}
-	if(b_CantCollidieAlly[otherindex])
-	{
-		if(i_IsABuilding[otherindex])
-		{
-			return false;
-		}
-	}
-	NpcStartTouch(loco,otherindex);
-	return true;
-}
-
-
 void NPC_StartPathing(int entity)
 {
 	view_as<CClotBody>(entity).StartPathing();
@@ -3835,12 +3737,18 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 
+
 #if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
 	{
 		return false;
 	}
 #endif
+
+	if(!b_NpcHasDied[iExclude])
+	{
+		return NpcCollisionCheck(iExclude, entity);
+	}
 
 	return !(entity == iExclude);
 }
@@ -4724,7 +4632,10 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return false;
 	}
-	
+	if(!b_NpcHasDied[data])
+	{
+		return NpcCollisionCheck(data, entity);
+	}	
 	return true;
 }
 
@@ -7519,34 +7430,6 @@ public MRESReturn Arrow_DHook_RocketExplodePre(int arrow)
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(arrow_particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return MRES_Supercede;
-}
-
-public void Change_Npc_Collision(int npc, int CollisionType)
-{
-	if(IsValidEntity(npc))
-	{
-		CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
-		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
-		switch(CollisionType)
-		{
-			case 1:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyIngoreBuilding);
-			}
-			case 2:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemy);
-			}
-			case 3:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAllyInvince);
-			}
-			case 4:
-			{
-				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
-			}
-		}
-	}
 }
 
 
