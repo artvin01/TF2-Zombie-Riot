@@ -24,7 +24,10 @@ void Events_PluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
-	HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
+
+//#if defined ZR
+	//HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
+//#endif
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
@@ -582,7 +585,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 	//This breaks maps.
 	return Plugin_Continue;
 }
-
+/*
 #if defined ZR
 public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
 {
@@ -620,4 +623,4 @@ public Action OnRelayFireUser1(const char[] output, int entity, int caller, floa
 	//This breaks maps.
 	return Plugin_Continue;
 }
-#endif
+#endif*/
