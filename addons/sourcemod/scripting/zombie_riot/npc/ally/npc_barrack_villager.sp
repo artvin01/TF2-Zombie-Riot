@@ -558,6 +558,7 @@ void BarracksVillager_MenuSpecial(int client, int entity)
 	menu.AddItem(num, "Repair This", npc.i_VillagerSpecialCommand == Villager_Command_RepairFocus ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Gather Resources", ITEMDRAW_DEFAULT);
 	menu.AddItem(num, "Stand Near Tower", npc.i_VillagerSpecialCommand == Villager_Command_StandNearTower ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	menu.AddItem(num, "Destroy Tower", IsValidEntity(player.m_iTowerLinked) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 	menu.Pagination = 0;
 	menu.ExitButton = true;
@@ -685,6 +686,14 @@ public int BarrackVillager_MenuH(Menu menu, MenuAction action, int client, int c
 					case 4:
 					{
 						npc.i_VillagerSpecialCommand = Villager_Command_StandNearTower;
+					}
+					case 5:
+					{
+						BarrackVillager player = view_as<BarrackVillager>(client);
+						if(IsValidEntity(player.m_iTowerLinked))
+						{
+							RequestFrame(KillNpc, EntIndexToEntRef(player.m_iTowerLinked));
+						}
 					}
 				}
 				BarracksVillager_MenuSpecial(client, npc.index);
