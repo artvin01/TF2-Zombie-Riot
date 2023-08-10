@@ -411,7 +411,7 @@ methodmap BarrackBody < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		BarrackOwner[npc.index] = client ? GetClientUserId(client) : 0;
+		BarrackOwner[npc.index] = client > 0 ? GetClientUserId(client) : 0;
 		FireRateBonus[npc.index] = 1.0;
 		DamageBonus[npc.index] = 1.0;
 		CommandOverride[npc.index] = -1;
