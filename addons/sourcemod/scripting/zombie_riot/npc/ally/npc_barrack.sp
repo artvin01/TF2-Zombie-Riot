@@ -456,7 +456,7 @@ methodmap BarrackBody < CClotBody
 		int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
 		BarrackOwner[Textentity] = client > 0 ? client : 0;
 		npc.StartPathing();
-		Barracks_UpdateEntityUpgrades(npc.index,client,true, true);
+		Barracks_UpdateEntityUpgrades(npc.index,client > 0 ? client : 0,true, true);
 		return npc;
 	}
 }
