@@ -3780,7 +3780,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			SeargentIdeal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case VIP_BUILDING:
-			VIPBuilding_OnTakeDamagePost(attacker);
+			VIPBuilding_OnTakeDamagePost(victim, attacker);
 	}
 	return Plugin_Changed;
 }

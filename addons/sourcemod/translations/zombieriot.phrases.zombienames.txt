@@ -1705,5 +1705,8 @@
 	{
 		"en"	"Seargent Ideal"
 	}
-	
+	"VIP Building, The Objective"
+	{
+		"en"	"VIP Building, The Objective"
+	}
 }

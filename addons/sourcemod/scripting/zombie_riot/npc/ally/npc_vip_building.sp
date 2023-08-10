@@ -58,16 +58,16 @@ void VIPBuilding_NPCDeath(int entity)
 
 	if(Waves_Started())
 	{
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		int endround = CreateEntityByName("game_round_win"); 
+		DispatchKeyValue(endround, "force_map_reset", "1");
+		SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		DispatchSpawn(endround);
+		AcceptEntityInput(endround, "RoundWin");
+		Music_RoundEnd(endround);
 	}
 }
 
-void VIPBuilding_OnTakeDamagePost(int attacker) 
+void VIPBuilding_OnTakeDamagePost(int victim, int attacker) 
 {
 	//Valid attackers only.
 	if(attacker < 1)
