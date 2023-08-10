@@ -4094,7 +4094,7 @@ stock int GetClosestTarget(int entity,
 		TFTeam_Blue = 3
 	};
 	*/
-	if(searcher_team != 3) 
+	if(searcher_team != 3 && !IsTowerdefense) 
 	{
 		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 		{
@@ -4148,6 +4148,10 @@ stock int GetClosestTarget(int entity,
 				}
 			}
 		}
+	}
+	if(IsTowerdefense)
+	{
+		return -1;
 	}
 	
 #if defined ZR
