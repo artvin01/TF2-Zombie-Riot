@@ -1229,10 +1229,17 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					
 					int skip = info.PackSkip;
 					count += skip;
+
+					char data[64], buffer[64];
+					if(count > 1)
+					{
+						zr_tagwhitelist.GetString(buffer, sizeof(buffer));
+						if(StrContains(buffer, "realtime") != -1)
+							count = 1;
+					}
 					
 					int userid = (client == owner || owner == -1) ? -1 : GetClientUserId(owner);
 					
-					char data[64], buffer[64];
 					for(int i = skip; i < count; i++)
 					{
 						if(item.GetItemInfo(item.Owned[client] + i, info) && info.Cost)

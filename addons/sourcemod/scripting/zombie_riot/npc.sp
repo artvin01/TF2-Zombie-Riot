@@ -351,7 +351,8 @@ enum
 	SEA_ALLY_GOGGLES		= 304,
 	SEA_ALLY_DONNERKRIEG		= 305,
 	SEA_ALLY_SCHWERTKRIEG		= 306,
-	SEA_ALLY_GOD_ARKANTOS		= 307
+	SEA_ALLY_GOD_ARKANTOS		= 307,
+	VIP_BUILDING			= 308
 }
 
 public const char NPC_Names[][] =
@@ -685,7 +686,8 @@ public const char NPC_Names[][] =
 	"Seaborn Blue Goggles",
 	"Seaborn Donnerkrieg",
 	"Seaborn Schwertkreig",
-	"Seaborn God Arkantos"
+	"Seaborn God Arkantos",
+	"VIP Building, The Objective"
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1017,7 +1019,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"Seaborn Blue Goggles",
 	"Seaborn Donnerkrieg",
 	"Seaborn Schwertkreig",
-	"Seaborn God Arkantos"
+	"Seaborn God Arkantos",
+	"npc_vip_building"
 };
 
 void NPC_MapStart()
@@ -2126,7 +2129,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case EXPIDONSA_SEARGENTIDEAL:
 			entity = SeargentIdeal(client, vecPos, vecAng, ally);
-
+		
+		case VIP_BUILDING:
+			entity = VIPBuilding(client, vecPos, vecAng);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -2991,6 +2996,9 @@ public void NPCDeath(int entity)
 
 		case EXPIDONSA_SEARGENTIDEAL:
 			SeargentIdeal_NPCDeath(entity);
+		
+		case VIP_BUILDING:
+			VIPBuilding_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -3770,6 +3778,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_SEARGENTIDEAL:
 			SeargentIdeal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case VIP_BUILDING:
+			VIPBuilding_OnTakeDamagePost(attacker);
 	}
 	return Plugin_Changed;
 }
@@ -4076,7 +4087,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
 
-
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
@@ -4087,3 +4097,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_diversionistico.sp"
 #include "zombie_riot/npc/expidonsa/npc_heavy_punuel.sp"
 #include "zombie_riot/npc/expidonsa/npc_seargent_ideal.sp"
+
+#include "zombie_riot/npc/ally/npc_vip_building.sp"
