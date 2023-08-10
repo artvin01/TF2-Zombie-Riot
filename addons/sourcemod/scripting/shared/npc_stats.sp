@@ -37,6 +37,7 @@ float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
 float f_AvoidObstacleNavTime[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 int b_NpcCollisionType[MAXENTITIES];
+int i_FailedTriesUnstuck[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -295,6 +296,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
 		b_NpcHasDied[npc] = false;
+		i_FailedTriesUnstuck[npc] = 0;
 		DispatchSpawn(npc); //Do this at the end :)
 		Hook_DHook_UpdateTransmitState(npc);
 		Check_For_Team_Npc(npc);
@@ -5115,18 +5117,30 @@ public void NpcBaseThink(int iNPC)
 	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
 	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
-		if (npc.IsOnGround())
+		if(i_FailedTriesUnstuck[iNPC] == 0)
 		{
-			if(f_UnstuckTimerCheck[iNPC] < GetGameTime())
+			if (npc.IsOnGround())
 			{
-				f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; 
-				//every 3 seconds we shall do an emenergency check
+				if(f_UnstuckTimerCheck[iNPC] < GetGameTime())
+				{
+					f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; 
+					//every 3 seconds we shall do an emenergency check
+				}
+				else
+				{
+					return;
+				}
 			}
-			else
+		}
+		else
+		{
+			if(!(i_FailedTriesUnstuck[iNPC] % 10))
 			{
+				i_FailedTriesUnstuck[iNPC] += 1;
 				return;
 			}
 		}
+		
 		f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; //they were in the air regardless, add time.
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
@@ -5155,7 +5169,11 @@ public void NpcBaseThink(int iNPC)
 			hullcheckmaxs[2] = 41.0;
 		}
 		hullcheckmins[2] += 17.0;
-
+		if (npc.IsOnGround()) //npcs can slightly clip if on ground due to giants massive height for example.
+		{
+			hullcheckmaxs[2] *= 0.5;
+		}
+	
 		//Floating point imprecision.
 		hullcheckmaxs[0] += 1.0;
 		hullcheckmaxs[1] += 1.0;
@@ -5169,6 +5187,13 @@ public void NpcBaseThink(int iNPC)
 		{
 			if(!Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
 			{
+				i_FailedTriesUnstuck[iNPC] += 1;
+				if(i_FailedTriesUnstuck[iNPC] < 66) //we will wait about a second
+				{
+					return;
+				}
+				i_FailedTriesUnstuck[iNPC] = 0;
+				//they are still stuck after so many tries and a second, teleport to safe location
 				//delete velocity.
 				static float vec3Origin[3];
 				npc.SetVelocity(vec3Origin);
@@ -5184,6 +5209,8 @@ public void NpcBaseThink(int iNPC)
 						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+						b_npcspawnprotection[iNPC] = true;
+						CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 					}
 				}
 				else
@@ -5217,6 +5244,10 @@ public void NpcBaseThink(int iNPC)
 				}
 				//We have tried 64 differnet spots, yet they are still stuck, let them stay stuck.
 			}
+		}
+		else
+		{
+			i_FailedTriesUnstuck[iNPC] = 0;
 		}
 	}
 }
