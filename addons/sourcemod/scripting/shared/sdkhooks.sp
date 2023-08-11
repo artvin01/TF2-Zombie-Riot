@@ -180,7 +180,6 @@ public void OnPostThink(int client)
 
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
-		b_PhaseThroughBuildingsPerma[client] = 3;
 		CvarMpSolidObjects.ReplicateToClient(client, "0");
 	}
 	else
