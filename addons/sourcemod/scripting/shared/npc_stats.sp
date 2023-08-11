@@ -2555,6 +2555,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		this.StudioFrameAdvance();
 		this.DispatchAnimEvents();
+		this.StudioFrameAdvance();
+		this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
 		if(this.m_flNextRunTime < GetGameTime())

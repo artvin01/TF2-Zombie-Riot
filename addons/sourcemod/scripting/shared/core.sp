@@ -670,7 +670,7 @@ enum
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_213.mdl"
 
-#define DEFAULT_UPDATE_DELAY_FLOAT 0.02 //Make it 0 for now
+#define DEFAULT_UPDATE_DELAY_FLOAT 0.0151 //Make it 0 for now
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
 
