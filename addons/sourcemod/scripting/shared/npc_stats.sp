@@ -4728,9 +4728,9 @@ public void NpcBaseThink(int iNPC)
 		npc.GetBaseNPC().flGravity = 0.0;
 	}
 
-	NpcDrawWorldLogic(iNPC);
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
+		NpcDrawWorldLogic(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + 0.1;
 		Npc_DebuffWorldTextUpdate(npc);
 	}
@@ -4764,22 +4764,8 @@ public void NpcBaseThink(int iNPC)
 		}
 	}
 	
-//	PlayerInIlligalStuckArea(iNPC);
-	
 	if(b_EntityInCrouchSpot[iNPC])
 	{
-		/*	
-		if(IsValidEntity(npc.m_iTarget) && b_EntityInCrouchSpot[npc.m_iTarget])
-		{
-			if(!b_NpcResizedForCrouch[iNPC])
-			{
-				float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
-				b_NpcResizedForCrouch[iNPC] = true;
-			}
-		}
-		else
-		*/
 		{
 			if(!b_NpcResizedForCrouch[iNPC])
 			{
@@ -4817,7 +4803,7 @@ public void NpcBaseThink(int iNPC)
 		}
 		if(!b_DoNotUnStuck[iNPC] && f_CheckIfStuckPlayerDelay[iNPC] < GameTime)
 		{
-			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.1;
+			f_CheckIfStuckPlayerDelay[iNPC] = GameTime + 0.25;
 			//This is a tempomary fix. find a better one for players getting stuck.
 			static float hullcheckmaxs_Player[3];
 			static float hullcheckmins_Player[3];

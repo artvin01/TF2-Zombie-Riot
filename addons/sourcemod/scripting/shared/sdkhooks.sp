@@ -180,6 +180,7 @@ public void OnPostThink(int client)
 
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
+		b_PhaseThroughBuildingsPerma[client] = 3;
 		CvarMpSolidObjects.ReplicateToClient(client, "0");
 	}
 	else
@@ -1156,9 +1157,6 @@ public void OnPostThink(int client)
 		//Doesnt reset often enough, fuck clientside.
 		if (IsPlayerAlive(client))
 		{
-		//	EscapeSentryHat_ApplyBuidingIcon(client);
-		//	SetVariantString("ParticleEffectStop");
-		//	AcceptEntityInput(client, "DispatchEffect"); 
 			static int entity;
 			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
