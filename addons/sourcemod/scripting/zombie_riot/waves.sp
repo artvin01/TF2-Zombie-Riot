@@ -773,7 +773,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				if(IsClientInGame(client))
 				{
 					DoOverlay(client, "");
-					if(VotedFor[client]>0 && GetClientTeam(client)==2)
+					if(VotedFor[client]>0 && VotedFor[client] <= length && GetClientTeam(client)==2)
 					{
 						votes[VotedFor[client]-1]++;
 					}
