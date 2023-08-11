@@ -57,6 +57,8 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
+#define NPC_DEFAULT_YAWRATE 450.0
+
 
 //static PathFollower pPath[MAXENTITIES];
 
@@ -324,7 +326,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flJumpHeight = 250.0;
 		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
 		baseNPC.flFrictionSideways = 5.0;
-		baseNPC.flMaxYawRate = 225.0;
+		baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
 		baseNPC.flDeathDropHeight = 2000.0;
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
@@ -2566,7 +2568,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-			this.GetBaseNPC().flMaxYawRate = (225.0 * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
+			this.GetBaseNPC().flMaxYawRate = (NPC_DEFAULT_YAWRATE * this.GetDebuffPercentage() * f_NpcTurnPenalty[this.index]);
 		}
 
 		if(f_AvoidObstacleNavTime[this.index] < GetGameTime()) //add abit of delay for optimisation
@@ -3884,9 +3886,9 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	return true;
 }
 
-stock bool IsEntityAlive(int index)
+stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 {
-	if(IsValidEntity(index))
+	if(WasValidAlready || IsValidEntity(index))
 	{
 		if(index > MaxClients)
 		{
@@ -3930,6 +3932,7 @@ stock bool IsEntityAlive(int index)
 		return false;
 	}
 }
+
 stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool target_invul = false)
 {
 	if(IsValidEntity(enemy))
@@ -3970,7 +3973,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			else
 #endif
 			{
-				return IsEntityAlive(enemy);
+				return IsEntityAlive(enemy, true);
 			}
 		}
 		else if(i_IsABuilding[enemy])
@@ -4012,7 +4015,7 @@ stock bool IsValidAllyPlayer(int index, int Ally)
 			}
 			else
 			{
-				return IsEntityAlive(Ally);
+				return IsEntityAlive(Ally, true);
 			}
 		}
 	}
@@ -4070,7 +4073,7 @@ stock int GetClosestTarget(int entity,
 			if (IsValidClient(i) && i != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(i);
-				if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+				if (TF2_GetClientTeam(i)!=view_as<TFTeam>(searcher_team) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 				{
 					if(CanSee)
 					{
@@ -4103,7 +4106,7 @@ stock int GetClosestTarget(int entity,
 			{
 				
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(CanSee)
 					{
@@ -4127,7 +4130,7 @@ stock int GetClosestTarget(int entity,
 			{
 				
 				CClotBody npc = view_as<CClotBody>(entity_close);
-				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
@@ -4409,7 +4412,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 		if (IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -6855,7 +6858,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	{
 		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
 		{
-			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
+			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == GetEntProp(i, Prop_Send, "m_iTeamNum") && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -6898,7 +6901,7 @@ stock bool IsValidAlly(int index, int ally)
 			return false;
 		}
 
-		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally)) 
+		if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(ally, Prop_Send, "m_iTeamNum") && (ally <= MaxClients || !b_NpcHasDied[ally]) && IsEntityAlive(ally, true)) 
 		{
 			return true;
 		}
