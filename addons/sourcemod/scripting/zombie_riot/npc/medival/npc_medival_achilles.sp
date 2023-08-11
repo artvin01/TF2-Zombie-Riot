@@ -282,11 +282,11 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 65.0;
+					float damage = 75.0;
 
 					if(Medival_Difficulty_Level > 2.0)
 					{
-						damage = 85.0;
+						damage = 100.0;
 					}
 
 					if(ShouldNpcDealBonusDamage(target))
@@ -352,7 +352,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 12.0) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 18.0) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Throw Spear
 		}
@@ -360,7 +360,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.0) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && npc.m_flJumpCooldown < gameTime)
+		else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.5) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0) && npc.m_flJumpCooldown < gameTime)
 		{
 			npc.m_iState = 2; //Jump
 		}

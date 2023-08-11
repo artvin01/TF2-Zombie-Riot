@@ -869,6 +869,13 @@ things i tried
 			{
 				return false;
 			}
+			else if(IsEntityTowerDefense(entity1)) //allow players to go through enemies here.
+			{
+				if(entity2 > 0 && entity2 <= MaxClients) 
+				{
+					return false;
+				}
+			}
 			else if(b_Is_Blue_Npc[entity2])
 			{
 				return false;

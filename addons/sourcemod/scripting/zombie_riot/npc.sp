@@ -714,7 +714,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_combine_soldier_overlord",
 	"npc_zombie_scout_grave",
 	"npc_zombie_engineer_grave",
-	"npc_zombie_heavy_grave",
+	"npc_zombie_heavy_grave",	
 	"npc_flying_armor",
 	"npc_flying_armor_tiny_swords",
 	"npc_kamikaze_demo",
