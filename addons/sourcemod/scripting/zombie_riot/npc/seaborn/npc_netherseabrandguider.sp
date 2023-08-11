@@ -145,7 +145,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 			{
 				npc.Anger = true;
 				npc.m_flMeleeArmor = 0.25;
-				Change_Npc_Collision(npc.index, 1);	// Ignore buildings
+				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 			}
 		}
 	}

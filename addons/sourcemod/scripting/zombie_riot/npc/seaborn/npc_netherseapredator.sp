@@ -143,13 +143,13 @@ public void SeaPredator_ClotThink(int iNPC)
 			if(!SeaFounder_TouchingNethersea(npc.index))
 			{
 				npc.Anger = false;
-				Change_Npc_Collision(npc.index, 2);	// Attack buildings
+				Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTD : num_ShouldCollideEnemy);
 			}
 		}
 		else if(SeaFounder_TouchingNethersea(npc.index))
 		{
 			npc.Anger = true;
-			Change_Npc_Collision(npc.index, 1);	// Ignore buildings
+			Change_Npc_Collision(npc.index, VIPBuilding_Active() ? num_ShouldCollideEnemyTDIgnoreBuilding : num_ShouldCollideEnemyIngoreBuilding);
 		}
 
 		npc.m_iTarget = GetClosestTarget(npc.index, npc.Anger);
