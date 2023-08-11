@@ -4791,7 +4791,7 @@ public void NpcBaseThink(int iNPC)
 	}
 	static float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	if(!IsEntityTowerDefense(iNPC) && !b_IsAlliedNpc[iNPC])
+	if(!IsEntityTowerDefense(iNPC) && !b_IsAlliedNpc[iNPC] && !i_NpcIsABuilding[iNPC])
 	{
 		float GameTime = GetGameTime();
 		//If NPCs some how get out of bounds
@@ -4933,7 +4933,7 @@ public void NpcBaseThink(int iNPC)
 			//This is a tempomary fix. find a better one for players getting stuck.
 		}
 	}
-	else if(b_IsAlliedNpc[iNPC])
+	else if(b_IsAlliedNpc[iNPC] && !i_NpcIsABuilding[iNPC])
 	{
 		float GameTime = GetGameTime();
 		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)

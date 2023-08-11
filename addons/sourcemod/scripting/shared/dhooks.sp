@@ -869,7 +869,7 @@ things i tried
 			{
 				return false;
 			}
-			else if(IsEntityTowerDefense(entity1)) //allow players to go through enemies here.
+			else if(IsEntityTowerDefense(entity1) && !DoingLagCompensation) //allow players to go through enemies here.
 			{
 				if(entity2 > 0 && entity2 <= MaxClients) 
 				{
