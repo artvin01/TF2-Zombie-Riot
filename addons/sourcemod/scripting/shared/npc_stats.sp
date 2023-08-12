@@ -1731,7 +1731,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, 1.0);
+			this.SetLayerPlaybackRate(layer, 0.5);
 	}
 	public void RemoveGesture(const char[] anim)
 	{
@@ -2530,7 +2530,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			int layerCount = this.GetNumAnimOverlays();
 			for(int i; i < layerCount; i++)
 			{
-				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 1.0);
+				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
 			}
 
 			if(IsValidEntity(view_as<CClotBody>(this.index).m_iFreezeWearable))
