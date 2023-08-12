@@ -7,7 +7,7 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733:
+		case 733, 309: //gibs on hit
 		{
 			return true;
 		}
@@ -195,7 +195,7 @@ int Attributes_Airdashes(int client)
 },
 #endif
 
-void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
+void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype, bool &guraneedGib)
 {
 	{
 		if(weapon < 1)
@@ -313,6 +313,10 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		float value = Attributes_Get(weapon, 877, 0.0);	// speed_boost_on_hit_enemy
 		if(value)
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, value);
+
+		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
+		if(value)
+			guraneedGib = true;
 		/*
 		if(Attributes_GetOnPlayer(client, weapon, 2067))	// attack_minicrits_and_consumes_burning
 		{

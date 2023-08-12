@@ -1244,6 +1244,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
+	
+	bool GuranteedGib = true;
 
 	if(attacker < 1 || victim == attacker)
 	{
@@ -1301,7 +1303,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 			
 			if(attacker <= MaxClients)
-				OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon);
+				OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon, GuranteedGib);
 		
 			OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
 			
@@ -1371,6 +1373,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		}
 	}
 	if(RogueFizzyDrink())
+	{
+		npcBase.m_bGib = true;
+	}
+	if(GuranteedGib)
 	{
 		npcBase.m_bGib = true;
 	}
@@ -2963,7 +2969,7 @@ bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damag
 	}
 	return false;
 }
-bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, bool &guranteedGibbing)
 {	
 #if defined RPG	
 	//Random crit damage!
@@ -2991,7 +2997,7 @@ bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inflictor, float
 	else
 		LastHitWeaponRef[victim] = -1;
 			
-	Attributes_OnHit(attacker, victim, weapon, damage, damagetype);
+	Attributes_OnHit(attacker, victim, weapon, damage, damagetype, guranteedGibbing);
 		
 	if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
 	{

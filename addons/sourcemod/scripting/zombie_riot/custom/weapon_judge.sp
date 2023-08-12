@@ -92,13 +92,13 @@ public void Judge_Cooldown_Logic(int client, int weapon)
 			{
 				if(f_JudgeHudDelay[client] < GetGameTime())
 				{
-					f_JudgeHudDelay[client] = GetGameTime() + 3.0;
+					f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(3.0, client);
 					Add_Back_One_Clip_Judge(weapon, client);
 				}
 			}
 			else
 			{
-					f_JudgeHudDelay[client] = GetGameTime() + 3.0;
+					f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(3.0, client);
 			}
 		}
 		else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE_PAP)
@@ -108,13 +108,14 @@ public void Judge_Cooldown_Logic(int client, int weapon)
 			{
 				if(f_JudgeHudDelay[client] < GetGameTime())
 				{
-					f_JudgeHudDelay[client] = GetGameTime() + 2.0;
+					f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(2.0, client);
+					
 					Add_Back_One_Clip_Judge(weapon, client);
 				}
 			}
 			else
 			{
-				f_JudgeHudDelay[client] = GetGameTime() + 2.0;
+				f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(2.0, client);
 			}
 		}
 		else
@@ -170,4 +171,15 @@ bool IsAmmoFullJudgeWeapon(int ammo, int client)
 		return true;
 	}
 	return false;
+}
+
+float GetJudgeReloadCooldown(float cooldown, int client)
+{
+	float returncooldown;
+	returncooldown = cooldown;
+
+	if(i_CurrentEquippedPerk[client] == 4) //speed cola
+		returncooldown *= 0.65;
+
+	return returncooldown;
 }

@@ -2293,7 +2293,7 @@
 	}
 	"Taurus Judge Desc 1"
 	{
-		"en"	"This weapon comes with remarkable strength and deploys 30 percent faster!\nUnfortunately, it only reloads when not equipped and fires slowly."
+		"en"	"This weapon comes with remarkable strength and deploys 30%% faster!\nUnfortunately, it only reloads when not equipped and fires slowly.\nGuranteed Gibs on kill if possible."
 	}
 	"Taurus Judge Desc Pap 1"
 	{
