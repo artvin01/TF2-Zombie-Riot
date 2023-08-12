@@ -106,7 +106,9 @@ enum
 	WEAPON_VAMPKNIVES_4_CLEAVER = 35,
 	WEAPON_SPEEDFISTS = 36,
 	WEAPON_ANCIENT_BANNER = 37,
-	WEAPON_QUINCY_BOW = 38
+	WEAPON_QUINCY_BOW = 38,
+	WEAPON_JUDGE = 39,
+	WEAPON_JUDGE_PAP = 40
 }
 
 ArrayList SpawnerList;
@@ -392,6 +394,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_blemishine.sp"
 #include "zombie_riot/custom/weapon_gladiia.sp"
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
+#include "zombie_riot/custom/weapon_judge.sp"
 
 void ZR_PluginLoad()
 {
@@ -513,6 +516,7 @@ void ZR_MapStart()
 	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
 	Mlynar_Map_Precache();
+	Judge_Map_Precache();
 	Reset_stats_Mlynar_Global();
 	Blemishine_Map_Precache();
 	
@@ -653,6 +657,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Mlynar_Singular(client);
 	Reset_stats_SpikeLayer_Singular(client);
 	Reset_stats_Blemishine_Singular(client);
+	Reset_stats_Judge_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -1462,7 +1467,7 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
 	}
 	
 }
-stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Multi = 1.0)
+stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Multi = 1.0, bool ignoreperk = false)
 {
 	int AmmoToAdd;
 	if(AmmoCount == 0)
@@ -1473,7 +1478,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.25);
 	}
