@@ -427,7 +427,7 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
 		if(npc.m_iChanged_WalkCycle != 5)
 		{
@@ -437,7 +437,7 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
-		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.4))
 		{
 			SeargentIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
 		}

@@ -513,6 +513,7 @@ void ZR_MapStart()
 	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
 	Mlynar_Map_Precache();
+	Judge_Map_Precache();
 	Reset_stats_Mlynar_Global();
 	Blemishine_Map_Precache();
 	

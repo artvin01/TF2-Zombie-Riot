@@ -252,7 +252,7 @@ void PistoleerSelfDefense(Pistoleer npc, float gameTime)
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
 	{
 		if(npc.m_iChanged_WalkCycle != 5)
 		{
@@ -264,7 +264,7 @@ void PistoleerSelfDefense(Pistoleer npc, float gameTime)
 		}	
 		if(gameTime > npc.m_flNextMeleeAttack)
 		{
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
 			{	
 
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
