@@ -2291,4 +2291,12 @@
 	{
 		"en"	"General stat boost, you also gain a skill point\nTo spend these skill points hold Mouse 2 and press RELOAD on a pap"
 	}
+	"Taurus Judge Desc 1"
+	{
+		"en"	"This weapon comes with remarkable strength and deploys 30 percent faster!\nUnfortunately, it only reloads when not equipped and fires slowly."
+	}
+	"Taurus Judge Desc Pap 1"
+	{
+		"en"	"Improved handling allows for 50%% faster deploy speed, faster reload, more firepower and faster shooting."
+	}
 }
