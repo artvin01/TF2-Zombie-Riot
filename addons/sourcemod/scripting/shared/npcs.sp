@@ -1245,7 +1245,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
-	bool GuranteedGib = true;
+	bool GuranteedGib = false;
 
 	if(attacker < 1 || victim == attacker)
 	{

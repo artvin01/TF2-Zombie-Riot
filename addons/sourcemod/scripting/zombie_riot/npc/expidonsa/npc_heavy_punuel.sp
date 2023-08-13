@@ -24,7 +24,6 @@ static const char g_IdleAlertedSounds[][] = {
 	")vo/demo_battlecry01.mp3",
 	")vo/demo_battlecry02.mp3",
 	")vo/demo_battlecry03.mp3",
-	")vo/demo_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
