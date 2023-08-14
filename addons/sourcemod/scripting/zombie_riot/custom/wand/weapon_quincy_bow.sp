@@ -163,7 +163,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			KillTimer(h_TimerQuincy_BowManagement[client]);
 			h_TimerQuincy_BowManagement[client] = INVALID_HANDLE;
 			
-			Create_Quincy_Weapon(client, true, weapon);
+			Create_Quincy_Weapon(client, true);
 			
 			
 			int pap = Get_Quincy_Pap(weapon);
@@ -186,7 +186,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 		i_quincy_pap[client] = pap;
 
 		
-		Create_Quincy_Weapon(client, true, weapon);
+		Create_Quincy_Weapon(client, true);
 		
 		DataPack pack;
 		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -232,7 +232,7 @@ static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 
 			if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
 			{
-				Create_Quincy_Weapon(client, _ , weapon);
+				Create_Quincy_Weapon(client, _);
 				float GameTime = GetGameTime();
 				int buttons = GetClientButtons(client);
 				bool attack = (buttons & IN_ATTACK) != 0;
@@ -911,7 +911,7 @@ static void test(float vec[3], float vec2[3], float Direction[3])
 	ScaleVector(Direction, -25.0);
 }
 
-static void Create_Quincy_Weapon(int client, bool first = false, int weapon)
+static void Create_Quincy_Weapon(int client, bool first = false)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);

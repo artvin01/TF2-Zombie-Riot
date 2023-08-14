@@ -30,7 +30,7 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 		
 		EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 23/*Default wand*/, weapon, "drg_cow_rockettrail_normal",_,false);
+		Wand_Projectile_Spawn(client, speed, time, damage, 23/*GB gun*/, weapon, "drg_cow_rockettrail_normal",_,false);
 	}
 }
 

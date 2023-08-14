@@ -845,9 +845,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 					float heatrefresh = 0.05;
 
-					heatrefresh /= Attributes_GetOnPlayer(owner, 314, true, true);
+					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
 					
-					flChargeLevel += heatrefresh*GetGameFrameTime();
+					flChargeLevel -= heatrefresh*0.1;
 					
 					if (flChargeLevel < 0.0)
 					{
@@ -869,9 +869,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 					float heatrefresh = 0.05;
 
-					heatrefresh /= Attributes_GetOnPlayer(owner, 314, true, true);
+					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
 					
-					flChargeLevel += heatrefresh*GetGameFrameTime();
+					flChargeLevel -= heatrefresh*0.1;
 					
 					if (flChargeLevel < 0.0)
 					{
@@ -889,9 +889,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 					float heatrefresh = 0.05;
 
-					heatrefresh /= Attributes_GetOnPlayer(owner, 314, true, true);
+					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
 
-					flChargeLevel += heatrefresh*GetGameFrameTime();
+					flChargeLevel -= heatrefresh*0.1;
+
 					if (flChargeLevel < 0.0)
 					{
 						flChargeLevel = 0.0;
@@ -918,17 +919,16 @@ public void GB_On_Reload(int client, int weapon, bool crit) {
 	gb_medigun_on_reload[client] = true;
 }
 #if defined ZR
-public void GB_Check_Ball(int client, int weapon, bool crit)
+public void GB_Check_Ball(int owner, int weapon, bool crit)
 {
-	if (gb_medigun_on_reload[client] || GetEntProp(weapon, Prop_Send, "m_bChargeRelease")==1)
+	if (gb_medigun_on_reload[owner] || GetEntProp(weapon, Prop_Send, "m_bChargeRelease")==1)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ClientCommand(owner, "playgamesound items/medshotno1.wav");
 		return;
 	}
 	float heatrefresh = 0.06;
 
-	heatrefresh /= Attributes_GetOnPlayer(client, 314, true, true);
-	
+	heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
 	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+heatrefresh;
 						
 	if (flChargeLevel >= 1.0) 
@@ -941,7 +941,7 @@ public void GB_Check_Ball(int client, int weapon, bool crit)
 	else
 		SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", flChargeLevel);
 	
-	Weapon_GB_Ball(client, weapon, crit);
+	Weapon_GB_Ball(owner, weapon, crit);
 }
 #endif
 
@@ -977,4 +977,40 @@ stock int CreateParticleOnBackPack(const char[] sParticle, int client)
 	ActivateEntity(entity);
 	AcceptEntityInput(entity, "start");
 	return entity;
+}
+
+
+float MedigunGetUberDuration(int owner)
+{
+	//so it starts at 1.0
+	float Attribute = Attributes_GetOnPlayer(owner, 314, true, true) + 3.0;
+	
+	switch(Attribute)
+	{
+		case 1.0:
+		{
+			Attribute = 1.0;
+		}
+		case 2.0:
+		{
+			Attribute = 1.15;
+		}
+		case 3.0:
+		{
+			Attribute = 1.35;
+		}
+		case 4.0:
+		{
+			Attribute = 1.45;
+		}
+		case 5.0:
+		{
+			Attribute = 1.65;
+		}
+	}
+	if(Attribute < 1.0)
+	{
+		Attribute = 1.0;
+	}
+	return Attribute;
 }
