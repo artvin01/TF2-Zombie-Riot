@@ -4,6 +4,12 @@
 	{
 		"Signatures"
 		{
+			"CTFPlayerShared::RecalculatePlayerBodygroups"
+			{
+				// string aPostInventoryA, most top function.
+				"windows"	"\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xC7\x45\xFC\x00\x00\x00\x00\x8D\x4D\xFC\x8B\xB7\x8C\x01\x00\x00"
+				"linux"		"@_ZN15CTFPlayerShared27RecalculatePlayerBodygroupsEv"
+			}
 			"CBaseAnimating::LookupBone"
 			{
 				// string aBipHead, function down

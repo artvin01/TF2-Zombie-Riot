@@ -959,7 +959,7 @@ void Waves_Progress()
 				*/
 				if(ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.65;
+					multiBoss = playercount * 0.60;
 				}
 				else
 				{

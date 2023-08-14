@@ -57,7 +57,7 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
-#define NPC_DEFAULT_YAWRATE 450.0
+#define NPC_DEFAULT_YAWRATE 225.0
 
 
 //static PathFollower pPath[MAXENTITIES];

@@ -2015,3 +2015,16 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	return damage;
 }
 #endif
+
+//problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
+
+void UpdatePlayerFakeModel(int client)
+{
+	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(PlayerModel > 0)
+	{
+		SDKCall_RecalculatePlayerBodygroups(client);
+		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
+		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
+	}
+}

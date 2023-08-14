@@ -109,6 +109,7 @@ void ViewChange_PlayerModel(int client)
 					{
 						SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
 					}
+
 				}
 				else
 				{
@@ -133,6 +134,7 @@ void ViewChange_PlayerModel(int client)
 				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
 				
 				i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
+				UpdatePlayerFakeModel(client);
 
 #if defined RPG
 				Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
@@ -251,10 +253,10 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				ViewChange_DeleteHands(client);
 				ViewChange_UpdateHands(client, CurrentClass[client]);
 			}
+			UpdatePlayerFakeModel(client);
 			return;
 		}
 	}
-
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
 	WeaponRef[client] = INVALID_ENT_REFERENCE;

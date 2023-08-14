@@ -173,6 +173,7 @@ public const int RenderColors_RPG[][] =
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 Handle g_hImpulse;
+Handle g_hRecalculatePlayerBodygroups;
 
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
@@ -670,7 +671,7 @@ enum
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 #define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_213.mdl"
 
-#define DEFAULT_UPDATE_DELAY_FLOAT 0.0151 //Make it 0 for now
+#define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
 
@@ -901,6 +902,7 @@ int i_AttacksTillMegahit[MAXENTITIES];
 int i_WeaponArchetype[MAXENTITIES];
 int i_WeaponForceClass[MAXENTITIES];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
+int i_nm_body_client[MAXTF2PLAYERS];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];
