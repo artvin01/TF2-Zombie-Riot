@@ -222,6 +222,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Quincy_Touch(entity, target);
 		}
+		case 23:
+		{
+			Event_GB_OnHatTouch(entity, target);
+		}
 		/*		
 		case WEAPON_LANTEAN:
 		{

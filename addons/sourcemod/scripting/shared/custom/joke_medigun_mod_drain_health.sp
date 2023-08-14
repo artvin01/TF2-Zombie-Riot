@@ -844,10 +844,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (flChargeLevel > 0.0) 
 				{
 					float heatrefresh = 0.05;
+
+					heatrefresh /= Attributes_GetOnPlayer(owner, 314, true, true);
 					
-					heatrefresh *= 1.0+(Attributes_Get(medigun, 314, 1.0)-9.0)/3;
-					
-					flChargeLevel -= heatrefresh*GetGameFrameTime();
+					flChargeLevel += heatrefresh*GetGameFrameTime();
 					
 					if (flChargeLevel < 0.0)
 					{
@@ -869,9 +869,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 					float heatrefresh = 0.05;
 
-					heatrefresh *= 1.0+(Attributes_Get(medigun, 314, 1.0)-9.0)/3;
+					heatrefresh /= Attributes_GetOnPlayer(owner, 314, true, true);
 					
-					flChargeLevel -= heatrefresh*GetGameFrameTime();
+					flChargeLevel += heatrefresh*GetGameFrameTime();
 					
 					if (flChargeLevel < 0.0)
 					{
@@ -879,7 +879,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				
 				}
 			}
 			else 
@@ -888,12 +887,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 				if (flChargeLevel > 0.0) 
 				{
-					float heatrefresh = 0.2;
-					
-					heatrefresh *= 1.0+(Attributes_Get(medigun, 314, 1.0)-9.0)/3;
-					
-					flChargeLevel -= heatrefresh*GetGameFrameTime();
-					
+					float heatrefresh = 0.05;
+
+					heatrefresh /= Attributes_GetOnPlayer(owner, 314, true, true);
+
+					flChargeLevel += heatrefresh*GetGameFrameTime();
 					if (flChargeLevel < 0.0)
 					{
 						flChargeLevel = 0.0;
@@ -904,12 +902,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 		}
 	}
-	/*
-	if(!LastMann)
-	{
-		TF2_AddCondition(owner, TFCond_SpeedBuffAlly, 0.0001); // This is the most ugly fix i had to do, but i have no idea how to fix it otherwise.
-	}
-	*/
 	return MRES_Ignored;
 }
 
@@ -933,8 +925,11 @@ public void GB_Check_Ball(int client, int weapon, bool crit)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
+	float heatrefresh = 0.06;
+
+	heatrefresh /= Attributes_GetOnPlayer(client, 314, true, true);
 	
-	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+0.06;
+	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+heatrefresh;
 						
 	if (flChargeLevel >= 1.0) 
 	{
