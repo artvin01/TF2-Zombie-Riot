@@ -112,7 +112,8 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 					case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
 					{
 						float amount = 0.0;
-						switch(EliteLevel[GetHighestGladiiaClient()])
+						int elite = EliteLevel[GetHighestGladiiaClient()];
+						switch(elite)
 						{
 							case 1:
 							{
@@ -130,7 +131,15 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 						if(amount)
 						{
-							amount *= float(GetEntProp(client, Prop_Data, "m_iMaxHealth"));
+							int maxhealth = SDKCall_GetMaxHealth(client);
+							if(maxhealth > 1000)
+								maxhealth = 1000;
+							
+							if(f_TimeUntillNormalHeal[client] > GetGameTime())
+								amount *= 0.25;
+
+							amount *= float(maxhealth);
+
 							StartHealingTimer(client, 0.0, amount);
 
 							if(ParticleRef[client] == -1)

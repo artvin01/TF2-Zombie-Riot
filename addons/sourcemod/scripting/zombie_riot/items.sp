@@ -54,7 +54,7 @@ static bool b_ForceSpawnNextTime;
 void Items_PluginStart()
 {
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
-	RegConsoleCmd("zr_itemdebug", Items_DebugCmd);
+	//RegConsoleCmd("zr_itemdebug", Items_DebugCmd);
 }
 
 void Items_SetupConfig()
