@@ -1,0 +1,1168 @@
+"Phrases"
+{
+	"nothing Desc"
+	{
+		"en" 		"Example Text!"
+	}
+	"Allies"
+	{
+		"en" 		"Allies"
+	}
+	"Raid Bosses"
+	{
+		"en" 		"Raid Bosses"
+	}
+	"Special Enemies"
+	{
+		"en" 		"Special Enemies"
+	}
+	"Common Infection"
+	{
+		"en" 		"Common Infection"
+	}
+	"Blitz Controlled"
+	{
+		"en" 		"Blitz Controlled"
+	}
+	"Xeno Infection"
+	{
+		"en" 		"Xeno Infection"
+	}
+	"Medieval Empire"
+	{
+		"en" 		"Medieval Empire"
+	}
+	"Seaborn Infection"
+	{
+		"en" 		"Seaborn Infection"
+	}
+	"Bloons"
+	{
+		"en" 		"Bloons"
+	}
+	"Cry of Fear"
+	{
+		"en" 		"Cry of Fear"
+	}
+	"Seaborn Infection"
+	{
+		"en" 		"Seaborn Infection"
+	}
+	"Headcrab Zombie Desc"
+	{
+		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
+	}
+	"Fortified Headcrab Zombie Desc"
+	{
+		"en" 		"Stronger version of the normal Headcrab Zombie."
+	}
+	"Fast Zombie  Desc"
+	{
+		"en" 		"A very fast zombie that can also jump at you.\nTheir damage is low but they quickly pile up."
+	}
+	"Fortified Fast Zombie Desc"
+	{
+		"en" 		"Stronger version of the normal Fast Zombie."
+	}
+	"Torsoless Headcrab Zombie Desc"
+	{
+		"en" 		"A Zombie with his legs cut off, sentries cant hit him.\nTheir health and damage is lower then the normal counterpart."
+	}
+	"Poison Zombie Desc"
+	{
+		"en" 		"A Slow Zombie with alot of damage and health.\nHitting their head is quite easy."
+	}
+	"Fortified Poison Zombie Desc"
+	{
+		"en" 		"Stronger version of the normal Poison Zombie."
+	}
+	"Fortified Giant Poison Zombie Desc"
+	{
+		"en" 		"Giants that are extreamly slow but very heavy hitting, moreso then later waved ones."
+	}
+	"Father Grigori Desc"
+	{
+		"en" 		"Father Grigori from Ravenholm seems to have succumb to the zombie sideeffects.\nHe will shoot bullets and summon Lasers of holy light upon himself.\nOccasionally will throw out grandes towards you.He Enrages once he reaches half health."
+	}
+	"Metro Cop Desc"
+	{
+		"en" 		"Metro cops that have become zombies, they can shoot but also hit you with their bat."
+	}
+	"Metro Raider Desc"
+	{
+		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this zombie."
+	}
+	"Combine Rifler Desc"
+	{
+		"en" 		"Losing most of his cognitive function he is barely able to use his rifle.\nHe will still shoot you from time to time."
+	}
+	"Combine Shotgunner Desc"
+	{
+		"en" 		"Very fast and shooting zombies, any melee class will be eliminated quickly as their bullets dont get resisted by melee resistance."
+	}
+	"Combine Swordsman Desc"
+	{
+		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances (can be silenced) for a short time."
+	}
+	"Combine Elite Desc"
+	{
+		"en" 		"Combine Elites were able to slightly resist the cognitive deterioation.\nThey shoot and also fire combine energy balls.\nOverall a better Combine Rifler."
+	}
+	"Combine Giant Swordsman Desc"
+	{
+		"en" 		"Giant Combine Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies (can be silenced)."
+	}
+	"Combine DDT Desc"
+	{
+		"en" 		"Robot Build by the combine against the infection, sadly they also got infected.\nThey are very fast and hit rapidly.\nThey are the melee versions of the Combine shotgunners."
+	}
+	"Combine Golden Collos Desc"
+	{
+		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies (can be silenced)."
+	}
+	"Combine Overlord Desc"
+	{
+		"en" 		"He Leads the combines specifically on earth.\nAlthough all combine forces have been infected, including him.\n Resistance on pulse attack and rage (can be silenced)."
+	}
+	"Scout Assulter Desc"
+	{
+		"en" 		"Zombified Scout who is fast and attacks quickly too."
+	}
+	"Engineer Deconstructor Desc"
+	{
+		"en" 		"This zombie will deal heavy bonus damage to any building."
+	}
+	"Heavy Brawler Desc"
+	{
+		"en" 		"Heavy's are boosted in power by the infection.\nTheir pure power is incredible."
+	}
+	"Flying Armor Desc"
+	{
+		"en" 		"Mysterious flying magical armor from combine rome experiments. Somehow even this got infected.\nDuplicates on death (can be silenced)."
+	}
+	"Tiny Flying Armor Desc"
+	{
+		"en" 		"Magical armor's even split into smaller ones when dying. Any slow attacking weapon will be practically useless here."
+	}
+	"Kamikaze Demo Desc"
+	{
+		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death (can be silenced)."
+	}
+	"Medic Supporter Desc"
+	{
+		"en" 		"This medic will heal (can be silenced) any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerfull."
+	}
+	"Giant Heavy Brawler Desc"
+	{
+		"en" 		"Giant Versions from Merasmus's experiments, sadly they were infected aswell.\n Merasmus was able to escape before he got infected..."
+	}
+	"Spy Facestabber Desc"
+	{
+		"en" 		"These spies wont even try to backstab you and outright go for your forehead."
+	}
+	"Soldier Rocketeer Desc"
+	{
+		"en" 		"These soldiers seem to have retained the ability to shoot.\nProbably thanks to them already being idiots."
+	}
+	"Soldier Minion Desc"
+	{
+		"en" 		"Tiny minions from the boss, they are weak alone but in high numbers they will instakill everything."
+	}
+	"Soldier Giant Summoner Desc"
+	{
+		"en" 		"This is another boss Zombie, He spawns rockets and shoots them at you.\nEverytime he is hurt below another 10 Percent health he spawns 2 minions (can be silenced but once unsilenced, will release all summons at once)."
+	}
+	"Spy Thief Desc"
+	{
+		"en" 		"The infection seems to be boosting the powers of spies specifically."
+	}
+	"Spy Trickstabber Desc"
+	{
+		"en" 		"They backstab you no matter what. You cannot outturn the backstabbing."
+	}
+	"Half Cloaked Spy Desc"
+	{
+		"en" 		"The infection broke the cloak and thus transformed them into skeletons as the rest is invis.\nThey will shoot you once and then go in for the melee."
+	}
+	"Sniper Main Desc"
+	{
+		"en" 		"These snipers lost their function to snipe you.\nThey will spam you down via smg's instead, when losing enough health they will bring out their melee (can be silenced).\nThis melee deals heavy damage."
+	}
+	"Demoknight Main Desc"
+	{
+		"en" 		"They will jump just like fast zombies and deal heavy damage ontop of that.\nIf they fail to jump then they will have vast amounts of speed."
+	}
+	"Battle Medic Main Desc"
+	{
+		"en" 		"The Strongest Zombie that exists without any Modifications.\nMedics pure rage caused this with the infection."
+	}	
+	"Giant Pyro Main Desc"
+	{
+		"en" 		"Giant pyro's made by merasmus, the thought was flamethrower wielding zombie erasers.\nThis backfired. Literally."
+	}
+	"Combine Deutsch Ritter Desc"
+	{
+		"en" 		"An extreamly powerfull and tanky Combine german soldier. Its better to just run at this point."
+	}
+	"X10 Spy Main Desc"
+	{
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65% of the damage.\nDeadringer gives 90% resistance (resistsance can be silenced)."
+	}
+		
+	//XENO
+
+	"Xeno Headcrab Zombie Desc"
+	{
+		"en" 		"This zombie will reach very high speeds once hurt (can be silenced)."
+	}
+	"Xeno Fortified Headcrab Zombie Desc"
+	{
+		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater (can be silenced)."
+	}
+	"Xeno Fast Zombie Desc"
+	{
+		"en" 		"The first hit deals no damage at all. No matter how high (can be silenced)."
+	}
+	"Xeno Fortified Fast Zombie Desc"
+	{
+		"en" 		"Stronger version of the Xeno Fast Zombie (can be silenced)"
+	}
+	"Xeno Torsoless Headcrab Zombie Desc"
+	{
+		"en" 		"Still unable to be attacked by sentries relieably."
+	}
+	"Xeno Poison Zombie Desc"
+	{
+		"en" 		"Once hurt, they will gain massive resistances (resistance can be silenced) for 3 seconds, it can recharge so kill them quick."
+	}
+	"Xeno Fortified Poison Zombie"
+	{
+	    "en" 		"Stronger version of the Xeno Poison Zombie (can be silenced)."
+	}
+	"Xeno Fortified Giant Poison Zombie Desc"
+	{
+		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger (can be silenced)."
+	}
+	"Xeno Father Grigori Desc"
+	{
+		"en" 		"Xeno infection altered Grigori's powers and made him able to summon his lightbeams directly on you.\nHe ditched his grenade and shoots his rockets way faster."
+	}
+	"Xeno Metro Cop Desc"
+	{
+		"en" 		"Attacking these zombies will cause them to heavily anger and gain vast speeds."
+	}
+	"Xeno Metro Raider Desc"
+	{
+		"en" 		"When hurt, they will attack 10x as fast, shredding everything (can be silenced)."
+	}
+	"Xeno Combine Rifler Desc"
+	{
+		"en" 		"All their abilities have been enhanced by the Xeno infection."
+	}
+	"Xeno Combine Shotgunner Desc"
+	{
+		"en" 		"Faster and more deadly Shotgunners, they also attack 2x as fast as normal."
+	}
+	"Xeno Combine Swordsman Desc"
+	{
+		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies (can be silenced)."
+	}
+	"Xeno Combine Elite Desc"
+	{
+		"en" 		"Xeno infection didnt seem to alter much in this one."
+	}
+	"Xeno Combine Giant Swordsman Desc"
+	{
+		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies (can be silenced)."
+	}
+	"Xeno Combine DDT Desc"
+	{
+		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time (can be silenced)."
+	}
+	"Xeno Combine Golden Collos Desc"
+	{
+		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies (can be silenced)."
+	}
+	"Xeno Combine Overlord Desc"
+	{
+		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies (can be silenced).\n Rage reisstance is high (can be silenced)."
+	}
+	"Xeno Scout Assulter Desc"
+	{
+		"en" 		"Hurting these will cause scouts to go at insane speeds."
+	}
+	"Xeno Engineer Deconstructor Desc"
+	{
+		"en" 		"Their damage towards buildings got increaced by 3x times or more."
+	}
+	"Xeno Heavy Brawler Desc"
+	{
+		"en" 		"These heavies gain even stronger muscles due to the xeno radiation."
+	}
+	"Xeno Flying Armor Desc"
+	{
+		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one (can be silenced)."
+	}
+	"Xeno Tiny Flying Armor Desc"
+	{
+		"en" 		"Just stronger versions of the normal."
+	}
+	"Xeno Kamikaze Demo Desc"
+	{
+		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death (can be silenced)."
+	}
+	"Xeno Medic Supporter Desc"
+	{
+		"en" 		"They heal (can be silenced) twice as fast due to xeno compatability."
+	}
+	"Xeno Giant Heavy Brawler Desc"
+	{
+		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones (can be silenced) !"
+	}
+	"Xeno Spy Facestabber Desc"
+	{
+		"en" 		"Spy facestabbers are unaffected mostly."
+	}
+	"Xeno Soldier Rocketeer Desc"
+	{
+		"en" 		"They shoot faster and have more health.\nThey predict your movement aswell."
+	}
+	"Xeno Soldier Minion Desc"
+	{
+		"en" 		"Smol soldier :)"
+	}
+	"Xeno Soldier Giant Summoner Desc"
+	{
+		"en" 		"Shoots rockets every second it can, prepare for a barrage of rockets comming your way.\n(can be silenced but once unsilenced, will release all summons at once)"
+	}
+	"Xeno Spy Thief Desc"
+	{
+		"en" 		"Xeno infection seems to have little effect on spy enemies, why so?"
+	}
+	"Xeno Spy Trickstabber Desc"
+	{
+		"en" 		"Again almost no change.\nThis is suspicious."
+	}
+	"Xeno Half Cloaked Spy Desc"
+	{
+		"en" 		"Not even recolour, do spies have a special interaction with the xeno virus?"
+	}
+	"Xeno Sniper Main Desc"
+	{
+		"en" 		"Hurting them at all causes them to instantly wield their melee (can be silenced)."
+	}
+	"Xeno Demoknight Main Desc"
+	{
+		"en" 		"They Jump twice as much and hurt twice as hard."
+	}
+	"Xeno Battle Medic Main Desc"
+	{
+		"en" 		"Absolute crazed battle monsters. Once hurt they will go at RAPID speeds and attack VERY fast.\nIf not carefull, they will wipe you out in mere moments."
+	}
+	"Xeno Giant Pyro Main Desc"
+	{
+		"en" 		"Stronger, faster, hits harder."
+	}
+	"Xeno Combine Deutsch Ritter Desc"
+	{
+		"en" 		"Infected, the german Knights become even more powerfull."
+	}
+	"Xeno X10 Spy Main Desc"
+	{
+		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
+	}
+
+	"Nazi Panzer Desc"
+	{
+		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
+	}
+	"Bob the Overgod of gods and destroyer of multiverses Desc"
+	{
+		"en" 		"The Highest of the highest. Be glad that he is on your side."
+	}
+	"Revived Combine DDT Desc"
+	{
+		"en" 		"You were able to reanimate these contraptions."
+	}
+	"Spookmaster Boner Desc"
+	{
+		"en" 		"The boner and his funny honk."
+	}
+	"Cured Father Grigori Desc"
+	{
+		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20% off."
+	}
+	"Combine Mage Desc"
+	{
+		"en" 		"Combines that have the ability to wield magic.\nThe infection seems to alter their mindset..."
+	}
+	"Bloon Desc"
+	{
+		"en" 		"Default Bloon, pop it."
+	}
+	"Massive Ornery Air Blimp Desc"
+	{
+		"en" 		"A Moab with high health."
+	}
+	"Brutal Floating Behemoth Desc"
+	{
+		"en" 		"BFB, splits into multiple MOABS."
+	}
+	"Zeppelin of Mighty Gargantuaness Desc"
+	{
+		"en" 		"ZOMG, huge and devastates buildings, but slow."
+	}
+	"Dark Dirigible Titan Desc"
+	{
+		"en" 		"a DDT. Invis and having heavy resistances to most damage types."
+	}
+	"Big Airship of Doom Desc"
+	{
+		"en" 		"The Biggest of all Blimps! (for now...)"
+	}
+	"Golden Bloon Desc"
+	{
+		"en" 		"Its gold, money!"
+	}
+	"Bloonarius Desc"
+	{
+		"en" 		"High reistance and bloon spawning, more bloons at once = more resistance."	//change desc
+	}
+	"Medic Apprentice Mage Desc"
+	{
+		"en" 		"A medic with magical capeabilities."
+	}
+	"Sawrunner Desc"
+	{
+		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic..."
+	}
+	"True Fusion Warrior Desc"
+	{
+		"en" 		"A Superpowered Warrior with the abilities of many arts. He Gets stronger everytime he comes back. His halo is his powersource, headshots are neccecary, he is very tanky.\nCan you cure him?\nHis pull attack (can be silenced)."
+	}
+	"Medic Charger Desc"
+	{
+		"en" 		"A charging jumping Strong Medic Warrior."
+	}
+	"Medic Berserker Desc"
+	{
+		"en" 		"They seem to feed off of blood. \nThe lower heatlh he has, the deadlier he becomes."
+	}
+	"Militia Desc"
+	{
+		"en" 		"From the dark ages, a soldier with basic gear."
+	}
+	"Archer Desc"
+	{
+		"en" 		"A simple archer, capeable of fiering arrows at you."
+	}
+	"Man-At-Arms Desc"
+	{
+		"en" 		"An Upgraded militia, with better gear."
+	}
+	"Skirmisher Desc"
+	{
+		"en" 		"A throwing spearmen, has insane ranged resistance, better attack it with melee."
+	}
+	"Long Swordsman Desc"
+	{
+		"en" 		"Further upgrades for milita"
+	}
+	"Twohanded Swordsman Desc"
+	{
+		"en" 		"Further upgrades for milita"
+	}
+	"Crossbow Man Desc"
+	{
+		"en" 		"Predicts your movement with his arrows"
+	}
+	"Spearman Desc"
+	{
+		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nDeals 2x damage to enemies that have a building mounted."
+	}
+	"Hand Cannoneer Desc"
+	{
+		"en" 		"Deals high damage but cant predict you"
+	}
+	"Elite Skirmisher Desc"
+	{
+		"en" 		"An elite variant of the skirmisher, even more deadly!"
+	}
+	"Blitzkrieg Desc"
+	{
+		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport (can be silenced)."
+	}
+	"Pikeman Desc"
+	{
+		"en" 		"Stronger Spearman, deals 2x dmg to enemies that mounted a building"
+	}
+	"Medic Supperior Mage Desc"
+	{
+		"en" 		"A medic mage who decided to pay attention in magic class\nBeing close to this mage may not be healthy...\nUses a close range energy burst\nAnd uses a close range magic ion burst"
+	}
+	"Rebel Desc"
+	{
+		"en" 		"Survivor of zombies and outlaw of combines. Assist them and they will assist you."
+	}
+	"Eagle Scout Desc"
+	{
+		"en" 		"A fast aglie scout, similair to an eagle.\nWeak to melee and resistant to ranged attacks."
+	}
+	"Samurai Desc"
+	{
+		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25% extra damage to any non, melee player, and get angered if attacked by anything non melee."
+	}
+	"The Addiction Desc"
+	{
+		"en" 		"Kill zombies before him, otherwise he will gain major power, in nightmare this doesnt matter, youre in for a fight."
+	}
+	"The Doctor Desc"
+	{
+		"en" 		"Shoots and melees you, if he melees he will reload 1 bullet, he will buff allied zombies one at a time forever."
+	}
+	"Book Simon Desc"
+	{
+		"en" 		"Do not let him escape, do not let him down you."
+	}
+	"Kahmlstein Desc"
+	{
+		"en"		"A far distant battler, he doesnt care about chaos, he just wants to fight, you cant kill him, hell fake his death and just go away as he is bored."
+	}
+	"L4D2 Tank Desc"
+	{
+		"en"		"A tank from L4D2, he can throw barricades, people and even his own fellow npc's to kill you.\nBut he can hurt his own teammates."
+	}
+	"Holy Knight Desc"
+	{
+		"en"		"A derivitive of the Deutch ritters\nThese knights decided to study magic while also studying to become a knight"
+	}
+	"Sniper Railgunner Desc"
+	{
+		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots (can be silenced)."
+	}
+	"Soldier Barrager Desc"
+	{
+		"en"		"A Soldier who is somewhat inteligent\nHe runs away when his clip is empty and has the ability to load multiple rockets"
+	}
+	"Capped Ram Desc"
+	{
+		"en"		"takes 0.01% dmg from ranged attacks and does high damage to barricades."
+	}
+	"The Shit Slapper Desc"
+	{
+		"en"		"An unusually large torsoless zombie\nits been nick-named ''The Shit Slapper'' by people who have encountered it"
+	}
+	"Basic Bones Desc"
+	{
+		"en"		"Weakest of the spook master gang."
+	}
+	"Mecha Engineer Desc"
+	{
+		"en"		"A rouge mechanical engineer, a part of the ''Last Hope'' project"
+	}
+	"Mecha Heavy Desc"
+	{
+		"en"		"A rouge mechanical heavy, a part of the ''Last Hope'' project"
+	}
+	"Mecha Giant Heavy Desc"
+	{
+		"en"		"A rouge giant mechanical heavy, a part of the ''Last Hope'' project"
+	}
+	"Mecha Giant Pyro Desc"
+	{
+		"en"		"A rouge giant mechanical pyro, a part of the ''Last Hope'' project"
+	}
+	"Mecha Scout Desc"
+	{
+		"en"		"A rouge mechanical scout, a part of the ''Last Hope'' project"
+	}
+	"Donnerkrieg Desc"
+	{
+		"en"		"A minnion of Blitzkrieg, he has mastered the art of light and energy\nThanks to those arts he posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs"
+	}
+	"Schwertkrieg Desc"
+	{
+		"en"		"A minnion of Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
+	}
+	"Phantom Knight Desc"
+	{
+		"en"		"A phantom knight, he is slow, he has the ability to teleport behind you, he can make clones of himself which are weaker compared to the main host. Highly dangerous up close."
+	}
+	"Medic Constructor Desc"
+	{
+		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies (can be silenced)."
+	}
+	"Gambler Desc"
+	{
+		"en"	"Currently WIP"
+	}
+	"Pablo Gonzales Desc"
+	{
+		"en"	"Currently WIP"
+	}
+	"Doktor Medick Desc"
+	{
+		"en"	"Currently WIP"
+	}
+	"Eternal Kaptain Heavy Desc"
+	{
+		"en"	"Currently WIP"
+	}
+	"Booty Executioner Desc"
+	{
+		"en"	"Currently WIP"
+	}
+	"Sandvich Slayer Desc"
+	{
+		"en"	"Currently WIP"
+	}
+	"Bunker Kahmlstein Desc"
+	{
+		"en"		"Bunker Kahmlstein"
+		"ru"		"Бункерный Кахмльштайн"
+	}
+	"Zerofuse Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Bunker Bot Soldier Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Bunker Bot Sniper Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Bunker Skeleton Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Bunker Small Skeleton Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Bunker Skeleton King Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Bunker Headless Horseman Desc"
+	{
+		"en"		"Currently WIP"
+	}
+	"Medival Scout Desc"
+	{
+		"en"		"Very quick and ranged reistant."
+	}
+	"Medival Villager Desc"
+	{
+		"en"		"A villager who somehow made it into modern times, he builds a village that constantly spawns warrior's akin to its own era."
+	}
+	"Building Desc"
+	{
+		"en"		"A building built by the villager, somehow this building containts an infinite amount of enemies inside, it also has the ability to shoot anyone near it"
+	}
+	"Medival Construct Desc"
+	{
+		"en"		"A giant Mythical creature, it will consume buildings at rapid paces and heal itself off them."
+	}
+	"Champion Desc"
+	{
+		"en"		"Strongest of the milita lines, usually used for elite fighting arenas."
+	}
+	"Light Cavalry Desc"
+	{
+		"en"		"Upgraded Ridden Scout."
+	}
+	"Hussar Desc"
+	{
+		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10% more dmg and resistance (can be silenced)."
+	}
+	"Knight Desc"
+	{
+		"en"		"Has high health but is slower then average cav."
+	}
+	"Obuch Desc"
+	{
+		"en"		"Attacks faster the more he attacks the same enemy."
+	}
+	"Monk Desc"
+	{
+		"en"		"Heals allies instantly in his damage radius instantly to full (can be silenced)."
+	}
+	"Cavalary Desc"
+	{
+		"en"		"A more tough knight."
+	}
+	"Paladin Desc"
+	{
+		"en"		"A more tough Cavalary."
+	}
+	"Crossbow Giant Desc"
+	{
+		"en"		"Deals extreme damage and attackspeed, but is very slow."
+	}
+	"Swordsman Giant Desc"
+	{
+		"en"		"Deals extreme damage and attackspeed, but is very slow.\nResistant to melee, do not melee."
+	}
+	"Mounted Archer Desc"
+	{
+		"en"		"an archer on a horse, fast and hard to run from."
+	}
+	"Eagle Warrior Desc"
+	{
+		"en"		"High speed, and range resistant."
+	}
+	"Giant Eagle Warrior Desc"
+	{
+		"en"		"Giant version of eagle warriors, they have high knockback."
+	}
+	"Son Of Osiris Desc"
+	{
+		"en"		"Is immune to most debuffs and weaknesses.\nChain lighting will damage all allies around you, the more it chains, the more damage it deals."
+	}
+	"Achilles Desc"
+	{
+		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
+	}
+	"Medival Abalest Desc"
+	{
+		"en"		"Short range, faster attacking high damage archers."
+	}
+	"Medival Brawler Desc"
+	{
+		"en"		"Shows up shortly, deals high fast melee punches."
+	}
+	"Medival Longbowmen Desc"
+	{
+		"en"		"Longrange, high damage archers."
+	}
+	"Medival Halberdier Desc"
+	{
+		"en"		"Final upgrade line to the spearmen."
+	}
+	"Medival Elite Longbowmen Desc"
+	{
+		"en"		"Upgraded longbowmen."
+	}
+	"Trebuchet Desc"
+	{
+		"en"		"Deals extreme damage to buildings and players, but is unmoving.\nDo not let it hit its attacks, it will instantly devistate anything."
+	}
+	"Ikunagae Desc"
+	{
+		"en"		"High amounts of abilities to throw magic bolts, beware."
+	}
+	"Mecha Soldier Barrager Desc"
+	{
+		"en"		"Loads a bunch of rockets and then attacks you."
+	}
+	"Nearl Radiant Sword Desc"
+	{
+		"en"		"A distacting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
+	}
+	"Spawned Combine Desc"
+	{
+		"en"		"Unknown creature, caused by something, giving it immunity to damage.\nCan only attack by seeing you and more so hates monks."
+	}
+	"Spawned Father Grigori Desc"
+	{
+		"en"		"A different kind of infection on Father Grigori. Silent man.\nCan only attack by attacking or blocking him and loses immunity with the fall of Combines."
+	}
+	"Spawned Blue Goggles Desc"
+	{
+		"en"		"Switches between going a charger melee with limited seeing range.\nAnd a standing still infinite range sniper.\nPrehaps stopping him before Wave 60 yields a different result?"
+	}
+	"Silvester Desc"
+	{
+		"en"		"The superpowered warrior returns but something is up. You cured him yes?\nHe brought along a friend this time to help.\nLaser resistance (can be silenced)."
+	}
+	"Blue Goggles Desc"
+	{
+		"en"		"A friend to Silvester and a gunslinger to various weapons and support tools.\nWhat are they doing fighting you?\nSniper attack prediction (can be silenced)."
+	}
+	"Angeled Silvester Desc"
+	{
+		"en"		"A higher tier form of Silvester, what is this, magic or technology?\nWhere does he come from?"
+	}
+	"Nemesis Desc"
+	{
+		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+	}
+	"Shell Sea Runner Desc"
+	{
+		"en"		"A very fast sea creature that can dodge sentry fire.\n''A Sea Terror that grew four limbs, but lacks an internal skeleton.''\n''It seems to have once hunted quadrupeds on land.''"
+	}
+	"Nourished Runner Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that grew four limbs and has sated its hunger.''\n''It controls its body's movements using hydraulic pressure and possesses superior reflexes.''"
+	}
+	"Deep Sea Slider Desc"
+	{
+		"en"		"Attacks inflict armor erosion.\n''A Sea Terror that crawled onto the shore.''\n''It brandishes its tough appendages menacingly.''"
+	}
+	"Nourished Slider Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that crawled onto the shore and has sated its hunger.''\n''Its appendages can cause protein denaturation.''"
+	}
+	"Ridge Sea Spitter Desc"
+	{
+		"en"		"Fires projectiles with no prediction.\n''A mysterious Sea Terror.''\n''In the sea, it can spit at even greater speeds, fast enough to destroy reefs.''"
+	}
+	"Nourished Spitter Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A mysterious Sea Terror that has sated its hunger.''\n''Its spit is a way to deal with natural disasters, rather than as a means of hunting.''"
+	}
+	"Basin Sea Reaper Desc"
+	{
+		"en"		"Starts passive and slow, enrages damaged enough. Rage increases speed and causes AOE armor erosion.\n''A Sea Terror that emits ear-splitting screeches.''\n''Should its nourishment be interrupted, it will immediately counterattack any nearby threats, until all other signs of life have ceased.''"
+	}
+	"Nourished Reaper Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that emits ear-splitting screeches and has sated its hunger.''\n''It is essentially harmless if you don't disturb it.''"
+	}
+	"Pocket Sea Crawler Desc"
+	{
+		"en"		"When taken enough damage, will cause an AOE damage and armor erosion attack.\n''A Sea Terror imbued with impurities.''\n''The density of its body tissue surpasses that of some alloys.''\n''Victims stabbed by it will feel as if they have been set alight.''"
+	}
+	"Nourished Crawler Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror imbued with impurities that has had its hunger sated.''\n''Such Sea Terrors are rarely seen nowadays, as they are gradually evolving to become more nimble.''"
+	}
+	"Primal Sea Piercer Desc"
+	{
+		"en"		"Long range, avoids enemy fire, and ignores resistances.\n''A Sea Terror that grew a solid organ.''\n''The other parts of its body seem to be forming impregnable outer spikes.''"
+	}
+	"Nourished Piercer Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that grew a solid organ and has had its hunger sated.''\n''It sways gently beneath the moonlight.''"
+	}
+	"The First To Talk Desc"
+	{
+		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\n''The first beautiful living being to speak human language before civilized man.''\n''Seaborn.''"
+	}
+	"Sal Viento Bishop Quintus Desc"
+	{
+		"en"		"Fires multiple projectiles at targets with highest resistance.\nWill cause AOE attacks with more time alive.\n''A member of the Church of the Deep who snuck into disaster-ravaged Iberia.''\n''He changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.''\n''Then again, who could?''"
+	}
+	"Armorless Union Knight Desc"
+	{
+		"en"		"Melee attacks get parried, dodge!"
+	}
+	"Roar Knightclub Trainee Desc"
+	{
+		"en"		"High flat shield damage reduction for a time on spawning."
+	}
+	"Bloodboil Knightclub Trainee Desc"
+	{
+		"en"		"Gets more and more powerfull each time an ally dies around it, dont let it get angry."
+	}
+	"Armorless Union Cleanup Squad Desc"
+	{
+		"en"		"Invis from afar and deal immensive damage."
+	}
+	"Consumable Remains Desc"
+	{
+		"en"		"Ready to be eaten by we many."
+	}
+	"The Endspeaker, Will of We Many Desc"
+	{
+		"en"		"Starts weak with no attacks but evolves from it's last standing spot.\nConsumes remains on the field to gain it's effects.\n''The tiny Seaborn that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.''\n''The revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.''"
+	}
+	"Nethersea Founder Desc"
+	{
+		"en"		"Range resistant, drops Nethersea Brand on death without silence or levitation.\n''A Sea Terror that has inexplicably grown a chitinous skull.''\n''There is no corresponding organ to be found beneath it.''"
+	}
+	"Nourished Founder Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that generally only metamorphoses within an abundance of the nethersea brand.''\n''They can on exceptionally rare occasions be born from the remains of their multiple kin.''"
+	}
+	"Regressed Founder Desc"
+	{
+		"en"		"Drops remains, when consumed, provides range resistance.\n''A special individual among the Founders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+	}
+	"Nethersea Predator Desc"
+	{
+		"en"		"Dodges when not stunned, frozen, or silenced.\nIgnores buildings while on Nethersea Brand.\n''A Sea Terror that has learned to use its chitinous skull to deal physical attacks, storing scraps of food in its body comprised of countless tiny creatures.''"
+	}
+	"Nourished Predator Desc"
+	{
+		"en"		"An upgraded variant with more damage, health, and evasion.\n''A Sea Terror that has learned to hunt efficiently.''\n''They themselves do not appear to require nutrients, instead reserving them for their lower-level kin.''\n''Before they die, they turn themselves into one last food source.''"
+	}
+	"Regressed Predator Desc"
+	{
+		"en"		"Drops remains, when consumed, provides a 50% dodge chance.\n''A special individual among the Predators.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+	}
+	"Nethersea Brandguider Desc"
+	{
+		"en"		"When below half health, constantly drops Nethersea Brand, gains melee resistance, ignores buildings.\n''A new type of Sea Terror formed from a colony that was about to decay and die.''\n''In order to effectively utilize the last bit of nutrients in their bodies, all they need to do is smear themselves across the ground.''"
+	}
+	"Nourished Brandguider Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''Even if not on the verge of death, they will still choose to expand the survival range of their kin using their own flesh and blood.''\n''Reminiscent of the Bishop's final journey back to Iberia.''"
+	}
+	"Regressed Brandguider Desc"
+	{
+		"en"		"Drops remains, when consumed and below 40% health, provides melee resistance and ignore buildings.\n''A special individual among the Brandguiders.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+	}
+	"Armorless Union Assassin Desc"
+	{
+		"en"		"Gets more damage the more he stays invis, deals one massive blow afterwards."
+	}
+	"Nethersea Spewer Desc"
+	{
+		"en"		"Attacks 3 targets at once with poor range.\nCan fire at targets on Nethersea Brand.\n''Possesses a hard, chitinous shell that it uses to protect itself, possibly capable of sporulation or a similar function.''\n''A commonly seen Sea Terror where the nethersea brand proliferates.''"
+	}
+	"Nourished Spewer Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror that has largely lost control of its functions, spewing out its spore-like progeny at a rate that surpasses its physical capacity, causing it to wear itself out prematurely.''"
+	}
+	"Regressed Spewer Desc"
+	{
+		"en"		"Drops remains, when consumed, provides AOE attacks.\n''A special individual among the Spewers.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+	}
+	"Nethersea Swarmcaller Desc"
+	{
+		"en"		"Deals constant AOE damage, immune to slow, and resistant to status effects.\n''A rare Sea Terror, able to manipulate the tiny creatures in the air and on the ground to eat away at their surroundings even in the absence of the nethersea brand.''\n''They seem to call the brand itself to life, hence their name.''"
+	}
+	"Nourished Swarmcaller Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A special and extremely-rare individual, boasting incredible destructive power and far-reaching transmission range.''\n''They are unable to be dealt with through conventional means, Inquisitors must be extra vigilant around them.''"
+	}
+	"Regressed Swarmcaller Desc"
+	{
+		"en"		"Drops remains, when consumed, provides immunity to slow and resistance to status effect.\n''A special individual among the Swarmcallers.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+	}
+	"Nethersea Reefbreaker Desc"
+	{
+		"en"		"Gains increased attack the more it attacks, decays over time when passive.\nGains camo while on Nethersea Brand.\n''An extremely aggressive individual born from the nethersea brand, capable of inflicting tremendous damage to its surrounding environment for its kin to transform.''\n''Lifeforms not considered kin fall under this category.''"
+	}
+	"Nourished Reefbreaker Desc"
+	{
+		"en"		"An upgraded variant with more damage and health.\n''A Sea Terror born from the nethersea brand, used to expel entities that pose a significant threat to its kin, or to completely destroy environments unsuitable for sustaining life.''\n''All civilizations on land fall under this category.''"
+	}
+	"Regressed Reefbreaker Desc"
+	{
+		"en"		"Drops remains, when consumed, provides increased attack the more it attacks, decays over time when passive.\n''A special individual among the Reefbreakers.''\n''Heeding the call of We Many, its body is ready to be preyed upon.''"
+	}
+	"Thorns Desc"
+	{
+		"en"		"Last hope against the deep sea.\nHas an ability when attacking enough, regens out of battle."
+	}
+	"God Arkantos Desc"
+	{
+		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (silence will make him unable to buff himself when buffing allies)."
+	}
+	"Seaborn Scout Desc"
+	{
+		"en"		"Very fast movement speed, inflicting armor erosion.\n''Seaborn infects those, they may still appear human.''"
+	}
+	"Seaborn Soldier Desc"
+	{
+		"en"		"Upon a kill, duplicates into three more and restores all health when not silenced.\n''To those, they spread onto others, continuing the chain.''"
+	}
+	"Seaborn Pyro Desc"
+	{
+		"en"		"Ignites targets on hit, explodes on death when not silenced.\n''Even if it means death upon those infected.''"
+	}
+	"Seaborn Demoman Desc"
+	{
+		"en"		"Explodes on death, hitting a target kills itself, can both be silenced.\n''But through death shall it live on, through the sea.''"
+	}
+	"Seaborn Heavy Desc"
+	{
+		"en"		"Gains resistance to either melee or ranged when damaged by the corresponding type, loses other type.\n''We adapt to what comes, sharing the knowledge.''"
+	}
+	"Seaborn Engineer Desc"
+	{
+		"en"		"Targets a random building, disabling it and deals armor erosion over time.\n''Not even man kind's technology can surpass We Many.''"
+	}
+	"Seaborn Medic Desc"
+	{
+		"en"		"Buffs all active seaborn while not silenced, stacks with others.\n''We Many makes us strong, together as one.''"
+	}
+	"Seaborn Sniper Desc"
+	{
+		"en"		"First hit applies Jarate debuff on the target.\n''Through weaking dread on man, We Many will stand.''"
+	}
+	"Seaborn Spy Desc"
+	{
+		"en"		"Gains camo when not attacking for several seconds when not debuffed.\n''From the deep sea, We Many will rise.''"
+	}
+	"Citizen Desc"
+	{
+		"en"		"NEED DESC"
+	}
+	"Barracks Railgunner Desc"
+	{
+		"en"		"Heavy damage on attack, far ranged ally"
+	}
+	"Barracks Basic Mage Desc"
+	{
+		"en"		"Basic unit to blar the enemy with"
+	}
+	"Barracks Intermediate Mage Desc"
+	{
+		"en"		"Stronger basic mage"
+	}
+	"Barracks Ikunagae Desc"
+	{
+		"en"		"Ikunake made ally, now he will magic bolt the enemy to death instead."
+	}
+	"Barracks SchwertKrieg Desc"
+	{
+		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+	}
+	"Barracks Donnerkrieg Desc"
+	{
+		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+	}
+	"Barracks Holy Knight Desc"
+	{
+		"en"		"Extreme strength and magic abilities."
+	}
+	"Barracks Mecha Barrager Desc"
+	{
+		"en"		"Good ambush or barricade defense."
+	}
+	"Barracks Barrager Desc"
+	{
+		"en"		"Good ambush or barricade defense."
+	}
+	"Barracks Berserker Desc"
+	{
+		"en"		"Strong fodder unit to rush enemies with."
+	}
+	"Barracks Crossbow Medic Desc"
+	{
+		"en"		"Far ranged ally, unused unit from blitz's army, why was it unused?"
+	}
+	"The Last Knight Desc"
+	{
+		"en"		"Attacks enemies and allies.\nDealing damage to The Last Knight applies freeze buff for one second (two when below 3/5 HP).\nDeals extra damage to frozen targets. Ignores buildings when below 1/5 HP.\n''The basis of a well-known folk tale in Kazimierz.''\n''The past died on the land, and neither the present nor the future have any meaning.''\n''Only the ocean, kill the ocean.''"
+	}
+	"Tide-Hunt Knight Desc"
+	{
+		"en"		"NEED DESC"
+	}
+	"Saint Carmen Desc"
+	{
+		"en"		"Attacks enemies and allies.\nHits levitate the target and deals extra hit of True damage.\n''The last surviving Saint of Iberia, living well past mortal life expectancy.''\n''His longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.''"
+	}
+	"Pathshaper Desc"
+	{
+		"en"		"Attacking and taking damage will spawn a Pathshaper Fractal.\nOn death, kills all Pathshaper Fractals.\n''Seaborn tasked with exploring evolutionary pathways, its fractals mapping out dead ends so that we many can stay on the right path.''"
+	}
+	"Pathshaper Fractal Desc"
+	{
+		"en"		"Attacking will spawn a Pathshaper Fractal, loses health over time.\n''Fractals left behind by the Seaborn Pathshaper.''\n''Illusions must eventually vanish.''\n''The path is not clear.''\n''Search on, search on.''"
+	}
+	"Barracks Teutonic Knight Desc"
+	{
+		"en"		"Immensive strength thanks to your castle."
+	}
+	"Barracks Villager Desc"
+	{
+		"en"		"Builds a tower, repairs, and gatheres resoruces."
+	}
+	"Barracks Building Desc"
+	{
+		"en"		"A tower on your side."
+	}
+	"Tidelinked Bishop Desc"
+	{
+		"en"		"When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max.\n''A bishop that has partially mutated.''\n''It is partly human, partly—''"
+	}
+	"Tidelinked Archon Desc"
+	{
+		"en"		"When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max.\n''—Sea Terror. Even AEgir technology has a role to play in the evolution of we many.''"
+	}
+	"Scientific Witchery Desc"
+	{
+		"en"	"Experiemental, created by donner and schwert to assist you."
+	}
+	"Ishar'mla, Heart of Corruption Desc"
+	{
+		"en"		"Heals and buffs nearby seaborn, partially ignores Regrow Blocker.\nGains power over time, boosted by standing on Nethersea Brands.\nWhen at full power, will transform into a Leviathan.\nLeviathan will instead deal AOE damage that ignores resistances.\n''It speaks for we many.''"
+	}
+	"Seaborn Guard Desc"
+	{
+		"en"		"Deals critical damage on it's 3rd hit.\n''They infect, swarming us like hell. What can we do now?''"
+	}
+	"Seaborn Defender Desc"
+	{
+		"en"		"Resists a certain damage type depending on the wave.\n''I feel... so weak...''"
+	}
+	"Seaborn Vanguard Desc"
+	{
+		"en"		"Grants increased movement speed to all enemies while alive, stacks with others.\n''We must stick together, or is it that what he wants.''"
+	}
+	"Seaborn Caster Desc"
+	{
+		"en"		"Deals AOE damage that ignores resistances.\n''No, no. I can't be them, I can't!''"
+	}
+	"Seaborn Specialist Desc"
+	{
+		"en"		"Spawns to a seaborn with lowest precentage health.\n''I'm not infected, I'm not seaborn! Please god!''"
+	}
+	"Seaborn Supporter Desc"
+	{
+		"en"		"Spawns Nourished Runner drones while alive.\n''I'm not We Many, I'm not We Many, We Many, We Many...''\n''...''\n''...''\n''Sea... the sea of we many...''"
+	}
+	"Theocracy Desc"
+	{
+		"en"		"NEED DESC"
+	}
+	"Benera Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Pental Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Defanda Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Selfam Ire Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Vaus Magica Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Pistoleer Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Diversionistico Desc"
+	{
+		"en" 		"NEED DESC"
+	}
+	"Adiantum Desc"
+	{
+		"en"	"NEED DESC"
+	}
+	"Lanius Desc"
+	{
+		"en"	"NEED DESC"
+	}
+	"Magia Desc"
+	{
+		"en"	"NEED DESC"
+	}
+	"Heavy Punuel Desc"
+	{
+		"en"	"NEED DESC"
+	}
+	"Seargent Ideal Desc"
+	{
+		"en"	"NEED DESC"
+	}
+	"VIP Building, The Objective Desc"
+	{
+		"en"	"Tower defense objective, defend it, if it dies you lose!"
+	}
+}

@@ -10,6 +10,7 @@
 #define DATATABLE_LOADOUT	"zr_loadout"
 #define DATATABLE_MISC		"zr_misc"
 #define DATATABLE_SETTINGS	"zr_settings"
+#define DATATABLE_GIFTITEM	"zr_giftitems"
 
 static Database Local;
 static Database Global;
@@ -23,6 +24,8 @@ void Database_PluginStart()
 	Database_LocalConnected(db, error);
 	
 	Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
+
+	RegServerCmd("zr_convert_from_textstore", DBCommand);
 }
 
 bool Database_Escape(char[] buffer, int length, int &bytes)
@@ -114,6 +117,11 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "tp INTEGER NOT NULL DEFAULT 0, "
 		... "zomvol FLOAT NOT NULL DEFAULT 0.0);");
 		
+		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_GIFTITEM ... " ("
+		... "steamid INTEGER NOT NULL, "
+		... "level INTEGER NOT NULL, "
+		... "flags INTEGER NOT NULL);");
+		
 		db.Execute(tr, Database_GlobalSetup, Database_FailHandle, db);
 	}
 	else
@@ -159,6 +167,9 @@ static void GlobalClientAuthorized(int id, int userid)
 		tr.AddQuery(buffer);
 
 		FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_SETTINGS ... " WHERE steamid = %d;", id);
+		tr.AddQuery(buffer);
+
+		FormatEx(buffer, sizeof(buffer), "SELECT * FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
 		tr.AddQuery(buffer);
 		
 		Global.Execute(tr, Database_GlobalClientSetup, Database_Fail, userid);
@@ -240,6 +251,17 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			FormatEx(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SETTINGS ... " (steamid) VALUES (%d)", GetSteamAccountID(client));
 			tr.AddQuery(buffer);
 		}
+		
+		Items_ClearArray(client);
+		while(results[3].MoreRows)
+		{
+			if(results[3].FetchRow())
+			{
+				Items_AddArray(client, results[3].FetchInt(1), results[3].FetchInt(2));
+			}
+		}
+
+		Store_OnCached(client);
 
 		if(tr)
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
@@ -303,6 +325,16 @@ void DataBase_ClientDisconnect(int client)
 			id);
 
 			tr.AddQuery(buffer);
+
+			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+			tr.AddQuery(buffer);
+			
+			int level, flags;
+			for(int i; Items_GetNextItem(client, i, level, flags); i++)
+			{
+				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				tr.AddQuery(buffer);
+			}
 
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
 		}
@@ -600,4 +632,101 @@ public void Database_FailHandle(Database db, any data, int numQueries, const cha
 {
 	LogError("[Database_FailHandle] %s", error);
 	CloseHandle(data);
+}
+
+static Database TSDB;
+
+public Action DBCommand(int args)
+{
+	PrintToServer("Connecting to textstore...");
+	Database.Connect(Database_TSConnected, "textstore");
+	return Plugin_Handled;
+}
+
+public void Database_TSConnected(Database db, const char[] error, any data)
+{
+	if(db)
+	{
+		TSDB = db;
+
+		PrintToServer("Grabbing textstore items...");
+		
+		Transaction tr = new Transaction();
+		
+		tr.AddQuery("SELECT * FROM common_items;");
+		
+		TSDB.Execute(tr, Database_TSConvert, Database_Fail);
+	}
+	else
+	{
+		PrintToServer("Failed..!");
+	}
+}
+
+public void Database_TSConvert(Database db, any userid, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	PrintToServer("Processing data...");
+
+	ArrayList list = new ArrayList(sizeof(OwnedItem));
+	OwnedItem item1, item2;
+	char buffer[256];
+
+	while(results[0].MoreRows)
+	{
+		if(results[0].FetchRow())
+		{
+			item1.Client = results[0].FetchInt(0);
+			
+			results[0].FetchString(1, buffer, sizeof(buffer));
+
+			if(results[0].FetchInt(2))
+			{
+				int id = Items_NameToId(buffer);
+				if(id != -1)
+				{
+					item1.Level = id / 31;
+					item1.Flags = 1 << (id % 31);
+					
+					bool found;
+					int length = list.Length;
+					for(int i; i < length; i++)
+					{
+						list.GetArray(i, item2);
+						if(item1.Client == item2.Client && item1.Level == item2.Level)
+						{
+							item2.Flags |= item1.Flags;
+							list.SetArray(i, item2);
+							found = true;
+							break;
+						}
+					}
+
+					if(!found)
+						list.PushArray(item1);
+				}
+			}
+		}
+	}
+
+	Transaction tr = new Transaction();
+
+	tr.AddQuery("DELETE FROM " ... DATATABLE_GIFTITEM ... ";");
+
+	int length = list.Length;
+	for(int i; i < length; i++)
+	{
+		list.GetArray(i, item1);
+		
+		Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", item1.Client, item1.Level, item1.Flags);
+		tr.AddQuery(buffer);
+	}
+
+	Global.Execute(tr, Database_TSSuccess, Database_Fail);
+
+	PrintToServer("Sending data...");
+}
+
+public void Database_TSSuccess(Database db, any userid, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	PrintToServer("Finished..!");
 }

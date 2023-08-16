@@ -1,7 +1,7 @@
 #include <sourcemod>
 
 #include <morecolors>
-#include <textstore> // TextStore is required for RPG unlike ZR
+#include <textstore>
 #include <loadsoundscript>
 
 #define RPG

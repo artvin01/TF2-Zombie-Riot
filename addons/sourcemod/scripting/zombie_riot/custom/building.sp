@@ -6801,7 +6801,7 @@ void CheckSummonerUpgrades(int client)
 		SupplyRate[client] += 10;
 	
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = (CivType[client] || HasNamedItem(client, "Medieval Crown"));
+	MedievalUnlock[client] = (CivType[client] || Items_HasNamedItem(client, "Medieval Crown"));
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 }
 

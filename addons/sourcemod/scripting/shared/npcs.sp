@@ -2197,7 +2197,7 @@ void NPC_DeadEffects(int entity)
 			
 #if defined ZR
 			GiveXP(client, 1);
-			GiveNamedItem(client, NPC_Names[i_NpcInternalId[entity]]);
+			Items_GiveNPCKill(client, i_NpcInternalId[entity]);
 			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			
@@ -2210,29 +2210,6 @@ void NPC_DeadEffects(int entity)
 		}
 	}
 }
-
-#if defined ZR
-void GiveNamedItem(int client, const char[] name)
-{
-	if(name[0] && GetFeatureStatus(FeatureType_Native, "TextStore_GetItems") == FeatureStatus_Available)
-	{
-		int length = TextStore_GetItems();
-		for(int i; i<length; i++)
-		{
-			static char buffer[64];
-			TextStore_GetItemName(i, buffer, sizeof(buffer));
-			if(StrEqual(buffer, name, false))
-			{
-				int amount;
-				TextStore_GetInv(client, i, amount);
-				TextStore_SetInv(client, i, amount + 1);
-				TextStore_Cash(client, 1);
-				break;
-			}
-		}
-	}
-}
-#endif
 
 stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false)
 {

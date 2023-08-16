@@ -193,22 +193,22 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 		switch(x)
 		{
 			case 0:
-				endPos[0] += 20.0;
+				endPos[0] += 5.0;
 
 			case 1:
-				endPos[0] -= 20.0;
+				endPos[0] -= 5.0;
 
 			case 2:
-				endPos[0] += 30.0;
+				endPos[0] += 10.0;
 
 			case 3:
-				endPos[0] -= 30.0;
+				endPos[0] -= 10.0;
 
 			case 4:
-				endPos[0] += 40.0;
+				endPos[0] += 25.0;
 
 			case 5:
-				endPos[0] -= 40.0;	
+				endPos[0] -= 25.0;	
 		}
 		for (int y = 0; y < 7; y++)
 		{
@@ -220,22 +220,22 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 			switch(y)
 			{
 				case 1:
-					endPos[1] += 20.0;
+					endPos[1] += 5.0;
 
 				case 2:
-					endPos[1] -= 20.0;
+					endPos[1] -= 5.0;
 
 				case 3:
-					endPos[1] += 30.0;
+					endPos[1] += 10.0;
 
 				case 4:
-					endPos[1] -= 30.0;
+					endPos[1] -= 10.0;
 
 				case 5:
-					endPos[1] += 40.0;
+					endPos[1] += 25.0;
 
 				case 6:
-					endPos[1] -= 40.0;	
+					endPos[1] -= 25.0;	
 			}
 
 			for (int z = 0; z < 7; z++)
@@ -248,22 +248,22 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 				switch(z)
 				{
 					case 1:
-						endPos[2] += 20.0;
+						endPos[2] += 5.0;
 
 					case 2:
-						endPos[2] -= 20.0;
+						endPos[2] -= 5.0;
 
 					case 3:
-						endPos[2] += 30.0;
+						endPos[2] += 10.0;
 
 					case 4:
-						endPos[2] -= 30.0;
+						endPos[2] -= 10.0;
 
 					case 5:
-						endPos[2] += 40.0;
+						endPos[2] += 25.0;
 
 					case 6:
-						endPos[2] -= 40.0;	
+						endPos[2] -= 25.0;	
 				}
 				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 					FoundSafeSpot = true;

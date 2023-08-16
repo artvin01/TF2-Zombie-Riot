@@ -223,7 +223,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
-							GiveNamedItem(client, "Head Equipped Blue Goggles");
+							Items_GiveNamedItem(client, "Head Equipped Blue Goggles");
 							CPrintToChat(client, "{default}You gained his favor, you obtained: {blue}''Head Equipped Blue Goggles''{default}!");
 						}
 					}

@@ -7908,6 +7908,10 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 	int ref;
 	
 	Handle hTrace;
+	if(entity <= MaxClients)	// Clients
+	{
+		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+	}
 	if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);

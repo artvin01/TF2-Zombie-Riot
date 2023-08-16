@@ -476,7 +476,7 @@ enum struct Item
 	bool NPCSeller_First;
 	int NPCWeapon;
 	bool NPCWeaponAlways;
-	char TextStore[64];
+	int GiftId;
 	
 	bool GetItemInfo(int index, ItemInfo info)
 	{
@@ -534,27 +534,10 @@ static bool HasMultiInSlot[MAXTF2PLAYERS][6];
 static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 
 #if defined ZR
-public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
+void Store_OnCached(int client)
 {
-	RequestFrame(TextStore_LoadFrame, GetClientUserId(client));
-	return Plugin_Continue;
-}
-
-public void TextStore_LoadFrame(int userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(client)
-	{
-		//if(TextStore_GetClientLoad(client))
-		{
-			if(!CashSpent[client] && HasNamedItem(client, "ZR Contest Nominator [???]"))
-				CashSpent[client] = -100;
-		}
-		//else
-		//{
-		//	RequestFrame(TextStore_LoadFrame, userid);
-		//}
-	}
+	if(!CashSpent[client] && Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
+		CashSpent[client] = -100;
 }
 #endif
 
@@ -715,7 +698,7 @@ bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.NPCWeapon >= 0 && !item.TextStore[0] && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
+			if(item.NPCWeapon >= 0 && item.GiftId == -1 && !item.Hidden && !item.NPCWeaponAlways && !item.Level)
 			{
 				int current;
 				for(int a; item.GetItemInfo(a, info); a++)
@@ -1141,7 +1124,8 @@ static void ConfigSetup(int section, KeyValues kv, bool hidden, const char[][] w
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
-	kv.GetString("textstore", item.TextStore, sizeof(item.TextStore));
+	kv.GetString("textstore", item.Name, sizeof(item.Name));
+	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	CharToUpper(item.Name[0]);
 	kv.GetString("buildingexistname", item.BuildingExistName, sizeof(item.BuildingExistName));
@@ -2384,7 +2368,7 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.ItemInfos && !item.TextStore[0] && !item.NPCWeaponAlways)
+		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways)
 		{
 			item.NPCSeller_First = false;
 			item.NPCSeller = false;
@@ -2910,7 +2894,7 @@ public void MenuPage(int client, int section)
 		}
 		else if(section == -2)
 		{
-			if((!starterPlayer && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.TextStore[0])
+			if((!starterPlayer && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.GiftId != -1)
 				continue;
 		}
 		else if(item.Section != section)
@@ -2942,7 +2926,7 @@ public void MenuPage(int client, int section)
 			continue;
 		}
 		
-		if(item.TextStore[0] && !HasNamedItem(client, item.TextStore))
+		if(item.GiftId != -1 && !Items_HasIdItem(client, item.GiftId))
 			continue;
 		
 		/*if(NPCOnly[client] != 2 && NPCOnly[client] != 3 && item.Slot >= 0)
@@ -3144,12 +3128,12 @@ public void MenuPage(int client, int section)
 		}
 		else
 		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
+			menu.AddItem("-13", buffer);
+
 			zr_tagblacklist.GetString(buffer, sizeof(buffer));
 			if(StrContains(buffer, "private", false) == -1)
 			{
-				FormatEx(buffer, sizeof(buffer), "%t", "Encyclopedia");
-				menu.AddItem("-13", buffer);
-				
 				FormatEx(buffer, sizeof(buffer), "%t", "Bored or Dead");
 				menu.AddItem("-14", buffer);
 			}
@@ -3391,7 +3375,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				}
 				case -13:
 				{
-					FakeClientCommand(client, "sm_encyclopedia");
+					Items_EncyclopediaMenu(client);
 				}
 				case -14:
 				{

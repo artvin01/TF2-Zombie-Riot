@@ -1286,7 +1286,7 @@ methodmap Citizen < CClotBody
 			else if(client)
 			{
 				this.PlaySound(Cit_Found);
-				GiveNamedItem(client, this.m_bBarney ? "Barney" : (this.m_bAlyx ? "Alyx" : "Rebel"));
+				Items_GiveNPCKill(client, CITIZEN);
 			}
 
 			if(this.m_bHero)

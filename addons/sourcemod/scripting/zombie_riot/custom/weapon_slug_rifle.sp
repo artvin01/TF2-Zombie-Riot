@@ -9,7 +9,7 @@ public void Weapon_Anti_Material_Rifle(int client, int weapon, const char[] clas
 
 public void Weapon_Anti_Material_Rifle_Deploy(int client, int weapon)
 {
-	if(HasNamedItem(client, "Head Equipped Blue Goggles"))
+	if(Items_HasNamedItem(client, "Head Equipped Blue Goggles"))
 	{
 		Attributes_Set(weapon, 304, 1.1);
 	}

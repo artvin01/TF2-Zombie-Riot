@@ -564,7 +564,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
-							GiveNamedItem(client, "Cured Silvester");
+							Items_GiveNamedItem(client, "Cured Silvester");
 							CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
 						}
 					}

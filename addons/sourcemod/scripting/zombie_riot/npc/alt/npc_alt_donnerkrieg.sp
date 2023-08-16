@@ -365,7 +365,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
-						GiveNamedItem(client, "Blitzkrieg's Army");
+						Items_GiveNamedItem(client, "Blitzkrieg's Army");
 						CPrintToChat(client,"{default}You now have access to: {crimson}''Blitzkrieg's Army''{default}!");
 					}
 				}

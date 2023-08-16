@@ -107,7 +107,7 @@ static int VotedFor[MAXTF2PLAYERS];
 static float VoteEndTime;
 
 static char LastWaveWas[64];
-static char TextStoreItem[48];
+static int WaveGiftItem;
 
 void Waves_PluginStart()
 {
@@ -514,14 +514,16 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	
 	Enemies = new ArrayStack(sizeof(Enemy));
 	
+	char buffer[64], plugin[64];
+
 	b_SpecialGrigoriStore = view_as<bool>(kv.GetNum("grigori_special_shop_logic"));
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
-	kv.GetString("complete_item", TextStoreItem, sizeof(TextStoreItem));
+	kv.GetString("complete_item", buffer, sizeof(buffer));
+	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	
 	Enemy enemy;
 	Wave wave;
 	kv.GotoFirstSubKey();
-	char buffer[64], plugin[64];
 	do
 	{
 		round.Cash = kv.GetNum("cash");
@@ -1312,25 +1314,10 @@ void Waves_Progress()
 						
 						players[total++] = i;
 
-						if(TextStoreItem[0] && PlayerPoints[i] > 500)
+						if(WaveGiftItem != -1 && PlayerPoints[i] > 500)
 						{
-							int length_2 = TextStore_GetItems();
-							for(int a; a < length_2; a++)
-							{
-								static char buffer[48];
-								TextStore_GetItemName(a, buffer, sizeof(buffer));
-								if(StrEqual(buffer, TextStoreItem, false))
-								{
-									TextStore_GetInv(i, a, length_2);
-									if(!length_2)
-									{
-										CPrintToChat(i,"{default}You have found {yellow}%s{default}!", buffer);
-										TextStore_SetInv(i, a, 1);
-									}
-
-									break;
-								}
-							}
+							if(Items_GiveIdItem(i, WaveGiftItem))
+								CPrintToChat(i,"{default}You have found {yellow}%s{default}!", Items_GetNameOfId(WaveGiftItem));
 						}
 					}
 				}

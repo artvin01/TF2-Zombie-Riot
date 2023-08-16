@@ -2717,27 +2717,6 @@ int CountPlayersOnServer()
 	
 }
 
-stock int HasNamedItem(int client, const char[] name)
-{
-	int amount;
-	if(name[0] && GetFeatureStatus(FeatureType_Native, "TextStore_GetItems") == FeatureStatus_Available)
-	{
-		int length = TextStore_GetItems();
-		for(int i; i<length; i++)
-		{
-			static char buffer[64];
-			TextStore_GetItemName(i, buffer, sizeof(buffer));
-			if(StrEqual(buffer, name, false))
-			{
-				TextStore_GetInv(client, i, amount);
-				break;
-			}
-		}
-	}
-	
-	return amount;
-}
-
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,

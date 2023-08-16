@@ -197,7 +197,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 				int maxhealth = SDKCall_GetMaxHealth(client);
 				maxhealth *= 2; //2x health cus no resistance.
 
-				if(HasNamedItem(client, "Cured Silvester"))
+				if(Items_HasNamedItem(client, "Cured Silvester"))
 				{
 					SetDefaultHudPosition(client, 255, 215, 0, 2.0);
 					SetGlobalTransTarget(client);

@@ -393,7 +393,6 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 
 	if(Player_Teleport_Safe(client, endPos))
 	{
-		
 		EmitSoundToAll(WAND_TELEPORT_SOUND, client, SNDCHAN_STATIC, 80, _, 0.5);
 		float Range = 100.0;
 		float Time = 0.25;

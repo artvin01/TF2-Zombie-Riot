@@ -298,7 +298,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/database.sp"
 #include "zombie_riot/escape.sp"
 #include "zombie_riot/freeplay.sp"
-#include "zombie_riot/item_gift_rpg.sp"
+#include "zombie_riot/items.sp"
 #include "zombie_riot/music.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/tutorial.sp"
@@ -430,6 +430,7 @@ void ZR_PluginStart()
 
 	OnPluginStart_Build_on_Building();
 	Database_PluginStart();
+	Items_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
 	SentryHat_OnPluginStart();
@@ -647,6 +648,7 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
+	Items_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
@@ -1102,7 +1104,7 @@ public void Spawn_Bob_Combine(int client)
 	int bob = Npc_Create(BOB_THE_GOD_OF_GODS, client, flPos, flAng, true);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
-	GiveNamedItem(client, "Bob the Overgod of gods and destroyer of multiverses");
+	Items_GiveNPCKill(client, BOB_THE_GOD_OF_GODS);
 }
 
 public void NPC_Despawn_bob(int entity)
@@ -1136,7 +1138,7 @@ public void Spawn_Cured_Grigori()
 	{
 		if(IsClientInGame(client_Give_item) && GetClientTeam(client_Give_item)==2)
 		{
-			GiveNamedItem(client_Give_item, "Cured Grigori");
+			Items_GiveNPCKill(client_Give_item, CURED_FATHER_GRIGORI);
 		}
 	}
 }

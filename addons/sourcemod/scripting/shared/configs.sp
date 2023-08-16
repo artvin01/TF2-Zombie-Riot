@@ -63,6 +63,7 @@ void Configs_ConfigsExecuted()
 	FileNetwork_ConfigSetup(kv);
 	
 #if defined ZR
+	Items_SetupConfig();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);
 	Waves_SetupMiniBosses(kv);
