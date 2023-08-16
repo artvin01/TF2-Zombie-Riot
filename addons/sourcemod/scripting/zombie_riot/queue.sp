@@ -208,6 +208,10 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 						ClientCommand(client,"redirect %s",buffer);
 					}
 				}
+				case 4:
+				{
+					Items_EncyclopediaMenu(client);
+				}
 				default:
 				{
 					if(IsValidClient(client))
