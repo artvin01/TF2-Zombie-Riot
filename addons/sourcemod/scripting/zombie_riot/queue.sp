@@ -130,12 +130,13 @@ void Queue_Menu(int client)
 		menu.AddItem("", buffer, ITEMDRAW_SPACER);
 	}
 	
+	menu.AddItem("0", " ", ITEMDRAW_SPACER);
+	
+	menu.AddItem("sm_encyclopedia", "Encyclopedia");
+	
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	if(StrContains(buffer, "private", false) == -1)
 	{
-		menu.AddItem("0", " ", ITEMDRAW_SPACER);
-		
-		menu.AddItem("sm_encyclopedia", "Encyclopedia");
 		menu.AddItem("sm_idlemine", "Idle Miner");
 		menu.AddItem("sm_tetris", "Tetris");
 		menu.AddItem("sm_snake", "Snake");

@@ -282,7 +282,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 			if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%s\n%t", NPC_Names[page], buffer, "Zombie Kills", GetFlagsOfLevel(client, IdToLevel(-page)));
+				menu.SetTitle("%t\n \n%s\n%t", NPC_Names[page], buffer, LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 			}
 			else
 			{
@@ -291,7 +291,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		}
 		else if(Database_IsCached(client))
 		{
-			menu.SetTitle("%t\n \n%t", NPC_Names[page], "Zombie Kills", GetFlagsOfLevel(client, IdToLevel(-page)));
+			menu.SetTitle("%t\n \n%t", NPC_Names[page], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 		}
 		else
 		{
