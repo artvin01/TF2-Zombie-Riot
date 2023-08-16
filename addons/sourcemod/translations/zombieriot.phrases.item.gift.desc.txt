@@ -44,10 +44,6 @@
 	{
 		"en" 		"Cry of Fear"
 	}
-	"Seaborn Infection"
-	{
-		"en" 		"Seaborn Infection"
-	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
@@ -56,7 +52,7 @@
 	{
 		"en" 		"Stronger version of the normal Headcrab Zombie."
 	}
-	"Fast Zombie  Desc"
+	"Fast Zombie Desc"
 	{
 		"en" 		"A very fast zombie that can also jump at you.\nTheir damage is low but they quickly pile up."
 	}
