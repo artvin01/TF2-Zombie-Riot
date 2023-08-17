@@ -554,6 +554,7 @@ bool i_IsWandWeapon[MAXENTITIES];
 bool i_IsWrench[MAXENTITIES]; 
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
+bool b_IsVehicle[MAXENTITIES]; 
 bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 int i_WeaponSoundIndexOverride[MAXENTITIES];
@@ -2290,6 +2291,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_NpcHasDied[entity] = true;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
+		b_IsVehicle[entity] = false;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
 		b_IsAGib[entity] = false;
@@ -2308,6 +2310,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
+		Armor_Charge[entity] = 0;
 		
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
@@ -2615,6 +2618,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_Regenerate_StartTouch);
 			SDKHook(entity, SDKHook_Touch, SDKHook_Regenerate_Touch);
+		}
+		else if(!StrContains(classname, "prop_vehicle"))
+		{
+			Armor_Charge[entity] = 100000;
+			b_IsVehicle[entity] = true;
 		}
 	}
 }

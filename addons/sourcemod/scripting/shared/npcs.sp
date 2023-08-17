@@ -1309,6 +1309,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 			OnTakeDamageScalingWaveDamage(attacker, inflictor, damage, damagetype, weapon);
 
+			OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
+
 			if(attacker <= MaxClients)
 			{
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -2681,6 +2683,20 @@ bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage,
 	}
 	return false;
 }
+
+void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float &damage, int &damagetype)
+{
+	if((damagetype & DMG_VEHICLE) && IsValidEntity(inflictor) && b_IsVehicle[inflictor])
+	{
+		static ConVar cvar;
+		if(!cvar)
+			cvar = FindConVar("vehicle_physics_damage_modifier");
+		
+		if(cvar)
+			damage *= cvar.FloatValue;
+	}
+}
+
 #if defined RPG
 bool OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {	

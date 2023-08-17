@@ -26,6 +26,10 @@ bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loco
 	{
 		return false;
 	}
+	if(b_IsVehicle[otherindex])
+	{
+		return false;
+	}
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco,otherindex);
 
@@ -55,6 +59,10 @@ bool ShouldCollideAllyInvince_Internal(CBaseNPC_Locomotion loco = view_as<CBaseN
 		}
 	}
 	if(b_CantCollidieAlly[otherindex]) 
+	{
+		return false;
+	}
+	if(b_IsVehicle[otherindex])
 	{
 		return false;
 	}
@@ -91,6 +99,10 @@ bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Loc
 	if(b_CantCollidie[otherindex]) //no change in performance..., almost.
 	{
 		return false;
+	}
+	if(b_IsVehicle[otherindex])
+	{
+		return true;
 	}
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco,otherindex);
@@ -132,6 +144,10 @@ bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_a
 		{
 			return false;
 		}
+	}
+	if(b_IsVehicle[otherindex])
+	{
+		return true;
 	}
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco,otherindex);
@@ -193,6 +209,10 @@ bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_L
 		}
 		return false;
 	}
+	if(b_IsVehicle[otherindex])
+	{
+		return false;
+	}
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco,otherindex);
 
@@ -243,6 +263,11 @@ bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view
 		return false;
 	}
 
+	if(b_IsVehicle[otherindex])
+	{
+		return false;
+	}
+	
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco, otherindex);
 

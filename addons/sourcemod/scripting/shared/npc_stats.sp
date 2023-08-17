@@ -3419,7 +3419,7 @@ void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
 
 void NPC_SetGoalEntity(int entity, int target)
 {
-	if(i_IsABuilding[target])
+	if(i_IsABuilding[target] || b_IsVehicle[target])
 	{
 		//broken on targetting buildings...?
 		float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
@@ -3940,14 +3940,23 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 {
 	if(IsValidEntity(enemy))
 	{
+		if(b_IsVehicle[enemy])
+		{
+			enemy = GetEntPropEnt(enemy, Prop_Data, "m_hPlayer");
+			if(enemy == -1)
+				return false;
+		}
+
 		if(b_ThisEntityIgnored[enemy])
 		{
 			return false;
 		}
+
 		if(b_is_a_brush[enemy])
 		{
 			return false;
 		}
+
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
@@ -4083,7 +4092,13 @@ stock int GetClosestTarget(int entity,
 						if(!Can_I_See_Enemy_Only(entity, i))
 							continue;
 					}
-					if (!npc.m_bCamo || camoDetection)
+
+					int vehicle = GetEntPropEnt(i, Prop_Data, "m_hVehicle");
+					if(vehicle != -1)
+					{
+						GetClosestTarget_AddTarget(vehicle, 1);
+					}
+					else if(!npc.m_bCamo || camoDetection)
 					{
 						GetClosestTarget_AddTarget(i, 1);
 					}			
@@ -4415,7 +4430,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 		if (IsValidClient(i))
 		{
 			CClotBody npc = view_as<CClotBody>(i);
-			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true)) //&& CheckForSee(i)) we dont even use this rn and probably never will.
+			if (TF2_GetClientTeam(i)==view_as<TFTeam>(GetEntProp(entity, Prop_Send, "m_iTeamNum")) && !npc.m_bThisEntityIgnored && IsEntityAlive(i, true) && GetEntPropEnt(i, Prop_Data, "m_hVehicle") == -1) //&& CheckForSee(i)) we dont even use this rn and probably never will.
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

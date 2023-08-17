@@ -846,25 +846,35 @@ public void OnPostThink(int client)
 			PrintToChat(client,"%t", "Show Plugin Messages Hint");
 		}
 
-		int Extra = Armor_Level[client];
-		int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
-			
+		int Armor_Max = 100000;
+		int armorEnt = client;
+		int vehicle = GetEntPropEnt(client, Prop_Data, "m_hVehicle");
+		if(vehicle != -1)
+		{
+			armorEnt = vehicle;
+		}
+		else
+		{
+			int Extra = Armor_Level[client];
+			Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+		}
+
 		int red = 255;
 		int green = 255;
 		int blue = 0;
-		if(Armor_Charge[client] < 0)
+		if(Armor_Charge[armorEnt] < 0)
 		{
 			green = 0;
 			blue = 255;
 		}
-		else if(Armor_Charge[client] < Armor_Max)
+		else if(Armor_Charge[armorEnt] < Armor_Max)
 		{
-			red = Armor_Charge[client] * 255  / Armor_Max;
-			green = Armor_Charge[client] * 255  / Armor_Max;
+			red = Armor_Charge[armorEnt] * 255  / Armor_Max;
+			green = Armor_Charge[armorEnt] * 255  / Armor_Max;
 				
 			red = 255 - red;
 		}
-		else if(Armor_Charge[client] > Armor_Max)
+		else if(Armor_Charge[armorEnt] > Armor_Max)
 		{
 			red = 0;
 			green = 0;
@@ -1007,7 +1017,7 @@ public void OnPostThink(int client)
 		}
 		bool Armor_Regenerating = false;
 		static int ArmorRegenCounter[MAXTF2PLAYERS];
-		if(f_ClientArmorRegen[client] > GetGameTime())
+		if(armorEnt == client && f_ClientArmorRegen[client] > GetGameTime())
 		{
 			Armor_Regenerating = true;
 		}
@@ -1019,7 +1029,7 @@ public void OnPostThink(int client)
 				ArmorRegenCounter[client] = 0;
 			}
 		}
-		int armor = abs(Armor_Charge[client]);
+		int armor = abs(Armor_Charge[armorEnt]);
 		for(int i=6; i>0; i--)
 		{
 			if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
@@ -1593,7 +1603,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 			if(i_HealthBeforeSuit[victim] == 0)
 			{
-				if(Armor_Charge[victim] > 0)
+				int armorEnt = victim;
+				int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
+				if(vehicle != -1)
+					armorEnt = vehicle;
+
+				if(Armor_Charge[armorEnt] > 0)
 				{
 					int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
 					switch(GetRandomInt(1,3))
@@ -1607,17 +1622,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 						case 3:
 							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
 					}						
-					if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[victim])
+					if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[armorEnt])
 					{
 						int damage_recieved_after_calc;
-						damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[victim];
-						Armor_Charge[victim] = 0;
+						damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[armorEnt];
+						Armor_Charge[armorEnt] = 0;
 						damage = float(damage_recieved_after_calc);
 						Replicated_Damage  = float(damage_recieved_after_calc);
 					}
 					else
 					{
-						Armor_Charge[victim] -= RoundToCeil(Replicated_Damage * 0.9);
+						Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * 0.9);
 						damage = 0.0;
 						damage += float(dmg_through_armour);
 						Replicated_Damage = 0.0;
@@ -1625,33 +1640,42 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				//		Though_Armor = true;
 					}
 				}
-				switch(Armour_Level_Current[victim])
+
+				if(armorEnt == victim)
 				{
-					case 1:
+					switch(Armour_Level_Current[victim])
 					{
-						damage *= 0.9;
-						Replicated_Damage *= 0.9;
+						case 1:
+						{
+							damage *= 0.9;
+							Replicated_Damage *= 0.9;
+						}
+						case 2:
+						{
+							damage *= 0.85;
+							Replicated_Damage *= 0.85;
+						}
+						case 3:
+						{
+							damage *= 0.8;
+							Replicated_Damage *= 0.80;
+						}
+						case 4:
+						{
+							damage *= 0.75;
+							Replicated_Damage *= 0.75;
+						}
+						default:
+						{
+							damage *= 1.0;
+							Replicated_Damage *= 1.0;
+						}
 					}
-					case 2:
-					{
-						damage *= 0.85;
-						Replicated_Damage *= 0.85;
-					}
-					case 3:
-					{
-						damage *= 0.8;
-						Replicated_Damage *= 0.80;
-					}
-					case 4:
-					{
-						damage *= 0.75;
-						Replicated_Damage *= 0.75;
-					}
-					default:
-					{
-						damage *= 1.0;
-						Replicated_Damage *= 1.0;
-					}
+				}
+				else
+				{
+					damage *= 0.65;
+					Replicated_Damage *= 0.65;
 				}
 			}
 #endif	// ZR

@@ -210,7 +210,7 @@ int Ammo_Count_Used[MAXTF2PLAYERS];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 
 int Armour_Level_Current[MAXTF2PLAYERS];
-int Armor_Charge[MAXTF2PLAYERS];
+int Armor_Charge[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
