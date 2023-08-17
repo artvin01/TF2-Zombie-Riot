@@ -235,7 +235,7 @@ bool Items_HasNamedItem(int client, const char[] name)
 
 void Items_GiveNPCKill(int client, int id)
 {
-	Items_GiveIdItem(client, -id, true);
+	AddFlagOfLevel(client, -id, 1, true);
 }
 
 bool Items_GiveIdItem(int client, int id, bool addition = false)
@@ -307,6 +307,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 	else if(page != -1)
 	{
 		int kills;
+		int pos;
 
 		char data[16], buffer[64];
 		for(int i; i < sizeof(NPC_Names); i++)
@@ -316,14 +317,16 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 				IntToString(i, data, sizeof(data));
 				FormatEx(buffer, sizeof(buffer), "%t", NPC_Names[i]);
 				menu.AddItem(data, buffer);
-				kills += GetFlagsOfLevel(client, -page);
+				kills += GetFlagsOfLevel(client, -i);
+				if(i == page)
+					pos = page;
 			}
 		}
 
 		menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", kills);
 
 		menu.ExitBackButton = true;
-		menu.DisplayAt(client, (page / 7 * 7), MENU_TIME_FOREVER);
+		menu.DisplayAt(client, (pos / 7 * 7), MENU_TIME_FOREVER);
 	}
 	else
 	{
