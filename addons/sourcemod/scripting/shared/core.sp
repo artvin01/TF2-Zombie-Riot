@@ -18,6 +18,8 @@
 #endif
 #include <queue>
 
+#pragma dynamic    131072
+
 #define CHAR_FULL	"█"
 #define CHAR_PARTFULL	"▓"
 #define CHAR_PARTEMPTY	"▒"

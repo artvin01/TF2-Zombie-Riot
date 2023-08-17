@@ -271,6 +271,7 @@ char[] Items_GetNameOfId(int id)
 void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 {
 	Menu menu = new Menu(Items_EncyclopediaMenuH);
+	SetGlobalTransTarget(client);
 
 	if(inPage)
 	{
@@ -282,26 +283,27 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 			if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%s\n%t", NPC_Names[page], buffer, LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+				menu.SetTitle("%t\n \n%s\n%t\n ", NPC_Names[page], buffer, LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 			}
 			else
 			{
-				menu.SetTitle("%t\n \n%s", NPC_Names[page], buffer);
+				menu.SetTitle("%t\n \n%s\n ", NPC_Names[page], buffer);
 			}
 		}
 		else if(Database_IsCached(client))
 		{
-			menu.SetTitle("%t\n \n%t", NPC_Names[page], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+			menu.SetTitle("%t\n \n%t\n ", NPC_Names[page], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 		}
 		else
 		{
-			menu.SetTitle("%t", NPC_Names[page]);
+			menu.SetTitle("%t\n ", NPC_Names[page]);
 		}
 		
-		IntToString(page, buffer, sizeof(buffer));
-		menu.AddItem(buffer, buffer, ITEMDRAW_SPACER);
+		char data[16];
+		IntToString(page, data, sizeof(data));
+		FormatEx(buffer, sizeof(buffer), "%t", "Back");
+		menu.AddItem(data, buffer);
 
-		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
 	else if(page != -1)
@@ -316,10 +318,17 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 			{
 				IntToString(i, data, sizeof(data));
 				FormatEx(buffer, sizeof(buffer), "%t", NPC_Names[i]);
-				menu.AddItem(data, buffer);
-				kills += GetFlagsOfLevel(client, -i);
+				
 				if(i == page)
-					pos = page;
+				{
+					pos = menu.AddItem(data, buffer);
+				}
+				else
+				{
+					menu.AddItem(data, buffer);
+				}
+
+				kills += GetFlagsOfLevel(client, -i);
 			}
 		}
 
@@ -377,15 +386,15 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 				}
 				else
 				{
-					char data[16];
-					if(menu.GetItem(1, data, sizeof(data)))	// Category -> Main
+					//char data[16];
+					//if(menu.GetItem(1, data, sizeof(data)))	// Category -> Main
 					{
 						Items_EncyclopediaMenu(client, -1, false);
 					}
-					else if(menu.GetItem(0, data, sizeof(data)))	// Item -> Category
-					{
-						Items_EncyclopediaMenu(client, StringToInt(data), false);
-					}
+					//else if(menu.GetItem(0, data, sizeof(data)))	// Item -> Category
+					//{
+					//	Items_EncyclopediaMenu(client, StringToInt(data), false);
+					//}
 				}
 			}
 			else
@@ -395,7 +404,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 		}
 		case MenuAction_Select:
 		{
-			char buffer[16];
+			char buffer[16], data[16];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
 
@@ -404,9 +413,13 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 				LastMenuPage[client] = id;
 				Items_EncyclopediaMenu(client, 0, false);
 			}
-			else	// Category -> Item
+			else if(choice || menu.GetItem(1, data, sizeof(data)))	// Category -> Item
 			{
 				Items_EncyclopediaMenu(client, StringToInt(buffer), true);
+			}
+			else	// Item -> Category
+			{
+				Items_EncyclopediaMenu(client, StringToInt(data), false);
 			}
 		}
 	}
@@ -519,10 +532,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					static GiftItem item;
 					int rand = GetURandomInt();
 					int length = GiftItems.Length;
+					int[] items = new int[length];
 					for(int r = i_RarityType[entity]; r >= 0; r--)
 					{
 						int maxitems;
-						int[] items = new int[length];
 						for(int i; i < length; i++)
 						{
 							GiftItems.GetArray(i, item);
@@ -543,17 +556,15 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 								continue;
 							}
 
-							GiftItems.GetArray(items[i], item);
-							if(item.Rarity == r)
+							if(Items_GiveIdItem(client, items[i]))	// Gives item, returns true if newly obtained, false if they already have
 							{
-								if(Items_GiveIdItem(client, items[i]))
-								{
-									static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
-									CPrintToChat(client, "{default}You have found {%s}%s{default}!", Colors[r], item.Name);
-									r = -1;
-									length = 0;
-									break;
-								}
+								static const char Colors[][] = { "default", "green", "blue", "yellow", "darkred" };
+								
+								GiftItems.GetArray(items[i], item);
+								CPrintToChat(client, "{default}You have found {%s}%s{default}!", Colors[r], item.Name);
+								r = -1;
+								length = 0;
+								break;
 							}
 						}
 						while(i != start);

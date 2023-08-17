@@ -411,6 +411,7 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_shop", Access_StoreViaCommand, "Please Press TAB instad");
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person");
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_give_cash_all", Command_GiveCashAll, ADMFLAG_ROOT, "Give Cash to All");
 	RegAdminCmd("sm_tutorial_test", Command_TestTutorial, ADMFLAG_ROOT, "Test The Tutorial");
@@ -830,6 +831,48 @@ public Action Command_GiveCash(int client, int args)
 		{
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
+		}
+	}
+	
+	return Plugin_Handled;
+}
+public Action Command_GiveScrap(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_scrap <target> <scrap>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "You got %i scrap from the admin %N!", money, client);
+			Scrap[targets[target]] -= money;
+		}
+		else
+		{
+			PrintToChat(targets[target], "You lost %i scrap due to the admin %N!", money, client);
+			Scrap[targets[target]] -= money;			
 		}
 	}
 	
