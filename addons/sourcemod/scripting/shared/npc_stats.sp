@@ -59,6 +59,9 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 
 #define NPC_DEFAULT_YAWRATE 225.0
 
+#define TELEPORT_STUCK_CHECK_1 5.0
+#define TELEPORT_STUCK_CHECK_2 12.0
+#define TELEPORT_STUCK_CHECK_3 24.0
 
 //static PathFollower pPath[MAXENTITIES];
 
@@ -3517,22 +3520,22 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 		switch(x)
 		{
 			case 0:
-				endPos[0] += 20.0;
+				endPos[0] += TELEPORT_STUCK_CHECK_1;
 
 			case 1:
-				endPos[0] -= 20.0;
+				endPos[0] -= TELEPORT_STUCK_CHECK_1;
 
 			case 2:
-				endPos[0] += 30.0;
+				endPos[0] += TELEPORT_STUCK_CHECK_2;
 
 			case 3:
-				endPos[0] -= 30.0;
+				endPos[0] -= TELEPORT_STUCK_CHECK_2;
 
 			case 4:
-				endPos[0] += 40.0;
+				endPos[0] += TELEPORT_STUCK_CHECK_3;
 
 			case 5:
-				endPos[0] -= 40.0;	
+				endPos[0] -= TELEPORT_STUCK_CHECK_3;	
 		}
 		for (int y = 0; y < 7; y++)
 		{
@@ -3544,22 +3547,22 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 			switch(y)
 			{
 				case 1:
-					endPos[1] += 20.0;
+					endPos[1] += TELEPORT_STUCK_CHECK_1;
 
 				case 2:
-					endPos[1] -= 20.0;
+					endPos[1] -= TELEPORT_STUCK_CHECK_1;
 
 				case 3:
-					endPos[1] += 30.0;
+					endPos[1] += TELEPORT_STUCK_CHECK_2;
 
 				case 4:
-					endPos[1] -= 30.0;
+					endPos[1] -= TELEPORT_STUCK_CHECK_2;	
 
 				case 5:
-					endPos[1] += 40.0;
+					endPos[1] += TELEPORT_STUCK_CHECK_3;	
 
 				case 6:
-					endPos[1] -= 40.0;	
+					endPos[1] -= TELEPORT_STUCK_CHECK_3;	
 			}
 
 			for (int z = 0; z < 7; z++)
@@ -3572,22 +3575,22 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 				switch(z)
 				{
 					case 1:
-						endPos[2] += 20.0;
+						endPos[2] += TELEPORT_STUCK_CHECK_1;
 
 					case 2:
-						endPos[2] -= 20.0;
+						endPos[2] -= TELEPORT_STUCK_CHECK_1;
 
 					case 3:
-						endPos[2] += 30.0;
+						endPos[2] += TELEPORT_STUCK_CHECK_2;
 
 					case 4:
-						endPos[2] -= 30.0;
+						endPos[2] -= TELEPORT_STUCK_CHECK_2;
 
 					case 5:
-						endPos[2] += 40.0;
+						endPos[2] += TELEPORT_STUCK_CHECK_3;
 
 					case 6:
-						endPos[2] -= 40.0;	
+						endPos[2] -= TELEPORT_STUCK_CHECK_3;	
 				}
 				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 					FoundSafeSpot = true;
@@ -7789,7 +7792,6 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 
 
 
-
 bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3])
 {
 	bool FoundSafeSpot = false;
@@ -7811,22 +7813,22 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 		switch(x)
 		{
 			case 0:
-				endPos[2] -= 5.0;
+				endPos[2] -= TELEPORT_STUCK_CHECK_1;
 
 			case 1:
-				endPos[2] += 5.0;
+				endPos[2] += TELEPORT_STUCK_CHECK_1;
 
 			case 2:
-				endPos[2] += 10.0;
+				endPos[2] += TELEPORT_STUCK_CHECK_2;
 
 			case 3:
-				endPos[2] -= 10.0;
+				endPos[2] -= TELEPORT_STUCK_CHECK_2;
 
 			case 4:
-				endPos[2] += 20.0;
+				endPos[2] += TELEPORT_STUCK_CHECK_3;
 
 			case 5:
-				endPos[2] -= 20.0;	
+				endPos[2] -= TELEPORT_STUCK_CHECK_3;	
 		}
 		for (int y = 0; y < 7; y++)
 		{
@@ -7838,22 +7840,22 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 			switch(y)
 			{
 				case 1:
-					endPos[1] += 5.0;
+					endPos[1] += TELEPORT_STUCK_CHECK_1;
 
 				case 2:
-					endPos[1] -= 5.0;
+					endPos[1] -= TELEPORT_STUCK_CHECK_1;
 
 				case 3:
-					endPos[1] += 10.0;
+					endPos[1] += TELEPORT_STUCK_CHECK_2;
 
 				case 4:
-					endPos[1] -= 10.0;
+					endPos[1] -= TELEPORT_STUCK_CHECK_2;
 
 				case 5:
-					endPos[1] += 20.0;
+					endPos[1] += TELEPORT_STUCK_CHECK_3;
 
 				case 6:
-					endPos[1] -= 20.0;	
+					endPos[1] -= TELEPORT_STUCK_CHECK_3;	
 			}
 
 			for (int z = 0; z < 7; z++)
@@ -7866,22 +7868,22 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 				switch(z)
 				{
 					case 1:
-						endPos[0] += 5.0;
+						endPos[0] += TELEPORT_STUCK_CHECK_1;
 
 					case 2:
-						endPos[0] -= 5.0;
+						endPos[0] -= TELEPORT_STUCK_CHECK_1;
 
 					case 3:
-						endPos[0] += 10.0;
+						endPos[0] += TELEPORT_STUCK_CHECK_2;
 
 					case 4:
-						endPos[0] -= 10.0;
+						endPos[0] -= TELEPORT_STUCK_CHECK_2;
 
 					case 5:
-						endPos[0] += 20.0;
+						endPos[0] += TELEPORT_STUCK_CHECK_3;
 
 					case 6:
-						endPos[0] -= 20.0;	
+						endPos[0] -= TELEPORT_STUCK_CHECK_3;
 				}
 				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 					FoundSafeSpot = true;
@@ -7912,7 +7914,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 	{
 		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
 	}
-	if(b_IsAlliedNpc[entity])
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
 	}
