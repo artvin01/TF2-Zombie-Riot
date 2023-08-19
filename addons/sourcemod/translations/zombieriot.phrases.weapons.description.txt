@@ -270,7 +270,7 @@
 	}
 	"Grenade Launcher Pap 2"
 	{
-		"en"		"Reduced damage and attackspeed."
+		"en"		"Reduced damage but higher attackspeed attack speed and reload speed."
 		"ru"		"Уменьшенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
@@ -783,7 +783,7 @@
 	
 	"Hammer Pap 1"
 	{
-		"en"	"Increased damage"
+		"en"	"Increased damage and attackspeed"
 		"ru"	"Увеличенный урон."
 	}
 	"Hammer Pap 2"
