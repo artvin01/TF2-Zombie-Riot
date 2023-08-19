@@ -445,9 +445,9 @@ methodmap Blitzkrieg < CClotBody
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		
-		if(amount_of_people > 14.0)
+		if(amount_of_people > 12.0)
 		{
-			amount_of_people = 14.0;
+			amount_of_people = 12.0;
 		}
 		
 		if(amount_of_people<8)	//This is to avoid blitz taking so much damage at low player counts that certain abilities just don't trigger
@@ -940,7 +940,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					float projectile_speed = (300.0 * i_HealthScale[npc.index]);
 					if(projectile_speed>=6000.0)
 						projectile_speed = 6000.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+				//	vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
 					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
@@ -1045,7 +1045,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 							{
 								float meleedmg;
 								meleedmg = 10.0 * i_HealthScale[npc.index];
-								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 0.85, DMG_CLUB, -1, _, vecHit);
 								
 								npc.PlayMeleeHitSound();		
 								bool Knocked = false;

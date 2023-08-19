@@ -284,9 +284,9 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		
-		if(amount_of_people > 14.0)
+		if(amount_of_people > 12.0)
 		{
-			amount_of_people = 14.0;
+			amount_of_people = 12.0;
 		}
 		
 		amount_of_people *= 0.12;
@@ -780,7 +780,7 @@ static void Heavens_Full_Charge(int ref)
 					if(distance< (fl_heavens_radius * fl_heavens_radius))
 					{
 						float fake_damage = fl_heavens_damage*(1.01 - (distance / (fl_heavens_radius * fl_heavens_radius)));	//reduce damage if the target just grazed it.
-						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
+						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage * 0.85, DMG_CLUB, _, _, loc);
 						Client_Shake(client, 0, 5.0, 15.0, 0.1);
 					}
 				}

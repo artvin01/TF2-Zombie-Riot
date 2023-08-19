@@ -594,11 +594,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 									TR_GetEndPosition(vecHit, swingTrace);
 									if(npc.Anger)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling, DMG_CLUB, -1, _, vecHit);	
+										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);	
 									}
 									
 									npc.PlayMeleeHitSound();

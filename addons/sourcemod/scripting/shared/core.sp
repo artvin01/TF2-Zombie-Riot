@@ -25,9 +25,9 @@
 #define CHAR_PARTEMPTY	"▒"
 #define CHAR_EMPTY	"░"
 
-#define NPC_HARD_LIMIT 42 
+#define NPC_HARD_LIMIT 40 
 #define ZR_MAX_NPCS (NPC_HARD_LIMIT*4)
-#define ZR_MAX_NPCS_ALLIED 42 //Never need more.
+#define ZR_MAX_NPCS_ALLIED 40 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS 64

@@ -335,9 +335,9 @@ methodmap RaidbossSilvester < CClotBody
 		}
 		
 		float amount_of_people = float(CountPlayersOnRed());
-		if(amount_of_people > 14.0)
+		if(amount_of_people > 12.0)
 		{
-			amount_of_people = 14.0;
+			amount_of_people = 12.0;
 		}
 
 		
@@ -1272,10 +1272,10 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 						}
 
 						if(!npc.Anger)
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
 								
 						if(npc.Anger)
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
 							
 						
 						// Hit particle

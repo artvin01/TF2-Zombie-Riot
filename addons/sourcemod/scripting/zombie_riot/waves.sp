@@ -959,11 +959,22 @@ void Waves_Progress()
 					They are just too unbalanced.
 					Lets treat each player as just more hp flat.
 				*/
-				if(ScaleWithHpMore)
+				if(playercount > 12)
 				{
-					multiBoss = playercount * 0.60;
+					if(ScaleWithHpMore)
+					{
+						multiBoss = playercount * 0.4;
+					}
 				}
 				else
+				{
+					if(ScaleWithHpMore)
+					{
+						multiBoss = playercount * 0.34;
+					}
+				}
+
+				if(!ScaleWithHpMore)
 				{
 					multiBoss = playercount * 0.2;
 					MultiGlobalHealth = multiBoss;

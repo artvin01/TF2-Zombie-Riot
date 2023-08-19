@@ -2047,7 +2047,11 @@ void UpdatePlayerFakeModel(int client)
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{
+		//setclass to actual class
+	//	TF2_SetPlayerClass(client, CurrentClass[client]);
 		SDKCall_RecalculatePlayerBodygroups(client);
+		//set back to simulate viewmodel
+	//	TF2_SetPlayerClass(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}

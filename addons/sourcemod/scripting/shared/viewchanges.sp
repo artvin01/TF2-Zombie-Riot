@@ -109,6 +109,7 @@ void ViewChange_PlayerModel(int client)
 					{
 						SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
 					}
+					UpdatePlayerFakeModel(client);
 
 				}
 				else
@@ -134,7 +135,6 @@ void ViewChange_PlayerModel(int client)
 				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
 				
 				i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
-				UpdatePlayerFakeModel(client);
 
 #if defined RPG
 				Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
@@ -253,7 +253,18 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				ViewChange_DeleteHands(client);
 				ViewChange_UpdateHands(client, CurrentClass[client]);
 			}
-			UpdatePlayerFakeModel(client);
+			if(TeutonType[client] == TEUTON_NONE)
+			{
+				UpdatePlayerFakeModel(client);
+			}
+			else
+			{
+				int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+				if(IsValidEntity(ViewmodelPlayerModel))
+				{
+					SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 9);
+				}
+			}
 			return;
 		}
 	}

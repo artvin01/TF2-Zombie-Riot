@@ -867,12 +867,12 @@ public Action Command_GiveScrap(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "You got %i scrap from the admin %N!", money, client);
-			Scrap[targets[target]] -= money;
+			Scrap[targets[target]] += money;
 		}
 		else
 		{
 			PrintToChat(targets[target], "You lost %i scrap due to the admin %N!", money, client);
-			Scrap[targets[target]] -= money;			
+			Scrap[targets[target]] += money;			
 		}
 	}
 	

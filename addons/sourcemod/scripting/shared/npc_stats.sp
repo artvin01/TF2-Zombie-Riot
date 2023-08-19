@@ -4152,7 +4152,7 @@ stock int GetClosestTarget(int entity,
 				{
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
-						if(i_Target[entity] <= 0)
+						if(!IsValidEnemy(entity, i_Target[entity], true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}
