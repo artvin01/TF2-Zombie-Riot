@@ -5,11 +5,16 @@ static int weapon_id[MAXPLAYERS+1]={0, ...};
 static int Board_Hits[MAXPLAYERS+1]={0, ...};
 static int Board_Level[MAXPLAYERS+1]={0, ...};
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
-static bool swag =  true; //please forgive me for I have sinned
+static int Board_OutlineModel[MAXPLAYERS+1]={0, ...};
+static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
+void WeaponBoard_Precache()
+{
+	PrecacheSound("weapons/air_burster_explode1.wav");
+}
 /*void PunishmentEffect(int entity, int victim, float damage, int weapon)
 {
 	float Range = 150.0;
@@ -37,28 +42,28 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 
 	i_ExplosiveProjectileHexArray[victim] = value;
 
-	EmitSoundToAll("weapons/air_burster_explode1.wav");
+	EmitSoundToAll("weapons/air_burster_explode1.wav", victim, SNDCHAN_AUTO, 90, _, 1.0);
 }
 
 public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at once doesnt grant more effects
 {
-	if (swag == true)
+	if (Board_Ability_1[victim] == true)
 	{
 		if (Board_Level[victim] == 2)
 		{
 			StartHealingTimer(victim, 0.1, float(SDKCall_GetMaxHealth(victim)) * 0.01, 5);
-			swag = false;
+			Board_Ability_1[victim] = false;
 		}
 		else if (Board_Level[victim] == 5)
 		{
 			ApplyTempAttrib(victim, 26, 1.2, 5.35);
 			StartHealingTimer(victim, 0.1, float(SDKCall_GetMaxHealth(victim)) * 0.01, 5);
-			swag = false;
+			Board_Ability_1[victim] = false;
 		}
 		else if(Board_Level[victim] == 4)
 		{
 			Punish(victim, weapon, true);
-			swag = false;
+			Board_Ability_1[victim] = false;
 		}
 		else
 		{
@@ -78,19 +83,12 @@ public void Board_empower_ability(int client, int weapon, bool crit, int slot) /
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 0;
 		
 		weapon_id[client] = weapon;
 
-		float flPos[3]; // original
-		float flAng[3]; // original	
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Board ability");
 
@@ -115,19 +113,12 @@ public void Board_empower_ability_Spike(int client, int weapon, bool crit, int s
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 1;
 		
 		weapon_id[client] = weapon;
 
-		float flPos[3]; // original
-		float flAng[3]; // original	
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Spike parry");
 	}
@@ -151,22 +142,14 @@ public void Board_empower_ability_Leaf(int client, int weapon, bool crit, int sl
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0); // PARRY COOLDOWN!!!!!!
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 2;
 		
-		swag = true;
+		Board_Ability_1[client] = true;
 
 		weapon_id[client] = weapon;
 		
-		float flPos[3]; // original
-		float flAng[3]; // original
-		
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Leaf parry");
 
@@ -191,19 +174,12 @@ public void Board_empower_ability_Rookie(int client, int weapon, bool crit, int 
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 3.0);
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 3;
 		
 		weapon_id[client] = weapon;
 
-		float flPos[3]; // original
-		float flAng[3]; // original
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-			
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 				
 
 		//PrintToChatAll("Rookie Parry");
@@ -229,21 +205,14 @@ public void Board_empower_ability_Punishment(int client, int weapon, bool crit, 
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 4;
 		
-		swag = true;
+		Board_Ability_1[client] = true;
 
 		weapon_id[client] = weapon;
 
-		float flPos[3]; // original
-		float flAng[3]; // original	
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Board parry");
 
@@ -268,21 +237,14 @@ public void Board_empower_ability_Rampart(int client, int weapon, bool crit, int
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 5.0);
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 5;
 		
-		swag = true;
+		Board_Ability_1[client] = true;
 
 		weapon_id[client] = weapon;
 
-		float flPos[3]; // original
-		float flAng[3]; // original	
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Board parry");
 
@@ -307,19 +269,12 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 3.0);
-		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 
 		Board_Level[client] = 6;
 		
 		weapon_id[client] = weapon;
 
-		float flPos[3]; // original
-		float flAng[3]; // original	
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-				
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.2);
-				
-		SetParent(client, particler, "effect_hand_r");
+		OnAbilityUseEffect_Board(client, weapon);
 
 		//PrintToChatAll("Board parry");
 
@@ -381,7 +336,13 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
 			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+			PlayParrySoundBoard(victim);
+			float flPos[3]; // original
+			float flAng[3]; // original
+			
+			GetAttachment(victim, "effect_hand_l", flPos, flAng);
+			
+			ParticleEffectAt(flPos, "mvm_soldier_shockwave", 0.15);
 		}
 		
 		static float angles[3];
@@ -390,21 +351,6 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(attacker);
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-		
-		GetAttachment(victim, "effect_hand_r", flPos, flAng);
-		
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
-
-		DataPack pack = new DataPack();
-		pack.WriteCell(EntIndexToEntRef(particler));
-		pack.WriteFloat(Entity_Position[0]);
-		pack.WriteFloat(Entity_Position[1]);
-		pack.WriteFloat(Entity_Position[2]);
-		
-		RequestFrame(TeleportParticleBoard, pack);
 	
 		
 		SDKHooks_TakeDamage(attacker, victim, victim, damage_reflected, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
@@ -434,7 +380,13 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
 			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_impact_object_02.wav");
+			PlayParrySoundBoard(victim);
+			float flPos[3]; // original
+			float flAng[3]; // original
+			
+			GetAttachment(victim, "effect_hand_l", flPos, flAng);
+			
+			int particler = ParticleEffectAt(flPos, "mvm_soldier_shockwave", 0.15);
 		}
 		
 		static float angles[3];
@@ -443,21 +395,6 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(attacker);
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-		
-		GetAttachment(victim, "effect_hand_r", flPos, flAng);
-		
-		int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
-		
-		DataPack pack = new DataPack();
-		pack.WriteCell(EntIndexToEntRef(particler));
-		pack.WriteFloat(Entity_Position[0]);
-		pack.WriteFloat(Entity_Position[1]);
-		pack.WriteFloat(Entity_Position[2]);
-		
-		RequestFrame(TeleportParticleBoard, pack);
 	
 		
 		SDKHooks_TakeDamage(attacker, victim, victim, damage_reflected, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
@@ -593,18 +530,89 @@ public void Enable_WeaponBoard(int client, int weapon) // Enable management, han
 	}
 }
 
-void TeleportParticleBoard(DataPack pack)
+void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 25)
+{
+	int WeaponModel;
+	WeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
+
+	if(!IsValidEntity(WeaponModel)) //somehow doesnt exist, aboard!
+		return;
+
+	ClientCommand(client, "playgamesound misc/halloween/strongman_fast_whoosh_01.wav");
+	
+	int ModelIndex = GetEntProp(WeaponModel, Prop_Send, "m_nModelIndex");
+	char model[PLATFORM_MAX_PATH];
+	ModelIndexToString(ModelIndex, model, PLATFORM_MAX_PATH);
+
+	int Glow = TF2_CreateGlow_White(WeaponModel, model, client, f_WeaponSizeOverride[active]);
+	SetVariantColor(view_as<int>({255, 255, 255, 200}));
+	AcceptEntityInput(Glow, "SetGlowColor");
+	//save for deletion when they switch away too fast
+	Board_OutlineModel[client] = EntIndexToEntRef(Glow);
+	SDKHook(Glow, SDKHook_SetTransmit, BarrackBody_Transmit);
+	BarrackOwner[Glow] = client;
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(active));
+	pack.WriteCell(EntIndexToEntRef(WeaponModel));
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(EntIndexToEntRef(Glow));
+	RequestFrames(RemoveEffectsOffShield_Board, FramesActive, pack); // 60 is 1 sec?
+
+//	SetEntPropFloat(WeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[active] * 1.25);
+}
+
+void RemoveEffectsOffShield_Board(DataPack pack)
 {
 	pack.Reset();
-	int particleEntity = EntRefToEntIndex(pack.ReadCell());
-	float Vec_Pos[3];
-	Vec_Pos[0] = pack.ReadFloat();
-	Vec_Pos[1] = pack.ReadFloat();
-	Vec_Pos[2] = pack.ReadFloat();
-	
-	if(IsValidEntity(particleEntity))
+	int WeaponEntity = EntRefToEntIndex(pack.ReadCell());
+	int WeaponViewEntity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int GlowEntity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client)) //does the player still exist, if no, aboard
 	{
-		TeleportEntity(particleEntity, Vec_Pos);
+		delete pack;
+		return;
 	}
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	//does my weapon exist
+	//does the model for it exist (different form normal tf2 cus zr)
+	//is my current weapon different from what i used before
+	if(IsValidEntity(WeaponViewEntity) && IsValidEntity(WeaponEntity) && weapon_holding == WeaponEntity)
+	{
+		SetEntPropFloat(WeaponViewEntity, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[WeaponEntity]);
+	}
+	if(IsValidEntity(GlowEntity))
+	{
+		RemoveEntity(GlowEntity);
+	}
+	
 	delete pack;
+}
+
+public void Weapon_BoardHolster(int client)
+{
+	int entity = EntRefToEntIndex(Board_OutlineModel[client]);
+	if(entity != INVALID_ENT_REFERENCE)
+		RemoveEntity(entity);	
+}
+
+void PlayParrySoundBoard(int client)
+{
+	switch(GetRandomInt(1,3))
+	{
+		case 1:
+		{
+			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh1.wav");
+		}
+		case 2:
+		{
+			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh2.wav");
+		}
+		case 3:
+		{
+			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh3.wav");
+		}
+	}
 }

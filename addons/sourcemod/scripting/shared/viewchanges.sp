@@ -53,7 +53,6 @@ static int PlayerIndex[10];
 static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
-static int WorldRef[MAXTF2PLAYERS];
 static int TeutonModelIndex;
 
 void ViewChange_MapStart()
@@ -151,7 +150,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
 	
-	entity = EntRefToEntIndex(WorldRef[client]);
+	entity = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
 
@@ -182,12 +181,10 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			}
 
 			// entity here is m_hViewModel
-			SetEntProp(entity, Prop_Send, "m_fEffects", EF_NODRAW);
 			/*	
 				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
 			*/
 			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
-			HidePlayerWeaponModel(active);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 
@@ -237,11 +234,14 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				SetVariantString("!activator");
 				ActivateEntity(entity);
 
-				WorldRef[client] = EntIndexToEntRef(entity);
+				i_Viewmodel_WeaponModel[client] = EntIndexToEntRef(entity);
 				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 
 				SDKCall_EquipWearable(client, entity);
 			}
+			
+			SetEntProp(active, Prop_Send, "m_fEffects", EF_NODRAW);
+			HidePlayerWeaponModel(client, active);
 					
 			//if(WeaponClass[client] != class)
 			{
@@ -271,7 +271,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
 	WeaponRef[client] = INVALID_ENT_REFERENCE;
-	WorldRef[client] = INVALID_ENT_REFERENCE;
+	i_Viewmodel_WeaponModel[client] = INVALID_ENT_REFERENCE;
 }
 
 void ViewChange_DeleteHands(int client)
@@ -311,7 +311,7 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	return entity;
 }
 
-void HidePlayerWeaponModel(int entity)
+void HidePlayerWeaponModel(int client, int entity)
 {
 	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
 	SetEntityRenderColor(entity, 0, 0, 0, 0);
@@ -320,4 +320,10 @@ void HidePlayerWeaponModel(int entity)
 	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | 0x020);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
+	int EntityWeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
+	if(IsValidEntity(EntityWeaponModel))
+	{
+		PrintToChatAll("%f", f_WeaponSizeOverride[entity]);
+		SetEntPropFloat(EntityWeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[entity]);
+	}
 }

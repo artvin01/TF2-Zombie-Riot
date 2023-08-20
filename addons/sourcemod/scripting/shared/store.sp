@@ -127,6 +127,7 @@ enum struct ItemInfo
 	Function FuncOnHolster;
 	int WeaponSoundIndexOverride;
 	int WeaponModelIndexOverride;
+	float WeaponSizeOverride;
 	char WeaponModelOverride[128];
 	
 	int Attack3AbilitySlot;
@@ -285,6 +286,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
+
+		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
+		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
 
 		if(this.WeaponModelOverride[0])
 		{
@@ -4524,7 +4528,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	Barracks_UpdateAllEntityUpgrades(client);
 
 	Manual_Impulse_101(client, health);
-	HideWallWeaponsExceptActive(client);
 }
 
 void CheckInvalidSlots(int client)
@@ -4798,7 +4801,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponForceClass[entity] = info.WeaponForceClass;
 					i_WeaponSoundIndexOverride[entity] = info.WeaponSoundIndexOverride;
 					i_WeaponModelIndexOverride[entity] = info.WeaponModelIndexOverride;
-					HidePlayerWeaponModel(entity);
+					f_WeaponSizeOverride[entity]	= info.WeaponSizeOverride;
+
+					HidePlayerWeaponModel(client, entity);
 					/*
 					if(info.WeaponModelOverride[0])
 					{
@@ -4910,7 +4915,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
 #endif
-			HidePlayerWeaponModel(entity);
+			HidePlayerWeaponModel(client, entity);
 			//hide original model
 			
 #if defined RPG

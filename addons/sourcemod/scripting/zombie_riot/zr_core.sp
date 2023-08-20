@@ -594,6 +594,7 @@ void ZR_MapStart()
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
+	WeaponBoard_Precache();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

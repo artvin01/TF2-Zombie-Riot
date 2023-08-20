@@ -901,23 +901,21 @@ stock int TF2_CreateGlow(int iEnt)
 	return ent;
 }
 
-stock int TF2_CreateGlow_White(int iEnt)
+stock int TF2_CreateGlow_White(int iEnt, const char[] model, int parentTo, float modelsize)
 {
 	int entity = CreateEntityByName("tf_taunt_prop");
 	if(IsValidEntity(entity))
 	{
-		char model[PLATFORM_MAX_PATH];
-		GetEntPropString(iEnt, Prop_Data, "m_ModelName", model, PLATFORM_MAX_PATH);
+		DispatchSpawn(entity);
 		SetEntityModel(entity, model);
 
-		DispatchSpawn(entity);
 		ActivateEntity(entity);
 
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(iEnt, Prop_Send, "m_iTeamNum"));
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(parentTo, Prop_Send, "m_iTeamNum"));
 
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", GetEntPropFloat(iEnt, Prop_Send, "m_flModelScale"));
-		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", iEnt);
-		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", iEnt);
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", modelsize);
+		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", parentTo);
+		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", parentTo);
 		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
 		int iFlags = GetEntProp(entity, Prop_Send, "m_fEffects");
 			
@@ -925,7 +923,7 @@ stock int TF2_CreateGlow_White(int iEnt)
 				iFlags |EF_BONEMERGE|EF_NOSHADOW|EF_NORECEIVESHADOW);
 
 		SetVariantString("!activator");
-		AcceptEntityInput(entity, "SetParent", iEnt);
+		AcceptEntityInput(entity, "SetParent", parentTo);
 
 		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
