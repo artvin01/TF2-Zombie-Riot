@@ -695,6 +695,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 														
 									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
 									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
+									f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 															
 									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 														
@@ -743,6 +744,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 														
 									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
 									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
+									
+									f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 															
 									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 											

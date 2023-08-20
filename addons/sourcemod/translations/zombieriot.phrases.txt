@@ -1037,11 +1037,11 @@
 	}
 	"Juggernog Recieved"
 	{
-		"en" 		"JUGGERNOG! 1.10x Damage resistance and +100HP"
-		"ru" 		"ДЖАГГЕР-ФАНТА! 1.10x сопротивления урону и +100 ед. здоровья"
-		"de"		"JUGGERNOG!	1.10-fache Schaden Resistenz und +100HP"
-		"pt"		"JUGGERNOG! 1.10x Resistência a danos e +100HP"
-		"nl"		"JUGGERNOG! 1.10x Schade resistentie en +100 levenspunten"
+		"en" 		"JUGGERNOG! 1.10x Damage resistance and +150HP"
+		"ru" 		"ДЖАГГЕР-ФАНТА! 1.10x сопротивления урону и +150 ед. здоровья"
+		"de"		"JUGGERNOG!	1.10-fache Schaden Resistenz und +150HP"
+		"pt"		"JUGGERNOG! 1.10x Resistência a danos e +150HP"
+		"nl"		"JUGGERNOG! 1.10x Schade resistentie en +150 levenspunten"
 		"chi" 		"身体强化:获得伤害抗性和生命值提升"
 	}
 	"Double Tap Recieved"
