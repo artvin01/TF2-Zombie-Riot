@@ -1753,16 +1753,20 @@ methodmap CClotBody < CBaseCombatCharacter
 			return;
 		
 		this.ResetSequence(iSequence);
+		this.ResetSequenceInfo();
+	//	this.SetSequence(iSequence);
+		this.SetPlaybackRate(1.0);
+		this.SetCycle(0.0);
+		this.ResetSequenceInfo();
 
-		int layer = this.FindGestureLayerBySequence(iSequence);
-		if(layer != -1)
-		{
-			CAnimationLayer alayer = this.GetAnimOverlay(layer);
-			alayer.m_flPlaybackRate = 1.0;
-			alayer.m_flCycle = 0.0;
-		}
+	//	int layer = this.FindGestureLayerBySequence(iSequence);
+	//	if(layer != -1)
+	//	{
+	//		CAnimationLayer alayer = this.GetAnimOverlay(layer);
+	//		alayer.m_flPlaybackRate = 1.0;
+	//		alayer.m_flCycle = 0.0;
+	//	}
 	
-		this.ResetSequenceInfo();	
 	}
 	public void AddGestureViaSequence(const char[] anim, bool cancel_animation = true)
 	{

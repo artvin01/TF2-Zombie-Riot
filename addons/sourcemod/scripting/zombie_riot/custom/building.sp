@@ -5011,8 +5011,11 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 	else
 	{
-		GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos);
-		pos[2] += 15.0;
+		if(IsValidEntity(i_HasSentryGunAlive[client]))
+		{
+			GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos);
+			pos[2] += 15.0;
+		}
 	}
 /*
 	float range = 600.0;

@@ -60,9 +60,15 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 {
 	if (Board_Ability_1[victim] == true)
 	{
+		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
+		if(MaxHealth > 1000.0)
+		{
+			MaxHealth = 1000.0;
+		}
 		if (Board_Level[victim] == 2)
 		{
-			StartHealingTimer(victim, 0.1, float(SDKCall_GetMaxHealth(victim)) * 0.01, 5);
+			
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.01, 5);
 			Board_Ability_1[victim] = false;
 		}
 		else if (Board_Level[victim] == 5)
