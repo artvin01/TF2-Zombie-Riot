@@ -2317,7 +2317,7 @@
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parry damage becomes AOE and scales with melee upgrades.\nDefence rating: ★★★☆☆\nArchetype changes to ''Crusher''"
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: ★★★☆☆\nArchetype changes to ''Crusher''"
 	}
 	"Rampart Desc"
 	{
