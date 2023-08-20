@@ -16,6 +16,8 @@ static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 void WeaponBoard_Precache()
 {
 	PrecacheSound("weapons/air_burster_explode1.wav");
+	Zero(f_ParryDuration);
+	Zero2(f_BoardReflectCooldown);
 }
 /*void PunishmentEffect(int entity, int victim, float damage, int weapon)
 {
