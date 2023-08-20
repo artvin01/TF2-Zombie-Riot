@@ -2299,4 +2299,32 @@
 	{
 		"en"	"Improved handling allows for 50%% faster deploy speed, faster reload, more firepower and faster shooting."
 	}
+	"Old Wooden Board Desc"
+	{
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades, however, damage always stays the same.\nDefence rating: ★✬☆☆☆"
+	}
+	"Spike Shield Desc"
+	{
+		"en"	"A weapon pretending to be a shield - Parrying boasts higher damage.\nDefence rating: ★☆☆☆☆"
+	}
+	"Leaf Shield Desc"
+	{
+		"en"	"A shield that was born - Parrying heals you.\nDefence rating: ★★★☆☆"
+	}
+	"Rookie Shield Desc"
+	{
+		"en"	"A regular shield - Parries faster. Bland.\nDefence rating: ★★☆☆☆"
+	}
+	"Punishment Desc"
+	{
+		"en"	"A weapon and a shield, given form - Parry damage becomes AOE and scales with melee upgrades.\nDefence rating: ★★★☆☆\nArchetype changes to ''Crusher''"
+	}
+	"Rampart Desc"
+	{
+		"en"	"An abomination, given life. You can feel it's breath - Parrying gives you additional, but temporary max HP.\nDefence rating: ★★★★★"
+	}
+	"Cudgel Desc"
+	{
+		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: ★★★★☆"
+	}
 }
