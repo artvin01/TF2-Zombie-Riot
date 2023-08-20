@@ -55,7 +55,6 @@ void Mlynar_EntityCreated(int entity)
 	{
 		f_MlynarReflectCooldown[i][entity] = 0.0;
 	}
-
 }
 void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 {

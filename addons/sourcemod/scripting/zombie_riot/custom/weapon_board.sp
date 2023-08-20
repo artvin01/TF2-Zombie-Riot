@@ -643,9 +643,9 @@ float ShieldCutOffCooldown_Board(float CooldownCurrent, int weapon)
 
 	CooldownCurrent *= attackspeed;
 
-	if(CooldownCurrent <= 0.4)
+	if(CooldownCurrent <= 0.7)
 	{
-		CooldownCurrent = 0.4; //cant get lower then 0.4
+		CooldownCurrent = 0.7; //cant get lower then 0.7
 	}
 	return CooldownCurrent;
 }
