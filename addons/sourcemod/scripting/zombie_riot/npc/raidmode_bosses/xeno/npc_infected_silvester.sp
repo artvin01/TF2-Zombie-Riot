@@ -512,6 +512,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
+			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
 			b_CannotBeBackstabbed[npc.index] = true;
