@@ -1920,8 +1920,8 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
-		volume *= 0.65;
-		level = 75;
+		volume *= 0.45;
+		level = 65;
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;

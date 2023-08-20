@@ -2123,7 +2123,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 					int HealTime = 30;
 					if(IsValidClient(owner))
 					{
-						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_GetOnPlayer(client, 8, true, true));
+						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_GetOnPlayer(owner, 8, true, true));
 					}
 					/*
 					if(f_TimeUntillNormalHeal[client])

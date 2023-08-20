@@ -1541,24 +1541,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(!b_npcspawnprotection[victim])
 #endif
 		{
-			red = (Health + 1) * 255  / (MaxHealth + 1);
-			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = (Health + 1) * 255  / (MaxHealth + 1);
-						
-			red = 255 - red;
-					
-			if(Health <= 0)
-			{
-				red = 255;
-				green = 0;
-				blue = 0;
-			}
-			else if(Health >= MaxHealth)
-			{
-				red = 0;
-				green = 255;
-				blue = 0;				
-			}
+			DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);
 		}
 		else
 		{
@@ -1566,8 +1549,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			green = 0;
 			blue = 255;
 		}
-			
-		
 	}
 	char Debuff_Adder[64];
 		
@@ -3190,4 +3171,35 @@ int GetRandomActiveSpawner()
 		}
 	}
 	return entity_Spawner;
+}
+
+
+void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)
+{
+	int Health = Health_init;
+	int MaxHealth = Maxhealth_init;
+
+	if(MaxHealth > 1000000) //the numbers are too great! it breaks the limits of numbers
+	{
+		Health /= 1000;
+		MaxHealth /= 1000;
+	}
+	red = (Health + 1) * 255  / (MaxHealth + 1);
+	//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+	green = (Health + 1) * 255  / (MaxHealth + 1);
+				
+	red = 255 - red;
+			
+	if(Health <= 0)
+	{
+		red = 255;
+		green = 0;
+		blue = 0;
+	}
+	else if(Health >= MaxHealth)
+	{
+		red = 0;
+		green = 255;
+		blue = 0;				
+	}
 }

@@ -315,8 +315,9 @@ void HidePlayerWeaponModel(int entity)
 {
 	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
 	SetEntityRenderColor(entity, 0, 0, 0, 0);
-	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
-	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
+//	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
+//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
+	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | 0x020);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
-	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.1);
+	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
 }

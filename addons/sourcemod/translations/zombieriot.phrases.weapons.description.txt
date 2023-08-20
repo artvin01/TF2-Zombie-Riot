@@ -1645,9 +1645,9 @@
 	
 	"Minigun Sentry Desc"
 	{
-		"en"	"10%% less damage, 1.15x Attack speed, 0.5x range for sentry guns and alike"
-		"ru"	"На 10%% меньше урона, 1,15-кратная скорость атаки, 0,5-кратная дальность стрельбы для всех турелей"
-		"chi"   "伤害减少10%%，但攻击速度提高1.15倍，哨兵的射程增加0.5倍"
+		"en"	"10%% less damage, 1.4x Attack speed, 0.5x range for sentry guns and alike"
+		"ru"	"На 10%% меньше урона, 1,4-кратная скорость атаки, 0,5-кратная дальность стрельбы для всех турелей"
+		"chi"   "伤害减少10%%，但攻击速度提高1.4倍，哨兵的射程增加0.5倍"
 	}
 	
 	"Glass Cannon Blueprints Desc"
