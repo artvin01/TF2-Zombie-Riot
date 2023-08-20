@@ -1632,7 +1632,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s⯯", Debuff_Adder);
 	}
-		
+
+	if(f_CudgelDebuff[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s‼", Debuff_Adder);
+	}
+
 	if(f_MaimDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
@@ -2016,6 +2023,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	else if(f_WidowsWineDebuff[npc] > GameTime)
 		return true;
 	else if(f_CrippleDebuff[npc] > GameTime)
+		return true;
+	else if(f_CudgelDebuff[npc] > GameTime)
 		return true;
 	else if(f_MaimDebuff[npc] > GameTime)
 		return true;
@@ -3119,6 +3128,11 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
 		damage += BaseDamageBeforeBuffs * 0.4;
+	}
+
+	if(f_CudgelDebuff[victim] > GameTime)
+	{
+		damage += BaseDamageBeforeBuffs * 0.3;
 	}
 
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.

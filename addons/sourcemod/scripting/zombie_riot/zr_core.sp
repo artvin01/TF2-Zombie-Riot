@@ -108,7 +108,8 @@ enum
 	WEAPON_ANCIENT_BANNER = 37,
 	WEAPON_QUINCY_BOW = 38,
 	WEAPON_JUDGE = 39,
-	WEAPON_JUDGE_PAP = 40
+	WEAPON_JUDGE_PAP = 40,
+	WEAPON_BOARD = 41
 }
 
 ArrayList SpawnerList;
@@ -395,6 +396,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_gladiia.sp"
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
 #include "zombie_riot/custom/weapon_judge.sp"
+#include "zombie_riot/custom/weapon_board.sp"
 
 void ZR_PluginLoad()
 {

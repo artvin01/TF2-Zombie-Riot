@@ -20,6 +20,7 @@ static int TeslarDebuff;
 static int FusionBuff;
 static int OceanBuff;
 static int CrippleDebuff;
+static int CudgelDebuff;
 static int StalkerBuff;
 static int PerkMachine;
 static int RaidFight;
@@ -46,6 +47,7 @@ void Freeplay_ResetAll()
 	FusionBuff = 0;
 	OceanBuff = 0;
 	CrippleDebuff = 0;
+	CudgelDebuff = 0;
 	StalkerBuff = 0;
 	PerkMachine = 0;
 	RaidFight = 0;
@@ -167,6 +169,12 @@ void Freeplay_SpawnEnemy(int entity)
 		CrippleDebuff--;
 	}
 	
+	if(CudgelDebuff > 0)
+	{
+		f_CudgelDebuff[entity] = FAR_FUTURE;
+		CudgelDebuff--;
+	}
+
 	if(StalkerBuff > 0)
 	{
 		b_StaticNPC[entity] = true;
@@ -574,6 +582,11 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 			Medival_Difficulty_Level *= 0.9;
 			if(Medival_Difficulty_Level < 0.1)
 				Medival_Difficulty_Level = 0.1;
+		}
+		case 44:
+		{
+			strcopy(message, sizeof(message), "{green}The next 300 enemies gain Cudgel debuff");
+			CudgelDebuff += 300;
 		}
 		default:
 		{

@@ -2011,6 +2011,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			return Player_OnTakeDamage_Blemishine(victim, attacker, damage);
 		}
+		case WEAPON_BOARD:
+		{
+			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
 	}
 	return damage;
 }
