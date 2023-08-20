@@ -513,6 +513,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			npc.m_flSpeed = 0.0;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			b_RageAnimated[npc.index] = true;
+			b_CannotBeHeadshot[npc.index] = true;
+			b_CannotBeBackstabbed[npc.index] = true;
+			b_CannotBeStunned[npc.index] = true;
+			b_CannotBeKnockedUp[npc.index] = true;
+			b_CannotBeSlowed[npc.index] = true;
 		}
 	}
 
@@ -524,6 +529,11 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
 		{
+			b_CannotBeHeadshot[npc.index] = false;
+			b_CannotBeBackstabbed[npc.index] = false;
+			b_CannotBeStunned[npc.index] = false;
+			b_CannotBeKnockedUp[npc.index] = false;
+			b_CannotBeSlowed[npc.index] = false;
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			NPC_StartPathing(npc.index);
 			npc.m_bPathing = true;
