@@ -866,7 +866,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 		if(Donner_Takeover_Active && !b_donner_locked)
 		{
 			b_donner_locked = true;
-			RaidModeTime += 50.0;
+			RaidModeTime += 22.5;
 			Donner_Takeover = false;
 			Donner_Takeover_Active = false;
 			npc.m_bThisNpcIsABoss = false;

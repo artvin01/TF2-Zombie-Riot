@@ -215,6 +215,10 @@ methodmap Schwertkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
+		TELEPORT_STRIKE_Smite_ChargeTime = 1.33;
+		TELEPORT_STRIKE_Smite_ChargeSpan = 0.66;
+		TELEPORT_STRIKE_Timer = 1.0; //How long it takes to teleport
+		TELEPORT_STRIKE_Reuseable = 30.0; //How long it should be reuseable again
 		
 		Schwert_Takeover_Active = false;
 		
@@ -237,6 +241,16 @@ public void Schwertkrieg_ClotThink(int iNPC)
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			npc.m_bThisNpcIsABoss = true;
 		}
+		if(!Schwert_Takeover_Active && b_angered)
+		{
+			if(TELEPORT_STRIKE_Usage[npc.index]>GetGameTime()+5.0)
+				TELEPORT_STRIKE_Usage[npc.index] = 0.0;
+			
+			TELEPORT_STRIKE_Reuseable = 15.0;
+			TELEPORT_STRIKE_Smite_ChargeTime = 1.0;
+			TELEPORT_STRIKE_Smite_ChargeSpan = 0.22;
+			TELEPORT_STRIKE_Timer = 0.5;
+		}
 		Schwert_Takeover_Active = true;
 		if(RaidModeTime < GetGameTime())
 		{
@@ -253,7 +267,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	
 	if(b_angered)
 	{
-		npc.m_flSpeed = Schwertkrieg_Speed*1.1;
+		npc.m_flSpeed = Schwertkrieg_Speed*1.25;
 	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -475,7 +489,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 								float meleedmg= 175.0;
 								if(b_angered)
 								{
-									meleedmg = 225.0;
+									meleedmg = 325.0;
 								}
 								
 								if(target <= MaxClients)
@@ -497,7 +511,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 7.5, DMG_CLUB, -1, _, vecHit);
 								}
 								
 								npc.PlayMeleeHitSound();	
@@ -570,7 +584,7 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 		if(Schwert_Takeover_Active && !b_schwert_loocked)
 		{
 			b_schwert_loocked = true;
-			RaidModeTime += 50.0;
+			RaidModeTime += 22.5;
 			Schwert_Takeover = false;
 			Schwert_Takeover_Active = false;
 			npc.m_bThisNpcIsABoss = false;

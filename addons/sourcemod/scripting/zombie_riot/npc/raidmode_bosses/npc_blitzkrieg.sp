@@ -556,7 +556,6 @@ methodmap Blitzkrieg < CClotBody
 		else if(i_currentwave[npc.index]>=60)
 		{
 			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
-			RaidModeTime = GetGameTime(npc.index) + 250.0;
 		}
 		if(i_currentwave[npc.index]>60)
 		{
@@ -1468,7 +1467,7 @@ public void Blitzkrieg_NPCDeath(int entity)
 //	Music_RoundEnd(entity);
 
 
-	RaidModeTime += 125.0;
+	RaidModeTime += 45.0;
 	
 	b_Blitz_Alive = false;
 	
