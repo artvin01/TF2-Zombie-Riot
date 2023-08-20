@@ -36,7 +36,7 @@ void Board_EntityCreated(int entity)
 
 public void Punish(int victim, int weapon, int bool) //AOE parry damage that scales with melee upgrades, im a coding maestro SUPREME
 {
-	float damage = 300.0;
+	float damage = 125.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 			
 	int value = i_ExplosiveProjectileHexArray[victim];
@@ -60,15 +60,20 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 {
 	if (Board_Ability_1[victim] == true)
 	{
+		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
+		if (MaxHealth > 1500.0)
+		{
+			MaxHealth = 1500.0;
+		}
 		if (Board_Level[victim] == 2)
 		{
-			StartHealingTimer(victim, 0.1, float(SDKCall_GetMaxHealth(victim)) * 0.01, 5);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.005, 7);
 			Board_Ability_1[victim] = false;
 		}
 		else if (Board_Level[victim] == 5)
 		{
 			ApplyTempAttrib(victim, 26, 1.2, 5.35);
-			StartHealingTimer(victim, 0.1, float(SDKCall_GetMaxHealth(victim)) * 0.01, 5);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.005, 7);
 			Board_Ability_1[victim] = false;
 		}
 		else if(Board_Level[victim] == 4)
@@ -331,6 +336,10 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			Board_Hits[victim] += 1;
 			SwagMeter(victim, weapon);
 		}
+		else if(Board_Level[victim] == 3)
+		{
+			Board_Hits[victim] += 1;
+		}
 		else if(Board_Level[victim] == 4)
 		{
 			Board_Hits[victim] += 1;
@@ -340,6 +349,13 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		{
 			Board_Hits[victim] += 1;
 			SwagMeter(victim, weapon);
+		}
+		else if(Board_Level[victim] == 6)
+		{
+			Board_Hits[victim] += 1;
+			float time = GetGameTime() + 3.5;
+			if(f_CudgelDebuff[attacker] <= time)
+				f_CudgelDebuff[attacker] = time;
 		}
 		else if(Board_Level[victim] == 0)
 		{
@@ -377,49 +393,6 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 
 		return damage * 0.05;
 	}
-	else if ((f_ParryDuration[victim] > GetGameTime()) && (Board_Level[victim] == 3 || Board_Level[victim] == 6))
-	{
-		if(Board_Level[victim] == 3)
-		{
-			Board_Hits[victim] += 1;
-		}
-		else if(Board_Level[victim] == 6)
-		{
-			Board_Hits[victim] += 1;
-			float time = GetGameTime() + 3.5;
-			if(f_CudgelDebuff[attacker] < time)
-				f_CudgelDebuff[attacker] = time;
-		}
-
-		if(f_AniSoundSpam[victim] < GetGameTime())
-		{
-			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			PlayParrySoundBoard(victim);
-			float flPos[3]; // original
-			float flAng[3]; // original
-			
-			GetAttachment(victim, "effect_hand_l", flPos, flAng);
-			
-			int particler = ParticleEffectAt(flPos, "mvm_soldier_shockwave", 0.15);
-		}
-	
-		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
-		{
-			float ParriedDamage = 65.0;
-			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
-		
-			static float angles[3];
-			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-			float vecForward[3];
-			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-			static float Entity_Position[3];
-			Entity_Position = WorldSpaceCenter(attacker);
-			f_BoardReflectCooldown[victim][attacker] = GetGameTime() + 0.1;
-			SDKHooks_TakeDamage(attacker, victim, victim, ParriedDamage, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
-		}
-		
-		return damage * 0.05;
-	} 
 	else if(Board_Level[victim] == 0) //board
 	{
 		//PrintToChatAll("damage resist");
@@ -557,7 +530,7 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 25)
 	if(!IsValidEntity(WeaponModel)) //somehow doesnt exist, aboard!
 		return;
 
-	f_ParryDuration[client] = GetGameTime() + 0.35;
+	f_ParryDuration[client] = GetGameTime() + 0.5;
 	ClientCommand(client, "playgamesound misc/halloween/strongman_fast_whoosh_01.wav");
 	
 	int ModelIndex = GetEntProp(WeaponModel, Prop_Send, "m_nModelIndex");
