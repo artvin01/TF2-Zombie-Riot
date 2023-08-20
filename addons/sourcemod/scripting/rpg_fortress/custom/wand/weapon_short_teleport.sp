@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int HitEntitiesTeleportTrace[MAXENTITIES];
+static int ST_HitEntitiesTeleportTrace[MAXENTITIES];
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_TELEPORT_SOUND "misc/halloween/spell_teleport.wav"
@@ -106,12 +106,12 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 		Explode_Logic_Custom(damage, client, client, weapon, abspos, Range, _, _, false, _, _, _);
 		Explode_Logic_Custom(damage, client, client, weapon, endPos, Range, _, _, false, _, _, _);
 
-		Zero(HitEntitiesTeleportTrace);
+		Zero(ST_HitEntitiesTeleportTrace);
 		static float maxs[3];
 		static float mins[3];
 		maxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 		mins = view_as<float>( { -24.0, -24.0, 0.0 } );	
-		Handle hTrace = TR_TraceHullFilterEx(abspos, endPos, mins, maxs, MASK_SOLID, TeleportDetectEnemy, client);
+		Handle hTrace = TR_TraceHullFilterEx(abspos, endPos, mins, maxs, MASK_SOLID, ST_TeleportDetectEnemy, client);
 		delete hTrace;
 		float damage_1;
 		float VictimPos[3];
@@ -122,12 +122,12 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 
 		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
-			if(!HitEntitiesTeleportTrace[entity_traced])
+			if(!ST_HitEntitiesTeleportTrace[entity_traced])
 				break;
 
-			VictimPos = WorldSpaceCenter(HitEntitiesTeleportTrace[entity_traced]);
+			VictimPos = WorldSpaceCenter(ST_HitEntitiesTeleportTrace[entity_traced]);
 
-			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0), VictimPos, false);	
+			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0), VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD = 4.0;
 		}
@@ -142,151 +142,18 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 	return 0.0;
 }
 
-public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
+public bool ST_TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
 {
 	if(IsValidEnemy(iExclude, entity, true, true))
 	{
 		for(int i=0; i < MAXENTITIES; i++)
 		{
-			if(!HitEntitiesTeleportTrace[i])
+			if(!ST_HitEntitiesTeleportTrace[i])
 			{
-				HitEntitiesTeleportTrace[i] = entity;
+				ST_HitEntitiesTeleportTrace[i] = entity;
 				break;
 			}
 		}
 	}
 	return false;
-}
-
-
-//TODO:
-/*
-	Unique effect on teleport
-	Damage on teleport on where you teleport to, and old position
-
-	Higher levels allow to bring allies
-*/
-bool Player_Teleport_Safe(int client, float endPos[3])
-{
-	bool FoundSafeSpot = false;
-
-	static float hullcheckmaxs_Player[3];
-	static float hullcheckmins_Player[3];
-	hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
-	hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
-
-	//Try base position.
-	float OriginalPos[3];
-	OriginalPos = endPos;
-
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
-		FoundSafeSpot = true;
-
-	for (int x = 0; x < 6; x++)
-	{
-		if (FoundSafeSpot)
-			break;
-
-		endPos = OriginalPos;
-		//ignore 0 at all costs.
-		
-		switch(x)
-		{
-			case 0:
-				endPos[0] += 5.0;
-
-			case 1:
-				endPos[0] -= 5.0;
-
-			case 2:
-				endPos[0] += 10.0;
-
-			case 3:
-				endPos[0] -= 10.0;
-
-			case 4:
-				endPos[0] += 25.0;
-
-			case 5:
-				endPos[0] -= 25.0;	
-		}
-		for (int y = 0; y < 7; y++)
-		{
-			if (FoundSafeSpot)
-				break;
-
-			endPos[1] = OriginalPos[1];
-				
-			switch(y)
-			{
-				case 1:
-					endPos[1] += 5.0;
-
-				case 2:
-					endPos[1] -= 5.0;
-
-				case 3:
-					endPos[1] += 10.0;
-
-				case 4:
-					endPos[1] -= 10.0;
-
-				case 5:
-					endPos[1] += 25.0;
-
-				case 6:
-					endPos[1] -= 25.0;	
-			}
-
-			for (int z = 0; z < 7; z++)
-			{
-				if (FoundSafeSpot)
-					break;
-
-				endPos[2] = OriginalPos[2];
-						
-				switch(z)
-				{
-					case 1:
-						endPos[2] += 5.0;
-
-					case 2:
-						endPos[2] -= 5.0;
-
-					case 3:
-						endPos[2] += 10.0;
-
-					case 4:
-						endPos[2] -= 10.0;
-
-					case 5:
-						endPos[2] += 25.0;
-
-					case 6:
-						endPos[2] -= 25.0;	
-				}
-				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
-					FoundSafeSpot = true;
-			}
-		}
-	}
-				
-
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
-		FoundSafeSpot = true;
-
-	if(FoundSafeSpot)
-	{
-		TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
-		EmitSoundToAll(WAND_TELEPORT_SOUND, client, SNDCHAN_STATIC, 80, _, 0.5);
-	}
-	return FoundSafeSpot;
-}
-
-static void constrainDistance(const float[] startPoint, float[] endPoint, float distance, float maxDistance)
-{
-	float constrainFactor = maxDistance / distance;
-	endPoint[0] = ((endPoint[0] - startPoint[0]) * constrainFactor) + startPoint[0];
-	endPoint[1] = ((endPoint[1] - startPoint[1]) * constrainFactor) + startPoint[1];
-	endPoint[2] = ((endPoint[2] - startPoint[2]) * constrainFactor) + startPoint[2];
 }

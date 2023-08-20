@@ -1083,11 +1083,6 @@ public void OnPluginStart()
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
 	RegConsoleCmd("sm_make_niko", Command_MakeNiko, "Turn This player into niko");
 	
-	SkyboxProps_OnPluginStart();
-	
-#if defined ZR
-	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
-#endif	
 	RegAdminCmd("sm_toggle_fake_cheats", Command_ToggleCheats, ADMFLAG_GENERIC, "ToggleCheats");
 	RegAdminCmd("zr_reload_plugin", Command_ToggleReload, ADMFLAG_GENERIC, "Reload plugin on map change");
 	
@@ -1274,8 +1269,6 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb1.wav");
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
-
-	SkyboxProps_OnMapStart();
 	
 	MapStartResetAll();
 	
@@ -1402,6 +1395,8 @@ public Action Command_ChangeCollision(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+#if defined ZR
 public Action Command_FakeDeathCount(int client, int args)
 {
 	//What are you.
@@ -1434,6 +1429,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	}
 	return Plugin_Handled;
 }
+#endif
 
 public Action Command_ToggleCheats(int client, int args)
 {
@@ -2038,10 +2034,12 @@ public void Update_Ammo(int  client)
 
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
+#if defined ZR
 	if(i_HealthBeforeSuit[client] == 0)
 	{
 		RequestFrame(Update_Ammo, client);
 	}
+#endif
 
 	Action action = Plugin_Continue;
 	Function func = EntityFuncAttack[weapon];
@@ -2174,6 +2172,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	return action;
 }
 
+#if defined ZR
 public void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
@@ -2189,6 +2188,7 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 	PrintToChatAll("MAP HAS TOO MANY SPAWNERS, REPORT BUG");
 	LogError("MAP HAS TOO MANY SPAWNERS");
 }
+#endif
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
@@ -2209,8 +2209,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_CustomWeaponEquipLogic[entity] = 0;
 		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
-		SetEntitySpike(entity, false);
 #if defined ZR
+		SetEntitySpike(entity, false);
 		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
 		b_SentryIsCustom[entity] = false;
@@ -2232,14 +2232,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
 		f_GodArkantosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
-		HasMechanic[entity] = false;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
-		i_BuildingRecievedHordings[entity] = false;
 		f_Ocean_Buff_Weak_Buff[entity] = 0.0;
-		FinalBuilder[entity] = false;
 		i_CurrentEquippedPerk[entity] = 0;
-		GlassBuilder[entity] = false;
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		LastHitRef[entity] = -1;
@@ -2312,18 +2308,24 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
 		i_IsABuilding[entity] = false;
-		Resistance_for_building_High[entity] = 0.0;
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;
-		Armor_Charge[entity] = 0;
 		
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+#if defined ZR
+		HasMechanic[entity] = false;
+		i_BuildingRecievedHordings[entity] = false;
+		FinalBuilder[entity] = false;
+		GlassBuilder[entity] = false;
+		Resistance_for_building_High[entity] = 0.0;
+		Armor_Charge[entity] = 0;
 		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;
 		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
+#endif
 
 		KillFeed_EntityCreated(entity);
 
@@ -2334,8 +2336,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
-#endif
 		BannerOnEntityCreated(entity);
+#endif
 
 #if defined RPG
 		RPG_EntityCreated(entity, classname);
@@ -2627,7 +2629,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "prop_vehicle"))
 		{
+#if defined ZR
 			Armor_Charge[entity] = 100000;
+#endif
 			b_IsVehicle[entity] = true;
 		}
 	}
@@ -2894,8 +2898,8 @@ public void OnEntityDestroyed(int entity)
 			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
-			SkyboxProps_OnEntityDestroyed(entity);
 #if defined ZR
+			SkyboxProps_OnEntityDestroyed(entity);
 			OnEntityDestroyed_BackPack(entity);
 			BuildingHordingsRemoval(entity);
 #endif

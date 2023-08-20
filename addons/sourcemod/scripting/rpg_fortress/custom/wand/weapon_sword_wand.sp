@@ -3,11 +3,7 @@
 
 public void Weapon_SwordWand(int client, int weapon, bool crit)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-
+	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
 	if(mana_cost > Current_Mana[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -17,10 +13,7 @@ public void Weapon_SwordWand(int client, int weapon, bool crit)
 	}
 	else
 	{
-		float damage = 1.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		float damage = Attributes_Get(weapon, 410, 1.0);
 		
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;

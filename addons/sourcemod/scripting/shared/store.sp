@@ -1415,7 +1415,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0; //you dont own the item.
 }*/
-#endif	// ZR
+
 void Store_RogueEndFightReset()
 {
 	static Item item;
@@ -1439,8 +1439,9 @@ void Store_RogueEndFightReset()
 		}
 	}*/
 	Ammo_Count_Ready += 5;
-
 }
+#endif	// ZR
+
 void Store_Reset()
 {
 #if defined ZR

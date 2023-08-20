@@ -8,11 +8,7 @@ void Wand_Arts_MapStart()
 
 public Action Weapon_Arts_Wand(int client, int weapon, bool &crit, int slot)
 {
-	int mana_cost;
-	Address address = TF2Attrib_GetByDefIndex(weapon, 733);
-	if(address != Address_Null)
-		mana_cost = RoundToCeil(TF2Attrib_GetValue(address));
-
+	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
 	if(mana_cost > Current_Mana[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -22,10 +18,7 @@ public Action Weapon_Arts_Wand(int client, int weapon, bool &crit, int slot)
 	}
 	else
 	{
-		float damage = 65.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 410);
-		if(address != Address_Null)
-			damage *= TF2Attrib_GetValue(address);
+		float damage = 65.0 * Attributes_Get(weapon, 410, 1.0);
 		
 		damage *= 1.0 + (Stats_OriginiumPower(client) / 2.0);
 		// x1.0 to x2.5
@@ -36,29 +29,15 @@ public Action Weapon_Arts_Wand(int client, int weapon, bool &crit, int slot)
 		Current_Mana[client] -= mana_cost;
 		
 		delay_hud[client] = 0.0;
-			
+		
 		float speed = 1100.0;
-		address = TF2Attrib_GetByDefIndex(weapon, 103);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		speed *= Attributes_Get(weapon, 104, 1.0);
+		speed *= Attributes_Get(weapon, 475, 1.0);
 	
-		address = TF2Attrib_GetByDefIndex(weapon, 104);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 475);
-		if(address != Address_Null)
-			speed *= TF2Attrib_GetValue(address);
-	
-	
-		float time = 500.0 / speed;
-		address = TF2Attrib_GetByDefIndex(weapon, 101);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
-	
-		address = TF2Attrib_GetByDefIndex(weapon, 102);
-		if(address != Address_Null)
-			time *= TF2Attrib_GetValue(address);
+		float time = 500.0/speed;
+		time *= Attributes_Get(weapon, 101, 1.0);
+		time *= Attributes_Get(weapon, 102, 1.0);
 		
 		EmitSoundToAll("misc/halloween/spell_teleport.wav", client, _, 65, _, 0.45);
 		Wand_Projectile_Spawn(client, speed, time, damage, 1, weapon, "eyeboss_projectile");

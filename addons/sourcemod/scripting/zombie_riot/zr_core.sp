@@ -423,6 +423,7 @@ void ZR_PluginStart()
 	
 	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
 	RegAdminCmd("sm_kill_ruina_ion", Command_Kill_Ruina_Cannon, ADMFLAG_ROOT, "Kills all ruina Ion Cannon"); 
+	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
@@ -431,6 +432,7 @@ void ZR_PluginStart()
 	if(CvarSvRollagle)
 		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	SkyboxProps_OnPluginStart();
 	OnPluginStart_Build_on_Building();
 	Database_PluginStart();
 	Items_PluginStart();
@@ -453,6 +455,7 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;

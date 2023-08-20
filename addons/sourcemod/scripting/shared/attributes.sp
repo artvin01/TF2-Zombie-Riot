@@ -192,7 +192,7 @@ int Attributes_Airdashes(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	return RoundFloat(Attributes_Get(weapon, 250, 0.0) + Attributes_GetOnPlayer(client, 393, false));	// air dash count, sniper rage DISPLAY ONLY
-},
+}
 #endif
 
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype, bool &guraneedGib)
@@ -219,7 +219,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 				value = float(i_BleedDurationWeapon[weapon]);	// bleeding duration
 				if(value)
-					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 0.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
+					StartBleedingTimer(victim, client, Attributes_Get(weapon, 2, 1.0) * 4.0, RoundFloat(value * 2.0), weapon, damagetype);
 
 					
 				value = float(i_BurnDurationWeapon[weapon]);	// Set DamageType Ignite
