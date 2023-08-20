@@ -189,8 +189,7 @@ public void StartChicken_ClotThink(int iNPC)
 		
 		if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
 			return;
-			
-
+		
 		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
 		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);

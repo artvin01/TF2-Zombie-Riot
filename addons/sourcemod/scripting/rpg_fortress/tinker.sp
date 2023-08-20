@@ -581,13 +581,8 @@ void Tinker_SpawnItem(int client, int index, int entity)
 				{
 					float multi = GetAutoMulti(weapon.Auto, Level[client], weapon.XP);
 
-					Address address = TF2Attrib_GetByDefIndex(entity, 2);
-					if(address != Address_Null)
-						Attributes_Set(entity, 2, TF2Attrib_GetValue(address) * multi);
-
-					address = TF2Attrib_GetByDefIndex(entity, 410);
-					if(address != Address_Null)
-						Attributes_Set(entity, 410, TF2Attrib_GetValue(address) * multi);
+					Attributes_SetMulti(entity, 2, multi);
+					Attributes_SetMulti(entity, 410, multi);
 				}
 				
 				static TinkerEnum tinker;
@@ -650,17 +645,17 @@ void Tinker_SpawnItem(int client, int index, int entity)
 					else if(weapon.Forge[i])
 					{
 						Address address = TF2Attrib_GetByDefIndex(entity, weapon.Forge[i]);
-						if(address == Address_Null)
+						if(!Attributes_Has(entity, weapon.Forge[i]))
 						{
 							Attributes_Set(entity, weapon.Forge[i], weapon.Value[i]);
 						}
 						else if(TF2Econ_GetAttributeDefinitionString(weapon.Forge[i], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
 						{
-							Attributes_Set(entity, weapon.Forge[i], TF2Attrib_GetValue(address) + weapon.Value[i]);
+							Attributes_SetAdd(entity, weapon.Forge[i], weapon.Value[i]);
 						}
 						else
 						{
-							Attributes_Set(entity, weapon.Forge[i], TF2Attrib_GetValue(address) * weapon.Value[i]);
+							Attributes_SetMulti(entity, weapon.Forge[i], weapon.Value[i]);
 						}
 
 						Attributes_Set(entity, 128, 1.0);
@@ -1487,17 +1482,9 @@ public void Tinker_XP_Ecological(int client, int weapon)
 
 public void Tinker_XP_Glassy(int client, int weapon)
 {
-	Address address = TF2Attrib_GetByDefIndex(weapon, 2);
-	if(address != Address_Null)
-		Attributes_Set(weapon, 2, TF2Attrib_GetValue(address) * 0.99);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 410);
-	if(address != Address_Null)
-		Attributes_Set(weapon, 410, TF2Attrib_GetValue(address) * 0.99);
-	
-	address = TF2Attrib_GetByDefIndex(weapon, 2016);
-	if(address != Address_Null)
-		Attributes_Set(weapon, 2016, TF2Attrib_GetValue(address) * 0.99);
+	Attributes_SetMulti(weapon, 2, 0.99);
+	Attributes_SetMulti(weapon, 410, 0.99);
+	Attributes_SetMulti(weapon, 2016, 0.99);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)

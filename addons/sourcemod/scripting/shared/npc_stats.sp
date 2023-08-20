@@ -30,14 +30,6 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
-float f3_AvoidOverrideMin[MAXENTITIES][3];
-float f3_AvoidOverrideMax[MAXENTITIES][3];
-float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
-float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
-float f_AvoidObstacleNavTime[MAXENTITIES];
-bool b_AvoidObstacleType[MAXENTITIES];
-int b_NpcCollisionType[MAXENTITIES];
-int i_FailedTriesUnstuck[MAXENTITIES];
 #endif
 
 #if defined RPG
@@ -47,6 +39,14 @@ int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 
 static int g_modelArrow;
 
+float f3_AvoidOverrideMin[MAXENTITIES][3];
+float f3_AvoidOverrideMax[MAXENTITIES][3];
+float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
+float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
+float f_AvoidObstacleNavTime[MAXENTITIES];
+bool b_AvoidObstacleType[MAXENTITIES];
+int i_FailedTriesUnstuck[MAXENTITIES];
+int b_NpcCollisionType[MAXENTITIES];
 static bool b_should_explode[MAXENTITIES];
 static bool b_rocket_particle_from_blue_npc[MAXENTITIES];
 static int g_rocket_particle;
@@ -4150,6 +4150,7 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
+#if defined ZR
 					if(IsTowerdefense && i_NpcInternalId[entity_close] == VIP_BUILDING)
 					{
 						if(!IsValidEnemy(entity, i_Target[entity], true, true))
@@ -4157,6 +4158,7 @@ stock int GetClosestTarget(int entity,
 							return entity_close; //we found a vip building, go after it.
 						}
 					}
+#endif
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -4920,6 +4922,7 @@ public void NpcBaseThink(int iNPC)
 							npc.SetVelocity({ 0.0, 0.0, 0.0 });
 							if(f_NpcHasBeenUnstuckAboveThePlayer[iNPC] > GameTime)
 							{
+#if defined ZR
 								bool wasactuallysawrunner = false;
 								if(b_ThisNpcIsSawrunner[npc.index]) //Code works already good, do this.
 								{
@@ -4931,6 +4934,7 @@ public void NpcBaseThink(int iNPC)
 								{
 									b_ThisNpcIsSawrunner[npc.index] = false;
 								}
+#endif	// ZR
 							}
 							f_NpcHasBeenUnstuckAboveThePlayer[iNPC] = GameTime + 1.0; //Make the npc immortal! This will prevent abuse of stuckspots.
 							//make this work in rpg too.
@@ -5101,6 +5105,7 @@ public void NpcBaseThink(int iNPC)
 				}
 				else
 				{
+#if defined ZR
 					//This is an ally.
 					int target = 0;
 					for(int i=1; i<=MaxClients; i++)
@@ -5124,6 +5129,7 @@ public void NpcBaseThink(int iNPC)
 						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 					}
 					else
+#endif	// ZR
 					{
 						RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 					}
@@ -6995,6 +7001,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_ThisNpcIsSawrunner[entity] = false;
 	Expidonsa_SetToZero(entity);
+	f_AvoidObstacleNavTime[entity] = 0.0;
 #endif
 	
 #if defined RPG
@@ -7009,7 +7016,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_DungeonContracts_35PercentMoreDamage[entity] = false;
 	b_DungeonContracts_25PercentMoreDamage[entity] = false;
 #endif
-	f_AvoidObstacleNavTime[entity] = 0.0;
 	f_NpcHasBeenUnstuckAboveThePlayer[entity] = 0.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
@@ -7244,7 +7250,11 @@ public void ArrowStartTouch(int arrow, int entity)
 		SDKHooks_TakeDamage(entity, owner, inflictor, f_ArrowDamage[arrow], DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);
 		if(i_NervousImpairmentArrowAmount[arrow] > 0)
 		{
+#if defined ZR
 			SeaSlider_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
+#elseif defined RPG
+			Stats_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
+#endif
 		}
 		
 		EmitSoundToAll(g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], arrow, _, 80, _, 0.8, 100);

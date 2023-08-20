@@ -253,11 +253,14 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				ViewChange_DeleteHands(client);
 				ViewChange_UpdateHands(client, CurrentClass[client]);
 			}
+
+			#if defined ZR
 			if(TeutonType[client] == TEUTON_NONE)
 			{
 				UpdatePlayerFakeModel(client);
 			}
 			else
+			#endif
 			{
 				int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 				if(IsValidEntity(ViewmodelPlayerModel))
