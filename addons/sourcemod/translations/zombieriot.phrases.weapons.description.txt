@@ -1707,9 +1707,9 @@
 	
 	"Soft Shoes Desc"
 	{
-		"en"	"Take 35%% less fall damage!"
-		"ru"	"Получайте на 35%% меньше урона при падении!"
-		"chi"   "减少35%%的掉落伤害!"
+		"en"	"Take 10%% less fall damage!"
+		"ru"	"Получайте на 10%% меньше урона при падении!"
+		"chi"   "减少10%%的掉落伤害!"
 	}
 	
 	"Hardened Stance Desc"

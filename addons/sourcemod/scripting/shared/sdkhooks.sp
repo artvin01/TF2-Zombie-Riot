@@ -1345,12 +1345,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 			
 #if defined ZR
-		Replicated_Damage *= 0.65; //Reduce falldmg by passive overall
-		damage *= 0.65;
+		Replicated_Damage *= 0.85; //Reduce falldmg by passive overall
+		damage *= 0.85;
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
-			Replicated_Damage *= 0.2;
-			damage *= 0.2;			
+			Replicated_Damage *= 0.75;
+			damage *= 0.75;			
 		}
 		else if(i_SoftShoes[victim] == 1)
 #else
@@ -1359,10 +1359,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 				
 #if defined ZR
-			Replicated_Damage *= 0.65;
+			Replicated_Damage *= 0.9;
 #endif
 				
-			damage *= 0.65;
+			damage *= 0.9;
 		}
 		if(f_ImmuneToFalldamage[victim] > GameTime)
 		{
@@ -1539,8 +1539,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(i_CurrentEquippedPerk[victim] == 2)
 		{
-			Replicated_Damage *= 0.85;
-			damage *= 0.85;
+			Replicated_Damage *= 0.9;
+			damage *= 0.9;
 		}
 #endif
 		{

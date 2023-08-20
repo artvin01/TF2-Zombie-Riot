@@ -67,13 +67,13 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 		}
 		if (Board_Level[victim] == 2)
 		{
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.005, 7);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.001, 10);
 			Board_Ability_1[victim] = false;
 		}
 		else if (Board_Level[victim] == 5)
 		{
-			ApplyTempAttrib(victim, 26, 1.2, 5.35);
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.005, 7);
+			ApplyTempAttrib(victim, 26, 1.1, 3.0);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.001, 10);
 			Board_Ability_1[victim] = false;
 		}
 		else if(Board_Level[victim] == 4)
@@ -391,42 +391,42 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			SDKHooks_TakeDamage(attacker, victim, victim, ParriedDamage, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
 		}
 
-		return damage * 0.05;
+		return damage * 0.5;
 	}
 	else if(Board_Level[victim] == 0) //board
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.85;
+		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 1) //spike
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.9;
+		return damage * 0.95;
 	}
 	else if(Board_Level[victim] == 2) //leaf
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.7;
+		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 3) //rookie
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.8;
+		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 4) //punish
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.7;
+		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.5;
+		return damage * 0.75;
 	}
 	else if(Board_Level[victim] == 6) //the last one cudgel
 	{
 		//PrintToChatAll("damage resist");
-		return damage * 0.6;
+		return damage * 0.8;
 	}
 	else
 	{
