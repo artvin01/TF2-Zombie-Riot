@@ -7038,6 +7038,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_Jumping[entity] = false;
 	b_AllowBackWalking[entity] = false;
 	fl_JumpStartTime[entity] = 0.0;
+	for(int client; client <= MaxClients; client++)
+	{
+		f_BackstabBossDmgPenaltyNpcTime[entity][client] = 0.0;
+	}
 	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
 	fl_NextDelayTime[entity] = 0.0;

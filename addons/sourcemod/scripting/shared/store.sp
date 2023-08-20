@@ -117,6 +117,7 @@ enum struct ItemInfo
 	int BackstabHealPerTick;
 	int BackstabHealTicks;
 	bool BackstabLaugh;
+	float BackstabDmgPentalty;
 	
 	Function FuncAttack;
 	Function FuncAttackInstant;
@@ -128,6 +129,7 @@ enum struct ItemInfo
 	int WeaponSoundIndexOverride;
 	int WeaponModelIndexOverride;
 	float WeaponSizeOverride;
+	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
 	
 	int Attack3AbilitySlot;
@@ -289,6 +291,12 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%sweapon_custom_size_viewmodel", prefix);
+		this.WeaponSizeOverrideViewmodel			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%sbackstab_multi_dmg_penalty_bosses", prefix);
+		this.BackstabDmgPentalty			= kv.GetFloat(buffer, 1.0);
 
 		if(this.WeaponModelOverride[0])
 		{
@@ -4798,11 +4806,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						i_Hex_WeaponUsesTheseAbilities[entity] |= ABILITY_R;  //R status to weapon
 					}
 					
-					i_WeaponArchetype[entity] = info.WeaponArchetype;
-					i_WeaponForceClass[entity] = info.WeaponForceClass;
-					i_WeaponSoundIndexOverride[entity] = info.WeaponSoundIndexOverride;
-					i_WeaponModelIndexOverride[entity] = info.WeaponModelIndexOverride;
-					f_WeaponSizeOverride[entity]	= info.WeaponSizeOverride;
+					i_WeaponArchetype[entity] 				= info.WeaponArchetype;
+					i_WeaponForceClass[entity] 				= info.WeaponForceClass;
+					i_WeaponSoundIndexOverride[entity] 		= info.WeaponSoundIndexOverride;
+					i_WeaponModelIndexOverride[entity] 		= info.WeaponModelIndexOverride;
+					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
+					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
+					f_BackstabBossDmgPenalty[entity]		= info.BackstabDmgPentalty;
 
 					HidePlayerWeaponModel(client, entity);
 					/*

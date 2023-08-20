@@ -591,14 +591,18 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		if(soundIndex > 0)
 		{
 			char SoundStringToPlay[256];
-			if(i_WeaponSoundIndexOverride[weapon] > 0)
-				SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
+			if(i_WeaponSoundIndexOverride[weapon] != -1)
+			{
+				if(i_WeaponSoundIndexOverride[weapon] > 0)
+					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
 
-			SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
-			if(i_WeaponSoundIndexOverride[weapon] > 0)
-				SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
+				SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+				if(i_WeaponSoundIndexOverride[weapon] > 0)
+					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
 
-			EmitGameSoundToAll(SoundStringToPlay, client);
+				EmitGameSoundToAll(SoundStringToPlay, client);
+					
+			}
 		}
 
 		float damage = 65.0;
@@ -644,15 +648,18 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 
 						if(soundIndex > 0)
 						{
-							char SoundStringToPlay[256];
-							if(i_WeaponSoundIndexOverride[weapon] > 0)
-								SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
+							if(i_WeaponSoundIndexOverride[weapon] != -1)
+							{
+								char SoundStringToPlay[256];
+								if(i_WeaponSoundIndexOverride[weapon] > 0)
+									SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
 
-							SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
-							if(i_WeaponSoundIndexOverride[weapon] > 0)
-								SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
-								
-							EmitGameSoundToAll(SoundStringToPlay, client);
+								SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+								if(i_WeaponSoundIndexOverride[weapon] > 0)
+									SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
+									
+								EmitGameSoundToAll(SoundStringToPlay, client);
+							}
 						}	
 					}
 					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);

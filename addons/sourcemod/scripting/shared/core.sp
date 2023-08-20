@@ -217,6 +217,8 @@ float f_BackstabCooldown[MAXENTITIES];
 int i_BackstabHealEachTick[MAXENTITIES];
 int i_BackstabHealTicks[MAXENTITIES];
 bool b_BackstabLaugh[MAXENTITIES];
+float f_BackstabBossDmgPenalty[MAXENTITIES];
+float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
@@ -563,6 +565,7 @@ float f_ImmuneToFalldamage[MAXENTITIES];
 int i_WeaponSoundIndexOverride[MAXENTITIES];
 int i_WeaponModelIndexOverride[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
+float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
@@ -2218,6 +2221,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
+		f_WeaponSizeOverrideViewmodel[entity] = 1.0;
 		i_WeaponModelIndexOverride[entity] = 0;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
@@ -2336,6 +2340,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
+		Board_EntityCreated(entity);
+
 		BannerOnEntityCreated(entity);
 #endif
 

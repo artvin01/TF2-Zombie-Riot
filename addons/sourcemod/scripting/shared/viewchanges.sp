@@ -326,7 +326,11 @@ void HidePlayerWeaponModel(int client, int entity)
 	int EntityWeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
 	if(IsValidEntity(EntityWeaponModel))
 	{
-		PrintToChatAll("%f", f_WeaponSizeOverride[entity]);
 		SetEntPropFloat(EntityWeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[entity]);
+	}
+	EntityWeaponModel = EntRefToEntIndex(WeaponRef[client]);
+	if(IsValidEntity(EntityWeaponModel))
+	{
+		SetEntPropFloat(EntityWeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverrideViewmodel[entity]);
 	}
 }

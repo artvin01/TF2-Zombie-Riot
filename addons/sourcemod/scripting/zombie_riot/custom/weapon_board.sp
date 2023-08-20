@@ -4,9 +4,11 @@
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static int Board_Hits[MAXPLAYERS+1]={0, ...};
 static int Board_Level[MAXPLAYERS+1]={0, ...};
+static float f_ParryDuration[MAXPLAYERS+1]={0.0, ...};
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
-static int Board_OutlineModel[MAXPLAYERS+1]={0, ...};
+static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
+static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
@@ -22,10 +24,17 @@ void WeaponBoard_Precache()
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", Pos);
 	I wanted to implement an effect similar to Riot Shield here for when you parry with the Punishment shield, but couldn't get it to work properly and crashing is annoying
 }*/
+void Board_EntityCreated(int entity) 
+{
+	for(int i=1; i<=MaxClients; i++)
+	{
+		f_BoardReflectCooldown[i][entity] = 0.0;
+	}
+}
 
 public void Punish(int victim, int weapon, int bool) //AOE parry damage that scales with melee upgrades, im a coding maestro SUPREME
 {
-	float damage = 2500.0;
+	float damage = 300.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 			
 	int value = i_ExplosiveProjectileHexArray[victim];
@@ -82,7 +91,9 @@ public void Board_empower_ability(int client, int weapon, bool crit, int slot) /
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 5.0);
+		float Cooldown = 5.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 0;
 		
@@ -112,7 +123,9 @@ public void Board_empower_ability_Spike(int client, int weapon, bool crit, int s
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 5.0);
+		float Cooldown = 5.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 1;
 		
@@ -141,7 +154,9 @@ public void Board_empower_ability_Leaf(int client, int weapon, bool crit, int sl
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 5.0); // PARRY COOLDOWN!!!!!!
+		float Cooldown = 5.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 2;
 		
@@ -173,7 +188,9 @@ public void Board_empower_ability_Rookie(int client, int weapon, bool crit, int 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 3.0);
+		float Cooldown = 3.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 3;
 		
@@ -204,7 +221,9 @@ public void Board_empower_ability_Punishment(int client, int weapon, bool crit, 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 5.0);
+		float Cooldown = 5.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 4;
 		
@@ -236,7 +255,9 @@ public void Board_empower_ability_Rampart(int client, int weapon, bool crit, int
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 5.0);
+		float Cooldown = 5.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 5;
 		
@@ -268,7 +289,9 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 3.0);
+		float Cooldown = 3.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 6;
 		
@@ -295,42 +318,30 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 //stuff that gets activated upon taking any damage
 public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
-	if (Ability_Check_Cooldown(victim, 2) >= 4.65 && Ability_Check_Cooldown(victim, 2) < 5.0)
+	if (f_ParryDuration[victim] > GetGameTime())
 	{
-		float damage_reflected = damage;
-		//PrintToChatAll("parry worked");
 		if(Board_Level[victim] == 1)
 		{
-			damage_reflected = 3250.0; //1.0 = 50
 			Board_Hits[victim] += 1;
-			//PrintToChatAll("Spike parry");
 		}
 		else if(Board_Level[victim] == 2)
 		{
-			damage_reflected = 1500.0;
 			Board_Hits[victim] += 1;
 			SwagMeter(victim, weapon);
-			//PrintToChatAll("Leaf parry");
 		}
 		else if(Board_Level[victim] == 4)
 		{
-			damage_reflected = 2500.0;
 			Board_Hits[victim] += 1;
 			SwagMeter(victim, weapon);
-			//PrintToChatAll("Punishment parry");
 		}
 		else if(Board_Level[victim] == 5)
 		{
-			damage_reflected = 6000.0;
 			Board_Hits[victim] += 1;
 			SwagMeter(victim, weapon);
-			//PrintToChatAll("Rampart parry");
 		}
 		else if(Board_Level[victim] == 0)
 		{
-			damage_reflected = 650.0;
 			Board_Hits[victim] += 1;
-			//PrintToChatAll("Board parry");
 		}
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
@@ -344,34 +355,35 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			
 			ParticleEffectAt(flPos, "mvm_soldier_shockwave", 0.15);
 		}
-		
-		static float angles[3];
-		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(attacker);
 	
 		
-		SDKHooks_TakeDamage(attacker, victim, victim, damage_reflected, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
+		{
+			float ParriedDamage = 65.0;
+			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
 		
+			static float angles[3];
+			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+			float vecForward[3];
+			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+			static float Entity_Position[3];
+			Entity_Position = WorldSpaceCenter(attacker);
+
+			f_BoardReflectCooldown[victim][attacker] = GetGameTime() + 0.1;
+			SDKHooks_TakeDamage(attacker, victim, victim, ParriedDamage, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+		}
+
 		return damage * 0.05;
 	}
-	else if ((Ability_Check_Cooldown(victim, 2) >= 2.65 && Ability_Check_Cooldown(victim, 2) < 3.0) && (Board_Level[victim] == 3 || Board_Level[victim] == 6))
+	else if ((f_ParryDuration[victim] > GetGameTime()) && (Board_Level[victim] == 3 || Board_Level[victim] == 6))
 	{
-		float damage_reflected = damage;
-		//PrintToChatAll("parry worked");
 		if(Board_Level[victim] == 3)
 		{
-			damage_reflected = 1050.0;
 			Board_Hits[victim] += 1;
-			//PrintToChatAll("Rookie parry");
 		}
 		else if(Board_Level[victim] == 6)
 		{
-			damage_reflected = 2692.6;
 			Board_Hits[victim] += 1;
-			//PrintToChatAll("Cudgel parry");
 			float time = GetGameTime() + 3.5;
 			if(f_CudgelDebuff[attacker] < time)
 				f_CudgelDebuff[attacker] = time;
@@ -388,16 +400,21 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			
 			int particler = ParticleEffectAt(flPos, "mvm_soldier_shockwave", 0.15);
 		}
-		
-		static float angles[3];
-		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenter(attacker);
 	
+		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
+		{
+			float ParriedDamage = 65.0;
+			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
 		
-		SDKHooks_TakeDamage(attacker, victim, victim, damage_reflected, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+			static float angles[3];
+			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+			float vecForward[3];
+			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+			static float Entity_Position[3];
+			Entity_Position = WorldSpaceCenter(attacker);
+			f_BoardReflectCooldown[victim][attacker] = GetGameTime() + 0.1;
+			SDKHooks_TakeDamage(attacker, victim, victim, ParriedDamage, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+		}
 		
 		return damage * 0.05;
 	} 
@@ -538,6 +555,7 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 25)
 	if(!IsValidEntity(WeaponModel)) //somehow doesnt exist, aboard!
 		return;
 
+	f_ParryDuration[client] = GetGameTime() + 0.35;
 	ClientCommand(client, "playgamesound misc/halloween/strongman_fast_whoosh_01.wav");
 	
 	int ModelIndex = GetEntProp(WeaponModel, Prop_Send, "m_nModelIndex");
@@ -615,4 +633,25 @@ void PlayParrySoundBoard(int client)
 			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh3.wav");
 		}
 	}
+}
+
+float ShieldCutOffCooldown_Board(float CooldownCurrent, int weapon)
+{
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
+
+	CooldownCurrent *= attackspeed;
+
+	if(CooldownCurrent <= 0.4)
+	{
+		CooldownCurrent = 0.4; //cant get lower then 0.4
+	}
+	return CooldownCurrent;
+}
+float CalculateDamageBonus_Board(float damage, int weapon)
+{
+	float damageModif = damage;
+	damageModif *= Attributes_Get(weapon, 1, 1.0);
+	damageModif *= Attributes_Get(weapon, 2, 1.0);
+	damageModif *= Attributes_Get(weapon, 476, 1.0);
+	return damageModif;
 }

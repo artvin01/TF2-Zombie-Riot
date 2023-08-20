@@ -2805,7 +2805,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
 					{
 						damage *= 0.35; //cut damage in half and then some.
-					}
+					}	
 					
 					CClotBody npc = view_as<CClotBody>(victim);
 					bool IsTargeter = false;
@@ -2813,6 +2813,27 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 					{
 						IsTargeter = true;
 						damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
+					}
+
+					if(f_BackstabBossDmgPenalty[weapon] != 1.0)
+					{
+						bool DoPenalty = false;
+						if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+						{
+							DoPenalty = true;
+						}
+						if(i_NpcIsABuilding[victim])
+						{
+							DoPenalty = false;
+						}
+						if(DoPenalty)
+						{
+							if(f_BackstabBossDmgPenaltyNpcTime[victim][attacker] > GetGameTime())
+							{
+								damage *= f_BackstabBossDmgPenalty[weapon];
+							}
+							f_BackstabBossDmgPenaltyNpcTime[victim][attacker] = GetGameTime() + 2.0;	
+						}
 					}
 
 					damage *= f_BackstabDmgMulti[weapon];		

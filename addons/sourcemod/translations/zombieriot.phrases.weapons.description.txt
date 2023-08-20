@@ -2301,7 +2301,7 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades, however, damage always stays the same.\nDefence rating: ★✬☆☆☆"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: ★✬☆☆☆"
 	}
 	"Spike Shield Desc"
 	{
