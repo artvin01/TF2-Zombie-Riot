@@ -181,8 +181,6 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 	int client = GetClientOfUserId(userid);
 	if(client && !Cached[client])
 	{
-		Cached[client] = true;
-
 		char buffer[512];
 		
 		delete Loadouts[client];
@@ -261,6 +259,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			}
 		}
 
+		Cached[client] = true;
 		Store_OnCached(client);
 
 		if(tr)
