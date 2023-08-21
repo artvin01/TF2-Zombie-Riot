@@ -240,7 +240,6 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				SDKCall_EquipWearable(client, entity);
 			}
 			
-			SetEntProp(active, Prop_Send, "m_fEffects", EF_NODRAW);
 			HidePlayerWeaponModel(client, active);
 					
 			//if(WeaponClass[client] != class)
@@ -320,7 +319,7 @@ void HidePlayerWeaponModel(int client, int entity)
 	SetEntityRenderColor(entity, 0, 0, 0, 0);
 //	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
 //	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
-	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | 0x020);
+	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
 	int EntityWeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
