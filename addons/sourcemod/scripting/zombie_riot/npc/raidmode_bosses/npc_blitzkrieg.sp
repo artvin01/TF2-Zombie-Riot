@@ -940,7 +940,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					if(projectile_speed>=6000.0)
 						projectile_speed = 6000.0;
 						
-					FireBlitzRocket(npc.index, vPredictedPos, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
+					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
