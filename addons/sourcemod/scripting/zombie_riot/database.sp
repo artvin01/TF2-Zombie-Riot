@@ -44,8 +44,8 @@ public void Database_LocalSetup(Database db, any data, int numQueries, DBResultS
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientAuthorized(client))
-				Database_ClientAuthorized(client);
+			if(IsClientInGame(client))
+				Database_ClientPostAdminCheck(client);
 		}
 	}
 }
