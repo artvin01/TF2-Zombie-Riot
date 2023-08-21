@@ -939,7 +939,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					float projectile_speed = (300.0 * i_HealthScale[npc.index]);
 					if(projectile_speed>=6000.0)
 						projectile_speed = 6000.0;
-				//	vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+						
 					FireBlitzRocket(npc.index, vecTarget, 7.5 * i_HealthScale[npc.index], projectile_speed, "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl", 1.0);
 					npc.m_iAmountProjectiles += 1;
 					npc.PlayRangedSound();
@@ -1127,7 +1127,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	{
 		CPrintToChatAll("Target outside distance %i", attacker);
 	}*/
-	int closest = attacker;
+	int closest = npc.m_iTarget;	//IOC and text towards the npc's target, who is most likely the one tanking him, ion *should* in theory obliterate them!
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));

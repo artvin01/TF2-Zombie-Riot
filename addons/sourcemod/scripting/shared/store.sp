@@ -4019,7 +4019,7 @@ void Store_ApplyAttribs(int client)
 	int Extra_Juggernog_Hp = 0;
 	if(i_CurrentEquippedPerk[client] == 2)
 	{
-		Extra_Juggernog_Hp = 150;
+		Extra_Juggernog_Hp = 100;
 	}
 
 	if(i_HealthBeforeSuit[client] == 0)
