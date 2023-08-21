@@ -1539,8 +1539,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(i_CurrentEquippedPerk[victim] == 2)
 		{
-			Replicated_Damage *= 0.9;
-			damage *= 0.9;
+			Replicated_Damage *= 0.85;
+			damage *= 0.85;
 		}
 #endif
 		{

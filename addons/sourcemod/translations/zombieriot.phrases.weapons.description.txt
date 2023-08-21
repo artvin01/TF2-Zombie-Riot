@@ -1700,9 +1700,9 @@
 	
 	"Android Desc"
 	{
-		"en"	"You take 5%% less damage overall but have -50 health."
-		"ru"	"Вы получаете на 5%% меньше общего урона, но имеете -50 здоровья."
-		"chi"   "你受到的伤害减少5%%，但生命值-50。"
+		"en"	"You take 5%% less damage overall but have -100 health."
+		"ru"	"Вы получаете на 5%% меньше общего урона, но имеете -100 здоровья."
+		"chi"   "你受到的伤害减少5%%，但生命值-100。"
 	}
 	
 	"Soft Shoes Desc"
