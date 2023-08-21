@@ -655,7 +655,6 @@ void ZR_ClientDisconnect(int client)
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
 	DataBase_ClientDisconnect(client);
-	Items_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);

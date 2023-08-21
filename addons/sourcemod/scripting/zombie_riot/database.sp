@@ -337,6 +337,8 @@ void DataBase_ClientDisconnect(int client)
 			}
 
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+
+			Items_ClearArray(client);
 		}
 	}
 

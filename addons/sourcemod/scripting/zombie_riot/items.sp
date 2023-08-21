@@ -87,11 +87,6 @@ void Items_SetupConfig()
 	}
 }
 
-void Items_ClientDisconnect(int client)
-{
-	Items_ClearArray(client);
-}
-
 void Items_ClearArray(int client)
 {
 	int id;
