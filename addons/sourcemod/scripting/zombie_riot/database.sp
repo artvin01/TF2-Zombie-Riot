@@ -57,13 +57,13 @@ public void Database_GlobalSetup(Database db, any data, int numQueries, DBResult
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientAuthorized(client))
-				Database_ClientAuthorized(client);
+			if(IsClientInGame(client))
+				Database_ClientPostAdminCheck(client);
 		}
 	}
 }
 
-void Database_ClientAuthorized(int client)
+void Database_ClientPostAdminCheck(int client)
 {
 	if(!IsFakeClient(client))
 	{

@@ -1002,8 +1002,6 @@ public void OnClientAuthorized(int client)
 	
 	if(CurrentRound)
 		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
-
-	Database_ClientAuthorized(client);
 }
 
 void ZR_OnClientDisconnect_Post()

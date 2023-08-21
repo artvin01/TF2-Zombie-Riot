@@ -1500,8 +1500,9 @@ public Action Command_ToggleReload(int client, int args)
 
 public void OnClientPostAdminCheck(int client)
 {
-	return;
-//	CreateTimer(1.0, AdminCheckKick, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+#if defined ZR
+	Database_ClientPostAdminCheck(client);
+#endif
 }
 				
 public void OnClientPutInServer(int client)
