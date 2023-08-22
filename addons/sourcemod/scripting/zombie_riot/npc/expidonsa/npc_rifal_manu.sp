@@ -72,9 +72,9 @@ methodmap RifalManu < CClotBody
 
 	public RifalManu(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.1", "5000", ally));
+		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.1", "1000", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_RifalManu;
+		i_NpcInternalId[npc.index] = EXPIDONSA_RIFALMANU;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -209,25 +209,25 @@ public void RifalManu_NPCDeath(int entity)
 
 }
 
-void RifalManuSelfDefense(Pistoleer npc, float gameTime)
+void RifalManuSelfDefense(RifalManu npc, float gameTime)
 {
-	int GetClosestEnemyToAttack;
-	//Ranged units will behave differently.
-	//Get the closest visible target via distance checks, not via pathing check.
-	GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
-	if(!IsValidEnemy(npc.index,GetClosestEnemyToAttack))
+	int target;
+	//some Ranged units will behave differently.
+	//not this one.
+	target = npc.m_iTarget;
+	if(!IsValidEnemy(npc.index,target))
 	{
 		if(npc.m_iChanged_WalkCycle != 4)
 		{
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 300.0;
+			npc.m_flSpeed = 250.0;
 			npc.StartPathing();
 		}
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
@@ -280,7 +280,7 @@ void RifalManuSelfDefense(Pistoleer npc, float gameTime)
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.SetActivity("ACT_MP_RUN_PRIMARY");
-			npc.m_flSpeed = 300.0;
+			npc.m_flSpeed = 250.0;
 			npc.StartPathing();
 		}
 	}

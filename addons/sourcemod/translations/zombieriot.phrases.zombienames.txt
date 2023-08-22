@@ -1709,4 +1709,12 @@
 	{
 		"en"	"VIP Building, The Objective"
 	}
+	"Rifal Manu"
+	{
+		"en"	"Rifal Manu"
+	}
+	"Siccerino"
+	{
+		"en"	"Siccerino"
+	}
 }

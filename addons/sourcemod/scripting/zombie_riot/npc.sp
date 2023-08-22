@@ -352,7 +352,10 @@ enum
 	SEA_ALLY_DONNERKRIEG		= 305,
 	SEA_ALLY_SCHWERTKRIEG		= 306,
 	SEA_ALLY_GOD_ARKANTOS		= 307,
-	VIP_BUILDING			= 308
+	VIP_BUILDING			= 308,
+	EXPIDONSA_RIFALMANU 	= 309,
+	EXPIDONSA_SICCERINO		= 310,
+	EXPIDONSA_SOLDINE_PROTOTYPE		= 311
 }
 
 public const char NPC_Names[][] =
@@ -687,7 +690,10 @@ public const char NPC_Names[][] =
 	"Seaborn Donnerkrieg",
 	"Seaborn Schwertkreig",
 	"Seaborn God Arkantos",
-	"VIP Building, The Objective"
+	"VIP Building, The Objective",
+	"Rifal Manu",
+	"Siccerino",
+	"Soldine Prototype"
 };
 
 // See items.sp for IDs to names
@@ -1028,6 +1034,9 @@ public const int NPCCategory[] =
 	-1,	// SEA_ALLY_SCHWERTKRIEG		= 306,
 	-1,	// SEA_ALLY_GOD_ARKANTOS		= 307,
 	0	// VIP_BUILDING			= 308
+	-1,	// EXPIDONSA_RIFALMANU		= 309,
+	-1,	// EXPIDONSA_SICCERINO			= 310,
+	-1,	// EXPIDONSA_SOLDINE_PROTOTYPE			= 311,
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1360,7 +1369,10 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"Seaborn Donnerkrieg",
 	"Seaborn Schwertkreig",
 	"Seaborn God Arkantos",
-	"npc_vip_building"
+	"npc_vip_building",
+	"npc_rifal_manu",
+	"npc_siccerino",
+	"npc_soldine_prototype"
 };
 
 void NPC_MapStart()
@@ -1571,15 +1583,20 @@ void NPC_MapStart()
 	
 
 	//Expidonsa Waves
+//wave 1-15:
 	Benera_OnMapStart_NPC();
 	Pental_OnMapStart_NPC();
 	Defanda_OnMapStart_NPC();
 	SelfamIre_OnMapStart_NPC();
 	VausMagica_OnMapStart_NPC();
 	Pistoleer_OnMapStart_NPC();
-	Diversionistico_OnMapStart_NPC();
+	Diversionistico_OnMapStart_NPC();	//reused in waves all over
 	HeavyPunuel_OnMapStart_NPC();
 	SeargentIdeal_OnMapStart_NPC();	
+//wave 15-30:
+	RifalManu_OnMapStart_NPC();
+	Siccerino_OnMapStart_NPC();
+	SoldinePrototype_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2472,6 +2489,15 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		
 		case VIP_BUILDING:
 			entity = VIPBuilding(client, vecPos, vecAng);
+
+		case EXPIDONSA_RIFALMANU:
+			entity = RifalManu(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_SICCERINO:
+			entity = Siccerino(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_SOLDINE_PROTOTYPE:
+			entity = SoldinePrototype(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -3340,6 +3366,15 @@ public void NPCDeath(int entity)
 		case VIP_BUILDING:
 			VIPBuilding_NPCDeath(entity);
 
+		case EXPIDONSA_RIFALMANU:
+			RifalManu_NPCDeath(entity);
+
+		case EXPIDONSA_SICCERINO:
+			Siccerino_NPCDeath(entity);
+
+		case EXPIDONSA_SOLDINE_PROTOTYPE:
+			SoldinePrototype_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -4118,9 +4153,19 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_SEARGENTIDEAL:
 			SeargentIdeal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case EXPIDONSA_RIFALMANU:
+			RifalManu_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 		case VIP_BUILDING:
 			VIPBuilding_OnTakeDamagePost(victim, attacker);
+
+		case EXPIDONSA_SICCERINO:
+			Siccerino_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_SOLDINE_PROTOTYPE:
+			SoldinePrototype_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
 	}
 	return Plugin_Changed;
 }
@@ -4437,5 +4482,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_diversionistico.sp"
 #include "zombie_riot/npc/expidonsa/npc_heavy_punuel.sp"
 #include "zombie_riot/npc/expidonsa/npc_seargent_ideal.sp"
+#include "zombie_riot/npc/expidonsa/npc_rifal_manu.sp"
+#include "zombie_riot/npc/expidonsa/npc_siccerino.sp"
+#include "zombie_riot/npc/expidonsa/npc_soldine_prototype.sp"
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"

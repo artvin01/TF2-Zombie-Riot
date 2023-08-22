@@ -1,13 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
+#define MAX_EXPI_ENERGY_EFFECTS 20
 
-int i_ExpidonsaEnergyEffect[MAXENTITIES][10];
+int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_Expidonsa_ShieldEffect[MAXENTITIES];
 
 void ExpidonsaRemoveEffects(int iNpc)
 {
-	for(int loop = 0; loop<10; loop++)
+	for(int loop = 0; loop<MAX_EXPI_ENERGY_EFFECTS; loop++)
 	{
 		int entity = EntRefToEntIndex(i_ExpidonsaEnergyEffect[iNpc][loop]);
 		if(IsValidEntity(entity))
