@@ -276,6 +276,10 @@ void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int targe
 				PathingLogic = true;
 			}
 		}
+		else
+		{
+			PathingLogic = true;
+		}
 	}
 	//allow moving if can attack and no enemy in sight, otherwise, dont move
 	if(PathingLogic)
