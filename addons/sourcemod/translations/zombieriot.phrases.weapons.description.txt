@@ -2313,7 +2313,7 @@
 	}
 	"Rookie Shield Desc"
 	{
-		"en"	"A regular shield - Parries faster. Bland.\nDefence rating: ★★☆☆☆"
+		"en"	"A regular shield - Parries and lets you switch weapons faster.\nDefence rating: ★★☆☆☆"
 	}
 	"Punishment Desc"
 	{
