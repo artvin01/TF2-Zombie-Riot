@@ -9,6 +9,7 @@ static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
+static int ParryCounter = 0;
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
@@ -19,13 +20,7 @@ void WeaponBoard_Precache()
 	Zero(f_ParryDuration);
 	Zero2(f_BoardReflectCooldown);
 }
-/*void PunishmentEffect(int entity, int victim, float damage, int weapon)
-{
-	float Range = 150.0;
-	float Pos[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", Pos);
-	I wanted to implement an effect similar to Riot Shield here for when you parry with the Punishment shield, but couldn't get it to work properly and crashing is annoying
-}*/
+
 void Board_EntityCreated(int entity) 
 {
 	for(int i=1; i<=MaxClients; i++)
@@ -36,7 +31,7 @@ void Board_EntityCreated(int entity)
 
 public void Punish(int victim, int weapon, int bool) //AOE parry damage that scales with melee upgrades, im a coding maestro SUPREME
 {
-	float damage = 125.0;
+	float damage = 107.5;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 			
 	int value = i_ExplosiveProjectileHexArray[victim];
@@ -67,13 +62,13 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 		}
 		if (Board_Level[victim] == 2)
 		{
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.001, 10);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.004, 5);
 			Board_Ability_1[victim] = false;
 		}
 		else if (Board_Level[victim] == 5)
 		{
-			ApplyTempAttrib(victim, 26, 1.1, 3.0);
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.001, 10);
+			ApplyTempAttrib(victim, 26, 1.14, 4.3);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.004, 5);
 			Board_Ability_1[victim] = false;
 		}
 		else if(Board_Level[victim] == 4)
@@ -353,7 +348,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		else if(Board_Level[victim] == 6)
 		{
 			Board_Hits[victim] += 1;
-			float time = GetGameTime() + 3.5;
+			float time = GetGameTime() + 3.95;
 			if(f_CudgelDebuff[attacker] <= time)
 				f_CudgelDebuff[attacker] = time;
 		}
@@ -377,7 +372,35 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		
 		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
 		{
-			float ParriedDamage = 65.0;
+			ParryCounter += 1;
+			float ParriedDamage = 0.0;
+			switch (ParryCounter)
+			{
+				case 1:
+				{
+					ParriedDamage = 70.0;
+				}
+				case 2:
+				{
+					ParriedDamage = 65.0;
+				}
+				case 3:
+				{
+					ParriedDamage = 55.0;
+				}
+				case 4:
+				{
+					ParriedDamage = 45.0;
+				}
+				case 5, 6, 7:
+				{
+					ParriedDamage = 25.0;
+				}
+				default:
+				{
+					ParriedDamage = 0.0;
+				}
+			}
 			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
 		
 			static float angles[3];
@@ -391,7 +414,22 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			SDKHooks_TakeDamage(attacker, victim, victim, ParriedDamage, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
 		}
 
-		return damage * 0.5;
+		switch (ParryCounter)
+		{
+			case 1:
+			{
+				return damage * 0.3;
+			}
+			case 2:
+			{
+				return damage * 0.4;
+			}
+			default:
+			{
+				return damage * 0.7;
+			}
+		}
+
 	}
 	else if(Board_Level[victim] == 0) //board
 	{
@@ -522,7 +560,7 @@ public void Enable_WeaponBoard(int client, int weapon) // Enable management, han
 	}
 }
 
-void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 25)
+void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 {
 	int WeaponModel;
 	WeaponModel = EntRefToEntIndex(i_Viewmodel_WeaponModel[client]);
@@ -530,7 +568,7 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 25)
 	if(!IsValidEntity(WeaponModel)) //somehow doesnt exist, aboard!
 		return;
 
-	f_ParryDuration[client] = GetGameTime() + 0.5;
+	f_ParryDuration[client] = GetGameTime() + 0.7;
 	ClientCommand(client, "playgamesound misc/halloween/strongman_fast_whoosh_01.wav");
 	
 	int ModelIndex = GetEntProp(WeaponModel, Prop_Send, "m_nModelIndex");
@@ -552,6 +590,10 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 25)
 	pack.WriteCell(EntIndexToEntRef(Glow));
 	RequestFrames(RemoveEffectsOffShield_Board, FramesActive, pack); // 60 is 1 sec?
 
+	if (ParryCounter != 0)
+	{
+		ParryCounter = 0;
+	}
 //	SetEntPropFloat(WeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[active] * 1.25);
 }
 
