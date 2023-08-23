@@ -247,11 +247,13 @@ public void SoldinePrototype_NPCDeath(int entity)
 
 void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int target, float distance)
 {
+	bool PathingLogic = false;
 	//This ranged unit is more of an intruder, so we will get whatever enemy its pathing
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 		{
+			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(target);
 
 			int Enemy_I_See;
@@ -269,6 +271,31 @@ void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int targe
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 2.5;
 			}
+			else
+			{
+				PathingLogic = true;
+			}
 		}
+	}
+	//allow moving if can attack and no enemy in sight, otherwise, dont move
+	if(PathingLogic)
+	{
+		if(npc.m_iChanged_WalkCycle != 5)
+		{
+			npc.SetActivity("ACT_MP_RUN_PRIMARY");
+			npc.m_bisWalking = true;
+			npc.m_iChanged_WalkCycle = 5;
+			npc.StartPathing();
+		}			
+	}
+	else
+	{
+		if(npc.m_iChanged_WalkCycle != 4)
+		{
+			npc.SetActivity("ACT_MP_STAND_PRIMARY");
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 4;
+			npc.StopPathing();
+		}			
 	}
 }
