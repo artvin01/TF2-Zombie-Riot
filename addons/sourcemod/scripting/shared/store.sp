@@ -5571,13 +5571,13 @@ bool Store_PrintLevelItems(int client, int level)
 
 char[] TranslateItemName(int client, const char name[64], const char Custom_Name[64]) //Just make it 0 as a default so if its not used, fuck it
 {
-	static int ServerLang = -1;
-	if(ServerLang == -1)
-		ServerLang = GetServerLanguage();
+	//static int ServerLang = -1;
+	//if(ServerLang == -1)
+	//	ServerLang = GetServerLanguage();
 	
 	char buffer[64];
 
-	if(GetClientLanguage(client) != ServerLang)
+	//if(GetClientLanguage(client) != ServerLang)
 	{
 		if(Custom_Name[0])
 		{
@@ -5587,7 +5587,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 			}
 			else
 			{
-				FormatEx(buffer, sizeof(buffer), "%s", Custom_Name, client);
+				return Custom_Name;
 			}
 		}
 		else
@@ -5598,11 +5598,11 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 			}
 			else
 			{
-				FormatEx(buffer, sizeof(buffer), "%s", name, client);
+				return name;
 			}
 		}
 	}
-	else
+	/*else
 	{	
 		if(Custom_Name[0])
 		{
@@ -5612,7 +5612,7 @@ char[] TranslateItemName(int client, const char name[64], const char Custom_Name
 		{
 			FormatEx(buffer, sizeof(buffer), "%s", name, client);
 		}
-	}
+	}*/
 	return buffer;
 }
 
