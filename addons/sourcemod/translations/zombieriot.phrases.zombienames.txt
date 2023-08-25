@@ -1717,4 +1717,12 @@
 	{
 		"en"	"Siccerino"
 	}
+	"Soldine Prototype"
+	{
+		"en"	"Soldine Prototype"
+	}
+	"Soldine"
+	{
+		"en"	"Soldine"
+	}
 }

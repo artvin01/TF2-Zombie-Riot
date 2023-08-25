@@ -355,7 +355,8 @@ enum
 	VIP_BUILDING			= 308,
 	EXPIDONSA_RIFALMANU 	= 309,
 	EXPIDONSA_SICCERINO		= 310,
-	EXPIDONSA_SOLDINE_PROTOTYPE		= 311
+	EXPIDONSA_SOLDINE_PROTOTYPE		= 311,
+	EXPIDONSA_SOLDINE				= 312
 }
 
 public const char NPC_Names[][] =
@@ -693,7 +694,8 @@ public const char NPC_Names[][] =
 	"VIP Building, The Objective",
 	"Rifal Manu",
 	"Siccerino",
-	"Soldine Prototype"
+	"Soldine Prototype",
+	"Soldine"
 };
 
 // See items.sp for IDs to names
@@ -1037,6 +1039,7 @@ public const int NPCCategory[] =
 	-1,	// EXPIDONSA_RIFALMANU		= 309,
 	-1,	// EXPIDONSA_SICCERINO			= 310,
 	-1,	// EXPIDONSA_SOLDINE_PROTOTYPE			= 311,
+	-1,	// EXPIDONSA_SOLDINE					= 312,
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1372,7 +1375,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_vip_building",
 	"npc_rifal_manu",
 	"npc_siccerino",
-	"npc_soldine_prototype"
+	"npc_soldine_prototype",
+	"npc_soldine"
 };
 
 void NPC_MapStart()
@@ -1597,6 +1601,7 @@ void NPC_MapStart()
 	RifalManu_OnMapStart_NPC();
 	Siccerino_OnMapStart_NPC();
 	SoldinePrototype_OnMapStart_NPC();
+	Soldine_OnMapStart_NPC();
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2498,6 +2503,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case EXPIDONSA_SOLDINE_PROTOTYPE:
 			entity = SoldinePrototype(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_SOLDINE:
+			entity = Soldine(client, vecPos, vecAng, ally);
 			
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -3375,6 +3383,9 @@ public void NPCDeath(int entity)
 		case EXPIDONSA_SOLDINE_PROTOTYPE:
 			SoldinePrototype_NPCDeath(entity);
 
+		case EXPIDONSA_SOLDINE:
+			Soldine_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -4166,6 +4177,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case EXPIDONSA_SOLDINE_PROTOTYPE:
 			SoldinePrototype_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
+		case EXPIDONSA_SOLDINE:
+			Soldine_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
 	}
 	return Plugin_Changed;
 }
@@ -4485,5 +4499,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_rifal_manu.sp"
 #include "zombie_riot/npc/expidonsa/npc_siccerino.sp"
 #include "zombie_riot/npc/expidonsa/npc_soldine_prototype.sp"
+#include "zombie_riot/npc/expidonsa/npc_soldine.sp"
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
