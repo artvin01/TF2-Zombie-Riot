@@ -2193,7 +2193,9 @@ methodmap CClotBody < CBaseCombatCharacter
 				AcceptEntityInput(entity, "SetParent", this.index);
 			}
 		}
-		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		if(duration > 0.0)
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			
 		return entity;
 	}
 	public int FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
@@ -6788,6 +6790,7 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 
 	SetVariantInt(0);
 	AcceptEntityInput(iBeam, "TouchType");
+	CBaseCombatCharacter(iBeam).SetNextThink(FAR_FUTURE);
 
 
 	return iBeam;

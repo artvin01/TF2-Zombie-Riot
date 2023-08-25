@@ -1725,4 +1725,20 @@
 	{
 		"en"	"Soldine"
 	}
+	"Protecta"
+	{
+		"en"	"Protecta"
+	}
+	"Sniponeer"
+	{
+		"en"	"Sniponeer"
+	}
+	"Ega Bunar"
+	{
+		"en"	"Ega Bunar"
+	}
+	"Enega Kapus"
+	{
+		"en"	"Enega Kapus"
+	}
 }

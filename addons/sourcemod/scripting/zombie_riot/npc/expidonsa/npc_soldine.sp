@@ -555,7 +555,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 			{
 				float projectile_speed = 900.0;
-				float DamageRocket = 95.0;
+				float DamageRocket = 85.0;
 				float vPredictedPos[3];
 				vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed);
 				

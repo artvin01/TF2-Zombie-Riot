@@ -356,7 +356,11 @@ enum
 	EXPIDONSA_RIFALMANU 	= 309,
 	EXPIDONSA_SICCERINO		= 310,
 	EXPIDONSA_SOLDINE_PROTOTYPE		= 311,
-	EXPIDONSA_SOLDINE				= 312
+	EXPIDONSA_SOLDINE				= 312,
+	EXPIDONSA_PROTECTA				= 313,
+	EXPIDONSA_SNIPONEER				= 314,
+	EXPIDONSA_EGABUNAR				= 315,
+	EXPIDONSA_ENEGAKAPUS			= 316
 }
 
 public const char NPC_Names[][] =
@@ -695,9 +699,12 @@ public const char NPC_Names[][] =
 	"Rifal Manu",
 	"Siccerino",
 	"Soldine Prototype",
-	"Soldine"
+	"Soldine",
+	"Protecta",
+	"Sniponeer",
+	"Ega Bunar",
+	"Enega Kapus"
 };
-
 // See items.sp for IDs to names
 public const int NPCCategory[] =
 {
@@ -1040,6 +1047,10 @@ public const int NPCCategory[] =
 	-1,	// EXPIDONSA_SICCERINO			= 310,
 	-1,	// EXPIDONSA_SOLDINE_PROTOTYPE			= 311,
 	-1,	// EXPIDONSA_SOLDINE					= 312,
+	-1,	// EXPIDONSA_PROTECTA					= 313,
+	-1,	// EXPIDONSA_SNIPONEER					= 314,
+	-1,	// EXPIDONSA_EGABUNAR					= 315,
+	-1,	// EXPIDONSA_ENEGAKAPUS					= 316,
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1376,9 +1387,12 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_rifal_manu",
 	"npc_siccerino",
 	"npc_soldine_prototype",
-	"npc_soldine"
+	"npc_soldine",
+	"npc_protecta",
+	"npc_sniponeer",
+	"npc_ega_bunar",
+	"npc_enegakapus"
 };
-
 void NPC_MapStart()
 {
 	f_FactionCreditGain = 0.0;
@@ -1597,11 +1611,16 @@ void NPC_MapStart()
 	Diversionistico_OnMapStart_NPC();	//reused in waves all over
 	HeavyPunuel_OnMapStart_NPC();
 	SeargentIdeal_OnMapStart_NPC();	
-//wave 15-30:
+//wave 16-30:
 	RifalManu_OnMapStart_NPC();
 	Siccerino_OnMapStart_NPC();
 	SoldinePrototype_OnMapStart_NPC();
 	Soldine_OnMapStart_NPC();
+	EnegaKapus_OnMapStart_NPC();
+	Sniponeer_OnMapStart_NPC();
+	EgaBunar_OnMapStart_NPC();
+	Protecta_OnMapStart_NPC();
+//wave 31 - 45
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2507,6 +2526,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case EXPIDONSA_SOLDINE:
 			entity = Soldine(client, vecPos, vecAng, ally);
 			
+		case EXPIDONSA_PROTECTA:
+			entity = Protecta(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_SNIPONEER:
+			entity = Sniponeer(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_EGABUNAR:
+			entity = EgaBunar(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_ENEGAKAPUS:
+			entity = EnegaKapus(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -3386,6 +3417,18 @@ public void NPCDeath(int entity)
 		case EXPIDONSA_SOLDINE:
 			Soldine_NPCDeath(entity);
 
+		case EXPIDONSA_PROTECTA:
+			Protecta_NPCDeath(entity);
+
+		case EXPIDONSA_SNIPONEER:
+			Sniponeer_NPCDeath(entity);
+
+		case EXPIDONSA_EGABUNAR:
+			EgaBunar_NPCDeath(entity);
+
+		case EXPIDONSA_ENEGAKAPUS:
+			EnegaKapus_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -4179,6 +4222,18 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_SOLDINE:
 			Soldine_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+			
+		case EXPIDONSA_PROTECTA:
+			Protecta_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_SNIPONEER:
+			Sniponeer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_EGABUNAR:
+			EgaBunar_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_ENEGAKAPUS:
+			EnegaKapus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	}
 	return Plugin_Changed;
@@ -4500,5 +4555,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_siccerino.sp"
 #include "zombie_riot/npc/expidonsa/npc_soldine_prototype.sp"
 #include "zombie_riot/npc/expidonsa/npc_soldine.sp"
+#include "zombie_riot/npc/expidonsa/npc_sniponeer.sp"
+#include "zombie_riot/npc/expidonsa/npc_enegakapus.sp"
+#include "zombie_riot/npc/expidonsa/npc_ega_bunar.sp"
+#include "zombie_riot/npc/expidonsa/npc_protecta.sp"
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
