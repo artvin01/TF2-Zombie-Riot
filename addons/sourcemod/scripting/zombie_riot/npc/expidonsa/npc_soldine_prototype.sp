@@ -265,11 +265,12 @@ void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int targe
 				//Play attack anim
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				
-				float DamageRocket = 750.0;
+				npc.FaceTowards(vecTarget, 20000.0);
+				float DamageRocket = 75.0;
 				npc.PlayMeleeSound();
 				npc.FireRocket(vecTarget, DamageRocket, 900.0);
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 2.5;
+				npc.m_flNextMeleeAttack = gameTime + 1.5;
 			}
 			else
 			{

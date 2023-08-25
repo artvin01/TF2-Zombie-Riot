@@ -55,9 +55,11 @@ static char g_AngerSounds[][] = {
 	"vo/medic_sf13_influx_big03.mp3",
 	"vo/medic_weapon_taunts03.mp3",
 };
+
 static const char g_IdleMusic[][] = {
 	"#zombiesurvival/altwaves_and_blitzkrieg/music/blitz_theme.mp3",
 };
+
 static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
 };

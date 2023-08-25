@@ -2196,7 +2196,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		return entity;
 	}
-	public void FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
+	public int FireRocket(float vecTarget[3], float rocket_damage, float rocket_speed, const char[] rocket_model = "", float model_scale = 1.0, int flags = 0, float offset = 0.0, int inflictor = INVALID_ENT_REFERENCE) //No defaults, otherwise i cant even judge.
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -2244,6 +2244,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			Set_Projectile_Collision(entity); //If red, set to 27
 			See_Projectile_Team(entity);
 		}
+		return entity;
 	}
 	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0)
 	{
@@ -6784,6 +6785,11 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 	SetVariantFloat(32.0);
 	AcceptEntityInput(iBeam, "Amplitude");
 	AcceptEntityInput(iBeam, "TurnOn");
+
+	SetVariantInt(0);
+	AcceptEntityInput(iBeam, "TouchType");
+
+
 	return iBeam;
 }
 

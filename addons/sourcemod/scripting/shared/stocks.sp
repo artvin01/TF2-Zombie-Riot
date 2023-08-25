@@ -109,8 +109,11 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
-		ActivateEntity(particle);
-		AcceptEntityInput(particle, "start");
+		if(effectName[0])
+		{
+			ActivateEntity(particle);
+			AcceptEntityInput(particle, "start");
+		}
 		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
@@ -135,9 +138,11 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
-		ActivateEntity(particle);
-
-		AcceptEntityInput(particle, "start");
+		if(effectName[0])
+		{
+			ActivateEntity(particle);
+			AcceptEntityInput(particle, "start");
+		}
 		//CreateTimer(0.1, Activate_particle_late, particle, TIMER_FLAG_NO_MAPCHANGE);
 	}
 
@@ -154,9 +159,12 @@ stock int ParticleEffectAtWithRotation(float position[3], float rotation[3], cha
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		DispatchKeyValue(particle, "effect_name", effectName);
 		DispatchSpawn(particle);
-		ActivateEntity(particle);
+		if(effectName[0])
+		{
+			ActivateEntity(particle);
+			AcceptEntityInput(particle, "start");
+		}
 		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
-		AcceptEntityInput(particle, "start");
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -2814,7 +2822,21 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 		LogError("something went wrong, entity was : [%i] | Client if any: [%i]",entityToEvaluateFrom, client);
 		return;
 	}
-
+	//I exploded, do custom logic additionally if neccecary.
+	if(i_ProjectileExtraFunction[entity] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, i_ProjectileExtraFunction[entity]);
+		Call_PushCell(entity);
+		Call_PushFloat(damage);
+		Call_PushArray(spawnLoc, sizeof(spawnLoc));
+		Call_Finish();
+		//info to give:
+		/*
+			Who the originator is
+			Whats the original damage
+			where did i explode
+		*/
+	}
 	DoExlosionTraceCheck(spawnLoc, explosionRadius, entityToEvaluateFrom);
 	/*
 	This trace does not filter on what is hit first, thats kinda bad, it filters by what entity number is smaller.

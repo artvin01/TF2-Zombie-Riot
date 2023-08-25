@@ -306,10 +306,7 @@ void SiccerinoEffects(int iNpc)
 	int particle_4 = ParticleEffectAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
 	int particle_5 = ParticleEffectAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
 
-	
-	int particle_2_i = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
 	int particle_3_i = ParticleEffectAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_i = ParticleEffectAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
 	int particle_5_i = ParticleEffectAt({-10.0,50.0,0.0}, "", 0.0); //First offset we go by
 	
 	SetParent(particle_1, particle_2, "",_, true);
@@ -318,9 +315,7 @@ void SiccerinoEffects(int iNpc)
 	SetParent(particle_1, particle_5, "",_, true);
 
 	
-	SetParent(particle_1, particle_2_i, "",_, true);
 	SetParent(particle_1, particle_3_i, "",_, true);
-	SetParent(particle_1, particle_4_i, "",_, true);
 	SetParent(particle_1, particle_5_i, "",_, true);
 
 	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
@@ -331,9 +326,9 @@ void SiccerinoEffects(int iNpc)
 	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM);
 	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM);
 	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM);
-	int Laser_1_i = ConnectWithBeamClient(particle_2_i, particle_3_i, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4_i, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_i = ConnectWithBeamClient(particle_4_i, particle_5_i, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM);
+	int Laser_1_i = ConnectWithBeamClient(particle_2, particle_3_i, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_3_i = ConnectWithBeamClient(particle_4, particle_5_i, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM);
 	
 
 	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
@@ -341,9 +336,7 @@ void SiccerinoEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
 	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_2_i);
 	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_3_i);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_4_i);
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_5_i);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1);
 	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2);

@@ -812,6 +812,7 @@ char g_TankStepSound[][] = {
 
 float f_ArrowDamage[MAXENTITIES];
 int h_ArrowInflictorRef[MAXENTITIES];
+Function i_ProjectileExtraFunction[MAXENTITIES];
 float h_BonusDmgToSpecialArrow[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
@@ -2265,6 +2266,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_EntityRenderOverride[entity] = false;
 		b_StickyIsSticking[entity] = false;
 		h_ArrowInflictorRef[entity] = -1;
+		i_ProjectileExtraFunction[entity] = INVALID_FUNCTION;
 		h_BonusDmgToSpecialArrow[entity] = 1.0;
 		
 		b_RocketBoomEffect[entity] = false;
