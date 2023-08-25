@@ -101,6 +101,10 @@
 		"en"		"Archetype: Base Caster"
 		"ru"		"Архетип: Базовый заклинатель"
 	}
+	"Mythic Caster"
+	{
+		"en"		"Archetype: Mythic Caster"
+	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
