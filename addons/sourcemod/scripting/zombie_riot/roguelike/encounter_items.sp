@@ -433,3 +433,66 @@ public void Rogue_Vote_CoffinOfEvil(const Vote vote, int index)
 		Rogue_GiveNamedArtifact("Proof of Friendship");
 	}
 }
+
+public float Rogue_Encounter_EyeForAnEye()
+{
+	PrintToChatAll("%t", "Eye for an Eye Lore");
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EyeForAnEye, "Lore Title");
+	Vote vote;
+
+	if(Rogue_HasFriendship())
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Eye for an Eye Option 1");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Eye for an Eye Desc 1");
+		list.PushArray(vote);
+	}
+
+	strcopy(vote.Name, sizeof(vote.Name), "Eye for an Eye Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Eye for an Eye Desc 2");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Eye for an Eye Option 3");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Eye for an Eye Desc 3");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
+{
+	int choice = index;
+	if(!Rogue_HasFriendship())
+		choice++;
+	
+	switch(choice)
+	{
+		case 0:
+		{
+			Rogue_GiveNamedArtifact(vote.Config);
+			PrintToChatAll("%t", "Eye for an Eye Lore 1");
+		}
+		case 1:
+		{
+			Ammo_Count_Ready -= 20;
+
+			CurrentCash += 1500;
+			for(int client = 1; client <= MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					CashRecievedNonWave[client] += 1500;
+				}
+			}
+
+			PrintToChatAll("%t", "Eye for an Eye Lore 2");
+		}
+		default:
+		{
+			Ammo_Count_Ready += 30;
+
+			PrintToChatAll("%t", "Eye for an Eye Lore 3");
+		}
+	}
+}

@@ -2327,4 +2327,12 @@
 	{
 		"en"	"A standard issue shield, given purpose - Parrying debuffs the enemy.\nDefence rating: ★★★★☆"
 	}
+	"The Standchen Desc"
+	{
+		"en"	"Speichert bis zu drei Angriffe, unleash by letting go of attack. Stored shots deal bonus damage.\nAbility increases damage, fire rate, and stores another shot but, kann nur Elite- oder Riesengegner treffen, ability can be canceled."
+	}
+	"The Standchen Desc Pap"
+	{
+		"en"	"Speichert bis zu vier Angriffe."
+	}
 }

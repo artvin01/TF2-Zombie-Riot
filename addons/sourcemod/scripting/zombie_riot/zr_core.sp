@@ -109,7 +109,8 @@ enum
 	WEAPON_QUINCY_BOW = 38,
 	WEAPON_JUDGE = 39,
 	WEAPON_JUDGE_PAP = 40,
-	WEAPON_BOARD = 41
+	WEAPON_BOARD = 41,
+	WEAPON_GERMAN = 42
 }
 
 ArrayList SpawnerList;
@@ -397,6 +398,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
 #include "zombie_riot/custom/weapon_judge.sp"
 #include "zombie_riot/custom/weapon_board.sp"
+#include "zombie_riot/custom/wand/weapon_german_caster.sp"
 
 void ZR_PluginLoad()
 {
@@ -598,6 +600,7 @@ void ZR_MapStart()
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
 	WeaponBoard_Precache();
+	Weapon_German_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

@@ -243,6 +243,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Gladiia_WandTouch(entity, target);
 		}
+		case WEAPON_GERMAN:
+		{
+			Weapon_German_WandTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])

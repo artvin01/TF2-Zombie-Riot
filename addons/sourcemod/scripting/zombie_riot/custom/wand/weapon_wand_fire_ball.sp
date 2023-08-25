@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
 
 #define WAND_FIREBALL_SOUND "misc/halloween/spell_fireball_cast.wav"
@@ -9,7 +8,6 @@ static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
 public void Wand_Fire_Spell_ClearAll()
 {
 	Zero(i_FireBallsToThrow);
-	Zero(ability_cooldown);
 }
 
 void Wand_FireBall_Map_Precache()

@@ -61,7 +61,8 @@ public const char ItemArchetype[][] =
 	"Abyssal Hunter",	// 22
 	"Kazimierz",		// 23
 	"Bloodletter",	//24, Vampire Knives fast-attack path
-	"Bloody Butcher" //25, Vampire Knives cleaver path			
+	"Bloody Butcher", //25, Vampire Knives cleaver path
+	"Mythic Caster"	// 26		
 };
 
 enum struct ItemInfo

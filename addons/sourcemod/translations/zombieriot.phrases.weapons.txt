@@ -2247,5 +2247,12 @@
 	{
 		"en"	"Quincy's Bow"
 	}
-	
+	"The Standchen"
+	{
+		"en"	"The Ständchen"
+	}
+	"The Standchen Pap"
+	{
+		"en"	"The Ständchen Zugabe"
+	}
 }
