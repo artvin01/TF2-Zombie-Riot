@@ -1366,7 +1366,6 @@ static float f_projectile_dmg[MAXENTITIES];
 
 static int i_Quincy_index[MAXENTITIES+1];
 static int i_Quincy_wep[MAXENTITIES+1];
-static int i_rocket_particle[MAXENTITIES];
 
 static void Quincy_Rocket_Launch(int client, int weapon, float startVec[3], float targetVec[3], float speed, float dmg, const char[] rocket_particle = "")
 {

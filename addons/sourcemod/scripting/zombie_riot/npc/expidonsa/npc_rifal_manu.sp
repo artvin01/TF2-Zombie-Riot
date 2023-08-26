@@ -261,7 +261,7 @@ void RifalManuSelfDefense(RifalManu npc, float gameTime)
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 2.5;
+						float damageDealt = 5.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

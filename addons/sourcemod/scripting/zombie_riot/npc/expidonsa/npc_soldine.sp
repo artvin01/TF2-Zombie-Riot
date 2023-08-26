@@ -426,8 +426,8 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			{
 				npc.m_flAttackHappens = 0.0;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
+				if(npc.DoSwingTrace(swingTrace, target, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target_hit = TR_GetEntityIndex(swingTrace);	
 					float vecHit[3];
@@ -496,53 +496,60 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			}
 		}
 	}
-
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0) || npc.b_SoldineRocketJump)
+	npc.i_GunMode = 1;
+	//isnt melee anymore
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0) || npc.b_SoldineRocketJump)
 	{
-		npc.i_GunMode = 1;
-		
+
 		if(gameTime > npc.f_SoldineRocketJumpCD)
 		{
-			static float flMyPos[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
-			static float hullcheckmaxs[3];
-			static float hullcheckmins[3];
-
-			//Defaults:
-			//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
-			//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
-
-			hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
-			hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
-		
-			if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
+			if(Can_I_See_Enemy_Only(npc.index, target))
 			{
-				float flPos[3];
-				float flAng[3];
-				int Particle_1;
-				int Particle_2;
-				npc.GetAttachment("foot_L", flPos, flAng);
-				Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
-				
+				static float flMyPos[3];
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
 
-				npc.GetAttachment("foot_R", flPos, flAng);
-				Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+				//Defaults:
+				//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
+				//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+
+				hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+				hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
 			
-				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
-				
-				npc.PlaySuperJumpSound();
-				static float flMyPos_2[3];
-				flMyPos[2] += 800.0;
-				flMyPos_2 = WorldSpaceCenter(npc.m_iTarget);
+				if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
+				{
+					float flPos[3];
+					float flAng[3];
+					int Particle_1;
+					int Particle_2;
+					npc.GetAttachment("foot_L", flPos, flAng);
+					Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
+					
 
-				flMyPos[0] = flMyPos_2[0];
-				flMyPos[1] = flMyPos_2[1];
-				PluginBot_Jump(npc.index, flMyPos);
-				npc.f_SoldineRocketJumpCD_Wearoff = gameTime + 1.0;
-				npc.f_SoldineRocketJumpCD = gameTime + 15.0;
-				npc.b_SoldineRocketJump = true;
-				npc.m_flNextRangedAttack = gameTime + 0.25;
+					npc.GetAttachment("foot_R", flPos, flAng);
+					Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+				
+					CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
+					
+					npc.PlaySuperJumpSound();
+					static float flMyPos_2[3];
+					flMyPos[2] += 800.0;
+					flMyPos_2 = WorldSpaceCenter(target);
+
+					flMyPos[0] = flMyPos_2[0];
+					flMyPos[1] = flMyPos_2[1];
+					PluginBot_Jump(npc.index, flMyPos);
+					npc.f_SoldineRocketJumpCD_Wearoff = gameTime + 1.0;
+					npc.f_SoldineRocketJumpCD = gameTime + 15.0;
+					npc.b_SoldineRocketJump = true;
+					npc.m_flNextRangedAttack = gameTime + 0.25;
+				}
+				else
+				{
+					npc.f_SoldineRocketJumpCD = gameTime + 1.0;
+				}
 			}
 			else
 			{
@@ -550,14 +557,14 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			}
 		}
 		
-		if(gameTime > npc.m_flNextRangedAttack)
+		if((distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0) || npc.b_SoldineRocketJump) && gameTime > npc.m_flNextRangedAttack)
 		{	
-			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			if(Can_I_See_Enemy_Only(npc.index, target))
 			{
 				float projectile_speed = 900.0;
 				float DamageRocket = 85.0;
 				float vPredictedPos[3];
-				vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed);
+				vPredictedPos = PredictSubjectPositionForProjectiles(npc, target, projectile_speed);
 				
 				npc.FaceTowards(vPredictedPos, 20000.0);
 				//Play attack anim
@@ -566,7 +573,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 
 
 				npc.PlayRangedSound();
-				int Rocket = npc.FireRocket(vPredictedPos, DamageRocket, projectile_speed);
+				npc.FireRocket(vPredictedPos, DamageRocket, projectile_speed);
 			//	i_ProjectileExtraFunction[Rocket] = view_as<Function>(Soldine_Rocket_Base_Explode);
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				if(npc.b_SoldineRocketJump)
@@ -586,7 +593,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 		}
 		else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 		{
-			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			if(Can_I_See_Enemy_Only(npc.index, target))
 			{
 				//target is too close, try to keep distance
 				return 1;

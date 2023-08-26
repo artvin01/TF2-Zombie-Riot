@@ -12,7 +12,7 @@ public bool ShouldCollideAlly(CBaseNPC_Locomotion loco, int otherindex)
 { 
 	return ShouldCollideAlly_Internal(loco, otherindex); 
 }
-bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
+bool ShouldCollideAlly_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
 {
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -79,7 +79,7 @@ public bool ShouldCollideEnemy(CBaseNPC_Locomotion loco, int otherindex)
 	return ShouldCollideEnemy_Internal(loco, otherindex);
 }
 
-bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
+bool ShouldCollideEnemy_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -116,7 +116,7 @@ public bool ShouldCollideEnemyIngoreBuilding(CBaseNPC_Locomotion loco, int other
 	return ShouldCollideEnemyIngoreBuilding_Internal(loco, otherindex);
 }
 
-bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0)
+bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex)
 { 
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
@@ -318,11 +318,11 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 	{
 		case 1:
 		{
-			return ShouldCollideEnemyIngoreBuilding_Internal(_,other,extrarules);
+			return ShouldCollideEnemyIngoreBuilding_Internal(_,other);
 		}
 		case 2:
 		{
-			return ShouldCollideEnemy_Internal(_,other,extrarules);
+			return ShouldCollideEnemy_Internal(_,other);
 		}
 		case 3:
 		{
@@ -330,7 +330,7 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 		}
 		case 4:
 		{
-			return ShouldCollideAlly_Internal(_,other,extrarules);
+			return ShouldCollideAlly_Internal(_,other);
 		}
 		case 5:
 		{

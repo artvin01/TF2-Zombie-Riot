@@ -47,12 +47,12 @@ float f_AvoidObstacleNavTime[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 int i_FailedTriesUnstuck[MAXENTITIES];
 int b_NpcCollisionType[MAXENTITIES];
-static bool b_should_explode[MAXENTITIES];
-static bool b_rocket_particle_from_blue_npc[MAXENTITIES];
+bool b_should_explode[MAXENTITIES];
+bool b_rocket_particle_from_blue_npc[MAXENTITIES];
 static int g_rocket_particle;
-static int i_rocket_particle[MAXENTITIES];
-static float fl_rocket_particle_dmg[MAXENTITIES];
-static float fl_rocket_particle_radius[MAXENTITIES];
+int i_rocket_particle[MAXENTITIES];
+float fl_rocket_particle_dmg[MAXENTITIES];
+float fl_rocket_particle_radius[MAXENTITIES];
 static float f_DelayComputingOfPath[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
@@ -4056,7 +4056,8 @@ stock int GetClosestTarget(int entity,
 	   float fldistancelimitAllyNPC = 350.0,
 	   bool IgnorePlayers = false,
 	   bool UseVectorDistance = false,
-  		float MinimumDistance = 0.0)
+  		float MinimumDistance = 0.0,
+  		Function ExtraValidityFunction = INVALID_FUNCTION)
 {
 	int searcher_team = GetEntProp(entity, Prop_Send, "m_iTeamNum"); //do it only once lol
 	if(EntityLocation[2] == 0.0)
@@ -4100,6 +4101,17 @@ stock int GetClosestTarget(int entity,
 							continue;
 					}
 
+					if(ExtraValidityFunction != INVALID_FUNCTION)
+					{
+						bool WasValid;
+						Call_StartFunction(null, ExtraValidityFunction);
+						Call_PushCell(entity);
+						Call_PushCell(i);
+						Call_Finish(WasValid);
+
+						if(!WasValid)
+							continue;
+					}
 					int vehicle = GetEntPropEnt(i, Prop_Data, "m_hVehicle");
 					if(vehicle != -1)
 					{
@@ -4138,6 +4150,17 @@ stock int GetClosestTarget(int entity,
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
 					}
+					if(ExtraValidityFunction != INVALID_FUNCTION)
+					{
+						bool WasValid;
+						Call_StartFunction(null, ExtraValidityFunction);
+						Call_PushCell(entity);
+						Call_PushCell(entity_close);
+						Call_Finish(WasValid);
+
+						if(!WasValid)
+							continue;
+					}
 					if (!npc.m_bCamo || camoDetection)
 					{
 						GetClosestTarget_AddTarget(entity_close, 2);
@@ -4171,6 +4194,17 @@ stock int GetClosestTarget(int entity,
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
 							continue;
 					}
+					if(ExtraValidityFunction != INVALID_FUNCTION)
+					{
+						bool WasValid;
+						Call_StartFunction(null, ExtraValidityFunction);
+						Call_PushCell(entity);
+						Call_PushCell(entity_close);
+						Call_Finish(WasValid);
+
+						if(!WasValid)
+							continue;
+					}
 					if (!npc.m_bCamo || camoDetection)
 					{
 						GetClosestTarget_AddTarget(entity_close, 3);
@@ -4202,6 +4236,17 @@ stock int GetClosestTarget(int entity,
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
+							continue;
+					}
+					if(ExtraValidityFunction != INVALID_FUNCTION)
+					{
+						bool WasValid;
+						Call_StartFunction(null, ExtraValidityFunction);
+						Call_PushCell(entity);
+						Call_PushCell(entity_close);
+						Call_Finish(WasValid);
+
+						if(!WasValid)
 							continue;
 					}
 					if (!npc.m_bCamo || camoDetection)
@@ -7836,14 +7881,14 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 
 
 
-bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3])
+bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3], bool check_for_Ground_Clerance = false)
 {
 	bool FoundSafeSpot = false;
 	//Try base position.
 	float OriginalPos[3];
 	OriginalPos = endPos;
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
 		FoundSafeSpot = true;
 
 	for (int x = 0; x < 6; x++)
@@ -7929,14 +7974,14 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 					case 6:
 						endPos[0] -= TELEPORT_STUCK_CHECK_3;
 				}
-				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+				if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
 					FoundSafeSpot = true;
 			}
 		}
 	}
 				
 
-	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player, check_for_Ground_Clerance))
 		FoundSafeSpot = true;
 
 	if(FoundSafeSpot)
@@ -7949,7 +7994,7 @@ bool Npc_Teleport_Safe(int client, float endPos[3], float hullcheckmins_Player[3
 
 //We wish to check if this poisiton is safe or not.
 //This is only for players.
-bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
+bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool check_for_Ground_Clerance = false)
 {
 	int ref;
 	
@@ -7969,7 +8014,35 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3])
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
 	if(ref < 0) //It hit nothing, good!
-		return true;
+	{
+		if(!check_for_Ground_Clerance)
+			return true;
+
+		//We aint done yet!
+		float Pos2Test[3];
+		Pos2Test = Pos;
+		Pos2Test[2] -= 25.0; //25 is a good ammount
+
+		if(entity <= MaxClients)	// Clients
+		{
+			hTrace = TR_TraceHullFilterEx(Pos2Test, Pos2Test, mins, maxs, MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+		}
+		else if(b_IsAlliedNpc[entity])
+		{
+			hTrace = TR_TraceHullFilterEx(Pos2Test, Pos2Test, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+		}
+		else
+		{
+			hTrace = TR_TraceHullFilterEx(Pos2Test, Pos2Test, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+		}
+		ref = TR_GetEntityIndex(hTrace);
+		delete hTrace;
+		if(ref == 0) //It Ground, good, otherwise, bad!
+		{
+			return true;
+		}
+		
+	}
 	
 	//It Hit something, bad!
 	return false;

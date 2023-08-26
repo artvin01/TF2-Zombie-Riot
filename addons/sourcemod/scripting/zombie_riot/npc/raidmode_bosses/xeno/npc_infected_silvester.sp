@@ -50,11 +50,11 @@ static char g_MeleeMissSounds[][] = {
 };
 
 static char g_AngerSounds[][] = {
-	")vo/medic_item_secop_domination01.mp3",
+	")vo/soldier_sf13_influx_big03.mp3",
 };
 
 static char g_AngerSoundsPassed[][] = {
-	")vo/medic_laughlong01.mp3",
+	")vo/soldier_sf13_influx_big03.mp3",
 };
 
 static char g_PullSounds[][] = {

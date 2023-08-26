@@ -360,7 +360,9 @@ enum
 	EXPIDONSA_PROTECTA				= 313,
 	EXPIDONSA_SNIPONEER				= 314,
 	EXPIDONSA_EGABUNAR				= 315,
-	EXPIDONSA_ENEGAKAPUS			= 316
+	EXPIDONSA_ENEGAKAPUS			= 316,
+	EXPIDONSA_CAPTINOAGENTUS		= 317,
+	RAIDMODE_EXPIDONSA_SENSAL		= 318
 }
 
 public const char NPC_Names[][] =
@@ -703,7 +705,9 @@ public const char NPC_Names[][] =
 	"Protecta",
 	"Sniponeer",
 	"Ega Bunar",
-	"Enega Kapus"
+	"Enega Kapus",
+	"Captino Agentus",
+	"Sensal"
 };
 // See items.sp for IDs to names
 public const int NPCCategory[] =
@@ -1051,6 +1055,8 @@ public const int NPCCategory[] =
 	-1,	// EXPIDONSA_SNIPONEER					= 314,
 	-1,	// EXPIDONSA_EGABUNAR					= 315,
 	-1,	// EXPIDONSA_ENEGAKAPUS					= 316,
+	-1, // EXPIDONSA_CAPTINOAGENTUS				= 317,
+	-1, // RAIDMODE_EXPIDONSA_SENSAL			= 318
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1391,8 +1397,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_protecta",
 	"npc_sniponeer",
 	"npc_ega_bunar",
-	"npc_enegakapus"
+	"npc_enegakapus",
+	"npc_captino_agentus",
+	"npc_sensal"
 };
+
 void NPC_MapStart()
 {
 	f_FactionCreditGain = 0.0;
@@ -1621,6 +1630,8 @@ void NPC_MapStart()
 	EgaBunar_OnMapStart_NPC();
 	Protecta_OnMapStart_NPC();
 //wave 31 - 45
+	CaptinoAgentus_OnMapStart_NPC();
+
 	
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1645,6 +1656,7 @@ void NPC_MapStart()
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
 	GodArkantos_OnMapStart();
+	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
 
@@ -2538,6 +2550,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case EXPIDONSA_ENEGAKAPUS:
 			entity = EnegaKapus(client, vecPos, vecAng, ally);
 
+		case EXPIDONSA_CAPTINOAGENTUS:
+			entity = CaptinoAgentus(client, vecPos, vecAng, ally);
+
+		case RAIDMODE_EXPIDONSA_SENSAL:
+			entity = Sensal(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -3429,6 +3447,12 @@ public void NPCDeath(int entity)
 		case EXPIDONSA_ENEGAKAPUS:
 			EnegaKapus_NPCDeath(entity);
 
+		case EXPIDONSA_CAPTINOAGENTUS:
+			CaptinoAgentus_NPCDeath(entity);
+
+		case RAIDMODE_EXPIDONSA_SENSAL:
+			Sensal_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -4235,6 +4259,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case EXPIDONSA_ENEGAKAPUS:
 			EnegaKapus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
+		case EXPIDONSA_CAPTINOAGENTUS:
+			CaptinoAgentus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RAIDMODE_EXPIDONSA_SENSAL:
+			Sensal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
 	}
 	return Plugin_Changed;
 }
@@ -4559,5 +4589,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_enegakapus.sp"
 #include "zombie_riot/npc/expidonsa/npc_ega_bunar.sp"
 #include "zombie_riot/npc/expidonsa/npc_protecta.sp"
+#include "zombie_riot/npc/expidonsa/npc_captino_agentus.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_sensal.sp"
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"

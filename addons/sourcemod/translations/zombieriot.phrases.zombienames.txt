@@ -1741,4 +1741,12 @@
 	{
 		"en"	"Enega Kapus"
 	}
+	"Captino Agentus"
+	{
+		"en"	"Captino Agentus"
+	}
+	"Sensal"
+	{
+		"en"	"Sensal"
+	}
 }

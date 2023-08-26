@@ -308,6 +308,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
+#include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"

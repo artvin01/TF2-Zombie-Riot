@@ -220,7 +220,7 @@ void EnegaKapusSelfDefense(EnegaKapus npc, float gameTime, int target, float dis
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.75))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					
@@ -241,7 +241,7 @@ void EnegaKapusSelfDefense(EnegaKapus npc, float gameTime, int target, float dis
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flNextMeleeAttack = gameTime + 0.4;
 
 					if(IsValidEnemy(npc.index, target))
 					{
