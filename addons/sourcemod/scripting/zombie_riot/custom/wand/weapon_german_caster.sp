@@ -5,6 +5,14 @@
 #define WAND_GERMAN_M2_SOUND	"Taunt.MedicViolinUber"
 #define WAND_GERMAN_M1_SOUND	"WeaponMedigun_Vaccinator.Charged_tier_0%d"
 
+static float RMR_HomingPerSecond[MAXENTITIES];
+static int RMR_CurrentHomingTarget[MAXENTITIES];
+static bool RMR_HasTargeted[MAXENTITIES];
+static int RMR_RocketOwner[MAXENTITIES];
+static float RWI_HomeAngle[MAXENTITIES];
+static float RWI_LockOnAngle[MAXENTITIES];
+static float RMR_RocketVelocity[MAXENTITIES];
+
 static Handle GermanTimer[MAXTF2PLAYERS];
 static Handle GermanSilence[MAXTF2PLAYERS];
 static int GermanCharges[MAXTF2PLAYERS];
@@ -17,7 +25,7 @@ void Weapon_German_MapStart()
 
 public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int slot)
 {
-	int cost = GermanSilence[client] ? 150 : 200;
+	int cost = GermanSilence[client] ? 75 : 100;
 	if(Current_Mana[client] < cost)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -36,17 +44,18 @@ public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int sl
 		char buffer[64];
 		FormatEx(buffer, sizeof(buffer), WAND_GERMAN_M1_SOUND, GermanCharges[client]);
 		EmitGameSoundToClient(client, buffer);
+		EmitGameSoundToClient(client, buffer);
 
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
 		delay_hud[client] = 0.0;
 		Current_Mana[client] -= cost;
 
-		float cooldown = 0.8 * Attributes_Get(weapon, 6, 1.0);
+		float cooldown = 0.7 * Attributes_Get(weapon, 6, 1.0);
 		if(GermanSilence[client])
 			cooldown *= 0.6;
 		
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+		SetCoooldown(client, weapon, GetGameTime() + cooldown);
 	}
 	else if(GermanWeapon[client] == EntIndexToEntRef(weapon))
 	{
@@ -61,15 +70,15 @@ public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int sl
 			delay_hud[client] = 0.0;
 			Current_Mana[client] -= cost;
 
-			float cooldown = 0.8 * Attributes_Get(weapon, 6, 1.0);
+			float cooldown = 0.7 * Attributes_Get(weapon, 6, 1.0);
 			if(GermanSilence[client])
 				cooldown *= 0.6;
 			
-			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+			SetCoooldown(client, weapon, GetGameTime() + cooldown);
 		}
 		else
 		{
-			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.01);
+			SetCoooldown(client, weapon, GetGameTime() + 0.1);
 		}
 	}
 	else
@@ -80,7 +89,7 @@ public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int sl
 
 public void Weapon_German_M1_Module(int client, int weapon, bool &result, int slot)
 {
-	int cost = GermanSilence[client] ? 150 : 200;
+	int cost = GermanSilence[client] ? 75 : 100;
 	if(Current_Mana[client] < cost)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -99,6 +108,7 @@ public void Weapon_German_M1_Module(int client, int weapon, bool &result, int sl
 		char buffer[64];
 		FormatEx(buffer, sizeof(buffer), WAND_GERMAN_M1_SOUND, GermanCharges[client]);
 		EmitGameSoundToClient(client, buffer);
+		EmitGameSoundToClient(client, buffer);
 
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
@@ -109,7 +119,7 @@ public void Weapon_German_M1_Module(int client, int weapon, bool &result, int sl
 		if(GermanSilence[client])
 			cooldown *= 0.6;
 		
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+		SetCoooldown(client, weapon, GetGameTime() + cooldown);
 	}
 	else if(GermanWeapon[client] == EntIndexToEntRef(weapon))
 	{
@@ -128,11 +138,11 @@ public void Weapon_German_M1_Module(int client, int weapon, bool &result, int sl
 			if(GermanSilence[client])
 				cooldown *= 0.6;
 			
-			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+			SetCoooldown(client, weapon, GetGameTime() + cooldown);
 		}
 		else
 		{
-			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.01);
+			SetCoooldown(client, weapon, GetGameTime() + 0.1);
 		}
 	}
 	else
@@ -146,7 +156,7 @@ static void PlayChargeSound(int client, int charge, int max)
 	int sound = 1;
 	if(charge > 1)
 	{
-		sound = charge - (4 - max);
+		sound = charge - (max - 4);
 		if(sound < 1)
 			sound = 1;
 	}
@@ -154,6 +164,35 @@ static void PlayChargeSound(int client, int charge, int max)
 	char buffer[64];
 	FormatEx(buffer, sizeof(buffer), WAND_GERMAN_M1_SOUND, sound);
 	EmitGameSoundToClient(client, buffer);
+	EmitGameSoundToClient(client, buffer);
+}
+
+static void SetCoooldown(int client, int weapon, float duration)
+{
+	DataPack pack = new DataPack();
+	pack.WriteFloat(duration);
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	RequestFrame(Weapon_German_Frame, pack);
+}
+
+public void Weapon_German_Frame(DataPack pack)
+{
+	pack.Reset();
+
+	float duration = pack.ReadFloat();
+
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(client)
+	{
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", duration);
+
+		int weapon = EntRefToEntIndex(pack.ReadCell());
+		if(weapon != -1)
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", duration);
+		}
+	}
 }
 
 public Action Weapon_German_Timer(Handle timer, int client)
@@ -167,6 +206,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 			{
 				float cooldown = 0.8 * Attributes_Get(weapon, 6, 1.0);
 				SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + cooldown);
+				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + cooldown);
 
 				float damage = 65.0 * Attributes_Get(weapon, 410, 1.0);
 
@@ -182,9 +222,9 @@ public Action Weapon_German_Timer(Handle timer, int client)
 				time *= Attributes_Get(weapon, 101, 1.0);
 				time *= Attributes_Get(weapon, 102, 1.0);
 
-				for(int i = 1; i < GermanCharges[client]; i++)
+				for(int i; i < GermanCharges[client]; i++)
 				{
-					if(i == 2)
+					if(i == 1)
 					{
 						if(GermanSilence[client])	// The damage boosting effect of this unit's first Talent increases to 140% of the original
 						{
@@ -195,13 +235,28 @@ public Action Weapon_German_Timer(Handle timer, int client)
 							damage *= 1.35;
 						}
 					}
-
+					
 					EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
-					Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
+					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
+					
+					CreateTimer(0.1, Weapon_German_HomingTimer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					RMR_HomingPerSecond[projectile] = 150.0;
+					RMR_RocketOwner[projectile] = client;
+					RMR_HasTargeted[projectile] = false;
+					RWI_HomeAngle[projectile] = 180.0;
+					RWI_LockOnAngle[projectile] = 180.0;
+					RMR_RocketVelocity[projectile] = speed;
+					RMR_CurrentHomingTarget[projectile] = -1;	
 				}
+
+				PrintHintText(client, "Charges: %d", GermanCharges[client]);
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			}
 			else
 			{
+				PrintHintText(client, "Charges: %d", GermanCharges[client]);
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				return Plugin_Continue;
 			}
@@ -210,6 +265,66 @@ public Action Weapon_German_Timer(Handle timer, int client)
 
 	GermanTimer[client] = null;
 	return Plugin_Stop;
+}
+
+public Action Weapon_German_HomingTimer(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		if(!IsValidClient(RMR_RocketOwner[entity]))
+		{
+			RemoveEntity(entity);
+			return Plugin_Stop;
+		}
+
+		if(IsValidHomingTarget(entity, RMR_CurrentHomingTarget[entity], RMR_RocketOwner[entity]))
+		{
+			if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
+			{
+				HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
+			}
+			return Plugin_Continue;
+		}
+
+		int Closest = GetClosestTarget(entity, _, _, true);
+		if(IsValidHomingTarget(RMR_RocketOwner[entity], Closest, RMR_RocketOwner[entity]))
+		{
+			RMR_CurrentHomingTarget[entity] = Closest;
+			if(IsValidHomingTarget(entity, RMR_CurrentHomingTarget[entity], RMR_RocketOwner[entity]))
+			{
+				if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
+				{
+					HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
+				}
+				return Plugin_Continue;
+			}
+		}
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+
+static bool IsValidHomingTarget(int projectile, int target, int owner)
+{
+	if(!IsValidEnemy(projectile, target))
+		return false;
+	
+	if(GermanSilence[owner])	// Ignores non-elite enemies while in ability
+	{
+		if(!b_thisNpcIsABoss[target] &&
+		   !b_thisNpcIsARaid[target] &&
+		   !b_StaticNPC[target] &&
+		   !b_thisNpcHasAnOutline[target] &&
+		   !b_ThisNpcIsImmuneToNuke[target] &&
+		   !b_IsGiant[target])
+			return false;
+	}
+
+	return true;
 }
 
 void Weapon_German_WandTouch(int entity, int target)
