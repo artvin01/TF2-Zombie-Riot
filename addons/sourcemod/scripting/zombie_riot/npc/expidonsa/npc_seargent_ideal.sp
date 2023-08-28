@@ -138,7 +138,7 @@ methodmap SeargentIdeal < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		SeargentIdeal npc = view_as<SeargentIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		
@@ -153,6 +153,11 @@ methodmap SeargentIdeal < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextRangedAttack = 0.0;
+
+		npc.g_TimesSummoned = 0;
+
+		if(data[0])
+			npc.g_TimesSummoned = StringToInt(data);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -190,9 +195,12 @@ methodmap SeargentIdeal < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
-		SetVariantString("2.5");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		if(npc.g_TimesSummoned != 0)
+		{
+			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+			SetVariantString("2.5");
+			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		}
 
 	//	npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
 	//	SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_flModelScale", -2.5);
@@ -203,7 +211,10 @@ methodmap SeargentIdeal < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		if(npc.g_TimesSummoned != 0)
+		{
+			SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		}
 	//	SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 		SeargentIdeal_Alive += 1;
 		return npc;
@@ -213,46 +224,50 @@ methodmap SeargentIdeal < CClotBody
 public void SeargentIdeal_ClotThink(int iNPC)
 {
 	SeargentIdeal npc = view_as<SeargentIdeal>(iNPC);
-	if(f_TimeFrozenStill[iNPC])
+	if(npc.g_TimesSummoned == 0)
 	{
-		if(IsValidEntity(npc.m_iWearable6))
+		if(f_TimeFrozenStill[iNPC])
 		{
-			RemoveEntity(npc.m_iWearable6);
-		}
-	//	if(IsValidEntity(npc.m_iWearable7))
-	//	{
-	//		RemoveEntity(npc.m_iWearable7);
-	//	}
-	}	
-	else
-	{
-		if(!IsValidEntity(npc.m_iWearable6))
-		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
-			SetVariantString("2.5");
-			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		}
+			if(IsValidEntity(npc.m_iWearable6))
+			{
+				RemoveEntity(npc.m_iWearable6);
+			}
+		//	if(IsValidEntity(npc.m_iWearable7))
+		//	{
+		//		RemoveEntity(npc.m_iWearable7);
+		//	}
+		}	
 		else
 		{
-			float vecTarget[3];
-			GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-			vecTarget[2] -= 100.0;
-			Custom_SDKCall_SetLocalOrigin(npc.m_iWearable6, vecTarget);
+			if(!IsValidEntity(npc.m_iWearable6))
+			{
+				npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
+				SetVariantString("2.5");
+				AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
+			}
+			else
+			{
+				float vecTarget[3];
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
+				vecTarget[2] -= 100.0;
+				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable6, vecTarget);
+			}
+			/*
+			if(!IsValidEntity(npc.m_iWearable7))
+			{
+				npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
+				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_flModelScale", -2.5);
+			}
+			else
+			{
+				float vecTarget[3];
+				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
+				vecTarget[2] -= 100.0;
+				Custom_SDKCall_SetLocalOrigin(npc.m_iWearable7, vecTarget);
+			}
+			*/
 		}
-		/*
-		if(!IsValidEntity(npc.m_iWearable7))
-		{
-			npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
-			SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_flModelScale", -2.5);
-		}
-		else
-		{
-			float vecTarget[3];
-			GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-			vecTarget[2] -= 100.0;
-			Custom_SDKCall_SetLocalOrigin(npc.m_iWearable7, vecTarget);
-		}
-		*/
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -274,7 +289,9 @@ public void SeargentIdeal_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	SeargentIdealShield(npc.index);
+	
+	if(npc.g_TimesSummoned == 0)
+		SeargentIdealShield(npc.index);
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{

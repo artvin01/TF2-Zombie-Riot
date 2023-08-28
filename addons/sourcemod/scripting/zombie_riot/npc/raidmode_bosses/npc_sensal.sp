@@ -1194,7 +1194,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		 npc.index,
 		 	80.0,			// float lockonAngleMax,
 		   	13.0,				//float homingaSec,
-			false,				// bool LockOnlyOnce,
+			true,				// bool LockOnlyOnce,
 			false,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
 
@@ -1600,7 +1600,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				npc.index,
 					80.0,			// float lockonAngleMax,
 					13.0,				//float homingaSec,
-					false,				// bool LockOnlyOnce,
+					true,				// bool LockOnlyOnce,
 					false,				// bool changeAngles,
 					ang_Look,			
 					enemy[i]); //home onto this enemy

@@ -2900,6 +2900,9 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 	{
 		if(damagetype & DMG_CRIT)
 		{		
+			damage *= 1.35;
+			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
+			damagetype &= ~DMG_CRIT;
 			if(i_HeadshotAffinity[attacker] == 1)
 			{
 				damage *= 1.35;
