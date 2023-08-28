@@ -878,7 +878,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				TE_SetupBeamRingPoint(powerup_pos, 10.0, 500.0, g_BeamIndex_heal, -1, 0, 5, 0.5, 5.0, 1.0, color, 0, 0);
 	   			TE_SendToAll();
 				bool Repaired_Building = false;
-				float RepairRateBonus = Attributes_FindOnPlayerZR(client, 95); //Sentry attack speed bonus
+				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, true);
 				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 

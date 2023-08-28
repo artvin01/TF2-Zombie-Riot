@@ -1280,7 +1280,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		else
 			ParticleEffectAt(ProjectileLoc, "spell_batball_impact_blue", 0.25);
 
-		int particle = i_rocket_particle[entity];
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1288,7 +1288,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = i_rocket_particle[entity];
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		//we uhh, missed?
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);

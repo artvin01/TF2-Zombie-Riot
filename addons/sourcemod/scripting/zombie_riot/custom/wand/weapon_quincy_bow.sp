@@ -1399,7 +1399,7 @@ static void Quincy_Rocket_Launch(int client, int weapon, float startVec[3], floa
 		if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
 		{
 			particle = ParticleEffectAt(startVec, rocket_particle, 0.0); //Inf duartion
-			i_rocket_particle[entity]=particle;
+			i_rocket_particle[entity]= EntIndexToEntRef(particle);
 			TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
 			SetParent(entity, particle);	
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
@@ -1469,7 +1469,7 @@ public Action Quincy_StartTouch(int entity, int other)
 			case 5:EmitSoundToAll(SOUND_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 				
 	   	}
-	   	int particle = i_rocket_particle[entity];
+	   	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1492,7 +1492,7 @@ public Action Quincy_StartTouch(int entity, int other)
 			
 			case 4:EmitSoundToAll(SOUND_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 		}
-		int particle = i_rocket_particle[entity];
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);

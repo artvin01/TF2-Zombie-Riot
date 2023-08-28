@@ -2306,7 +2306,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
 			{
 				particle = ParticleEffectAt(vecSwingStart, rocket_particle, 0.0); //Inf duartion
-				i_rocket_particle[entity]=particle;
+				i_rocket_particle[entity]= EntIndexToEntRef(particle);
 				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
 				SetParent(entity, particle);	
 				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
@@ -7399,7 +7399,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
 		
-		int particle = i_rocket_particle[entity];
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -7407,7 +7407,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 	}
 	else
 	{
-		int particle = i_rocket_particle[entity];
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		//we uhh, missed?
 		if(IsValidEntity(particle))
 		{
