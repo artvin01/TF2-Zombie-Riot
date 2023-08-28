@@ -75,7 +75,7 @@ methodmap Sniponeer < CClotBody
 	
 	public Sniponeer(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Sniponeer npc = view_as<Sniponeer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "2500", ally));
+		Sniponeer npc = view_as<Sniponeer>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_SNIPONEER;
 		i_NpcWeight[npc.index] = 1;
@@ -348,7 +348,7 @@ void SniponeerInitiateLaserAttack(int entity, float VectorTarget[3], float Vecto
 	pack.WriteFloat(VectorStart[0]);
 	pack.WriteFloat(VectorStart[1]);
 	pack.WriteFloat(VectorStart[2]);
-	RequestFrames(SniponeerInitiateLaserAttack_DamagePart, 25, pack);
+	RequestFrames(SniponeerInitiateLaserAttack_DamagePart, 50, pack);
 }
 
 void SniponeerInitiateLaserAttack_DamagePart(DataPack pack)
@@ -400,9 +400,9 @@ void SniponeerInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sniponeer_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 100.0;
+	float CloseDamage = 75.0;
 	float FarDamage = 50.0;
-	float MaxDistance = 2000.0;
+	float MaxDistance = 125.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{

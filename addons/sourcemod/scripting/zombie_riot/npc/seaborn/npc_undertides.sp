@@ -348,7 +348,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -363,6 +363,9 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
 	{
 		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
 		{
+			if(respectTrace && !Can_I_See_Enemy_Only(npc.index, client))
+				continue;
+
 			for(int i; i < count; i++)
 			{
 				int defense = Armour_Level_Current[client];
@@ -423,6 +426,9 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
+					if(respectTrace && !Can_I_See_Enemy_Only(npc.index, entity))
+						continue;
+
 					for(int i; i < count; i++)
 					{
 						int defense = b_npcspawnprotection[entity] ? 8 : 0;
@@ -457,6 +463,9 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count)
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
+					if(respectTrace && !Can_I_See_Enemy_Only(npc.index, entity))
+						continue;
+						
 					for(int i; i < count; i++)
 					{
 						int defense = b_npcspawnprotection[entity] ? 8 : 0;

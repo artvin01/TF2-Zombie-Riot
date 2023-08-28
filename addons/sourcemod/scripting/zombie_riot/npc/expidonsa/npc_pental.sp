@@ -87,7 +87,7 @@ methodmap Pental < CClotBody
 	
 	public Pental(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "700", ally));
+		Pental npc = view_as<Pental>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "500", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_PENTAL;
 		i_NpcWeight[npc.index] = 1;

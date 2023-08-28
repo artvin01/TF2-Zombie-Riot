@@ -122,7 +122,7 @@ methodmap SoldinePrototype < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 200.0;
 		
 		
 		int skin = 1;
@@ -236,6 +236,8 @@ public void SoldinePrototype_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, SoldinePrototype_ClotThink);
 		
 	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))

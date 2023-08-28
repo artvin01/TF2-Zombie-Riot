@@ -1765,4 +1765,28 @@
 	{
 		"en"	"Minigun Assisa"
 	}
+	"Ignitus"
+	{
+		"en"	"Ignitus"
+	}
+	"Helena"
+	{
+		"en"	"Helena"
+	}
+	"Erasus"
+	{
+		"en"	"Erasus"
+	}
+	"Giant Tankus"
+	{
+		"en"	"Giant Tankus"
+	}
+	"Anfuhrer Eisenhard"
+	{
+		"en"	"Anfuhrer Eisenhard"
+	}
+	"Speedus Adivus"
+	{
+		"en"	"Speedus Adivus"
+	}
 }

@@ -87,7 +87,7 @@ methodmap Defanda < CClotBody
 	
 	public Defanda(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
+		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_DEFANDA;
 		i_NpcWeight[npc.index] = 1;
@@ -350,7 +350,7 @@ void DefandaAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			DefandaAllyHealInternal(victim, 250.0);
+			DefandaAllyHealInternal(victim, 150.0);
 		}
 	}
 }

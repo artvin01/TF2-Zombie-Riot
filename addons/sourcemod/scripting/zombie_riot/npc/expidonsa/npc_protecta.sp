@@ -208,12 +208,13 @@ public void Protecta_NPCDeath(int entity)
 	Protecta npc = view_as<Protecta>(entity);
 	if(!npc.m_bGib)
 	{
-		//when dying, cause a heal explosion!
+		npc.PlayDeathSound();	
+	}
+	//when dying, cause a heal explosion!
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
 		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
-		// Hit sound
-		npc.PlayMeleeHitSound();
-		//on hit, we heal all allies around us
 		Explode_Logic_Custom(0.0,
 		npc.index,
 		npc.index,
@@ -228,7 +229,6 @@ public void Protecta_NPCDeath(int entity)
 		_,
 		ProtectaAllyHeal);
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
-		npc.PlayDeathSound();	
 	}
 	ExpidonsaRemoveEffects(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Protecta_ClotThink);
@@ -370,7 +370,7 @@ void ProtectaAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			ProtectaAllyHealInternal(victim, 1000.0);
+			ProtectaAllyHealInternal(victim, 250.0);
 		}
 	}
 }

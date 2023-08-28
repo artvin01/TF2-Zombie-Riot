@@ -1044,8 +1044,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	MarkNativeAsOptional("FuncToVal");
 	CreateNative("FuncToVal", Native_FuncToVal);
-	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
-	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
 	
 	Thirdperson_PluginLoad();
 	
@@ -3152,17 +3150,6 @@ public void Frame_OffCheats()
 public any Native_FuncToVal(Handle plugin, int numParams)
 {
 	return GetNativeCell(1);
-}
-
-public any Native_ApplyKillEffects(Handle plugin, int numParams)
-{
-	NPC_DeadEffects(GetNativeCell(1));
-	return Plugin_Handled;
-}
-
-public any Native_GetLevelCount(Handle plugin, int numParams)
-{
-	return Level[GetNativeCell(1)];
 }
 
 //#file "Zombie Riot" broke in sm 1.11

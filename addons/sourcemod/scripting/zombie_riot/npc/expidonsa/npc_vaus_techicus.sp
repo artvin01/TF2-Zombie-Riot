@@ -84,7 +84,7 @@ methodmap VausTechicus < CClotBody
 
 	public VausTechicus(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		VausTechicus npc = view_as<VausTechicus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "200000", ally));
+		VausTechicus npc = view_as<VausTechicus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "20000", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_VAUSTECHICUS;
 		i_NpcWeight[npc.index] = 3;
