@@ -3865,6 +3865,12 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 	SetVariantFloat(32.0);
 	AcceptEntityInput(iBeam, "Amplitude");
 	AcceptEntityInput(iBeam, "TurnOn");
+
+//	SetVariantInt(0);
+//	AcceptEntityInput(iBeam, "TouchType");
+	//its delayed by a frame to avoid it not rendering at all.
+	RequestFrame(ApplyBeamThinkRemoval, EntIndexToEntRef(iBeam));
+
 	return iBeam;
 }
 
