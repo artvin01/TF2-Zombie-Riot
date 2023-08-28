@@ -3869,7 +3869,7 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 //	SetVariantInt(0);
 //	AcceptEntityInput(iBeam, "TouchType");
 	//its delayed by a frame to avoid it not rendering at all.
-	RequestFrame(ApplyBeamThinkRemoval, EntIndexToEntRef(iBeam));
+	RequestFrames(ApplyBeamThinkRemoval, 15, EntIndexToEntRef(iBeam));
 
 	return iBeam;
 }
