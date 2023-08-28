@@ -8,7 +8,6 @@ void Natives_PluginLoad()
 	CreateNative("ZR_ApplyKillEffects", Native_ApplyKillEffects);
 	CreateNative("ZR_GetLevelCount", Native_GetLevelCount);
 	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
-	CreateNative("ZR_GetWaveDifficulty", Native_GetWaveDifficulty);
 
 	OnDifficultySet = new GlobalForward("ZR_OnDifficultySet", ET_Ignore, Param_Cell);
 }

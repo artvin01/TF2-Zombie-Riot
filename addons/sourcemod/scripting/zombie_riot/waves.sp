@@ -597,6 +597,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			round.FogDesnity = kv.GetFloat("fogmaxdensity");
 		}
 
+		int nonBosses;
+
 		round.Waves = new ArrayList(sizeof(Wave));
 		if(kv.GotoFirstSubKey())
 		{
@@ -633,6 +635,9 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
+
+						if(!enemy.Credits)
+							nonBosses++;
 						
 						wave.EnemyData = enemy;
 						round.Waves.PushArray(wave);
@@ -643,21 +648,23 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			kv.GoBack();
 		}
 
-		if(autoCash)
+		if(autoCash && nonBosses)
 		{
 			int length = round.Waves.Length;
 			if(length)
 			{
-				float fcash = float(round.Cash) / float(length);
+				float fcash = float(round.Cash) / float(nonBosses);
 				for(int i; i < length; i++)
 				{
 					round.Waves.GetArray(i, wave);
+					if(wave.EnemyData.Credits)
+						continue;
 
 					float count = float(wave.Count);
 					if(count < 1.0)
 						count = 1.0;
 					
-					wave.EnemyData.Credits += RoundToCeil(fcash / count);
+					wave.EnemyData.Credits = fcash / count;
 					round.Waves.SetArray(i, wave);
 				}
 
