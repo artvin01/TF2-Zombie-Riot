@@ -414,7 +414,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			}
 			else	// Item -> Category
 			{
-				Items_EncyclopediaMenu(client, StringToInt(data), false);
+				Items_EncyclopediaMenu(client, StringToInt(buffer), false);
 			}
 		}
 	}
