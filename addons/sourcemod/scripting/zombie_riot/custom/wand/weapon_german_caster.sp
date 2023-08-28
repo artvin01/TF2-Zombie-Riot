@@ -25,69 +25,15 @@ void Weapon_German_MapStart()
 
 public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int slot)
 {
-	int cost = GermanSilence[client] ? 75 : 100;
-	if(Current_Mana[client] < cost)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", cost);
-
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.01);
-	}
-	else if(!GermanTimer[client])
-	{
-		GermanTimer[client] = CreateTimer(0.1, Weapon_German_Timer, client, TIMER_REPEAT);
-		GermanWeapon[client] = EntIndexToEntRef(weapon);
-		GermanCharges[client] = 1;
-		
-		char buffer[64];
-		FormatEx(buffer, sizeof(buffer), WAND_GERMAN_M1_SOUND, GermanCharges[client]);
-		EmitGameSoundToClient(client, buffer);
-		EmitGameSoundToClient(client, buffer);
-
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
-		Mana_Hud_Delay[client] = 0.0;
-		delay_hud[client] = 0.0;
-		Current_Mana[client] -= cost;
-
-		float cooldown = 0.7 * Attributes_Get(weapon, 6, 1.0);
-		if(GermanSilence[client])
-			cooldown *= 0.6;
-		
-		SetCoooldown(client, weapon, GetGameTime() + cooldown);
-	}
-	else if(GermanWeapon[client] == EntIndexToEntRef(weapon))
-	{
-		int maxcharge = GermanSilence[client] ? 4 : 3;
-		if(GermanCharges[client] < maxcharge)
-		{
-			GermanCharges[client]++;
-
-			PlayChargeSound(client, GermanCharges[client], maxcharge);
-			
-			Mana_Hud_Delay[client] = 0.0;
-			delay_hud[client] = 0.0;
-			Current_Mana[client] -= cost;
-
-			float cooldown = 0.7 * Attributes_Get(weapon, 6, 1.0);
-			if(GermanSilence[client])
-				cooldown *= 0.6;
-			
-			SetCoooldown(client, weapon, GetGameTime() + cooldown);
-		}
-		else
-		{
-			SetCoooldown(client, weapon, GetGameTime() + 0.1);
-		}
-	}
-	else
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-	}
+	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
 }
 
 public void Weapon_German_M1_Module(int client, int weapon, bool &result, int slot)
+{
+	Weapon_German_M1(client, weapon, GermanSilence[client] ? 5 : 4);
+}
+
+static void Weapon_German_M1(int client, int weapon, int maxcharge)
 {
 	int cost = GermanSilence[client] ? 75 : 100;
 	if(Current_Mana[client] < cost)
@@ -114,16 +60,9 @@ public void Weapon_German_M1_Module(int client, int weapon, bool &result, int sl
 		Mana_Hud_Delay[client] = 0.0;
 		delay_hud[client] = 0.0;
 		Current_Mana[client] -= cost;
-
-		float cooldown = 0.7 * Attributes_Get(weapon, 6, 1.0);
-		if(GermanSilence[client])
-			cooldown *= 0.6;
-		
-		SetCoooldown(client, weapon, GetGameTime() + cooldown);
 	}
 	else if(GermanWeapon[client] == EntIndexToEntRef(weapon))
 	{
-		int maxcharge = GermanSilence[client] ? 5 : 4;
 		if(GermanCharges[client] < maxcharge)
 		{
 			GermanCharges[client]++;
@@ -133,12 +72,6 @@ public void Weapon_German_M1_Module(int client, int weapon, bool &result, int sl
 			Mana_Hud_Delay[client] = 0.0;
 			delay_hud[client] = 0.0;
 			Current_Mana[client] -= cost;
-
-			float cooldown = 0.7 * Attributes_Get(weapon, 6, 1.0);
-			if(GermanSilence[client])
-				cooldown *= 0.6;
-			
-			SetCoooldown(client, weapon, GetGameTime() + cooldown);
 		}
 		else
 		{
@@ -378,7 +311,7 @@ public void Weapon_German_M2(int client, int weapon, bool &result, int slot)
 {
 	if(GermanSilence[client])
 	{
-		delete GermanSilence[client];
+		TriggerTimer(GermanSilence[client]);
 		Ability_Apply_Cooldown(client, slot, 20.0);
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
 	}
@@ -399,15 +332,27 @@ public void Weapon_German_M2(int client, int weapon, bool &result, int slot)
 			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 
 			TF2_AddCondition(client, TFCond_FocusBuff, 30.0);
-			GermanSilence[client] = CreateTimer(30.0, Weapon_German_SilenceTimer, client);
+			Attributes_SetMulti(weapon, 6, 0.6);
+
+			DataPack pack;
+			GermanSilence[client] = CreateDataTimer(30.0, Weapon_German_SilenceTimer, pack);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
 
 			EmitGameSoundToClient(client, WAND_GERMAN_M2_SOUND);
 		}
 	}
 }
 
-public Action Weapon_German_SilenceTimer(Handle timer, int client)
+public Action Weapon_German_SilenceTimer(Handle timer, DataPack pack)
 {
-	GermanSilence[client] = null;
+	pack.Reset();
+	GermanSilence[pack.ReadCell()] = null;
+
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(weapon != -1)
+	{
+		Attributes_SetMulti(weapon, 6, 1.0 / 0.6);
+	}
 	return Plugin_Stop;	
 }
