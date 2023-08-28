@@ -199,9 +199,9 @@
 	
 	"Huntsman Desc"
 	{
-		"en"		"Can headshot. Press R To fire a barrage"
-		"ru"		"Может стрелять в голову. Нажмите R, чтобы открыть шквальный огонь."
-		"chi"       "可以造成爆头伤害！按下R键发射多个弓箭"
+		"en"		"Can headshot. Press M2 To fire a barrage"
+		"ru"		"Может стрелять в голову. Нажмите M2, чтобы открыть шквальный огонь."
+		"chi"       "可以造成爆头伤害！按下M2键发射多个弓箭"
 	}
 	"Huntsman Pap 1"
 	{
