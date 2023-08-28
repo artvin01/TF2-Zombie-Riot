@@ -232,44 +232,60 @@ void RifalManuSelfDefense(RifalManu npc, float gameTime)
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
 	{
-		if(npc.m_iChanged_WalkCycle != 5)
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					
+		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 5;
-			npc.SetActivity("ACT_MP_STAND_PRIMARY");
-			npc.m_flSpeed = 0.0;
-			npc.StopPathing();
-		}	
-		if(gameTime > npc.m_flNextMeleeAttack)
-		{
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
-			{	
-				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-				npc.PlayMeleeSound();
-				npc.FaceTowards(vecTarget, 20000.0);
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
-				{
-					target = TR_GetEntityIndex(swingTrace);	
-						
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.25;
-
-					if(IsValidEnemy(npc.index, target))
+			if(npc.m_iChanged_WalkCycle != 5)
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 5;
+				npc.SetActivity("ACT_MP_STAND_PRIMARY");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+			}	
+			if(gameTime > npc.m_flNextMeleeAttack)
+			{
+				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.0))
+				{	
+					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+					npc.PlayMeleeSound();
+					npc.FaceTowards(vecTarget, 20000.0);
+					Handle swingTrace;
+					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 					{
-						float damageDealt = 5.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 3.0;
+						target = TR_GetEntityIndex(swingTrace);	
+							
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						float origin[3], angles[3];
+						view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, vecHit, false );
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.25;
+
+						if(IsValidEnemy(npc.index, target))
+						{
+							float damageDealt = 5.0;
+							if(ShouldNpcDealBonusDamage(target))
+								damageDealt *= 3.0;
 
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+						}
 					}
+					delete swingTrace;
 				}
-				delete swingTrace;
+			}
+		}
+		else
+		{
+			if(npc.m_iChanged_WalkCycle != 4)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 4;
+				npc.SetActivity("ACT_MP_RUN_PRIMARY");
+				npc.m_flSpeed = 250.0;
+				npc.StartPathing();
 			}
 		}
 	}

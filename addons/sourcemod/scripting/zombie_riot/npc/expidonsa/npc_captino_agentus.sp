@@ -353,7 +353,10 @@ public void CaptinoAgentus_NPCDeath(int entity)
 	}
 	SDKUnhook(npc.index, SDKHook_Think, CaptinoAgentus_ClotThink);
 		
-	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
