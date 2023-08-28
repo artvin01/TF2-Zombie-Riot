@@ -384,7 +384,7 @@ static void TBB_Ability_BeamWand_pap(int client)
 	TBB_Tick(client);
 //	SDKHook(client, SDKHook_PreThink, TBB_Tick);
 	
-	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+//	CreateTimer(999.9, Timer_RemoveEntity, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 static bool BeamWand_TraceWallsOnly(int entity, int contentsMask)

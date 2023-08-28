@@ -443,7 +443,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 
 			Rogue_OnAbilityUse(weapon);
 
-			CreateTimer(0.5, Timer_RemoveEntity, ConnectWithBeam(client, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(ConnectWithBeam(client, entity, 5, 5, 5, 3.0, 3.0, 1.0, LASERBEAM_PANZER)), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
