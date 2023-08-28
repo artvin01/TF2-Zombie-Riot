@@ -1938,9 +1938,7 @@
 	}
 	"Cryo Staff"
 	{
-	     "en"       "Beam Wand"
-		 "ru"       "Жезл луча"
-	     "chi"       "约束神杖"
+	     "en"       "Cryo Staff"
 	}
 	"Atomic Reconstructor"
 	{

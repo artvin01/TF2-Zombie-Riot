@@ -15,6 +15,7 @@ void ExpidonsaRemoveEffects(int iNpc)
 		{
 			RemoveEntity(entity);
 		}
+		i_ExpidonsaEnergyEffect[iNpc][loop] = INVALID_ENT_REFERENCE;
 	}
 }
 
@@ -85,5 +86,6 @@ void VausMagicaRemoveShield(int entity)
 		return;
 
 	RemoveEntity(EntRefToEntIndex(i_Expidonsa_ShieldEffect[entity]));
+	i_Expidonsa_ShieldEffect[entity] = INVALID_ENT_REFERENCE;
 }
 
