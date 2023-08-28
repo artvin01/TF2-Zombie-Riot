@@ -291,13 +291,13 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 							TeleportEntity(spawn_index, pos, ang);
 							SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 							SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-							fl_Extra_Damage[spawn_index] = 2.0; //2x dmg so they are scary
+							fl_Extra_Damage[spawn_index] = 1.5; //2x dmg so they are scary
 						}
 						npc.PlayTeleportSound();
 						ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						ParticleEffectAt(WorldSpaceCenter(npc.index), "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-						npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 7.5;
+						npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 12.5;
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 					}
 					else

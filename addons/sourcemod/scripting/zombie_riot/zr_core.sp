@@ -302,6 +302,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/freeplay.sp"
 #include "zombie_riot/items.sp"
 #include "zombie_riot/music.sp"
+#include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
@@ -403,7 +404,7 @@ bool applied_lastmann_buffs_once = false;
 
 void ZR_PluginLoad()
 {
-	CreateNative("ZR_GetWaveCount", Native_GetWaveCounts);
+	Natives_PluginLoad();
 }
 
 void ZR_PluginStart()
@@ -702,11 +703,6 @@ void ZR_ClientDisconnect(int client)
 			}
 		}
 	}
-}
-
-public any Native_GetWaveCounts(Handle plugin, int numParams)
-{
-	return CurrentRound;
 }
 
 public Action OnReloadCommand(int args)

@@ -101,7 +101,7 @@ methodmap Diversionistico < CClotBody
 
 	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, true, true));
+		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_DIVERSIONISTICO;
 		i_NpcWeight[npc.index] = 1;
@@ -292,7 +292,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();
-				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget))
+				if(IsBehindAndFacingTarget(npc.index, npc.m_iTarget) && !NpcStats_IsEnemySilenced(npc.index))
 				{
 					BackstabDone = true;
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");	

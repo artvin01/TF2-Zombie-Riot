@@ -104,7 +104,7 @@ methodmap SelfamIre < CClotBody
 	
 	public SelfamIre(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		SelfamIre npc = view_as<SelfamIre>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
+		SelfamIre npc = view_as<SelfamIre>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "550", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_SELFAM_IRE;
 		i_NpcWeight[npc.index] = 1;
@@ -145,11 +145,11 @@ methodmap SelfamIre < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/eotl_winter_coat/eotl_winter_coat.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/eotl_winter_coat/eotl_winter_coat.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
@@ -235,6 +235,8 @@ public void SelfamIre_NPCDeath(int entity)
 	}
 	SDKUnhook(npc.index, SDKHook_Think, SelfamIre_ClotThink);
 		
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -267,11 +269,11 @@ void SelfamIreSprint(SelfamIre npc, float gameTime, int target, float distance)
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_flNextRangedSpecialAttack = gameTime + 20.0;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 3.0;
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 2.0;
 				float flPos[3];
 				float flAng[3];
 				GetAttachment(npc.index, "head", flPos, flAng);		
-				int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 3.0);
+				int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 2.0);
 				SetParent(npc.index, particler, "head");
 				npc.m_iWearable4 = particler;
 			}

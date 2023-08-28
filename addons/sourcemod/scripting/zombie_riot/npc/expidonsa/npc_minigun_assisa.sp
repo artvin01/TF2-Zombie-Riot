@@ -74,7 +74,7 @@ methodmap MinigunAssisa < CClotBody
 			if(this.i_GunMode != 0)
 			{
 				StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_spin.wav");
-				EmitSoundToAll("weapons/minigun_shoot.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, 0.35);
+				EmitSoundToAll("weapons/minigun_shoot.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
 			}
 			this.i_GunMode = 0;
 		}
@@ -83,7 +83,7 @@ methodmap MinigunAssisa < CClotBody
 			if(this.i_GunMode != 1)
 			{
 				StopSound(this.index, SNDCHAN_STATIC, "weapons/minigun_shoot.wav");
-				EmitSoundToAll("weapons/minigun_spin.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL - 20, _, 0.35);
+				EmitSoundToAll("weapons/minigun_spin.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
 			}
 			this.i_GunMode = 1;
 		}
@@ -188,7 +188,7 @@ public void MinigunAssisa_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		MinigunAssisaSelfDefense(npc,GetGameTime(npc.index)); 
+		MinigunAssisaSelfDefense(npc); 
 	}
 	else
 	{
@@ -240,7 +240,7 @@ public void MinigunAssisa_NPCDeath(int entity)
 
 }
 
-void MinigunAssisaSelfDefense(MinigunAssisa npc, float gameTime)
+void MinigunAssisaSelfDefense(MinigunAssisa npc)
 {
 	int target;
 	target = npc.m_iTarget;
@@ -267,7 +267,7 @@ void MinigunAssisaSelfDefense(MinigunAssisa npc, float gameTime)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 10.0;
+					float damageDealt = 15.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 

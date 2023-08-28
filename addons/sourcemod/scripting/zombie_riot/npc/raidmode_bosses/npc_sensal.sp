@@ -246,6 +246,7 @@ methodmap Sensal < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_flMeleeArmor = 1.25;	
 		
 		SDKHook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		
@@ -306,6 +307,15 @@ methodmap Sensal < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+		
+		if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+		{
+			RaidModeScaling *= 0.85;
+		}
+		else if(ZR_GetWaveCount()+1 > 55)
+		{
+			RaidModeScaling *= 0.7;
+		}
 		
 		Raidboss_Clean_Everyone();
 		Music_SetRaidMusic("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3", 218, true);
@@ -553,7 +563,7 @@ public void Sensal_NPCDeath(int entity)
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going agains the law of {gold}Expidonsa{default}.");
+			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
 		}
 		case 2:
 		{
@@ -666,11 +676,15 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				npc.SetCycle(0.01);
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
-				VausMagicaGiveShield(npc.index, CountPlayersOnRed()); //Give self a shield
+				VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
 
 				SensalThrowScythes(npc);
 				npc.m_flDoingAnimation = gameTime + 0.45;
 				npc.m_flAngerDelay = gameTime + 60.0;
+
+				if(ZR_GetWaveCount()+1 >= 60)
+					npc.m_flAngerDelay = gameTime + 30.0;
+
 				npc.m_flReloadIn = gameTime + 3.0;
 			}
 			else
@@ -714,7 +728,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_bPathing = false;
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
-			VausMagicaGiveShield(npc.index, CountPlayersOnRed()); //Give self a shield
+			VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
 			float flPos[3];
@@ -754,16 +768,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 					{
 						float damage = 24.0;
 						float damage_rage = 28.0;
-						if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-						{
-							damage = 20.0; //nerf
-							damage_rage = 21.0; //nerf
-						}
-						else if(ZR_GetWaveCount()+1 > 55)
-						{
-							damage = 17.5; //nerf
-							damage_rage = 18.5; //nerf
-						}
 						damage *= 1.15;
 						damage_rage *= 1.15;
 
@@ -788,13 +792,19 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 							{
 								Knocked = true;
 								Custom_Knockback(npc.index, target_traced, 900.0, true);
-								TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
+								if(!NpcStats_IsEnemySilenced(npc.index))
+								{
+									TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
+								}
 							}
 							else
 							{
-								TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
+								if(!NpcStats_IsEnemySilenced(npc.index))
+								{
+									TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
+								}
 							}
 						}
 									
@@ -1004,6 +1014,10 @@ void SensalThrowScythes(Sensal npc)
 	float ang_Look[3];
 	float pos[3];
 	pos = WorldSpaceCenter(npc.index);
+	
+	if(ZR_GetWaveCount()+1 >= 60)
+		MaxCount = 2;
+
 	for(int Repeat; Repeat <= 7; Repeat++)
 	{
 		Sensal_Scythe_Throw_Ability(npc.index,
@@ -1178,8 +1192,8 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 		Initiate_HomingProjectile(Projectile,
 		 npc.index,
-		 	90.0,			// float lockonAngleMax,
-		   	15.0,				//float homingaSec,
+		 	80.0,			// float lockonAngleMax,
+		   	13.0,				//float homingaSec,
 			false,				// bool LockOnlyOnce,
 			false,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
@@ -1336,7 +1350,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apoligise for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}Sensal{default}: We apoligize for the sudden attack, we didn't know, take this as an apology.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1345,7 +1359,7 @@ bool SensalTalkPostWin(Sensal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Battery Device");
-				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {blue}''Expidonsan Battery Device''{default}!");
+				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
 			}
 		}
 	}
@@ -1470,7 +1484,7 @@ bool SensalMassLaserAttack(Sensal npc)
 
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[16];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true);
 			bool foundEnemy = false;
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -1560,7 +1574,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
 		int enemy[16];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true);
 		bool Foundenemies = false;
 
 		for(int i; i < sizeof(enemy); i++)
@@ -1584,14 +1598,15 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 				Initiate_HomingProjectile(Projectile,
 				npc.index,
-					90.0,			// float lockonAngleMax,
-					15.0,				//float homingaSec,
+					80.0,			// float lockonAngleMax,
+					13.0,				//float homingaSec,
 					false,				// bool LockOnlyOnce,
 					false,				// bool changeAngles,
 					ang_Look,			
 					enemy[i]); //home onto this enemy
 			}
 		}
+
 		if(Foundenemies)
 			EmitSoundToAll("misc/halloween/spell_teleport.wav", npc.index, SNDCHAN_STATIC, 90, _, 0.8);
 			
@@ -1652,16 +1667,18 @@ void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorSt
 	delete trace;
 
 	Sensal npc = view_as<Sensal>(entity);
-	int red = 50;
-	int green = 50;
+	int red = 255;
+	int green = 255;
 	int blue = 255;
 	int Alpha = 255;
+
 	if(npc.Anger)
 	{
 		red = 255;
-		green = 50;
-		blue = 50;
+		green = 255;
+		blue = 255;
 	}
+
 	int colorLayer4[4];
 	float diameter = float(SENSAL_LASER_THICKNESS * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
@@ -1741,8 +1758,8 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 400.0 * RaidModeScaling;
-	float FarDamage = 300.0 * RaidModeScaling;
+	float CloseDamage = 120.0 * RaidModeScaling;
+	float FarDamage = 100.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)

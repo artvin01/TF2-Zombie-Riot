@@ -115,7 +115,7 @@ methodmap EgaBunar < CClotBody
 	
 	public EgaBunar(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		EgaBunar npc = view_as<EgaBunar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "2500", ally));
+		EgaBunar npc = view_as<EgaBunar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_EGABUNAR;
 		i_NpcWeight[npc.index] = 1;
@@ -146,7 +146,7 @@ methodmap EgaBunar < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 370.0;
+		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
@@ -192,7 +192,7 @@ public void EgaBunar_ClotThink(int iNPC)
 	}
 	if(npc.m_flArmorCount > 0.0)
 	{
-		npc.m_flSpeed = 370.0;
+		npc.m_flSpeed = 330.0;
 	}
 	else
 	{
@@ -252,7 +252,14 @@ public Action EgaBunar_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	if(npc.m_flArmorCount > 0.0)
 	{
-		npc.m_flArmorCount -= damage * 0.9;
+		if(damagetype & DMG_CLUB)
+		{
+			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
+		}
+		else
+		{
+			npc.m_flArmorCount -= damage * 0.9;
+		}
 		damage *= 0.1; //negate damage heavy.
 		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;

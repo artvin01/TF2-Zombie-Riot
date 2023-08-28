@@ -520,6 +520,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
+	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	
 	Enemy enemy;
 	Wave wave;
@@ -640,6 +641,28 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			} while(kv.GotoNextKey());
 			
 			kv.GoBack();
+		}
+
+		if(autoCash)
+		{
+			int length = round.Waves.Length;
+			if(length)
+			{
+				float fcash = float(round.Cash) / float(length);
+				for(int i; i < length; i++)
+				{
+					round.Waves.GetArray(i, wave);
+
+					float count = float(wave.Count);
+					if(count < 1.0)
+						count = 1.0;
+					
+					wave.EnemyData.Credits += RoundToCeil(fcash / count);
+					round.Waves.SetArray(i, wave);
+				}
+
+				round.Cash = 0;
+			}
 		}
 		
 		Rounds.PushArray(round);
@@ -833,6 +856,10 @@ public Action Waves_EndVote(Handle timer, float time)
 					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
 					Queue_DifficultyVoteEnded();
+					Native_OnDifficultySet(highest);
+					
+					if(highest > 3)
+						highest = 3;
 					
 					Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "FireUser%d", highest + 1);
 					ExcuteRelay("zr_waveselected", WhatDifficultySetting);

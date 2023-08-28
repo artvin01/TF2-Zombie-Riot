@@ -44,6 +44,10 @@
 	{
 		"en" 		"Cry of Fear"
 	}
+	"Expidonsa"
+	{
+		"en" 		"Expidonsa"
+	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
@@ -231,7 +235,7 @@
 	{
 		"en" 		"Once hurt, they will gain massive resistances (resistance can be silenced) for 3 seconds, it can recharge so kill them quick."
 	}
-	"Xeno Fortified Poison Zombie"
+	"Xeno Fortified Poison Zombie Desc"
 	{
 	    "en" 		"Stronger version of the Xeno Poison Zombie (can be silenced)."
 	}
@@ -1111,31 +1115,31 @@
 	}
 	"Benera Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"An expidonsan with a shotgun."
 	}
 	"Pental Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"a lightsaber, its dangerous."
 	}
 	"Defanda Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"A heavy tank, heals all allied around itself when hitting an enemy."
 	}
 	"Selfam Ire Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"Gains high speeds upon getting close to an enemy."
 	}
 	"Vaus Magica Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"Grants a shield to all allied around it."
 	}
 	"Pistoleer Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"A easily dodgeable laser, but not so easily dodgeable with everything else going on."
 	}
 	"Diversionistico Desc"
 	{
-		"en" 		"NEED DESC"
+		"en" 		"An enemy that comes from time to time, Will try to backstab you. (Backstabbing can be silenced)"
 	}
 	"Adiantum Desc"
 	{
@@ -1151,14 +1155,94 @@
 	}
 	"Heavy Punuel Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
 	}
 	"Seargent Ideal Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"A seargent who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
 	}
 	"VIP Building, The Objective Desc"
 	{
 		"en"	"Tower defense objective, defend it, if it dies you lose!"
+	}
+	"Rifal Manu Desc"
+	{
+		"en"	"A rifle holder, it deals high ranged damage."
+	}
+	"Siccerino Desc"
+	{
+		"en"	"A trained pental."
+	}
+	"Soldine Prototype Desc"
+	{
+		"en"	"A prototype made by sensal on the way to you.\nShoots rockets slowly."
+	}
+	"Soldine Desc"
+	{
+		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump (can be silenced)\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
+	}
+	"Protecta Desc"
+	{
+		"en"	"A better defenda, Altough on death will also heal allies (can be silenced)"
+	}
+	"Sniponeer Desc"
+	{
+		"en"	"A far ranged and better version of the pistoleers' their delay upon hurting is also less."
+	}
+	"Ega Bunar Desc"
+	{
+		"en"	"An enemy with heavy armor, although when it breaks they lose all their speed.\nMelee deals 2x as much damage to the armor."
+	}
+	"Enega Kapus Desc"
+	{
+		"en"	"A cyborg with a heavy shield that destoys most projectiles and bullets and has heavy ranged resistance.\n(once silenced, the shield breaks and never returns)"
+	}
+	"Captino Agentus Desc"
+	{
+		"en"	"A captain of the scouting party, he teleports and backstabs, once teleporting he will call reinforcements inform of diversionisticos.\n(Backstab can be silenced)"
+	}
+	"Sensal Desc"
+	{
+		"en"	"The leader of the scouting group and a friend of silvester and goggles, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using some abilities.\nMost of his group targetting attacks go onto the people with the highest health.\n(silencing removes his melee making you unable to air controll.)"
+	}
+	"Dual Rea Desc"
+	{
+		"en"	"an elite version of the pentals."
+	}
+	"Guardus Desc"
+	{
+		"en"	"A robotic giant with the same abiltiies as the protecta."
+	}
+	"Vaus Techicus Desc"
+	{
+		"en"	"A better version of the vaus magica's, grants more shield stacks."
+	}
+	"Minigun Assisa Desc"
+	{
+		"en"	"A minigun maniac, he will shred anything."
+	}
+	"Ignitus Desc"
+	{
+		"en"	"A giant that ignites upon attacking."
+	}
+	"Helena Desc"
+	{
+		"en"	"A field medic that enrages when its patient dies, or you get too close to it."
+	}
+	"Erasus Desc"
+	{
+		"en"	"The best of the best of pantals."
+	}
+	"Giant Tankus Desc"
+	{
+		"en"	"A aboslute giant of a tank."
+	}
+	"Anfuhrer Eisenhard Desc"
+	{
+		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health, takes 50%% more dmg from the back, once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 2x as much damage to the armor."
+	}
+	"Speedus Adivus Desc"
+	{
+		"en"	"A high speed saber-ist."
 	}
 }
