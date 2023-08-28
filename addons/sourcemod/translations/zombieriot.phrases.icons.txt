@@ -23,6 +23,10 @@
 		"en" 		"The Atlantean and great leader Arkantos arrived."
 		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
 	}
+	"Sensal Arrived"
+	{
+		"en" 		"The Expidonsan Sensal reaps."
+	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."

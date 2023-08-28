@@ -115,7 +115,7 @@ methodmap HeavyPunuel < CClotBody
 	
 	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "1500", ally, false, true));
+		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1500", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_HEAVYPUNUEL;
 		i_NpcWeight[npc.index] = 1;

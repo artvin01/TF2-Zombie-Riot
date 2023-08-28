@@ -1749,4 +1749,20 @@
 	{
 		"en"	"Sensal"
 	}
+	"Dual Rea"
+	{
+		"en"	"Dual Rea"
+	}
+	"Guardus"
+	{
+		"en"	"Guardus"
+	}
+	"Vaus Techicus"
+	{
+		"en"	"Vaus Techicus"
+	}
+	"Minigun Assisa"
+	{
+		"en"	"Minigun Assisa"
+	}
 }

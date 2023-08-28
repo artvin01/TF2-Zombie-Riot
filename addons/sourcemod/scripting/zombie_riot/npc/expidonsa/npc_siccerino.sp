@@ -31,10 +31,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/neon_sign_hit_01.wav",
-	"weapons/neon_sign_hit_02.wav",
-	"weapons/neon_sign_hit_03.wav",
-	"weapons/neon_sign_hit_04.wav"
+	"replay/snip.wav",
 };
 
 void Siccerino_OnMapStart_NPC()

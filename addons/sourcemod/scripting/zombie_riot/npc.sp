@@ -362,7 +362,11 @@ enum
 	EXPIDONSA_EGABUNAR				= 315,
 	EXPIDONSA_ENEGAKAPUS			= 316,
 	EXPIDONSA_CAPTINOAGENTUS		= 317,
-	RAIDMODE_EXPIDONSA_SENSAL		= 318
+	RAIDMODE_EXPIDONSA_SENSAL		= 318,
+	EXPIDONSA_DUALREA				= 319,
+	EXPIDONSA_GUARDUS				= 320,
+	EXPIDONSA_VAUSTECHICUS			= 321,
+	EXPIDONSA_MINIGUNASSISA			= 322
 }
 
 public const char NPC_Names[][] =
@@ -707,7 +711,11 @@ public const char NPC_Names[][] =
 	"Ega Bunar",
 	"Enega Kapus",
 	"Captino Agentus",
-	"Sensal"
+	"Sensal",
+	"Dual Rea",
+	"Guardus",
+	"Vaus Techicus",
+	"Minigun Assisa"
 };
 // See items.sp for IDs to names
 public const int NPCCategory[] =
@@ -1056,7 +1064,11 @@ public const int NPCCategory[] =
 	-1,	// EXPIDONSA_EGABUNAR					= 315,
 	-1,	// EXPIDONSA_ENEGAKAPUS					= 316,
 	-1, // EXPIDONSA_CAPTINOAGENTUS				= 317,
-	-1, // RAIDMODE_EXPIDONSA_SENSAL			= 318
+	-1, // RAIDMODE_EXPIDONSA_SENSAL			= 318,
+	-1, // EXPIDONSA_DUALREA					= 319,
+	-1, // EXPIDONSA_GUARDUS					= 320,
+	-1, // EXPIDONSA_VAUSTECHICUS				= 321,
+	-1,	// EXPIDONSA_MINIGUNASSISA				= 322
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1399,7 +1411,11 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_ega_bunar",
 	"npc_enegakapus",
 	"npc_captino_agentus",
-	"npc_sensal"
+	"npc_sensal",
+	"npc_dualrea",
+	"npc_guardus",
+	"npc_vaus_techicus",
+	"npc_minigun_assisa"
 };
 
 void NPC_MapStart()
@@ -1631,6 +1647,10 @@ void NPC_MapStart()
 	Protecta_OnMapStart_NPC();
 //wave 31 - 45
 	CaptinoAgentus_OnMapStart_NPC();
+	DualRea_OnMapStart_NPC();
+	Guardus_OnMapStart_NPC();
+	VausTechicus_OnMapStart_NPC();
+	MinigunAssisa_OnMapStart_NPC();
 
 	
 	//Alt Barracks
@@ -2556,6 +2576,18 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case RAIDMODE_EXPIDONSA_SENSAL:
 			entity = Sensal(client, vecPos, vecAng, ally);
 
+		case EXPIDONSA_DUALREA:
+			entity = DualRea(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_GUARDUS:
+			entity = Guardus(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_VAUSTECHICUS:
+			entity = VausTechicus(client, vecPos, vecAng, ally);
+
+		case EXPIDONSA_MINIGUNASSISA:
+			entity = MinigunAssisa(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -3453,6 +3485,18 @@ public void NPCDeath(int entity)
 		case RAIDMODE_EXPIDONSA_SENSAL:
 			Sensal_NPCDeath(entity);
 
+		case EXPIDONSA_DUALREA:
+			DualRea_NPCDeath(entity);
+
+		case EXPIDONSA_GUARDUS:
+			Guardus_NPCDeath(entity);
+
+		case EXPIDONSA_VAUSTECHICUS:
+			VausTechicus_NPCDeath(entity);
+
+		case EXPIDONSA_MINIGUNASSISA:
+			MinigunAssisa_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -4265,6 +4309,17 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		case RAIDMODE_EXPIDONSA_SENSAL:
 			Sensal_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
+		case EXPIDONSA_DUALREA:
+			DualRea_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_GUARDUS:
+			Guardus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_VAUSTECHICUS:
+			VausTechicus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case EXPIDONSA_MINIGUNASSISA:
+			MinigunAssisa_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
@@ -4589,7 +4644,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_enegakapus.sp"
 #include "zombie_riot/npc/expidonsa/npc_ega_bunar.sp"
 #include "zombie_riot/npc/expidonsa/npc_protecta.sp"
+
 #include "zombie_riot/npc/expidonsa/npc_captino_agentus.sp"
+#include "zombie_riot/npc/expidonsa/npc_dualrea.sp"
+#include "zombie_riot/npc/expidonsa/npc_guardus.sp"
+#include "zombie_riot/npc/expidonsa/npc_vaus_techicus.sp"
+#include "zombie_riot/npc/expidonsa/npc_minigun_assisa.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_sensal.sp"
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"

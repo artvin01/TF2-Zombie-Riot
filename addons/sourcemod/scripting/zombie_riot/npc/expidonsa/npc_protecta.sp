@@ -87,7 +87,7 @@ methodmap Protecta < CClotBody
 	
 	public Protecta(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Protecta npc = view_as<Protecta>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "4500", ally));
+		Protecta npc = view_as<Protecta>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "2500", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_PROTECTA;
 		i_NpcWeight[npc.index] = 1;
@@ -370,7 +370,7 @@ void ProtectaAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			ProtectaAllyHealInternal(victim, 2500.0);
+			ProtectaAllyHealInternal(victim, 1000.0);
 		}
 	}
 }

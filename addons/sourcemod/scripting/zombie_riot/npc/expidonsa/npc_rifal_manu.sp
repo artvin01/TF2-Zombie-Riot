@@ -72,7 +72,7 @@ methodmap RifalManu < CClotBody
 
 	public RifalManu(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.1", "1000", ally));
+		RifalManu npc = view_as<RifalManu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1000", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_RIFALMANU;
 		i_NpcWeight[npc.index] = 1;

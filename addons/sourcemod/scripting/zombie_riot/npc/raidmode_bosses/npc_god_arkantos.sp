@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool BlockLoseSay;
 
 static const char g_DeathSounds[][] = {
 	"vo/npc/male01/no01.wav",
@@ -327,6 +328,8 @@ public void GodArkantos_ClotThink(int iNPC)
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		SDKUnhook(npc.index, SDKHook_Think, GodArkantos_ClotThink);
+		npc.m_bDissapearOnDeath = true;
+		BlockLoseSay = true;
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -833,28 +836,31 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 public void GodArkantos_NPCDeath(int entity)
 {
 	GodArkantos npc = view_as<GodArkantos>(entity);
-	if(!npc.m_bDissapearOnDeath)
+	if(!BlockLoseSay)
 	{
-		npc.PlayDeathSound();
-	}
-	
-	switch(GetRandomInt(0,3))
-	{
-		case 0:
+		if(!npc.m_bDissapearOnDeath)
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: I have failed Atlantis...");
+			npc.PlayDeathSound();
 		}
-		case 1:
+		
+		switch(GetRandomInt(0,3))
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: How was my army defeated..?");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know what you are doing!!");
-		}
-		case 3:
-		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: We should be fighting together, not against eachother, the {blue}sea{default} will be your doom...");
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: I have failed Atlantis...");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: How was my army defeated..?");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know what you are doing!!");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: We should be fighting together, not against eachother, the {blue}sea{default} will be your doom...");
+			}
 		}
 	}
 

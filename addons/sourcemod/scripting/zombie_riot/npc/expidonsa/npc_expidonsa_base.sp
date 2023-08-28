@@ -45,29 +45,36 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage)
 void VausMagicaGiveShield(int entity, int amount)
 {
 	i_ExpidonsaShieldCapacity[entity] += amount;
-	if(i_ExpidonsaShieldCapacity[entity] >= 10)
+	if(i_ExpidonsaShieldCapacity[entity] >= 50)
 	{
-		i_ExpidonsaShieldCapacity[entity] = 10;
+		i_ExpidonsaShieldCapacity[entity] = 50;
 	}
 	int alpha = i_ExpidonsaShieldCapacity[entity];
+	alpha = alpha * 10;
+	if(alpha > 255)
+	{
+		alpha = 255;
+	}
 	if(IsValidEntity(i_Expidonsa_ShieldEffect[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_Expidonsa_ShieldEffect[entity]);
 		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(Shield, 50, 60, 240, alpha * 25);
+		SetEntityRenderColor(Shield, 255, 255, 255, alpha);
 		return;
 	}
 
 	CClotBody npc = view_as<CClotBody>(entity);
 	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[entity])
-		SetVariantString("1.5");
+		SetVariantString("1.35");
 	else
 		SetVariantString("1.0");
 
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(Shield, 50, 60, 240, i_ExpidonsaShieldCapacity[entity] * 25);
+	
+	SetEntityRenderColor(Shield, 255, 255, 255, alpha);
+	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 
 	i_Expidonsa_ShieldEffect[entity] = EntIndexToEntRef(Shield);
 }

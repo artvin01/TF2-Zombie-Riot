@@ -1,6 +1,5 @@
 static int RMR_CurrentHomingTarget[MAXENTITIES];
 static int RMR_RocketOwner[MAXENTITIES];
-static float RWI_HomeAngle[MAXENTITIES];
 static float RMR_HomingPerSecond[MAXENTITIES];
 static float RWI_LockOnAngle[MAXENTITIES];
 static bool RWI_LockOnlyOnce[MAXENTITIES];
@@ -12,17 +11,20 @@ static float RWI_RocketRotation[MAXENTITIES][3];
 
 //Credits: Me (artvin) for rewriting it abit so its easier to read
 // Sarysa (sarysa pub 1 plugin)
-void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, float homingaSec, float HomeAngle, bool LockOnlyOnce, bool changeAngles, float AnglesInitiate[3], int initialTarget = -1)
+void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, float homingaSec, bool LockOnlyOnce, bool changeAngles, float AnglesInitiate[3], int initialTarget = -1)
 {
 	RMR_RocketOwner[projectile] = EntIndexToEntRef(owner);
-	RWI_HomeAngle[projectile] = HomeAngle; 			//whats the max homing im allowed to do 
 	RMR_HomingPerSecond[projectile] = homingaSec; 	//whats the homingpersec
 	RWI_LockOnAngle[projectile] = lockonAngleMax;	//at what point do i lose my Target if out of my angle
 	RWI_LockOnlyOnce[projectile] = LockOnlyOnce; 	//Incase we do not want to refind a Target to home onto
 	RWI_WasLockedOnce[projectile] = false;
 	RMR_CurrentHomingTarget[projectile] = initialTarget;
 	RWI_AlterRocketActualAngle[projectile] = changeAngles;
-	RWI_RocketRotation[projectile] = AnglesInitiate;
+
+	RWI_RocketRotation[projectile][0] = AnglesInitiate[0];
+	RWI_RocketRotation[projectile][1] = AnglesInitiate[1];
+	RWI_RocketRotation[projectile][2] = AnglesInitiate[2];
+
 	float vecVelocityCurrent[3];
 	GetEntPropVector(projectile, Prop_Send, "m_vInitialVelocity", vecVelocityCurrent);
 	RWI_RocketSpeed[projectile] = getLinearVelocity(vecVelocityCurrent);
@@ -52,14 +54,14 @@ public Action Projectile_NonPerfectHoming(Handle timer, int ref)
 		{
 			if(HomingProjectile_IsVisible(entity, RMR_CurrentHomingTarget[entity]))
 			{
-				HomingProjectile_TurnToTarget_NonPerfect(entity, RMR_CurrentHomingTarget[entity]);
-				return Plugin_Continue;
-			}
-			else
-			{
-				RMR_CurrentHomingTarget[entity] = -1;
+				if(HomingProjectile_ValidTargetCheck(entity, RMR_CurrentHomingTarget[entity]))
+				{
+					HomingProjectile_TurnToTarget_NonPerfect(entity, RMR_CurrentHomingTarget[entity]);
+					return Plugin_Continue;
+				}
 			}
 		}
+		RMR_CurrentHomingTarget[entity] = -1;
 
 		//We already lost our homing Target AND we made it so we cant get another, kill the homing.
 		if(RWI_LockOnlyOnce[entity] && RWI_WasLockedOnce[entity])
@@ -75,9 +77,12 @@ public Action Projectile_NonPerfectHoming(Handle timer, int ref)
 			{
 				if(HomingProjectile_IsVisible(entity, Closest))
 				{
-					RMR_CurrentHomingTarget[entity] = Closest;
-					RWI_WasLockedOnce[entity] = true;
-					HomingProjectile_TurnToTarget_NonPerfect(entity, Closest);
+					if(HomingProjectile_ValidTargetCheck(entity, Closest))
+					{
+						RMR_CurrentHomingTarget[entity] = Closest;
+						RWI_WasLockedOnce[entity] = true;
+						HomingProjectile_TurnToTarget_NonPerfect(entity, Closest);
+					}
 				}
 				return Plugin_Continue;
 			}
@@ -97,78 +102,31 @@ bool HomingProjectile_IsVisible(int projectile, int Target)
 	{
 		return false;
 	}
-	static float ang3[3];
-	
-	float ang_Look[3];
-	ang_Look = RWI_RocketRotation[projectile];
-
-	float pos1[3];
-	float pos2[3];
-	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", pos2);
-	pos1 = WorldSpaceCenter(Target);
-	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
-
-	// fix all angles
-	ang3[0] = fixAngle(ang3[0]);
-	ang3[1] = fixAngle(ang3[1]);
-
-	// verify angle validity
-	if(!(fabs(ang_Look[0] - ang3[0]) <= RWI_LockOnAngle[projectile] ||
-	(fabs(ang_Look[0] - ang3[0]) >= (360.0-RWI_LockOnAngle[projectile]))))
-		return false;
-
-
-	if(!(fabs(ang_Look[1] - ang3[1]) <= RWI_LockOnAngle[projectile] ||
-	(fabs(ang_Look[1] - ang3[1]) >= (360.0-RWI_LockOnAngle[projectile]))))
-		return false;
-
-
-	//they are still in my respected boundry.
 	return true;
 }
 
 void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 {
-	float maxAngleDeviation = RMR_HomingPerSecond[projectile];
-
 	static float rocketAngle[3];
 
-	rocketAngle = RWI_RocketRotation[projectile];
+	rocketAngle[0] = RWI_RocketRotation[projectile][0];
+	rocketAngle[1] = RWI_RocketRotation[projectile][1];
+	rocketAngle[2] = RWI_RocketRotation[projectile][2];
+
 	static float tmpAngles[3];
 	static float rocketOrigin[3];
 	GetEntPropVector(projectile, Prop_Send, "m_vecOrigin", rocketOrigin);
 
 	float pos1[3];
 	pos1 = WorldSpaceCenter(Target);
-	GetVectorAnglesTwoPoints(rocketOrigin, pos1, tmpAngles);
-
-	for (int i = 0; i < 2; i++)
-	{
-		if (fabs(rocketAngle[i] - tmpAngles[i]) <= RWI_HomeAngle[projectile])
-		{
-			if (rocketAngle[i] - tmpAngles[i] < 0.0)
-				rocketAngle[i] += fmin(maxAngleDeviation, tmpAngles[i] - rocketAngle[i]);
-			else
-			rocketAngle[i] -= fmin(maxAngleDeviation, rocketAngle[i] - tmpAngles[i]);
-		}
-		else // it wrapped around
-		{
-			float tmpRocketAngle = rocketAngle[i];
-
-			if (rocketAngle[i] - tmpAngles[i] < 0.0)
-				tmpRocketAngle += 360.0;
-			else
-				tmpRocketAngle -= 360.0;
-
-			if (tmpRocketAngle - tmpAngles[i] < 0.0)
-				rocketAngle[i] += fmin(maxAngleDeviation, tmpAngles[i] - tmpRocketAngle);
-			else
-				rocketAngle[i] -= fmin(maxAngleDeviation, tmpRocketAngle - tmpAngles[i]);
-			}
-
-		rocketAngle[i] = fixAngle(rocketAngle[i]);
-	}
-	// now use the old velocity and tweak it to match the int angles
+	GetRayAngles(rocketOrigin, pos1, tmpAngles);
+	
+	// Thanks to mikusch for pointing out this function to use instead
+	// we had a simular function but i forgot that it existed before
+	// https://github.com/Mikusch/ChaosModTF2/pull/4/files
+	rocketAngle[0] = ApproachAngle(tmpAngles[0], rocketAngle[0], RMR_HomingPerSecond[projectile]);
+	rocketAngle[1] = ApproachAngle(tmpAngles[1], rocketAngle[1], RMR_HomingPerSecond[projectile]);
+	
 	float vecVelocity[3];
 	GetAngleVectors(rocketAngle, vecVelocity, NULL_VECTOR, NULL_VECTOR);
 	
@@ -176,9 +134,11 @@ void HomingProjectile_TurnToTarget_NonPerfect(int projectile, int Target)
 	vecVelocity[1] *= RWI_RocketSpeed[projectile];
 	vecVelocity[2] *= RWI_RocketSpeed[projectile];
 
-	RWI_RocketRotation[projectile] = rocketAngle;
+	RWI_RocketRotation[projectile][0] = rocketAngle[0];
+	RWI_RocketRotation[projectile][1] = rocketAngle[1];
+	RWI_RocketRotation[projectile][2] = rocketAngle[2];
 
-	// apply both changes
+	// Apply only both if we want to, angle doesnt matter mostly
 	if(RWI_AlterRocketActualAngle[projectile])
 		TeleportEntity(projectile, NULL_VECTOR, rocketAngle, vecVelocity);
 	else
@@ -190,7 +150,10 @@ bool HomingProjectile_ValidTargetCheck(int projectile, int Target)
 	static float ang3[3];
 	
 	float ang_Look[3];
-	ang_Look = RWI_RocketRotation[projectile];
+
+	ang_Look[0] = RWI_RocketRotation[projectile][0];
+	ang_Look[1] = RWI_RocketRotation[projectile][1];
+	ang_Look[2] = RWI_RocketRotation[projectile][2];
 
 	float pos1[3];
 	float pos2[3];
@@ -205,11 +168,15 @@ bool HomingProjectile_ValidTargetCheck(int projectile, int Target)
 	// verify angle validity
 	if(!(fabs(ang_Look[0] - ang3[0]) <= RWI_LockOnAngle[projectile] ||
 	(fabs(ang_Look[0] - ang3[0]) >= (360.0-RWI_LockOnAngle[projectile]))))
+	{
 		return false;
+	}
 
 	if(!(fabs(ang_Look[1] - ang3[1]) <= RWI_LockOnAngle[projectile] ||
 	(fabs(ang_Look[1] - ang3[1]) >= (360.0-RWI_LockOnAngle[projectile]))))
+	{
 		return false;
+	}
 		
 	return true;
 }

@@ -29,7 +29,7 @@ public void Weapon_Fire_Wand(int client, int weapon, bool crit)
 		
 		delay_hud[client] = 0.0;
 			
-		float speed = 250.0;
+		float speed = 1100.0;
 		speed *= Attributes_Get(weapon, 103, 1.0);
 		
 		speed *= Attributes_Get(weapon, 104, 1.0);
@@ -42,22 +42,9 @@ public void Weapon_Fire_Wand(int client, int weapon, bool crit)
 	
 		time *= Attributes_Get(weapon, 102, 1.0);
 
-		time = 9.0;
-
 		EmitSoundToAll(SOUND_WAND_SHOT_FIRE, client, SNDCHAN_WEAPON, 65, _, 0.45, 135);
 		//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 4/*Default wand*/, weapon, "m_brazier_flame");
-
-		static float ang_Look[3];
-		GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
-		Initiate_HomingProjectile(projectile,
-			client,
-		 	90.0,			// float lockonAngleMax,
-		   	25.0,				//float homingaSec,
-		   	45.0,				// float HomeAngle,
-			false,				// bool LockOnlyOnce,
-			false,				// bool changeAngles,
-			ang_Look);// float AnglesInitiate[3]);
+		Wand_Projectile_Spawn(client, speed, time, damage, 4/*Default wand*/, weapon, "m_brazier_flame");
 	}
 	else
 	{

@@ -1758,7 +1758,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.SetPlaybackRate(1.0);
 		this.SetCycle(0.0);
 		this.ResetSequenceInfo();
-
+		this.m_iState = iSequence;
 	//	int layer = this.FindGestureLayerBySequence(iSequence);
 	//	if(layer != -1)
 	//	{
@@ -2297,7 +2297,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
 	
 			//Make it entirely invis. Shouldnt even render these 8 polygons.
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+			SetEntityRenderColor(entity, 255, 255, 255, 0);
 			
 			int particle = 0;
 	
@@ -4797,6 +4799,11 @@ public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
+//	static float FakeRotationFix[3];
+//	npc.FaceTowards(FakeRotationFix, 1.0);
+	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
+	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
+
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{

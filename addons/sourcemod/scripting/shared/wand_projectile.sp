@@ -69,6 +69,7 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+		SetEntPropVector(entity, Prop_Send, "m_angRotation", fAng); //set it so it can be used
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
 	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 		//make rockets visible on spawn.
