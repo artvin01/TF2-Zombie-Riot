@@ -223,8 +223,8 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 	if(IsValidEntity(entity))
 	{
 		fl_tornado_dmg[entity]=damage;
-		i_tornado_wep[entity]=weapon;
-		i_tornado_index[entity]=client;
+		i_tornado_wep[entity]=EntIndexToEntRef(weapon);
+		i_tornado_index[entity]=EntIndexToEntRef(client);
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
