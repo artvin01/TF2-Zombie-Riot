@@ -1596,11 +1596,25 @@ void Waves_Progress()
 		Renable_Powerups();
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
+		for (int target = 1; target <= MaxClients; target++)
+		{
+			if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+			{
+				Ammo_Count_Used[target] -= 1;
+			}
+		}
 	}
 	else if (Gave_Ammo_Supply > 2)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
+		for (int target = 1; target <= MaxClients; target++)
+		{
+			if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+			{
+				Ammo_Count_Used[target] -= 1;
+			}
+		}
 	}	
 	else
 	{

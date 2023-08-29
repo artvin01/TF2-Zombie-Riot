@@ -645,6 +645,11 @@
 		"nl"		"Druk het HERLADEN toets om hiermee interactie te hebben" 
 		"chi"       "按下 R 键与物品交互"
 	}
+	"Perk Machine Sickness"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"You right now feel sick from drinking too many perks and would vomit, try again in {1} seconds."
+	}
 	"Ammo Box Used"
 	{
 		"en"		"Someone used your ammo box, you gain +20 Credits!"
@@ -1074,8 +1079,7 @@
 	}
 	"Recycle Poire Recieved"
 	{
-		"en" 		"RECYCLE POIRÉ! 33%% More ammo from all non shop sources, and 50%% more max armor and armor gain."
-		"ru" 		"ПЕРЕРАБОТКА ПУАРЕ! На 33%% больше боеприпасов из всех источников (кроме магазина), и на 50% больше макс. брони и получаемой брони."
+		"en" 		"RECYCLE POIRÉ! 33%% More ammo from all non shop sources, and 50%% more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
 	}
 	"Nuke Activated"
 	{

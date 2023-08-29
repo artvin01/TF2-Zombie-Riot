@@ -205,6 +205,7 @@ static int Beam_Glow;
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
+static float Perk_Machine_Sickness[MAXTF2PLAYERS];
 
 void Building_MapStart()
 {
@@ -247,6 +248,7 @@ void Building_MapStart()
 	PrecacheSound("player/mannpower_invulnerable.wav");
 	Zero(f_VillageRingVectorCooldown);
 	Zero(f_VillageSavingResources);
+	Zero(Perk_Machine_Sickness);
 }
 
 //static int RebelTimerSpawnIn;
@@ -2457,6 +2459,15 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				}
 				case 5:
 				{
+					if(Perk_Machine_Sickness[client] > GetGameTime())
+					{
+						ClientCommand(client, "playgamesound items/medshotno1.wav");
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Perk Machine Sickness", Perk_Machine_Sickness[client] - GetGameTime());	
+					}
+					else
+					{
 						if(Is_Reload_Button)
 						{
 							i_MachineJustClickedOn[client] = EntIndexToEntRef(entity);
@@ -2498,7 +2509,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetDefaultHudPosition(client);
 							SetGlobalTransTarget(client);
 							ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Reload to Interact");				
-						}
+						}		
+					}
 				}
 				case 6:
 				{
@@ -4307,6 +4319,18 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
+	float pos1[3];
+	float pos2[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+	if(GetVectorDistance(pos1, pos2, true) > (200.0 * 200.0))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Too Far Away");		
+		return;	
+	}
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	Building_Collect_Cooldown[entity][client] = GetGameTime() + 40.0;
 	
@@ -4316,9 +4340,9 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	{
 		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
-			CashSpent[owner] -= 80;
-			Perk_Machine_money_limit[owner][client] += 2;
-			Resupplies_Supplied[owner] += 8;
+			CashSpent[owner] -= 40;
+			Perk_Machine_money_limit[owner][client] += 1;
+			Resupplies_Supplied[owner] += 4;
 			SetDefaultHudPosition(owner);
 			SetGlobalTransTarget(owner);
 			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
@@ -4334,7 +4358,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 
 	int particle = ParticleEffectAt(pos, "flamethrower_underwater", 1.0);
 	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
-
+	Perk_Machine_Sickness[client] = GetGameTime() + 2.0;
 	SetDefaultHudPosition(client, _, _, _, 5.0);
 	SetGlobalTransTarget(client);
 	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
