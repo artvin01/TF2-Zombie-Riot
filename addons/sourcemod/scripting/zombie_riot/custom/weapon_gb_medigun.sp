@@ -20,6 +20,7 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 		float damage = 75.0;
 
 		damage *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
+		damage *= Attributes_GetOnPlayer(owner, 8, true, true);
 
 		if(LastMann)	
 			damage *= 2.0;
