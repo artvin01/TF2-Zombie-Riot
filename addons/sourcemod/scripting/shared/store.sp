@@ -5237,7 +5237,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 		//DEADSHOT!
 		if(i_CurrentEquippedPerk[client] == 5)
-		{		
+		{	
+			Attributes_SetMulti(entity, 103, 1.2);
 			Attributes_SetMulti(entity, 106, 0.65);
 		}
 

@@ -1528,7 +1528,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	}
 	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
 	{
-		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.25);
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
 	if(Multi != 1.0)
 	{

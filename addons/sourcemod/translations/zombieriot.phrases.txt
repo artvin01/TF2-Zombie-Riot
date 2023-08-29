@@ -1062,12 +1062,7 @@
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage"
-		"ru" 		"СНАЙПЕР-ЛАЙМ! 1.35x точность оружия и 1.25x доп. урона от выстрела в голову и удара в спину"
-		"de"		"TODESSCHUSS DAIQUIRI! 1.35-fache Waffengenauigkeit und 1.25-facher zusätzlicher Kopfschussschaden und Rücken messerstich schaden"
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão com armas e 1.25x Dano extra com tiros na cabeça e facas nas costas"
-		"nl"		"DOOD SCHOT DAIQUIRI! 1.35 Wapen accuraatheid en 1.25x Meer Hoofdschotschade en Rugstekingschade"
-		"chi" 		"死亡宣告:射击精准度提升，爆头、背刺伤害提升"
+		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 	}
 	"Widows Wine Recieved"
 	{
@@ -1079,8 +1074,8 @@
 	}
 	"Recycle Poire Recieved"
 	{
-		"en" 		"RECYCLE POIRÉ! 25%% More ammo from all non shop sources, and 50%% more max armor and armor gain."
-		"ru" 		"ПЕРЕРАБОТКА ПУАРЕ! На 25%% больше боеприпасов из всех источников (кроме магазина), и на 50% больше макс. брони и получаемой брони."
+		"en" 		"RECYCLE POIRÉ! 33%% More ammo from all non shop sources, and 50%% more max armor and armor gain."
+		"ru" 		"ПЕРЕРАБОТКА ПУАРЕ! На 33%% больше боеприпасов из всех источников (кроме магазина), и на 50% больше макс. брони и получаемой брони."
 	}
 	"Nuke Activated"
 	{

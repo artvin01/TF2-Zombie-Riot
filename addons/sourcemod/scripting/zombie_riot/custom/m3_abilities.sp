@@ -375,7 +375,6 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			npc.m_bThisEntityIgnored = true;
 			
 			float Healing_Amount = 10.0;
-			
 			Healing_Amount *= Attributes_GetOnPlayer(client, 8, true, true);
 			
 			f_HealDelay[entity] = GetGameTime() + 1.0;
@@ -386,7 +385,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 			DataPack pack;
 			CreateDataTimer(0.1, Timer_Detect_Player_Near_Healing_Grenade, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(EntIndexToEntRef(entity));
-			pack.WriteCell(Healing_Amount);	
+			pack.WriteFloat(Healing_Amount);	
 			pack.WriteCell(GetClientUserId(client));
 		}
 	}
@@ -409,7 +408,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
-	float Healing_Amount = pack.ReadCell();
+	float Healing_Amount = pack.ReadFloat();
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
@@ -457,9 +456,9 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 							}
 							else
 							{
-								if(f_TimeUntillNormalHeal[target] < GetGameTime())
+								if(f_TimeUntillNormalHeal[target] > GetGameTime())
 								{
-									Healing_Amount *= 0.25;
+									Healing_Amount *= 0.5;
 								}
 								if(Healing_Amount < 10.0)
 								{
@@ -888,7 +887,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
-						GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", client_pos);
+						GetEntPropVector(entity_close, Prop_Data, "m_vecOrigin", client_pos);
 						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
 						{
 							Repaired_Building = true;
@@ -906,7 +905,6 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 								int HealthAfter = GetEntProp(entity_close, Prop_Send, "m_iHealth");
 
 								CurrentMetal -= (HealthAfter - HealthBefore) / 5;
-
 							}
 							Resistance_for_building_High[entity_close] = GetGameTime() + 1.1; 
 						}

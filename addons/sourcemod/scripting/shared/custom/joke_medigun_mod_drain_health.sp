@@ -388,25 +388,26 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				
 				if(team)
 				{
-					int healing_Amount;
-					int how_high_is_attribute_medigun = RoundToCeil(Attributes_Get(medigun, 95, 1.0));
+					float healing_Amount;
+					float how_high_is_attribute_medigun = Attributes_Get(medigun, 95, 1.0);
+					how_high_is_attribute_medigun *= Attributes_GetOnPlayer(owner, 95, true, true);
 					
-					if (how_high_is_attribute_medigun == 0)
-						how_high_is_attribute_medigun = 1;
+					if (how_high_is_attribute_medigun == 0.0)
+						how_high_is_attribute_medigun = 1.0;
 					
 					if(medigun_mode == 0 || medigun_mode == 2)
 					{
 						if(What_Uber_Type == 0)
-							healing_Amount = 36 * how_high_is_attribute_medigun;
+							healing_Amount = 36.0 * how_high_is_attribute_medigun;
 						else if(What_Uber_Type == 2)
-							healing_Amount = 15 * how_high_is_attribute_medigun;
+							healing_Amount = 15.0 * how_high_is_attribute_medigun;
 						else if  (medigun_mode == 2)
-							healing_Amount = 6 * how_high_is_attribute_medigun;
+							healing_Amount = 6.0 * how_high_is_attribute_medigun;
 						else if  (medigun_mode == 0)
-							healing_Amount = 12 * how_high_is_attribute_medigun;
+							healing_Amount = 12.0 * how_high_is_attribute_medigun;
 					}
 					else
-						healing_Amount = 5 * how_high_is_attribute_medigun;
+						healing_Amount = 5.0 * how_high_is_attribute_medigun;
 						
 						
 					if(medigun_mode == 1)
@@ -460,25 +461,26 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 					*/
-						
+					
+					int i_HealingAmount = RoundToCeil(healing_Amount);
 					int flHealth = GetEntProp(healTarget, Prop_Send, "m_iHealth");
-					int Healing_Value = healing_Amount;
-					int newHealth = flHealth + healing_Amount;
+					int Healing_Value = i_HealingAmount;
+					int newHealth = flHealth + i_HealingAmount;
 					
 					int max_health = GetEntProp(healTarget, Prop_Send, "m_iMaxHealth");
 					
 					if(newHealth >= max_health)
 					{
-						healing_Amount -= newHealth - max_health;
+						i_HealingAmount -= newHealth - max_health;
 						newHealth = max_health;
 					}
 					
-					int Remove_Ammo = healing_Amount / 3;
+					int Remove_Ammo = i_HealingAmount / 3;
 					
 				//	SetEntProp(healTarget, Prop_Send, "m_iHealth", newHealth);
 					if  (medigun_mode == 2)
 					{
-						Remove_Ammo = healing_Amount / 6;
+						Remove_Ammo = i_HealingAmount / 6;
 					}
 					
 					if(Remove_Ammo < 0)
