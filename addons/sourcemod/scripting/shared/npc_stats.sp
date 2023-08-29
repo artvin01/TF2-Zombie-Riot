@@ -6840,15 +6840,15 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 	AcceptEntityInput(iBeam, "Amplitude");
 	AcceptEntityInput(iBeam, "TurnOn");
 
-//	SetVariantInt(0);
-//	AcceptEntityInput(iBeam, "TouchType");
+	SetVariantInt(0);
+	AcceptEntityInput(iBeam, "TouchType");
 	//its delayed by a frame to avoid it not rendering at all.
-	RequestFrames(ApplyBeamThinkRemoval, 15, EntIndexToEntRef(iBeam));
+//	RequestFrames(ApplyBeamThinkRemoval, 15, EntIndexToEntRef(iBeam));
 
 	return iBeam;
 }
 
-void ApplyBeamThinkRemoval(int ref)
+stock void ApplyBeamThinkRemoval(int ref)
 {
 	int EntityBeam = EntRefToEntIndex(ref);
 	if(IsValidEntity(EntityBeam))

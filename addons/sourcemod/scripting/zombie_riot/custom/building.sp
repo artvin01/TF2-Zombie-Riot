@@ -4321,8 +4321,16 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 {
 	float pos1[3];
 	float pos2[3];
+	int MountedBuilding = EntRefToEntIndex(Building_Mounted[owner]); 
+	if(MountedBuilding == entity)
+	{
+		GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", pos2);
+	}
+	else
+	{
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+	}
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
 	if(GetVectorDistance(pos1, pos2, true) > (200.0 * 200.0))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
