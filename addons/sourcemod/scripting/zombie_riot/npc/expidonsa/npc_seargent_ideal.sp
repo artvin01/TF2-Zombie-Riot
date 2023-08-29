@@ -195,7 +195,7 @@ methodmap SeargentIdeal < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		if(npc.g_TimesSummoned != 0)
+		if(npc.g_TimesSummoned == 0)
 		{
 			npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
 			SetVariantString("2.5");

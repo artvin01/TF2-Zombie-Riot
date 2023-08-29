@@ -658,13 +658,12 @@ public void GearTesting(int client)
 public Action QuantumActivate(Handle cut_timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
-	float startPosition[3];
-	GetClientAbsOrigin(client, startPosition);
-
 	if(IsValidClient(client))
 	{
 		if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 		{
+			float startPosition[3];
+			GetClientAbsOrigin(client, startPosition);
 			i_HealthBeforeSuit[client] = GetClientHealth(client);
 
 			i_ClientHasCustomGearEquipped[client] = true;
@@ -720,9 +719,7 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 
 		i_HealthBeforeSuit[client] = 0;
 	//	SetEntityMoveType(client, MOVETYPE_WALK);
-
-		Store_RemoveSpecificItem(client, "Quantum Repeater");
-		Store_RemoveSpecificItem(client, "Quantum Nanosaber");
+		UnequipQuantumSet(client);
 		//Remove both just in case.
 		
 		TF2_RegeneratePlayer(client);
@@ -745,6 +742,11 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 	return Plugin_Handled;
 }
 
+void UnequipQuantumSet(int client)
+{
+	Store_RemoveSpecificItem(client, "Quantum Repeater");
+	Store_RemoveSpecificItem(client, "Quantum Nanosaber");
+}
 
 public float GetAbilityCooldownM3(int client)
 {
