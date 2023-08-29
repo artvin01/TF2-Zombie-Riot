@@ -2657,6 +2657,7 @@ bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage,
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TEUTON_DEAD)
 		{
+			ExtraDamageDealt *= 0.5;
 			damage *= ExtraDamageDealt;
 		}
 	}
