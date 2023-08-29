@@ -111,7 +111,7 @@ methodmap Helena < CClotBody
 	}
 	public Helena(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Helena npc = view_as<Helena>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3500", ally));
+		Helena npc = view_as<Helena>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "5500", ally));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_HELENA;
 		i_NpcWeight[npc.index] = 1;
@@ -334,7 +334,7 @@ public void Helena_ClotThink(int iNPC)
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.m_bFUCKYOU_move_anim = true;
 			}
-			npc.m_flSpeed = 400.0;
+			npc.m_flSpeed = 450.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		}
@@ -402,9 +402,9 @@ public void Helena_ClotThink(int iNPC)
 								{
 									
 									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 120.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 550.0, DMG_CLUB, -1, _, vecHit);
 									
 									
 									

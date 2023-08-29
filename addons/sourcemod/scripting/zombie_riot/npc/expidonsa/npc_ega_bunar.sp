@@ -187,8 +187,8 @@ public void EgaBunar_ClotThink(int iNPC)
 	{
 		npc.m_bArmorGiven = true;
 		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 2.0;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 2.0;
+		npc.m_flArmorCount = float(flMaxHealth) * 1.25;
+		npc.m_flArmorCountMax = float(flMaxHealth) * 1.25;
 	}
 	if(npc.m_flArmorCount > 0.0)
 	{

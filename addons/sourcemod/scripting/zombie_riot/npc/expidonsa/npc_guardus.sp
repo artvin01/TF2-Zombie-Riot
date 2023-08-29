@@ -377,7 +377,7 @@ void GuardusAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			GuardusAllyHealInternal(victim, 3500.0);
+			GuardusAllyHealInternal(victim, 1500.0);
 		}
 	}
 }

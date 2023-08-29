@@ -5,6 +5,7 @@
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_Expidonsa_ShieldEffect[MAXENTITIES];
+float f_Expidonsa_ShieldBroke[MAXENTITIES];
 
 void ExpidonsaRemoveEffects(int iNpc)
 {
@@ -21,6 +22,7 @@ void ExpidonsaRemoveEffects(int iNpc)
 
 void Expidonsa_SetToZero(int iNpc)
 {
+	f_Expidonsa_ShieldBroke[iNpc] = 0.0;
 	i_ExpidonsaShieldCapacity[iNpc] = 0;
 	VausMagicaRemoveShield(iNpc);
 }
@@ -34,6 +36,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage)
 		damage *= 0.25;
 		if(i_ExpidonsaShieldCapacity[victim] <= 0)
 		{
+			f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;
 			VausMagicaRemoveShield(victim);
 		}
 		else
@@ -46,12 +49,25 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int victim, float &damage)
 void VausMagicaGiveShield(int entity, int amount)
 {
 	i_ExpidonsaShieldCapacity[entity] += amount;
-	if(i_ExpidonsaShieldCapacity[entity] >= 50)
+	int MaxShieldCapacity = 5;
+	if(b_thisNpcIsABoss[entity])
 	{
-		i_ExpidonsaShieldCapacity[entity] = 50;
+		MaxShieldCapacity = 10;
+	}
+	else if(b_thisNpcIsARaid[entity])
+	{
+		MaxShieldCapacity = 999;
+	}
+	if(f_Expidonsa_ShieldBroke[entity] > GetGameTime() && MaxShieldCapacity < 999)
+	{
+		return; //do not give shield.
+	}
+	if(i_ExpidonsaShieldCapacity[entity] >= MaxShieldCapacity)
+	{
+		i_ExpidonsaShieldCapacity[entity] = MaxShieldCapacity;
 	}
 	int alpha = i_ExpidonsaShieldCapacity[entity];
-	alpha = alpha * 10;
+	alpha = alpha * 20;
 	if(alpha > 255)
 	{
 		alpha = 255;

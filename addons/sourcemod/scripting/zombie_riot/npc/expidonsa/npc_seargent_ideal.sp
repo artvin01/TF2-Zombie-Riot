@@ -42,7 +42,7 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 int SeargentIdeal_Alive;
-#define SEARGENT_IDEAL_RANGE 300.0
+#define SEARGENT_IDEAL_RANGE 250.0
 
 bool SeargentIdeal_Existant()
 {
