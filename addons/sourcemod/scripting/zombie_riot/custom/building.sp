@@ -3672,12 +3672,12 @@ public Action MortarFire(Handle timer, int client)
 			
 			float attack_speed;
 			float sentry_range;
-		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+
+			attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
 			
-			sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
+			sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 			
 			float AOE_range = 350.0 * sentry_range;
 			
@@ -3749,13 +3749,13 @@ static void Railgun_Boom(int client)
 
 		float attack_speed;
 
-		attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-		Strength = attack_speed * Strength * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+		Strength = attack_speed * Strength * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
 		
 		float sentry_range;
 			
-		sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
+		sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 					
 		float BEAM_CloseBuildingDPT = Strength;
 		float BEAM_FarBuildingDPT = Strength;
@@ -3899,13 +3899,13 @@ static void Railgun_Boom_Client(int client)
 		Strength *= 40.0;
 		float attack_speed;
 		
-		attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-		Strength = attack_speed * Strength * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+		Strength = attack_speed * Strength * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
 		
 		float sentry_range;
 			
-		sentry_range = Attributes_FindOnPlayerZR(client, 344, true, 1.0);			//Sentry Range bonus
+		sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 		
 		float BEAM_CloseBuildingDPT = Strength;
 		float BEAM_FarBuildingDPT = Strength;
