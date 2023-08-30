@@ -41,7 +41,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/boxing_gloves_hit4.wav",
 };
 
-int SeargentIdeal_Alive;
+int SeargentIdeal_Alive = 0;
 #define SEARGENT_IDEAL_RANGE 250.0
 
 bool SeargentIdeal_Existant()
@@ -211,7 +211,7 @@ methodmap SeargentIdeal < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		if(npc.g_TimesSummoned != 0)
+		if(npc.g_TimesSummoned == 0)
 		{
 			SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		}
@@ -385,11 +385,14 @@ Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &d
 {
 	if(i_NpcInternalId[victim] != EXPIDONSA_SEARGENTIDEAL)
 	{
-		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
-		if(npc.m_iGetSeargentProtector)
+		if(!f_TimeFrozenStill[victim])
 		{
-			SDKHooks_TakeDamage(npc.m_iGetSeargentProtector, attacker, inflictor, damage * 0.25, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
-			damage = 0.0;
+			SeargentIdeal npc = view_as<SeargentIdeal>(victim);
+			if(npc.m_iGetSeargentProtector)
+			{
+				SDKHooks_TakeDamage(npc.m_iGetSeargentProtector, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				damage = 0.0;
+			}
 		}
 	}
 	return Plugin_Continue;

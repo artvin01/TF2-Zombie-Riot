@@ -348,7 +348,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false, bool player_only = false)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -417,7 +417,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		}
 	}
 
-	if(team != 3)
+	if(team != 3 && !player_only)
 	{
 		for(int a; a < i_MaxcountNpc; a++)
 		{
@@ -454,7 +454,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		}
 	}
 
-	if(team != 2)
+	if(team != 2 && !player_only)
 	{
 		for(int a; a < i_MaxcountNpc_Allied; a++)
 		{

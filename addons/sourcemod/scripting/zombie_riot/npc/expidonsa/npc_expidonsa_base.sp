@@ -6,6 +6,7 @@ int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_Expidonsa_ShieldEffect[MAXENTITIES];
 float f_Expidonsa_ShieldBroke[MAXENTITIES];
+bool b_ExpidonsaWasAttackingNonPlayer;
 
 void ExpidonsaRemoveEffects(int iNpc)
 {

@@ -245,9 +245,9 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 45.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 3.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -257,6 +257,21 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 					// Hit sound
 					npc.PlayMeleeHitSound();
 					//on hit, we heal all allies around us
+					if(target <= MaxClients)
+					{
+						if (IsInvuln(target))
+						{
+							b_ExpidonsaWasAttackingNonPlayer = true;
+						}
+						else
+						{
+							b_ExpidonsaWasAttackingNonPlayer = false;
+						}
+					}
+					else
+					{
+						b_ExpidonsaWasAttackingNonPlayer = true;
+					}
 					Explode_Logic_Custom(0.0,
 					npc.index,
 					npc.index,
@@ -350,13 +365,15 @@ void DefandaAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			DefandaAllyHealInternal(victim, 150.0);
+			DefandaAllyHealInternal(victim, 100.0);
 		}
 	}
 }
 
 void DefandaAllyHealInternal(int victim, float heal)
 {
+	if(b_ExpidonsaWasAttackingNonPlayer)
+		heal *= 0.5;
 	HealEntityViaFloat(victim, heal, 1.0);
 	float ProjLoc[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);

@@ -40,6 +40,7 @@ static Handle SyncHudRaid;
 
 static Handle SyncHud;
 static char LastClassname[2049][64];
+static bool b_DoNotDisplayHurtHud[MAXENTITIES];
 //static float f_SpawnerCooldown[MAXENTITIES];
 /*
 void NPC_Spawn_ClearAll()
@@ -1236,6 +1237,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		WeaponWasValid = true;
 
 	float GameTime = GetGameTime();
+	b_DoNotDisplayHurtHud[victim] = false;
 
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)
@@ -1341,7 +1343,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			{
 				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 				if(damage == 0.0)
+				{
+					b_DoNotDisplayHurtHud[victim] = true;
 					return Plugin_Handled;
+				}
 			}
 #endif
 			if(attacker <= MaxClients)
@@ -1393,40 +1398,44 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
-	if(inflictor > 0 && inflictor <= MaxClients)
-	{
-		GiveRageOnDamage(inflictor, damage);
-		Calculate_And_Display_hp(inflictor, victim, damage, false);
-	}
-	else if(attacker > 0 && attacker <= MaxClients)
-	{
-		GiveRageOnDamage(attacker, damage);
-		Calculate_And_Display_hp(attacker, victim, damage, false);	
-	}
-	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
-
+	
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-
-	Event event = CreateEvent("npc_hurt");
-	if(event) 
+	if(damage != 0.0 && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
-		event.SetInt("entindex", victim);
-		event.SetInt("health", health);
-		event.SetInt("damageamount", RoundToFloor(damage));
-		event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
-
-		if(attacker > 0 && attacker <= MaxClients)
+		if(inflictor > 0 && inflictor <= MaxClients)
 		{
-			event.SetInt("attacker_player", GetClientUserId(attacker));
-			event.SetInt("weaponid", 0);
+			GiveRageOnDamage(inflictor, damage);
+			Calculate_And_Display_hp(inflictor, victim, damage, false);
 		}
-		else 
+		else if(attacker > 0 && attacker <= MaxClients)
 		{
-			event.SetInt("attacker_player", 0);
-			event.SetInt("weaponid", 0);
+			GiveRageOnDamage(attacker, damage);
+			Calculate_And_Display_hp(attacker, victim, damage, false);	
 		}
+		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 
-		event.Fire();
+
+		Event event = CreateEvent("npc_hurt");
+		if(event) 
+		{
+			event.SetInt("entindex", victim);
+			event.SetInt("health", health);
+			event.SetInt("damageamount", RoundToFloor(damage));
+			event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
+
+			if(attacker > 0 && attacker <= MaxClients)
+			{
+				event.SetInt("attacker_player", GetClientUserId(attacker));
+				event.SetInt("weaponid", 0);
+			}
+			else 
+			{
+				event.SetInt("attacker_player", 0);
+				event.SetInt("weaponid", 0);
+			}
+
+			event.Fire();
+		}
 	}
 
 	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.

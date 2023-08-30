@@ -11,6 +11,7 @@ static bool b_angered_twice[MAXENTITIES];
 static int i_SaidLineAlready[MAXENTITIES];
 static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -551,6 +552,14 @@ public void Sensal_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+	{
+		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+		{
+			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+		}					
+	}
 	
 	if(BlockLoseSay)
 		return;
@@ -767,15 +776,9 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 					if(target_traced > 0) 
 					{
 						float damage = 24.0;
-						float damage_rage = 28.0;
 						damage *= 1.15;
-						damage_rage *= 1.15;
 
-						if(!npc.Anger)
-							SDKHooks_TakeDamage(target_traced, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
-								
-						if(npc.Anger)
-							SDKHooks_TakeDamage(target_traced, npc.index, npc.index, damage_rage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);									
+						SDKHooks_TakeDamage(target_traced, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							
 						
 						// Hit particle
@@ -994,7 +997,7 @@ public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflic
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			b_RageAnimated[npc.index] = false;
-			RaidModeTime += 30.0;
+			RaidModeTime += 60.0;
 			npc.m_bisWalking = false;
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1192,8 +1195,8 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 		Initiate_HomingProjectile(Projectile,
 		 npc.index,
-		 	80.0,			// float lockonAngleMax,
-		   	13.0,				//float homingaSec,
+		 	70.0,			// float lockonAngleMax,
+		   	10.0,				//float homingaSec,
 			true,				// bool LockOnlyOnce,
 			false,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
@@ -1401,6 +1404,14 @@ bool SensalTransformation(Sensal npc)
 		
 			SetVariantInt(3);
 			AcceptEntityInput(npc.index, "SetBodyGroup");
+
+			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+			{
+				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+				{
+					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+				}				
+			}
 		}
 	}
 
@@ -1421,6 +1432,7 @@ bool SensalTransformation(Sensal npc)
 			npc.m_flSpeed = 330.0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;
+			RaidModeScaling *= 1.15;
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
@@ -1453,6 +1465,43 @@ bool SensalMassLaserAttack(Sensal npc)
 {
 	if(npc.m_flAttackHappens_2)
 	{
+		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+		int enemy_2[MAXTF2PLAYERS];
+		bool ClientTargeted[MAXTF2PLAYERS];
+		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
+		for(int i; i < sizeof(enemy_2); i++)
+		{
+			if(enemy_2[i])
+			{
+				ClientTargeted[enemy_2[i]] = true;
+				if(!IsValidEntity(i_LaserEntityIndex[enemy_2[i]]))
+				{
+					int red = 200;
+					int green = 200;
+					int blue = 200;
+					if(IsValidEntity(i_LaserEntityIndex[enemy_2[i]]))
+					{
+						RemoveEntity(i_LaserEntityIndex[enemy_2[i]]);
+					}
+
+					int laser;
+					
+					laser = ConnectWithBeam(npc.index, enemy_2[i], red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+			
+					i_LaserEntityIndex[enemy_2[i]] = EntIndexToEntRef(laser);
+				}
+			}
+		}
+		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
+		{
+			if(!ClientTargeted[client_clear])
+			{
+				if(IsValidEntity(i_LaserEntityIndex[client_clear]))
+				{
+					RemoveEntity(i_LaserEntityIndex[client_clear]);
+				}
+			}
+		}
 		if(npc.m_flAttackHappens_2 < GetGameTime(npc.index))
 		{
 			if(IsValidEntity(npc.m_iWearable1))
@@ -1474,10 +1523,16 @@ bool SensalMassLaserAttack(Sensal npc)
 			npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
 			npc.m_iChanged_WalkCycle = 0;
 			npc.m_flAttackHappens_2 = 0.0;	
+			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+			{
+				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
+				{
+					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
+				}				
+			}
 
-			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[16];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true);
+			int enemy[32];
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true);
 			bool foundEnemy = false;
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -1567,7 +1622,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
 		int enemy[16];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true);
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true);
 		bool Foundenemies = false;
 
 		for(int i; i < sizeof(enemy); i++)
@@ -1591,8 +1646,8 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 				Initiate_HomingProjectile(Projectile,
 				npc.index,
-					80.0,			// float lockonAngleMax,
-					13.0,				//float homingaSec,
+					70.0,			// float lockonAngleMax,
+					10.0,				//float homingaSec,
 					true,				// bool LockOnlyOnce,
 					false,				// bool changeAngles,
 					ang_Look,			
@@ -1751,8 +1806,8 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 120.0 * RaidModeScaling;
-	float FarDamage = 100.0 * RaidModeScaling;
+	float CloseDamage = 70.0 * RaidModeScaling;
+	float FarDamage = 60.0 * RaidModeScaling;
 	float MaxDistance = 5000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -1766,8 +1821,8 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 				damage *= -1.0;
 
 			
-			if(ShouldNpcDealBonusDamage(victim))
-				damage *= 3.0;
+			if(victim > MaxClients) //make sure barracks units arent bad
+				damage *= 0.5;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 				

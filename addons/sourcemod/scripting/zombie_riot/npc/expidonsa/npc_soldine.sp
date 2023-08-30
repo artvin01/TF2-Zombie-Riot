@@ -563,6 +563,10 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			{
 				float projectile_speed = 900.0;
 				float DamageRocket = 85.0;
+				if(npc.b_SoldineRocketJump)
+				{
+					DamageRocket *= 0.5;
+				}
 				float vPredictedPos[3];
 				vPredictedPos = PredictSubjectPositionForProjectiles(npc, target, projectile_speed);
 				

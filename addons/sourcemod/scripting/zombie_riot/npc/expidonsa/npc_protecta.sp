@@ -45,7 +45,6 @@ void Protecta_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 }
 
-
 methodmap Protecta < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -213,6 +212,7 @@ public void Protecta_NPCDeath(int entity)
 	//when dying, cause a heal explosion!
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
+		b_ExpidonsaWasAttackingNonPlayer = false;
 		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 		Explode_Logic_Custom(0.0,
@@ -265,9 +265,9 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 80.0;
+					float damageDealt = 70.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 3.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -276,6 +276,22 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 					// Hit sound
 					npc.PlayMeleeHitSound();
+
+					if(target <= MaxClients)
+					{
+						if (IsInvuln(target))
+						{
+							b_ExpidonsaWasAttackingNonPlayer = true;
+						}
+						else
+						{
+							b_ExpidonsaWasAttackingNonPlayer = false;
+						}
+					}
+					else
+					{
+						b_ExpidonsaWasAttackingNonPlayer = true;
+					}
 					//on hit, we heal all allies around us
 					Explode_Logic_Custom(0.0,
 					npc.index,
@@ -370,13 +386,15 @@ void ProtectaAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			ProtectaAllyHealInternal(victim, 250.0);
+			ProtectaAllyHealInternal(victim, 200.0);
 		}
 	}
 }
 
 void ProtectaAllyHealInternal(int victim, float heal)
 {
+	if(b_ExpidonsaWasAttackingNonPlayer)
+		heal *= 0.5;
 	HealEntityViaFloat(victim, heal, 1.0);
 	float ProjLoc[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
