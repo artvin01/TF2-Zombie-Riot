@@ -649,6 +649,7 @@
 	{
 		"#format"	"{1:.1f}"
 		"en"		"You right now feel sick from drinking too many perks and would vomit, try again in {1} seconds."
+		"chi"       "你现在因为喝了太多的饮料而感到恶心，并且会呕吐，{1}秒后再试一次。"
 	}
 	"Ammo Box Used"
 	{
@@ -1068,6 +1069,7 @@
 	"Deadshot Daiquiri Recieved"
 	{
 		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"chi"       "死神射击:提升1.35倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
 	}
 	"Widows Wine Recieved"
 	{
@@ -1080,6 +1082,7 @@
 	"Recycle Poire Recieved"
 	{
 		"en" 		"RECYCLE POIRÉ! 33%% More ammo from all non shop sources, and 50%% more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"chi"		"超级回收:所有非商店弹药增加33%%+最大护甲值和护甲增益增加50%%+2倍弹药补给"
 	}
 	"Nuke Activated"
 	{
@@ -2252,121 +2255,145 @@
 	{
 		"en"		"Buff/Debuff List"
 		"ru"		"Полож./негат. эфф."
+		"chi"		"Buff/Debuff 列表"
 	}
 	"Crouch To See Info Barracks"
 	{
 		"en"		"Crouch to see descriptions!"
 		"ru"		"Пригнитесь, чтобы посмотреть описание!"
+		"chi"		"蹲下可以查看描述!"
 	}
 	"Toggle Upgrade Menu Barracks"
 	{
 		"en"		"Toggle Upgrade Menu"
 		"ru"		"Меню улучшения"
+		"chi"		"切换升级菜单"
 	}
 	"Barracks Copper Smith"
 	{
 		"en"		"Copper Smith"
 		"ru"		"Медный кузнец"
+		"chi"		"铜匠"
 	}
 	"Barracks Copper Smith Desc"
 	{
 		"en"		"Increased Melee Damage"
 	//	"ru"		"Увеличение урона ближнего боя на 15%%"
+		"chi"		"增加近战伤害"
 	}
 	"Barracks Iron Casting"
 	{
 		"en"		"Iron Casting"
 		"ru"		"Железное литьё"
+		"chi"		"铸铁件"
 	}
 	"Barracks Iron Casting Desc"
 	{
 		"en"		"Increased Melee Damage"
 	//	"ru"		"Увеличение урона ближнего боя на 15%%"
+		"chi"		"增加近战伤害"
 	}
 	"Barracks Steel Casting"
 	{
 		"en"		"Steel Casting"
 		"ru"		"Стальное литьё"
+		"chi"		"钢铸件"
 	}
 	"Barracks Steel Casting Desc"
 	{
 		"en"		"Increased Melee Damage"
 		"ru"		"Увеличение урона ближнего боя на 30%%"
+		"chi"		"增加近战伤害"
 	}
 	"Barracks Refined Steel"
 	{
 		"en"		"Refined Steel"
 		"ru"		"Очищенная сталь"
+		"chi"		"精炼钢"
 	}
 	"Barracks Refined Steel Desc"
 	{
 		"en"		"Increased Melee Damage"
 	//	"ru"		"Увеличение урона ближнего боя на 50%%"
+		"chi"		"增加近战伤害"
 	}
 	"Barracks Requirement Template"
 	{
 		"en"		"Requirement:"
 		"ru"		"Требование:"
+		"chi"		"要求:"
 	}
 	"Barracks Fletching"
 	{
 		"en"		"Fletching"
 		"ru"		"Оперение"
+		"chi"		"尾翼"
 	}
 	"Barracks Fletching Desc"
 	{
 		"en"		"Increased Ranged Damage and range"
 	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+		"chi"		"增加远程伤害和范围"
 	}
 	"Barracks Steel Arrows"
 	{
 		"en"		"Steel Arrows"
 		"ru"		"Стальные стрелы"
+		"chi"		"钢箭"
 	}
 	"Barracks Steel Arrows Desc"
 	{
 		"en"		"Increased Ranged Damage and range"
 	//	"ru"		"15%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+		"chi"		"增加远程伤害和范围"
 	}
 	"Barracks Bracer"
 	{
 		"en"		"Bracer"
 		"ru"		"Наручи"
+		"chi"		"护腕"
 	}
 	"Barracks Bracer Desc"
 	{
 		"en"		"Increased Ranged Damage"
 	//	"ru"		"30%% увелич. урона в дальнем бою и на 10%% увелич. дальности стрельбы"
+		"chi"		"增加远程伤害"
 	}
 	"Barracks Obsidian Refined Tips"
 	{
 		"en"		"Obsidian Refine"
 		"ru"		"Обсидиановое очищение"
+		"chi"		"精炼黑曜石"
 	}
 	"Barracks Obsidian Refined Tips Desc"
 	{
 		"en"		"Increased Ranged Damage"
 		//"ru"		"50%% увелич. урона в дальнем бою"
+		"chi"		"增加远程伤害"
 	}
 	"Barracks Copper Armor Plate"
 	{
 		"en"		"Copper Armor Plate"
 		"ru"		"Медная бронепластина"
+		"chi"		"铜钢板"
 	}
 	"Barracks Copper Armor Plate Desc"
 	{
 		"en"		"Increased Damage reduction"
+		"chi"		"增加伤害减免"
 		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
 	}
 	"Barracks Iron Armor Plate"
 	{
 		"en"		"Iron Armor Plate"
 		"ru"		"Железная бронепластина"
+		"chi"		"铁板"
 	}
 	"Barracks Iron Armor Plate Desc"
 	{
 		"en"		"Increased Damage reduction"
 		//"ru"		"3%% снижение урона и 1 плоское снижение урона"
+		"chi"		"增加伤害减免"
 	}
 	"Barracks Chainmail Armor"
 	{
@@ -2376,81 +2403,97 @@
 	"Barracks Chainmail Armor Desc"
 	{
 		"en"		"Increased Damage reduction"
+		"chi"		"增加伤害减免"
 	}
 	"Barracks Reforged Armor Plate"
 	{
 		"en"		"Reforged Armor Plate"
 		"ru"		"Перекованная бронепластина"
+		"chi"		"重锻造装甲板"
 	}
 	"Barracks Reforged Armor Plate Desc"
 	{
 		"en"		"Increased Damage reduction"
+		"chi"		"增加伤害减免"
 	}
 	"Barracks Herbal Medicine"
 	{
 		"en"		"Herbal Medicine"
 		"ru"		"Фитотерапия"
+		"chi"		"草药"
 	}
 	"Barracks Herbal Medicine Desc"
 	{
 		"en"		"Low health regen passively on units"
 		"ru"		"Пассивное восстановление при низком уровне здоровья у войск"
+		"chi"		"低生命回复被动单位"
 	}
 	"Barracks Refined Medicine"
 	{
 		"en"		"Refined Medicine"
 		"ru"		"Усовершенствованная медицина"
+		"chi"		"精致的医学"
 	}
 	"Barracks Refined Medicine Desc"
 	{
 		"en"		"Increased health regen and 10%% more max health"
 		"ru"		"Увелич. восст. здоровья и на 10% больше макс. запас здоровья"
+		"chi"		"增加生命回复，最大生命值提高10%"
 	}
 
 	"Barracks Tower"
 	{
 		"en"		"Tower"
 		"ru"		"Башня"
+		"chi"		"塔"
 	}
 	"Barracks Tower Desc"
 	{
 		"en"		"unlock more upgrades\nmore health for your building, and it defends itself."
 		"ru"		"новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
+		"chi"		"为你的建筑解锁更多的升级和更多的生命值\n它会自我防御。"
 	}
 	"Barracks Guard Tower"
 	{
 		"en"		"Guard Tower"
 		"ru"		"Сторожевая башня"
+		"chi"		"守卫塔"
 	}
 	"Barracks Guard Tower Desc"
 	{
 		"en"		"Increased health and damage and arrow count."
 		"ru"		"Увеличение прочности, урона и количества стрел."
+		"chi"		"增加生命值，伤害和箭数。"
 	}
 	"Barracks Imperial Tower"
 	{
 		"en"		"Imperial Tower"
 		"ru"		"Императорская башня"
+		"chi"		"帝国大厦"
 	}
 	"Barracks Imperial Tower Desc"
 	{
 		"en"		"Increased health and damage and arrow count."
 		"ru"		"Увеличение прочности, урона и количества стрел."
+		"chi"		"增加生命值，伤害和箭数。"
 	}
 	"Barracks Ballistical Tower"
 	{
 		"en"		"Ballista Tower"
 		"ru"		"Башня с баллистой"
+		"chi"		"弹道炮塔"
 	}
 	"Barracks Ballistical Tower Desc"
 	{
 		"en"		"Increased health and damage and arrow count."
 		"ru"		"Увеличение прочности, урона и количества стрел."
+		"chi"		"增加生命值，伤害和箭数。"
 	}
 	"Barracks Donjon Tower"
 	{
 		"en"		"Donjon Tower"
 		"ru"		"Башня-донжон"
+		"chi"		"城堡主楼塔"
 	}
 	"Barracks Donjon"
 	{
@@ -2461,165 +2504,199 @@
 	{
 		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
 		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
+		"chi"		"增加生命值，伤害和箭数，你失去1个补给槽，解锁更多升级。"
 	}
 	"Barracks Krepost"
 	{
 		"en"		"Krepost"
 		"ru"		"Крепость"
+		"chi"		"堡垒"
 	}
 	"Barracks Krepost Desc"
 	{
 		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
+		"chi"		"增加生命值，伤害和箭数，解锁更多升级。"
 	}
 	"Barracks Castle"
 	{
 		"en"		"Castle"
 		"ru"		"Замок"
+		"chi"		"城堡"
 	}
 	"Barracks Castle Desc"
 	{
 		"en"		"Increased health and damage and arrow count, unlocks more upgrades.\nAllows you to train a new special unit slowly."
 		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПозволяет медленно обучать нового особого воина."
+		"chi"		"增加生命值，伤害和箭数，解锁更多升级。允许你慢慢训练一个新的特殊单位。"
 	}
 	"Barracks Manual Fire"
 	{
 		"en"		"Manual Fire"
 		"ru"		"Атака вручную"
+		"chi"		"手动射击"
 	}
 	"Barracks Manual Fire Desc"
 	{
 		"en"		"Allows you to enable manual fire mode inside your building.\nManually firing will increase its damage massively, but must be mounted."
 		"ru"		"Позволяет включить режим атаки вручную внутри постройки.\nАтака вручную значительно увеличивает его урон, но должна быть задана вручную."
+		"chi"		"允许您在建筑物内启用手动射击模式。手动射击将大大增加其伤害，但必须背负建筑。"
 	}
 	"Barracks Murder Holes"
 	{
 		"en"		"Murder Holes"
 		"ru"		"Убийственные дыры"
+		"chi"		"陷阱坑"
 	}
 	"Barracks Murder Holes Desc"
 	{
 		"en"		"Removed the minimal range of your building."
 		"ru"		"Убрана минимальная дальность атаки вашей постройки."
+		"chi"		"移除你的建筑的最小范围。"
 	}
 	"Barracks Ballistics"
 	{
 		"en"		"Ballistics"
 		"ru"		"Баллистика"
+		"chi"		"弹道"
 	}
 	"Barracks Ballistics Desc"
 	{
 		"en"		"Your building will now predict the movement of enemies."
 		"ru"		"Теперь ваша постройка будет предсказывать движение врагов."
+		"chi"		"你的建筑现在会预测敌人的移动。"
 	}
 	"Barracks Chemistry"
 	{
 		"en"		"Chemistry"
 		"ru"		"Химия"
+		"chi"		"化学"
 	}
 	"Barracks Chemistry Desc"
 	{
 		"en"		"Arrows deal increased damage."
+		"chi"		"箭造成的伤害增加。"
 	}
 	"Barracks Crenelations"
 	{
 		"en"		"Crenelations"
 		"ru"		"Зубцы"
+		"chi"		"齿状物"
 	}
 	"Barracks Crenelations Desc"
 	{
 		"en"		"Massively increased range, non ranged units will now increase arrow count as well, arrows now home onto the target."
 		"ru"		"Значительное увеличение дальности стрельбы, войска ближнего боя теперь также увеличивают количество стрел, стрелы теперь наводятся в цель."
+		"chi"		"大量增加射程，非远程单位现在也会增加箭的数量，箭现在可以射向目标。"
 	}
 	"Barracks Conscription"
 	{
 		"en"		"Conscription"
 		"ru"		"Призыв"
+		"chi"		"征兵"
 	}
 	"Barracks Conscription Desc"
 	{
 		"en"		"Train units 25%% faster, Gain resources 25%% faster (gold excluded)."
 		"ru"		"Обучение войск на 25% быстрее, получение ресурсов на 25% быстрее (без учёта золота)."
+		"chi"		"训练单位速度提高25%，获得资源速度提高25%(金币除外)。"
 	}
 	"Barracks Goldminers"
 	{
 		"en"		"Goldminers"
 		"ru"		"Золотодобытчики"
+		"chi"		"淘金者"
 	}
 	"Barracks Goldminers Desc"
 	{
 		"en"		"Get gold 25%% faster."
 		"ru"		"Получайте золото на 25%% быстрее."
+		"chi"       "获得黄金的速度提高25%"
 	}
 	"Barracks Assistant Villager"
 	{
 		"en"		"Assistant Villager"
 		"ru"		"Житель-помощник"
+		"chi"       "助理村民"
 	}
 	"Barracks Assistant Villager Desc"
 	{
 		"en"		"Gain the ability to create a villager, it will build a tower and repair buildings talk to the villager for more info."
 		"ru"		"Получите возможность создать жителя, он будет строить башни и ремонтировать постройки, поговорите с ним для получения подробностей."
+		"chi"       "获得创造一个村民的能力，它将建造一个塔和维修建筑与村民交谈以获得更多信息。"
 	}
 	"Barracks Villager Education"
 	{
 		"en"		"Villager Education"
 		"ru"		"Образование жителей"
+		"chi"       "村民研究"
 	}
 	"Barracks Villager Education Desc"
 	{
 		"en"		"Your villager will no longer take up deployment slots."
 		"ru"		"Ваш житель больше не будет занимать ячейки развёртывания."
+		"chi"       "你的村民将不再占用部署位置。"
 	}
 	"Barracks Strongholds"
 	{
 		"en"		"Strongholds"
 		"ru"		"Цитадель"
+		"chi"       "要塞"
 	}
 	"Barracks Strongholds Desc"
 	{
 		"en"		"Your building attacks 33% faster and heals any melee unit or player around it."
 		"ru"		"Ваша постройка атакует на 33% быстрее и лечит любые войска ближнего боя или игрока вокруг него."
+		"chi"       "你的建筑攻击速度提高33%，治疗周围的近战单位或玩家。"
 	}
 	"Barracks Hoardings"
 	{
 		"en"		"Hoardings"
 		"ru"		"Щиты"
+		"chi"       "围板"
 	}
 	"Barracks Hoardings Desc"
 	{
 		"en"		"While your building is alive, all your buildings will gain 25%% more health."
 		"ru"		"Пока ваша постройка цела, все ваши постройки получают на 25%% больше прочности."
+		"chi"       "当前未被摧毁的建筑生命值提升25%%"
 	}
 	"Barracks Exquisite Housing"
 	{
 		"en"		"Exquisite Housing"
 		"ru"		"Изящное жильё"
+		"chi"       "精致的建筑样貌"
 	}
 	"Barracks Exquisite Housing Desc"
 	{
 		"en"		"Gain back your lost 1 deployment slot from making a tower."
 		"ru"		"Верните себе 1 ячейку развёртывания, потерянную при создании башни."
+		"chi"       "从制作塔中获得丢失的1个部署槽位。"
 	}
 	"Barracks Villager Desc"
 	{
 		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"The strongest of the strongest. Ultimate melee unit."	
+		"chi"       "强者中的强者。终极近战单位。"
 	}
 	"Barracks Troop Classes"
 	{
 		"en"		"Barracks Troop Classes"
+		"chi"       "兵营部队等级"
 	}
 	"Barracks Troop Classes Desc"
 	{
 		"en"		"Allows the training of troops, but it will set your support building max to 1 (the villgaer is excluded from this.)"
+		"chi"       "允许训练部队，但它会将你的支援建筑最大值设置为1.（村民不包括在内）"
 	}
 	"Research Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
+		"chi"       "训练士兵的专项技能（村民不包括在内）"
 	}
 	"Spike Masspickup Confirm"
 	{
@@ -2632,36 +2709,44 @@
 	"Spike Masspickup None"
 	{
 		"en"		"There are no spikes left to pick up."		
+		"chi"       "没有钉子可捡了。"
 	}
 	"Pre Round Pap Limit"
 	{
 		"en"		"The PAP is still booting up, wait untill the round starts."		
+		"chi"       "PAP仍在启动，请等待回合开始。"
 	}
 	"Zombie Volume Setting Show"
 	{
 		"en"		"Zombie Volume Setting"
+		"chi"       "僵尸声音设置"
 	}
 	"Zombie Volume Setting"
 	{
 		"#format"	"{1:d}"
 		"en"		"Zombie Volume: [{1}%%]"
+		"chi"       "僵尸音量: [{1}%%]"
 	}
 	"Turn up volume"
 	{
-		"en"		"Turn up volume"		
+		"en"		"Turn up volume"
+		"chi"       "提高音量"		
 	}
 	"Turn down volume"
 	{
-		"en"		"Turn down volume"		
+		"en"		"Turn down volume"
+		"chi"       "降低音量"		
 	}
 	"Burstpack Already Used This Round, Recharging"
 	{
-		"en"		"Burstpack already used this round, recharging..."		
+		"en"		"Burstpack already used this round, recharging..."	
+		"chi"       "Burstpack这一轮已经用过了，正在充电。。。"	
 	}
 	"Quincy Menu First"
 	{
 		"#format"	"{1:d}"
-		"en"		"Select which skill you wish to upgrade. You have [{1}] Skill points Left"		
+		"en"		"Select which skill you wish to upgrade. You have [{1}] Skill points Left"
+		"chi"       "选择要升级的技能。你还剩下[｛1｝]技能点"		
 	}
 	"Quincy Menu Second"
 	{
@@ -2743,10 +2828,12 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Kills: {1}"
+		"chi"       "杀敌数:{1}"
 	}
 	"Allied Summons"
 	{
 		"#format"	"{1:d}"
 		"en"		"Summons: {1}"
+		"chi"       "召唤: {1}"
 	}
 }
