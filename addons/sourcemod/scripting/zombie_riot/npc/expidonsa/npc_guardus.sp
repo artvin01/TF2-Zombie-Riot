@@ -388,5 +388,5 @@ void GuardusAllyHealInternal(int victim, float heal)
 	float ProjLoc[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;
-	ParticleEffectAt(ProjLoc, "healthgained_blu", 0.1);
+	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

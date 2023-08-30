@@ -388,7 +388,7 @@ public void Sensal_ClotThink(int iNPC)
 		AcceptEntityInput(entity, "RoundWin");
 		Music_RoundEnd(entity);
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		BlockLoseSay = true;
 	}
 
@@ -1275,10 +1275,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		}
 		ExpidonsaRemoveEffects(entity);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		if(b_RageProjectile[entity])
-			ParticleEffectAt(ProjectileLoc, "spell_batball_impact_red", 0.25);
-		else
-			ParticleEffectAt(ProjectileLoc, "spell_batball_impact_blue", 0.25);
+		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
@@ -1292,11 +1289,7 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		//we uhh, missed?
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-
-		if(b_RageProjectile[entity])
-			ParticleEffectAt(ProjectileLoc, "spell_batball_impact_red", 0.25);
-		else
-			ParticleEffectAt(ProjectileLoc, "spell_batball_impact_blue", 0.25);
+		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 		ExpidonsaRemoveEffects(entity);
 		if(IsValidEntity(particle))

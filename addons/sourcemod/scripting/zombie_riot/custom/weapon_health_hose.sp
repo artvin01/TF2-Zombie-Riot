@@ -227,8 +227,8 @@ public void Hose_Touch(int entity, int other)
 	{	
 		float ProjLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		
-		ParticleEffectAt(ProjLoc, Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, 1.0);
+		ProjLoc[2] += 100.0;
+		TE_Particle(Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 		Hose_Heal(owner, other, Hose_Healing[entity]);
 		
