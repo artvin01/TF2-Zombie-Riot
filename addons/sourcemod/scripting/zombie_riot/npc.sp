@@ -2549,8 +2549,13 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			entity = Raidboss_Schwertkrieg(client, vecPos, vecAng, ally);
+		
+		case SEA_ALLY_SILVESTER:
+			entity = SeaAllySilvester(vecPos, vecAng);
+		
+		case SEA_ALLY_GOGGLES:
+			entity = SeaAllyGoggles(vecPos, vecAng);
 
-			
 		case EXPIDONSA_BENERA:
 			entity = Benera(client, vecPos, vecAng, ally);
 			
@@ -3470,13 +3475,18 @@ public void NPCDeath(int entity)
 			
 		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
-
-
+		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			Raidboss_Donnerkrieg_NPCDeath(entity);
 			
 		case SEA_RAIDBOSS_SCHWERTKRIEG:
 			Raidboss_Schwertkrieg_NPCDeath(entity);
+		
+		case SEA_ALLY_SILVESTER:
+			SeaAllySilvester_NPCDeath(entity);
+		
+		case SEA_ALLY_GOGGLES:
+			SeaAllyGoggles_NPCDeath(entity);
 
 		case EXPIDONSA_BENERA:
 			Benera_NPCDeath(entity); 
@@ -4714,6 +4724,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_donnerkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/seaborn/npc_schwertkrieg.sp"
+#include "zombie_riot/npc/ally/npc_seaally_silvester.sp"
+#include "zombie_riot/npc/ally/npc_seaally_goggles.sp"
 
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"

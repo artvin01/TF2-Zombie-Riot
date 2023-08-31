@@ -207,7 +207,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-static bool IsValidHomingTarget(int projectile, int target, int owner)
+static stock bool IsValidHomingTarget(int projectile, int target, int owner)
 {
 	if(!IsValidEnemy(projectile, target))
 		return false;

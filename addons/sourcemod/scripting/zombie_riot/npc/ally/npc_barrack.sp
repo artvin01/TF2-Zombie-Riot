@@ -404,9 +404,9 @@ methodmap BarrackBody < CClotBody
 	public BarrackBody(int client, float vecPos[3], float vecAng[3],
 	 const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL,
 	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
-	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl")
+	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false)
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, true, .Ally_Collideeachother = true));
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, true, IsInvuln, .Ally_Collideeachother = !IsInvuln));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -433,28 +433,32 @@ methodmap BarrackBody < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		b_NpcIsInvulnerable[npc.index] = IsInvuln;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		
-		if(IsValidEntity(npc.m_iTeamGlow))
+		if(!IsInvuln)
 		{
-			RemoveEntity(npc.m_iTeamGlow);
-		}		
+			if(IsValidEntity(npc.m_iTeamGlow))
+			{
+				RemoveEntity(npc.m_iTeamGlow);
+			}
 
-		npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
-		SetVariantString("0.65");
-		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		BarrackOwner[npc.m_iWearable7] = client > 0 ? client : 0;
-		SDKHook(npc.m_iWearable7, SDKHook_SetTransmit, BarrackBody_Transmit);
+			npc.m_iWearable7 = npc.EquipItemSeperate("partyhat", ParticleModelPath,"spin",_,_,60.0 + ExtraOffset);
+			SetVariantString("0.65");
+			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+			BarrackOwner[npc.m_iWearable7] = client > 0 ? client : 0;
+			SDKHook(npc.m_iWearable7, SDKHook_SetTransmit, BarrackBody_Transmit);
 
-		npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable7);
-		SetVariantColor(view_as<int>({255, 255, 255, 200}));
-		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-		
-		int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
-		BarrackOwner[Textentity] = client > 0 ? client : 0;
+			npc.m_iTeamGlow = TF2_CreateGlow(npc.m_iWearable7);
+			SetVariantColor(view_as<int>({255, 255, 255, 200}));
+			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+			
+			int Textentity = BarrackBody_HealthHud(npc, ExtraOffset);
+			BarrackOwner[Textentity] = client > 0 ? client : 0;
+		}
+
 		npc.StartPathing();
 		Barracks_UpdateEntityUpgrades(npc.index,client > 0 ? client : 0,true, true);
 		return npc;
