@@ -88,7 +88,13 @@ public void Remains_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.5;
 
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
-	spawnRing_Vectors(vecTarget, 500.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] + 50.0;
+	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] + 50.0;
+	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] + 50.0;
+	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
 }
 
 void Remains_SpawnDrop(float pos[3], int type)
