@@ -232,7 +232,7 @@ public void Guardus_NPCDeath(int entity)
 		_,
 		_,
 		true,
-		99,
+		5,
 		false,
 		_,
 		GuardusAllyHeal);
@@ -309,7 +309,7 @@ void GuardusSelfDefense(Guardus npc, float gameTime, int target, float distance)
 					_,
 					_,
 					true,
-					99,
+					5,
 					false,
 					_,
 					GuardusAllyHeal);

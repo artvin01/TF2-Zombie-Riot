@@ -857,6 +857,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(28.0);
 			damage = 0.0;
 			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, i wont stop you no more...");
 			return Plugin_Handled;

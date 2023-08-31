@@ -435,9 +435,9 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 
 					if(target_hit > 0) 
 					{
-						float damageDealt = 500.0; //Extreme melee damage
+						float damageDealt = 400.0; //Extreme melee damage
 						if(ShouldNpcDealBonusDamage(target_hit))
-							damageDealt *= 50.0; //basically oneshots buildings or atleast deals heavy damage
+							damageDealt *= 20.0; //basically oneshots buildings or atleast deals heavy damage
 							
 						SDKHooks_TakeDamage(target_hit, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);									
 								
@@ -562,7 +562,7 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 			if(Can_I_See_Enemy_Only(npc.index, target))
 			{
 				float projectile_speed = 900.0;
-				float DamageRocket = 85.0;
+				float DamageRocket = 70.0;
 				if(npc.b_SoldineRocketJump)
 				{
 					DamageRocket *= 0.5;

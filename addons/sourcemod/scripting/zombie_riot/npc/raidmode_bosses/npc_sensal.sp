@@ -510,6 +510,7 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(20.0);
 			
 			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Blue Goggles, what is the meaning of this?");
 

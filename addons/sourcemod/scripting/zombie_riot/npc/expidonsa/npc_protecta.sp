@@ -224,7 +224,7 @@ public void Protecta_NPCDeath(int entity)
 		_,
 		_,
 		true,
-		99,
+		5,
 		false,
 		_,
 		ProtectaAllyHeal);
@@ -302,7 +302,7 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 					_,
 					_,
 					true,
-					99,
+					5,
 					false,
 					_,
 					ProtectaAllyHeal);

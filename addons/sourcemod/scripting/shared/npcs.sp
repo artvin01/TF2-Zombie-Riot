@@ -41,6 +41,7 @@ static Handle SyncHudRaid;
 static Handle SyncHud;
 static char LastClassname[2049][64];
 static bool b_DoNotDisplayHurtHud[MAXENTITIES];
+static float f_DelayNextWaveStartAdvancing;
 //static float f_SpawnerCooldown[MAXENTITIES];
 /*
 void NPC_Spawn_ClearAll()
@@ -50,6 +51,7 @@ void NPC_Spawn_ClearAll()
 
 void Npc_Sp_Precache()
 {
+	f_DelayNextWaveStartAdvancing = 0.0;
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMissText = PrecacheParticleSystem("miss_text");
 }
@@ -145,6 +147,7 @@ public Action GetClosestSpawners(Handle timer)
 {
 	float f3_PositionTemp_2[3];
 	float f3_PositionTemp[3];
+	Zombie_Delay_Warning();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -729,7 +732,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			}
 			else if(!found)
 			{
-				Waves_Progress();
+				if(f_DelayNextWaveStartAdvancing < GetGameTime())
+				{
+					Waves_Progress();
+				}
 			}
 		}
 	}
@@ -3250,4 +3256,9 @@ void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &g
 		green = 255;
 		blue = 0;				
 	}
+}
+
+void GiveProgressDelay(float Time)
+{
+	f_DelayNextWaveStartAdvancing = GetGameTime() + Time;
 }

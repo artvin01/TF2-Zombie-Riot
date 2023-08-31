@@ -851,6 +851,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		b_NpcIsInvulnerable[npc.index] = true;
 		RemoveNpcFromEnemyList(npc.index);
+		GiveProgressDelay(20.0);
 		
 		b_Donnerkrieg_Alive = false;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);

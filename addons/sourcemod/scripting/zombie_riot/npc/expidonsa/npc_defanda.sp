@@ -281,7 +281,7 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 					_,
 					_,
 					true,
-					99,
+					5,
 					false,
 					_,
 					DefandaAllyHeal);

@@ -2849,7 +2849,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 	static float distance[MAXENTITIES];
 	static float VicPos[MAXENTITIES][3];
 
-	if(FromBlueNpc) //Npcs do not have damage falloff, dodge.
+	if(FromBlueNpc && maxtargetshit == 10) //Npcs do not have damage falloff, dodge.
 	{
 		maxtargetshit = 20; //we do not care.
 	}

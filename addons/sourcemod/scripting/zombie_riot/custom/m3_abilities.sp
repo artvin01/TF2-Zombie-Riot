@@ -283,7 +283,7 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 					if (IsValidClient(target) && IsPlayerAlive(target) && GetClientTeam(target) == view_as<int>(TFTeam_Red) && TeutonType[target] == 0)
 					{
 						GetClientAbsOrigin(target, client_pos);
-						if (GetVectorDistance(powerup_pos, client_pos, true) <= 90000)
+						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
 						{
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
 							EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 1.0);
@@ -434,7 +434,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 					if (IsValidClient(target) && IsPlayerAlive(target) && GetClientTeam(target) == view_as<int>(TFTeam_Red) && TeutonType[target] == 0)
 					{
 						GetClientAbsOrigin(target, client_pos);
-						if (GetVectorDistance(powerup_pos, client_pos, true) <= 90000)
+						if (GetVectorDistance(powerup_pos, client_pos, true) <= (500.0 * 500.0))
 						{
 							if(dieingstate[target] > 0)
 							{

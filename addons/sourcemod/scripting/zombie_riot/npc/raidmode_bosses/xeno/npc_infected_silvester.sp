@@ -1156,6 +1156,7 @@ public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inf
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(28.0);
 			damage = 0.0;
 			CPrintToChatAll("{gold}Silvester{default}: You wont listen to our warnings do you!?");
 			return Plugin_Handled;

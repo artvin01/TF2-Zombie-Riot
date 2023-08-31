@@ -572,6 +572,7 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
         
 		b_Schwertkrieg_Alive = false;
 		RemoveNpcFromEnemyList(npc.index);
+		GiveProgressDelay(20.0);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 		damage = 0.0;
 		if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)

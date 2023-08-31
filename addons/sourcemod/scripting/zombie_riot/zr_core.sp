@@ -611,7 +611,6 @@ void ZR_MapStart()
 	
 	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
-	
 	char_MusicString1[0] = 0;
 	char_MusicString2[0] = 0;
 	char_RaidMusicSpecial1[0] = 0;
