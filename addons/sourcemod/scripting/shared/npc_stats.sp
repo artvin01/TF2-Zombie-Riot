@@ -2188,6 +2188,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			b_ThisEntityIgnored[entity] = true;
 			b_ForceCollisionWithProjectile[entity] = true;
+			i_WandOwner[entity] = this.index;
 
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 1600.0);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1800.0);

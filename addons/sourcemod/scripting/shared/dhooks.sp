@@ -792,16 +792,20 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			if(b_ForceCollisionWithProjectile[entity2])
 			{
-				//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
-				//This is only used for wands so place beware, we will just delete the entity.
-				RemoveEntity(entity1);
-			//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
-			//	b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
-				int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
-				if(IsValidEntity(entity_particle))
+				int EntityOwner = i_WandOwner[entity2];
+				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					RemoveEntity(entity_particle);
-				//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
+					//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
+					//This is only used for wands so place beware, we will just delete the entity.
+					RemoveEntity(entity1);
+				//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
+				//	b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
+					int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
+					if(IsValidEntity(entity_particle))
+					{
+						RemoveEntity(entity_particle);
+					//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
+					}
 				}
 				return false;
 			}
@@ -2019,4 +2023,36 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 	}
 	TF2_SetPlayerClass(client, CurrentClass[client]);
 	return MRES_Ignored;
+}
+
+#define MAX_YAW_SHIELD_DELETE_SIDEWAY 55.0
+bool ShieldDeleteProjectileCheck(int owner, int enemy)
+{
+	float pos1[3];
+	float pos2[3];
+	float ang3[3];
+	float ang2[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", pos1);	
+	GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos2);	
+
+	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
+	GetEntPropVector(owner, Prop_Data, "m_angRotation", ang2);
+
+	// fix all angles
+	ang3[0] = fixAngle(ang3[0]);
+	ang3[1] = fixAngle(ang3[1]);
+
+	int Verify = 0;
+
+	if(ang2[0] < 30.0 && ang2[0] > -30.0)
+		Verify++;
+
+	if(!(fabs(ang2[1] - ang3[1]) <= MAX_YAW_SHIELD_DELETE_SIDEWAY ||
+	(fabs(ang2[1] - ang3[1]) >= (360.0-MAX_YAW_SHIELD_DELETE_SIDEWAY))))
+		Verify++;
+
+	if(Verify == 2)
+		return true;
+
+	return false;
 }
