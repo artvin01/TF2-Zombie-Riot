@@ -348,13 +348,17 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false, bool player_only = false)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false, bool player_only = false, int TraceFrom = -1)
 {
 	// Prio:
 	// 1. Highest Defense Stat
 	// 2. Highest NPC Entity Index
 	// 3. Random Player
-
+	int TraceEntity = npc.index;
+	if(TraceFrom != -1)
+	{
+		TraceEntity = TraceFrom;
+	}
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 	int[] def = new int[count];
 	float gameTime = GetGameTime();
@@ -363,7 +367,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	{
 		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != team && IsEntityAlive(client) && Can_I_See_Enemy_Only(npc.index, client))
 		{
-			if(respectTrace && !Can_I_See_Enemy_Only(npc.index, client))
+			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 				continue;
 
 			for(int i; i < count; i++)
@@ -426,7 +430,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
-					if(respectTrace && !Can_I_See_Enemy_Only(npc.index, entity))
+					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
 
 					for(int i; i < count; i++)
@@ -463,7 +467,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 			{
 				if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && Can_I_See_Enemy_Only(npc.index, entity))
 				{
-					if(respectTrace && !Can_I_See_Enemy_Only(npc.index, entity))
+					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
 						
 					for(int i; i < count; i++)

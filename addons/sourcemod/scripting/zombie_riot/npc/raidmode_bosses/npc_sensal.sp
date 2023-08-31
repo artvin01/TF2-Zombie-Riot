@@ -1622,7 +1622,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
 		int enemy[16];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true);
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true, Particle);
 		bool Foundenemies = false;
 
 		for(int i; i < sizeof(enemy); i++)
@@ -1665,7 +1665,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 			int PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_death_vortex", 0.0);
 			DataPack pack2;
 			particle.Anger = npc.Anger;
-			CreateDataTimer(5.0, Sensal_TimerRepeatPortalGate, pack2, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack2, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack2.WriteCell(EntIndexToEntRef(Originator));
 			pack2.WriteCell(EntIndexToEntRef(PortalParticle));
 			if(IsValidEntity(Particle))
