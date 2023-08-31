@@ -5,14 +5,6 @@
 #define WAND_GERMAN_M2_SOUND	"Taunt.MedicViolinUber"
 #define WAND_GERMAN_M1_SOUND	"WeaponMedigun_Vaccinator.Charged_tier_0%d"
 
-static float RMR_HomingPerSecond[MAXENTITIES];
-static int RMR_CurrentHomingTarget[MAXENTITIES];
-static bool RMR_HasTargeted[MAXENTITIES];
-static int RMR_RocketOwner[MAXENTITIES];
-static float RWI_HomeAngle[MAXENTITIES];
-static float RWI_LockOnAngle[MAXENTITIES];
-static float RMR_RocketVelocity[MAXENTITIES];
-
 static Handle GermanTimer[MAXTF2PLAYERS];
 static Handle GermanSilence[MAXTF2PLAYERS];
 static int GermanCharges[MAXTF2PLAYERS];
@@ -155,6 +147,18 @@ public Action Weapon_German_Timer(Handle timer, int client)
 				time *= Attributes_Get(weapon, 101, 1.0);
 				time *= Attributes_Get(weapon, 102, 1.0);
 
+				b_LagCompNPC_No_Layers = true;
+				StartLagCompensation_Base_Boss(client);
+				Handle swingTrace;
+				float vecSwingForward[3];
+				DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 2000.0, false, 45.0, false);
+				int target = TR_GetEntityIndex(swingTrace);	
+				delete swingTrace;
+				FinishLagCompensation_Base_boss();
+
+				if(target == 0)
+					target = -1;
+
 				for(int i; i < GermanCharges[client]; i++)
 				{
 					if(i == 1)
@@ -172,14 +176,17 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
 					
-					CreateTimer(0.1, Weapon_German_HomingTimer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					RMR_HomingPerSecond[projectile] = 150.0;
-					RMR_RocketOwner[projectile] = client;
-					RMR_HasTargeted[projectile] = false;
-					RWI_HomeAngle[projectile] = 180.0;
-					RWI_LockOnAngle[projectile] = 180.0;
-					RMR_RocketVelocity[projectile] = speed;
-					RMR_CurrentHomingTarget[projectile] = -1;	
+					static float ang_Look[3];
+					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
+					
+					Initiate_HomingProjectile(projectile,
+						client,
+						80.0,		// float lockonAngleMax,
+						25.0,		// float homingaSec,
+						false,		// bool LockOnlyOnce,
+						true,		// bool changeAngles,
+						ang_Look,	// float AnglesInitiate[3]);
+						target);
 				}
 
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
@@ -198,47 +205,6 @@ public Action Weapon_German_Timer(Handle timer, int client)
 
 	GermanTimer[client] = null;
 	return Plugin_Stop;
-}
-
-public Action Weapon_German_HomingTimer(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
-	{
-		if(!IsValidClient(RMR_RocketOwner[entity]))
-		{
-			RemoveEntity(entity);
-			return Plugin_Stop;
-		}
-
-		if(IsValidHomingTarget(entity, RMR_CurrentHomingTarget[entity], RMR_RocketOwner[entity]))
-		{
-			if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-			{
-				HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-			}
-			return Plugin_Continue;
-		}
-
-		int Closest = GetClosestTarget(entity, _, _, true);
-		if(IsValidHomingTarget(RMR_RocketOwner[entity], Closest, RMR_RocketOwner[entity]))
-		{
-			RMR_CurrentHomingTarget[entity] = Closest;
-			if(IsValidHomingTarget(entity, RMR_CurrentHomingTarget[entity], RMR_RocketOwner[entity]))
-			{
-				if(Can_I_See_Enemy_Only(RMR_CurrentHomingTarget[entity],entity)) //Insta home!
-				{
-					HomingProjectile_TurnToTarget(RMR_CurrentHomingTarget[entity], entity);
-				}
-				return Plugin_Continue;
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
 }
 
 static bool IsValidHomingTarget(int projectile, int target, int owner)
