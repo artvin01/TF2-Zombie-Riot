@@ -110,7 +110,8 @@ enum
 	WEAPON_JUDGE = 39,
 	WEAPON_JUDGE_PAP = 40,
 	WEAPON_BOARD = 41,
-	WEAPON_GERMAN = 42
+	WEAPON_GERMAN = 42,
+	WEAPON_SENSAL_SCYTHE = 43
 }
 
 ArrayList SpawnerList;
@@ -401,6 +402,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_judge.sp"
 #include "zombie_riot/custom/weapon_board.sp"
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
+#include "zombie_riot/custom/weapon_sensal.sp"
 
 void ZR_PluginLoad()
 {
@@ -619,6 +621,7 @@ void ZR_MapStart()
 	i_MusicLength2 = 0;
 	i_RaidMusicLength1 = 0;
 	b_RaidMusicCustom1 = false;
+	ResetMapStartSensalWeapon();
 	
 	//Store_RandomizeNPCStore(true);
 }

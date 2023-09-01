@@ -119,22 +119,80 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 	}
 }
 
+public void Weapon_BlemishineAttackM2Strongest(int client, int weapon, bool &result, int slot)
+{
+	//This melee is too unique, we have to code it in a different way.
+	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
+	{
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, BLEMISHINE_COOLDOWN);
+		f_Blemishine_AbilityActive[client] = GetGameTime() + BLEMISHINE_ABILITY_ACTIVE;
+		float flPos[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
+		ParticleEffectAt(flPos, "bombinomicon_flash", 1.0);
+		int particle_Sing = ParticleEffectAt(flPos, "utaunt_arcane_yellow_parent", BLEMISHINE_ABILITY_ACTIVE);
+		SetParent(client, particle_Sing);
+		BlemishineAuraEffects(client, BLEMISHINE_ABILITY_ACTIVE);
+		EmitSoundToAll("player/taunt_medic_heroic.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		EmitSoundToAll("weapons/vaccinator_charge_tier_04.wav", client, SNDCHAN_AUTO, 75,_,1.0,100);
+		MakePlayerGiveResponseVoice(client, 1); //haha!
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit3);
+		FinishLagCompensation_Base_boss();
+		i_BlemishineWhichAbility[client] = 2;
+		float value = Attributes_FindOnWeapon(client, weapon, 180);
+		f_AbilityHealAmmount[client] = value * 1.9;
+		SDKUnhook(client, SDKHook_PreThink, Blemishine_Think);
+		SDKHook(client, SDKHook_PreThink, Blemishine_Think);
+		/*
+			utaunt_arcane_yellow_parent
+		*/
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
 void BlemishineAbilityHit(int entity, int victim, float damage, int weapon)
 {
-	float StunDuration = 4.0;
+	float StunDuration = 2.0;
 	if(b_thisNpcIsABoss[victim])
 	{
-		StunDuration = 2.0;
+		StunDuration = 1.0;
 	}	
 	if(b_thisNpcIsARaid[victim])
 	{
-		StunDuration = 1.5;
+		StunDuration = 0.85;
 	}	
 
 	FreezeNpcInTime(victim, StunDuration);
 }
 
 void BlemishineAbilityHit2(int entity, int victim, float damage, int weapon)
+{
+	float StunDuration = 3.5;
+	if(b_thisNpcIsABoss[victim])
+	{
+		StunDuration = 1.5;
+	}	
+	if(b_thisNpcIsARaid[victim])
+	{
+		StunDuration = 1.25;
+	}	
+
+	FreezeNpcInTime(victim, StunDuration);
+}
+void BlemishineAbilityHit3(int entity, int victim, float damage, int weapon)
 {
 	float StunDuration = 4.5;
 	if(b_thisNpcIsABoss[victim])
