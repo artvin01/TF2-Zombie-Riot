@@ -207,17 +207,17 @@ methodmap EndSpeaker < CClotBody
 					if(remain[b] != entity)
 					{
 						float dist = GetVectorDistance(vecTarget, vecOther, true);
-						if(dist > 62500.0)	// 250 HU
+						if(dist > (DEEP_SEA_VORE_RANGE * DEEP_SEA_VORE_RANGE))	// 250 HU
 							continue;
 					}
 
 					this.m_hBuffs |= (1 << view_as<Remains>(remain[b]).m_iBuffType);
-					ParticleEffectAt(vecOther, "water_bulletsplash01", 3.0);
-					spawnRing_Vectors(vecOther, 500.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
+					ParticleEffectAt(vecOther, "tr_waterfall_bottomsplash", 0.5);
+					spawnRing_Vectors(vecOther, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 2.0, 6.0, 0.1, 1);
 				}
 
 				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
-				Explode_Logic_Custom(999999.9, -1, this.index, -1, vecTarget, 500.0, _, _, true, _, false, _, EndSpeaker_EatPost);
+				Explode_Logic_Custom(9999.9, -1, this.index, -1, vecTarget, DEEP_SEA_VORE_RANGE, _, _, true, _, false, _, EndSpeaker_EatPost);
 				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			}
 		}

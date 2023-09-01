@@ -75,8 +75,9 @@ public void Event_ObjectMoved_Custom(int building)
 		float Delta;
 		if(i_WhatBuilding[building] == BuildingAmmobox)
 		{
-			posStacked[2] -= (32.0 * 0.5);
+			posStacked[2] += (32.0 * 0.5);
 		}
+		
 		switch(i_WhatBuilding[iBuildingDependency[building]])
 		{
 			case BuildingAmmobox:
@@ -84,7 +85,8 @@ public void Event_ObjectMoved_Custom(int building)
 				Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
 			}
 		}
-		posStacked[2] += Delta;
+		posStacked[2] += Delta;		
+		
 		TeleportBuilding(iBuildingDependency[building], posStacked, NULL_VECTOR, NULL_VECTOR);
 		CClotBody buildingclot = view_as<CClotBody>(iBuildingDependency[building]);
 		buildingclot.bBuildingIsStacked = false;
@@ -290,7 +292,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 		//Also coords are reported as (0.0, 0.0, 0.0) for both entities?!?
 		//And here is my hack
 		float endPos2[3];
-		GetEntPropVector(buildingHit, Prop_Send, "m_vecOrigin", endPos2);
+		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
 		//We use custom offets for buildings, so we do our own magic here
 		float Delta = 50.0; //default is 50
 
@@ -345,7 +347,7 @@ public MRESReturn OnIsPlacementPosValidPost(int pThis, Handle hReturn, Handle hP
 			return MRES_ChangedOverride;
 		}
 		//before we allow this, we have to make sure the building cant be inside a wall.
-		if(IsSpaceOccupiedIgnorePlayers(fPos, m_vecMins, m_vecMaxs, pThis))
+		if(IsSpaceOccupiedWorldandBuildingsOnly(fPos, m_vecMins, m_vecMaxs, pThis))
 		{
 			if(IsValidClient(client))
 			{
@@ -415,11 +417,13 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 			posStacked[2] = posMain[2];
 
 		
+			
 			float Delta;
 			if(i_WhatBuilding[entity] == BuildingAmmobox)
 			{
-				posStacked[2] -= (32.0 * 0.5);
+				posStacked[2] += (32.0 * 0.5);
 			}
+			
 			switch(i_WhatBuilding[iBuildingDependency[entity]])
 			{
 				case BuildingAmmobox:
@@ -427,7 +431,8 @@ void OnEntityDestroyed_Build_On_Build(int entity)
 					Delta = (32.0 * 0.5); //half it, the buidling is half in the sky!
 				}
 			}
-			posStacked[2] += Delta;			
+			posStacked[2] += Delta;		
+			
 			TeleportBuilding(iBuildingDependency[entity], posStacked, NULL_VECTOR, NULL_VECTOR);
 			CClotBody building = view_as<CClotBody>(iBuildingDependency[entity]);
 			building.bBuildingIsStacked = false;
@@ -613,21 +618,53 @@ void IsBuildingNotFloating(int building)
 	m_vecMaxs = view_as<float>( { 20.0, 20.0, 1.0 } );
 	m_vecMins = view_as<float>( { -20.0, -20.0, -5.0 } );	
 	float endPos2[3];
-	GetEntPropVector(building, Prop_Send, "m_vecOrigin", endPos2);
+	GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", endPos2);
 
 	if(i_WhatBuilding[building] == BuildingAmmobox)
 	{
 		endPos2[2] -= (32.0 * 0.5); //ammoboxes are flying beacuse their model is.
 	}
-	if(!IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
+	if(!IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
 	{
-		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
-		return;
+		//This failed, lets do a trace
+		Handle hTrace;
+		float endPos3[3];
+		endPos3 = endPos2;
+		endPos3[2] -= 50.0; //only go down 50 units at max.
+		
+		m_vecMaxs = view_as<float>( { 20.0, 20.0, 20.0 } );
+		m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );
+		hTrace = TR_TraceHullFilterEx(endPos2, endPos3, m_vecMins, m_vecMaxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, building);
+		
+		int target_hit = TR_GetEntityIndex(hTrace);	
+		if(target_hit > -1)
+		{
+			float vecHit[3];
+			TR_GetEndPosition(vecHit, hTrace);
+		//	vecHit[2] -= 7.5; //if a tracehull collides, it takes the middle, so we have to half our height box, which is 20.
+			endPos2 = vecHit;
+			if(IsPointHazard(endPos2))
+			{
+				SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+				return;
+			}
+			if(i_WhatBuilding[building] == BuildingAmmobox)
+			{
+				endPos2[2] += (32.0 * 0.5); //ammoboxes are flying beacuse their model is.
+			}
+			TeleportBuilding(building, endPos2, NULL_VECTOR, NULL_VECTOR);
+			//we hit something
+		}
+		else
+		{
+			SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+			return;
+		}
 	}
 	m_vecMaxs = view_as<float>( { 20.0, 20.0, 50.0 } );
-	m_vecMins = view_as<float>( { -20.0, -20.0, 25.0 } );	
+	m_vecMins = view_as<float>( { -20.0, -20.0, 35.0 } );	
 	//Check if half of the top half of the building is inside a wall, if it is, detroy, if it is not, then we leave it be.
-	if(IsSpaceOccupiedIgnorePlayers(endPos2, m_vecMins, m_vecMaxs, building))
+	if(IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
 	{
 		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
 	}

@@ -143,6 +143,7 @@ public Action Event_player_builtobject(Handle event, const char[] name, bool don
 	int entity = GetEventInt(event, "index");
 //	int id = GetEventInt(event, "userid");
 //	int owner = GetClientOfUserId(id);
+	f_ClientInvul[entity] = GetGameTime() + 0.1; //Slight invulnerability
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.bBuildingIsPlaced = true;
 	i_BeingCarried[entity] = false;

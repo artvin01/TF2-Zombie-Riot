@@ -4546,6 +4546,23 @@ stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], con
 	return bHit;
 }
 
+stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	Handle hTrace;
+	if(b_IsAlliedNpc[entity])
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
+	}
+	else
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
+	}
+	bool bHit = TR_DidHit(hTrace);
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	return bHit;
+}
+
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;

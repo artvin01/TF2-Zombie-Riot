@@ -234,7 +234,7 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 	int projectile = Wand_Projectile_Spawn(client, velocity, 15.0, damage, 18, weapon, particle, ang, false);
 	
 	if (IsValidEdict(projectile))
-	{
+	{	
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
 		
 		SetEntityModel(projectile, SKULL_MODEL);
@@ -299,6 +299,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 			
 			if (IsValidEntity(prop))
 			{
+				b_EntityIgnoredByShield[prop] = true;
 				DispatchKeyValue(prop, "targetname", "droneparent"); 
 				DispatchKeyValue(prop, "spawnflags", "4"); 
 				DispatchKeyValue(prop, "model", "models/props_c17/canister01a.mdl");

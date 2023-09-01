@@ -304,7 +304,7 @@ bool b_IsPlayerNiko[MAXTF2PLAYERS];
 
 float delay_hud[MAXTF2PLAYERS];
 float f_DelayBuildNotif[MAXTF2PLAYERS];
-float f_ClientInvul[MAXTF2PLAYERS]; //Extra ontop of uber if they somehow lose it to some god damn reason.
+float f_ClientInvul[MAXENTITIES]; //Extra ontop of uber if they somehow lose it to some god damn reason.
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
@@ -550,6 +550,7 @@ float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
 bool b_EntityIsWandProjectile[MAXENTITIES];
+bool b_EntityIgnoredByShield[MAXENTITIES];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 float f_WandDamage[MAXENTITIES]; //
 int i_WandOwner[MAXENTITIES]; //
@@ -2204,6 +2205,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		f_ClientInvul[entity] = 0.0;
 		f_BackstabDmgMulti[entity] = 0.0;
 		f_KnockbackPullDuration[entity] = 0.0;
 		f_DoNotUnstuckDuration[entity] = 0.0;
@@ -2272,6 +2274,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;
+		b_EntityIgnoredByShield[entity] = false;
 		i_WandIdNumber[entity] = -1;
 		CClotBody npc = view_as<CClotBody>(entity);
 		b_Is_Npc_Projectile[entity] = false;

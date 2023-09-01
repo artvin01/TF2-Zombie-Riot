@@ -151,10 +151,15 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 	{
 		return true;
 	}
+	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+
 	if(b_is_a_brush[entity])
 	{
 		return true;//They blockin me
 	}
+	return false;
+	/*
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		return false;
@@ -190,4 +195,33 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 		return false;
 	}
 	return true;
+	*/
+}
+public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
+{
+	if(entity == 0)
+	{
+		return true;
+	}
+	if(entity == data)
+	{
+		return false;
+	}
+	if(i_IsABuilding[entity])
+	{
+		return true;
+	}
+	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+
+	if(b_is_a_brush[entity])
+	{
+		return true;//They blockin me
+	}
+	
+	if(i_IsABuilding[entity])
+	{
+		return true;//They blockin me
+	}
+	return false;
 }

@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define DEEP_SEA_VORE_RANGE 250.0
 enum
 {
 	Buff_Founder = 0,
@@ -88,13 +89,7 @@ public void Remains_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.5;
 
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
-	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
-	vecTarget[2] + 50.0;
-	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
-	vecTarget[2] + 50.0;
-	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
-	vecTarget[2] + 50.0;
-	spawnRing_Vectors(vecTarget, 500.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	ShowScuffedRemainsCircle(vecTarget);
 }
 
 void Remains_SpawnDrop(float pos[3], int type)
@@ -107,4 +102,19 @@ void Remains_SpawnDrop(float pos[3], int type)
 void Remains_NPCDeath(int entity)
 {
 	SDKUnhook(entity, SDKHook_Think, Remains_ClotThink);
+}
+
+
+void ShowScuffedRemainsCircle(float vecTarget[3])
+{
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] -= 50.0;
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] -= 50.0;
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] += 100.0;
+	vecTarget[2] += 50.0;
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	vecTarget[2] += 50.0;
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
 }

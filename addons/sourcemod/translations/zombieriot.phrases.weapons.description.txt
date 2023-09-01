@@ -420,7 +420,7 @@
 	}
 	"Boomstick Pap 2"
 	{
-		"en"		"bullets turn into piercing lasers with damage falloff."
+		"en"		"Bullets turn into piercing lasers with damage falloff.\nDamage stays the same on full hits but it is easier to hit as you dont have to headshot."
 	}
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"

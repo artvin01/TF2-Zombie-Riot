@@ -790,7 +790,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
-			if(b_ForceCollisionWithProjectile[entity2])
+			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))

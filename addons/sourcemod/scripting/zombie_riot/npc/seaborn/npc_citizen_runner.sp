@@ -24,7 +24,6 @@ methodmap CitizenRunner < CClotBody
 		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");
-		Change_Npc_Collision(npc.index, 4); //they go through enemy npcs
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -61,6 +60,12 @@ public void CitizenRunner_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	if(!npc.Anger)
+	{
+		Change_Npc_Collision(npc.index, 3); //they go through enemy npcs
+		npc.Anger = true;
+	}
+	
 	if(Waves_InSetup())
 	{
 		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);

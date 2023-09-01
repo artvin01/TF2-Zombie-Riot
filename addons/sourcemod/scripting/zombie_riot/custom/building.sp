@@ -994,6 +994,11 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	if(f_ClientInvul[entity] > GetGameTime())
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
 		damage *= 3.0;
@@ -1325,6 +1330,10 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 		return;
 	}
 	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
+	{
+		return;
+	}
+	if(f_ClientInvul[entity] > GetGameTime())
 	{
 		return;
 	}
@@ -7562,14 +7571,19 @@ void TeleportBuilding(int entity, const float origin[3] = NULL_VECTOR, const flo
 	int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
 	int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
 
-	TeleportEntity(entity,origin,angles,velocity);
+	float Orgin_2[3];
+	Orgin_2 = origin;
+	SDKCall_SetLocalOrigin(entity, Orgin_2);	
+	TeleportEntity(entity,NULL_VECTOR,angles,velocity);
 	if(IsValidEntity(prop1))
 	{
-		TeleportEntity(prop1,origin,angles,velocity);
+		SDKCall_SetLocalOrigin(prop1, Orgin_2);	
+		TeleportEntity(prop1,NULL_VECTOR,angles,velocity);
 	}
 	if(IsValidEntity(prop2))
 	{
-		TeleportEntity(prop2,origin,angles,velocity);
+		SDKCall_SetLocalOrigin(prop2, Orgin_2);	
+		TeleportEntity(prop2,NULL_VECTOR,angles,velocity);
 	}
 }
 

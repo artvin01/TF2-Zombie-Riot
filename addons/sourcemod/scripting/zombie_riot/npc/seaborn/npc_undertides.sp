@@ -348,7 +348,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false, bool player_only = false, int TraceFrom = -1)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = false, bool player_only = false, int TraceFrom = -1, float RangeLimit = 0.0)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -362,6 +362,11 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 	int team = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
 	int[] def = new int[count];
 	float gameTime = GetGameTime();
+	float Pos1[3];
+	if(RangeLimit > 0.0)
+	{
+		Pos1 = WorldSpaceCenter(TraceEntity);
+	}
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -369,6 +374,13 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		{
 			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 				continue;
+				
+			if(RangeLimit > 0.0)
+			{
+				float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(client), Pos1, true);
+				if(flDistanceToTarget > RangeLimit)
+					continue;
+			}
 
 			for(int i; i < count; i++)
 			{
@@ -433,6 +445,13 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
 
+					if(RangeLimit > 0.0)
+					{
+						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(entity), Pos1, true);
+						if(flDistanceToTarget > RangeLimit)
+							continue;
+					}
+
 					for(int i; i < count; i++)
 					{
 						int defense = b_npcspawnprotection[entity] ? 8 : 0;
@@ -470,6 +489,13 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 					if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, entity))
 						continue;
 						
+					if(RangeLimit > 0.0)
+					{
+						float flDistanceToTarget = GetVectorDistance(WorldSpaceCenter(entity), Pos1, true);
+						if(flDistanceToTarget > RangeLimit)
+							continue;
+					}
+
 					for(int i; i < count; i++)
 					{
 						int defense = b_npcspawnprotection[entity] ? 8 : 0;

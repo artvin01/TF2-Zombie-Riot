@@ -682,6 +682,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				ExpidonsaRemoveEffects(npc.index);
 				npc.AddActivityViaSequence("taunt05");
+				npc.m_flAttackHappens = 0.0;
 				EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 				npc.SetCycle(0.01);
 				NPC_StopPathing(npc.index);
@@ -738,6 +739,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_bPathing = false;
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
+			npc.m_flAttackHappens = 0.0;
 			VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
@@ -1392,6 +1394,7 @@ bool SensalTransformation(Sensal npc)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
+			npc.m_flAttackHappens = 0.0;
 			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
 			b_CannotBeHeadshot[npc.index] = true;
@@ -1583,7 +1586,7 @@ bool SensalSummonPortal(Sensal npc)
 			Sensal particle = view_as<Sensal>(PortalParticle);
 			particle.Anger = npc.Anger;
 			DataPack pack;
-			CreateDataTimer(5.0, Sensal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(npc.index));
 			pack.WriteCell(EntIndexToEntRef(PortalParticle));
 
@@ -1623,7 +1626,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
 		int enemy[16];
-		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true, Particle);
+		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, true, Particle, (1800.0 * 1800.0));
 		bool Foundenemies = false;
 
 		for(int i; i < sizeof(enemy); i++)
