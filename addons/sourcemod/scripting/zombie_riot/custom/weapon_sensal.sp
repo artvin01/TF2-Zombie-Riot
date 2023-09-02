@@ -177,7 +177,7 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 			fAng[0] = 0.0;
 			
-			float damage = 250.0;
+			float damage = 500.0;
 
 			damage *= Attributes_Get(weapon, 2, 1.0);
 					
@@ -495,7 +495,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	speed *= Attributes_Get(weapon, 475, 1.0);
 
 
-	float time = 1000.0/speed;
+	float time = 3000.0/speed;
 	time *= Attributes_Get(weapon, 101, 1.0);
 
 	time *= Attributes_Get(weapon, 102, 1.0);
@@ -531,9 +531,9 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	{
 		for(int Repeat; Repeat <= 2; Repeat++)
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
+			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
 			SensalWeaponEffects(projectile, projectile, 0, "");
-			CreateTimer(15.0, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			
 			Initiate_HomingProjectile(projectile,
@@ -564,9 +564,9 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		fAng[1] += 45.0;
 		for(int Repeat; Repeat <= 1; Repeat++)
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
+			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
 			SensalWeaponEffects(projectile, projectile, 0, "");
-			CreateTimer(15.0, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			
 			Initiate_HomingProjectile(projectile,
@@ -588,8 +588,14 @@ public Action Timer_RemoveEntityWeaponSensal(Handle timer, any entid)
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity))
 	{
+		int Particle EntRefToEntIndex(i_WandParticle[entity]);
+		if(IsValidEntity(Particle))
+		{
+			RemoveEntity(Particle);
+		}
 		SensalWeaponRemoveEffects(entity);
 		RemoveEntity(entity);
+		
 	}
 	return Plugin_Stop;
 }
