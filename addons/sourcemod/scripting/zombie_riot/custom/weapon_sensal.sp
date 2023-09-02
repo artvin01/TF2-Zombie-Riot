@@ -588,7 +588,7 @@ public Action Timer_RemoveEntityWeaponSensal(Handle timer, any entid)
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity))
 	{
-		int Particle EntRefToEntIndex(i_WandParticle[entity]);
+		int Particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(Particle))
 		{
 			RemoveEntity(Particle);
