@@ -20,11 +20,11 @@ methodmap AlliedSensalAbility < CClotBody
 {
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.9, 100);
 	}
 	public void PlayChargeSound() 
 	{
-		EmitSoundToAll(g_ChargeSounds[GetRandomInt(0, sizeof(g_ChargeSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_ChargeSounds[GetRandomInt(0, sizeof(g_ChargeSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.9, 100);
 	}
 
 	
@@ -99,6 +99,9 @@ methodmap AlliedSensalAbility < CClotBody
 		NPC_StopPathing(npc.index);
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
+		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
+		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 
 
 		return npc;
 	}
@@ -243,6 +246,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 
+	int Weapon = EntRefToEntIndex(i_Changed_WalkCycle[npc.index]);
 	float DamageFallOff = 1.0;
 	for (int building = 0; building < SENSAL_MAX_TARGETS_HIT; building++)
 	{
@@ -252,7 +256,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 			{
 				float damage = fl_heal_cooldown[entity];
 
-				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, entity, damage / DamageFallOff, DMG_CLUB, -1, NULL_VECTOR, WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building]));	// 2048 is DMG_NOGIB?
+				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, entity, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building]), _ , ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);	// 2048 is DMG_NOGIB?
 				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;				
 			}
 		}

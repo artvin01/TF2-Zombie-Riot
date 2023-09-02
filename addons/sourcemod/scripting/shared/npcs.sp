@@ -53,6 +53,7 @@ void Npc_Sp_Precache()
 {
 	f_DelayNextWaveStartAdvancing = 0.0;
 	g_particleCritText = PrecacheParticleSystem("crit_text");
+	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 	g_particleMissText = PrecacheParticleSystem("miss_text");
 }
 
@@ -2939,6 +2940,12 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 				damage *= 0.75;
 			}
 		}
+	}
+	if(damagetype & DMG_CRIT && !b_IsABow[weapon])
+	{		
+		damage *= 1.35;
+		DisplayCritAboveNpc(victim, attacker, true,_,_,true); //Display crit above head
+		damagetype &= ~DMG_CRIT;
 	}
 #endif
 	return false;

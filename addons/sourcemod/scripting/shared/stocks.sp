@@ -3036,7 +3036,7 @@ public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, int filte
 	return true;
 }
 
-stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0}, int ParticleIndex = -1)
+stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float position[3] = {0.0,0.0,0.0}, int ParticleIndex = -1, bool minicrit = false)
 {
 	float chargerPos[3];
 	if(victim != -1)
@@ -3058,30 +3058,61 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 
 	if(sound)
 	{
-		switch(GetRandomInt(1,5))
+		if(minicrit)
 		{
-			case 1:
+			switch(GetRandomInt(1,5))
 			{
-				EmitSoundToClient(client, "player/crit_hit.wav", _, _, 80, _, 0.8, 100);
-			}
-			case 2:
-			{
-				EmitSoundToClient(client, "player/crit_hit2.wav", _, _, 80, _, 0.8, 100);
-			}
-			case 3:
-			{
-				EmitSoundToClient(client, "player/crit_hit3.wav", _, _, 80, _, 0.8, 100);
-			}
-			case 4:
-			{
-				EmitSoundToClient(client, "player/crit_hit4.wav", _, _, 80, _, 0.8, 100);
-			}
-			case 5:
-			{
-				EmitSoundToClient(client, "player/crit_hit5.wav", _, _, 80, _, 0.8, 100);
-			}
-			
+				case 1:
+				{
+					EmitSoundToClient(client, "player/crit_hit_mini.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 2:
+				{
+					EmitSoundToClient(client, "player/crit_hit_mini1.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 3:
+				{
+					EmitSoundToClient(client, "player/crit_hit_mini2.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 4:
+				{
+					EmitSoundToClient(client, "player/crit_hit_mini3.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 5:
+				{
+					EmitSoundToClient(client, "player/crit_hit_mini4.wav", _, _, 80, _, 0.8, 100);
+				}
+				
+			}			
 		}
+		else
+		{
+			switch(GetRandomInt(1,5))
+			{
+				case 1:
+				{
+					EmitSoundToClient(client, "player/crit_hit.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 2:
+				{
+					EmitSoundToClient(client, "player/crit_hit2.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 3:
+				{
+					EmitSoundToClient(client, "player/crit_hit3.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 4:
+				{
+					EmitSoundToClient(client, "player/crit_hit4.wav", _, _, 80, _, 0.8, 100);
+				}
+				case 5:
+				{
+					EmitSoundToClient(client, "player/crit_hit5.wav", _, _, 80, _, 0.8, 100);
+				}
+				
+			}		
+		}
+
 	}
 	if(ParticleIndex != -1)
 	{
@@ -3090,8 +3121,16 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 	}
 	else
 	{
-		TE_ParticleInt(g_particleCritText, chargerPos);
-		TE_SendToClient(client);		
+		if(minicrit)
+		{
+			TE_ParticleInt(g_particleMiniCritText, chargerPos);
+			TE_SendToClient(client);
+		}
+		else
+		{
+			TE_ParticleInt(g_particleCritText, chargerPos);
+			TE_SendToClient(client);	
+		}	
 	}
 }
 

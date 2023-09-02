@@ -384,6 +384,7 @@ float f_PotionShrinkEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int g_particleCritText;
+int g_particleMiniCritText;
 int g_particleMissText;
 int LastHitRef[MAXENTITIES];
 int DamageBits[MAXENTITIES];

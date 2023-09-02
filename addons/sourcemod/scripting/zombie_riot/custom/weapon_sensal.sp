@@ -202,6 +202,7 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 				//this is the damage
 				i_Target[spawn_index] = foundTarget;
 				fl_heal_cooldown[spawn_index] = damage;
+				i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);
 			}
 		}
 		else
@@ -528,7 +529,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	EmitSoundToAll("weapons/mortar/mortar_explode3.wav", client, SNDCHAN_AUTO, 80, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Pos_player);	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_2 || i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_3)
 	{
-		for(int Repeat; Repeat <= 4; Repeat++)
+		for(int Repeat; Repeat <= 2; Repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
 			SensalWeaponEffects(projectile, projectile, 0, "");
@@ -537,7 +538,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 			
 			Initiate_HomingProjectile(projectile,
 			client,
-				75.0,			// float lockonAngleMax,
+				90.0,			// float lockonAngleMax,
 				45.0,				//float homingaSec,
 				false,				// bool LockOnlyOnce,
 				false,				// bool changeAngles,
@@ -546,21 +547,22 @@ void SummonScytheSensalProjectile(int client, int weapon)
 			
 			if(Repeat == 0)
 			{
-				fAng[1] -= 72.0;
+				fAng[1] -= 50.0;
 			}
 			else if(Repeat == 1)
 			{
-				fAng[1] += (72.0 * 2.0);
+				fAng[1] += (50.0 * 2.0);
 			}
 			else
 			{
-				fAng[1] += 72.0;
+				fAng[1] += 50.0;
 			}
 		}		
 	}
 	else
 	{
-		for(int Repeat; Repeat <= 3; Repeat++)
+		fAng[1] += 45.0;
+		for(int Repeat; Repeat <= 1; Repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
 			SensalWeaponEffects(projectile, projectile, 0, "");
@@ -569,13 +571,13 @@ void SummonScytheSensalProjectile(int client, int weapon)
 			
 			Initiate_HomingProjectile(projectile,
 			client,
-				75.0,			// float lockonAngleMax,
+				90.0,			// float lockonAngleMax,
 				45.0,				//float homingaSec,
 				false,				// bool LockOnlyOnce,
 				false,				// bool changeAngles,
 				fAng,
 				target);			// float AnglesInitiate[3]);
-			fAng[1] += 90.0;
+			fAng[1] -= 90.0;
 		}
 	}
 }
