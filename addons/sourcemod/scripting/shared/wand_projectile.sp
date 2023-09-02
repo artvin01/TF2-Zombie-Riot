@@ -16,7 +16,8 @@ int WandId,
 int weapon,
 const char[] WandParticle,
 float CustomAng[3] = {0.0,0.0,0.0},
-bool hideprojectile = true) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
+bool hideprojectile = true,
+float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the rest like particle effects should be handled within the plugins themselves. hopefully.
 {
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
@@ -27,6 +28,12 @@ bool hideprojectile = true) //This will handle just the spawning, the rest like 
 		fAng[0] = CustomAng[0];
 		fAng[1] = CustomAng[1];
 		fAng[2] = CustomAng[2];
+	}
+	if(CustomPos[0] != 0.0 || CustomPos[1] != 0.0)
+	{
+		fPos[0] = CustomPos[0];
+		fPos[1] = CustomPos[1];
+		fPos[2] = CustomPos[2];
 	}
 
 
@@ -247,6 +254,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_GERMAN:
 		{
 			Weapon_German_WandTouch(entity, target);
+		}
+		case WEAPON_SENSAL_SCYTHE:
+		{
+			Weapon_Sensal_WandTouch(entity, target);
 		}
 	}
 #else

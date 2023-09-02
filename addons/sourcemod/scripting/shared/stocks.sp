@@ -2267,7 +2267,7 @@ public void CreateEarthquake(float position[3], float duration, float radius, fl
 }
 
 
-public bool TF2U_GetWearable(int client, int &entity, int &index)
+bool TF2U_GetWearable(int client, int &entity, int &index, const char[] classname = "tf_wear*")
 {
 	/*#if defined __nosoop_tf2_utils_included
 	if(Loaded)
@@ -2288,7 +2288,7 @@ public bool TF2U_GetWearable(int client, int &entity, int &index)
 		
 		if(index > -2)
 		{
-			while((index=FindEntityByClassname(index, "tf_wear*")) != -1)
+			while((index=FindEntityByClassname(index, classname)) != -1)
 			{
 				if(GetEntPropEnt(index, Prop_Send, "m_hOwnerEntity") == client)
 				{

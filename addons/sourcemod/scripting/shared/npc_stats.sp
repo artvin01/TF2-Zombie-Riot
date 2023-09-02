@@ -1984,7 +1984,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	int skin = 0,
 	float model_size = 1.0)
 	{
-		int item = CreateEntityByName("prop_dynamic");
+		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)

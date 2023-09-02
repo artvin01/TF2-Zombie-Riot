@@ -373,7 +373,8 @@ enum
 	EXPIDONSA_ERASUS				= 325,
 	EXPIDONSA_GIANTTANKUS			= 326,
 	EXPIDONSA_ANFUHREREISENHARD		= 327, //not as many gimmics as everything else has a million gimmics
-	EXPIDONSA_SPEEDUSADIVUS			= 328
+	EXPIDONSA_SPEEDUSADIVUS			= 328,
+	WEAPON_SENSAL_AFTERIMAGE		= 329
 	
 }
 
@@ -729,7 +730,8 @@ public const char NPC_Names[][] =
 	"Erasus",
 	"Giant Tankus",
 	"Anfuhrer Eisenhard",
-	"Speedus Adivus"
+	"Speedus Adivus",
+	"Allied Sensal Afterimage"
 };
 // See items.sp for IDs to names
 public const int NPCCategory[] =
@@ -1089,7 +1091,8 @@ public const int NPCCategory[] =
 	10,	// EXPIDONSA_ERASUS				= 325,
 	10,	// EXPIDONSA_GIANTTANKUS			= 326,
 	10,	// EXPIDONSA_ANFUHREREISENHARD		= 327,
-	10, //EXPIDONSA_SPEEDUSADIVUS			= 328
+	10, //EXPIDONSA_SPEEDUSADIVUS			= 328,
+	0, 	//WEAPON_SENSAL_AFTERIMAGE			= 329 
 };
 
 public const char NPC_Plugin_Names_Converted[][] =
@@ -1444,7 +1447,8 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_erasus",
 	"npc_gianttankus",
 	"npc_anfuhrer_eisenhard",
-	"npc_speedus_adivus"
+	"npc_speedus_adivus",
+	"",
 };
 
 void NPC_MapStart()
@@ -1703,6 +1707,7 @@ void NPC_MapStart()
 	Barrack_Alt_Scientific_Witchery_MapStart();
 	Barracks_Thorns();
 	VIPBuilding_MapStart();
+	AlliedSensalAbility_OnMapStart_NPC();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -2646,6 +2651,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 		case EXPIDONSA_SPEEDUSADIVUS:
 			entity = SpeedusAdivus(client, vecPos, vecAng, ally);
 
+		case WEAPON_SENSAL_AFTERIMAGE:
+			entity = AlliedSensalAbility(client, vecPos, vecAng, ally);
+
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
 		
@@ -3577,6 +3585,9 @@ public void NPCDeath(int entity)
 
 		case EXPIDONSA_SPEEDUSADIVUS:
 			SpeedusAdivus_NPCDeath(entity);
+
+		case WEAPON_SENSAL_AFTERIMAGE:
+			AlliedSensalAbility_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -4530,6 +4541,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_necromancy_calcium.sp"
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
 #include "zombie_riot/npc/ally/npc_citizen.sp"
+#include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"

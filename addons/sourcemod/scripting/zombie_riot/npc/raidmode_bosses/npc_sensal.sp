@@ -1245,7 +1245,6 @@ public Action Timer_RemoveEntitySensal(Handle timer, any entid)
 }
 
 
-
 public void Sensal_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
@@ -1644,6 +1643,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				//dont exist !
 				SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+				
 				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 				CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 				static float ang_Look[3];

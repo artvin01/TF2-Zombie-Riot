@@ -2381,6 +2381,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Vamp_ApplyBloodlust(attacker, victim, 4, true, false);
 		}
+		case WEAPON_SENSAL_SCYTHE, WEAPON_SENSAL_SCYTHE_PAP_1, WEAPON_SENSAL_SCYTHE_PAP_2, WEAPON_SENSAL_SCYTHE_PAP_3:
+		{
+			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon);
+		}
 	}
 #endif
 

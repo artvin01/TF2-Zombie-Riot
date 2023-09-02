@@ -2836,4 +2836,8 @@
 		"en"		"Summons: {1}"
 		"chi"       "召唤: {1}"
 	}
+	"Sensal Scythes Not Fully Charged"
+	{
+		"en"		"Sensal Scythes Not Fully Charged"
+	}
 }

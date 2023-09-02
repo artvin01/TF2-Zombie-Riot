@@ -2339,4 +2339,20 @@
 	{
 		"en"	"Speichert bis zu vier Angriffe."
 	}
+	"Sensal Desc"
+	{
+		"en"	"Borrowed from sensal straight out of expidonsa."
+	}
+	"Sensal Desc 1"
+	{
+		"en"	"Gain the ability to shoot projetiles with m2, they homo onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits\nA certain battery will double its capacity..."
+	}
+	"Sensal Desc 2"
+	{
+		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell."
+	}
+	"Sensal Desc 3"
+	{
+		"en"	"Increaced damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
+	}
 }

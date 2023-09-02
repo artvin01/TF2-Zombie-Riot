@@ -9,6 +9,10 @@ static float RWI_RocketSpeed[MAXENTITIES];
 static bool RWI_AlterRocketActualAngle[MAXENTITIES];
 static float RWI_RocketRotation[MAXENTITIES][3];
 
+float[] GetRocketAngles(int entity)
+{
+	return RWI_RocketRotation[entity];
+}
 //Credits: Me (artvin) for rewriting it abit so its easier to read
 // Sarysa (sarysa pub 1 plugin)
 void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, float homingaSec, bool LockOnlyOnce, bool changeAngles, float AnglesInitiate[3], int initialTarget = -1)

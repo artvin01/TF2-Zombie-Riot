@@ -4328,6 +4328,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
+	/*
 	float pos1[3];
 	float pos2[3];
 	int MountedBuilding = EntRefToEntIndex(Building_Mounted[owner]); 
@@ -4348,6 +4349,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Too Far Away");		
 		return;	
 	}
+	*/
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	Building_Collect_Cooldown[entity][client] = GetGameTime() + 40.0;
 	

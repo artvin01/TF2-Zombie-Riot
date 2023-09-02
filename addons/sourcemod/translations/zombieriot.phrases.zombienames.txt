@@ -1789,4 +1789,8 @@
 	{
 		"en"	"Speedus Adivus"
 	}
+	"Allied Sensal Afterimage"
+	{
+		"en"	"Allied Sensal Afterimage"
+	}
 }
