@@ -8,7 +8,7 @@ static int Luck = 0;
 
 void Hazard_Map_Precache()
 {
-	PrecacheSound("playgamesound weapons/weapon_crit_charged_off.wav");
+	PrecacheSound("weapons/weapon_crit_charged_off.wav");
 }
 
 public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, int weapon)
@@ -399,7 +399,7 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 20.0);
-		EmitSoundToAll("playgamesound weapons/weapon_crit_charged_off.wav", client);
+		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
 		float flPos[3]; 
 		float flAng[3];	
 		int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);

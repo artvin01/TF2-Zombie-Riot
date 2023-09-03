@@ -121,6 +121,8 @@ methodmap EnegaKapus < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		npc.m_iWearable4 = npc.SpawnShield(0.0, "models/props_mvm/mvm_player_shield.mdl",80.0);
+		SetVariantString("0.45");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		return npc;
 	}

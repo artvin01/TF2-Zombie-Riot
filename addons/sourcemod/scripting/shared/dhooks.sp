@@ -790,21 +790,31 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
-			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
+			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
-					//This is only used for wands so place beware, we will just delete the entity.
-					RemoveEntity(entity1);
-				//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
-				//	b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
-					int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
-					if(IsValidEntity(entity_particle))
+					if(i_WandIdNumber[entity1] != 0)
 					{
-						RemoveEntity(entity_particle);
-					//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
+						//make it act as if it collided with the world.
+						Wand_Base_StartTouch(entity1, 0);
+					}
+					else
+					{
+						//force a collision
+						
+						//We sadly cannot force a collision like this, but whatwe can do is manually call the collision with out own code.
+						//This is only used for wands so place beware, we will just delete the entity.
+						RemoveEntity(entity1);
+					//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity1));
+					//	b_ThisEntityIgnoredEntirelyFromAllCollisions[entity1] = true;
+						int entity_particle = EntRefToEntIndex(i_WandParticle[entity1]);
+						if(IsValidEntity(entity_particle))
+						{
+							RemoveEntity(entity_particle);
+						//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(entity_particle));
+						}						
 					}
 				}
 				return false;
@@ -2030,7 +2040,7 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 	return MRES_Ignored;
 }
 
-#define MAX_YAW_SHIELD_DELETE_SIDEWAY 55.0
+#define MAX_YAW_SHIELD_DELETE_SIDEWAY 25.0
 bool ShieldDeleteProjectileCheck(int owner, int enemy)
 {
 	float pos1[3];
@@ -2049,7 +2059,7 @@ bool ShieldDeleteProjectileCheck(int owner, int enemy)
 
 	int Verify = 0;
 
-	if(ang2[0] < 30.0 && ang2[0] > -30.0)
+	if(ang2[0] < 15.0 && ang2[0] > -15.0)
 		Verify++;
 
 	if(!(fabs(ang2[1] - ang3[1]) <= MAX_YAW_SHIELD_DELETE_SIDEWAY ||
