@@ -2355,4 +2355,33 @@
 	{
 		"en"	"Increaced damage and resistance, you gain the ability to summon after images which fire lasers onto targets.\nAttacks targets you look at, if they arent valid, then its any close enemy."
 	}
+	"Hazard Desc"
+	{
+		"en"	"A bonesaw powered by a strange core. It's aura feels weak.\nAttacks deal random damage, has a low chance to hit [JACKPOT]"
+	}
+	"Hazard Unstable Desc"
+	{
+		"en"	"The core grows wild.\nIncreased and more randomized damage."
+	}
+	"Hazard Lunatic Desc"
+	{
+		"en"	"The core has taken in the Improbability drive, nothing makes sense anymore.\nDamage is completely randomized alongside attack speed."
+	}
+	"Hazard Chaos Desc"
+	{
+		"en"	"Chaos has been achieved. Complete anarchy.\nDamage, attack speed, speed, damage resistance, [JACKPOT]...\nHave all been randomized."
+	}
+	"Hazard Stabilized Desc"
+	{
+		"en"	"Safety measures for the core have calmed it down.\nDamage is slightly less randomized, [JACKPOT] has a higher chance of happening."
+	}
+	"Hazard Demi Desc"
+	{
+		"en"	"Reaching the finality, it will soon be over.\nYou gain an ability that increases your luck, which lets you deal more damage and get [JACKPOT] more often"
+	}
+	"Hazard Perfect Desc"
+	{
+		"en"	"Full maturity, the fruit of our labour.\n[JACKPOT] has a higher chance to occur, ability is improved and a hidden power has awakened..."
+	}
 }
+
