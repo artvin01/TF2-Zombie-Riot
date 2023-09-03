@@ -1160,7 +1160,7 @@ public void OnPostThink(int client)
 #endif	// RPG
 		
 #if defined ZR
-	if(f_DelayLookingAtHud[client] > GameTime)
+	if(f_DelayLookingAtHud[client] < GameTime)
 	{
 		//Reuse uhh
 		//Doesnt reset often enough, fuck clientside.

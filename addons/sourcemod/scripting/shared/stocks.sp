@@ -383,6 +383,8 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	GetClientEyePosition(iClient, vecOrigin);
 	GetClientEyeAngles(iClient, vecAngles);
 	
+	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+
 	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitAlivePlayer, iClient);
 	TR_GetEndPosition(vecEndOrigin, hTrace);
 	

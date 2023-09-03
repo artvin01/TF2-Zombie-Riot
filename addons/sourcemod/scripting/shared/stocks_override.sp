@@ -29,6 +29,19 @@ bool Stock_IsValidEntity(int entity)
 
 #define IsValidEntity Stock_IsValidEntity
 
+void Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int caller=-1, int outputid=0)
+{
+	//for some reason some props faily to spawn, so we have this check and give a warning instead of errors spamming to death.
+	if(dest < 0)
+	{
+		LogError("AcceptEntityInput Failed somehow. Todo: Do checks on them all, but not neccecary.");
+		return;
+	}
+
+	AcceptEntityInput(dest, input, activator, caller, outputid);
+}
+
+#define AcceptEntityInput Stock_AcceptEntityInput
 	
 
 /*
