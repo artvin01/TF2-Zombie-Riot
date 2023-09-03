@@ -199,10 +199,11 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 	}
 	delete trace;
 
+
 	int red = 65;
 	int green = 65;
 	int blue = 255;
-	float diameter = float(10 * 4);
+	float diameter = float(40);
 	//we set colours of the differnet laser effects to give it more of an effect
 	
 	float flPos[3];
@@ -229,7 +230,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 
 	float hullMin[3];
 	float hullMax[3];
-	hullMin[0] = -float(10);
+	hullMin[0] = -float(40);
 	hullMin[1] = hullMin[0];
 	hullMin[2] = hullMin[0];
 	hullMax[0] = -hullMin[0];

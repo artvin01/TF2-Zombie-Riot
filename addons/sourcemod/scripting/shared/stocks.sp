@@ -313,7 +313,7 @@ stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
 	return false;
 }
 
-stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0})
+stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
 {
 	float vecOrigin[3], vecAngles[3];
 	GetClientEyePosition(iClient, vecOrigin);
@@ -334,20 +334,42 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		flags |= MASK_SHOT;
 	}
 
-	if(!ignore_allied_npc)
+	int iReturn = -1;
+	int iHit;
+	//loop upto twice
+	if(repeatsretry == 1)
 	{
-		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
-		TR_GetEndPosition(vecEndOrigin, hTrace);
+		i_PreviousInteractedEntityDo[iClient] = false;
 	}
 	else
 	{
-		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
-		TR_GetEndPosition(vecEndOrigin, hTrace);		
+		i_PreviousInteractedEntityDo[iClient] = true;
 	}
 
-	int iReturn = -1;
-	int iHit = TR_GetEntityIndex(hTrace);
-	
+	for(int repeat; repeat < repeatsretry; repeat++)
+	{
+		if(!ignore_allied_npc)
+		{
+			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
+			TR_GetEndPosition(vecEndOrigin, hTrace);
+		}
+		else
+		{
+			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
+			TR_GetEndPosition(vecEndOrigin, hTrace);		
+		}
+		iHit = TR_GetEntityIndex(hTrace);
+		if(iHit > 0)
+		{
+			break;
+		}
+		if(repeat == 0)
+		{
+			delete hTrace;
+			i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+		}
+	}
+	i_PreviousInteractedEntity[iClient] = iHit;
 	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
 	
@@ -1379,23 +1401,26 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 #if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{
-			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
-			if(dieingstate[entity] > 0)
+			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
-				if(!b_LeftForDead[entity])
+				int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
+				if(dieingstate[entity] > 0)
 				{
-					return entity!=data;
+					if(!b_LeftForDead[entity])
+					{
+						return entity!=data;
+					}
+					else
+					{
+						return false;	
+					}
 				}
-				else
+				else if(Building_Index == 0 || !IsValidEntity(Building_Index))
 				{
-					return false;	
+					return false;
 				}
+				return Building_Index!=data;
 			}
-			else if(Building_Index == 0 || !IsValidEntity(Building_Index))
-			{
-				return false;
-			}
-			return Building_Index!=data;
 		}
 #else
 		return false;
@@ -1403,6 +1428,10 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 		
 	}
 	if(entity > MaxClients && b_IsAlliedNpc[entity])
+	{
+		return false;
+	}
+	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
 	}
@@ -1417,23 +1446,26 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 #if defined ZR
 		if(entity != data) //make sure that they are not dead, if they are then just ignore them/give special shit
 		{
-			int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
-			if(dieingstate[entity] > 0)
+			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
-				if(!b_LeftForDead[entity])
+				int Building_Index = EntRefToEntIndex(Building_Mounted[entity]);
+				if(dieingstate[entity] > 0)
 				{
-					return entity!=data;
+					if(!b_LeftForDead[entity])
+					{
+						return entity!=data;
+					}
+					else
+					{
+						return false;	
+					}
 				}
-				else
+				else if(Building_Index == 0 || !IsValidEntity(Building_Index))
 				{
-					return false;	
+					return false;
 				}
+				return Building_Index!=data;
 			}
-			else if(Building_Index == 0 || !IsValidEntity(Building_Index))
-			{
-				return false;
-			}
-			return Building_Index!=data;
 		}
 #else
 		return false;
@@ -1447,16 +1479,25 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			int entityfrombrush = BrushToEntity(entity);
 			if(entityfrombrush != -1)
 			{
-				return entityfrombrush!=data;
+				if(i_PreviousInteractedEntity[data] != entityfrombrush || !i_PreviousInteractedEntityDo[data])
+				{
+					return entityfrombrush!=data;
+				}
 			}
 		}
 		if(Textstore_CanSeeItem(entity, data))
 		{
-			return entity!=data;
+			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
+			{
+				return entity!=data;
+			}
 		}
 		else if(b_IsAlliedNpc[entity])
 		{
-			return entity!=data;
+			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
+			{
+				return entity!=data;
+			}
 		}
 		else
 		{
@@ -1464,6 +1505,10 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		}
 	}
 #endif	
+	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
+	{
+		return false;
+	}
 	return entity!=data;
 }
 

@@ -238,13 +238,17 @@ void Music_PostThink(int client)
 						TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
 					
 					Give_Cond_Timer[client] = GetGameTime() + 1.0;
+					Attributes_Set(client, 442, 0.7674418604651163);
+					
 				}
 			}
 		}
+		/*
 		if(TeutonType[client] == TEUTON_NONE)
 		{
 			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 250.0);
 		}
+		*/
 	}
 	
 	if(MusicDisabled)

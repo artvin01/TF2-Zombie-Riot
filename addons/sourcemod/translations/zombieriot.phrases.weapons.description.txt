@@ -780,9 +780,7 @@
 	
 	"Ubersaw Desc"
 	{
-		"en"	"Get 10%% uber per melee hit"
-		"ru"	"Получайте 10%% убер-заряда за каждый удар в ближнем бою."
-		"chi"   "每次近战攻击将获得10%%的超能力"
+		"en"	"Get 10%% uber per melee hit.\nIts uber is split between mediguns if they arent full."
 	}
 	
 	"Hammer Pap 1"

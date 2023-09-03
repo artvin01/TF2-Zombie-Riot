@@ -1264,7 +1264,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-			if(NullfyDamageAndNegate(victim, attacker, inflictor, damage, damagetype, weapon,damagecustom,GameTime))
+			if(NullfyDamageAndNegate(victim, attacker, inflictor, damage, damagetype, weapon,damagecustom))
 				return Plugin_Handled;	
 			
 
@@ -2418,7 +2418,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &att
 #endif
 	return damage;
 }
-bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom, float GameTime)
+bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 	if(attacker <= MaxClients)
 	{
@@ -2460,10 +2460,6 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 		{
 			return true;
 		}
-	}
-	if(f_NpcHasBeenUnstuckAboveThePlayer[victim] > GameTime) //They were immortal, just nullfy any and all damage.
-	{
-		return true;
 	}
 	return false;
 }

@@ -888,6 +888,11 @@ things i tried
 			{
 				return false;
 			}
+			else if((entity2 <= MaxClients && entity2 > 0) && f_AntiStuckPhaseThrough[entity2] > GetGameTime())
+			{
+				//if a player needs to get unstuck.
+				return false;
+			}
 		}
 		else if(b_IsAlliedNpc[entity1])
 		{

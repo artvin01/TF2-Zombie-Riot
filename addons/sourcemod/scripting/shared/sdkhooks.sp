@@ -1160,14 +1160,14 @@ public void OnPostThink(int client)
 #endif	// RPG
 		
 #if defined ZR
-	if(f_DelayLookingAtHud[client] < GameTime)
+	if(f_DelayLookingAtHud[client] > GameTime)
 	{
 		//Reuse uhh
 		//Doesnt reset often enough, fuck clientside.
 		if (IsPlayerAlive(client))
 		{
 			static int entity;
-			entity = GetClientPointVisible(client); //allow them to get info if they stare at something for abit long
+			entity = GetClientPointVisible(client,_,_,_,_,1); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
 			f_DelayLookingAtHud[client] = GameTime + 0.25;	
 		}
@@ -1345,8 +1345,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 			
 #if defined ZR
-		Replicated_Damage *= 0.85; //Reduce falldmg by passive overall
-		damage *= 0.85;
+		Replicated_Damage *= 0.45; //Reduce falldmg by passive overall
+		damage *= 0.45;
 		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 		{
 			Replicated_Damage *= 0.75;
@@ -1399,36 +1399,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
-			SetGlobalTransTarget(victim);
-			PrintToChat(victim, "%t", "Npc Stuck Spot Warning");
-			if (GameTime > f_ClientWasTooLongInsideHurtZone[victim])
-			{
-				f_ClientWasTooLongInsideHurtZone[victim] = GameTime + 6.0;	
-			}
-			if (GameTime > f_ClientWasTooLongInsideHurtZoneDamage[victim] + 2.0)
-			{	
-				f_ClientWasTooLongInsideHurtZoneDamage[victim] = GameTime + 4.0;	
-			}
-		}
-		if ((GetEntityFlags(victim) & FL_ONGROUND) != 0 || GetEntProp(victim, Prop_Send, "m_nWaterLevel") >= 1 || b_ThisNpcIsSawrunner[attacker] || f_ClientWasTooLongInsideHurtZoneDamage[victim] < GameTime) 
-#endif
-		{
-		//only damage if actually standing or in water, itll be more forgiving.
-#if defined ZR
-			Replicated_Damage *= 2.0;
-			damage *= 2.0;
-#endif
-
-#if defined RPG
-			damage *= 5.0;
-#endif
-			f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-			return Plugin_Changed;	
-		}
-#if defined ZR
-		else
-		{
-			return Plugin_Handled;	
+			NpcStuckZoneWarning(victim, damage);
+			Replicated_Damage = damage;
 		}
 #endif
 	}
@@ -2058,5 +2030,26 @@ void UpdatePlayerFakeModel(int client)
 	//	TF2_SetPlayerClass(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
+	}
+}
+
+void NpcStuckZoneWarning(int client, float &damage)
+{
+	SetGlobalTransTarget(client);
+	PrintToChat(client, "%t", "Npc Stuck Spot Warning");
+	f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
+	//deduct healing already.
+	//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
+	damage = 0.0;
+	if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
+	{
+		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 2.0;
+		f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+	}
+	else if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime() + 1.0)
+	{
+		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 1.0;
+		f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
+		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
 	}
 }

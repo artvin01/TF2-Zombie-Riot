@@ -4048,6 +4048,8 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
+	if(LastMann)
+		Attributes_Set(client, 442, 0.7674418604651163);
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 10.0);	// x10 faster diepsner build

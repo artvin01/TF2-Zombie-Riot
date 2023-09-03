@@ -219,6 +219,8 @@ int i_BackstabHealTicks[MAXENTITIES];
 bool b_BackstabLaugh[MAXENTITIES];
 float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
+float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
+float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 
 bool thirdperson[MAXTF2PLAYERS];
 bool b_DoNotUnStuck[MAXENTITIES];
@@ -595,6 +597,8 @@ bool b_IgnoredByPlayerProjectiles[MAXENTITIES];
 
 bool b_IsPlayerABot[MAXPLAYERS+1];
 float f_CooldownForHurtHud[MAXPLAYERS];	
+int i_PreviousInteractedEntity[MAXENTITIES];
+bool i_PreviousInteractedEntityDo[MAXENTITIES];
 //Otherwise we get kicks if there is too much hurting going on.
 
 Address g_hSDKStartLagCompAddress;
@@ -962,7 +966,6 @@ int i_PoseMoveY[MAXENTITIES];
 bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
 bool b_LagCompensationDeletedArrayList[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
-float f_NpcHasBeenUnstuckAboveThePlayer[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1262,6 +1265,11 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit3.wav");
 	PrecacheSound("player/crit_hit2.wav");
 	PrecacheSound("player/crit_hit.wav");
+	PrecacheSound("player/crit_hit_mini.wav");
+	PrecacheSound("player/crit_hit_mini1.wav");
+	PrecacheSound("player/crit_hit_mini2.wav");
+	PrecacheSound("player/crit_hit_mini3.wav");
+	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
@@ -1290,7 +1298,8 @@ public void OnMapStart()
 	ViewChange_MapStart();
 	MapStart_CustomMeleePrecache();
 	WandStocks_Map_Precache();
-	
+	Zero(f_AntiStuckPhaseThroughFirstCheck);
+	Zero(f_AntiStuckPhaseThrough);
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -3068,6 +3077,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	}
 }
 
+
 bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 {
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
@@ -3162,7 +3172,6 @@ static void MapStartResetAll()
 {
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(b_IsAGib);
-	Zero(f_StuckTextChatNotif);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
 	Zero(f_WidowsWineDebuffPlayerCooldown);
 	Zero(f_WidowsWineDebuff);
@@ -3194,7 +3203,6 @@ static void MapStartResetAll()
 	Zero(f_ClientInvul);
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
-	Zero(f_StuckTextChatNotif);
 	Zero(b_LimitedGibGiveMoreHealth);
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
