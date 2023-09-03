@@ -181,8 +181,8 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 
 			damage *= Attributes_Get(weapon, 2, 1.0);
 					
-			StartLagCompensation_Base_Boss(client);
 			b_LagCompNPC_No_Layers = true;
+			StartLagCompensation_Base_Boss(client);
 
 			Handle swingTrace;
 			float vecSwingForward[3];
@@ -503,8 +503,8 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	float Pos_player[3];
 	Pos_player = WorldSpaceCenter(client);
 	
-	StartLagCompensation_Base_Boss(client);
 	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
 
 	Handle swingTrace;
 	float vecSwingForward[3];

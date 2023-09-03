@@ -1340,6 +1340,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 						OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 					}
 				}
+				if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || damagetype & DMG_CRIT)
+				{		
+					damage *= 1.35;
+					DisplayCritAboveNpc(victim, attacker, true,_,_,true); //Display crit above head
+					damagetype &= ~DMG_CRIT;
+				}
 			}	
 		}
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -2940,12 +2946,6 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 				damage *= 0.75;
 			}
 		}
-	}
-	if(damagetype & DMG_CRIT && !b_IsABow[weapon])
-	{		
-		damage *= 1.35;
-		DisplayCritAboveNpc(victim, attacker, true,_,_,true); //Display crit above head
-		damagetype &= ~DMG_CRIT;
 	}
 #endif
 	return false;

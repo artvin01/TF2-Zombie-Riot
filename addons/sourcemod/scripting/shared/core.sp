@@ -1266,7 +1266,6 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit2.wav");
 	PrecacheSound("player/crit_hit.wav");
 	PrecacheSound("player/crit_hit_mini.wav");
-	PrecacheSound("player/crit_hit_mini1.wav");
 	PrecacheSound("player/crit_hit_mini2.wav");
 	PrecacheSound("player/crit_hit_mini3.wav");
 	PrecacheSound("player/crit_hit_mini4.wav");
@@ -3108,6 +3107,10 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				if (TeutonType[client] == TEUTON_WAITING)
+					return false;
+
+					
+				if (b_Is_Blue_Npc[client])
 					return false;
 
 				if(Escape_Interact(client, entity))

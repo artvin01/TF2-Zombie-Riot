@@ -2153,7 +2153,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						{
 							i_Healing_station_money_limit[owner][client] += 1;
 							Resupplies_Supplied[owner] += 4;
-							CashSpent[owner] -= 40;
+							GiveCredits(owner, 40, true);
 							SetDefaultHudPosition(owner);
 							SetGlobalTransTarget(owner);
 							ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Healing Station Used");
@@ -2210,7 +2210,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2246,7 +2246,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2271,7 +2271,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2293,7 +2293,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2315,7 +2315,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2337,7 +2338,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2359,7 +2360,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										if(!Rogue_Mode() && owner != -1 && owner != client)
 										{
 											Resupplies_Supplied[owner] += 2;
-											CashSpent[owner] -= 20;
+											GiveCredits(owner, 20, true);
 											SetDefaultHudPosition(owner);
 											SetGlobalTransTarget(owner);
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2385,7 +2386,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											if(!Rogue_Mode() && owner != -1 && owner != client)
 											{
 												Resupplies_Supplied[owner] += 2;
-												CashSpent[owner] -= 20;
+												GiveCredits(owner, 20, true);
 												SetDefaultHudPosition(owner);
 												SetGlobalTransTarget(owner);
 												ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
@@ -2442,12 +2443,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 
 							ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);
 
-						//	CashSpent[owner] -= 20;
 							if(!Rogue_Mode() && owner != -1 && owner != client)
 							{
 								if(Armor_table_money_limit[owner][client] < 15)
 								{
-									CashSpent[owner] -= 40;
+									GiveCredits(owner, 40, true);
 									Armor_table_money_limit[owner][client] += 1;
 									Resupplies_Supplied[owner] += 4;
 									SetDefaultHudPosition(owner);
@@ -4359,7 +4359,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	{
 		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
-			CashSpent[owner] -= 40;
+			GiveCredits(owner, 40, true);
 			Perk_Machine_money_limit[owner][client] += 1;
 			Resupplies_Supplied[owner] += 4;
 			SetDefaultHudPosition(owner);

@@ -682,6 +682,7 @@ void Store_WeaponSwitch(int client, int weapon)
 }
 
 #if defined ZR
+/*
 void Store_RemoveSellValue()
 {
 	static Item item;
@@ -697,7 +698,7 @@ void Store_RemoveSellValue()
 		StoreItems.SetArray(i, item);
 	}
 }
-
+*/
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -1347,7 +1348,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 							if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
 							{
 								Pack_A_Punch_Machine_money_limit[owner][client] += 10;
-								CashSpent[owner] -= 400;
+								GiveCredits(owner, 400, true);
 								Resupplies_Supplied[owner] += 40;
 								SetDefaultHudPosition(owner, _, _, _, 5.0);
 								SetGlobalTransTarget(owner);
@@ -1359,7 +1360,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 							if(Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] < 50)
 							{
 								Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] += 7;
-								CashSpent[HigherTechAdvancedClient] -= 300;
+								GiveCredits(HigherTechAdvancedClient, 300, true);
 								Resupplies_Supplied[HigherTechAdvancedClient] += 30;
 								SetDefaultHudPosition(HigherTechAdvancedClient, _, _, _, 5.0);
 								SetGlobalTransTarget(HigherTechAdvancedClient);
@@ -1368,7 +1369,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 							if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
 							{
 								Pack_A_Punch_Machine_money_limit[owner][client] += 3;
-								CashSpent[owner] -= 100;
+								GiveCredits(owner, 100, true);
 								Resupplies_Supplied[owner] += 10;
 								SetDefaultHudPosition(owner, _, _, _, 5.0);
 								SetGlobalTransTarget(owner);
@@ -1605,7 +1606,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				if(info.Cost > 0 && free)
 					return;
 				
-				if(CurrentCash >= base && (CurrentCash - CashSpent[client]) >= info.Cost)
+				if((base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())
 					{
@@ -1768,6 +1769,8 @@ void Store_ClientDisconnect(int client)
 	Database_SaveGameData(client);
 
 	CashSpent[client] = 0;
+	CashSpentGivePostSetup[client] = 0;
+	CashSpentGivePostSetupWarning[client] = false;
 	CashSpentTotal[client] = 0;
 	
 	static Item item;
@@ -2660,7 +2663,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
-				else if(Rogue_NoDiscount() || !Waves_InSetup())
+				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n \n%t\n \n%s \n<%t> [%i] ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name),"Can Be Pack-A-Punched", info2.Cost);
 				}
@@ -2675,7 +2678,7 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n%t\n%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
-				else if(Rogue_NoDiscount() || !Waves_InSetup())
+				else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 				{
 					FormatEx(buffer, sizeof(buffer), "%t\n \n%t\n \n%s ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(client, item.Name, info2.Custom_Name));
 				}
@@ -2824,7 +2827,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
-		else if(Rogue_NoDiscount() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
@@ -2844,7 +2847,7 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client]);
 		}
-		else if(Rogue_NoDiscount() || !Waves_InSetup())
+		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			if(Database_IsCached(client))
 			{
@@ -5656,7 +5659,7 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool started = (!Rogue_NoDiscount() && !Waves_InSetup());
+	bool noSetup = (!Rogue_NoDiscount() && !Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -5687,11 +5690,18 @@ static void ItemCost(int client, Item item, int &cost)
 				GregSale = true;
 		}
 	}
-	if(!started && !GregSale)
+	if(!noSetup && !GregSale)
 	{
-		if(CurrentRound < 2)
+		if(CurrentRound < 2)//extra preround discount
 		{
-			cost = RoundToCeil(float(cost) * 0.7);	
+			if(StartCash < 750) //give super discount for normal waves
+			{
+				cost = RoundToCeil(float(cost) * 0.35);
+			}
+			else //keep normal discount for waves that have other starting cash.
+			{
+				cost = RoundToCeil(float(cost) * 0.7);
+			}
 		}
 		else
 		{
@@ -5806,3 +5816,35 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 	
 }
 #endif	// ZR
+
+
+
+void GiveCredits(int client, int credits, bool building)
+{
+	if(building && Waves_InSetup() && StartCash < 750)
+	{
+		if(!CashSpentGivePostSetupWarning[client])
+		{
+			SetGlobalTransTarget(client);
+			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
+			CashSpentGivePostSetupWarning[client] = true;
+		}
+		int CreditsGive = credits;
+		int CreditsSaveForLater = credits;
+		CreditsGive /= 2;
+		CreditsSaveForLater = CreditsSaveForLater - CreditsGive;
+
+		CashSpent[client] -= CreditsGive;
+		CashSpentGivePostSetup[client] += CreditsSaveForLater;
+	}
+	else
+	{
+		CashSpent[client] -= credits;
+	}
+}
+
+void GrantCreditsBack(int client)
+{
+	CashSpent[client] -= CashSpentGivePostSetup[client];
+	CashSpentGivePostSetup[client] = 0;
+}

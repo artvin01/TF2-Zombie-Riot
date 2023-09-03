@@ -589,8 +589,8 @@ void Cause_Terroriser_Explosion(int client, int npc, float damage, float EntLoc2
 	spawnRing_Vectors(EntLoc2, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 6.0, 2.1, 1, radius);	
 	if(allowLagcomp)
 	{
-		StartLagCompensation_Base_Boss(client);
 		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
 
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false);
 

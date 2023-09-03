@@ -1054,14 +1054,14 @@ void Waves_Progress()
 					if(GetClientTeam(client_Penalise)!=2)
 					{
 						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 80%% due to not being in-game");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.20);
+						PrintToChat(client_Penalise, "%t", "You have only gained 90%% due to not being in-game");
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.10);
 					}
 					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
 					{
 						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 90 %% due to being a non-player player, but still helping");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.10);
+						PrintToChat(client_Penalise, "%t", "You have only gained 95 %% due to being a non-player player, but still helping");
+						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.05);
 					}
 				}
 			}
@@ -1575,10 +1575,15 @@ void Waves_Progress()
 	if(CurrentRound == 0 && !Rogue_Mode())
 	{
 		if(StartCash < 1500)
-			Store_RemoveSellValue();
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				GrantCreditsBack(client);
+			}
+		}
 		
 		Ammo_Count_Ready = 8;
-		if(StartCash < 1500)
+		/*if(StartCash < 1500)
 		{
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -1593,7 +1598,7 @@ void Waves_Progress()
 			}
 
 			CurrentCash = 0;
-		}
+		}*/
 	}
 	WaveStart_SubWaveStart();
 	if(CurrentWave == 0)

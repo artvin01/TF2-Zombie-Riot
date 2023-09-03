@@ -817,7 +817,10 @@ void Rogue_NextProgress()
 	{
 		case State_Setup:
 		{
-			Store_RemoveSellValue();
+			for(int client=1; client<=MaxClients; client++)
+			{
+				GrantCreditsBack(client);
+			}
 			
 			Ammo_Count_Ready = 8;
 			int highestLevel;

@@ -77,7 +77,6 @@ Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 	ViewAngles[client] = angles;
 	return Plugin_Continue;
 }
-
 /* Manually remove no longer in use entites */
 void OnEntityDestroyed_LagComp(int entity)
 {

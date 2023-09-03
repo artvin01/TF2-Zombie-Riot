@@ -213,6 +213,8 @@ int i_SvRollAngle[MAXTF2PLAYERS];
 Handle SyncHud_ArmorCounter;
 	
 int CashSpent[MAXTF2PLAYERS];
+int CashSpentGivePostSetup[MAXTF2PLAYERS];
+bool CashSpentGivePostSetupWarning[MAXTF2PLAYERS];
 int CashSpentTotal[MAXTF2PLAYERS];
 int CashRecievedNonWave[MAXTF2PLAYERS];
 int Scrap[MAXTF2PLAYERS];
@@ -1015,7 +1017,7 @@ public void OnClientAuthorized(int client)
 	f_LeftForDead_Cooldown[client] = 0.0;
 	
 	if(CurrentRound)
-		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.20);
+		CashSpent[client] = RoundToCeil(float(CurrentCash) * 0.10);
 }
 
 void ZR_OnClientDisconnect_Post()

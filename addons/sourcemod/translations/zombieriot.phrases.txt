@@ -1674,23 +1674,23 @@
 		"nl"		"Druk op TAB om de winkel te openen"
 		"chi"       "请按下TAB键打开商城"
 	}
-	"You have only gained 80%% due to not being in-game"
+	"You have only gained 90%% due to not being in-game"
 	{
-		"en"		"You have only gained 80%% due to not being in-game."
-		"ru"		"Вы получили только 80%% из-за того, что не были в игре."
-		"de"		"Sie haben nur 80%% Verdient, weil sie nicht in spiel, sind."
-		"pt"		"Você ganhou apenas 80%% devido não estar jogando."
-		"nl"		"Je hebt maar 80%% gekregen omdat je niet aan het spelen was."
-		"chi"       "因为你不在游戏中，你只获得了80%%的收益。"
+		"en"		"You have only gained 90%% due to not being in-game."
+		"ru"		"Вы получили только 90%% из-за того, что не были в игре."
+		"de"		"Sie haben nur 90%% Verdient, weil sie nicht in spiel, sind."
+		"pt"		"Você ganhou apenas 90%% devido não estar jogando."
+		"nl"		"Je hebt maar 90%% gekregen omdat je niet aan het spelen was."
+		"chi"       "因为你不在游戏中，你只获得了90%%的收益。"
 	}
-	"You have only gained 90 %% due to being a non-player player, but still helping"
+	"You have only gained 95 %% due to being a non-player player, but still helping"
 	{
-		"en"		"You have only gained 90 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
-		"ru"		"Вы получили только 90%% из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
-		"de"		"Sie haben nur 90%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
-		"pt"		"Você ganhou apenas 90%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
-		"nl"		"Je hebt maar 90%% gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
-		"chi"       "作为一个非玩家，你只获得了90%%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
+		"en"		"You have only gained 95 %% due to being a non-player player, but still helping. (You are a Teutonic Knight!)"
+		"ru"		"Вы получили только 95%% из-за того, что не являетесь игроком, но всё равно помогали. (Вы - тевтонский рыцарь!)."
+		"de"		"Sie haben nur 95%% verdient, weil sie ein Nicht-Spieler waren, aber trotzdem geholfen haben. (Sie sind ein Teutonic Knight!)"
+		"pt"		"Você ganhou apenas 95%% devido não ser um jogador não-classe, mas ainda ajudou (Você é um Cavaleiro Teutônico)."
+		"nl"		"Je hebt maar 95%% gekregen ommdat je een niet-spelende speler bent maar nogsteeds aan het helpen bent (Je bent een Teutonische Ridder!)"
+		"chi"       "作为一个非玩家，你只获得了95%%的收益，但仍然有帮助。(你是一个日耳曼骑士!)"
 	}
 	"Be sure to spend all your starting cash!"
 	{
@@ -2839,5 +2839,9 @@
 	"Sensal Scythes Not Fully Charged"
 	{
 		"en"		"Sensal Scythes Not Fully Charged"
+	}
+	"Pre Setup Cash Gain Hint"
+	{
+		"en"		"During setup, you gain half the cash from buildings, you will get this money back once the waves start!"
 	}
 }

@@ -3115,17 +3115,13 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 				}
 				case 2:
 				{
-					EmitSoundToClient(client, "player/crit_hit_mini1.wav", _, _, 80, _, 0.8, 100);
+					EmitSoundToClient(client, "player/crit_hit_mini2.wav", _, _, 80, _, 0.8, 100);
 				}
 				case 3:
 				{
-					EmitSoundToClient(client, "player/crit_hit_mini2.wav", _, _, 80, _, 0.8, 100);
-				}
-				case 4:
-				{
 					EmitSoundToClient(client, "player/crit_hit_mini3.wav", _, _, 80, _, 0.8, 100);
 				}
-				case 5:
+				case 4:
 				{
 					EmitSoundToClient(client, "player/crit_hit_mini4.wav", _, _, 80, _, 0.8, 100);
 				}
