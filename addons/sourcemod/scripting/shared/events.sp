@@ -35,6 +35,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 	b_GameOnGoing = true;
 	
+	
 	LastMann = false;
 	Ammo_Count_Ready = 0;
 	Zero(Ammo_Count_Used);
