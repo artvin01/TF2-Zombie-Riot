@@ -114,7 +114,14 @@ enum
 	WEAPON_SENSAL_SCYTHE = 43,
 	WEAPON_SENSAL_SCYTHE_PAP_1 = 44,
 	WEAPON_SENSAL_SCYTHE_PAP_2 = 45,
-	WEAPON_SENSAL_SCYTHE_PAP_3 = 46
+	WEAPON_SENSAL_SCYTHE_PAP_3 = 46,
+	WEAPON_HAZARD = 47,
+	WEAPON_HAZARD_UNSTABLE = 48,
+	WEAPON_HAZARD_LUNATIC = 49,
+	WEAPON_HAZARD_CHAOS = 50,
+	WEAPON_HAZARD_STABILIZED = 51,
+	WEAPON_HAZARD_DEMI = 52,
+	WEAPON_HAZARD_PERFECT = 53
 }
 
 ArrayList SpawnerList;
@@ -406,6 +413,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_board.sp"
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
 #include "zombie_riot/custom/weapon_sensal.sp"
+#include "zombie_riot/custom/weapon_hazard.sp"
 
 void ZR_PluginLoad()
 {
@@ -532,6 +540,7 @@ void ZR_MapStart()
 	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
 	Mlynar_Map_Precache();
+	Hazard_Map_Precache();
 	Judge_Map_Precache();
 	Reset_stats_Mlynar_Global();
 	Blemishine_Map_Precache();
