@@ -201,6 +201,9 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_HAZARD_LUNATIC:
@@ -217,9 +220,9 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 						float flAng[3];	
 						int particler = ParticleEffectAt(flPos, "critical_rocket_redsparks", 2.0);
 				
-						SetParent(viewmodelModel, particler, "effect_hand_r");
-		
 						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+
+						SetParent(viewmodelModel, particler, "effect_hand_r");
 
 						ApplyTempAttrib(weapon, 2, 0.65, 2.5);
 						LessRandomDamage += 3;
@@ -237,10 +240,10 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 						float flPos[3]; 
 						float flAng[3];	
 						int particler = ParticleEffectAt(flPos, "critical_rocket_bluesparks", 2.0);
+						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 				
 						SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 						ApplyTempAttrib(weapon, 2, 1.35, 2.5);
 						LessRandomDamage -= 2;
 					}
@@ -277,10 +280,10 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 						float flPos[3]; 
 						float flAng[3];	
 						int particler = ParticleEffectAt(flPos, "critical_rocket_redsparks", 2.0);
+						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 				
 						SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 						ApplyTempAttrib(weapon, 2, 0.65, 2.5);
 						LessRandomDamage += 3;
 					}
@@ -297,10 +300,10 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 						float flPos[3]; 
 						float flAng[3];	
 						int particler = ParticleEffectAt(flPos, "critical_rocket_bluesparks", 2.0);
+						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 				
 						SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 						ApplyTempAttrib(weapon, 2, 1.35, 2.5);
 						LessRandomDamage -= 2;
 					}
@@ -340,10 +343,10 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 					float flPos[3]; 
 					float flAng[3];	
 					int particler = ParticleEffectAt(flPos, "rocketpack_exhaust", 2.5);
+					GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 			
 					SetParent(viewmodelModel, particler, "effect_hand_r");
 	
-					GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 					ApplyTempAttrib(weapon, 2, 1.5, 3.0);
 					ApplyTempAttrib(weapon, 6, 1.5, 3.0);
 					LessRandomDamage += 2;
@@ -366,18 +369,22 @@ public void Hazard_Luck(int client, int weapon, bool crit, int slot)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 30.0);
-		EmitSoundToAll("playgamesound weapons/weapon_crit_charged_off.wav", client);
+		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
 		float flPos[3]; 
 		float flAng[3];	
+		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+
 		int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);
 				
 		SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	}
 	else
 	{
@@ -399,6 +406,9 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+		
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
@@ -407,10 +417,9 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 		float flPos[3]; 
 		float flAng[3];	
 		int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);
+		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 				
 		SetParent(viewmodelModel, particler, "effect_hand_r");
-		
-		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	}
 	else
 	{
