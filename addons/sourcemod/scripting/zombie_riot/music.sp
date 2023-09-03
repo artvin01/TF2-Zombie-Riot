@@ -84,6 +84,9 @@ void Music_EndLastmann()
 				Armor_Charge[client] = 0;
 				if(IsPlayerAlive(client))
 					SetEntProp(client, Prop_Send, "m_iHealth", 50);
+				
+				//just incase.
+				Attributes_Set(client, 442, 1.0);
 			}
 		}
 		LastMann = false;
