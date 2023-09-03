@@ -200,7 +200,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 	{
 		case WEAPON_HAZARD_LUNATIC:
 		{
-			ApplyTempAttrib(weapon, 396, GetRandomFloat(0.35,1.05), 0.3); //random attack speed
+			ApplyTempAttrib(weapon, 396, GetRandomFloat(0.45,1.05), 0.3); //random attack speed
 			int RNG = GetRandomInt(1,10);
 			switch(RNG)
 			{
@@ -249,7 +249,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 		}
 		case WEAPON_HAZARD_CHAOS:
 		{
-			ApplyTempAttrib(weapon, 396, GetRandomFloat(0.40,1.0), 0.5); //random attack speed
+			ApplyTempAttrib(weapon, 396, GetRandomFloat(0.5,1.0), 0.5); //random attack speed
 			int RNG = GetRandomInt(1,10); //RNG for condition
 			float MaxHealth = float(SDKCall_GetMaxHealth(client));
 			int flHealth = GetClientHealth(client); // :)
@@ -341,7 +341,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 
 						ApplyTempAttrib(weapon, 2, 1.5, 3.0);
-						ApplyTempAttrib(weapon, 396, 1.15, 3.0);
+						ApplyTempAttrib(weapon, 396, 1.5, 3.0);
 						LessRandomDamage += 2;
 				}
 				default:
