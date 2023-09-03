@@ -175,7 +175,7 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 					ClientCommand(attacker, "playgamesound player/crit_received1.wav");
 					DisplayCritAboveNpc(victim, attacker, true);
 					DamageMod = 6.0;
-					ApplyTempAttrib(weapon, 396, 0.8, 5.0);
+					ApplyTempAttrib(weapon, 6, 0.8, 5.0);
 					Luck *= 0;
 				}
 				default:
@@ -205,7 +205,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 	{
 		case WEAPON_HAZARD_LUNATIC:
 		{
-			ApplyTempAttrib(weapon, 396, GetRandomFloat(0.45,1.05), 0.3); //random attack speed
+			ApplyTempAttrib(weapon, 6, GetRandomFloat(0.45,1.05), 0.3); //random attack speed
 			int RNG = GetRandomInt(1,10);
 			switch(RNG)
 			{
@@ -345,7 +345,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 	
 					GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 					ApplyTempAttrib(weapon, 2, 1.5, 3.0);
-					ApplyTempAttrib(weapon, 396, 1.5, 3.0);
+					ApplyTempAttrib(weapon, 6, 1.5, 3.0);
 					LessRandomDamage += 2;
 				}
 				default:
