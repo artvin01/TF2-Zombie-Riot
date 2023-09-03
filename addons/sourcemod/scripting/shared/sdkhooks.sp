@@ -1452,21 +1452,26 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			if(i_CurrentEquippedPerk[attacker] == 5)
 			{
 				damage *= 1.25;
+				Replicated_Damage *= 1.25;
 			}
 		}
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
 			damage *= 1.10;
+			Replicated_Damage *= 1.10;
 		}
 		if(f_HussarBuff[victim] > GameTime) //hussar!
 		{
 			damage *= 0.90;
+			Replicated_Damage *= 0.90;
 		}
 		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
 		{
 			damage *= 0.5; //half the damage when small.
+			Replicated_Damage *= 0.5;
 		}
 		damage *= fl_Extra_Damage[attacker];
+		Replicated_Damage *= fl_Extra_Damage[attacker];
 		
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 		//It will just return the same damage if nothing is done.
