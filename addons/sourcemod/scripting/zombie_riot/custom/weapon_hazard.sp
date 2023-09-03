@@ -1,13 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int weapon_id[MAXPLAYERS+1]={0, ...};
 //Handle h_TimerHazardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static float f_WeaponDelayGiveRandom[MAXPLAYERS+1]={0.0, ...};
 static int LessRandomDamage = 1;
 static int Luck = 0;
 
 void Hazard_Map_Precache()
 {
+	Zero(f_WeaponDelayGiveRandom);
 	PrecacheSound("weapons/weapon_crit_charged_off.wav");
 }
 
@@ -193,7 +194,11 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 
 public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 {
-	weapon_id[client] = EntIndexToEntRef(weapon);
+	if(f_WeaponDelayGiveRandom[client] > GetGameTime())
+		return;
+
+	f_WeaponDelayGiveRandom[client] = GetGameTime() + 0.25;
+
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -249,7 +254,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 		}
 		case WEAPON_HAZARD_CHAOS:
 		{
-			ApplyTempAttrib(weapon, 396, GetRandomFloat(0.5,1.0), 0.5); //random attack speed
+			ApplyTempAttrib(weapon, 6, GetRandomFloat(0.5,1.0), 0.5); //random attack speed
 			int RNG = GetRandomInt(1,10); //RNG for condition
 			float MaxHealth = float(SDKCall_GetMaxHealth(client));
 			int flHealth = GetClientHealth(client); // :)
@@ -257,13 +262,13 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 			{
 				case 1:
 				{
-					TF2_RemoveCondition(client, TFCond_Slowed);
-					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.65); //SPEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED
+				//	TF2_RemoveCondition(client, TFCond_Slowed);
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.25); //SPEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED
 				}
 				case 2:
 				{
 					TF2_RemoveCondition(client, TFCond_SpeedBuffAlly); //no more SPEEEEEEEEEEEEEEEEEEED
-					TF2_AddCondition(client, TFCond_Slowed, 0.4);
+				//	TF2_AddCondition(client, TFCond_Slowed, 0.4);
 				}
 				case 3:
 				{
@@ -332,17 +337,16 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				}
 				case 9:
 				{
-						float flPos[3]; 
-						float flAng[3];	
-						int particler = ParticleEffectAt(flPos, "rocketpack_exhaust", 2.5);
-				
-						SetParent(viewmodelModel, particler, "effect_hand_r");
-		
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-
-						ApplyTempAttrib(weapon, 2, 1.5, 3.0);
-						ApplyTempAttrib(weapon, 396, 1.5, 3.0);
-						LessRandomDamage += 2;
+					float flPos[3]; 
+					float flAng[3];	
+					int particler = ParticleEffectAt(flPos, "rocketpack_exhaust", 2.5);
+			
+					SetParent(viewmodelModel, particler, "effect_hand_r");
+	
+					GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+					ApplyTempAttrib(weapon, 2, 1.5, 3.0);
+					ApplyTempAttrib(weapon, 396, 1.5, 3.0);
+					LessRandomDamage += 2;
 				}
 				default:
 				{
