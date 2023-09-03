@@ -1402,6 +1402,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			NpcStuckZoneWarning(victim, damage);
 			Replicated_Damage = damage;
 		}
+		else
+		{
+			damage *= 2.0;
+			Replicated_Damage *= 2.0;
+		}
 #endif
 	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
