@@ -2048,12 +2048,12 @@ void NpcStuckZoneWarning(int client, float &damage)
 	damage = 0.0;
 	if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
 	{
-		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 2.0;
+		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
 		f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
 	}
-	else if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime() + 1.0)
+	else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
 	{
-		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 1.0;
+		f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
 		f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
 		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
 	}
