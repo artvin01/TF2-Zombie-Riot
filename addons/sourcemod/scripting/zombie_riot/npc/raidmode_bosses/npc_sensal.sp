@@ -680,28 +680,30 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			
 			if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
 			{
-				ExpidonsaRemoveEffects(npc.index);
-				npc.AddActivityViaSequence("taunt05");
-				npc.m_flAttackHappens = 0.0;
-				EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
-				npc.SetCycle(0.01);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
-
-				SensalThrowScythes(npc);
-				npc.m_flDoingAnimation = gameTime + 0.45;
-				npc.m_flAngerDelay = gameTime + 60.0;
-
-				if(ZR_GetWaveCount()+1 >= 60)
-					npc.m_flAngerDelay = gameTime + 30.0;
-
-				npc.m_flReloadIn = gameTime + 3.0;
+				npc.m_flDead_Ringer_Invis_bool = true;
 			}
 			else
 			{
-				npc.m_flAngerDelay = gameTime + 1.0;
+				npc.m_flDead_Ringer_Invis_bool = false;
 			}
+
+			ExpidonsaRemoveEffects(npc.index);
+			npc.AddActivityViaSequence("taunt05");
+			npc.m_flAttackHappens = 0.0;
+			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
+			npc.SetCycle(0.01);
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			VausMagicaGiveShield(npc.index, CountPlayersOnRed() * 2); //Give self a shield
+
+			SensalThrowScythes(npc);
+			npc.m_flDoingAnimation = gameTime + 0.45;
+			npc.m_flAngerDelay = gameTime + 60.0;
+
+			if(ZR_GetWaveCount()+1 >= 60)
+				npc.m_flAngerDelay = gameTime + 30.0;
+
+			npc.m_flReloadIn = gameTime + 3.0;
 		}
 		else
 		{
@@ -1074,17 +1076,28 @@ float volume = 0.7)
 		float vecUp[3];
 				
 		GetAngleVectors(direction, VecForward, vecRight, vecUp);
-		
+
 		float vecSwingEnd[3];
 		vecSwingEnd[0] = origin_altered[0] + VecForward[0] * (PILLAR_SPACING);
 		vecSwingEnd[1] = origin_altered[1] + VecForward[1] * (PILLAR_SPACING);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+		static float hullcheckmaxs[3];
+		static float hullcheckmins[3];
 
-		origin_altered = vecSwingEnd;
+		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
+		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
+		
+		Handle trace = TR_TraceHullFilterEx(origin_altered, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
 
-		//Clip to ground, its like stepping on stairs, but for these rocks.
-
-		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, origin_altered);
+		if (TR_DidHit(trace))
+		{
+			TR_GetEndPosition(origin_altered, trace);
+		}
+		else
+		{
+			origin_altered = vecSwingEnd;
+		}
+		delete trace;
 
 		Range += (float(Repeats) * 10.0);
 		Silvester_TE_Used += 1;
@@ -1179,12 +1192,24 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 		float origin_altered[3];
-		origin_altered = vecSwingEnd;
+		static float hullcheckmaxs[3];
+		static float hullcheckmins[3];
 
-		//Clip to ground, its like stepping on stairs, but for these rocks.
-
-		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, origin_altered);
+		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
+		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
 		
+		Handle trace = TR_TraceHullFilterEx(origin_altered, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
+
+		if (TR_DidHit(trace))
+		{
+			TR_GetEndPosition(origin_altered, trace);
+		}
+		else
+		{
+			origin_altered = vecSwingEnd;
+		}
+		delete trace;
+
 		Sensal npc = view_as<Sensal>(entity);
 		int Projectile = npc.FireParticleRocket(WorldSpaceCenter(npc.m_iTarget), damage , 400.0 , 100.0 , "",_,_,true,origin_altered);
 		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
@@ -1570,7 +1595,14 @@ bool SensalSummonPortal(Sensal npc)
 			static float flMyPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
-			flMyPos[2] += 400.0;
+			if(npc.m_flDead_Ringer_Invis_bool)
+			{
+				flMyPos[2] += 400.0;
+			}
+			else
+			{
+				flMyPos[2] += 120.0; //spawn at headhight instead.
+			}
 			
 			//every 5 seconds, summon blades onto all enemeis in view
 			int PortalParticle;
