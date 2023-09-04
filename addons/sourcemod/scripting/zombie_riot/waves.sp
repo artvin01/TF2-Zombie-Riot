@@ -1767,7 +1767,7 @@ void WaveEndLogicExtra()
 void WaveStart_SubWaveStart()
 {
 //	f_ZombieAntiDelaySpeedUp = Cooldown + 600.0;
-	f_ZombieAntiDelaySpeedUp = Cooldown + 480.0;
+	f_ZombieAntiDelaySpeedUp = Cooldown + 420.0;
 	i_ZombieAntiDelaySpeedUp = 0; //warning off
 }
 
@@ -1796,7 +1796,7 @@ void Zombie_Delay_Warning()
 		}
 		case 2:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 30.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + 45.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 3;
 				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies grow furious and become even faster...");
@@ -1804,7 +1804,7 @@ void Zombie_Delay_Warning()
 		}
 		case 3:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 45.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + 75.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 4;
 				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies become pissed off and gain super speed...");
@@ -1812,7 +1812,7 @@ void Zombie_Delay_Warning()
 		}
 		case 4:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 60.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + 95.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 5;
 				CPrintToChatAll("{crimson}[Zombie-Riot] Enemies become infuriated and will reach you...");
