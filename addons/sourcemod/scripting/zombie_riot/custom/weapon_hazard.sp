@@ -86,8 +86,8 @@ public float NPC_OnTakeDamage_Hazard(int attacker, int victim, float &damage, in
 		}
 		case WEAPON_HAZARD_CHAOS:
 		{
-			int RNG = GetRandomInt(100,210);
-			if (RNG < 201)
+			int RNG = GetRandomInt(115,225);
+			if (RNG < 216)
 			{
 
 				DamageMod = (RNG / 100.0);
@@ -284,7 +284,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				
 						SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-						ApplyTempAttrib(weapon, 2, 0.65, 2.5);
+						ApplyTempAttrib(weapon, 2, 0.75, 2.5);
 						LessRandomDamage += 3;
 					}
 					else
@@ -304,7 +304,7 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				
 						SetParent(viewmodelModel, particler, "effect_hand_r");
 		
-						ApplyTempAttrib(weapon, 2, 1.35, 2.5);
+						ApplyTempAttrib(weapon, 2, 1.3, 2.5);
 						LessRandomDamage -= 2;
 					}
 					else
@@ -316,12 +316,12 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				case 5:
 				{
 					TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
-					TF2_AddCondition(client, TFCond_DefenseBuffed, 5.0);
+					TF2_AddCondition(client, TFCond_DefenseBuffed, 3.75);
 				}
 				case 6:
 				{
 					TF2_RemoveCondition(client, TFCond_DefenseBuffed);
-					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 5.0);
+					TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 2.0);
 				}
 				case 7:
 				{
@@ -347,9 +347,9 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 			
 					SetParent(viewmodelModel, particler, "effect_hand_r");
 	
-					ApplyTempAttrib(weapon, 2, 1.5, 3.0);
-					ApplyTempAttrib(weapon, 6, 1.5, 3.0);
-					LessRandomDamage += 2;
+					ApplyTempAttrib(weapon, 2, 1.4, 3.0);
+					ApplyTempAttrib(weapon, 6, 1.25, 3.0);
+					LessRandomDamage += 1;
 				}
 				default:
 				{
