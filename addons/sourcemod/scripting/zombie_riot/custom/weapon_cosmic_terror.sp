@@ -431,7 +431,7 @@ void Cosmic_Terror_Charging(int client)
 		Cosmic_Terror_Trace_Delay[client] = gametime + 0.1;
 		Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 		TR_GetEndPosition(SpawnLoc, trace);
-		CloseHandle(trace);
+		delete trace;
 		
 		int pitch = 25+100-RoundToFloor(100*(offset));
 		EmitSoundToClient(client, SND_WELD_SOUND ,_, SNDCHAN_STATIC, 100, _, 0.2, pitch);
@@ -592,7 +592,7 @@ void Cosmic_Terror_FullCharge(int client)
 		Cosmic_Terror_Trace_Delay[client] = gametime + 0.33;
 		Handle trace = TR_TraceRayFilterEx(EyeLoc, SpawnLoc, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 		TR_GetEndPosition(SpawnLoc, trace);
-		CloseHandle(trace);
+		delete trace;
 		Cosmic_Terror_Last_Known_Loc[client] = SpawnLoc;
 	}
 		
