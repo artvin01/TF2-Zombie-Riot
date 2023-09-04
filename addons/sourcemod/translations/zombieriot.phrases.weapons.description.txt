@@ -418,6 +418,12 @@
 		"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
 		"chi"       "增加伤害和攻击速度，子弹装载量增加到6发。"
 	}
+	"Boomstick Pap 3"
+	{
+		"en"		"Increased damage and attackspeed."
+		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度."
+	}
 	"Boomstick Pap 2"
 	{
 		"en"		"Bullets turn into piercing lasers with damage falloff.\nDamage stays the same on full hits but it is easier to hit as you dont have to headshot."
