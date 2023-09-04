@@ -117,7 +117,7 @@ void ApplyExtraSensalWeaponEffects(int client, bool remove = false)
 	if(SensalWeaponCheckEffects_IfNotAvaiable(client))
 	{
 		SensalWeaponRemoveEffects(client);
-		SensalWeaponEffects(client, viewmodelModel, "effect_hand_r");
+		SensalWeaponEffects(client, client, viewmodelModel, "effect_hand_r");
 	}
 }
 
@@ -360,12 +360,12 @@ public void Kill_Timer_Management_SensalWeapon(int client)
 	}
 }
 
-void SensalWeaponEffects(int client, int Wearable, char[] attachment = "effect_hand_r")
+void SensalWeaponEffects(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
 {
 	int red = 125;
 	int green = 125;
 	int blue = 255;
-	bool RecolourToRed = b_ClientPossesBattery[client];
+	bool RecolourToRed = b_ClientPossesBattery[owner];
 	if(RecolourToRed)
 	{
 		red = 255;
@@ -526,14 +526,24 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	float RingSpawnVec[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", RingSpawnVec);
 	RingSpawnVec[2] += 5.0;
-	spawnRing_Vectors(RingSpawnVec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, 0.25, 6.0, 2.1, 1, 65.0 * 2.0);	
+	int red = 125;
+	int green = 125;
+	int blue = 255;
+	bool RecolourToRed = b_ClientPossesBattery[client];
+	if(RecolourToRed)
+	{
+		red = 255;
+		green = 125;
+		blue = 125;
+	}
+	spawnRing_Vectors(RingSpawnVec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, green, blue, 200, 1, 0.25, 6.0, 2.1, 1, 65.0 * 2.0);	
 	EmitSoundToAll("weapons/mortar/mortar_explode3.wav", client, SNDCHAN_AUTO, 80, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Pos_player);	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_2 || i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_3)
 	{
 		for(int Repeat; Repeat <= 2; Repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
-			SensalWeaponEffects(projectile, projectile, "");
+			SensalWeaponEffects(client, projectile, projectile, "");
 			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			
@@ -566,7 +576,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		for(int Repeat; Repeat <= 1; Repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
-			SensalWeaponEffects(projectile, projectile, "");
+			SensalWeaponEffects(client, projectile, projectile, "");
 			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			

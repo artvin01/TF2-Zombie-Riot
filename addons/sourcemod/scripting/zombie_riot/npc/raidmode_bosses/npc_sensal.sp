@@ -1198,7 +1198,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
 		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
 		
-		Handle trace = TR_TraceHullFilterEx(origin_altered, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
+		Handle trace = TR_TraceHullFilterEx(origin, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
 
 		if (TR_DidHit(trace))
 		{
@@ -1240,9 +1240,9 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		}
 
 		pack.Position = originPos;
-		pack.WriteCell(vecSwingEnd[0], false);
-		pack.WriteCell(vecSwingEnd[1], false);
-		pack.WriteCell(origin[2], false);
+		pack.WriteCell(origin_altered[0], false);
+		pack.WriteCell(origin_altered[1], false);
+		pack.WriteCell(origin_altered[2], false);
 		//override origin, we have a new origin.
 	}
 	else
