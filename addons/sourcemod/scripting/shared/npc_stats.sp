@@ -6171,12 +6171,18 @@ bool SetTeleportEndPoint(int client, float Position[3])
 
 public MRESReturn IBody_GetSolidMask(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMask()); 
+/*	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMask()); 
+	//causes crashes, and its unnceccacary?
+*/
+	DHookSetReturn(hReturn, (MASK_NPCSOLID)); 
 	return MRES_Supercede; 
 }
 public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle hParams)			  
 { 
-	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly()); 
+/*	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
+	//causes crashes, and its unnceccacary?
+*/
+	DHookSetReturn(hReturn, (MASK_NPCSOLID|MASK_PLAYERSOLID)); 
 	return MRES_Supercede; 
 }
 

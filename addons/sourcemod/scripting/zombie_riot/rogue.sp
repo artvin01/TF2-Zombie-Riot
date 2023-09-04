@@ -828,18 +828,18 @@ void Rogue_NextProgress()
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) == 2)
 				{
-					int cash = StartCash - (Resupplies_Supplied[client] * 10);
-					if(CashSpent[client] < cash)
-						CashSpent[client] = cash;
-					
-					CashSpent[client] -= StartCash;
+					//int cash = StartCash - (Resupplies_Supplied[client] * 10);
+					//if(CashSpent[client] < cash)
+					//	CashSpent[client] = cash;
+					//
+					//CashSpent[client] -= StartCash;
 
 					if(Level[client] > highestLevel)
 						highestLevel = Level[client];
 				}
 			}
 
-			CurrentCash = 0;
+			//CurrentCash = 0;
 			
 			CurrentFloor = 0;
 			CurrentCount = -1;

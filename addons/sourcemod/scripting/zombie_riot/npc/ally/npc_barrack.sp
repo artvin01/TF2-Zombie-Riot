@@ -705,7 +705,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 			}
 		}
 
-		if(!pathed && IsValidEntity(npc.m_iTargetRally) && command != Command_HoldPos && !retreating)
+		if(!pathed && IsValidEntity(npc.m_iTargetRally) && npc.m_iTargetRally > 0 && command != Command_HoldPos && !retreating)
 		{
 			float vecTarget[3];
 			GetEntPropVector(npc.m_iTargetRally, Prop_Data, "m_vecAbsOrigin", vecTarget);
