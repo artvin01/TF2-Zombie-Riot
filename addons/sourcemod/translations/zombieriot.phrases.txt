@@ -1114,6 +1114,10 @@
 		"ru" 		"Дополнительные деньги!"
 		"chi"       "额外的现金!"
 	}
+	"Grigori Shop Extra Activated"
+	{
+		"en" 		"Extra Super Sale!"
+	}
 	"Help?"
 	{
 		"en" 		"Help/FAQ"

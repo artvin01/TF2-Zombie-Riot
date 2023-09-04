@@ -2349,7 +2349,7 @@
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"Gain the ability to shoot projetiles with m2, they homo onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits\nA certain battery will double its capacity..."
+		"en"	"Gain the ability to shoot projetiles with m2, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits\nA certain battery will double its capacity..."
 	}
 	"Sensal Desc 2"
 	{

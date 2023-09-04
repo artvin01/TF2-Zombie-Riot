@@ -1333,7 +1333,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				{
 					if(WeaponWasValid)
 					{
-						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);	
 						damage = modified_damage;
 						OnTakeDamage_HandOfElderMages(attacker, weapon);
 						OnTakeDamageOldExtraWeapons(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
@@ -2288,7 +2288,7 @@ void Spawner_RemoveFromArray(int entity)
 }
 #endif
 
-stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
 {
 #if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -2394,7 +2394,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case WEAPON_SENSAL_SCYTHE, WEAPON_SENSAL_SCYTHE_PAP_1, WEAPON_SENSAL_SCYTHE_PAP_2, WEAPON_SENSAL_SCYTHE_PAP_3:
 		{
-			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon);
+			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
 		}
 	}
 #endif

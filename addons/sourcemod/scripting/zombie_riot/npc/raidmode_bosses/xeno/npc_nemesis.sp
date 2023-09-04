@@ -382,7 +382,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		float flPos[3]; // original
 		float flAng[3]; // original
 		npc.GetAttachment("RightHand", flPos, flAng);
-		Nemesis_DoInfectionThrow(npc.index, 5, flPos);
+		Nemesis_DoInfectionThrow(npc.index, 5);
 		ParticleEffectAt(flPos, "duck_collect_blood_green", 1.0);
 	}
 
@@ -418,7 +418,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			float flPos[3]; // original
 			float flAng[3]; // original
 			npc.GetAttachment("RightHand", flPos, flAng);
-			Nemesis_DoInfectionThrow(npc.index, 10, flPos);
+			Nemesis_DoInfectionThrow(npc.index, 10);
 			ParticleEffectAt(flPos, "duck_collect_blood_green", 1.0);
 			f_NemesisCauseInfectionBox[npc.index] = 0.0;
 		}
@@ -1310,7 +1310,7 @@ stock float[] Nemesis_DodgeToDirection(CClotBody npc, float extra_backoff = 64.0
 
 #define MAX_TARGETS_HIT_NEMESIS 64
 
-void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount, float StartVec[3])
+void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 {
 	int count;
 	int targets[MAX_TARGETS_HIT_NEMESIS];
@@ -1365,88 +1365,16 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount, float StartVec[3])
 			count--;	// This decreases the max entries
 			int target = targets[count];	// This grabs the entry at the very end
 			
-			float vecJumpVel[3];
 			float VicLoc[3];
 
 			//poisition of the enemy we random decide to shoot.
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VicLoc);
 
-			float gravity = GetEntPropFloat(entity, Prop_Data, "m_flGravity");
-				
-			if(gravity <= 0.0)
-				gravity = FindConVar("sv_gravity").FloatValue;
+			VicLoc[2] += 10.0;
+			spawnRing_Vectors(VicLoc, INFECTION_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1);	
+			VicLoc[2] -= 5.0;
+			spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1,INFECTION_RANGE * 2.0);	
 			
-			// How fast does the headcrab need to travel to reach the position given gravity?
-			float flActualHeight = VicLoc[2] - StartVec[2];
-			float height = flActualHeight;
-			if ( height < 72 )
-			{
-				height = 72.0;
-			}
-			float additionalHeight = 0.0;
-			
-			if ( height < 35 )
-			{
-				additionalHeight = 50.0;
-			}
-			
-			height += additionalHeight;
-			
-			float speed = SquareRoot( 2 * gravity * height );
-			float time = speed / gravity;
-		
-			time += SquareRoot( (2 * additionalHeight) / gravity );
-			
-			// Scale the sideways velocity to get there at the right time
-			SubtractVectors( VicLoc, StartVec, vecJumpVel );
-			vecJumpVel[0] /= time;
-			vecJumpVel[1] /= time;
-			vecJumpVel[2] /= time;
-		
-			// Speed to offset gravity at the desired height.
-			vecJumpVel[2] = speed;
-			
-			// Don't jump too far/fast.
-			float flJumpSpeed = GetVectorLength(vecJumpVel);
-			float flMaxSpeed = 1250.0;
-			if ( flJumpSpeed > flMaxSpeed )
-			{
-				vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
-				vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
-				vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
-			}
-
-			float direction[3];
-			int prop = CreateEntityByName("prop_physics_multiplayer");
-			if(IsValidEntity(prop))
-			{
-				DispatchKeyValue(prop, "model", INFECTION_MODEL);
-				DispatchKeyValue(prop, "physicsmode", "2");
-				DispatchKeyValue(prop, "solid", "0");
-				DispatchKeyValue(prop, "massScale", "1.0");
-				DispatchKeyValue(prop, "spawnflags", "6");
-
-				DispatchKeyValue(prop, "modelscale", "1.0");
-				DispatchKeyValueVector(prop, "origin",	 StartVec);
-				direction[2] -= 180.0;
-				direction[1] = GetRandomFloat(-180.0, 180.0);
-				DispatchKeyValueVector(prop, "angles",	 direction);
-				DispatchSpawn(prop);
-				TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(prop, 0, 200, 0, 255);
-				SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
-				SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
-				SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
-				CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
-				
-			//	int particle = ParticleEffectAt(StartVec, "spellbook_minor_fire", 1.0);
-			//	SetParent(prop, particle, "");
-
-				spawnRing_Vectors(VicLoc, INFECTION_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1);	
-				VicLoc[2] -= 5.0;
-				spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1,INFECTION_RANGE * 2.0);	
-			}
 			float damage = 500.0;
 
 			DataPack pack;

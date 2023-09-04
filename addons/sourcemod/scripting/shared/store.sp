@@ -2374,7 +2374,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-public void Store_RandomizeNPCStore(bool ResetStore)
+void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2387,8 +2387,11 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 		StoreItems.GetArray(i, item);
 		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways)
 		{
-			item.NPCSeller_First = false;
-			item.NPCSeller = false;
+			if(addItem == 0)
+			{
+				item.NPCSeller_First = false;
+				item.NPCSeller = false;
+			}
 			item.GetItemInfo(0, info);
 			if(info.Cost > 0 && info.Cost > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
 				indexes[amount++] = i;
@@ -2400,12 +2403,32 @@ public void Store_RandomizeNPCStore(bool ResetStore)
 	{
 		if(!ResetStore)
 		{
-			CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
+			if(addItem == 0)
+				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
+			else
+				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering extra for a limited time!");
+
 			bool OneSuperSale = true;
 			SortIntegers(indexes, amount, Sort_Random);
-			for(int i; i<GrigoriMaxSells && i<amount; i++) //amount of items to sell
+			int SellsMax = GrigoriMaxSells;
+			if(addItem != 0)
+				SellsMax = addItem;
+			
+			for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 			{
 				StoreItems.GetArray(indexes[i], item);
+				if(item.NPCSeller_First)
+				{
+					SellsMax++;
+					continue;
+				}
+
+				if(item.NPCSeller)
+				{
+					SellsMax++;
+					continue;
+				}
+				
 				if(OneSuperSale)
 				{
 					CPrintToChatAll("{green}%s [$$]{default}",item.Name);

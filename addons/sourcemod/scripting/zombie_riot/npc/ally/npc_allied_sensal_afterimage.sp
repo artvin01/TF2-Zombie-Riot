@@ -46,7 +46,7 @@ methodmap AlliedSensalAbility < CClotBody
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
+
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
 			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
@@ -67,7 +67,17 @@ methodmap AlliedSensalAbility < CClotBody
 				if(!IsValidEntity(WearableIndex))
 				{	
 					int WearablePostIndex = npc.EquipItem("head", ModelPath);
-					i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
+					if(IsValidEntity(WearablePostIndex))
+					{	
+						if(entity == EntRefToEntIndex(i_Viewmodel_PlayerModel[client]))
+						{
+							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
+							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
+						}
+						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
+						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 125);
+						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
+					}
 					break;
 				}
 			}
@@ -102,6 +112,8 @@ methodmap AlliedSensalAbility < CClotBody
 		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
 		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
 
 		return npc;
 	}
@@ -257,7 +269,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 			{
 				float damage = fl_heal_cooldown[entity];
 
-				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, entity, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building]), _ , ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);	// 2048 is DMG_NOGIB?
+				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building]), _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;				
 			}
 		}

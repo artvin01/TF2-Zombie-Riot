@@ -3100,6 +3100,7 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
+
 				if(Building_Interact(client, entity, Is_Reload_Button))
 					return true;
 					
@@ -3107,10 +3108,6 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return true;
 
 				if (TeutonType[client] == TEUTON_WAITING)
-					return false;
-
-					
-				if (b_Is_Blue_Npc[client])
 					return false;
 
 				if(Escape_Interact(client, entity))
@@ -3124,6 +3121,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
+				
+				if (b_Is_Blue_Npc[entity])
+					return false;
 			}
 #endif
 					

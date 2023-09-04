@@ -445,8 +445,11 @@ void SensalWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 }
 
 
-void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon)
+void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int zr_damage_custom)
 {
+	if(zr_damage_custom & ZR_DAMAGE_REFLECT_LOGIC)
+		return;
+
 	f_SensalAbilityCharge_1[attacker] += SENSAL_MELEE_CHARGE_ON_HIT;
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_2)
 		f_SensalAbilityCharge_1[attacker] += SENSAL_MELEE_CHARGE_ON_HIT * 0.5;
@@ -632,9 +635,12 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 		
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		if(owner < 0)
+			owner = 0;
+			
+		TE_Particle(b_ClientPossesBattery[owner] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position,_,ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position,_,ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 		
 		
 		if(IsValidEntity(particle))
