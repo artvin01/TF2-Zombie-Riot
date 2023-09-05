@@ -397,13 +397,18 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
 		int glowColor[4];
 		SetColorRGBA(glowColor, red, green, blue, Alpha);
-		TE_SetupBeamPoints(Pos1, Pos2, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+		TE_SetupBeamPoints(Pos1, Pos2, Shared_BEAM_Laser, 0, 0, 0, 0.25, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 0.5, glowColor, 0);
 		TE_SendToAll(0.0);
+
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
 	
-		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, _, _, _, _);
+		SDKHooks_TakeDamage(victim, weapon, entity, 10.0, DMG_SLASH, weapon, CalculateDamageForce(vecForward, 10000.0), VicLoc, _, _);
 	}
 }
 
