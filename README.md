@@ -114,7 +114,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHook](https://github.com/Adrianilloo/Collisionhook)
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC) 
-- [lambda](https://github.com/Batfoxkid/lambda)
+~~- [lambda](https://github.com/Batfoxkid/lambda)~~ currently is kown to cause crashes. do not use. and its not used currently either.
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
