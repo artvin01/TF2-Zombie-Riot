@@ -22,34 +22,35 @@ bool b_ToggleTransparency[MAXENTITIES];
 
 static int i_KilledThisMany_Nuke = 0;
 static bool i_AllowNuke = true;
-static float f_KillTheseManyMorePowerup_base_Nuke = 125.0;
-static int i_KillTheseManyMorePowerup_Nuke = 125;
+static float f_KillTheseManyMorePowerup_base_Nuke = 375.0;
+static int i_KillTheseManyMorePowerup_Nuke = 375;
 
 static int i_KilledThisMany_Maxammo = 0;
 static bool i_AllowMaxammo = true;
-static float f_KillTheseManyMorePowerup_base_Maxammo = 120.0;
-static int i_KillTheseManyMorePowerup_Maxammo = 120;
+static float f_KillTheseManyMorePowerup_base_Maxammo = 360.0;
+static int i_KillTheseManyMorePowerup_Maxammo = 360;
 
 static int i_KilledThisMany_Health = 0;
 static bool i_AllowHealth = true;
-static float f_KillTheseManyMorePowerup_base_Health = 150.0;
-static int i_KillTheseManyMorePowerup_Health = 150;
+static float f_KillTheseManyMorePowerup_base_Health = 450.0;
+static int i_KillTheseManyMorePowerup_Health = 450;
 
 static int i_KilledThisMany_Money = 0;
 static bool i_AllowMoney = true;
-static float f_KillTheseManyMorePowerup_base_Money = 160.0;
-static int i_KillTheseManyMorePowerup_Money = 160;
+static float f_KillTheseManyMorePowerup_base_Money = 480.0;
+static int i_KillTheseManyMorePowerup_Money = 480;
 
 static int i_KilledThisMany_Grigori = 0;
 static bool i_AllowMoney_Grigori = true;
-static float f_KillTheseManyMorePowerup_base_Grigori = 160.0;
-static int i_KillTheseManyMorePowerup_Grigori = 160;
+static float f_KillTheseManyMorePowerup_base_Grigori = 480.0;
+static int i_KillTheseManyMorePowerup_Grigori = 480;
 
 static bool b_ForceSpawnNextTimeNuke;
 static bool b_ForceSpawnNextTimeAmmo;
 static bool b_ForceSpawnNextTimeHealth;
 static bool b_ForceSpawnNextTimeMoney;
 static bool b_ForceSpawnNextTimeGrigori;
+static float f_PowerupSpawnMulti;
 
 void Map_Precache_Zombie_Drops()
 {
@@ -80,6 +81,7 @@ public void Renable_Powerups()
 
 public void BalanceDropMinimum(float multi)
 {
+	f_PowerupSpawnMulti = multi;
 	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (multi));
 	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (multi));
 	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (Waves_GetRound() * 2)) * (multi));
@@ -109,16 +111,16 @@ public void DropPowerupChance(int entity)
 	{
 		return;
 	}
+	i_KilledThisMany_Grigori += 1;
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
-		i_KilledThisMany_Grigori += 1;
 		if(i_KilledThisMany_Grigori > i_KillTheseManyMorePowerup_Grigori || b_ForceSpawnNextTimeGrigori)
 		{
-			if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeGrigori)
+			if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeGrigori)
 			{
 				if(i_AllowMoney_Grigori)
 				{
-					i_AllowMoney_Grigori = false;
+			//		i_AllowMoney_Grigori = false;
 					
 					float VecOrigin[3];
 					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
@@ -140,11 +142,11 @@ public void DropPowerupChance(int entity)
 	i_KilledThisMany_Nuke += 1;
 	if(i_KilledThisMany_Nuke > i_KillTheseManyMorePowerup_Nuke || b_ForceSpawnNextTimeNuke)
 	{
-		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeNuke)
+		if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeNuke)
 		{
 			if(i_AllowNuke)
 			{
-				i_AllowNuke = false;
+			//	i_AllowNuke = false;
 				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
@@ -165,11 +167,11 @@ public void DropPowerupChance(int entity)
 	i_KilledThisMany_Maxammo += 1;
 	if(i_KilledThisMany_Maxammo > i_KillTheseManyMorePowerup_Maxammo || b_ForceSpawnNextTimeAmmo)
 	{
-		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeAmmo)
+		if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeAmmo)
 		{
 			if(i_AllowMaxammo)
 			{
-				i_AllowMaxammo = false;
+			//	i_AllowMaxammo = false;
 				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
@@ -190,11 +192,11 @@ public void DropPowerupChance(int entity)
 	i_KilledThisMany_Health += 1;
 	if(i_KilledThisMany_Health > i_KillTheseManyMorePowerup_Health || b_ForceSpawnNextTimeHealth)
 	{
-		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeHealth)
+		if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeHealth)
 		{
 			if(i_AllowHealth)
 			{
-				i_AllowHealth = false;
+			//	i_AllowHealth = false;
 				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
@@ -215,11 +217,11 @@ public void DropPowerupChance(int entity)
 	i_KilledThisMany_Money += 1;
 	if(i_KilledThisMany_Money > i_KillTheseManyMorePowerup_Money || b_ForceSpawnNextTimeMoney)
 	{
-		if(GetRandomFloat(0.0, 1.0) < 0.01 || b_ForceSpawnNextTimeMoney)
+		if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) < 0.01 || b_ForceSpawnNextTimeMoney)
 		{
 			if(i_AllowMoney)
 			{
-				i_AllowMoney = false;
+			//	i_AllowMoney = false;
 				
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
