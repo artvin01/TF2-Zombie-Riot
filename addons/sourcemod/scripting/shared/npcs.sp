@@ -2423,7 +2423,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &att
 	{
 		case WEAPON_SAGA:
 		{
-			Saga_OnTakeDamage(victim, attacker, damage, weapon);
+			Saga_OnTakeDamage(victim, attacker, damage, weapon, damagetype);
 		}
 	}
 #endif

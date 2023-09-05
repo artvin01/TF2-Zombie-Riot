@@ -296,8 +296,12 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon)
+void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, int damagetype)
 {
+	if(damagetype & DMG_SLASH)
+	{
+		return;
+	}
 	if(SagaCrippled[victim])
 	{
 		damage = 0.0;
@@ -380,20 +384,21 @@ void SagaCutLast(int entity, int victim, float damage, int weapon)
 		Pos2[1] -= PosRand[1];
 		Pos2[2] -= PosRand[2];
 
-		//get random pos offset for cool slash effect cus i can.
-		
-		int particle = ParticleEffectAt(Pos1, "raygun_projectile_red_crit", 0.3);
+		int red = 255;
+		int green = 65;
+		int blue = 65;
+		int Alpha = 65;
 
-		DataPack pack = new DataPack();
-		pack.WriteCell(EntIndexToEntRef(particle));
-		pack.WriteFloat(Pos2[0]);
-		pack.WriteFloat(Pos2[1]);
-		pack.WriteFloat(Pos2[2]);
-		RequestFrames(TeleportParticleArk, 10,pack);
-		
-
-	//	TE_SetupBeamPoints(Pos1, Pos2, ShortTeleportLaserIndex, 0, 0, 0, 0.25, 10.0, 10.0, 0, 1.0, {255,0,0,200}, 3);
-	//	TE_SendToAll(0.0);
+		int colorLayer4[4];
+		float diameter = float(10);
+		SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+		//we set colours of the differnet laser effects to give it more of an effect
+		int colorLayer1[4];
+		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+		int glowColor[4];
+		SetColorRGBA(glowColor, red, green, blue, Alpha);
+		TE_SetupBeamPoints(Pos1, Pos2, Shared_BEAM_Glow, 0, 0, 0, 0.7, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.5, glowColor, 0);
+		TE_SendToAll(0.0);
 
 
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], 0, SNDCHAN_AUTO, 90, _,_,GetRandomInt(80,110),-1,VicLoc);
