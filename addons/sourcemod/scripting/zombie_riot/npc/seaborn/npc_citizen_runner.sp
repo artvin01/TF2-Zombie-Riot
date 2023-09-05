@@ -121,6 +121,8 @@ void CitizenRunner_NPCDeath(int entit)
 		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 
+		SeaFounder_SpawnNethersea(pos);
+
 		static const int RandomInfection[] = { SEAPREDATOR_ALT, SEAPREDATOR_ALT, SEAFOUNDER_ALT, SEASPEWER_ALT, SEASWARMCALLER_ALT };
 
 		int entity = Npc_Create(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, false);
@@ -163,8 +165,9 @@ void CitizenRunner_NPCDeath(int entit)
 */
 	}
 }
-
+/*
 public void CitizenRunner_PostDeath(const char[] output, int caller, int activator, float delay)
 {
 	RemoveEntity(caller);
 }
+*/

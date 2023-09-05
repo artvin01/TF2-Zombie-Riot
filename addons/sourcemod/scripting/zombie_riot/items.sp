@@ -99,7 +99,7 @@ void Items_ClearArray(int client)
 
 void Items_AddArray(int client, int level, int flags)
 {
-	if(flags)
+	if(flags && level >= 0)
 	{
 		static OwnedItem owned;
 		owned.Client = client;
@@ -116,7 +116,7 @@ bool Items_GetNextItem(int client, int &i, int &level, int &flags)
 	{
 		static OwnedItem owned;
 		OwnedItems.GetArray(i, owned);
-		if(owned.Client == client)
+		if(owned.Client == client && level >= 0)
 		{
 			level = owned.Level;
 			flags = owned.Flags;
@@ -231,7 +231,7 @@ bool Items_HasNamedItem(int client, const char[] name)
 
 void Items_GiveNPCKill(int client, int id)
 {
-	AddFlagOfLevel(client, -id, 1, true);
+	//AddFlagOfLevel(client, -id, 1, true);
 }
 
 bool Items_GiveIdItem(int client, int id, bool addition = false)
@@ -277,19 +277,19 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		{
 			Format(buffer, sizeof(buffer), "%t", buffer);
 
-			if(Database_IsCached(client))
+			/*if(Database_IsCached(client))
 			{
 				menu.SetTitle("%t\n \n%s\n%t\n ", NPC_Names[page], buffer, LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 			}
-			else
+			else*/
 			{
 				menu.SetTitle("%t\n \n%s\n ", NPC_Names[page], buffer);
 			}
 		}
-		else if(Database_IsCached(client))
+		/*else if(Database_IsCached(client))
 		{
 			menu.SetTitle("%t\n \n%t\n ", NPC_Names[page], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
-		}
+		}*/
 		else
 		{
 			menu.SetTitle("%t\n ", NPC_Names[page]);
@@ -328,7 +328,8 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 			}
 		}
 
-		menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", kills);
+		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", kills);
+		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]]);
 
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, (pos / 7 * 7), MENU_TIME_FOREVER);
@@ -348,7 +349,8 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 				kills += owned.Flags;
 		}
 
-		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", "Zombie Kills", kills);
+		//menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", "Zombie Kills", kills);
+		menu.SetTitle("%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia");
 
 		char data[16], buffer[64];
 		for(int i; i < sizeof(Categories); i++)

@@ -182,7 +182,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					Initiate_HomingProjectile(projectile,
 						client,
 						80.0,		// float lockonAngleMax,
-						25.0,		// float homingaSec,
+						20.0,		// float homingaSec,
 						false,		// bool LockOnlyOnce,
 						true,		// bool changeAngles,
 						ang_Look,	// float AnglesInitiate[3]);
