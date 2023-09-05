@@ -39,7 +39,7 @@ static Handle SyncHudRaid;
 #endif
 
 static Handle SyncHud;
-static char LastClassname[2049][64];
+//static char LastClassname[2049][64];
 static bool b_DoNotDisplayHurtHud[MAXENTITIES];
 static float f_DelayNextWaveStartAdvancing;
 //static float f_SpawnerCooldown[MAXENTITIES];
@@ -70,8 +70,9 @@ void NPC_PluginStart()
 }
 void NPC_OnAllPluginsLoaded()
 {
-	LF_HookSpawn("", NPC_OnCreatePre, false);
-	LF_HookSpawn("", NPC_OnCreatePost, true);
+	return;
+//	LF_HookSpawn("", NPC_OnCreatePre, false);
+//	LF_HookSpawn("", NPC_OnCreatePost, true);
 }
 
 #if defined ZR
@@ -96,6 +97,7 @@ void NPC_RoundStart()
 }
 #endif
 
+/*
 public Action LF_OnMakeNPC(char[] classname, int &entity)
 {
 	int index = StringToInt(classname);
@@ -108,7 +110,6 @@ public Action LF_OnMakeNPC(char[] classname, int &entity)
 	
 	return Plugin_Handled;
 }
-
 public Action NPC_OnCreatePre(char[] classname)
 {
 	if(!StrContains(classname, "npc_") && !StrEqual(classname, "npc_maker"))
@@ -142,7 +143,7 @@ public void NPC_EntitySpawned(int entity)
 		Npc_Create(index, -1, pos, ang, false);
 	}
 }
-
+*/
 #if defined ZR
 public Action GetClosestSpawners(Handle timer)
 {

@@ -9,7 +9,7 @@
 #include <tf2items>
 #include <tf_econ_data>
 #include <tf2attributes>
-#include <lambda>
+//#include <lambda>
 #include <morecolors>
 #include <cbasenpc>
 #include <tf2utils>
