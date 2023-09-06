@@ -44,6 +44,7 @@ float f3_AvoidOverrideMax[MAXENTITIES][3];
 float f3_AvoidOverrideMinNorm[MAXENTITIES][3];
 float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
 float f_AvoidObstacleNavTime[MAXENTITIES];
+float f_LayerSpeedFrozeRestore[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 int i_FailedTriesUnstuck[MAXENTITIES];
 int b_NpcCollisionType[MAXENTITIES];
@@ -1965,6 +1966,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}	
 	
 	public void SetSequence(int iSequence)	{ SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); }
+	public float GetPlaybackRate() { return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); }
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
 	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
 	
@@ -2550,6 +2552,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
 			}
+			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index]);
 
 			if(IsValidEntity(view_as<CClotBody>(this.index).m_iFreezeWearable))
 				RemoveEntity(view_as<CClotBody>(this.index).m_iFreezeWearable);
@@ -7227,6 +7230,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_GodArkantosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
+	f_RaidStunResistance[entity] = 0.0;
 	i_TextEntity[entity][0] = -1;
 	i_TextEntity[entity][1] = -1;
 	i_TextEntity[entity][2] = -1;
@@ -7801,13 +7805,23 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 
 	view_as<CClotBody>(npc).Update();
 	
-	f_StunExtraGametimeDuration[npc] += (Duration_Stun - TimeSinceLastStunSubtract);
-	fl_NextDelayTime[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
-	f_TimeFrozenStill[npc] = GameTime + Duration_Stun - f_StunExtraGametimeDuration[npc];
-	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun;
+	float Duration_Stun_Post = Duration_Stun;
+	if(b_thisNpcIsARaid[npc] && Duration_Stun >= 1.0)
+	{
+		if(f_RaidStunResistance[npc] > GameTime)
+		{
+			Duration_Stun_Post *= 0.5;
+		}
+	}
+	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
+	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
+	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
+	f_TimeSinceLastStunHit[npc] = GameTime + Duration_Stun_Post;
+	f_RaidStunResistance[npc] = GameTime + Duration_Stun;
 
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
 
+	f_LayerSpeedFrozeRestore[npc] = view_as<CClotBody>(npc).GetPlaybackRate();
 	view_as<CClotBody>(npc).SetPlaybackRate(0.0);
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
 	for(int i; i < layerCount; i++)

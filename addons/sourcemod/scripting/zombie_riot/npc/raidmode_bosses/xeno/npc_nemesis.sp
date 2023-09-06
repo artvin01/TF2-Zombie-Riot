@@ -278,6 +278,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
+	if(i_GunAmmo[npc.index] > 0)
+	{
+		i_GunMode[npc.index] = 1;
+	}
 	
 	if(f_NemesisSpecialDeathAnimation[npc.index])
 	{
@@ -924,7 +928,7 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		}
 		i_GunMode[npc.index] = 1;
 		i_GunAmmo[npc.index] = 250;
-		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
+		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 50.0;
 		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
 		npc.PlayBoomSound();
 		npc.Anger = true; //	>:(

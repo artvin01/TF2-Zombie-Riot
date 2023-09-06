@@ -166,12 +166,20 @@ methodmap MedivalRiddenArcher < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetVariantString("0.8");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			SetVariantInt(1);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}				
 
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
-		SetVariantString("1.1");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetVariantString("1.1");
+			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		}
 
 		
 		SDKHook(npc.index, SDKHook_Think, MedivalRiddenArcher_ClotThink);
@@ -209,9 +217,6 @@ methodmap MedivalRiddenArcher < CClotBody
 public void MedivalRiddenArcher_ClotThink(int iNPC)
 {
 	MedivalRiddenArcher npc = view_as<MedivalRiddenArcher>(iNPC);
-	
-	SetVariantInt(1);
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{

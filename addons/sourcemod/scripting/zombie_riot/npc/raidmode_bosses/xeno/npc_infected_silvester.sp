@@ -50,11 +50,11 @@ static char g_MeleeMissSounds[][] = {
 };
 
 static char g_AngerSounds[][] = {
-	")vo/soldier_sf13_influx_big03.mp3",
+	")vo/medic_item_secop_domination01.mp3",
 };
 
 static char g_AngerSoundsPassed[][] = {
-	")vo/soldier_sf13_influx_big03.mp3",
+	")vo/medic_laughlong01.mp3",
 };
 
 static char g_PullSounds[][] = {
@@ -221,7 +221,7 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayAngerSound() {
 	
 		int sound = GetRandomInt(0, sizeof(g_AngerSounds) - 1);
-		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -232,7 +232,7 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayAngerSoundPassed() {
 	
 		int sound = GetRandomInt(0, sizeof(g_AngerSoundsPassed) - 1);
-		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSoundsPassed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		
 		DataPack pack;
 		CreateDataTimer(0.1, Fusion_RepeatSound_Doublevoice, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -841,7 +841,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 							static float velocity[3];
 							GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-							float attraction_intencity = 3000.0;
+							float attraction_intencity = 1500.0;
 							ScaleVector(velocity, attraction_intencity);
 											
 											
@@ -936,7 +936,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			{
 				ActionToTake = 2;
 			}
-			else if(flDistanceToTarget < (500.0 * 500.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
+			else if(flDistanceToTarget < (1000.0 * 1000.0) && npc.m_flNextRangedAttack < GetGameTime(npc.index))
 			{
 				ActionToTake = 4;
 			}
@@ -1104,7 +1104,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 25.0;
 				if(npc.Anger)
 				{
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 20.0;
+					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 20.0;
 				}
 			}
 			default:
@@ -1371,9 +1371,9 @@ public Action contact_throw_Silvester_entity(int client)
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
 	bool EndThrow = false;
-	if (IsValidClient(client))
+	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] != 0 && TeutonType[client] == TEUTON_NONE)
 	{
-		if(((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1))
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 		{
 			if (fl_ThrowDelay[client] < GetGameTime())
 			{
@@ -1392,7 +1392,7 @@ public Action contact_throw_Silvester_entity(int client)
 	{
 		EndThrow = true;
 	}
-
+	PrintToChatAll("EndThrow :%b",EndThrow);
 	if(EndThrow)
 	{
 		for(int entity=1; entity < MAXENTITIES; entity++)
@@ -1400,7 +1400,7 @@ public Action contact_throw_Silvester_entity(int client)
 			b_AlreadyHitTankThrow[client][entity] = false;
 		}
 
-		SDKUnhook(client, SDKHook_Think, contact_throw_Silvester_entity);	
+		SDKUnhook(client, SDKHook_PreThink, contact_throw_Silvester_entity);	
 		return Plugin_Continue;
 	}
 	else
@@ -1415,7 +1415,7 @@ public Action contact_throw_Silvester_entity(int client)
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
 					targPos = WorldSpaceCenter(entity);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (125.0* 125.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
+					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		
@@ -1464,7 +1464,7 @@ void ApplySdkHookSilvesterThrow(int ref)
 	if(IsValidEntity(entity))
 	{
 		fl_ThrowDelay[entity] = GetGameTime(entity) + 0.1;
-		SDKHook(entity, SDKHook_Think, contact_throw_Silvester_entity);		
+		SDKHook(entity, SDKHook_PreThink, contact_throw_Silvester_entity);		
 	}
 }
 

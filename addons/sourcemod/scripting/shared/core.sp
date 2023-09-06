@@ -363,6 +363,7 @@ bool b_NoGravity[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
+float f_RaidStunResistance[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
 float f_Ruina_Speed_Buff[MAXENTITIES];
@@ -1761,6 +1762,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	else if(buttons & IN_RELOAD)
 	{
 		holding[client] |= IN_RELOAD;
+		
 		
 		#if defined ZR
 		if(angles[0] < -70.0)

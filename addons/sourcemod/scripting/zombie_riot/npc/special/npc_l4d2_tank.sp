@@ -778,6 +778,12 @@ public Action contact_throw_tank(int client)
 	float chargerPos[3];
 	float flVel[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", flVel);
+	if (IsValidClient(client) && IsPlayerAlive(client) && dieingstate[client] != 0 && TeutonType[client] == TEUTON_NONE)
+	{
+		
+		Zero(b_AlreadyHitTankThrow);
+		SDKUnhook(client, SDKHook_PreThink, contact_throw_tank);	
+	}
 	if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 	{
 		Zero(b_AlreadyHitTankThrow);

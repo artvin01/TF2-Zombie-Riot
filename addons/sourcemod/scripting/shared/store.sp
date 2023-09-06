@@ -487,6 +487,7 @@ enum struct Item
 	
 	bool NPCSeller;
 	bool NPCSeller_First;
+	int NPCSeller_WaveStart;
 	int NPCWeapon;
 	bool NPCWeaponAlways;
 	int GiftId;
@@ -2374,7 +2375,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0)
+void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave = 0)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2391,6 +2392,17 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0)
 			{
 				item.NPCSeller_First = false;
 				item.NPCSeller = false;
+				if(ResetStore)
+				{
+					item.NPCSeller_WaveStart = 0;
+				}
+			}
+			if(addItem == 99)
+			{
+				if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				{
+					item.NPCSeller_WaveStart -= 1;
+				}
 			}
 			item.GetItemInfo(0, info);
 			if(info.Cost > 0 && info.Cost > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
@@ -2399,6 +2411,9 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0)
 			StoreItems.SetArray(i, item);
 		}
 	}
+	if(subtract_wave != 0)
+		return;
+
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
 		if(!ResetStore)
@@ -2428,14 +2443,18 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0)
 					SellsMax++;
 					continue;
 				}
-				
-				if(OneSuperSale)
+				if(addItem != 0 && item.NPCSeller_WaveStart <= 0)
+				{
+					item.NPCSeller_WaveStart = 3;
+					CPrintToChatAll("{green}%s [$$]{default}",item.Name);
+				}
+				else if(OneSuperSale)
 				{
 					CPrintToChatAll("{green}%s [$$]{default}",item.Name);
 					item.NPCSeller_First = true;
 					OneSuperSale = false;
 				}
-				else
+				else if(item.NPCSeller_WaveStart <= 0)
 				{
 					CPrintToChatAll("{palegreen}%s [$]{default}",item.Name);
 				}
@@ -2924,7 +2943,7 @@ public void MenuPage(int client, int section)
 		item.GetItemInfo(0, info);
 		if(NPCOnly[client] == 1)
 		{
-			if(!item.NPCSeller || item.Level > ClientLevel)
+			if((!item.NPCSeller && item.NPCSeller_WaveStart == 0) || item.Level > ClientLevel )
 				continue;
 		}
 		else if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
@@ -3015,6 +3034,10 @@ public void MenuPage(int client, int section)
 					if(item.NPCSeller_First)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
+					}	
+					else if(item.NPCSeller_WaveStart > 0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$$}", item.NPCSeller_WaveStart);
 					}	
 					else if(item.NPCSeller)
 					{
@@ -3137,6 +3160,10 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
 				}	
+				else if(item.NPCSeller_WaveStart > 0)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s%s [Waves Left:%i]", buffer, "{$$}", item.NPCSeller_WaveStart);
+				}
 				else if(item.NPCSeller)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$}");
@@ -5700,7 +5727,11 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		if(b_SpecialGrigoriStore) //during maps where he alaways sells, always sell!
 		{
-			if(item.NPCSeller_First)
+			if(item.NPCSeller_WaveStart > 0)
+			{
+				cost = RoundToCeil(float(cost) * 0.7);
+			}
+			else if(item.NPCSeller_First)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);
 			}
@@ -5730,7 +5761,11 @@ static void ItemCost(int client, Item item, int &cost)
 		{
 			if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 			{
-				if(item.NPCSeller_First)
+				if(item.NPCSeller_WaveStart > 0)
+				{
+					cost = RoundToCeil(float(cost) * 0.7);
+				}
+				else if(item.NPCSeller_First)
 				{
 					cost = RoundToCeil(float(cost) * 0.7);
 				}
@@ -5844,7 +5879,7 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	if(building && Waves_InSetup() && StartCash < 750)
+	if(building && !Waves_Started() && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{

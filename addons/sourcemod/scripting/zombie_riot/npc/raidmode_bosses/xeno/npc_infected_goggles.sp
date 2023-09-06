@@ -250,7 +250,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		npc.m_iGunType = 0;
 		npc.m_flSwitchCooldown = GetGameTime(npc.index) + 10.0;
 		npc.m_flBuffCooldown = GetGameTime(npc.index) + GetRandomFloat(10.0, 12.5);
-		npc.m_flPiggyCooldown = FAR_FUTURE;//GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0);
+		npc.m_flPiggyCooldown = GetGameTime(npc.index) + GetRandomFloat(30.0, 50.0); // FAR_FUTURE;
 		npc.m_flPiggyFor = 0.0;
 		npc.m_flMeleeArmor = 1.25;
 
@@ -404,11 +404,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	if(npc.m_flPiggyFor)
 	{
+		SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0}); //keep teleporting just incase.
 		if(npc.m_flPiggyFor < gameTime || alone || b_NpcIsInvulnerable[ally])
 		{
 			// Disable Piggyback Stuff
 			npc.m_flPiggyFor = 0.0;
 			npc.m_flSpeed = 290.0;
+			SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
 			AcceptEntityInput(npc.index, "ClearParent");
 			b_CannotBeKnockedUp[npc.index] = false;
 			b_NoGravity[npc.index] = false;
@@ -549,16 +551,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 				flPos[2] += 85.0;
 				SDKCall_SetLocalOrigin(npc.index, flPos);
-				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 				npc.SetVelocity({0.0,0.0,0.0});
 				float eyePitch[3];
 				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
 				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,0.0});
 				SetParent(npcally.index, npc.index, "");
 				b_NoGravity[npc.index] = true;
 				b_CannotBeKnockedUp[npc.index] = true;
 				SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
-				TeleportEntity(npc.index, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 				npc.SetVelocity({0.0,0.0,0.0});
 				GetEntPropVector(npcally.index, Prop_Data, "m_angRotation", eyePitch);
 				SetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);

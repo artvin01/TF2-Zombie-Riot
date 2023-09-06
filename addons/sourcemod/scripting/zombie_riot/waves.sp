@@ -1425,6 +1425,7 @@ void Waves_Progress()
 			}
 			else
 			{
+				Store_RandomizeNPCStore(false, 99, 1);
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(false);
 				
@@ -1435,6 +1436,9 @@ void Waves_Progress()
 
 			if(refreshNPCStore)
 				Store_RandomizeNPCStore(false);
+
+			
+			Store_RandomizeNPCStore(false, 99, 1);
 		}
 	}
 	else if(Rogue_Mode())
