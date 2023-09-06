@@ -196,7 +196,7 @@ methodmap MedivalEagleGiant < CClotBody
 		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-		SetVariantString("-3.0");
+		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);

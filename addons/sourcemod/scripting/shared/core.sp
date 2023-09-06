@@ -684,7 +684,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_213.mdl"
+#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_216.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
 
@@ -3103,6 +3103,9 @@ bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
 
+				if (b_Is_Blue_Npc[entity])
+					return false;
+					
 				if(Building_Interact(client, entity, Is_Reload_Button))
 					return true;
 					
