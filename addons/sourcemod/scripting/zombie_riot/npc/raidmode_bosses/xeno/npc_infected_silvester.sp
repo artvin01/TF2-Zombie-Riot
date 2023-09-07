@@ -1392,7 +1392,6 @@ public Action contact_throw_Silvester_entity(int client)
 	{
 		EndThrow = true;
 	}
-	PrintToChatAll("EndThrow :%b",EndThrow);
 	if(EndThrow)
 	{
 		for(int entity=1; entity < MAXENTITIES; entity++)
