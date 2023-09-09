@@ -245,9 +245,9 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 45.0;
+					float damageDealt = 40.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.5;
+						damageDealt *= 2.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
