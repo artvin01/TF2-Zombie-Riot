@@ -4902,10 +4902,10 @@ static int VillagePointsLeft(int client)
 	if(Store_HasNamedItem(client, "Construction Killer"))	// 25 -> 44
 		level += 19;
 	
-	for(int i; i < sizeof(VillageCosts); i++)
+	for(int i = 1; i < sizeof(VillageCosts); i++)
 	{
 		if(Village_Flags[client] & (1 << i))
-			level -= VillageCosts[client];
+			level -= VillageCosts[i];
 	}
 
 	return level;	// 1 - 25/44
