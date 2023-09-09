@@ -442,8 +442,11 @@ void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapo
 
 void SeargentIdealShieldInternal(int shielder, int victim)
 {
-	SeargentIdeal npc = view_as<SeargentIdeal>(victim);
-	npc.m_iGetSeargentProtector = shielder;
+	if(i_NpcInternalId[victim] != EXPIDONSA_DIVERSIONISTICO) //do not shield diversios.
+	{
+		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
+		npc.m_iGetSeargentProtector = shielder;
+	}
 }
 
 void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)

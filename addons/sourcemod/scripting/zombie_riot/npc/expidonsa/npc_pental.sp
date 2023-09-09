@@ -244,9 +244,9 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 35.0;
+					float damageDealt = 30.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.5;
+						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

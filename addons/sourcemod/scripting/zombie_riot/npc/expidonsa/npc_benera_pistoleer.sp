@@ -403,8 +403,8 @@ void PistoleerInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Pistoleer_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 50.0;
-	float FarDamage = 25.0;
+	float CloseDamage = 25.0;
+	float FarDamage = 15.0;
 	float MaxDistance = 1000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)

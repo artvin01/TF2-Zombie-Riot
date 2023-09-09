@@ -115,7 +115,7 @@ methodmap HeavyPunuel < CClotBody
 	
 	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1500", ally, false, true));
+		HeavyPunuel npc = view_as<HeavyPunuel>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "1000", ally, false, true));
 		
 		i_NpcInternalId[npc.index] = EXPIDONSA_HEAVYPUNUEL;
 		i_NpcWeight[npc.index] = 1;
@@ -340,9 +340,9 @@ void HeavyPunuelSelfDefense(HeavyPunuel npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 65.0;
+					float damageDealt = 50.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 2.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
