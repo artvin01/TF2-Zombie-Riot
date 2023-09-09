@@ -3665,6 +3665,10 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 
 	if(b_IsAlliedNpc[bot_entidx]) //ally!
 	{
+		if(b_IsCamoNPC[bot_entidx])
+		{
+			return false;
+		}
 		if(b_IsCamoNPC[other_entidx])
 		{
 			if(!b_IsCamoNPC[bot_entidx])
@@ -3703,6 +3707,10 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	}
 	else //Enemy!
 	{
+		if(b_IsCamoNPC[bot_entidx])
+		{
+			return false;
+		}
 		if(b_IsCamoNPC[other_entidx])
 		{
 			if(!b_IsCamoNPC[bot_entidx])
