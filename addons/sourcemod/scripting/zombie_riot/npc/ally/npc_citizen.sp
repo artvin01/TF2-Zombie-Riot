@@ -913,7 +913,7 @@ methodmap Citizen < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.m_iState = -1;
-		npc.SetActivity("ACT_BUSY_SIT_GROUND");
+		npc.SetActivity("ACT_BUSY_SIT_GROUND", 0.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -948,7 +948,6 @@ methodmap Citizen < CClotBody
 		npc.m_iArmorErosion = 0;
 		GunBonusFireRate[npc.index] = 1.0;
 		GunBonusReload[npc.index] = 1.0;
-		
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1090,21 +1089,23 @@ methodmap Citizen < CClotBody
 	{
 		public get()
 		{
-			return fl_Speed[this.index];
+			return this.m_flNextRangedBarrage_Spam;
 		}
 		public set(float value)
 		{
-			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG))
+			this.m_flNextRangedBarrage_Spam = value;
+
+			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG || (npc.m_bCamo && this.m_iHasPerk == Cit_Melee)))
 			{
-				fl_Speed[this.index] = value * (this.m_bAlyx ? 1.4 : 1.1);
+				fl_Speed[this.index] = value * (this.m_bAlyx ? 1.66 : 1.55);
 			}
 			else if(this.m_bAlyx)
 			{
-				fl_Speed[this.index] = value * 1.3;
+				fl_Speed[this.index] = value * 1.6;
 			}
 			else
 			{
-				fl_Speed[this.index] = value;
+				fl_Speed[this.index] = value * 1.5;
 			}
 		}
 	}
@@ -1180,11 +1181,12 @@ methodmap Citizen < CClotBody
 			SetEntityRenderMode(this.index, RENDER_NORMAL);
 		}
 	}
-	public void SetActivity(const char[] animation)
+	public void SetActivity(const char[] animation, float speed)
 	{
 		int activity = this.LookupActivity(animation);
 		if(activity > 0 && activity != this.m_iState)
 		{
+			this.m_flSpeed = speed;
 			this.m_iState = activity;
 			this.m_bisWalking = false;
 			this.StartActivity(activity);
@@ -1200,7 +1202,7 @@ methodmap Citizen < CClotBody
 			this.m_iHasPerk = Cit_None;
 			this.m_bThisEntityIgnored = true;
 			this.m_iReviveTicks = 99999;
-			this.SetActivity("ACT_BUSY_SIT_GROUND");
+			this.SetActivity("ACT_BUSY_SIT_GROUND", 0.0);
 			
 			if(this.m_bPathing)
 			{
@@ -1260,7 +1262,7 @@ methodmap Citizen < CClotBody
 			this.m_bThisEntityIgnored = false;
 			if(!this.m_bAlyx)
 			{
-				this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT");
+				this.SetActivity("ACT_BUSY_SIT_GROUND_EXIT", 0.0);
 				this.SetPlaybackRate(2.0);
 				this.m_flReloadDelay = GetGameTime(this.index) + 1.2;
 			}
@@ -1510,8 +1512,7 @@ bool Citizen_GivePerk(int entity, int type)
 	npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 	npc.UpdateModel();
 	
-	npc.SetActivity("ACT_PICKUP_RACK");
-	npc.m_flSpeed = 0.0;
+	npc.SetActivity("ACT_PICKUP_RACK", 0.0);
 	
 	if(npc.m_iWearable2 > 0)
 		RemoveEntity(npc.m_iWearable2);
@@ -1636,8 +1637,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);
 	
-	npc.SetActivity("ACT_PICKUP_RACK");
-	npc.m_flSpeed = 0.0;
+	npc.SetActivity("ACT_PICKUP_RACK", 0.0);
 	
 	if(npc.m_iWearable1 > 0)
 		RemoveEntity(npc.m_iWearable1);
@@ -1753,7 +1753,7 @@ void Citizen_SetupStart()
 					}
 				}
 				
-				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.26, npc.m_bAlyx ? 0.4 : 0.34)), view_as<bool>(found)))
+				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.22, npc.m_bAlyx ? 0.4 : 0.3)), view_as<bool>(found)))
 				{
 					npc.m_iTargetAlly = found;
 					npc.m_bSeakingGeneric = true;
@@ -1886,7 +1886,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus, npc.m_bCamo, _, _, _, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, npc.m_bCamo ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, true);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2029,8 +2029,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					if(distance < (14500.0 * npc.m_fGunRangeBonus))
 					{
-						npc.SetActivity("ACT_MELEE_ANGRY_MELEE");
-						npc.m_flSpeed = 0.0;
+						npc.SetActivity("ACT_MELEE_ANGRY_MELEE", 0.0);
 						walkStatus = -1;	// Don't move
 						
 						npc.FaceTowards(vecTarget, 500.0);
@@ -2057,8 +2056,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(healingTarget < 1)	// Don't try to melee more if we're injured
 					{
-						npc.SetActivity("ACT_RUN_CROUCH");
-						npc.m_flSpeed = 240.0;
+						npc.SetActivity("ACT_RUN_CROUCH", 240.0);
 						walkStatus = 1;	// Walk up
 						
 						if(npc.m_iWearable1 > 0)
@@ -2070,8 +2068,7 @@ public void Citizen_ClotThink(int iNPC)
 					if(npc.m_flNextRangedAttack > gameTime)	// On cooldown
 					{
 						npc.FaceTowards(vecTarget, 500.0);
-						npc.SetActivity("ACT_RANGE_ATTACK_PISTOL");
-						npc.m_flSpeed = 0.0;
+						npc.SetActivity("ACT_RANGE_ATTACK_PISTOL", 0.0);
 						walkStatus = -1;	// Don't move
 
 						if(npc.m_iWearable1 > 0)
@@ -2082,8 +2079,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
-							npc.SetActivity("ACT_RUN");
-							npc.m_flSpeed = 240.0;
+							npc.SetActivity("ACT_RUN", 240.0);
 							walkStatus = 3;	// Back off
 						}
 
@@ -2092,8 +2088,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(!npc.m_bCamo && distance < 22500.0)	// Too close for the Pistol
 					{
-						npc.SetActivity("ACT_RUN");
-						npc.m_flSpeed = 240.0;
+						npc.SetActivity("ACT_RUN", 240.0);
 						walkStatus = 3;	// Back off
 						
 						if(npc.m_iWearable1 > 0)
@@ -2115,8 +2110,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							KillFeed_SetKillIcon(npc.index, "pistol");
 							npc.FaceTowards(vecTarget, 15000.0);
-							npc.SetActivity("ACT_RANGE_ATTACK_PISTOL");
-							npc.m_flSpeed = 0.0;
+							npc.SetActivity("ACT_RANGE_ATTACK_PISTOL", 0.0);
 							walkStatus = -1;	// Don't move
 							
 							if(npc.m_iWearable1 > 0)
@@ -2175,8 +2169,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
-							npc.SetActivity("ACT_RUN_RIFLE");
-							npc.m_flSpeed = 210.0;
+							npc.SetActivity("ACT_RUN_RIFLE", 210.0);
 							walkStatus = 3;	// Back off
 						}
 					}
@@ -2184,14 +2177,12 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						if(!npc.m_bCamo && distance < 150000.0)	// Too close, walk backwards
 						{
-							npc.SetActivity("ACT_WALK_AIM_RIFLE");
-							npc.m_flSpeed = 90.0;
+							npc.SetActivity("ACT_WALK_AIM_RIFLE", 90.0);
 							walkStatus = 2;	// Back off
 						}
 						else
 						{
-							npc.SetActivity((npc.m_iSeed % 5) ? "ACT_IDLE_ANGRY_SMG1" : "ACT_IDLE_AIM_RIFLE_STIMULATED");
-							npc.m_flSpeed = 0.0;
+							npc.SetActivity((npc.m_iSeed % 5) ? "ACT_IDLE_ANGRY_SMG1" : "ACT_IDLE_AIM_RIFLE_STIMULATED", 0.0);
 							walkStatus = -1;	// Don't move
 						}
 
@@ -2258,8 +2249,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
-							npc.SetActivity("ACT_RUN_AR2");
-							npc.m_flSpeed = 210.0;
+							npc.SetActivity("ACT_RUN_AR2", 210.0);
 							walkStatus = 3;	// Back off
 						}
 					}
@@ -2267,14 +2257,12 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						if(!npc.m_bCamo && distance < 150000.0)	// Too close, walk backwards
 						{
-							npc.SetActivity("ACT_WALK_AIM_AR2");
-							npc.m_flSpeed = 90.0;
+							npc.SetActivity("ACT_WALK_AIM_AR2", 90.0);
 							walkStatus = 2;	// Back off
 						}
 						else
 						{
-							npc.SetActivity("ACT_IDLE_ANGRY_AR2");
-							npc.m_flSpeed = 0.0;
+							npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
 							walkStatus = -1;	// Don't move
 						}
 
@@ -2338,8 +2326,7 @@ public void Citizen_ClotThink(int iNPC)
 					if(npc.m_flNextRangedAttack > gameTime)	// On cooldown
 					{
 						npc.FaceTowards(vecTarget, 500.0);
-						npc.SetActivity("ACT_IDLE_ANGRY_AR2");
-						npc.m_flSpeed = 0.0;
+						npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
 						walkStatus = -1;	// Don't move
 					}
 					else if(reloadStatus == 2)	// We need to reload now
@@ -2347,8 +2334,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
-							npc.SetActivity("ACT_RUN_AR2");
-							npc.m_flSpeed = 210.0;
+							npc.SetActivity("ACT_RUN_AR2", 210.0);
 							walkStatus = 3;	// Back off
 						}
 					}
@@ -2368,8 +2354,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							KillFeed_SetKillIcon(npc.index, "shotgun_primary");
 							npc.FaceTowards(vecTarget, 15000.0);
-							npc.SetActivity("ACT_IDLE_ANGRY_AR2");
-							npc.m_flSpeed = 0.0;
+							npc.SetActivity("ACT_IDLE_ANGRY_AR2", 0.0);
 							walkStatus = -1;	// Don't move
 							
 							npc.m_iState = -1;
@@ -2417,8 +2402,7 @@ public void Citizen_ClotThink(int iNPC)
 					if(npc.m_flNextRangedAttack > gameTime)	// On cooldown
 					{
 						npc.FaceTowards(vecTarget, 500.0);
-						npc.SetActivity("ACT_IDLE_ANGRY_RPG");
-						npc.m_flSpeed = 0.0;
+						npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
 						walkStatus = -1;	// Don't move
 					}
 					else if(reloadStatus == 2)	// We need to reload now
@@ -2426,15 +2410,13 @@ public void Citizen_ClotThink(int iNPC)
 						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
-							npc.SetActivity("ACT_RUN_RPG");
-							npc.m_flSpeed = 240.0;
+							npc.SetActivity("ACT_RUN_RPG", 240.0);
 							walkStatus = 3;	// Back off
 						}
 					}
 					else if(!npc.m_bCamo && distance < 22500.0)	// Too close for the RPG
 					{
-						npc.SetActivity("ACT_RUN_RPG");
-						npc.m_flSpeed = 240.0;
+						npc.SetActivity("ACT_RUN_RPG", 240.0);
 						walkStatus = 3;	// Back off
 					}
 					else	// Try to shoot
@@ -2453,8 +2435,7 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 							npc.FaceTowards(vecTarget, 15000.0);
-							npc.SetActivity("ACT_IDLE_ANGRY_RPG");
-							npc.m_flSpeed = 0.0;
+							npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
 							walkStatus = -1;	// Don't move
 							
 							npc.m_iState = -1;
@@ -2477,15 +2458,15 @@ public void Citizen_ClotThink(int iNPC)
 		if(reloadStatus)	// Reload
 		{
 			npc.m_iAttacksTillReload = npc.m_iGunClip;
-			npc.m_flSpeed = 0.0;
 			walkStatus = -1;	// Don't move
 			
 			switch(npc.m_iGunType)
 			{
 				case Cit_Pistol:
 				{
-					npc.SetActivity("ACT_RELOAD_PISTOL");
-					npc.m_flReloadDelay = gameTime + (1.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.SetActivity("ACT_RELOAD_PISTOL", 0.0);
+					npc.SetPlaybackRate(2.0);
+					npc.m_flReloadDelay = gameTime + (0.7 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayPistolReloadSound();
 
 					if(npc.m_iWearable1 > 0)
@@ -2496,8 +2477,9 @@ public void Citizen_ClotThink(int iNPC)
 				}
 				case Cit_SMG:
 				{
-					npc.SetActivity("ACT_RELOAD_SMG1");
-					npc.m_flReloadDelay = gameTime + (2.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.SetActivity("ACT_RELOAD_SMG1", 0.0);
+					npc.SetPlaybackRate(2.0);
+					npc.m_flReloadDelay = gameTime + (1.2 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlaySMGReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2505,8 +2487,9 @@ public void Citizen_ClotThink(int iNPC)
 				}
 				case Cit_AR:
 				{
-					npc.SetActivity("ACT_RELOAD_AR2");
-					npc.m_flReloadDelay = gameTime + (1.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.SetActivity("ACT_RELOAD_AR2", 0.0);
+					npc.SetPlaybackRate(2.0);
+					npc.m_flReloadDelay = gameTime + (0.8 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayARReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2514,8 +2497,9 @@ public void Citizen_ClotThink(int iNPC)
 				}
 				case Cit_Shotgun:
 				{
-					npc.SetActivity("ACT_RELOAD_shotgun");
-					npc.m_flReloadDelay = gameTime + (2.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.SetActivity("ACT_RELOAD_shotgun", 0.0);
+					npc.SetPlaybackRate(2.0);
+					npc.m_flReloadDelay = gameTime + (1.3 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayShotgunReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2523,7 +2507,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 				default:
 				{
-					npc.SetActivity("ACT_IDLE_ANGRY_RPG");
+					npc.SetActivity("ACT_IDLE_ANGRY_RPG", 0.0);
 					npc.m_flReloadDelay = gameTime + (npc.m_fGunReload * npc.m_fGunBonusReload);
 				}
 			}
@@ -2535,8 +2519,7 @@ public void Citizen_ClotThink(int iNPC)
 			distance = GetVectorDistance(vecTarget, vecMe, true);
 			if(distance < 7000.0)
 			{
-				npc.SetActivity("ACT_CIT_HEAL");
-				npc.m_flSpeed = 0.0;
+				npc.SetActivity("ACT_CIT_HEAL", 0.0);
 				walkStatus = -1;	// Don't move
 
 				HealingCooldown[npc.m_iTargetAlly] = gameTime + 60.0;
@@ -2780,8 +2763,7 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = false;
 			npc.m_flidle_talk = FAR_FUTURE;
 
-			npc.SetActivity("ACT_RUN_PANICKED");
-			npc.m_flSpeed = 260.0;
+			npc.SetActivity("ACT_RUN_PANICKED", 260.0);
 
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
@@ -2806,23 +2788,19 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				case Cit_SMG:
 				{
-					npc.SetActivity(combat ? "ACT_RUN_RIFLE" : injured ? "ACT_RUN_RIFLE_STIMULATED" : "ACT_RUN_RIFLE_RELAXED");
-					npc.m_flSpeed = combat ? 210.0 : 240.0;
+					npc.SetActivity(combat ? "ACT_RUN_RIFLE" : injured ? "ACT_RUN_RIFLE_STIMULATED" : "ACT_RUN_RIFLE_RELAXED", combat ? 210.0 : 240.0);
 				}
 				case Cit_AR, Cit_Shotgun:
 				{
-					npc.SetActivity(combat ? "ACT_RUN_AR2" : injured ? "ACT_RUN_AR2_STIMULATED" : "ACT_RUN_AR2_RELAXED");
-					npc.m_flSpeed = combat ? 210.0 : 240.0;
+					npc.SetActivity(combat ? "ACT_RUN_AR2" : injured ? "ACT_RUN_AR2_STIMULATED" : "ACT_RUN_AR2_RELAXED", combat ? 210.0 : 240.0);
 				}
 				case Cit_RPG:
 				{
-					npc.SetActivity(combat ? "ACT_RUN_RPG" : "ACT_RUN_RPG_RELAXED");
-					npc.m_flSpeed = 240.0;
+					npc.SetActivity(combat ? "ACT_RUN_RPG" : "ACT_RUN_RPG_RELAXED", 240.0);
 				}
 				default:
 				{
-					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 240.0;
+					npc.SetActivity("ACT_RUN", 240.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -2843,31 +2821,26 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				case Cit_Melee:
 				{
-					npc.SetActivity("ACT_WALK_SUITCASE");
-					npc.m_flSpeed = 90.0;
+					npc.SetActivity("ACT_WALK_SUITCASE", 90.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
 				}
 				case Cit_SMG:
 				{
-					npc.SetActivity(combat ? "ACT_WALK_RIFLE" : injured ? "ACT_WALK_RIFLE_STIMULATED" : "ACT_WALK_RIFLE_RELAXED");
-					npc.m_flSpeed = 90.0;
+					npc.SetActivity(combat ? "ACT_WALK_RIFLE" : injured ? "ACT_WALK_RIFLE_STIMULATED" : "ACT_WALK_RIFLE_RELAXED", 90.0);
 				}
 				case Cit_AR, Cit_Shotgun:
 				{
-					npc.SetActivity(combat ? "ACT_WALK_AR2" : injured ? "ACT_WALK_AR2_STIMULATED" : "ACT_WALK_AR2_RELAXED");
-					npc.m_flSpeed = 90.0;
+					npc.SetActivity(combat ? "ACT_WALK_AR2" : injured ? "ACT_WALK_AR2_STIMULATED" : "ACT_WALK_AR2_RELAXED", 90.0);
 				}
 				case Cit_RPG:
 				{
-					npc.SetActivity(combat ? "ACT_WALK_RPG" : "ACT_WALK_RPG_RELAXED");
-					npc.m_flSpeed = 90.0;
+					npc.SetActivity(combat ? "ACT_WALK_RPG" : "ACT_WALK_RPG_RELAXED", 90.0);
 				}
 				default:
 				{
-					npc.SetActivity("ACT_WALK");
-					npc.m_flSpeed = 90.0;
+					npc.SetActivity("ACT_WALK", 90.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -2941,45 +2914,38 @@ public void Citizen_ClotThink(int iNPC)
 				// TODO: Barney has an issue with ACT_IDLE_SUITCASE, same with Rebels?
 				if(combat/* || !npc.m_bBarney*/)
 				{
-					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE");
+					npc.SetActivity(combat ? "ACT_IDLE_ANGRY_MELEE" : "ACT_IDLE_SUITCASE", 0.0);
 					
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
 				}
 				else
 				{
-					npc.SetActivity("ACT_IDLE");
+					npc.SetActivity("ACT_IDLE", 0.0);
 
 					if(npc.m_iWearable1 > 0)
 						AcceptEntityInput(npc.m_iWearable1, "Enable");
 				}
-				
-				npc.m_flSpeed = 0.0;
 			}
 			case Cit_SMG:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_SMG1" : injured ? "ACT_IDLE_SMG1_STIMULATED" : "ACT_IDLE_SMG1_RELAXED");
-				npc.m_flSpeed = 0.0;
+				npc.SetActivity(combat ? "ACT_IDLE_SMG1" : injured ? "ACT_IDLE_SMG1_STIMULATED" : "ACT_IDLE_SMG1_RELAXED", 0.0);
 			}
 			case Cit_AR:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_AR2" : injured ? "ACT_IDLE_AR2_STIMULATED" : "ACT_IDLE_AR2_RELAXED");
-				npc.m_flSpeed = 0.0;
+				npc.SetActivity(combat ? "ACT_IDLE_AR2" : injured ? "ACT_IDLE_AR2_STIMULATED" : "ACT_IDLE_AR2_RELAXED", 0.0);
 			}
 			case Cit_Shotgun:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_SHOTGUN_AGITATED" : injured ? "ACT_IDLE_SHOTGUN_STIMULATED" : "ACT_IDLE_SHOTGUN_RELAXED");
-				npc.m_flSpeed = 0.0;
+				npc.SetActivity(combat ? "ACT_IDLE_SHOTGUN_AGITATED" : injured ? "ACT_IDLE_SHOTGUN_STIMULATED" : "ACT_IDLE_SHOTGUN_RELAXED", 0.0);
 			}
 			case Cit_RPG:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_RPG" : "ACT_IDLE_RPG_RELAXED");
-				npc.m_flSpeed = 0.0;
+				npc.SetActivity(combat ? "ACT_IDLE_RPG" : "ACT_IDLE_RPG_RELAXED", 0.0);
 			}
 			default:
 			{
-				npc.SetActivity(combat ? "ACT_IDLE_ANGRY" : "ACT_IDLE");
-				npc.m_flSpeed = 0.0;
+				npc.SetActivity(combat ? "ACT_IDLE_ANGRY" : "ACT_IDLE", 0.0);
 				
 				if(npc.m_iWearable1 > 0)
 					AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -3068,6 +3034,11 @@ public void Citizen_ClotThink(int iNPC)
 		
 		if(TalkTurningFor[npc.index] > gameTime)
 			npc.FaceTowards(TalkTurnPos[npc.index], 400.0);
+	}
+
+	if(npc.m_flSpeed > 0.0)
+	{
+		npc.SetPlaybackRate(npc.GetRunSpeed() / npc.m_flSpeed);
 	}
 
 	npc.m_bGetClosestTargetTimeAlly = false;

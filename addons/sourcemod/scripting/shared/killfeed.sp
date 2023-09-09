@@ -201,7 +201,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 	}
 	else if(!b_NpcHasDied[victim])
 	{
-		if(!Bots[botNum])
+		if(b_NoKillFeed[victim] || !Bots[botNum])
 			return;
 		
 		feed.userid = GetClientUserId(Bots[botNum]);

@@ -211,6 +211,7 @@ methodmap NecroCombine < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_bDissapearOnDeath = true;
+		npc.m_bNoKillFeed = true;
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");

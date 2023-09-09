@@ -88,6 +88,7 @@ methodmap AlliedSensalAbility < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		b_NoKnockbackFromSources[npc.index] = true;
+		npc.m_bNoKillFeed = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	

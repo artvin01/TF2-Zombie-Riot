@@ -339,6 +339,7 @@ int i_ObjectsBreakable[ZR_MAX_BREAKBLES];
 bool b_IsAGib[MAXENTITIES];
 int i_NpcInternalId[MAXENTITIES];
 bool b_IsCamoNPC[MAXENTITIES];
+bool b_NoKillFeed[MAXENTITIES];
 
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};

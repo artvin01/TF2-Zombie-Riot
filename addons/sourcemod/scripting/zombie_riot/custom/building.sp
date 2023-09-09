@@ -4842,6 +4842,75 @@ static void VillageCheckItems(int client)
 	}
 }
 
+static const int VillageCosts[] =
+{
+	// B0 1
+	// B1 2
+	// B2 4
+	// B3 7
+	// B4 11
+	// B5 16
+	// B6 35
+
+	// R0 0
+	// R1 1
+	// R2 2
+	// R3 4
+	// R4 6
+	// R5 9
+
+	0,
+
+	1,	// 1	- B0 R0
+	3,	// 4	- B1 R2
+	2,	// 6	- B2 R2
+	3,	// 9	- B3 R2
+	4,	// 13	- B4 R2
+
+	1,	// 1	- B0 R0
+	2,	// 3	- B1 R1
+	5,	// 8	- B3 R1
+	6,	// 14	- B4 R3
+	7,	// 21	- B5 R4
+
+	2,	// 2	- B1 R0
+	2,	// 4	- B1 R2
+	6,	// 10	- B3 R3
+	14,	// 24	- B5 R5
+	20,	// 44	- B6 R5
+};
+
+static int VillagePointsLeft(int client)
+{
+	int level = MaxSupportBuildingsAllowed(client, true);	// 1 - 16
+
+	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+		level++;
+	
+	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+		level++;
+	
+	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
+		level += 2;
+	
+	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
+		level += 2;
+	
+	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
+		level += 3;
+	
+	if(Store_HasNamedItem(client, "Construction Killer"))	// 25 -> 44
+		level += 19;
+	
+	for(int i; i <= VILLAGE_005; i++)
+	{
+		if(Village_Flags[client] & (1 << i))
+			level -= VillageCosts[client];
+	}
+
+	return level;	// 1 - 25/44
+}
+
 static void VillageUpgradeMenu(int client, int viewer)
 {
 	bool owner = client == viewer;
@@ -4849,8 +4918,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 	Menu menu = new Menu(VillageUpgradeMenuH);
 	
 	SetGlobalTransTarget(viewer);
-	int cash = CurrentCash-CashSpent[viewer];
-	menu.SetTitle("%t\n \n%t\n \n%s\n ", "TF2: Zombie Riot", "Credits", cash, TranslateItemName(viewer, "Buildable Village", ""));
+	int points = VillagePointsLeft(client);
+	menu.SetTitle("%s\n \nBananas: %d (%s)\n ", TranslateItemName(viewer, "Buildable Village", ""), points, TranslateItemName(viewer, "Building Upgrades", ""));
 	
 	int paths;
 	if(Village_Flags[client] & VILLAGE_100)
@@ -4869,7 +4938,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Rebel Expertise", ""), ITEMDRAW_DISABLED);
 		menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
-		menu.AddItem("", "radius attack faster, deal more damage, and start with $1000.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "radius attack faster, deal more damage, and start with $1750.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_400)
 	{
@@ -4881,16 +4950,16 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$5000]", TranslateItemName(viewer, "Rebel Expertise", ""));
-			menu.AddItem(VilN(VILLAGE_500), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [4 Bananas]", TranslateItemName(viewer, "Rebel Expertise", ""));
+			menu.AddItem(VilN(VILLAGE_500), buffer, (!owner || points < 4) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
-			menu.AddItem("", "radius attack faster, deal more damage, and start with $1000.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "radius attack faster, deal more damage, and start with $1750.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_300)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$2500]%s", TranslateItemName(viewer, "Rebel Mentoring", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_400), buffer, (!owner || cash < 2500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [3 Bananas]%s", TranslateItemName(viewer, "Rebel Mentoring", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_400), buffer, (!owner || points < 3) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "All Rebels in radius start with $500,", ITEMDRAW_DISABLED);
 		menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4904,8 +4973,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$800]%s", TranslateItemName(viewer, "Rebel Training", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_300), buffer, (!owner || cash < 800) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [2 Bananas]%s", TranslateItemName(viewer, "Rebel Training", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_300), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "All Rebels in radius get", ITEMDRAW_DISABLED);
 			menu.AddItem("", "more range and more damage.\n", ITEMDRAW_DISABLED);
 			menu.AddItem("", "Village will spawn rebels every 3 waves upto 3\n ", ITEMDRAW_DISABLED);
@@ -4913,8 +4982,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 	else if(Village_Flags[client] & VILLAGE_100)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$1500]%s", TranslateItemName(viewer, "Jungle Drums", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || cash < 1500) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [3 Bananas]%s", TranslateItemName(viewer, "Jungle Drums", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_200), buffer, (!owner || points < 3) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases attack speed of all", ITEMDRAW_DISABLED);
 		menu.AddItem("", "players and allies in the radius by 5% and healrate by 8%.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4923,8 +4992,8 @@ static void VillageUpgradeMenu(int client, int viewer)
 		if(owner)
 			menu.AddItem("", "TIP: Only one path can have a tier 3 upgrade.\n ", ITEMDRAW_DISABLED);
 		
-		FormatEx(buffer, sizeof(buffer), "%s [$400]%s", TranslateItemName(viewer, "Bigger Radius", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : Village_TierExists[0] == 1 ? " [Tier 1 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_100), buffer, (!owner || cash < 400) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [1 Banana]%s", TranslateItemName(viewer, "Bigger Radius", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : Village_TierExists[0] == 2 ? " [Tier 2 Exists]" : Village_TierExists[0] == 1 ? " [Tier 1 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_100), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Increases influence radius of the village.\n ", ITEMDRAW_DISABLED);
 	}
 	
@@ -4944,16 +5013,16 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$10000]", TranslateItemName(viewer, "Homeland Defense", ""));
-			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || cash < 10000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [7 Bananas]", TranslateItemName(viewer, "Homeland Defense", ""));
+			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || points < 7) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_030)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$5000]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || cash < 5000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [6 Bananas]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
 		menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4967,23 +5036,23 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "%s [$4000]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || cash < 4000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "%s [5 Bananas]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || points < 5) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
 			menu.AddItem("", "nearby players and allies to deal 10% more damage.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_010)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$750]%s", TranslateItemName(viewer, "Radar Scanner", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || cash < 750) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [2 Bananas]%s", TranslateItemName(viewer, "Radar Scanner", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_020), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Removes camo properites off", ITEMDRAW_DISABLED);
 		menu.AddItem("", "enemies while in influence radius.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "%s [$250]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || cash < 250) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "%s [1 Banana]%s", TranslateItemName(viewer, "Grow Blocker", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : Village_TierExists[1] == 2 ? " [Tier 2 Exists]" : Village_TierExists[1] == 1 ? " [Tier 1 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_010), buffer, (!owner || points < 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Prevents non-boss enemies from", ITEMDRAW_DISABLED);
 		menu.AddItem("", "gaining health in influence radius.\n ", ITEMDRAW_DISABLED);
 	}
@@ -4992,7 +5061,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gains a +30% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_004)
 	{
@@ -5003,16 +5072,16 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [$30000]");
-			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || cash < 30000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [20 Bananas]");
+			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 20) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 			menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
-		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [$30000]");
-		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || cash < 30000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [14 Bananas]");
+		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 14) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Spawned in Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)
@@ -5025,23 +5094,23 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Little Handy [$9000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
-			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || cash < 9000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			FormatEx(buffer, sizeof(buffer), "Little Handy [6 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
+			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Reduces the damage caused by nethersea brands", ITEMDRAW_DISABLED);
 			menu.AddItem("", "by 80% to all allies with in range.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_001)
 	{
-		FormatEx(buffer, sizeof(buffer), "Armor Aid [$2000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || cash < 2000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "Armor Aid [2 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_002), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Gain a point of armor every half.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(paths < 2)
 	{
-		FormatEx(buffer, sizeof(buffer), "Wandering Aid [$1000]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
-		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || cash < 1000) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer, sizeof(buffer), "Wandering Aid [2 Bananas]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : Village_TierExists[2] == 2 ? " [Tier 2 Exists]" : Village_TierExists[2] == 1 ? " [Tier 1 Exists]" : "");
+		menu.AddItem(VilN(VILLAGE_001), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Heals a point of armor erosion every.\n ", ITEMDRAW_DISABLED);
 		menu.AddItem("", "half second to all players in range.\n ", ITEMDRAW_DISABLED);
 	}
@@ -5112,7 +5181,6 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_500:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 5);
-					CashSpent[client] += 5000;
 					Village_TierExists[0] = 5;
 					
 					int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
@@ -5136,7 +5204,6 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_400:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 4);
-					CashSpent[client] += 2500;
 					Village_TierExists[0] = 4;
 
 					int count;
@@ -5153,7 +5220,6 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_300:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 3);
-					CashSpent[client] += 800;
 					Village_TierExists[0] = 3;
 
 					int count;
@@ -5170,86 +5236,63 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 				case VILLAGE_200:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 2);
-					CashSpent[client] += 1500;
 					Village_TierExists[0] = 2;
 				}
 				case VILLAGE_100:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 1);
-					CashSpent[client] += 400;
-					CashSpentTotal[client] += 400;
 					Village_TierExists[0] = 1;
 				}
 				case VILLAGE_050:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 5);
-					CashSpent[client] += 10000;
-					CashSpentTotal[client] += 10000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 5;
 				}
 				case VILLAGE_040:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 4);
-					CashSpent[client] += 5000;
-					CashSpentTotal[client] += 5000;
 					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 					Village_TierExists[1] = 4;
 				}
 				case VILLAGE_030:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 3);
-					CashSpent[client] += 4000;
-					CashSpentTotal[client] += 4000;
 					Village_TierExists[1] = 3;
 				}
 				case VILLAGE_020:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 2);
-					CashSpent[client] += 750;
-					CashSpentTotal[client] += 750;
 					Village_TierExists[1] = 2;
 				}
 				case VILLAGE_010:
 				{
 					Store_SetNamedItem(client, "Village Buffing Expert", 1);
-					CashSpent[client] += 250;
-					CashSpentTotal[client] += 250;
 					Village_TierExists[1] = 1;
 				}
 				case VILLAGE_005:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 5);
-					CashSpent[client] += 30000;
-					CashSpentTotal[client] += 30000;
 					Village_TierExists[2] = 5;
 				}
 				case VILLAGE_004:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 4);
-					CashSpent[client] += 30000;
-					CashSpentTotal[client] += 30000;
 					Village_TierExists[2] = 4;
 				}
 				case VILLAGE_003:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 3);
-					CashSpent[client] += 9000;
-					CashSpentTotal[client] += 9000;
 					Village_TierExists[2] = 3;
 				}
 				case VILLAGE_002:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 2);
-					CashSpent[client] += 2000;
-					CashSpentTotal[client] += 2000;
 					Village_TierExists[2] = 2;
 				}
 				case VILLAGE_001:
 				{
 					Store_SetNamedItem(client, "Village Support Expert", 1);
-					CashSpent[client] += 1000;
-					CashSpentTotal[client] += 1000;
 					Village_TierExists[2] = 1;
 				}
 			}
@@ -5341,13 +5384,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						case VILLAGE_005:
 						{
 							if(Attributes_Has(entity, 6))
-								Attributes_SetMulti(entity, 6, 0.75);	// Fire Rate
+								Attributes_SetMulti(entity, 6, 0.85);	// Fire Rate
 							
 							if(Attributes_Has(entity, 97))
-								Attributes_SetMulti(entity, 97, 0.75);	// Reload Time
+								Attributes_SetMulti(entity, 97, 0.85);	// Reload Time
 							
 							if(Attributes_Has(entity, 8))
-								Attributes_SetMulti(entity, 8, 1.5);	// Heal Rate
+								Attributes_SetMulti(entity, 8, 1.3);	// Heal Rate
 						}
 					}
 				}
@@ -5397,13 +5440,13 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					case VILLAGE_005:
 					{
 						if(Attributes_Has(entity, 6))
-							Attributes_SetMulti(entity, 6, 1.0 / 0.75);	// Fire Rate
+							Attributes_SetMulti(entity, 6, 1.0 / 0.85);	// Fire Rate
 						
 						if(Attributes_Has(entity, 97))
-							Attributes_SetMulti(entity, 97, 1.0 / 0.75);	// Reload Time
+							Attributes_SetMulti(entity, 97, 1.0 / 0.85);	// Reload Time
 						
 						if(Attributes_Has(entity, 8))
-							Attributes_SetMulti(entity, 8, 1.0 / 1.5);	// Heal Rate
+							Attributes_SetMulti(entity, 8, 1.0 / 1.3);	// Heal Rate
 					}
 				}
 			}
@@ -5453,8 +5496,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					//		if(npc.m_iGunClip > 0)
 					//			npc.m_iGunClip += 2;
 							
-							if(npc.m_iGunValue < 1000)
-								npc.m_iGunValue = 1000;
+							if(npc.m_iGunValue < 1750)
+								npc.m_iGunValue = 1750;
 							
 							npc.m_fGunRangeBonus *= 1.3;
 							npc.m_fGunFirerate *= 0.7;
@@ -5476,8 +5519,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_005:
 						{
-							npc.m_fGunFirerate *= 0.75;
-							npc.m_fGunReload *= 0.75;
+							npc.m_fGunFirerate *= 0.85;
+							npc.m_fGunReload *= 0.85;
 						}
 					}
 				}
@@ -5532,8 +5575,8 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_005:
 					{
-						npc.m_fGunFirerate /= 0.75;
-						npc.m_fGunReload /= 0.75;
+						npc.m_fGunFirerate /= 0.85;
+						npc.m_fGunReload /= 0.85;
 					}
 				}
 			}
@@ -5574,7 +5617,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							}
 							case VILLAGE_005:
 							{
-								npc.BonusFireRate *= 0.75;
+								npc.BonusFireRate *= 0.85;
 							}
 						}
 					}
@@ -5601,7 +5644,7 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_005:
 						{
-							npc.BonusFireRate /= 0.75;
+							npc.BonusFireRate /= 0.85;
 						}
 					}
 				}

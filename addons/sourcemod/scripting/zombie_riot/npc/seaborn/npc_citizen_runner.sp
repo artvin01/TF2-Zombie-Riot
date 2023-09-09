@@ -68,6 +68,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 	
 	if(Waves_InSetup())
 	{
+		npc.m_bNoKillFeed = true;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);
 		return;
 	}

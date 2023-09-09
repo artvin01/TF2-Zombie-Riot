@@ -727,6 +727,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_IsCamoNPC[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_IsCamoNPC[this.index] = TempValueForProperty; }
 	}
+	property bool m_bNoKillFeed
+	{
+		public get()							{ return b_NoKillFeed[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_NoKillFeed[this.index] = TempValueForProperty; }
+	}
 	property bool m_bmovedelay_gun
 	{
 		public get()							{ return b_movedelay_gun[this.index]; }
@@ -7180,6 +7185,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_GrappleCooldown[entity] = 0.0;
 	fl_HookDamageTaken[entity] = 0.0;
 	b_IsCamoNPC[entity] = false;
+	b_NoKillFeed[entity] = false;
 	b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 	b_isGiantWalkCycle[entity] = 1.0;
 	i_Activity[entity] = -1;

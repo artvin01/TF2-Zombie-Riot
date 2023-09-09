@@ -25,7 +25,7 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		{
 			return false;
 		}
-		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+		else if(!b_IsCamoNPC[entity] && b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
 		{
 			return false;
 		}

@@ -49,6 +49,7 @@ methodmap Remains < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
+		npc.m_bNoKillFeed = true;
 		
 		npc.m_iBleedType = 0;
 		npc.m_iStepNoiseType = 0;

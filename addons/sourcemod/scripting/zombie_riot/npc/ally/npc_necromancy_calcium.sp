@@ -210,7 +210,7 @@ methodmap NecroCalcium < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDissapearOnDeath = true;
-		
+		npc.m_bNoKillFeed = true;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/engineer/jul13_king_hair/jul13_king_hair.mdl");
 		SetVariantString("1.0");
