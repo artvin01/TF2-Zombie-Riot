@@ -407,7 +407,8 @@ public void CombineOverlord_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.RemoveGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE",_, 0.25);
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;

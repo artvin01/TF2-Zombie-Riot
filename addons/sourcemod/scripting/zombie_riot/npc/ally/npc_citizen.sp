@@ -2466,7 +2466,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					npc.SetActivity("ACT_RELOAD_PISTOL", 0.0);
 					npc.SetPlaybackRate(2.0);
-					npc.m_flReloadDelay = gameTime + (0.7 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.m_flReloadDelay = gameTime + (1.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayPistolReloadSound();
 
 					if(npc.m_iWearable1 > 0)
@@ -2479,7 +2479,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					npc.SetActivity("ACT_RELOAD_SMG1", 0.0);
 					npc.SetPlaybackRate(2.0);
-					npc.m_flReloadDelay = gameTime + (1.2 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.m_flReloadDelay = gameTime + (2.4 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlaySMGReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2489,7 +2489,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					npc.SetActivity("ACT_RELOAD_AR2", 0.0);
 					npc.SetPlaybackRate(2.0);
-					npc.m_flReloadDelay = gameTime + (0.8 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.m_flReloadDelay = gameTime + (1.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayARReloadSound();
 					
 					if(npc.m_iTarget > 0)
@@ -2499,7 +2499,7 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					npc.SetActivity("ACT_RELOAD_shotgun", 0.0);
 					npc.SetPlaybackRate(2.0);
-					npc.m_flReloadDelay = gameTime + (1.3 * (npc.m_fGunReload * npc.m_fGunBonusReload));
+					npc.m_flReloadDelay = gameTime + (2.6 * (npc.m_fGunReload * npc.m_fGunBonusReload));
 					npc.PlayShotgunReloadSound();
 					
 					if(npc.m_iTarget > 0)

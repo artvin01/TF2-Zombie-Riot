@@ -7216,6 +7216,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NoGravity[entity] = false;
 	f_TankGrabbedStandStill[entity] = 0.0;
 	f_TimeFrozenStill[entity] = 0.0;
+	f_BuildingAntiRaid[entity] = 0.0;
 	f_MaimDebuff[entity] = 0.0;
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;

@@ -1624,6 +1624,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
 	}
+	if (f_BuildingAntiRaid[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%sR", Debuff_Adder);	
+	}
 		
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
@@ -1795,7 +1801,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "♟%s", Debuff_Adder);
 	}
-	
+
 	if(Debuff_added)
 	{
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
@@ -2023,6 +2029,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	else if(f_HighIceDebuff[npc] > GameTime)
 		return true;
 	else if(f_LowIceDebuff[npc] > GameTime)
+		return true;
+	else if(f_BuildingAntiRaid[npc] > GameTime)
 		return true;
 	else if (f_VeryLowIceDebuff[npc] > GameTime)
 		return true;
@@ -3140,7 +3148,11 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		else
 			damage += BaseDamageBeforeBuffs * 0.5;
 	}
-	
+
+	if(f_BuildingAntiRaid[victim] > GameTime)
+	{
+		damage += BaseDamageBeforeBuffs * 0.1;
+	}
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
 		damage += BaseDamageBeforeBuffs * 0.35;

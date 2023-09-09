@@ -363,6 +363,7 @@ bool b_Frozen[MAXENTITIES];
 bool b_NoGravity[MAXENTITIES];
 float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
+float f_BuildingAntiRaid[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
 bool b_PernellBuff[MAXENTITIES];

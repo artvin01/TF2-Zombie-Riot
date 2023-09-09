@@ -685,6 +685,11 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
 		}
+		if(VillageBuffs & VILLAGE_005) //This has priority.
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
+		}
 #endif
 		if(Increaced_Overall_damage_Low[client] > GameTime)
 		{

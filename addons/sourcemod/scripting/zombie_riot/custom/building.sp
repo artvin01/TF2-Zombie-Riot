@@ -4531,8 +4531,9 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	if(mounted)
 		range *= 0.55;
 	
+	BuildingApplyDebuffyToEnemiesInRange(owner, range, mounted);
+
 	range = range * range;
-	
 	ArrayList weapons = new ArrayList();
 	ArrayList allies = new ArrayList();
 	
@@ -4687,6 +4688,8 @@ void Building_ClearRefBuffs(int ref)
 
 void Building_RaidSpawned(int entity)
 {
+	return;
+	/*
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
@@ -4697,12 +4700,53 @@ void Building_RaidSpawned(int entity)
 				break;
 			}
 		}
-	}
+	}*/
 }
 
 bool Building_NeatherseaReduced(int entity)
 {
 	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);
+}
+
+void BuildingApplyDebuffyToEnemiesInRange(int client, float range, bool mounted)
+{
+	if(Village_Flags[client] & VILLAGE_004)
+	{
+		static float pos2[3];
+		if(mounted)
+		{
+			GetClientEyePosition(client, pos2);
+		}
+		else
+		{
+			GetEntPropVector(i_HasSentryGunAlive[client], Prop_Data, "m_vecAbsOrigin", pos2);
+		}
+
+		Explode_Logic_Custom(0.0,
+		client,
+		client,
+		-1,
+		pos2,
+		range,
+		_,
+		_,
+		false,
+		99,
+		false,
+		_,
+		BuildingAntiRaidInternal);
+	}
+}
+
+void BuildingAntiRaidInternal(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if(b_thisNpcIsARaid[victim])
+	{
+		f_BuildingAntiRaid[victim] = GetGameTime() + 3.0;
+	}
 }
 
 void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow = false)
@@ -5000,7 +5044,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	if(Village_Flags[client] & VILLAGE_050)
 	{
 		menu.AddItem("", TranslateItemName(viewer, "Homeland Defense", ""), ITEMDRAW_DISABLED);
-		menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 25%", ITEMDRAW_DISABLED);
 		menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_040)
@@ -5009,13 +5053,13 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Call To Arms", ""), ITEMDRAW_DISABLED);
 			menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-			menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "players and allies +12% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "%s [7 Bananas]", TranslateItemName(viewer, "Homeland Defense", ""));
 			menu.AddItem(VilN(VILLAGE_050), buffer, (!owner || points < 7) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 50%", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Ability now increases attack speed and reloadspeed and heal rate by 25%", ITEMDRAW_DISABLED);
 			menu.AddItem("", "for all players and allies for 20 seconds.\n ", ITEMDRAW_DISABLED);
 		}
 	}
@@ -5024,7 +5068,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		FormatEx(buffer, sizeof(buffer), "%s [6 Bananas]%s", TranslateItemName(viewer, "Call To Arms", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_040), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Press E to activate an ability that gives nearby", ITEMDRAW_DISABLED);
-		menu.AddItem("", "players and allies +25% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "players and allies +12% attack speed and reloadspeed and heal rate for a short time.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_020)
 	{
@@ -5039,7 +5083,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 			FormatEx(buffer, sizeof(buffer), "%s [5 Bananas]%s", TranslateItemName(viewer, "Monkey Intelligence Bureau", ""), Village_TierExists[1] == 5 ? " [Tier 5 Exists]" : Village_TierExists[1] == 4 ? " [Tier 4 Exists]" : Village_TierExists[1] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_030), buffer, (!owner || points < 5) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "The Bureau grants special Bloon popping knowledge, allowing", ITEMDRAW_DISABLED);
-			menu.AddItem("", "nearby players and allies to deal 10% more damage.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "nearby players and allies to deal 5% more damage.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_010)
@@ -5061,28 +5105,28 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
-		menu.AddItem("", "gains a +30% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
+		menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_004)
 	{
 		if(Village_TierExists[1] == 5)
 		{
 			menu.AddItem("", "Iberia Anti-Raid", ITEMDRAW_DISABLED);
-			menu.AddItem("", "Causes Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 		}
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [20 Bananas]");
 			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 20) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
-			menu.AddItem("", "gains a +50% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
 		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [14 Bananas]");
 		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 14) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("", "Spawned in Raid Bosses to gain the Cripple debuff.", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)
 	{
@@ -5354,43 +5398,32 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						case VILLAGE_200:
 						{
 							if(Attributes_Has(entity, 6))
-								Attributes_SetMulti(entity, 6, 0.95);	// Fire Rate
+								Attributes_SetMulti(entity, 6, 0.975);	// Fire Rate
 							
 							if(Attributes_Has(entity, 97))
-								Attributes_SetMulti(entity, 97, 0.95);	// Reload Time
+								Attributes_SetMulti(entity, 97, 0.975);	// Reload Time
 							
 							if(Attributes_Has(entity, 8))
-								Attributes_SetMulti(entity, 8, 1.06);	// Heal Rate
+								Attributes_SetMulti(entity, 8, 1.025);	// Heal Rate
 						}
 						case VILLAGE_030:
 						{
 							if(Attributes_Has(entity, 2))
-								Attributes_SetMulti(entity, 2, 1.1);	// Damage
+								Attributes_SetMulti(entity, 2, 1.05);	// Damage
 							
 							if(Attributes_Has(entity, 410))
-								Attributes_SetMulti(entity, 410, 1.1);	// Mage Damage
+								Attributes_SetMulti(entity, 410, 1.05);	// Mage Damage
 						}
 						case VILLAGE_040, VILLAGE_050:
 						{
 							if(Attributes_Has(entity, 6))
-								Attributes_SetMulti(entity, 6, 0.875);	// Fire Rate
+								Attributes_SetMulti(entity, 6, 0.88);	// Fire Rate
 							
 							if(Attributes_Has(entity, 97))
-								Attributes_SetMulti(entity, 97, 0.875);	// Reload Time
+								Attributes_SetMulti(entity, 97, 0.88);	// Reload Time
 							
 							if(Attributes_Has(entity, 8))
-								Attributes_SetMulti(entity, 8, 1.25);	// Heal Rate
-						}
-						case VILLAGE_005:
-						{
-							if(Attributes_Has(entity, 6))
-								Attributes_SetMulti(entity, 6, 0.85);	// Fire Rate
-							
-							if(Attributes_Has(entity, 97))
-								Attributes_SetMulti(entity, 97, 0.85);	// Reload Time
-							
-							if(Attributes_Has(entity, 8))
-								Attributes_SetMulti(entity, 8, 1.3);	// Heal Rate
+								Attributes_SetMulti(entity, 8, 1.12);	// Heal Rate
 						}
 					}
 				}
@@ -5410,43 +5443,43 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					case VILLAGE_200:
 					{
 						if(Attributes_Has(entity, 6))
-							Attributes_SetMulti(entity, 6, 1.0 / 0.95);	// Fire Rate
+							Attributes_SetMulti(entity, 6, 1.0 / 0.975);	// Fire Rate
 						
 						if(Attributes_Has(entity, 97))
-							Attributes_SetMulti(entity, 97, 1.0 / 0.95);	// Reload Time
+							Attributes_SetMulti(entity, 97, 1.0 / 0.975);	// Reload Time
 						
 						if(Attributes_Has(entity, 8))
-							Attributes_SetMulti(entity, 8, 1.0 / 1.06);	// Heal Rate
+							Attributes_SetMulti(entity, 8, 1.0 / 1.025);	// Heal Rate
 					}
 					case VILLAGE_030:
 					{
 						if(Attributes_Has(entity, 2))
-								Attributes_SetMulti(entity, 2, 1.0 / 1.1);	// Damage
+								Attributes_SetMulti(entity, 2, 1.0 / 1.05);	// Damage
 					
 						if(Attributes_Has(entity, 410))
-							Attributes_SetMulti(entity, 410, 1.0 / 1.1);	// Mage Damage
+							Attributes_SetMulti(entity, 410, 1.0 / 1.05);	// Mage Damage
 					}
 					case VILLAGE_040, VILLAGE_050:
 					{
 						if(Attributes_Has(entity, 6))
-							Attributes_SetMulti(entity, 6, 1.0 / 0.875);	// Fire Rate
+							Attributes_SetMulti(entity, 6, 1.0 / 0.88);	// Fire Rate
 						
 						if(Attributes_Has(entity, 97))
-							Attributes_SetMulti(entity, 97, 1.0 / 0.875);	// Reload Time
+							Attributes_SetMulti(entity, 97, 1.0 / 0.88);	// Reload Time
 						
 						if(Attributes_Has(entity, 8))
-							Attributes_SetMulti(entity, 8, 1.0 / 1.25);	// Heal Rate
+							Attributes_SetMulti(entity, 8, 1.0 / 1.12);	// Heal Rate
 					}
 					case VILLAGE_005:
 					{
 						if(Attributes_Has(entity, 6))
-							Attributes_SetMulti(entity, 6, 1.0 / 0.85);	// Fire Rate
+							Attributes_SetMulti(entity, 6, 1.0 / 0.90);	// Fire Rate
 						
 						if(Attributes_Has(entity, 97))
-							Attributes_SetMulti(entity, 97, 1.0 / 0.85);	// Reload Time
+							Attributes_SetMulti(entity, 97, 1.0 / 0.90);	// Reload Time
 						
 						if(Attributes_Has(entity, 8))
-							Attributes_SetMulti(entity, 8, 1.0 / 1.3);	// Heal Rate
+							Attributes_SetMulti(entity, 8, 1.0 / 1.1);	// Heal Rate
 					}
 				}
 			}
@@ -5473,23 +5506,23 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_200:
 						{
-							npc.m_fGunFirerate *= 0.95;
-							npc.m_fGunReload *= 0.95;
+							npc.m_fGunFirerate *= 0.975;
+							npc.m_fGunReload *= 0.975;
 						}
 						case VILLAGE_300:
 						{
 					//		if(npc.m_iGunClip > 0)
 					//			npc.m_iGunClip++;
 							
-							npc.m_fGunRangeBonus *= 1.1;
+							npc.m_fGunRangeBonus *= 1.05;
 						}
 						case VILLAGE_400:
 						{
 							if(npc.m_iGunValue < 500)
 								npc.m_iGunValue = 500;
 							
-							npc.m_fGunFirerate *= 0.9;
-							npc.m_fGunReload *= 0.9;
+							npc.m_fGunFirerate *= 0.95;
+							npc.m_fGunReload *= 0.95;
 						}
 						case VILLAGE_500:
 						{
@@ -5499,28 +5532,28 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							if(npc.m_iGunValue < 1750)
 								npc.m_iGunValue = 1750;
 							
-							npc.m_fGunRangeBonus *= 1.3;
-							npc.m_fGunFirerate *= 0.7;
-							npc.m_fGunReload *= 0.7;
+							npc.m_fGunRangeBonus *= 1.1;
+							npc.m_fGunFirerate *= 0.9;
+							npc.m_fGunReload *= 0.9;
 						}
 						case VILLAGE_030:
 						{
-							npc.m_fGunRangeBonus *= 1.1;
+							npc.m_fGunRangeBonus *= 1.05;
 						}
 						case VILLAGE_040:
 						{
-							npc.m_fGunFirerate *= 0.875;
-							npc.m_fGunReload *= 0.875;
+							npc.m_fGunFirerate *= 0.88;
+							npc.m_fGunReload *= 0.88;
 						}
 						case VILLAGE_050:
 						{
-							npc.m_fGunFirerate *= 0.875;
-							npc.m_fGunReload *= 0.875;
+							npc.m_fGunFirerate *= 0.85;
+							npc.m_fGunReload *= 0.85;
 						}
 						case VILLAGE_005:
 						{
-							npc.m_fGunFirerate *= 0.85;
-							npc.m_fGunReload *= 0.85;
+							npc.m_fGunFirerate *= 0.90;
+							npc.m_fGunReload *= 0.90;
 						}
 					}
 				}
@@ -5535,48 +5568,48 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 					}
 					case VILLAGE_200:
 					{
-						npc.m_fGunFirerate /= 0.95;
-						npc.m_fGunReload /= 0.95;
+						npc.m_fGunFirerate /= 0.975;
+						npc.m_fGunReload /= 0.975;
 					}
 					case VILLAGE_300:
 					{
-						if(npc.m_iGunClip > 1)
-							npc.m_iGunClip--;
+					//	if(npc.m_iGunClip > 1)
+					//		npc.m_iGunClip--;
 						
-						npc.m_fGunRangeBonus /= 1.1;
+						npc.m_fGunRangeBonus /= 1.05;
 					}
 					case VILLAGE_400:
 					{
-						npc.m_fGunFirerate /= 0.9;
-						npc.m_fGunReload /= 0.9;
+						npc.m_fGunFirerate /= 0.95;
+						npc.m_fGunReload /= 0.95;
 					}
 					case VILLAGE_500:
 					{
-						if(npc.m_iGunClip > 2)
-							npc.m_iGunClip -= 2;
+					//	if(npc.m_iGunClip > 2)
+					//		npc.m_iGunClip -= 2;
 						
-						npc.m_fGunRangeBonus /= 1.3;
-						npc.m_fGunFirerate /= 0.7;
-						npc.m_fGunReload /= 0.7;
+						npc.m_fGunRangeBonus /= 1.1;
+						npc.m_fGunFirerate /= 0.9;
+						npc.m_fGunReload /= 0.9;
 					}
 					case VILLAGE_030:
 					{
-						npc.m_fGunRangeBonus /= 1.1;
+						npc.m_fGunRangeBonus /= 1.05;
 					}
 					case VILLAGE_040:
 					{
-						npc.m_fGunFirerate /= 0.875;
-						npc.m_fGunReload /= 0.875;
+						npc.m_fGunFirerate /= 0.88;
+						npc.m_fGunReload /= 0.88;
 					}
 					case VILLAGE_050:
 					{
-						npc.m_fGunFirerate /= 0.875;
-						npc.m_fGunReload /= 0.875;
+						npc.m_fGunFirerate /= 0.85;
+						npc.m_fGunReload /= 0.85;
 					}
 					case VILLAGE_005:
 					{
-						npc.m_fGunFirerate /= 0.85;
-						npc.m_fGunReload /= 0.85;
+						npc.m_fGunFirerate /= 0.90;
+						npc.m_fGunReload /= 0.90;
 					}
 				}
 			}
@@ -5601,23 +5634,23 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						{
 							case VILLAGE_200:
 							{
-								npc.BonusFireRate *= 0.95;
+								npc.BonusFireRate *= 0.975;
 							}
 							case VILLAGE_030:
 							{
-								npc.BonusDamageBonus *= 1.1;
+								npc.BonusDamageBonus *= 1.05;
 							}
 							case VILLAGE_040:
 							{
-								npc.BonusFireRate *= 0.875;
+								npc.BonusFireRate *= 0.88;
 							}
 							case VILLAGE_050:
 							{
-								npc.BonusFireRate *= 0.875;
+								npc.BonusFireRate *= 0.85;
 							}
 							case VILLAGE_005:
 							{
-								npc.BonusFireRate *= 0.85;
+								npc.BonusFireRate *= 0.90;
 							}
 						}
 					}
@@ -5632,19 +5665,19 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 						}
 						case VILLAGE_030:
 						{
-							npc.BonusDamageBonus /= 1.1;
+							npc.BonusDamageBonus /= 1.05;
 						}
 						case VILLAGE_040:
 						{
-							npc.BonusFireRate /= 0.875;
+							npc.BonusFireRate /= 0.88;
 						}
 						case VILLAGE_050:
 						{
-							npc.BonusFireRate /= 0.875;
+							npc.BonusFireRate /= 0.85;
 						}
 						case VILLAGE_005:
 						{
-							npc.BonusFireRate /= 0.85;
+							npc.BonusFireRate /= 0.90;
 						}
 					}
 				}
