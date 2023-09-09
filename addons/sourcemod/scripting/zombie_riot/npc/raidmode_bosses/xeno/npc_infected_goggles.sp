@@ -360,6 +360,22 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
 			
+		if(npc.m_flPiggyFor)
+		{
+			SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0}); //keep teleporting just incase.
+			// Disable Piggyback Stuff
+			npc.m_flPiggyFor = 0.0;
+			npc.m_flSpeed = 290.0;
+			SDKCall_SetLocalOrigin(npc.index, {0.0,0.0,85.0});
+			AcceptEntityInput(npc.index, "ClearParent");
+			float flPos[3]; // original
+				
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] -= 70.0;
+			SDKCall_SetLocalOrigin(npc.index, flPos);
+			npc.SetVelocity({0.0,0.0,0.0});
+			TeleportEntity(npc.index, flPos, NULL_VECTOR, _);
+		}
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.StopPathing();
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
