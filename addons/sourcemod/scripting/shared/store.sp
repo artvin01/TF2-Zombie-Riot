@@ -2390,6 +2390,7 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
+		item.GetItemInfo(0, info);
 		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !info.GregBlockSell)
 		{
 			if(addItem == 0)
@@ -2408,7 +2409,6 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 					item.NPCSeller_WaveStart -= 1;
 				}
 			}
-			item.GetItemInfo(0, info);
 			if(info.Cost > 0 && info.Cost > (CurrentCash / 3 - 1000) && info.Cost < CurrentCash)
 				indexes[amount++] = i;
 			

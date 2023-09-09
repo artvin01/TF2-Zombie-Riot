@@ -5425,6 +5425,17 @@ static void UpdateBuffEffects(int entity, bool weapon, int oldBuffs, int newBuff
 							if(Attributes_Has(entity, 8))
 								Attributes_SetMulti(entity, 8, 1.12);	// Heal Rate
 						}
+						case VILLAGE_005:
+						{
+							if(Attributes_Has(entity, 6))
+								Attributes_SetMulti(entity, 6, 0.90);	// Fire Rate
+							
+							if(Attributes_Has(entity, 97))
+								Attributes_SetMulti(entity, 97, 0.90);	// Reload Time
+							
+							if(Attributes_Has(entity, 8))
+								Attributes_SetMulti(entity, 8, 1.1);	// Heal Rate
+						}
 					}
 				}
 			}
