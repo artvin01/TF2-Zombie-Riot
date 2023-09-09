@@ -35,6 +35,10 @@ public void Barracks_Thorns()
 	
 }
 
+bool ThornsHasElite[MAXENTITIES];
+bool ThornsHasMaxPot[MAXENTITIES];
+
+float ThornsDelayTimerUpgrade[MAXENTITIES];
 methodmap BarrackThorns < BarrackBody
 {
 	public void PlayRangedSound()
@@ -94,6 +98,10 @@ methodmap BarrackThorns < BarrackBody
 		{
 			ThornsLevelAt[npc.index] = 2;
 		}
+		ThornsHasElite[npc.index] = elite;
+		ThornsHasMaxPot[npc.index] = MaxPot;
+
+		ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
 
 		i_NpcInternalId[npc.index] = BARRACK_THORNS;
 		i_NpcWeight[npc.index] = 2;
@@ -136,6 +144,41 @@ public void BarrackThorns_ClotThink(int iNPC)
 {
 	BarrackThorns npc = view_as<BarrackThorns>(iNPC);
 	float GameTime = GetGameTime(iNPC);
+	if(ThornsDelayTimerUpgrade[npc.index] < GetGameTime())
+	{
+		int owner = GetClientOfUserId(npc.OwnerUserId);
+		if(IsValidClient(owner))
+		{
+			ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
+			if(!ThornsHasElite[npc.index])
+			{
+				ThornsHasElite[npc.index] = view_as<bool>(Store_HasNamedItem(owner, "Construction Master"));
+				if(ThornsHasElite[npc.index])
+				{
+					ThornsLevelAt[npc.index] = 1;
+					npc.BonusDamageBonus *= 1.5;
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
+				}
+			}
+			if(!ThornsHasMaxPot[npc.index])
+			{
+				ThornsHasMaxPot[npc.index] = view_as<bool>(Store_HasNamedItem(owner, "Construction Killer"));
+				if(ThornsHasMaxPot[npc.index])
+				{
+					ThornsLevelAt[npc.index] = 2;
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.5));
+				}
+			}
+			if(ThornsLevelAt[npc.index] == 2)
+			{
+				ThornsDelayTimerUpgrade[npc.index] = FAR_FUTURE;
+			}
+		}
+		else
+		{
+			ThornsDelayTimerUpgrade[npc.index] = FAR_FUTURE;
+		}
+	}
 	if(npc.m_flDoingAnimation)
 	{
 		npc.m_flSpeed = 0.0;

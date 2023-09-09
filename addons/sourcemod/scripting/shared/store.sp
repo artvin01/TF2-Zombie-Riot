@@ -93,6 +93,7 @@ enum struct ItemInfo
 	bool IsWand;
 	bool IsWrench;
 	bool InternalMeleeTrace;
+	bool GregBlockSell;
 	
 	char Classname[36];
 	char Custom_Name[64];
@@ -272,6 +273,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sinternal_melee_trace", prefix);
 		this.InternalMeleeTrace	= view_as<bool>(kv.GetNum(buffer, 1));
+
+		Format(buffer, sizeof(buffer), "%sgreg_block_sell", prefix);
+		this.GregBlockSell	= view_as<bool>(kv.GetNum(buffer, 0));
 		
 
 		
@@ -2386,7 +2390,7 @@ void Store_RandomizeNPCStore(bool ResetStore, int addItem = 0, int subtract_wave
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways)
+		if(item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !info.GregBlockSell)
 		{
 			if(addItem == 0)
 			{
