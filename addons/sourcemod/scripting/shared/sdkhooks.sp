@@ -1873,6 +1873,10 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		return Plugin_Handled;
 	}
+	if(StrContains(sample, "vo/halloween_scream", true) != -1)
+	{
+		return Plugin_Handled;
+	}
 
 	if(StrContains(sample, "sentry_", true) != -1)
 	{

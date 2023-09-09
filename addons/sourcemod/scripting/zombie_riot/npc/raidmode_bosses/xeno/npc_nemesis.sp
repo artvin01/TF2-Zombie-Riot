@@ -1021,6 +1021,20 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+
+	GiveProgressDelay(3.0);
+	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	if(ZR_GetWaveCount()+1 == 65)
+	{
+		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
+		{
+			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
+			{
+				Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
+				CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
+			}
+		}
+	}
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 //	npc.Anger = false;

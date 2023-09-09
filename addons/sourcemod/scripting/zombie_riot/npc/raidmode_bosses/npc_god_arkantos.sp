@@ -73,6 +73,9 @@ public void GodArkantos_OnMapStart()
 static int i_TargetToWalkTo[MAXENTITIES];
 static float f_TargetToWalkToDelay[MAXENTITIES];
 static float f_ArkantosCantDieLimit[MAXENTITIES];
+static bool b_angered_twice[MAXENTITIES];
+static float f_TalkDelayCheck;
+static int i_TalkDelayCheck;
 
 methodmap GodArkantos < CClotBody
 {
@@ -237,8 +240,11 @@ methodmap GodArkantos < CClotBody
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
 		npc.m_bThisNpcIsABoss = true;
+		f_TalkDelayCheck = 0.0;
+		i_TalkDelayCheck = 0;
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		b_angered_twice[npc.index] = false;
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -331,7 +337,31 @@ public void GodArkantos_ClotThink(int iNPC)
 		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
 	}
-
+	if(b_angered_twice[npc.index])
+	{
+		BlockLoseSay = true;
+		int closestTarget = GetClosestTarget(npc.index);
+		if(IsValidEntity(closestTarget))
+		{
+			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
+		}
+		npc.SetActivity("ACT_IDLE");
+		npc.m_bisWalking = false;
+		npc.StopPathing();
+		for (int client = 0; client < MaxClients; client++)
+		{
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			{
+				TF2_StunPlayer(client, 0.5, 0.5, TF_STUNFLAGS_LOSERSTATE);
+			}
+		}
+		if(ArkantosForceTalk())
+		{
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}
+		return;
+	}
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
@@ -590,6 +620,30 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
 		damage = 0.0;
 		return Plugin_Handled;
+	}
+
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	{
+		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			b_angered_twice[npc.index] = true;
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(32.0);
+			damage = 0.0;
+			RaidModeTime += 60.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
+			CPrintToChatAll("{lightblue}God Arkantos{default}: Thats it, i will make you listen.");
+			return Plugin_Handled;
+		}
 	}
 	return Plugin_Changed;
 }
@@ -1504,4 +1558,51 @@ void ArkantosSayWords()
 			CPrintToChatAll("{lightblue}God Arkantos{default}: Together for Atlantis! As one and for all!");
 		}
 	}
+}
+
+
+bool ArkantosForceTalk()
+{
+	if(i_TalkDelayCheck == 5)
+	{
+		return true;
+	}
+	if(f_TalkDelayCheck < GetGameTime())
+	{
+		f_TalkDelayCheck = GetGameTime() + 7.0;
+		RaidModeTime += 10.0; //cant afford to delete it, since duo.
+		switch(i_TalkDelayCheck)
+		{
+			case 0:
+			{
+				ReviveAll(true);
+				CPrintToChatAll("{lightblue}God Arkantos{default}: Since you refuse to listen, i will have to restrain you.");
+				i_TalkDelayCheck += 1;
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: I am not your enemy and i can revive all my allies, so do not worry.");
+				i_TalkDelayCheck += 1;
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: The true enemy is the {blue}sea{default}, if we dont beat them, then were done for. They can infect any one of us.");
+				i_TalkDelayCheck += 1;
+			}
+			case 3:
+			{
+				CPrintToChatAll("{lightblue}God Arkantos{default}: I will hand you a bit of help as youre proven to be a strong foe.");
+				i_TalkDelayCheck = 5;
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "Arkantos's Godly assistance");
+						CPrintToChat(client, "{default}You feel something around you... and gained: {lightblue}''Arkantos's Godly assistance''{default}!");
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
