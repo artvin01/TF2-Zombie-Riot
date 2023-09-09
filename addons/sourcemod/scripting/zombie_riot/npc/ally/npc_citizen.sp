@@ -1095,7 +1095,7 @@ methodmap Citizen < CClotBody
 		{
 			this.m_flNextRangedBarrage_Spam = value;
 
-			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG || (npc.m_bCamo && this.m_iHasPerk == Cit_Melee)))
+			if(!this.m_bSeakingGeneric && (this.m_iHasPerk == Cit_Pistol || this.m_iHasPerk == Cit_Shotgun || this.m_iHasPerk == Cit_RPG || (this.m_bCamo && this.m_iHasPerk == Cit_Melee)))
 			{
 				fl_Speed[this.index] = value * (this.m_bAlyx ? 1.66 : 1.55);
 			}
@@ -1227,7 +1227,7 @@ methodmap Citizen < CClotBody
 			this.m_iHasPerk = Cit_None;
 			this.m_bThisEntityIgnored = true;
 			this.m_iReviveTicks = 250;
-			this.SetActivity("ACT_BUSY_SIT_GROUND");
+			this.SetActivity("ACT_BUSY_SIT_GROUND", 0.0);
 			this.AddGesture("ACT_BUSY_SIT_GROUND_ENTRY");
 			
 			if(this.m_bPathing)
