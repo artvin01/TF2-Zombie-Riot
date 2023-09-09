@@ -798,15 +798,17 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 		}
 				
+		npc.StartPathing();
+		
 		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		
 		if(b_angered)
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.08);
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 20.0);
 		}
 		else
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 250.0 * 0.01);
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 5.0);
 		}
 		
 		NPC_StopPathing(npc.index);
