@@ -2785,7 +2785,8 @@ int maxtargetshit = 10,
 bool ignite = false,
 float dmg_against_entity_multiplier = 3.0,
 Function FunctionToCallOnHit = INVALID_FUNCTION,
-Function FunctionToCallBeforeHit = INVALID_FUNCTION)
+Function FunctionToCallBeforeHit = INVALID_FUNCTION,
+int inflictor = 0)
 {
 
 	float damage_reduction = 1.0;
@@ -2862,6 +2863,10 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 	else
 	{
 		entityToEvaluateFrom = entity;
+	}
+	if(inflictor == 0)
+	{
+		inflictor = entityToEvaluateFrom;
 	}
 	if(entityToEvaluateFrom < 1)
 	{
@@ -3011,7 +3016,7 @@ Function FunctionToCallBeforeHit = INVALID_FUNCTION)
 					}
 				}
 				damage_1 += GetBeforeDamage;
-				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, entityToEvaluateFrom, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
+				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{

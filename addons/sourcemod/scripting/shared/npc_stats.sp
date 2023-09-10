@@ -2645,8 +2645,25 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		if(!b_AvoidObstacleType[this.index])
 		{
-			this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMax[this.index]);
-			this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMin[this.index]);	
+			float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
+			//avoid obstacle code scales with modelsize, we dont want that.
+			float f3_AvoidModifMax[3];
+			float f3_AvoidModifMin[3];
+
+			for(int axis; axis < 3; axis++)
+			{
+				f3_AvoidModifMax[axis] = f3_AvoidOverrideMax[this.index][axis];
+				f3_AvoidModifMin[axis] = f3_AvoidOverrideMin[this.index][axis];
+				f3_AvoidModifMax[axis] /= ModelSize;
+				f3_AvoidModifMin[axis] /= ModelSize;
+				if(this.m_bIsGiant) //giants need abit more space.
+				{
+					f3_AvoidModifMax[axis] *= 1.35;
+					f3_AvoidModifMin[axis] *= 1.35;
+				}
+			}
+			this.GetBaseNPC().SetBodyMaxs(f3_AvoidModifMax);
+			this.GetBaseNPC().SetBodyMins(f3_AvoidModifMin);	
 		}
 		else
 		{
@@ -6224,8 +6241,8 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	float subjectPos[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
 		
-	botPos[2] += 1.0;
-	subjectPos[2] += 1.0;
+	botPos[2] += 45.0;
+	subjectPos[2] += 45.0;
 #if defined ZR
 	//do not predict if in air
 	//do not predict if its a building, waste of resources.
@@ -6309,44 +6326,17 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		// would fall off a cliff
 		return subjectPos;	
 	}
+	//todo: find better code to not clip through very thin walls, but this works for now
+	Handle trace; 
+	trace = TR_TraceRayFilterEx(subjectPos, pathTarget, MASK_NPCSOLID | MASK_PLAYERSOLID, RayType_EndPoint, TraceRayHitWorldOnly, 0); //If i hit a wall, i stop retreatring and accept death, for now!
+	
+	if(TR_DidHit(trace))
+	{
+		TR_GetEndPosition(pathTarget, trace);
+	}
+	delete trace;
 
 	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
-
-/*	
-	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 5.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-	TE_SendToAll();
-*/
-	/*
-	//Extra check on if they try to follow through a wall again, double check is always good. Specficially check for only COLLIDING WITH THE WORLD.
-	
-	int Looking_At_This; 
-	Looking_At_This = GetEntPropEnt(sentry, Prop_Send, "m_hEnemy");
-	if(IsValidEntity(Looking_At_This) && IsValidEnemy(sentry, Looking_At_This))
-	{
-		Handle trace; 
-		float pos_sentry[3]; GetEntPropVector(sentry, Prop_Data, "m_vecAbsOrigin", pos_sentry);
-		float pos_enemy[3]; GetEntPropVector(Looking_At_This, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-		pos_sentry[2] += 25.0;
-		pos_enemy[2] += 45.0;
-		
-		trace = TR_TraceRayFilterEx(pos_sentry, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Base_Boss_Hit, sentry);
-		int Traced_Target;
-		
-//		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//		TE_SetupBeamPoints(pos_sentry, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-//		TE_SendToAll();
-		
-		Traced_Target = TR_GetEntityIndex(trace);
-		delete trace;
-		
-		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
-		{
-			DHookSetReturn(hReturn, true); 
-			return MRES_Supercede;		
-		}
-	}
-	*/
 	
 	return pathTarget;
 }

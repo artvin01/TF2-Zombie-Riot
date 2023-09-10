@@ -135,6 +135,7 @@ enum struct ItemInfo
 	char WeaponModelOverride[128];
 	
 	int Attack3AbilitySlot;
+	bool VisualDescOnly;
 	
 	int SpecialAdditionViaNonAttribute; //better then spamming attribs.
 	int SpecialAdditionViaNonAttributeInfo; //better then spamming attribs.
@@ -348,6 +349,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix);
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
+		
+		Format(buffer, sizeof(buffer), "%svisual_desc_only", prefix);
+		this.VisualDescOnly			= view_as<bool>(kv.GetNum(buffer, 0));
 		
 		Format(buffer, sizeof(buffer), "%sspecial_attribute", prefix);
 		this.SpecialAdditionViaNonAttribute			= kv.GetNum(buffer);
@@ -1636,12 +1640,14 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 							MoneyTake = false;
 						}
 					}
+					Store_BuyClientItem(client, item, info);
 					
 					if(MoneyTake)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
 						item.BuyPrice[client] = info.Cost;
+
 						item.Sell[client] = ItemSell(base, info.Cost);
 					}
 					else
@@ -1650,7 +1656,6 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					Store_BuyClientItem(client, item, info);
 					item.BuyWave[client] = Rogue_GetRoundScale();
 					if(!item.BoughtBefore[client])
 					{
@@ -2789,11 +2794,10 @@ public void MenuPage(int client, int section)
 					else if(item.Owned[client] || (info.Cost <= 0 && (item.Scale*item.Scaled[client]) <= 0))	// Owned already or free
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Equip");
-						//if(!info.Classname[0])
-						//{
-						//	if(item.Owned[client] && info.Attack3AbilitySlot == 0)
-						//		style = ITEMDRAW_DISABLED;
-						//}
+						if(info.VisualDescOnly)
+						{
+							style = ITEMDRAW_DISABLED;
+						}
 					}
 					else	// Buy it
 					{
@@ -2828,7 +2832,6 @@ public void MenuPage(int client, int section)
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
 					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
-
 					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
 					{
 						int cost = AmmoData[info.Ammo][0] * 10;
