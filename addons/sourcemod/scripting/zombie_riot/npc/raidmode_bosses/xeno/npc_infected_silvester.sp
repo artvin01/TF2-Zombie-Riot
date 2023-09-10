@@ -1120,7 +1120,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	//This is for self defense, incase an enemy is too close, This exists beacuse
 	//Silvester's main walking target might not be the closest target he has.
-	if(npc.m_iInKame == 0 && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if((npc.m_iInKame == 0 || npc.m_iInKame == 3) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		RaidbossSilvesterSelfDefense(npc,GetGameTime(npc.index)); 
 	}
