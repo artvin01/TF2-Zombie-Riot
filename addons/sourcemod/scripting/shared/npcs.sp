@@ -2350,6 +2350,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			NPC_OnTakeDamage_Hazard(attacker, victim, damage,weapon);
 		}
+		case WEAPON_CASINO:
+		{
+			Npc_OnTakeDamage_Casino(attacker, damage, damagetype);
+		}
 		case WEAPON_FANTASY_BLADE:
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
@@ -3188,6 +3192,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		case WEAPON_MLYNAR_PAP:
 		{
 			MlynarReduceDamageOnKill(attacker, 1);
+		}
+		case WEAPON_CASINO:
+		{
+			CasinoSalaryPerKill(attacker);
 		}
 	}
 }

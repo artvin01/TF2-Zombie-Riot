@@ -5353,6 +5353,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Management_Banner_3(client, entity); 	//Ancient Banner
 		
 		Enable_StarShooter(client, entity);
+		Enable_Casino(client, entity);
 		Enable_Passanger(client, entity);
 		Reset_stats_Irene_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
