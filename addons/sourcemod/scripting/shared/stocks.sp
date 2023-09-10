@@ -1178,10 +1178,12 @@ void StartHealingTimer(int entity, float delay, float health, int amount=0, bool
 	DataPack pack;
 	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(entity));
+#if defined ZR
 	if(b_HealthyEssence) //see rouge.sp
 	{
 		health *= 1.25;
 	}
+#endif
 	pack.WriteFloat(health);
 	pack.WriteCell(maxhealth);
 	pack.WriteCell(amount);

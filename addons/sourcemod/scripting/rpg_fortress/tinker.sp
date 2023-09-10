@@ -598,18 +598,17 @@ void Tinker_SpawnItem(int client, int index, int entity)
 						}
 						else
 						{
-							Address address = TF2Attrib_GetByDefIndex(entity, tinker.Attrib[a]);
-							if(address == Address_Null)
+							if(!Attributes_Has(entity, tinker.Attrib[a]))
 							{
 								Attributes_Set(entity, tinker.Attrib[a], tinker.Value[a]);
 							}
 							else if(TF2Econ_GetAttributeDefinitionString(tinker.Attrib[a], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
 							{
-								Attributes_Set(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) + tinker.Value[a]);
+								Attributes_SetAdd(entity, tinker.Attrib[a], tinker.Value[a]);
 							}
 							else
 							{
-								Attributes_Set(entity, tinker.Attrib[a], TF2Attrib_GetValue(address) * tinker.Value[a]);
+								Attributes_SetMulti(entity, tinker.Attrib[a], tinker.Value[a]);
 							}
 						}
 					}
@@ -644,7 +643,6 @@ void Tinker_SpawnItem(int client, int index, int entity)
 					}
 					else if(weapon.Forge[i])
 					{
-						Address address = TF2Attrib_GetByDefIndex(entity, weapon.Forge[i]);
 						if(!Attributes_Has(entity, weapon.Forge[i]))
 						{
 							Attributes_Set(entity, weapon.Forge[i], weapon.Value[i]);

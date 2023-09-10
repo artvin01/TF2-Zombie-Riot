@@ -1583,11 +1583,11 @@ public void OnClientDisconnect(int client)
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	
-	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 
 #if defined ZR
+	i_HealthBeforeSuit[client] = 0;
 	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;
 	f_MedicCallIngore[client] = 0.0;

@@ -1353,11 +1353,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		speed_for_return *= this.GetDebuffPercentage();
 
+#if defined ZR
 		if(!b_IsAlliedNpc[this.index])
 		{
 			speed_for_return *= Zombie_DelayExtraSpeed();
 		}
-		
+#endif
 		return speed_for_return; 
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -1991,7 +1992,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	int skin = 0,
 	float model_size = 1.0)
 	{
-		int item = CreateEntityByName("prop_dynamic_ornament");
+		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -4804,15 +4805,19 @@ public void NpcBaseThinkPost(int iNPC)
 }
 void NpcDrawWorldLogic(int entity)
 {
+#if defined ZR
 	CClotBody npc = view_as<CClotBody>(entity);
+#endif
 	if(b_IsEntityNeverTranmitted[entity])
 	{
 		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_DONTSEND));
 	}
+#if defined ZR
 	else if(IsValidEntity(npc.m_iTeamGlow))
 	{
 		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
 	}
+#endif
 	if(b_IsAlliedNpc[entity])
 	{
 		SetEdictFlags(entity, SetEntityTransmitState(entity, FL_EDICT_ALWAYS));
@@ -4837,6 +4842,7 @@ void NpcDrawWorldLogic(int entity)
 	}
 }
 
+#if defined ZR
 void GiveNpcOutLineLastOrBoss(int entity, bool add)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
@@ -4872,6 +4878,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	}
 
 }
+#endif
 
 
 public void NpcBaseThink(int iNPC)
@@ -5150,6 +5157,7 @@ public void NpcBaseThink(int iNPC)
 				static float vec3Origin[3];
 				npc.SetVelocity(vec3Origin);
 
+#if defined ZR
 				if(!b_IsAlliedNpc[npc.index])
 				{
 					//This was an enemy.
@@ -5167,7 +5175,6 @@ public void NpcBaseThink(int iNPC)
 				}
 				else
 				{
-#if defined ZR
 					//This is an ally.
 					int target = 0;
 					for(int i=1; i<=MaxClients; i++)
@@ -5191,12 +5198,12 @@ public void NpcBaseThink(int iNPC)
 						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 					}
 					else
-#endif	// ZR
 					{
 						RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 					}
 				}
 				//We have tried 64 differnet spots, yet they are still stuck, let them stay stuck.
+#endif	// ZR
 			}
 		}
 		else

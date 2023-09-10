@@ -163,6 +163,7 @@ public bool ShouldCollideEnemyTD(CBaseNPC_Locomotion loco, int otherindex)
 bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	//entirely ignore players
+	#if defined ZR
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		return false;
@@ -216,6 +217,7 @@ bool ShouldCollideEnemyTD_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_L
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco,otherindex);
 
+	#endif
 	return true;
 }
 
@@ -227,6 +229,8 @@ public bool ShouldCollideEnemyTDIgnoreBuilding(CBaseNPC_Locomotion loco, int oth
 bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view_as<CBaseNPC_Locomotion>(0), int otherindex, int extrarules = 0, int npc = 0)
 { 
 	//entirely ignore players
+	
+	#if defined ZR
 	if(otherindex > 0 && otherindex <= MaxClients)
 	{
 		return false;
@@ -271,6 +275,7 @@ bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view
 	if(loco != view_as<CBaseNPC_Locomotion>(0))
 		NpcStartTouch(loco, otherindex);
 
+	#endif
 	return true;
 }
 

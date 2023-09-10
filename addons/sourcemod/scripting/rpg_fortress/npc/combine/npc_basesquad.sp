@@ -660,7 +660,7 @@ void BaseSquad_BaseThinking(any npcIndex, const float vecMe[3], bool ignoreLOS =
 		if(npc.m_iTargetWalk)
 		{
 			float length;
-			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER)) && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length))
+			if(!(GetEntityFlags(npc.index) & (FL_SWIM|FL_INWATER))/* && PF_IsPathToEntityPossible(npc.index, npc.m_iTargetWalk, length)*/)
 			{
 				// Players can be above a nav mesh and a "path" is possible
 				// Check if the target is above a place

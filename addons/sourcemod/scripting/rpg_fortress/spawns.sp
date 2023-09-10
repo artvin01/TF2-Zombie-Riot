@@ -107,7 +107,7 @@ enum struct SpawnEnum
 }
 
 static ArrayList SpawnList;
-static Handle SpawnTimer;
+static Handle h_SpawnTimer;
 static int SpawnCycle;
 
 void Spawns_PluginStart()
@@ -159,13 +159,13 @@ void Spawns_ConfigSetup(KeyValues map)
 	if(kv != map)
 		delete kv;
 	
-	if(!SpawnTimer && SpawnList.Length)
-		SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
+	if(!h_SpawnTimer && SpawnList.Length)
+		h_SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
 }
 
 void Spawns_MapEnd()
 {
-	delete SpawnTimer;
+	delete h_SpawnTimer;
 }
 
 void Spawns_ClientEnter(int client, const char[] name)

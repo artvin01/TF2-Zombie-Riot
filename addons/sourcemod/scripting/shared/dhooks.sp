@@ -811,7 +811,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if(b_Is_Player_Projectile[entity1])
 		{
+#if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
+#else
+			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
+#endif
 			{
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
@@ -848,15 +852,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
-			{
-				Hose_Touch(entity1, entity2);
-				return false;
-			}
-			else if (i_WandIdNumber[entity1] == 21 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2])
-			{
-				return Vamp_CleaverHit(entity1, entity2);
-			}
 			if(entity2 <= MaxClients && entity2 > 0)
 			{
 				return false;
@@ -878,6 +873,15 @@ things i tried
 	All collision groups
 
 */
+			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2]) //Health Hose projectiles
+			{
+				Hose_Touch(entity1, entity2);
+				return false;
+			}
+			else if (i_WandIdNumber[entity1] == 21 && !i_IsABuilding[entity2] && !b_Is_Player_Projectile[entity2])
+			{
+				return Vamp_CleaverHit(entity1, entity2);
+			}
 			else if(i_WandIdNumber[entity1] == 11)
 			{
 		//		//Have to use this here, please check wand_projectile for more info!
@@ -2017,7 +2021,6 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 #if defined ZR
 	//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
 	i_ExtraPlayerPoints[client] += 15;
-#endif
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 	{
@@ -2025,6 +2028,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		BuffBannerActivate(client, weapon);
 		BuffBattilonsActivate(client, weapon);
 	}
+#endif
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;

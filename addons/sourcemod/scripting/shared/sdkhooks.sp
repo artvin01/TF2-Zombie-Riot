@@ -1317,6 +1317,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Continue;	
 		}
 	}
+#if defined ZR
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	if(dieingstate[victim] > 0)
 	{
@@ -1332,11 +1333,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;
 	}
 	else
+#endif	
 	{
 		if(victim == attacker)
 			return Plugin_Handled;
-	}
-			
+	}	
 #if defined ZR
 	float Replicated_Damage;
 	Replicated_Damage = Replicate_Damage_Medications(victim, damage, damagetype);
@@ -1880,6 +1881,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 
 	if(StrContains(sample, "sentry_", true) != -1)
 	{
+#if defined ZR
 		if(StrContains(sample, "weapons/sentry_scan.wav", true) != -1)
 		{
 			if(b_SentryIsCustom[entity])
@@ -1887,7 +1889,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				return Plugin_Handled;
 			}
 		}
-
+#endif
 		volume *= 0.4;
 		level = SNDLEVEL_NORMAL;
 		

@@ -4108,8 +4108,10 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
+#if defined ZR
 	if(LastMann)
 		Attributes_Set(client, 442, 0.7674418604651163);
+#endif
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 10.0);	// x10 faster diepsner build
@@ -4405,7 +4407,9 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			GetEntityClassname(i, classname, sizeof(classname));
 			if(!StrContains(classname, "tf_projectile_pipe_remote"))
 			{
+#if defined ZR
 				if(!IsEntitySpike(i))
+#endif
 				{
 					if(GetEntPropEnt(i, Prop_Send, "m_hThrower") == client)
 					{
@@ -4596,9 +4600,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2_SetPlayerClass(client, TFClass_Engineer);
 	}
 	*/
+#if defined ZR
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
-
+#endif
 	Manual_Impulse_101(client, health);
 }
 
@@ -4607,6 +4612,7 @@ void CheckInvalidSlots(int client)
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
+#if defined ZR
 		if(StoreWeapon[entity] > 0)
 		{
 			static Item item;
@@ -4616,6 +4622,18 @@ void CheckInvalidSlots(int client)
 				TF2_RemoveItem(client, entity);
 			}
 		}
+#else
+		int index = EquippedItems.FindValue(EntIndexToEntRef(entity));
+		if(index > 0)
+		{
+			static ItemInfo item;
+			EquippedItems.GetArray(index, item);
+			if(!item.Equipped[client])
+			{
+				TF2_RemoveItem(client, entity);
+			}
+		}
+#endif
 	}
 }
 static void CheckMultiSlots(int client)
@@ -5066,7 +5084,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 #endif
 	
 	{
+#if defined ZR
 		i_MaxSupportBuildingsLimit[client] = 0;
+#endif
 		for(int i; i<length; i++)
 		{
 			
@@ -5880,7 +5900,6 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 	return false;
 	
 }
-#endif	// ZR
 
 
 
@@ -5913,3 +5932,4 @@ void GrantCreditsBack(int client)
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
 }
+#endif	// ZR

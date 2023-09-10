@@ -135,7 +135,6 @@ public void TownGuardPistol_ClotThink(int iNPC)
 							enemy.m_iDeathDamage += 19;
 							if(enemy.m_iDeathDamage > 99)
 							{
-								LastHitId[target] = 0;
 								SDKHooks_TakeDamage(target, 0, 0, GetEntProp(target, Prop_Data, "m_iMaxHealth") * 1.4, DMG_DROWN);
 							}
 						}

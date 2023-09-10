@@ -63,7 +63,6 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 			return Plugin_Handled;
 		}
 	}
-#endif
 	
 //	HINT: there is a - version, which is detected when letting go of the button, its basically a fancy onclientruncmd, although it shouldnt be used really.
 
@@ -73,6 +72,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		//This is an extra slot, incase you want to use it for anything.
 	}
 	
+#endif
 	return Plugin_Continue;
 }
 
