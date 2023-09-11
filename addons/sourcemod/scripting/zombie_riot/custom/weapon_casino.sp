@@ -475,7 +475,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
 				}
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 57;
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 57.0;
 				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 				{
 					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
@@ -508,7 +508,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						fl_jackpot_cooldown[client] = GameTime + 90.0;
 						ClientCommand(client, "playgamesound player/crit_received2.wav");
 
-						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37;
+						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37.0;
 						if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 						{
 							fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
@@ -516,11 +516,11 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 2, 1.4125, 120.0);
-						ApplyTempAttrib(weapon, 6, 0.725, 120.0);
-						ApplyTempAttrib(weapon, 97, 0.725, 120.0);
-						ApplyTempAttrib(weapon, 106, 0.1, 120.0);
-						ApplyTempAttrib(weapon, 4, 1.5, 120.0);
+						ApplyTempAttrib(weapon, 2, 1.4125, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.725, 90.0);
+						ApplyTempAttrib(weapon, 97, 0.725, 90.0);
+						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
+						ApplyTempAttrib(weapon, 4, 1.5, 90.0);
 						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 37;
 						if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
 						{
@@ -528,10 +528,10 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						}
 						SetDefaultHudPosition(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 120.0;
+						fl_jackpot_cooldown[client] = GameTime + 90.0;
 						ClientCommand(client, "playgamesound player/crit_received2.wav");
 
-						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37;
+						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37.0;
 						if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 						{
 							fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
@@ -539,11 +539,11 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 2, 1.45, 120.0);
-						ApplyTempAttrib(weapon, 6, 0.6725, 120.0);
-						ApplyTempAttrib(weapon, 97, 0.6725, 120.0);
-						ApplyTempAttrib(weapon, 106, 0.1, 120.0);
-						ApplyTempAttrib(weapon, 4, 1.7, 120.0);
+						ApplyTempAttrib(weapon, 2, 1.45, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.6725, 90.0);
+						ApplyTempAttrib(weapon, 97, 0.6725, 90.0);
+						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
+						ApplyTempAttrib(weapon, 4, 1.7, 90.0);
 						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 37;
 						if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
 						{
@@ -554,7 +554,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						fl_jackpot_cooldown[client] = GameTime + 120.0;
 						ClientCommand(client, "playgamesound player/crit_received2.wav");
 
-						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37;
+						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37.0;
 						if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 						{
 							fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
@@ -562,11 +562,11 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 2, 1.525, 120.0);
-						ApplyTempAttrib(weapon, 6, 0.625, 120.0);
-						ApplyTempAttrib(weapon, 97, 0.625, 120.0);
-						ApplyTempAttrib(weapon, 106, 0.1, 120.0);
-						ApplyTempAttrib(weapon, 4, 1.9, 120.0);
+						ApplyTempAttrib(weapon, 2, 1.525, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.625, 90.0);
+						ApplyTempAttrib(weapon, 97, 0.625, 90.0);
+						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
+						ApplyTempAttrib(weapon, 4, 1.9, 90.0);
 						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 37;
 						if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
 						{
@@ -574,10 +574,10 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						}
 						SetDefaultHudPosition(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[|- JACKPOT 7/7/7 -|]");
-						fl_jackpot_cooldown[client] = GameTime + 120.0;
+						fl_jackpot_cooldown[client] = GameTime + 90.0;
 						ClientCommand(client, "playgamesound player/crit_received2.wav");
 
-						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37;
+						fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 37.0;
 						if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 						{
 							fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
@@ -917,7 +917,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
 				}
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 22;
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 22.0;
 				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 				{
 					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
