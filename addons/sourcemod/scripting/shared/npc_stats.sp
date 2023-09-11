@@ -3685,13 +3685,13 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		if(b_IsCamoNPC[bot_entidx])
 		{
-			return false;
+			return true;
 		}
 		if(b_IsCamoNPC[other_entidx])
 		{
 			if(!b_IsCamoNPC[bot_entidx])
 			{
-				return false;
+				return true;
 			}
 		}
 		if(b_CollidesWithEachother[bot_entidx])
@@ -3721,19 +3721,14 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		{
 			return true;
 		}	
-
 	}
 	else //Enemy!
 	{
-		if(b_IsCamoNPC[bot_entidx])
-		{
-			return false;
-		}
 		if(b_IsCamoNPC[other_entidx])
 		{
 			if(!b_IsCamoNPC[bot_entidx])
 			{
-				return false;
+				return true;
 			}
 		}
 		if(i_IsABuilding[other_entidx])
