@@ -24,47 +24,6 @@ static const int SlotLimits[] =
 	1	// 16
 };
 
-public const char ItemArchetype[][] =
-{
-	"",	// No archetype.	
-//PRIMARY SECONDARY
-	"Multi Pellet",		// 1
-	"Rapid Fire",		// 2
-	"Infinite Fire",	// 3
-	"none",		// 4
-	"Single Pellet",	// 5
-	"Far Range",		// 6
-	"Trap Master",		// 7 this can include builder weapons!
-	"Explosive Mind",	// 8 Most Explosive weapons
-//SUPPORT ITEMS
-	"Team Support",		// 9
-	"Debuff",			// 10
-//MELEE'S
-	"Brawler",			// 11 most fist melee's
-	"Ambusher",			// 12 spy backstab weapons
-	"Combatant",		// 13 Longsword any melee that has no special abilities, mostly
-//	"Martial Artist",	// ?? Weapons with heavy skill usage such as judgement of iberia
-//	edit: Too general, cant.
-	"Aberration",		// 14 Melee weapons that summon things, currenly only fusion blade
-	"Duelist",			// 15 Melee weapons that exell at taking down/fighting single targets, see ark due to parry
-	"Lord",				// 16 Any melee that heavily has ranged attacks, see Lappland melee as the only one currently
-	"Crusher",			// 17 Any melee that has very good aoe, see judgement of ibera or final hammer pap
-
-	
-//MAGE WEAPONS
-	"Summoner",			// 18
-	"Chain Caster",		// 19
-	"Multi Caster",		// 20
-	"Base Caster",		// 21
-
-// CUSTOM
-	"Abyssal Hunter",	// 22
-	"Kazimierz",		// 23
-	"Bloodletter",	//24, Vampire Knives fast-attack path
-	"Bloody Butcher", //25, Vampire Knives cleaver path
-	"Mythic Caster"	// 26		
-};
-
 enum struct ItemInfo
 {
 	int Cost;
@@ -4622,16 +4581,14 @@ void CheckInvalidSlots(int client)
 				TF2_RemoveItem(client, entity);
 			}
 		}
-#else
+#elseif defined RPG
 		int index = EquippedItems.FindValue(EntIndexToEntRef(entity));
 		if(index > 0)
 		{
-			static ItemInfo item;
-			EquippedItems.GetArray(index, item);
-			if(!item.Equipped[client])
-			{
+			static ItemInfo info;
+			EquippedItems.GetArray(index, info);
+			if(info.Owner != client || !TextStore_GetInv(client, info.Store))
 				TF2_RemoveItem(client, entity);
-			}
 		}
 #endif
 	}

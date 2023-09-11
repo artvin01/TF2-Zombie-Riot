@@ -526,8 +526,9 @@ public void TextStore_OnDescItem(int client, int item, char[] desc)
 				Fishing_DescItem(kv, desc, attrib, value, count);
 				Stats_DescItem(desc, attrib, value, count);
 				
+				int archetype = kv.GetNum("archetype");
 				kv.GetString("classname", buffer, sizeof(buffer));
-				Config_CreateDescription(buffer, attrib, value, count, desc, 512);
+				Config_CreateDescription(ItemArchetype[archetype], buffer, attrib, value, count, desc, 512);
 				
 				int level = kv.GetNum("level");
 				if(level > 0)
