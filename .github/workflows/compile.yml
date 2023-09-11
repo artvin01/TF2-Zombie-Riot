@@ -43,6 +43,7 @@ jobs:
           wget "https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc"
           wget "https://raw.githubusercontent.com/Batfoxkid/File-Network/main/scripting/include/filenetwork.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc"
+          mkdir cbasenpc/tf
           cd cbasenpc
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/activity.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseanimating.inc"
@@ -56,6 +57,7 @@ jobs:
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/takedamageinfo.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/util.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/tf/nav.inc" -O "tf/nav.inc"
+          mkdir nextbot
           cd nextbot
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/behavior.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/body.inc"
