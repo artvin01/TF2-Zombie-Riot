@@ -31,7 +31,6 @@ jobs:
       - name: Install Misc
         run: |
           echo "SCRIPTS_PATH=addons/sourcemod/scripting" >> $GITHUB_ENV
-          cp scripts/compile.sh addons/sourcemod/scripting/compile.sh
           cd addons/sourcemod/scripting
           cd include
           wget "https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc"
