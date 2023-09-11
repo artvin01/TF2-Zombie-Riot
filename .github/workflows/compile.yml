@@ -1,26 +1,74 @@
 name: Compile
 
 on:
+  push:
+    branches: master
   pull_request:
-    branches: main
+    branches: master
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sm-version: [ '1.12.x']
     
     steps:
-      - name: Checkout
+      - name: Install Checkout
         uses: actions/checkout@v1
       
-      - name: Environments
-        run: |
-          echo "SM_VERSION=1.11" >> $GITHUB_ENV
+      - name: Install Setup SP ${{ matrix.sm-version }}
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.sm-version }}
       
-      - name: Install
+      - name: Get GitHub Env
         run: |
-          bash scripts/install.sh
+          echo "PLUGIN_VERSION_REVISION<<EOF" >> $GITHUB_ENV
+          git rev-list --count HEAD >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
       
-      - name: Compile
+      - name: Install Misc
         run: |
-          cd build/addons/sourcemod/scripting
-          ./spcomp -E zombie_riot.sp
+          echo "SCRIPTS_PATH=addons/sourcemod/scripting" >> $GITHUB_ENV
+          cp scripts/compile.sh addons/sourcemod/scripting/compile.sh
+          cd addons/sourcemod/scripting
+          cd include
+          wget "https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc"
+          wget "https://raw.githubusercontent.com/peace-maker/DHooks2/dynhooks/sourcemod_files/scripting/include/dhooks.inc"
+          wget "https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc"
+          wget "https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc"
+          wget "https://raw.githubusercontent.com/haxtonsale/LoadSoundScript/master/sourcepawn/loadsoundscript.inc"
+          wget "https://raw.githubusercontent.com/Adrianilloo/Collisionhook/master/extra/collisionhook.inc"
+          wget "https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc"
+          wget "https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc"
+          wget "https://raw.githubusercontent.com/Batfoxkid/File-Network/main/scripting/include/filenetwork.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/activity.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseanimating.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseanimatingoverlay.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/basecombatcharacter.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/baseentity.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/entityfactory.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/matrix.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nav.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/takedamageinfo.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/util.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/behavior.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/body.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/intention.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/knownentity.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/locomotion.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/vision.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path/chase.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/nextbot/path/follower.inc"
+          wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc/tf/nav.inc"
+        working-directory: ./
+      
+      - name: Compile ${{ matrix.sm-version }}
+        run: |
+          spcomp -E -O2 -v2 -i "include" zombie_riot.sp
+          spcomp -E -O2 -v2 -i "include" rpg_fortress.sp
+        working-directory: ${{ env.SCRIPTS_PATH }}
