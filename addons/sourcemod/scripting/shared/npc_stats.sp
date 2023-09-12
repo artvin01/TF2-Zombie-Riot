@@ -172,6 +172,7 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSoundMetal));   i++) { PrecacheSound(g_GibSoundMetal[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineSoldierStepSound));   i++) { PrecacheSound(g_CombineSoldierStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_DefaultStepSound));   i++) { PrecacheSound(g_DefaultStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_CombineMetroStepSound));   i++) { PrecacheSound(g_CombineMetroStepSound[i]);   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
@@ -3372,6 +3373,8 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			if(IsWalkEvent(event))
 			{
+				/*
+				causes too much lag.
 				static char strSound[64];
 				static float vSoundPos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vSoundPos);
@@ -3383,6 +3386,8 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				Format(strSound, sizeof(strSound), "player/footsteps/%s%i.wav", GetStepSoundForMaterial(material), GetRandomInt(1,4));
 				
 				npc.PlayStepSound(strSound,0.8, npc.m_iStepNoiseType);
+				*/
+				npc.PlayStepSound(g_DefaultStepSound[GetRandomInt(0, sizeof(g_DefaultStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 			}
 		}
 		case STEPTYPE_COMBINE:
@@ -6319,7 +6324,11 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		}
 	}
 	
-
+		
+//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+//	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
+//	TE_SendToAll();
+	
 	CNavArea leadArea = TheNavMesh.GetNearestNavArea( pathTarget );
 	
 	
@@ -6328,6 +6337,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		// would fall off a cliff
 		return subjectPos;	
 	}
+	
 	//todo: find better code to not clip through very thin walls, but this works for now
 	Handle trace; 
 	trace = TR_TraceRayFilterEx(subjectPos, pathTarget, MASK_NPCSOLID | MASK_PLAYERSOLID, RayType_EndPoint, TraceRayHitWorldOnly, 0); //If i hit a wall, i stop retreatring and accept death, for now!
@@ -6336,7 +6346,11 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	{
 		TR_GetEndPosition(pathTarget, trace);
 	}
+//	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({0, 0, 255, 255}), 30);
+//	TE_SendToAll();
+	
 	delete trace;
+	
 
 	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
 	
@@ -6826,6 +6840,10 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 
 	SetVariantInt(0);
 	AcceptEntityInput(iBeam, "TouchType");
+
+	SetVariantString("0");
+	AcceptEntityInput(iBeam, "damage");
+
 	//its delayed by a frame to avoid it not rendering at all.
 //	RequestFrames(ApplyBeamThinkRemoval, 15, EntIndexToEntRef(iBeam));
 

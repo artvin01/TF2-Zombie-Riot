@@ -1433,7 +1433,7 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 	if(f_NemesisImmuneToInfection[victim] < GetGameTime())
 	{
 		//this wont work on npcs, too unfair.
-		if(IsValidClient(victim))
+		if(IsValidClient(victim) && !IsInvuln(victim))
 		{
 			f_NemesisImmuneToInfection[victim] = GetGameTime() + 15.0;
 			float HudY = -1.0;
@@ -1462,6 +1462,7 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 		}
 	}
 }
+
 public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -1513,6 +1514,10 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 		}
 	}
 	int bleed_count = pack.ReadCell();
+	if(IsInvuln(client))
+	{
+		bleed_count = 0;
+	}
 	if(bleed_count < 1)
 	{
 		if(IsValidEntity(Particle_entity))

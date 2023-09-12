@@ -234,6 +234,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		/*
 			Variables
 		*/
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

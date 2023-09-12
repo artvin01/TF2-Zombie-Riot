@@ -547,9 +547,7 @@
 	
 	"Grenade Desc"
 	{
-		"en"	"1000 Dmg Grenade"
-		"ru"	"Граната с уроном в 1000 единиц."
-		"chi"   "造成1000伤害的手榴弹"
+		"en"	"High Dmg Grenade"
 	}
 	"Grenade Pap 1"
 	{
@@ -1015,9 +1013,15 @@
 	}
 	"Fire Wand Pap 1"
 	{
-		"en"	"Increased damage, fires 3 fireballs in quick succession"
-		"ru"	"Увеличенный урон, выпускает 3 огненных шаров в быстрой последовательности."
-		"chi"   "增加伤害，快速连续发射5个火球"
+		"en"	"Increased damage, fires 2 fireballs in quick succession, subsequent fireballs deal less damage."
+	}
+	"Fire Wand Pap 2"
+	{
+		"en"	"Increased damage, fires 3 fireballs in quick succession, subsequent fireballs deal less damage."
+	}
+	"Fire Wand Pap 3"
+	{
+		"en"	"Increased damage, fires 5 fireballs in quick succession, subsequent fireballs deal less damage."
 	}
 	
 	"Cryo Staff Desc"
