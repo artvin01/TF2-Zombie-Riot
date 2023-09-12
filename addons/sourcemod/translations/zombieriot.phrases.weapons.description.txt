@@ -2387,5 +2387,21 @@
 	{
 		"en"	"Full maturity, the fruit of our labour.\n[JACKPOT] has a higher chance to occur, ability is improved and a hidden power has awakened..."
 	}
+	"Casino Desc"
+	{
+		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 7 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\n''The game was rigged from the start''."
+	}
+	"Flush Desc"
+	{
+		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''Take it or leave it.''"
+	}
+	"Straight Desc"
+	{
+		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''ALL IN BABY!''"
+	}
+	"Royal Desc"
+	{
+		"en"	"Dollar gain is increased and effects are improved.\n''You should probably get your mental health checked.''"
+	}
 }
 

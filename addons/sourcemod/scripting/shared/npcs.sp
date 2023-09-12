@@ -1290,22 +1290,23 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			//This exists for rpg so that attacking the target will trigger it for hte next 5 seconds.
 			//ZR does not need this.
-#if defined RPG
-			OnTakeDamageRpgAgressionOnHit(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
-#endif		
+	#if defined RPG
+			OnTakeDamageRpgAgressionOnHit(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition,damagecustom, GameTime);
+	#endif		
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, inflictor, damage, damagetype, weapon);
 
-#if defined ZR
+	#if defined ZR
 			VausMagicaShieldLogicNpcOnTakeDamage(victim, damage);
 
 			OnTakeDamageWidowsWine(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+	#endif
 
 			if(Rogue_InItallianWrath(weapon))
 			{
 				damage *= 2.0;
 			}
 			OnTakeDamage_RogueItemGeneric(attacker, damage, damagetype, inflictor);
-#endif
+
 			OnTakeDamageDamageBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 
@@ -1315,10 +1316,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon, GuranteedGib);
 		
 			OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
-
-#if defined ZR			
+			
 			OnTakeDamageScalingWaveDamage(attacker, inflictor, damage, damagetype, weapon);
-#endif
+
 			OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
 
 			if(attacker <= MaxClients)
@@ -1327,18 +1327,16 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				{
 					DoClientHitmarker(attacker);
 				}
-#if defined RPG
+				#if defined RPG
 				OnTakeDamageRpgPotionBuff(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
-#endif
+				#endif
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
 					if(WeaponWasValid)
 					{
 						float modified_damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);	
 						damage = modified_damage;
-#if defined ZR		
 						OnTakeDamage_HandOfElderMages(attacker, weapon);
-#endif
 						OnTakeDamageOldExtraWeapons(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 						OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 					}
@@ -1395,12 +1393,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npcBase.m_bGib = true;
 		}
 	}
-#if defined ZR
 	if(RogueFizzyDrink())
 	{
 		npcBase.m_bGib = true;
 	}
-#endif
 	if(GuranteedGib)
 	{
 		npcBase.m_bGib = true;
@@ -1628,12 +1624,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❅", Debuff_Adder);	
 	}
-	if (f_BuildingAntiRaid[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Debuff_added_hud = true;
-		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%sR", Debuff_Adder);	
-	}
 		
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
@@ -1805,7 +1795,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "♟%s", Debuff_Adder);
 	}
-
+	
 	if(Debuff_added)
 	{
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s\n", Debuff_Adder);
@@ -2033,8 +2023,6 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 	else if(f_HighIceDebuff[npc] > GameTime)
 		return true;
 	else if(f_LowIceDebuff[npc] > GameTime)
-		return true;
-	else if(f_BuildingAntiRaid[npc] > GameTime)
 		return true;
 	else if (f_VeryLowIceDebuff[npc] > GameTime)
 		return true;
@@ -2362,6 +2350,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			NPC_OnTakeDamage_Hazard(attacker, victim, damage,weapon);
 		}
+		case WEAPON_CASINO:
+		{
+			Npc_OnTakeDamage_Casino(attacker, damage, damagetype);
+		}
 		case WEAPON_FANTASY_BLADE:
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
@@ -2470,7 +2462,6 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 		}
 	}
 	//should not steal.
-#if defined ZR
 	if(Saga_EnemyDoomed(victim) && attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
 	{
 		if(Saga_IsChargeWeapon(attacker, weapon))
@@ -2478,7 +2469,6 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 			return true;
 		}
 	}
-#endif
 	if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
 	{
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
@@ -2684,7 +2674,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 		}
 	}
 }
-#if defined ZR
+
 bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
@@ -2715,7 +2705,7 @@ bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage,
 	}
 	return false;
 }
-#endif
+
 void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float &damage, int &damagetype)
 {
 	if((damagetype & DMG_VEHICLE) && IsValidEntity(inflictor) && b_IsVehicle[inflictor])
@@ -2777,7 +2767,6 @@ bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, floa
 	if(!IsValidEntity(weapon))
 		return false;
 
-#if defined ZR
 	if(i_ArsenalBombImplanter[weapon] > 0)
 	{
 		int BombsToInject = i_ArsenalBombImplanter[weapon];
@@ -2803,7 +2792,7 @@ bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, floa
 	{
 		f_LowTeslarDebuff[victim] = GameTime + 5.0;
 	}
-#endif
+	
 	return false;
 }
 
@@ -3133,7 +3122,7 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	{
 		damage += BaseDamageBeforeBuffs * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus
 	}
-#if defined ZR	
+	
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
 		if(IsZombieFrozen(victim))
@@ -3155,11 +3144,7 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		else
 			damage += BaseDamageBeforeBuffs * 0.5;
 	}
-#endif
-	if(f_BuildingAntiRaid[victim] > GameTime)
-	{
-		damage += BaseDamageBeforeBuffs * 0.1;
-	}
+	
 	if(f_WidowsWineDebuff[victim] > GameTime)
 	{
 		damage += BaseDamageBeforeBuffs * 0.35;
@@ -3198,7 +3183,6 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		BackstabNpcInternalModifExtra(weapon, attacker, victim, 2.0);
 	}
 
-#if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_MLYNAR:
@@ -3209,8 +3193,11 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			MlynarReduceDamageOnKill(attacker, 1);
 		}
+		case WEAPON_CASINO:
+		{
+			CasinoSalaryPerKill(attacker);
+		}
 	}
-#endif
 }
 void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_custom_zr)
 {
@@ -3220,7 +3207,6 @@ void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_c
 	if(!IsValidClient(attacker))
 		return;
 
-#if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_MLYNAR:
@@ -3234,11 +3220,10 @@ void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_c
 				MlynarTakeDamagePostRaid(attacker, 1);
 		}
 	}
-#endif
 }
 
 
-#if defined ZR
+
 int GetRandomActiveSpawner()
 {
 	int entity_Spawner = -1;
@@ -3261,7 +3246,6 @@ int GetRandomActiveSpawner()
 	}
 	return entity_Spawner;
 }
-#endif	
 
 
 void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)
