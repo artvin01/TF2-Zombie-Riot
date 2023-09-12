@@ -470,7 +470,8 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 	{
 		case 0:
 		{
-			Rogue_GiveNamedArtifact(vote.Config);
+			Rogue_AddIngots(20);
+			
 			PrintToChatAll("%t", "Eye for an Eye Lore 1");
 		}
 		case 1:
