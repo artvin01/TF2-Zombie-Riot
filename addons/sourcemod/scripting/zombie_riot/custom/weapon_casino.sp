@@ -38,6 +38,7 @@ public void Casino_MapStart() //idk what to precisely precache so hopefully this
 	Zero(Timer_Casino_Management);
 	Zero(i_Dollars_Ammount);
 	Zero(Casino_hud_delay);
+	Zero(fl_Damage_Ammount);
 
 	//cooldowns//
 	Zero(fl_minor_damage_cooldown);
@@ -179,6 +180,25 @@ static int Casino_Get_Pap(int weapon) //deivid inspired pap detection system (as
 	return pap;
 }
 
+public int RecurringNumbers(int client) //the logic for generating and showing the random numbers, thank u sammy
+{
+	i_slot1[client] = GetRandomInt(1,7), i_slot2[client] = GetRandomInt(1,7), i_slot3[client] = GetRandomInt(1,7);
+	int Jackpot = i_slot1[client];
+	if (i_slot1[client] == i_slot2[client] && i_slot2[client] == i_slot3[client])
+	{
+		return Jackpot + 7; // if all numbers are the same, add 7 and then return slot 1 number
+	}
+
+	if(i_slot1[client] == i_slot2[client]) //if slots 1 and 2 are same, return slot 1 number
+		return i_slot1[client];
+	if(i_slot1[client] == i_slot3[client]) //if slots 1 and 3 are same, return slot 3 number
+		return i_slot3[client];
+	if(i_slot2[client] == i_slot3[client]) //if slots 2 and 3 are same, return slot 2 number
+		return i_slot2[client];
+	
+	return 0; //no slots are same?
+}
+
 public void Weapon_Casino_M2(int client, int weapon)
 {
 	if (i_Dollars_Ammount[client] >= 7) //only go through if you can afford it
@@ -198,14 +218,330 @@ public void Weapon_Casino_M2(int client, int weapon)
 
 public void ROLL_THE_SLOTS(int client, int weapon)
 {
-	i_slot1[client] = GetRandomInt(1,7); // 1/X/X
-	i_slot2[client] = GetRandomInt(1,7); // X/1/X
-	i_slot3[client] = GetRandomInt(1,7); // X/X/1
-	
-	int pap = i_Current_Pap[client];
 	float GameTime = GetGameTime();
+	int pap = i_Current_Pap[client];
+
+	RecurringNumbers(client); //function :)
+	switch(RecurringNumbers(client)) //5000000000000x better than else if spam
 	{
-		if (i_slot1[client] == 1 && i_slot2[client] == 1 && i_slot3[client] == 1) // beeg dmg for 1/1/1
+		case 1: //minor damage
+		{
+			if(fl_minor_damage_cooldown[client] < GameTime)
+			{
+				switch(pap)
+				{
+					case 0:
+					{
+						ApplyTempAttrib(weapon, 2, 1.25, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
+						fl_minor_damage_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 1:
+					{
+						ApplyTempAttrib(weapon, 2, 1.375, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
+						fl_minor_damage_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 2:
+					{
+						ApplyTempAttrib(weapon, 2, 1.45, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
+						fl_minor_damage_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 3:
+					{
+						ApplyTempAttrib(weapon, 2, 1.5, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
+						fl_minor_damage_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+				}
+			}
+			else
+			{
+				ApplyTempAttrib(weapon, 2, 1.05, 60.0);
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor damage boost]!");
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
+				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
+				{
+					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+				}
+
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
+				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+				{
+					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
+				}
+			}
+		}
+		case 2: //minor firing speed
+		{
+			if(fl_minor_speed_cooldown[client] < GameTime)
+			{
+				switch(pap)
+				{
+					case 0:
+					{
+						ApplyTempAttrib(weapon, 6, 0.8, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
+						fl_minor_speed_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 1:
+					{
+						ApplyTempAttrib(weapon, 6, 0.75, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
+						fl_minor_speed_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 2:
+					{
+						ApplyTempAttrib(weapon, 6, 0.70, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
+						fl_minor_speed_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 3:
+					{
+						ApplyTempAttrib(weapon, 6, 0.65, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
+						fl_minor_speed_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+				}
+			}
+			else
+			{
+				ApplyTempAttrib(weapon, 6, 0.95, 60.0);
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor firing speed boost]!");
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
+				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
+				{
+					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+				}
+				
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
+				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+				{
+					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
+				}
+			}
+		}
+		case 3: //minor reload
+		{
+			if(fl_minor_reload_cooldown[client] < GameTime)
+			{
+				switch(pap)
+				{
+					case 0:
+					{
+						ApplyTempAttrib(weapon, 97, 0.8, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
+						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 1:
+					{
+						ApplyTempAttrib(weapon, 97, 0.75, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
+						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 2:
+					{
+						ApplyTempAttrib(weapon, 97, 0.7, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
+						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 3:
+					{
+						ApplyTempAttrib(weapon, 97, 0.65, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
+						fl_minor_reload_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+				}
+			}
+		}
+		case 4: //perfect accuracy
+		{
+			if(fl_minor_accuracy_cooldown[client] < GameTime)
+			{
+				switch(pap)
+				{
+					case 0:
+					{
+						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
+						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 1:
+					{
+						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
+						ApplyTempAttrib(weapon, 2, 1.1, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
+						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 2:
+					{
+						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
+						ApplyTempAttrib(weapon, 2, 1.15, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
+						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 3:
+					{
+						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
+						ApplyTempAttrib(weapon, 2, 1.2, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
+						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+				}
+			}
+			else
+			{
+				ApplyTempAttrib(weapon, 2, 1.05, 60.0);
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Perfect accuracy]!");
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
+				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
+				{
+					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+				}
+				
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
+				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+				{
+					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
+				}
+			}
+		}
+		case 5: //minor clip
+		{
+			if(fl_minor_clip_cooldown[client] < GameTime)
+			{
+				switch(pap)
+				{
+					case 0:
+					{
+						ApplyTempAttrib(weapon, 4, 1.3, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
+						fl_minor_clip_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 1:
+					{
+						ApplyTempAttrib(weapon, 4, 1.5, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
+						fl_minor_clip_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 2:
+					{
+						ApplyTempAttrib(weapon, 4, 1.7, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
+						fl_minor_clip_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+					case 3:
+					{
+						ApplyTempAttrib(weapon, 4, 1.9, 60.0);
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
+						fl_minor_clip_cooldown[client] = GameTime + 60.0;
+						ClientCommand(client, "playgamesound player/crit_hit.wav");
+					}
+				}
+			}
+			else
+			{
+				ApplyTempAttrib(weapon, 97, 0.95, 60.0);
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor clip size boost]!");
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
+				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
+				{
+					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+				}
+				
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
+				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+				{
+					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
+				}
+			}
+		}
+		case 6: //minor cash
+		{
+			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 27;
+			if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
+			{
+				i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+			}
+			fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 27.0;
+			if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+			{
+				fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
+			}
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Gain [a few dollars]!");
+			ClientCommand(client, "playgamesound player/crit_hit.wav");
+		}
+		case 8: //major damage
 		{
 			if(fl_major_damage_cooldown[client] < GameTime)
 			{
@@ -257,7 +593,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major damage boost]!");
 			}
 		}
-		else if (i_slot1[client] == 2 && i_slot2[client] == 2 && i_slot3[client] == 2) // beeg firing speed for 2/2/2
+		case 9: //major firing
 		{
 			if(fl_major_speed_cooldown[client] < GameTime)
 			{
@@ -309,7 +645,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major firing speed boost]!");
 			}
 		}
-		else if (i_slot1[client] == 3 && i_slot2[client] == 3 && i_slot3[client] == 3) // beeg reload for 3/3/3
+		case 10: //major reload
 		{
 			if(fl_major_reload_cooldown[client] < GameTime)
 			{
@@ -361,7 +697,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major reloading speed boost]!");
 			}
 		}
-		else if (i_slot1[client] == 4 && i_slot2[client] == 4 && i_slot3[client] == 4) //perfect accuracy is already perfect so it gives dmg too lol also 4/4/4
+		case 11: //perfect accuracy and minor damage
 		{
 			if(fl_major_accuracy_cooldown[client] < GameTime)
 			{
@@ -416,7 +752,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major perfect accuracy]!");
 			}
 		}
-		else if (i_slot1[client] == 5 && i_slot2[client] == 5 && i_slot3[client] == 5) // beeg clip size for 5/5/5
+		case 12: //major clip
 		{
 			if(fl_major_clip_cooldown[client] < GameTime)
 			{
@@ -468,24 +804,24 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major clip size boost]");
 			}
 		}
-		else if (i_slot1[client] == 6 && i_slot2[client] == 6 && i_slot3[client] == 6) // dolla for 6/6/6 because money is evil
+		case 13: //major cash
 		{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 57;
-				if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 57.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Gain [a lot of dollars]!");
-				ClientCommand(client, "playgamesound player/crit_received1.wav");	
+			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 57;
+			if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
+			{
+				i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+			}
+			fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 57.0;
+			if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+			{
+				fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
+			}
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Gain [a lot of dollars]!");
+			ClientCommand(client, "playgamesound player/crit_received1.wav");
 		}
-		else if (i_slot1[client] == 7 && i_slot2[client] == 7 && i_slot3[client] == 7) //JACKPOT!!!!!!
+		case 14: //jackpot
 		{
 			if(fl_jackpot_cooldown[client] < GameTime)
 			{
@@ -592,342 +928,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [JACKPOT]. How lucky!");
 			}
 		}
-		else if ((i_slot1[client] == 1 && i_slot2[client] == 1) || (i_slot1[client] == 1 && i_slot3[client] == 1) || (i_slot2[client] == 1 && i_slot3[client] == 1)) // damage for 1's LETS GOOOOO
-		{
-			if(fl_minor_damage_cooldown[client] < GameTime)
-			{
-				switch(pap)
-				{
-					case 0:
-					{
-						ApplyTempAttrib(weapon, 2, 1.25, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
-						fl_minor_damage_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 1:
-					{
-						ApplyTempAttrib(weapon, 2, 1.375, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
-						fl_minor_damage_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 2:
-					{
-						ApplyTempAttrib(weapon, 2, 1.45, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
-						fl_minor_damage_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 3:
-					{
-						ApplyTempAttrib(weapon, 2, 1.5, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor damage boost] for 60 seconds!");
-						fl_minor_damage_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-				}
-			}
-			else
-			{
-				ApplyTempAttrib(weapon, 2, 1.05, 60.0);
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor damage boost]!");
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
-				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-			}
-		}
-		else if ((i_slot1[client] == 2 && i_slot2[client] == 2) || (i_slot1[client] == 2 && i_slot3[client] == 2) || (i_slot2[client] == 2 && i_slot3[client] == 2)) //better firing speed whenever you roll 2 2's
-		{
-			if(fl_minor_speed_cooldown[client] < GameTime)
-			{
-				switch(pap)
-				{
-					case 0:
-					{
-						ApplyTempAttrib(weapon, 6, 0.8, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
-						fl_minor_speed_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 1:
-					{
-						ApplyTempAttrib(weapon, 6, 0.75, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
-						fl_minor_speed_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 2:
-					{
-						ApplyTempAttrib(weapon, 6, 0.70, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
-						fl_minor_speed_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 3:
-					{
-						ApplyTempAttrib(weapon, 6, 0.65, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
-						fl_minor_speed_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-				}
-			}
-			else
-			{
-				ApplyTempAttrib(weapon, 6, 0.95, 60.0);
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor firing speed boost]!");
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
-				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-				
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-			}
-		}
-		else if ((i_slot1[client] == 3 && i_slot2[client] == 3) || (i_slot1[client] == 3 && i_slot3[client] == 3) || (i_slot2[client] == 3 && i_slot3[client] == 3)) //better reload whenever you roll 2 3's
-		{
-			if(fl_minor_reload_cooldown[client] < GameTime)
-			{
-				switch(pap)
-				{
-					case 0:
-					{
-						ApplyTempAttrib(weapon, 97, 0.8, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 1:
-					{
-						ApplyTempAttrib(weapon, 97, 0.75, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 2:
-					{
-						ApplyTempAttrib(weapon, 97, 0.7, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 3:
-					{
-						ApplyTempAttrib(weapon, 97, 0.65, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor reloading speed] boost for 60 seconds!");
-						fl_minor_reload_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-				}
-			}
-			else
-			{
-				ApplyTempAttrib(weapon, 97, 0.95, 60.0);
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor reloading speed boost]!");
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
-				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-				
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-			}
-		}
-		else if ((i_slot1[client] == 4 && i_slot2[client] == 4) || (i_slot1[client] == 4 && i_slot3[client] == 4) || (i_slot2[client] == 4 && i_slot3[client] == 4)) //perfect accuracy whenever you roll 2 4's
-		{
-			if(fl_minor_accuracy_cooldown[client] < GameTime)
-			{
-				switch(pap)
-				{
-					case 0:
-					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 1:
-					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.1, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 2:
-					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.15, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 3:
-					{
-						ApplyTempAttrib(weapon, 106, 0.1, 60.0);
-						ApplyTempAttrib(weapon, 2, 1.2, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy] for 60 seconds!");
-						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-				}
-			}
-			else
-			{
-				ApplyTempAttrib(weapon, 2, 1.05, 60.0);
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Perfect accuracy]!");
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
-				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-				
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-			}
-		}
-		else if ((i_slot1[client] == 5 && i_slot2[client] == 5) || (i_slot1[client] == 5 && i_slot3[client] == 5) || (i_slot2[client] == 5 && i_slot3[client] == 5)) //increased clip size whenever you get 2 5's
-		{
-			if(fl_minor_clip_cooldown[client] < GameTime)
-			{
-				switch(pap)
-				{
-					case 0:
-					{
-						ApplyTempAttrib(weapon, 4, 1.3, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
-						fl_minor_clip_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 1:
-					{
-						ApplyTempAttrib(weapon, 4, 1.5, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
-						fl_minor_clip_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 2:
-					{
-						ApplyTempAttrib(weapon, 4, 1.7, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
-						fl_minor_clip_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-					case 3:
-					{
-						ApplyTempAttrib(weapon, 4, 1.9, 60.0);
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor clip size boost] for 60 seconds!");
-						fl_minor_clip_cooldown[client] = GameTime + 60.0;
-						ClientCommand(client, "playgamesound player/crit_hit.wav");
-					}
-				}
-			}
-			else
-			{
-				ApplyTempAttrib(weapon, 97, 0.95, 60.0);
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor clip size boost]!");
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
-				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-				
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-			}
-		}
-		else if ((i_slot1[client] == 6 && i_slot2[client] == 6) || (i_slot1[client] == 6 && i_slot3[client] == 6) || (i_slot2[client] == 6 && i_slot3[client] == 6)) // money gain whenever you get two 6's
-		{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 22;
-				if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
-				{
-					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
-				}
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 22.0;
-				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
-				{
-					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
-				}
-				SetDefaultHudPosition(client);
-				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Gain [a few dollars]!");
-				ClientCommand(client, "playgamesound player/crit_hit.wav");
-		}
-		else //whenever any effects above dont trigger
+		default: //womp womp
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
