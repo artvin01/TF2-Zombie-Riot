@@ -7956,7 +7956,6 @@ void BuildingVillageChangeModel(int owner, int entity)
 	}
 	else if(ModelTypeApplied == 2 && collisionboxapplied != 2)
 	{
-		PrintToChatAll("test2");
 		i_VillageModelApplianceCollisionBox[entity] = 2;
 		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		float minbounds[3] = {-20.0, -20.0, 0.0};
@@ -8021,7 +8020,6 @@ void BuildingVillageChangeModel(int owner, int entity)
 	}
 	else if(Village_Flags[owner] & VILLAGE_030 && ModelTypeApplied != 2)
 	{
-		PrintToChatAll("test1");
 		i_VillageModelAppliance[entity] = 2;
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.4);
 		SetEntityModel(entity, VILLAGE_MODEL_MIDDLE);
