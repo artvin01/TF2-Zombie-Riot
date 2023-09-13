@@ -1324,7 +1324,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 			
-			if(attacker <= MaxClients)
+			if(attacker <= MaxClients && attacker > 0)
 				OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon, GuranteedGib);
 		
 			OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
@@ -1334,7 +1334,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 			OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
 
-			if(attacker <= MaxClients)
+			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
@@ -1378,7 +1378,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 #endif
-			if(attacker <= MaxClients)
+			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(WeaponWasValid)
 				{
