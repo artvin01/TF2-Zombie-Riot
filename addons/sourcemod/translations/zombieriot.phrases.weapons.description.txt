@@ -2405,7 +2405,7 @@
 	}
 	"Royal Desc"
 	{
-		"en"	"Dollar gain is increased and effects are improved.\n''You should probably get your mental health checked.''"
+		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''You should probably get your mental health checked.''"
 	}
 }
 
