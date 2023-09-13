@@ -817,26 +817,29 @@ public Action Waves_EndVote(Handle timer, float time)
 			if(CanReVote)
 			{
 				int high1 = 0;
-				int high2 = 1;
-				for(int i = 2; i < length; i++)
+				int high2 = -1;
+				for(int i = 1; i < length; i++)
 				{
 					if(votes[i] > votes[high1])
 					{
 						high2 = high1;
 						high1 = i;
 					}
-					else if(votes[i] > votes[high2])
+					else if(high2 == -1 || votes[i] > votes[high2])
 					{
 						high2 = i;
 					}
 				}
 
-				high1 = votes[high2];
-				for(int i = length - 1; i >= 0; i--)
+				if(high2 != -1)
 				{
-					if(votes[i] < high1)
+					high1 = votes[high2];
+					for(int i = length - 1; i >= 0; i--)
 					{
-						Voting.Erase(i);
+						if(votes[i] < high1)
+						{
+							Voting.Erase(i);
+						}
 					}
 				}
 
@@ -1417,6 +1420,8 @@ void Waves_Progress()
 			else if(wasLastMann)
 			{
 				Cooldown = GetGameTime() + 30.0;
+				
+				InSetup = true;
 				
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
