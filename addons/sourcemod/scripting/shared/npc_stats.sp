@@ -8584,6 +8584,8 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 
 void RemoveNpcFromEnemyList(int npc)
 {
+	GetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 	{
 		int entity_close = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
