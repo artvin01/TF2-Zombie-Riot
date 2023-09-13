@@ -2798,12 +2798,6 @@ int inflictor = 0)
 		explosionRadius *= value;
 	}
 	//this should make explosives during raids more usefull.
-#if defined ZR
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-	{
-		damage *= 1.15;
-	}
-#endif
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
 		if(spawnLoc[0] == 0.0)
@@ -3957,6 +3951,9 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 
 	SetVariantInt(0);
 	AcceptEntityInput(iBeam, "TouchType");
+
+	SetVariantString("0");
+	AcceptEntityInput(iBeam, "damage");
 	//its delayed by a frame to avoid it not rendering at all.
 //	RequestFrames(ApplyBeamThinkRemoval, 15, EntIndexToEntRef(iBeam));
 

@@ -229,7 +229,7 @@ bool Items_HasNamedItem(int client, const char[] name)
 	return false;
 }
 
-void Items_GiveNPCKill(int client, int id)
+stock void Items_GiveNPCKill(int client, int id)
 {
 	//AddFlagOfLevel(client, -id, 1, true);
 }
@@ -304,7 +304,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 	}
 	else if(page != -1)
 	{
-		int kills;
+		//int kills;
 		int pos;
 
 		char data[16], buffer[64];
@@ -324,7 +324,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 					menu.AddItem(data, buffer);
 				}
 
-				kills += GetFlagsOfLevel(client, -i);
+				//kills += GetFlagsOfLevel(client, -i);
 			}
 		}
 
@@ -339,7 +339,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		if(LastMenuPage[client] < 0)
 			LastMenuPage[client] = 0;
 		
-		int kills;
+		/*int kills;
 		int length = OwnedItems.Length;
 		for(int i; i < length; i++)
 		{
@@ -347,7 +347,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 			OwnedItems.GetArray(i, owned);
 			if(owned.Client == client && owned.Level < 0)
 				kills += owned.Flags;
-		}
+		}*/
 
 		//menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", "Zombie Kills", kills);
 		menu.SetTitle("%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia");

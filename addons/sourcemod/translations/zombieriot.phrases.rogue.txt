@@ -393,6 +393,10 @@
 	}
 
 	// Stages
+	"Dense Fog"
+	{
+		"en"	"Dense Fog"
+	}
 	"Forcefield Chest"
 	{
 		"en"	"Forcefield Chest"
@@ -530,6 +534,66 @@
 	}
 
 	// Curses
+	"Bewildered"
+	{
+		"en"	"Bewildered"
+	}
+	"Bewildered Desc"
+	{
+		"en"	"{green}More stages to pick from {yellow}but the chapter is now longer."
+	}
+	"Bewildered Lore"
+	{
+		"en"	"The road branches into multiple directions. You feel you are unable to pick the right path."
+	}
+	"Sensitive"
+	{
+		"en"	"Sensitive"
+	}
+	"Sensitive Desc"
+	{
+		"en"	"{red}Players take +50%% more damage {green}but heal +100%% faster{yellow}."
+	}
+	"Sensitive Lore"
+	{
+		"en"	"Whether joy or sorrow, everything you feel is intensified."
+	}
+	"Obsessed"
+	{
+		"en"	"Obsessed"
+	}
+	"Obsessed Desc"
+	{
+		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next{yellow}."
+	}
+	"Obsessed Lore"
+	{
+		"en"	"Your extra riches make you ecstatic, but your fear of losing them keeps you just as restless."
+	}
+	"Solitary"
+	{
+		"en"	"Solitary"
+	}
+	"Solitary Desc"
+	{
+		"en"	"{red}Store items cost 10%% more {green}but Pack-a-Punch upgrades cost 10%% less."
+	}
+	"Solitary Lore"
+	{
+		"en"	"You are afraid of losing all that you hold dear. You will do everything it takes to make sure they do not go anywhere.
+	}
+	"Blind"
+	{
+		"en"	"Blind"
+	}
+	"Blind Desc"
+	{
+		"en"	"{green}Gain an extra Australium Ingot each stage but {red}you can not see the name of stages in votes."
+	}
+	"Blind Lore"
+	{
+		"en"	"Even though everything is right before your eyes, you feel it is all a haze."
+	}
 	"Gravity Upset"
 	{
 		"en"	"Gravity Upset"

@@ -333,6 +333,7 @@ methodmap RaidbossSilvester < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		if(amount_of_people > 12.0)

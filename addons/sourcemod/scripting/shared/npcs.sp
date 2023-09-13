@@ -1238,6 +1238,7 @@ public void Map_BaseBoss_Damage_Post(int victim, int attacker, int inflictor, fl
 	}
 }
 
+float Damageaftercalc = 0.0;
 public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	bool WeaponWasValid = false;
@@ -1251,14 +1252,17 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)
 	{
 		damage = 0.0;
+		Damageaftercalc = 0.0;
 		return Plugin_Handled;
 	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
 	bool GuranteedGib = false;
 
-	if(attacker < 1 || victim == attacker)
+	if(attacker < 0 || victim == attacker)
 	{
+		Damageaftercalc = 0.0;
+		return Plugin_Handled;
 		//nothing happens.
 	}
 	else 
@@ -1266,15 +1270,24 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
 			if(NullfyDamageAndNegate(victim, attacker, inflictor, damage, damagetype, weapon,damagecustom))
+			{
+				Damageaftercalc = 0.0;
 				return Plugin_Handled;	
+			}
 			
 
 			if(OnTakeDamageAbsolutes(victim, attacker, inflictor, damage, damagetype, weapon, GameTime))
+			{
+				Damageaftercalc = 0.0;
 				return Plugin_Handled;	
+			}
 
 #if defined RPG
 			if(OnTakeDamageRpgPartyLogic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime))
+			{
+				Damageaftercalc = 0.0;
 				return Plugin_Handled;	
+			}
 
 			OnTakeDamageRpgDungeonLogic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition,damagecustom, GameTime);
 #endif		
@@ -1311,7 +1324,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 			OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
 			
-			if(attacker <= MaxClients)
+			if(attacker <= MaxClients && attacker > 0)
 				OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon, GuranteedGib);
 		
 			OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
@@ -1321,7 +1334,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 			OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
 
-			if(attacker <= MaxClients)
+			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 				{
@@ -1365,7 +1378,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				}
 			}
 #endif
-			if(attacker <= MaxClients)
+			if(attacker <= MaxClients && attacker > 0)
 			{
 				if(WeaponWasValid)
 				{
@@ -1408,27 +1421,28 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if(damage <= 0.0)
 	{
-		return Plugin_Handled;
+		Damageaftercalc = 0.0;
+		return Plugin_Handled;	
 	}
+	Damageaftercalc = damage;
 	
 	return Plugin_Changed;
 }
 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
-	
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(damage != 0.0 && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if(Damageaftercalc > 0.0 && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
-			GiveRageOnDamage(inflictor, damage);
-			Calculate_And_Display_hp(inflictor, victim, damage, false);
+			GiveRageOnDamage(inflictor, Damageaftercalc);
+			Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
 		}
 		else if(attacker > 0 && attacker <= MaxClients)
 		{
-			GiveRageOnDamage(attacker, damage);
-			Calculate_And_Display_hp(attacker, victim, damage, false);	
+			GiveRageOnDamage(attacker, Damageaftercalc);
+			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
 		}
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 
@@ -1438,7 +1452,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		{
 			event.SetInt("entindex", victim);
 			event.SetInt("health", health);
-			event.SetInt("damageamount", RoundToFloor(damage));
+			event.SetInt("damageamount", RoundToFloor(Damageaftercalc));
 			event.SetBool("crit", (damagetype & DMG_ACID) == DMG_ACID);
 
 			if(attacker > 0 && attacker <= MaxClients)
@@ -1458,7 +1472,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 
 	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
 	if(health <= 0)
-		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
+
+	Damageaftercalc = 0.0;
 }
 
 void GiveRageOnDamage(int client, float damage)

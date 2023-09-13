@@ -37,6 +37,9 @@
 #define PACKAPUNCH_MODEL "models/props_spytech/computer_low.mdl"
 
 #define VILLAGE_MODEL "models/props_rooftop/roof_dish001.mdl"
+#define VILLAGE_MODEL_LIGHTHOUSE "models/props_sunshine/lighthouse_top_skybox.mdl"
+#define VILLAGE_MODEL_MIDDLE "models/props_urban/urban_skybuilding005a.mdl"
+#define VILLAGE_MODEL_REBEL "models/egypt/tent/tent.mdl"
 
 //#define BARRICADE_MODEL "models/props_c17/concrete_barrier001a.mdl"
 #define BARRICADE_MODEL "models/props_gameplay/sign_barricade001a.mdl"
@@ -196,6 +199,8 @@ static ArrayList Village_Effects;
 static int Village_TierExists[3];
 static float f_VillageRingVectorCooldown[MAXENTITIES];
 static float f_VillageSavingResources[MAXENTITIES];
+static int i_VillageModelAppliance[MAXENTITIES];
+static int i_VillageModelApplianceCollisionBox[MAXENTITIES];
 
 //static int gLaser1;
 
@@ -240,6 +245,9 @@ void Building_MapStart()
 	PrecacheModel(PACKAPUNCH_MODEL);
 	PrecacheModel(HEALING_STATION_MODEL);
 	PrecacheModel(VILLAGE_MODEL);
+	PrecacheModel(VILLAGE_MODEL_LIGHTHOUSE);
+	PrecacheModel(VILLAGE_MODEL_MIDDLE);
+	PrecacheModel(VILLAGE_MODEL_REBEL);
 	PrecacheModel(BARRICADE_MODEL);
 	PrecacheModel(ELEVATOR_MODEL);
 	PrecacheModel(SUMMONER_MODEL);
@@ -4420,7 +4428,8 @@ public bool Building_Village(int client, int entity)
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(0.5, Timer_VillageThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT); //No custom anims
-	
+	i_VillageModelAppliance[entity] = 0;
+	i_VillageModelApplianceCollisionBox[entity] = 0;
 	SetEntProp(entity, Prop_Send, "m_bMiniBuilding", 1);
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 	SDKHook(entity, SDKHook_OnTakeDamage, Building_TakeDamage);
@@ -4468,32 +4477,28 @@ public Action Timer_VillageThink(Handle timer, int ref)
 				//BELOW IS SET ONCE!
 				view_as<CClotBody>(entity).bBuildingIsPlaced = true;
 				Building_Constructed[entity] = true;
-				
-				if(Village_Flags[owner] & VILLAGE_500)
-				{
-					SetEntityModel(entity, "models/buildables/sentry1.mdl");
-				}
-				else
-				{
-					static const float minbounds[3] = {-10.0, -20.0, 0.0};
-					static const float maxbounds[3] = {10.0, 20.0, -2.0};
-					SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
-					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-					
-					SetEntityModel(entity, VILLAGE_MODEL);
-				}
+				BuildingVillageChangeModel(owner, entity);
 			}
 			
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		}
 		else
 		{
+			i_VillageModelAppliance[entity] = 0;
+			i_VillageModelApplianceCollisionBox[entity] = 0;
 			Building_Constructed[entity] = false;
 		}
 	}
 	
 	
 	i_ExtraPlayerPoints[owner] += 2; //Static low point increace.
+	if(IsValidEntity(entity))
+	{
+		if(Building_Constructed[entity])
+		{
+			BuildingVillageChangeModel(owner, entity);
+		}
+	}
 	
 	int effects = Village_Flags[owner];
 	
@@ -4530,7 +4535,12 @@ public Action Timer_VillageThink(Handle timer, int ref)
 	
 	if(mounted)
 		range *= 0.55;
-	
+
+	int points = VillagePointsLeft(owner);
+	if(points < 0)
+	{
+		range = 0.0;
+	}
 	BuildingApplyDebuffyToEnemiesInRange(owner, range, mounted);
 
 	range = range * range;
@@ -4920,8 +4930,8 @@ static const int VillageCosts[] =
 	2,	// 2	- B1 R0
 	2,	// 4	- B1 R2
 	6,	// 10	- B3 R3
-	14,	// 24	- B5 R5
-	20,	// 44	- B6 R5
+	12,	// 24	- B5 R5
+	18,	// 44	- B6 R5
 };
 
 static int VillagePointsLeft(int client)
@@ -4963,7 +4973,14 @@ static void VillageUpgradeMenu(int client, int viewer)
 	
 	SetGlobalTransTarget(viewer);
 	int points = VillagePointsLeft(client);
-	menu.SetTitle("%s\n \nBananas: %d (%s)\n ", TranslateItemName(viewer, "Buildable Village", ""), points, TranslateItemName(viewer, "Building Upgrades", ""));
+	if(points >= 0)
+	{
+		menu.SetTitle("%s\n \nBananas: %d (%s)\n ", TranslateItemName(viewer, "Buildable Village", ""), points, TranslateItemName(viewer, "Building Upgrades", ""));
+	}
+	else
+	{
+		menu.SetTitle("%s\n \nYoure in Banana dept! Buffs dont work!: %d (%s)\n ", TranslateItemName(viewer, "Buildable Village", ""), points, TranslateItemName(viewer, "Building Upgrades", ""));	
+	}
 	
 	int paths;
 	if(Village_Flags[client] & VILLAGE_100)
@@ -5116,7 +5133,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [20 Bananas]");
+			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [18 Bananas]");
 			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 20) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 			menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
@@ -5124,7 +5141,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
-		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [14 Bananas]");
+		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [12 Bananas]");
 		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 14) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 	}
@@ -7903,5 +7920,120 @@ void BuildingHordingsRemoval(int entity)
 				i_BuildingRecievedHordings[player.m_iTowerLinked] = false;
 			}			
 		}
+	}
+}
+
+
+void BuildingVillageChangeModel(int owner, int entity)
+{
+	/*
+		Explained:
+		Buildings, or sentries in this regard have some special rule where their model scale makes their bounding box scale with it
+		thats why we have all this extra shit.
+
+
+	*/
+	int ModelTypeApplied = i_VillageModelAppliance[entity];
+	int collisionboxapplied = i_VillageModelApplianceCollisionBox[entity];
+	if(ModelTypeApplied == 1 && collisionboxapplied != 1)
+	{
+		i_VillageModelApplianceCollisionBox[entity] = 1;
+		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		float minbounds[3] = {-20.0, -20.0, 0.0};
+		float maxbounds[3] = {20.0, 20.0, 30.0};
+		for(int repeat; repeat < 3; repeat++)
+		{
+			minbounds[repeat] /= ModelScaleMulti;
+			maxbounds[repeat] /= ModelScaleMulti;
+		}
+		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
+	else if(ModelTypeApplied == 2 && collisionboxapplied != 2)
+	{
+		i_VillageModelApplianceCollisionBox[entity] = 2;
+		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		float minbounds[3] = {-20.0, -20.0, 0.0};
+		float maxbounds[3] = {20.0, 20.0, 30.0};
+		for(int repeat; repeat < 3; repeat++)
+		{
+			minbounds[repeat] /= ModelScaleMulti;
+			maxbounds[repeat] /= ModelScaleMulti;
+		}
+		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
+	else if(ModelTypeApplied == 3 && collisionboxapplied != 3)
+	{
+		i_VillageModelApplianceCollisionBox[entity] = 3;
+		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		float minbounds[3] = {-20.0, -20.0, 0.0};
+		float maxbounds[3] = {20.0, 20.0, 30.0};
+		for(int repeat; repeat < 3; repeat++)
+		{
+			minbounds[repeat] /= ModelScaleMulti;
+			maxbounds[repeat] /= ModelScaleMulti;
+		}
+		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
+	else if(ModelTypeApplied == 4 && collisionboxapplied != 4)
+	{
+		i_VillageModelApplianceCollisionBox[entity] = 4;
+		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		float minbounds[3] = {-20.0, -20.0, 0.0};
+		float maxbounds[3] = {20.0, 20.0, 30.0};
+		for(int repeat; repeat < 3; repeat++)
+		{
+			minbounds[repeat] /= ModelScaleMulti;
+			maxbounds[repeat] /= ModelScaleMulti;
+		}
+		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+
+		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
+
+	if(Village_Flags[owner] & VILLAGE_300 && ModelTypeApplied != 1)
+	{
+		i_VillageModelAppliance[entity] = 1;
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.4);
+		SetEntityModel(entity, VILLAGE_MODEL_REBEL);
+	}
+	else if(Village_Flags[owner] & VILLAGE_030 && ModelTypeApplied != 2)
+	{
+		i_VillageModelAppliance[entity] = 2;
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.4);
+		SetEntityModel(entity, VILLAGE_MODEL_MIDDLE);
+	}
+	else if(Village_Flags[owner] & VILLAGE_003 && ModelTypeApplied != 3)
+	{
+		i_VillageModelAppliance[entity] = 3;
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 1.5);
+		SetEntityModel(entity, VILLAGE_MODEL_LIGHTHOUSE);
+	}
+	else if(ModelTypeApplied == 0)
+	{
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
+		i_VillageModelAppliance[entity] = 4;
+		SetEntityModel(entity, VILLAGE_MODEL);
 	}
 }

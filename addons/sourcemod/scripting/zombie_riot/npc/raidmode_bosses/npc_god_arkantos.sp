@@ -1088,9 +1088,6 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 		static float ThrowPos[3]; 
 		int TargetToLungeTo = GetClosestTarget(npc.index,_,_,_,_,_,_,true); //only visible targets!
 		float Range = 150.0;
-
-		if(LastMann)
-			Range = 85.0; //nerf range alot so the lastman can actuall dodge.
 		
 		if(IsValidEnemy(npc.index,TargetToLungeTo))
 		{
@@ -1238,6 +1235,12 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 							i_LaserEntityIndex[EnemyLoop] = EntIndexToEntRef(laser);
 							//Im seeing a new target, relocate laser particle.
 						}
+						else
+						{
+							int laser = EntRefToEntIndex(i_LaserEntityIndex[EnemyLoop]);
+							SetEntityRenderColor(laser, red, green, blue, 255);
+							SetEntityRenderMode(laser, RENDER_TRANSCOLOR);
+						}
 					}
 					else
 					{
@@ -1299,6 +1302,12 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 					
 								i_LaserEntityIndex[entity_close] = EntIndexToEntRef(laser);
 								//Im seeing a new target, relocate laser particle.
+							}
+							else
+							{
+								int laser = EntRefToEntIndex(i_LaserEntityIndex[entity_close]);
+								SetEntityRenderColor(laser, red, green, blue, 255);
+								SetEntityRenderMode(laser, RENDER_TRANSCOLOR);
 							}
 						}
 						else

@@ -587,21 +587,30 @@ public MRESReturn DHook_FireballExplodePre(int entity)
 	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
 	Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true,_,_,FireBallBonusDamage);
 #endif
-
+	
 #if defined ZR
-		int i, weapon;
-		while(TF2_GetItem(owner, weapon, i))
+	int weapon;
+	weapon = GetEntPropEnt(entity, Prop_Send, "m_hLauncher");
+	if(f_CustomGrenadeDamage[entity] > 0.0)
+	{
+		Explode_Logic_Custom(f_CustomGrenadeDamage[entity], owner, entity, weapon, _, _, _, _, _, _, true);
+	}
+	else
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
 		{
-			if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_FIRE_WAND)
 			{
 				float damage = 300.0;
 				
-				damage *= Attributes_Get(weapon, 410, 1.0);
+				damage *= Attributes_Get(weapon1, 410, 1.0);
 				
-				Explode_Logic_Custom(damage, owner, entity, weapon, _, _, _, _, _, _, true);
+				Explode_Logic_Custom(damage, owner, entity, weapon1, _, _, _, _, _, _, true);
 				break;
 			}
 		}
+	}
 #endif
 	}
 

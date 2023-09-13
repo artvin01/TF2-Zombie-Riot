@@ -814,6 +814,13 @@ char g_CombineSoldierStepSound[][] = {
 	"npc/combine_soldier/gear6.wav",
 };
 
+char g_DefaultStepSound[][] = {
+	"player/footsteps/concrete1.wav",
+	"player/footsteps/concrete3.wav",
+	"player/footsteps/concrete2.wav",
+	"player/footsteps/concrete4.wav",
+};
+
 char g_CombineMetroStepSound[][] = {
 	"npc/metropolice/gear1.wav",
 	"npc/metropolice/gear2.wav",
