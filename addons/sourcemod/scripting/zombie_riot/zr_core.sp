@@ -122,7 +122,8 @@ enum
 	WEAPON_HAZARD_STABILIZED = 51,
 	WEAPON_HAZARD_DEMI = 52,
 	WEAPON_HAZARD_PERFECT = 53,
-	WEAPON_FIRE_WAND = 54
+	WEAPON_FIRE_WAND = 54,
+	WEAPON_CASINO = 55
 }
 
 ArrayList SpawnerList;
@@ -417,6 +418,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
+#include "zombie_riot/custom/weapon_casino.sp"
 
 void ZR_PluginLoad()
 {
@@ -546,6 +548,7 @@ void ZR_MapStart()
 	Hazard_Map_Precache();
 	Judge_Map_Precache();
 	Reset_stats_Mlynar_Global();
+//	Reset_stats_Casino_Global();
 	Blemishine_Map_Precache();
 	
 	Waves_MapStart();
@@ -615,6 +618,7 @@ void ZR_MapStart()
 	Reset_stats_Yamato_Global();	//acts as a reset/map precache
 	QuincyMapStart();
 	Fantasy_Blade_MapStart();
+	Casino_MapStart();
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
