@@ -1210,6 +1210,8 @@ void Store_PackMenu(int client, int index, int entity, int owner)
 					{
 						if(item.GetItemInfo(item.Owned[client] + i, info) && info.Cost)
 						{
+							ItemCostPap(client, item, info, info.Cost);
+
 							FormatEx(data, sizeof(data), "%d;%d;%d;%d", index, item.Owned[client] + i, entity, userid);
 							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 							menu.AddItem(data, buffer, cash < info.Cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -1261,93 +1263,97 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				int owner = -1;
 				
 				ItemInfo info;
-				if(item.GetItemInfo(values[1], info) && info.Cost && (CurrentCash-CashSpent[client]) >= info.Cost)
+				if(item.GetItemInfo(values[1], info) && info.Cost)
 				{
-					CashSpent[client] += info.Cost;
-					CashSpentTotal[client] += info.Cost;
-					item.Owned[client] = values[1] + 1;
-					if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+					ItemCostPap(client, item, info, info.Cost);
+					if((CurrentCash-CashSpent[client]) >= info.Cost)
 					{
-						item.Sell[client] = 0;
-					}
-					item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-					item.BuyWave[client] = -1;
-					StoreItems.SetArray(values[0], item);
-					
-					TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
-					
-					SetDefaultHudPosition(client);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
-					Store_ApplyAttribs(client);
-					Store_GiveAll(client, GetClientHealth(client));
-					owner = GetClientOfUserId(values[3]);
-					if(owner && !Rogue_Mode())
-					{
-						int HigherTechAdvancedClient;
-						int HigherTechAdvancedCount;
-						HigherTechAdvancedClient = owner;
-						HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
-						char buffer_pap[36];
-						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+						CashSpent[client] += info.Cost;
+						CashSpentTotal[client] += info.Cost;
+						item.Owned[client] = values[1] + 1;
+						if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
 						{
-							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-							if(IsValidEntity(entity))
+							item.Sell[client] = 0;
+						}
+						item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+						item.BuyWave[client] = -1;
+						StoreItems.SetArray(values[0], item);
+						
+						TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
+						
+						SetDefaultHudPosition(client);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+						Store_ApplyAttribs(client);
+						Store_GiveAll(client, GetClientHealth(client));
+						owner = GetClientOfUserId(values[3]);
+						if(owner && !Rogue_Mode())
+						{
+							int HigherTechAdvancedClient;
+							int HigherTechAdvancedCount;
+							HigherTechAdvancedClient = owner;
+							HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
+							char buffer_pap[36];
+							for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 							{
-								GetEntPropString(entity, Prop_Data, "m_iName", buffer_pap, sizeof(buffer_pap));
-								if(!StrContains(buffer_pap, "zr_packapunch", false))
+								int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+								if(IsValidEntity(entity))
 								{
-									int ownerTech = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-									if(IsValidClient(ownerTech) && ownerTech != owner)
+									GetEntPropString(entity, Prop_Data, "m_iName", buffer_pap, sizeof(buffer_pap));
+									if(!StrContains(buffer_pap, "zr_packapunch", false))
 									{
-										int TechCount;
-										TechCount = MaxSupportBuildingsAllowed(ownerTech, false);
-										if(HigherTechAdvancedCount < TechCount)
+										int ownerTech = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+										if(IsValidClient(ownerTech) && ownerTech != owner)
 										{
-											HigherTechAdvancedClient = ownerTech;
-											HigherTechAdvancedCount = TechCount;
+											int TechCount;
+											TechCount = MaxSupportBuildingsAllowed(ownerTech, false);
+											if(HigherTechAdvancedCount < TechCount)
+											{
+												HigherTechAdvancedClient = ownerTech;
+												HigherTechAdvancedCount = TechCount;
+											}
 										}
 									}
 								}
 							}
-						}
-						if(owner == HigherTechAdvancedClient || HigherTechAdvancedClient == client)
-						{
-							if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
+							if(owner == HigherTechAdvancedClient || HigherTechAdvancedClient == client)
 							{
-								Pack_A_Punch_Machine_money_limit[owner][client] += 10;
-								GiveCredits(owner, 400, true);
-								Resupplies_Supplied[owner] += 40;
-								SetDefaultHudPosition(owner, _, _, _, 5.0);
-								SetGlobalTransTarget(owner);
-								ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
+								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
+								{
+									Pack_A_Punch_Machine_money_limit[owner][client] += 10;
+									GiveCredits(owner, 400, true);
+									Resupplies_Supplied[owner] += 40;
+									SetDefaultHudPosition(owner, _, _, _, 5.0);
+									SetGlobalTransTarget(owner);
+									ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
+								}
+							}
+							else
+							{
+								if(Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] < 50)
+								{
+									Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] += 7;
+									GiveCredits(HigherTechAdvancedClient, 300, true);
+									Resupplies_Supplied[HigherTechAdvancedClient] += 30;
+									SetDefaultHudPosition(HigherTechAdvancedClient, _, _, _, 5.0);
+									SetGlobalTransTarget(HigherTechAdvancedClient);
+									ShowSyncHudText(HigherTechAdvancedClient, SyncHud_Notifaction, "%t", "Pap Machine Used Me");
+								}
+								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
+								{
+									Pack_A_Punch_Machine_money_limit[owner][client] += 3;
+									GiveCredits(owner, 100, true);
+									Resupplies_Supplied[owner] += 10;
+									SetDefaultHudPosition(owner, _, _, _, 5.0);
+									SetGlobalTransTarget(owner);
+									ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used But Another");
+								}							
 							}
 						}
 						else
 						{
-							if(Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] < 50)
-							{
-								Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] += 7;
-								GiveCredits(HigherTechAdvancedClient, 300, true);
-								Resupplies_Supplied[HigherTechAdvancedClient] += 30;
-								SetDefaultHudPosition(HigherTechAdvancedClient, _, _, _, 5.0);
-								SetGlobalTransTarget(HigherTechAdvancedClient);
-								ShowSyncHudText(HigherTechAdvancedClient, SyncHud_Notifaction, "%t", "Pap Machine Used Me");
-							}
-							if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
-							{
-								Pack_A_Punch_Machine_money_limit[owner][client] += 3;
-								GiveCredits(owner, 100, true);
-								Resupplies_Supplied[owner] += 10;
-								SetDefaultHudPosition(owner, _, _, _, 5.0);
-								SetGlobalTransTarget(owner);
-								ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used But Another");
-							}							
+							owner = -1;
 						}
-					}
-					else
-					{
-						owner = -1;
 					}
 				}
 				
@@ -5791,8 +5797,11 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = item.MaxCost;
 	}
+
 	if(Rogue_Mode())
 	{
+		Rogue_Curse_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller_First || item.NPCSeller));
+
 		ItemInfo info;
 		if(item.GetItemInfo(0, info))
 		{
@@ -5827,6 +5836,12 @@ static int ItemSell(int base, int discount)
 	}
 
 	return RoundToCeil(cost * ratio);
+}
+
+static stock void ItemCostPap(int client, const Item item, const ItemInfo info, int &cost)
+{
+	if(Rogue_Mode())
+		Rogue_Curse_PackPriceMulti(cost);
 }
 
 bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool Is_Reload_Button = false)
