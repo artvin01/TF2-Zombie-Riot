@@ -270,7 +270,6 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			}
 			else
 			{
-				ApplyTempAttrib(weapon, 2, 1.05, 60.0);
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor damage boost]!");
@@ -295,7 +294,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 6, 0.8, 60.0);
+						ApplyTempAttrib(weapon, 6, 0.9, 60.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
@@ -304,7 +303,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 6, 0.75, 60.0);
+						ApplyTempAttrib(weapon, 6, 0.85, 60.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
@@ -313,7 +312,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 6, 0.70, 60.0);
+						ApplyTempAttrib(weapon, 6, 0.80, 60.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
@@ -322,7 +321,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 6, 0.65, 60.0);
+						ApplyTempAttrib(weapon, 6, 0.75, 60.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Minor firing speed boost] for 60 seconds!");
@@ -333,7 +332,6 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			}
 			else
 			{
-				ApplyTempAttrib(weapon, 6, 0.95, 60.0);
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor firing speed boost]!");
@@ -392,6 +390,23 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						fl_minor_reload_cooldown[client] = GameTime + 60.0;
 						ClientCommand(client, "playgamesound player/crit_hit.wav");
 					}
+				}
+			}
+			else
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor reloading speed]!");
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
+				if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
+				{
+					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
+				}
+				
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.0;
+				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
+				{
+					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
 				}
 			}
 		}
@@ -507,7 +522,6 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			}
 			else
 			{
-				ApplyTempAttrib(weapon, 97, 0.95, 60.0);
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Minor clip size boost]!");
@@ -587,7 +601,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			}
 			else
 			{
-				ApplyTempAttrib(weapon, 2, 1.2, 120.0);
+				ApplyTempAttrib(weapon, 2, 1.1, 120.0);
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major damage boost]!");
@@ -601,7 +615,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					case 0:
 					{
-						ApplyTempAttrib(weapon, 6, 0.6, 120.0);
+						ApplyTempAttrib(weapon, 6, 0.75, 120.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Major firing speed boost] for 120 seconds!");
@@ -610,7 +624,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 1:
 					{
-						ApplyTempAttrib(weapon, 6, 0.55, 120.0);
+						ApplyTempAttrib(weapon, 6, 0.7, 120.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Major firing speed boost] for 120 seconds!");
@@ -619,7 +633,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 2:
 					{
-						ApplyTempAttrib(weapon, 6, 0.50, 120.0);
+						ApplyTempAttrib(weapon, 6, 0.65, 120.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Major firing speed boost] for 120 seconds!");
@@ -628,7 +642,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					}
 					case 3:
 					{
-						ApplyTempAttrib(weapon, 6, 0.45, 120.0);
+						ApplyTempAttrib(weapon, 6, 0.6, 120.0);
 						SetDefaultHudPosition(client);
 						SetGlobalTransTarget(client);
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Major firing speed boost] for 120 seconds!");
@@ -639,7 +653,6 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			}
 			else
 			{
-				ApplyTempAttrib(weapon, 6, 0.9, 120.0);
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major firing speed boost]!");
@@ -747,7 +760,8 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			}
 			else
 			{
-				ApplyTempAttrib(weapon, 2, 1.2, 120.0);
+				ApplyTempAttrib(weapon, 2, 1.1, 120.0);
+				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You already have [Major perfect accuracy]!");
 			}
@@ -830,7 +844,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					case 0:
 					{
 						ApplyTempAttrib(weapon, 2, 1.325, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.77, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.8, 90.0);
 						ApplyTempAttrib(weapon, 97, 0.77, 90.0);
 						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
 						ApplyTempAttrib(weapon, 4, 1.3, 90.0);
@@ -853,7 +867,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					case 1:
 					{
 						ApplyTempAttrib(weapon, 2, 1.4125, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.725, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.8, 90.0);
 						ApplyTempAttrib(weapon, 97, 0.725, 90.0);
 						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
 						ApplyTempAttrib(weapon, 4, 1.5, 90.0);
@@ -876,7 +890,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					case 2:
 					{
 						ApplyTempAttrib(weapon, 2, 1.45, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.6725, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.75, 90.0);
 						ApplyTempAttrib(weapon, 97, 0.6725, 90.0);
 						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
 						ApplyTempAttrib(weapon, 4, 1.7, 90.0);
@@ -899,7 +913,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 					case 3:
 					{
 						ApplyTempAttrib(weapon, 2, 1.525, 90.0);
-						ApplyTempAttrib(weapon, 6, 0.625, 90.0);
+						ApplyTempAttrib(weapon, 6, 0.75, 90.0);
 						ApplyTempAttrib(weapon, 97, 0.625, 90.0);
 						ApplyTempAttrib(weapon, 106, 0.1, 90.0);
 						ApplyTempAttrib(weapon, 4, 1.9, 90.0);
