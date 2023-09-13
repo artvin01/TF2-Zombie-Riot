@@ -949,8 +949,8 @@ void Waves_Progress()
 			if(Is_a_boss == 2)
 			{
 				Raidboss_Clean_Everyone();
-				ReviveAll(true);
 				Music_EndLastmann();
+				ReviveAll(true);
 				CheckAlivePlayers();
 				WaveEndLogicExtra();
 			}
@@ -1422,7 +1422,7 @@ void Waves_Progress()
 				Cooldown = GetGameTime() + 30.0;
 				
 				InSetup = true;
-				
+
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
