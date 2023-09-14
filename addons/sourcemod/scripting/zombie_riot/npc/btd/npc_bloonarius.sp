@@ -205,7 +205,7 @@ methodmap Bloonarius < CClotBody
 			AcceptEntityInput(entity, "RoundWin");
 			Music_RoundEnd(entity);
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			return -1;
+			return view_as<Bloonarius>(-1);
 		}
 
 		bool elite = StrContains(data, "classic") != -1;
@@ -423,6 +423,9 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);			
+		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
 		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
 
@@ -495,7 +498,7 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;
-			view_as<CClotBody>(npc).m_bStaticNPC = elite;
+			view_as<CClotBody>(spawn_index).m_bStaticNPC = elite;
 		}
 	}
 	return Plugin_Continue;
