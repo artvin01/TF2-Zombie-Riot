@@ -7361,6 +7361,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #if defined ZR
 public void Raidboss_Clean_Everyone()
 {
+	if(VIPBuilding_Active())
+		return;
+		
 	int base_boss;
 	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 	{

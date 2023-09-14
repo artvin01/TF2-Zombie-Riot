@@ -38,18 +38,18 @@ static const float BloonSpeeds[] =
 static const int BloonHealth[] =
 {
 //	Health	Type		RGB	Multi
-	100,	// Red		1
-	200,	// Blue		2
-	300,	// Green	3
-	400,	// Yellow	4
-	500,	// Pink		5	x1
-	1100,	// Black	11	x6
-	1100,	// White	11	x6
-	1100,	// Purple	11	x6
-	2300,	// Lead		23	x13
-	2300,	// Zebra	23	x13
-	4700,	// Rainbow	47	x27
-	10400	// Ceramic	104	x64
+	200,	// Red		1
+	400,	// Blue		2
+	600,	// Green	3
+	800,	// Yellow	4
+	1000,	// Pink		5	x1
+	2200,	// Black	11	x6
+	2200,	// White	11	x6
+	2200,	// Purple	11	x6
+	4600,	// Lead		23	x13
+	4600,	// Zebra	23	x13
+	9400,	// Rainbow	47	x27
+	20800	// Ceramic	104	x64
 };
 
 static const char Type[] = "12345bwpl789";

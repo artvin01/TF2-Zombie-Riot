@@ -2253,7 +2253,13 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
-		if (!IsValidEntity(i_ObjectsSpawners[i]) || i_ObjectsSpawners[i] == 0)
+		if (i_ObjectsSpawners[i] == entity)
+			return;
+	}
+
+	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if (!IsValidEntity(i_ObjectsSpawners[i]))
 		{
 			Spawner_AddToArray(entity);
 			i_ObjectsSpawners[i] = entity;

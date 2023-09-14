@@ -498,7 +498,10 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 				SpawnerList.GetArray(index, Spawner);
 				if((Spawner.IsBaseBoss || !GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled")) && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
 				{
-					Active_Spawners += 1;
+					if(!Spawner.IsBaseBoss)
+					{
+						Active_Spawners += 1;
+					}
 					if(Spawner.f_SpawnerCooldown < GameTime)
 					{
 						list.Push(entity_Spawner);
@@ -657,7 +660,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						SpawnerList.GetArray(index, Spawner);
 						if(Active_Spawners_Calculate == 2.0)
 						{
-							Spawner.f_SpawnerCooldown = GameTime+(0.9 / MultiGlobal);
+							Spawner.f_SpawnerCooldown = GameTime+(0.65 / MultiGlobal);
 
 						}
 						else
