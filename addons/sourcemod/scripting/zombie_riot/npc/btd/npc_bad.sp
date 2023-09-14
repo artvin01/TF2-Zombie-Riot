@@ -17,18 +17,13 @@ static const char SoundZomgPop[][] =
 
 static float MoabSpeed()
 {
-	/*if(CurrentRound < 80)
+	if(CurrentRound < 80)
 		return 150.0;
 	
 	if(CurrentRound < 100)
 		return 150.0 * (1.0 + (CurrentRound - 79) * 0.02);
 	
-	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);*/
-	
-	if(CurrentRound < 60)
-		return 150.0;
-	
-	return 150.0 * (1.0 + (CurrentRound - 50) * 0.02);
+	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);
 }
 
 static int MoabHealth(bool fortified)
@@ -46,7 +41,7 @@ static int MoabHealth(bool fortified)
 	if(fortified)
 		value *= 2.0;
 	
-	/*if(CurrentRound > 123)
+	if(CurrentRound > 123)
 	{
 		value *= 1.05 + (CurrentRound - 106) * 0.15;
 	}
@@ -57,15 +52,6 @@ static int MoabHealth(bool fortified)
 	else if(CurrentRound > 79)
 	{
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
-	}*/
-	
-	if(CurrentRound > 83)
-	{
-		value *= 1.05 + (CurrentRound - 66) * 0.15;
-	}
-	else if(CurrentRound > 59)
-	{
-		value *= 1.0 + (CurrentRound - 31) * 0.05;
 	}
 	
 	return RoundFloat(value);

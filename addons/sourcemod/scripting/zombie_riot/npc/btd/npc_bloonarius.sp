@@ -62,14 +62,17 @@ static float MoabSpeed(bool elite)
 
 static int CurrentTier(bool elite)
 {
-	int round = CurrentRound - 14;
-	
-	if(!elite)	// 40,60,80,100 -> 15,30,45,60
+	int round;
+
+	if(elite)	// 39,59,79,99
 	{
-	//	round = (round - 20) * 3 / 4;
+		round = (CurrentRound - 38) / 20;
 	}
-	
-	round /= 15;
+	else	// 14,29,44,59
+	{
+		round = (CurrentRound - 13) / 15;
+	}
+
 	if(round > 3)
 	{
 		round = 3;
@@ -347,7 +350,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(entity != npc.index && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[entity] && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[entity] && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
 				SDKHooks_TakeDamage(entity, 0, 0, 99999999.0, DMG_BLAST);
 				SDKHooks_TakeDamage(entity, 0, 0, 99999999.0, DMG_BLAST);
