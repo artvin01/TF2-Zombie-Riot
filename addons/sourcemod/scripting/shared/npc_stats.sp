@@ -55,6 +55,8 @@ int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
 static float f_DelayComputingOfPath[MAXENTITIES];
+static float f_PredictPos[MAXENTITIES][3];
+static float f_PredictDuration[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -207,6 +209,8 @@ void OnMapStart_NPC_Base()
 	Zero(b_EntityInCrouchSpot);
 	Zero(b_NpcResizedForCrouch);
 	Zero(b_PlayerIsInAnotherPart);
+	Zero(f_PredictDuration);
+	Zero2(f_PredictPos);
 	
 	NPC_MapStart();
 }
@@ -6240,7 +6244,17 @@ public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle h
 	return MRES_Supercede; 
 }
 
-stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0)
+stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
+{
+	if(!ignore && f_PredictDuration[subject] > GetGameTime())
+	{
+		return f_PredictPos[subject];
+	}
+	f_PredictPos[subject] = PredictSubjectPositionInternal(npc, subject, Extra_lead);
+	f_PredictDuration[subject] = GetGameTime() + 0.05;
+	return f_PredictPos[subject];
+}
+stock float[] PredictSubjectPositionInternal(CClotBody npc, int subject, float Extra_lead = 0.0)
 {
 	float botPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", botPos);
@@ -6258,6 +6272,12 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		return subjectPos;
 	}
 #endif
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	if(MovementSpreadSpeedTooLow(SubjectAbsVelocity))
+	{
+		return subjectPos;
+	}
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
 	to[2] = 0.0;
@@ -6280,8 +6300,6 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	float leadTime = (0.1 + Extra_lead) + ( range / ( npc.GetRunSpeed() + 0.0001 ) );
 	
 	// estimate amount to lead the subject	
-	float SubjectAbsVelocity[3];
-	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 	float lead[3];	
 	lead[0] = leadTime * SubjectAbsVelocity[0];
 	lead[1] = leadTime * SubjectAbsVelocity[1];
@@ -6324,12 +6342,7 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 		}
 	}
 	
-		
-//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
-//	TE_SendToAll();
-	
-	CNavArea leadArea = TheNavMesh.GetNearestNavArea( pathTarget );
+	CNavArea leadArea = TheNavMesh.GetNearestNavArea(pathTarget, false, 100.0);
 	
 	
 	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
@@ -6346,13 +6359,10 @@ stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lea
 	{
 		TR_GetEndPosition(pathTarget, trace);
 	}
-//	TE_SetupBeamPoints(botPos, pathTarget, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({0, 0, 255, 255}), 30);
-//	TE_SendToAll();
-	
 	delete trace;
 	
 
-	pathTarget[2] += 20.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
+	pathTarget[2] += 5.0; //Clip them up, minimum crouch level preferred, or else the bots get really confused and sometimees go otther ways if the player goes up or down somewhere, very thin stairs break these bots.
 	
 	return pathTarget;
 }
@@ -8584,7 +8594,7 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 
 void RemoveNpcFromEnemyList(int npc)
 {
-	GetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+	SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
 	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 	{
@@ -8598,4 +8608,22 @@ void RemoveNpcFromEnemyList(int npc)
 			}
 		}
 	}	
+}
+
+bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
+{
+	static float SubjectAbsVel[3];
+	SubjectAbsVel = SubjectAbsVelocity;
+	for(int Repeat; Repeat <3; Repeat ++)
+	{
+		if(SubjectAbsVel[Repeat] < 0.0)
+		{
+			SubjectAbsVel[Repeat] *= -1.0;
+		}
+	}
+	if(SubjectAbsVel[0] <= 20.0 && SubjectAbsVel[1] == 20.0 && SubjectAbsVel[2] == 20.0)
+	{
+		return true;
+	}
+	return false;
 }

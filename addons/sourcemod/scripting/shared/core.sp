@@ -17,6 +17,7 @@
 #include <filenetwork>
 #endif
 #include <queue>
+#include <profiler>
 
 #pragma dynamic    131072
 
