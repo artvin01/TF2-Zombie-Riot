@@ -661,7 +661,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						if(Active_Spawners_Calculate == 2.0)
 						{
 							Spawner.f_SpawnerCooldown = GameTime+(0.65 / MultiGlobal);
-
 						}
 						else
 						{
