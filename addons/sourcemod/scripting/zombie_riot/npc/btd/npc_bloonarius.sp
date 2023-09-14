@@ -54,7 +54,7 @@ static int SpawnMulti(int count, int players, bool elite)
 
 static float MoabSpeed(bool elite)
 {
-	if(CurrentRound < (elite ? 29 : 59))
+	if(CurrentRound < (elite ? 59 : 29))
 		return 62.5;
 	
 	return 75.0;
@@ -88,25 +88,6 @@ static void SetBossBloonPower(int players, bool elite)
 {
 	if(elite)
 	{
-		if(CurrentRound > 58)
-		{
-			RaidModeScaling = 80.0 / 3.0;
-		}
-		else if(CurrentRound > 43)
-		{
-			RaidModeScaling = 20.0 / 3.0;
-		}
-		else if(CurrentRound > 28)
-		{
-			RaidModeScaling = 1.0;
-		}
-		else
-		{
-			RaidModeScaling = 1.0 / 6.0;
-		}
-	}
-	else
-	{
 		if(CurrentRound > 98)
 		{
 			RaidModeScaling = 10.0;
@@ -132,6 +113,25 @@ static void SetBossBloonPower(int players, bool elite)
 		else if(CurrentRound > 79)
 		{
 			RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
+		}
+	}
+	else
+	{
+		if(CurrentRound > 58)
+		{
+			RaidModeScaling = 80.0 / 3.0;
+		}
+		else if(CurrentRound > 43)
+		{
+			RaidModeScaling = 20.0 / 3.0;
+		}
+		else if(CurrentRound > 28)
+		{
+			RaidModeScaling = 1.0;
+		}
+		else
+		{
+			RaidModeScaling = 1.0 / 6.0;
 		}
 	}
 	
