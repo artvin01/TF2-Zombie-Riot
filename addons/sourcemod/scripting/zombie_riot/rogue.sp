@@ -269,8 +269,8 @@ static int CurrentIngots;
 static int BonusLives;
 static int BattleIngots;
 
-static int CurseOne;
-static int CurseTwo;
+static int CurseOne = -1;
+static int CurseTwo = -1;
 static int ExtraStageCount;
 
 // Rogue Items
