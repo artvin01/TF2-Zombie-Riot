@@ -866,6 +866,8 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				
 				i_maxfirerockets[npc.index] = 100;
 				
+				fl_attack_timeout[npc.index] = 1.0;
+				
 				fl_LifelossReload[npc.index] = 0.3;
 				
 				npc.m_flRangedArmor = 1.0;
@@ -1229,6 +1231,8 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		
 		i_maxfirerockets[npc.index] =25;	//Buff's the clipsize
 		
+		fl_attack_timeout[npc.index] = 1.5;
+		
 		fl_LifelossReload[npc.index] = 0.8;	//Buff's the reload speed.
 		
 		fl_move_speed[npc.index] = 270.0;	//Buff's movement speed.
@@ -1288,6 +1292,9 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		
 		i_maxfirerockets[npc.index] =40;
 		
+		fl_attack_timeout[npc.index] = 1.5;
+		
+		
 		fl_LifelossReload[npc.index] = 0.75;
 		
 		fl_move_speed[npc.index] = 275.0;
@@ -1343,6 +1350,8 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		npc.m_flReloadIn = GetGameTime(npc.index);
 		
 		i_maxfirerockets[npc.index] = 65;
+		
+		fl_attack_timeout[npc.index] = 1.5;
 		
 		fl_move_speed[npc.index] = 280.0;
 		
@@ -1417,6 +1426,8 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		b_Are_we_reloading[npc.index]=true;
 		
 		npc.m_flReloadIn = GetGameTime(npc.index);
+		
+		fl_attack_timeout[npc.index] = 1.5;
 		
 		float charge=6.0;	//Charge time of blitzlight MUST be set here
 		float timer=20.0;	//Duration of blitzlight MUST be set here
