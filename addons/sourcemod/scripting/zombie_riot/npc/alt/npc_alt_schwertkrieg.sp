@@ -455,6 +455,8 @@ public void Schwertkrieg_ClotThink(int iNPC)
 			else
 				Schwertkrieg_Speed=315.0;
 			//Target close enough to hit
+			
+			npc.StartPathing();
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
@@ -528,11 +530,6 @@ public void Schwertkrieg_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
 					}
 				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
 			}
 	}
 	else

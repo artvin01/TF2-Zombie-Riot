@@ -67,6 +67,7 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 	"vo/heavy_meleeing07.mp3",
 	"vo/heavy_meleeing08.mp3",
 };
+static float fl_attack_timeout[MAXENTITIES];
 //All the funny static things.	//Fast1	//this thing is likely unorganised at this point, god knows how it works at this point?, unless im retarded
 //Combo system
 static int i_kahml_combo[MAXENTITIES];	//which weapon on combo is being used
@@ -551,11 +552,12 @@ public void Kahmlstein_ClotThink(int iNPC)
 		if(i_kahml_combo[npc.index] == 15 && i_kahml_combo_offest[npc.index] == 5 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{	//necksnap
 			npc.m_flSpeed = 290.0;
-			fl_kahml_main_melee_damage[npc.index] = 500.0 * fl_kahml_galactic_strenght[npc.index];	//so will likely 1 shot most players unless they invest in armour
+			fl_kahml_main_melee_damage[npc.index] = 750.0 * fl_kahml_galactic_strenght[npc.index];	//so will likely 1 shot most players unless they invest in armour
+			fl_attack_timeout[npc.index]=GetGameTime(npc.index) + 2.5;
 			EmitSoundToAll("mvm/mvm_tank_horn.wav");
 			EmitSoundToAll("vo/heavy_domination16.mp3");
 			CPrintToChatAll("{blue}Kahmlstein{default}: {crimson}I Will BREAK YOU");
-			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 10.0;
+			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 12.5;
 			i_kahml_combo_offest[npc.index]++;
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -586,12 +588,13 @@ public void Kahmlstein_ClotThink(int iNPC)
 			fl_kahml_bulletres[npc.index] = 0.1;
 			fl_kahml_meleeres[npc.index] = 0.1;
 			
+			fl_attack_timeout[npc.index] = GetGameTime(npc.index) + 3.5;
 			b_kahml_annihilation[npc.index]=true;
 			b_kahml_annihilation_used[npc.index]=true;
 			i_kahml_combo_offest[npc.index] = 0;
 			i_kahml_combo[npc.index] = 0;
 		
-			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime(npc.index) + 15.0;	
+			fl_kahml_annihilation_reset_timer[npc.index] = GetGameTime(npc.index) + 18.5;	
 		}
 		if(b_kahml_annihilation_used[npc.index] && fl_kahml_annihilation_reset_timer[npc.index] <= GetGameTime(npc.index))
 		{
@@ -622,7 +625,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			
 			fl_kahml_knockback[npc.index] = 0.0;
 			
-			npc.m_flSpeed = 307.5;
+			npc.m_flSpeed = 310.0;
 			
 			fl_kahml_melee_speed[npc.index] = 0.2;
 			
@@ -758,7 +761,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && fl_attack_timeout[npc.index] < GetGameTime(npc.index))
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
@@ -862,9 +865,13 @@ public void Kahmlstein_ClotThink(int iNPC)
 					{
 						//Play attack anim
 						npc.AddGesture("ACT_MP_DEPLOYED_PRIMARY");
-						npc.PlayRangedSound();
-						npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index], 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
+						if(fl_attack_timeout[npc.index] < GetGameTime(npc.index))
+						{
+							npc.PlayRangedSound();
+							npc.FireRocket(vecTarget, fl_kahml_main_melee_damage[npc.index], 2500.0, "models/effects/combineball.mdl", 1.0, EP_NO_KNOCKBACK);
+						}
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.075 / fl_kahml_galactic_strenght[npc.index];
+						
 					}
 				}
 				else
