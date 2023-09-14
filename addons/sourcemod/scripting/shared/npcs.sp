@@ -394,6 +394,8 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		PlayersInGame = 0;
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
+		if(VIPBuilding_Active())
+			limit *= 2;
 
 		float f_limit = Pow(1.14, float(CountPlayersOnRed()));
 		float f_limit_alive = Pow(1.14, float(CountPlayersOnRed(true)));
@@ -425,15 +427,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 
 		PlayersAliveScaling = RoundToNearest(f_limit);
 		
-		if(RoundToNearest(f_limit) >= NPC_HARD_LIMIT)
-			f_limit = float(NPC_HARD_LIMIT);
+		if(RoundToNearest(f_limit) >= MaxNpcEnemyAllowed())
+			f_limit = float(MaxNpcEnemyAllowed());
 
-		if(RoundToNearest(f_limit_alive) >= NPC_HARD_LIMIT)
-			f_limit_alive = float(NPC_HARD_LIMIT);
+		if(RoundToNearest(f_limit_alive) >= MaxNpcEnemyAllowed())
+			f_limit_alive = float(MaxNpcEnemyAllowed());
 			
 		
-		if(PlayersAliveScaling >= NPC_HARD_LIMIT)
-			PlayersAliveScaling = NPC_HARD_LIMIT;
+		if(PlayersAliveScaling >= MaxNpcEnemyAllowed())
+			PlayersAliveScaling = MaxNpcEnemyAllowed();
 
 		LimitNpcs = RoundToNearest(f_limit);
 		
@@ -511,27 +513,28 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	{
 		case 1:
 		{
-			Active_Spawners_Calculate = 1.95;
+			//special rules!
+			Active_Spawners_Calculate = 2.0;
 		}
 		case 2:
 		{
-			Active_Spawners_Calculate = 1.85;
+			Active_Spawners_Calculate = 1.6;
 		}
 		case 3:
 		{
-			Active_Spawners_Calculate = 1.8;
+			Active_Spawners_Calculate = 1.5;
 		}
 		case 4:
 		{
-			Active_Spawners_Calculate = 1.7;
+			Active_Spawners_Calculate = 1.45;
 		}
 		case 5:
 		{
-			Active_Spawners_Calculate = 1.6;
+			Active_Spawners_Calculate = 1.35;
 		}
 		case 6:
 		{
-			Active_Spawners_Calculate = 1.5;
+			Active_Spawners_Calculate = 1.2;
 		}
 	}
 	
@@ -652,7 +655,15 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 					{
 						SpawnerData Spawner;
 						SpawnerList.GetArray(index, Spawner);
-						Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
+						if(Active_Spawners_Calculate == 2.0)
+						{
+							Spawner.f_SpawnerCooldown = GameTime+(0.3 / MultiGlobal);
+
+						}
+						else
+						{
+							Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
+						}
 						SpawnerList.SetArray(index, Spawner);
 					}
 					entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
@@ -3321,4 +3332,14 @@ void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &g
 void GiveProgressDelay(float Time)
 {
 	f_DelayNextWaveStartAdvancing = GetGameTime() + Time;
+}
+
+
+int MaxNpcEnemyAllowed()
+{
+	if(VIPBuilding_Active())
+	{
+		return NPC_HARD_LIMIT * 2;
+	}
+	return NPC_HARD_LIMIT;
 }

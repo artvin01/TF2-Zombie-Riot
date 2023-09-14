@@ -233,6 +233,7 @@ int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 bool b_IsAloneOnServer = false;
 
 ConVar cvarTimeScale;
+ConVar cvar_nbAvoidObstacle;
 ConVar CvarMpSolidObjects; //mp_solidobjects 
 ConVar CvarTfMMMode; // tf_mm_servermode
 ConVar sv_cheats;
@@ -1160,6 +1161,10 @@ public void OnPluginStart()
 	CvarTfMMMode = FindConVar("tf_mm_servermode");
 	if(CvarTfMMMode)
 		CvarTfMMMode.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
+		
+	cvar_nbAvoidObstacle = FindConVar("nb_allow_avoiding");
+	if(cvar_nbAvoidObstacle)
+		cvar_nbAvoidObstacle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	
 	//FindConVar("tf_bot_count").Flags &= ~FCVAR_NOTIFY;
@@ -1255,7 +1260,6 @@ public Action Timer_Temp(Handle timer)
 	{
 		PlayTickSound(false, true);
 	}
-	NPC_SpawnNext(false, false, false);
 //	PlayerIllgalMapCheck();
 #endif
 	
@@ -1404,6 +1408,12 @@ public Action Command_MakeNiko(int client, int args)
 	}
 	return Plugin_Handled;
 }
+
+public void OnGameFrame()
+{
+	NPC_SpawnNext(false, false, false);
+}
+
 public Action Command_PlayViewmodelAnim(int client, int args)
 {
 	//What are you.

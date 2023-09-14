@@ -616,11 +616,11 @@ public void Bloon_ClotThink(int iNPC)
 								{
 									if(npc.m_bFortified)
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 4.2, DMG_CLUB, -1, _, vecTarget);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, vecTarget);
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 3.0, DMG_CLUB, -1, _, vecTarget);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, vecTarget);
 									}
 								}
 								//delete swingTrace;
@@ -753,6 +753,9 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 
 public void Bloon_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
+	if(b_NpcHasDied[victim])
+		return;
+		
 	Bloon npc = view_as<Bloon>(victim);
 	npc.UpdateBloonOnDamage();
 }

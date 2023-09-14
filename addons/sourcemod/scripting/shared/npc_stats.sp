@@ -58,6 +58,9 @@ static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
 
+static int i_WasPathingToHere[MAXENTITIES];
+static float f3_WasPathingToHere[MAXENTITIES][3];
+
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 #define NPC_DEFAULT_YAWRATE 225.0
@@ -337,6 +340,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flFrictionSideways = 5.0;
 		baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
 		baseNPC.flDeathDropHeight = 2000.0;
+		if(!Ally && VIPBuilding_Active())
+		{
+			baseNPC.flAcceleration = 9000.0;
+			baseNPC.flFrictionSideways = 10.0;
+		}
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
@@ -360,6 +368,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 				if(VIPBuilding_Active())
 				{
+					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
+					b_AvoidObstacleType[npc] = true;
 					Change_Npc_Collision(npc, num_ShouldCollideEnemyTDIgnoreBuilding);
 				}
 				else
@@ -373,6 +383,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 				if(VIPBuilding_Active())
 				{
+					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
+					b_AvoidObstacleType[npc] = true;
 					Change_Npc_Collision(npc, num_ShouldCollideEnemyTD);
 				}
 				else
@@ -1751,7 +1763,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, 0.5);
+			this.SetLayerPlaybackRate(layer, 1.0);
 	}
 	public void RemoveGesture(const char[] anim)
 	{
@@ -1914,7 +1926,24 @@ methodmap CClotBody < CBaseCombatCharacter
 				AddComputingDelay = 0.2;
 			}
 			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
-			this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+			if(IsEntityTowerDefense(this.index))
+			{
+				if(this.m_bPathing && this.IsOnGround())
+				{
+					if(i_WasPathingToHere[this.index] == target)
+						return;
+
+					i_WasPathingToHere[this.index] = target;
+				}
+				else
+				{
+					i_WasPathingToHere[this.index] = 0;
+				}
+			}
+			if(this.m_bPathing)
+			{
+				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+			}
 		}
 	}
 	public void SetGoalVector(const float vec[3], bool ignoretime = false)
@@ -1932,7 +1961,26 @@ methodmap CClotBody < CBaseCombatCharacter
 				AddComputingDelay = 0.2;
 			}
 			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
-			this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
+			if(IsEntityTowerDefense(this.index))
+			{
+				if(this.m_bPathing && this.IsOnGround())
+				{
+					if(f3_WasPathingToHere[this.index][0] == vec[0] && f3_WasPathingToHere[this.index][1] == vec[1] && f3_WasPathingToHere[this.index][2] == vec[2])
+						return;
+
+					f3_WasPathingToHere[this.index] = vec;
+				}
+				else
+				{
+					f3_WasPathingToHere[this.index][0] = 0.0;
+					f3_WasPathingToHere[this.index][1] = 0.0;
+					f3_WasPathingToHere[this.index][2] = 0.0;
+				}
+			}
+			if(this.m_bPathing)
+			{
+				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
+			}
 		}
 	}
 	public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
@@ -2561,7 +2609,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			int layerCount = this.GetNumAnimOverlays();
 			for(int i; i < layerCount; i++)
 			{
-				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
+				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 1.0);
 			}
 			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index]);
 
@@ -2585,8 +2633,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
-		this.StudioFrameAdvance();
-		this.DispatchAnimEvents();
+	//	this.StudioFrameAdvance();
+	//	this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
 		if(this.m_flNextRunTime < GetGameTime())
@@ -2673,13 +2721,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
-			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});	
+			cvar_nbAvoidObstacle.BoolValue = false;
 		}
 
 
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
+
+		cvar_nbAvoidObstacle.BoolValue = true;
 
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
@@ -7245,7 +7294,11 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
-	f_DelayComputingOfPath[entity] = 0.0;
+	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
+	i_WasPathingToHere[entity] = 0;
+	f3_WasPathingToHere[entity][0] = 0.0;
+	f3_WasPathingToHere[entity][1] = 0.0;
+	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
@@ -8621,7 +8674,7 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 			SubjectAbsVel[Repeat] *= -1.0;
 		}
 	}
-	if(SubjectAbsVel[0] <= 20.0 && SubjectAbsVel[1] == 20.0 && SubjectAbsVel[2] == 20.0)
+	if(SubjectAbsVel[0] <= 20.0 && SubjectAbsVel[1] <= 20.0 && SubjectAbsVel[2] <= 20.0)
 	{
 		return true;
 	}

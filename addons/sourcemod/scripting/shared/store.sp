@@ -4095,6 +4095,11 @@ void Store_ApplyAttribs(int client)
 	}
 #endif
 	float MovementSpeed = 330.0;
+	if(VIPBuilding_Active())
+	{
+		MovementSpeed = 419.0;
+		map.SetValue("443", 1.25);
+	}
 #if defined RPG
 	
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
