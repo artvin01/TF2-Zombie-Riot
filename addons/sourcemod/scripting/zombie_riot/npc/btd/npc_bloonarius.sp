@@ -144,6 +144,7 @@ void Bloonarius_MapStart()
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusspawn.wav");
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusvomit.wav");
 	PrecacheSoundCustom("#zombie_riot/btd/musicbossbloonarius.mp3");
+	PrecacheModel("models/zombie_riot/btd/bloonarius.mdl");
 }
 
 methodmap Bloonarius < CClotBody
