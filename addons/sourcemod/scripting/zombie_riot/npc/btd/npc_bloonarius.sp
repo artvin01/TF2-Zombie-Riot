@@ -211,7 +211,7 @@ methodmap Bloonarius < CClotBody
 
 		bool elite = StrContains(data, "classic") != -1;
 		
-		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "1.15", "1000000", ally, false, true, true, true));
+		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "2.0", "1000000", ally, false, true, true, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BLOONARIUS;
 		i_NpcWeight[npc.index] = 5;
@@ -550,7 +550,7 @@ public void Bloonarius_NPCDeath(int entity)
 		
 		DispatchSpawn(entity_death);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.15); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.0); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("bloonarius_death");
 		AcceptEntityInput(entity_death, "SetAnimation");
