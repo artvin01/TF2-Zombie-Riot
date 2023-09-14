@@ -57,6 +57,7 @@ float fl_rocket_particle_radius[MAXENTITIES];
 static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
+static float f_UnstuckSuckMonitor[MAXENTITIES];
 
 static int i_WasPathingToHere[MAXENTITIES];
 static float f3_WasPathingToHere[MAXENTITIES][3];
@@ -2723,8 +2724,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			cvar_nbAvoidObstacle.BoolValue = false;
 		}
-
-
+		if(VIPBuilding_Active() && !b_IsAlliedNpc[this.index])
+		{
+			if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
+			{
+				this.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+				f_UnstuckSuckMonitor[this.index] = GetGameTime() + 1.0;
+			}
+		}
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
 
@@ -7295,6 +7302,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
+	f_UnstuckSuckMonitor[entity] = 0.0;
 	i_WasPathingToHere[entity] = 0;
 	f3_WasPathingToHere[entity][0] = 0.0;
 	f3_WasPathingToHere[entity][1] = 0.0;
