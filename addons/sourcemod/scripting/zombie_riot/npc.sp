@@ -2589,7 +2589,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = SeargentIdeal(client, vecPos, vecAng, ally, data);
 		
 		case VIP_BUILDING:
-			entity = VIPBuilding(client, vecPos, vecAng);
+			entity = VIPBuilding(client, vecPos, vecAng, data);
 
 		case EXPIDONSA_RIFALMANU:
 			entity = RifalManu(client, vecPos, vecAng, ally);

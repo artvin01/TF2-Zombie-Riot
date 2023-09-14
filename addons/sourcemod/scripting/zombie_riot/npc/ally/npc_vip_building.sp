@@ -27,8 +27,11 @@ methodmap VIPBuilding < BarrackBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 	}
-	public VIPBuilding(int client, float vecPos[3], float vecAng[3])
+	public VIPBuilding(int client, float vecPos[3], float vecAng[3], const char[] data)
 	{
+		if(data[0])
+			ExplodeStringFloat(data, " ", vecPos, sizeof(vecPos));
+		
 		VIPBuilding npc = view_as<VIPBuilding>(BarrackBody(client, vecPos, vecAng, "10000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0, "models/pickups/pickup_powerup_resistance.mdl"));
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
