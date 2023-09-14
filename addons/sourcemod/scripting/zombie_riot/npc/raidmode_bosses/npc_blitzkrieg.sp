@@ -982,7 +982,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 					if (npc.m_iAmountProjectiles >= i_maxfirerockets[npc.index])
 					{
 						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 / i_HealthScale[npc.index];
+						npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0 * fl_LifelossReload[npc.index];
 						if(i_NpcCurrentLives[npc.index]>=2)
 						{
 							EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
