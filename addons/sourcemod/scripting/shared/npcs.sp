@@ -657,7 +657,7 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						SpawnerList.GetArray(index, Spawner);
 						if(Active_Spawners_Calculate == 2.0)
 						{
-							Spawner.f_SpawnerCooldown = GameTime+(0.3 / MultiGlobal);
+							Spawner.f_SpawnerCooldown = GameTime+(0.9 / MultiGlobal);
 
 						}
 						else
