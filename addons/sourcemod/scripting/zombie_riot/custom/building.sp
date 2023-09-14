@@ -65,7 +65,8 @@ enum
 	BuildingSentrygun = 8,
 	BuildingMortar = 9,
 	BuildingHealingStation = 10,
-	BuildingSummoner = 11
+	BuildingSummoner = 11,
+	BuildingVillage = 12
 }
 enum
 {
@@ -4424,6 +4425,7 @@ public bool Building_Village(int client, int entity)
 {
 	VillageCheckItems(client);
 	i_HasSentryGunAlive[client] = EntIndexToEntRef(entity);
+	i_WhatBuilding[entity] = BuildingVillage;
 	b_SentryIsCustom[entity] = !(Village_Flags[client] & VILLAGE_500);
 	Building_Constructed[entity] = false;
 	CreateTimer(0.2, Building_Set_HP_Colour_Sentry, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -4486,6 +4488,37 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		{
 			i_VillageModelAppliance[entity] = 0;
 			i_VillageModelApplianceCollisionBox[entity] = 0;
+			Building_Constructed[entity] = false;
+		}
+	}
+	if(Village_Flags[owner] & VILLAGE_500)
+	{
+		if(GetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed") == 1.0)
+		{
+			if(Building_Constructed[entity])
+			{
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			//	SetEntProp(obj, Prop_Send, "m_fEffects", GetEntProp(obj, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+			}
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.bBuildingIsPlaced = true;
+			Building_Constructed[entity] = true;
+		}
+		else
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+			
+			int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
+			int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+			
+			if(IsValidEntity(prop1))
+			{
+				RemoveEntity(prop1);
+			}
+			if(IsValidEntity(prop2))
+			{
+				RemoveEntity(prop2);
+			}
 			Building_Constructed[entity] = false;
 		}
 	}
@@ -6320,6 +6353,61 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
 						
 		}
+		case BuildingVillage:
+		{
+			int owner = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
+			if(IsValidEntity(owner) && (Village_Flags[owner] & VILLAGE_500))
+			{
+				SetEntProp(Building_Index, Prop_Send, "m_fEffects", GetEntProp(Building_Index, Prop_Send, "m_fEffects") | EF_NODRAW);
+				npc.bBuildingIsPlaced = true;
+				Building_Constructed[Building_Index] = true;
+				float vOrigin[3];
+				float vAngles[3];
+				
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[Building_Index][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+				}
+				else
+				{
+					prop1 = CreateEntityByName("prop_dynamic_override");
+					if(IsValidEntity(prop1))
+					{
+						DispatchKeyValue(prop1, "model", VILLAGE_MODEL_REBEL);
+						DispatchKeyValue(prop1, "modelscale", "0.45");
+						DispatchKeyValue(prop1, "StartDisabled", "false");
+						DispatchKeyValue(prop1, "Solid", "0");
+						SetEntProp(prop1, Prop_Data, "m_nSolidType", 0);
+						DispatchSpawn(prop1);
+						SetEntityCollisionGroup(prop1, 1);
+						AcceptEntityInput(prop1, "DisableShadow");
+						AcceptEntityInput(prop1, "DisableCollision");
+						SetEntityMoveType(prop1, MOVETYPE_NONE);
+						SetEntProp(prop1, Prop_Data, "m_nNextThinkTick", -1.0);
+						Building_Hidden_Prop[Building_Index][1] = EntIndexToEntRef(prop1);
+						Building_Hidden_Prop_To_Building[prop1] = EntIndexToEntRef(Building_Index);
+						SetEntityRenderMode(prop1, RENDER_TRANSCOLOR);
+
+						GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+						GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+						
+						TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
+						SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1_Summoner);
+					}
+				}
+											
+				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
+				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+																	
+				TeleportEntity(Building_Index, vOrigin, vAngles, NULL_VECTOR);
+				
+			}
+						
+		}
 	}
 	int client = GetEntPropEnt(Building_Index, Prop_Send, "m_hBuilder");
 	if(IsValidClient(client)) //Make sure that they dont trigger the building once its done and dont get stuck like idiotas
@@ -8011,8 +8099,32 @@ void BuildingVillageChangeModel(int owner, int entity)
 		view_as<CClotBody>(entity).UpdateCollisionBox();
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
+	else if(ModelTypeApplied == 5 && collisionboxapplied != 5)
+	{
+		i_VillageModelApplianceCollisionBox[entity] = 5;
+		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		float minbounds[3] = {-20.0, -20.0, 0.0};
+		float maxbounds[3] = {20.0, 20.0, 30.0};
+		for(int repeat; repeat < 3; repeat++)
+		{
+			minbounds[repeat] /= ModelScaleMulti;
+			maxbounds[repeat] /= ModelScaleMulti;
+		}
+		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-	if(Village_Flags[owner] & VILLAGE_300 && ModelTypeApplied != 1)
+		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
+	}
+	if(Village_Flags[owner] & VILLAGE_500 && ModelTypeApplied != 5)
+	{
+		i_VillageModelAppliance[entity] = 5;
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
+	//	SetEntityModel(entity, VILLAGE_MODEL_REBEL);
+	}
+	else if(Village_Flags[owner] & VILLAGE_300 && !(Village_Flags[owner] & VILLAGE_500) && ModelTypeApplied != 1)
 	{
 		i_VillageModelAppliance[entity] = 1;
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.4);

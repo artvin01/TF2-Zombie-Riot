@@ -665,7 +665,7 @@ void Rogue_RoundEnd()
 	delete CurrentExclude;
 	delete CurrentCollection;
 	CurrentIngots = 0;
-
+	/*
 	if(CurseOne != -1)
 	{
 		Curse curse;
@@ -675,7 +675,7 @@ void Rogue_RoundEnd()
 			Call_StartFunction(null, curse.Func);
 			Call_PushCell(false);
 			Call_Finish();
-		}
+		}	
 
 		CurseOne = -1;
 	}
@@ -693,6 +693,7 @@ void Rogue_RoundEnd()
 
 		CurseTwo = -1;
 	}
+	*/
 
 	ClearStats();
 }

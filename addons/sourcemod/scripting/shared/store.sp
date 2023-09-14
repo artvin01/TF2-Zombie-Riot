@@ -29,6 +29,7 @@ enum struct ItemInfo
 	int Cost;
 	char Desc[256];
 	char Rogue_Desc[256];
+	char ExtraDesc[256];
 	
 	bool HasNoClip;
 	bool SemiAuto;
@@ -142,6 +143,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sdesc", prefix);
 		kv.GetString(buffer, this.Desc, 256);
+
+		Format(buffer, sizeof(buffer), "%sextra_desc", prefix);
+		kv.GetString(buffer, this.ExtraDesc, 256);
 
 		Format(buffer, sizeof(buffer), "%srogue_desc", prefix);
 		kv.GetString(buffer, this.Rogue_Desc, 256);
@@ -2741,6 +2745,7 @@ public void MenuPage(int client, int section)
 				}
 				else
 				{
+					int Repeat_Filler = 0;
 					if(item.Equipped[client])
 					{
 						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
@@ -2794,6 +2799,7 @@ public void MenuPage(int client, int section)
 					char buffer2[16];
 					IntToString(section, buffer2, sizeof(buffer2));
 					menu.AddItem(buffer2, buffer, style);	// 0
+					Repeat_Filler ++;
 					
 					bool fullSell = (item.BuyWave[client] == Waves_GetRound());
 					bool canSell = (item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
@@ -2803,11 +2809,12 @@ public void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
 						if(cost > cash)
 							style = ITEMDRAW_DISABLED;
-							
+						Repeat_Filler ++;
 						menu.AddItem(buffer2, buffer, style);	// 1
 					}
 					else if(item.Equipped[client] || canSell)
 					{
+						Repeat_Filler ++;
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 1
 					}
 
@@ -2816,18 +2823,42 @@ public void MenuPage(int client, int section)
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Unequip");
 						menu.AddItem(buffer2, buffer,/* levelPerk ? ITEMDRAW_DISABLED : */ITEMDRAW_DEFAULT);	// 2
+						Repeat_Filler ++;
 					}
 					else if(canSell)
 					{
+						Repeat_Filler ++;
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
 					}
 
 					if(canSell)
 					{
+						Repeat_Filler ++;
 						FormatEx(buffer, sizeof(buffer), "%t ($%d) | (%t: $%d)", "Sell", fullSell ? item.BuyPrice[client] : item.Sell[client], "Credits After Selling", (fullSell ? item.BuyPrice[client] : item.Sell[client]) + (CurrentCash-CashSpent[client]));	// 3
 						menu.AddItem(buffer2, buffer);
 					}
-									
+					else
+					{
+						Repeat_Filler ++;
+						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+					}
+					if(info.ExtraDesc[0])
+					{
+						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
+						{
+							if(Repeat_Filler < 4)
+							{
+								Repeat_Filler ++;
+								menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
+							}
+							else
+							{
+								break;
+							}
+						}
+						FormatEx(buffer, sizeof(buffer), "%t", "Extra Description");
+						menu.AddItem(buffer2, buffer);
+					}
 				}
 			}
 			
@@ -3848,8 +3879,14 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						}
 					}
 				}
+				case 4:
+				{
+					item.GetItemInfo(0, info);
+					char buffer[256];
+					FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, info.ExtraDesc, info.Rogue_Desc));
+					PrintToChat(client, buffer);
+				}
 			}
-			
 			MenuPage(client, index);
 		}
 	}

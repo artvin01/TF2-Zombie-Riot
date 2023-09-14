@@ -2848,4 +2848,8 @@
 	{
 		"en"		"During setup, you gain half the cash from buildings, you will get this money back once the waves start!"
 	}
+	"Extra Description"
+	{
+		"en"		"Extra Description"
+	}
 }
