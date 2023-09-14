@@ -62,6 +62,11 @@ void Music_MapStart()
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 }
 
+bool Music_Disabled()
+{
+	return MusicDisabled;
+}
+
 void Music_EndLastmann()
 {
 //	if(MusicDisabled)   Does this even matter? You might aswell keep it in yknow...

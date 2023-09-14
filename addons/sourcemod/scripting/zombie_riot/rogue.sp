@@ -665,7 +665,7 @@ void Rogue_RoundEnd()
 	delete CurrentExclude;
 	delete CurrentCollection;
 	CurrentIngots = 0;
-	/*
+	
 	if(CurseOne != -1)
 	{
 		Curse curse;
@@ -693,7 +693,6 @@ void Rogue_RoundEnd()
 
 		CurseTwo = -1;
 	}
-	*/
 
 	ClearStats();
 }
