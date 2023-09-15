@@ -241,7 +241,7 @@ methodmap Bloonarius < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 		SDKHook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 		
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		/*for(int i; i < ZR_MAX_SPAWNERS; i++)
 		{
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
@@ -249,7 +249,7 @@ methodmap Bloonarius < CClotBody
 				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}
-		}
+		}*/
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		
@@ -380,8 +380,8 @@ public void Bloonarius_ClotThink(int iNPC)
 		
 		//if(npc.m_bElite)
 		{
-			npc.m_flMeleeArmor = 0.1;
-			npc.m_flRangedArmor = 0.1;
+			//npc.m_flMeleeArmor = 0.1;
+			//npc.m_flRangedArmor = 0.1;
 		}
 		return;
 	}
@@ -532,7 +532,7 @@ public void Bloonarius_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 	
-	Spawns_RemoveFromArray(entity);
+	/*Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -541,7 +541,7 @@ public void Bloonarius_NPCDeath(int entity)
 			i_ObjectsSpawners[i] = 0;
 			break;
 		}
-	}
+	}*/
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))

@@ -176,6 +176,9 @@ void Spawns_RemoveFromArray(int entity)
 
 void Spawners_Timer()
 {
+	if(!SpawnerList)
+		return;
+	
 	float f3_PositionTemp_2[3];
 	float f3_PositionTemp[3];
 		
