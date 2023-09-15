@@ -1504,6 +1504,7 @@ void Waves_Progress()
 			if(Enemies.Empty)
 			{
 				CurrentWave++;
+				WaveStart_SubWaveStart();
 				Waves_Progress();
 				return;
 			}

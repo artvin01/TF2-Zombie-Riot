@@ -421,7 +421,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 							{
 								float vecTarget_closest[3]; vecTarget_closest = WorldSpaceCenter(Closest_non_grabbed_player);
 								npc.FaceTowards(vecTarget_closest, 20000.0);
-								if(client > MaxClients)
+								if(client > MaxClients && !b_NpcHasDied[client])
 								{
 									RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(client));
 									PluginBot_Jump(client, vecTarget_closest);

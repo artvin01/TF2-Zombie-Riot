@@ -97,10 +97,10 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 		if(!spawn.BaseBoss)
 		{
-			nonBossSpawners++;
-
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
 				continue;
+
+			nonBossSpawners++;
 		}
 		
 		if((spawn.Cooldown < gameTime && spawn.Points > bestPoints) || (name[0] && bestIndex == -1))
@@ -197,13 +197,14 @@ void Spawners_Timer()
 		spawn.Points = 0.0;
 		SpawnerList.SetArray(index, spawn);	
 	}
-	
+	int PlayersGathered = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client))
 		{
 			if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
 			{
+				PlayersGathered ++;
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
 
 				for(int index; index < length; index++)
@@ -211,7 +212,9 @@ void Spawners_Timer()
 					SpawnerList.GetArray(index, spawn);
 					
 					int entity_Ref = spawn.EntRef;
-
+					if(GetEntProp(entity_Ref, Prop_Data, "m_bDisabled"))
+						continue;
+						
 					GetEntPropVector(entity_Ref, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp_2);
 					float distance = GetVectorDistance( f3_PositionTemp, f3_PositionTemp_2, true); 
 					//leave it all squared for optimsation sake!
@@ -252,6 +255,17 @@ void Spawners_Timer()
 
 	// Get list of points
 	ArrayList pointsList = new ArrayList();
+
+	for(int index; index < length; index++)
+	{
+		SpawnerList.GetArray(index, spawn);
+		if(spawn.Points > 0.0)
+		{
+			spawn.Points /= PlayersGathered;
+		}
+		SpawnerList.SetArray(index, spawn);
+	}
+
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
@@ -265,7 +279,7 @@ void Spawners_Timer()
 		maxSpawners = length;
 
 	// Sort points
-	pointsList.Sort(Sort_Ascending, Sort_Float);
+	pointsList.Sort(Sort_Descending, Sort_Float);
 	
 	// Get points of the X ranked score
 	HighestPoints = pointsList.Get(0);

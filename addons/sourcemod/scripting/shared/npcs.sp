@@ -1084,7 +1084,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
 {
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(Damageaftercalc > 0.0 && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc > 0.0 || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
