@@ -233,7 +233,7 @@ methodmap Bloonarius < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bStaticNPC = elite;
 		npc.m_bisWalking = false;
-		npc.m_flInJump = final;
+		npc.m_bnew_target = final;
 		
 		npc.m_flSpeed = MoabSpeed(elite);
 		npc.m_iLivesLost = 0;
@@ -535,13 +535,13 @@ public void Bloonarius_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 
-	if(npc.m_flInJump)
+	if(npc.m_bnew_target)
 	{
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
+		int entitygame = CreateEntityByName("game_round_win"); 
+		DispatchKeyValue(entitygame, "force_map_reset", "1");
+		SetEntProp(entitygame, Prop_Data, "m_iTeamNum", TFTeam_Red);
+		DispatchSpawn(entitygame);
+		AcceptEntityInput(entitygame, "RoundWin");
 	}
 	
 	/*Spawns_RemoveFromArray(entity);

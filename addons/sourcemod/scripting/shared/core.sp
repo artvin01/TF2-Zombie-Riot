@@ -1043,6 +1043,9 @@ int g_particleImpactMetal;
 
 char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
+#if defined ZR
+float f_DelayNextWaveStartAdvancingDeathNpc;
+#endif
 
 /*
 	Above Are Variables/Defines That Are Shared

@@ -186,7 +186,6 @@ int i_RaidMusicLength1;
 bool b_RaidMusicCustom1;
 //custom wave music.
 float f_DelaySpawnsForVariousReasons;
-float f_DelayNextWaveStartAdvancingDeathNpc;
 int CurrentRound;
 int CurrentWave = -1;
 int StartCash;
