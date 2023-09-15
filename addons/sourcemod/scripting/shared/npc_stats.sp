@@ -2888,6 +2888,38 @@ static void OnCreate(CClotBody body)
 static void OnDestroy(CClotBody body)
 {
 	body.GetPathFollower().Destroy();
+	
+	if(IsValidEntity(body.m_iTeamGlow))
+		RemoveEntity(body.m_iTeamGlow);
+
+	if(IsValidEntity(body.m_iSpawnProtectionEntity))
+		RemoveEntity(body.m_iSpawnProtectionEntity);
+
+	if(IsValidEntity(body.m_iTextEntity1))
+		RemoveEntity(body.m_iTextEntity1);
+	if(IsValidEntity(body.m_iTextEntity2))
+		RemoveEntity(body.m_iTextEntity2);
+	if(IsValidEntity(body.m_iTextEntity3))
+		RemoveEntity(body.m_iTextEntity3);
+	if(IsValidEntity(body.m_iTextEntity4))
+		RemoveEntity(body.m_iTextEntity4);
+	if(IsValidEntity(body.m_iFreezeWearable))
+		RemoveEntity(body.m_iFreezeWearable);
+	if(IsValidEntity(body.m_iWearable1))
+		RemoveEntity(body.m_iWearable1);
+	if(IsValidEntity(body.m_iWearable2))
+		RemoveEntity(body.m_iWearable2);
+	if(IsValidEntity(body.m_iWearable3))
+		RemoveEntity(body.m_iWearable3);
+	if(IsValidEntity(body.m_iWearable4))
+		RemoveEntity(body.m_iWearable4);
+	if(IsValidEntity(body.m_iWearable5))
+		RemoveEntity(body.m_iWearable5);
+	if(IsValidEntity(body.m_iWearable6))
+		RemoveEntity(body.m_iWearable6);
+	if(IsValidEntity(body.m_iWearable7))
+		RemoveEntity(body.m_iWearable7);
+
 }
 
 //Ragdoll
