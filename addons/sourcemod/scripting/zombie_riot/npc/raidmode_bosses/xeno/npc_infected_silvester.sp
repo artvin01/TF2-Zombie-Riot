@@ -1828,13 +1828,14 @@ void Silvester_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(5.0, Silvester_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, Silvester_TBB_Timer, EntRefToEntIndex(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Silvester_TBB_Tick);
 }
 
 
-public Action Silvester_TBB_Timer(Handle timer, int client)
+public Action Silvester_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 

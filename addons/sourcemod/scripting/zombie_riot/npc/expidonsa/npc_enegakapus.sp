@@ -90,6 +90,7 @@ methodmap EnegaKapus < CClotBody
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 10.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -138,7 +139,7 @@ public void EnegaKapus_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	if(NpcStats_IsEnemySilenced(npc.index))
+	if(NpcStats_IsEnemySilenced(npc.index) || npc.m_flNextRangedAttack < GetGameTime())
 	{
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);

@@ -118,10 +118,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
-
-### Recommended
-
--[Tf2 Edict Free limiter Fix](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4) Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix
+- [some Gamedata and source scramble](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
 
 ### Supported
 

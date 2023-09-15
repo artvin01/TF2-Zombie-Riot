@@ -18,6 +18,7 @@
 #endif
 #include <queue>
 #include <profiler>
+#include <sourcescramble>
 
 #pragma dynamic    131072
 

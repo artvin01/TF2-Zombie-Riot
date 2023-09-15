@@ -595,13 +595,14 @@ static void Scaramouche_Activate(int client)
 		Scaramouche_BEAM(npc.index, UserLoc, vecAngles, type, range);
 	}
 	
-	CreateTimer(time, Scaramouche_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(time, Scaramouche_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Scaramouche_TBB_Tick);
 	
 	
 }
-public Action Scaramouche_TBB_Timer(Handle timer, int client)
+public Action Scaramouche_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 		
@@ -765,23 +766,25 @@ static void Spin_To_Win_Activate(int client, int severity, bool alternate_attack
 	UserLoc[2] -= 12.5;
 	spawnRing_Vectors(UserLoc, Range * 2.7, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, charge_time*1.1, 6.0, 0.1, 1, 1.0);
 	
-	CreateTimer(charge_time*1.7, Spin_To_Win_Activate_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(charge_time*1.7, Spin_To_Win_Activate_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 }
-public Action Spin_To_Win_Activate_Timer(Handle timer, int client)
+public Action Spin_To_Win_Activate_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 		
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
-	CreateTimer(fl_spin_to_win_duration[npc.index], Spin_To_Win_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(fl_spin_to_win_duration[npc.index], Spin_To_Win_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Spin_To_Win_TBB_Tick);
 	
 	return Plugin_Continue;
 }
 
-public Action Spin_To_Win_TBB_Timer(Handle timer, int client)
+public Action Spin_To_Win_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 		
@@ -1191,12 +1194,13 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_IsUsing[client] = true;
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
-	CreateTimer(Ikunagae_BEAM_Duration[client], Ikunagae_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Ikunagae_BEAM_Duration[client], Ikunagae_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Ikunagae_TBB_Tick);
 	
 }
-static Action Ikunagae_TBB_Timer(Handle timer, int client)
+static Action Ikunagae_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
