@@ -39,6 +39,7 @@ static float MoabSpeed()
 static int MoabHealth(bool fortified)
 {
 	float value = 40000.0;	// 400 RGB
+	value *= 0.5;
 	
 	if(fortified)
 		value *= 2.0;
