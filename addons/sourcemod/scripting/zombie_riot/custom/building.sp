@@ -2537,17 +2537,28 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 							if(weapon != -1 && StoreWeapon[weapon] > 0)
 							{
-								if(i_CustomWeaponEquipLogic[weapon]==WEAPON_QUINCY_BOW)
+								switch(i_CustomWeaponEquipLogic[weapon])
 								{
-									
-									int buttons = GetClientButtons(client);
-									bool attack2 = (buttons & IN_ATTACK2) != 0;
-									if(attack2)
+									case WEAPON_QUINCY_BOW:
 									{
-										Quincy_Menu(client, weapon);
-										return true;
+										int buttons = GetClientButtons(client);
+										bool attack2 = (buttons & IN_ATTACK2) != 0;
+										if(attack2)
+										{
+											Quincy_Menu(client, weapon);
+											return true;
+										}
 									}
-									
+									case WEAPON_ION_BEAM:
+									{
+										int buttons = GetClientButtons(client);
+										bool attack2 = (buttons & IN_ATTACK2) != 0;
+										if(attack2)
+										{
+											Neuvellete_Menu(client, weapon);
+											return true;
+										}
+									}
 								}
 								if(Store_CanPapItem(client, StoreWeapon[weapon]))
 								{

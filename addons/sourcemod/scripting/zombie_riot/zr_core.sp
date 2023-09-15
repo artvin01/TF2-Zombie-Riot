@@ -123,7 +123,8 @@ enum
 	WEAPON_HAZARD_DEMI = 52,
 	WEAPON_HAZARD_PERFECT = 53,
 	WEAPON_FIRE_WAND = 54,
-	WEAPON_CASINO = 55
+	WEAPON_CASINO = 55,
+	WEAPON_ION_BEAM = 56
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -418,6 +419,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
 #include "zombie_riot/custom/weapon_casino.sp"
+#include "zombie_riot/custom/wand/weapon_ion_beam_wand.sp"
 
 void ZR_PluginLoad()
 {
@@ -624,6 +626,7 @@ void ZR_MapStart()
 	Gladiia_MapStart();
 	WeaponBoard_Precache();
 	Weapon_German_MapStart();
+	Ion_Beam_Wand_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
