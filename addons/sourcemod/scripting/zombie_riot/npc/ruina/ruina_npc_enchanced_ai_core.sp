@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static int i_master_target_id[MAXENTITIES];
-static int i_master_id[MAXENTITIES];
+static int i_master_id_ref[MAXENTITIES];
 static int i_npc_type[MAXENTITIES];
 
 static float fl_master_change_timer[MAXENTITIES];
@@ -51,7 +51,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_master_change_timer);
 	Zero(i_master_target_id);
 	Zero(b_master_exists);
-	Zero(i_master_id);
+	Zero(i_master_id_ref);
 	Zero(i_npc_type);
 	
 	Zero(b_master_is_rallying);
@@ -166,11 +166,12 @@ public void Ruina_NPCDeath_Override(int entity)
 {
 	
 	b_master_exists[entity] = false;
-	if(IsValidEntity(i_master_id[entity]) && i_master_id[entity]!=entity)	//check if the master is still valid, but block the master itself
+	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[entity]);
+	if(IsValidEntity(Master_Id_Main) && Master_Id_Main!=entity)	//check if the master is still valid, but block the master itself
 	{
 		//if so we remove a slave from there list
-		i_master_current_slaves[i_master_id[entity]]--;
-		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[i_master_id[entity]]);
+		i_master_current_slaves[Master_Id_Main]--;
+		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[Master_Id_Main]);
 	}
 	
 	
@@ -277,30 +278,31 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		
 		if(!b_master_exists[npc.index])	//check if the npc is a master or not
 		{	
-			
-			if(fl_master_change_timer[npc.index]<GameTime || !IsValidEntity(i_master_id[npc.index]) || b_force_reasignment[i_master_id[npc.index]])
+			int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+			if(fl_master_change_timer[npc.index]<GameTime || !IsValidEntity(Master_Id_Main) || b_force_reasignment[Master_Id_Main])
 			{
-				if(fl_master_change_timer[npc.index]<GameTime && IsValidEntity(i_master_id[npc.index]))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
+				if(fl_master_change_timer[npc.index]<GameTime && IsValidEntity(Master_Id_Main))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
 				{
-					i_master_current_slaves[i_master_id[npc.index]]--;
-					//CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+					i_master_current_slaves[Master_Id_Main]--;
+					//CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
 				}
 				
-				i_master_id[npc.index] = GetRandomMaster(npc.index);
+				i_master_id_ref[npc.index] = EntIndexToEntRef(GetRandomMaster(npc.index));
+				Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
 				
-				if(IsValidEntity(i_master_id[npc.index]))	//only add if the master id is valid
-					i_master_current_slaves[i_master_id[npc.index]]++;
+				if(IsValidEntity(Master_Id_Main))	//only add if the master id is valid
+					i_master_current_slaves[Master_Id_Main]++;
 				
-				//if(IsValidEntity(i_master_id[npc.index]))				
-				//	CPrintToChatAll("Master %i has gained a slave. current count %i",i_master_id[npc.index], i_master_current_slaves[i_master_id[npc.index]]);
+				//if(IsValidEntity(Master_Id_Main))				
+				//	CPrintToChatAll("Master %i has gained a slave. current count %i",Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
 				
 				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
 				
 			}
 			bool b_return = false;
-			if(IsValidEntity(i_master_id[npc.index]))	//get master's target
+			if(IsValidEntity(Master_Id_Main))	//get master's target
 			{
-				CClotBody npc2 = view_as<CClotBody>(i_master_id[npc.index]);
+				CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
 				PrimaryThreatIndex = npc2.m_iTarget;
 			}
 			else
@@ -337,22 +339,22 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 				npc.StartPathing();
 				return;
 			}
-			if(IsValidEntity(i_master_id[npc.index]))
+			if(IsValidEntity(Master_Id_Main))
 			{
 				switch(i_npc_type[npc.index])
 				{
 					case 1:	//melee, buisness as usual, just the target is the same as the masters
 					{
-						if(b_master_is_rallying[i_master_id[npc.index]])	//is master rallying targets to be near it?
+						if(b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 						{
-							float Master_Loc[3]; Master_Loc = WorldSpaceCenter(i_master_id[npc.index]);
+							float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
 							float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 							
 							float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 							
 							if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
 							{
-								NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
+								NPC_SetGoalEntity(npc.index, Master_Id_Main);
 								npc.StartPathing();
 								npc.m_bPathing = true;
 								
@@ -406,14 +408,14 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 					}
 					case 2:	//ranged, target is the same, npc moves towards the master npc
 					{
-						float Master_Loc[3]; Master_Loc = WorldSpaceCenter(i_master_id[npc.index]);
+						float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
 						float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 						
 						float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 						
 						if(dist > (100.0 * 100.0))
 						{
-							NPC_SetGoalEntity(npc.index, i_master_id[npc.index]);
+							NPC_SetGoalEntity(npc.index, Master_Id_Main);
 							npc.StartPathing();
 							npc.m_bPathing = true;
 							
@@ -490,9 +492,10 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
-	if(IsValidEntity(i_master_id[npc.index]))//do we have a master?
+	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+	if(IsValidEntity(Master_Id_Main))//do we have a master?
 	{
-		if(!b_master_is_rallying[i_master_id[npc.index]])	//is master rallying targets to be near it?
+		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 		{
 			npc.StartPathing();
 			float vBackoffPos[3];
