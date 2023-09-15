@@ -213,6 +213,8 @@ methodmap Bloonarius < CClotBody
 		}
 
 		bool elite = StrContains(data, "classic") != -1;
+
+		bool final = StrContains(data, "classic_final") != -1;
 		
 		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "3.0", "1000000", ally, false, true, true, true));
 		
@@ -231,6 +233,7 @@ methodmap Bloonarius < CClotBody
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bStaticNPC = elite;
 		npc.m_bisWalking = false;
+		npc.m_flInJump = final;
 		
 		npc.m_flSpeed = MoabSpeed(elite);
 		npc.m_iLivesLost = 0;
@@ -531,6 +534,15 @@ public void Bloonarius_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
+
+	if(npc.m_flInJump)
+	{
+		int entity = CreateEntityByName("game_round_win"); 
+		DispatchKeyValue(entity, "force_map_reset", "1");
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Red);
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "RoundWin");
+	}
 	
 	/*Spawns_RemoveFromArray(entity);
 	

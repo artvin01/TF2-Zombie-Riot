@@ -927,6 +927,7 @@ bool b_NPCVelocityCancel[MAXENTITIES];
 bool b_NPCTeleportOutOfStuck[MAXENTITIES];
 float fl_DoSpawnGesture[MAXENTITIES];
 bool b_isWalking[MAXENTITIES];
+bool b_DoNotGiveWaveDelay[MAXENTITIES];
 bool b_TeamGlowDefault[MAXENTITIES];
 int i_StepNoiseType[MAXENTITIES];
 int i_NpcStepVariation[MAXENTITIES];

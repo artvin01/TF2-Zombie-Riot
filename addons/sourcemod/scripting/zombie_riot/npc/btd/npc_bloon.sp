@@ -478,6 +478,7 @@ methodmap Bloon < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bDoNotGiveWaveDelay = true;
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
@@ -579,55 +580,41 @@ public void Bloon_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
-		//Target close enough to hit
 		if(flDistanceToTarget < 10000)
 		{
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
-				//Handle swingTrace;
-				//if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
+				for(int i; i<9; i++)
 				{
-					int target = PrimaryThreatIndex;//TR_GetEntityIndex(swingTrace);
-					//if(target > 0)
+					if(npc.RegrowsInto(i) == npc.m_iType)
 					{
-						//float vecHit[3];
-						//TR_GetEndPosition(vecHit, swingTrace);
-						
-						for(int i; i<9; i++)
+						if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 						{
-							if(npc.RegrowsInto(i) == npc.m_iType)
+							if(npc.m_bFortified)
 							{
-								if(!ShouldNpcDealBonusDamage(target))
-								{
-									if(npc.m_bFortified)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, vecTarget);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, vecTarget);
-									}
-								}
-								else
-								{
-									if(npc.m_bFortified)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, vecTarget);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, vecTarget);
-									}
-								}
-								//delete swingTrace;
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+							}
+							else
+							{
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
 							}
 						}
+						else
+						{
+							if(npc.m_bFortified)
+							{
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+							}
+							else
+							{
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+							}
+						}
+						//delete swingTrace;
 					}
-				}
+				}				
 			}
 		}
 		

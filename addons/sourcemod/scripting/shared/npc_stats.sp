@@ -1455,6 +1455,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_isWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_isWalking[this.index] = TempValueForProperty; }
 	}
+	property bool m_bDoNotGiveWaveDelay
+	{
+		public get()							{ return b_DoNotGiveWaveDelay[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_DoNotGiveWaveDelay[this.index] = TempValueForProperty; }
+	}
 	property float m_bisGiantWalkCycle
 	{
 		public get()							{ return b_isGiantWalkCycle[this.index]; }
@@ -2991,6 +2996,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iTextEntity4);
 		if(IsValidEntity(npc.m_iFreezeWearable))
 			RemoveEntity(npc.m_iFreezeWearable);
+		
+		if(!b_IsAlliedNpc[pThis] && !b_DoNotGiveWaveDelay[pThis])
+		{
+			if(f_DelayNextWaveStartAdvancingDeathNpc < GetGameTime() + 1.5)
+			{
+				f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
+			}
+		}
 		
 #if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
@@ -7253,6 +7266,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NPCTeleportOutOfStuck[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
+	b_DoNotGiveWaveDelay[entity] = false;
 	b_TeamGlowDefault[entity] = false;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;

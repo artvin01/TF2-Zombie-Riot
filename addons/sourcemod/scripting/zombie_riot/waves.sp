@@ -902,7 +902,7 @@ public Action Waves_EndVote(Handle timer, float time)
 	Enemies = new ArrayStack(sizeof(Enemy));
 }*/
 
-void Waves_Progress()
+void Waves_Progress(bool donotAdvance = false)
 {
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || Cooldown > GetGameTime())
 		return;
@@ -1033,7 +1033,7 @@ void Waves_Progress()
 			if(wave.Delay > 0.0)
 				WaveTimer = CreateTimer(wave.Delay * (MultiGlobal * 0.75), Waves_ProgressTimer);
 		}
-		else
+		else if(!donotAdvance)
 		{
 			WaveEndLogicExtra();
 			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -1445,6 +1445,10 @@ void Waves_Progress()
 			
 			Store_RandomizeNPCStore(false, 99, 1);
 		}
+		else
+		{
+			return;
+		}
 	}
 	else if(Rogue_Mode())
 	{
@@ -1509,7 +1513,7 @@ void Waves_Progress()
 				return;
 			}
 		}
-		else
+		else if(!donotAdvance)
 		{
 			WaveEndLogicExtra();
 
@@ -1580,6 +1584,10 @@ void Waves_Progress()
 				Waves_Progress();
 				return;
 			}
+		}
+		else
+		{
+			return;
 		}
 	}
 	if(CurrentRound == 0 && !Rogue_Mode())

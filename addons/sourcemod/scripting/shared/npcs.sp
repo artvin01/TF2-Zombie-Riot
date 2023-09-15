@@ -27,6 +27,7 @@ void Npc_Sp_Precache()
 {
 	f_DelayGiveOutlineNpc = 0.0;
 	f_DelayNextWaveStartAdvancing = 0.0;
+	f_DelayNextWaveStartAdvancingDeathNpc = 0.0;
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 	g_particleMissText = PrecacheParticleSystem("miss_text");
@@ -106,6 +107,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 
 	bool found;
+	bool foundstatic;
 	int limit = 0;
 	int npc_current_count = 0;
 	
@@ -211,6 +213,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					
 					if(!npcstats.m_bStaticNPC)
 						found = true;
+					else
+					{
+						foundstatic = true;
+					}
 				}
 			}
 		}
@@ -391,9 +397,17 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		}
 		else if(!found)
 		{
+			bool donotprogress = false;
+			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
+			{
+				if(foundstatic)
+				{
+					donotprogress = true;
+				}
+			}
 			if(f_DelayNextWaveStartAdvancing < GetGameTime())
 			{
-				Waves_Progress();
+				Waves_Progress(donotprogress);
 			}
 		}
 	}
