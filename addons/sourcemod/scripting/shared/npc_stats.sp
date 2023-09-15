@@ -361,7 +361,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(!Ally)
 		{
 #if defined ZR
-			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
+			if(IgnoreBuildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //During an active raidboss, make sure that they ignore barricades
 #else
 			if(IgnoreBuildings)
 #endif
@@ -2187,7 +2187,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 #if defined ZR
 		bool ingore_buildings = false;
-		if(Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))))
 		{
 			ingore_buildings = true;
 		}
@@ -4115,7 +4115,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		else if(i_IsABuilding[enemy])
 		{
 #if defined ZR
-			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			{
 				return false;
 			}
@@ -5481,7 +5481,7 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	pos_enemy = WorldSpaceCenter(enemy);
 
 #if defined ZR
-	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));
+	bool ingore_buildings = (Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))) 	);
 #else
 	bool ingore_buildings = Ignore_Buildings;
 #endif

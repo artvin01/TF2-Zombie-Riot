@@ -269,6 +269,7 @@ methodmap Bloonarius < CClotBody
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);
+		npc.m_flMeleeArmor = 1.15;
 		
 		//ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
@@ -321,12 +322,14 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	//if(npc.m_bElite)
 	{
+		/*
 		float armor = 1.0;
 		if(Zombies_Currently_Still_Ongoing > 50)
 			armor *= Pow(0.97, float(Zombies_Currently_Still_Ongoing - 50));
 		
 		npc.m_flMeleeArmor = armor;
 		npc.m_flRangedArmor = armor;
+		*/
 	}
 	
 	int nextLoss = -999999;
