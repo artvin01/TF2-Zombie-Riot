@@ -876,7 +876,8 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 			npc.m_bThisNpcIsABoss = false;
 				
 			//prepare takeover for schwert
-			RaidBossActive = INVALID_ENT_REFERENCE;
+			if(!b_Blitz_Alive && !Schwert_Takeover_Active)
+				RaidBossActive = INVALID_ENT_REFERENCE;
 			if(b_Schwertkrieg_Alive)
 			{
 				Schwert_Takeover = true;
