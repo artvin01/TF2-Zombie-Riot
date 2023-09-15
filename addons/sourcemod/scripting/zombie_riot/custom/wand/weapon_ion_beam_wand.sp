@@ -5,11 +5,15 @@
 
 #define NEUVELLETE_THROTTLE_SPEED 5.0/66.0	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
 #define NEUVELLETE_TE_DURATION 5.5/66.0
-
+//playgamesound misc\doomsday_cap_open_start.wav	use for startup of hexagon cannon
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static int i_hand_particle[MAXTF2PLAYERS+1];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
+
+static float fl_ion_charge_ammount[MAXTF2PLAYERS+1];
+static float fl_Ion_timer[MAXTF2PLAYERS + 1];
 
 static float BEAM_Targets_Hit[MAXTF2PLAYERS+1];
 static int BEAM_BuildingHit[MAX_NEUVELLETE_TARGETS_HIT+6];
@@ -30,14 +34,18 @@ static int i_Neuvellete_Skill_Points[MAXTF2PLAYERS + 1];
 
 static float fl_Special_Timer[MAXTF2PLAYERS + 1];
 
+
 static int BeamWand_Laser;
 static int BeamWand_Glow;
+static char gExplosive1;
 //static int BeamWand_LaserBeam;
 
 static char gGlow1;
 //static char gLaser2;
 public void Ion_Beam_Wand_MapStart()
 {
+	Zero(fl_Ion_timer);
+	Zero(fl_ion_charge_ammount);
 	Zero(fl_Special_Timer);
 	Zero(fl_Neuvellete_Beam_Timeout);
 	Zero(h_TimerNeuvellete_Management);
@@ -61,11 +69,14 @@ public void Ion_Beam_Wand_MapStart()
 	//gLaser2= PrecacheModel("materials/sprites/lgtning.vmt");
 }
 
+#define NEUVELLETE_BASELINE_ION_DMG 250.0
+#define NEUVELLETE_BASELINE_ION_RANGE 10.0
+
 #define NEUVELLETE_BASELINE_DAMAGE 100.0
-#define NEUVELLETE_BASELINE_RANGE 1000.0
+#define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
 #define NEUVELLETE_BASELINE_TURN_SPEED 1.5	
 #define NEUVELLETE_BASELINE_PITCH_SPEED 0.75
-#define NEUVELLETE_BASELINE_MOVESPEED_PENALTY 0.5
+#define NEUVELLETE_BASELINE_MOVESPEED_PENALTY 0.5		//for the time being it does nothing :(
 
 
 #define FLAG_NEUVELLETE_PAP_1_DMG				(1 << 1)
@@ -175,12 +186,11 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	{
 		Move_Speed *=0.75;
 		Range *= 1.25;
-		Mana_Cost += RoundToFloor(float(Mana_Cost) * 1.25);
 		
-		Turn_Speed *= 0.3;
-		Pitch_Speed *= 0.3;
+		Turn_Speed *= 0.5;
+		Pitch_Speed *= 0.5;
 		
-		DamagE *= 2.5;
+		DamagE *= 2.0;
 		
 		Effects |= (1 << 6);	//nightmare
 	}
@@ -190,14 +200,14 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		
 		if(GameTime > fl_Special_Timer[client] + 2.5)
 		{
-			Kill_Beam_Hook(client, 5.0);
+			Kill_Beam_Hook(client, 1.5);
 			return;
 		}
 		
 		Turn_Speed *= 2.0;
 		Pitch_Speed *= 2.0;
 		
-		DamagE *= 1.15;
+		DamagE *= 1.75;
 		
 		Effects |= (1 << 7); //pulse
 	}
@@ -205,10 +215,12 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP)
 	{
 		float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
-		float Ration = Duration*1.3 - Duration;
+		float Ration = Duration*1.35 - Duration;
+		
+		Turn_Speed *= 1.0/Ration;
+		Pitch_Speed *= 1.0/Ration;
 		
 		DamagE *= Ration;
-		Mana_Cost += RoundToFloor(float(Mana_Cost) * Ration);
 	
 	
 		Effects |= (1 << 8); //feedback
@@ -236,6 +248,11 @@ public void Activate_Neuvellete(int client, int weapon)
 			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			
+			if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+			{
+				Create_Hand_Particle(client);
+			}
 		}
 		return;
 	}
@@ -252,7 +269,28 @@ public void Activate_Neuvellete(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
-
+static void Create_Hand_Particle(int client)
+{
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	
+	if(!IsValidEntity(viewmodelModel))
+		return;
+		
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
+	
+	int particle = ParticleEffectAt({0.0,0.0,0.0}, "raygun_projectile_blue_crit", 0.0);
+	
+	Custom_SDKCall_SetLocalOrigin(particle, flPos);
+	SetEntPropVector(particle, Prop_Data, "m_angRotation", flAng); 
+	SetParent(viewmodelModel, particle, "effect_hand_r",_);
+	
+	i_hand_particle[client] = EntIndexToEntRef(particle);
+	
+	
+}
 public Action Timer_Management_Neuvellete(Handle timer, DataPack pack)
 {
 	pack.Reset();
@@ -288,13 +326,57 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 		{
 
 			if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
-			{	/*
+			{	
 				float GameTime = GetGameTime();
+				int buttons = GetClientButtons(client);
+				bool attack2 = (buttons & IN_ATTACK2) != 0;
 				if(fl_hud_timer[client]<GameTime)
 				{
 					fl_hud_timer[client] = GameTime + 0.5;
 					Neuvellete_Hud(client);
-				}*/
+				}
+				if(attack2 && fl_Ion_timer[client]<=GameTime)
+				{
+					int mana_cost = 10;
+					
+					if(Current_Mana[client]>=mana_cost)
+					{		
+						if(fl_ion_charge_ammount[client]<=1000.0)
+						{
+							fl_ion_charge_ammount[client] += mana_cost;
+							float Null = 0.0;
+							int Null2 = 0;
+							Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, Null ,Null , Null2, mana_cost, Null, Null2);
+							if(mana_cost>10)
+								mana_cost = 10;
+							Current_Mana[client] -=mana_cost;
+						}
+					}
+					Mana_Regen_Delay[client] = GameTime + 1.0;
+				}
+				else if(fl_ion_charge_ammount[client]>250.0 && fl_Ion_timer[client] < GameTime)
+				{
+					fl_Ion_timer[client] = GameTime + 30.0+15.0;	//the 15 is the chargeup period xd
+					
+					Witch_Hexagon_Witchery(client);
+				}
+				else if(fl_ion_charge_ammount[client]>0.0 && fl_Ion_timer[client] < GameTime)
+				{
+					fl_ion_charge_ammount[client] = 0.0;
+				}
+				
+				if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+				{
+					Create_Hand_Particle(client);
+				}
+				
+			}
+			else
+			{
+				if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+				{
+					RemoveEntity(EntRefToEntIndex(i_hand_particle[client]));
+				}
 			}
 		}
 		else
@@ -308,18 +390,289 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 		
 	}
 }
-/*
+
 static void Neuvellete_Hud(int client)
 {
 	char HUDText[255] = "";
 	
-	Format(HUDText, sizeof(HUDText), "%sRaishi Concentration: %.1f％", HUDText, charge_percent);
+	float GameTime = GetGameTime();
+	
+	if(fl_Ion_timer[client]<=GameTime)
+	{
+		if(fl_ion_charge_ammount[client]<=0.0)
+		{
+			Format(HUDText, sizeof(HUDText), "%sHexagon Cannon: [Offline] ", HUDText);
+		}
+		else if(fl_ion_charge_ammount[client]>0.0)
+		{
+			float charge_precent = fl_ion_charge_ammount[client] / 10.0;
+			Format(HUDText, sizeof(HUDText), "%sHexagon Cannon: [Charging | %.1f％]", HUDText, charge_precent);
+		}
+	}
+	else
+	{
+		float duration = fl_Ion_timer[client] - GameTime;
+		Format(HUDText, sizeof(HUDText), "%sHexagon Cannon: [Recharging | %.1f] ", HUDText, duration);
+	}
+	
 	
 	
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-}*/
+}
+static bool b_hexagon_ancored[MAXTF2PLAYERS];
+static bool b_hexagon_created[MAXTF2PLAYERS];
+static float fl_hexagon_vec[MAXTF2PLAYERS][3];
+static float fl_ability_timer[MAXTF2PLAYERS];
+static void Witch_Hexagon_Witchery(int client)
+{
+	fl_throttle2[client] = 0.0;
+	b_hexagon_ancored[client] = false;
+	b_hexagon_created[client] = false;
+	float time = 10.0+5.0;
+	float gametime = GetGameTime();
+	fl_ability_timer[client] = gametime + time;
+	SDKHook(client, SDKHook_PreThink, Hexagon_Witchery_Tick);
+}
+static float fl_hexagon_angle[MAXTF2PLAYERS];
 
+static Action Hexagon_Witchery_Tick(int client)
+{
+	float offset_time = 5.0;
+	float time = 10.0;
+	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
+	float origin_vec[3];
+	float gametime = GetGameTime();
+	int amount = 5;
+	
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		
+	if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_ION_BEAM)
+	{
+		SDKUnhook(client, SDKHook_PreThink, Hexagon_Witchery_Tick);
+		fl_Ion_timer[client] -= 25.0;
+		fl_ion_charge_ammount[client] = 0.0;
+		return Plugin_Stop;
+	}
+	if(fl_throttle2[client]>gametime)
+		return Plugin_Continue;
+		
+	fl_throttle2[client] = gametime + NEUVELLETE_THROTTLE_SPEED;
+	
+	float DamagE = NEUVELLETE_BASELINE_ION_DMG*(fl_ion_charge_ammount[client]/100.0);
+	
+	DamagE *=Attributes_Get(weapon_holding, 410, 1.0);
+		
+	range *= Attributes_Get(weapon_holding, 103, 1.0);
+	range *= Attributes_Get(weapon_holding, 104, 1.0);
+	range *= Attributes_Get(weapon_holding, 475, 1.0);
+	range *= Attributes_Get(weapon_holding, 101, 1.0);
+	range *= Attributes_Get(weapon_holding, 102, 1.0);
+	
+	float Null = 0.0;
+	int Null2 = 0;
+	Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, DamagE, range, Null2, Null2, Null, Null2);
+	
+	if(!b_hexagon_ancored[client])
+	{
+		Handle swingTrace;
+		float Vec_offset[3] , vec[3];
+								
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+		DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
+		FinishLagCompensation_Base_boss();
+	
+		int target = TR_GetEntityIndex(swingTrace);	
+		if(IsValidEnemy(client, target))
+		{
+			vec = WorldSpaceCenter(target);
+			
+		}
+		else
+		{
+			TR_GetEndPosition(vec, swingTrace);
+		}
+		delete swingTrace;
+		vec[2] += 50.0;
+		fl_hexagon_vec[client] = vec;
+		origin_vec = vec;
+		b_hexagon_ancored[client] = true;
+	}
+	else
+	{
+		origin_vec = fl_hexagon_vec[client];
+	}
+	float duration = fl_ability_timer[client] - gametime+offset_time;
+	
+	
+	
+	//Now, with an anchor point set the fun can "begin"
+	if(duration>offset_time)
+	{
+		if(duration-time>offset_time)	//we don't start "reeling" it in until after this
+		{
+			if(!b_hexagon_created[client])
+			{
+				fl_hexagon_angle[client] = 0.0;
+				b_hexagon_created[client] = true;
+				for (int j = 0; j < amount; j++)
+				{
+					float offset = (360.0/amount) * float(j);
+					float vec_temp[4][3];
+					for(int i=1 ; i<=3 ; i++)
+					{
+						float tempAngles[3], Direction[3], EndLoc[3];
+						tempAngles[0] = 0.0;
+						tempAngles[1] = float(i) * ((360.0/amount)*3)+offset;
+						tempAngles[2] = 0.0;
+						
+						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+						ScaleVector(Direction, range*2.0);
+						AddVectors(origin_vec, Direction, EndLoc);
+						vec_temp[i] = EndLoc;
+					}			
+					int colour[4];
+					float start_size = 4.0;
+					float end_size = 4.0;
+					colour[3] = 150;
+		
+					colour[0] = 255;
+					colour[1] = 255;
+					colour[2] = 255;
+					
+					TE_SetupBeamPoints(vec_temp[1], vec_temp[2], BeamWand_Laser, 0, 0, 0, offset_time, start_size, end_size, 0, 0.1, colour, 0);
+					if(!LastMann)
+						TE_SendToClient(client);
+					else
+						TE_SendToAll();
+					
+					TE_SetupBeamPoints(vec_temp[1], vec_temp[3], BeamWand_Laser, 0, 0, 0, offset_time, start_size, end_size, 0, 0.1, colour, 0);
+					if(!LastMann)
+						TE_SendToClient(client);
+					else
+						TE_SendToAll();
+	
+					TE_SetupGlowSprite(vec_temp[1], gGlow1, offset_time, 0.5, 255);
+					if(!LastMann)
+						TE_SendToClient(client);
+					else
+						TE_SendToAll();
+
+				}
+			}
+		}
+		else
+		{
+			fl_hexagon_angle[client] += 3.5;
+			if(fl_hexagon_angle[client]>360.0)
+			{
+				fl_hexagon_angle[client] = 0.0;
+			}
+			range *= (duration-offset_time) / time;
+			
+			for (int j = 0; j < amount; j++)
+			{
+				float offset = (360.0/amount) * float(j);
+				float vec_temp[4][3];
+				for(int i=1 ; i<=3 ; i++)
+				{
+					float tempAngles[3], Direction[3], EndLoc[3];
+					tempAngles[0] = 0.0;
+					tempAngles[1] = fl_hexagon_angle[client]+float(i) * ((360.0/amount)*3)+offset;
+					tempAngles[2] = 0.0;
+					
+					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+					ScaleVector(Direction, range*2.0);
+					AddVectors(origin_vec, Direction, EndLoc);
+					vec_temp[i] = EndLoc;
+				}			
+				int colour[4];
+				float start_size = 4.0;
+				float end_size = 4.0;
+				colour[3] = 150;
+	
+				colour[0] = 255;
+				colour[1] = 255;
+				colour[2] = 255;
+				
+				TE_SetupBeamPoints(vec_temp[1], vec_temp[2], BeamWand_Laser, 0, 0, 0, NEUVELLETE_TE_DURATION, start_size, end_size, 0, 0.1, colour, 0);
+				if(!LastMann)
+					TE_SendToClient(client);
+				else
+					TE_SendToAll();
+				TE_SetupBeamPoints(vec_temp[1], vec_temp[3], BeamWand_Laser, 0, 0, 0, NEUVELLETE_TE_DURATION, start_size, end_size, 0, 0.1, colour, 0);
+				if(!LastMann)
+					TE_SendToClient(client);
+				else
+					TE_SendToAll();
+
+				TE_SetupGlowSprite(vec_temp[1], gGlow1, NEUVELLETE_TE_DURATION, 0.5, 255);
+				if(!LastMann)
+					TE_SendToClient(client);
+				else
+					TE_SendToAll();
+
+			}
+		}
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PreThink, Hexagon_Witchery_Tick);
+		//FIRE!
+		int colour[4];
+		colour[3] = 150;
+		
+		Explode_Logic_Custom(DamagE, client, client, -1, origin_vec, range);
+		
+		colour[0] = 255;
+		colour[1] = 255;
+		colour[2] = 255;
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.10, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*3.25);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 2.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.2, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*2.0);
+		spawnRing_Vector(origin_vec, 0.0, 0.0, 0.0, 3.5, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.35, 5.0, 1.25, 1 , BEAM_WAND_CANNON_ABILITY_RANGE*1.75);
+		
+		TE_SetupExplosion(origin_vec, gExplosive1, 0.1, 1, 0, 0, 0);
+		TE_SendToAll();
+		
+		EmitSoundToAll(BEAM_WAND_PARTICLE_ORBITAL_CANNON_FIRE_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+				
+		float position[3];
+		position[0] = origin_vec[0];
+		position[1] = origin_vec[1];
+		position[2] += origin_vec[2] + 900.0;
+		origin_vec[2] += -200;
+		TE_SetupBeamPoints(origin_vec, position, BeamWand_Laser, 0, 0, 0, 2.0, 11.0, 11.0, 0, 1.0, colour, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(origin_vec, position, BeamWand_Laser, 0, 0, 0, 1.66, 22.0, 22.0, 0, 1.0, colour, 3);
+		
+		
+		float skyloc[3];
+		
+		fl_ion_charge_ammount[client] = 0.0;
+		
+		skyloc = origin_vec;
+		skyloc[2] += 99999.0;
+		TE_SetupBeamPoints(origin_vec, skyloc, BeamWand_Laser, 0, 0, 0, 2.0, 11.0, 11.0, 0, 1.0, colour, 3);
+		if(!LastMann)
+			TE_SendToClient(client);
+		else
+			TE_SendToAll();
+		TE_SetupBeamPoints(origin_vec, skyloc, BeamWand_Laser, 0, 0, 0, 1.66, 22.0, 22.0, 0, 1.0, colour, 3);
+		if(!LastMann)
+			TE_SendToClient(client);
+		else
+			TE_SendToAll();
+		TE_SetupBeamPoints(origin_vec, skyloc, BeamWand_Laser, 0, 0, 0, 1.33, 33.0, 33.0, 0, 1.0, colour, 3);
+		if(!LastMann)
+			TE_SendToClient(client);
+		else
+			TE_SendToAll();
+		
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
 public void Kill_Neuvellete_Loop(int client)
 {
 	if (h_TimerNeuvellete_Management[client] != INVALID_HANDLE)
@@ -327,6 +680,10 @@ public void Kill_Neuvellete_Loop(int client)
 		KillTimer(h_TimerNeuvellete_Management[client]);
 		h_TimerNeuvellete_Management[client] = INVALID_HANDLE;
 		
+		if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+		{
+			RemoveEntity(EntRefToEntIndex(i_hand_particle[client]));
+		}
 		Kill_Beam_Hook(client, 2.5);
 	}
 }
@@ -394,7 +751,8 @@ public void Weapon_Ion_Wand_Beam(int client, int weapon, bool crit)
 		Kill_Beam_Hook(client, 3.5);
 	}
 }
-static float fl_m2_angle[MAXTF2PLAYERS + 1];
+
+/*static float fl_m2_angle[MAXTF2PLAYERS + 1];
 static float fl_m2_start_angles[MAXTF2PLAYERS + 1][3];
 static float fl_m2_start_pos[MAXTF2PLAYERS + 1][3];
 static bool b_first_tick[MAXTF2PLAYERS + 1];
@@ -412,7 +770,7 @@ public void Weapon_Ion_Wand_Beam_M2(int client, int weapon, bool &result, int sl
 	fl_m2_start_pos[client] = Pos;
 	b_first_tick[client] = true;
 	
-}
+}*/
 
 static float fl_spinning_angle[MAXTF2PLAYERS+1];
 public Action Neuvellete_tick(int client)
@@ -543,32 +901,6 @@ public Action Neuvellete_tick(int client)
 		if(fl_beam_angle[client][0]<-180.0)
 			fl_beam_angle[client][0] = 180.0;
 		
-		//TODO: issue will arise if the client's angle are say 359 and then they turn making angles say 0, this code doesn't acount for that meaning it will just go around, FIX IT SOMEHOW
-		/*
-			Possible sollution: check distances for both sides, whichever one is less turn that way
-			
-			Client is looking at 10.0
-			Beam is at -170.0
-			with current logic it will start going around the long way around the entire player.
-			
-			When in reality all it needs to do is travel 20 units in the other direction
-			
-			So, say we 
-			
-			if travel distance above 180 we invert
-			
-			
-			
-			Mouse 2: Uses up extra mana to do 1? of these:
-			
-			Defensive Stance - Adds dmg reistance
-			
-			Offensive Stance - Adds extra damage
-			
-			Light Stance - Increases turn speed of laser
-			
-		*/
-		
 			
 		Beam_Angles[0] = fl_beam_angle[client][1]; Beam_Angles[2] = 0.0; Beam_Angles[1] = fl_beam_angle[client][0];
 		
@@ -604,7 +936,20 @@ public Action Neuvellete_tick(int client)
 		fl_spinning_angle[client] = 0.0;
 		
 		if(flags & FLAG_NEUVELLETE_PAP_5_PULSE_CANNON)
-			Neuvellete_Create_Spinning_Beams_ALT_ALT(client, Start_Loc, Beam_Angles, 3, Main_Beam_Dist, 2.5);		//Infuser (it cycles a triangle from start to end)
+		{
+			int Amt_Spin = 3;
+			if(Effects & (1<<2))
+				Amt_Spin++;
+			if(Effects & (1<<3))
+				Amt_Spin++;
+			if(Effects & (1<<4))
+				Amt_Spin++;
+			if(Effects & (1<<5))
+				Amt_Spin++;
+				
+			Neuvellete_Create_Spinning_Beams_ALT_ALT(client, Start_Loc, Beam_Angles, Amt_Spin, Main_Beam_Dist, 2.5);		//Infuser (it cycles a triangle from start to end)
+		}
+			
 			
 		if(flags & FLAG_NEUVELLETE_PAP_5_NIGHTMARE)
 		{
@@ -690,6 +1035,7 @@ static void Neuvellete_Base_Central_Beam(float Start_Loc[3], float Target_Loc[3]
 	TE_SetupBeamPoints(Start_Loc, Target_Loc, BeamWand_Glow, 0, 0, 66, NEUVELLETE_TE_DURATION, ClampBeamWidth(diameter * 0.7 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, glowColor, -25);								
 	TE_SendToAll(0.0);
 }
+/*
 static float fl_buffer_vector[MAXTF2PLAYERS + 1][2][3];
 public Action Neuvellete_tick_m2(int client)
 {
@@ -772,7 +1118,7 @@ public Action Neuvellete_tick_m2(int client)
 	
 	return Plugin_Continue;
 }
-
+*/
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
 	float Direction[3];
@@ -1118,6 +1464,9 @@ static bool BeamWand_TraceWallsOnly(int entity, int contentsMask)
 
 public void Neuvellete_Menu(int client, int weapon)
 {	
+	if(!IsValidClient(client))
+		return;
+		
 	Menu menu2 = new Menu(Neuvellete_Menu_Selection);
 	int flags = i_Neuvellete_HEX_Array[client];
 	
@@ -1435,6 +1784,29 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 	return 0;	//do nothing
 }
 
+static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+{
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
+	
+	int ICE_INT = PrecacheModel(sprite);
+	
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = alpha;
+	
+	if (endRange == -69.0)
+	{
+		endRange = range + 0.5;
+	}
+	
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SendToAll();
+}
+
 /*
 "Neuv"
 			{
@@ -1444,7 +1816,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 				
 				"classname"	"tf_weapon_bonesaw"
 				"index"		"173"
-				"attributes"	"1 ; 0 ; 410 ; 1.25 ; 264 ; 0 ; 733 ; 10 ; 122 ; 0" 
+				"attributes"	"1 ; 0 ; 410 ; 1.0 ; 264 ; 0 ; 733 ; 10 ; 122 ; 0" 
 				
 				"func_onbuy"	"Ion_Beam_On_Buy_Reset"
 				
@@ -1471,7 +1843,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 				"pap_1_cost"			"2550"
 				"pap_1_classname"		"tf_weapon_bonesaw"
 				"pap_1_index"			"173"
-				"pap_1_attributes"	"1 ; 0 ; 410 ; 1.5 ; 264 ; 0 ; 733 ; 10 ; 122 ; 1" 
+				"pap_1_attributes"	"1 ; 0 ; 410 ; 1.2 ; 264 ; 0 ; 733 ; 10 ; 122 ; 1" 
 				
 				"pap_1_func_attack"	"Weapon_Ion_Wand_Beam"
 				"pap_1_model_weapon_override"					"models/empty.mdl"
@@ -1490,7 +1862,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 				"pap_2_cost"			"3300"
 				"pap_2_classname"		"tf_weapon_bonesaw"
 				"pap_2_index"			"173"
-				"pap_2_attributes"	"1 ; 0 ; 410 ; 1.75 ; 264 ; 0 ; 733 ; 10 ; 122 ; 2" 
+				"pap_2_attributes"	"1 ; 0 ; 410 ; 1.4 ; 264 ; 0 ; 733 ; 10 ; 122 ; 2" 
 				
 				"pap_2_func_attack"	"Weapon_Ion_Wand_Beam"
 				
@@ -1509,7 +1881,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 				"pap_3_cost"			"4000"
 				"pap_3_classname"		"tf_weapon_bonesaw"
 				"pap_3_index"			"173"
-				"pap_3_attributes"	"1 ; 0 ; 410 ; 2.0 ; 264 ; 0 ; 733 ; 10 ; 122 ; 3" 
+				"pap_3_attributes"	"1 ; 0 ; 410 ; 1.6 ; 264 ; 0 ; 733 ; 10 ; 122 ; 3" 
 				
 				"pap_3_func_attack"	"Weapon_Ion_Wand_Beam"
 				
@@ -1530,7 +1902,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 				"pap_4_cost"			"5000"
 				"pap_4_classname"		"tf_weapon_bonesaw"
 				"pap_4_index"			"173"
-				"pap_4_attributes"	"1 ; 0 ; 410 ; 2.25 ; 264 ; 0 ; 733 ; 10 ; 122 ; 4" 
+				"pap_4_attributes"	"1 ; 0 ; 410 ; 1.8 ; 264 ; 0 ; 733 ; 10 ; 122 ; 4" 
 				
 				"pap_4_lag_comp" 						"0"
 				"pap_4_lag_comp_collision" 		"0"
@@ -1547,7 +1919,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 				"pap_5_cost"			"5000"
 				"pap_5_classname"		"tf_weapon_bonesaw"
 				"pap_5_index"			"173"
-				"pap_5_attributes"	"1 ; 0 ; 410 ; 2.5 ; 264 ; 0 ; 733 ; 10 ; 122 ; 5" 
+				"pap_5_attributes"	"1 ; 0 ; 410 ; 2.0 ; 264 ; 0 ; 733 ; 10 ; 122 ; 5" 
 				
 				"pap_5_func_attack"	"Weapon_Ion_Wand_Beam"
 				

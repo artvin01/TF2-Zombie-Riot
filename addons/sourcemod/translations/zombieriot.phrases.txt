@@ -2878,15 +2878,15 @@
 	}
 	"Neuvellete Nightmare"
 	{
-		"en"		"Heavily reduced Movement and Turn speed, Increased damage, higher mana cost"
+		"en"		"Heavily reduced Turn speed, Increased damage"
 	}
 	"Neuvellete Pulse"
 	{
-		"en"		"Heavily increased turnrate, but beam is only active for 2.5 seconds, longer cooldown period"
+		"en"		"Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter cooldown period, You cannot use this while Hexagon Cannon is Active"
 	}
 	"Neuvellete Feedback"
 	{
-		"en"		"The longer your Beam is active, the more damage it deals, but also the more mana it consumes"
+		"en"		"The longer your Beam is active, the more damage it deals, its turns speed also decreases the longer its active"
 	}
 	"Neuvellete Menu First"
 	{

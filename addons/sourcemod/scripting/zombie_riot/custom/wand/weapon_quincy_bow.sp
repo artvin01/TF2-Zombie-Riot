@@ -666,6 +666,9 @@ public void Quincy_Touch(int entity, int target)
 
 public void Quincy_Menu(int client, int weapon)
 {	
+	if(!IsValidClient(client))
+		return;
+		
 	Menu menu2 = new Menu(Quincy_Menu_Selection);
 	int flags = Quincy_Bow_Hex_Array[client];
 	
