@@ -5178,7 +5178,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [18 Bananas]");
-			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 20) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 18) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 			menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 		}
@@ -5186,7 +5186,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
 		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [12 Bananas]");
-		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 14) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 12) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)

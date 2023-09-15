@@ -669,14 +669,6 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		{
 			magic = true;
 		}
-
-		if(IsValidEntity(weapon))
-		{
-			char buffer[36];
-			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			if(!StrContains(buffer, "tf_weapon_flamethrower"))
-				damage *= 0.5;
-		}
 	}
 	
 	switch(npc.m_iType)
