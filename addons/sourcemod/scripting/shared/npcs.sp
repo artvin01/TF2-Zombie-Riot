@@ -2923,7 +2923,7 @@ int MaxNpcEnemyAllowed()
 {
 	if(VIPBuilding_Active())
 	{
-		return NPC_HARD_LIMIT * 2;
+		return RoundToCeil(float(NPC_HARD_LIMIT) * 1.5);
 	}
 	return NPC_HARD_LIMIT;
 }

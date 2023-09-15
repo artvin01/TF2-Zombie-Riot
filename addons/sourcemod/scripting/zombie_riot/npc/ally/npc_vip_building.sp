@@ -54,6 +54,7 @@ methodmap VIPBuilding < BarrackBody
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		SDKHook(npc.index, SDKHook_Think, VIPBuilding_ClotThink);
 
 		npc.m_flSpeed = 0.0;
 
@@ -62,9 +63,22 @@ methodmap VIPBuilding < BarrackBody
 	}
 }
 
+public void VIPBuilding_ClotThink(int iNPC)
+{
+	VIPBuilding npc = view_as<VIPBuilding>(iNPC);
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + 0.1;
+	BarrackBody npc1 = view_as<BarrackBody>(iNPC);
+	BarrackBody_HealthHud(npc1 ,0.0);
+}
+
 void VIPBuilding_NPCDeath(int entity)
 {
 	VIPBuilding npc = view_as<VIPBuilding>(entity);
+	SDKUnhook(npc.index, SDKHook_Think, VIPBuilding_ClotThink);
 
 	IsActive = false;
 
@@ -99,8 +113,10 @@ void VIPBuilding_OnTakeDamagePost(int victim, int attacker)
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.5;
 		}
 		PrintCenterTextAll("VIP BUILDING IS UNDER ATTACK");
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
+		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 0.5;
 		npc.PlayHurtSound();
 	}
 }
