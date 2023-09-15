@@ -16,42 +16,17 @@ enum //hitgroup_t
 };
 
 #if defined ZR
-enum struct SpawnerData
-{
-	int 	indexnumber;
-	bool	b_SpawnIsCloseEnough;
-	float	f_ClosestSpawnerLessCooldown;
-	float	f_SpawnerCooldown;
-	float	f_PointScore;
-	bool	IsBaseBoss;
-	char	Name[64];
-}
-
-//todo: code a way to include 2 or more groups of players splitting up, so the enemies dont spawn in the middle of nowhere
-//Easy temp solution: Map should handle it. via triggers, and such, and dont make huge maps with a billion corridors.
-
-
-
-//ArrayList NPCList; Make this global, i need it globally.
-//ArrayList SpawnerList; global
-static ConVar MapSpawnersActive;
 static Handle SyncHudRaid;
 #endif
 
 static Handle SyncHud;
-//static char LastClassname[2049][64];
 static bool b_DoNotDisplayHurtHud[MAXENTITIES];
 static float f_DelayNextWaveStartAdvancing;
-//static float f_SpawnerCooldown[MAXENTITIES];
-/*
-void NPC_Spawn_ClearAll()
-{
-	Zero(f_SpawnerCooldown);
-}*/
-
+static float f_DelayGiveOutlineNpc;
 void Npc_Sp_Precache()
 {
-	f_DelayNextWaveStartAdvancing = 0.0;
+	f_DelayGiveOutlineNpc = 0.0;
+	f_DelayNextWaveStartAdvancing = GetGameTime() + 600;
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 	g_particleMissText = PrecacheParticleSystem("miss_text");
@@ -60,8 +35,6 @@ void Npc_Sp_Precache()
 void NPC_PluginStart()
 {
 #if defined ZR
-	MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
-	SpawnerList = new ArrayList(sizeof(SpawnerData));
 	SyncHudRaid = CreateHudSynchronizer();
 #endif
 
@@ -74,28 +47,6 @@ void NPC_OnAllPluginsLoaded()
 //	LF_HookSpawn("", NPC_OnCreatePre, false);
 //	LF_HookSpawn("", NPC_OnCreatePost, true);
 }
-
-#if defined ZR
-void NPC_MapEnd()
-{
-	delete SpawnerList;
-	SpawnerList = new ArrayList(sizeof(SpawnerData));
-}
-
-void NPC_RoundStart()
-{
-	// Artvin TODO: Check whenever a teamspawn is deleted and remove from SpawnerList and other arrays
-
-	delete SpawnerList;
-	SpawnerList = new ArrayList(sizeof(SpawnerData));
-
-	int entity = -1;
-	while((entity = FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
-	{
-		OnEntityCreated(entity, "info_player_teamspawn");
-	}
-}
-#endif
 
 /*
 public Action LF_OnMakeNPC(char[] classname, int &entity)
@@ -144,238 +95,17 @@ public void NPC_EntitySpawned(int entity)
 	}
 }
 */
+
 #if defined ZR
-public Action GetClosestSpawners(Handle timer)
-{
-	float f3_PositionTemp_2[3];
-	float f3_PositionTemp[3];
-	Zombie_Delay_Warning();
-
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			if(IsPlayerAlive(client) && GetClientTeam(client)==3)
-			{
-				if(IsFakeClient(client))
-				{
-					KickClient(client);	
-				}
-				else
-				{
-					ClientCommand(client, "retry");
-				}
-			}
-			else if(!IsFakeClient(client))
-			{
-				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
-				QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
-				int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
-				
-				if(point_difference > 0)
-				{
-					if(Waves_GetRound() +1 > 60)
-					{
-						GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
-					}
-					else
-					{
-						GiveXP(client, point_difference);
-					}
-				}
-				
-				i_PreviousPointAmount[client] = PlayerPoints[client];
-				
-				if(GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0 && IsPlayerAlive(client))
-				{
-					
-					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp);
-
-					for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
-					{
-						int entity = i_ObjectsSpawners[entitycount];
-						if(IsValidEntity(entity))
-						{
-							GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp_2);
-
-							float distance = GetVectorDistance( f3_PositionTemp, f3_PositionTemp_2, true); 
-
-							//leave it all squared for optimsation sake!
-							//max distance is 10,000 anymore and wtf u doin
-
-							if( distance < 100000000.0) 
-							{
-								int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
-								if(index != -1)
-								{
-									SpawnerData Spawner;
-									SpawnerList.GetArray(index, Spawner);
-
-									//For Zr_lila_panic.
-									if(StrEqual(Spawner.Name, "underground"))
-									{
-										if(!b_PlayerIsInAnotherPart[client])
-										{
-											continue;
-										}
-									}
-									if(b_PlayerIsInAnotherPart[client])
-									{
-										if(!StrEqual(Spawner.Name, "underground"))
-										{
-											continue;
-										}
-									}
-										
-									float inverting_score_calc;
-
-									inverting_score_calc = ( distance / 1000000.0);
-
-									inverting_score_calc -= 1;
-
-									inverting_score_calc *= -1.0;
-
-									//
-									//	(n*n)^4.0
-									//	So further away spawnpoints gain way less points.
-									//	This should solve the problem of 2 groups of people far away triggering spawnpoints that arent even near them.
-
-									Spawner.f_PointScore += inverting_score_calc;
-
-									SpawnerList.SetArray(index, Spawner);										
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	/*
-	float PositonBeam[3];
-	PositonBeam = f3_PositionOfAll;
-	PositonBeam[2] += 50;
-	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-	TE_SetupBeamPoints(f3_PositionOfAll, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-	TE_SendToAll();
-	*/
-	int i_Spawner_Indexes[32 + 1];
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	int maxSpawners = Rogue_Mode() ? 1 : MapSpawnersActive.IntValue;
-
-	for(int Repeats=1; Repeats<=maxSpawners; Repeats++)
-	{
-		for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
-		{
-			int entity = i_ObjectsSpawners[entitycount];
-			if(IsValidEntity(entity))
-			{
-				int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
-				if(index != -1)
-				{
-					SpawnerData Spawner;
-					SpawnerList.GetArray(index, Spawner);
-					bool Found = false;
-					if((Spawner.IsBaseBoss || !GetEntProp(entity, Prop_Data, "m_bDisabled")) && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
-					{
-						for(int Repeats_anti=1; Repeats_anti<=Repeats; Repeats_anti++)
-						{
-							if(i_Spawner_Indexes[Repeats_anti] == entity)
-							{
-								Found = true;
-								break;
-							}
-						}
-						
-						if(Found)
-						{
-							continue;
-						}
-						Spawner.b_SpawnIsCloseEnough = false;
-						
-						if (TargetDistance) 
-						{
-							if( Spawner.f_PointScore > TargetDistance ) 
-							{
-								ClosestTarget = entity; 
-								TargetDistance = Spawner.f_PointScore;		  
-							}
-						} 
-						else 
-						{
-							ClosestTarget = entity; 
-							TargetDistance = Spawner.f_PointScore;
-						}						
-					}
-					SpawnerList.SetArray(index, Spawner);
-				}
-			}
-		}
-		if(IsValidEntity(ClosestTarget))
-		{
-			int index = SpawnerList.FindValue(ClosestTarget, SpawnerData::indexnumber);
-			if(index != -1)
-			{
-				SpawnerData Spawner;
-				SpawnerList.GetArray(index, Spawner);
-				if(Repeats < 3) // first two have less cooldown
-				{
-					Spawner.f_ClosestSpawnerLessCooldown = 1.5;
-				}
-				else
-				{
-					Spawner.f_ClosestSpawnerLessCooldown = float(Repeats - 1) / 2.0;
-				}
-				Spawner.b_SpawnIsCloseEnough = true;
-				SpawnerList.SetArray(index, Spawner);
-			}
-			i_Spawner_Indexes[Repeats] = ClosestTarget;
-			/*
-			GetEntPropVector(ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-			PositonBeam = TargetLocation;
-			PositonBeam[2] += 50;
-			TE_SetupBeamPoints(TargetLocation, PositonBeam, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 2.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 255, 255, 255}), 30);
-			TE_SendToAll();
-			*/
-		}
-		ClosestTarget = -1;
-		TargetDistance = 0.0;
-	}
-
-	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
-	{
-		int entity = i_ObjectsSpawners[entitycount];
-		if(IsValidEntity(entity))
-		{
-			int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
-			if(index != -1)
-			{
-				SpawnerData Spawner;
-				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_PointScore = 0.0; //Set it to 0 again, as we wanna keep it for future calcs !	
-				SpawnerList.SetArray(index, Spawner);
-			}
-		}
-	}
-	
-	return Plugin_Continue;
-}
-
-public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
+public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 {
 	float GameTime = GetGameTime();
 	if(f_DelaySpawnsForVariousReasons > GameTime)
 	{
 		return;
 	}
+
 	bool found;
-	/*
-	*/
-	/*
-	int limit = 10 + RoundToCeil(float(Waves_GetRound())/2.3);
-	*/
 	int limit = 0;
 	int npc_current_count = 0;
 	
@@ -438,7 +168,6 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			PlayersAliveScaling = MaxNpcEnemyAllowed();
 
 		LimitNpcs = RoundToNearest(f_limit);
-		
 	}
 	
 	if(!b_GameOnGoing) //no spawn if the round is over
@@ -452,16 +181,25 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 	
 	if(!panzer)
 	{
+		bool CheckOutline = true;
+		if(f_DelayGiveOutlineNpc > GetGameTime())
+		{
+			CheckOutline = false;
+		}
+		else
+		{
+			f_DelayGiveOutlineNpc = GetGameTime() + 0.5;
+		}
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
 			if(IsValidEntity(entity) && entity != 0)
 			{
-				if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+				if(!b_IsAlliedNpc[entity])
 				{
 					npc_current_count += 1;
 					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
+					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && CheckOutline)
 					{
 						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 							GiveNpcOutLineLastOrBoss(entity, true);
@@ -480,142 +218,82 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 			return;
 		}
 	}
+
+	if(!Spawns_CanSpawnNext())
+		return;
 	
-	bool npcInIt;
 	float pos[3], ang[3];
-	ArrayList list = new ArrayList();
-	int Active_Spawners = 0;
-	int entity_Spawner = -1;
-	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
+
+	MiniBoss boss;
+	if(panzer && Waves_GetMiniBoss(boss))
 	{
-		entity_Spawner = i_ObjectsSpawners[entitycount];
-		if(IsValidEntity(entity_Spawner))
+		bool isBoss = false;
+		int deathforcepowerup = boss.Powerup;
+		if(panzer_warning)
 		{
-			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
-			if(index != -1)
+			int Text_Int = GetRandomInt(0, 2);
+			if(boss.Sound[0])
 			{
-				SpawnerData Spawner;
-				SpawnerList.GetArray(index, Spawner);
-				if((Spawner.IsBaseBoss || !GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled")) && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
+				for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
 				{
-					if(!Spawner.IsBaseBoss)
+					if(IsClientInGame(panzer_warning_client))
 					{
-						Active_Spawners += 1;
-					}
-					if(Spawner.f_SpawnerCooldown < GameTime)
-					{
-						list.Push(entity_Spawner);
-					}
-				}
-				SpawnerList.SetArray(index, Spawner);
-			}
-		}
-	}
-	float Active_Spawners_Calculate = 1.0;
-	switch (Active_Spawners)
-	{
-		case 1:
-		{
-			//special rules!
-			Active_Spawners_Calculate = 2.0;
-		}
-		case 2:
-		{
-			Active_Spawners_Calculate = 1.6;
-		}
-		case 3:
-		{
-			Active_Spawners_Calculate = 1.5;
-		}
-		case 4:
-		{
-			Active_Spawners_Calculate = 1.45;
-		}
-		case 5:
-		{
-			Active_Spawners_Calculate = 1.35;
-		}
-		case 6:
-		{
-			Active_Spawners_Calculate = 1.2;
-		}
-	}
-	
-	entity_Spawner = list.Length;
-	if(entity_Spawner)
-	{
-		MiniBoss boss;
-		if(panzer && Waves_GetMiniBoss(boss))
-		{
-			entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-			bool isBoss = false;
-			int deathforcepowerup = boss.Powerup;
-			if(panzer_warning)
-			{
-				int Text_Int = GetRandomInt(0, 2);
-				if(boss.Sound[0])
-				{
-					for(int panzer_warning_client=1; panzer_warning_client<=MaxClients; panzer_warning_client++)
-					{
-						if(IsClientInGame(panzer_warning_client))
+						if(IsValidClient(panzer_warning_client))
 						{
-							if(IsValidClient(panzer_warning_client))
+							SetGlobalTransTarget(panzer_warning_client);
+							/*
+								https://github.com/SteamDatabase/GameTracking-TF2/blob/master/tf/tf2_misc_dir/scripts/mod_textures.txt	
+							
+							*/
+							switch(Text_Int)
 							{
-								SetGlobalTransTarget(panzer_warning_client);
-								/*
-									https://github.com/SteamDatabase/GameTracking-TF2/blob/master/tf/tf2_misc_dir/scripts/mod_textures.txt	
-								
-								*/
-								switch(Text_Int)
+								case 0:
 								{
-									case 0:
-									{
-										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_1);
-									}
-									case 1:
-									{
-										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_2);
-									}
-									case 2:
-									{
-										ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
-									}
+									ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_1);
+								}
+								case 1:
+								{
+									ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_2);
+								}
+								case 2:
+								{
+									ShowGameText(panzer_warning_client, boss.Icon, 1, "%t", boss.Text_3);
 								}
 							}
+						}
 
-							if(boss.SoundCustom)
-							{
-								EmitCustomToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 2.0);
-							}
-							else
-							{
-								EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-								EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
-							}
+						if(boss.SoundCustom)
+						{
+							EmitCustomToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 2.0);
+						}
+						else
+						{
+							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
+							EmitSoundToClient(panzer_warning_client, boss.Sound, panzer_warning_client, SNDCHAN_AUTO, 90, _, 1.0);
 						}
 					}
-
-					Citizen_MiniBossSpawn(entity_Spawner);
 				}
-				isBoss = true;
+
+				Citizen_MiniBossSpawn();
 			}
-			else
-			{
-				deathforcepowerup = 0;
-			}
-			
-			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
-			if(index != -1)
-			{
-				SpawnerData Spawner;
-				SpawnerList.GetArray(index, Spawner);
-				Spawner.f_SpawnerCooldown = GameTime + boss.Delay + 2.0;
-				SpawnerList.SetArray(index, Spawner);
-			}
-			
+			isBoss = true;
+		}
+		else
+		{
+			deathforcepowerup = 0;
+		}
+		
+		if(Spawns_GetNextPos(pos, ang, _, boss.Delay + 2.0))
+		{
 			DataPack pack;
-			CreateDataTimer(boss.Delay, Timer_Delayed_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(entity_Spawner);
+			CreateDataTimer(boss.Delay, Timer_Delay_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
+
+			for(int i; i < 3; i++)
+			{
+				pack.WriteFloat(pos[i]);
+				pack.WriteFloat(ang[i]);
+			}
+
 			pack.WriteCell(isBoss);
 			pack.WriteCell(boss.Index);
 			pack.WriteCell(deathforcepowerup);
@@ -623,58 +301,17 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 		}
 		else
 		{
-			Enemy enemy;
-			if(Waves_GetNextEnemy(enemy))
+			PrintToChatAll("SPAWN FAILED (Mini-Boss)");
+		}
+	}
+	else
+	{
+		Enemy enemy;
+		if(Waves_GetNextEnemy(enemy))
+		{
+			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
 			{
-				if(enemy.Spawn[0])
-				{
-					int length = SpawnerList.Length;
-
-					SpawnerData Spawner;
-
-					int count;
-					int[] matches = new int[length];
-					for(int i; i < length; i++)
-					{
-						SpawnerList.GetArray(i, Spawner);
-						if(StrEqual(Spawner.Name, enemy.Spawn, false))
-							matches[count++] = Spawner.indexnumber;
-					}
-
-					if(count)
-					{
-						entity_Spawner = matches[GetRandomInt(0, count-1)];
-					}
-					else
-					{
-						entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-						PrintToChatAll("UNKNOWN SPAWN POINT \"%s\", REPORT BUG", enemy.Spawn);
-					}
-				}
-				else
-				{
-					int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
-					if(index != -1)
-					{
-						SpawnerData Spawner;
-						SpawnerList.GetArray(index, Spawner);
-						if(Active_Spawners_Calculate == 2.0)
-						{
-							Spawner.f_SpawnerCooldown = GameTime+(0.65 / MultiGlobal);
-						}
-						else
-						{
-							Spawner.f_SpawnerCooldown = GameTime+(2.0 - (Active_Spawners_Calculate / Spawner.f_ClosestSpawnerLessCooldown));
-						}
-						SpawnerList.SetArray(index, Spawner);
-					}
-					entity_Spawner = list.Get(GetRandomInt(0, entity_Spawner-1));
-				}
-				
-				GetEntPropVector(entity_Spawner, Prop_Data, "m_vecOrigin", pos);
-				GetEntPropVector(entity_Spawner, Prop_Data, "m_angRotation", ang);
-				
-				entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Friendly, enemy.Data);
+				int entity_Spawner = Npc_Create(enemy.Index, -1, pos, ang, enemy.Friendly, enemy.Data);
 				if(entity_Spawner != -1)
 				{
 					if(enemy.Is_Outlined)
@@ -745,20 +382,19 @@ public void NPC_SpawnNext(bool force, bool panzer, bool panzer_warning)
 						Freeplay_SpawnEnemy(entity_Spawner);
 				}
 			}
-			else if(!found)
+			else
 			{
-				if(f_DelayNextWaveStartAdvancing < GetGameTime())
-				{
-					Waves_Progress();
-				}
+				PrintToChatAll("SPAWN FAILED (%s)", enemy.Spawn);
+			}
+		}
+		else if(!found)
+		{
+			if(f_DelayNextWaveStartAdvancing < GetGameTime())
+			{
+				Waves_Progress();
 			}
 		}
 	}
-	else if(!npcInIt && !force)
-	{
-		NPC_SpawnNext(true, false, false);
-	}
-	delete list;
 }
 #endif	// ZR
 
@@ -778,47 +414,48 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 }
 
 #if defined ZR
-public Action Timer_Delayed_BossSpawn(Handle timer, DataPack pack)
+public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int spawner_entity = pack.ReadCell();
+	float pos[3], ang[3];
+	for(int i; i < 3; i++)
+	{
+		pos[i] = pack.ReadFloat();
+		ang[i] = pack.ReadFloat();
+	}
 	bool isBoss = pack.ReadCell();
 	int index = pack.ReadCell();
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
-	if(IsValidEntity(spawner_entity) && spawner_entity != 0)
+	
+	int entity = Npc_Create(index, -1, pos, ang, false);
+	if(entity != -1)
 	{
-		float pos[3], ang[3];
-			
-		GetEntPropVector(spawner_entity, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(spawner_entity, Prop_Data, "m_angRotation", ang);
 		Zombies_Currently_Still_Ongoing += 1;
-		int entity = Npc_Create(index, -1, pos, ang, false);
-		if(entity != -1)
-		{
-			CClotBody npcstats = view_as<CClotBody>(entity);
-			if(isBoss)
-			{
-				GiveNpcOutLineLastOrBoss(entity, true);
-				npcstats.m_bThisNpcIsABoss = true; //Set to true!
-			}
-			else
-			{
-				npcstats.m_bThisNpcIsABoss = false; //Set to true!
-			}
-			
-			if(healthmulti)
-			{
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthmulti));
-				SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthmulti));
-			}
-			
-			b_NpcForcepowerupspawn[entity] = forcepowerup;
 
-			if(Waves_InFreeplay())
-				Freeplay_SpawnEnemy(entity);
+		CClotBody npcstats = view_as<CClotBody>(entity);
+		if(isBoss)
+		{
+			GiveNpcOutLineLastOrBoss(entity, true);
+			npcstats.m_bThisNpcIsABoss = true; //Set to true!
 		}
+		else
+		{
+			npcstats.m_bThisNpcIsABoss = false; //Set to true!
+		}
+		
+		if(healthmulti)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthmulti));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthmulti));
+		}
+		
+		b_NpcForcepowerupspawn[entity] = forcepowerup;
+
+		if(Waves_InFreeplay())
+			Freeplay_SpawnEnemy(entity);
 	}
+	
 	return Plugin_Stop;
 }
 #endif
@@ -2207,24 +1844,11 @@ public void NPC_CheckDead(int entity)
 			b_NpcHasDied[entity] = true;
 			
 #if defined ZR
-			float GameTime = GetGameTime();
-			
 			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
 				Zombies_Currently_Still_Ongoing -= 1;
 			}
-			if(GlobalAntiSameFrameCheck_NPC_SpawnNext == GameTime)
-			{
-				return;
-			}
-				
-			GlobalAntiSameFrameCheck_NPC_SpawnNext = GameTime;
-			
-			RequestFrame(NPC_SpawnNextRequestFrame, false);
-			//dont call if its multiple at once, can cause lag
-			//make sure that if they despawned instead of dying, that their shit still gets cleaned just in case.
 #endif
-			
 		}
 	}
 }
@@ -2234,13 +1858,6 @@ void NPC_DeadEffects(int entity)
 	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 	{
 #if defined ZR		
-		float GameTime = GetGameTime();
-
-		if(GlobalAntiSameFrameCheck_NPC_SpawnNext != GameTime)
-		{
-			RequestFrame(NPC_SpawnNextRequestFrame, false);
-		}
-		GlobalAntiSameFrameCheck_NPC_SpawnNext = GameTime;
 		Zombies_Currently_Still_Ongoing -= 1;
 		DropPowerupChance(entity);
 		Gift_DropChance(entity);
@@ -2304,31 +1921,6 @@ void CleanAllNpcArray()
 	Zero(f_HudCooldownAntiSpam);
 	Zero(f_HudCooldownAntiSpamRaid);
 }
-
-#if defined ZR
-void Spawner_AddToArray(int entity, bool base_boss = false) //cant use ent ref here...
-{
-	SpawnerData Spawner;
-	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
-	if(index == -1)
-	{
-		if(base_boss)
-		{
-			Spawner.IsBaseBoss = true;
-		}
-		Spawner.indexnumber = entity;
-		GetEntPropString(entity, Prop_Data, "m_iName", Spawner.Name, sizeof(Spawner.Name));
-		SpawnerList.PushArray(Spawner);
-	}
-}
-
-void Spawner_RemoveFromArray(int entity)
-{
-	int index = SpawnerList.FindValue(entity, SpawnerData::indexnumber);
-	if(index != -1)
-		SpawnerList.Erase(index);
-}
-#endif
 
 stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
 {
@@ -3273,32 +2865,6 @@ void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_c
 	}
 #endif
 }
-
-
-#if defined ZR
-int GetRandomActiveSpawner()
-{
-	int entity_Spawner = -1;
-	for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++)
-	{
-		entity_Spawner = i_ObjectsSpawners[entitycount];
-		if(IsValidEntity(entity_Spawner))
-		{
-			int index = SpawnerList.FindValue(entity_Spawner, SpawnerData::indexnumber);
-			if(index != -1)
-			{
-				SpawnerData Spawner;
-				SpawnerList.GetArray(index, Spawner);
-				if((!GetEntProp(entity_Spawner, Prop_Data, "m_bDisabled")) && GetEntProp(entity_Spawner, Prop_Data, "m_iTeamNum") != 2 && Spawner.b_SpawnIsCloseEnough)
-				{
-					break;
-				}
-			}
-		}
-	}
-	return entity_Spawner;
-}
-#endif	
 
 
 void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &green, int &blue)

@@ -151,7 +151,7 @@ void Waves_PlayerSpawn(int client)
 
 public Action Waves_ForcePanzer(int client, int args)
 {
-	NPC_SpawnNext(false, true, true); //This will force spawn a panzer.
+	NPC_SpawnNext(true, true); //This will force spawn a panzer.
 	return Plugin_Handled;
 }
 
@@ -936,7 +936,7 @@ void Waves_Progress()
 			{
 				playercount = 0.70;
 			}
-
+			
 			float multi = Pow(1.08, playercount);
 
 			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
@@ -1435,7 +1435,7 @@ void Waves_Progress()
 					Store_RandomizeNPCStore(false);
 				
 				Waves_Progress();
-				NPC_SpawnNext(false, panzer_spawn, panzer_sound);
+				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
@@ -1493,12 +1493,12 @@ void Waves_Progress()
 			if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
 			{
 				panzer_spawn = true;
-				NPC_SpawnNext(false, panzer_spawn, false);
+				NPC_SpawnNext(panzer_spawn, false);
 			}
 			else
 			{
 				panzer_spawn = false;
-				NPC_SpawnNext(false, false, false);
+				NPC_SpawnNext(false, false);
 			}
 			
 			if(Enemies.Empty)

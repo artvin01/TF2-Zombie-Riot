@@ -91,7 +91,7 @@ methodmap UnderTides < CClotBody
 			npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 15.0;
 			npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 30.0;
 
-			Citizen_MiniBossSpawn(npc.index);
+			Citizen_MiniBossSpawn();
 		}
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
@@ -213,13 +213,13 @@ public void UnderTides_ClotThink(int iNPC)
 		npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 15.0;
 		npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 30.0;
 
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		
 		for(int i; i < ZR_MAX_SPAWNERS; i++)
 		{
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
-				Spawner_AddToArray(npc.index, true);
+				Spawns_AddToArray(npc.index, true);
 				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}
@@ -572,7 +572,7 @@ void UnderTides_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	
-	Spawner_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{

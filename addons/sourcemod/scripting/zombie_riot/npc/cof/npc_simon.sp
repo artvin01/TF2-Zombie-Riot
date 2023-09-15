@@ -110,7 +110,7 @@ methodmap Simon < CClotBody
 		
 		npc.m_bLostHalfHealth = (!newSimon && view_as<bool>(data[0]));
 
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		return npc;
 	}
 	

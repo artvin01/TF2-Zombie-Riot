@@ -312,8 +312,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			}
 		}
 		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 			

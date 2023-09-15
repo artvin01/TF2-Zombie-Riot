@@ -1179,7 +1179,9 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 			Handle btrace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Quincy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete btrace;
 			FinishLagCompensation_Base_boss();
-			
+			if(VIPBuilding_Active())
+				dmg *= 0.25;
+				
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
 				if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))

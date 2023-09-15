@@ -343,8 +343,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flDeathDropHeight = 2000.0;
 		if(!Ally && VIPBuilding_Active())
 		{
-			baseNPC.flAcceleration = 9000.0;
-			baseNPC.flFrictionSideways = 10.0;
+			baseNPC.flAcceleration = 90000.0;
+			baseNPC.flFrictionSideways = 90.0;
 		}
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
@@ -2980,6 +2980,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SetEntityCollisionGroup(pThis, 1);
 		b_ThisEntityIgnored[pThis] = true;
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
+		RemoveNpcFromEnemyList(pThis, true);
 
 		if(!npc.m_bDissapearOnDeath)
 		{
@@ -7363,7 +7364,7 @@ public void Raidboss_Clean_Everyone()
 {
 	if(VIPBuilding_Active())
 		return;
-		
+
 	int base_boss;
 	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 	{
@@ -8656,9 +8657,11 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 	return MRES_ChangedOverride;
 }
 
-void RemoveNpcFromEnemyList(int npc)
+void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 {
-	SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+	if(ingoresetteam)
+		SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+		
 	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 	{

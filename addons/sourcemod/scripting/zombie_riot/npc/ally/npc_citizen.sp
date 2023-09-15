@@ -3044,33 +3044,17 @@ public void Citizen_ClotThink(int iNPC)
 	npc.m_bGetClosestTargetTimeAlly = false;
 }
 
-void Citizen_MiniBossSpawn(int spawner)
+void Citizen_MiniBossSpawn()
 {
-	int talkingTo;
-	float distance;
-	
-//	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
-	float vecMe[3];
-	GetEntPropVector(spawner, Prop_Data, "m_vecAbsOrigin", vecMe); 
-	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
 		if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
+			view_as<Citizen>(i).PlaySound(Cit_MiniBoss);
 			view_as<Citizen>(i).m_flidle_talk += 15.0;
-
-			vecTarget = WorldSpaceCenter(i);
-			float dist = GetVectorDistance(vecTarget, vecMe, true);
-			if(!talkingTo || dist < distance)
-			{
-				talkingTo = i;
-				distance = dist;
-			}
+			break;
 		}
 	}
-	
-	if(talkingTo)
-		view_as<Citizen>(talkingTo).PlaySound(Cit_MiniBoss);
 }
 
 void Citizen_MiniBossDeath(int entity)

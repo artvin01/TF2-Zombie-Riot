@@ -126,8 +126,6 @@ enum
 	WEAPON_CASINO = 55
 }
 
-ArrayList SpawnerList;
-
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
 int GrigoriMaxSells = 3;
@@ -280,7 +278,6 @@ int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
-float GlobalAntiSameFrameCheck_NPC_SpawnNext;
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
@@ -319,6 +316,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/music.sp"
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/spawns.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -465,6 +463,7 @@ void ZR_PluginStart()
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
+	Spawns_PluginStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -630,7 +629,7 @@ void ZR_MapStart()
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(2.0, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	char_MusicString1[0] = 0;
 	char_MusicString2[0] = 0;
@@ -643,6 +642,20 @@ void ZR_MapStart()
 	ResetMapStartSensalWeapon();
 	
 	//Store_RandomizeNPCStore(true);
+}
+
+public Action GlobalTimer(Handle timer)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			PlayerApplyDefaults(client);
+		}
+	}
+	Zombie_Delay_Warning();
+	Spawners_Timer();
+	return Plugin_Continue;
 }
 
 void ZR_ClientPutInServer(int client)
@@ -1448,12 +1461,6 @@ public void SetHealthAfterReviveAgain(int client)
 
 //Set hp spam after normal revive
 
-
-public void NPC_SpawnNextRequestFrame(bool force)
-{
-	NPC_SpawnNext(false, false, false);
-}
-
 stock void UpdatePlayerPoints(int client)
 {
 	int Points;
@@ -1841,4 +1848,41 @@ void GiveXP(int client, int xp)
 			PrintToChat(client, "%t", "None");
 		}
 	}
+}
+
+
+void PlayerApplyDefaults(int client)
+{
+	if(IsPlayerAlive(client) && GetClientTeam(client)==3)
+	{
+		if(IsFakeClient(client))
+		{
+			KickClient(client);	
+		}
+		else
+		{
+			ClientCommand(client, "retry");
+		}
+	}
+	else if(!IsFakeClient(client))
+	{
+		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
+		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
+		
+		if(point_difference > 0)
+		{
+			if(Waves_GetRound() +1 > 60)
+			{
+				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
+			}
+			else
+			{
+				GiveXP(client, point_difference);
+			}
+		}
+		
+		i_PreviousPointAmount[client] = PlayerPoints[client];
+    }
 }

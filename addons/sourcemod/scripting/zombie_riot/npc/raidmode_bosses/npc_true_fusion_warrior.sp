@@ -405,7 +405,7 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_flNextPull = GetGameTime(npc.index) + 5.0;
 		npc.m_bInKame = false;
 		
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		Building_RaidSpawned(npc.index);
 		return npc;
 	}

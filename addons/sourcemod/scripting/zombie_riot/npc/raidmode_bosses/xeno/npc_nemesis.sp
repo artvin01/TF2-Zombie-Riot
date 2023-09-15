@@ -241,7 +241,7 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
 		
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		Building_RaidSpawned(npc.index);
 		npc.StartPathing();
 		return npc;

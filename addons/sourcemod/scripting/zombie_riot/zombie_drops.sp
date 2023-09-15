@@ -82,11 +82,14 @@ public void Renable_Powerups()
 public void BalanceDropMinimum(float multi)
 {
 	f_PowerupSpawnMulti = multi;
-	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (multi));
-	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (multi));
-	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (Waves_GetRound() * 2)) * (multi));
-	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (Waves_GetRound() * 2)) * (multi));
-	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (Waves_GetRound() * 2)) * (multi));
+	if(VIPBuilding_Active())
+		f_PowerupSpawnMulti *= 4.0;
+		
+	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
 }
 
 

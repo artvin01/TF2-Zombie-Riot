@@ -1366,7 +1366,7 @@ public void OnMapEnd()
 	Store_RandomizeNPCStore(true);
 	OnRoundEnd(null, NULL_STRING, false);
 	OnMapEndWaves();
-	NPC_MapEnd();
+	Spawns_MapEnd();
 #endif
 
 #if defined RPG
@@ -1411,7 +1411,7 @@ public Action Command_MakeNiko(int client, int args)
 
 public void OnGameFrame()
 {
-	NPC_SpawnNext(false, false, false);
+	NPC_SpawnNext(false, false);
 }
 
 public Action Command_PlayViewmodelAnim(int client, int args)
@@ -2261,7 +2261,9 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 	{
 		if (!IsValidEntity(i_ObjectsSpawners[i]))
 		{
-			Spawner_AddToArray(entity);
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+				Spawns_AddToArray(entity);
+			
 			i_ObjectsSpawners[i] = entity;
 			return;
 		}

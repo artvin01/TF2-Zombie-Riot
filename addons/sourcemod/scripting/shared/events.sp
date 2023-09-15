@@ -64,7 +64,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
-	NPC_RoundStart();
 	Waves_RoundStart();
 #endif
 

@@ -55,9 +55,9 @@ static int SpawnMulti(int count, int players, bool elite)
 static float MoabSpeed(bool elite)
 {
 	if(CurrentRound < (elite ? 59 : 29))
-		return 62.5;
+		return 31.25;//62.5;
 	
-	return 75.0;
+	return 37.5;//75.0;
 }
 
 static int CurrentTier(bool elite)
@@ -214,7 +214,7 @@ methodmap Bloonarius < CClotBody
 
 		bool elite = StrContains(data, "classic") != -1;
 		
-		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "2.0", "1000000", ally, false, true, true, true));
+		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "3.0", "1000000", ally, false, true, true, true));
 		
 		i_NpcInternalId[npc.index] = BTD_BLOONARIUS;
 		i_NpcWeight[npc.index] = 5;
@@ -245,7 +245,7 @@ methodmap Bloonarius < CClotBody
 		{
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
-				Spawner_AddToArray(npc.index, true);
+				Spawns_AddToArray(npc.index, true);
 				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}
@@ -424,8 +424,8 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index, false, _, true);
 		npc.m_flGetClosestTargetTime = gameTime + 5.0;
 	}
-	
-	if(npc.m_iTarget > 0)
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);			
 		float distance = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -529,7 +529,7 @@ public void Bloonarius_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
 	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 	
-	Spawner_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -553,7 +553,7 @@ public void Bloonarius_NPCDeath(int entity)
 		
 		DispatchSpawn(entity_death);
 		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.0); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 3.0); 
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("bloonarius_death");
 		AcceptEntityInput(entity_death, "SetAnimation");

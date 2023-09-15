@@ -260,7 +260,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
 		
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		Building_RaidSpawned(npc.index);
 		npc.StartPathing();
 

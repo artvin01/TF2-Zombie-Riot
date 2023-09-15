@@ -636,7 +636,7 @@ methodmap Blitzkrieg < CClotBody
 		
 		
 		
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		Building_RaidSpawned(npc.index);
 		return npc;
 		

@@ -165,7 +165,7 @@ int Bloon_Health(bool fortified, int type)
 	if(type == Bloon_Ceramic)
 		return (BloonHealth[type] * 2) - BloonHealth[Bloon_Rainbow];
 	
-	return BloonHealth[type] * 2;
+	return BloonHealth[type];
 }
 
 void Bloon_MapStart()
