@@ -119,6 +119,10 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 
+### Recommended
+
+-[Tf2 Edict Free limiter Fix](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4) Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix
+
 ### Supported
 
 The SourceMod plugins / extensions listed below are not necessary for TF2 Zombie Riot to run but are supported nevertheless:
