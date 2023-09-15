@@ -26,7 +26,7 @@ static float f_DelayGiveOutlineNpc;
 void Npc_Sp_Precache()
 {
 	f_DelayGiveOutlineNpc = 0.0;
-	f_DelayNextWaveStartAdvancing = GetGameTime() + 600;
+	f_DelayNextWaveStartAdvancing = 0.0;
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 	g_particleMissText = PrecacheParticleSystem("miss_text");
@@ -171,7 +171,9 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	}
 	
 	if(!b_GameOnGoing) //no spawn if the round is over
+	{
 		return;
+	}
 	
 	if(!AllowSpecialSpawns)
 	{
@@ -193,7 +195,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if(IsValidEntity(entity) && entity != 0)
+			if(IsValidEntity(entity))
 			{
 				if(!b_IsAlliedNpc[entity])
 				{

@@ -32,6 +32,7 @@ bool Spawns_CanSpawnNext()
 	SpawnerData spawn;
 	float gameTime = GetGameTime();
 
+	//bool error = true;
 	int length = SpawnerList.Length;
 	for(int i; i < length; i++)
 	{
@@ -51,9 +52,14 @@ bool Spawns_CanSpawnNext()
 		if(!spawn.BaseBoss && GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
 			continue;
 		
+		//error = false;
 		if(spawn.Cooldown < gameTime)
 			return true;
 	}
+
+	//if(error)
+	//	PrintToChatAll("ERROR NO ACTIVE SPAWNS %d", length);
+	
 	return false;
 }
 
@@ -170,6 +176,9 @@ void Spawns_RemoveFromArray(int entity)
 
 void Spawners_Timer()
 {
+	if(!SpawnerList)
+		return;
+	
 	float f3_PositionTemp_2[3];
 	float f3_PositionTemp[3];
 		
@@ -238,21 +247,25 @@ void Spawners_Timer()
 		}
 	}
 
+	// Get max spawner count
+	int maxSpawners = Rogue_Mode() ? 1 : MapSpawnersActive.IntValue;
+
 	// Get list of points
 	ArrayList pointsList = new ArrayList();
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
+		if(spawn.BaseBoss)
+			maxSpawners++;
+		
 		pointsList.Push(spawn.Points);
     }
+	
+	if(maxSpawners > length)
+		maxSpawners = length;
 
 	// Sort points
 	pointsList.Sort(Sort_Ascending, Sort_Float);
-
-	// Get max spawner count
-	int maxSpawners = Rogue_Mode() ? 1 : MapSpawnersActive.IntValue;
-	if(maxSpawners > length)
-		maxSpawners = length;
 	
 	// Get points of the X ranked score
 	HighestPoints = pointsList.Get(0);
