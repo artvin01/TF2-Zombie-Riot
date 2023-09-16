@@ -1379,6 +1379,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= Zombie_DelayExtraSpeed();
 		}
+		if(b_IsAlliedNpc[this.index])
+		{
+			if(VIPBuilding_Active())
+				speed_for_return *= 2.0;
+		}
 #endif
 		return speed_for_return; 
 	}
