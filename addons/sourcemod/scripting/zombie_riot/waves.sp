@@ -1860,7 +1860,7 @@ float Zombie_DelayExtraSpeed()
 }
 
 
-float DoGlobalMultiScaling()
+void DoGlobalMultiScaling()
 {
 	float playercount = float(CountPlayersOnRed());
 			

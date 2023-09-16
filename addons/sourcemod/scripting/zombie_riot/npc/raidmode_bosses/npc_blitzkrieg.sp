@@ -566,6 +566,7 @@ methodmap Blitzkrieg < CClotBody
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
 		
+		bool final = StrContains(data, "final_item") != -1;
 		fl_blitzscale[npc.index] = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
 		if(i_currentwave[npc.index]<30)
 		{
