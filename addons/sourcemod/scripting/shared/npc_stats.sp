@@ -8708,7 +8708,7 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 {
-	if(ingoresetteam)
+	if(!ingoresetteam)
 		SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
 		
 	//set to red just incase!

@@ -1183,7 +1183,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			b_RageAnimated[npc.index] = false;
-			RaidModeTime += 85.0;
+			RaidModeTime += 60.0;
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;

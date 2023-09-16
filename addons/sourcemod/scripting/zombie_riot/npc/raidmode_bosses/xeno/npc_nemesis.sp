@@ -296,12 +296,24 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			npc.m_flRangedArmor = 0.30;
 		}
 		//silence doesnt completly delete it, but moreso, nerf it.
-
-		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3500;
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		if(f_NemesisSpecialDeathAnimation[npc.index] + 14.0 > GetGameTime(npc.index))
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			
+			float ProjLoc[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+			ProjLoc[2] += 70.0;
+
+			ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
+			ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
+			ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
+			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
+			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			}
 		}
 
 		if(f_NemesisSpecialDeathAnimation[npc.index] + 0.1 > GetGameTime(npc.index))
@@ -317,7 +329,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 20;
 			}
 		}
-		if(f_NemesisSpecialDeathAnimation[npc.index] + 3.0 > GetGameTime(npc.index))
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 3.0 > GetGameTime(npc.index))
 		{
 			if(npc.m_iChanged_WalkCycle != 12) 	
 			{
@@ -342,13 +354,23 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				int iActivity = npc.LookupActivity("ACT_FT_DOWN_3");
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.m_iChanged_WalkCycle = 14;
+				npc.SetPlaybackRate(0.4);
+				if(IsValidEntity(npc.m_iWearable1))
+				{
+					RemoveEntity(npc.m_iWearable1);
+				}
+				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
+				SetVariantString("1.0");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			}
 		}
-		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.0 > GetGameTime(npc.index))
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.5 < GetGameTime(npc.index))
 		{
 			f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
 			if(npc.m_iChanged_WalkCycle != 10) 	
 			{
+				i_GunMode[npc.index] = 1;
+				i_GunAmmo[npc.index] = 250;
 				int iActivity = npc.LookupActivity("ACT_FT_WALK");
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.m_iChanged_WalkCycle = 10;
@@ -359,13 +381,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 				npc.StartPathing();
 				f_NpcTurnPenalty[npc.index] = 1.0;
-				if(IsValidEntity(npc.m_iWearable1))
-				{
-					RemoveEntity(npc.m_iWearable1);
-				}
-				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
-				SetVariantString("1.0");
-				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			}	
 		}
 		return;
@@ -406,6 +421,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 			i_GunMode[npc.index] = 1;
 			i_GunAmmo[npc.index] = 150;
+			npc.m_flAttackHappens = 0.0;
 
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
 			SetVariantString("1.0");
@@ -806,7 +822,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		Most effective way is backstabbing during melee attacks.
 		*/
 
-
 		switch(ActionToTake)
 		{
 			case 1:
@@ -926,9 +941,11 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		{
 			RemoveEntity(npc.m_iWearable1);
 		}
+		RaidModeTime += 10.0;
 		i_GunMode[npc.index] = 1;
 		i_GunAmmo[npc.index] = 250;
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 50.0;
+		npc.m_flAttackHappens = 0.0;
 		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
 		npc.PlayBoomSound();
 		npc.Anger = true; //	>:(

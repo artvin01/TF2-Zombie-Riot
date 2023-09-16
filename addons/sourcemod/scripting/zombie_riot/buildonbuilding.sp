@@ -17,6 +17,10 @@ static const float ViewHeights[] =
 	68.0
 };
 */
+void RemoveBuildingDependency(int entity)
+{
+	iBuildingDependency[entity] = 0;
+}
 static DynamicHook dtIsPlacementPosValid;
 
 void OnPluginStart_Build_on_Building()

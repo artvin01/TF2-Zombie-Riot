@@ -1873,6 +1873,8 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
+	bool autoSeek = (npc.m_bCamo || VIPBuilding_Active());
+
 	// See if our target is still valid
 	if(npc.m_iTarget && (npc.m_iGunType == Cit_None || !IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo)))
 	{
@@ -1886,7 +1888,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, npc.m_bCamo ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? 99999.9 : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, !autoSeek);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2076,7 +2078,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN", 240.0);
@@ -2086,7 +2088,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_iWearable1 > 0)
 							AcceptEntityInput(npc.m_iWearable1, "Disable");
 					}
-					else if(!npc.m_bCamo && distance < 22500.0)	// Too close for the Pistol
+					else if(!autoSeek && distance < 22500.0)	// Too close for the Pistol
 					{
 						npc.SetActivity("ACT_RUN", 240.0);
 						walkStatus = 3;	// Back off
@@ -2166,7 +2168,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RIFLE", 210.0);
@@ -2175,7 +2177,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!npc.m_bCamo && distance < 150000.0)	// Too close, walk backwards
+						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_RIFLE", 90.0);
 							walkStatus = 2;	// Back off
@@ -2246,7 +2248,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2255,7 +2257,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!npc.m_bCamo && distance < 150000.0)	// Too close, walk backwards
+						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_AR2", 90.0);
 							walkStatus = 2;	// Back off
@@ -2331,7 +2333,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2407,14 +2409,14 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RPG", 240.0);
 							walkStatus = 3;	// Back off
 						}
 					}
-					else if(!npc.m_bCamo && distance < 22500.0)	// Too close for the RPG
+					else if(!autoSeek && distance < 22500.0)	// Too close for the RPG
 					{
 						npc.SetActivity("ACT_RUN_RPG", 240.0);
 						walkStatus = 3;	// Back off

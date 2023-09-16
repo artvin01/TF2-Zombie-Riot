@@ -556,7 +556,8 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_summoner"))
 				{
 					EquipDispenser(client, entity, 9);
-				}					
+				}	
+				RemoveBuildingDependency(entity);				
 			}
 		}
 	}
