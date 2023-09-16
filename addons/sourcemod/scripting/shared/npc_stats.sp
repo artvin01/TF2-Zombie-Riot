@@ -80,6 +80,9 @@ static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_EntityInCrouchSpot[MAXENTITIES];
 static bool b_NpcResizedForCrouch[MAXENTITIES];
 
+int i_EntitiesHitAoeSwing_NpcSwing[MAXENTITIES]= {-1, ...};	//Who got hit
+int i_EntitiesHitAtOnceMax_NpcSwing; //How many do we stack
+
 public Action Command_PetMenu(int client, int args)
 {
 	//What are you.
@@ -2162,7 +2165,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
 	   float vecSwingStartOffset = 55.0,
 	    int Npc_type = 0,
-		 int Ignore_Buildings = 0)
+		 int Ignore_Buildings = 0,
+		  int countAoe = 0)
 	{
 		switch(Npc_type)
 		{
@@ -2214,7 +2218,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		bool ingore_buildings = view_as<bool>(Ignore_Buildings);
 #endif
 		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		if(countAoe > 0)
+		{
+			Zero(i_EntitiesHitAoeSwing_NpcSwing);
+			i_EntitiesHitAtOnceMax_NpcSwing = countAoe; //How many do we stack
+			trace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, MASK_NPCSOLID | MASK_PLAYERSOLID,  ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
+		}	
+		else
+		{
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		}
 		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
@@ -8763,6 +8776,45 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 	if(SubjectAbsVel[0] <= 20.0 && SubjectAbsVel[1] <= 20.0 && SubjectAbsVel[2] <= 20.0)
 	{
 		return true;
+	}
+	return false;
+}
+
+
+
+bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int contentsMask, int client)
+{
+	bool type = BulletAndMeleeTrace(entity, contentsMask, client);
+	if(!type) //if it collised, return.
+	{
+		return type;
+	}
+
+	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
+	{
+		if(i_EntitiesHitAoeSwing_NpcSwing[i] == -1)
+		{
+			i_EntitiesHitAoeSwing_NpcSwing[i] = entity;
+			break;
+		}
+	}
+	return false;
+}
+bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int contentsMask, int client)
+{
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, contentsMask, client);
+	if(!type) //if it collised, return.
+	{
+		return type;
+	}
+
+	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
+	{
+		if(i_EntitiesHitAoeSwing_NpcSwing[i] == -1)
+		{
+			i_EntitiesHitAoeSwing_NpcSwing[i] = entity;
+			break;
+		}
 	}
 	return false;
 }

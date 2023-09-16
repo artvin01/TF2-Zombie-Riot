@@ -873,93 +873,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			//Target close enough to hit
-			if(flDistanceToTarget < (125.0* 125.0) && !npc.m_bInKame || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-				{
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 5000.0);
-						if(npc.DoSwingTrace(swingTrace, closest,_,_,_,1))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									float damage = 24.0;
-									float damage_rage = 28.0;
-									if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-									{
-										damage = 20.0; //nerf
-										damage_rage = 21.0; //nerf
-									}
-									else if(ZR_GetWaveCount()+1 > 55)
-									{
-										damage = 19.0; //nerf
-										damage_rage = 20.0; //nerf
-									}
-
-									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
-											
-									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
-										
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-									bool Knocked = false;
-									
-									if(IsValidClient(target))
-									{
-										if (IsInvuln(target))
-										{
-											Knocked = true;
-											Custom_Knockback(npc.index, target, 900.0, true);
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-										}
-										else
-										{
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-										}
-									}
-									
-									if(!Knocked)
-										Custom_Knockback(npc.index, target, 650.0); 
-								} 
-							}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-					}
-				}
-			}
+			TrueFusionSelfDefense(npc, GetGameTime(npc.index));
 		}
 		else
 		{
@@ -969,7 +883,6 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	if  (!npc.m_bInKame)
 	{
 		npc.StartPathing();
-		
 	}
 	npc.PlayIdleAlertSound();
 }
@@ -1659,4 +1572,116 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			}
 */
 		}
+}
+
+
+void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
+{
+	if(npc.m_bInKame)
+		return;
+
+	//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(target);
+
+							float damage = 24.0;
+							float damage_rage = 28.0;
+							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+							{
+								damage = 20.0; //nerf
+								damage_rage = 21.0; //nerf
+							}
+							else if(ZR_GetWaveCount()+1 > 55)
+							{
+								damage = 19.0; //nerf
+								damage_rage = 20.0; //nerf
+							}
+							if(!npc.Anger)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
+									
+							if(npc.Anger)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
+								
+							
+							// Hit particle
+							
+							
+							// Hit sound
+							npc.PlayMeleeHitSound();
+							bool Knocked = false;
+							
+							if(IsValidClient(target))
+							{
+								if (IsInvuln(target))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, target, 900.0, true);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+								else
+								{
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+							}
+							
+							if(!Knocked)
+								Custom_Knockback(npc.index, target, 650.0); 
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+			{
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.m_iTarget = Enemy_I_See;
+
+					npc.PlayMeleeSound();
+
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+							
+					npc.m_flAttackHappens = gameTime + 0.3;
+
+					npc.m_flNextMeleeAttack = gameTime + 0.85;
+				}
+			}
+		}
+	}
 }

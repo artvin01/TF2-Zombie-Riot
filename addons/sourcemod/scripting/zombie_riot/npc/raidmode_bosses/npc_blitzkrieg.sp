@@ -1009,7 +1009,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 				npc.m_flReloadIn = GetGameTime(npc.index) + (10.0 * fl_LifelossReload[npc.index]);
 				i_PrimaryRocketsFired[npc.index] = 0;	//Resets fired rockets to 0 for when reload ends.
 				b_Are_we_reloading[npc.index] = true;
-				fl_attack_timeout[npc.index] = GetGameTime(npc.index) + (10.0 * fl_LifelossReload[npc.index]) + 2.5;
+				fl_attack_timeout[npc.index] = GetGameTime(npc.index) + (10.0 * fl_LifelossReload[npc.index]) + 1.0;
 				if(IsValidEntity(npc.m_iWearable1))
 					RemoveEntity(npc.m_iWearable1);
 				npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_ubersaw/c_ubersaw.mdl");	//Replaces current weapon with uber saw.
@@ -1046,100 +1046,15 @@ public void Blitzkrieg_ClotThink(int iNPC)
 						npc.m_flAttackHappens = 0.0;
 					}
 				}
-				else
-				{
-					npc.StartPathing();
-				}
-			}
-			else
-			{
-				npc.StartPathing();
 			}
 			if(b_Are_we_reloading[npc.index])	//Melee logic for when we are shoping for rockets. aka reloading.
 			{
-			//Target close enough to hit
-			if(flDistanceToTarget < 40000 || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
-				{
-					//Play attack ani
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flSpeed = fl_move_speed[npc.index];
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayPullSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.43;
-						npc.m_flAttackHappenswillhappen = true;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.9;
-					}
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-						
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								float meleedmg;
-								meleedmg = 10.0 * i_HealthScale[npc.index];
-								SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 0.85, DMG_CLUB, -1, _, vecHit);
-								
-								npc.PlayMeleeHitSound();		
-								bool Knocked = false;
-									
-								if(IsValidClient(target))
-								{
-									if (IsInvuln(target))
-									{
-										Knocked = true;
-										Custom_Knockback(npc.index, target, 900.0, true);
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
-									else
-									{
-										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-									}
-								}
-									
-								if(!Knocked)
-									Custom_Knockback(npc.index, target, 650.0); 
-								
-							
-								// Hit sound
-								npc.PlayPullSound();
-							
-							} 
-						}
-						delete swingTrace;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-					}
-				}
+				//Target close enough to hit
+				BlitzKriegSelfDefense(npc, GetGameTime(npc.index));
 			}
-			else
-			{
-				npc.StartPathing();
-			}
-		}
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -1241,7 +1156,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		
 		i_maxfirerockets[npc.index] =25;	//Buff's the clipsize
 		
-		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.5;
+		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 		
 		fl_LifelossReload[npc.index] = 0.8;	//Buff's the reload speed.
 		
@@ -1302,7 +1217,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		
 		i_maxfirerockets[npc.index] =40;
 		
-		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.5;
+		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 		
 		
 		fl_LifelossReload[npc.index] = 0.75;
@@ -1361,7 +1276,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		
 		i_maxfirerockets[npc.index] = 65;
 		
-		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.5;
+		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 		
 		fl_move_speed[npc.index] = 280.0;
 		
@@ -1437,7 +1352,7 @@ public Action Blitzkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		
 		npc.m_flReloadIn = GetGameTime(npc.index);
 		
-		fl_attack_timeout[npc.index] =GetGameTime(npc.index)+ 1.5;
+		fl_attack_timeout[npc.index] =GetGameTime(npc.index)+ 1.0;
 		
 		float charge=6.0;	//Charge time of blitzlight MUST be set here
 		float timer=20.0;	//Duration of blitzlight MUST be set here
@@ -2215,10 +2130,10 @@ public void BlitzLight_DealDamage(int entity)
 	if(i_BlitzLight_dmg_throttle[npc.index] > 6)	//do damage 10 times a second.
 	{
 		i_BlitzLight_dmg_throttle[npc.index] = 0;	//damage throttle
-		float dmg_pen = 0.25;
+		float dmg_pen = 0.85;
 		if(i_currentwave[npc.index]>=60)
 		{
-			dmg_pen = 0.375;	//A slight buff to damage on wave 60
+			dmg_pen = 0.9;	//A slight buff to damage on wave 60
 		}
 		Explode_Logic_Custom((BlitzLight_DMG[npc.index]*i_HealthScale[npc.index]) * dmg_pen, entity, entity, -1, beamLoc, BlitzLight_DMG_Radius[npc.index]*1.25 , _ , _ , true);
 		//CPrintToChatAll("dmg: %fl", BlitzLight_DMG[npc.index]);
@@ -2359,4 +2274,98 @@ public void Rocket_Blitz_StartTouch(int entity, int target)
 	TE_ParticleInt(g_particleBLITZ_IMPACTTornado, pos1);
 	TE_SendToAll();
 	RemoveEntity(entity);
+}
+
+
+
+void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
+{
+	//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(target);
+							float meleedmg;
+							meleedmg = 12.5 * i_HealthScale[npc.index];
+							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
+							
+							npc.PlayMeleeHitSound();		
+							bool Knocked = false;
+								
+							if(IsValidClient(target))
+							{
+								if (IsInvuln(target))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, target, 900.0, true);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+								else
+								{
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+							}
+								
+							if(!Knocked)
+								Custom_Knockback(npc.index, target, 650.0); 
+							
+						
+							// Hit sound
+							npc.PlayPullSound();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+			{
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.m_iTarget = Enemy_I_See;
+
+					npc.PlayMeleeSound();
+
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+							
+					npc.m_flAttackHappens = gameTime + 0.3;
+
+					npc.m_flNextMeleeAttack = gameTime + 0.85;
+				}
+			}
+		}
+	}
 }

@@ -775,59 +775,62 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			
 			if(IsValidEnemy(npc.index, target))
 			{
+				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, { 150.0, 150.0, 150.0 }, { -150.0, -150.0, -150.0 })) 
-				{
-								
-					int target_traced = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target_traced > 0) 
-					{
-						float damage = 24.0;
-						damage *= 1.15;
-
-						SDKHooks_TakeDamage(target_traced, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-							
-						
-						// Hit particle
-						
-						
-						// Hit sound
-						npc.PlayMeleeHitSound();
-						
-						bool Knocked = false;
-									
-						if(IsValidClient(target_traced))
-						{
-							if (IsInvuln(target_traced))
-							{
-								Knocked = true;
-								Custom_Knockback(npc.index, target_traced, 900.0, true);
-								if(!NpcStats_IsEnemySilenced(npc.index))
-								{
-									TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
-								}
-							}
-							else
-							{
-								if(!NpcStats_IsEnemySilenced(npc.index))
-								{
-									TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
-								}
-							}
-						}
-									
-						if(!Knocked)
-							Custom_Knockback(npc.index, target_traced, 650.0); 
-					} 
-				}
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(targetTrace);
+
+							float damage = 24.0;
+							damage *= 1.15;
+
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+								
+							
+							// Hit particle
+							
+							
+							// Hit sound
+							npc.PlayMeleeHitSound();
+							
+							bool Knocked = false;
+										
+							if(IsValidClient(targetTrace))
+							{
+								if (IsInvuln(targetTrace))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, targetTrace, 900.0, true);
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+								else
+								{
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+							}
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, targetTrace, 650.0); 
+						} 
+					}
+				}
 			}
 		}
 	}

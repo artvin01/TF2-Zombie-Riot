@@ -604,54 +604,59 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(npc.m_flAttackHappens < gameTime)
 						{
 							npc.m_flAttackHappens = 0.0;
-							
+							int HowManyEnemeisAoeMelee = 64;
 							Handle swingTrace;
-							npc.FaceTowards(vecTarget, 15000.0);
-							if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-							{	
-								int target = TR_GetEntityIndex(swingTrace);
-								if(target == npc.m_iTarget) 
+							npc.FaceTowards(vecTarget, 20000.0);
+							npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+							delete swingTrace;
+							for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+							{
+								if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 								{
-									KillFeed_SetKillIcon(npc.index, "club");
+									if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+									{
+										int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+										float vecHit[3];
+										vecHit = WorldSpaceCenter(target);
 
-									float vecHit[3];
-									TR_GetEndPosition(vecHit, swingTrace);
-									if(npc.Anger)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);	
-									}
-									
-									npc.PlayMeleeHitSound();
-									
-									bool Knocked = false;
-									
-									if(IsValidClient(target))
-									{
-										if (IsInvuln(target))
+										KillFeed_SetKillIcon(npc.index, "club");
+
+										if(npc.Anger)
 										{
-											Knocked = true;
-											Custom_Knockback(npc.index, target, 750.0, true);
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);
 										}
 										else
 										{
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);	
 										}
-									}
-									
-									if(!Knocked)
-										Custom_Knockback(npc.index, target, 550.0); 
+										
+										npc.PlayMeleeHitSound();
+										
+										bool Knocked = false;
+										
+										if(IsValidClient(target))
+										{
+											if (IsInvuln(target))
+											{
+												Knocked = true;
+												Custom_Knockback(npc.index, target, 750.0, true);
+												TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+												TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											}
+											else
+											{
+												TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+												TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											}
+										}
+										
+										if(!Knocked)
+											Custom_Knockback(npc.index, target, 550.0); 
 
-									npc.m_flSwitchCooldown = 0.0;
+										npc.m_flSwitchCooldown = 0.0;
+									}
 								} 
 							}
-							delete swingTrace;
 						}
 					}
 					else if(npc.m_flNextMeleeAttack < gameTime && distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
