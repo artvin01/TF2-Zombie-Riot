@@ -56,7 +56,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 public void MagicRestore_MapStart()
 {
 	PrecacheSound("player/pl_scout_dodge_can_drink.wav");
-
+	Zero(Handle_on);
 }
 
 public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
