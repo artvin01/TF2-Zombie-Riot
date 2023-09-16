@@ -2315,8 +2315,7 @@ public void CreateEarthquake(float position[3], float duration, float radius, fl
 	}
 }
 
-
-bool TF2U_GetWearable(int client, int &entity, int &index, const char[] classname = "tf_wear*")
+stock bool TF2U_GetWearable(int client, int &entity, int &index, const char[] classname = "tf_wear*")
 {
 	/*#if defined __nosoop_tf2_utils_included
 	if(Loaded)

@@ -17,17 +17,20 @@ enum //hitgroup_t
 
 #if defined ZR
 static Handle SyncHudRaid;
+static float f_DelayNextWaveStartAdvancing;
+static float f_DelayGiveOutlineNpc;
 #endif
 
 static Handle SyncHud;
 static bool b_DoNotDisplayHurtHud[MAXENTITIES];
-static float f_DelayNextWaveStartAdvancing;
-static float f_DelayGiveOutlineNpc;
+
 void Npc_Sp_Precache()
 {
+#if defined ZR
 	f_DelayGiveOutlineNpc = 0.0;
 	f_DelayNextWaveStartAdvancing = 0.0;
 	f_DelayNextWaveStartAdvancingDeathNpc = 0.0;
+#endif
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
 	g_particleMissText = PrecacheParticleSystem("miss_text");
@@ -1154,6 +1157,7 @@ void GiveRageOnDamage(int client, float damage)
 		SetEntPropFloat(client, Prop_Send, "m_flRageMeter", rage);
 	}
 }
+
 void Generic_OnTakeDamage(int victim, int attacker)
 {
 	if(attacker > 0)
@@ -2164,6 +2168,7 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 	}
 	return false;
 }
+
 #if defined RPG
 bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {
@@ -2371,7 +2376,7 @@ void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float &damage, int
 }
 
 #if defined RPG
-bool OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+void OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {	
 	if(IsValidEntity(weapon))
 	{
@@ -2410,7 +2415,7 @@ bool OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float 
 			}
 		}	
 		damage = RpgCC_ContractExtrasNpcOnTakeDamage(victim, attacker, damage, damagetype, weapon, slot);
-	}	
+	}
 }
 #endif
 bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -2913,17 +2918,20 @@ void DisplayRGBHealthValue(int Health_init, int Maxhealth_init, int &red, int &g
 	}
 }
 
+#if defined ZR
 void GiveProgressDelay(float Time)
 {
 	f_DelayNextWaveStartAdvancing = GetGameTime() + Time;
 }
-
+#endif
 
 int MaxNpcEnemyAllowed()
 {
+#if defined ZR
 	if(VIPBuilding_Active())
 	{
 		return RoundToCeil(float(NPC_HARD_LIMIT) * 1.5);
 	}
+#endif
 	return NPC_HARD_LIMIT;
 }

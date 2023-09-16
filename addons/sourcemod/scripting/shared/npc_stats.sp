@@ -341,11 +341,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flFrictionSideways = 5.0;
 		baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
 		baseNPC.flDeathDropHeight = 2000.0;
+
+#if defined ZR
 		if(!Ally && VIPBuilding_Active())
 		{
 			baseNPC.flAcceleration = 90000.0;
 			baseNPC.flFrictionSideways = 90.0;
 		}
+#endif
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
@@ -2729,6 +2732,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			cvar_nbAvoidObstacle.BoolValue = false;
 		}
+#if defined ZR
 		if(VIPBuilding_Active() && !b_IsAlliedNpc[this.index])
 		{
 			if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
@@ -2737,6 +2741,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				f_UnstuckSuckMonitor[this.index] = GetGameTime() + 1.0;
 			}
 		}
+#endif
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
 
@@ -2894,8 +2899,10 @@ static void OnDestroy(CClotBody body)
 {
 	body.GetPathFollower().Destroy();
 	
+#if defined ZR
 	if(IsValidEntity(body.m_iTeamGlow))
 		RemoveEntity(body.m_iTeamGlow);
+#endif
 
 	if(IsValidEntity(body.m_iSpawnProtectionEntity))
 		RemoveEntity(body.m_iSpawnProtectionEntity);
@@ -2997,6 +3004,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		if(IsValidEntity(npc.m_iFreezeWearable))
 			RemoveEntity(npc.m_iFreezeWearable);
 		
+#if defined ZR
 		if(!b_IsAlliedNpc[pThis] && !b_DoNotGiveWaveDelay[pThis])
 		{
 			if(f_DelayNextWaveStartAdvancingDeathNpc < GetGameTime() + 1.5)
@@ -3005,7 +3013,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			}
 		}
 		
-#if defined ZR
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
 			Raidboss_Clean_Everyone();

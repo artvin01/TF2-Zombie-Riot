@@ -53,7 +53,10 @@ static int PlayerIndex[10];
 static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
+
+#if defined ZR
 static int TeutonModelIndex;
+#endif
 
 void ViewChange_MapStart()
 {
@@ -72,8 +75,10 @@ void ViewChange_MapStart()
 		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
 
+#if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
-	
+#endif
+
 	PrecacheModel(NIKO_PLAYERMODEL);
 }
 
