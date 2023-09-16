@@ -137,6 +137,7 @@ bool b_Schwertkrieg_Alive= false;
 bool b_Donnerkrieg_Alive = false;
 bool b_Blitz_Alive = false;
 bool b_Valid_Wave = false;
+bool b_Sub_Valid_Wave = false;
 
 bool Schwert_Takeover = false;
 bool Schwert_Takeover_Active = false;
@@ -230,6 +231,7 @@ public void Blitzkrieg_OnMapStart()
 	b_Schwertkrieg_Alive= false;	//I SWEAR I KNOW WHAT IM DOING
 	b_Donnerkrieg_Alive = false;
 	b_Valid_Wave = false;
+	b_Sub_Valid_Wave = false;
 	b_Begin_Dialogue = false;
 	b_angered = false;
 	b_Blitz_Alive = false;
@@ -387,6 +389,7 @@ methodmap Blitzkrieg < CClotBody
 
 		b_angered = false;
 		b_Valid_Wave = false;
+		b_Sub_Valid_Wave = false;
 		b_Begin_Dialogue = false;
 		b_Blitz_Alive = true;
 		
@@ -571,15 +574,21 @@ methodmap Blitzkrieg < CClotBody
 		else if(i_currentwave[npc.index]>=60)
 		{
 			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
+			
 		}
 		if(i_currentwave[npc.index]>60 && !final)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
 		}
+		bool final = StrContains(data, "final_item") != -1;
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 			b_Valid_Wave = true;
+		}
+		if(i_currentwave[npc.index]>=60)
+		{
+			b_Sub_Valid_Wave = true;
 			switch(GetRandomInt(1,2))
 			{
 				case 1:	//kebab

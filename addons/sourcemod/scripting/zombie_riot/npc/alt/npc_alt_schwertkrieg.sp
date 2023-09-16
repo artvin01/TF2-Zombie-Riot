@@ -167,6 +167,7 @@ methodmap Schwertkrieg < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 			
+		b_angered = false;
 		
 		//IDLE
 		npc.m_flSpeed = Schwertkrieg_Speed;
@@ -234,7 +235,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 {
 	Schwertkrieg npc = view_as<Schwertkrieg>(iNPC);
 	
-	if(!b_Blitz_Alive && !b_Begin_Dialogue && Schwert_Takeover && b_Valid_Wave)
+	if(!b_Blitz_Alive && !b_Begin_Dialogue && Schwert_Takeover && b_Sub_Valid_Wave)
 	{
 		if(!Donner_Takeover_Active)
 		{
@@ -558,27 +559,29 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 	}
 	
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && b_Valid_Wave)
+	if(RoundToCeil(damage)>=Health && b_Sub_Valid_Wave)
 	{
-		b_DoNotUnStuck[npc.index] = true;
-		b_CantCollidieAlly[npc.index] = true;
-		b_CantCollidie[npc.index] = true;
-		SetEntityCollisionGroup(npc.index, 24);
-		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him
-		b_NpcIsInvulnerable[npc.index] = true;
-        
-		b_Schwertkrieg_Alive = false;
-		RemoveNpcFromEnemyList(npc.index);
-		GiveProgressDelay(20.0);
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-		damage = 0.0;
-		if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)
+		if(b_Valid_Wave)
 		{
-			b_timer_locked = true;
-			g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
-			
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him
+			b_NpcIsInvulnerable[npc.index] = true;
+	        
+			b_Schwertkrieg_Alive = false;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(20.0);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)
+			{
+				b_timer_locked = true;
+				g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+				
+			}
 		}
-		
 		if(Schwert_Takeover_Active && !b_schwert_loocked)
 		{
 			b_schwert_loocked = true;
@@ -615,8 +618,6 @@ public void Schwertkrieg_NPCDeath(int entity)
 
 	
 	b_Schwertkrieg_Alive = false;
-	
-	b_angered = false;
 	
 	b_Valid_Wave = false;
 	

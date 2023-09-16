@@ -212,6 +212,9 @@ methodmap Donnerkrieg < CClotBody
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
 		
+		
+		b_angered = false;
+		
 		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
@@ -283,7 +286,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
 	
-	if(!b_Blitz_Alive && !b_Begin_Dialogue && Donner_Takeover && b_Valid_Wave)
+	if(!b_Blitz_Alive && !b_Begin_Dialogue && Donner_Takeover && b_Sub_Valid_Wave)
 	{
 		if(!Donner_Takeover_Active)
 		{
@@ -845,7 +848,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 	}
 	
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health)
+	if(RoundToCeil(damage)>=Health && b_Sub_Valid_Wave)
 	{
 		if(b_Valid_Wave)
 		{
@@ -867,29 +870,26 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 				g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
 				
 			}
-			b_angered = true;
-			
-			if(Donner_Takeover_Active && !b_donner_locked)
-			{
-				b_donner_locked = true;
-				RaidModeTime += 22.5;
-				Donner_Takeover = false;
-				Donner_Takeover_Active = false;
-				npc.m_bThisNpcIsABoss = false;
-					
-				//prepare takeover for schwert
-				if(!b_Blitz_Alive && !Schwert_Takeover_Active)
-					RaidBossActive = INVALID_ENT_REFERENCE;
-				if(b_Schwertkrieg_Alive)
-				{
-					Schwert_Takeover = true;
-					Schwert_Takeover_Active = false;
-				}
-			}
-				
 		}
-		
-		
+		b_angered = true;
+			
+		if(Donner_Takeover_Active && !b_donner_locked)
+		{
+			b_donner_locked = true;
+			RaidModeTime += 22.5;
+			Donner_Takeover = false;
+			Donner_Takeover_Active = false;
+			npc.m_bThisNpcIsABoss = false;
+				
+			//prepare takeover for schwert
+			if(!b_Blitz_Alive && !Schwert_Takeover_Active)
+				RaidBossActive = INVALID_ENT_REFERENCE;
+			if(b_Schwertkrieg_Alive)
+			{
+				Schwert_Takeover = true;
+				Schwert_Takeover_Active = false;
+			}
+		}
 		return Plugin_Handled;
 	}
 	
@@ -906,8 +906,6 @@ public void Donnerkrieg_NPCDeath(int entity)
 	
 	
 	b_Donnerkrieg_Alive = false;
-	
-	b_angered = false;
 	
 	b_Valid_Wave = false;
 	
