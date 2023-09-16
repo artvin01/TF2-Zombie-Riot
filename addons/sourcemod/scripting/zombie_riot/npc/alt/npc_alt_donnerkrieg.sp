@@ -1279,6 +1279,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }

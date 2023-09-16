@@ -842,6 +842,7 @@ public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }

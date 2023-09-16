@@ -525,11 +525,11 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 2.65;
+						damage *= 1.75;
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{
-						damage *= 1.75;
+						damage *= 1.25;
 					}
 							
 					float flPos[3]; // original

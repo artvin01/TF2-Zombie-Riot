@@ -1216,6 +1216,7 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 	{
 		delete trace;
 	}
+	delete trace;
 
 }
 static bool Quincy_BEAM_TraceUsers(int entity, int contentsMask, int client)

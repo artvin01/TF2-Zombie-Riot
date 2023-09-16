@@ -559,6 +559,7 @@ static void TBB_Tick(int client)
 	{
 		delete trace;
 	}
+		delete trace;
 }
 
 static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, float damage, int weapon)

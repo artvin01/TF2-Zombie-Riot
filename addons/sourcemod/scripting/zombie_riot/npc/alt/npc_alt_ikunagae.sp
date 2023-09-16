@@ -690,6 +690,7 @@ static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], i
 	{
 		delete trace;
 	}
+	delete trace;
 }
 static void Scaramouche_Do_Effect_And_Attack(int client, float EndLoc[3])
 {
@@ -963,6 +964,7 @@ static void Spin_To_Win_Clearance_Check(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	if(Total_Hit/360>=0.75)
 	{
@@ -1372,6 +1374,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }

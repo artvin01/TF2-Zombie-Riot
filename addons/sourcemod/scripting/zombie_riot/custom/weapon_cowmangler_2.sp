@@ -367,4 +367,5 @@ static void TBB_Tick(int client)
 	{
 		delete trace;
 	}
+	delete trace;
 }

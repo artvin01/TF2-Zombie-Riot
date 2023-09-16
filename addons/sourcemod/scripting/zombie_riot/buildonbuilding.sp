@@ -559,13 +559,13 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 
 		if (EntityHit <= 0 || EntityHit==self)
 		{
-			CloseHandle(trace);
+			delete trace;
 			return false;
 		}
 
 		if(!i_IsABuilding[EntityHit])
 		{
-			CloseHandle(trace);
+			delete trace;
 			return false;
 		}
 
@@ -579,7 +579,7 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 		}
 	}
 
-	CloseHandle(trace);
+	delete trace;
 
 	return foundbuilding;
 }

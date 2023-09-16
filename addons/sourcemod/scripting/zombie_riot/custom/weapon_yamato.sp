@@ -314,7 +314,7 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
 		
 		Handle test = TR_TraceRayFilterEx(UserLoc, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 		TR_GetEndPosition(test_vec, test);
-		CloseHandle(test);
+		delete test;
 		
 		fl_last_known_loc[client]= test_vec;
 		

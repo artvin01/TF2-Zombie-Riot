@@ -1193,6 +1193,12 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
+		static char buffer[36];
+		GetEntityClassname(entity, buffer, sizeof(buffer));
+		if(!StrContains(buffer, "obj_dispenser"))
+		{
+			return Plugin_Stop;
+		}
 		SetEntProp(entity, Prop_Send, "m_iAmmoShells", 150);
 		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
 		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
@@ -3914,6 +3920,7 @@ static void Railgun_Boom(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 }
 
@@ -4063,6 +4070,7 @@ static void Railgun_Boom_Client(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 }
 

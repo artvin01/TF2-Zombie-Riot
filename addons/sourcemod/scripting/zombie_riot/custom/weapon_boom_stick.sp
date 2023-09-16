@@ -481,6 +481,7 @@ static void TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	float vecForward[3];
 	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
