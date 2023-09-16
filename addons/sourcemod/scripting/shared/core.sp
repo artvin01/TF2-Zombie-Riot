@@ -431,6 +431,7 @@ float f_CudgelDebuff[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
+int i_RaidGrantExtra[MAXENTITIES];
 int g_particleCritText;
 int g_particleMiniCritText;
 int g_particleMissText;
@@ -2402,6 +2403,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
 		b_HasBombImplanted[entity] = false;
+		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
 		i_NervousImpairmentArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;

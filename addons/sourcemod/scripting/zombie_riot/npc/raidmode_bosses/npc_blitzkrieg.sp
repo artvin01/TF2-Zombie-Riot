@@ -373,7 +373,7 @@ methodmap Blitzkrieg < CClotBody
 		PrintToServer("CClot::PlayPullSound()");
 		#endif
 	}
-	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Blitzkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Blitzkrieg npc = view_as<Blitzkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.4", "25000", ally, false, true, true, true)); //giant!
 		
@@ -572,12 +572,13 @@ methodmap Blitzkrieg < CClotBody
 		{
 			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
 		}
-		if(i_currentwave[npc.index]>60)
+		if(i_currentwave[npc.index]>60 && !final)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
 		}
-		if(i_currentwave[npc.index] >= 60 && !Waves_InFreeplay())
+		if(final)
 		{
+			i_RaidGrantExtra[npc.index] = 1;
 			b_Valid_Wave = true;
 			switch(GetRandomInt(1,2))
 			{

@@ -284,7 +284,7 @@ methodmap RaidbossSilvester < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -310,6 +310,12 @@ methodmap RaidbossSilvester < CClotBody
 				SetGlobalTransTarget(client_check);
 				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
 			}
+		}
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 		
@@ -1142,7 +1148,7 @@ public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{

@@ -180,7 +180,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flJumpCooldown = value;	}
 	}
 
-	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -198,6 +198,12 @@ methodmap RaidbossBlueGoggles < CClotBody
 		b_angered_twice[npc.index] = false;
 		
 
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		/*
 			Cosmetics
 		*/
@@ -862,7 +868,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 		
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(victim);
 	
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{

@@ -201,7 +201,7 @@ methodmap GodArkantos < CClotBody
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodArkantos(int client, float vecPos[3], float vecAng[3], bool ally)
+	public GodArkantos(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
@@ -234,7 +234,13 @@ methodmap GodArkantos < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Arkantos Arrived");
 			}
 		}
+
+		bool final = StrContains(data, "final_item") != -1;
 		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
@@ -312,6 +318,8 @@ methodmap GodArkantos < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc.index, "root", {0.0,0.0,0.0});
 		npc.StartPathing();
 
+		DoGlobalMultiScaling();
+		
 		return npc;
 	}
 }
@@ -622,7 +630,7 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 		return Plugin_Handled;
 	}
 
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{

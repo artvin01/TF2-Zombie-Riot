@@ -845,43 +845,46 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 	}
 	
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && b_Valid_Wave)
+	if(RoundToCeil(damage)>=Health)
 	{
-		b_DoNotUnStuck[npc.index] = true;
-		b_CantCollidieAlly[npc.index] = true;
-		b_CantCollidie[npc.index] = true;
-		SetEntityCollisionGroup(npc.index, 24);
-		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
-		b_NpcIsInvulnerable[npc.index] = true;
-		RemoveNpcFromEnemyList(npc.index);
-		GiveProgressDelay(20.0);
-		
-		b_Donnerkrieg_Alive = false;
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-		damage = 0.0;
-		if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)
+		if(b_Valid_Wave)
 		{
-			b_timer_locked = true;
-			g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(20.0);
 			
-		}
-		b_angered = true;
-		
-		if(Donner_Takeover_Active && !b_donner_locked)
-		{
-			b_donner_locked = true;
-			RaidModeTime += 22.5;
-			Donner_Takeover = false;
-			Donner_Takeover_Active = false;
-			npc.m_bThisNpcIsABoss = false;
-				
-			//prepare takeover for schwert
-			if(!b_Blitz_Alive && !Schwert_Takeover_Active)
-				RaidBossActive = INVALID_ENT_REFERENCE;
-			if(b_Schwertkrieg_Alive)
+			b_Donnerkrieg_Alive = false;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)
 			{
-				Schwert_Takeover = true;
-				Schwert_Takeover_Active = false;
+				b_timer_locked = true;
+				g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+				
+			}
+			b_angered = true;
+			
+			if(Donner_Takeover_Active && !b_donner_locked)
+			{
+				b_donner_locked = true;
+				RaidModeTime += 22.5;
+				Donner_Takeover = false;
+				Donner_Takeover_Active = false;
+				npc.m_bThisNpcIsABoss = false;
+					
+				//prepare takeover for schwert
+				if(!b_Blitz_Alive && !Schwert_Takeover_Active)
+					RaidBossActive = INVALID_ENT_REFERENCE;
+				if(b_Schwertkrieg_Alive)
+				{
+					Schwert_Takeover = true;
+					Schwert_Takeover_Active = false;
+				}
 			}
 				
 		}

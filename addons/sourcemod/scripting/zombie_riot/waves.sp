@@ -930,18 +930,13 @@ void Waves_Progress(bool donotAdvance = false)
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
+			DoGlobalMultiScaling();
 			float playercount = float(CountPlayersOnRed());
-			
+					
 			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
 			{
 				playercount = 0.70;
 			}
-			
-			float multi = Pow(1.08, playercount);
-
-			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
-			
-			MultiGlobal = multi;
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
@@ -961,7 +956,7 @@ void Waves_Progress(bool donotAdvance = false)
 			{
 				if(Is_a_boss == 0)
 				{
-					count = RoundToNearest(float(count)*multi);
+					count = RoundToNearest(float(count)*MultiGlobal);
 				}
 				else
 				{
@@ -988,7 +983,7 @@ void Waves_Progress(bool donotAdvance = false)
 			
 			Is_Health_Scaling = 0;
 			
-			BalanceDropMinimum(multi);
+			BalanceDropMinimum(MultiGlobal);
 			
 			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
@@ -1460,9 +1455,7 @@ void Waves_Progress(bool donotAdvance = false)
 		if(++CurrentWave < 1)
 		{
 			float playercount = float(CountPlayersOnRed());
-			float multi = Pow(1.08, playercount);
-			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
-			MultiGlobal = multi;
+			DoGlobalMultiScaling();
 
 			int postWaves = CurrentRound - length;
 			f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
@@ -1864,4 +1857,20 @@ float Zombie_DelayExtraSpeed()
 		}
 	}
 	return 1.0;
+}
+
+
+float DoGlobalMultiScaling()
+{
+	float playercount = float(CountPlayersOnRed());
+			
+	if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
+	{
+		playercount = 0.70;
+	}
+			
+	float multi = Pow(1.08, playercount);
+
+	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
+	MultiGlobal = multi;
 }

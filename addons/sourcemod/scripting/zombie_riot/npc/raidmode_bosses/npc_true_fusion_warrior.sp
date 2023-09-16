@@ -264,7 +264,7 @@ methodmap TrueFusionWarrior < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -291,6 +291,14 @@ methodmap TrueFusionWarrior < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
 			}
 		}
+		
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+		
 		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -1010,7 +1018,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetVariantColor(view_as<int>({255, 255, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 	}
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{

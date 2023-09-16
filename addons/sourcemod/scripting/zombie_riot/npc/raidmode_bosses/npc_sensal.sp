@@ -226,7 +226,7 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Sensal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		
@@ -272,6 +272,13 @@ methodmap Sensal < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -495,7 +502,7 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{

@@ -170,7 +170,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		
@@ -197,6 +197,12 @@ methodmap RaidbossNemesis < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -1041,7 +1047,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	GiveProgressDelay(3.0);
 	RaidModeTime += 999.0; //cant afford to delete it, since duo.
-	if(ZR_GetWaveCount()+1 == 65)
+	if(i_RaidGrantExtra[npc.index] == 1)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
