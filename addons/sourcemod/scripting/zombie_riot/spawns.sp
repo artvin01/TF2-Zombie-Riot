@@ -48,9 +48,11 @@ bool Spawns_CanSpawnNext()
 			length--;
 			continue;
 		}
-
-		if(/*!spawn.BaseBoss && */GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
-			continue;
+		if(!spawn.BaseBoss)
+		{
+			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
+				continue;
+		}
 		
 		//error = false;
 		if(spawn.Cooldown < gameTime)
@@ -103,7 +105,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			nonBossSpawners++;
 		}
 		
-		if((spawn.Cooldown < gameTime && spawn.Points > bestPoints) || (name[0] && bestIndex == -1))
+		if((spawn.Cooldown < gameTime && spawn.Points >= bestPoints) || (name[0] && bestIndex == -1))
 		{
 			bestIndex = i;
 			bestPoints = spawn.Points;
@@ -262,6 +264,10 @@ void Spawners_Timer()
 		if(spawn.Points > 0.0)
 		{
 			spawn.Points /= PlayersGathered;
+		}
+		else
+		{
+			spawn.Points = 0.0;
 		}
 		SpawnerList.SetArray(index, spawn);
 	}

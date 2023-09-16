@@ -1873,4 +1873,5 @@ void DoGlobalMultiScaling()
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
 	MultiGlobal = multi;
+	MultiGlobalHealth = playercount * 0.2;
 }

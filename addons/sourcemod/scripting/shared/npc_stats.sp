@@ -2155,8 +2155,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		AcceptEntityInput(item, "SetParent", this.index);
 		SetEntityCollisionGroup(item, 1);
 		return item;
-	}
-	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 55.0, int Npc_type = 0, int Ignore_Buildings = 0)
+	} 
+	public bool DoSwingTrace(Handle &trace,
+	int target,
+	 float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 },
+	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
+	   float vecSwingStartOffset = 55.0,
+	    int Npc_type = 0,
+		 int Ignore_Buildings = 0)
 	{
 		switch(Npc_type)
 		{
@@ -2988,7 +2994,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		npc.m_flNextDelayTime = 999999.9; //disable them thinking.
-		SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
+	//	SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
 		OnKillUniqueWeapon(iAttacker, iWeapon, pThis);
@@ -3037,8 +3043,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SetEntityCollisionGroup(pThis, 1);
 		b_ThisEntityIgnored[pThis] = true;
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
+	//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
-		NPC_StopPathing(pThis);
 		OnEntityDestroyed_LagComp(pThis);
 		RemoveEntityToLagCompList(pThis);
 
@@ -5010,7 +5016,12 @@ public void NpcBaseThink(int iNPC)
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
-
+	if(b_NpcHasDied[iNPC])
+	{
+		NPC_StopPathing(iNPC);
+		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
+		return;
+	}
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{
