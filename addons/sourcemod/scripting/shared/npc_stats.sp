@@ -3027,6 +3027,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 		RemoveNpcFromEnemyList(pThis, true);
 		NPC_StopPathing(pThis);
+		OnEntityDestroyed_LagComp(pThis);
+		RemoveEntityToLagCompList(pThis);
 
 		if(!npc.m_bDissapearOnDeath)
 		{

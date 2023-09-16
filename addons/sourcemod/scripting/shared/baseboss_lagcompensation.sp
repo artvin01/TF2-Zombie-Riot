@@ -726,3 +726,16 @@ void AddEntityToLagCompList(int entity)
 		}
 	}	
 }
+
+void RemoveEntityToLagCompList(int entity)
+{
+	b_EntityIsLagComp[entity] = false;
+	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
+	{
+		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) == entity)
+		{
+			i_Objects_Apply_Lagcompensation[i] = -1;
+			break;
+		}
+	}	
+}
