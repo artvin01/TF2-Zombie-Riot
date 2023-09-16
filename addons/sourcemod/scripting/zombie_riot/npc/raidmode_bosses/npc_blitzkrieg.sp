@@ -2227,6 +2227,8 @@ public MRESReturn Rocket_Blitz_DHook_RocketExplodePre(int entity)
 public void Rocket_Blitz_StartTouch(int entity, int target)
 {
 	
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
 		
@@ -2236,8 +2238,6 @@ public void Rocket_Blitz_StartTouch(int entity, int target)
 			owner = 0;
 		}
 
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		float DamageDeal = fl_blitz_rocket_dmg[entity];
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= 2.0;
@@ -2269,6 +2269,12 @@ public void Rocket_Blitz_StartTouch(int entity, int target)
 		
 		case 4:EmitSoundToAll(SOUND_BLITZ_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
 	}
+	DataPack pack = new DataPack();
+	pack.WriteFloat(ProjectileLoc[0]);
+	pack.WriteFloat(ProjectileLoc[1]);
+	pack.WriteFloat(ProjectileLoc[2]);
+	pack.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack);
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 	TE_ParticleInt(g_particleBLITZ_IMPACTTornado, pos1);
