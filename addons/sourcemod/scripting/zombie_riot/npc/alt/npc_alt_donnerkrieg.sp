@@ -766,7 +766,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					}
 					
 					EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
-					CreateTimer(1.0, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.0, Donner_Nightmare_Offset, EntRefToEntIndex(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
 			else
@@ -818,8 +818,9 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 	}
 }
 
-static Action Donner_Nightmare_Offset(Handle timer, int client)
+static Action Donner_Nightmare_Offset(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidEntity(client))
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(client);
@@ -875,7 +876,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 			npc.m_bThisNpcIsABoss = false;
 				
 			//prepare takeover for schwert
-			if(!b_Blitz_Alive)
+			if(!b_Blitz_Alive && !Schwert_Takeover_Active)
 				RaidBossActive = INVALID_ENT_REFERENCE;
 			if(b_Schwertkrieg_Alive)
 			{
@@ -994,7 +995,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
 	
 }
@@ -1066,12 +1067,13 @@ void NightmareCannon_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
 	
 }
-public Action NightmareCannon_TBB_Timer(Handle timer, int client)
+public Action NightmareCannon_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 

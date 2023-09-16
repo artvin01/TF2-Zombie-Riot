@@ -461,7 +461,7 @@ public void Enable_Arsenal(int client, int weapon) // Enable management, handle 
 		
 	if(i_AresenalTrap[weapon] > 0)
 	{	
-		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT);
 	}
 	else
 	{

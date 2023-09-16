@@ -12,6 +12,7 @@ public void Grenade_Custom_Precache()
 	static char model[PLATFORM_MAX_PATH];
 	model = "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl";
 	g_ProjectileModel = PrecacheModel(model);
+	Zero(Handle_on);
 }
 
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)

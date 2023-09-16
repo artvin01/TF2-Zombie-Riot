@@ -317,12 +317,13 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_IsUsing[client] = true;
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
-	CreateTimer(Ikunagae_BEAM_Duration[client], Ikunagae_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(Ikunagae_BEAM_Duration[client], Ikunagae_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Ikunagae_TBB_Tick);
 	
 }
-static Action Ikunagae_TBB_Timer(Handle timer, int client)
+static Action Ikunagae_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 

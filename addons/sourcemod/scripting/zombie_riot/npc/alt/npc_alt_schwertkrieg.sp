@@ -588,7 +588,7 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 			npc.m_bThisNpcIsABoss = false;
 				
 			//prepare takeover for donner
-			if(!b_Blitz_Alive)
+			if(!b_Blitz_Alive && !Donner_Takeover_Active)
 				RaidBossActive = INVALID_ENT_REFERENCE;
 			if(b_Donnerkrieg_Alive)
 			{

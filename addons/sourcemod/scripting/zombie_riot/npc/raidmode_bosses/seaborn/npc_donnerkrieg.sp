@@ -699,14 +699,15 @@ static void Invoke_Heavens_Light(int ref)
 	
 	fl_heavens_charge_gametime = fl_heavens_charge_time + GameTime;
 	
-	CreateTimer(time, Heavens_End_Timer, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(time, Heavens_End_Timer, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 }
-public Action Heavens_End_Timer(Handle timer, int client)
+public Action Heavens_End_Timer(Handle timer, int ref)
 {
-	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
 
 	SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
 
@@ -1298,7 +1299,7 @@ void RAid_Normal_Attack_BEAM_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(DonnerKriegCannon_BEAM_Duration[client], DonnerKriegCannon_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(DonnerKriegCannon_BEAM_Duration[client], DonnerKriegCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, DonnerKriegCannon_TBB_Tick);
 	
 }
@@ -1370,12 +1371,13 @@ void DonnerKriegCannon_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(DonnerKriegCannon_BEAM_Duration[client], DonnerKriegCannon_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(DonnerKriegCannon_BEAM_Duration[client], DonnerKriegCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, DonnerKriegCannon_TBB_Tick);
 	
 }
-public Action DonnerKriegCannon_TBB_Timer(Handle timer, int client)
+public Action DonnerKriegCannon_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 

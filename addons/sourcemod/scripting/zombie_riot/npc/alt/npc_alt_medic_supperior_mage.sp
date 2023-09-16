@@ -575,7 +575,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	}
 			
 
-	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick);
 }
 
@@ -634,13 +634,14 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Tick);
 	
 }
 
-public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer(Handle timer, int client)
+public Action NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
