@@ -1,11 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define NEUVELLETE_MAIN_BEAM_SOUND "npc/combine_gunship/dropship_engine_distant_loop1.wav"	//"weapons/physcannon/energy_sing_loop4.wav"
+#define NEUVELLETE_MAIN_BEAM_SOUND	"npc/combine_gunship/dropship_engine_distant_loop1.wav"	//"weapons/physcannon/energy_sing_loop4.wav"
+#define NEUVELLETE_ION_KABOOM_SOUND	"misc/doomsday_missile_explosion.wav"
+#define NEUVELLETE_ION_CAST_SOUND	"misc/doomsday_cap_open_start.wav"
+#define NEUVELLETE_ION_EXTRA_SOUND0	"misc/ks_tier_04.wav"
+#define NEUVELLETE_ION_EXTRA_SOUND1	"misc/ks_tier_04_death.wav"
+#define NEUVELLETE_MAIN_BEAM_START_SONUD		"misc/ks_tier_04.wav"
 
 #define NEUVELLETE_THROTTLE_SPEED 5.0/66.0	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
 #define NEUVELLETE_TE_DURATION 5.5/66.0
-//playgamesound misc\doomsday_cap_open_start.wav	use for startup of hexagon cannon
+
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
@@ -61,6 +66,11 @@ public void Ion_Beam_Wand_MapStart()
 	Zero(fl_extra_effects_timer);
 	Zero(fl_m2_timer);
 	PrecacheSound(NEUVELLETE_MAIN_BEAM_SOUND);
+	PrecacheSound(NEUVELLETE_ION_CAST_SOUND);
+	PrecacheSound(NEUVELLETE_ION_EXTRA_SOUND0);
+	PrecacheSound(NEUVELLETE_ION_EXTRA_SOUND1);
+	PrecacheSound(NEUVELLETE_MAIN_BEAM_START_SONUD);
+	PrecacheSound(NEUVELLETE_ION_KABOOM_SOUND);
 	PrecacheModel("materials/sprites/laserbeam.vmt");
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	//BeamWand_LaserBeam = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -333,38 +343,42 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 				if(fl_hud_timer[client]<GameTime)
 				{
 					fl_hud_timer[client] = GameTime + 0.5;
-					Neuvellete_Hud(client);
+					Neuvellete_Hud(client, weapon);
 				}
-				if(attack2 && fl_Ion_timer[client]<=GameTime)
+				if(Get_Pap(weapon)>=3)
 				{
-					int mana_cost = 10;
-					
-					if(Current_Mana[client]>=mana_cost)
-					{		
-						if(fl_ion_charge_ammount[client]<=1000.0)
-						{
-							fl_ion_charge_ammount[client] += mana_cost;
-							float Null = 0.0;
-							int Null2 = 0;
-							Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, Null ,Null , Null2, mana_cost, Null, Null2);
-							if(mana_cost>10)
-								mana_cost = 10;
-							Current_Mana[client] -=mana_cost;
+					if(attack2 && fl_Ion_timer[client]<=GameTime)
+					{
+						int mana_cost = 10;
+						
+						if(Current_Mana[client]>=mana_cost)
+						{		
+							if(fl_ion_charge_ammount[client]<=1000.0)
+							{
+								fl_ion_charge_ammount[client] += mana_cost;
+								float Null = 0.0;
+								int Null2 = 0;
+								Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, Null ,Null , Null2, mana_cost, Null, Null2);
+								if(mana_cost>10)
+									mana_cost = 10;
+								Current_Mana[client] -=mana_cost;
+							}
 						}
+						Mana_Regen_Delay[client] = GameTime + 1.0;
 					}
-					Mana_Regen_Delay[client] = GameTime + 1.0;
+					else if(fl_ion_charge_ammount[client]>250.0 && fl_Ion_timer[client] < GameTime)
+					{
+						fl_Ion_timer[client] = GameTime + 30.0+15.0;	//the 15 is the chargeup period xd
+						
+						Witch_Hexagon_Witchery(client);
+						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
+						EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
+					}
+					else if(fl_ion_charge_ammount[client]>0.0 && fl_Ion_timer[client] < GameTime)
+					{
+						fl_ion_charge_ammount[client] = 0.0;
+					}
 				}
-				else if(fl_ion_charge_ammount[client]>250.0 && fl_Ion_timer[client] < GameTime)
-				{
-					fl_Ion_timer[client] = GameTime + 30.0+15.0;	//the 15 is the chargeup period xd
-					
-					Witch_Hexagon_Witchery(client);
-				}
-				else if(fl_ion_charge_ammount[client]>0.0 && fl_Ion_timer[client] < GameTime)
-				{
-					fl_ion_charge_ammount[client] = 0.0;
-				}
-				
 				if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
 				{
 					Create_Hand_Particle(client);
@@ -391,30 +405,41 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 	}
 }
 
-static void Neuvellete_Hud(int client)
+static void Neuvellete_Hud(int client, int weapon)
 {
 	char HUDText[255] = "";
 	
 	float GameTime = GetGameTime();
 	
-	if(fl_Ion_timer[client]<=GameTime)
+	if(b_special_active[client])
 	{
-		if(fl_ion_charge_ammount[client]<=0.0)
-		{
-			Format(HUDText, sizeof(HUDText), "%sHexagon Cannon: [Offline] ", HUDText);
-		}
-		else if(fl_ion_charge_ammount[client]>0.0)
-		{
-			float charge_precent = fl_ion_charge_ammount[client] / 10.0;
-			Format(HUDText, sizeof(HUDText), "%sHexagon Cannon: [Charging | %.1f％]", HUDText, charge_precent);
-		}
+		Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online]", HUDText);
 	}
 	else
 	{
-		float duration = fl_Ion_timer[client] - GameTime;
-		Format(HUDText, sizeof(HUDText), "%sHexagon Cannon: [Recharging | %.1f] ", HUDText, duration);
+		Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Offline]", HUDText);
 	}
-	
+
+	if(Get_Pap(weapon)>=3)
+	{
+		if(fl_Ion_timer[client]<=GameTime)
+		{
+			if(fl_ion_charge_ammount[client]<=0.0)
+			{
+				Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Offline] ", HUDText);
+			}
+			else if(fl_ion_charge_ammount[client]>0.0)
+			{
+				float charge_precent = fl_ion_charge_ammount[client] / 10.0;
+				Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Charging | %.1f％]", HUDText, charge_precent);
+			}
+		}
+		else
+		{
+			float duration = fl_Ion_timer[client] - GameTime;
+			Format(HUDText, sizeof(HUDText), "%s\nHexagon Cannon: [Recharging | %.1f] ", HUDText, duration);
+		}
+	}
 	
 	
 	PrintHintText(client, HUDText);
@@ -635,7 +660,8 @@ static Action Hexagon_Witchery_Tick(int client)
 		TE_SetupExplosion(origin_vec, gExplosive1, 0.1, 1, 0, 0, 0);
 		TE_SendToAll();
 		
-		EmitSoundToAll(BEAM_WAND_PARTICLE_ORBITAL_CANNON_FIRE_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+		EmitSoundToAll(NEUVELLETE_ION_KABOOM_SOUND, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+		EmitSoundToAll(NEUVELLETE_ION_EXTRA_SOUND1, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 				
 		float position[3];
 		position[0] = origin_vec[0];
@@ -728,6 +754,7 @@ public void Weapon_Ion_Wand_Beam(int client, int weapon, bool crit)
 			SDKHook(client, SDKHook_PreThink, Neuvellete_tick);
 			
 			EmitSoundToClient(client, NEUVELLETE_MAIN_BEAM_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85);
+			EmitSoundToClient(client, NEUVELLETE_MAIN_BEAM_START_SONUD, _, SNDCHAN_STATIC, 100, _, 0.25, 85);
 			
 			fl_beam_angle[client][0] = Angles[1];	//Yaw
 			fl_beam_angle[client][1] = Angles[0];	//Pitch

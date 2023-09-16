@@ -2409,5 +2409,33 @@
 	{
 		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''You should probably get your mental health checked.''"
 	}
+	"Neuv pap0"
+	{
+		"en"	"''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown..."
+	}
+	"Neuv pap1"
+	{
+		"en"	"Your Understanding of the spell improves\nImages of a city flood your mind...\nOne things for certain though, this spell has become far more powerfull"
+	}
+	"Neuv pap2"
+	{
+		"en"	"Science And Witches\nHow could something so contradictory to one another be so intertwined with a spell"
+	}
+	"Neuv pap3"
+	{
+		"en"	"A new spell manifests into your mind\Hold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
+	}
+	"Neuv pap4"
+	{
+		"en"	"Truth or false, it’s the logic that dictates it all\nRising edge,\nTicks the clock\nStimulates your flip flop\nGenerate, Oscillate\nLet your blood fill the gates\nMultiplex, process registration"
+	}
+	"Neuv pap5"
+	{
+		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all he knows..."
+	}
+	"Skill Point Info"
+	{
+		"en"	"Hold MOUSE2 while pressing RELOAD on a pap to gain access to a skill point alocation system"
+	}
 }
 
