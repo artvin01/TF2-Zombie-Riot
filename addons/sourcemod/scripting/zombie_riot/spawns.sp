@@ -49,7 +49,7 @@ bool Spawns_CanSpawnNext()
 			continue;
 		}
 
-		if(!spawn.BaseBoss && GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
+		if(/*!spawn.BaseBoss && */GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
 			continue;
 		
 		//error = false;

@@ -581,7 +581,6 @@ methodmap Blitzkrieg < CClotBody
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
 		}
-		bool final = StrContains(data, "final_item") != -1;
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
