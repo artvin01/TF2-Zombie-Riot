@@ -79,6 +79,10 @@ public void Ion_Beam_Wand_MapStart()
 	//gLaser2= PrecacheModel("materials/sprites/lgtning.vmt");
 }
 
+#define NEUVELLETE_HEXAGON_CHARGE_TIME 3.5
+#define NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER 1.5	//THIS MUST ALWAYS BE LESS THEN THE ONE ABOVE IT
+//Tottal charge time is these 2 combined
+
 #define NEUVELLETE_BASELINE_ION_DMG 250.0
 #define NEUVELLETE_BASELINE_ION_RANGE 10.0
 
@@ -368,7 +372,7 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 					}
 					else if(fl_ion_charge_ammount[client]>250.0 && fl_Ion_timer[client] < GameTime)
 					{
-						fl_Ion_timer[client] = GameTime + 30.0+15.0;	//the 15 is the chargeup period xd
+						fl_Ion_timer[client] = GameTime + 30.0+NEUVELLETE_HEXAGON_CHARGE_TIME+NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;	//the 15 is the chargeup period xd
 						
 						Witch_Hexagon_Witchery(client);
 						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
@@ -463,8 +467,8 @@ static float fl_hexagon_angle[MAXTF2PLAYERS];
 
 static Action Hexagon_Witchery_Tick(int client)
 {
-	float offset_time = 5.0;
-	float time = 10.0;
+	float offset_time = NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;
+	float time = NEUVELLETE_HEXAGON_CHARGE_TIME;
 	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
 	float origin_vec[3];
 	float gametime = GetGameTime();
