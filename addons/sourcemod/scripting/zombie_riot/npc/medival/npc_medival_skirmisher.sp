@@ -356,7 +356,8 @@ public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 	
 		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			if(IsValidEntity(npc.m_iWearable1))
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 				

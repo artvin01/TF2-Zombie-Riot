@@ -173,7 +173,6 @@ static void TBB_Tick(int client)
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, float(BEAM_MaxDistance[client]));
 		float lineReduce = BEAM_BeamRadius[client] * 2.0 / 3.0;
 		float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -201,8 +200,8 @@ static void TBB_Tick(int client)
 		hullMax[2] = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 		
 		float vecForward[3];
@@ -262,10 +261,6 @@ static void TBB_Tick(int client)
 		SetColorRGBA(glowColor, r, g, b, 60);
 		TE_SetupBeamPoints(belowBossEyes, endPoint, Beam_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.5, glowColor, 0);
 		TE_SendToAll(0.0);
-	}
-	else
-	{
-		delete trace;
 	}
 	delete trace;
 }

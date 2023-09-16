@@ -1211,10 +1211,6 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 			TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Glow, 0, 0, 0, 1.75, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.5, glowColor, 0);
 			TE_SendToAll(0.0);
 	}
-	else
-	{
-		delete trace;
-	}
 	delete trace;
 
 }
