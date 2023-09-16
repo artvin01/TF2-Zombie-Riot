@@ -2614,6 +2614,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
+		else if(!StrContains(classname, "monster_resource")) //npcs think they cant go past this sometimes, lol
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
+		
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;

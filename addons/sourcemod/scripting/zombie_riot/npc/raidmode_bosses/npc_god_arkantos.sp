@@ -1000,12 +1000,14 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
+				bool PlaySound = false;
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
 					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
 						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 						{
+							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
 							vecHit = WorldSpaceCenter(target);
@@ -1050,6 +1052,10 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 								Custom_Knockback(npc.index, target, 350.0); 
 						}
 					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
 				}
 			}
 		}

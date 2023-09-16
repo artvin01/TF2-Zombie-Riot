@@ -780,12 +780,14 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
+				bool PlaySound = false;
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
 					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
 						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 						{
+							PlaySound = true;
 							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
 							vecHit = WorldSpaceCenter(targetTrace);
@@ -798,9 +800,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 							
 							// Hit particle
 							
-							
-							// Hit sound
-							npc.PlayMeleeHitSound();
+						
 							
 							bool Knocked = false;
 										
@@ -830,6 +830,10 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
 						} 
 					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
 				}
 			}
 		}

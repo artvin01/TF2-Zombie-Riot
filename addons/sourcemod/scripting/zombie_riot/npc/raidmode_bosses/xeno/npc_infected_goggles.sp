@@ -609,12 +609,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FaceTowards(vecTarget, 20000.0);
 							npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 							delete swingTrace;
+							bool PlaySound = false;
 							for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 							{
 								if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 								{
 									if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 									{
+										PlaySound = true;
 										int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 										float vecHit[3];
 										vecHit = WorldSpaceCenter(target);
@@ -630,7 +632,6 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);	
 										}
 										
-										npc.PlayMeleeHitSound();
 										
 										bool Knocked = false;
 										
@@ -656,6 +657,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										npc.m_flSwitchCooldown = 0.0;
 									}
 								} 
+							}
+							if(PlaySound)
+							{
+								npc.PlayMeleeHitSound();
 							}
 						}
 					}

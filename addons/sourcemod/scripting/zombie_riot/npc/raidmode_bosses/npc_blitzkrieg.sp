@@ -61,7 +61,10 @@ static const char g_IdleMusic[][] = {
 };
 
 static char g_PullSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/ubersaw_hit1.wav",
+	"weapons/ubersaw_hit2.wav",
+	"weapons/ubersaw_hit3.wav",
+	"weapons/ubersaw_hit4.wav",
 };
 
 #define BLITZKRIEG_PUNISHMENT_SHIELD_MULTI "4.2"
@@ -2300,20 +2303,20 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
+				bool PlaySound = false;
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
 					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
 						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
 						{
+							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
 							vecHit = WorldSpaceCenter(target);
 							float meleedmg;
 							meleedmg = 12.5 * i_HealthScale[npc.index];
-							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
-							
-							npc.PlayMeleeHitSound();		
+							SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);	
 							bool Knocked = false;
 								
 							if(IsValidClient(target))
@@ -2334,12 +2337,12 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 								
 							if(!Knocked)
 								Custom_Knockback(npc.index, target, 650.0); 
-							
-						
-							// Hit sound
-							npc.PlayPullSound();
 						}
 					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayPullSound();
 				}
 			}
 		}
@@ -2363,8 +2366,7 @@ void BlitzKriegSelfDefense(Blitzkrieg npc, float gameTime)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.PlayMeleeSound();
-
+					npc.PlayMeleeHitSound();
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							
 					npc.m_flAttackHappens = gameTime + 0.3;

@@ -2222,7 +2222,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			Zero(i_EntitiesHitAoeSwing_NpcSwing);
 			i_EntitiesHitAtOnceMax_NpcSwing = countAoe; //How many do we stack
-			trace = TR_TraceHullFilterEx(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, MASK_NPCSOLID | MASK_PLAYERSOLID,  ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
+			for(int repeat; repeat < 3; repeat ++)
+			{
+				vecSwingMins[repeat] *= 0.75;
+				vecSwingMins[repeat] *= 0.75;
+				vecSwingMaxs[repeat] *= 0.75;
+				vecSwingMaxs[repeat] *= 0.75;
+			}
+			TR_EnumerateEntitiesHull(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, false, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
 		}	
 		else
 		{
@@ -8676,10 +8683,19 @@ float GetRandomRetargetTime()
 	return GetRandomFloat(3.0, 4.0);
 }
 
-public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
+void NpcStartTouch(CBaseNPC_Locomotion pThis, int target, bool DoNotLoop = false, int TouchedTarget = 0)
 {
-	int entity = pThis.GetBot().GetNextBotCombatCharacter();
+	int entity = TouchedTarget;
+	if(TouchedTarget == 0)
+	{
+		entity = pThis.GetBot().GetNextBotCombatCharacter();
+	}
 	CClotBody npc = view_as<CClotBody>(entity);
+	if(!DoNotLoop && !b_NpcHasDied[target]) //If one entity touches me, then i touch them
+	{
+		NpcStartTouch(view_as<CBaseNPC_Locomotion>(0), entity, true, target);
+	}
+
 	if(fl_GetClosestTargetTimeTouch[entity] < GetGameTime() && f_TimeFrozenStill[entity] < GetGameTime(npc.index))
 	{
 		if(npc.m_iTarget != target)
@@ -8782,39 +8798,77 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 
 
 
-bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int contentsMask, int client)
+bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 {
-	bool type = BulletAndMeleeTrace(entity, contentsMask, client);
+	bool type = BulletAndMeleeTrace(entity, 0, client);
 	if(!type) //if it collised, return.
 	{
-		return type;
+		return true;
 	}
+	if(!SwingTraceMultiAoeIsInFront(client, entity))
+		return true;
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
 	{
-		if(i_EntitiesHitAoeSwing_NpcSwing[i] == -1)
+		if(i_EntitiesHitAoeSwing_NpcSwing[i] <= 0)
 		{
 			i_EntitiesHitAoeSwing_NpcSwing[i] = entity;
 			break;
 		}
 	}
-	return false;
+	return true;
 }
-bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int contentsMask, int client)
+bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int client)
 {
-	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, contentsMask, client);
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, client);
 	if(!type) //if it collised, return.
 	{
-		return type;
+		return true;
 	}
+	if(!SwingTraceMultiAoeIsInFront(client, entity))
+		return true;
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
 	{
-		if(i_EntitiesHitAoeSwing_NpcSwing[i] == -1)
+		if(i_EntitiesHitAoeSwing_NpcSwing[i] <= 0)
 		{
 			i_EntitiesHitAoeSwing_NpcSwing[i] = entity;
 			break;
 		}
 	}
-	return false;
+	return true;
+}
+
+#define SWINGPITCHMAX_MAXANGLEPITCH	 90.0
+bool SwingTraceMultiAoeIsInFront(int owner, int enemy)
+{
+	float pos1[3];
+	float pos2[3];
+	float ang3[3];
+	float ang2[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", pos2);	
+	GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos1);	
+
+	
+	float pos4test;
+	pos4test = pos1[2] - pos2[2];
+	
+	if(pos4test > 75.0) //far above me, just hit.
+	{
+		return true;
+	}
+	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
+	GetEntPropVector(owner, Prop_Data, "m_angRotation", ang2);
+
+	// fix all angles
+	ang3[0] = fixAngle(ang3[0]);
+	ang3[1] = fixAngle(ang3[1]);
+
+
+	if(!(fabs(ang2[1] - ang3[1]) <= SWINGPITCHMAX_MAXANGLEPITCH || (fabs(ang2[1] - ang3[1]) >= (360.0-SWINGPITCHMAX_MAXANGLEPITCH))))
+	{
+		return false;
+	}
+
+	return true;
 }

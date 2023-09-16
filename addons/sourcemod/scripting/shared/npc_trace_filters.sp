@@ -15,6 +15,12 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
+	if(!IsValidEntity(entity))
+		return false;
+		
+	if(!IsValidEntity(iExclude))
+		return false;
+
 	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
 		return false;
@@ -37,13 +43,13 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}	
 
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-
 	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
 	}	
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		return false;
+
 
 #if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))

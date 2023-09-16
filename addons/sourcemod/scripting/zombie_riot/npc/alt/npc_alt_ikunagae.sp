@@ -940,7 +940,6 @@ static void Spin_To_Win_Clearance_Check(int client)
 		if(TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
 			
 			float flDistanceToTarget = GetVectorDistance(endPoint, UserLoc);
 			
