@@ -374,7 +374,7 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 					{
 						fl_Ion_timer[client] = GameTime + 30.0+NEUVELLETE_HEXAGON_CHARGE_TIME+NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;	//the 15 is the chargeup period xd
 						
-						Witch_Hexagon_Witchery(client);
+						Witch_Hexagon_Witchery(client, weapon);
 						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
 						EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
 					}
@@ -453,15 +453,37 @@ static bool b_hexagon_ancored[MAXTF2PLAYERS];
 static bool b_hexagon_created[MAXTF2PLAYERS];
 static float fl_hexagon_vec[MAXTF2PLAYERS][3];
 static float fl_ability_timer[MAXTF2PLAYERS];
-static void Witch_Hexagon_Witchery(int client)
+static float fl_dmg[MAXTF2PLAYERS];
+static float fl_range[MAXTF2PLAYERS];
+static void Witch_Hexagon_Witchery(int client, int weapon)
 {
 	fl_throttle2[client] = 0.0;
 	b_hexagon_ancored[client] = false;
 	b_hexagon_created[client] = false;
-	float time = 10.0+5.0;
+	float time = NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER+NEUVELLETE_HEXAGON_CHARGE_TIME;
 	float gametime = GetGameTime();
 	fl_ability_timer[client] = gametime + time;
 	SDKHook(client, SDKHook_PreThink, Hexagon_Witchery_Tick);
+	
+	float DamagE = NEUVELLETE_BASELINE_ION_DMG*(fl_ion_charge_ammount[client]/100.0);
+	
+	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
+		
+	
+	
+	
+	float Null = 0.0;
+	int Null2 = 0;
+	Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, DamagE, range, Null2, Null2, Null, Null2);
+	
+	DamagE *=Attributes_Get(weapon, 410, 1.0);
+	range *= Attributes_Get(weapon, 103, 1.0);
+	range *= Attributes_Get(weapon, 104, 1.0);
+	range *= Attributes_Get(weapon, 475, 1.0);
+	range *= Attributes_Get(weapon, 101, 1.0);
+	range *= Attributes_Get(weapon, 102, 1.0);
+	fl_dmg[client] = DamagE;
+	fl_range[client] = range;
 }
 static float fl_hexagon_angle[MAXTF2PLAYERS];
 
@@ -469,38 +491,17 @@ static Action Hexagon_Witchery_Tick(int client)
 {
 	float offset_time = NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;
 	float time = NEUVELLETE_HEXAGON_CHARGE_TIME;
-	float range = NEUVELLETE_BASELINE_ION_RANGE * (fl_ion_charge_ammount[client]/100.0);
+	float range = fl_range[client];
 	float origin_vec[3];
 	float gametime = GetGameTime();
 	int amount = 5;
 	
-	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-	if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_ION_BEAM)
-	{
-		SDKUnhook(client, SDKHook_PreThink, Hexagon_Witchery_Tick);
-		fl_Ion_timer[client] -= 25.0;
-		fl_ion_charge_ammount[client] = 0.0;
-		return Plugin_Stop;
-	}
 	if(fl_throttle2[client]>gametime)
 		return Plugin_Continue;
 		
 	fl_throttle2[client] = gametime + NEUVELLETE_THROTTLE_SPEED;
 	
-	float DamagE = NEUVELLETE_BASELINE_ION_DMG*(fl_ion_charge_ammount[client]/100.0);
-	
-	DamagE *=Attributes_Get(weapon_holding, 410, 1.0);
-		
-	range *= Attributes_Get(weapon_holding, 103, 1.0);
-	range *= Attributes_Get(weapon_holding, 104, 1.0);
-	range *= Attributes_Get(weapon_holding, 475, 1.0);
-	range *= Attributes_Get(weapon_holding, 101, 1.0);
-	range *= Attributes_Get(weapon_holding, 102, 1.0);
-	
-	float Null = 0.0;
-	int Null2 = 0;
-	Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, DamagE, range, Null2, Null2, Null, Null2);
+	float DamagE = fl_dmg[client];
 	
 	if(!b_hexagon_ancored[client])
 	{
