@@ -382,12 +382,12 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 	if(!pap)
 	{
 		TORNADO_Radius[client] = 150.0;
-		CreateTimer(0.2, Timer_Electric_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		CreateTimer(0.2, Timer_Electric_Think, EntIndexToEntRef(iCarrier), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	}
 	else
 	{
 		TORNADO_Radius[client] = 250.0;
-		CreateTimer(0.2, Timer_Electric_Think_PAP, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		CreateTimer(0.2, Timer_Electric_Think_PAP, EntIndexToEntRef(iCarrier), TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	}
 	DataPack pack;
 	CreateDataTimer(time, Timer_RemoveEntity_CustomProjectile, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -428,8 +428,13 @@ public Action Event_Wand_IEM_OnHatTouch(int entity, int other)
 }
 
 
-public Action Timer_Electric_Think_PAP(Handle timer, int iCarrier)
+public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 {
+	int iCarrier = EntRefToEntIndex(ref);
+	if(!IsValidEntity(iCarrier))
+	{
+		return Plugin_Stop;
+	}
 	int client = Projectile_To_Client[iCarrier];
 	int particle = Projectile_To_Particle[iCarrier];
 	
@@ -545,8 +550,13 @@ public Action Timer_Electric_Think_PAP(Handle timer, int iCarrier)
 	return Plugin_Continue;
 }
 
-public Action Timer_Electric_Think(Handle timer, int iCarrier)
+public Action Timer_Electric_Think(Handle timer, int ref)
 {
+	int iCarrier = EntRefToEntIndex(ref);
+	if(!IsValidEntity(iCarrier))
+	{
+		return Plugin_Stop;
+	}
 	int client = Projectile_To_Client[iCarrier];
 	int particle = Projectile_To_Particle[iCarrier];
 	

@@ -1163,7 +1163,6 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 	if (TR_DidHit(trace))
 	{
 			TR_GetEndPosition(Vec_2, trace);
-			CloseHandle(trace);
 			static float hullMin[3];
 			static float hullMax[3];
 
