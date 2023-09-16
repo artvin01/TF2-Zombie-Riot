@@ -1182,7 +1182,7 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 			delete btrace;
 			FinishLagCompensation_Base_boss();
 			if(VIPBuilding_Active())
-				dmg *= 0.25;
+				dmg *= 0.5;
 				
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
