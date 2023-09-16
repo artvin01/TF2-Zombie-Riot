@@ -64,7 +64,7 @@ static char g_PullSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
-#define BLITZKRIEG_PUNISHMENT_SHIELD_MULTI "4.75"
+#define BLITZKRIEG_PUNISHMENT_SHIELD_MULTI "4.2"
 
 #define SOUND_BLITZ_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
 #define SOUND_BLITZ_IMPACT_2 					"physics/flesh/flesh_impact_bullet2.wav"
@@ -533,7 +533,7 @@ methodmap Blitzkrieg < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-350.0, true);
+		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-300.0, true);
 		SetVariantString(BLITZKRIEG_PUNISHMENT_SHIELD_MULTI);
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
@@ -553,7 +553,7 @@ methodmap Blitzkrieg < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 125, 100, 100, 255);
 		
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 255, 100, 100, 50);
+		SetEntityRenderColor(npc.m_iWearable6, 255, 100, 100, 125);
 		
 		//IDLE
 		npc.m_flSpeed = fl_move_speed[npc.index];
@@ -692,7 +692,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	
 	if(!IsValidEntity(npc.m_iWearable6))
 	{
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-350.0,true);
+		npc.m_iWearable6 = npc.EquipItemSeperate("head", "models/buildables/sentry_shield.mdl",_,_,_,-300.0,true);
 		SetVariantString(BLITZKRIEG_PUNISHMENT_SHIELD_MULTI);
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
@@ -704,7 +704,7 @@ public void Blitzkrieg_ClotThink(int iNPC)
 	{
 		float vecTarget[3];
 		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
-		vecTarget[2] -= 350.0;
+		vecTarget[2] -= 300.0;
 		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable6, vecTarget);
 	}
 	
