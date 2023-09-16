@@ -346,7 +346,6 @@ methodmap NaziPanzer < CClotBody
 				TR_GetEndPosition(vecSwingEnd, trace);	
 			}
 		}
-		delete trace;
 		return ( TR_GetFraction(trace) < 1.0 );
 	}
 }
