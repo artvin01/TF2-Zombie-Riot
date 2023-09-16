@@ -2034,7 +2034,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = SawRunner(client, vecPos, vecAng, ally);
 		
 		case RAIDMODE_TRUE_FUSION_WARRIOR:
-			entity = TrueFusionWarrior(client, vecPos, vecAng, ally);
+			entity = TrueFusionWarrior(client, vecPos, vecAng, ally, data);
 		
 		case ALT_MEDIC_CHARGER:
 			entity = AltMedicCharger(client, vecPos, vecAng, ally);
@@ -2073,7 +2073,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = MedivalEliteSkirmisher(client, vecPos, vecAng, ally);
 		
 		case RAIDMODE_BLITZKRIEG:
-			entity = Blitzkrieg(client, vecPos, vecAng, ally);
+			entity = Blitzkrieg(client, vecPos, vecAng, ally, data);
 		
 		case MEDIVAL_PIKEMAN:
 			entity = MedivalPikeman(client, vecPos, vecAng, ally);
@@ -2328,16 +2328,16 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = StalkerGoggles(client, vecPos, vecAng, false);
 		
 		case XENO_RAIDBOSS_SILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false);
+			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
 		
 		case XENO_RAIDBOSS_BLUE_GOGGLES:
-			entity = RaidbossBlueGoggles(client, vecPos, vecAng, false);
+			entity = RaidbossBlueGoggles(client, vecPos, vecAng, false, data);
 		
 		case XENO_RAIDBOSS_SUPERSILVESTER:
-			entity = RaidbossSilvester(client, vecPos, vecAng, false);
+			entity = RaidbossSilvester(client, vecPos, vecAng, false, data);
 		
 		case XENO_RAIDBOSS_NEMESIS:
-			entity = RaidbossNemesis(client, vecPos, vecAng, false);
+			entity = RaidbossNemesis(client, vecPos, vecAng, false, data);
 		
 		case SEARUNNER, SEARUNNER_ALT:
 			entity = SeaRunner(client, vecPos, vecAng, ally, data);
@@ -2415,7 +2415,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = BarrackThorns(client, vecPos, vecAng, ally);
 		
 		case RAIDMODE_GOD_ARKANTOS:
-			entity = GodArkantos(client, vecPos, vecAng, ally);
+			entity = GodArkantos(client, vecPos, vecAng, ally, data);
 		
 		case SEABORN_SCOUT:
 			entity = SeabornScout(client, vecPos, vecAng, ally);
@@ -2619,7 +2619,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = CaptinoAgentus(client, vecPos, vecAng, ally);
 
 		case RAIDMODE_EXPIDONSA_SENSAL:
-			entity = Sensal(client, vecPos, vecAng, ally);
+			entity = Sensal(client, vecPos, vecAng, ally, data);
 
 		case EXPIDONSA_DUALREA:
 			entity = DualRea(client, vecPos, vecAng, ally);

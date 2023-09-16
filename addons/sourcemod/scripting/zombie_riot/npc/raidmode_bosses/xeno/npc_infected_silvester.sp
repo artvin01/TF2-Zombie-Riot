@@ -1492,6 +1492,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)
 		{
+			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
 			Zombies_Currently_Still_Ongoing += 1;
