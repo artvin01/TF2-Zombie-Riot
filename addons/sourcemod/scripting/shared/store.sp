@@ -4094,12 +4094,17 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("26", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
 #endif
+
 	float MovementSpeed = 330.0;
+	
+#if defined ZR
 	if(VIPBuilding_Active())
 	{
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
+#endif
+
 #if defined RPG
 	
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");

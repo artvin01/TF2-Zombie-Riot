@@ -155,6 +155,7 @@ bool ShouldCollideEnemyIngoreBuilding_Internal(CBaseNPC_Locomotion loco = view_a
 	return true;
 }
 
+#if defined ZR
 public bool ShouldCollideEnemyTD(CBaseNPC_Locomotion loco, int otherindex)
 { 
 	return ShouldCollideEnemyTD_Internal(loco, otherindex);
@@ -278,6 +279,7 @@ bool ShouldCollideEnemyTDIgnoreBuilding_Internal(CBaseNPC_Locomotion loco = view
 	#endif
 	return true;
 }
+#endif
 
 public void Change_Npc_Collision(int npc, int CollisionType)
 {
@@ -304,6 +306,8 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 			{
 				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideAlly);
 			}
+
+#if defined ZR
 			case 5:
 			{
 				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyTD);
@@ -312,6 +316,8 @@ public void Change_Npc_Collision(int npc, int CollisionType)
 			{
 				locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollideEnemyTDIgnoreBuilding);
 			}
+#endif
+
 		}
 	}
 }
@@ -337,6 +343,8 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 		{
 			return ShouldCollideAlly_Internal(_,other);
 		}
+
+#if defined ZR
 		case 5:
 		{
 			return ShouldCollideEnemyTD_Internal(_,other,extrarules, npc);
@@ -345,6 +353,8 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 		{
 			return ShouldCollideEnemyTDIgnoreBuilding_Internal(_,other,extrarules, npc);
 		}
+#endif
+
 	}
 	return true; //somehow nothing happens collide with whatever it was!
 }

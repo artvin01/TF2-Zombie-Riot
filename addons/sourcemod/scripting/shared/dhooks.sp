@@ -71,11 +71,12 @@ void DHook_Setup()
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
-	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
+
 #if defined ZR
+	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
 #endif
@@ -1724,19 +1725,19 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 	return MRES_Ignored;
 }
 
+#if defined ZR
 static int LastTeam;
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
 {
-#if defined ZR
 //	if(!Disconnecting)
 	{
 		LastTeam = GetEntProp(client, Prop_Send, "m_iTeamNum");
 		GameRules_SetProp("m_bPlayingMannVsMachine", true);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 	}
-#endif
 	return MRES_Ignored;
 }
+#endif
 /*
 public MRESReturn DHookCallback_GameModeUsesUpgrades_Pre(DHookReturn ret)
 {
@@ -1761,17 +1762,17 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 	return MRES_Supercede;	
 }
 */
+#if defined ZR
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookParam param)
 {
-#if defined ZR
 //	if(!Disconnecting)
 	{
 		GameRules_SetProp("m_bPlayingMannVsMachine", false);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", LastTeam);
 	}
-#endif
 	return MRES_Ignored;
 }
+#endif
 
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {

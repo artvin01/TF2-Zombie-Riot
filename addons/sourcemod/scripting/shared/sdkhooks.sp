@@ -1395,14 +1395,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
-#endif
-	
-#if defined RPG
-	if(damagetype & (DMG_DROWN|DMG_DROWNRECOVER))
-#endif
-	
 	{
-#if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
 			NpcStuckZoneWarning(victim, damage);
@@ -1413,8 +1406,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 2.0;
 			Replicated_Damage *= 2.0;
 		}
-#endif
 	}
+#elseif defined RPG
+	if(damagetype & (DMG_DROWN|DMG_DROWNRECOVER))
+	{
+		damage *= 2.0;
+	}
+#endif
+
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 #if defined ZR
 	if(Medival_Difficulty_Level != 0.0)

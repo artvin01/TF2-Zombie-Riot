@@ -291,7 +291,6 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
-float f_ClientArmorRegen[MAXENTITIES];
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
@@ -513,6 +512,7 @@ bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
+float f_ClientArmorRegen[MAXENTITIES];
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
@@ -1415,7 +1415,9 @@ public Action Command_MakeNiko(int client, int args)
 
 public void OnGameFrame()
 {
+#if defined ZR
 	NPC_SpawnNext(false, false);
+#endif
 }
 
 public Action Command_PlayViewmodelAnim(int client, int args)
