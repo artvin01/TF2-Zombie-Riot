@@ -129,7 +129,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		PlayersInGame = 0;
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
-		limit *= MaxEnemyMulti();
+		limit = RoundToCeil(float(limit) * MaxEnemyMulti());
 
 		float f_limit = Pow(1.14, float(CountPlayersOnRed()));
 		float f_limit_alive = Pow(1.14, float(CountPlayersOnRed(true)));

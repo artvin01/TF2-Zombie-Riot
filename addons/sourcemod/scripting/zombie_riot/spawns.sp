@@ -27,6 +27,7 @@ void Spawns_MapEnd()
 	delete SpawnerList;
 }
 
+
 bool Spawns_CanSpawnNext()
 {
 	SpawnerData spawn;
@@ -62,9 +63,6 @@ bool Spawns_CanSpawnNext()
 			return true;
 	}
 
-	//if(error)
-	//	PrintToChatAll("ERROR NO ACTIVE SPAWNS %d", length);
-	
 	return false;
 }
 
@@ -218,7 +216,9 @@ void Spawners_Timer()
 					
 					int entity_Ref = spawn.EntRef;
 					if(!spawn.BaseBoss && GetEntProp(entity_Ref, Prop_Data, "m_bDisabled"))
+					{
 						continue;
+					}
 						
 					GetEntPropVector(entity_Ref, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp_2);
 					float distance = GetVectorDistance( f3_PositionTemp, f3_PositionTemp_2, true); 
