@@ -432,7 +432,6 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
 		Citizen_MiniBossSpawn();
-		Building_RaidSpawned(npc.index);
 		npc.StartPathing();
 
 		

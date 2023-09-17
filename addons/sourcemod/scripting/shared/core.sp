@@ -218,7 +218,6 @@ public const int RenderColors_RPG[][] =
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 Handle g_hImpulse;
-Handle g_hRecalculatePlayerBodygroups;
 
 Handle g_hSetLocalOrigin;
 Handle g_hSnapEyeAngles;
@@ -434,7 +433,6 @@ bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
 int g_particleCritText;
 int g_particleMiniCritText;
-int g_particleMissText;
 int LastHitRef[MAXENTITIES];
 int DamageBits[MAXENTITIES];
 float Damage[MAXENTITIES];
@@ -515,6 +513,9 @@ bool GlassBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 int Building_Hidden_Prop[MAXENTITIES][2];
 float f_ClientArmorRegen[MAXENTITIES];
+int i_nm_body_client[MAXTF2PLAYERS];
+int g_particleMissText;
+Handle g_hRecalculatePlayerBodygroups;
 #endif
 float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 float Mana_Regen_Level[MAXPLAYERS]={0.0, ...};				//405
@@ -974,7 +975,6 @@ int i_WeaponArchetype[MAXENTITIES];
 int i_WeaponForceClass[MAXENTITIES];
 int i_Viewmodel_PlayerModel[MAXENTITIES];
 int i_Viewmodel_WeaponModel[MAXTF2PLAYERS];
-int i_nm_body_client[MAXTF2PLAYERS];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];

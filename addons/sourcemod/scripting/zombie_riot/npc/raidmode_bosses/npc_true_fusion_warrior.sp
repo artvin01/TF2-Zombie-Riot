@@ -414,7 +414,6 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_bInKame = false;
 		
 		Citizen_MiniBossSpawn();
-		Building_RaidSpawned(npc.index);
 		return npc;
 	}
 }

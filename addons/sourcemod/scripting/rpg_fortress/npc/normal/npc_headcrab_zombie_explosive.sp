@@ -111,6 +111,7 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 		i_NpcInternalId[npc.index] = EXPLOSIVE_ZOMBIE;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 
 		npc.m_bisWalking = false;
 
@@ -200,7 +201,9 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						

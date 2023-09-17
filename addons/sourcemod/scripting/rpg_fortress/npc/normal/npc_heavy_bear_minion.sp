@@ -98,7 +98,8 @@ methodmap HeavyBearMinion < CClotBody
 		i_NpcInternalId[npc.index] = HEAVY_BEAR_MINION;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 

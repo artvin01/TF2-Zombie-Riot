@@ -4748,23 +4748,6 @@ void Building_ClearRefBuffs(int ref)
 	}
 }
 
-void Building_RaidSpawned(int entity)
-{
-	return;
-	/*
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
-		{
-			if(Village_Flags[client] & VILLAGE_004)
-			{
-				f_CrippleDebuff[entity] = FAR_FUTURE;
-				break;
-			}
-		}
-	}*/
-}
-
 bool Building_NeatherseaReduced(int entity)
 {
 	return view_as<bool>(GetBuffEffects(EntIndexToEntRef(entity)) & VILLAGE_003);

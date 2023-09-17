@@ -30,10 +30,10 @@ void Npc_Sp_Precache()
 	f_DelayGiveOutlineNpc = 0.0;
 	f_DelayNextWaveStartAdvancing = 0.0;
 	f_DelayNextWaveStartAdvancingDeathNpc = 0.0;
+	g_particleMissText = PrecacheParticleSystem("miss_text");
 #endif
 	g_particleCritText = PrecacheParticleSystem("crit_text");
 	g_particleMiniCritText = PrecacheParticleSystem("minicrit_text");
-	g_particleMissText = PrecacheParticleSystem("miss_text");
 }
 
 void NPC_PluginStart()
@@ -1158,7 +1158,7 @@ void GiveRageOnDamage(int client, float damage)
 	}
 }
 
-void Generic_OnTakeDamage(int victim, int attacker)
+stock void Generic_OnTakeDamage(int victim, int attacker)
 {
 	if(attacker > 0)
 	{
@@ -2170,7 +2170,7 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 }
 
 #if defined RPG
-bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+stock bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {
 	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 100000)
 	{
@@ -2204,7 +2204,7 @@ bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, float 
 	return false;
 }
 
-void OnTakeDamageRpgDungeonLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+stock void OnTakeDamageRpgDungeonLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {
 	if(!b_NpcIsInADungeon[victim] && Level[victim] < 100000)
 	{
@@ -2217,7 +2217,7 @@ void OnTakeDamageRpgDungeonLogic(int victim, int &attacker, int &inflictor, floa
 	}
 }
 
-void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {
 	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum")!=GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 	{
@@ -2231,6 +2231,7 @@ void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &inflictor, fl
 	}
 }
 #endif
+
 void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
@@ -2376,7 +2377,7 @@ void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float &damage, int
 }
 
 #if defined RPG
-void OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+stock void OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
 {	
 	if(IsValidEntity(weapon))
 	{
@@ -2418,7 +2419,8 @@ void OnTakeDamageRpgPotionBuff(int victim, int &attacker, int &inflictor, float 
 	}
 }
 #endif
-bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
+
+stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {	
 	if(!IsValidEntity(weapon))
 		return false;
@@ -2831,6 +2833,8 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 		damage -= BaseDamageBeforeBuffs * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
 }
+
+#if defined ZR
 void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 {
 	if(!IsValidEntity(weapon))
@@ -2844,7 +2848,6 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		BackstabNpcInternalModifExtra(weapon, attacker, victim, 2.0);
 	}
 
-#if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_MLYNAR:
@@ -2860,9 +2863,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 			CasinoSalaryPerKill(attacker);
 		}
 	}
-#endif
 }
-void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_custom_zr)
+#endif
+
+stock void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int damage_custom_zr)
 {
 	if(!IsValidEntity(weapon))
 		return;
@@ -2925,13 +2929,13 @@ void GiveProgressDelay(float Time)
 }
 #endif
 
+#if defined ZR
 int MaxNpcEnemyAllowed()
 {
-#if defined ZR
 	if(VIPBuilding_Active())
 	{
 		return RoundToCeil(float(NPC_HARD_LIMIT) * 1.5);
 	}
-#endif
 	return NPC_HARD_LIMIT;
 }
+#endif

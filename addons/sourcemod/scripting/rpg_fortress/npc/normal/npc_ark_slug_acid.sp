@@ -83,6 +83,7 @@ methodmap ArkSlugAcid < CClotBody
 		i_NpcInternalId[npc.index] = ARK_SLUGACID;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		npc.SetActivity("ACT_IDLE");
 

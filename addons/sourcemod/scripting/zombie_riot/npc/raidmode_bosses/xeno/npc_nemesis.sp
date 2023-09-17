@@ -248,7 +248,6 @@ methodmap RaidbossNemesis < CClotBody
 		CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
 		
 		Citizen_MiniBossSpawn();
-		Building_RaidSpawned(npc.index);
 		npc.StartPathing();
 		return npc;
 	}

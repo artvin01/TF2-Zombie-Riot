@@ -309,7 +309,6 @@ methodmap GodArkantos < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		Citizen_MiniBossSpawn();
-		Building_RaidSpawned(npc.index);
 		
 		Music_SetRaidMusic("#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 189, true);
 

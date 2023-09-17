@@ -222,6 +222,7 @@ methodmap EnemyFatherGrigori < CClotBody
 		i_NpcInternalId[npc.index] = FATHER_GRIGORI;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
 		
 		npc.SetActivity("ACT_IDLE");
 
@@ -391,8 +392,9 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "club");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-
+						KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
 					}
 				}
 				delete swingTrace;

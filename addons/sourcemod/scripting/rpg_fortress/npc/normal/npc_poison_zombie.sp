@@ -92,6 +92,7 @@ methodmap PoisonZombie < CClotBody
 		PoisonZombie npc = view_as<PoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
 		i_NpcInternalId[npc.index] = POISON_ZOMBIE;
+		KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -181,7 +182,9 @@ public void PoisonZombie_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
+						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						

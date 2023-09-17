@@ -23,7 +23,8 @@ methodmap CombineTurtle < CClotBody
 		
 		i_NpcInternalId[npc.index] = COMBINE_TURTLE;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "the_capper");
+
 		npc.SetActivity("idle", true);
 		SetEntProp(npc.index, Prop_Data, "m_bSequenceLoops", true);
 		

@@ -119,6 +119,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L15 = 157.5, E2 L20 = 175
+						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.5, DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
 					}
@@ -150,6 +151,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L15 = 225, E2 L20 = 250
+						KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 5.0, DMG_BULLET, -1, _, vecTarget);
 					}
 				}
