@@ -201,7 +201,7 @@ static void BurnTarget(CombineOverlordCC npc, int entity)
 {
 	if(entity > MaxClients)
 	{
-		NPC_Ignite(entity, npc.index, 5.0, -1);
+	//	NPC_Ignite(entity, npc.index, 5.0, -1);
 	}
 	else if(npc.m_hCCFlags & CC_FLAG_BURNDAMAGE)
 	{

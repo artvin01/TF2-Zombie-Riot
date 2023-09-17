@@ -1928,21 +1928,10 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		this.m_bPathing = false;
 	}
-	public void SetGoalEntity(int target)
+	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
-		if(f_DelayComputingOfPath[this.index] < GetGameTime())
+		if(ignoretime || DelayPathing(this.index))
 		{
-			float AddComputingDelay = 0.3;
-
-			if(b_thisNpcIsARaid[this.index])
-			{
-				AddComputingDelay = 0.1;
-			}
-			else if(b_thisNpcIsABoss[this.index])
-			{
-				AddComputingDelay = 0.2;
-			}
-			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -1960,24 +1949,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+				AddDelayPather(this.index);
 			}
 		}
 	}
 	public void SetGoalVector(const float vec[3], bool ignoretime = false)
 	{	
-		if(f_DelayComputingOfPath[this.index] < GetGameTime() || ignoretime)
+		if(ignoretime || DelayPathing(this.index))
 		{
-			float AddComputingDelay = 0.3;
-
-			if(b_thisNpcIsARaid[this.index])
-			{
-				AddComputingDelay = 0.1;
-			}
-			else if(b_thisNpcIsABoss[this.index])
-			{
-				AddComputingDelay = 0.2;
-			}
-			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
 			if(IsEntityTowerDefense(this.index))
 			{
 				if(this.m_bPathing && this.IsOnGround())
@@ -1997,6 +1976,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
+				AddDelayPather(this.index);
 			}
 		}
 	}
@@ -4495,6 +4475,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
+		f_DelayComputingOfPath[entity] = 0.0;
+		//Reset Timer, let them repath!
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
 		if(baseNPC == INVALID_NPC)
 		{
@@ -8716,6 +8698,7 @@ void NpcStartTouch(CBaseNPC_Locomotion pThis, int target, bool DoNotLoop = false
 					{
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
+						f_DelayComputingOfPath[entity] = 0.0;
 					}
 				}
 			}
@@ -8886,4 +8869,37 @@ bool SwingTraceMultiAoeIsInFront(int owner, int enemy)
 	}
 
 	return true;
+}
+
+bool DelayPathing(int npcpather)
+{
+	if(f_DelayComputingOfPath[npcpather] < GetGameTime())
+		return true;
+
+	return false;
+}
+
+void AddDelayPather(int npcpather)
+{
+	float AddComputingDelay = 0.0;
+
+	if(b_thisNpcIsARaid[npcpather])
+	{
+		AddComputingDelay = 0.1;
+	}
+	else
+	{
+		CClotBody npc = view_as<CClotBody>(npcpather);
+		float Length = npc.GetPathFollower().GetLength();
+		if(Length < 500.0)// close enough, update pather often.
+		{
+			AddComputingDelay = 0.3;
+		}
+		else
+		{
+			AddComputingDelay = 0.3 + (Length * 0.001);
+		}
+
+		f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
+	}
 }

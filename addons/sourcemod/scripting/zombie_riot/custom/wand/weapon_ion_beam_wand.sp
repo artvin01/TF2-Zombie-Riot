@@ -1497,39 +1497,41 @@ static void Beam_Wand_Laser_Attack(int client, float playerPos[3], float endVec_
 		GetAngleVectors(vecAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		BEAM_Targets_Hit[client] = 1.0;
 		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-		for (int building = 0; building < i_Neuvellete_penetration[client]; building++)
+		if(weapon_active > 0)
 		{
-			if (BEAM_BuildingHit[building])
+			for (int building = 0; building < i_Neuvellete_penetration[client]; building++)
 			{
-				if(IsValidEntity(BEAM_BuildingHit[building]))
+				if (BEAM_BuildingHit[building])
 				{
-					float trg_loc[3];
-					trg_loc = WorldSpaceCenter(BEAM_BuildingHit[building]);
-					
-					
-					float damage_force[3];
-					damage_force = CalculateDamageForce(vecForward, 10000.0);
-					DataPack pack = new DataPack();
-					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
-					pack.WriteCell(DMG_PLASMA);
-					pack.WriteCell(EntIndexToEntRef(weapon_active));
-					pack.WriteFloat(damage_force[0]);
-					pack.WriteFloat(damage_force[1]);
-					pack.WriteFloat(damage_force[2]);
-					pack.WriteFloat(trg_loc[0]);
-					pack.WriteFloat(trg_loc[1]);
-					pack.WriteFloat(trg_loc[2]);
-					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+					if(IsValidEntity(BEAM_BuildingHit[building]))
+					{
+						float trg_loc[3];
+						trg_loc = WorldSpaceCenter(BEAM_BuildingHit[building]);
+						
+						
+						float damage_force[3];
+						damage_force = CalculateDamageForce(vecForward, 10000.0);
+						DataPack pack = new DataPack();
+						pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
+						pack.WriteCell(EntIndexToEntRef(client));
+						pack.WriteCell(EntIndexToEntRef(client));
+						pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+						pack.WriteCell(DMG_PLASMA);
+						pack.WriteCell(EntIndexToEntRef(weapon_active));
+						pack.WriteFloat(damage_force[0]);
+						pack.WriteFloat(damage_force[1]);
+						pack.WriteFloat(damage_force[2]);
+						pack.WriteFloat(trg_loc[0]);
+						pack.WriteFloat(trg_loc[1]);
+						pack.WriteFloat(trg_loc[2]);
+						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
-					
-					BEAM_Targets_Hit[client] *= fl_penetration_falloff[client];
+						
+						BEAM_Targets_Hit[client] *= fl_penetration_falloff[client];
+					}
+					else
+						BEAM_BuildingHit[building] = false;
 				}
-				else
-					BEAM_BuildingHit[building] = false;
 			}
 		}
 }

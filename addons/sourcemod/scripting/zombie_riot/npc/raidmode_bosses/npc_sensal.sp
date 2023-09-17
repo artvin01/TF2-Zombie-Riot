@@ -731,6 +731,12 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
+
+			if(ZR_GetWaveCount()+1 >= 15)
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
+				
+			if(ZR_GetWaveCount()+1 >= 30)
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
 		}
 	}
 	else if(ZR_GetWaveCount()+1 >= 30 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
@@ -741,6 +747,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 						
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
+			SensalThrowScythes(npc);
 			ExpidonsaRemoveEffects(npc.index);
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
