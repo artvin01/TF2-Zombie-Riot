@@ -3054,6 +3054,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcFromEnemyList(pThis, true);
 		OnEntityDestroyed_LagComp(pThis);
 		RemoveEntityToLagCompList(pThis);
+			
 
 		if(!npc.m_bDissapearOnDeath)
 		{
@@ -5029,6 +5030,11 @@ public void NpcBaseThink(int iNPC)
 	{
 		NPC_StopPathing(iNPC);
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
+		static float hullcheckmaxs[3];	
+		//Remove their hull
+		npc.GetBaseNPC().SetBodyMaxs(hullcheckmaxs);
+		npc.GetBaseNPC().SetBodyMins(hullcheckmaxs);	
+		npc.GetBaseNPC().flGravity = 0.0;
 		return;
 	}
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;

@@ -16,7 +16,7 @@
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-static int i_hand_particle[MAXTF2PLAYERS+1];
+static int i_hand_particle[MAXTF2PLAYERS+1][15];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 
 static float fl_ion_charge_ammount[MAXTF2PLAYERS+1];
@@ -272,7 +272,7 @@ public void Activate_Neuvellete(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
-			if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+			if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 			{
 				Create_Hand_Particle(client);
 			}
@@ -299,20 +299,71 @@ static void Create_Hand_Particle(int client)
 	
 	if(!IsValidEntity(viewmodelModel))
 		return;
+
+	for(int RepeatDeletion; RepeatDeletion < 15; RepeatDeletion ++)
+	{
+		if(IsValidEntity(i_hand_particle[client][RepeatDeletion]))
+			RemoveEntity(i_hand_particle[client][RepeatDeletion]);
+	}
 		
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(viewmodelModel, "effect_hand_l", flPos, flAng);
+	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	
-	int particle = ParticleEffectAt({0.0,0.0,0.0}, "raygun_projectile_blue_crit", 0.0);
+	int particle_1 = ParticleEffectAt({-4.0,0.0,0.0}, "raygun_projectile_blue_crit", 0.0);
+
+	float RotateVector[3];
+	RotateVector = {45.0,0.0,0.0};
+
+	float VectorSet[3];
+
+	//http://www.mathforengineers.com/math-calculators/3D-point-rotation-calculator.html
+//	VectorSet = {8.0,8.0,-8.0};
+	VectorSet = {-4.000,12.000,-5.657};
+//RotateVectorViaAngleVector(RotateVector, VectorSet);
+	int	particle_2 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+
+	VectorSet = {-12.000,4.000,5.657};
+	int	particle_3 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+
+	VectorSet = {-5.657,-5.657,-8.000};
+	int	particle_4 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+
+	VectorSet = {6.828,-1.172,4.000};
+	int	particle_5 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
+
+	int red = 200;
+	int green = 200;
+	int blue = 200;
+
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_2 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_5 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_6 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
 	
-	Custom_SDKCall_SetLocalOrigin(particle, flPos);
-	SetEntPropVector(particle, Prop_Data, "m_angRotation", flAng); 
-	SetParent(viewmodelModel, particle, "effect_hand_r",_);
-	
-	i_hand_particle[client] = EntIndexToEntRef(particle);
-	
-	
+
+	i_hand_particle[client][0] = EntIndexToEntRef(particle_1);
+	i_hand_particle[client][1] = EntIndexToEntRef(particle_2);
+	i_hand_particle[client][2] = EntIndexToEntRef(particle_3);
+	i_hand_particle[client][3] = EntIndexToEntRef(particle_4);
+	i_hand_particle[client][4] = EntIndexToEntRef(particle_5);
+	i_hand_particle[client][6] = EntIndexToEntRef(Laser_1);
+	i_hand_particle[client][7] = EntIndexToEntRef(Laser_2);
+	i_hand_particle[client][8] = EntIndexToEntRef(Laser_3);
+	i_hand_particle[client][9] = EntIndexToEntRef(Laser_4);
+	i_hand_particle[client][10] = EntIndexToEntRef(Laser_5);
+	i_hand_particle[client][11] = EntIndexToEntRef(Laser_6);
 }
 public Action Timer_Management_Neuvellete(Handle timer, DataPack pack)
 {
@@ -436,7 +487,7 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 						fl_ion_charge_ammount[client] = 0.0;
 					}
 				}
-				if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+				if(!IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 				{
 					Create_Hand_Particle(client);
 				}
@@ -444,9 +495,13 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 			}
 			else
 			{
-				if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+				if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 				{
-					RemoveEntity(EntRefToEntIndex(i_hand_particle[client]));
+					RemoveEntity(EntRefToEntIndex(i_hand_particle[client][0]));
+				}
+				if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][1])))
+				{
+					RemoveEntity(EntRefToEntIndex(i_hand_particle[client][1]));
 				}
 				if(b_special_active[client])
 					Kill_Beam_Hook(client, 2.5);
@@ -766,9 +821,13 @@ public void Kill_Neuvellete_Loop(int client)
 		KillTimer(h_TimerNeuvellete_Management[client]);
 		h_TimerNeuvellete_Management[client] = INVALID_HANDLE;
 		
-		if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client])))
+		if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 		{
-			RemoveEntity(EntRefToEntIndex(i_hand_particle[client]));
+			RemoveEntity(EntRefToEntIndex(i_hand_particle[client][0]));
+		}
+		if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][1])))
+		{
+			RemoveEntity(EntRefToEntIndex(i_hand_particle[client][1]));
 		}
 		Kill_Beam_Hook(client, 2.5);
 	}
@@ -1000,13 +1059,27 @@ public Action Neuvellete_tick(int client)
 		
 		float Pos[3];
 		GetClientEyePosition(client, Pos);
-		Pos[2] -= 35.0;	//somewhere near the torso
+		float PosEffects[3];
+		PosEffects = Pos;
+		
+		int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+		
+		if(IsValidEntity(viewmodelModel))
+		{
+			float flAng[3];
+			GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	
+		}
 		
 		
 		
 		Handle trace = TR_TraceRayFilterEx(Pos, Beam_Angles, 11, RayType_Infinite, BeamWand_TraceWallsOnly);
 		TR_GetEndPosition(Target_Loc, trace);
 		delete trace;
+		Pos = PosEffects;
+		if(!IsValidEntity(viewmodelModel))
+		{
+			Pos[2] -= 35.0;	//somewhere near the torso
+		}
 		
 		ConformLineDistance(Target_Loc, Pos, Target_Loc, Range);
 		
@@ -2031,3 +2104,14 @@ static void spawnRing_Vector(float center[3], float range, float modif_X, float 
 				
 			}
 */
+
+/*
+    |cos θ   −sin θ   0| |x|   |x cos θ − y sin θ|   |x'|
+    |sin θ    cos θ   0| |y| = |x sin θ + y cos θ| = |y'|
+    |  0       0      1| |z|   |        z        |   |z'|
+*/
+/*
+void RotateVectorViaAngleVector(float AngleVector[3], float SpaceVector[3])
+{
+	// X Axis
+}*/
