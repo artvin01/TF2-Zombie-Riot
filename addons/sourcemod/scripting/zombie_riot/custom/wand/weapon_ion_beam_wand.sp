@@ -240,11 +240,8 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 		float Ration = Duration*1.15 - Duration;
 		
-		if(Ration>2.0)
-			Ration = 2.0;
-		
-		Turn_Speed *= 1.0/Ration;
-		Pitch_Speed *= 1.0/Ration;
+		if(Ration>2.5)
+			Ration = 2.5;
 		
 		DamagE *= Ration;
 	
@@ -431,8 +428,8 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 						fl_Special_Timer[client] = GameTime;
 						
 						Witch_Hexagon_Witchery(client, weapon);
-						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
-						EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
+						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
+						EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
 					}
 					else if(fl_ion_charge_ammount[client]>0.0 && fl_Ion_timer[client] < GameTime)
 					{
