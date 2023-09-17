@@ -444,6 +444,64 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+
+	
+	if(b_angered_twice[npc.index])
+	{
+		npc.m_flNextThinkTime = 0.0;
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+		npc.m_bInKame = false;
+		npc.m_bisWalking = false;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+				{
+					Music_Stop_All(client); //This is actually more expensive then i thought.
+				}
+				SetMusicTimer(client, GetTime() + 6);
+				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
+			}
+		}
+		if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
+		{
+			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, i thank you, and beware of the rogue machine... {red}Blitzkrieg.");
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+				{
+					Items_GiveNamedItem(client, "Cured Silvester");
+					CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
+				}
+			}
+		}
+		else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+		{
+			i_SaidLineAlready[npc.index] = 4;
+			CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
+		}
+		else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+		{
+			i_SaidLineAlready[npc.index] = 3;
+			CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and i will warn you of dangers.");
+		}
+		else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
+		{
+			i_SaidLineAlready[npc.index] = 2;
+			CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
+		}
+		else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
+		{
+			i_SaidLineAlready[npc.index] = 1;
+			CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
+		}
+		return; //He is trying to help.
+	}
 	
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
@@ -539,64 +597,6 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				
 			//	ang[0] = clamp(ang[0], -44.0, 89.0);
 				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-			}
-			if(b_angered_twice[npc.index])
-			{
-				npc.m_flNextThinkTime = 0.0;
-				npc.FaceTowards(vecTarget, 100.0);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
-				npc.m_bInKame = false;
-				npc.m_bisWalking = false;
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client))
-					{
-						if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
-						{
-							Music_Stop_All(client); //This is actually more expensive then i thought.
-						}
-						SetMusicTimer(client, GetTime() + 6);
-						fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
-					}
-				}
-				if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
-				{
-					CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, i thank you, and beware of the rogue machine... {red}Blitzkrieg.");
-					npc.m_bDissapearOnDeath = true;
-
-					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-					for (int client = 0; client < MaxClients; client++)
-					{
-						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-						{
-							Items_GiveNamedItem(client, "Cured Silvester");
-							CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
-						}
-					}
-				}
-				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
-				{
-					i_SaidLineAlready[npc.index] = 4;
-					CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
-				}
-				else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
-				{
-					i_SaidLineAlready[npc.index] = 3;
-					CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and i will warn you of dangers.");
-				}
-				else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
-				{
-					i_SaidLineAlready[npc.index] = 2;
-					CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
-				}
-				else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
-				{
-					i_SaidLineAlready[npc.index] = 1;
-					CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
-				}
-				return; //He is trying to help.
 			}
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
