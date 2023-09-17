@@ -449,6 +449,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	if(b_angered_twice[npc.index])
 	{
 		npc.m_flNextThinkTime = 0.0;
+		int enemyGet = GetClosestAllyPlayer(npc.index);
+		if(IsValidEntity(enemyGet))
+			npc.FaceTowards(WorldSpaceCenter(enemyGet), 100.0);
+			
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");

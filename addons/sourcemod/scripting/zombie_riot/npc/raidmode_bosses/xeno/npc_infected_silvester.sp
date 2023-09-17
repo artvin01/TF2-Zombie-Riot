@@ -477,7 +477,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 	if(b_angered_twice[npc.index])
 	{
-		int closestTarget = GetClosestTarget(npc.index);
+		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
 			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
