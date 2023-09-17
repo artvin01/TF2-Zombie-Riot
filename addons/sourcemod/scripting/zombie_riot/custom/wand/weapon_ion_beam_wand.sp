@@ -242,8 +242,8 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			
 		float Ration = Duration*1.2 - Duration;
 		
-		if(Ration>5.0)
-			Ration = 5.0;
+		if(Ration>2.0)
+			Ration = 2.0;
 		
 		Turn_Speed *= 1.0/Ration;
 		Pitch_Speed *= 1.0/Ration;
