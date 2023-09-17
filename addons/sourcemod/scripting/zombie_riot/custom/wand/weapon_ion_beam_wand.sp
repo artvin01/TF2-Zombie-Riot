@@ -240,8 +240,13 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 		float Ration = Duration*1.15 - Duration;
 		
-		if(Ration>5.0)
-			Ration = 5.0;
+		float Duration = fl_Special_Timer[client] - GameTime; 
+		Duration *= -1.0;
+			
+		float Ration = Duration*1.2 - Duration;
+		
+		if(Ration>2.0)
+			Ration = 2.0;
 		
 		Turn_Speed *= 1.0/Ration;
 		Pitch_Speed *= 1.0/Ration;
