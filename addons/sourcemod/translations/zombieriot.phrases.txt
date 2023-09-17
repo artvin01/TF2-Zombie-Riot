@@ -2886,7 +2886,7 @@
 	}
 	"Neuvellete Feedback"
 	{
-		"en"		"The longer your Beam is active, the more damage it deals, its turns speed also decreases the longer its active"
+		"en"		"The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5"
 	}
 	"Neuvellete Menu First"
 	{
