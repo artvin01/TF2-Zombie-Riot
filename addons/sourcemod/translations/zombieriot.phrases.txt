@@ -2872,9 +2872,9 @@
 	{
 		"en"		"Beam can penetrate more targets"
 	}
-	"Neuvellete MoveSpeed"
+	"Neuvellete PenFallOff"
 	{
-		"en"		"Movement Speed penalty it reduced"
+		"en"		"Dmage penalty per target hit reduced"
 	}
 	"Neuvellete Nightmare"
 	{
@@ -2882,7 +2882,7 @@
 	}
 	"Neuvellete Pulse"
 	{
-		"en"		"Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter cooldown period, You cannot use this while Hexagon Cannon is Active"
+		"en"		"Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter cooldown period"
 	}
 	"Neuvellete Feedback"
 	{
