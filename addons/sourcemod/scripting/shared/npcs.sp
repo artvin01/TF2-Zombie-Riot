@@ -129,8 +129,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		PlayersInGame = 0;
 		
 		limit = 8; //Minimum should be 8! Do not scale with waves, makes it boring early on.
-		if(VIPBuilding_Active())
-			limit *= 2;
+		limit *= MaxEnemyMulti();
 
 		float f_limit = Pow(1.14, float(CountPlayersOnRed()));
 		float f_limit_alive = Pow(1.14, float(CountPlayersOnRed(true)));
@@ -2934,8 +2933,24 @@ int MaxNpcEnemyAllowed()
 {
 	if(VIPBuilding_Active())
 	{
-		return RoundToCeil(float(NPC_HARD_LIMIT) * 1.5);
+		return RoundToCeil(float(NPC_HARD_LIMIT) * MaxEnemyMulti());
 	}
 	return NPC_HARD_LIMIT;
+}
+
+float MaxEnemyMulti()
+{
+	if(VIPBuilding_Active())
+	{
+		if(Waves_GetWave() + 1 >= 100)
+		{
+			return 1.0;
+		}
+		else
+		{
+			return 1.5;
+		}
+	}
+	return 1.0;
 }
 #endif

@@ -15,11 +15,10 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
-	if(!IsValidEntity(entity))
+	if(!IsValidEnemy(iExclude, entity, true, true)) //Must detect camo.
+	{
 		return false;
-		
-	if(!IsValidEntity(iExclude))
-		return false;
+	}
 
 	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
@@ -47,9 +46,6 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
-		return false;
-
 
 #if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))

@@ -2618,7 +2618,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 		}
-		
+		else if(!StrContains(classname, "water_lod_control")) //npcs think they cant go past this sometimes, lol
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;

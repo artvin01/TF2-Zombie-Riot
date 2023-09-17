@@ -2101,6 +2101,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		}	
 		
 		SetEntityCollisionGroup(item, 1);
+		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+
 		return item;
 	}
 
@@ -2157,6 +2160,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
 		SetEntityCollisionGroup(item, 1);
+		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
 		return item;
 	} 
 	public bool DoSwingTrace(Handle &trace,
@@ -3061,6 +3066,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
+		SetEntProp(pThis, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(pThis, Prop_Data, "m_nSolidType", 6); 
 		b_ThisEntityIgnored[pThis] = true;
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 	//Do not remove pather here.
@@ -8800,6 +8807,10 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 
 bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 {
+	if(entity == 0)
+	{
+		return true;
+	}
 	bool type = BulletAndMeleeTrace(entity, 0, client);
 	if(!type) //if it collised, return.
 	{
@@ -8820,6 +8831,10 @@ bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 }
 bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int client)
 {
+	if(entity == 0)
+	{
+		return true;
+	}
 	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, client);
 	if(!type) //if it collised, return.
 	{

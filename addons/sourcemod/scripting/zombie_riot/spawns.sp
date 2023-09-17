@@ -217,7 +217,7 @@ void Spawners_Timer()
 					SpawnerList.GetArray(index, spawn);
 					
 					int entity_Ref = spawn.EntRef;
-					if(GetEntProp(entity_Ref, Prop_Data, "m_bDisabled"))
+					if(!spawn.BaseBoss && GetEntProp(entity_Ref, Prop_Data, "m_bDisabled"))
 						continue;
 						
 					GetEntPropVector(entity_Ref, Prop_Data, "m_vecAbsOrigin", f3_PositionTemp_2);
@@ -298,7 +298,8 @@ void Spawners_Timer()
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
-		if(minPoints <= 0.0)
+
+		if(spawn.Points <= 0.0)
 		{
 			spawn.Enabled = false;
 		}
