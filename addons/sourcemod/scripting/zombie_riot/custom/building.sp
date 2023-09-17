@@ -5896,6 +5896,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] += 180.0;
 				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5920,6 +5921,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
 				}
@@ -5929,6 +5931,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] += 180.0;
 				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5953,6 +5956,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
 				}
