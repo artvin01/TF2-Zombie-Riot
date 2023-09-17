@@ -128,10 +128,12 @@ void SDKCall_Setup()
 	if(!g_hImpulse)
 		LogError("[Gamedata] Could not find CBasePlayer::CheatImpulseCommands");
 
+#if defined ZR
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayerShared::RecalculatePlayerBodygroups");
 	if((g_hRecalculatePlayerBodygroups = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFPlayerShared::RecalculatePlayerBodygroups");
-		
+#endif
+
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::InvalidateBoneCache");
 	if((g_hInvalidateBoneCache = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::InvalidateBoneCache");
@@ -298,6 +300,7 @@ void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 }
 */
 
+#if defined ZR
 void SDKCall_RecalculatePlayerBodygroups(int index)
 {
 	if(g_hRecalculatePlayerBodygroups)
@@ -305,11 +308,13 @@ void SDKCall_RecalculatePlayerBodygroups(int index)
 		SDKCall(g_hRecalculatePlayerBodygroups, GetPlayerSharedAddress(index));
 	}
 }
+
 //https://github.com/nosoop/SM-TFUtils/blob/4802fa401a86d3088feb77c8a78d758c10806112/scripting/tf2utils.sp#L1067C1-L1067C1
 static Address GetPlayerSharedAddress(int client) {
 	return GetEntityAddress(client)
 			+ view_as<Address>(FindSendPropInfo("CTFPlayer", "m_Shared"));
 }
+#endif	// ZR
 
 int SDKCall_GetMaxHealth(int client)
 {

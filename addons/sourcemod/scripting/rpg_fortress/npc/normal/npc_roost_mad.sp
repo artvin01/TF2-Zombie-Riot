@@ -102,7 +102,8 @@ methodmap MadRoost < CClotBody
 		i_NpcInternalId[npc.index] = MAD_ROOST;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "holymackerel");
+
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 

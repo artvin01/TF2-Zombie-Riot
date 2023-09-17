@@ -692,7 +692,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 	}
 }
 
-Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	switch(i_NpcInternalId[victim])
 	{

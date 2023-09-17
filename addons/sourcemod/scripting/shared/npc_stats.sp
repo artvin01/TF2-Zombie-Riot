@@ -30,6 +30,8 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+int Shared_BEAM_Laser;
+int Shared_BEAM_Glow;
 #endif
 
 #if defined RPG
@@ -70,12 +72,8 @@ static float f3_WasPathingToHere[MAXENTITIES][3];
 #define TELEPORT_STUCK_CHECK_2 12.0
 #define TELEPORT_STUCK_CHECK_3 24.0
 
-//static PathFollower pPath[MAXENTITIES];
-
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
-int Shared_BEAM_Laser;
-int Shared_BEAM_Glow;
 static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_EntityInCrouchSpot[MAXENTITIES];
 static bool b_NpcResizedForCrouch[MAXENTITIES];
@@ -202,8 +200,10 @@ void OnMapStart_NPC_Base()
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
+#if defined ZR
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+#endif
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);

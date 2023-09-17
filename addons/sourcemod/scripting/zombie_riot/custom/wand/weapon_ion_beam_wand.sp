@@ -8,8 +8,10 @@
 #define NEUVELLETE_ION_EXTRA_SOUND1	"misc/ks_tier_04_death.wav"
 #define NEUVELLETE_MAIN_BEAM_START_SONUD		"misc/ks_tier_04.wav"
 
-#define NEUVELLETE_THROTTLE_SPEED 5.0/66.0	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
-#define NEUVELLETE_TE_DURATION 5.5/66.0
+
+//NOTE!!!! this affects ALL STATS, how fast it turns, how fast it deal damage, etc etc etc
+#define NEUVELLETE_THROTTLE_SPEED 6.0/66.0	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
+#define NEUVELLETE_TE_DURATION 6.6/66.0
 
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
@@ -88,8 +90,8 @@ public void Ion_Beam_Wand_MapStart()
 
 #define NEUVELLETE_BASELINE_DAMAGE 100.0
 #define NEUVELLETE_BASELINE_RANGE 1000.0				//how far the laser can reach
-#define NEUVELLETE_BASELINE_TURN_SPEED 1.5	
-#define NEUVELLETE_BASELINE_PITCH_SPEED 0.75
+#define NEUVELLETE_BASELINE_TURN_SPEED 1.75	
+#define NEUVELLETE_BASELINE_PITCH_SPEED 0.8
 #define NEUVELLETE_BASELINE_MOVESPEED_PENALTY 0.5		//for the time being it does nothing :(
 
 
@@ -101,7 +103,7 @@ public void Ion_Beam_Wand_MapStart()
 #define FLAG_NEUVELLETE_PAP_2_RANGE				(1 << 5)
 #define FLAG_NEUVELLETE_PAP_2_PENETRATION		(1 << 6)
 
-#define FLAG_NEUVELLETE_PAP_3_MOVESPEED			(1 << 7)	//Player movespeed
+#define FLAG_NEUVELLETE_PAP_3_PENETRATION_FALLOFF	(1 << 7)
 #define FLAG_NEUVELLETE_PAP_3_TURNRATE			(1 << 8)
 #define FLAG_NEUVELLETE_PAP_3_RANGE				(1 << 9)	
 
@@ -111,11 +113,19 @@ public void Ion_Beam_Wand_MapStart()
 
 //	"Overclocks" - Heavily changes the weapon, buffs one thing nerfs another, mostly optional stuff if the player wants to
 
-#define FLAG_NEUVELLETE_PAP_5_NIGHTMARE			(1 << 13)	//Heavily reduces turnrate, heavily increases damage, heavily increases mana use
+#define FLAG_NEUVELLETE_PAP_5_NIGHTMARE			(1 << 13)	//Heavily reduces turnrate, heavily increases damage
 #define FLAG_NEUVELLETE_PAP_5_PULSE_CANNON		(1 << 14)	//Instead of the beam being constant, the beam only lasts for 2.5 seconds, but has huge turnrate, and resonable damage, increases the useage cooldown
-#define FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP		(1 << 15)	//the longer its active, the more damage it deals, mana cost grows with time active as well
+#define FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP		(1 << 15)	//the longer its active, the more damage it deals, beam also moves slower the longer its active
 
-static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, float &Pitch_Speed, float &DamagE, float &Range, int &Penetration, int &Mana_Cost, float &Move_Speed, int &Effects)
+static float fl_turnspeed[MAXTF2PLAYERS + 1];
+static float fl_pitchspeed[MAXTF2PLAYERS + 1];
+static float fl_main_damage[MAXTF2PLAYERS + 1];
+static float fl_main_range[MAXTF2PLAYERS + 1];
+static int i_manacost[MAXTF2PLAYERS + 1];
+static int i_Effect_Hex[MAXTF2PLAYERS + 1];
+static float fl_penetration_falloff[MAXTF2PLAYERS + 1];
+
+static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, float &Pitch_Speed, float &DamagE, float &Range, int &Penetration, int &Mana_Cost, float &Pen_FallOff, int &Effects)
 {
 	int flags = i_Neuvellete_HEX_Array[client];
 	float GameTime = GetGameTime();
@@ -169,14 +179,14 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		Range *= 1.5;
 		Effects |= (1 << 4);	//adds +1 to the spinning shape
 	}
-	if(flags & FLAG_NEUVELLETE_PAP_3_MOVESPEED)
+	if(flags & FLAG_NEUVELLETE_PAP_3_PENETRATION_FALLOFF)
 	{
-		Move_Speed *= 1.5;
+		Pen_FallOff = 1.45;
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_3_TURNRATE)
 	{
-		Turn_Speed += 0.25;
-		Pitch_Speed += 0.1;
+		Turn_Speed += 0.3;
+		Pitch_Speed += 0.2;
 	}
 	
 	
@@ -198,7 +208,6 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	
 	if(flags & FLAG_NEUVELLETE_PAP_5_NIGHTMARE)
 	{
-		Move_Speed *=0.75;
 		Range *= 1.25;
 		
 		Turn_Speed *= 0.5;
@@ -228,6 +237,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	
 	if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP)
 	{
+<<<<<<< HEAD
 		float Duration = fl_Special_Timer[client] - GameTime; 
 		Duration *= -1.0;
 
@@ -236,6 +246,13 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 			Duration = 5.0;
 		}
 		float Ration = Duration*1.35 - Duration;
+=======
+		float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
+		float Ration = Duration*1.15 - Duration;
+		
+		if(Ration>5.0)
+			Ration = 5.0;
+>>>>>>> 4e34f343c99d36a6c8cb444f495f6be77400482b
 		
 		Turn_Speed *= 1.0/Ration;
 		Pitch_Speed *= 1.0/Ration;
@@ -355,6 +372,48 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 					fl_hud_timer[client] = GameTime + 0.5;
 					Neuvellete_Hud(client, weapon);
 				}
+				
+				if(b_special_active[client])
+				{
+					int main_mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+					
+					float Turn_Speed = NEUVELLETE_BASELINE_TURN_SPEED;
+					float Pitch_Speed = NEUVELLETE_BASELINE_PITCH_SPEED;
+					float DamagE = NEUVELLETE_BASELINE_DAMAGE;
+					float Range = NEUVELLETE_BASELINE_RANGE;
+					int Penetration = MAX_NEUVELLETE_TARGETS_HIT;
+					float Pen_Falloff = LASER_AOE_DAMAGE_FALLOFF;
+					int Effects = 0;
+							
+					Neuvellete_Adjust_Stats_To_Flags(client, Turn_Speed, Pitch_Speed, DamagE, Range, Penetration, main_mana_cost, Pen_Falloff, Effects);
+					
+					DamagE *=Attributes_Get(weapon, 410, 1.0);
+					
+					Range *= Attributes_Get(weapon, 103, 1.0);
+					Range *= Attributes_Get(weapon, 104, 1.0);
+					Range *= Attributes_Get(weapon, 475, 1.0);
+					Range *= Attributes_Get(weapon, 101, 1.0);
+					Range *= Attributes_Get(weapon, 102, 1.0);
+					
+					/*
+					float firerate1 = Attributes_Get(weapon, 6, 1.0);
+					float firerate2 = Attributes_Get(weapon, 5, 1.0);
+					Turn_Speed /= firerate1;
+					Turn_Speed /= firerate2;
+					Pitch_Speed /= firerate1;
+					Pitch_Speed /= firerate2;
+					*/
+			
+					fl_turnspeed[client] = Turn_Speed;
+					fl_pitchspeed[client] = Pitch_Speed;
+					fl_main_damage[client] = DamagE;
+					fl_main_range[client] = Range;
+					i_manacost[client] = main_mana_cost;
+					i_Effect_Hex[client] = Effects;
+					i_Neuvellete_penetration[client] = Penetration;
+					fl_penetration_falloff[client] = Pen_Falloff;
+				}
+				
 				if(Get_Pap(weapon)>=3)
 				{
 					if(attack2 && fl_Ion_timer[client]<=GameTime)
@@ -368,7 +427,7 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 								fl_ion_charge_ammount[client] += mana_cost;
 								float Null = 0.0;
 								int Null2 = 0;
-								Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, Null ,Null , Null2, mana_cost, Null, Null2);
+								Neuvellete_Adjust_Stats_To_Flags(client, Null, Null, Null, Null, Null2, mana_cost, Null, Null2);
 								if(mana_cost>10)
 									mana_cost = 10;
 								Current_Mana[client] -=mana_cost;
@@ -378,7 +437,9 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 					}
 					else if(fl_ion_charge_ammount[client]>250.0 && fl_Ion_timer[client] < GameTime)
 					{
-						fl_Ion_timer[client] = GameTime + 30.0+NEUVELLETE_HEXAGON_CHARGE_TIME+NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;	//the 15 is the chargeup period xd
+						fl_Ion_timer[client] = GameTime + 30.0+NEUVELLETE_HEXAGON_CHARGE_TIME+NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;
+						
+						fl_Special_Timer[client] = GameTime;
 						
 						Witch_Hexagon_Witchery(client, weapon);
 						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
@@ -401,6 +462,8 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 				{
 					RemoveEntity(EntRefToEntIndex(i_hand_particle[client]));
 				}
+				if(b_special_active[client])
+					Kill_Beam_Hook(client, 2.5);
 			}
 		}
 		else
@@ -772,6 +835,45 @@ public void Weapon_Ion_Wand_Beam(int client, int weapon, bool crit)
 			
 			fl_throttle[client] = 0.0;
 			fl_extra_effects_timer[client] = 0.0;
+			
+			//to avoid an uber edge case where stats are null
+			int main_mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+					
+			float Turn_Speed = NEUVELLETE_BASELINE_TURN_SPEED;
+			float Pitch_Speed = NEUVELLETE_BASELINE_PITCH_SPEED;
+			float DamagE = NEUVELLETE_BASELINE_DAMAGE;
+			float Range = NEUVELLETE_BASELINE_RANGE;
+			int Penetration = MAX_NEUVELLETE_TARGETS_HIT;
+			float Pen_Falloff = LASER_AOE_DAMAGE_FALLOFF;
+			int Effects = 0;
+					
+			Neuvellete_Adjust_Stats_To_Flags(client, Turn_Speed, Pitch_Speed, DamagE, Range, Penetration, main_mana_cost, Pen_Falloff, Effects);
+			
+			DamagE *=Attributes_Get(weapon, 410, 1.0);
+			
+			Range *= Attributes_Get(weapon, 103, 1.0);
+			Range *= Attributes_Get(weapon, 104, 1.0);
+			Range *= Attributes_Get(weapon, 475, 1.0);
+			Range *= Attributes_Get(weapon, 101, 1.0);
+			Range *= Attributes_Get(weapon, 102, 1.0);
+			
+			/*
+			float firerate1 = Attributes_Get(weapon, 6, 1.0);
+			float firerate2 = Attributes_Get(weapon, 5, 1.0);
+			Turn_Speed /= firerate1;
+			Turn_Speed /= firerate2;
+			Pitch_Speed /= firerate1;
+			Pitch_Speed /= firerate2;
+			*/
+	
+			fl_turnspeed[client] = Turn_Speed;
+			fl_pitchspeed[client] = Pitch_Speed;
+			fl_main_damage[client] = DamagE;
+			fl_main_range[client] = Range;
+			i_manacost[client] = main_mana_cost;
+			i_Effect_Hex[client] = Effects;
+			i_Neuvellete_penetration[client] = Penetration;
+			fl_penetration_falloff[client] = Pen_Falloff;
 		}
 		else
 		{
@@ -819,14 +921,6 @@ public Action Neuvellete_tick(int client)
 				
 		if(fl_throttle[client]>GameTime)
 			return Plugin_Continue;
-			
-		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-		if(i_CustomWeaponEquipLogic[weapon_holding] != WEAPON_ION_BEAM)
-		{
-			Kill_Beam_Hook(client, 3.5);
-			return Plugin_Stop;
-		}
 		
 		float Angles[3], Beam_Angles[3], Start_Loc[3], Target_Loc[3];
 		GetClientEyeAngles(client, Angles);
@@ -837,19 +931,14 @@ public Action Neuvellete_tick(int client)
 		float travel_distance_pitch = fl_beam_angle[client][1] - Angles[0];
 		
 		
-		float Turn_Speed = NEUVELLETE_BASELINE_TURN_SPEED;
-		float Pitch_Speed = NEUVELLETE_BASELINE_PITCH_SPEED;
-		float DamagE = NEUVELLETE_BASELINE_DAMAGE;
-		float Range = NEUVELLETE_BASELINE_RANGE;
-		float Move_Speed = NEUVELLETE_BASELINE_MOVESPEED_PENALTY;
-		int Penetration = MAX_NEUVELLETE_TARGETS_HIT;
+		float Turn_Speed = fl_turnspeed[client];
+		float Pitch_Speed = fl_pitchspeed[client];
+		float DamagE = fl_main_damage[client];
+		float Range = fl_main_range[client];
 		
-		int Effects;
+		int Effects = i_Effect_Hex[client];
 		
-		int mana_cost;
-		mana_cost = RoundToCeil(Attributes_Get(weapon_holding, 733, 1.0));
-						
-		Neuvellete_Adjust_Stats_To_Flags(client, Turn_Speed, Pitch_Speed, DamagE, Range, Penetration, mana_cost, Move_Speed, Effects);
+		int mana_cost= i_manacost[client];
 		int flags = i_Neuvellete_HEX_Array[client];
 		
 		if(Current_Mana[client]<=mana_cost)
@@ -858,27 +947,8 @@ public Action Neuvellete_tick(int client)
 			return Plugin_Stop;
 		}
 		
-		DamagE *=Attributes_Get(weapon_holding, 410, 1.0);
-		
-		Range *= Attributes_Get(weapon_holding, 103, 1.0);
-		Range *= Attributes_Get(weapon_holding, 104, 1.0);
-		Range *= Attributes_Get(weapon_holding, 475, 1.0);
-		Range *= Attributes_Get(weapon_holding, 101, 1.0);
-		Range *= Attributes_Get(weapon_holding, 102, 1.0);
-		/*
-		float firerate1 = Attributes_Get(weapon_holding, 6, 1.0);
-		float firerate2 = Attributes_Get(weapon_holding, 5, 1.0);	//nerf turnrate bonus if too high
-		Turn_Speed /= firerate1;
-		Turn_Speed /= firerate2;
-		Pitch_Speed /= firerate1;
-		Pitch_Speed /= firerate2;*/
-		
-		//Attributes_Set(weapon_holding, 107, Move_Speed);
-		
 		Current_Mana[client] -=mana_cost;
 		Mana_Regen_Delay[client] = GameTime + 1.0;
-		
-		i_Neuvellete_penetration[client] = Penetration;
 		
 		if(travel_distance<180.0 && -180.0<travel_distance)	//travel distance is less then 180.0 we do it normaly
 		{
@@ -1467,7 +1537,7 @@ static void Beam_Wand_Laser_Attack(int client, float playerPos[3], float endVec_
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
 					
-					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+					BEAM_Targets_Hit[client] *= fl_penetration_falloff[client];
 				}
 				else
 					BEAM_BuildingHit[building] = false;
@@ -1541,8 +1611,8 @@ public void Neuvellete_Menu(int client, int weapon)
 			case 3:
 			{
 				char buffer[255];
-				//FormatEx(buffer, sizeof(buffer), "%t", "Neuvellete MoveSpeed");
-				//menu2.AddItem("1", buffer);
+				FormatEx(buffer, sizeof(buffer), "%t", "Neuvellete PenFallOff");
+				menu2.AddItem("1", buffer);
 				
 				FormatEx(buffer, sizeof(buffer), "%t", "Neuvellete Turn");
 				menu2.AddItem("2", buffer);
@@ -1638,10 +1708,10 @@ public void Neuvellete_Menu(int client, int weapon)
 						FormatEx(buffer, sizeof(buffer), "%t", "Neuvellete Range");
 						menu2.AddItem("4", buffer, ITEMDRAW_DISABLED);
 					}
-					if(flags & FLAG_NEUVELLETE_PAP_3_MOVESPEED)
+					if(flags & FLAG_NEUVELLETE_PAP_3_PENETRATION_FALLOFF)
 					{
-						//FormatEx(buffer, sizeof(buffer), "%t", "Neuvellete MoveSpeed");
-						//menu2.AddItem("4", buffer, ITEMDRAW_DISABLED);
+						FormatEx(buffer, sizeof(buffer), "%t", "Neuvellete PenFallOff");
+						menu2.AddItem("4", buffer, ITEMDRAW_DISABLED);
 					}
 					if(flags & FLAG_NEUVELLETE_PAP_3_TURNRATE)
 					{
@@ -1767,7 +1837,7 @@ static int Neuvellete_Menu_Selection(Menu menu, MenuAction action, int client, i
 					{
 						case 1:
 						{
-							i_Neuvellete_HEX_Array[client] |= FLAG_NEUVELLETE_PAP_3_MOVESPEED;
+							i_Neuvellete_HEX_Array[client] |= FLAG_NEUVELLETE_PAP_3_PENETRATION_FALLOFF;
 						}
 						case 2:
 						{

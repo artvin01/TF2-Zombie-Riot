@@ -1454,7 +1454,7 @@ void Waves_Progress(bool donotAdvance = false)
 		Rounds.GetArray(length, round);
 		if(++CurrentWave < 1)
 		{
-			float playercount = float(CountPlayersOnRed());
+//			float playercount = float(CountPlayersOnRed());
 			DoGlobalMultiScaling();
 
 			int postWaves = CurrentRound - length;

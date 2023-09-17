@@ -666,7 +666,6 @@ static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], i
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, Range);
 		float lineReduce = 5.0 * 2.0 / 3.0;
 		float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -685,10 +684,6 @@ static void Scaramouche_BEAM(int client, float UserLoc[3], float vecAngles[3], i
 		TE_SetupBeamPoints(endPoint, UserLoc, gLaser2, 0, 0, 0, 0.1, 15.0, 15.0, 0, 0.1, colour, 1);
 		TE_SendToAll();
 			
-	}
-	else
-	{
-		delete trace;
 	}
 	delete trace;
 }

@@ -108,6 +108,7 @@ methodmap ArkSinger < CClotBody
 		i_NpcInternalId[npc.index] = ARK_SINGER;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		
 		npc.SetActivity("ACT_IDLE_PISTOL");
 

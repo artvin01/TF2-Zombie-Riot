@@ -13,7 +13,8 @@ methodmap CombineOverlordCC < CombineSoldier
 		
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD_CC;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "firedeath");
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
@@ -106,8 +107,11 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 						BurnTarget(npc, target);
 
 						// E2 L20 = 150, E2 L25 = 165
+						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * ((npc.m_hCCFlags & CC_FLAG_MELEEDAMAGE) ? 6.0 : 3.0), DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
+
+						KillFeed_SetKillIcon(npc.index, "firedeath");
 					}
 				}
 
@@ -131,11 +135,11 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 					npc.PlayOverload();
 				}
 
-				if(npc.m_flRangedArmor > 1.1001)
-					npc.m_flRangedArmor = 1.1001;
+				if(npc.m_flRangedArmor > 0.5)
+					npc.m_flRangedArmor = 0.5001;
 
-				if(npc.m_flMeleeArmor > 1.1001)
-					npc.m_flMeleeArmor = 1.1001;
+				if(npc.m_flMeleeArmor > 0.5)
+					npc.m_flMeleeArmor = 0.5001;
 
 				npc.m_flRangedArmor -= 0.1;
 				if(npc.m_flRangedArmor < 0.01)
@@ -195,14 +199,19 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 
 static void BurnTarget(CombineOverlordCC npc, int entity)
 {
-	if(npc.m_hCCFlags & CC_FLAG_BURNDAMAGE)
+	if(entity > MaxClients)
 	{
-		StartHealingTimer(entity, 0.2, -3.0, 50);
+		NPC_Ignite(entity, npc.index, 5.0, -1);
+	}
+	else if(npc.m_hCCFlags & CC_FLAG_BURNDAMAGE)
+	{
+		TF2_AddCondition(entity, TFCond_Gas, 1.5);
+		StartBleedingTimer_Against_Client(entity, npc.index, 6.0, 20);
 	}
 	else
 	{
-		ExtinguishEntity(entity);
-		IgniteEntity(entity, 10.0);
+		TF2_AddCondition(entity, TFCond_Gas, 1.5);
+		StartBleedingTimer_Against_Client(entity, npc.index, 2.0, 20);
 	}
 }
 
@@ -214,11 +223,15 @@ public Action CombineOverlordCC_TakeDamage(int victim, int &attacker, int &infli
 	{
 		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		npc.m_flMeleeArmor += 0.0125;
+		if(npc.m_flMeleeArmor > 1.5)
+			npc.m_flMeleeArmor = 1.5;
 	}
 	else if(!(damagetype & DMG_SLASH))
 	{
 		EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		npc.m_flRangedArmor += 0.005;
+		if(npc.m_flRangedArmor > 1.5)
+			npc.m_flRangedArmor = 1.5;
 	}
 
 	return Plugin_Changed;

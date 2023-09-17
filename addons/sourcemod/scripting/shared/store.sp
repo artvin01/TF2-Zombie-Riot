@@ -4619,6 +4619,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	Manual_Impulse_101(client, health);
 }
 
+#if defined ZR
 void CheckInvalidSlots(int client)
 {
 	int i, entity;
@@ -4646,6 +4647,8 @@ void CheckInvalidSlots(int client)
 #endif
 	}
 }
+#endif
+
 static void CheckMultiSlots(int client)
 {
 	ResetToZero(HasMultiInSlot[client], sizeof(HasMultiInSlot[]));

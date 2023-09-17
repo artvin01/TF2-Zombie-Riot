@@ -86,8 +86,10 @@ public void CombineElite_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L5 = 105, E2 L10 = 120
+						KillFeed_SetKillIcon(npc.index, "club");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
+						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
 				}
 
@@ -193,8 +195,10 @@ public void CombineElite_ClotThink(int iNPC)
 							NormalizeVector(vecDir, vecDir);
 							
 							// E2 L5 = 5.25, E2 L10 = 6
+							KillFeed_SetKillIcon(npc.index, "smg");
 							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.125, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-							
+							KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
 							npc.PlayAR2Fire();
 						}

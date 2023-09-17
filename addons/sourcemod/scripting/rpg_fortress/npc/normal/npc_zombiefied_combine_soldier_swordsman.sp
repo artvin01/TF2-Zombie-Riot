@@ -233,6 +233,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
+						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
@@ -304,7 +305,8 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 				NormalizeVector(vecDir, vecDir);
-			
+
+				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				FireBullet(npc.index, npc.index, WorldSpaceCenter(npc.index), vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}

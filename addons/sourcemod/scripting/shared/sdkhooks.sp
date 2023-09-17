@@ -2041,7 +2041,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	}
 	return damage;
 }
-#endif
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 
@@ -2080,3 +2079,4 @@ void NpcStuckZoneWarning(int client, float &damage)
 		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
 	}
 }
+#endif	// ZR

@@ -24,6 +24,7 @@ enum struct KillFeed
 	bool silent_kill;
 }
 
+#if defined ZR
 static const char BuildingName[][] =
 {
 	"Building",
@@ -39,6 +40,7 @@ static const char BuildingName[][] =
 	"Healing Station",
 	"Barracks"
 };
+#endif
 
 static int Bots[2];
 static int ForceTeam[MAXTF2PLAYERS];
