@@ -10,7 +10,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 	{
 		if(CurrentAmmo[client][Ammo_Potion_Supply] >= 1)
 		{
-			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntRefToEntIndex(client), TIMER_FLAG_NO_MAPCHANGE);
+			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			if(Handle_on[client])
 			{
 				KillTimer(Give_bomb_back[client]);
@@ -66,7 +66,7 @@ public void Reset_stats_Drink_Singular(int client)
 
 public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
 {
-	int client = EntIndexToEntRef(ref);
+	int client = EntRefToEntIndex(ref);
 	if (IsValidClient(client))
 	{
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
