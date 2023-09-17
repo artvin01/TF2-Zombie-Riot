@@ -29,7 +29,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 
 #define CASINO_MAX_DOLLARS 100
 #define CASINO_SALARY_GAIN_PER_HIT 1
-#define CASINO_DAMAGE_GAIN_PER_HIT 1.0
+#define CASINO_DAMAGE_GAIN_PER_HIT 0.8
 #define CASINO_MAX_DAMAGE 100.0
 
 public void Casino_MapStart() //idk what to precisely precache so hopefully this is good enough
@@ -79,31 +79,31 @@ public float Npc_OnTakeDamage_Casino(int client, float &damage, int damagetype) 
 			}
 			case 1:
 			{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 2;
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1;
 				if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
 					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
 
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 2.0;
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.2;
 				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
 			}
 			case 2:
 			{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 3;
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 2;
 				if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
 					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
 
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 3.0;
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 1.5;
 				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
 			}
 			case 3:
 			{
-				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 4;
+				i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 2;
 				if(i_Dollars_Ammount[client]>=CASINO_MAX_DOLLARS)
 					i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
 
-				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 4.0;
+				fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * 2.2;
 				if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 					fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
 			}

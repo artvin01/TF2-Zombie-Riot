@@ -228,7 +228,13 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	
 	if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP)
 	{
-		float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
+		float Duration = fl_Special_Timer[client] - GameTime; 
+		Duration *= -1.0;
+
+		if(Duration > 5.0)
+		{
+			Duration = 5.0;
+		}
 		float Ration = Duration*1.35 - Duration;
 		
 		Turn_Speed *= 1.0/Ration;

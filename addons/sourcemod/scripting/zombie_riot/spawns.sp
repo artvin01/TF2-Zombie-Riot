@@ -53,6 +53,9 @@ bool Spawns_CanSpawnNext()
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
 				continue;
 		}
+		if(spawn.Points <= 0.0)	// Map disabled, ignore
+			continue;
+		
 		
 		//error = false;
 		if(spawn.Cooldown < gameTime)
@@ -295,7 +298,14 @@ void Spawners_Timer()
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
-		spawn.Enabled = spawn.Points >= minPoints;
+		if(minPoints <= 0.0)
+		{
+			spawn.Enabled = false;
+		}
+		else
+		{
+			spawn.Enabled = spawn.Points >= minPoints;
+		}
 		SpawnerList.SetArray(index, spawn);
 	}
 }

@@ -34,6 +34,11 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	}
 }
 
+public void Reset_stats_Grenade_Singular(int client)
+{
+	Handle_on[client] = false;
+}
+
 
 public Action Give_Back_Grenade(Handle cut_timer, int client)
 {

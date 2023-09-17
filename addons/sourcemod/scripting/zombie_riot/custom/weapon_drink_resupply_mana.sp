@@ -59,6 +59,11 @@ public void MagicRestore_MapStart()
 	Zero(Handle_on);
 }
 
+public void Reset_stats_Drink_Singular(int client)
+{
+	Handle_on[client] = false;
+}
+
 public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
 {
 	int client = EntIndexToEntRef(ref);
@@ -72,7 +77,7 @@ public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Mana Regen Potion Back");
+		Handle_on[client] = false;
 	}
-	Handle_on[client] = false;
 	return Plugin_Handled;
 }
