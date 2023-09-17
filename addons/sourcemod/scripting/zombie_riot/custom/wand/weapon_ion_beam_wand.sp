@@ -431,8 +431,8 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 						fl_Special_Timer[client] = GameTime;
 						
 						Witch_Hexagon_Witchery(client, weapon);
-						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
-						EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, 0.5, 85); 
+						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
+						EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
 					}
 					else if(fl_ion_charge_ammount[client]>0.0 && fl_Ion_timer[client] < GameTime)
 					{
