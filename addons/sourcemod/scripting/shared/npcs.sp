@@ -547,7 +547,9 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				IgniteFor[entity]--;
 				
 				float pos[3], ang[3];
-				GetClientEyeAngles(attacker, ang);
+				if(attacker > 0 && attacker <= MaxClients)
+					GetClientEyeAngles(attacker, ang);
+				
 				int weapon = EntRefToEntIndex(IgniteRef[entity]);
 				float value = 8.0;
 				if(weapon > MaxClients && IsValidEntity(weapon))

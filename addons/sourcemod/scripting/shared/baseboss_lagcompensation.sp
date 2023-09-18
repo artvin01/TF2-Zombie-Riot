@@ -90,7 +90,7 @@ void OnEntityDestroyed_LagComp(int entity)
 		
 		b_LagCompensationDeletedArrayList[entity] = true;
 		int ref = EntIndexToEntRef(entity);
-		char key[13];
+		char key[16];
 		IntToString(ref, key, sizeof(key));
 		
 		ArrayList list;
@@ -127,13 +127,11 @@ void OnEntityDestroyed_LagComp(int entity)
 		}
 	*/
 		LagRecord restore;
-		EntityRestore.GetArray(key, restore, sizeof(restore));
+		if(EntityRestore.GetArray(key, restore, sizeof(restore)))
 	//	if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 		{
-			if(restore.m_layerRecords)
-			{
-				delete restore.m_layerRecords;
-			}
+			delete restore.m_layerRecords;
+			EntityRestore.Remove(key);
 		}
 	}
 }
@@ -256,7 +254,7 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	int ref = EntIndexToEntRef(entity);
-	char refchar[12];
+	char refchar[16];
 	IntToString(ref, refchar, sizeof(refchar));
 	
 	ArrayList list;
@@ -489,7 +487,12 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 			}
 		}
 	}
-	SDKCall_InvalidateBoneCache(entity); //Do at all times, yes, ew but i have to,
+	//only invalidate when we actually update the bones, otherwise there is no reason to do this.
+	//if this bool is on, then that means whateverhappens only goes for position or collision box.
+	//if the code needs the bones for any reason, then simply enable this bool when doing the compensation.
+	if(!b_LagCompNPC_No_Layers)
+		SDKCall_InvalidateBoneCache(entity);
+
 	EntityRestore.SetArray(refchar, restore, sizeof(restore));
 }
 
@@ -501,7 +504,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 		DoingLagCompensation = false;
 	//	SetEntProp(CurrentPlayer, Prop_Data, "m_bLagCompensation", true, 1);
 		
-		char refchar[12];
+		char refchar[16];
 		LagRecord restore;
 		LayerRecord layer;
 		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
@@ -577,9 +580,10 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 									currentLayer.m_flWeight = layer.m_weight;
 								}
 							}
-							delete restore.m_layerRecords;
 						}
 					}
+
+					delete restore.m_layerRecords;
 					EntityRestore.Remove(refchar);
 				}
 			}
@@ -598,7 +602,7 @@ void LagCompensationThink_Forward()
 	{
 		// remove all records before that time:
 		float deadTime = GetGameTime() - sv_maxunlag.FloatValue;
-		char refchar[12];
+		char refchar[16];
 		ArrayList list;
 		LagRecord record;
 		LayerRecord layer;

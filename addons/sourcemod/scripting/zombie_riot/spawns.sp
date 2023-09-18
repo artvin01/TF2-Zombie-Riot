@@ -294,6 +294,8 @@ void Spawners_Timer()
 	HighestPoints = pointsList.Get(0);
 	float minPoints = pointsList.Get(maxSpawners - 1);
 
+	delete pointsList;
+
 	// Enable if meet requirement
 	for(int index; index < length; index++)
 	{

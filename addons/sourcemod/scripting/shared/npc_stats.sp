@@ -5027,7 +5027,6 @@ public void NpcBaseThink(int iNPC)
 	if(b_NpcHasDied[iNPC])
 	{
 		NPC_StopPathing(iNPC);
-		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		static float hullcheckmaxs[3];	
 		//Remove their hull
 		npc.GetBaseNPC().SetBodyMaxs(hullcheckmaxs);
@@ -5035,6 +5034,7 @@ public void NpcBaseThink(int iNPC)
 		npc.GetBaseNPC().flGravity = 0.0;
 		OnEntityDestroyed_LagComp(iNPC);
 		RemoveEntityToLagCompList(iNPC);
+		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
