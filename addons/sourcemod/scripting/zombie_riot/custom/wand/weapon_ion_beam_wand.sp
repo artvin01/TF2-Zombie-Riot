@@ -1070,6 +1070,11 @@ public Action Neuvellete_tick(int client)
 			float flAng[3];
 			GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	
 		}
+		else
+		{
+			PosEffects[2] -= 35.0;
+			Pos[2] -= 35.0;
+		}
 		
 		
 		
@@ -1077,10 +1082,6 @@ public Action Neuvellete_tick(int client)
 		TR_GetEndPosition(Target_Loc, trace);
 		delete trace;
 		Pos = PosEffects;
-		if(!IsValidEntity(viewmodelModel))
-		{
-			Pos[2] -= 35.0;	//somewhere near the torso
-		}
 		
 		ConformLineDistance(Target_Loc, Pos, Target_Loc, Range);
 		
