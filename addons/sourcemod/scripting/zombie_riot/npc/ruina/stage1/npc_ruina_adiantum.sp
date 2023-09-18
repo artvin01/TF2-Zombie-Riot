@@ -249,16 +249,10 @@ public void Adiantum_ClotThink(int iNPC)
 			
 			if(npc.m_flNextRangedBarrage_Spam < GameTime)
 			{
-				bool buff_array[3];
-				buff_array[0] = true;	//defense
-				buff_array[1] = false;	//speed
-				buff_array[2] = true;	//attack
-				float buff_array_amt[3];
-				buff_array_amt[0] = 0.2;	//20% dmg bonus
-				buff_array_amt[1] = 1.25;	//going bellow 1.0 will reduce speed
-				buff_array_amt[2] = 0.05;	//5% dmg resist
-			
-				Apply_Master_Buff(npc.index, buff_array, 250.0, 5.0, buff_array_amt);
+
+				Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);
+				Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
+				
 				Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
 				npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
 			}

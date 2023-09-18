@@ -20,10 +20,19 @@ float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 
-float fl_ruina_shield_power[MAXENTITIES];
-float fl_ruina_shield_strenght[MAXENTITIES];
-float fl_ruina_shield_timer[MAXENTITIES];
-bool b_ruina_shield_active[MAXENTITIES];
+static float fl_ruina_shield_power[MAXENTITIES];
+static float fl_ruina_shield_strenght[MAXENTITIES];
+static float fl_ruina_shield_timer[MAXENTITIES];
+static bool b_ruina_shield_active[MAXENTITIES];
+static int i_shield_effect[MAXENTITIES];
+static float fl_shield_break_timeout[MAXENTITIES];
+
+//these scales on wavecount
+#define RUINA_NORMAL_NPC_MAX_SHIELD 175.0
+#define RUINA_BOSS_NPC_MAX_SHIELD 250.0
+#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 1000.0
+#define RUINA_SHIELD_NPC_TIMEOUT 15.0
+#define RUINA_SHIELD_ONTAKE_SOUND "weapons/flame_thrower_end.wav"
 
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
@@ -31,6 +40,7 @@ static int i_master_priority[MAXENTITIES];		//when searching for a master, the m
 static int i_master_max_slaves[MAXENTITIES];	//how many npc's a master can hold before they stop accepting slaves
 static int i_master_current_slaves[MAXENTITIES];
 static bool b_master_is_acepting[MAXENTITIES];	//if a master npc no longer wants slaves this is set to false
+static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
 
@@ -65,10 +75,14 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_battery);
 	Zero(b_ruina_battery_ability_active);
 	Zero(fl_ruina_battery_timer);
+	
 	Zero(fl_ruina_shield_power);
 	Zero(fl_ruina_shield_timer);
 	Zero(fl_ruina_shield_strenght);
 	Zero(b_ruina_shield_active);
+	Zero(i_shield_effect);
+	Zero(fl_shield_break_timeout);
+	Zero(fl_ontake_sound_timer);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -76,6 +90,8 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SHUTDOWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING);
+	
+	PrecacheSound(RUINA_SHIELD_ONTAKE_SOUND);
 	
 	
 	
@@ -127,24 +143,8 @@ public void Ruina_Master_Accpet_Slaves(int client)
 public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	
-	if(fl_ruina_shield_power[victim]>0.0)	//does this npc have shield power?
-	{
-		fl_ruina_shield_power[victim] -= damage*fl_ruina_shield_strenght[victim];	//remove shield damage dependant on damage dealt
-		if(fl_ruina_shield_power[victim]>=0.0)		//if the shield is still intact remove all damage
-		{
-			damage -= damage*fl_ruina_shield_strenght[victim];
-			b_ruina_shield_active[victim] = true;
-			damageForce[0] -= damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
-			damageForce[1] -= damageForce[1]*fl_ruina_shield_strenght[victim];
-			damageForce[2] -= damageForce[2]*fl_ruina_shield_strenght[victim];
-		}
-		else	//if not, remove shield, deal the remaining damage 
-		{
-			damage = fl_ruina_shield_power[victim] * -1.0;
-			fl_ruina_shield_power[victim] = 0.0;
-			b_ruina_shield_active[victim] = false;
-		}
-	}
+	Ruina_Npc_Shield_Logic(victim, damage, damageForce);
+	
 	switch(i_NpcInternalId[victim])
 	{
 		case RUINA_THEOCRACY:
@@ -161,6 +161,133 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 	}
 		
 }
+public void Ruina_Npc_Give_Shield(int client, float strenght)
+{
+	float GameTime = GetGameTime();
+	if(fl_shield_break_timeout[client] > GameTime)
+		return;
+	
+	fl_shield_break_timeout[client] = GameTime + 999.0;
+	
+	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
+	int wave =(ZR_GetWaveCount()+1);
+	if(b_thisNpcIsABoss[client])
+	{
+		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
+	}
+	else if(b_thisNpcIsARaid[client])
+	{
+		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
+	}
+	Shield_Power *= wave;
+	
+	fl_ruina_shield_power[client] = Shield_Power;
+	fl_ruina_shield_strenght[client] = strenght;
+	
+	Ruina_Update_Shield(client);
+}
+
+static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[3])
+{
+	float GameTime = GetGameTime();
+	
+	if(fl_ruina_shield_power[victim]>0.0)	//does this npc have shield power?
+	{
+		Ruina_Update_Shield(victim);
+		
+		fl_ruina_shield_power[victim] -= damage*fl_ruina_shield_strenght[victim];	//remove shield damage dependant on damage dealt
+		if(fl_ruina_shield_power[victim]>=0.0)		//if the shield is still intact remove all damage
+		{
+			if(fl_ontake_sound_timer[victim]<=GameTime)
+			{
+				fl_ontake_sound_timer[victim] = GameTime + 0.25;
+				EmitSoundToAll(RUINA_SHIELD_ONTAKE_SOUND, victim, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+			}
+			damage -= damage*fl_ruina_shield_strenght[victim];
+			b_ruina_shield_active[victim] = true;
+			damageForce[0] -= damageForce[0]*fl_ruina_shield_strenght[victim];	//also remove kb dependant on strenght
+			damageForce[1] -= damageForce[1]*fl_ruina_shield_strenght[victim];
+			damageForce[2] -= damageForce[2]*fl_ruina_shield_strenght[victim];
+			
+			
+		}
+		else	//if not, remove shield, deal the remaining damage 
+		{
+			damage = fl_ruina_shield_power[victim] * -1.0;
+			fl_ruina_shield_power[victim] = 0.0;
+			b_ruina_shield_active[victim] = false;
+		}
+	}
+	else
+	{
+		Ruina_Remove_Shield(victim);
+	}
+}
+
+static void Ruina_Remove_Shield(int client, bool death=false)
+{
+	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
+	if(IsValidEntity(i_shield_entity))
+	{
+		if(!death)
+			fl_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
+		else
+			fl_shield_break_timeout[client] = 0.0;
+		RemoveEntity(i_shield_entity);
+	}
+}
+static void Ruina_Update_Shield(int client)
+{
+	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
+	int wave =(ZR_GetWaveCount()+1);
+	if(b_thisNpcIsABoss[client])
+	{
+		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
+	}
+	else if(b_thisNpcIsARaid[client])
+	{
+		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
+	}
+	Shield_Power *= wave;
+	
+	float current_shield_power = fl_ruina_shield_power[client];
+	
+	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
+
+	int alpha = RoundToFloor(255*(current_shield_power/Shield_Power));
+	if(alpha > 255)
+	{
+		alpha = 255;
+	}
+	if(IsValidEntity(i_shield_entity))
+	{
+		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(i_shield_entity, 255, 255, 255, alpha);
+		return;
+	}
+	else
+	{
+		Ruina_Give_Shield(client, alpha);
+		return;
+	}
+}
+static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from artvins vaus shield...
+{
+	CClotBody npc = view_as<CClotBody>(client);
+	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	if(b_IsGiant[client])
+		SetVariantString("1.35");
+	else
+		SetVariantString("1.0");
+
+	AcceptEntityInput(Shield, "SetModelScale");
+	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	
+	SetEntityRenderColor(Shield, 255, 255, 255, alpha);
+	SetEntProp(Shield, Prop_Send, "m_nSkin", 0);
+
+	i_shield_effect[client] = EntIndexToEntRef(Shield);
+}
 
 public void Ruina_NPCDeath_Override(int entity)
 {
@@ -173,7 +300,7 @@ public void Ruina_NPCDeath_Override(int entity)
 		i_master_current_slaves[Master_Id_Main]--;
 		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[Master_Id_Main]);
 	}
-	
+	Ruina_Remove_Shield(entity, true);
 	
 	
 	switch(i_NpcInternalId[entity])
@@ -287,8 +414,17 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 					//CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
 				}
 				
-				i_master_id_ref[npc.index] = EntIndexToEntRef(GetRandomMaster(npc.index));
-				Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+				int buffer_id_of_master = GetRandomMaster(npc.index);
+				if(IsValidEntity(buffer_id_of_master))
+				{
+					i_master_id_ref[npc.index] = EntIndexToEntRef(buffer_id_of_master);
+					Master_Id_Main = buffer_id_of_master;
+				}
+				else
+				{
+					Master_Id_Main = -1;
+				}
+				
 				
 				if(IsValidEntity(Master_Id_Main))	//only add if the master id is valid
 					i_master_current_slaves[Master_Id_Main]++;
@@ -511,8 +647,35 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 		NPC_SetGoalVector(npc.index, vBackoffPos, true);
 	}
 }
+public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
+{
+	bool buff_type[4]; buff_type[0] = true; buff_type[1] = false; buff_type[2] = false; buff_type[3] = false; 
+	float amt[4]; amt[0] = power;
+	Apply_Master_Buff(client, buff_type, range, time, amt);
+}
 
-public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float time, float amt[3])	//only works with npc's
+public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
+{
+	bool buff_type[4]; buff_type[0] = false; buff_type[1] = true; buff_type[2] = false; buff_type[3] = false; 
+	float amt[4]; amt[1] = power;
+	Apply_Master_Buff(client, buff_type, range, time, amt);
+}
+
+public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
+{
+	bool buff_type[4]; buff_type[0] = false; buff_type[1] = false; buff_type[2] = true; buff_type[3] = false; 
+	float amt[4]; amt[2] = power;
+	Apply_Master_Buff(client, buff_type, range, time, amt);
+}
+
+public void Master_Apply_Shield_Buff(int client, float range, float power)
+{
+	bool buff_type[4]; buff_type[0] = false; buff_type[1] = false; buff_type[2] = false; buff_type[3] = true; 
+	float amt[4]; amt[3] = power;
+	Apply_Master_Buff(client, buff_type, range, 0.0, amt);
+}
+
+static void Apply_Master_Buff(int iNPC, bool buff_type[4], float range, float time, float amt[4])	//only works with npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -540,6 +703,8 @@ public void Apply_Master_Buff(int iNPC, bool buff_type[3], float range, float ti
 									Apply_Speed_buff(time, baseboss_index, amt[1]);
 								if(buff_type[2])
 									Apply_Attack_buff(time, baseboss_index, amt[2]);
+								if(buff_type[3])
+									Ruina_Npc_Give_Shield(baseboss_index, amt[3]);
 							}		
 						}
 					}

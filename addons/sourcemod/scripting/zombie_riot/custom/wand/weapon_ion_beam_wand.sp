@@ -312,8 +312,8 @@ static void Create_Hand_Particle(int client)
 	
 	int particle_1 = ParticleEffectAt({-4.0,0.0,0.0}, "raygun_projectile_blue_crit", 0.0);
 
-	float RotateVector[3];
-	RotateVector = {45.0,0.0,0.0};
+	//float RotateVector[3];
+	//RotateVector = {45.0,0.0,0.0};
 
 	float VectorSet[3];
 
