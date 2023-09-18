@@ -1374,7 +1374,7 @@ void Waves_Progress(bool donotAdvance = false)
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);
 					
-					EmitCustomToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
 					Menu menu = new Menu(Waves_FreeplayVote);
 					menu.SetTitle("%t","Victory Menu");

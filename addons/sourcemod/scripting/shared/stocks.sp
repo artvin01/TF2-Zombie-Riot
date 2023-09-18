@@ -4627,3 +4627,8 @@ stock int GetOwnerLoop(int entity)
 	else
 		return entity;
 }
+
+void GiveCustomEntityFilterLogic(int entity)
+{
+	EntityToFilterForCustomTrace = entity;
+}

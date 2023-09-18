@@ -303,6 +303,7 @@ float f_ClientReviveDelay[MAXENTITIES];
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
+int EntityToFilterForCustomTrace;
 
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];

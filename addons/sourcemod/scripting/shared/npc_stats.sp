@@ -2207,6 +2207,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			Zero(i_EntitiesHitAoeSwing_NpcSwing);
 			i_EntitiesHitAtOnceMax_NpcSwing = countAoe; //How many do we stack
+			
 			for(int repeat; repeat < 3; repeat ++)
 			{
 				vecSwingMins[repeat] *= 0.75;
@@ -2214,7 +2215,15 @@ methodmap CClotBody < CBaseCombatCharacter
 				vecSwingMaxs[repeat] *= 0.75;
 				vecSwingMaxs[repeat] *= 0.75;
 			}
-			TR_EnumerateEntitiesHull(vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, false, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
+			//Trace filter hate custom entities.
+			/*
+				We use custom entities for npcs
+				These are bugged out during specifically hull trace filters
+				putting them in the filter will break and give
+				non sensical entity numbers that arent even ent refs.
+			*/
+			GiveCustomEntityFilterLogic(this.index);
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd,vecSwingMins, vecSwingMaxs, 1073741824, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
 		}	
 		else
 		{
@@ -4147,12 +4156,20 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 			return false;
 		}
+		if(index == enemy)
+		{
+			return false;
+		}
+		if(b_ThisEntityIsAProjectileForUpdateContraints[enemy])
+		{
+			return false;
+		}
 
 		if(b_is_a_brush[enemy])
 		{
 			return false;
 		}
-
+		
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
@@ -7455,7 +7472,7 @@ public void Raidboss_Clean_Everyone()
 	int base_boss;
 	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 	{
-		if(IsValidEntity(base_boss))
+		if(IsValidEntity(base_boss) && !b_NpcHasDied[base_boss])
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
@@ -8793,24 +8810,28 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 }
 
 
-
 bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 {
 	if(entity == 0)
 	{
-		return true;
+		return false;
 	}
-	if(!IsValidEnemy(client, entity, true, true)) //Must detect camo.
+	if(entity == EntityToFilterForCustomTrace)
 	{
-		return true;
+		return false;
 	}
-	bool type = BulletAndMeleeTrace(entity, 0, client);
+	if(!IsValidEnemy(EntityToFilterForCustomTrace, entity, true, true)) //Must detect camo.
+	{
+		return false;
+	}
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, EntityToFilterForCustomTrace);
 	if(!type) //if it collised, return.
 	{
-		return true;
+		return false;
 	}
-	if(!SwingTraceMultiAoeIsInFront(client, entity))
-		return true;
+
+	if(!SwingTraceMultiAoeIsInFront(EntityToFilterForCustomTrace, entity))
+		return false;
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
 	{
@@ -8820,26 +8841,29 @@ bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 			break;
 		}
 	}
-	return true;
+	return false;
 }
 bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int client)
 {
 	if(entity == 0)
 	{
-		return true;
+		return false;
 	}
-	if(!IsValidEnemy(client, entity, true, true)) //Must detect camo.
+	if(entity == EntityToFilterForCustomTrace)
 	{
-		return true;
+		return false;
 	}
-	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, client);
+	if(!IsValidEnemy(EntityToFilterForCustomTrace, entity, true, true)) //Must detect camo.
+	{
+		return false;
+	}
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, EntityToFilterForCustomTrace);
 	if(!type) //if it collised, return.
 	{
-		return true;
+		return false;
 	}
-
-	if(!SwingTraceMultiAoeIsInFront(client, entity))
-		return true;
+	if(!SwingTraceMultiAoeIsInFront(EntityToFilterForCustomTrace, entity))
+		return false;
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
 	{
@@ -8849,7 +8873,7 @@ bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int client)
 			break;
 		}
 	}
-	return true;
+	return false;
 }
 
 #define SWINGPITCHMAX_MAXANGLEPITCH	 90.0
