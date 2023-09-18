@@ -1232,7 +1232,19 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		delete trace;
 
 		Sensal npc = view_as<Sensal>(entity);
-		int Projectile = npc.FireParticleRocket(WorldSpaceCenter(npc.m_iTarget), damage , 400.0 , 100.0 , "",_,_,true,origin_altered);
+		float FloatVector[3];
+		
+		
+		if(IsValidEntity(npc.m_iTarget))
+		{
+			FloatVector = WorldSpaceCenter(npc.m_iTarget);
+		}
+		else
+		{
+			FloatVector = WorldSpaceCenter(entity);
+		}
+
+		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered);
 		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !

@@ -4383,7 +4383,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
-	if(!Rogue_Mode() && owner != -1 && owner != client)
+	if(!Rogue_Mode() && owner > 0 && owner != client)
 	{
 		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
