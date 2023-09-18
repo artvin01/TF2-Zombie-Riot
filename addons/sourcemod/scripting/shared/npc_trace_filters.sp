@@ -42,6 +42,10 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
+	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	{
+		return false;
+	}
 
 #if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
