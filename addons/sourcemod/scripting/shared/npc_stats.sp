@@ -3052,8 +3052,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 	//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
-		OnEntityDestroyed_LagComp(pThis);
-		RemoveEntityToLagCompList(pThis);
 			
 
 		if(!npc.m_bDissapearOnDeath)
@@ -5035,6 +5033,8 @@ public void NpcBaseThink(int iNPC)
 		npc.GetBaseNPC().SetBodyMaxs(hullcheckmaxs);
 		npc.GetBaseNPC().SetBodyMins(hullcheckmaxs);	
 		npc.GetBaseNPC().flGravity = 0.0;
+		OnEntityDestroyed_LagComp(iNPC);
+		RemoveEntityToLagCompList(iNPC);
 		return;
 	}
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
@@ -8800,6 +8800,10 @@ bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 	{
 		return true;
 	}
+	if(!IsValidEnemy(client, entity, true, true)) //Must detect camo.
+	{
+		return true;
+	}
 	bool type = BulletAndMeleeTrace(entity, 0, client);
 	if(!type) //if it collised, return.
 	{
@@ -8824,11 +8828,16 @@ bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int client)
 	{
 		return true;
 	}
+	if(!IsValidEnemy(client, entity, true, true)) //Must detect camo.
+	{
+		return true;
+	}
 	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, client);
 	if(!type) //if it collised, return.
 	{
 		return true;
 	}
+
 	if(!SwingTraceMultiAoeIsInFront(client, entity))
 		return true;
 

@@ -15,14 +15,6 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
-	if(entity == 0) 
-	{
-		return true;
-	}
-	if(!IsValidEnemy(iExclude, entity, true, true)) //Must detect camo.
-	{
-		return false;
-	}
 
 	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
 	{
