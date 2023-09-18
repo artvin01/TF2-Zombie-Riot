@@ -599,16 +599,17 @@ static float fl_hexagon_angle[MAXTF2PLAYERS];
 
 static Action Hexagon_Witchery_Tick(int client)
 {
-	float offset_time = NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;
-	float time = NEUVELLETE_HEXAGON_CHARGE_TIME;
-	float range = fl_range[client];
-	float origin_vec[3];
 	float gametime = GetGameTime();
-	int amount = 5;
 	
 	if(fl_throttle2[client]>gametime)
 		return Plugin_Continue;
 		
+	float offset_time = NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;
+	float time = NEUVELLETE_HEXAGON_CHARGE_TIME;
+	float range = fl_range[client];
+	float origin_vec[3];
+	int amount = 5;
+
 	fl_throttle2[client] = gametime + NEUVELLETE_THROTTLE_SPEED;
 	
 	float DamagE = fl_dmg[client];
@@ -960,12 +961,20 @@ public void Weapon_Ion_Wand_Beam_M2(int client, int weapon, bool &result, int sl
 static float fl_spinning_angle[MAXTF2PLAYERS+1];
 public Action Neuvellete_tick(int client)
 {
-	if(IsValidClient(client))
+	//if(IsValidClient(client))
 	{
 		float GameTime = GetGameTime();
 				
 		if(fl_throttle[client]>GameTime)
 			return Plugin_Continue;
+		
+		int mana_cost= i_manacost[client];
+		
+		if(Current_Mana[client]<=mana_cost)
+		{
+			Kill_Beam_Hook(client, 6.0);
+			return Plugin_Stop;
+		}
 		
 		float Angles[3], Beam_Angles[3], Start_Loc[3], Target_Loc[3];
 		GetClientEyeAngles(client, Angles);
@@ -982,15 +991,7 @@ public Action Neuvellete_tick(int client)
 		float Range = fl_main_range[client];
 		
 		int Effects = i_Effect_Hex[client];
-		
-		int mana_cost= i_manacost[client];
 		int flags = i_Neuvellete_HEX_Array[client];
-		
-		if(Current_Mana[client]<=mana_cost)
-		{
-			Kill_Beam_Hook(client, 6.0);
-			return Plugin_Stop;
-		}
 		
 		Current_Mana[client] -=mana_cost;
 		Mana_Regen_Delay[client] = GameTime + 1.0;
