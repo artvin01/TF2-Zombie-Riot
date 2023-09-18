@@ -260,7 +260,6 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 	{
 		SensalAllied_BEAM_BuildingHit[building] = 0;
 	}
-	GiveCustomEntityFilterLogic(entity);
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 
@@ -292,7 +291,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int iExclude)
 {
 	if (IsValidEntity(entity))
 	{
-		if(IsValidEnemy(EntityToFilterForCustomTrace, entity, true, true))
+		if(IsValidEnemy(iExclude, entity, true, true))
 		{
 			for(int i=0; i < (SENSAL_MAX_TARGETS_HIT); i++)
 			{

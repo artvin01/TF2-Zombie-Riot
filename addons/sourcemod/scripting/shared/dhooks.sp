@@ -1803,6 +1803,11 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon <= MaxClients)
 		return MRES_Ignored;
+		
+	if(!b_TauntSpeedIncreace[client])
+	{
+		Attributes_Set(client, 201, 1.0);
+	}
 
 	static char buffer[36];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));

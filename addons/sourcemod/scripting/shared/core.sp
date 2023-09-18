@@ -303,7 +303,6 @@ float f_ClientReviveDelay[MAXENTITIES];
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
 int i_StickyToNpcCount[MAXENTITIES][MAXSTICKYCOUNTTONPC]; //12 should be the max amount of stickies.
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
-int EntityToFilterForCustomTrace;
 
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
@@ -3148,13 +3147,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-	}
-	else if (condition == TFCond_Taunting && IsPlayerAlive(client))
-	{
-		if(!b_TauntSpeedIncreace[client])
-		{
-			Attributes_Set(client, 201, 1.0);
-		}
 	}
 }
 

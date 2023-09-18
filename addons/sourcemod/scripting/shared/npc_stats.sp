@@ -2215,14 +2215,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				vecSwingMaxs[repeat] *= 0.75;
 				vecSwingMaxs[repeat] *= 0.75;
 			}
-			//Trace filter hate custom entities.
-			/*
-				We use custom entities for npcs
-				These are bugged out during specifically hull trace filters
-				putting them in the filter will break and give
-				non sensical entity numbers that arent even ent refs.
-			*/
-			GiveCustomEntityFilterLogic(this.index);
+
 			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd,vecSwingMins, vecSwingMaxs, 1073741824, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
 		}	
 		else
@@ -8810,27 +8803,27 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 }
 
 
-bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
+bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int contentsMask, int iExclude)
 {
 	if(entity == 0)
 	{
 		return false;
 	}
-	if(entity == EntityToFilterForCustomTrace)
+	if(entity == iExclude)
 	{
 		return false;
 	}
-	if(!IsValidEnemy(EntityToFilterForCustomTrace, entity, true, true)) //Must detect camo.
+	if(!IsValidEnemy(iExclude, entity, true, true)) //Must detect camo.
 	{
 		return false;
 	}
-	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, EntityToFilterForCustomTrace);
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, iExclude);
 	if(!type) //if it collised, return.
 	{
 		return false;
 	}
 
-	if(!SwingTraceMultiAoeIsInFront(EntityToFilterForCustomTrace, entity))
+	if(!SwingTraceMultiAoeIsInFront(iExclude, entity))
 		return false;
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
@@ -8843,26 +8836,26 @@ bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int client)
 	}
 	return false;
 }
-bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int client)
+bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int contentsMask, int iExclude)
 {
 	if(entity == 0)
 	{
 		return false;
 	}
-	if(entity == EntityToFilterForCustomTrace)
+	if(entity == iExclude)
 	{
 		return false;
 	}
-	if(!IsValidEnemy(EntityToFilterForCustomTrace, entity, true, true)) //Must detect camo.
+	if(!IsValidEnemy(iExclude, entity, true, true)) //Must detect camo.
 	{
 		return false;
 	}
-	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, EntityToFilterForCustomTrace);
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, iExclude);
 	if(!type) //if it collised, return.
 	{
 		return false;
 	}
-	if(!SwingTraceMultiAoeIsInFront(EntityToFilterForCustomTrace, entity))
+	if(!SwingTraceMultiAoeIsInFront(iExclude, entity))
 		return false;
 
 	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
