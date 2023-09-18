@@ -1011,7 +1011,7 @@ void Rogue_NextProgress()
 
 					CurrentFloor = 0;
 
-					EmitCustomToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
 					int entity = CreateEntityByName("game_round_win"); 
 					DispatchKeyValue(entity, "force_map_reset", "1");

@@ -57,7 +57,7 @@ void Music_MapStart()
 	
 	PrecacheSoundCustom("#zombiesurvival/lasthuman.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_lose.mp3",_,1);
-	PrecacheSoundCustom("#zombiesurvival/music_win.mp3",_,1);
+	PrecacheSoundCustom("#zombiesurvival/music_win_1.mp3",_,1);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 }
