@@ -73,6 +73,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
+	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
 
 #if defined ZR
@@ -1803,17 +1804,20 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon <= MaxClients)
 		return MRES_Ignored;
-		
+
 	if(!b_TauntSpeedIncreace[client])
 	{
 		Attributes_Set(client, 201, 1.0);
+		f_DelayAttackspeedPreivous[client] = 1.0;
 	}
-
+	
 	static char buffer[36];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));
 	TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
 	if(class != TFClass_Unknown)
+	{
 		TF2_SetPlayerClass(client, class, false, false);
+	}
 
 	return MRES_Ignored;
 }
