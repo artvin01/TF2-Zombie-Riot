@@ -316,6 +316,7 @@ float Resistance_for_building_Low[MAXENTITIES];
 
 bool b_DisplayDamageHud[MAXTF2PLAYERS];
 bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
+bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 
 float f_ArmorHudOffsetX[MAXTF2PLAYERS];
 float f_ArmorHudOffsetY[MAXTF2PLAYERS];
@@ -1087,6 +1088,7 @@ float f_DelayNextWaveStartAdvancingDeathNpc;
 #include "shared/filenetwork.sp"
 #include "shared/killfeed.sp"
 #include "shared/npcs.sp"
+#include "shared/npccamera.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
 #include "shared/stocks.sp"
@@ -3146,6 +3148,13 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 	}
+	else if (condition == TFCond_Taunting && IsPlayerAlive(client))
+	{
+		if(!b_TauntSpeedIncreace[client])
+		{
+			Attributes_Set(client, 201, 1.0);
+		}
+	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
@@ -3161,6 +3170,34 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 		else if(condition == TFCond_Slowed && IsPlayerAlive(client))
 		{
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+		}
+		else if (condition == TFCond_Taunting && IsPlayerAlive(client))
+		{
+			if(!b_TauntSpeedIncreace[client])
+			{
+				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon_holding != -1)
+				{
+					static char classname[64];
+					GetEntityClassname(weapon_holding, classname, sizeof(classname));
+					if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+					{
+						float attack_speed;
+					
+						attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
+						
+						if(attack_speed > 5.0)
+						{
+							attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+						}
+						Attributes_Set(client, 201, attack_speed);
+					}
+					else
+					{	
+						Attributes_Set(client, 201, 1.0);
+					}
+				}
+			}
 		}
 	}
 }

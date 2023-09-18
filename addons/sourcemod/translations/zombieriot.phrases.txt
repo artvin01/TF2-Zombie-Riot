@@ -2921,7 +2921,8 @@
 	{
 		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs, THEY ARE NOT A DIRECT UPGRADE! so no need to upgrade them if you don't want to"
 	}
-
-	
-	
+	"Taunt Speed Increace"
+	{
+		"en" 	"Taunt Speed Increace"
+	}
 }

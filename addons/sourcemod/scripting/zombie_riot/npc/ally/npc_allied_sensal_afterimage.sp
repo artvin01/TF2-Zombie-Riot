@@ -288,12 +288,11 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 	}
 }
 
-static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
+static bool BEAM_TraceUsers(int entity, int contentsMask, int iExclude)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(iExclude, entity, true, true))
 		{
 			for(int i=0; i < (SENSAL_MAX_TARGETS_HIT); i++)
 			{

@@ -1839,10 +1839,21 @@ public void ReShowSettingsHud(int client)
 		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
 	}
 	menu2.AddItem("-42", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
+	if(b_TauntSpeedIncreace[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-71", buffer);
 	
 	FormatEx(buffer, sizeof(buffer), "%t", "Back");
 	menu2.AddItem("-999", buffer);
-	menu2.Pagination = 0;
+	menu2.Pagination = 1;
 	
 	menu2.Display(client, MENU_TIME_FOREVER);
 }
@@ -2300,6 +2311,18 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 						f_ZombieVolumeSetting[client] = 0.0;
 					}
 					ReShowVolumeHud(client);
+				}
+				case -71: 
+				{
+					if(b_TauntSpeedIncreace[client])
+					{
+						b_TauntSpeedIncreace[client] = false;
+					}
+					else
+					{
+						b_TauntSpeedIncreace[client] = true;
+					}
+					ReShowSettingsHud(client);
 				}
 				case -55: //Show Volume Hud
 				{
