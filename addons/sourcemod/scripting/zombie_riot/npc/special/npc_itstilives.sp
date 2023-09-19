@@ -215,6 +215,7 @@ static void CollectNPC(int entity, bool lead)
 	
 	npc.m_bDissapearOnDeath = true;
 	npc.m_bStaticNPC = true;
+	EnemyNpcAliveStatic += 1;
 	
 	if(lead)
 	{

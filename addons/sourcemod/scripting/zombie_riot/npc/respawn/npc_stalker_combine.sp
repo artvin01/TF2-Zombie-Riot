@@ -218,6 +218,7 @@ methodmap StalkerCombine < StalkerShared
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
+		EnemyNpcAliveStatic += 1;
 
 		Zero(fl_AlreadyStrippedMusic);
 

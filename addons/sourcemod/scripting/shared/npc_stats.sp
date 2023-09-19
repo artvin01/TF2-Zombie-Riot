@@ -2925,9 +2925,18 @@ static void OnDestroy(CClotBody body)
 	}
 	if(!b_NpcHasDied[body.index])
 	{
+		if(GetEntProp(body.index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+		{
+			Zombies_Currently_Still_Ongoing -= 1;
+		}
 		EnemyNpcAlive -= 1;
 	}
+	if(b_StaticNPC[body.index])
+	{
+		EnemyNpcAliveStatic -= 1;
+	}
 	b_NpcHasDied[body.index] = true;
+	b_StaticNPC[body.index] = false;
 
 	
 #if defined ZR
@@ -3052,6 +3061,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 		b_NpcHasDied[pThis] = true;
 		EnemyNpcAlive -= 1;
+		if(b_StaticNPC[pThis])
+		{
+			EnemyNpcAliveStatic -= 1;
+			b_StaticNPC[pThis] = false;
+		}
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif		

@@ -297,6 +297,7 @@ int i_CurrentEquippedPerk[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
 int EnemyNpcAlive = 0;
+int EnemyNpcAliveStatic = 0;
 
 float f_ClientReviveDelay[MAXENTITIES];
 
@@ -3000,7 +3001,6 @@ public void OnEntityDestroyed(int entity)
 		{
 			Attributes_EntityDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
-			NPC_CheckDead(entity);
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR

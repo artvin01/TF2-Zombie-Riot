@@ -63,6 +63,7 @@ methodmap StalkerGoggles < StalkerShared
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
+		EnemyNpcAliveStatic += 1;
 
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline

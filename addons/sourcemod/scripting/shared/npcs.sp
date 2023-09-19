@@ -108,9 +108,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	{
 		return;
 	}
-
-	bool found;
-	bool foundstatic;
 	int limit = 0;
 	
 	if(CvarNoSpecialZombieSpawn.BoolValue)//PLEASE ASK CRUSTY FOR MODELS
@@ -211,13 +208,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 								GiveNpcOutLineLastOrBoss(entity, true);
 							else
 								GiveNpcOutLineLastOrBoss(entity, false);
-						}
-						
-						if(!npcstats.m_bStaticNPC)
-							found = true;
-						else
-						{
-							foundstatic = true;
 						}
 					}
 				}
@@ -344,6 +334,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
 					
 					npcstats.m_bStaticNPC = enemy.Is_Static;
+					if(enemy.Is_Static)
+					{
+						EnemyNpcAliveStatic += 1;
+					}
 					
 					if(enemy.Is_Boss == 1)
 					{
@@ -398,14 +392,15 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				PrintToChatAll("SPAWN FAILED (%s)", enemy.Spawn);
 			}
 		}
-		else if(!found)
+		else if((EnemyNpcAlive - EnemyNpcAliveStatic) <= 0)
 		{
 			bool donotprogress = false;
 			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
 			{
-				if(foundstatic)
+				donotprogress = true;
+				if(EnemyNpcAliveStatic >= 1)
 				{
-					donotprogress = true;
+					donotprogress = false;
 				}
 			}
 			if(f_DelayNextWaveStartAdvancing < GetGameTime())
@@ -1859,25 +1854,7 @@ public void Try_Backstab_Anim_Again(int attacker)
 	TE_SendToAll();
 					
 }
-public void NPC_CheckDead(int entity)
-{
-//	if(IsValidEntity(entity))
-	{
-		if(!b_NpcHasDied[entity])
-		{
-			CClotBody npc = view_as<CClotBody>(entity);
-			npc.RemovePather(entity);
-			b_NpcHasDied[entity] = true;
-			
-#if defined ZR
-			if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
-			{
-				Zombies_Currently_Still_Ongoing -= 1;
-			}
-#endif
-		}
-	}
-}
+
 
 void NPC_DeadEffects(int entity)
 {

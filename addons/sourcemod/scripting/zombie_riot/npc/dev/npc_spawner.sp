@@ -40,6 +40,7 @@ methodmap DevSpawner < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisEntityIgnored = true;
 		npc.m_bStaticNPC = true;
+		EnemyNpcAliveStatic += 1;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		npc.m_iNPCIndex = -1;

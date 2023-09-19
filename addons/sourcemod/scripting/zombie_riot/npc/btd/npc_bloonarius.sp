@@ -232,6 +232,10 @@ methodmap Bloonarius < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bStaticNPC = elite;
+		
+		if(elite)
+			EnemyNpcAliveStatic += 1;
+
 		npc.m_bisWalking = false;
 		npc.m_bnew_target = final;
 		
@@ -404,6 +408,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			Enemy enemy;
 			enemy.Index = BTD_BLOON;
 			enemy.Is_Static = npc.m_bStaticNPC;
+
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
 			
 			enemy.ExtraMeleeRes = 1.0;
