@@ -305,10 +305,10 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 							if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 							{
 								CClotBody npcstats = view_as<CClotBody>(base_boss);
-								if(!npcstats.m_bThisNpcIsABoss && !b_Map_BaseBoss_No_Layers[base_boss] && !b_ThisNpcIsImmuneToNuke[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
+								if(!npcstats.m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
 								{
-									SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
-									SDKHooks_TakeDamage(base_boss, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+									SmiteNpcToDeath(base_boss);
+									SmiteNpcToDeath(base_boss);
 								}
 							}
 						}

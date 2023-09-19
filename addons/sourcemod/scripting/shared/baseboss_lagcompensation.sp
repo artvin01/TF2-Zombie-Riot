@@ -9,13 +9,13 @@
 #define MAX_LAYER_RECORDS	15
 
 /* game/server/player_lagcompensation.cpp#L45 */
-enum struct LayerRecord
+/*enum struct LayerRecord
 {
 	int m_sequence;
 	float m_cycle;
 	float m_weight;
 	int m_order;
-}
+}*/
 
 /* game/server/player_lagcompensation.cpp#L69 */
 enum struct LagRecord
@@ -32,7 +32,12 @@ enum struct LagRecord
 	float					m_flSimulationTime;	
 	
 	// Player animation details, so we can get the legs in the right spot.
-	ArrayList				m_layerRecords;
+	int						m_sequence[10];
+	float					m_cycle[10];
+	float					m_weight[10];
+	int						m_order[10];
+	int						m_layerRecords;
+
 	int						m_masterSequence;
 	float					m_masterCycle;
 }
@@ -63,20 +68,7 @@ void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-		if(EntityTrack[entity])
-		{
-			LagRecord record;
-			int length = EntityTrack[entity].Length;
-			for(int i; i < length; i++)
-			{
-				EntityTrack[entity].GetArray(i, record);
-				delete record.m_layerRecords;
-			}
-
-			delete EntityTrack[entity];
-		}
-
-		delete EntityRestore[entity].m_layerRecords;
+		delete EntityTrack[entity];
 	}
 }
 
@@ -131,7 +123,7 @@ void StartLagCompensation_Base_Boss(int client)
 }
 
 /* game/server/player.cpp#L732 */
-bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
+static bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles[3]/*, const CBitVec<MAX_EDICTS> *pEntityTransmitBits */)
 {
 	// Team members shouldn't be adjusted unless friendly fire is on.
 	/*
@@ -175,7 +167,7 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
-void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
+static void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
 	if(!EntityTrack[entity])
 	{
@@ -246,69 +238,39 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	//	minsPreScaled = record.m_vecMinsPreScaled;
 	//	maxsPreScaled = record.m_vecMaxsPreScaled;
 	}
-	LagRecord restore;
-				
-//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", restore.m_vecMinsPreScaled);
-//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", restore.m_vecMaxsPreScaled);
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", restore.m_vecOrigin);
-//	if(!b_LagCompAlliedPlayers)
-	{
-		GetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles);
-		if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
-		{	
-			restore.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
-			restore.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
-			restore.m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
-		}
-		if(b_LagCompNPC_ExtendBoundingBox)
-		{
-			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
-			{
-				SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
-				SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
-				
-				
-				CClotBody npc = view_as<CClotBody>(entity);
-				npc.UpdateCollisionBox();
-			}
-		}
-		SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+	
+//	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", EntityRestore[entity].m_vecMinsPreScaled);
+//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", EntityRestore[entity].m_vecMaxsPreScaled);
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[entity].m_vecOrigin);
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[entity].m_vecAngles);
+
+	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	{	
+		EntityRestore[entity].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+		EntityRestore[entity].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
+		EntityRestore[entity].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	}
+
+	if(b_LagCompNPC_ExtendBoundingBox)
+	{
+		if(!b_IsAlliedNpc[entity])
+		{
+			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
+			SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", { -100.0, -100.0, 0.0 });
+
+			
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.UpdateCollisionBox();
+		}
+	}
+
+	SetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	SDKCall_SetLocalOrigin(entity, org);
 	
-	/*
-	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-	float tempRestore_1[3];
-	tempRestore_1 = tempRestore;
-	tempRestore[2] += 54.0;
-	TE_SetupBeamPoints(tempRestore, tempRestore_1, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({0, 0, 255, 255}), 30);
-	TE_SendToAll();
-	
-	//	SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime",record.m_flSimulationTime);
-	float tempRestore[3];
-	tempRestore[0] = 4676.0;
-	tempRestore[1] = -3309.0;
-	tempRestore[2] = 146.0;
-	
-	float tempRestore[3];
-	tempRestore = restore.m_vecOrigin;
-	tempRestore[2] += 54;
-	
-	float temporg[3];
-	temporg = org;
-	temporg[2] += 54;
-	
-	TE_SetupBeamPoints(restore.m_vecOrigin, tempRestore, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 0, 255}), 30);
-	TE_SendToAll();
-	
-	TE_SetupBeamPoints(temporg, org, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({0, 0, 255, 255}), 30);
-	TE_SendToAll();
-	*/
-	// If the master state changes, all layers will be invalid too, so don't interp (ya know, interp barely ever happens anyway)
-//	if(!b_LagCompAlliedPlayers)
-//	{
 	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 	{
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
+
 		bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
 		
 		if(interpolationAllowed)
@@ -345,75 +307,72 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 			SetEntProp(entity, Prop_Data, "m_nSequence", record.m_masterSequence);
 			SetEntPropFloat(entity, Prop_Data, "m_flCycle", record.m_masterCycle);
 		}
+
 		////////////////////////
 		// Now do all the layers
-		if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+		if(!b_IsAlliedNpc[entity])
 		{
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 			if(overlay.IsValid())
 			{
-				int layerCount = overlay.GetNumAnimOverlays();
-				LayerRecord layer, recordsLayerRecord, prevRecordsLayerRecord;
-				restore.m_layerRecords = new ArrayList(sizeof(LayerRecord));
-				for(int i; i<layerCount; i++)
+				EntityRestore[entity].m_layerRecords = overlay.GetNumAnimOverlays();
+				if(EntityRestore[entity].m_layerRecords >= sizeof(EntityRestore[].m_sequence))
+					EntityRestore[entity].m_layerRecords = sizeof(EntityRestore[].m_sequence) - 1;
+				
+				for(int i; i < EntityRestore[entity].m_layerRecords; i++)
 				{
 					CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
 
-					layer.m_cycle = overlay.GetLayerCycle(i);
-					layer.m_order = overlayLayer.m_nOrder;
-					layer.m_sequence = overlay.GetLayerSequence(i);
-					layer.m_weight = overlay.GetLayerWeight(i);
-					restore.m_layerRecords.PushArray(layer);
+					EntityRestore[entity].m_cycle[i] = overlay.GetLayerCycle(i);
+					EntityRestore[entity].m_order[i] = overlayLayer.m_nOrder;
+					EntityRestore[entity].m_sequence[i] = overlay.GetLayerSequence(i);
+					EntityRestore[entity].m_weight[i] = overlay.GetLayerWeight(i);
 
 					bool interpolated = false;
 					if(interpolationAllowed &&
-						i < record.m_layerRecords.Length && i < prevRecord.m_layerRecords.Length)	// TODO: Duct tape fix, find out of bounds array happens
+						i < record.m_layerRecords && i < prevRecord.m_layerRecords)
 					{
-						
-						record.m_layerRecords.GetArray(i, recordsLayerRecord);
-						prevRecord.m_layerRecords.GetArray(i, prevRecordsLayerRecord);
-						if(recordsLayerRecord.m_order == prevRecordsLayerRecord.m_order && recordsLayerRecord.m_sequence == prevRecordsLayerRecord.m_sequence)
+						if(record.m_order[i] == prevRecord.m_order[i] && record.m_sequence[i] == prevRecord.m_sequence[i])
 						{
 							// We can't interpolate across a sequence or order change
 							interpolated = true;
-							if(recordsLayerRecord.m_cycle > prevRecordsLayerRecord.m_cycle)
+							if(record.m_cycle[i] > prevRecord.m_cycle[i])
 							{
 								// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
 								// add one to the Lerpfloat so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-								float newCycle = Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle + 1.0);
+								float newCycle = Lerpfloat(frac, record.m_cycle[i], prevRecord.m_cycle[i] + 1.0);
 								overlay.SetLayerCycle(i, newCycle < 1.0 ? newCycle : newCycle - 1.0);
 							}
 							else
 							{
-								overlay.SetLayerCycle(i, Lerpfloat(frac, recordsLayerRecord.m_cycle, prevRecordsLayerRecord.m_cycle));
+								overlay.SetLayerCycle(i, Lerpfloat(frac, record.m_cycle[i], prevRecord.m_cycle[i]));
 							}
 							
-							overlayLayer.m_nOrder = recordsLayerRecord.m_order;
-							overlayLayer.m_nSequence = recordsLayerRecord.m_sequence;
-							overlay.SetLayerWeight(i, Lerpfloat(frac, recordsLayerRecord.m_weight, prevRecordsLayerRecord.m_weight));
+							overlayLayer.m_nOrder = record.m_order[i];
+							overlayLayer.m_nSequence = record.m_sequence[i];
+							overlay.SetLayerWeight(i, Lerpfloat(frac, record.m_weight[i], prevRecord.m_weight[i]));
 						}
 					}
 						
 					if(!interpolated)
 					{
 						//Either no interp, or interp failed.  Just use record.
-						overlay.SetLayerCycle(i, layer.m_cycle);
-						overlayLayer.m_nOrder = layer.m_order;
-						overlayLayer.m_nSequence = layer.m_sequence;
-						overlay.SetLayerWeight(i, layer.m_weight);
+						overlay.SetLayerCycle(i, record.m_cycle[i]);
+						overlayLayer.m_nOrder = record.m_order[i];
+						overlayLayer.m_nSequence = record.m_sequence[i];
+						overlay.SetLayerWeight(i, record.m_weight[i]);
 					}
 				}
 			}
 		}
 	}
+
 	//only invalidate when we actually update the bones, otherwise there is no reason to do this.
 	//if this bool is on, then that means whateverhappens only goes for position or collision box.
 	//if the code needs the bones for any reason, then simply enable this bool when doing the compensation.
 	if(!b_LagCompNPC_No_Layers)
 		SDKCall_InvalidateBoneCache(entity);
 	
-	delete EntityRestore[entity].m_layerRecords;
-	EntityRestore[entity] = restore;
 	WasBackTracked[entity] = true;
 }
 
@@ -425,13 +384,12 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 	
 	DoingLagCompensation = false;
 	
-	LayerRecord layer;
 	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
 	{
 		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
 		if(IsValidEntity(entity) && WasBackTracked[entity])
 		{
-			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+			if(!b_IsAlliedNpc[entity])
 			{
 				if(b_LagCompNPC_ExtendBoundingBox)
 				{
@@ -477,7 +435,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[entity].m_vecAngles); //See start pos on why we use this instead of the SDKCall
 			SDKCall_SetLocalOrigin(entity, EntityRestore[entity].m_vecOrigin);
 			
-			if(!b_LagCompNPC_No_Layers && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+			if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 			{
 				SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[entity].m_flSimulationTime);
 				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[entity].m_masterSequence);
@@ -489,20 +447,21 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 					if(overlay.IsValid())
 					{
 						int layerCount = overlay.GetNumAnimOverlays();
+						if(layerCount >= EntityRestore[entity].m_layerRecords)
+							layerCount = EntityRestore[entity].m_layerRecords - 1;
+						
 						for(int i; i < layerCount; i++)
 						{
-							EntityRestore[entity].m_layerRecords.GetArray(i, layer);
 							CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
-							currentLayer.m_flCycle = layer.m_cycle;
-							currentLayer.m_nOrder = layer.m_order;
-							currentLayer.m_nSequence = layer.m_sequence;
-							currentLayer.m_flWeight = layer.m_weight;
+							currentLayer.m_flCycle = EntityRestore[entity].m_cycle[i];
+							currentLayer.m_nOrder = EntityRestore[entity].m_order[i];
+							currentLayer.m_nSequence = EntityRestore[entity].m_sequence[i];
+							currentLayer.m_flWeight = EntityRestore[entity].m_weight[i];
 						}
 					}
 				}
 			}
 
-			delete EntityRestore[entity].m_layerRecords;
 			WasBackTracked[entity] = false;
 		}
 	}
@@ -519,7 +478,6 @@ void LagCompensationThink_Forward()
 	// remove all records before that time:
 	float deadTime = GetGameTime() - sv_maxunlag.FloatValue;
 	LagRecord record;
-	LayerRecord layer;
 
 	// Iterate all active NPCs
 	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
@@ -544,8 +502,9 @@ void LagCompensationThink_Forward()
 					break;
 				
 				// remove tail, get new tail
-				delete record.m_layerRecords;
 				EntityTrack[entity].Erase(0);
+			//	PrintToServer("%d Removed %d -> %d (%f >= %f)", entity, length, EntityTrack[entity].Length, record.m_flSimulationTime, deadTime);
+
 				length--;
 			}
 			
@@ -567,29 +526,32 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 
-				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
+				if(!b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
 				{
-					record.m_layerRecords = new ArrayList(sizeof(LayerRecord));
-					int layerCount = overlay.GetNumAnimOverlays();
-					for(int i = 0; i < layerCount; i++)
+					record.m_layerRecords = overlay.GetNumAnimOverlays();
+					if(record.m_layerRecords >= sizeof(record.m_sequence))
+						record.m_layerRecords = sizeof(record.m_sequence) - 1;
+					
+					for(int i = 0; i < record.m_layerRecords; i++)
 					{
 						CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
 						
-						layer.m_cycle = overlay.GetLayerCycle(i);
-						layer.m_order = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
-						layer.m_sequence = overlay.GetLayerSequence(i);
-						layer.m_weight = overlay.GetLayerWeight(i);
-						record.m_layerRecords.PushArray(layer);
+						record.m_cycle[i] = overlay.GetLayerCycle(i);
+						record.m_order[i] = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
+						record.m_sequence[i] = overlay.GetLayerSequence(i);
+						record.m_weight[i] = overlay.GetLayerWeight(i);
 					}
+
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
 				else
 				{
-					record.m_layerRecords = null;
+					record.m_layerRecords = 0;
 				}
 
 				EntityTrack[entity].PushArray(record);
+				//PrintToServer("%d Added %d -> %d", entity, length, EntityTrack[entity].Length);
 			}
 		}
 	}

@@ -336,8 +336,8 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 }

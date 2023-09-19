@@ -590,7 +590,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 public Action StalkerCombine_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(damage > 999999.9)
+	if(damage > 9999999.9)
 		return Plugin_Continue;
 	
 	if(damagetype & DMG_DROWN)

@@ -112,7 +112,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	bool found;
 	bool foundstatic;
 	int limit = 0;
-	int npc_current_count = 0;
 	
 	if(CvarNoSpecialZombieSpawn.BoolValue)//PLEASE ASK CRUSTY FOR MODELS
 	{		
@@ -196,34 +195,36 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			f_DelayGiveOutlineNpc = GetGameTime() + 0.5;
 		}
-		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+		if(CheckOutline)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if(IsValidEntity(entity))
+			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
 			{
-				if(!b_IsAlliedNpc[entity])
+				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
+				if(IsValidEntity(entity))
 				{
-					npc_current_count += 1;
-					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity] && CheckOutline)
+					if(!b_IsAlliedNpc[entity])
 					{
-						if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-							GiveNpcOutLineLastOrBoss(entity, true);
+						CClotBody npcstats = view_as<CClotBody>(entity);
+						if(!npcstats.m_bThisNpcIsABoss && !b_thisNpcHasAnOutline[entity])
+						{
+							if(Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+								GiveNpcOutLineLastOrBoss(entity, true);
+							else
+								GiveNpcOutLineLastOrBoss(entity, false);
+						}
+						
+						if(!npcstats.m_bStaticNPC)
+							found = true;
 						else
-							GiveNpcOutLineLastOrBoss(entity, false);
-					}
-					
-					if(!npcstats.m_bStaticNPC)
-						found = true;
-					else
-					{
-						foundstatic = true;
+						{
+							foundstatic = true;
+						}
 					}
 				}
 			}
 		}
 		//emercency stop. 
-		if(npc_current_count >= LimitNpcs)
+		if(EnemyNpcAlive >= LimitNpcs)
 		{
 			return;
 		}
@@ -362,7 +363,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
 					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
 					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
-					
+
 					if(enemy.Is_Boss || enemy.Is_Outlined)
 					{
 						GiveNpcOutLineLastOrBoss(entity_Spawner, true);
@@ -919,7 +920,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	b_DoNotDisplayHurtHud[victim] = false;
 
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
-	if(b_NpcIsInvulnerable[victim] && damage < 999999.9)
+	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;
@@ -928,6 +929,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
 	bool GuranteedGib = false;
+	if((i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
+	{
+		return Plugin_Changed;
+	}
 
 	if(attacker < 0 || victim == attacker)
 	{
@@ -935,7 +940,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Handled;
 		//nothing happens.
 	}
-	else 
+	else if(damage < 9999999.9)
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{

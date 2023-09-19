@@ -394,8 +394,8 @@ void AnfuhrerEisenhardSelfDefense(AnfuhrerEisenhard npc, float gameTime, int tar
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

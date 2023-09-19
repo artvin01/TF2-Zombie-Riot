@@ -349,8 +349,8 @@ void EgaBunarSelfDefense(EgaBunar npc, float gameTime, int target, float distanc
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

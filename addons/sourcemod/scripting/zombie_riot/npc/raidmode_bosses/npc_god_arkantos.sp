@@ -1022,13 +1022,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 							}
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-								
 							
-							// Hit particle
-							
-							
-							// Hit sound
-							npc.PlayMeleeHitSound();
 							bool Knocked = false;
 							
 							if(IsValidClient(target))

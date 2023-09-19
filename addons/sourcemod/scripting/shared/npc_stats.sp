@@ -362,6 +362,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			SetEntityCollisionGroup(npc, 24);
 		}
+		else
+		{
+			EnemyNpcAlive += 1;
+		}
 		
 		b_NpcCollisionType[npc] = 0;
 		if(!Ally)
@@ -516,11 +520,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IsRaidBoss)
 		{
 			RemoveAllDamageAddition();
-		}
-
-		if(Ally || IsRaidBoss)
-		{
-			NPCCamera_AddCamera(npc);
 		}
 	
 		return view_as<CClotBody>(npc);
@@ -2920,7 +2919,16 @@ static void OnCreate(CClotBody body)
 
 static void OnDestroy(CClotBody body)
 {
-	body.GetPathFollower().Destroy();
+	if(view_as<int>(body.GetPathFollower()) != -1)
+	{
+		body.GetPathFollower().Destroy();
+	}
+	if(!b_NpcHasDied[body.index])
+	{
+		EnemyNpcAlive -= 1;
+	}
+	b_NpcHasDied[body.index] = true;
+
 	
 #if defined ZR
 	if(IsValidEntity(body.m_iTeamGlow))
@@ -3043,10 +3051,10 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		VausMagicaRemoveShield(pThis);
 #endif
 		b_NpcHasDied[pThis] = true;
+		EnemyNpcAlive -= 1;
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif		
-	
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		RemoveNpcThingsAgain(pThis);
 		NPCDeath(pThis);
@@ -3428,7 +3436,9 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
 	CClotBody npc = view_as<CClotBody>(pThis);
-	
+	if(b_NpcHasDied[pThis])
+		return MRES_Ignored;
+		
 #if defined ZR
 	switch(i_NpcInternalId[pThis])
 	{
@@ -4952,6 +4962,7 @@ float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
+	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -5041,14 +5052,27 @@ public void NpcBaseThink(int iNPC)
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
 	if(b_NpcHasDied[iNPC])
 	{
-		NPC_StopPathing(iNPC);
-		static float hullcheckmaxs[3];	
-		//Remove their hull
-		npc.GetBaseNPC().SetBodyMaxs(hullcheckmaxs);
-		npc.GetBaseNPC().SetBodyMins(hullcheckmaxs);	
-		npc.GetBaseNPC().flGravity = 0.0;
+		npc.GetPathFollower().Destroy();
+		npc.SetProp(Prop_Data, "zr_pPath", -1);
 		OnEntityDestroyed_LagComp(iNPC);
 		RemoveEntityToLagCompList(iNPC);
+
+		if(h_NpcCollissionHookType[iNPC] != 0)
+		{
+			if(!DHookRemoveHookID(h_NpcCollissionHookType[iNPC]))
+			{
+				PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+			}
+		}
+		if(h_NpcSolidHookType[iNPC] != 0)
+		{
+			if(!DHookRemoveHookID(h_NpcSolidHookType[iNPC]))
+			{
+				PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+			}
+		}
+		h_NpcCollissionHookType[iNPC] = 0;
+		h_NpcSolidHookType[iNPC] = 0;
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
@@ -7474,7 +7498,7 @@ public void Raidboss_Clean_Everyone()
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss] && !b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
+				if(!b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
 					Change_Npc_Collision(base_boss, 1); //Gives raid collision
 				}
@@ -8939,4 +8963,9 @@ void AddDelayPather(int npcpather)
 
 		f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
 	}
+}
+
+void SmiteNpcToDeath(int entity)
+{
+	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
 }

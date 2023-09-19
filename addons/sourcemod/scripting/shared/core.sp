@@ -19,7 +19,7 @@
 #include <queue>
 #include <profiler>
 #include <sourcescramble>
-#include <handledebugger>
+//#include <handledebugger>
 
 #pragma dynamic    131072
 
@@ -296,6 +296,7 @@ int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
+int EnemyNpcAlive = 0;
 
 float f_ClientReviveDelay[MAXENTITIES];
 
@@ -494,6 +495,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_IGNORE_DEATH_PENALTY			(1 << 5)
 #define ZR_DAMAGE_REFLECT_LOGIC					(1 << 6)
 #define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
+#define ZR_SLAY_DAMAGE							(1 << 8)
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -597,7 +599,6 @@ int h_NpcSolidHookType[MAXENTITIES];
 #define EP_DEALS_DROWN_DAMAGE             	(1 << 5)
 #define EP_IS_ICE_DAMAGE              		(1 << 6)   					// Even if its anything then blast, it will still gib.
 
-bool b_Map_BaseBoss_No_Layers[MAXENTITIES];
 float f_TempCooldownForVisualManaPotions[MAXPLAYERS+1];
 float f_DelayLookingAtHud[MAXPLAYERS+1];
 bool b_EntityIsArrow[MAXENTITIES];
@@ -1192,6 +1193,7 @@ public void OnPluginStart()
 	ConVar_PluginStart();
 	KillFeed_PluginStart();
 	NPC_PluginStart();
+	NPCCamera_PluginStart();
 	SDKHook_PluginStart();
 	Thirdperson_PluginStart();
 //	Building_PluginStart();
@@ -2372,7 +2374,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		EntityFuncAttack3[entity] = INVALID_FUNCTION;
 		EntityFuncReload4[entity] = INVALID_FUNCTION;
 		EntityFuncAttackInstant[entity] = INVALID_FUNCTION;
-		b_Map_BaseBoss_No_Layers[entity] = false;
 		b_Is_Player_Projectile_Through_Npc[entity] = false;
 		b_ForceCollisionWithProjectile[entity] = false;
 		i_IsABuilding[entity] = false;
@@ -2857,7 +2858,6 @@ public void Check_For_Team_Npc(int entity)
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 			if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS FALSE, then that means that a baseboss spawned without getting default stats.
 			{
-				b_Map_BaseBoss_No_Layers[entity] = true;
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}
@@ -2936,7 +2936,6 @@ public void Check_For_Team_Npc_Delayed(int ref)
 			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 			if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS FALSE, then that means that a baseboss spawned without getting default stats.
 			{
-				b_Map_BaseBoss_No_Layers[entity] = true;
 				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
 				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
 			}

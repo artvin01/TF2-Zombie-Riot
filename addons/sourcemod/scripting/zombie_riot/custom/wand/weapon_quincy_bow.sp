@@ -1162,54 +1162,54 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 	Handle trace = TR_TraceRayFilterEx(Vec_1, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
-			TR_GetEndPosition(Vec_2, trace);
-			static float hullMin[3];
-			static float hullMax[3];
+		TR_GetEndPosition(Vec_2, trace);
+		static float hullMin[3];
+		static float hullMax[3];
 
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Quincy_Blade_BEAM_HitDetected[i] = false;
-			}
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			Quincy_Blade_BEAM_HitDetected[i] = false;
+		}
+		
+		hullMin[0] = -radius;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+		StartLagCompensation_Base_Boss(client);
+		Handle btrace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Quincy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+		delete btrace;
+		FinishLagCompensation_Base_boss();
+		if(VIPBuilding_Active())
+			dmg *= 0.5;
 			
-			hullMin[0] = -radius;
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			StartLagCompensation_Base_Boss(client);
-			Handle btrace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Quincy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete btrace;
-			FinishLagCompensation_Base_boss();
-			if(VIPBuilding_Active())
-				dmg *= 0.5;
-				
-			for (int victim = 1; victim < MAXENTITIES; victim++)
+		for (int victim = 1; victim < MAXENTITIES; victim++)
+		{
+			if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 			{
-				if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-				{
-					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-				}
+				SDKHooks_TakeDamage(victim, client, client, dmg, DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			}
-			radius *= 2.0;
-			int r, g, b;
-			r = 15;
-			g = 179;
-			b = 235;
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 60);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
-			TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Laser, 0, 0, 0, 1.0, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 60);
-			TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Glow, 0, 0, 0, 1.75, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.5, glowColor, 0);
-			TE_SendToAll(0.0);
+		}
+		radius *= 2.0;
+		int r, g, b;
+		r = 15;
+		g = 179;
+		b = 235;
+		int colorLayer4[4];
+		SetColorRGBA(colorLayer4, r, g, b, 60);
+		int colorLayer3[4];
+		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
+		int colorLayer2[4];
+		SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
+		int colorLayer1[4];
+		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
+		TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Laser, 0, 0, 0, 1.0, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+		TE_SendToAll(0.0);
+		int glowColor[4];
+		SetColorRGBA(glowColor, r, g, b, 60);
+		TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Glow, 0, 0, 0, 1.75, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.5, glowColor, 0);
+		TE_SendToAll(0.0);
 	}
 	delete trace;
 

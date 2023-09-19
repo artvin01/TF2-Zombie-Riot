@@ -307,8 +307,8 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 					ProtectaAllyHeal);
 					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

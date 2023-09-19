@@ -108,7 +108,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 		if(npc.m_iTargetAlly < 1)
 		{
 			LastHitRef[npc.index] = -1;
-			SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.0, DMG_CLUB);
+			SmiteNpcToDeath(npc.index);
 			return;
 		}
 		

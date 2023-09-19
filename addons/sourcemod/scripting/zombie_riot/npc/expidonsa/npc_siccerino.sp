@@ -261,8 +261,8 @@ void SiccerinoSelfDefense(Siccerino npc, float gameTime, int target, float dista
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

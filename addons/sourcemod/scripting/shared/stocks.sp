@@ -107,7 +107,11 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
-		DispatchKeyValue(particle, "effect_name", effectName);
+		if(effectName[0])
+			DispatchKeyValue(particle, "effect_name", effectName);
+		else
+			DispatchKeyValue(particle, "effect_name", "3rd_trail");
+
 		DispatchSpawn(particle);
 		if(effectName[0])
 		{
@@ -129,7 +133,11 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
-		DispatchKeyValue(particle, "effect_name", effectName);
+		if(effectName[0])
+			DispatchKeyValue(particle, "effect_name", effectName);
+		else
+			DispatchKeyValue(particle, "effect_name", "3rd_trail");
+			
 		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
 		{
 			b_IsEntityAlwaysTranmitted[particle] = true;
@@ -157,7 +165,10 @@ stock int ParticleEffectAtWithRotation(float position[3], float rotation[3], cha
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		SetEntPropVector(particle, Prop_Data, "m_angRotation", rotation);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
-		DispatchKeyValue(particle, "effect_name", effectName);
+		if(effectName[0])
+			DispatchKeyValue(particle, "effect_name", effectName);
+		else
+			DispatchKeyValue(particle, "effect_name", "3rd_trail");
 		DispatchSpawn(particle);
 		if(effectName[0])
 		{

@@ -287,8 +287,8 @@ void GiantTankusSelfdefense(GiantTankus npc, float gameTime, int target, float d
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

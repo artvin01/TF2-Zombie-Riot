@@ -515,7 +515,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Changed;
 	}
 
-	if(attacker < 1 || damage > 999999.9)
+	if(attacker < 1 || damage > 9999999.9)
 		return Plugin_Continue;
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);

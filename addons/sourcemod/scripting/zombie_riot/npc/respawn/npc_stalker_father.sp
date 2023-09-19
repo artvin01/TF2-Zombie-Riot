@@ -284,7 +284,7 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 		return Plugin_Handled;
 	}
 	
-	if(damage > 999999.9)
+	if(damage > 9999999.9)
 		return Plugin_Continue;
 	
 	if(damagetype & DMG_DROWN)

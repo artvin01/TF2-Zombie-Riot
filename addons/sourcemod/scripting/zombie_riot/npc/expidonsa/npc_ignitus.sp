@@ -306,8 +306,8 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 
