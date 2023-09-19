@@ -1,5 +1,4 @@
 #pragma semicolon 1
-
 #pragma newdecls required
 
 /* engine/host.h#L157-L158 */
@@ -38,163 +37,95 @@ enum struct LagRecord
 	float					m_masterCycle;
 }
 
-//static ConVar sv_unlag;
 static ConVar sv_maxunlag;
-//static ConVar mp_friendlyfire;
 
-static StringMap EntityTrack;
-static StringMap EntityRestore;
 static int TickCount[MAXTF2PLAYERS];
 static float ViewAngles[MAXTF2PLAYERS][3];
-static bool b_EntityIsLagComp[MAXENTITIES];
+static ArrayList EntityTrack[MAXENTITIES];
+static LagRecord EntityRestore[MAXENTITIES];
+static bool WasBackTracked[MAXENTITIES];
+
+static const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
+static int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
 
 void OnPluginStart_LagComp()
 {
-//	sv_unlag = FindConVar("sv_unlag");
 	sv_maxunlag = FindConVar("sv_maxunlag");
-//	mp_friendlyfire = FindConVar("mp_friendlyfire");
-	
-	EntityTrack = new StringMap();
-	EntityRestore = new StringMap();
-	/*
-	GameData gamedata = LoadGameConfigFile("lagcompensation");
-	
-	DynamicDetour detour = DynamicDetour.FromConf(gamedata, "CLagCompensationManager::StartLagCompensation");
-	DHookEnableDetour(detour, false, StartLagCompensation);
-	delete detour;
-	
-	detour = DynamicDetour.FromConf(gamedata, "CLagCompensationManager::FinishLagCompensation");
-	DHookEnableDetour(detour, false, FinishLagCompensation);
-	delete detour;
-	*/
-//	delete gamedata;	   
 }
 
-Action OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
+void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 {
-//	i_CmdNumber[client] = cmdnum;
 	TickCount[client] = tickcount;
 	ViewAngles[client] = angles;
-	return Plugin_Continue;
 }
-/* Manually remove no longer in use entites */
+
 void OnEntityDestroyed_LagComp(int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-		if(!b_EntityIsLagComp[entity])
+		if(EntityTrack[entity])
 		{
-			return;
-		}
-		b_EntityIsLagComp[entity] = false;
-		
-		b_LagCompensationDeletedArrayList[entity] = true;
-		int ref = EntIndexToEntRef(entity);
-		char key[16];
-		IntToString(ref, key, sizeof(key));
-		
-		ArrayList list;
-		if(EntityTrack.GetValue(key, list))
-		{
-			EntityTrack.Remove(key);
-			if(list)
+			LagRecord record;
+			int length = EntityTrack[entity].Length;
+			for(int i; i < length; i++)
 			{
-				LagRecord record;
-				int length2 = list.Length;
-				for(int a; a<length2; a++)
-				{
-					list.GetArray(a, record);
-		//			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
-					{
-						delete record.m_layerRecords;
-					}
-				}
-				delete list;
+				EntityTrack[entity].GetArray(i, record);
+				delete record.m_layerRecords;
 			}
+
+			delete EntityTrack[entity];
 		}
-	/*
-		static LagRecord restore;
-		if(EntityRestore.GetArray(key, restore, sizeof(restore)))
-		{
-			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
-			{
-				if(restore.m_layerRecords)
-				{
-					delete restore.m_layerRecords;
-				}
-			}
-			EntityRestore.Remove(key);
-		}
-	*/
-		LagRecord restore;
-		if(EntityRestore.GetArray(key, restore, sizeof(restore)))
-	//	if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
-		{
-			delete restore.m_layerRecords;
-			EntityRestore.Remove(key);
-		}
+
+		delete EntityRestore[entity].m_layerRecords;
 	}
 }
 
 /* game/server/player_lagcompensation.cpp#L328 */
-//public MRESReturn StartLagCompensation(Address manager, DHookParam param)
 void StartLagCompensation_Base_Boss(int client)
 {
-	if(!DoingLagCompensation) //dont  check for && sv_unlag.BoolValue, this function wont even call if you dont have this cvar enabled.
+	if(DoingLagCompensation)
+		ThrowError("Already in BaseBoss Lag Comp");
+	
+	DoingLagCompensation = true;
+	
+	// Get true latency
+	
+	// correct is the amout of time we have to correct game time
+	float correct = GetClientLatency(client, NetFlow_Outgoing);
+	
+	// calc number of view interpolation ticks - 1
+	int lerpTicks = TIME_TO_TICKS(GetEntPropFloat(client, Prop_Data, "m_fLerpTime"));
+	
+	// add view interpolation latency see C_BaseEntity::GetInterpolationAmount()
+	correct += TICKS_TO_TIME(lerpTicks);
+	
+	// check bouns [0,sv_maxunlag]
+	correct = clamp(correct, 0.0, sv_maxunlag.FloatValue);
+	
+	// correct tick send by player 
+	int targettick = TickCount[client] - lerpTicks;
+	
+	// calc difference between tick send by player and our latency based tick
+	float deltaTime = correct - TICKS_TO_TIME(GetGameTickCount() - targettick);
+	
+	if(fabs(deltaTime) > 0.2)
 	{
-	//	if(GetEntProp(client, Prop_Data, "m_bLagCompensation", 1) && !IsFakeClient(client) && IsPlayerAlive(client)) dont check for these things, unndeded as fuck
+		// difference between cmd time and latency is too big > 200ms, use time correction based on latency
+	//	PrintToConsoleAll("StartLagCompensation: delta too big (%.3f)\n", deltaTime );
+		targettick = GetGameTickCount() - TIME_TO_TICKS(correct);
+	}
+
+	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+		if(IsValidEntity(entity))
 		{
-		//	CurrentPlayer = client;
-		//	SetEntProp(client, Prop_Data, "m_bLagCompensation", false, 1);
-			
-			DoingLagCompensation = true;
-			
-			// Get true latency
-			
-			// correct is the amout of time we have to correct game time
-			float correct = GetClientLatency(client, NetFlow_Outgoing);
-			
-			// calc number of view interpolation ticks - 1
-			int lerpTicks = TIME_TO_TICKS(GetEntPropFloat(client, Prop_Data, "m_fLerpTime"));
-			
-			// add view interpolation latency see C_BaseEntity::GetInterpolationAmount()
-			correct += TICKS_TO_TIME(lerpTicks);
-			
-			// check bouns [0,sv_maxunlag]
-			correct = clamp(correct, 0.0, sv_maxunlag.FloatValue);
-			
-			// correct tick send by player 
-			int targettick = TickCount[client] - lerpTicks;
-			
-			// calc difference between tick send by player and our latency based tick
-			float deltaTime = correct - TICKS_TO_TIME(GetGameTickCount() - targettick);
-			
-			if(fabs(deltaTime) > 0.2)
-			{
-				// difference between cmd time and latency is too big > 200ms, use time correction based on latency
-			//	PrintToConsoleAll("StartLagCompensation: delta too big (%.3f)\n", deltaTime );
-				targettick = GetGameTickCount() - TIME_TO_TICKS(correct);
-			}
+			// Custom checks for if things should lag compensate (based on things like what team the player is on).
+			if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
+				continue;
 
-			
-			// Iterate all active NPCs
-			//const CBitVec<MAX_EDICTS> *pEntityTransmitBits = engine.GetEntityTransmitBitsForClient( player.entindex() - 1 );
-		//	if(!compensate_players)
-			{
-				for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
-				{
-					int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-					if(IsValidEntity(entity))
-					{
-							// Custom checks for if things should lag compensate (based on things like what team the player is on).
-						if(!WantsLagCompensationOnEntity(entity, client, ViewAngles[client]/*, pEntityTransmitBits*/))
-							continue;
-
-						// Move other NPCs back in time
-						BacktrackEntity(entity, TICKS_TO_TIME(targettick));
-					}
-				}
-			}
+			// Move other NPCs back in time
+			BacktrackEntity(entity, TICKS_TO_TIME(targettick));
 		}
 	}
 }
@@ -210,10 +141,10 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
 	//if ( pEntityTransmitBits && !pEntityTransmitBits.Get( pPlayer.entindex() ) )
 	//	return false;
+
 	if(b_LagCompNPC_OnlyAllies && !b_IsAlliedNpc[entity])
-	{
 		return false;
-	}
+	
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
 	float pos2[3];
@@ -227,8 +158,6 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	if(GetVectorDistance(pos2, pos1) < maxDistance)
 		return true;
 	
-//	if(!b_LagCompNPC_No_Layers)
-//	{
 	// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
 	float forwar[3];
 	GetAngleVectors(viewangles, forwar, NULL_VECTOR, NULL_VECTOR );
@@ -242,29 +171,19 @@ bool WantsLagCompensationOnEntity(int entity, int player, const float viewangles
 	{
 		return false;
 	}
-//	}
-//	else
-//	{
-//		return false;	
-//	}
 	return true;
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
 void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
-	int ref = EntIndexToEntRef(entity);
-	char refchar[16];
-	IntToString(ref, refchar, sizeof(refchar));
-	
-	ArrayList list;
-	if (!EntityTrack.GetValue(refchar, list))
+	if(!EntityTrack[entity])
 	{
 		return;
 	}
 	
-	int length = list.Length;
-	if (length < 1)
+	int length = EntityTrack[entity].Length;
+	if(length < 1)
 	{
 		return;
 	}
@@ -276,13 +195,13 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", prevOrg);
 	
 	bool multi;
-	for(int i=length-1; i>=0; i--)
+	for(int i = length-1; i >= 0; i--)
 	{
 		// remember last record
 		prevRecord = record;
 		
 		// get next record
-		list.GetArray(i, record);
+		EntityTrack[entity].GetArray(i, record);
 		
 		/*float delta[3]
 		SubtractVectors(record.m_vecOrigin, prevOrg, delta);
@@ -492,103 +411,102 @@ void BacktrackEntity(int entity, float currentTime) //Make sure that allies only
 	//if the code needs the bones for any reason, then simply enable this bool when doing the compensation.
 	if(!b_LagCompNPC_No_Layers)
 		SDKCall_InvalidateBoneCache(entity);
-
-	EntityRestore.SetArray(refchar, restore, sizeof(restore));
+	
+	delete EntityRestore[entity].m_layerRecords;
+	EntityRestore[entity] = restore;
+	WasBackTracked[entity] = true;
 }
 
 void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
-	if(DoingLagCompensation)
+	if(!DoingLagCompensation)
+		ThrowError("Not in BaseBoss Lag Comp");
+	
+	DoingLagCompensation = false;
+	
+	LayerRecord layer;
+	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
 	{
-		DoingLagCompensation = false;
-	//	SetEntProp(CurrentPlayer, Prop_Data, "m_bLagCompensation", true, 1);
-		
-		char refchar[16];
-		LagRecord restore;
-		LayerRecord layer;
-		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
+		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+		if(IsValidEntity(entity) && WasBackTracked[entity])
 		{
-			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-			if(IsValidEntity(entity))
+			if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
 			{
-				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
-				if(EntityRestore.GetArray(refchar, restore, sizeof(restore)))
+				if(b_LagCompNPC_ExtendBoundingBox)
 				{
-					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+					static float m_vecMaxs[3];
+					static float m_vecMins[3];
+					m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
+					m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
+					
+					SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
+					
+					SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
+					
+					CClotBody npc = view_as<CClotBody>(entity);
+					npc.UpdateCollisionBox();
+					
+					if(b_BoundingBoxVariant[entity] == 1)
 					{
-						if(b_LagCompNPC_ExtendBoundingBox)
-						{
-							static float m_vecMaxs[3];
-							static float m_vecMins[3];
-							m_vecMaxs = view_as<float>( { 1.0, 1.0, 2.0 } );
-							m_vecMins = view_as<float>( { -1.0, -1.0, 0.0 } );		
-							
-							SetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", m_vecMins);
-							
-							SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", m_vecMaxs);
-							
-							CClotBody npc = view_as<CClotBody>(entity);
-							npc.UpdateCollisionBox();
-							
-							if(b_BoundingBoxVariant[entity] == 1)
-							{
-								m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-								m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-							}			
-							else
-							{
-								m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-								m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
-							}
-
-							if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
-							{
-								m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[entity][0];
-								m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[entity][1];
-								m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[entity][2];
-
-								m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
-								m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
-								m_vecMins[2] = 0.0;
-							}
-
-							SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
-							SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
-						}
-					}
-					SetEntPropVector(entity, Prop_Data, "m_angRotation", restore.m_vecAngles); //See start pos on why we use this instead of the SDKCall
-					SDKCall_SetLocalOrigin(entity, restore.m_vecOrigin);
-					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+						m_vecMaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+						m_vecMins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+					}			
+					else
 					{
-						if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
-						{
-							SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", restore.m_flSimulationTime);
-							SetEntProp(entity, Prop_Data, "m_nSequence", restore.m_masterSequence);
-							SetEntPropFloat(entity, Prop_Data, "m_flCycle", restore.m_masterCycle);
-							CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
-							if(overlay.IsValid())
-							{
-								int layerCount = overlay.GetNumAnimOverlays();
-								for(int i; i<layerCount; i++)
-								{
-									restore.m_layerRecords.GetArray(i, layer);
-									CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
-									currentLayer.m_flCycle = layer.m_cycle;
-									currentLayer.m_nOrder = layer.m_order;
-									currentLayer.m_nSequence = layer.m_sequence;
-									currentLayer.m_flWeight = layer.m_weight;
-								}
-							}
-						}
+						m_vecMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+						m_vecMins = view_as<float>( { -24.0, -24.0, 0.0 } );		
 					}
 
-					delete restore.m_layerRecords;
-					EntityRestore.Remove(refchar);
+					if(f3_CustomMinMaxBoundingBox[entity][1] != 0.0)
+					{
+						m_vecMaxs[0] = f3_CustomMinMaxBoundingBox[entity][0];
+						m_vecMaxs[1] = f3_CustomMinMaxBoundingBox[entity][1];
+						m_vecMaxs[2] = f3_CustomMinMaxBoundingBox[entity][2];
+
+						m_vecMins[0] = -f3_CustomMinMaxBoundingBox[entity][0];
+						m_vecMins[1] = -f3_CustomMinMaxBoundingBox[entity][1];
+						m_vecMins[2] = 0.0;
+					}
+
+					SetEntPropVector(entity, Prop_Data, "m_vecMaxs", m_vecMaxs);
+					SetEntPropVector(entity, Prop_Data, "m_vecMins", m_vecMins);
 				}
 			}
+
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[entity].m_vecAngles); //See start pos on why we use this instead of the SDKCall
+			SDKCall_SetLocalOrigin(entity, EntityRestore[entity].m_vecOrigin);
+			
+			if(!b_LagCompNPC_No_Layers && !b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity])
+			{
+				SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[entity].m_flSimulationTime);
+				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[entity].m_masterSequence);
+				SetEntPropFloat(entity, Prop_Data, "m_flCycle", EntityRestore[entity].m_masterCycle);
+				
+				if(EntityRestore[entity].m_layerRecords)
+				{
+					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
+					if(overlay.IsValid())
+					{
+						int layerCount = overlay.GetNumAnimOverlays();
+						for(int i; i < layerCount; i++)
+						{
+							EntityRestore[entity].m_layerRecords.GetArray(i, layer);
+							CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
+							currentLayer.m_flCycle = layer.m_cycle;
+							currentLayer.m_nOrder = layer.m_order;
+							currentLayer.m_nSequence = layer.m_sequence;
+							currentLayer.m_flWeight = layer.m_weight;
+						}
+					}
+				}
+			}
+
+			delete EntityRestore[entity].m_layerRecords;
+			WasBackTracked[entity] = false;
 		}
 	}
+
 	StartLagCompResetValues();
 }
 
@@ -598,93 +516,80 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //-----------------------------------------------------------------------------
 void LagCompensationThink_Forward()
 {
-//	if(sv_unlag.BoolValue) //This isnt needed as itsa utomatic
+	// remove all records before that time:
+	float deadTime = GetGameTime() - sv_maxunlag.FloatValue;
+	LagRecord record;
+	LayerRecord layer;
+
+	// Iterate all active NPCs
+	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
 	{
-		// remove all records before that time:
-		float deadTime = GetGameTime() - sv_maxunlag.FloatValue;
-		char refchar[16];
-		ArrayList list;
-		LagRecord record;
-		LayerRecord layer;
-		// Iterate all active NPCs
-		for(int entitycount; entitycount<i_Maxcount_Apply_Lagcompensation; entitycount++)
+		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+		if(IsValidEntity(entity))
 		{
-			int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-			if(IsValidEntity(entity))
+			if(!EntityTrack[entity])
 			{
-				if(b_LagCompensationDeletedArrayList[entity]) //Is the npc dead?
-				{
-					b_EntityIsLagComp[entity] = true;
-					continue; //This npc has died. We reset it to be sure and dont keep tracking it.
-				}
-				b_EntityIsLagComp[entity] = true;
+				EntityTrack[entity] = new ArrayList(sizeof(LagRecord));
+				continue; // give a frame to spawn in before we do anything
+			}
+			
+			// remove tail records that are too old
+			int length = EntityTrack[entity].Length;
+			while(length)
+			{
+				EntityTrack[entity].GetArray(0, record);
 				
-				IntToString(EntIndexToEntRef(entity), refchar, sizeof(refchar));
-				if(!EntityTrack.GetValue(refchar, list))
-				{
-					list = new ArrayList(sizeof(LagRecord));
-					EntityTrack.SetValue(refchar, list);
-					continue; // give a frame to spawn in before we do anything
-				}
+				// if tail is within limits, stop
+				if(record.m_flSimulationTime >= deadTime)
+					break;
 				
-				// remove tail records that are too old
-				int length = list.Length;
-				while(length)
-				{
-					list.GetArray(0, record);
-					
-					// if tail is within limits, stop
-					if(record.m_flSimulationTime >= deadTime)
-						break;
-					
-					// remove tail, get new tail
-					delete record.m_layerRecords;
-					list.Erase(0);
-					length--;
-				}
+				// remove tail, get new tail
+				delete record.m_layerRecords;
+				EntityTrack[entity].Erase(0);
+				length--;
+			}
+			
+			// check if head has same simulation time
+			if(length)
+			{
+				EntityTrack[entity].GetArray(length - 1, record);
 				
-				// check if head has same simulation time
-				if(length)
-				{
-					list.GetArray(length-1, record);
-					
-					// check if player changed simulation time since last time updated
-					if(record.m_flSimulationTime >= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime"))
-						continue; // don't add new entry for same or older time
-				}
-				
-				CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
-				if(overlay.IsValid())
-				{
-					// add new record to player track
-					record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
-					GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
-					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
+				// check if player changed simulation time since last time updated
+				if(record.m_flSimulationTime >= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime"))
+					continue; // don't add new entry for same or older time
+			}
+			
+			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
+			if(overlay.IsValid())
+			{
+				// add new record to player track
+				record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
+				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
+				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 
-					if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
+				if(!b_Map_BaseBoss_No_Layers[entity] && !b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
+				{
+					record.m_layerRecords = new ArrayList(sizeof(LayerRecord));
+					int layerCount = overlay.GetNumAnimOverlays();
+					for(int i = 0; i < layerCount; i++)
 					{
-						record.m_layerRecords = new ArrayList(sizeof(LayerRecord));
-						int layerCount = overlay.GetNumAnimOverlays();
-						for(int i = 0; i < layerCount; i++)
-						{
-							CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
-							
-							layer.m_cycle = overlay.GetLayerCycle(i);
-							layer.m_order = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
-							layer.m_sequence = overlay.GetLayerSequence(i);
-							layer.m_weight = overlay.GetLayerWeight(i);
-							record.m_layerRecords.PushArray(layer);
-						}
-						record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
-						record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
+						CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
+						
+						layer.m_cycle = overlay.GetLayerCycle(i);
+						layer.m_order = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
+						layer.m_sequence = overlay.GetLayerSequence(i);
+						layer.m_weight = overlay.GetLayerWeight(i);
+						record.m_layerRecords.PushArray(layer);
 					}
-					else
-					{
-						record.m_layerRecords = null;
-					}
-
-					list.PushArray(record);
+					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
+				else
+				{
+					record.m_layerRecords = null;
+				}
+
+				EntityTrack[entity].PushArray(record);
 			}
 		}
 	}
@@ -720,20 +625,18 @@ stock float fabs(float value)
 
 void AddEntityToLagCompList(int entity)
 {
-	b_EntityIsLagComp[entity] = true;
 	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
 	{
 		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
 		{
 			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
-			i = ZR_MAX_LAG_COMP;
+			break;
 		}
 	}	
 }
 
 void RemoveEntityToLagCompList(int entity)
 {
-	b_EntityIsLagComp[entity] = false;
 	for (int i = 0; i < ZR_MAX_LAG_COMP; i++) //Make them lag compensate
 	{
 		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) == entity)

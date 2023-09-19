@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 void NPCCamera_AddCamera(int entity)
-{
+{/*
 	int camera = CreateEntityByName("info_observer_point");
 	if(camera != -1)
 	{
@@ -20,5 +20,5 @@ void NPCCamera_AddCamera(int entity)
 
 		pos[2] += 40.0;
 		TeleportEntity(camera, pos, ang, NULL_VECTOR);
-	}
+	}*/
 }

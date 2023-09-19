@@ -19,7 +19,7 @@
 #include <queue>
 #include <profiler>
 #include <sourcescramble>
-//#include <handledebugger>
+#include <handledebugger>
 
 #pragma dynamic    131072
 
@@ -362,8 +362,6 @@ bool b_BuildingHasDied[MAXENTITIES]={true, ...};
 const int i_MaxcountNpc = ZR_MAX_NPCS;
 int i_ObjectsNpcs[ZR_MAX_NPCS];
 
-const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
-int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
 bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
@@ -1022,7 +1020,6 @@ int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
-bool b_LagCompensationDeletedArrayList[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
@@ -2303,7 +2300,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 		i_CustomWeaponEquipLogic[entity] = 0;
-		b_LagCompensationDeletedArrayList[entity] = false;
 		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
 #if defined ZR
 		SetEntitySpike(entity, false);

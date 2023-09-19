@@ -517,6 +517,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			RemoveAllDamageAddition();
 		}
+
+		if(Ally || IsRaidBoss)
+		{
+			NPCCamera_AddCamera(npc);
+		}
 	
 		return view_as<CClotBody>(npc);
 	}
