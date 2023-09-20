@@ -2931,11 +2931,13 @@ static void OnDestroy(CClotBody body)
 		{
 			Zombies_Currently_Still_Ongoing -= 1;
 		}
-		EnemyNpcAlive -= 1;
+		if(!b_IsAlliedNpc[body.index])
+			EnemyNpcAlive -= 1;
 	}
 	if(b_StaticNPC[body.index])
 	{
-		EnemyNpcAliveStatic -= 1;
+		if(!b_IsAlliedNpc[body.index])
+			EnemyNpcAlive -= 1;
 	}
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
@@ -3062,10 +3064,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		VausMagicaRemoveShield(pThis);
 #endif
 		b_NpcHasDied[pThis] = true;
-		EnemyNpcAlive -= 1;
+		if(!b_IsAlliedNpc[pThis])
+			EnemyNpcAlive -= 1;
+			
 		if(b_StaticNPC[pThis])
 		{
-			EnemyNpcAliveStatic -= 1;
+			if(!b_IsAlliedNpc[pThis])
+				EnemyNpcAliveStatic -= 1;
+
 			b_StaticNPC[pThis] = false;
 		}
 #if defined ZR

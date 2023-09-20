@@ -334,7 +334,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					CClotBody npcstats = view_as<CClotBody>(entity_Spawner);
 					
 					npcstats.m_bStaticNPC = enemy.Is_Static;
-					if(enemy.Is_Static)
+					if(enemy.Is_Static && !enemy.Friendly)
 					{
 						EnemyNpcAliveStatic += 1;
 					}
