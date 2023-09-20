@@ -1953,7 +1953,9 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
-				AddDelayPather(this.index);
+				float DistanceCheck[3];
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
+				AddDelayPather(this.index, DistanceCheck);
 			}
 		}
 	}
@@ -1980,7 +1982,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(this.m_bPathing)
 			{
 				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
-				AddDelayPather(this.index);
+				AddDelayPather(this.index, vec);
 			}
 		}
 	}
@@ -8954,7 +8956,7 @@ bool DelayPathing(int npcpather)
 	return false;
 }
 
-void AddDelayPather(int npcpather)
+void AddDelayPather(int npcpather, float DistanceCheap[3])
 {
 	float AddComputingDelay = 0.0;
 
@@ -8964,8 +8966,11 @@ void AddDelayPather(int npcpather)
 	}
 	else
 	{
-		CClotBody npc = view_as<CClotBody>(npcpather);
-		float Length = npc.GetPathFollower().GetLength();
+	//	CClotBody npc = view_as<CClotBody>(npcpather);
+	//	float Length = npc.GetPathFollower().GetLength();
+		float DistanceCheap_pather[3];
+		GetEntPropVector(npcpather, Prop_Data, "m_vecAbsOrigin", DistanceCheap_pather);
+		float Length = GetVectorDistance(DistanceCheap_pather, DistanceCheap);
 		if(Length < 500.0)// close enough, update pather often.
 		{
 			AddComputingDelay = 0.3;
