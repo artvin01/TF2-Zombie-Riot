@@ -218,8 +218,8 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				break;
 			}
 		}
+		FinishLagCompensation_Base_boss();
 	}
-	FinishLagCompensation_Base_boss();
 	delete pack;
 }
 public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot)

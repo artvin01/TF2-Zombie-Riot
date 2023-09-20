@@ -256,7 +256,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 	npc.PlayDeathSound();
 	npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 	
-	for (int building = 1; building < SENSAL_MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < SENSAL_MAX_TARGETS_HIT; building++)
 	{
 		SensalAllied_BEAM_BuildingHit[building] = 0;
 	}

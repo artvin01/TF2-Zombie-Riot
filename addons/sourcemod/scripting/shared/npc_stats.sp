@@ -2959,12 +2959,13 @@ static void OnDestroy(CClotBody body)
 			Zombies_Currently_Still_Ongoing -= 1;
 		}
 		if(!b_IsAlliedNpc[body.index])
+		{
+			if(b_StaticNPC[body.index])
+				EnemyNpcAliveStatic -= 1;
+				
 			EnemyNpcAlive -= 1;
-	}
-	if(b_StaticNPC[body.index])
-	{
-		if(!b_IsAlliedNpc[body.index])
-			EnemyNpcAlive -= 1;
+			
+		}
 	}
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;

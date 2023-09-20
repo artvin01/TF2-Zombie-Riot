@@ -902,7 +902,7 @@ public Action Waves_EndVote(Handle timer, float time)
 	Enemies = new ArrayStack(sizeof(Enemy));
 }*/
 
-void Waves_Progress(bool donotAdvance = false)
+void Waves_Progress(bool donotAdvanceRound = false)
 {
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || Cooldown > GetGameTime())
 		return;
