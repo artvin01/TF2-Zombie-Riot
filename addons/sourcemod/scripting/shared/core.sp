@@ -29,7 +29,7 @@
 #define CHAR_EMPTY	"░"
 
 #define NPC_HARD_LIMIT 40 
-#define ZR_MAX_NPCS (NPC_HARD_LIMIT*4)
+#define ZR_MAX_NPCS (NPC_HARD_LIMIT*6)
 #define ZR_MAX_NPCS_ALLIED 40 //Never need more.
 #define ZR_MAX_LAG_COMP 128 
 #define ZR_MAX_BUILDINGS 128 //cant ever have more then 64 realisticly speaking
@@ -370,6 +370,9 @@ bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 bool b_IsAlliedNpc[MAXENTITIES]={false, ...};
 const int i_MaxcountNpc_Allied = ZR_MAX_NPCS_ALLIED;
 int i_ObjectsNpcs_Allied[ZR_MAX_NPCS_ALLIED];
+
+const int i_MaxcountNpcTotal = ZR_MAX_NPCS;
+int i_ObjectsNpcsTotal[ZR_MAX_NPCS];
 
 const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
@@ -1385,6 +1388,7 @@ public void OnMapEnd()
 
 	ConVar_Disable();
 	FileNetwork_MapEnd();
+	NpcStats_OnMapEnd();
 }
 
 public void OnConfigsExecuted()

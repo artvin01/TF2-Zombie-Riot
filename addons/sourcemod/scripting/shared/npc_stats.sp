@@ -32,6 +32,7 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
+PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 #endif
 
 #if defined RPG
@@ -174,6 +175,7 @@ public Action Command_PetMenu(int client, int args)
 	return Plugin_Handled;
 }
 
+
 void OnMapStart_NPC_Base()
 {
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
@@ -220,6 +222,22 @@ void OnMapStart_NPC_Base()
 	Zero2(f_PredictPos);
 	
 	NPC_MapStart();
+
+	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
+	{
+		g_NpcPathFollower[NpcIndexNumber] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	}
+}
+
+void NpcStats_OnMapEnd()
+{
+	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
+	{
+		if(g_NpcPathFollower[NpcIndexNumber].IsValid())
+		{
+			g_NpcPathFollower[NpcIndexNumber].Destroy();
+		}
+	}
 }
 
 Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
@@ -1904,17 +1922,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public void RemovePather(int entity)
-	{
-		return;
-		/*
-		body.GetPathFollower().Destroy();
-		this.MyNextBotPointer().NotifyPathDestruction(pPath[this.index]);
-		pPath[this.index].Destroy();
-		pPath[this.index] = view_as<PathFollower>(0);
-		this.m_bPathing = false;
-		*/
-	}
 	public void StartPathing()
 	{
 		if(!CvarDisableThink.BoolValue)
@@ -2916,17 +2923,37 @@ public void NPC_Base_InitGamedata()
 
 static void OnCreate(CClotBody body)
 {
-	body.SetProp(Prop_Data, "zr_pPath", view_as<int>(PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors)));
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		if(!IsValidEntity(entity))
+		{
+			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
+			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
+			break;
+		}
+	}
 }
 
+void RemoveFromNpcPathList(CClotBody body)
+{
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		if(entity == body.index)
+		{
+			body.GetPathFollower().Invalidate(); //Remove its current path 
+			body.SetProp(Prop_Data, "zr_pPath", 0);
+			i_ObjectsNpcsTotal[entitycount] = -1;
+			break;
+		}
+	}	
+}
 static void OnDestroy(CClotBody body)
 {
-	if(view_as<int>(body.GetPathFollower()) != -1)
-	{
-		body.GetPathFollower().Destroy();
-	}
 	if(!b_NpcHasDied[body.index])
 	{
+		RemoveFromNpcPathList(body);
 		if(GetEntProp(body.index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 		{
 			Zombies_Currently_Still_Ongoing -= 1;
@@ -3064,9 +3091,10 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		VausMagicaRemoveShield(pThis);
 #endif
 		b_NpcHasDied[pThis] = true;
+
 		if(!b_IsAlliedNpc[pThis])
 			EnemyNpcAlive -= 1;
-			
+
 		if(b_StaticNPC[pThis])
 		{
 			if(!b_IsAlliedNpc[pThis])
@@ -5074,8 +5102,6 @@ public void NpcBaseThink(int iNPC)
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
 	if(b_NpcHasDied[iNPC])
 	{
-		npc.GetPathFollower().Destroy();
-		npc.SetProp(Prop_Data, "zr_pPath", -1);
 		OnEntityDestroyed_LagComp(iNPC);
 		RemoveEntityToLagCompList(iNPC);
 
@@ -5095,6 +5121,7 @@ public void NpcBaseThink(int iNPC)
 		}
 		h_NpcCollissionHookType[iNPC] = 0;
 		h_NpcSolidHookType[iNPC] = 0;
+		RemoveFromNpcPathList(npc);
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
@@ -8976,21 +9003,22 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 	}
 	else
 	{
-	//	CClotBody npc = view_as<CClotBody>(npcpather);
-	//	float Length = npc.GetPathFollower().GetLength();
+		CClotBody npc = view_as<CClotBody>(npcpather);
+		float Length1 = npc.GetPathFollower().GetLength();
 		float DistanceCheap_pather[3];
 		GetEntPropVector(npcpather, Prop_Data, "m_vecAbsOrigin", DistanceCheap_pather);
-		float Length = GetVectorDistance(DistanceCheap_pather, DistanceCheap);
-		if(Length < 500.0)// close enough, update pather often.
+		float Length2 = GetVectorDistance(DistanceCheap_pather, DistanceCheap);
+		if(Length2 < 500.0)// close enough, update pather often.
 		{
 			AddComputingDelay = 0.3;
 		}
 		else
 		{
-			AddComputingDelay = 0.3 + (Length * 0.001);
+			AddComputingDelay = 0.3 + (Length2 * 0.0005);
 		}
 
-		f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
+		if(Length1 > 0.0)
+			f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
 	}
 }
 

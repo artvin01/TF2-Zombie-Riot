@@ -76,9 +76,6 @@ methodmap BobTheTargetDummy < CClotBody
 
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
-
-		npc.RemovePather(npc.index);
-		//He wont move!
 		
 		return npc;
 	}
