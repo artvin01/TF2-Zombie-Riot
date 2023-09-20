@@ -1444,10 +1444,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			Store_RandomizeNPCStore(false, 99, 1);
 		}
-		else
-		{
-			return;
-		}
 	}
 	else if(Rogue_Mode())
 	{
@@ -1585,10 +1581,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				Waves_Progress();
 				return;
 			}
-		}
-		else
-		{
-			return;
 		}
 	}
 	if(CurrentRound == 0 && !Rogue_Mode())
