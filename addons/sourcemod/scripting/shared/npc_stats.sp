@@ -5070,7 +5070,7 @@ public void NpcBaseThink(int iNPC)
 	{
 		npc.GetPathFollower().Destroy();
 		npc.SetProp(Prop_Data, "zr_pPath", -1);
-		OnEntityDestroyed_LagComp(iNPC);
+		//OnEntityDestroyed_LagComp(iNPC);
 		RemoveEntityToLagCompList(iNPC);
 
 		if(h_NpcCollissionHookType[iNPC] != 0)
