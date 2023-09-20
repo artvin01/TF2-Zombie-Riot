@@ -38,6 +38,7 @@ jobs:
           wget "https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc"
           wget "https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc"
           wget "https://raw.githubusercontent.com/Batfoxkid/File-Network/main/scripting/include/filenetwork.inc"
+          wget "https://raw.githubusercontent.com/nosoop/SMExt-SourceScramble/master/scripting/include/sourcescramble.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc"
           mkdir cbasenpc
           cd cbasenpc
