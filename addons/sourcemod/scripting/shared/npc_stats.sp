@@ -2942,7 +2942,7 @@ void RemoveFromNpcPathList(CClotBody body)
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 		if(entity == body.index)
 		{
-			body.GetPathFollower().Invalidate(); //Remove its current path 
+	//		body.GetPathFollower().Invalidate(); //Remove its current path 
 			body.SetProp(Prop_Data, "zr_pPath", 0);
 			i_ObjectsNpcsTotal[entitycount] = -1;
 			break;
