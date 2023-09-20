@@ -537,6 +537,7 @@ void LagCompensationThink_Forward()
 				}
 
 				EntityTrack[index][EntityTrackCount[index]] = record;
+				EntityTrackCount[index]++;
 				//PrintToServer("%d Added %d -> %d", entity, length, EntityTrack[entity].Length);
 			}
 		}
