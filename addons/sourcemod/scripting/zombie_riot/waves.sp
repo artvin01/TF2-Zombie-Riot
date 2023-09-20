@@ -1028,7 +1028,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			if(wave.Delay > 0.0)
 				WaveTimer = CreateTimer(wave.Delay * (MultiGlobal * 0.75), Waves_ProgressTimer);
 		}
-		else if(!donotAdvance)
+		else if(!donotAdvanceRound)
 		{
 			WaveEndLogicExtra();
 			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -1506,7 +1506,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				return;
 			}
 		}
-		else if(!donotAdvance)
+		else if(!donotAdvanceRound)
 		{
 			WaveEndLogicExtra();
 
