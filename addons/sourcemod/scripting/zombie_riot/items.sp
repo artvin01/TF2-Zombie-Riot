@@ -86,6 +86,8 @@ void Items_SetupConfig()
 			break;
 		}
 	}
+
+	delete kv;
 }
 
 void Items_ClearArray(int client)

@@ -8956,7 +8956,7 @@ bool DelayPathing(int npcpather)
 	return false;
 }
 
-void AddDelayPather(int npcpather, float DistanceCheap[3])
+void AddDelayPather(int npcpather, const float DistanceCheap[3])
 {
 	float AddComputingDelay = 0.0;
 
