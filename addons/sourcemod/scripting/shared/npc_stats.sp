@@ -5102,7 +5102,8 @@ public void NpcBaseThink(int iNPC)
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
 	if(b_NpcHasDied[iNPC])
 	{
-		OnEntityDestroyed_LagComp(iNPC);
+		npc.GetPathFollower().Destroy();
+		npc.SetProp(Prop_Data, "zr_pPath", -1);
 		RemoveEntityToLagCompList(iNPC);
 
 		if(h_NpcCollissionHookType[iNPC] != 0)

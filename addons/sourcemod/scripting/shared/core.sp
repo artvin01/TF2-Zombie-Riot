@@ -3000,7 +3000,7 @@ public void OnEntityDestroyed(int entity)
 {
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-		OnEntityDestroyed_LagComp(entity);
+		//OnEntityDestroyed_LagComp(entity);
 		
 		if(entity > MaxClients)
 		{

@@ -46,11 +46,11 @@ static ConVar sv_maxunlag;
 
 static int TickCount[MAXTF2PLAYERS];
 static float ViewAngles[MAXTF2PLAYERS][3];
-static ArrayList EntityTrack[MAXENTITIES];
-static LagRecord EntityRestore[MAXENTITIES];
-static bool WasBackTracked[MAXENTITIES];
+static LagRecord EntityTrack[ZR_MAX_LAG_COMP][67];
+static int EntityTrackCount[ZR_MAX_LAG_COMP];
+static LagRecord EntityRestore[ZR_MAX_LAG_COMP];
+static bool WasBackTracked[ZR_MAX_LAG_COMP];
 
-static const int i_Maxcount_Apply_Lagcompensation = ZR_MAX_LAG_COMP;
 static int i_Objects_Apply_Lagcompensation[ZR_MAX_LAG_COMP];
 
 void OnPluginStart_LagComp()
@@ -62,14 +62,6 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 {
 	TickCount[client] = tickcount;
 	ViewAngles[client] = angles;
-}
-
-void OnEntityDestroyed_LagComp(int entity)
-{
-	if(entity > 0 && entity < MAXENTITIES)
-	{
-		delete EntityTrack[entity];
-	}
 }
 
 /* game/server/player_lagcompensation.cpp#L328 */
@@ -107,9 +99,9 @@ void StartLagCompensation_Base_Boss(int client)
 		targettick = GetGameTickCount() - TIME_TO_TICKS(correct);
 	}
 
-	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
+	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity))
 		{
 			// Custom checks for if things should lag compensate (based on things like what team the player is on).
@@ -117,7 +109,7 @@ void StartLagCompensation_Base_Boss(int client)
 				continue;
 
 			// Move other NPCs back in time
-			BacktrackEntity(entity, TICKS_TO_TIME(targettick));
+			BacktrackEntity(entity, index, TICKS_TO_TIME(targettick));
 		}
 	}
 }
@@ -167,15 +159,9 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 }
 
 /* game/server/player_lagcompensation.cpp#L423 */
-static void BacktrackEntity(int entity, float currentTime) //Make sure that allies only get compensated for their bounding box.
+static void BacktrackEntity(int entity, int index, float currentTime) //Make sure that allies only get compensated for their bounding box.
 {
-	if(!EntityTrack[entity])
-	{
-		return;
-	}
-	
-	int length = EntityTrack[entity].Length;
-	if(length < 1)
+	if(EntityTrackCount[index] < 1)
 	{
 		return;
 	}
@@ -187,13 +173,13 @@ static void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", prevOrg);
 	
 	bool multi;
-	for(int i = length-1; i >= 0; i--)
+	for(int i = EntityTrackCount[index] - 1; i >= 0; i--)
 	{
 		// remember last record
 		prevRecord = record;
 		
 		// get next record
-		EntityTrack[entity].GetArray(i, record);
+		record = EntityTrack[index][i];
 		
 		/*float delta[3]
 		SubtractVectors(record.m_vecOrigin, prevOrg, delta);
@@ -240,15 +226,15 @@ static void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 	}
 	
 //	GetEntPropVector(entity, Prop_Data, "m_vecMinsPreScaled", EntityRestore[entity].m_vecMinsPreScaled);
-//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", EntityRestore[entity].m_vecMaxsPreScaled);
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[entity].m_vecOrigin);
-	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[entity].m_vecAngles);
+//	GetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", EntityRestore[index].m_vecMaxsPreScaled);
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", EntityRestore[index].m_vecOrigin);
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles);
 
 	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 	{	
-		EntityRestore[entity].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
-		EntityRestore[entity].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
-		EntityRestore[entity].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
+		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+		EntityRestore[index].m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
+		EntityRestore[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	}
 
 	if(b_LagCompNPC_ExtendBoundingBox)
@@ -315,18 +301,18 @@ static void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 			if(overlay.IsValid())
 			{
-				EntityRestore[entity].m_layerRecords = overlay.GetNumAnimOverlays();
-				if(EntityRestore[entity].m_layerRecords >= sizeof(EntityRestore[].m_sequence))
-					EntityRestore[entity].m_layerRecords = sizeof(EntityRestore[].m_sequence) - 1;
+				EntityRestore[index].m_layerRecords = overlay.GetNumAnimOverlays();
+				if(EntityRestore[index].m_layerRecords >= sizeof(EntityRestore[].m_sequence))
+					EntityRestore[index].m_layerRecords = sizeof(EntityRestore[].m_sequence) - 1;
 				
-				for(int i; i < EntityRestore[entity].m_layerRecords; i++)
+				for(int i; i < EntityRestore[index].m_layerRecords; i++)
 				{
 					CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
 
-					EntityRestore[entity].m_cycle[i] = overlay.GetLayerCycle(i);
-					EntityRestore[entity].m_order[i] = overlayLayer.m_nOrder;
-					EntityRestore[entity].m_sequence[i] = overlay.GetLayerSequence(i);
-					EntityRestore[entity].m_weight[i] = overlay.GetLayerWeight(i);
+					EntityRestore[index].m_cycle[i] = overlay.GetLayerCycle(i);
+					EntityRestore[index].m_order[i] = overlayLayer.m_nOrder;
+					EntityRestore[index].m_sequence[i] = overlay.GetLayerSequence(i);
+					EntityRestore[index].m_weight[i] = overlay.GetLayerWeight(i);
 
 					bool interpolated = false;
 					if(interpolationAllowed &&
@@ -373,7 +359,7 @@ static void BacktrackEntity(int entity, float currentTime) //Make sure that alli
 	if(!b_LagCompNPC_No_Layers)
 		SDKCall_InvalidateBoneCache(entity);
 	
-	WasBackTracked[entity] = true;
+	WasBackTracked[index] = true;
 }
 
 void FinishLagCompensation_Base_boss(/*DHookParam param*/)
@@ -384,10 +370,10 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 	
 	DoingLagCompensation = false;
 	
-	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
+	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
-		if(IsValidEntity(entity) && WasBackTracked[entity])
+		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
 			if(!b_IsAlliedNpc[entity])
 			{
@@ -432,37 +418,37 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 				}
 			}
 
-			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[entity].m_vecAngles); //See start pos on why we use this instead of the SDKCall
-			SDKCall_SetLocalOrigin(entity, EntityRestore[entity].m_vecOrigin);
+			SetEntPropVector(entity, Prop_Data, "m_angRotation", EntityRestore[index].m_vecAngles); //See start pos on why we use this instead of the SDKCall
+			SDKCall_SetLocalOrigin(entity, EntityRestore[index].m_vecOrigin);
 			
 			if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
 			{
-				SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[entity].m_flSimulationTime);
-				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[entity].m_masterSequence);
-				SetEntPropFloat(entity, Prop_Data, "m_flCycle", EntityRestore[entity].m_masterCycle);
+				SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
+				SetEntProp(entity, Prop_Data, "m_nSequence", EntityRestore[index].m_masterSequence);
+				SetEntPropFloat(entity, Prop_Data, "m_flCycle", EntityRestore[index].m_masterCycle);
 				
-				if(EntityRestore[entity].m_layerRecords)
+				if(EntityRestore[index].m_layerRecords)
 				{
 					CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
 					if(overlay.IsValid())
 					{
 						int layerCount = overlay.GetNumAnimOverlays();
-						if(layerCount >= EntityRestore[entity].m_layerRecords)
-							layerCount = EntityRestore[entity].m_layerRecords - 1;
+						if(layerCount >= EntityRestore[index].m_layerRecords)
+							layerCount = EntityRestore[index].m_layerRecords - 1;
 						
 						for(int i; i < layerCount; i++)
 						{
 							CAnimationLayer currentLayer = overlay.GetAnimOverlay(i); 
-							currentLayer.m_flCycle = EntityRestore[entity].m_cycle[i];
-							currentLayer.m_nOrder = EntityRestore[entity].m_order[i];
-							currentLayer.m_nSequence = EntityRestore[entity].m_sequence[i];
-							currentLayer.m_flWeight = EntityRestore[entity].m_weight[i];
+							currentLayer.m_flCycle = EntityRestore[index].m_cycle[i];
+							currentLayer.m_nOrder = EntityRestore[index].m_order[i];
+							currentLayer.m_nSequence = EntityRestore[index].m_sequence[i];
+							currentLayer.m_flWeight = EntityRestore[index].m_weight[i];
 						}
 					}
 				}
 			}
 
-			WasBackTracked[entity] = false;
+			WasBackTracked[index] = false;
 		}
 	}
 
@@ -480,38 +466,38 @@ void LagCompensationThink_Forward()
 	LagRecord record;
 
 	// Iterate all active NPCs
-	for(int entitycount; entitycount < i_Maxcount_Apply_Lagcompensation; entitycount++)
+	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[entitycount]);
+		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity))
 		{
-			if(!EntityTrack[entity])
+			if(EntityTrackCount[index] < 0)
 			{
-				EntityTrack[entity] = new ArrayList(sizeof(LagRecord));
+				EntityTrackCount[index]++;
 				continue; // give a frame to spawn in before we do anything
 			}
 			
 			// remove tail records that are too old
-			int length = EntityTrack[entity].Length;
-			while(length)
+			while(EntityTrackCount[index])
 			{
-				EntityTrack[entity].GetArray(0, record);
-				
 				// if tail is within limits, stop
-				if(record.m_flSimulationTime >= deadTime)
+				if(EntityTrackCount[index] < (sizeof(EntityTrack[]) - 1) &&
+				   EntityTrack[index][0].m_flSimulationTime >= deadTime)
 					break;
 				
 				// remove tail, get new tail
-				EntityTrack[entity].Erase(0);
-			//	PrintToServer("%d Removed %d -> %d (%f >= %f)", entity, length, EntityTrack[entity].Length, record.m_flSimulationTime, deadTime);
+				for(int i = 1; i < EntityTrackCount[index]; i++)
+				{
+					EntityTrack[index][i - 1] = EntityTrack[index][i];
+				}
 
-				length--;
+				EntityTrackCount[index]--;
 			}
 			
 			// check if head has same simulation time
-			if(length)
+			if(EntityTrackCount[index])
 			{
-				EntityTrack[entity].GetArray(length - 1, record);
+				record = EntityTrack[index][EntityTrackCount[index] - 1];
 				
 				// check if player changed simulation time since last time updated
 				if(record.m_flSimulationTime >= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime"))
@@ -550,7 +536,7 @@ void LagCompensationThink_Forward()
 					record.m_layerRecords = 0;
 				}
 
-				EntityTrack[entity].PushArray(record);
+				EntityTrack[index][EntityTrackCount[index]] = record;
 				//PrintToServer("%d Added %d -> %d", entity, length, EntityTrack[entity].Length);
 			}
 		}
@@ -591,6 +577,7 @@ void AddEntityToLagCompList(int entity)
 	{
 		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) <= 0)
 		{
+			EntityTrackCount[i] = -1;
 			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
 			break;
 		}
