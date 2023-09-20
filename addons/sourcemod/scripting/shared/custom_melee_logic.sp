@@ -575,6 +575,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					delete swingTrace;
 					FinishLagCompensation_Base_boss();
 					delete pack;
+					return;
 				}
 				case WEAPON_GLADIIA:
 				{
@@ -582,6 +583,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					delete swingTrace;
 					FinishLagCompensation_Base_boss();
 					delete pack;
+					return;
 				}	
 			}
 		}
