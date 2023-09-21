@@ -486,7 +486,6 @@ static Action Ikunagae_TBB_Tick(int client)
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
 			ConformLineDistance(endPoint, startPoint, endPoint, float(Ikunagae_BEAM_MaxDistance[client]));
 			float lineReduce = Ikunagae_BEAM_BeamRadius[client] * 2.0 / 3.0;
 			float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -506,6 +505,7 @@ static Action Ikunagae_TBB_Tick(int client)
 			hullMax[0] = -hullMin[0];
 			hullMax[1] = -hullMin[1];
 			hullMax[2] = -hullMin[2];
+			delete trace;
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, Ikunagae_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
 			

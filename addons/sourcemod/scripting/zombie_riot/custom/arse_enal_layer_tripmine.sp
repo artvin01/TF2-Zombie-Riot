@@ -318,9 +318,6 @@ public Action Trip_ArmMine(Handle Trip_ArmMine_Handle, any pack)
 
 public void Trip_TrackPlanted(int client)
 {
-	if (!IsValidMulti(client))
-		return;
-		
 	for(int entitycount; entitycount<i_MaxcountTraps; entitycount++)
 	{
 		int ent = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
@@ -465,36 +462,21 @@ public void Enable_Arsenal(int client, int weapon) // Enable management, handle 
 	}
 	else
 	{
-		Kill_Timer_Trap(client);
+		delete Timer_Trip_Management[client];
+		Timer_Trip_Management[client] = null;
 	}
 }
 
 public Action Timer_Management_Trap(Handle timer, int client)
 {
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
-		if (IsPlayerAlive(client))
-		{
-			Trip_TrackPlanted(client);
-		}
-		else
-			Kill_Timer_Trap(client);
+		return Plugin_Stop;
 	}
-	else
-		Kill_Timer_Trap(client);
+	Trip_TrackPlanted(client);
 		
 	return Plugin_Continue;
 }
-
-public void Kill_Timer_Trap(int client)
-{
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Trip_Management[client]);
-		Timer_Trip_Management[client] = INVALID_HANDLE;
-	}
-}
-
 
 public void Weapon_Arsenal_Terroriser_M1(int client, int weapon, const char[] classname, bool &result)
 {

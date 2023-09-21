@@ -411,7 +411,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
+			delete trace;
 			ConformLineDistance(endPoint, startPoint, endPoint, float(Ikunagae_BEAM_MaxDistance[client]));
 			float lineReduce = Ikunagae_BEAM_BeamRadius[client] * 2.0 / 3.0;
 			float curDist = GetVectorDistance(startPoint, endPoint, false);

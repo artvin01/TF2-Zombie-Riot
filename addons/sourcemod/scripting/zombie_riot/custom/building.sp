@@ -1561,7 +1561,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 						{
 							if(b_Doing_Buildingpickup_Handle[client])
 							{
-								KillTimer(h_Pickup_Building[client]);
+								delete h_Pickup_Building[client];
 							}
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;

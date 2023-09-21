@@ -23,7 +23,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
 		if(Handle_on[client])
 		{
-			KillTimer(Give_bomb_back[client]);
+			delete Give_bomb_back[client];
 		}
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);

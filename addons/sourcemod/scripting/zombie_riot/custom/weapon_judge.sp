@@ -3,7 +3,7 @@
 
 #define JUDGE_MAX_CLIP 5
 
-Handle h_TimerJudgeManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerJudgeManagement[MAXPLAYERS+1] = {null, ...};
 static float f_JudgeHudDelay[MAXTF2PLAYERS];
 static bool b_JudgeFullAmmoSound[MAXTF2PLAYERS];
 
@@ -16,25 +16,25 @@ void Judge_Map_Precache() //Anything that needs to be precaced like sounds or so
 
 void Reset_stats_Judge_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerJudgeManagement[client] != INVALID_HANDLE)
+	if (h_TimerJudgeManagement[client] != null)
 	{
-		KillTimer(h_TimerJudgeManagement[client]);
+		delete h_TimerJudgeManagement[client];
 	}	
-	h_TimerJudgeManagement[client] = INVALID_HANDLE;
+	h_TimerJudgeManagement[client] = null;
 }
 
 
 public void Enable_Judge(int client, int weapon) 
 {
-	if (h_TimerJudgeManagement[client] != INVALID_HANDLE)
+	if (h_TimerJudgeManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE || i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE_PAP) 
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerJudgeManagement[client]);
-			h_TimerJudgeManagement[client] = INVALID_HANDLE;
+			delete h_TimerJudgeManagement[client];
+			h_TimerJudgeManagement[client] = null;
 			DataPack pack;
 			h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -58,83 +58,52 @@ public Action Timer_Management_Judge(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Judge_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Judge(client);
-		}
-		else
-			Kill_Timer_Judge(client);
-	}
-	else
-		Kill_Timer_Judge(client);
-		
+		h_TimerJudgeManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Judge_Cooldown_Logic(client, weapon);
+
 	return Plugin_Continue;
 }
 
 public void Judge_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE)
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE)
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+			if(f_JudgeHudDelay[client] < GetGameTime())
 			{
-				if(f_JudgeHudDelay[client] < GetGameTime())
-				{
-					f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(3.0, client);
-					Add_Back_One_Clip_Judge(weapon, client);
-				}
-			}
-			else
-			{
-					f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(3.0, client);
-			}
-		}
-		else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE_PAP)
-		{
-			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
-			{
-				if(f_JudgeHudDelay[client] < GetGameTime())
-				{
-					f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(2.0, client);
-					
-					Add_Back_One_Clip_Judge(weapon, client);
-				}
-			}
-			else
-			{
-				f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(2.0, client);
+				f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(3.0, client);
+				Add_Back_One_Clip_Judge(weapon, client);
 			}
 		}
 		else
 		{
-			Kill_Timer_Judge(client);
+			f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(3.0, client);
 		}
 	}
-	else
+	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE_PAP)
 	{
-		Kill_Timer_Judge(client);
-	}
-}
-
-public void Kill_Timer_Judge(int client)
-{
-	if (h_TimerJudgeManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerJudgeManagement[client]);
-		h_TimerJudgeManagement[client] = INVALID_HANDLE;
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			if(f_JudgeHudDelay[client] < GetGameTime())
+			{
+				f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(2.0, client);
+				
+				Add_Back_One_Clip_Judge(weapon, client);
+			}
+		}
+		else
+		{
+			f_JudgeHudDelay[client] = GetGameTime() + GetJudgeReloadCooldown(2.0, client);
+		}
 	}
 }
 

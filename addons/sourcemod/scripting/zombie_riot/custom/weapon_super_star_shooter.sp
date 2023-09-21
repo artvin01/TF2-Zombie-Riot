@@ -237,8 +237,8 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(Timer_Starshooter_Management[client]);
-			Timer_Starshooter_Management[client] = INVALID_HANDLE;
+			delete Timer_Starshooter_Management[client];
+			Timer_Starshooter_Management[client] = null;
 			DataPack pack;
 			Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -262,74 +262,40 @@ public Action Timer_Management_StarShooter(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Starshooter_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Starshooter(client);
-		}
-		else
-			Kill_Timer_Starshooter(client);
-	}
-	else
-		Kill_Timer_Starshooter(client);
+		Timer_Starshooter_Management[client] = null;
+		return Plugin_Stop;
+	}	
+	Starshooter_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
 
-public void Kill_Timer_Starshooter(int client)
-{
-	if (Timer_Starshooter_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Starshooter_Management[client]);
-		Timer_Starshooter_Management[client] = INVALID_HANDLE;
-	}
-}
 
 
 public void Starshooter_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	//Do your code here :)
+	
+	if (StarShooterCoolDelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == 2) //Double check to see if its good or bad :(
-		{	
-			//Do your code here :)
-			
-			if (StarShooterCoolDelay[client] < GetGameTime())
-			{
-				SSS_overheat[client] -= 1;
-				
-				if(SSS_overheat[client] < 0)
-				{
-					SSS_overheat[client] = 0;
-				}
-			}
-			if(starshooter_hud_delay[client] < GetGameTime())
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-				}
-				starshooter_hud_delay[client] = GetGameTime() + 0.5;
-			}
-		}
-		else
+		SSS_overheat[client] -= 1;
+		
+		if(SSS_overheat[client] < 0)
 		{
-			Kill_Timer_Starshooter(client);
+			SSS_overheat[client] = 0;
 		}
 	}
-	else
+	if(starshooter_hud_delay[client] < GetGameTime())
 	{
-		Kill_Timer_Starshooter(client);
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			PrintHintText(client,"Star Shooter Overheat %i%%%", SSS_overheat[client] * 4);
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		}
+		starshooter_hud_delay[client] = GetGameTime() + 0.5;
 	}
 }

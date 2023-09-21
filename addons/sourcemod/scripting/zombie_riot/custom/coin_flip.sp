@@ -131,12 +131,7 @@ public Action short_bonus_damage(Handle timer, int ref)
 		mf_extra_damage[entity] = GetGameTime() + 0.30; //how much time is given for extra damage to apply for the flash appeared
 		ParticleEffectAt(chargerPos, "raygun_projectile_blue_crit", 0.3);
 	}
-	else
-	{
-		KillTimer(timer);
-		return Plugin_Handled;
-	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 public Action Coin_on_for_too_long(Handle timer, int ref)
@@ -148,12 +143,7 @@ public Action Coin_on_for_too_long(Handle timer, int ref)
 		Entity_Owner[entity] = 0;
 		AcceptEntityInput(entity, "break");
 	}
-	else
-	{
-		KillTimer(timer);
-		return Plugin_Handled;
-	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 public Action Coin_on_ground(Handle timer, int ref)
 {

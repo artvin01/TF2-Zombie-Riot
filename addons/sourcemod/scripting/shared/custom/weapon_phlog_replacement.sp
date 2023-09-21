@@ -37,11 +37,11 @@ void Reset_stats_PHLOG_Global()
 
 void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerPHLOGManagement[client] != INVALID_HANDLE)
+	if (h_TimerPHLOGManagement[client] != null)
 	{
-		KillTimer(h_TimerPHLOGManagement[client]);
+		delete h_TimerPHLOGManagement[client];
 	}	
-	h_TimerPHLOGManagement[client] = INVALID_HANDLE;
+	h_TimerPHLOGManagement[client] = null;
 	i_PHLOGHitsDone[client] = 0;
 }
 
@@ -52,15 +52,15 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 
 public void Enable_PHLOG(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerPHLOGManagement[client] != INVALID_HANDLE)
+	if (h_TimerPHLOGManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == 7) //7 is for PHLOG.
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerPHLOGManagement[client]);
-			h_TimerPHLOGManagement[client] = INVALID_HANDLE;
+			delete h_TimerPHLOGManagement[client];
+			h_TimerPHLOGManagement[client] = null;
 			DataPack pack;
 			h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -84,22 +84,14 @@ public Action Timer_Management_PHLOG(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				PHLOG_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_PHLOG(client);
-		}
-		else
-			Kill_Timer_PHLOG(client);
-	}
-	else
-		Kill_Timer_PHLOG(client);
+		h_TimerPHLOGManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	PHLOG_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
@@ -107,68 +99,43 @@ public Action Timer_Management_PHLOG(Handle timer, DataPack pack)
 
 public void PHLOG_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(f_PHLOGhuddelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == 7) //Double check to see if its good or bad :(
-		{	
-			if(f_PHLOGhuddelay[client] < GetGameTime())
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					if(GetGameTime() > f_PHLOGabilitydelay[client])
-					{
-						if(i_PHLOGHitsDone[client] < PHLOG_JUDGEMENT_MAX_HITS_NEEDED)
-						{
-							PrintHintText(client,"Phlog Hit Charge[%i%/%i]", i_PHLOGHitsDone[client], PHLOG_JUDGEMENT_MAX_HITS_NEEDED);
-						}
-						else
-						{
-							PrintHintText(client,"Phlog Hit Charge [READY!]");
-						}
-					}
-					else
-					{
-						PrintHintText(client,"Phlog Hit Charge [Cooldown: %.1f]",f_PHLOGabilitydelay[client] - GetGameTime());
-					}
-					
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_PHLOGhuddelay[client] = GetGameTime() + 0.5;
-				}
-			}
-			if(GetGameTime() < f_PHLOGabilitydelay[client])
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					f_PHLOGabilitydelay[client] = 0.0; //They just switched off it, delete.
-					TF2_RemoveCondition(client, TFCond_DefenseBuffNoCritBlock);
-					TF2_RemoveCondition(client, TFCond_CritCanteen);	
-				}
-			}
-		}
-		else
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			Kill_Timer_PHLOG(client);
+			if(GetGameTime() > f_PHLOGabilitydelay[client])
+			{
+				if(i_PHLOGHitsDone[client] < PHLOG_JUDGEMENT_MAX_HITS_NEEDED)
+				{
+					PrintHintText(client,"Phlog Hit Charge[%i%/%i]", i_PHLOGHitsDone[client], PHLOG_JUDGEMENT_MAX_HITS_NEEDED);
+				}
+				else
+				{
+					PrintHintText(client,"Phlog Hit Charge [READY!]");
+				}
+			}
+			else
+			{
+				PrintHintText(client,"Phlog Hit Charge [Cooldown: %.1f]",f_PHLOGabilitydelay[client] - GetGameTime());
+			}
+			
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_PHLOGhuddelay[client] = GetGameTime() + 0.5;
 		}
 	}
-	else
+	if(GetGameTime() < f_PHLOGabilitydelay[client])
 	{
-		Kill_Timer_PHLOG(client);
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			f_PHLOGabilitydelay[client] = 0.0; //They just switched off it, delete.
+			TF2_RemoveCondition(client, TFCond_DefenseBuffNoCritBlock);
+			TF2_RemoveCondition(client, TFCond_CritCanteen);	
+		}
 	}
 }
 
-public void Kill_Timer_PHLOG(int client)
-{
-	if (h_TimerPHLOGManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerPHLOGManagement[client]);
-		h_TimerPHLOGManagement[client] = INVALID_HANDLE;
-	}
-}
 
 public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 {

@@ -1192,7 +1192,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
+			delete trace;
 			ConformLineDistance(endPoint, startPoint, endPoint, float(NightmareCannon_BEAM_MaxDistance[client]));
 			float lineReduce = NightmareCannon_BEAM_BeamRadius[client] * 2.0 / 3.0;
 			float curDist = GetVectorDistance(startPoint, endPoint, false);

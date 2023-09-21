@@ -186,11 +186,11 @@ void Reset_stats_Passanger_Singular(int client) //This is on disconnect/connect
 {
 	f_PassangerAbilityCooldownRegen[client] = 0.0;
 	i_PassangerAbilityCount[client] = 0;
-	if (h_TimerPassangerManagement[client] != INVALID_HANDLE)
+	if (h_TimerPassangerManagement[client] != null)
 	{
-		KillTimer(h_TimerPassangerManagement[client]);
+		delete h_TimerPassangerManagement[client];
 	}	
-	h_TimerPassangerManagement[client] = INVALID_HANDLE;
+	h_TimerPassangerManagement[client] = null;
 }
 static bool b_EntityHitByLightning[MAXENTITIES];
 
@@ -334,15 +334,15 @@ void Passanger_Lightning_Effect(float belowBossEyes[3], float vecHit[3], int Pow
 
 public void Enable_Passanger(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerPassangerManagement[client] != INVALID_HANDLE)
+	if (h_TimerPassangerManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == 9) //9 Is for Passanger
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerPassangerManagement[client]);
-			h_TimerPassangerManagement[client] = INVALID_HANDLE;
+			delete h_TimerPassangerManagement[client];
+			h_TimerPassangerManagement[client] = null;
 			DataPack pack;
 			h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -358,11 +358,6 @@ public void Enable_Passanger(int client, int weapon) // Enable management, handl
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
-
-//	else
-//	{	
-//		Kill_Timer_Passanger(client);
-//	}
 }
 
 
@@ -371,95 +366,62 @@ public Action Timer_Management_Passanger(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Passanger_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Passanger(client);
-		}
-		else
-			Kill_Timer_Passanger(client);
-	}
-	else
-		Kill_Timer_Passanger(client);
+		h_TimerPassangerManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Passanger_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
 
 bool Passanger_HasCharge(int client)
 {
-	return h_TimerPassangerManagement[client] != INVALID_HANDLE;
+	return h_TimerPassangerManagement[client] != null;
 }
 
 void Passanger_ChargeReduced(int client, float time)
 {
-	if(h_TimerPassangerManagement[client] != INVALID_HANDLE)
+	if(h_TimerPassangerManagement[client] != null)
 		f_PassangerAbilityCooldownRegen[client] -= time;
 }
 
 public void Passanger_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(f_PassangerHudDelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == 9)
-		{	
-			if(f_PassangerHudDelay[client] < GetGameTime())
-			{
-				if(f_PassangerAbilityCooldownRegen[client] < GetGameTime())
-				{
-					f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;
-					i_PassangerAbilityCount[client]++;
-					if(i_PassangerAbilityCount[client] >= 2)
-					{
-						f_PassangerAbilityCooldownRegen[client] = FAR_FUTURE;
-						i_PassangerAbilityCount[client] = 2;
-					}
-
-				}
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					
-					if(i_PassangerAbilityCount[client] != 2)
-					{
-						PrintHintText(client,"Glorious Shards [%i/%i] (Recharge in: %.1f)",i_PassangerAbilityCount[client], PASSANGER_MAX_ABILITIES,f_PassangerAbilityCooldownRegen[client]-GetGameTime());
-					}
-					else
-					{
-						PrintHintText(client,"Glorious Shards [%i/%i]",PASSANGER_MAX_ABILITIES,PASSANGER_MAX_ABILITIES);
-					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_PassangerHudDelay[client] = GetGameTime() + 0.5;
-				}
-			}
-		}
-		else
+		if(f_PassangerAbilityCooldownRegen[client] < GetGameTime())
 		{
-			Kill_Timer_Passanger(client);
+			f_PassangerAbilityCooldownRegen[client] = GetGameTime() + PASSANGER_ABILITY_REGARGE_TIME;
+			i_PassangerAbilityCount[client]++;
+			if(i_PassangerAbilityCount[client] >= 2)
+			{
+				f_PassangerAbilityCooldownRegen[client] = FAR_FUTURE;
+				i_PassangerAbilityCount[client] = 2;
+			}
+
 		}
-	}
-	else
-	{
-		Kill_Timer_Passanger(client);
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			
+			if(i_PassangerAbilityCount[client] != 2)
+			{
+				PrintHintText(client,"Glorious Shards [%i/%i] (Recharge in: %.1f)",i_PassangerAbilityCount[client], PASSANGER_MAX_ABILITIES,f_PassangerAbilityCooldownRegen[client]-GetGameTime());
+			}
+			else
+			{
+				PrintHintText(client,"Glorious Shards [%i/%i]",PASSANGER_MAX_ABILITIES,PASSANGER_MAX_ABILITIES);
+			}
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_PassangerHudDelay[client] = GetGameTime() + 0.5;
+		}
 	}
 }
 
-public void Kill_Timer_Passanger(int client)
-{
-	if (h_TimerPassangerManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerPassangerManagement[client]);
-		h_TimerPassangerManagement[client] = INVALID_HANDLE;
-	}
-}
 
 public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, int slot)
 {

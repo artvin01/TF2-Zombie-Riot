@@ -1,4 +1,4 @@
-static Handle h_TimerSensalWeaponManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle h_TimerSensalWeaponManagement[MAXPLAYERS+1] = {null, ...};
 
 #define MAX_SENSAL_ENERGY_EFFECTS 10
 #define SENSAL_MELEE_CHARGE_ON_HIT 0.25
@@ -56,7 +56,7 @@ bool SensalWeaponCheckEffects_IfNotAvaiable(int iNpc)
 //code that starts up a repeat timer upon weapon equip
 public void Enable_SensalWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerSensalWeaponManagement[client] != INVALID_HANDLE)
+	if (h_TimerSensalWeaponManagement[client] != null)
 	{
 		//This timer already exists.
 		if(IsSensalWeapon(i_CustomWeaponEquipLogic[weapon]))
@@ -65,8 +65,8 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 			ApplyExtraSensalWeaponEffects(client);
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerSensalWeaponManagement[client]);
-			h_TimerSensalWeaponManagement[client] = INVALID_HANDLE;
+			delete h_TimerSensalWeaponManagement[client];
+			h_TimerSensalWeaponManagement[client] = null;
 			DataPack pack;
 			h_TimerSensalWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_SensalWeapon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -233,39 +233,18 @@ public Action Timer_Management_SensalWeapon(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if (IsClientInGame(client))
-	{
-		if (IsPlayerAlive(client))
-		{
-			if(IsValidEntity(weapon))
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					ApplyExtraSensalWeaponEffects(client, false);
-					SensalTimerHudShow(client, weapon);
-				}
-				else
-				{
-					ApplyExtraSensalWeaponEffects(client, true);
-				}
-			}
-			else
-			{
-				ApplyExtraSensalWeaponEffects(client, true);
-				Kill_Timer_Management_SensalWeapon(client);
-			}
-		}
-		else
-		{
-			ApplyExtraSensalWeaponEffects(client, true);
-			Kill_Timer_Management_SensalWeapon(client);
-		}
-	}
-	else
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		ApplyExtraSensalWeaponEffects(client, true);
-		Kill_Timer_Management_SensalWeapon(client);
+		h_TimerSensalWeaponManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		ApplyExtraSensalWeaponEffects(client, false);
+		SensalTimerHudShow(client, weapon);
 	}
 		
 	return Plugin_Continue;
@@ -348,15 +327,6 @@ void SensalTimerHudShow(int client, int weapon)
 				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
 			}
 		}
-	}
-}
-public void Kill_Timer_Management_SensalWeapon(int client)
-{
-	if (h_TimerSensalWeaponManagement[client] != INVALID_HANDLE)
-	{
-		ApplyExtraSensalWeaponEffects(client, true);
-		KillTimer(h_TimerSensalWeaponManagement[client]);
-		h_TimerSensalWeaponManagement[client] = INVALID_HANDLE;
 	}
 }
 

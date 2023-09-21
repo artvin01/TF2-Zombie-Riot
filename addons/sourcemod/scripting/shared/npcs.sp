@@ -2107,7 +2107,7 @@ bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &dam
 		}
 	}
 #endif
-	if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
+//	if(b_NpcHasDied[attacker] || b_NpcHasDied[victim])
 	{
 		if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum")) //should be entirely ignored
 		{

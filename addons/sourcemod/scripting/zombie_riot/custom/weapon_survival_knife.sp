@@ -59,11 +59,11 @@ void Survival_Knife_Map_Precache()
 
 void Reset_stats_Survival_Singular(int client) //This is on disconnect/connect
 {
-	if (Timer_Knife_Management[client] != INVALID_HANDLE)
+	if (Timer_Knife_Management[client] != null)
 	{
-		KillTimer(Timer_Knife_Management[client]);
+		delete Timer_Knife_Management[client];
 	}	
-	Timer_Knife_Management[client] = INVALID_HANDLE;
+	Timer_Knife_Management[client] = null;
 }
 
 
@@ -74,7 +74,7 @@ public void Survival_Knife_Attack(int client, int weapon, bool crit)
 
 public void Enable_Management_Knife(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Knife_Management[client] != INVALID_HANDLE)
+	if (Timer_Knife_Management[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == 10) //10 Is for Survival Knife
@@ -108,8 +108,8 @@ public void Enable_Management_Knife(int client, int weapon) // Enable management
 
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(Timer_Knife_Management[client]);
-			Timer_Knife_Management[client] = INVALID_HANDLE;
+			delete Timer_Knife_Management[client];
+			Timer_Knife_Management[client] = null;
 			DataPack pack;
 			Timer_Knife_Management[client] = CreateDataTimer(0.1, Timer_Management_Survival, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -160,92 +160,75 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-
-	if (!IsValidMulti(client))
-		Kill_Timer_Management(client);
-		
-	if(IsValidEntity(weapon))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsPlayerAlive(client))
+		Timer_Knife_Management[client] = null;
+		return Plugin_Stop;
+	}	
+		
+	if (CD_Knife[client]<=GetGameTime())
+	{
+		if(Knife_Max[client] > Knife_Count[client])
 		{
-			if (CD_Knife[client]<=GetGameTime())
-			{
-				if(Knife_Max[client] > Knife_Count[client])
-				{
-						
-					Knife_Count[client]++;
+				
+			Knife_Count[client]++;
 
-					CD_Knife[client] = GetGameTime() + CD_KnifeSet[client];
-				}
-			}
-			if(f_KnifeHudDelay[client] < GetGameTime())
+			CD_Knife[client] = GetGameTime() + CD_KnifeSet[client];
+		}
+	}
+	if(f_KnifeHudDelay[client] < GetGameTime())
+	{
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			int iTier = i_SurvivalKnifeCount[weapon];
+			if(iTier == 2)
 			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+				if(Knife_Count[client] != Knife_Max[client])
 				{
-					int iTier = i_SurvivalKnifeCount[weapon];
-					if(iTier == 2)
+					if(Knife_Triple_Mode[client])
 					{
-						if(Knife_Count[client] != Knife_Max[client])
-						{
-							if(Knife_Triple_Mode[client])
-							{
-								PrintHintText(client,"Triple Throw! Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
-							}
-							else
-							{
-								PrintHintText(client,"Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
-							}
-						}
-						else
-						{
-							if(Knife_Triple_Mode[client])
-							{
-								PrintHintText(client,"Triple Throw! Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
-							}
-							else
-							{
-								PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);	
-							}
-						}
-					}
-					else if(InMadness[client])
-					{
-						PrintHintText(client,"Infinite Knives!");				
+						PrintHintText(client,"Triple Throw! Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
 					}
 					else
 					{
-						if(Knife_Count[client] != Knife_Max[client])
-						{
-							PrintHintText(client,"Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
-						}
-						else
-						{
-							PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
-						}							
+						PrintHintText(client,"Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
 					}
-
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_KnifeHudDelay[client] = GetGameTime() + 0.5;
+				}
+				else
+				{
+					if(Knife_Triple_Mode[client])
+					{
+						PrintHintText(client,"Triple Throw! Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
+					}
+					else
+					{
+						PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);	
+					}
 				}
 			}
+			else if(InMadness[client])
+			{
+				PrintHintText(client,"Infinite Knives!");				
+			}
+			else
+			{
+				if(Knife_Count[client] != Knife_Max[client])
+				{
+					PrintHintText(client,"Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
+				}
+				else
+				{
+					PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
+				}							
+			}
+
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_KnifeHudDelay[client] = GetGameTime() + 0.5;
 		}
-		else
-			Kill_Timer_Management(client);
 	}
-	else
-		Kill_Timer_Management(client);
 		
 	return Plugin_Continue;
-}
-
-public void Kill_Timer_Management(int client)
-{
-	if (Timer_Knife_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Knife_Management[client]);
-		Timer_Knife_Management[client] = INVALID_HANDLE;
-	}
 }
 
 public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot)

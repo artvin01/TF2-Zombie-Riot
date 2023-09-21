@@ -5719,45 +5719,6 @@ public int Can_I_See_Ally(int attacker, int ally)
 	return Traced_Target;
 }
 
-/*
-void RequestFrames(RequestFrameCallback func, int frames, any data=0)
-{
-	DataPack pack = new DataPack();
-	pack.WriteFunction(func);
-	pack.WriteCell(data);
-	pack.WriteCell(frames);
-	RequestFrame(RequestFramesCallback, pack);
-}
-
-public void RequestFramesCallback(DataPack pack)
-{
-	pack.Reset();
-	RequestFrameCallback func = view_as<RequestFrameCallback>(pack.ReadFunction());
-	any data = pack.ReadCell();
-
-	int frames = pack.ReadCell();
-	if(frames < 2)
-	{
-		RequestFrame(func, data);
-		delete pack;
-	}
-	else
-	{
-		pack.Position--;
-		pack.WriteCell(frames-1, false);
-		RequestFrame(RequestFramesCallback, pack);
-	}
-}
-*/
-
-
-//	models/Gibs/HGIBS.mdl
-//	models/Gibs/HGIBS_scapula.mdl
-//	models/Gibs/HGIBS_spine.mdl
-//	models/Gibs/HGIBS_rib.mdl
-//	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
-
-
 int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, int BleedType = 0, bool nobleed = false)
 {
 	int prop = CreateEntityByName("prop_physics_multiplayer");
@@ -8780,7 +8741,7 @@ void NpcStartTouch(CBaseNPC_Locomotion pThis, int target, bool DoNotLoop = false
 		entity = pThis.GetBot().GetNextBotCombatCharacter();
 	}
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(!DoNotLoop && !b_NpcHasDied[target]) //If one entity touches me, then i touch them
+	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target)) //If one entity touches me, then i touch them
 	{
 		NpcStartTouch(view_as<CBaseNPC_Locomotion>(0), entity, true, target);
 	}

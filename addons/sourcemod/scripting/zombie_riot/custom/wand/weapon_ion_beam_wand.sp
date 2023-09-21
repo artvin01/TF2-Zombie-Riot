@@ -15,7 +15,7 @@
 
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
-static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
 static int i_hand_particle[MAXTF2PLAYERS+1][15];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 
@@ -254,19 +254,20 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 
 public void Activate_Neuvellete(int client, int weapon)
 {
-	if (h_TimerNeuvellete_Management[client] != INVALID_HANDLE)
+	if (h_TimerNeuvellete_Management[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ION_BEAM)
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerNeuvellete_Management[client]);
-			h_TimerNeuvellete_Management[client] = INVALID_HANDLE;
+			delete h_TimerNeuvellete_Management[client];
+			h_TimerNeuvellete_Management[client] = null;
 			
 			int pap = Get_Pap(weapon);
 			if(pap!=0)
 				Give_Skill_Points(client, pap);
+
 			DataPack pack;
 			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -369,33 +370,27 @@ public Action Timer_Management_Neuvellete(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Neuvellete_Loop_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Neuvellete_Loop(client);
-		}
-		else
-			Kill_Neuvellete_Loop(client);
+		Kill_Neuvellete_Extras(client);
+		h_TimerNeuvellete_Management[client] = null;
+		return Plugin_Stop;
+	}	
+
+	if(!Neuvellete_Loop_Logic(client, EntRefToEntIndex(pack.ReadCell())))
+	{
+		Kill_Neuvellete_Extras(client);
+		h_TimerNeuvellete_Management[client] = null;
+		return Plugin_Stop;
 	}
-	else
-		Kill_Neuvellete_Loop(client);
-		
 	return Plugin_Continue;
 }
-static void Neuvellete_Loop_Logic(int client, int weapon)
+static bool Neuvellete_Loop_Logic(int client, int weapon)
 {
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	
 
 	if(IsValidEntity(weapon))
 	{
-
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ION_BEAM)	//this loop will work if the holder doesn't have it in there hands, but they have it bought
 		{
 
@@ -509,14 +504,14 @@ static void Neuvellete_Loop_Logic(int client, int weapon)
 		}
 		else
 		{
-			Kill_Neuvellete_Loop(client);
+			return false;
 		}
 	}
 	else
 	{
-		Kill_Neuvellete_Loop(client);
-		
+		return false;
 	}
+	return true;
 }
 
 static void Neuvellete_Hud(int client, int weapon)
@@ -815,23 +810,17 @@ static Action Hexagon_Witchery_Tick(int client)
 	}
 	return Plugin_Continue;
 }
-public void Kill_Neuvellete_Loop(int client)
+public void Kill_Neuvellete_Extras(int client)
 {
-	if (h_TimerNeuvellete_Management[client] != INVALID_HANDLE)
+	if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
 	{
-		KillTimer(h_TimerNeuvellete_Management[client]);
-		h_TimerNeuvellete_Management[client] = INVALID_HANDLE;
-		
-		if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][0])))
-		{
-			RemoveEntity(EntRefToEntIndex(i_hand_particle[client][0]));
-		}
-		if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][1])))
-		{
-			RemoveEntity(EntRefToEntIndex(i_hand_particle[client][1]));
-		}
-		Kill_Beam_Hook(client, 2.5);
+		RemoveEntity(EntRefToEntIndex(i_hand_particle[client][0]));
 	}
+	if(IsValidEntity(EntRefToEntIndex(i_hand_particle[client][1])))
+	{
+		RemoveEntity(EntRefToEntIndex(i_hand_particle[client][1]));
+	}
+	Kill_Beam_Hook(client, 2.5);
 }
 
 public void Ion_Beam_On_Buy_Reset(int client)

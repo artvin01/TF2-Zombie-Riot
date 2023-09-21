@@ -1,4 +1,4 @@
-static Handle h_TimerOceanSongManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle h_TimerOceanSongManagement[MAXPLAYERS+1] = {null, ...};
 static int i_Particle_1[MAXPLAYERS+1];
 static int i_Particle_2[MAXPLAYERS+1];
 static int i_Particle_3[MAXPLAYERS+1];
@@ -17,7 +17,7 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 		SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
 	}
 
-	if (h_TimerOceanSongManagement[client] != INVALID_HANDLE)
+	if (h_TimerOceanSongManagement[client] != null)
 	{
 
 		//This timer already exists.
@@ -26,8 +26,8 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 			ApplyExtraOceanEffects(client);
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerOceanSongManagement[client]);
-			h_TimerOceanSongManagement[client] = INVALID_HANDLE;
+			delete h_TimerOceanSongManagement[client];
+			h_TimerOceanSongManagement[client] = null;
 			DataPack pack;
 			h_TimerOceanSongManagement[client] = CreateDataTimer(0.1, Timer_Management_OceanSong, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -244,39 +244,21 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsPlayerAlive(client))
-		{
-			if(IsValidEntity(weapon))
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					ApplyExtraOceanEffects(client, false);
-					DoHealingOcean(client, client);
-				}
-				else
-				{
-					ApplyExtraOceanEffects(client, true);
-				}
-			}
-			else
-			{
-				ApplyExtraOceanEffects(client, true);
-				Kill_Timer_Management_OceanSong(client);
-			}
-		}
-		else
-		{
-			ApplyExtraOceanEffects(client, true);
-			Kill_Timer_Management_OceanSong(client);
-		}
+		ApplyExtraOceanEffects(client, true);
+		h_TimerOceanSongManagement[client] = null;
+		return Plugin_Stop;
+	}	
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		ApplyExtraOceanEffects(client, false);
+		DoHealingOcean(client, client);
 	}
 	else
 	{
 		ApplyExtraOceanEffects(client, true);
-		Kill_Timer_Management_OceanSong(client);
 	}
 		
 	return Plugin_Continue;
@@ -392,15 +374,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 		}
 	}
 }
-public void Kill_Timer_Management_OceanSong(int client)
-{
-	if (h_TimerOceanSongManagement[client] != INVALID_HANDLE)
-	{
-		ApplyExtraOceanEffects(client, true);
-		KillTimer(h_TimerOceanSongManagement[client]);
-		h_TimerOceanSongManagement[client] = INVALID_HANDLE;
-	}
-}
+
 
 stock int ParticleEffectAtOcean(float position[3], const char[] effectName, float duration = 0.1, int attach = 0, bool start = true)
 {

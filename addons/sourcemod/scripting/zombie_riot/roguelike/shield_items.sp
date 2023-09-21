@@ -18,11 +18,11 @@ void ShieldLogic_OnMapStart()
 	PrecacheSound("weapons/medi_shield_deploy.wav", true);
 	PrecacheSound("weapons/medi_shield_retract.wav", true);
 	ShieldLogicRegen(1);
-	if (GlobalShieldTimer != INVALID_HANDLE)
+	if (GlobalShieldTimer != null)
 	{
-		KillTimer(GlobalShieldTimer);
+		delete GlobalShieldTimer;
 	}
-	GlobalShieldTimer = INVALID_HANDLE;
+	GlobalShieldTimer = null;
 }
 
 int i_MalfunctionShield[MAXENTITIES]; 
@@ -86,11 +86,8 @@ public Action ShieldRegenTimer(Handle timer, int client)
 	}
 	if(!AnyShieldThere)
 	{
-		if (GlobalShieldTimer != INVALID_HANDLE)
-		{
-			KillTimer(GlobalShieldTimer);
-		}
-		GlobalShieldTimer = INVALID_HANDLE;
+		GlobalShieldTimer = null;
+		return Plugin_Stop;
 	}
 	return Plugin_Continue;
 }

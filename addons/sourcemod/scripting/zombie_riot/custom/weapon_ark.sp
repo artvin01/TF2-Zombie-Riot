@@ -59,11 +59,11 @@ void Ark_autoaim_Map_Precache()
 
 void Reset_stats_LappLand_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerLappLandManagement[client] != INVALID_HANDLE)
+	if (h_TimerLappLandManagement[client] != null)
 	{
-		KillTimer(h_TimerLappLandManagement[client]);
+		delete h_TimerLappLandManagement[client];
 	}	
-	h_TimerLappLandManagement[client] = INVALID_HANDLE;
+	h_TimerLappLandManagement[client] = null;
 	i_LappLandHitsDone[client] = 0;
 }
 
@@ -489,81 +489,45 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 
 
 
-public void Kill_Timer_WeaponArk(int client)
-{
-	if (h_TimerWeaponArkManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerWeaponArkManagement[client]);
-		h_TimerWeaponArkManagement[client] = INVALID_HANDLE;
-	}
-}
-
-
-
-
 public void WeaponArk_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(f_WeaponArkhuddelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ARK) //Double check to see if its good or bad :(
-		{	
-			if(f_WeaponArkhuddelay[client] < GetGameTime())
-			{
-				f_WeaponArkhuddelay[client] = GetGameTime() + 0.5;
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					PrintHintText(client, "Ark Energy [%d]", Ark_Hits[client]);
-					StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-				}
-			}
-		}
-		else
+		f_WeaponArkhuddelay[client] = GetGameTime() + 0.5;
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			Kill_Timer_WeaponArk(client);
+			PrintHintText(client, "Ark Energy [%d]", Ark_Hits[client]);
+			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
 		}
-	}
-	else
-	{
-		Kill_Timer_WeaponArk(client);
 	}
 }
+
 public Action Timer_Management_WeaponArk(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				WeaponArk_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_WeaponArk(client);
-		}
-		else
-			Kill_Timer_WeaponArk(client);
-	}
-	else
-		Kill_Timer_WeaponArk(client);
+		h_TimerWeaponArkManagement[client] = null;
+		return Plugin_Stop;
+	}	
+	
+	WeaponArk_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
 
 public void Enable_WeaponArk(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerWeaponArkManagement[client] != INVALID_HANDLE)
+	if (h_TimerWeaponArkManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ARK)
 		{
-			KillTimer(h_TimerWeaponArkManagement[client]);
-			h_TimerWeaponArkManagement[client] = INVALID_HANDLE;
+			delete h_TimerWeaponArkManagement[client];
+			h_TimerWeaponArkManagement[client] = null;
 			DataPack pack;
 			h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -809,8 +773,9 @@ public void Enable_LappLand(int client, int weapon) // Enable management, handle
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerLappLandManagement[client]);
-			h_TimerLappLandManagement[client] = INVALID_HANDLE;
+
+			delete h_TimerLappLandManagement[client];
+			h_TimerLappLandManagement[client] = null;
 			DataPack pack;
 			h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -829,53 +794,26 @@ public void Enable_LappLand(int client, int weapon) // Enable management, handle
 }
 
 
-public void Kill_Timer_LappLand(int client)
-{
-	if (h_TimerLappLandManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerLappLandManagement[client]);
-		h_TimerLappLandManagement[client] = INVALID_HANDLE;
-	}
-}
-
-
 public void LappLand_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(f_LappLandhuddelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LAPPLAND) //Double check to see if its good or bad :(
-		{	
-			if(f_LappLandhuddelay[client] < GetGameTime())
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					if(f_LappLandAbilityActive[client] < GetGameTime())
-					{
-						PrintHintText(client,"Wolf Spirit [%i%/%i]", i_LappLandHitsDone[client], LAPPLAND_MAX_HITS_NEEDED);
-					}
-					else
-					{
-						float TimeLeft = f_LappLandAbilityActive[client] - GetGameTime();
-						PrintHintText(client,"Raging Wolf Spirit [%.1f]",TimeLeft);
-					}
-					
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_LappLandhuddelay[client] = GetGameTime() + 0.5;
-				}
-			}
-		}
-		else
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			Kill_Timer_LappLand(client);
+			if(f_LappLandAbilityActive[client] < GetGameTime())
+			{
+				PrintHintText(client,"Wolf Spirit [%i%/%i]", i_LappLandHitsDone[client], LAPPLAND_MAX_HITS_NEEDED);
+			}
+			else
+			{
+				float TimeLeft = f_LappLandAbilityActive[client] - GetGameTime();
+				PrintHintText(client,"Raging Wolf Spirit [%.1f]",TimeLeft);
+			}
+			
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_LappLandhuddelay[client] = GetGameTime() + 0.5;
 		}
-	}
-	else
-	{
-		Kill_Timer_LappLand(client);
 	}
 }
 
@@ -883,22 +821,14 @@ public Action Timer_Management_LappLand(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				LappLand_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_LappLand(client);
-		}
-		else
-			Kill_Timer_LappLand(client);
-	}
-	else
-		Kill_Timer_LappLand(client);
+		h_TimerLappLandManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	LappLand_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }

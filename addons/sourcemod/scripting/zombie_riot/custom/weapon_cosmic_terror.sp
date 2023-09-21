@@ -240,7 +240,7 @@ public Action Cosmic_Activate_Tick(int client)
 				{
 					if(Handle_on[client])
 					{
-						KillTimer(Revert_Weapon_Back_Timer[client]);
+						delete Revert_Weapon_Back_Timer[client];
 						
 						SDKUnhook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 					}

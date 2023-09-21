@@ -772,7 +772,6 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	
@@ -789,7 +788,6 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	

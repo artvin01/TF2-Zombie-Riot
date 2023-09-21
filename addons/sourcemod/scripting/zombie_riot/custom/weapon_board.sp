@@ -11,7 +11,7 @@ static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
 static int ParryCounter = 0;
 
-Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 void WeaponBoard_Precache()
@@ -472,77 +472,46 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	}
 }
 
-public void Kill_Timer_WeaponBoard(int client)
-{
-	if (h_TimerWeaponBoardManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerWeaponBoardManagement[client]);
-		h_TimerWeaponBoardManagement[client] = INVALID_HANDLE;
-	}
-}
 
 public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(f_WeaponBoardhuddelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BOARD) //Double check to see if its good or bad :(
-		{	
-			if(f_WeaponBoardhuddelay[client] < GetGameTime())
-			{
-				f_WeaponBoardhuddelay[client] = GetGameTime() + 0.5;
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
-				}
-			}
-		}
-		else
+		f_WeaponBoardhuddelay[client] = GetGameTime() + 0.5;
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			Kill_Timer_WeaponBoard(client);
+			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
 		}
-	}
-	else
-	{
-		Kill_Timer_WeaponBoard(client);
 	}
 }
 public Action Timer_Management_WeaponBoard(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				WeaponBoard_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_WeaponBoard(client);
-		}
-		else
-			Kill_Timer_WeaponBoard(client);
-	}
-	else
-		Kill_Timer_WeaponBoard(client);
+		h_TimerWeaponBoardManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+
+	WeaponBoard_Cooldown_Logic(client, weapon);
+
 		
 	return Plugin_Continue;
 }
 
 public void Enable_WeaponBoard(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerWeaponBoardManagement[client] != INVALID_HANDLE)
+	if (h_TimerWeaponBoardManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BOARD)
 		{
-			KillTimer(h_TimerWeaponBoardManagement[client]);
-			h_TimerWeaponBoardManagement[client] = INVALID_HANDLE;
+			delete h_TimerWeaponBoardManagement[client];
+			h_TimerWeaponBoardManagement[client] = null;
 			DataPack pack;
 			h_TimerWeaponBoardManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponBoard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);

@@ -97,8 +97,8 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerFantasyManagement[client]);
-			h_TimerFantasyManagement[client] = INVALID_HANDLE;
+			delete h_TimerFantasyManagement[client];
+			h_TimerFantasyManagement[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 			
 			Create_Halo_And_Wings(client, true);
@@ -125,23 +125,14 @@ public Action Timer_Management_Fantasy(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Fantasy_Blade_Loop_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Fantasy_Loop(client);
-		}
-		else
-			Kill_Fantasy_Loop(client);
-	}
-	else
-		Kill_Fantasy_Loop(client);
-		
+		Destroy_Halo_And_Wings(client, 3);
+		h_TimerFantasyManagement[client] = null;
+		return Plugin_Stop;
+	}	
+	Fantasy_Blade_Loop_Logic(client, weapon);
 	return Plugin_Continue;
 }
 
@@ -221,71 +212,52 @@ public void Fantasy_Blade_m2(int client, int weapon, bool crit, int slot)
 static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 {
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	
-
-	if(IsValidEntity(weapon))
+	if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
 	{
-
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FANTASY_BLADE)	//this loop will work if the holder doesn't have it in there hands, but they have it bought
+		Create_Halo_And_Wings(client);
+		int pap = i_Current_Pap[client];
+		float GameTime = GetGameTime();
+		int buttons = GetClientButtons(client);
+		bool reload = (buttons & IN_RELOAD) != 0;
+		bool crouch = (buttons & IN_DUCK) != 0;
+		bool attack2 = (buttons & IN_ATTACK2) != 0;
+		if(!reload && !crouch && fl_blade_swing_reload_time[client] <= GameTime && attack2)
 		{
-
-			if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
+			if(fl_Shard_Ammount[client]>=1)
 			{
-				Create_Halo_And_Wings(client);
-				int pap = i_Current_Pap[client];
-				float GameTime = GetGameTime();
-				int buttons = GetClientButtons(client);
-				bool reload = (buttons & IN_RELOAD) != 0;
-				bool crouch = (buttons & IN_DUCK) != 0;
-				bool attack2 = (buttons & IN_ATTACK2) != 0;
-				if(!reload && !crouch && fl_blade_swing_reload_time[client] <= GameTime && attack2)
-				{
-					if(fl_Shard_Ammount[client]>=1)
-					{
-						float time = 1.75;
-						time *= Attributes_Get(weapon, 6, 1.0);
-							
-						float damage = 75.0;
-						damage *= Attributes_Get(weapon, 2, 1.0);
-						fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
-						float look_vec[3];
-						float range = 250.0;
-						Get_Fake_Forward_Vec(client, range, look_vec);
-						Horizontal_Slicer(client, look_vec, range/2.0, time, damage);
-						fl_Shard_Ammount[client]-=1.0;
-					}
-					else
-					{
-						if(fl_hud_timer[client]<GameTime)
-						{
-							SetDefaultHudPosition(client);
-							SetGlobalTransTarget(client);
-							ShowSyncHudText(client,  SyncHud_Notifaction, "Not Enough Shards");
-						}
-					}
+				float time = 1.75;
+				time *= Attributes_Get(weapon, 6, 1.0);
 					
-				}
-				if(fl_hud_timer[client]<GameTime)
-				{
-					fl_hud_timer[client] = GameTime + 0.5;
-					Fantasy_Show_Hud(client, GameTime, pap);
-				}
-				
+				float damage = 75.0;
+				damage *= Attributes_Get(weapon, 2, 1.0);
+				fl_blade_swing_reload_time[client] = GameTime + time + 0.5;
+				float look_vec[3];
+				float range = 250.0;
+				Get_Fake_Forward_Vec(client, range, look_vec);
+				Horizontal_Slicer(client, look_vec, range/2.0, time, damage);
+				fl_Shard_Ammount[client]-=1.0;
 			}
 			else
 			{
-				Destroy_Halo_And_Wings(client, 3);
+				if(fl_hud_timer[client]<GameTime)
+				{
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "Not Enough Shards");
+				}
 			}
+			
 		}
-		else
+		if(fl_hud_timer[client]<GameTime)
 		{
-			Kill_Fantasy_Loop(client);
+			fl_hud_timer[client] = GameTime + 0.5;
+			Fantasy_Show_Hud(client, GameTime, pap);
 		}
+		
 	}
 	else
 	{
-		Kill_Fantasy_Loop(client);
-		
+		Destroy_Halo_And_Wings(client, 3);
 	}
 }
 static void Fantasy_Show_Hud(int client, float GameTime, int pap)
@@ -346,15 +318,6 @@ static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])
 	AddVectors(Pos, Direction, Vec_Target);
 }
 
-public void Kill_Fantasy_Loop(int client)
-{
-	if (h_TimerFantasyManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerFantasyManagement[client]);
-		h_TimerFantasyManagement[client] = INVALID_HANDLE;
-		Destroy_Halo_And_Wings(client, 3);
-	}
-}
 
 static float Fantasy_Blade_Tele(int client, int weapon, float damage, float range)
 {

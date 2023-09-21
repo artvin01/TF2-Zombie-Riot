@@ -68,8 +68,6 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 				if(TR_DidHit(trace))
 				{   	 
 		   		 	TR_GetEndPosition(vEnd, trace);
-			
-					CloseHandle(trace);
 					
 					Handle pack;
 					CreateDataTimer(Smite_ChargeSpan, Smite_Timer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -86,6 +84,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 					spawnBeam(0.8, 255, 255, 0, 120, "materials/sprites/lgtning.vmt", 8.0, 8.2, _, 5.0, vOrigin, vEnd);
 					spawnRing_Vectors(vEnd, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, Smite_ChargeTime, 6.0, 0.1, 1, 1.0);
 				}
+				delete trace;
 				
 			}
 			else

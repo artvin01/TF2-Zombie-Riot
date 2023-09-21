@@ -23,11 +23,12 @@ enum
 
 public void Enable_Management_Banner(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Banner_Management[client] != INVALID_HANDLE)
+	if (Timer_Banner_Management[client] != null)
 	{
 		if(i_BuffBannerPassively[weapon] == 2)
 		{
-			Kill_Timer_Management_Banner(client);
+			delete Timer_Banner_Management[client];
+			Timer_Banner_Management[client] = null;
 		}
 		else
 		{
@@ -51,63 +52,40 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsPlayerAlive(client))
+		Timer_Banner_Management[client] = null;
+		return Plugin_Stop;
+	}	
+	float BannerPos[3];
+	float targPos[3];
+	GetClientAbsOrigin(client, BannerPos);
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally))
 		{
-			if(IsValidEntity(weapon))
+			GetClientAbsOrigin(ally, targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 			{
-				if(i_BuffBannerPassively[weapon] == 2)
-				{
-					float BannerPos[3];
-					float targPos[3];
-					GetClientAbsOrigin(client, BannerPos);
-					for(int ally=1; ally<=MaxClients; ally++)
-					{
-						if(IsClientInGame(ally) && IsPlayerAlive(ally))
-						{
-							GetClientAbsOrigin(ally, targPos);
-							if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
-							{
-								f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
-								i_ExtraPlayerPoints[client] += 1;
-							}
-						}
-					}
-					for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-					{
-						int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-						if (IsValidEntity(ally) && !b_NpcHasDied[ally])
-						{
-							GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-							if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
-							{
-								f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
-								i_ExtraPlayerPoints[client] += 1;
-							}
-						}
-					}
-				}
+				f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+				i_ExtraPlayerPoints[client] += 1;
 			}
-			else
-				Kill_Timer_Management_Banner(client);
 		}
-		else
-			Kill_Timer_Management_Banner(client);
 	}
-	else
-		Kill_Timer_Management_Banner(client);
-		
-	return Plugin_Continue;
-}
-
-public void Kill_Timer_Management_Banner(int client)
-{
-	if (Timer_Banner_Management[client] != INVALID_HANDLE)
+	for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
 	{
-		KillTimer(Timer_Banner_Management[client]);
-		Timer_Banner_Management[client] = INVALID_HANDLE;
+		int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+			{
+				f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+				i_ExtraPlayerPoints[client] += 1;
+			}
+		}
 	}
+	return Plugin_Continue;
 }
 
 
@@ -123,7 +101,8 @@ public void Enable_Management_Banner_1(int client, int weapon) // Enable managem
 	{
 		if(i_BuffBannerPassively[weapon] == 1)
 		{
-			Kill_Timer_Management_Banner_1(client);
+			delete Timer_Banner_Management_1[client];
+			Timer_Banner_Management_1[client] = null;
 		}
 		else
 		{
@@ -147,66 +126,45 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsPlayerAlive(client))
+		Timer_Banner_Management_1[client] = null;
+		return Plugin_Stop;
+	}	
+
+	if(f_BannerDurationActive[client] > GetGameTime())
+	{
+		float BannerPos[3];
+		float targPos[3];
+		GetClientAbsOrigin(client, BannerPos);
+		for(int ally=1; ally<=MaxClients; ally++)
 		{
-			if(IsValidEntity(weapon))	
+			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				if(i_BuffBannerPassively[weapon] == 1)
+				GetClientAbsOrigin(ally, targPos);
+				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 				{
-					if(f_BannerDurationActive[client] > GetGameTime())
-					{
-						float BannerPos[3];
-						float targPos[3];
-						GetClientAbsOrigin(client, BannerPos);
-						for(int ally=1; ally<=MaxClients; ally++)
-						{
-							if(IsClientInGame(ally) && IsPlayerAlive(ally))
-							{
-								GetClientAbsOrigin(ally, targPos);
-								if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
-								{
-									f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
-									i_ExtraPlayerPoints[client] += 1;
-								}
-							}
-						}
-						for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-						{
-							int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-							if (IsValidEntity(ally) && !b_NpcHasDied[ally])
-							{
-								GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-								if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
-								{
-									f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
-									i_ExtraPlayerPoints[client] += 1;
-								}
-							}
-						}
-					}
+					f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
-			else
-				Kill_Timer_Management_Banner_1(client);
 		}
-		else
-			Kill_Timer_Management_Banner_1(client);
+		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		{
+			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			{
+				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+				{
+					f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
+					i_ExtraPlayerPoints[client] += 1;
+				}
+			}
+		}
 	}
-	else
-		Kill_Timer_Management_Banner_1(client);
 		
 	return Plugin_Continue;
-}
-
-public void Kill_Timer_Management_Banner_1(int client)
-{
-	if (Timer_Banner_Management_1[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Banner_Management_1[client]);
-		Timer_Banner_Management_1[client] = INVALID_HANDLE;
-	}
 }
 
 
@@ -224,7 +182,8 @@ public void Enable_Management_Banner_2(int client, int weapon) // Enable managem
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == 18)
 		{
-			Kill_Timer_Management_Banner_2(client);
+			delete Timer_Banner_Management_2[client];
+			Timer_Banner_Management_2[client] = null;
 		}
 		else
 		{
@@ -248,79 +207,53 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsPlayerAlive(client))
+		Timer_Banner_Management_2[client] = null;
+		return Plugin_Stop;
+	}	
+	if(f_BannerDurationActive[client] > GetGameTime())
+	{
+		float BannerPos[3];
+		float targPos[3];
+		GetClientAbsOrigin(client, BannerPos);
+		for(int ally=1; ally<=MaxClients; ally++)
 		{
-			if(IsValidEntity(weapon))
+			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				if(i_CustomWeaponEquipLogic[weapon] == 18)
+				GetClientAbsOrigin(ally, targPos);
+				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
 				{
-					if(f_BannerDurationActive[client] > GetGameTime())
-					{
-						float BannerPos[3];
-						float targPos[3];
-						GetClientAbsOrigin(client, BannerPos);
-						for(int ally=1; ally<=MaxClients; ally++)
-						{
-							if(IsClientInGame(ally) && IsPlayerAlive(ally))
-							{
-								GetClientAbsOrigin(ally, targPos);
-								if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
-								{
-									f_BattilonsNpcBuff[ally] = GetGameTime() + 1.1;
-									i_ExtraPlayerPoints[client] += 1;
-								}
-							}
-						}
-						for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
-						{
-							int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
-							if (IsValidEntity(ally) && !b_NpcHasDied[ally])
-							{
-								GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-								if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
-								{
-									f_BattilonsNpcBuff[ally] = GetGameTime() + 0.5;
-									i_ExtraPlayerPoints[client] += 1;
-								}
-							}
-						}
-					}
+					f_BattilonsNpcBuff[ally] = GetGameTime() + 1.1;
+					i_ExtraPlayerPoints[client] += 1;
 				}
 			}
-			else
-				Kill_Timer_Management_Banner_2(client);
 		}
-		else
-			Kill_Timer_Management_Banner_2(client);
+		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
+		{
+			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			{
+				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+				{
+					f_BattilonsNpcBuff[ally] = GetGameTime() + 0.5;
+					i_ExtraPlayerPoints[client] += 1;
+				}
+			}
+		}
 	}
-	else
-		Kill_Timer_Management_Banner_2(client);
 		
 	return Plugin_Continue;
 }
 
-public void Kill_Timer_Management_Banner_2(int client)
-{
-	if (Timer_Banner_Management_2[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Banner_Management_2[client]);
-		Timer_Banner_Management_2[client] = INVALID_HANDLE;
-	}
-}
-
-
-
-
-Handle Timer_Banner_Management_3[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
 public void Enable_Management_Banner_3(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANCIENT_BANNER)
 	{	
 		b_ClientHasAncientBanner[client] = true;
-		if (Timer_AncientBanner == INVALID_HANDLE)
+		if (Timer_AncientBanner == null)
 		{
 			Timer_AncientBanner = CreateTimer(0.4, Timer_AncientBannerGlobal, _, TIMER_REPEAT);
 		}
@@ -422,18 +355,10 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
 			}
 		}
-		Kill_Timer_AncientBanner_Buff();
+		Timer_AncientBanner = null;
+		return Plugin_Stop;
 	}
 	return Plugin_Continue;
-}
-
-public void Kill_Timer_Management_Banner_3(int client)
-{
-	if (Timer_Banner_Management_3[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Banner_Management_3[client]);
-		Timer_Banner_Management_3[client] = INVALID_HANDLE;
-	}
 }
 
 void AncientBannerActivate(int client, int weapon)
@@ -552,17 +477,5 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 				}
 			}
 		}
-	}
-}
-
-
-
-
-public void Kill_Timer_AncientBanner_Buff()
-{
-	if (Timer_AncientBanner != INVALID_HANDLE)
-	{
-		KillTimer(Timer_AncientBanner);
-		Timer_AncientBanner = INVALID_HANDLE;
 	}
 }

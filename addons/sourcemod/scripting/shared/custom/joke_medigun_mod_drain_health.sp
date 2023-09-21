@@ -281,7 +281,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						if(Handle_on_target_sucked_long[healTarget])
 						{
-							KillTimer(Revert_target_sucked_long_timer[healTarget]);
+							delete Revert_target_sucked_long_timer[healTarget];
 						}
 						Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
 						Handle_on_target_sucked_long[healTarget] = true;
@@ -304,7 +304,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 						if(Handle_on_target_sucked_long[healTarget])
 						{
-							KillTimer(Revert_target_sucked_long_timer[healTarget]);
+							delete Revert_target_sucked_long_timer[healTarget];
 						}
 						Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
 						Handle_on_target_sucked_long[healTarget] = true;
@@ -804,7 +804,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 					if(Handle_on_target_sucked_long[healTarget])
 					{
-						KillTimer(Revert_target_sucked_long_timer[healTarget]);
+						delete Revert_target_sucked_long_timer[healTarget];
 					}
 					Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
 					Handle_on_target_sucked_long[healTarget] = true;

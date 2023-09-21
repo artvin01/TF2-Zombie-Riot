@@ -39,7 +39,7 @@ public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, 
 		weapon_id[client] = weapon;
 		if(Handle_on[client])
 		{
-			KillTimer(Revert_Weapon_Back_Timer[client]);
+			delete Revert_Weapon_Back_Timer[client];
 		}
 		else 
 		{
@@ -85,7 +85,7 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 		weapon_id[client] = weapon;
 		if(Handle_on[client])
 		{
-			KillTimer(Revert_Weapon_Back_Timer[client]);
+			delete Revert_Weapon_Back_Timer[client];
 		}
 		else 
 		{
@@ -131,7 +131,7 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 		weapon_id[client] = weapon;
 		if(Handle_on[client])
 		{
-			KillTimer(Revert_Weapon_Back_Timer[client]);
+			delete Revert_Weapon_Back_Timer[client];
 		}
 		else 
 		{
@@ -450,8 +450,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 		{
 			RemoveEntity(iCarrier);
 		}
-		
-		KillTimer(timer);
+
 		return Plugin_Stop;
 	}
 	
@@ -467,8 +466,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 		{
 			RemoveEntity(iCarrier);
 		}
-		
-		KillTimer(timer);
+
 		return Plugin_Stop;
 	}
 	
@@ -573,7 +571,6 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	
@@ -590,7 +587,6 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	

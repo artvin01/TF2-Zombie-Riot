@@ -1362,8 +1362,8 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 
 	if (!IsValidMulti(client))
 	{
-		ApplyHealEvent_TimerDeleter(clientOriginalIndex);
-		return Plugin_Continue;
+		h_Timer_HealEventApply[clientOriginalIndex] = null;
+		return Plugin_Stop;
 	}
 
 	Event event = CreateEvent("player_healonhit", true);
@@ -1371,18 +1371,8 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
 	event.Fire();
 
-	ApplyHealEvent_TimerDeleter(clientOriginalIndex);
-	return Plugin_Continue;
-}
-
-void ApplyHealEvent_TimerDeleter(int client) //This is on disconnect/connect
-{
-	if (h_Timer_HealEventApply[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_Timer_HealEventApply[client]);
-	}	
-	i_HealsDone_Event[client] = 0;
-	h_Timer_HealEventApply[client] = INVALID_HANDLE;
+	h_Timer_HealEventApply[clientOriginalIndex] = null;
+	return Plugin_Stop;
 }
 
 

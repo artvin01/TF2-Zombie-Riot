@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle Timer_Casino_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Casino_Management[MAXPLAYERS+1] = {null, ...};
 
 static float Casino_hud_delay[MAXTF2PLAYERS];
 static float fl_Damage_Ammount[MAXTF2PLAYERS];
@@ -959,7 +959,7 @@ static void Casino_Show_Hud(int client)
 
 public void Enable_Casino(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Casino_Management[client] != INVALID_HANDLE)
+	if (Timer_Casino_Management[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CASINO)
@@ -967,8 +967,8 @@ public void Enable_Casino(int client, int weapon) // Enable management, handle w
 			//Is the weapon it again?
 			//Yes?
 			i_Current_Pap[client] = Casino_Get_Pap(weapon);
-			KillTimer(Timer_Casino_Management[client]);
-			Timer_Casino_Management[client] = INVALID_HANDLE;
+			delete Timer_Casino_Management[client];
+			Timer_Casino_Management[client] = null;
 			DataPack pack;
 			Timer_Casino_Management[client] = CreateDataTimer(0.1, Timer_Management_Casino, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -992,64 +992,29 @@ public Action Timer_Management_Casino(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Casino_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Casino(client);
-		}
-		else
-			Kill_Timer_Casino(client);
-	}
-	else
-		Kill_Timer_Casino(client);
-		
-	return Plugin_Continue;
-}
+		Timer_Casino_Management[client] = null;
+		return Plugin_Stop;
+	}	
 
-public void Kill_Timer_Casino(int client)
-{
-	if (Timer_Casino_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Casino_Management[client]);
-		Timer_Casino_Management[client] = INVALID_HANDLE;
-	}
+	Casino_Cooldown_Logic(client, weapon);
+
+	return Plugin_Continue;
 }
 
 public void Casino_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	//Do your code here :) < ok :)
+	if(Casino_hud_delay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CASINO) //Double check to see if its good or bad :(
-		{	
-			//Do your code here :) < ok :)
-			if(Casino_hud_delay[client] < GetGameTime())
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					Casino_Show_Hud(client);
-					i_Current_Pap[client] = Casino_Get_Pap(weapon);
-				}
-				Casino_hud_delay[client] = GetGameTime() + 0.5;
-			}
-		}
-		else
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			Kill_Timer_Casino(client);
+			Casino_Show_Hud(client);
+			i_Current_Pap[client] = Casino_Get_Pap(weapon);
 		}
-	}
-	else
-	{
-		Kill_Timer_Casino(client);
+		Casino_hud_delay[client] = GetGameTime() + 0.5;
 	}
 }
-////////////////////////
