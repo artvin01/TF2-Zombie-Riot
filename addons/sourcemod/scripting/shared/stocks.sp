@@ -1362,6 +1362,7 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 
 	if (!IsValidMulti(client))
 	{
+		i_HealsDone_Event[clientOriginalIndex] = 0;
 		h_Timer_HealEventApply[clientOriginalIndex] = null;
 		return Plugin_Stop;
 	}
@@ -1370,7 +1371,7 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	event.SetInt("entindex", client);
 	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
 	event.Fire();
-
+	i_HealsDone_Event[clientOriginalIndex] = 0;
 	h_Timer_HealEventApply[clientOriginalIndex] = null;
 	return Plugin_Stop;
 }
