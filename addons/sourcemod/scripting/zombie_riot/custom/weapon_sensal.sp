@@ -246,6 +246,10 @@ public Action Timer_Management_SensalWeapon(Handle timer, DataPack pack)
 		ApplyExtraSensalWeaponEffects(client, false);
 		SensalTimerHudShow(client, weapon);
 	}
+	else
+	{
+		ApplyExtraSensalWeaponEffects(client, true);
+	}
 		
 	return Plugin_Continue;
 }
