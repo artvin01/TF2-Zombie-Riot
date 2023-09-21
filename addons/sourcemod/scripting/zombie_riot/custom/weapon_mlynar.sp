@@ -297,7 +297,7 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 
 public void Enable_Mlynar(int client, int weapon) 
 {
-	if (h_TimerMlynarManagement[client] != INVALID_HANDLE)
+	if (h_TimerMlynarManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP) 

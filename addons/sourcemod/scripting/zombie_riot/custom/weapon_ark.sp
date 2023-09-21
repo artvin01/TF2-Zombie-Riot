@@ -24,7 +24,7 @@ static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 #define LAPPLAND_SILENCE_DUR_NORMAL 3.0
 #define LAPPLAND_SILENCE_DUR_ABILITY 6.0
 
-Handle h_TimerWeaponArkManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerWeaponArkManagement[MAXPLAYERS+1] = {null, ...};
 static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 
@@ -33,7 +33,7 @@ static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 #define LAPPLAND_MAX_HITS_NEEDED 84 //Double the amount because we do double hits.
 #define LAPPLAND_AOE_SILENCE_RANGE 200.0
 #define LAPPLAND_AOE_SILENCE_RANGE_SQUARED 40000.0
-Handle h_TimerLappLandManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerLappLandManagement[MAXPLAYERS+1] = {null, ...};
 static int i_LappLandHitsDone[MAXPLAYERS+1]={0, ...};
 static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_LappLandhuddelay[MAXPLAYERS+1]={0.0, ...};
@@ -766,7 +766,7 @@ void HomingProjectile_TurnToTarget(int enemy, int Projectile)
 
 public void Enable_LappLand(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (h_TimerLappLandManagement[client] != INVALID_HANDLE)
+	if (h_TimerLappLandManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LAPPLAND)

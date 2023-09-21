@@ -9,7 +9,7 @@ static int Knife_Count[MAXPLAYERS+1]={0, ...};
 static int Knife_Max[MAXPLAYERS+1]={0, ...};
 static bool Knife_Triple_Mode[MAXPLAYERS+1]={false, ...};
 static bool InMadness[MAXPLAYERS+1]={false, ...};
-Handle Timer_Knife_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Knife_Management[MAXPLAYERS+1] = {null, ...};
 static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
 
 static float Damage_Projectile[MAXENTITIES]={0.0, ...};

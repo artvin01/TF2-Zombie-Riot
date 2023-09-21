@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle Timer_Banner_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Banner_Management[MAXPLAYERS+1] = {null, ...};
 int i_SetBannerType[MAXPLAYERS+1];
 bool b_ClientHasAncientBanner[MAXENTITIES];
 bool b_EntityRecievedBuff[MAXENTITIES];
-Handle Timer_AncientBanner = INVALID_HANDLE;
+Handle Timer_AncientBanner = null;
 
 void BannerOnEntityCreated(int entity)
 {
@@ -93,11 +93,11 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 
 
 
-Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_Management_Banner_1(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Banner_Management_1[client] != INVALID_HANDLE)
+	if (Timer_Banner_Management_1[client] != null)
 	{
 		if(i_BuffBannerPassively[weapon] == 1)
 		{
@@ -174,11 +174,11 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 
 
 
-Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_Management_Banner_2(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Banner_Management_2[client] != INVALID_HANDLE)
+	if (Timer_Banner_Management_2[client] != null)
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == 18)
 		{

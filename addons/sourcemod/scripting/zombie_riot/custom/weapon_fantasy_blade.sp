@@ -27,7 +27,7 @@
 	Wings
 */
 
-static Handle h_TimerFantasyManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle h_TimerFantasyManagement[MAXPLAYERS+1] = {null, ...};
 
 
 static float fl_Shard_Ammount[MAXTF2PLAYERS+1];
@@ -90,7 +90,7 @@ public void Npc_OnTakeDamage_Fantasy_Blade(int client, int damagetype)
 
 public void Activate_Fantasy_Blade(int client, int weapon)
 {	
-	if (h_TimerFantasyManagement[client] != INVALID_HANDLE)
+	if (h_TimerFantasyManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FANTASY_BLADE)

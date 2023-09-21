@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//Handle h_TimerBlemishineManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-//static float f_BlemishineHudDelay[MAXTF2PLAYERS];
 static float f_BlemishineThinkDelay[MAXTF2PLAYERS];
 static float f_Blemishine_AbilityActive[MAXTF2PLAYERS];
 static int i_BlemishineWhichAbility[MAXTF2PLAYERS];
@@ -23,12 +21,7 @@ void Blemishine_Map_Precache() //Anything that needs to be precaced like sounds 
 
 void Reset_stats_Blemishine_Singular(int client) //This is on disconnect/connect
 {
-//	if (h_TimerBlemishineManagement[client] != INVALID_HANDLE)
-//	{
-//		KillTimer(h_TimerBlemishineManagement[client]);
-//	}	
 	f_Blemishine_AbilityActive[client] = 0.0;
-//	h_TimerBlemishineManagement[client] = INVALID_HANDLE;
 }
 
 public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, int slot)
@@ -206,109 +199,6 @@ void BlemishineAbilityHit3(int entity, int victim, float damage, int weapon)
 
 	FreezeNpcInTime(victim, StunDuration);
 }
-/*
-public void Enable_Blemishine(int client, int weapon) 
-{
-	if (h_TimerBlemishineManagement[client] != INVALID_HANDLE)
-	{
-		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLEMISHINE) 
-		{
-			//Is the weapon it again?
-			//Yes?
-			KillTimer(h_TimerBlemishineManagement[client]);
-			h_TimerBlemishineManagement[client] = INVALID_HANDLE;
-			DataPack pack;
-			h_TimerBlemishineManagement[client] = CreateDataTimer(0.1, Timer_Management_Blemishine, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(client);
-			pack.WriteCell(EntIndexToEntRef(weapon));
-		}
-		return;
-	}
-		
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLEMISHINE) //9 Is for Passanger
-	{
-		DataPack pack;
-		h_TimerBlemishineManagement[client] = CreateDataTimer(0.1, Timer_Management_Blemishine, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(client);
-		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
-}
-
-
-
-public Action Timer_Management_Blemishine(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = pack.ReadCell();
-	if(IsValidClient(client))
-	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Blemishine_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Blemishine(client);
-		}
-		else
-			Kill_Timer_Blemishine(client);
-	}
-	else
-		Kill_Timer_Blemishine(client);
-		
-	return Plugin_Continue;
-}
-
-public void Blemishine_Cooldown_Logic(int client, int weapon)
-{
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
-	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLEMISHINE)
-		{
-			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-			{
-				if(f_BlemishineHudDelay[client] < GetGameTime())
-				{
-					float cooldown = Ability_Check_Cooldown(client, 2);
-					if(cooldown > 0.0)
-					{
-						PrintHintText(client,"%.1f％",cooldown);	
-					}
-					else
-					{
-						PrintHintText(client,"%.1f％",cooldown);	
-					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_BlemishineHudDelay[client] = GetGameTime() + 0.5;
-				}
-			}
-		}
-		else
-		{
-			Kill_Timer_Blemishine(client);
-		}
-	}
-	else
-	{
-		Kill_Timer_Blemishine(client);
-	}
-}
-
-public void Kill_Timer_Blemishine(int client)
-{
-	if (h_TimerBlemishineManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerBlemishineManagement[client]);
-		h_TimerBlemishineManagement[client] = INVALID_HANDLE;
-	}
-}
-*/
 public float Player_OnTakeDamage_Blemishine(int victim, int attacker, float &damage)
 {
 	if(GetGameTime() < f_Blemishine_AbilityActive[victim])

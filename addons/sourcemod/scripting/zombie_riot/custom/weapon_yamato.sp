@@ -559,7 +559,7 @@ public Action Timer_RemoveEntity_Yamato_Projectile(Handle timer, DataPack pack)
 
 public void Activate_Yamato(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (TimerYamatoManagement[client] != INVALID_HANDLE)
+	if (TimerYamatoManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAMATO)

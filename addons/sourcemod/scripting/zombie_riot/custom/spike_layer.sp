@@ -62,7 +62,7 @@ static int Spikes_AliveCap[MAXPLAYERS+1]={30, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
-Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {null, ...};
 static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
 static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
 

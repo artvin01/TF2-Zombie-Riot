@@ -1336,7 +1336,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 }
 
 //doing this litterally every heal spams it, so we make a 0.5 second delay, and thus, will stack it, and then show it all at once.
-Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {null, ...};
 static int i_HealsDone_Event[MAXENTITIES]={0, ...};
 
 stock void ApplyHealEvent(int entindex, int amount)
@@ -1344,7 +1344,7 @@ stock void ApplyHealEvent(int entindex, int amount)
 	if(IsValidClient(entindex))
 	{
 		i_HealsDone_Event[entindex] += amount;
-		if (h_Timer_HealEventApply[entindex] == INVALID_HANDLE)
+		if (h_Timer_HealEventApply[entindex] == null)
 		{
 			DataPack pack;
 			h_Timer_HealEventApply[entindex] = CreateDataTimer(0.5, Timer_HealEventApply, pack, _);

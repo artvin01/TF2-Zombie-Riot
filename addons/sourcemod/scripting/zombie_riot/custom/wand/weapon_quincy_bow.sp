@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 static int i_Quincy_Skill_Points[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Charge[MAXTF2PLAYERS + 1];
@@ -153,7 +153,7 @@ static int Get_Quincy_Pap(int weapon)
 }
 public void Activate_Quincy_Bow(int client, int weapon)
 {
-	if (h_TimerQuincy_BowManagement[client] != INVALID_HANDLE)
+	if (h_TimerQuincy_BowManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)

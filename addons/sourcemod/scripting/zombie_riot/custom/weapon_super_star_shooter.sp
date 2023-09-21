@@ -9,7 +9,7 @@ static float starshooter_hud_delay[MAXTF2PLAYERS];
 static int Star_HitTarget[MAXENTITIES][MAXENTITIES];
 static float StarShooterCoolDelay[MAXTF2PLAYERS];
 
-Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {null, ...};
 
 #define COLLISION_DETECTION_MODEL	"models/props_lab/monitor01a.mdl"
 #define SOUND_WAND_SHOT_STAR 	"weapons/gauss/fire1.wav"
@@ -230,7 +230,7 @@ public Action Event_SSS_OnHatTouch(int entity, int other)
 
 public void Enable_StarShooter(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Starshooter_Management[client] != INVALID_HANDLE)
+	if (Timer_Starshooter_Management[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == 2) //2

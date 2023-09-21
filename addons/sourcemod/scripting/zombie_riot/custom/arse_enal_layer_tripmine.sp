@@ -6,7 +6,7 @@ int Trip_NumMines[MAXPLAYERS+1] = {0, ...};
 int Trip_Owner[MAXENTITIES+1] = {-1, ...};
 float Trip_DMG[MAXPLAYERS+1] = {0.0, ...};
 float Trip_BlastDMG[MAXPLAYERS+1] = {0.0, ...};
-Handle Timer_Trip_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Trip_Management[MAXPLAYERS+1] = {null, ...};
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
 
@@ -453,7 +453,7 @@ public bool Trip_PlayerCrossed(int client, int mask, any data)
 
 public void Enable_Arsenal(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
+	if (Timer_Trip_Management[client] != null)
 		return;
 		
 	if(i_AresenalTrap[weapon] > 0)

@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//Handle h_TimerHazardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_WeaponDelayGiveRandom[MAXPLAYERS+1]={0.0, ...};
 static int LessRandomDamage = 1;
 static int Luck = 0;
@@ -450,60 +449,3 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
 }
-
-/*public Action Timer_Management_Hazard(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = pack.ReadCell();
-	if(IsValidClient(client))
-	{
-		if (IsClientInGame(client))
-		{
-			Kill_Timer_Hazard(client);
-		}
-		else
-			Kill_Timer_Hazard(client);
-	}
-	else
-		Kill_Timer_Hazard(client);
-		
-	return Plugin_Continue;
-}
-
-public void Kill_Timer_Hazard(int client)
-{
-	if (h_TimerHazardManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerHazardManagement[client]);
-		h_TimerHazardManagement[client] = INVALID_HANDLE;
-	}
-}
-
-public void Enable_Hazard(int client, int weapon) 
-{
-	if (h_TimerHazardManagement[client] != INVALID_HANDLE)
-	{
-		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_UNSTABLE || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_LUNATIC || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_CHAOS || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_STABILIZED || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_DEMI || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_PERFECT) 
-		{
-			//Is the weapon it again?
-			//Yes?
-			KillTimer(h_TimerHazardManagement[client]);
-			h_TimerHazardManagement[client] = INVALID_HANDLE;
-			DataPack pack;
-			h_TimerHazardManagement[client] = CreateDataTimer(0.1, Timer_Management_Hazard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(client);
-			pack.WriteCell(EntIndexToEntRef(weapon));
-		}
-		return;
-	}
-		
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_UNSTABLE || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_LUNATIC || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_CHAOS || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_STABILIZED || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_DEMI || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_PERFECT)
-	{
-		DataPack pack;
-		h_TimerHazardManagement[client] = CreateDataTimer(0.1, Timer_Management_Hazard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(client);
-		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
-}
-*/

@@ -680,7 +680,7 @@ void ZR_ClientPutInServer(int client)
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
 	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
-	Timer_Knife_Management[client] = INVALID_HANDLE;
+	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
@@ -719,7 +719,7 @@ void ZR_ClientDisconnect(int client)
 	PlayerPoints[client] = 0;
 	i_PreviousPointAmount[client] = 0;
 	i_ExtraPlayerPoints[client] = 0;
-	Timer_Knife_Management[client] = INVALID_HANDLE;
+	Timer_Knife_Management[client] = null;
 	Escape_DropItem(client, false);
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;

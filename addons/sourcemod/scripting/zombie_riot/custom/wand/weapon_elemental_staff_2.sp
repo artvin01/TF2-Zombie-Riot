@@ -145,7 +145,7 @@ public Action shockwave_explosions(Handle timer, int client)
 
 //Passanger Ability stuff.
 
-Handle h_TimerPassangerManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerPassangerManagement[MAXPLAYERS+1] = {null, ...};
 static float f_PassangerHudDelay[MAXTF2PLAYERS];
 static int i_PassangerAbilityCount[MAXPLAYERS+1]={0, ...};
 static float f_PassangerAbilityCooldownRegen[MAXPLAYERS+1]={0.0, ...};
