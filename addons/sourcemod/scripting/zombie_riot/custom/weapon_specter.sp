@@ -424,7 +424,7 @@ public Action Timer_Management_SpecterAlter(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}	
 	
-	SpecterAlter_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
+	SpecterAlter_Cooldown_Logic(client, weapon);
 	return Plugin_Continue;
 }
 
