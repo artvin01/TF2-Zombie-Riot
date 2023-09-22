@@ -460,17 +460,13 @@ public void Enable_Arsenal(int client, int weapon) // Enable management, handle 
 	{	
 		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT);
 	}
-	else
-	{
-		delete Timer_Trip_Management[client];
-		Timer_Trip_Management[client] = null;
-	}
 }
 
 public Action Timer_Management_Trap(Handle timer, int client)
 {
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
+		Timer_Trip_Management[client] = null;
 		return Plugin_Stop;
 	}
 	Trip_TrackPlanted(client);
