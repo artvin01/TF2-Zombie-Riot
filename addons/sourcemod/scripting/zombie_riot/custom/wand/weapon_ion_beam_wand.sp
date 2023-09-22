@@ -523,7 +523,7 @@ static void Neuvellete_Hud(int client, int weapon)
 	
 	if(b_special_active[client])
 	{
-		
+		int flags = i_Neuvellete_HEX_Array[client];
 		if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP)
 		{
 			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
