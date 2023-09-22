@@ -1031,7 +1031,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else if(donotAdvanceRound)
 		{
 			CurrentWave = round.Waves.Length - 1;
-			return;
 		}
 		else
 		{
@@ -1510,7 +1509,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else if(donotAdvanceRound)
 		{
 			CurrentWave = 0;
-			return;
 		}
 		else
 		{
@@ -1627,7 +1625,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 		}
 	}
-	else if (Gave_Ammo_Supply > 2)
+	else if (Gave_Ammo_Supply > 2 && !donotAdvanceRound)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
@@ -1639,7 +1637,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 		}
 	}	
-	else
+	else if(!donotAdvanceRound)
 	{
 		Gave_Ammo_Supply += 1;	
 	}
