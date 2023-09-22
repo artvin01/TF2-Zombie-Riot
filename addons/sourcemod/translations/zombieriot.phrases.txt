@@ -2878,15 +2878,15 @@
 	}
 	"Neuvellete Nightmare"
 	{
-		"en"		"Heavily reduced Turn speed, Increased damage"
+		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
 	}
 	"Neuvellete Pulse"
 	{
-		"en"		"Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter cooldown period"
+		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
 	}
 	"Neuvellete Feedback"
 	{
-		"en"		"The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5"
+		"en"		"Feeback Loop: The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5x"
 	}
 	"Neuvellete Menu First"
 	{
@@ -2919,7 +2919,7 @@
 	}
 	"Neuvellete Overclock Info"
 	{
-		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs, THEY ARE NOT A DIRECT UPGRADE! so no need to upgrade them if you don't want to"
+		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs"
 	}
 	"Taunt Speed Increace"
 	{
