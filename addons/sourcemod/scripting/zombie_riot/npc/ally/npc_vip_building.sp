@@ -104,6 +104,9 @@ void VIPBuilding_OnTakeDamagePost(int victim, int attacker)
 	//Valid attackers only.
 	if(attacker < 1)
 		return;
+		
+	if(GetEntProp(attacker, Prop_Send, "m_iTeamNum") == GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		return;
 
 	VIPBuilding npc = view_as<VIPBuilding>(victim);
 	if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
