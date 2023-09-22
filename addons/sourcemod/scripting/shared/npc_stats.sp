@@ -2761,7 +2761,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-			cvar_nbAvoidObstacle.BoolValue = false;
+			this.GetBaseNPC().SetBodyMaxs({0.0,0.0,0.0});
+			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
 #if defined ZR
 		if(VIPBuilding_Active() && !b_IsAlliedNpc[this.index])
@@ -2775,8 +2776,6 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
-
-		cvar_nbAvoidObstacle.BoolValue = true;
 
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
