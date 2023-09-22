@@ -235,7 +235,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		Effects |= (1 << 7); //pulse
 	}
 	
-	if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP)
+	if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP && b_special_active[client])
 	{
 		float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
 		float Ration = Duration*1.15 - Duration;
@@ -471,7 +471,8 @@ static bool Neuvellete_Loop_Logic(int client, int weapon)
 					{
 						fl_Ion_timer[client] = GameTime + 30.0+NEUVELLETE_HEXAGON_CHARGE_TIME+NEUVELLETE_HEXAGON_CHARGE_TIME_PRIMER;
 						
-						fl_Special_Timer[client] = GameTime;
+						if(!b_special_active[client])
+							fl_Special_Timer[client] = GameTime;
 						
 						Witch_Hexagon_Witchery(client, weapon);
 						EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
@@ -522,7 +523,21 @@ static void Neuvellete_Hud(int client, int weapon)
 	
 	if(b_special_active[client])
 	{
-		Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online]", HUDText);
+		
+		if(flags & FLAG_NEUVELLETE_PAP_5_FEEDBACK_LOOP)
+		{
+			float Duration = fl_Special_Timer[client] - GameTime; Duration *= -1.0;
+			float Ration = Duration*1.15 - Duration;
+			
+			if(Ration>2.5)
+				Ration = 2.5;
+				
+			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online | Power: (%.1f/2.5)]", HUDText, Ration);
+		}
+		else
+		{
+			Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Online]", HUDText);
+		}
 	}
 	else
 	{
@@ -923,7 +938,12 @@ public void Weapon_Ion_Wand_Beam(int client, int weapon, bool crit)
 	}
 	else
 	{
-		Kill_Beam_Hook(client, 3.5);
+		int flags = i_Neuvellete_HEX_Array[client];
+		
+		if(flags & FLAG_NEUVELLETE_PAP_5_PULSE_CANNON)
+			Kill_Beam_Hook(client, 1.5);
+		else
+			Kill_Beam_Hook(client, 3.5);
 	}
 }
 
