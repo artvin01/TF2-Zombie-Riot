@@ -1029,7 +1029,15 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 				if(TF2_IsPlayerInCondition(attacker, TFCond_NoHealingDamageBuff) || damagetype & DMG_CRIT)
 				{		
 					damage *= 1.35;
-					DisplayCritAboveNpc(victim, attacker, true,_,_,true); //Display crit above head
+					bool PlaySound = false;
+					if(f_MinicritSoundDelay[attacker] < GetGameTime())
+					{
+						PlaySound = true;
+						f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
+					}
+					
+					DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
+					
 					damagetype &= ~DMG_CRIT;
 				}
 			}	

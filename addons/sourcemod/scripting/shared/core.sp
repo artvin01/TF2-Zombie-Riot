@@ -704,6 +704,8 @@ float played_headshotsound_already [MAXTF2PLAYERS];
 int played_headshotsound_already_Case [MAXTF2PLAYERS];
 int played_headshotsound_already_Pitch [MAXTF2PLAYERS];
 
+float f_MinicritSoundDelay[MAXTF2PLAYERS];
+
 float f_IsThisExplosiveHitscan[MAXENTITIES];
 float f_CustomGrenadeDamage[MAXENTITIES];
 
@@ -3295,6 +3297,7 @@ public any Native_FuncToVal(Handle plugin, int numParams)
 
 static void MapStartResetAll()
 {
+	Zero(f_MinicritSoundDelay);
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(b_IsAGib);
 	Zero(i_Hex_WeaponUsesTheseAbilities);
