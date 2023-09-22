@@ -2929,6 +2929,10 @@ static void OnCreate(CClotBody body)
 		if(!IsValidEntity(entity))
 		{
 			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
+			if(body.GetPathFollower().IsValid())
+			{
+				body.GetPathFollower().Invalidate(); //Remove its current path
+			}
 			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
 			break;
 		}
@@ -2942,7 +2946,6 @@ void RemoveFromNpcPathList(CClotBody body)
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 		if(entity == body.index)
 		{
-	//		body.GetPathFollower().Invalidate(); //Remove its current path 
 			body.SetProp(Prop_Data, "zr_pPath", 0);
 			i_ObjectsNpcsTotal[entitycount] = -1;
 			break;
