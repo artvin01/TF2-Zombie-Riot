@@ -918,6 +918,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	bool panzer_sound = false;
 	bool rogue = Rogue_Mode();
 	static int panzer_chance;
+	bool GiveAmmoSupplies = true;
 
 	if(CurrentRound < length)
 	{
@@ -1031,6 +1032,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else if(donotAdvanceRound)
 		{
 			CurrentWave = round.Waves.Length - 1;
+			GiveAmmoSupplies = false;
 		}
 		else
 		{
@@ -1594,25 +1596,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		}
 		
 		Ammo_Count_Ready = 8;
-		/*if(StartCash < 1500)
-		{
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(IsClientInGame(client) && GetClientTeam(client)==2)
-				{
-					int cash = StartCash - (Resupplies_Supplied[client] * 10);
-					if(CashSpent[client] < cash)
-						CashSpent[client] = cash;
-					
-					CashSpent[client] -= StartCash;
-				}
-			}
-
-			CurrentCash = 0;
-		}*/
 	}
+
 	WaveStart_SubWaveStart();
-	if(CurrentWave == 0)
+	if(CurrentWave == 0 && GiveAmmoSupplies)
 	{
 		Renable_Powerups();
 		CheckIfAloneOnServer();
@@ -1625,7 +1612,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 		}
 	}
-	else if (Gave_Ammo_Supply > 2 && !donotAdvanceRound)
+	else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
@@ -1637,7 +1624,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 		}
 	}	
-	else if(!donotAdvanceRound)
+	else if(GiveAmmoSupplies)
 	{
 		Gave_Ammo_Supply += 1;	
 	}
