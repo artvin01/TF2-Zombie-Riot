@@ -2761,7 +2761,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-			this.GetBaseNPC().SetBodyMaxs({0.0,0.0,0.0});
+			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
 			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
 #if defined ZR
