@@ -2928,10 +2928,6 @@ static void OnCreate(CClotBody body)
 		if(!IsValidEntity(entity))
 		{
 			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
-			if(body.GetPathFollower().IsValid())
-			{
-				body.GetPathFollower().Invalidate(); //Remove its current path
-			}
 			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
 			break;
 		}
@@ -5105,7 +5101,10 @@ public void NpcBaseThink(int iNPC)
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
 	if(b_NpcHasDied[iNPC])
 	{
-		npc.GetPathFollower().Destroy();
+		if(npc.GetPathFollower().IsValid())
+		{
+			npc.GetPathFollower().Invalidate(); //Remove its current path
+		}
 		npc.SetProp(Prop_Data, "zr_pPath", -1);
 		RemoveEntityToLagCompList(iNPC);
 
@@ -5659,7 +5658,7 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	pos_enemy = WorldSpaceCenter(enemy);
 
 #if defined ZR
-	bool ingore_buildings = (Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))) 	);
+	bool ingore_buildings = (Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))));
 #else
 	bool ingore_buildings = Ignore_Buildings;
 #endif

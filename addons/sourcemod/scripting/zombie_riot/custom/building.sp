@@ -2009,6 +2009,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
+							SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 						}
 						else if(StrEqual(buffer, "zr_barricade") && i_BarricadesBuild[client] < MaxBarricadesAllowed(client)) // do not check for if too many barricades, doesnt make sense to do this anyways.
@@ -2022,7 +2023,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
-							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);							
+							SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);					
 						}
 						else if(StrEqual(buffer, "zr_elevator")) // bruh why.
 						{
@@ -2034,6 +2036,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
+							SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 							
 							Elevators_Currently_Build[client] += 1;
@@ -8046,6 +8049,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 2 && collisionboxapplied != 2)
@@ -8065,6 +8069,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 3 && collisionboxapplied != 3)
@@ -8084,6 +8089,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 4 && collisionboxapplied != 4)
@@ -8103,6 +8109,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 5 && collisionboxapplied != 5)
@@ -8122,6 +8129,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	if(Village_Flags[owner] & VILLAGE_500 && ModelTypeApplied != 5)

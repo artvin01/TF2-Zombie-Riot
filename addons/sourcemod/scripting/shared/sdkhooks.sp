@@ -136,6 +136,28 @@ public void OnPreThinkPost(int client)
 {
 	if(CvarMpSolidObjects)
 	{
+		if(IsValidEntity(RaidBossActive))
+		{
+			if(i_PreviousBuildingCollision[client] == -1)
+			{
+				i_PreviousBuildingCollision[client] = b_PhaseThroughBuildingsPerma[client];
+			}
+			b_PhaseThroughBuildingsPerma[client] = 2;
+		}
+		else
+		{
+			if(i_PreviousBuildingCollision[client] != -1)
+			{
+				if(i_PreviousBuildingCollision[client] != 2)
+				{
+					SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+					SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+				}
+				b_PhaseThroughBuildingsPerma[client] = i_PreviousBuildingCollision[client];
+			}
+			i_PreviousBuildingCollision[client] = -1;
+		}
+		
 		if(b_PhaseThroughBuildingsPerma[client] == 0)
 		{
 			CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
