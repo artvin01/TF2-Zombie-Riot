@@ -136,6 +136,7 @@ public void OnPreThinkPost(int client)
 {
 	if(CvarMpSolidObjects)
 	{
+#if defined ZR
 		if(IsValidEntity(RaidBossActive))
 		{
 			if(i_PreviousBuildingCollision[client] == -1)
@@ -157,6 +158,7 @@ public void OnPreThinkPost(int client)
 			}
 			i_PreviousBuildingCollision[client] = -1;
 		}
+#endif
 		
 		if(b_PhaseThroughBuildingsPerma[client] == 0)
 		{
