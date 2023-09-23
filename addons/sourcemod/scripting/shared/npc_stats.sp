@@ -2962,7 +2962,14 @@ static void OnDestroy(CClotBody body)
 				EnemyNpcAliveStatic -= 1;
 				
 			EnemyNpcAlive -= 1;
-			
+		}
+		if(EnemyNpcAlive < 0)
+		{
+			EnemyNpcAlive = 0;
+		}
+		if(EnemyNpcAliveStatic < 0)
+		{
+			EnemyNpcAliveStatic = 0;
 		}
 	}
 	b_NpcHasDied[body.index] = true;
@@ -3100,6 +3107,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 				EnemyNpcAliveStatic -= 1;
 
 			b_StaticNPC[pThis] = false;
+		}
+		if(EnemyNpcAlive < 0)
+		{
+			EnemyNpcAlive = 0;
+		}
+		if(EnemyNpcAliveStatic < 0)
+		{
+			EnemyNpcAliveStatic = 0;
 		}
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
