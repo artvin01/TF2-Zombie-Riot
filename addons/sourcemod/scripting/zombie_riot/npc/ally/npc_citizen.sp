@@ -3271,11 +3271,6 @@ public void Citizen_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
 	
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
-	
-	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
-	
 	if(npc.m_iWearable1 > 0 && IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
