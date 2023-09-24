@@ -1196,7 +1196,7 @@ public void NPC_Despawn_bob(int entity)
 {
 	if(IsValidEntity(entity) && entity != 0)
 	{
-		BobTheGod_NPCDeath(entity);
+		SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	}
 	Bob_Exists_Index = -1;
 }
