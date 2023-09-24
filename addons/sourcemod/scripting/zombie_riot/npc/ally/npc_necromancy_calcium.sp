@@ -371,7 +371,7 @@ public void NecroCalcium_ClotThink(int iNPC)
 	}
 	else
 	{
-		NecroCalcium_NPCDeath(npc.index);
+		SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	}
 }
 
@@ -394,7 +394,6 @@ public void NecroCalcium_NPCDeath(int entity)
 
 	
 	SDKUnhook(npc.index, SDKHook_Think, NecroCalcium_ClotThink);
-	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
