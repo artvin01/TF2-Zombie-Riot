@@ -870,6 +870,7 @@ public void Ruina_Create_Ion_Cannon(int amt, float damage, float speed, float ra
 		
 }
 
+//todo: DOESNT HAVE A PLUGIN_STOP;
 static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 {
 	int true_current_round = ZR_GetWaveCount() + 1;

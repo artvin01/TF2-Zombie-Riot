@@ -469,7 +469,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
 	}
-	
+
 	return Plugin_Stop;
 }
 #endif

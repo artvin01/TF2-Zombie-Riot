@@ -93,7 +93,6 @@ static ArrayList Voting;
 static bool CanReVote;
 static ArrayList MiniBosses;
 static ArrayStack Enemies;
-static Handle WaveTimer;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
@@ -107,9 +106,17 @@ static int VotedFor[MAXTF2PLAYERS];
 static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
+static Handle WaveTimer;
 
 static char LastWaveWas[64];
 static int WaveGiftItem;
+
+public Action Waves_ProgressTimer(Handle timer)
+{
+	WaveTimer = null;
+	Waves_Progress();
+	return Plugin_Continue;
+}
 
 void Waves_PluginStart()
 {
@@ -119,6 +126,7 @@ void Waves_PluginStart()
 
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
+	RegAdminCmd("zr_CurrentEnemyAliveLimits", NpcEnemyAliveLimit, ADMFLAG_CHEATS);
 }
 
 bool Waves_InFreeplay()
@@ -147,6 +155,12 @@ void Waves_PlayerSpawn(int client)
 		SetVariantString("rpg_fortress_envfog");
 		AcceptEntityInput(client, "SetFogController");
 	}
+}
+
+public Action NpcEnemyAliveLimit(int client, int args)
+{
+	PrintToConsoleAll("EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
+	return Plugin_Handled;
 }
 
 public Action Waves_ForcePanzer(int client, int args)
@@ -779,9 +793,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 		}
 		if(any_player_on && !CvarNoRoundStart.BoolValue)
 		{
-			
 			InSetup = false;
-			Waves_Progress();
 		}
 		else
 		{
@@ -1435,7 +1447,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(false);
 				
-				Waves_Progress();
 				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
@@ -1504,7 +1515,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				CurrentWave++;
 				WaveStart_SubWaveStart();
-				Waves_Progress();
 				return;
 			}
 		}
@@ -1580,7 +1590,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Waves_Progress();
 				return;
 			}
 		}
@@ -1715,12 +1724,6 @@ float GetWaveSetupCooldown()
 	return Cooldown;
 }
 
-public Action Waves_ProgressTimer(Handle timer)
-{
-	WaveTimer = null;
-	Waves_Progress();
-	return Plugin_Continue;
-}
 
 void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 {

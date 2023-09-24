@@ -2366,9 +2366,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		h_ArrowInflictorRef[entity] = -1;
 		i_ProjectileExtraFunction[entity] = INVALID_FUNCTION;
 		h_BonusDmgToSpecialArrow[entity] = 1.0;
-		
 		b_RocketBoomEffect[entity] = false;
-		b_IsAlliedNpc[entity] = false;
 		b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 		b_EntityIsArrow[entity] = false;
 		b_EntityIsWandProjectile[entity] = false;
@@ -2395,7 +2393,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BuffBannerNpcBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;
-		b_NpcHasDied[entity] = true;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_IsVehicle[entity] = false;
@@ -2815,12 +2812,6 @@ public void Check_For_Team_Npc(int entity)
 	if (IsValidEntity(entity))
 	{
 		CClotBody npcstats = view_as<CClotBody>(entity);
-		if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS FALSE, then that means that a baseboss spawned without getting default stats.
-		{
-			//ADD TELEPORT LOGIC IF NEEDED!!!
-			RequestFrame(Check_For_Team_Npc_Delayed, EntIndexToEntRef(entity)); //outside plugins are doing something...., give them time to do their crap...
-			return;
-		}
 		b_NpcHasDied[entity] = false;
 		b_IsAlliedNpc[entity] = false;
 		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
@@ -2875,84 +2866,6 @@ public void Check_For_Team_Npc(int entity)
 				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 			}
 			
-			
-			npcstats.bCantCollidie = true;
-			npcstats.bCantCollidieAlly = false;
-			b_Is_Blue_Npc[entity] = true;
-			for (int i = 0; i < ZR_MAX_NPCS; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsNpcs[i]) <= 0)
-				{
-					i_ObjectsNpcs[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_NPCS;
-				}
-			}
-			AddEntityToLagCompList(entity);
-		}
-	}
-}
-
-
-public void Check_For_Team_Npc_Delayed(int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (IsValidEntity(entity))
-	{
-		CClotBody npcstats = view_as<CClotBody>(entity);
-		b_NpcHasDied[entity] = false;
-		b_IsAlliedNpc[entity] = false;
-		if(GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Red))
-		{
-		//	SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
-			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
-			npcstats.bCantCollidieAlly = true;
-			npcstats.bCantCollidie = false;
-			b_IsAlliedNpc[entity] = true;
-			if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS FALSE, then that means that a baseboss spawned without getting default stats.
-			{
-				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Red));
-			}
-			
-			if(npcstats.m_bThisEntityIgnored) //do not collide. This is just as a global rule.
-			{
-				npcstats.bCantCollidie = true;
-			}
-			
-			SetEntProp(entity, Prop_Send, "m_bGlowEnabled", false);
-			
-			for (int i = 0; i < ZR_MAX_NPCS_ALLIED; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsNpcs_Allied[i]) <= 0)
-				{
-					i_ObjectsNpcs_Allied[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_NPCS_ALLIED;
-				}
-			}
-			AddEntityToLagCompList(entity);
-			
-		}	
-		else
-		{
-			//This code only exists if a base_boss that gets summoned isnt a boss, and also isnt applied by the plugin, so it will default to a non boss
-			//As a safety measure.
-			//Todo: If any map has any base_boss, detect and apply.
-			//Idea: detect if team 0, if yes, move to zombie team and apply boss status!
-		//	PrintToChatAll("%i",GetCustomKeyValue(entity,"m_bThisEntityIgnored", "1", 2));
-		//	SetCustomKeyValue(client, "m_bThisEntityIgnored", "0");
-			
-			SDKHook(entity, SDKHook_TraceAttack, NPC_TraceAttack);
-			SDKHook(entity, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
-			if(!npcstats.m_bThisNpcGotDefaultStats_INVERTED) //IF THIS IS FALSE, then that means that a baseboss spawned without getting default stats.
-			{
-				SDKHook(entity, SDKHook_OnTakeDamagePost, Map_BaseBoss_Damage_Post);
-				npcstats.SetDefaultStatsZombieRiot(view_as<int>(TFTeam_Blue));
-			}
-			
-			else
-			{
-				SDKHook(entity, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
-			}
 			
 			npcstats.bCantCollidie = true;
 			npcstats.bCantCollidieAlly = false;

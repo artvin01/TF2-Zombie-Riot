@@ -399,14 +399,17 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			if(b_thisNpcIsABoss[entity])
 				weight++;
 
+			if(b_thisNpcIsARaid[entity])
+				weight++;
+
 			int force = strength - weight;
 			if(force >= 0)
 			{
 				if(module)
 					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_PLASMA, weapon);
 
-				FreezeNpcInTime(entity, 0.4 + (force * 0.1));
-				Custom_Knockback(client, entity, -3000.0, true, true, true, 0.4 + (force * 0.1));
+				FreezeNpcInTime(entity, 0.3 + (force * 0.1));
+				Custom_Knockback(client, entity, -1500.0, true, true, true, 0.3 + (force * 0.1));
 				
 				EmitSoundToAll("weapons/grappling_hook_reel_stop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 			}

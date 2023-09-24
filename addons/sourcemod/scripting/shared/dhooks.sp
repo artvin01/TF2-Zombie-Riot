@@ -883,14 +883,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			if(entity2 <= MaxClients && entity2 > 0)
-			{
-				return false;
-			}
-			else if(b_IsAlliedNpc[entity2])
-			{
-				return false;
-			}
 			else if(b_Is_Player_Projectile[entity2])
 			{
 				return false;
@@ -925,6 +917,14 @@ things i tried
 				return false;
 			}
 #endif
+			else if(entity2 <= MaxClients && entity2 > 0)
+			{
+				return false;
+			}
+			else if(b_IsAlliedNpc[entity2])
+			{
+				return false;
+			}
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{

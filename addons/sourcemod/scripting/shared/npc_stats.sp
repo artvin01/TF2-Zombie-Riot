@@ -2972,6 +2972,7 @@ static void OnDestroy(CClotBody body)
 			EnemyNpcAliveStatic = 0;
 		}
 	}
+	b_IsAlliedNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
 
@@ -3096,7 +3097,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		}
 		VausMagicaRemoveShield(pThis);
 #endif
-		b_NpcHasDied[pThis] = true;
 
 		if(!b_IsAlliedNpc[pThis])
 			EnemyNpcAlive -= 1;
@@ -3131,6 +3131,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 	//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
+		b_IsAlliedNpc[pThis] = false;
+		b_NpcHasDied[pThis] = true;
+		b_StaticNPC[pThis] = false;
 			
 
 		if(!npc.m_bDissapearOnDeath)
@@ -4804,7 +4807,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(b_IsAlliedNpc[entity])
+	if(IsValidClient(entity) || b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
@@ -4821,6 +4824,10 @@ stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], con
 stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
+	if(IsValidClient(entity))
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
+	}
 	if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
@@ -4838,7 +4845,11 @@ stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(b_IsAlliedNpc[entity])
+	if(IsValidClient(entity))
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	}
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	}
@@ -4855,7 +4866,11 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(b_IsAlliedNpc[entity])
+	if(IsValidClient(entity))
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
+	}
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
 	}
@@ -7373,7 +7388,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_thisNpcIsABoss[entity] = false;
 	b_thisNpcIsARaid[entity] = false;
 	b_TryToAvoidTraverse[entity] = false;
-	b_StaticNPC[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	b_NPCTeleportOutOfStuck[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
@@ -7448,7 +7462,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;
-	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
 	IgniteTimer[entity] = null;
 	IgniteFor[entity] = 0;
