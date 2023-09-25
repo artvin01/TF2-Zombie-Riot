@@ -234,7 +234,7 @@ methodmap Bloonarius < CClotBody
 		npc.m_bStaticNPC = elite;
 		
 		if(elite)
-			EnemyNpcAliveStatic += 1;
+			AddNpcToAliveList(npc.index, 1);
 
 		npc.m_bisWalking = false;
 		npc.m_bnew_target = final;
@@ -515,7 +515,7 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 			Zombies_Currently_Still_Ongoing++;
 			view_as<CClotBody>(spawn_index).m_bStaticNPC = elite;
 			if(elite)
-				EnemyNpcAliveStatic += 1;
+				AddNpcToAliveList(spawn_index, 1);
 		}
 	}
 	return Plugin_Continue;

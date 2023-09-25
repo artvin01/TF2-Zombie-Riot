@@ -288,7 +288,7 @@ TFClassType CurrentClass[MAXTF2PLAYERS];
 TFClassType WeaponClass[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
-int i_SemiAutoWeapon_AmmoCount[MAXENTITIES]; //idk like 10 slots lol
+int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 bool i_WeaponCannotHeadshot[MAXENTITIES];
 float i_WeaponDamageFalloff[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
@@ -298,6 +298,9 @@ int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
 int i_CurrentEquippedPerk[MAXENTITIES];
 int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
+
+//only used in zr, however, can also be used for other gamemodes incase theres a limit.
+int b_EnemyNpcWasIndexed[MAXENTITIES][2];
 int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
 

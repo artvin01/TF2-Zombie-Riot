@@ -382,7 +382,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-			EnemyNpcAlive += 1;
+			AddNpcToAliveList(npc, 0);
 		}
 		
 		b_NpcCollisionType[npc] = 0;
@@ -9027,7 +9027,53 @@ void MapStartResetNpc()
 		b_NpcHasDied[i] = true;
 		b_StaticNPC[i] = false;
 		b_IsAlliedNpc[i] = false;
+		b_EnemyNpcWasIndexed[i][0] = false;
+		b_EnemyNpcWasIndexed[i][1] = false;
 	}
 	EnemyNpcAlive = 0;
 	EnemyNpcAliveStatic = 0;
+}
+
+/*
+	0 means normal enemy
+	1 means static
+*/
+void AddNpcToAliveList(int iNpc, int which)
+{
+	if(which == 0 && !b_EnemyNpcWasIndexed[iNpc][0])
+	{
+		b_EnemyNpcWasIndexed[iNpc][0] = true;
+		EnemyNpcAlive += 1;
+	}
+	if(which == 1)
+	{
+		if(!b_EnemyNpcWasIndexed[iNpc][0])
+		{
+			b_EnemyNpcWasIndexed[iNpc][0] = true;
+			EnemyNpcAlive += 1;
+		}
+		if(!b_EnemyNpcWasIndexed[iNpc][1])
+		{
+			b_EnemyNpcWasIndexed[iNpc][1] = true;
+			EnemyNpcAliveStatic += 1;
+		}
+	}
+}
+
+void RemoveFromNpcAliveList(int iNpc)
+{
+	if(b_EnemyNpcWasIndexed[iNpc][0])
+		EnemyNpcAlive -= 1;
+
+	if(b_EnemyNpcWasIndexed[iNpc][1])
+		EnemyNpcAliveStatic -= 1;
+
+	b_EnemyNpcWasIndexed[iNpc][0] = false;
+	b_EnemyNpcWasIndexed[iNpc][1] = false;
+
+	if(EnemyNpcAlive < 0)
+		EnemyNpcAlive = 0;
+
+	if(EnemyNpcAliveStatic < 0)
+		EnemyNpcAliveStatic = 0;
 }

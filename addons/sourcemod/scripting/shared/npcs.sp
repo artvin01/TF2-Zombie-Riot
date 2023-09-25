@@ -336,7 +336,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					npcstats.m_bStaticNPC = enemy.Is_Static;
 					if(enemy.Is_Static && !enemy.Friendly)
 					{
-						EnemyNpcAliveStatic += 1;
+						AddNpcToAliveList(entity_Spawner, 1);
 					}
 					
 					if(enemy.Is_Boss == 1)
