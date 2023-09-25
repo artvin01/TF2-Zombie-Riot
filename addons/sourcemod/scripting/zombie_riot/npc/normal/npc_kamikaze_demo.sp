@@ -272,6 +272,16 @@ public void Kamikaze_NPCDeath(int entity)
 		float startPosition[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition); 
 		startPosition[2] += 45;
+		/*
+		DataPack pack;
+		pack.WriteCell(entity);
+		pack.WriteFloat(startPosition[0]);
+		pack.WriteFloat(startPosition[1]);
+		pack.WriteFloat(startPosition[2]);
+		pack.WriteCell(50);
+		pack.WriteCell(100);
+		RequestFrame(DelayExplosiveMakeExplosion, pack);
+		*/
 		makeexplosion(entity, entity, startPosition, "", 50, 100, _, _, true);
 	}
 	else
@@ -285,4 +295,11 @@ public void Kamikaze_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 }
-
+/*
+void DelayExplosiveMakeExplosion(DataPack pack)
+{
+	pack.Reset();
+	int iNpc = pack.ReadCell();
+	int client = pack.ReadCell();
+}
+*/

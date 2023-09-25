@@ -3004,6 +3004,16 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
+		//MUST be at top, or else there can be heavy issues regarding infinite loops!
+		b_NpcHasDied[pThis] = true;
+
+
+		//leaving these on can cause crashes.
+		SDKUnhook(pThis, SDKHook_TraceAttack, NPC_TraceAttack);
+		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
+		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+
+		
 		int client = EntRefToEntIndex(LastHitRef[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
@@ -3100,7 +3110,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
 		b_IsAlliedNpc[pThis] = false;
-		b_NpcHasDied[pThis] = true;
 		b_StaticNPC[pThis] = false;
 			
 
