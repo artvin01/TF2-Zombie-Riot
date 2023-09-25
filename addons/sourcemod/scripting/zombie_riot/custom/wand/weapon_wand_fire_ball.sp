@@ -311,7 +311,7 @@ public Action FireMultipleFireBalls(Handle Timer, int ref)
 				int i, weapon;
 				while(TF2_GetItem(client, weapon, i))
 				{
-					if(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex") == 939)
+					if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FIRE_WAND)
 					{
 						break;
 					}
@@ -340,6 +340,7 @@ public Action FireMultipleFireBalls(Handle Timer, int ref)
 					TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 					DispatchSpawn(entity);
 					TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+					SetEntPropEnt(entity, Prop_Send, "m_hLauncher", EntRefToEntIndex(weapon));
 					f_CustomGrenadeDamage[entity] = f_FireBallDamage[client];
 					
 				}

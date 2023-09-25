@@ -300,7 +300,7 @@ int Building_Max_Health[MAXENTITIES]={0, ...};
 int Building_Repair_Health[MAXENTITIES]={0, ...};
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
-int b_EnemyNpcWasIndexed[MAXENTITIES][2];
+bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
 int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
 

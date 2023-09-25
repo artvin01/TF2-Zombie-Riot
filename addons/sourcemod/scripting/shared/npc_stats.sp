@@ -2949,24 +2949,13 @@ void RemoveFromNpcPathList(CClotBody body)
 }
 static void OnDestroy(CClotBody body)
 {
+	RemoveFromNpcAliveList(body.index);
 	if(!b_NpcHasDied[body.index])
 	{
 		RemoveFromNpcPathList(body);
 		if(!b_IsAlliedNpc[body.index])
 		{
 			Zombies_Currently_Still_Ongoing -= 1;
-			if(b_StaticNPC[body.index])
-				EnemyNpcAliveStatic -= 1;
-				
-			EnemyNpcAlive -= 1;
-		}
-		if(EnemyNpcAlive < 0)
-		{
-			EnemyNpcAlive = 0;
-		}
-		if(EnemyNpcAliveStatic < 0)
-		{
-			EnemyNpcAliveStatic = 0;
 		}
 	}
 	b_IsAlliedNpc[body.index] = false;
@@ -3012,6 +3001,7 @@ static void OnDestroy(CClotBody body)
 //Ragdoll
 public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int iInflictor, float flDamage, int iDamagetype, int iWeapon, const float vecDamageForce[3], const float vecDamagePosition[3])
 {	
+	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
 		int client = EntRefToEntIndex(LastHitRef[pThis]);
@@ -3094,25 +3084,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		}
 		VausMagicaRemoveShield(pThis);
 #endif
-
-		if(!b_IsAlliedNpc[pThis])
-			EnemyNpcAlive -= 1;
-
-		if(b_StaticNPC[pThis])
-		{
-			if(!b_IsAlliedNpc[pThis])
-				EnemyNpcAliveStatic -= 1;
-
-			b_StaticNPC[pThis] = false;
-		}
-		if(EnemyNpcAlive < 0)
-		{
-			EnemyNpcAlive = 0;
-		}
-		if(EnemyNpcAliveStatic < 0)
-		{
-			EnemyNpcAliveStatic = 0;
-		}
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif		
