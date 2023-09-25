@@ -2952,12 +2952,9 @@ static void OnDestroy(CClotBody body)
 	if(!b_NpcHasDied[body.index])
 	{
 		RemoveFromNpcPathList(body);
-		if(GetEntProp(body.index, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
-		{
-			Zombies_Currently_Still_Ongoing -= 1;
-		}
 		if(!b_IsAlliedNpc[body.index])
 		{
+			Zombies_Currently_Still_Ongoing -= 1;
 			if(b_StaticNPC[body.index])
 				EnemyNpcAliveStatic -= 1;
 				
@@ -4807,7 +4804,11 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity) || b_IsAlliedNpc[entity])
+	if(IsValidClient(entity))
+	{	
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
+	}
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
@@ -9017,4 +9018,16 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 void SmiteNpcToDeath(int entity)
 {
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
+}
+
+void MapStartResetNpc()
+{
+	for(int i=0; i < MAXENTITIES; i++)
+	{
+		b_NpcHasDied[i] = true;
+		b_StaticNPC[i] = false;
+		b_IsAlliedNpc[i] = false;
+	}
+	EnemyNpcAlive = 0;
+	EnemyNpcAliveStatic = 0;
 }

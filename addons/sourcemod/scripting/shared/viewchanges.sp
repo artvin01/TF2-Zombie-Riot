@@ -85,7 +85,7 @@ void ViewChange_MapStart()
 void ViewChange_PlayerModel(int client)
 {
 	{
-		if(b_IsPlayerNiko[client])
+		if((b_IsPlayerNiko[client]) && TeutonType[client] == TEUTON_NONE)
 		{
 			SetVariantString(NIKO_PLAYERMODEL);
 			AcceptEntityInput(client, "SetCustomModel");
@@ -93,8 +93,7 @@ void ViewChange_PlayerModel(int client)
 
 #if defined RPG
 			Party_PlayerModel(client, NIKO_PLAYERMODEL);
-#endif
-
+#endif		
 		}
 		else
 		{

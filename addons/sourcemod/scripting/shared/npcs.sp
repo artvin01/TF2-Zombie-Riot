@@ -1869,7 +1869,7 @@ public void Try_Backstab_Anim_Again(int attacker)
 
 void NPC_DeadEffects(int entity)
 {
-	if(GetEntProp(entity, Prop_Send, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+	if(!b_IsAlliedNpc[entity])
 	{
 #if defined ZR		
 		Zombies_Currently_Still_Ongoing -= 1;
