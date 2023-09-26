@@ -55,9 +55,9 @@ static int SpawnMulti(int count, int players, bool elite)
 static float MoabSpeed(bool elite)
 {
 	if(CurrentRound < (elite ? 59 : 29))
-		return 31.25;//62.5;
+		return elite ? 31.25 : 62.5;
 	
-	return 37.5;//75.0;
+	return elite ? 37.5 : 75.0;
 }
 
 static int CurrentTier(bool elite)
