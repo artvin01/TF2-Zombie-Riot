@@ -9,6 +9,11 @@ static float fl_master_change_timer[MAXENTITIES];
 static bool b_master_exists[MAXENTITIES];
 static int i_master_attracts[MAXENTITIES];
 
+static bool b_npc_low_health[MAXENTITIES];
+static bool b_npc_no_retreat[MAXENTITIES];
+static bool b_npc_healer[MAXENTITIES];	//warp
+static float fl_npc_healing_duration[MAXENTITIES];
+
 static char gLaser1;
 static int BeamWand_Laser;
 //static char gGlow1;	//blue
@@ -84,6 +89,11 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_shield_break_timeout);
 	Zero(fl_ontake_sound_timer);
 	
+	Zero(b_npc_low_health);
+	Zero(b_npc_no_retreat);
+	Zero(b_npc_healer);
+	Zero(fl_npc_healing_duration);
+	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_ATTACK);
@@ -101,8 +111,21 @@ public void Ruina_Ai_Core_Mapstart()
 }
 public void Ruina_Set_Heirarchy(int client, int type)
 {
+	fl_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	b_master_exists[client] = false;
+	b_npc_healer[client] = false;
+	b_npc_no_retreat[client] = false;
+	fl_npc_healing_duration[client] = 0.0;
+	
+}
+public void Ruina_Set_Healer(int client)
+{
+	b_npc_healer[client] = true;
+}
+public void Ruina_Set_No_Retreat(int client)
+{
+	b_npc_no_retreat[client] = true;
 }
 public void Ruina_Set_Master_Heirarchy(int client, bool melee, bool ranged, bool accepting, int max_slaves, int priority)
 {
@@ -224,15 +247,12 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 	}
 }
 
-static void Ruina_Remove_Shield(int client, bool death=false)
+static void Ruina_Remove_Shield(int client)
 {
 	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
 	if(IsValidEntity(i_shield_entity))
 	{
-		if(!death)
-			fl_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
-		else
-			fl_shield_break_timeout[client] = 0.0;
+		fl_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
 		RemoveEntity(i_shield_entity);
 	}
 }
@@ -300,7 +320,7 @@ public void Ruina_NPCDeath_Override(int entity)
 		i_master_current_slaves[Master_Id_Main]--;
 		//CPrintToChatAll("I died, but master was still alive: %i, now removing one, master has %i slaves left", entity, i_master_current_slaves[Master_Id_Main]);
 	}
-	Ruina_Remove_Shield(entity, true);
+	Ruina_Remove_Shield(entity);
 	
 	
 	switch(i_NpcInternalId[entity])
@@ -335,6 +355,26 @@ static int GetRandomMaster(int client)
 		{
 			if(Check_If_I_Am_The_Right_Slave(client, baseboss_index))
 				valid=baseboss_index;
+		}
+	}
+	return valid;
+}
+static int GetClosestHealer(int client)
+{
+	int valid = -1;
+	float Npc_Vec[3]; Npc_Vec=GetAbsOrigin(client);
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		float dist = 99999999.9;
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_healer[baseboss_index])
+		{
+			float target_vec[3]; target_vec = GetAbsOrigin(baseboss_index);
+			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
+			if(dist>Distance)
+			{
+				valid = baseboss_index;
+			}
 		}
 	}
 	return valid;
@@ -402,6 +442,35 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 		float GameTime = GetGameTime(npc.index);
 		
 		int Backup_Target = PrimaryThreatIndex;
+		
+		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+		float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float Ratio = Health / Max_Health;
+		
+		if(Ratio<=0.10 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
+		{
+			fl_npc_healing_duration[npc.index] = GameTime + 2.5;
+		}
+		else if(fl_npc_healing_duration[npc.index] > GameTime && Ratio<0.5 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index] )	//heal until 50% hp
+		{
+			int Healer = GetClosestHealer(npc.index);
+			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
+			{
+				float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Healer);
+				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
+				
+				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
+				
+				if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
+				{
+					NPC_SetGoalEntity(npc.index, Healer);
+					npc.StartPathing();
+					npc.m_bPathing = true;
+					fl_npc_healing_duration[npc.index] = GameTime + 2.5;
+				}
+				return;	//override ALL logic
+			}
+		}
 		
 		if(!b_master_exists[npc.index])	//check if the npc is a master or not
 		{	
