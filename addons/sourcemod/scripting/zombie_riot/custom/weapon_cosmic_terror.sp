@@ -389,7 +389,7 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 {
 	if(!IsValidClient(client))
 	{
-		delete Revert_Weapon_Back_Timer[client];
+		Revert_Weapon_Back_Timer[client] = null;
 		return Plugin_Stop;
 	}
 	
@@ -406,7 +406,7 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 	Cosmic_Terror_Full_Reset[client]=true;
 	Cosmic_Terror_On[client]=false;
 	SDKUnhook(client, SDKHook_PreThink, Cosmic_Activate_Tick);
-	delete Revert_Weapon_Back_Timer[client];
+	Revert_Weapon_Back_Timer[client] = null;
 	return Plugin_Stop;
 }
 void Cosmic_Terror_Charging(int client)
