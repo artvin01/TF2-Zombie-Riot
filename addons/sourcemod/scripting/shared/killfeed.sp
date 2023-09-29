@@ -500,6 +500,8 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 
 		if(event.GetBool("silent_kill"))
 		{
+			event.SetBool("silent_kill", false);
+
 			int victim = GetClientOfUserId(event.GetInt("userid"));
 			int attacker = GetClientOfUserId(event.GetInt("attacker"));
 			int assister = GetClientOfUserId(event.GetInt("assister"));
