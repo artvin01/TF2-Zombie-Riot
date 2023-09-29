@@ -124,7 +124,8 @@ enum
 	WEAPON_HAZARD_PERFECT = 53,
 	WEAPON_FIRE_WAND = 54,
 	WEAPON_CASINO = 55,
-	WEAPON_ION_BEAM = 56
+	WEAPON_ION_BEAM = 56,
+	WEAPON_SEABORNMELEE = 57
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -420,6 +421,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hazard.sp"
 #include "zombie_riot/custom/weapon_casino.sp"
 #include "zombie_riot/custom/wand/weapon_ion_beam_wand.sp"
+#include "zombie_riot/custom/kit_seaborn.sp"
 
 void ZR_PluginLoad()
 {
