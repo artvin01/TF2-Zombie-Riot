@@ -32,6 +32,7 @@ bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int Shared_BEAM_Laser;
 int Shared_BEAM_Glow;
+PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 #endif
 
 #if defined RPG
@@ -39,7 +40,6 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
-PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
 
 float f3_AvoidOverrideMin[MAXENTITIES][3];
@@ -2953,12 +2953,10 @@ static void OnDestroy(CClotBody body)
 	if(!b_NpcHasDied[body.index])
 	{
 		RemoveFromNpcPathList(body);
-#if defined ZR
 		if(!b_IsAlliedNpc[body.index])
 		{
 			Zombies_Currently_Still_Ongoing -= 1;
 		}
-#endif
 	}
 	b_IsAlliedNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
@@ -9000,7 +8998,7 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 	}
 }
 
-stock void SmiteNpcToDeath(int entity)
+void SmiteNpcToDeath(int entity)
 {
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
 }

@@ -217,7 +217,7 @@ methodmap EndSpeaker < CClotBody
 				}
 
 				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
-				Explode_Logic_Custom(9999.9, -1, this.index, -1, vecTarget, DEEP_SEA_VORE_RANGE, _, _, true, _, false);
+				Explode_Logic_Custom(9999.9, -1, this.index, -1, vecTarget, DEEP_SEA_VORE_RANGE, _, _, true, _, false, _, EndSpeaker_EatPost);
 				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			}
 		}
@@ -343,6 +343,15 @@ methodmap EndSpeaker < CClotBody
 		{
 			HardMode = value;
 		}
+	}
+}
+
+public void EndSpeaker_EatPost(int attacker, int victim, float damage, int weapon)
+{
+	if(i_NpcInternalId[victim] == CITIZEN)
+	{
+		// Eaten
+		view_as<Citizen>(victim).SetDowned(2);
 	}
 }
 

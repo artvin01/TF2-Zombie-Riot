@@ -81,7 +81,7 @@ static Action Beserk_ringTracker_effect(Handle ringTracker, int ref)
 	}
 	else
 	{
-		return Plugin_Stop;
+		KillTimer(ringTracker, false);
 	}
 
 	return Plugin_Continue;

@@ -85,11 +85,7 @@ void ViewChange_MapStart()
 void ViewChange_PlayerModel(int client)
 {
 	{
-#if defined ZR
 		if((b_IsPlayerNiko[client]) && TeutonType[client] == TEUTON_NONE)
-#else
-		if(b_IsPlayerNiko[client])
-#endif
 		{
 			SetVariantString(NIKO_PLAYERMODEL);
 			AcceptEntityInput(client, "SetCustomModel");
