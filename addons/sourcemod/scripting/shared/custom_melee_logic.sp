@@ -330,27 +330,6 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 #define MELEE_BOUNDS 22.0
 stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[3], float CustomMeleeRange = 0.0, bool Hit_ally = false, float CustomMeleeWide = 0.0, bool ignore_walls = false, int &enemies_hit_aoe = 1, int weapon = -1)
 {
-#if defined ZR
-	if(weapon > 0)
-	{
-		switch(i_CustomWeaponEquipLogic[weapon])
-		{
-			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
-			{
-				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
-			}	
-			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
-			{
-				SagaAttackBeforeSwing(client);
-			}
-			case WEAPON_SEABORNMELEE:
-			{
-				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
-			}	
-		}	
-	}
-#endif
-
 	// Setup a volume for the melee weapon to be swung - approx size, so all melee behave the same.
 	float vecSwingMins[3];
 	float vecSwingMaxs[3];
@@ -373,7 +352,22 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingMins = view_as<float>({-MELEE_BOUNDS, -MELEE_BOUNDS, -MELEE_BOUNDS});
 		vecSwingMaxs = view_as<float>({MELEE_BOUNDS, MELEE_BOUNDS, MELEE_BOUNDS});
 	}
-
+#if defined ZR
+	if(weapon > 0)
+	{
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
+			{
+				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
+			}	
+			case WEAPON_SAGA: //yes, if we miss, then we do other stuff.
+			{
+				SagaAttackBeforeSwing(client);
+			}	
+		}	
+	}
+#endif
 	float vecSwingStart[3];
 //	float vecSwingForward[3];
 	float ang[3];

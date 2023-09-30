@@ -2253,24 +2253,4 @@
 	{
 		"en"	"The Ständchen Zugabe"
 	}
-	"Combo Kits"
-	{
-		"en"	"Combo Kits"
-	}
-	"Seaborn Infection"
-	{
-		"en"	"Seaborn Infection"
-	}
-	"Seaborn Claws"
-	{
-		"en"	"Seaborn Claws"
-	}
-	"Seaborn Spines"
-	{
-		"en"	"Seaborn Spines"
-	}
-	"Seaborn Salve"
-	{
-		"en"	"Seaborn Salve"
-	}
 }

@@ -1712,70 +1712,33 @@ void Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 }
 #endif	// ZR
 
-#if defined ZR
-void Store_EquipSlotCheck(int client, Item mainItem)
-#else
 void Store_EquipSlotCheck(int client, int slot)
-#endif
 {
-#if defined ZR
-	int count;
-
-	int slot = mainItem.Slot;
-
-	static ItemInfo info;
-	mainItem.GetItemInfo(0, info);
-	bool isWeapon = (!mainItem.ChildKit && info.Classname[0] && TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee);
-	
-	int length = StoreItems.Length;
-	static Item subItem;
-	for(int i; i < length; i++)
-	{
-		StoreItems.GetArray(i, subItem);
-		if(subItem.Equipped[client])
-		{
-			subItem.GetItemInfo(0, info);
-			
-			if(mainItem.ParentKit)
-			{
-				if(!subItem.ChildKit && info.Classname[0] && TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee)
-				{
-					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
-					Store_Unequip(client, i);
-					continue;
-				}
-			}
-			else if(isWeapon)
-			{
-				if(subItem.ParentKit)
-				{
-					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
-					Store_Unequip(client, i);
-					StoreItems.SetArray(i, subItem);
-					continue;
-				}
-			}
-
-			if(subItem.Slot == slot)
-			{
-				count++;
-				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
-				{
-					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
-					Store_Unequip(client, i);
-					StoreItems.SetArray(i, subItem);
-					continue;
-				}
-			}
-		}
-	}
-#endif	// ZR
-
-#if defined RPG
 	if(slot >= 0)
 	{
 		int count;
 
+#if defined ZR
+		int length = StoreItems.Length;
+		static Item item;
+		for(int i; i<length; i++)
+		{
+			StoreItems.GetArray(i, item);
+			if(item.Equipped[client] && item.Slot == slot)
+			{
+				count++;
+				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))
+				{
+					PrintToChat(client, "%s was unequipped", TranslateItemName(client, item.Name, ""));
+					item.Equipped[client] = false;
+					StoreItems.SetArray(i, item);
+					break;
+				}
+			}
+		}
+#endif
+
+#if defined RPG
 		int length = EquippedItems.Length;
 		static ItemInfo info;
 		for(int i; i < length; i++)
@@ -1794,15 +1757,15 @@ void Store_EquipSlotCheck(int client, int slot)
 				}
 			}
 		}
-	}
-#endif	// RPG
+#endif
 
+	}
 }
 
 #if defined ZR
 void Store_BuyClientItem(int client, int index, Item item, const ItemInfo info)
 {
-	Store_EquipSlotCheck(client, item);
+	Store_EquipSlotCheck(client, item.Slot);
 
 	item.Scaled[client]++;
 	item.Owned[client] = 1;
@@ -3832,7 +3795,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							
 							if(item.Owned[client] && !item.Equipped[client])	// Equip All Items
 							{
-								Store_EquipSlotCheck(client, item);
+								Store_EquipSlotCheck(client, item.Slot);
 
 								item.Equipped[client] = true;
 								StoreItems.SetArray(index, item);
@@ -3846,14 +3809,21 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 										StoreItems.GetArray(i, subItem);
 										if(subItem.Section == index)
 										{
-											Store_EquipSlotCheck(client, subItem);
+											Store_EquipSlotCheck(client, subItem.Slot);
 											subItem.Equipped[client] = true;
 											StoreItems.SetArray(i, subItem);
+
+											Store_GiveItem(client, i, subItem.Equipped[client]);
+
+											if(subItem.GetItemInfo(subItem.Owned[client] - 1, info) &&
+											   TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
+												Store_RemoveNullWeapons(client);
 										}
 									}
 									
-									Store_ApplyAttribs(client);
-									Store_GiveAll(client, GetClientHealth(client));
+									CheckInvalidSlots(client);
+									CheckMultiSlots(client);
+									Manual_Impulse_101(client, GetClientHealth(client));
 								}
 							}
 						}
@@ -3887,7 +3857,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							
 							if(item.Owned[client] && !item.Equipped[client])	// Equip Weapon
 							{
-								Store_EquipSlotCheck(client, item);
+								Store_EquipSlotCheck(client, item.Slot);
 
 								item.Equipped[client] = true;
 								StoreItems.SetArray(index, item);
@@ -3935,7 +3905,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						}
 						else
 						{
-							Store_EquipSlotCheck(client, item);
+							Store_EquipSlotCheck(client, item.Slot);
 
 							item.Equipped[client] = true;
 							StoreItems.SetArray(index, item);
@@ -4756,21 +4726,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 #if defined RPG
 		int length = EquippedItems.Length;
 #endif
-/*
-#if defined ZR
-		bool hasKit;
-		static Item item;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client] && item.ParentKit)
-			{
-				hasKit = true;
-				break;
-			}
-		}
-#endif
-*/
+
 		for(int i; i < length; i++)
 		{
 			static ItemInfo info;
@@ -4801,15 +4757,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 						
 						hasPDA = true;
 					}
-/*
-#if defined ZR
-					if(hasKit && !item.ChildKit)	// Weapon Kits override other weapons
-					{
-						if(TF2_GetClassnameSlot(info.Classname) <= TFWeaponSlot_Melee)
-							continue;
-					}
-#endif
-*/
+
 					Store_GiveItem(client, i, use, found);
 					if(++count > 6)
 					{
@@ -5647,7 +5595,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Gladiia_Enable(client, entity);
 		Vampire_KnifesDmgMulti(client, entity);
 		Activate_Neuvellete(client, entity);
-		SeaMelee_Enable(client, entity);
 #endif
 
 #if defined RPG
@@ -5685,7 +5632,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 		StoreItems.GetArray(i, item);
 		if(StrEqual(name, item.Name, false))
 		{
-			Store_EquipSlotCheck(client, item);
+			Store_EquipSlotCheck(client, item.Slot);
 
 			static ItemInfo info;
 			item.GetItemInfo(0, info);
@@ -5872,21 +5819,6 @@ void Store_ConsumeItem(int client, int index)
 	item.Owned[client] = 0;
 	item.Equipped[client] = false;
 	StoreItems.SetArray(index, item);
-	
-	if(item.ParentKit)
-	{
-		int length = StoreItems.Length;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, item);
-			if(item.Section == index)
-			{
-				item.Owned[client] = 0;
-				item.Equipped[client] = false;
-				StoreItems.SetArray(i, item);
-			}
-		}
-	}
 }
 
 stock void Store_Unequip(int client, int index)
@@ -5895,21 +5827,6 @@ stock void Store_Unequip(int client, int index)
 	StoreItems.GetArray(index, item);
 	item.Equipped[client] = false;
 	StoreItems.SetArray(index, item);
-
-	if(item.ParentKit)
-	{
-		int length = StoreItems.Length;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, item);
-			if(item.Section == index)
-			{
-				item.Owned[client] = 0;
-				item.Equipped[client] = false;
-				StoreItems.SetArray(i, item);
-			}
-		}
-	}
 }
 
 bool Store_PrintLevelItems(int client, int level)

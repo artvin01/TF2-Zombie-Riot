@@ -170,15 +170,6 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 		return Plugin_Continue;
 	}
-		
-	if(ParticleRef[client] != -1)
-	{
-		int entity = EntRefToEntIndex(ParticleRef[client]);
-		if(entity > MaxClients)
-			RemoveEntity(entity);
-		
-		ParticleRef[client] = -1;
-	}
 
 	HealingTimer[client] = null;
 	EliteLevel[client] = 0;

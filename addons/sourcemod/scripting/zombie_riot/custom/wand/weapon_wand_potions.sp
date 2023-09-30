@@ -115,10 +115,7 @@ static void PotionM2(int client, int weapon, int slot, float cooldown, SDKHookCB
 	}
 
 	if(PotionM1(client, weapon, touch, extra))
-	{
-		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, cooldown);
-	}
 }
 
 static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
@@ -493,8 +490,6 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
-
-	Rogue_OnAbilityUse(weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM1);
@@ -518,8 +513,6 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
-	
-	Rogue_OnAbilityUse(weapon);
 	Ability_Apply_Cooldown(client, slot, 45.0);
 
 	EmitSoundToClient(client, SOUND_TRANSFORM2);
