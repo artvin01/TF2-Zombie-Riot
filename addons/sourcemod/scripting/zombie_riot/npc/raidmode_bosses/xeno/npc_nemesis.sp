@@ -1383,11 +1383,13 @@ public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
 	DataNem.Reset();
 	int entity = EntRefToEntIndex(DataNem.ReadCell());
 	int MaxThrowCount = DataNem.ReadCell();
+	
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
 
 	int count;
 	int targets[MAX_TARGETS_HIT_NEMESIS];
-	if(IsValidEntity(entity))
-		return Plugin_Stop;
+
 		
 	for(int client; client<=MaxClients; client++)
 	{
