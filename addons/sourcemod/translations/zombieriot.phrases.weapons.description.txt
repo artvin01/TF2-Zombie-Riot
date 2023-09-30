@@ -2395,7 +2395,7 @@
 	}
 	"Casino Desc"
 	{
-		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 7 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\n''The game was rigged from the start''."
+		"en"	"Killing and hitting enemies rewards you with dollars.\nPress M2 to spend 20 dollars and roll the slots!\nRolling the slots: Chance to gain a special effect/buff.\nDamage scales with wealth.\n''Money = Power''."
 	}
 	"Flush Desc"
 	{
@@ -2403,11 +2403,15 @@
 	}
 	"Straight Desc"
 	{
-		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''ALL IN BABY!''"
+		"en"	"Stats are increased.\nRoll the slots: buffs have been improved.\n''ALL IN BABY!''"
 	}
 	"Royal Desc"
 	{
-		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''You should probably get your mental health checked.''"
+		"en"	"Stats are increased and you gain more dollars.\nRoll the slots: buffs have been improved.\n''The game was rigged from the start''"
+	}
+	"Casino Desc Extra"
+	{
+		"en"	"R. deals damage up to 5 enemies in a single shot, C. applies freeze, T.B.O. deals massive damage based on your clip.\nBlood ammo gives ammo on kill.\nGambling frenzy makes M2 ability free."
 	}
 }
 
