@@ -494,12 +494,14 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 
 	//Think throttling
-	/*
+	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
 	{
 		return;
 	}
-	*/
+
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
+	
 	if(!npc.m_flNextChargeSpecialAttack)
 	{
 		if(npc.m_blPlayHurtAnimation)
@@ -528,10 +530,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		}
 	}
 
-	
-	/*
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
-*/
+
 	if(npc.m_flNextChargeSpecialAttack)
 	{
 		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))

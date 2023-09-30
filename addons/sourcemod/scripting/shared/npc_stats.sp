@@ -2732,7 +2732,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					}
 				}
 			}
-		//	f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
+			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
 		}
 
 		//increace the size of the avoid box by 2x
@@ -8767,7 +8767,8 @@ void NpcStartTouch(CBaseNPC_Locomotion pThis, int target, bool DoNotLoop = false
 				if(!b_DoNotChangeTargetTouchNpc[entity] || (b_DoNotChangeTargetTouchNpc[entity] && i_NpcIsABuilding[target]))
 				{
 					fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
-					if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
+				//	if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25)
+				//	a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
 					{
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
@@ -8994,6 +8995,8 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 
 		if(Length1 > 0.0)
 			f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
+		else
+			f_DelayComputingOfPath[npcpather] = GetGameTime() + 0.1;
 	}
 }
 

@@ -261,6 +261,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	
 	if(RaidModeTime < GetGameTime())
 	{
+		i_RaidGrantExtra[npc.index] = 0;
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -395,11 +396,19 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 	}
 	
+	
 	if(npc.m_flDoingAnimation < gameTime && i_GunMode[npc.index] == 0)
 	{
 		Nemesis_TryDodgeAttack(npc.index);
 	}
-	
+
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
+	{
+		return;
+	}
+
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
+
 	if(f_NemesisRandomInfectionCycle[npc.index] < GetGameTime(npc.index))
 	{
 		f_NemesisRandomInfectionCycle[npc.index] = GetGameTime(npc.index) + 10.0;
@@ -1352,6 +1361,29 @@ stock float[] Nemesis_DodgeToDirection(CClotBody npc, float extra_backoff = 64.0
 
 void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 {
+	float Nemesis_Loc[3];
+	//poisition of the enemy we random decide to shoot.
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Nemesis_Loc);
+
+	Nemesis_Loc[2] += 10.0;
+	spawnRing_Vectors(Nemesis_Loc, INFECTION_RANGE * 3.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1,1.0);	
+	
+	float Nemesis_Ang[3];
+	Nemesis_Ang = {-90.0,0.0,0.0};
+	int particle = ParticleEffectAt(Nemesis_Loc, "green_steam_plume", 1.0);
+	TeleportEntity(particle, NULL_VECTOR, Nemesis_Ang, NULL_VECTOR);
+
+	DataPack pack;
+	CreateDataTimer(INFECTION_DELAY, Nemesis_DoInfectionThrowInternal, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
+	pack.WriteCell(MaxThrowCount); 	//who this attack belongs to
+}
+public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
+{
+	DataNem.Reset();
+	int entity = EntRefToEntIndex(DataNem.ReadCell());
+	int MaxThrowCount = DataNem.ReadCell();
+
 	int count;
 	int targets[MAX_TARGETS_HIT_NEMESIS];
 
@@ -1426,6 +1458,7 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 			pack.WriteCell(VicLoc[2]);
 		}
 	}
+	return Plugin_Stop;
 }
 
 public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
@@ -1446,7 +1479,7 @@ public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
 		TeleportEntity(particle, NULL_VECTOR, Ang, NULL_VECTOR);
 		EmitSoundToAll("weapons/cow_mangler_explode.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, origin);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 
