@@ -2108,6 +2108,7 @@ void ForceClientViewOntoEntity(int client, int entity)
 		}
 	}
 }
+
 void ClearAllCameras()
 {
 	for(int i=1; i<MAXENTITIES; i++)

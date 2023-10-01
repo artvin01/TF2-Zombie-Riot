@@ -186,7 +186,6 @@ public void OnPreThinkPost(int client)
 
 public void OnPostThink(int client)
 {
-	
 	float GameTime = GetGameTime();
 	if(b_DisplayDamageHud[client])
 	{

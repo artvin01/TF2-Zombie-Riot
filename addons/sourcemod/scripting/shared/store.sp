@@ -1140,14 +1140,17 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 			
 		if(item.ParentKit)
 		{
-			int sec = StoreItems.PushArray(item);
-
-			do
+			if(kv.GotoFirstSubKey())
 			{
-				ConfigSetup(sec, kv, 2, whitelist, 0, blacklist, 0);
+				int sec = StoreItems.PushArray(item);
+				
+				do
+				{
+					ConfigSetup(sec, kv, 2, whitelist, 0, blacklist, 0);
+				}
+				while(kv.GotoNextKey());
+				kv.GoBack();
 			}
-			while(kv.GotoNextKey());
-			kv.GoBack();
 		}
 		else
 		{
@@ -1756,7 +1759,7 @@ void Store_EquipSlotCheck(int client, int slot)
 				}
 			}
 
-			if(subItem.Slot == slot)
+			if(slot >= 0 && subItem.Slot == slot)
 			{
 				count++;
 				if(count >= (slot < sizeof(SlotLimits) ? SlotLimits[slot] : 1))

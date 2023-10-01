@@ -335,6 +335,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
+			case WEAPON_LEPER_MELEE:
+			{
+				enemies_hit_aoe = LeperEnemyAoeHit(client, weapon);
+			}
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
 			{
 				enemies_hit_aoe = SpecterHowManyEnemiesHit(client, weapon);
@@ -452,7 +456,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 }
 
-public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon)
+int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
 {
 	if(target == -1)
 		return ZEROSOUND;
@@ -470,6 +474,12 @@ public int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
+			case WEAPON_LEPER_MELEE:
+			{
+				PlayCustomSoundLeper(client, target);
+				PlayOnceOnly = false;
+				return ZEROSOUND;
+			}
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
 			{
 				PlayCustomSoundSpecter(client);
@@ -652,7 +662,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					if(!PlayOnceOnly)
 					{
 						PlayOnceOnly = true;
-						soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon);	
+						soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, i_EntitiesHitAoeSwing[counter], Item_Index, weapon, PlayOnceOnly);	
 
 						if(soundIndex > 0)
 						{

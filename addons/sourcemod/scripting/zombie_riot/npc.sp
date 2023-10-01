@@ -374,7 +374,8 @@ enum
 	EXPIDONSA_GIANTTANKUS			= 326,
 	EXPIDONSA_ANFUHREREISENHARD		= 327, //not as many gimmics as everything else has a million gimmics
 	EXPIDONSA_SPEEDUSADIVUS			= 328,
-	WEAPON_SENSAL_AFTERIMAGE		= 329
+	WEAPON_SENSAL_AFTERIMAGE		= 329,
+	WEAPON_LEPER_AFTERIMAGE		= 330
 	
 }
 
@@ -731,7 +732,8 @@ public const char NPC_Names[][] =
 	"Giant Tankus",
 	"Anfuhrer Eisenhard",
 	"Speedus Adivus",
-	"Allied Sensal Afterimage"
+	"Allied Sensal Afterimage",
+	"Allied Leper Afterimage"
 };
 // See items.sp for IDs to names
 public const int NPCCategory[] =
@@ -1449,6 +1451,7 @@ public const char NPC_Plugin_Names_Converted[][] =
 	"npc_anfuhrer_eisenhard",
 	"npc_speedus_adivus",
 	"",
+	"",
 };
 
 void NPC_MapStart()
@@ -1741,6 +1744,8 @@ void NPC_MapStart()
 
 	// Bloon Raid Low Prio
 	Bloonarius_MapStart();
+
+	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -2653,6 +2658,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case WEAPON_SENSAL_AFTERIMAGE:
 			entity = AlliedSensalAbility(client, vecPos, vecAng, ally);
+
+		case WEAPON_LEPER_AFTERIMAGE:
+			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -3588,6 +3596,9 @@ public void NPCDeath(int entity)
 
 		case WEAPON_SENSAL_AFTERIMAGE:
 			AlliedSensalAbility_NPCDeath(entity);
+
+		case WEAPON_LEPER_AFTERIMAGE:
+			AlliedLeperVisualiserAbility_NPCDeath(entity);
 
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -4542,6 +4553,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_cured_last_survivor.sp"
 #include "zombie_riot/npc/ally/npc_citizen.sp"
 #include "zombie_riot/npc/ally/npc_allied_sensal_afterimage.sp"
+#include "zombie_riot/npc/ally/npc_allied_leper_visualiser.sp"
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"

@@ -125,7 +125,8 @@ enum
 	WEAPON_FIRE_WAND = 54,
 	WEAPON_CASINO = 55,
 	WEAPON_ION_BEAM = 56,
-	WEAPON_SEABORNMELEE = 57
+	WEAPON_SEABORNMELEE = 57,
+	WEAPON_LEPER_MELEE = 58,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -422,6 +423,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_casino.sp"
 #include "zombie_riot/custom/wand/weapon_ion_beam_wand.sp"
 #include "zombie_riot/custom/kit_seaborn.sp"
+#include "zombie_riot/custom/weapon_class_leper.sp"
 
 void ZR_PluginLoad()
 {
@@ -629,6 +631,7 @@ void ZR_MapStart()
 	WeaponBoard_Precache();
 	Weapon_German_MapStart();
 	Ion_Beam_Wand_MapStart();
+	OnMapStartLeper();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
