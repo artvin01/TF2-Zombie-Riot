@@ -2437,5 +2437,49 @@
 	{
 		"en"	"Hold MOUSE2 while pressing RELOAD on a pap to gain access to a skill point alocation system"
 	}
+	"Seaborn Infection Desc"
+	{
+		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit."
+	}
+	"Seaborn Claws Desc"
+	{
+		"en"	"Hits up to 3 targets and increased melee range."
+	}
+	"Seaborn Claws Pap 1"
+	{
+		"en"	"Hits up to 4 targets, doubled melee range, and ignores walls."
+	}
+	"Seaborn Claws Pap 2"
+	{
+		"en"	"Hits up to 5 targets, doubled melee range, and ignores walls."
+	}
+	"Seaborn Claws Pap 3"
+	{
+		"en"	"Ability grants self and all nearby players double fire rate with a slight damage penalty."
+	}
+	"Seaborn Spines Desc"
+	{
+		"en"	"A crossbow that does more damage the further the target is."
+	}
+	"Seaborn Spines Pap 1"
+	{
+		"en"	"Ability spawns a Shell Sea Runner."
+	}
+	"Seaborn Spines Pap 2"
+	{
+		"en"	"Ability spawns two Shell Sea Runners."
+	}
+	"Seaborn Spines Pap 3"
+	{
+		"en"	"Ability grants self and all nearby players double damage with a slight fire rate penalty."
+	}
+	"Seaborn Salve Desc"
+	{
+		"en"	"Heals allies up to 100 health and self up to 30 health."
+	}
+	"Seaborn Salve Pap 1"
+	{
+		"en"	"Heals allies up to 200 health and self up to 50 health."
+	}
 }
 
