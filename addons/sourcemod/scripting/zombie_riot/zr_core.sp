@@ -199,7 +199,7 @@ float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
-
+int i_PreviousBuildingCollision[MAXENTITIES];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05

@@ -9,11 +9,7 @@ public void MudrockShieldUnequip(int client)
 	MudrockShield[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
 	
-	if (MudrockShieldHandle[client] == INVALID_HANDLE)
-		return;
-
-	KillTimer(MudrockShieldHandle[client]);
-	MudrockShieldHandle[client] = INVALID_HANDLE;
+	delete MudrockShieldHandle[client];
 }
 
 public void MudrockShieldDisconnect(int client)
