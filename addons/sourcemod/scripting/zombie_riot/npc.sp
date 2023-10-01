@@ -2660,7 +2660,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = AlliedSensalAbility(client, vecPos, vecAng, ally);
 
 		case WEAPON_LEPER_AFTERIMAGE:
-			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally);
+			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
