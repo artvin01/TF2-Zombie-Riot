@@ -73,10 +73,10 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			npc.SetActivity("ACT_MP_RUN_ITEM1");
 			npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 			int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
-			for(int i; i < layerCount; i++)
+			for(int ilayeri; ilayeri < layerCount; ilayeri++)
 			{
-				view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 0.05);
-				view_as<CClotBody>(npc.index).SetLayerCycle(i, 0.6);
+				view_as<CClotBody>(npc.index).SetLayerPlaybackRate(ilayeri, 0.05);
+				view_as<CClotBody>(npc.index).SetLayerCycle(ilayeri, 0.6);
 			}
 		}
 		if(solemny)
