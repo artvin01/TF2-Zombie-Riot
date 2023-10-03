@@ -495,12 +495,6 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 	//Think throttling
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
-	{
-		return;
-	}
-
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 	
 	if(!npc.m_flNextChargeSpecialAttack)
 	{
@@ -608,16 +602,6 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 	}
-	/*
-	if(npc.m_flNextRangedAttackHappening && npc.m_flDoingAnimation < GetGameTime(npc.index))
-	{
-		NPC_StartPathing(npc.index);
-		npc.m_bPathing = true;
-		npc.m_flSpeed = 330.0;
-		npc.m_iInKame = 0;
-		npc.m_flNextRangedAttackHappening = 0.0;
-	}
-	*/
 	if(npc.m_iInKame > 0 && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		if(npc.Anger)
@@ -877,7 +861,6 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		npc.m_flSpeed = 330.0;
 	}
-
 	if(IsEntityAlive(i_TargetToWalkTo[npc.index]))
 	{
 		int ActionToTake = -1;

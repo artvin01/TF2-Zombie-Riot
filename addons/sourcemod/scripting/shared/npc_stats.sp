@@ -8976,6 +8976,7 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 	if(b_thisNpcIsARaid[npcpather])
 	{
 		AddComputingDelay = 0.1;
+		f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
 	}
 	else
 	{

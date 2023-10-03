@@ -208,7 +208,7 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 }
 
 #define LEPER_BOUNDS_VIEW_EFFECT 25.0
-#define LEPER_MAXRANGE_VIEW_EFFECT 250.0
+#define LEPER_MAXRANGE_VIEW_EFFECT 125.0
 
 int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 {

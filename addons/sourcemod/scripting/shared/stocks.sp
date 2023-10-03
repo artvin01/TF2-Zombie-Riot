@@ -3820,7 +3820,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int cli
 
 stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
 {
-
 	float HudY = 0.75;
 	float HudX = -1.0;
 	HudX += f_NotifHudOffsetY[client];
