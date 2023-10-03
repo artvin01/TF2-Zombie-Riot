@@ -997,14 +997,15 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 		}
 		default: //womp womp
 		{
+			int RNG = GetRandomInt(0,7);
 			ClientCommand(client, "playgamesound ui/item_helmet_drop.wav");
-			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * GetRandomInt(0,7);
+			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * RNG;
 			if(i_Dollars_Ammount[client]>= CASINO_MAX_DOLLARS)
 			{
 				i_Dollars_Ammount[client] = CASINO_MAX_DOLLARS;
 			}
 
-			fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * GetRandomFloat(0.0,7.0);
+			fl_Damage_Ammount[client] += CASINO_DAMAGE_GAIN_PER_HIT * RNG;
 			if(fl_Damage_Ammount[client]>= CASINO_MAX_DAMAGE)
 			{
 				fl_Damage_Ammount[client] = CASINO_MAX_DAMAGE;
