@@ -736,3 +736,47 @@ public void GiftJumpTowardsYou(int Gift, int client)
 	}
 	TeleportEntity(Gift, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
 }
+
+
+bool Item_ClientHasAllRarity(int client, int rarity)
+{
+	static GiftItem item;
+	int rand = GetURandomInt();
+	int length = GiftItems.Length;
+	int[] items = new int[length];
+	int maxitems;
+	rarity--;
+	for(int i; i < length; i++)
+	{
+		GiftItems.GetArray(i, item);
+		if(item.Rarity == rarity)
+		{
+			items[maxitems++] = i;
+		}
+	}
+
+	int start = (rand % maxitems);
+	int i = start;
+	do
+	{
+		i++;
+		if(i >= maxitems)
+		{
+			i = -1;
+			continue;
+		}
+		if(Items_GiveIdItem(client, items[i], false))	// Gives item, returns true if newly obtained, false if they already have
+		{
+			GiftItems.GetArray(items[i], item);
+			length = 0;
+			break;
+		}
+	}
+	while(i != start);
+	
+	if(length)
+	{
+		return true;
+	}
+	return false;
+}

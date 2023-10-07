@@ -3221,6 +3221,8 @@ public void MenuPage(int client, int section)
 				if(info.ScrapCost > 0)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
+					if(Item_ClientHasAllRarity(client, info.UnboxRarity))
+						style = ITEMDRAW_DISABLED;
 				}
 				else if(item.Equipped[client])
 				{
