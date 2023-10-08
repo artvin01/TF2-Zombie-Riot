@@ -1754,7 +1754,6 @@ void Store_EquipSlotCheck(int client, int slot)
 				{
 					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
 					Store_Unequip(client, i);
-					StoreItems.SetArray(i, subItem);
 					continue;
 				}
 			}
@@ -1766,7 +1765,6 @@ void Store_EquipSlotCheck(int client, int slot)
 				{
 					PrintToChat(client, "%s was unequipped", TranslateItemName(client, subItem.Name, ""));
 					Store_Unequip(client, i);
-					StoreItems.SetArray(i, subItem);
 					continue;
 				}
 			}
