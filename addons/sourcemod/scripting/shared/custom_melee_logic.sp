@@ -337,7 +337,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		{
 			case WEAPON_LEPER_MELEE:
 			{
-				enemies_hit_aoe = LeperEnemyAoeHit(client, weapon);
+				enemies_hit_aoe = LeperEnemyAoeHit(client);
 			}
 			case WEAPON_SPECTER: //yes, if we miss, then we do other stuff.
 			{

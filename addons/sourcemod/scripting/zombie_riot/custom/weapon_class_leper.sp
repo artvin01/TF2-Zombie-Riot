@@ -19,7 +19,7 @@ void OnMapStartLeper()
 	Zero(LeperSwingType);
 }
 
-int LeperEnemyAoeHit(int client, int weapon)
+int LeperEnemyAoeHit(int client)
 {
 	switch(LeperSwingType[client])
 	{

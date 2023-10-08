@@ -263,6 +263,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 
 		Cached[client] = true;
 		Store_OnCached(client);
+		Native_OnClientLoaded(client);
 
 		if(tr)
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);

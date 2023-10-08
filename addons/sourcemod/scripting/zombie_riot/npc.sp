@@ -375,11 +375,13 @@ enum
 	EXPIDONSA_ANFUHREREISENHARD		= 327, //not as many gimmics as everything else has a million gimmics
 	EXPIDONSA_SPEEDUSADIVUS			= 328,
 	WEAPON_SENSAL_AFTERIMAGE		= 329,
-	WEAPON_LEPER_AFTERIMAGE		= 330
+	WEAPON_LEPER_AFTERIMAGE		= 330,
 	
+
+	MAX_NPC_TYPES	// Add entries above this line
 }
 
-public const char NPC_Names[][] =
+public const char NPC_Names[MAX_NPC_TYPES][] =
 {
 	"nothing",
 	"Headcrab Zombie",
@@ -735,8 +737,9 @@ public const char NPC_Names[][] =
 	"Allied Sensal Afterimage",
 	"Allied Leper Afterimage"
 };
+
 // See items.sp for IDs to names
-public const int NPCCategory[] =
+public const int NPCCategory[MAX_NPC_TYPES] =
 {
 	-1,	// NOTHING 						= 0,	
 	3,	// HEADCRAB_ZOMBIE 				= 1,	
@@ -1097,7 +1100,7 @@ public const int NPCCategory[] =
 	0, 	//WEAPON_SENSAL_AFTERIMAGE			= 329 
 };
 
-public const char NPC_Plugin_Names_Converted[][] =
+public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 {
 	"npc_nothing",
 	"npc_headcrabzombie",
