@@ -135,7 +135,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_SLASH doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
 			LastHitTarget = victim;
 			
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 5);		
+			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 4);		
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
 			i_Ricochet[attacker] -= 1;
@@ -145,7 +145,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	{
 		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 		int ammo = GetEntData(weapon, iAmmoTable, 4);//Get ammo clip
-		damageMod += 5 + ammo;
+		damageMod += 8 + ammo;
 		i_MegaShot[attacker] -= 1;
 		ApplyTempAttrib(weapon, 97, 1.2, 3.0);
 		SetEntData(weapon, iAmmoTable, 0, 4, true);
@@ -822,7 +822,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				{
 					KillTimer(AmmoRefill_timer[client]);
 				}
-				AmmoRefill_timer[client] = CreateTimer(90.0, AmmoRefillCasino, client, TIMER_FLAG_NO_MAPCHANGE);
+				AmmoRefill_timer[client] = CreateTimer(100.0, AmmoRefillCasino, client, TIMER_FLAG_NO_MAPCHANGE);
 				AmmoRefill[client] = true;
 
 				ClientCommand(client, "playgamesound ui/killsound_space.wav");
