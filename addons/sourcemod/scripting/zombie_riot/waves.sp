@@ -1695,6 +1695,20 @@ void Waves_AddNextEnemy(const Enemy enemy)
 		Enemies.PushArray(enemy);
 }
 
+void Waves_ClearWave()
+{
+	if(CurrentRound >= 0 && CurrentRound < Rounds.Length)
+	{
+		Round round;
+		Rounds.GetArray(CurrentRound, round);
+		CurrentWave = round.Waves.Length;
+	}
+	else
+	{
+		CurrentWave = 999;
+	}
+}
+
 bool Waves_Started()
 {
 	if(Rogue_Mode())

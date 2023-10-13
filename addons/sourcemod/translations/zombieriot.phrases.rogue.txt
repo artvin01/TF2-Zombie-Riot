@@ -1036,4 +1036,28 @@
 		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from battles, doubled on Elite battles."
 		"ru"	"Когда они распространяют на других свою дружбу, они не позволяют ей быть запятнанной.\n{green}+1 слиток австралиума выпадает из сражений, удваивается в элитных сражениях."
 	}
+	"Broken Combine Crown"
+	{
+		"en"	"Broken Combine Crown"
+	}
+	"Broken Combine Crown Desc"
+	{
+		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}Allies receive -5% max health {blue}and the ending is changed."
+	}
+	"Bob's Reseach Papers"
+	{
+		"en"	"Bob's Reseach Papers"
+	}
+	"Bob's Reseach Papers"
+	{
+		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10% movement speed."
+	}
+	"Bob's Final Draft"
+	{
+		"en"	"Bob's Final Draft"
+	}
+	"Bob's Final Draft"
+	{
+		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}Allies receive +15%% damage bonus and +20% movement speed {blue}and the ending is changed."
+	}
 }

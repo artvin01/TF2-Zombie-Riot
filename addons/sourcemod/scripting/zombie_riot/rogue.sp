@@ -94,6 +94,7 @@ enum struct Stage
 
 	Function FuncStart;
 	char WaveSet[PLATFORM_MAX_PATH];
+	char ArtifactKey[64];
 
 	void SetupKv(KeyValues kv)
 	{
@@ -124,6 +125,8 @@ enum struct Stage
 				this.WaveSet[0] = 0;
 			}
 		}
+
+		kv.GetString("key", this.ArtifactKey, 64);
 	}
 }
 
@@ -132,6 +135,7 @@ enum struct Floor
 	char Name[64];
 	char Camera[64];
 	char Skyname[64];
+	char ArtifactKey[64];
 	int RoomCount;
 
 	char MusicNormal[PLATFORM_MAX_PATH];
@@ -157,6 +161,7 @@ enum struct Floor
 		this.RoomCount = kv.GetNum("rooms", 2) - 2;
 		kv.GetString("camera", this.Camera, 64);
 		kv.GetString("skyname", this.Skyname, 64);
+		kv.GetString("key", this.ArtifactKey, 64);
 
 		kv.GetString("normal_path", this.MusicNormal, PLATFORM_MAX_PATH);
 		this.TimeNormal = kv.GetNum("normal_time");
@@ -456,6 +461,24 @@ void Rogue_SetupVote(KeyValues kv)
 				Floors.PushArray(floor);
 			}
 			while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
+
+	if(kv.JumpToKey("CustomSounds"))
+	{
+		if(kv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				kv.GetSectionName(floor.MusicNormal, sizeof(floor.MusicNormal));
+				if(floor.MusicNormal[0])
+					PrecacheSoundCustom(floor.MusicNormal, _, 15);
+			}
+			while(kv.GotoNextKey(false));
 
 			kv.GoBack();
 		}
@@ -900,7 +923,7 @@ void Rogue_NextProgress()
 			Floors.GetArray(CurrentFloor, floor);
 			
 			Stage stage;
-			int id = GetRandomStage(floor, stage, false, true);
+			int id = GetRandomStage(floor, stage, 1);
 			if(id == -1)
 			{
 				PrintToChatAll("NO BATTLES ON FIRST FLOOR? BAD CFG, REPORT BUG");
@@ -994,17 +1017,29 @@ void Rogue_NextProgress()
 				CurrentCount = -1;
 				ExtraStageCount = 0;
 
-				if(CurrentFloor >= Floors.Length)	// All the floors are done
+				bool victory = CurrentFloor >= Floors.Length;
+				if(!victory)
+				{
+					Floors.GetArray(CurrentFloor, floor);
+					if(!floor.ArtifactKey[0] || !Rogue_HasNamedArtifact(floor.ArtifactKey))
+						victory = true;
+				}
+
+				if(victory)	// All the floors are done
 				{
 					for(int client = 1; client <= MaxClients; client++)
 					{
-						if(!b_IsPlayerABot[client] && IsClientInGame(client))
+						if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
 						{
 							Music_Stop_All(client);
 							SetMusicTimer(client, GetTime() + 33);
+							SendConVarValue(client, sv_cheats, "1");
 						}
 					}
 
+					cvarTimeScale.SetFloat(0.1);
+					CreateTimer(0.5, SetTimeBack);
+					
 					char_MusicString1[0] = 0;
 					char_MusicString2[0] = 0;
 					char_RaidMusicSpecial1[0] = 0;
@@ -1023,7 +1058,6 @@ void Rogue_NextProgress()
 				{
 					TeleportToSpawn();
 
-					Floors.GetArray(CurrentFloor, floor);
 					SetAllCamera(floor.Camera, floor.Skyname);
 
 					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
@@ -1110,7 +1144,7 @@ void Rogue_NextProgress()
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
 			{
-				int id = GetRandomStage(floor, stage, true, false);
+				int id = GetRandomStage(floor, stage, 2);
 				if(id == -1)
 				{
 					// We somehow don't have a final stage
@@ -1146,7 +1180,7 @@ void Rogue_NextProgress()
 				Vote vote;
 				for(int i; i < count; i++)
 				{
-					int id = GetRandomStage(floor, stage, false, false);
+					int id = GetRandomStage(floor, stage, 0);
 					if(id != -1)
 					{
 						strcopy(vote.Config, sizeof(vote.Config), stage.Name);
@@ -1583,9 +1617,9 @@ static int GetStageByName(const Floor floor, const char[] name, bool final, Stag
 	return -1;
 }
 
-static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battleOnly)
+static int GetRandomStage(const Floor floor, Stage stage, int type)
 {
-	ArrayList list = final ? floor.Finals : floor.Encounters;
+	ArrayList list = type == 2 ? floor.Finals : floor.Encounters;
 	if(!list)
 		list = floor.Encounters;
 	
@@ -1593,21 +1627,60 @@ static int GetRandomStage(const Floor floor, Stage stage, bool final, bool battl
 
 	int start = GetURandomInt() % length;
 	int i = start;
-	do
+	
+	if(type == 2)
 	{
-		if(i >= length)
-		{
-			i = 0;
-			continue;
-		}
-		
-		list.GetArray(i, stage);
-		if((!battleOnly || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION)) && (final || !CurrentExclude || CurrentExclude.FindString(stage.Name) == -1))
-			return i;
+		int choosen = -1;
 
-		i++;
+		do
+		{
+			if(i >= length)
+			{
+				i = 0;
+				continue;
+			}
+			
+			list.GetArray(i, stage);
+			if(stage.ArtifactKey[0])
+			{
+				if(Rogue_HasNamedArtifact(stage.ArtifactKey))
+					return i;
+			}
+			else if(choosen == -1)
+			{
+				choosen = i;
+			}
+
+			i++;
+		}
+		while(i != start);
+
+		return choosen;
 	}
-	while(i != start);
+	else
+	{
+		do
+		{
+			if(i >= length)
+			{
+				i = 0;
+				continue;
+			}
+			
+			list.GetArray(i, stage);
+			if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey))	// Key
+			{
+				if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+				{
+					if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
+						return i;
+				}
+			}
+
+			i++;
+		}
+		while(i != start);
+	}
 
 	return -1;
 }

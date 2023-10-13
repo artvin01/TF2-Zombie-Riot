@@ -1793,4 +1793,12 @@
 	{
 		"en"	"Allied Sensal Afterimage"
 	}
+	"Overlord The Last"
+	{
+		"en"	"Overlord The Last"
+	}
+	"Bladedance The Combine"
+	{
+		"en"	"Bladedance The Combine"
+	}
 }

@@ -1245,4 +1245,12 @@
 	{
 		"en"	"A high speed saber-ist."
 	}
+	"Overlord The Last Desc"
+	{
+		"en"	"You took it all from him, now he returns a favor."
+	}
+	"Bladedance The Combine Desc"
+	{
+		"en"	"What can be as strong as Bob?"
+	}
 }

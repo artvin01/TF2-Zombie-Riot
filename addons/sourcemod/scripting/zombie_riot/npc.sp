@@ -376,6 +376,8 @@ enum
 	EXPIDONSA_SPEEDUSADIVUS			= 328,
 	WEAPON_SENSAL_AFTERIMAGE		= 329,
 	WEAPON_LEPER_AFTERIMAGE		= 330,
+	OVERLORD_ROGUE	= 331,
+	RAIDBOSS_BLADEDANCE = 332,
 	
 
 	MAX_NPC_TYPES	// Add entries above this line
@@ -735,7 +737,9 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Anfuhrer Eisenhard",
 	"Speedus Adivus",
 	"Allied Sensal Afterimage",
-	"Allied Leper Afterimage"
+	"Allied Leper Afterimage",
+	"Overlord The Last",
+	"Bladedance The Combine"
 };
 
 // See items.sp for IDs to names
@@ -1098,6 +1102,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	10,	// EXPIDONSA_ANFUHREREISENHARD		= 327,
 	10, //EXPIDONSA_SPEEDUSADIVUS			= 328,
 	0, 	//WEAPON_SENSAL_AFTERIMAGE			= 329 
+	-1,	// OVERLORD_ROGUE
+	-1	// RAIDBOSS_BLADEDANCE
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1455,6 +1461,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_speedus_adivus",
 	"",
 	"",
+	"npc_overlord_rogue",
+	"npc_bladedance"
 };
 
 void NPC_MapStart()
@@ -1591,6 +1599,7 @@ void NPC_MapStart()
 	
 	BasicBones_OnMapStart_NPC();
 	Itstilives_MapStart();
+	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	
 	Mecha_Engineer_OnMapStart_NPC();
 	Mecha_Heavy_OnMapStart_NPC();
@@ -1748,7 +1757,9 @@ void NPC_MapStart()
 	// Bloon Raid Low Prio
 	Bloonarius_MapStart();
 
-	AlliedLeperVisualiserAbility_OnMapStart_NPC();
+	// Rogue Mode Low Prio
+	OverlordRogue_OnMapStart_NPC();
+	RaidbossBladedance_MapStart();
 }
 
 any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
@@ -2664,6 +2675,12 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case WEAPON_LEPER_AFTERIMAGE:
 			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
+
+		case OVERLORD_ROGUE:
+			entity = OverlordRogue(client, vecPos, vecAng, ally);
+
+		case RAIDBOSS_BLADEDANCE:
+			entity = RaidbossBladedance(client, vecPos, vecAng, ally);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
@@ -3603,6 +3620,12 @@ public void NPCDeath(int entity)
 		case WEAPON_LEPER_AFTERIMAGE:
 			AlliedLeperVisualiserAbility_NPCDeath(entity);
 
+		case OVERLORD_ROGUE:
+			OverlordRogue_NPCDeath(entity);
+		
+		case RAIDBOSS_BLADEDANCE:
+			RaidbossBladedance_NPCDeath(entity);
+
 		default:
 			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
 		
@@ -4444,6 +4467,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 		case EXPIDONSA_SPEEDUSADIVUS:
 			SpeedusAdivus_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case OVERLORD_ROGUE:
+			OverlordRogue_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RAIDBOSS_BLADEDANCE:
+			RaidbossBladedance_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 	return Plugin_Changed;
 }
@@ -4787,3 +4816,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/npc_sensal.sp"
 
 #include "zombie_riot/npc/ally/npc_vip_building.sp"
+#include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
