@@ -497,3 +497,142 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 		}
 	}
 }
+
+public float Rogue_Encounter_BrokenCrown()
+{
+	PrintToChatAll("%t", "Broken Crown Lore");
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BrokenCrown, "Lore Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Broken Crown Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Broken Crown Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Broken Crown Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Broken Crown Desc 2");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_BrokenCrown(const Vote vote, int index)
+{
+	if(index)
+	{
+		PrintToChatAll("%t", "Broken Crown Lore 2");
+
+		Rogue_AddIngots(2);
+	}
+	else
+	{
+		PrintToChatAll("%t", "Broken Crown Lore 1");
+
+		Rogue_GiveNamedArtifact("Broken Combine Crown");
+	}
+}
+
+public float Rogue_Encounter_BobResearch()
+{
+	PrintToChatAll("%t", "Bob Research Lore");
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobResearch, "Lore Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Bob Research Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Bob Research Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Bob Research Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_BobResearch(const Vote vote, int index)
+{
+	if(index)
+	{
+		PrintToChatAll("%t", "Bob Research Lore 2");
+	}
+	else
+	{
+		PrintToChatAll("%t", "Bob Research Lore 1");
+
+		Rogue_GiveNamedArtifact("Bob's Reseach Papers");
+	}
+}
+
+public float Rogue_Encounter_BobFinal()
+{
+	PrintToChatAll("%t", "Bob Final Lore");
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobFinal, "Lore Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_BobFinal(const Vote vote, int index)
+{
+	if(index)
+	{
+		PrintToChatAll("%t", "Bob Final Lore 2");
+	}
+	else
+	{
+		PrintToChatAll("%t", "Bob Final Lore 1");
+
+		Rogue_GiveNamedArtifact("Bob's Final Draft");
+	}
+}
+
+public float Rogue_Encounter_BrokenBridge()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BrokenBridge, "Broken Bridge Title");
+	Vote vote;
+
+	if(Rogue_GetIngots() > 2)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Broken Bridge Option 1");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Broken Bridge Desc 1");
+		list.PushArray(vote);
+	}
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Broken Bridge Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
+{
+	if(Rogue_GetIngots() < 3 || index)
+	{
+		PrintToChatAll("%t", "Broken Bridge Lore 2");
+	}
+	else
+	{
+		PrintToChatAll("%t", "Broken Bridge Lore 1");
+
+		Rogue_AddIngots(-3);
+		
+		Artifact artifact;
+		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+			Rogue_GiveNamedArtifact(vote.Name);
+	}
+}

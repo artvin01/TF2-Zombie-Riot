@@ -32,6 +32,13 @@ public float Rogue_Encounter_HardBattle()
 	return 0.0;
 }
 
+public float Rogue_Encounter_BossBattle()
+{
+	Rogue_SetRequiredBattle(true);
+	Rogue_SetBattleIngots(5 + (Rogue_GetRound() / 2));
+	return 0.0;
+}
+
 public float Rogue_Encounter_CrimsonTroupe()
 {
 	Rogue_SetBattleIngots(5 + (Rogue_GetRound() / 2));
@@ -54,14 +61,14 @@ public float Rogue_Encounter_CrimsonTroupe()
 	return 25.0;
 }
 
-public float Rogue_Encounter_XenoShaft()	// TODO
+public float Rogue_Encounter_XenoShaft()
 {
 	Rogue_SetBattleIngots(5);
 
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Crimson Troupe Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Xeno Shaft Title");
 	Vote vote;
 
-	strcopy(vote.Name, sizeof(vote.Name), "Let's check out this show");
+	strcopy(vote.Name, sizeof(vote.Name), "Investigate the mines");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
 	vote.Config[0] = 1;
 	list.PushArray(vote);
@@ -76,14 +83,36 @@ public float Rogue_Encounter_XenoShaft()	// TODO
 	return 25.0;
 }
 
-public float Rogue_Encounter_Stultifera()	// TODO
+public float Rogue_Encounter_Stultifera()
 {
 	Rogue_SetBattleIngots(7);
 
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Crimson Troupe Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Stultifera Title");
 	Vote vote;
 
-	strcopy(vote.Name, sizeof(vote.Name), "Let's check out this show");
+	strcopy(vote.Name, sizeof(vote.Name), "Investigate the mines");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	vote.Config[0] = 1;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+public float Rogue_Encounter_MedivealAlly()
+{
+	Rogue_SetBattleIngots(3);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Mediveal Ally Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Mediveal Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
 	vote.Config[0] = 1;
 	list.PushArray(vote);

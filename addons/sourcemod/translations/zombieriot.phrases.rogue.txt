@@ -74,8 +74,7 @@
 	// Encounters
 	"Optional Battle Title"
 	{
-		"en"	"Something seems off about this, should we fight or leave right here."
-		"ru"	"Что-то здесь не так, мы должны сражаться или уйти прямо сейчас."
+		"en"	"Something seems off about this, should we fight or leave right here?"
 	}
 	"We can handle this"
 	{
@@ -204,7 +203,7 @@
 	"Eccentric Lore 1"
 	{
 		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload. 'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other.''"
-        "ru"	"\"Он принадлежит к линии лордов комбайнов, могущественных и защищающих дело, в которое они верят. Другие лорды видят иначе, чем он. «Тень» видит так: напустить тьму на мир и покончить с ним, как можно скорее. «Взбешённый клинок» видит так: поставить всех друг против друга, чтобы каждый боролся за себя. «Белый цветок» не видит ничего в человечестве, позволяя только природе существовать. Что касается «Первейшего», ну, скажем так, запутанно, что они оба имеют против друг-друга.\""
+		"ru"	"\"Он принадлежит к линии лордов комбайнов, могущественных и защищающих дело, в которое они верят. Другие лорды видят иначе, чем он. «Тень» видит так: напустить тьму на мир и покончить с ним, как можно скорее. «Взбешённый клинок» видит так: поставить всех друг против друга, чтобы каждый боролся за себя. «Белый цветок» не видит ничего в человечестве, позволяя только природе существовать. Что касается «Первейшего», ну, скажем так, запутанно, что они оба имеют против друг-друга.\""
 	}
 	"Eccentric Option 2"
 	{
@@ -391,6 +390,122 @@
 		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
 		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
 	}
+	"Xeno Shaft Title"
+	{
+		"en"	"You can hear a figure walking about in the mines, perhaps guarding something of value?"
+	}
+	"Investigate the mines"
+	{
+		"en"	"Investigate the mines"
+	}
+	"Stultifera Title"
+	{
+		"en"	"A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
+	}
+	"Broken Crown Lore"
+	{
+		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it. You feel you've seen these before, an aura of rage surrounds it."
+	}
+	"Broken Crown Option 1"
+	{
+		"en"	"Take the broken crown"
+	}
+	"Broken Crown Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
+	"Broken Crown Lore 1"
+	{
+		"en"	"The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
+	}
+	"Broken Crown Option 2"
+	{
+		"en"	"Take the golden sword"
+	}
+	"Broken Crown Desc 2"
+	{
+		"en"	"{green}Gain 2 Australium Ingots"
+	}
+	"Broken Crown Lore 2"
+	{
+		"en"	"You brush aside the crown as you try picking up the sword from the ground. The blade snaps in half. Worthless as a weapon now but we could sell the gold later."
+	}
+	"Bob Research Lore"
+	{
+		"en"	"You find yourself in a blank room. In the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
+	}
+	"Bob Research Option 1"
+	{
+		"en"	"Take a look at it"
+	}
+	"Bob Research Lore 1"
+	{
+		"en"	"You find it's messy as if someone rushed out. You find papers on the desk, you read it."
+	}
+	"Bob Research Option 2"
+	{
+		"en"	"We're getting lost"
+	}
+	"Bob Research Lore 2"
+	{
+		"en"	"You head out, it's dark and we have other things to take care of."
+	}
+	"Bob Final Lore"
+	{
+		"en"	"You find yourself in a blank room. You find the same tiny office setup from before but the lights are off."
+	}
+	"Bob Final Option 1"
+	{
+		"en"	"I don't remember turning it off"
+	}
+	"Bob Final Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
+	"Bob Final Lore 1"
+	{
+		"en"	"You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
+	}
+	"Bob Final Option 2"
+	{
+		"en"	"Nothing changed"
+	}
+	"Bob Final Lore 2"
+	{
+		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
+	}
+	"Mediveal Ally Title"
+	{
+		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+	}
+	"Mediveal Option 1"
+	{
+		"en"	"Side with the Medievalists"
+	}
+	"Broken Bridge Title"
+	{
+		"en"	"In your path, a bridge breaks in front of you."
+	}
+	"Broken Bridge Option 1"
+	{
+		"en"	"We could rebuild this"
+	}
+	"Broken Bridge Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+	}
+	"Broken Bridge Lore 1"
+	{
+		"en"	"You rebuilt the bridge using your supplies, one the other side you happen to find a dropped item."
+	}
+	"Broken Bridge Option 2"
+	{
+		"en"	"Better go around"
+	}
+	"Broken Bridge Lore 2"
+	{
+		"en"	"Time is better spent elsewhere, nothing important anyways."
+	}
 
 	// Stages
 	"Dense Fog"
@@ -407,10 +522,18 @@
 		"en"	"Electric Tower"
 		"ru"	"Электробашня"
 	}
+	"Electric Tower!"
+	{
+		"en"	"Electric Tower ⚠"
+	}
 	"Tower Madness"
 	{
 		"en"	"Tower Madness"
 		"ru"	"Безумие башни"
+	}
+	"Tower Madness!"
+	{
+		"en"	"Tower Madness ⚠"
 	}
 	"Caged Beast"
 	{
@@ -437,10 +560,18 @@
 		"en"	"Water Fountain"
 		"ru"	"Водный фонтан"
 	}
+	"Water Fountain!"
+	{
+		"en"	"Water Fountain ⚠"
+	}
 	"Abandoned Graveyard"
 	{
 		"en"	"Abandoned Graveyard"
 		"ru"	"Заброшенное кладбище"
+	}
+	"Abandoned Graveyard!"
+	{
+		"en"	"Abandoned Graveyard ⚠"
 	}
 	"Pure Desert"
 	{
@@ -532,6 +663,258 @@
 		"en"	"Eye for an Eye"
 		"ru"	"Око за око"
 	}
+	"Fight to the Death"
+	{
+		"en"	"Fight to the Death"
+	}
+	"Fight to the Death!"
+	{
+		"en"	"Fight to the Death ⚠"
+	}
+	"Shooting Range"
+	{
+		"en"	"Shooting Range"
+	}
+	"Shooting Range!"
+	{
+		"en"	"Shooting Range ⚠"
+	}
+	"Car Battery"
+	{
+		"en"	"Car Battery"
+	}
+	"Car Battery!"
+	{
+		"en"	"Car Battery ⚠"
+	}
+	"A Date with Arrows"
+	{
+		"en"	"A Date with Arrows"
+	}
+	"A Date with Arrows!"
+	{
+		"en"	"A Date with Arrows ⚠"
+	}
+	"Not So Finale"
+	{
+		"en"	"Not So Finale"
+	}
+	"Not So Finale!"
+	{
+		"en"	"Not So Finale ⚠"
+	}
+	"Gift Delivery"
+	{
+		"en"	"Gift Delivery"
+	}
+	"Gift Delivery!"
+	{
+		"en"	"Gift Delivery ⚠"
+	}
+	"Viscera Cleanup"
+	{
+		"en"	"Viscera Cleanup"
+	}
+	"Viscera Cleanup!"
+	{
+		"en"	"Viscera Cleanup ⚠"
+	}
+	"Forgot My Passport"
+	{
+		"en"	"Forgot My Passport"
+	}
+	"Forgot My Passport!"
+	{
+		"en"	"Forgot My Passport ⚠"
+	}
+	"Castle Age"
+	{
+		"en"	"Castle Age"
+	}
+	"Castle Age!"
+	{
+		"en"	"Castle Age ⚠"
+	}
+	"Terrifying Legends"
+	{
+		"en"	"Terrifying Legends ☠"
+	}
+	"Dungeon Rematch"
+	{
+		"en"	"Dungeon Rematch ☠"
+	}
+	"On Your Guard"
+	{
+		"en"	"On Your Guard"
+	}
+	"On Your Guard!"
+	{
+		"en"	"On Your Guard ⚠"
+	}
+	"Darkest Dungeon"
+	{
+		"en"	"Darkest Dungeon"
+	}
+	"Darkest Dungeon!"
+	{
+		"en"	"Darkest Dungeon ⚠"
+	}
+	"The Hitman"
+	{
+		"en"	"The Hitman"
+	}
+	"The Hitman!"
+	{
+		"en"	"The Hitman ⚠"
+	}
+	"Under Tides"
+	{
+		"en"	"Under Tides"
+	}
+	"Under Tides!"
+	{
+		"en"	"Under Tides ⚠"
+	}
+	"Fish Bait"
+	{
+		"en"	"Fish Bait"
+	}
+	"Fish Bait!"
+	{
+		"en"	"Fish Bait ⚠"
+	}
+	"Need For Speed"
+	{
+		"en"	"Need For Speed"
+	}
+	"Need For Speed!"
+	{
+		"en"	"Need For Speed ⚠"
+	}
+	"Deep Rock Heist"
+	{
+		"en"	"Deep Rock Heist"
+	}
+	"Deep Rock Heist!"
+	{
+		"en"	"Deep Rock Heist ⚠"
+	}
+	"Teutons"
+	{
+		"en"	"Teutons"
+	}
+	"Teutons!"
+	{
+		"en"	"Teutons ⚠"
+	}
+	"Blitz"
+	{
+		"en"	"Blitz"
+	}
+	"Blitz!"
+	{
+		"en"	"Blitz ⚠"
+	}
+	"Heroic Age"
+	{
+		"en"	"Heroic Age"
+	}
+	"Heroic Age!"
+	{
+		"en"	"Heroic Age ⚠"
+	}
+	"Undead Warriors"
+	{
+		"en"	"Undead Warriors"
+	}
+	"Undead Warriors!"
+	{
+		"en"	"Undead Warriors ⚠"
+	}
+	"Gray Robots"
+	{
+		"en"	"Gray Robots"
+	}
+	"Gray Robots!"
+	{
+		"en"	"Gray Robots ⚠"
+	}
+	"Xeno Monsters"
+	{
+		"en"	"Xeno Monsters"
+	}
+	"Xeno Monsters!"
+	{
+		"en"	"Xeno Monsters ⚠"
+	}
+	"Ambush"
+	{
+		"en"	"Ambush"
+	}
+	"Ambush!"
+	{
+		"en"	"Ambush ⚠"
+	}
+	"Steel Workers"
+	{
+		"en"	"Steel Workers"
+	}
+	"Steel Workers!"
+	{
+		"en"	"Steel Workers ⚠"
+	}
+	"Infighting"
+	{
+		"en"	"Infighting"
+	}
+	"Infighting!"
+	{
+		"en"	"Infighting ⚠"
+	}
+	"Simple Yet Deadly"
+	{
+		"en"	"Simple Yet Deadly"
+	}
+	"Simple Yet Deadly!"
+	{
+		"en"	"Simple Yet Deadly ⚠"
+	}
+	"Patient Zero"
+	{
+		"en"	"Patient Zero ☠"
+	}
+	"Highest Rule"
+	{
+		"en"	"Highest Rule ☠"
+	}
+	"Familiar Yet Not!"
+	{
+		"en"	"Familiar Yet Not ⚠"
+	}
+	"Future Or Not!"
+	{
+		"en"	"Future Or Not ⚠"
+	}
+	"Bob's Fear"
+	{
+		"en"	"Bob's Fear ☠"
+	}
+	"Lost Crown and Sword"
+	{
+		"en"	"Lost Crown and Sword"
+	}
+	"Bob's Room"
+	{
+		"en"	"Bob's Room"
+	}
+	"Bob's Dark Room"
+	{
+		"en"	"Bob's Dark Room"
+	}
+	"Temporary Alliance"
+	{
+		"en"	"Temporary Alliance"
+	}
 
 	// Curses
 	"Bewildered"
@@ -580,7 +963,7 @@
 	}
 	"Solitary Lore"
 	{
-		"en"	"You are afraid of losing all that you hold dear. You will do everything it takes to make sure they do not go anywhere.
+		"en"	"You are afraid of losing all that you hold dear. You will do everything it takes to make sure they do not go anywhere."
 	}
 	"Blind"
 	{
@@ -1048,7 +1431,7 @@
 	{
 		"en"	"Bob's Reseach Papers"
 	}
-	"Bob's Reseach Papers"
+	"Bob's Reseach Papers Desc"
 	{
 		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10% movement speed."
 	}
@@ -1056,8 +1439,144 @@
 	{
 		"en"	"Bob's Final Draft"
 	}
-	"Bob's Final Draft"
+	"Bob's Final Draft Desc"
 	{
 		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}Allies receive +15%% damage bonus and +20% movement speed {blue}and the ending is changed."
+	}
+	"Hand of Sticks"
+	{
+		"en"	"Hand of Sticks"
+	}
+	"Hand of Sticks Desc"
+	{
+		"en"	""
+	}
+	"Hand of Superspeed"
+	{
+		"en"	"Hand of Superspeed"
+	}
+	"Hand of Superspeed Desc"
+	{
+		"en"	""
+	}
+	"Hand of Mailbox"
+	{
+		"en"	"Hand of Mailbox"
+	}
+	"Hand of Mailbox Desc"
+	{
+		"en"	""
+	}
+	"Hand of Quake"
+	{
+		"en"	"Hand of Quake"
+	}
+	"Hand of Quake Desc"
+	{
+		"en"	""
+	}
+	"Hand of Travel"
+	{
+		"en"	"Hand of Travel"
+	}
+	"Hand of Travel Desc"
+	{
+		"en"	""
+	}
+	"Hand of Flesh"
+	{
+		"en"	"Hand of Flesh"
+	}
+	"Hand of Flesh Desc"
+	{
+		"en"	""
+	}
+	"Hand of Trapmaster"
+	{
+		"en"	"Hand of Trapmaster"
+	}
+	"Hand of Trapmaster Desc"
+	{
+		"en"	""
+	}
+	"Hand of Geek"
+	{
+		"en"	"Hand of Geek"
+	}
+	"Hand of Geek Desc"
+	{
+		"en"	""
+	}
+	"Hand of Panic"
+	{
+		"en"	"Hand of Panic"
+	}
+	"Hand of Panic Desc"
+	{
+		"en"	""
+	}
+	"Hand of Fisting"
+	{
+		"en"	"Hand of Fisting"
+	}
+	"Hand of Fisting Desc"
+	{
+		"en"	""
+	}
+	"Hand of Suprise"
+	{
+		"en"	"Hand of Suprise"
+	}
+	"Hand of Suprise Desc"
+	{
+		"en"	""
+	}
+	"Hand of Suppression"
+	{
+		"en"	"Hand of Suppression"
+	}
+	"Hand of Suppression Desc"
+	{
+		"en"	""
+	}
+	"Hand of Flood"
+	{
+		"en"	"Hand of Flood"
+	}
+	"Hand of Flood Desc"
+	{
+		"en"	""
+	}
+	"Hand of Revenge"
+	{
+		"en"	"Hand of Revenge"
+	}
+	"Hand of Revenge Desc"
+	{
+		"en"	""
+	}
+	"Hand of Discounts"
+	{
+		"en"	"Hand of Discounts"
+	}
+	"Hand of Discounts Desc"
+	{
+		"en"	""
+	}
+	"Hand of Stock"
+	{
+		"en"	"Hand of Stock"
+	}
+	"Hand of Stock Desc"
+	{
+		"en"	""
+	}
+	"Hand of Poland"
+	{
+		"en"	"Hand of Poland"
+	}
+	"Hand of Poland Desc"
+	{
+		"en"	""
 	}
 }

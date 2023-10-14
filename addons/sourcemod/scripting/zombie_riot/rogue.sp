@@ -273,6 +273,7 @@ static ArrayList CurrentMissed;
 static int CurrentIngots;
 static int BonusLives;
 static int BattleIngots;
+static bool RequiredBattle;
 
 static int CurseOne = -1;
 static int CurseTwo = -1;
@@ -1487,6 +1488,7 @@ static void StartStage(const Stage stage)
 {
 	GameState = State_Stage;
 	BattleIngots = CurrentFloor > 1 ? 4 : 3;
+	RequiredBattle = false;
 	SetAllCamera();
 
 	float time = stage.WaveSet[0] ? 0.0 : 10.0;
@@ -2126,6 +2128,11 @@ int Rogue_GetRoundScale()
 void Rogue_AddExtraStage(int count)
 {
 	ExtraStageCount += count;
+}
+
+void Rogue_SetRequiredBattle(bool value)
+{
+	RequiredBattle = value;
 }
 
 public void Rogue_Vote_NextStage(const Vote vote)
