@@ -93,7 +93,7 @@ public void Rogue_HandTrap_Weapon(int entity)
 				Attributes_SetAdd(entity, 88, 6.0);
 
 				// Detonates stickybombs near the crosshair and directly under your feet
-				Attributes_Set(entity, 119, 1,0);
+				Attributes_Set(entity, 119, 1.0);
 			}
 		}
 	}
