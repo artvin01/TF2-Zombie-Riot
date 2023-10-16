@@ -999,7 +999,7 @@ void Rogue_NextProgress()
 					CurseOne = -1;
 				}
 				
-				if(CurseTwo)
+				if(CurseTwo != -1)
 				{
 					Curse curse;
 					Curses.GetArray(CurseTwo, curse);
