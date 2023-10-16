@@ -580,6 +580,11 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 							SetEntProp(client_Hud, Prop_Send, "m_iHealth", flHealth);
 							ApplyHealEvent(client_Hud, MaxHealth / 2);	// Show healing number
 
+							if(flHealth > MaxHealth * 2)
+							{
+								SetEntProp(client_Hud, Prop_Send, "m_iHealth", MaxHealth * 2);
+							}
+
 							//This gives 35% armor
 							GiveArmorViaPercentage(client_Hud, 0.35, 1.0);
 

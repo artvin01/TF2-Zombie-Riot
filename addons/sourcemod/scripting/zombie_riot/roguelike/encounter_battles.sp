@@ -1,7 +1,7 @@
 public void Rogue_Vote_BattleEncounter(const Vote vote)
 {
 	if(vote.Config[0])
-		Rogue_StartThisBattle();
+		Rogue_StartThisBattle(5.0);
 }
 
 public float Rogue_Encounter_OptionalBattle()

@@ -548,7 +548,7 @@ public int Rogue_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		{
 			if(Voting)
 			{
-				if(VotedFor[client] != choice)
+				if(!choice || VotedFor[client] != choice)
 				{
 					VotedFor[client] = choice;
 					if(VotedFor[client] == 0)
@@ -635,7 +635,7 @@ static void DisplayHintVote()
 			Voting.GetArray(top[0], vote);
 
 			char buffer[256];
-			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %s: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
+			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %t: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
 
 			for(int i = 1; i < sizeof(top); i++)
 			{
@@ -643,7 +643,7 @@ static void DisplayHintVote()
 				{
 					Voting.GetArray(top[i], vote);
 
-					Format(buffer, sizeof(buffer), "%s\n%d. %s: (%d)", buffer, i + 1, vote.Name, votes[top[i]]);
+					Format(buffer, sizeof(buffer), "%s\n%d. %t: (%d)", buffer, i + 1, vote.Name, votes[top[i]]);
 				}
 			}
 
@@ -818,28 +818,37 @@ void Rogue_BattleVictory()
 		CPrintToChatAll("%t", "Gained Ingots", BattleIngots);
 	}
 
-	Rogue_SetProgressTime(30.0, true);
-	
-	Floor floor;
-	Floors.GetArray(CurrentFloor, floor);
-
-	Stage stage;
 	if(CurrentType)
 	{
-		floor.Finals.GetArray(CurrentStage, stage);
+		Rogue_NextProgress();
 	}
 	else
 	{
-		floor.Encounters.GetArray(CurrentStage, stage);
-	}
+		Rogue_SetProgressTime(30.0, true);
 
-	SetFloorMusic(floor, false);
+		Floor floor;
+		Floors.GetArray(CurrentFloor, floor);
+
+		Stage stage;
+		floor.Encounters.GetArray(CurrentStage, stage);
+
+		SetFloorMusic(floor, false);
+	}
 }
 
 bool Rogue_BattleLost()
 {
 	if(BonusLives > 0 && !RequiredBattle)
 	{
+		if(BonusLives > 1)
+		{
+			CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+		}
+		else
+		{
+			CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+		}
+
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(!b_IsPlayerABot[client] && IsClientInGame(client))
@@ -1022,7 +1031,7 @@ void Rogue_NextProgress()
 				if(!victory)
 				{
 					Floors.GetArray(CurrentFloor, floor);
-					if(!floor.ArtifactKey[0] || !Rogue_HasNamedArtifact(floor.ArtifactKey))
+					if(floor.ArtifactKey[0] && !Rogue_HasNamedArtifact(floor.ArtifactKey))
 						victory = true;
 				}
 
@@ -1335,7 +1344,7 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 		{
 			if(Voting)
 			{
-				if(VotedFor[client] != choice)
+				if(!choice || VotedFor[client] != choice)
 				{
 					VotedFor[client] = choice;
 					if(VotedFor[client] == 0)
@@ -1429,8 +1438,7 @@ void Rogue_StartThisBattle(float time = 10.0)
 		floor.Encounters.GetArray(CurrentStage, stage);
 	}
 
-	StartBattle(stage, time + 1.0);
-	Rogue_SetProgressTime(time, true);
+	StartBattle(stage, time);
 }
 
 static void StartBattle(const Stage stage, float time = 3.0)
@@ -1457,31 +1465,8 @@ static void StartBattle(const Stage stage, float time = 3.0)
 	char_MusicString2[0] = 0;
 	char_RaidMusicSpecial1[0] = 0;
 
-	if(b_LeaderSquad)
-	{
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsPlayerAlive(client))
-			{
-				SpawnHealth(client);
-				break;
-			}
-		}
-	}
-
-	if(b_GatheringSquad)
-	{
-		for(int client = 1; client <= MaxClients; client++)
-		{
-			if(IsClientInGame(client) && IsPlayerAlive(client))
-			{
-				SpawnMaxAmmo(client);
-				break;
-			}
-		}
-	}
-
 	Rogue_Curse_BattleStart();
+	WaveStart_SubWaveStart();
 }
 
 static void StartStage(const Stage stage)
@@ -1551,6 +1536,30 @@ static void StartStage(const Stage stage)
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
 			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+	}
+
+	if(b_LeaderSquad)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				SpawnHealth(client);
+				break;
+			}
+		}
+	}
+
+	if(b_GatheringSquad)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				SpawnMaxAmmo(client);
+				break;
+			}
+		}
 	}
 
 	if(Rogue_Curse_HideNames())
@@ -1657,6 +1666,9 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 		}
 		while(i != start);
 
+		if(choosen != -1)
+			list.GetArray(choosen, stage);
+		
 		return choosen;
 	}
 	else
@@ -1714,6 +1726,7 @@ static void SetClientCamera(int client, const char[] name = "", const char[] sky
 	//}
 	
 	SetClientViewEntity(client, client);
+	Thirdperson_PlayerSpawn(client);
 }
 
 static void SetAllCamera(const char[] name = "", const char[] skyname = "")
@@ -1749,8 +1762,10 @@ static void SetAllCamera(const char[] name = "", const char[] skyname = "")
 		{
 			SetClientViewEntity(client, client);
 			//TF2_RemoveCondition(client, TFCond_FreezeInput);
+			Thirdperson_PlayerSpawn(client);
 		}
 	}
+
 	ClearAllCameras();
 }
 
@@ -2163,6 +2178,9 @@ public void Rogue_Vote_NextStage(const Vote vote)
 //thanks to mikusch for showing me this.
 void ForceClientViewOntoEntity(int client, int entity)
 {
+	SetVariantInt(0);
+	AcceptEntityInput(client, "SetForcedTauntCam");
+
 	int ViewTarget = EntRefToEntIndex(ViewCamareasTemp[entity]);
 	if(IsValidEntity(ViewTarget))
 	{

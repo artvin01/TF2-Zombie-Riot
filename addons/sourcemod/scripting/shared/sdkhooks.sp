@@ -1725,7 +1725,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
-		else if(!LastMann && !b_IsAloneOnServer || SpecterCheckIfAutoRevive(victim))
+		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
 		{
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
@@ -1741,10 +1741,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			
 			if(!Any_Left && !SpecterCheckIfAutoRevive(victim))
 			{
+				// Trigger lastman
 				CheckAlivePlayers(_, victim);
 
-				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
-				return Plugin_Handled;
+				// Die in Rogue, there's no lastman
+				return Rogue_Mode() ? Plugin_Continue : Plugin_Handled;
 			}
 			
 			i_AmountDowned[victim] += 1;

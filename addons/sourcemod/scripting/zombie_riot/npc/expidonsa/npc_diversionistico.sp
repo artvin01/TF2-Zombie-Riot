@@ -346,6 +346,9 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 void TeleportDiversioToRandLocation(int iNPC)
 {
+	if(zr_disablerandomvillagerspawn.BoolValue)
+		return;
+	
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
 	for( int loop = 1; loop <= 500; loop++ ) 
 	{

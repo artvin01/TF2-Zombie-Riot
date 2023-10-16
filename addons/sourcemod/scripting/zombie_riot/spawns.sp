@@ -256,7 +256,7 @@ void Spawners_Timer()
 	}
 
 	// Get max spawner count
-	int maxSpawners = Rogue_Mode() ? 1 : MapSpawnersActive.IntValue;
+	int maxSpawners = MapSpawnersActive.IntValue;
 
 	// Get list of points
 	ArrayList pointsList = new ArrayList();

@@ -15,6 +15,26 @@
 		"en"	"Allies Amongst Chaos"
 		"ru"	"Союзники среди хаоса"
 	}
+	"A Deeper Discovery"
+	{
+		"en"	"A Deeper Discovery"
+	}
+	"All Parties Involved"
+	{
+		"en"	"All Parties Involved"
+	}
+	"Nightmares Evolve"
+	{
+		"en"	"Nightmares Evolve"
+	}
+	"Time Stands Still"
+	{
+		"en"	"Time Stands Still"
+	}
+	"The Void"
+	{
+		"en"	"The Void"
+	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
@@ -593,10 +613,9 @@
 		"en"	"Eccentric Hunchback"
 		"ru"	"Горбун-эксцентрик"
 	}
-	"Crimson Troupe"
+	"Crimson Troupe Stage"
 	{
-		"en"	"Crimson Troupe"
-		"ru"	"Багровая труппа"
+		"en"	"Crimson Troupe Stage"
 	}
 	"Camp"
 	{
@@ -657,6 +676,38 @@
 	{
 		"en"	"Phone Service ⚠"
 		"ru"	"Телефонная связь ⚠"
+	}
+	"Scouting Party"
+	{
+		"en"	"Scouting Party"
+	}
+	"Scouting Party!"
+	{
+		"en"	"Scouting Party ⚠"
+	}
+	"Speed Demons"
+	{
+		"en"	"Speed Demons"
+	}
+	"Speed Demons!"
+	{
+		"en"	"Speed Demons ⚠"
+	}
+	"Dried Kelp"
+	{
+		"en"	"Dried Kelp"
+	}
+	"Dried Kelp!"
+	{
+		"en"	"Dried Kelp ⚠"
+	}
+	"Fueled By Gold"
+	{
+		"en"	"Fueled By Gold"
+	}
+	"Fueled By Gold!"
+	{
+		"en"	"Fueled By Gold ⚠"
 	}
 	"Eye for an Eye"
 	{
@@ -915,6 +966,10 @@
 	{
 		"en"	"Temporary Alliance"
 	}
+	"Broken Bridge"
+	{
+		"en"	"Broken Bridge"
+	}
 
 	// Curses
 	"Bewildered"
@@ -994,8 +1049,8 @@
 	}
 	"Pure Greed Desc"
 	{
-		"en"	"On this floor you will gain +25% australium ingots, but all enemies will deal +25% more damage."
-		"ru"	"На этом этаже вы получите +25% слитков австралия, но все враги будут наносить на +25% больше урона."
+		"en"	"On this floor you will gain +25%% australium ingots, but all enemies will deal +25%% more damage."
+		"ru"	"На этом этаже вы получите +25%% слитков австралия, но все враги будут наносить на +25%% больше урона."
 	}
 	
 	// Artifacts
@@ -1006,8 +1061,7 @@
 	}
 	"Leader Squad Desc"
 	{
-		"en"	"{green}Extra Health powerup spawns at the start of a battle.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
-		"ru"	"{green}Дополнительное здоровье появляется в начале боя.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"en"	"{green}Extra Health powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 	}
 	"Gathering Squad"
 	{
@@ -1016,8 +1070,7 @@
 	}
 	"Gathering Squad Desc"
 	{
-		"en"	"{green}Extra Ammo powerup spawns at the start of a battle.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
-		"ru"	"{green}Дополнительный боезапас появляется в начале боя.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"en"	"{green}Extra Ammo powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 	}
 	"Support Squad"
 	{
@@ -1425,7 +1478,7 @@
 	}
 	"Broken Combine Crown Desc"
 	{
-		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}Allies receive -5% max health {blue}and the ending is changed."
+		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}Allies receive -5%% max health {blue}and the ending is changed."
 	}
 	"Bob's Reseach Papers"
 	{
@@ -1433,7 +1486,7 @@
 	}
 	"Bob's Reseach Papers Desc"
 	{
-		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10% movement speed."
+		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10%% movement speed."
 	}
 	"Bob's Final Draft"
 	{
@@ -1441,7 +1494,7 @@
 	}
 	"Bob's Final Draft Desc"
 	{
-		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}Allies receive +15%% damage bonus and +20% movement speed {blue}and the ending is changed."
+		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
 	}
 	"Hand of Sticks"
 	{

@@ -1265,7 +1265,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	CheckIfAloneOnServer();
 	
 	bool alive;
-	LastMann = (!rogue && !Waves_InSetup());
+	LastMann = !Waves_InSetup();
 	int players = CurrentPlayers;
 	CurrentPlayers = 0;
 	int GlobalIntencity_Reduntant;
@@ -1305,7 +1305,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(CurrentPlayers < players)
 		CurrentPlayers = players;
 	
-	if(rogue || (LastMann && !GlobalIntencity_Reduntant)) //Make sure if they are alone, it wont play last man music.
+	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
 	if(LastMann)
@@ -1323,67 +1323,75 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 				}
 			}
 		}
-		ExcuteRelay("zr_lasthuman");
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE)
-			{
-				if(IsPlayerAlive(client) && !applied_lastmann_buffs_once && !Died[client])
-				{
-					if(dieingstate[client] > 0)
-					{
-						dieingstate[client] = 0;
-						Store_ApplyAttribs(client);
-						TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-						int entity, i;
-						while(TF2U_GetWearable(client, entity, i))
-						{
-							SetEntityRenderMode(entity, RENDER_NORMAL);
-							SetEntityRenderColor(entity, 255, 255, 255, 255);
-						}
-						SetEntityRenderMode(client, RENDER_NORMAL);
-						SetEntityRenderColor(client, 255, 255, 255, 255);
-						SetEntityCollisionGroup(client, 5);
-					}
-					
-					for(int i=1; i<=MaxClients; i++)
-					{
-						if(IsClientInGame(i) && !IsFakeClient(i))
-						{
-							Music_Stop_All(i);
-							SetMusicTimer(i, GetTime() + 5); //give them 5 seconds to react to full on panic.
-							SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
-						}
-					}
-					
-					for(int i=1; i<=MaxClients; i++)
-					{
-						if(IsClientInGame(i) && !IsFakeClient(i))
-						{
-							SendConVarValue(i, sv_cheats, "1");
-						}
-					}
-					cvarTimeScale.SetFloat(0.1);
-					CreateTimer(0.3, SetTimeBack);
-				
-					applied_lastmann_buffs_once = true;
-					
-					SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
-					ShowHudText(client, -1, "%T", "Last Alive", client);
-					int MaxHealth;
-					MaxHealth = SDKCall_GetMaxHealth(client) * 2;
-					if(i_HealthBeforeSuit[client] == 0)
-					{
-						SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
-					}
-					//if in quantum suit, dont.
-					
-					int Extra = 0;
-						
-					Extra = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
-					int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
-					Armor_Charge[client] = Armor_Max;
+		if(rogue)
+		{
+			LastMann = false;
+		}
+		else
+		{
+			ExcuteRelay("zr_lasthuman");
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] == TEUTON_NONE)
+				{
+					if(IsPlayerAlive(client) && !applied_lastmann_buffs_once && !Died[client])
+					{
+						if(dieingstate[client] > 0)
+						{
+							dieingstate[client] = 0;
+							Store_ApplyAttribs(client);
+							TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+							int entity, i;
+							while(TF2U_GetWearable(client, entity, i))
+							{
+								SetEntityRenderMode(entity, RENDER_NORMAL);
+								SetEntityRenderColor(entity, 255, 255, 255, 255);
+							}
+							SetEntityRenderMode(client, RENDER_NORMAL);
+							SetEntityRenderColor(client, 255, 255, 255, 255);
+							SetEntityCollisionGroup(client, 5);
+						}
+						
+						for(int i=1; i<=MaxClients; i++)
+						{
+							if(IsClientInGame(i) && !IsFakeClient(i))
+							{
+								Music_Stop_All(i);
+								SetMusicTimer(i, GetTime() + 5); //give them 5 seconds to react to full on panic.
+								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
+							}
+						}
+						
+						for(int i=1; i<=MaxClients; i++)
+						{
+							if(IsClientInGame(i) && !IsFakeClient(i))
+							{
+								SendConVarValue(i, sv_cheats, "1");
+							}
+						}
+						cvarTimeScale.SetFloat(0.1);
+						CreateTimer(0.3, SetTimeBack);
+					
+						applied_lastmann_buffs_once = true;
+						
+						SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
+						ShowHudText(client, -1, "%T", "Last Alive", client);
+						int MaxHealth;
+						MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+						if(i_HealthBeforeSuit[client] == 0)
+						{
+							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
+						}
+						//if in quantum suit, dont.
+						
+						int Extra = 0;
+							
+						Extra = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
+						int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+
+						Armor_Charge[client] = Armor_Max;
+					}
 				}
 			}
 		}
@@ -1415,7 +1423,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 
 		if(killed)
 		{
-			Music_RoundEnd(killed, !rogue);
+			Music_RoundEnd(killed);
 			if(!rogue)
 			{
 				CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);

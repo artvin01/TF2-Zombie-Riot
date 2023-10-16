@@ -66,7 +66,7 @@ methodmap LastKnight < CClotBody
 	
 	public LastKnight(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		if(data[0] == 'R')
+		if(data[0] == 'R' || data[0] == 'F')
 		{
 			PeaceKnight = -1;
 		}
