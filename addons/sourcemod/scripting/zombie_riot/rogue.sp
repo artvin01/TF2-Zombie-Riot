@@ -838,7 +838,7 @@ void Rogue_BattleVictory()
 
 bool Rogue_BattleLost()
 {
-	if(BonusLives > 0)	// TODO: Flag when it's a boss stage
+	if(BonusLives > 0 && !RequiredBattle)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{

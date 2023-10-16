@@ -33,9 +33,6 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 static int LastHitTarget;
 
 static bool CryoEasy;
-static bool Frenzy[MAXPLAYERS+1]={false, ...};
-static bool Handle_on[MAXPLAYERS+1]={false, ...};
-static bool AmmoRefill[MAXPLAYERS+1]={false, ...};
 
 #define CASINO_MAX_DOLLARS 100
 #define CASINO_SALARY_GAIN_PER_HIT 1
@@ -46,9 +43,6 @@ public void Casino_MapStart() //idk what to precisely precache so hopefully this
 {
 	//normal stuff//
 	Zero(Timer_Casino_Management);
-	Zero(DamageFalloff_timer);
-	Zero(AmmoRefill_timer);
-	Zero(Frenzy_timer);
 	Zero(i_Dollars_Ammount);
 	Zero(i_CryoShot);
 	Zero(i_MegaShot);
@@ -225,7 +219,7 @@ void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLI
 			}
 		}
 	}
-	if(AmmoRefill[client] == true)
+	if(AmmoRefill_timer[client])
 	{
 		int AmmoType = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 		AddAmmoClient(client, AmmoType ,(pap * 2) + 4,1.0, true);
@@ -260,13 +254,13 @@ public int RecurringNumbers(int client) //the logic for generating and showing t
 
 public void Weapon_Casino_M1(int client, int weapon)
 {
-	switch(Handle_on[client])
+	switch(DamageFalloff_timer[client])
 	{
-		case false:
+		case INVALID_HANDLE:
 		{
 			i_WeaponDamageFalloff[weapon] = 0.9;
 		}
-		case true:
+		default:
 		{
 			i_WeaponDamageFalloff[weapon] = 1.0;
 		}
@@ -284,13 +278,9 @@ public void Weapon_Casino_M1(int client, int weapon)
 
 public void Weapon_Casino_M2(int client, int weapon)
 {
-	switch(Frenzy[client])
+	switch(Frenzy_timer[client])
 	{
-		case true:
-		{
-			ROLL_THE_SLOTS(client, weapon);
-		}
-		case false:
+		case INVALID_HANDLE:
 		{
 			if (i_Dollars_Ammount[client] >= 20) //only go through if you can afford it
 			{
@@ -306,36 +296,28 @@ public void Weapon_Casino_M2(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "You're too poor!"); //lmao nerd
 			}
 		}
+		default:
+		{
+			ROLL_THE_SLOTS(client, weapon);
+		}
 	}
 }
 
 public Action DamageFalloffCasino(Handle cut_timer, int client)
 {
-	if(!IsValidClient(client))
-	{
-		return Plugin_Handled;
-	}
-	Handle_on[client] = false;
+	DamageFalloff_timer[client] = null;
 	return Plugin_Handled;
 }
 
 public Action AmmoRefillCasino(Handle cut_timer, int client)
 {
-	if(!IsValidClient(client))
-	{
-		return Plugin_Handled;
-	}
-	AmmoRefill[client] = false;
+	AmmoRefill_timer[client] = null;
 	return Plugin_Handled;
 }
 
 public Action FrenzyCasino(Handle cut_timer, int client)
 {
-	if(!IsValidClient(client))
-	{
-		return Plugin_Handled;
-	}
-	Frenzy[client] = false;
+	Frenzy_timer[client] = null;
 	return Plugin_Handled;
 }
 
@@ -547,12 +529,8 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
 						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
 
-						if(Handle_on[client])
-						{
-							KillTimer(DamageFalloff_timer[client]);
-						}
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client, TIMER_FLAG_NO_MAPCHANGE);
-						Handle_on[client] = true;
+						delete DamageFalloff_timer[client];
+						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
 						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
@@ -565,13 +543,9 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
 						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
 
-						if(Handle_on[client])
-						{
-							KillTimer(DamageFalloff_timer[client]);
-						}
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client, TIMER_FLAG_NO_MAPCHANGE);
-						Handle_on[client] = true;
-
+						delete DamageFalloff_timer[client];
+						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 					case 2:
@@ -583,13 +557,9 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
 						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
 
-						if(Handle_on[client])
-						{
-							KillTimer(DamageFalloff_timer[client]);
-						}
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client, TIMER_FLAG_NO_MAPCHANGE);
-						Handle_on[client] = true;
-
+						delete DamageFalloff_timer[client];
+						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 					case 3:
@@ -601,13 +571,9 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						ShowSyncHudText(client,  SyncHud_Notifaction, "[Perfect accuracy]!");
 						fl_minor_accuracy_cooldown[client] = GameTime + 60.0;
 
-						if(Handle_on[client])
-						{
-							KillTimer(DamageFalloff_timer[client]);
-						}
-						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client, TIMER_FLAG_NO_MAPCHANGE);
-						Handle_on[client] = true;
-
+						delete DamageFalloff_timer[client];
+						DamageFalloff_timer[client] = CreateTimer(60.0, DamageFalloffCasino, client);
+						
 						ClientCommand(client, "playgamesound ui/hitsound_space.wav");
 					}
 				}
@@ -818,12 +784,8 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "[Blood Ammo!]");
 				fl_ammo_cooldown[client] = GameTime + 100.0;
 
-				if(AmmoRefill[client])
-				{
-					KillTimer(AmmoRefill_timer[client]);
-				}
-				AmmoRefill_timer[client] = CreateTimer(100.0, AmmoRefillCasino, client, TIMER_FLAG_NO_MAPCHANGE);
-				AmmoRefill[client] = true;
+				delete AmmoRefill_timer[client];
+				AmmoRefill_timer[client] = CreateTimer(100.0, AmmoRefillCasino, client);
 
 				ClientCommand(client, "playgamesound ui/killsound_space.wav");
 			}
@@ -895,12 +857,8 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 		{
 			if(fl_frenzy_cooldown[client] < GameTime)
 			{
-				if(Frenzy[client])
-				{
-					KillTimer(Frenzy_timer[client]);
-				}
-				Frenzy_timer[client] = CreateTimer(3.5, FrenzyCasino, client, TIMER_FLAG_NO_MAPCHANGE);
-				Frenzy[client] = true;
+				delete Frenzy_timer[client];
+				Frenzy_timer[client] = CreateTimer(3.5, FrenzyCasino, client);
 
 				fl_frenzy_cooldown[client] = GameTime + 4.0;
 				SetDefaultHudPosition(client);
@@ -1018,14 +976,14 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 ///FUCK YOU TF2 HUDS///
 static void Casino_Show_Hud(int client)
 {
-	switch(Frenzy[client])
+	switch(Frenzy_timer[client])
 	{
-		case false:
+		case INVALID_HANDLE:
 		{
 			PrintHintText(client,"----[%.1i/%.1i/%.1i]----\nDollars: [%.1i$/%.1i$]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_slot1[client],i_slot2[client],i_slot3[client], i_Dollars_Ammount[client],CASINO_MAX_DOLLARS,i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 		}
-		case true:
+		default:
 		{
 			PrintHintText(client,"----[FRENZY ACTIVE]----\nDollars: [SPAM / M2]\nSpecial Bullets: [%.1i R.|%.1i T.B.O.|%.1i C.]",i_Ricochet[client],i_MegaShot[client],i_CryoShot[client]);
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
