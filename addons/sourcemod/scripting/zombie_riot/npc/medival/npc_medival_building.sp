@@ -352,6 +352,9 @@ public void MedivalBuilding_ClotThink(int iNPC)
 					IncreaceSpawnRates *= 0.70; //Swarm.
 					Construct = true;
 				}
+				
+				if(Rogue_Mode())
+					IncreaceSpawnRates *= 3.0;
 
 				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 				if(spawn_index > MaxClients)
