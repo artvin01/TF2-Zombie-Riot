@@ -1999,7 +1999,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		}
 		case WEAPON_CASINO:
 		{
-			Npc_OnTakeDamage_Casino(attacker, damage, damagetype);
+			Npc_OnTakeDamage_Casino(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
 		case WEAPON_FANTASY_BLADE:
 		{
@@ -2854,7 +2854,7 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		}
 		case WEAPON_CASINO:
 		{
-			CasinoSalaryPerKill(attacker);
+			CasinoSalaryPerKill(attacker, weapon);
 		}
 	}
 }
