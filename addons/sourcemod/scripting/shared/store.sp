@@ -6094,7 +6094,7 @@ static void ItemCost(int client, Item item, int &cost)
 
 	}
 	
-	if((CurrentRound != 0 || CurrentWave != -1) && cost)
+	if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
 	{
 		if(!CurrentPlayers)
 			CheckAlivePlayers();

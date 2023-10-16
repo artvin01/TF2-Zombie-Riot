@@ -687,8 +687,24 @@ void Rogue_RoundEnd()
 	CurrentStage = -1;
 	CurrentCount = -1;
 	delete CurrentExclude;
-	delete CurrentCollection;
 	CurrentIngots = 0;
+
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = CurrentCollection.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			if(artifact.FuncRemove != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncRemove);
+				Call_Finish();
+
+				CurrentCollection.Erase(i);
+			}
+		}
+	}
 	
 	if(CurseOne != -1)
 	{
@@ -2244,6 +2260,20 @@ static void ClearStats()
 	b_LeaderSquad = false;
 	b_GatheringSquad = false;
 	b_ResearchSquad = false;
+	b_ProvokedAnger = false;
+	b_MalfunctionShield = false;
+	b_MusicReleasingRadio = false;
+	b_WrathOfItallians = false;
+	b_HandOfElderMages = false;
+	b_BraceletsOfAgility = false;
+	b_ElasticFlyingCape = false;
+	b_HealingSalve = false;
+	b_HealthyEssence = false;
+	b_FizzyDrink = false;
+	b_HoverGlider = false;
+	b_NickelInjectedPack = false;
+	b_SteelRazor = false;
+	b_SpanishSpecialisedGunpowder = false;
 
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
