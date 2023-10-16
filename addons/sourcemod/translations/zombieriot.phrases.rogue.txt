@@ -1449,7 +1449,7 @@
 	}
 	"Hand of Sticks Desc"
 	{
-		"en"	""
+		"en"	"Real close and personal.\n{green}''Multi Pellet'' weapons gain +35%% melee damage resistance."
 	}
 	"Hand of Superspeed"
 	{
@@ -1457,7 +1457,7 @@
 	}
 	"Hand of Superspeed Desc"
 	{
-		"en"	""
+		"en"	"Gotta catch up!\n{green}''Rapid Fire'' weapons gain 0.5 seconds of speed boost on hit."
 	}
 	"Hand of Mailbox"
 	{
@@ -1465,7 +1465,7 @@
 	}
 	"Hand of Mailbox Desc"
 	{
-		"en"	""
+		"en"	"Look inside.\n{green}Hand grenade weapons gain +200%% damage bonus."
 	}
 	"Hand of Quake"
 	{
@@ -1473,7 +1473,7 @@
 	}
 	"Hand of Quake Desc"
 	{
-		"en"	""
+		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' weapons grant +150%% jump height."
 	}
 	"Hand of Travel"
 	{
@@ -1481,7 +1481,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	""
+		"en"	"Gotta set out.\n{green}''Team Support'' weapons grant +10 health regen."
 	}
 	"Hand of Flesh"
 	{
@@ -1489,7 +1489,7 @@
 	}
 	"Hand of Flesh Desc"
 	{
-		"en"	""
+		"en"	"Flesh burns and bleeds.\n{yellow}Afterburn is replaced with bleed."
 	}
 	"Hand of Trapmaster"
 	{
@@ -1497,7 +1497,7 @@
 	}
 	"Hand of Trapmaster Desc"
 	{
-		"en"	""
+		"en"	"{green}Builder trap weapons can hold shots.\n{green}Stickybomb launchers gain +6 max stickies {yellow}and detonates on your crosshair."
 	}
 	"Hand of Geek"
 	{
@@ -1505,7 +1505,7 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	""
+		"en"	"You want my drugs?\n{green}''Infinite Fire'' weapons grant +3 health on hit."
 	}
 	"Hand of Panic"
 	{
@@ -1513,7 +1513,7 @@
 	}
 	"Hand of Panic Desc"
 	{
-		"en"	""
+		"en"	"WHY DID WE VOTE FOR THIS MAP???\n{green}''Single Pellet'' weapons gain up to +75%% firing speed with less health."
 	}
 	"Hand of Fisting"
 	{
@@ -1521,7 +1521,7 @@
 	}
 	"Hand of Fisting Desc"
 	{
-		"en"	""
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' weapons gain +50%% firing speed."
 	}
 	"Hand of Suprise"
 	{
@@ -1529,7 +1529,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	""
+		"en"	"Boo.\n{green}''Ambusher'' weapons inflict 5 seconds of bleed on hit."
 	}
 	"Hand of Suppression"
 	{
@@ -1537,7 +1537,7 @@
 	}
 	"Hand of Suppression Desc"
 	{
-		"en"	""
+		"en"	"More cripple, more cripple!\n{green}''Debuff'' weapons grant 80%% ranged damage resistance."
 	}
 	"Hand of Flood"
 	{
@@ -1545,7 +1545,7 @@
 	}
 	"Hand of Flood Desc"
 	{
-		"en"	""
+		"en"	"Healing flows.\n{green}''Aberration'' weapons gain +300%% damage bonus while being healed by a Medi-Gun."
 	}
 	"Hand of Revenge"
 	{
@@ -1553,7 +1553,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	""
+		"en"	"Better not touch me then.\n{green}''Duelist'' weapons gain +150%% damage bonus while below half health."
 	}
 	"Hand of Discounts"
 	{
@@ -1561,7 +1561,7 @@
 	}
 	"Hand of Discounts Desc"
 	{
-		"en"	""
+		"en"	"Yeah I sold my soul to the devil.\n{green}''Summoner'' weapons gain -90%% mana cost."
 	}
 	"Hand of Stock"
 	{
@@ -1569,7 +1569,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	""
+		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100%% max mana and regen"
 	}
 	"Hand of Poland"
 	{
@@ -1577,6 +1577,6 @@
 	}
 	"Hand of Poland Desc"
 	{
-		"en"	""
+		"en"	"Still reading.\n{green}''Kazimierz'' weapons gain +75%% damage bonus while over half health"
 	}
 }

@@ -2246,7 +2246,7 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/item_squads.sp"
 #include "roguelike/item_barracks.sp"
 #include "roguelike/item_storyteller.sp"
-//#include "roguelike/item_hands.sp"
+#include "roguelike/item_hands.sp"
 
 #include "roguelike/provoked_anger.sp"
 #include "roguelike/shield_items.sp"
