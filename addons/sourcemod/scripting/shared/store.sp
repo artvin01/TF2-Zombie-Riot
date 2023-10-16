@@ -6054,7 +6054,7 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 	if(!noSetup && !GregSale)
 	{
-		if(Rogue_GetRound() < 2)//extra preround discount
+		if(Rogue_GetRound() < 1 && Rogue_GetWave() < 1)//extra preround discount
 		{
 			if(StartCash < 750 && (!item.ParentKit || cost <= 1000)) //give super discount for normal waves
 			{

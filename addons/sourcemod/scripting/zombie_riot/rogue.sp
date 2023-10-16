@@ -815,6 +815,7 @@ public Action Rogue_ProgressTimer(Handle timer)
 
 void Rogue_BattleVictory()
 {
+	ReviveAll();
 	Waves_RoundEnd();
 	Store_RogueEndFightReset();
 
@@ -2180,7 +2181,7 @@ public void Rogue_Vote_NextStage(const Vote vote)
 		floor.Encounters.GetArray(0, stage);
 		id = 0;
 	}
-	else if(stage.Repeat)
+	else if(!stage.Repeat)
 	{
 		if(!CurrentExclude)
 			CurrentExclude = new ArrayList(sizeof(stage.Name));

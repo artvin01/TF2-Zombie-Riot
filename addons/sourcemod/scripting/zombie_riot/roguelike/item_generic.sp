@@ -55,8 +55,7 @@ public void Rogue_Item_GrigoriCoinPurse_Weapon(int entity)
 	Attributes_SetMulti(entity, 6, Multi);
 	Attributes_SetMulti(entity, 97, Multi);
 	Attributes_SetMulti(entity, 733, Multi);
-	Attributes_SetMulti(entity, 8, Multi);
-	Attributes_SetMulti(entity, 6, (1.0 / Multi));
+	Attributes_SetMulti(entity, 8, (1.0 / Multi));
 }
 
 public void Rogue_Item_Provoked_Anger()
