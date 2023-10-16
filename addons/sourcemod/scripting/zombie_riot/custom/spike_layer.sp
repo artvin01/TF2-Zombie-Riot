@@ -62,7 +62,7 @@ static int Spikes_AliveCap[MAXPLAYERS+1]={30, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static bool Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
-Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {null, ...};
 static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
 static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
 
@@ -79,11 +79,11 @@ void SetEntitySpike(int entity, bool set)
 
 void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	if (h_TimerSpikeLayerManagement[client] != null)
 	{
-		KillTimer(h_TimerSpikeLayerManagement[client]);
+		delete h_TimerSpikeLayerManagement[client];
 	}	
-	h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+	h_TimerSpikeLayerManagement[client] = null;
 	f_SpikeLayerHudDelay[client] = 0.0;
 	f_DeleteAllSpikesDelay[client] = 0.0;
 }
@@ -497,15 +497,15 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 
 public void Enable_SpikeLayer(int client, int weapon) 
 {
-	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
+	if (h_TimerSpikeLayerManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER) 
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerSpikeLayerManagement[client]);
-			h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
+			delete h_TimerSpikeLayerManagement[client];
+			h_TimerSpikeLayerManagement[client] = null;
 			DataPack pack;
 			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -526,41 +526,21 @@ public Action Timer_Management_SpikeLayer(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				SpikeLayer_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_SpikeLayer(client);
-		}
-		else
-			Kill_Timer_SpikeLayer(client);
-	}
-	else
-		Kill_Timer_SpikeLayer(client);
-		
+		h_TimerSpikeLayerManagement[client] = null;
+		return Plugin_Stop;
+	}	
+	SpikeLayer_Cooldown_Logic(client, weapon);
+
 	return Plugin_Continue;
 }
 
-public void Kill_Timer_SpikeLayer(int client)
-{
-	if (h_TimerSpikeLayerManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerSpikeLayerManagement[client]);
-		h_TimerSpikeLayerManagement[client] = INVALID_HANDLE;
-	}
-}
 
 
 public void SpikeLayer_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
 	if(IsValidEntity(weapon))
 	{
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)

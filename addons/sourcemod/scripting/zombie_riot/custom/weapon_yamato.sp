@@ -6,7 +6,7 @@
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
-Handle TimerYamatoManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle TimerYamatoManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Yamatohuddelay[MAXTF2PLAYERS+1];
 
 static int i_Yamato_Rainsword_Count[MAXTF2PLAYERS+1];
@@ -314,7 +314,7 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
 		
 		Handle test = TR_TraceRayFilterEx(UserLoc, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 		TR_GetEndPosition(test_vec, test);
-		CloseHandle(test);
+		delete test;
 		
 		fl_last_known_loc[client]= test_vec;
 		
@@ -559,15 +559,15 @@ public Action Timer_RemoveEntity_Yamato_Projectile(Handle timer, DataPack pack)
 
 public void Activate_Yamato(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (TimerYamatoManagement[client] != INVALID_HANDLE)
+	if (TimerYamatoManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAMATO)
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(TimerYamatoManagement[client]);
-			TimerYamatoManagement[client] = INVALID_HANDLE;
+			delete TimerYamatoManagement[client];
+			TimerYamatoManagement[client] = null;
 			DataPack pack;
 			TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -592,36 +592,18 @@ public Action Timer_Management_Yamato(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Yamato_Loop_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Yamato(client);
-		}
-		else
-			Kill_Timer_Yamato(client);
-	}
-	else
-		Kill_Timer_Yamato(client);
-		
+		SDKUnhook(client, SDKHook_PreThink, Yamato_Activate_Tick);
+		TimerYamatoManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Yamato_Loop_Logic(client, weapon);
+
 	return Plugin_Continue;
 }
-
-public void Kill_Timer_Yamato(int client)
-{
-	if (TimerYamatoManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(TimerYamatoManagement[client]);
-		TimerYamatoManagement[client] = INVALID_HANDLE;
-		SDKUnhook(client, SDKHook_PreThink, Yamato_Activate_Tick);
-	}
-}
-
 
 static void Yamato_Update_Stats(int client, int weapon)
 {
@@ -655,79 +637,61 @@ static void Yamato_Update_Stats(int client, int weapon)
 }
 public void Yamato_Loop_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(f_Yamatohuddelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAMATO) //Double check to see if its good or bad :(
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{	
-			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(f_Yamatohuddelay[client] < GetGameTime())
-			{
-				
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{	
-					switch(i_Yamato_Combo[client])
-					{	
-						case 1:
-						{
-							PrintHintText(client,"Skill: Summoned Swords | Motivation: [%i]",RoundToFloor(fl_Yamato_Motivation[client]));	
-						}
-						case 2:
-						{
-							PrintHintText(client,"Skill: Spiral Swords | Motivation: [%i]",RoundToFloor(fl_Yamato_Motivation[client]));
-						}
-					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-				}			
-				f_Yamatohuddelay[client] = GetGameTime() + 0.5;
-			}
-			
-			if(weapon_holding == weapon)
-			{
-				if(Handle_on[client])
+			switch(i_Yamato_Combo[client])
+			{	
+				case 1:
 				{
-					KillTimer(Revert_Weapon_Back_Timer[client]);
+					PrintHintText(client,"Skill: Summoned Swords | Motivation: [%i]",RoundToFloor(fl_Yamato_Motivation[client]));	
 				}
-				else
+				case 2:
 				{
-					SDKHook(client, SDKHook_PreThink, Yamato_Activate_Tick);
-					
-					//CPrintToChatAll("HOOKED");
-					i_Yamato_Rainsword_Count[client] = 0;
-					i_Yamato_Combo[client] = 1;
-					
-				}
-				Revert_Weapon_Back_Timer[client] = CreateTimer(0.2, Yamato_Reset_Wep, client, TIMER_FLAG_NO_MAPCHANGE);
-				Handle_on[client] = true;
-				if(fl_yamato_stats_timer[client]<=GetGameTime())
-				{
-					fl_yamato_stats_timer[client] = GetGameTime() + 2.5;
-					Yamato_Update_Stats(client, weapon);
-				}	
-			}
-			
-			if(fl_Yamato_Motivation[client]>YAMATO_RAINSWORD_COST_SPAWN)
-			{
-				float test = fl_Yamato_Motivation[client] / YAMATO_RAINSWORD_COST_SPAWN;
-				int what = RoundToFloor(test);
-				
-				i_Yamato_Rainsword_Count[client] = what;
-				if(i_Yamato_Rainsword_Count[client]>i_Yamato_Max_Rainsword_Count[client])
-				{
-					i_Yamato_Rainsword_Count[client] = i_Yamato_Max_Rainsword_Count[client];
+					PrintHintText(client,"Skill: Spiral Swords | Motivation: [%i]",RoundToFloor(fl_Yamato_Motivation[client]));
 				}
 			}
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		}			
+		f_Yamatohuddelay[client] = GetGameTime() + 0.5;
+	}
+	
+	if(weapon_holding == weapon)
+	{
+		if(Handle_on[client])
+		{
+			delete Revert_Weapon_Back_Timer[client];
 		}
 		else
 		{
-			Kill_Timer_Yamato(client);
+			SDKHook(client, SDKHook_PreThink, Yamato_Activate_Tick);
+			
+			//CPrintToChatAll("HOOKED");
+			i_Yamato_Rainsword_Count[client] = 0;
+			i_Yamato_Combo[client] = 1;
+			
 		}
+		Revert_Weapon_Back_Timer[client] = CreateTimer(0.2, Yamato_Reset_Wep, client, TIMER_FLAG_NO_MAPCHANGE);
+		Handle_on[client] = true;
+		if(fl_yamato_stats_timer[client]<=GetGameTime())
+		{
+			fl_yamato_stats_timer[client] = GetGameTime() + 2.5;
+			Yamato_Update_Stats(client, weapon);
+		}	
 	}
-	else
+	
+	if(fl_Yamato_Motivation[client]>YAMATO_RAINSWORD_COST_SPAWN)
 	{
-		Kill_Timer_Yamato(client);
+		float test = fl_Yamato_Motivation[client] / YAMATO_RAINSWORD_COST_SPAWN;
+		int what = RoundToFloor(test);
+		
+		i_Yamato_Rainsword_Count[client] = what;
+		if(i_Yamato_Rainsword_Count[client]>i_Yamato_Max_Rainsword_Count[client])
+		{
+			i_Yamato_Rainsword_Count[client] = i_Yamato_Max_Rainsword_Count[client];
+		}
 	}
 }
 

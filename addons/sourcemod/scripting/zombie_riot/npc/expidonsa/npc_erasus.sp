@@ -267,8 +267,8 @@ void ErasusSelfDefense(Erasus npc, float gameTime, int target, float distance)
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

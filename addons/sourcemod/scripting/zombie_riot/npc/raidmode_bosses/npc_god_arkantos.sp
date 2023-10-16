@@ -201,7 +201,7 @@ methodmap GodArkantos < CClotBody
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodArkantos(int client, float vecPos[3], float vecAng[3], bool ally)
+	public GodArkantos(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
@@ -234,7 +234,13 @@ methodmap GodArkantos < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Arkantos Arrived");
 			}
 		}
+
+		bool final = StrContains(data, "final_item") != -1;
 		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
@@ -302,8 +308,7 @@ methodmap GodArkantos < CClotBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		
 		Music_SetRaidMusic("#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 189, true);
 
@@ -312,6 +317,8 @@ methodmap GodArkantos < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc.index, "root", {0.0,0.0,0.0});
 		npc.StartPathing();
 
+		DoGlobalMultiScaling();
+		
 		return npc;
 	}
 }
@@ -340,7 +347,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	if(b_angered_twice[npc.index])
 	{
 		BlockLoseSay = true;
-		int closestTarget = GetClosestTarget(npc.index);
+		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
 			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
@@ -622,7 +629,7 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 		return Plugin_Handled;
 	}
 
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -987,59 +994,62 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
+				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
 				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-				{
-								
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
-					{
-						float damage = 20.0;
-						if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-						{
-							damage = 18.0; //nerf
-						}
-						else if(ZR_GetWaveCount()+1 > 55)
-						{
-							damage = 16.5; //nerf
-						}
-
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-							
-						
-						// Hit particle
-						
-						
-						// Hit sound
-						npc.PlayMeleeHitSound();
-						bool Knocked = false;
-						
-						if(IsValidClient(target))
-						{
-							if (IsInvuln(target))
-							{
-								Knocked = true;
-								Custom_Knockback(npc.index, target, 900.0, true);
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-							}
-							else
-							{
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-							}
-						}
-									
-						if(!Knocked)
-							Custom_Knockback(npc.index, target, 350.0); 
-					} 
-				}
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
+				bool PlaySound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							PlaySound = true;
+							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(target);
+										
+							float damage = 20.0;
+							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+							{
+								damage = 18.0; //nerf
+							}
+							else if(ZR_GetWaveCount()+1 > 55)
+							{
+								damage = 16.5; //nerf
+							}
+
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+							
+							bool Knocked = false;
+							
+							if(IsValidClient(target))
+							{
+								if (IsInvuln(target))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, target, 900.0, true);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+								else
+								{
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+							}
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, target, 350.0); 
+						}
+					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
+				}
 			}
 		}
 	}

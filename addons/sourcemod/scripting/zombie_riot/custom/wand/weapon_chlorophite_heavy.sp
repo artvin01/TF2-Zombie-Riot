@@ -24,7 +24,7 @@ public void Weapon_Chlorophite_Heavy(int client, int weapon, bool crit)
 		Attributes_Set(weapon, 396, RampagerAttackSpeed(attacks_made[client]));
 		if(Handle_on[client])
 		{
-			KillTimer(Revert_Weapon_Back_Timer[client]);
+			delete Revert_Weapon_Back_Timer[client];
 		}
 		Revert_Weapon_Back_Timer[client] = CreateTimer(3.0, Reset_weapon_rampager_Heavy, client, TIMER_FLAG_NO_MAPCHANGE);
 		Handle_on[client] = true;

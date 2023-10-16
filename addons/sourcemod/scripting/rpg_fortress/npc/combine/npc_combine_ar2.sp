@@ -9,6 +9,7 @@ methodmap CombineAR2 < CombineSoldier
 		
 		i_NpcInternalId[npc.index] = COMBINE_AR2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -122,8 +123,10 @@ public void CombineAR2_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L5 = 105, E2 L10 = 120
+						KillFeed_SetKillIcon(npc.index, "club");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 2.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
+						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 					}
 				}
 
@@ -215,8 +218,10 @@ public void CombineAR2_ClotThink(int iNPC)
 							NormalizeVector(vecDir, vecDir);
 							
 							// E2 L5 = 5.25, E2 L10 = 6
+							KillFeed_SetKillIcon(npc.index, "smg");
 							FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.1, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-							
+							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2");
 							npc.PlayAR2Fire();
 						}

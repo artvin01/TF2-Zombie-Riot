@@ -28,6 +28,10 @@ bool Stock_IsValidEntity(int entity)
 }
 
 #define IsValidEntity Stock_IsValidEntity
+
+
+#define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
+
 /*
 TODO:
 	Instead of setting the colour, try to get the average so gold and blue becomes a fusion of both,

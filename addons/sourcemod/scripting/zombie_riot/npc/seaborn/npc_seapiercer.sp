@@ -170,7 +170,7 @@ public void SeaPiercer_ClotThink(int iNPC)
 
 						if(target <= MaxClients && i_HealthBeforeSuit[target] > 0)
 						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.9, DMG_DROWN); // Make it oneshot the enemy if they have the quantum armor
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 199999999.9, DMG_DROWN); // Make it oneshot the enemy if they have the quantum armor
 							Custom_Knockback(npc.index, target, 1000.0); // Kick them away.
 						}
 						else

@@ -136,6 +136,30 @@ public void OnPreThinkPost(int client)
 {
 	if(CvarMpSolidObjects)
 	{
+#if defined ZR
+		if(IsValidEntity(RaidBossActive))
+		{
+			if(i_PreviousBuildingCollision[client] == -1)
+			{
+				i_PreviousBuildingCollision[client] = b_PhaseThroughBuildingsPerma[client];
+			}
+			b_PhaseThroughBuildingsPerma[client] = 2;
+		}
+		else
+		{
+			if(i_PreviousBuildingCollision[client] != -1)
+			{
+				if(i_PreviousBuildingCollision[client] != 2)
+				{
+					SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+					SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+				}
+				b_PhaseThroughBuildingsPerma[client] = i_PreviousBuildingCollision[client];
+			}
+			i_PreviousBuildingCollision[client] = -1;
+		}
+#endif
+		
 		if(b_PhaseThroughBuildingsPerma[client] == 0)
 		{
 			CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
@@ -162,7 +186,6 @@ public void OnPreThinkPost(int client)
 
 public void OnPostThink(int client)
 {
-	
 	float GameTime = GetGameTime();
 	if(b_DisplayDamageHud[client])
 	{
@@ -1395,14 +1418,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
-#endif
-	
-#if defined RPG
-	if(damagetype & (DMG_DROWN|DMG_DROWNRECOVER))
-#endif
-	
 	{
-#if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
 			NpcStuckZoneWarning(victim, damage);
@@ -1413,8 +1429,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 2.0;
 			Replicated_Damage *= 2.0;
 		}
-#endif
 	}
+#elseif defined RPG
+	if(damagetype & (DMG_DROWN|DMG_DROWNRECOVER))
+	{
+		damage *= 2.0;
+	}
+#endif
+
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 #if defined ZR
 	if(Medival_Difficulty_Level != 0.0)
@@ -2042,7 +2064,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	}
 	return damage;
 }
-#endif
 
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 
@@ -2081,3 +2102,4 @@ void NpcStuckZoneWarning(int client, float &damage)
 		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
 	}
 }
+#endif	// ZR

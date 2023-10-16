@@ -83,7 +83,7 @@ methodmap SeaRunner < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, SeaRunner_ClotThink);
 		
-		npc.m_flSpeed = 330.0;	// 1.9 x 250
+		npc.m_flSpeed = data[0] ? 475.0 : 330.0;	// 1.9 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;

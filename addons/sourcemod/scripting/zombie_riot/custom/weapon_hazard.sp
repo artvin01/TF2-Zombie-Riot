@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//Handle h_TimerHazardManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static float f_WeaponDelayGiveRandom[MAXPLAYERS+1]={0.0, ...};
 static int LessRandomDamage = 1;
 static int Luck = 0;
@@ -201,8 +200,6 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(!IsValidEntity(viewmodelModel))
-		return;
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
@@ -216,13 +213,16 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				{
 					if(LessRandomDamage < 0)
 					{
-						float flPos[3]; 
-						float flAng[3];	
-						int particler = ParticleEffectAt(flPos, "critical_rocket_redsparks", 2.0);
-				
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+						if(IsValidEntity(viewmodelModel))
+						{
+							float flPos[3]; 
+							float flAng[3];	
+							int particler = ParticleEffectAt(flPos, "critical_rocket_redsparks", 2.0);
 
-						SetParent(viewmodelModel, particler, "effect_hand_r");
+							GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+
+							SetParent(viewmodelModel, particler, "effect_hand_r");
+						}
 
 						ApplyTempAttrib(weapon, 2, 0.65, 2.5);
 						LessRandomDamage += 3;
@@ -237,12 +237,16 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				{
 					if(LessRandomDamage > 0)
 					{
-						float flPos[3]; 
-						float flAng[3];	
-						int particler = ParticleEffectAt(flPos, "critical_rocket_bluesparks", 2.0);
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-				
-						SetParent(viewmodelModel, particler, "effect_hand_r");
+						if(IsValidEntity(viewmodelModel))
+						{
+							float flPos[3]; 
+							float flAng[3];	
+							int particler = ParticleEffectAt(flPos, "critical_rocket_bluesparks", 2.0);
+
+							GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+
+							SetParent(viewmodelModel, particler, "effect_hand_r");
+						}
 		
 						ApplyTempAttrib(weapon, 2, 1.35, 2.5);
 						LessRandomDamage -= 2;
@@ -277,12 +281,16 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				{
 					if(LessRandomDamage < 0)
 					{
-						float flPos[3]; 
-						float flAng[3];	
-						int particler = ParticleEffectAt(flPos, "critical_rocket_redsparks", 2.0);
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-				
-						SetParent(viewmodelModel, particler, "effect_hand_r");
+						if(IsValidEntity(viewmodelModel))
+						{
+							float flPos[3]; 
+							float flAng[3];	
+							int particler = ParticleEffectAt(flPos, "critical_rocket_redsparks", 2.0);
+
+							GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+
+							SetParent(viewmodelModel, particler, "effect_hand_r");
+						}
 		
 						ApplyTempAttrib(weapon, 2, 0.75, 2.5);
 						LessRandomDamage += 3;
@@ -297,12 +305,16 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				{
 					if(LessRandomDamage > 0)
 					{
-						float flPos[3]; 
-						float flAng[3];	
-						int particler = ParticleEffectAt(flPos, "critical_rocket_bluesparks", 2.0);
-						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-				
-						SetParent(viewmodelModel, particler, "effect_hand_r");
+						if(IsValidEntity(viewmodelModel))
+						{
+							float flPos[3]; 
+							float flAng[3];	
+							int particler = ParticleEffectAt(flPos, "critical_rocket_bluesparks", 2.0);
+
+							GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+
+							SetParent(viewmodelModel, particler, "effect_hand_r");
+						}
 		
 						ApplyTempAttrib(weapon, 2, 1.3, 2.5);
 						LessRandomDamage -= 2;
@@ -340,12 +352,14 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				}
 				case 9:
 				{
-					float flPos[3]; 
-					float flAng[3];	
-					int particler = ParticleEffectAt(flPos, "rocketpack_exhaust", 2.5);
-					GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-			
-					SetParent(viewmodelModel, particler, "effect_hand_r");
+					if(IsValidEntity(viewmodelModel))
+					{
+						float flPos[3]; 
+						float flAng[3];	
+						int particler = ParticleEffectAt(flPos, "rocketpack_exhaust", 2.0);
+						GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+						SetParent(viewmodelModel, particler, "effect_hand_r");
+					}
 	
 					ApplyTempAttrib(weapon, 2, 1.4, 3.0);
 					ApplyTempAttrib(weapon, 6, 1.25, 3.0);
@@ -369,21 +383,20 @@ public void Hazard_Luck(int client, int weapon, bool crit, int slot)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(!IsValidEntity(viewmodelModel))
-		return;
 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 30.0);
 		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
-		float flPos[3]; 
-		float flAng[3];	
-		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-
-		int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);
-				
-		SetParent(viewmodelModel, particler, "effect_hand_r");
+		if(IsValidEntity(viewmodelModel))
+		{
+			float flPos[3]; 
+			float flAng[3];	
+			int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);
+			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+			SetParent(viewmodelModel, particler, "effect_hand_r");
+		}
 		
 	}
 	else
@@ -406,20 +419,20 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 {
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(!IsValidEntity(viewmodelModel))
-		return;
 		
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
 		Ability_Apply_Cooldown(client, slot, 20.0);
 		EmitSoundToAll("weapons/weapon_crit_charged_off.wav", client);
-		float flPos[3]; 
-		float flAng[3];	
-		int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);
-		GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-				
-		SetParent(viewmodelModel, particler, "effect_hand_r");
+		if(IsValidEntity(viewmodelModel))
+		{
+			float flPos[3]; 
+			float flAng[3];	
+			int particler = ParticleEffectAt(flPos, "halloween_rockettrail", 10.0);
+			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
+			SetParent(viewmodelModel, particler, "effect_hand_r");
+		}
 	}
 	else
 	{
@@ -436,60 +449,3 @@ public void Hazard_Luck_Pap(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
 }
-
-/*public Action Timer_Management_Hazard(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = pack.ReadCell();
-	if(IsValidClient(client))
-	{
-		if (IsClientInGame(client))
-		{
-			Kill_Timer_Hazard(client);
-		}
-		else
-			Kill_Timer_Hazard(client);
-	}
-	else
-		Kill_Timer_Hazard(client);
-		
-	return Plugin_Continue;
-}
-
-public void Kill_Timer_Hazard(int client)
-{
-	if (h_TimerHazardManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerHazardManagement[client]);
-		h_TimerHazardManagement[client] = INVALID_HANDLE;
-	}
-}
-
-public void Enable_Hazard(int client, int weapon) 
-{
-	if (h_TimerHazardManagement[client] != INVALID_HANDLE)
-	{
-		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_UNSTABLE || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_LUNATIC || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_CHAOS || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_STABILIZED || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_DEMI || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_PERFECT) 
-		{
-			//Is the weapon it again?
-			//Yes?
-			KillTimer(h_TimerHazardManagement[client]);
-			h_TimerHazardManagement[client] = INVALID_HANDLE;
-			DataPack pack;
-			h_TimerHazardManagement[client] = CreateDataTimer(0.1, Timer_Management_Hazard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(client);
-			pack.WriteCell(EntIndexToEntRef(weapon));
-		}
-		return;
-	}
-		
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_UNSTABLE || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_LUNATIC || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_CHAOS || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_STABILIZED || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_DEMI || i_CustomWeaponEquipLogic[weapon] == WEAPON_HAZARD_PERFECT)
-	{
-		DataPack pack;
-		h_TimerHazardManagement[client] = CreateDataTimer(0.1, Timer_Management_Hazard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(client);
-		pack.WriteCell(EntIndexToEntRef(weapon));
-	}
-}
-*/

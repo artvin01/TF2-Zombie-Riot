@@ -9,6 +9,7 @@ methodmap CombineOverlord < CombineSoldier
 		
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "sword");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

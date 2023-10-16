@@ -17,36 +17,24 @@ static const char SoundZomgPop[][] =
 
 static float MoabSpeed()
 {
-	/*if(CurrentRound < 80)
+	if(CurrentRound < 80)
 		return 150.0;
 	
 	if(CurrentRound < 100)
 		return 150.0 * (1.0 + (CurrentRound - 79) * 0.02);
 	
-	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);*/
-	
-	if(CurrentRound < 60)
-		return 150.0;
-	
-	return 150.0 * (1.0 + (CurrentRound - 50) * 0.02);
+	return 150.0 * (1.0 + (CurrentRound - 70) * 0.02);
 }
 
 static int MoabHealth(bool fortified)
 {
-	float value = 2000000.0;	// 20000 RGB 
-	/*if(CurrentRound == 99)
-	{
-		value *= 10.0;
-	}
-	else
-	{
-		value *= 0.25;
-	}*/
+	float value = 2000000.0;	// 20000 RGB
+	value *= 0.5;
 	
 	if(fortified)
 		value *= 2.0;
 	
-	/*if(CurrentRound > 123)
+	if(CurrentRound > 123)
 	{
 		value *= 1.05 + (CurrentRound - 106) * 0.15;
 	}
@@ -57,15 +45,6 @@ static int MoabHealth(bool fortified)
 	else if(CurrentRound > 79)
 	{
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
-	}*/
-	
-	if(CurrentRound > 83)
-	{
-		value *= 1.05 + (CurrentRound - 66) * 0.15;
-	}
-	else if(CurrentRound > 59)
-	{
-		value *= 1.0 + (CurrentRound - 31) * 0.05;
 	}
 	
 	return RoundFloat(value);
@@ -143,6 +122,7 @@ methodmap Bad < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bDoNotGiveWaveDelay = true;
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bad_ClotDamagedPost);
@@ -212,53 +192,36 @@ public void Bad_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
-		//Target close enough to hit
 		if(flDistanceToTarget < 20000)
 		{
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
-				Handle swingTrace;
-				if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
+				if(npc.m_bFortified)
 				{
-					int target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
+					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						
-						if(npc.m_bFortified)
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 7000.0, DMG_CLUB, -1, _, vecHit);
-							}
-						}
-						else
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
-							}
-						}
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
 					}
-					
-					delete swingTrace;
+					else
+					{
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 7000.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+					}
 				}
+				else
+				{
+					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					{
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+					}
+					else
+					{
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+					}
+				}					
 			}
 		}
-		
 		npc.StartPathing();
 		
 	}

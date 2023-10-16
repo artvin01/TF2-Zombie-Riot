@@ -17,6 +17,10 @@ static const float ViewHeights[] =
 	68.0
 };
 */
+void RemoveBuildingDependency(int entity)
+{
+	iBuildingDependency[entity] = 0;
+}
 static DynamicHook dtIsPlacementPosValid;
 
 void OnPluginStart_Build_on_Building()
@@ -555,13 +559,13 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 
 		if (EntityHit <= 0 || EntityHit==self)
 		{
-			CloseHandle(trace);
+			delete trace;
 			return false;
 		}
 
 		if(!i_IsABuilding[EntityHit])
 		{
-			CloseHandle(trace);
+			delete trace;
 			return false;
 		}
 
@@ -575,7 +579,7 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 		}
 	}
 
-	CloseHandle(trace);
+	delete trace;
 
 	return foundbuilding;
 }

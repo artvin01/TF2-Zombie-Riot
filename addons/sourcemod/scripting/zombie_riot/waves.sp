@@ -93,7 +93,6 @@ static ArrayList Voting;
 static bool CanReVote;
 static ArrayList MiniBosses;
 static ArrayStack Enemies;
-static Handle WaveTimer;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
@@ -107,9 +106,17 @@ static int VotedFor[MAXTF2PLAYERS];
 static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
+static Handle WaveTimer;
 
 static char LastWaveWas[64];
 static int WaveGiftItem;
+
+public Action Waves_ProgressTimer(Handle timer)
+{
+	WaveTimer = null;
+	Waves_Progress();
+	return Plugin_Continue;
+}
 
 void Waves_PluginStart()
 {
@@ -119,6 +126,7 @@ void Waves_PluginStart()
 
 	RegAdminCmd("zr_setwave", Waves_SetWaveCmd, ADMFLAG_CHEATS);
 	RegAdminCmd("zr_panzer", Waves_ForcePanzer, ADMFLAG_CHEATS);
+	RegAdminCmd("zr_CurrentEnemyAliveLimits", NpcEnemyAliveLimit, ADMFLAG_CHEATS);
 }
 
 bool Waves_InFreeplay()
@@ -149,9 +157,15 @@ void Waves_PlayerSpawn(int client)
 	}
 }
 
+public Action NpcEnemyAliveLimit(int client, int args)
+{
+	PrintToConsoleAll("EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
+	return Plugin_Handled;
+}
+
 public Action Waves_ForcePanzer(int client, int args)
 {
-	NPC_SpawnNext(false, true, true); //This will force spawn a panzer.
+	NPC_SpawnNext(true, true); //This will force spawn a panzer.
 	return Plugin_Handled;
 }
 
@@ -779,9 +793,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 		}
 		if(any_player_on && !CvarNoRoundStart.BoolValue)
 		{
-			
 			InSetup = false;
-			Waves_Progress();
 		}
 		else
 		{
@@ -902,7 +914,7 @@ public Action Waves_EndVote(Handle timer, float time)
 	Enemies = new ArrayStack(sizeof(Enemy));
 }*/
 
-void Waves_Progress()
+void Waves_Progress(bool donotAdvanceRound = false)
 {
 	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || Cooldown > GetGameTime())
 		return;
@@ -918,6 +930,7 @@ void Waves_Progress()
 	bool panzer_sound = false;
 	bool rogue = Rogue_Mode();
 	static int panzer_chance;
+	bool GiveAmmoSupplies = true;
 
 	if(CurrentRound < length)
 	{
@@ -930,18 +943,13 @@ void Waves_Progress()
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
+			DoGlobalMultiScaling();
 			float playercount = float(CountPlayersOnRed());
-			
+					
 			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
 			{
 				playercount = 0.70;
 			}
-
-			float multi = Pow(1.08, playercount);
-
-			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
-			
-			MultiGlobal = multi;
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
@@ -961,7 +969,7 @@ void Waves_Progress()
 			{
 				if(Is_a_boss == 0)
 				{
-					count = RoundToNearest(float(count)*multi);
+					count = RoundToNearest(float(count)*MultiGlobal);
 				}
 				else
 				{
@@ -988,7 +996,7 @@ void Waves_Progress()
 			
 			Is_Health_Scaling = 0;
 			
-			BalanceDropMinimum(multi);
+			BalanceDropMinimum(MultiGlobal);
 			
 			Is_Health_Scaling = wave.EnemyData.Is_Health_Scaled;
 			
@@ -1032,6 +1040,11 @@ void Waves_Progress()
 			
 			if(wave.Delay > 0.0)
 				WaveTimer = CreateTimer(wave.Delay * (MultiGlobal * 0.75), Waves_ProgressTimer);
+		}
+		else if(donotAdvanceRound)
+		{
+			CurrentWave = round.Waves.Length - 1;
+			GiveAmmoSupplies = false;
 		}
 		else
 		{
@@ -1379,7 +1392,7 @@ void Waves_Progress()
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);
 					
-					EmitCustomToAll("#zombiesurvival/music_win.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
 					Menu menu = new Menu(Waves_FreeplayVote);
 					menu.SetTitle("%t","Victory Menu");
@@ -1434,8 +1447,7 @@ void Waves_Progress()
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(false);
 				
-				Waves_Progress();
-				NPC_SpawnNext(false, panzer_spawn, panzer_sound);
+				NPC_SpawnNext(panzer_spawn, panzer_sound);
 				return;
 			}
 
@@ -1455,10 +1467,8 @@ void Waves_Progress()
 		Rounds.GetArray(length, round);
 		if(++CurrentWave < 1)
 		{
-			float playercount = float(CountPlayersOnRed());
-			float multi = Pow(1.08, playercount);
-			multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%
-			MultiGlobal = multi;
+//			float playercount = float(CountPlayersOnRed());
+			DoGlobalMultiScaling();
 
 			int postWaves = CurrentRound - length;
 			f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
@@ -1493,20 +1503,24 @@ void Waves_Progress()
 			if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
 			{
 				panzer_spawn = true;
-				NPC_SpawnNext(false, panzer_spawn, false);
+				NPC_SpawnNext(panzer_spawn, false);
 			}
 			else
 			{
 				panzer_spawn = false;
-				NPC_SpawnNext(false, false, false);
+				NPC_SpawnNext(false, false);
 			}
 			
 			if(Enemies.Empty)
 			{
 				CurrentWave++;
-				Waves_Progress();
+				WaveStart_SubWaveStart();
 				return;
 			}
+		}
+		else if(donotAdvanceRound)
+		{
+			CurrentWave = 0;
 		}
 		else
 		{
@@ -1576,7 +1590,6 @@ void Waves_Progress()
 			}
 			else
 			{
-				Waves_Progress();
 				return;
 			}
 		}
@@ -1592,25 +1605,10 @@ void Waves_Progress()
 		}
 		
 		Ammo_Count_Ready = 8;
-		/*if(StartCash < 1500)
-		{
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(IsClientInGame(client) && GetClientTeam(client)==2)
-				{
-					int cash = StartCash - (Resupplies_Supplied[client] * 10);
-					if(CashSpent[client] < cash)
-						CashSpent[client] = cash;
-					
-					CashSpent[client] -= StartCash;
-				}
-			}
-
-			CurrentCash = 0;
-		}*/
 	}
+
 	WaveStart_SubWaveStart();
-	if(CurrentWave == 0)
+	if(CurrentWave == 0 && GiveAmmoSupplies)
 	{
 		Renable_Powerups();
 		CheckIfAloneOnServer();
@@ -1623,7 +1621,7 @@ void Waves_Progress()
 			}
 		}
 	}
-	else if (Gave_Ammo_Supply > 2)
+	else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
@@ -1635,7 +1633,7 @@ void Waves_Progress()
 			}
 		}
 	}	
-	else
+	else if(GiveAmmoSupplies)
 	{
 		Gave_Ammo_Supply += 1;	
 	}
@@ -1697,6 +1695,20 @@ void Waves_AddNextEnemy(const Enemy enemy)
 		Enemies.PushArray(enemy);
 }
 
+void Waves_ClearWave()
+{
+	if(CurrentRound >= 0 && CurrentRound < Rounds.Length)
+	{
+		Round round;
+		Rounds.GetArray(CurrentRound, round);
+		CurrentWave = round.Waves.Length;
+	}
+	else
+	{
+		CurrentWave = 999;
+	}
+}
+
 bool Waves_Started()
 {
 	if(Rogue_Mode())
@@ -1726,12 +1738,6 @@ float GetWaveSetupCooldown()
 	return Cooldown;
 }
 
-public Action Waves_ProgressTimer(Handle timer)
-{
-	WaveTimer = null;
-	Waves_Progress();
-	return Plugin_Continue;
-}
 
 void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 {
@@ -1855,4 +1861,21 @@ float Zombie_DelayExtraSpeed()
 		}
 	}
 	return 1.0;
+}
+
+
+void DoGlobalMultiScaling()
+{
+	float playercount = float(CountPlayersOnRed());
+			
+	if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
+	{
+		playercount = 0.70;
+	}
+			
+	float multi = Pow(1.08, playercount);
+
+	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
+	MultiGlobal = multi;
+	MultiGlobalHealth = playercount * 0.2;
 }

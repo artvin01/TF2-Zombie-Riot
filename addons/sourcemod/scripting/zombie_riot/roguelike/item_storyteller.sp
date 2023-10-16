@@ -283,3 +283,106 @@ public void Rogue_ProofOfFriendship_Collect()
 {
 	Friendship = true;
 }
+
+public void Rogue_CombineCrown_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// -5% max health
+		map.GetValue("26", value);
+
+		value += ClassHealth(WeaponClass[entity]);
+		value *= 0.95;
+		value -= ClassHealth(WeaponClass[entity]);
+
+		map.SetValue("26", value);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// -5% max health
+			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 19 / 20;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// -5% max health
+				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 19 / 20;
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
+			}
+		}
+	}
+}
+
+public void Rogue_BobResearch_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// -10% movement speed
+		value = 1.0;
+		map.GetValue("107", value);
+		map.SetValue("107", value * 0.9);
+	}
+}
+
+public void Rogue_BobFinal_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +20% movement speed
+		value = 1.0;
+		map.GetValue("107", value);
+		map.SetValue("107", value * 1.2);
+
+		// +15% building damage
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.15);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +15% damage bonus
+			npc.m_fGunRangeBonus *= 1.15;
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// +15% damage bonus
+				npc.BonusDamageBonus *= 1.15;
+			}
+		}
+	}
+}
+
+public void Rogue_BobFinal_Weapon(int entity)
+{
+	Attributes_SetMulti(entity, 2, 1.15);
+	Attributes_SetMulti(entity, 410, 1.15);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		Attributes_SetMulti(entity, 1, 1.15);
+	}
+}

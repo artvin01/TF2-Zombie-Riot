@@ -107,7 +107,11 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
-		DispatchKeyValue(particle, "effect_name", effectName);
+		if(effectName[0])
+			DispatchKeyValue(particle, "effect_name", effectName);
+		else
+			DispatchKeyValue(particle, "effect_name", "3rd_trail");
+
 		DispatchSpawn(particle);
 		if(effectName[0])
 		{
@@ -129,7 +133,11 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
-		DispatchKeyValue(particle, "effect_name", effectName);
+		if(effectName[0])
+			DispatchKeyValue(particle, "effect_name", effectName);
+		else
+			DispatchKeyValue(particle, "effect_name", "3rd_trail");
+			
 		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
 		{
 			b_IsEntityAlwaysTranmitted[particle] = true;
@@ -157,7 +165,10 @@ stock int ParticleEffectAtWithRotation(float position[3], float rotation[3], cha
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
 		SetEntPropVector(particle, Prop_Data, "m_angRotation", rotation);
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
-		DispatchKeyValue(particle, "effect_name", effectName);
+		if(effectName[0])
+			DispatchKeyValue(particle, "effect_name", effectName);
+		else
+			DispatchKeyValue(particle, "effect_name", "3rd_trail");
 		DispatchSpawn(particle);
 		if(effectName[0])
 		{
@@ -1325,7 +1336,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 }
 
 //doing this litterally every heal spams it, so we make a 0.5 second delay, and thus, will stack it, and then show it all at once.
-Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {null, ...};
 static int i_HealsDone_Event[MAXENTITIES]={0, ...};
 
 stock void ApplyHealEvent(int entindex, int amount)
@@ -1333,7 +1344,7 @@ stock void ApplyHealEvent(int entindex, int amount)
 	if(IsValidClient(entindex))
 	{
 		i_HealsDone_Event[entindex] += amount;
-		if (h_Timer_HealEventApply[entindex] == INVALID_HANDLE)
+		if (h_Timer_HealEventApply[entindex] == null)
 		{
 			DataPack pack;
 			h_Timer_HealEventApply[entindex] = CreateDataTimer(0.5, Timer_HealEventApply, pack, _);
@@ -1351,27 +1362,18 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 
 	if (!IsValidMulti(client))
 	{
-		ApplyHealEvent_TimerDeleter(clientOriginalIndex);
-		return Plugin_Continue;
+		i_HealsDone_Event[clientOriginalIndex] = 0;
+		h_Timer_HealEventApply[clientOriginalIndex] = null;
+		return Plugin_Stop;
 	}
 
 	Event event = CreateEvent("player_healonhit", true);
 	event.SetInt("entindex", client);
 	event.SetInt("amount", i_HealsDone_Event[clientOriginalIndex]);
 	event.Fire();
-
-	ApplyHealEvent_TimerDeleter(clientOriginalIndex);
-	return Plugin_Continue;
-}
-
-void ApplyHealEvent_TimerDeleter(int client) //This is on disconnect/connect
-{
-	if (h_Timer_HealEventApply[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_Timer_HealEventApply[client]);
-	}	
-	i_HealsDone_Event[client] = 0;
-	h_Timer_HealEventApply[client] = INVALID_HANDLE;
+	i_HealsDone_Event[clientOriginalIndex] = 0;
+	h_Timer_HealEventApply[clientOriginalIndex] = null;
+	return Plugin_Stop;
 }
 
 
@@ -2315,8 +2317,7 @@ public void CreateEarthquake(float position[3], float duration, float radius, fl
 	}
 }
 
-
-bool TF2U_GetWearable(int client, int &entity, int &index, const char[] classname = "tf_wear*")
+stock bool TF2U_GetWearable(int client, int &entity, int &index, const char[] classname = "tf_wear*")
 {
 	/*#if defined __nosoop_tf2_utils_included
 	if(Loaded)
@@ -3819,7 +3820,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers_noBuilds(int entity, int cli
 
 stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
 {
-
 	float HudY = 0.75;
 	float HudX = -1.0;
 	HudX += f_NotifHudOffsetY[client];

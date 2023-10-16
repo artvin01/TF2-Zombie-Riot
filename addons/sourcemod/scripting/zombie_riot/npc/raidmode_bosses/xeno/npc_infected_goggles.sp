@@ -180,7 +180,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flJumpCooldown = value;	}
 	}
 
-	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -198,6 +198,12 @@ methodmap RaidbossBlueGoggles < CClotBody
 		b_angered_twice[npc.index] = false;
 		
 
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		/*
 			Cosmetics
 		*/
@@ -260,8 +266,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
 		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
@@ -353,7 +358,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	
 	if(b_angered_twice[npc.index])
 	{
-		int closestTarget = GetClosestTarget(npc.index);
+		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
 			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
@@ -598,54 +603,64 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						if(npc.m_flAttackHappens < gameTime)
 						{
 							npc.m_flAttackHappens = 0.0;
-							
+							int HowManyEnemeisAoeMelee = 64;
 							Handle swingTrace;
-							npc.FaceTowards(vecTarget, 15000.0);
-							if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-							{	
-								int target = TR_GetEntityIndex(swingTrace);
-								if(target == npc.m_iTarget) 
+							npc.FaceTowards(vecTarget, 20000.0);
+							npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+							delete swingTrace;
+							bool PlaySound = false;
+							for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+							{
+								if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 								{
-									KillFeed_SetKillIcon(npc.index, "club");
+									if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+									{
+										PlaySound = true;
+										int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+										float vecHit[3];
+										vecHit = WorldSpaceCenter(target);
 
-									float vecHit[3];
-									TR_GetEndPosition(vecHit, swingTrace);
-									if(npc.Anger)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);	
-									}
-									
-									npc.PlayMeleeHitSound();
-									
-									bool Knocked = false;
-									
-									if(IsValidClient(target))
-									{
-										if (IsInvuln(target))
+										KillFeed_SetKillIcon(npc.index, "club");
+
+										if(npc.Anger)
 										{
-											Knocked = true;
-											Custom_Knockback(npc.index, target, 750.0, true);
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);
 										}
 										else
 										{
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);	
 										}
-									}
-									
-									if(!Knocked)
-										Custom_Knockback(npc.index, target, 550.0); 
+										
+										
+										bool Knocked = false;
+										
+										if(IsValidClient(target))
+										{
+											if (IsInvuln(target))
+											{
+												Knocked = true;
+												Custom_Knockback(npc.index, target, 750.0, true);
+												TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+												TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											}
+											else
+											{
+												TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+												TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+											}
+										}
+										
+										if(!Knocked)
+											Custom_Knockback(npc.index, target, 550.0); 
 
-									npc.m_flSwitchCooldown = 0.0;
+										npc.m_flSwitchCooldown = 0.0;
+									}
 								} 
 							}
-							delete swingTrace;
+							if(PlaySound)
+							{
+								npc.PlayMeleeHitSound();
+							}
 						}
 					}
 					else if(npc.m_flNextMeleeAttack < gameTime && distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
@@ -862,7 +877,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 		
 	RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(victim);
 	
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{

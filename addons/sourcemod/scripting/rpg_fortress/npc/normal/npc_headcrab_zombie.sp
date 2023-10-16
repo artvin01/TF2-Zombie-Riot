@@ -108,7 +108,8 @@ methodmap HeadcrabZombie < CClotBody
 		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+
 	//	npc.SetActivity("ACT_WALK");
 
 		npc.m_bisWalking = false;

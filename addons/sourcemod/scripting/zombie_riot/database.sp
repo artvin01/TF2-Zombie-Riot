@@ -115,7 +115,8 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "lowhealthshake INTEGER NOT NULL DEFAULT 1, "
 		... "hitmarker INTEGER NOT NULL DEFAULT 1, "
 		... "tp INTEGER NOT NULL DEFAULT 0, "
-		... "zomvol FLOAT NOT NULL DEFAULT 0.0);");
+		... "zomvol FLOAT NOT NULL DEFAULT 0.0, "
+		... "tauntspeed INTEGER NOT NULL DEFAULT 1);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_GIFTITEM ... " ("
 		... "steamid INTEGER NOT NULL, "
@@ -240,6 +241,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_HudHitMarker[client] = view_as<bool>(results[2].FetchInt(12));
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
+			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -261,6 +263,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 
 		Cached[client] = true;
 		Store_OnCached(client);
+		Native_OnClientLoaded(client);
 
 		if(tr)
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
@@ -305,7 +308,8 @@ void DataBase_ClientDisconnect(int client)
 			... "lowhealthshake = %d, "
 			... "hitmarker = %d, "
 			... "tp = %d, "
-			... "zomvol = %.3f "
+			... "zomvol = %.3f, "
+			... "tauntspeed = %d "
 			... "WHERE steamid = %d;",
 			b_IsPlayerNiko[client],
 			f_ArmorHudOffsetX[client],
@@ -321,6 +325,7 @@ void DataBase_ClientDisconnect(int client)
 			b_HudHitMarker[client],
 			thirdperson[client],
 			f_ZombieVolumeSetting[client],
+			b_TauntSpeedIncreace[client],
 			id);
 
 			tr.AddQuery(buffer);

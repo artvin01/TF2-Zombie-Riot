@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 static int i_Quincy_Skill_Points[MAXTF2PLAYERS + 1];
 static float fl_Quincy_Charge[MAXTF2PLAYERS + 1];
@@ -153,16 +153,15 @@ static int Get_Quincy_Pap(int weapon)
 }
 public void Activate_Quincy_Bow(int client, int weapon)
 {
-	if (h_TimerQuincy_BowManagement[client] != INVALID_HANDLE)
+	if (h_TimerQuincy_BowManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerQuincy_BowManagement[client]);
-			h_TimerQuincy_BowManagement[client] = INVALID_HANDLE;
-			
+			delete h_TimerQuincy_BowManagement[client];
+			h_TimerQuincy_BowManagement[client] = null;			
 			Create_Quincy_Weapon(client, true);
 			
 			
@@ -199,22 +198,15 @@ public Action Timer_Management_Quincy_Bow(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Quincy_Bow_Blade_Loop_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Quincy_Bow_Loop(client);
-		}
-		else
-			Kill_Quincy_Bow_Loop(client);
-	}
-	else
-		Kill_Quincy_Bow_Loop(client);
+		Delete_Quincy_Weapon(client);
+		h_TimerQuincy_BowManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Quincy_Bow_Blade_Loop_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
@@ -222,207 +214,188 @@ static bool b_lockout[MAXTF2PLAYERS+1];
 static void Quincy_Bow_Blade_Loop_Logic(int client, int weapon)
 {
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	
-
-	if(IsValidEntity(weapon))
+	if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
 	{
-
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)	//this loop will work if the holder doesn't have it in there hands, but they have it bought
+		Create_Quincy_Weapon(client, _);
+		float GameTime = GetGameTime();
+		int buttons = GetClientButtons(client);
+		bool attack = (buttons & IN_ATTACK) != 0;
+		bool attack2 = (buttons & IN_ATTACK2) != 0;
+		
+		float charge_percent = (fl_Quincy_Charge[client] / QUINCY_BOW_BASELINE_BATTERY) * 100.0;
+		
+		if(fl_hud_timer[client]<GameTime)
 		{
-
-			if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
+			//CPrintToChatAll("charge %.1f", fl_Quincy_Charge[client]);
+			fl_hud_timer[client] = GameTime + 0.5;
+			Quincy_Bow_Show_Hud(client, charge_percent);
+			//Update_Quincy(client);
+		}
+		if(!attack && !attack2 && b_lockout[client])
+		{
+			b_lockout[client] = false;
+			fl_Quincy_Charge[client] = 0.0;
+			charge_percent = 0.0;
+		}
+		
+		if(attack && !b_lockout[client])	//eat mana if the client is holding m1
+		{
+			if(attack2)
 			{
-				Create_Quincy_Weapon(client, _);
-				float GameTime = GetGameTime();
-				int buttons = GetClientButtons(client);
-				bool attack = (buttons & IN_ATTACK) != 0;
-				bool attack2 = (buttons & IN_ATTACK2) != 0;
+				b_lockout[client] = true;	//if the client preses m2 while charging the charge will go bye bye.
+			}
+			
+			Mana_Regen_Delay[client] = GameTime + 1.0;
+			Mana_Hud_Delay[client] = 0.0;
+			
+			float charge_percent_sound = (fl_Quincy_Charge[client] / fl_Quincy_Max_Battery[client]) * 100.0;
+			
+			if(fl_sound_timer[client]<GameTime)
+			{
+				fl_sound_timer[client] = GameTime + 0.1;
 				
-				float charge_percent = (fl_Quincy_Charge[client] / QUINCY_BOW_BASELINE_BATTERY) * 100.0;
-				
-				if(fl_hud_timer[client]<GameTime)
+				switch(GetRandomInt(1, 2))
 				{
-					//CPrintToChatAll("charge %.1f", fl_Quincy_Charge[client]);
-					fl_hud_timer[client] = GameTime + 0.5;
-					Quincy_Bow_Show_Hud(client, charge_percent);
-					//Update_Quincy(client);
-				}
-				if(!attack && !attack2 && b_lockout[client])
-				{
-					b_lockout[client] = false;
-					fl_Quincy_Charge[client] = 0.0;
-					charge_percent = 0.0;
-				}
-				
-				if(attack && !b_lockout[client])	//eat mana if the client is holding m1
-				{
-					if(attack2)
+					case 1:
 					{
-						b_lockout[client] = true;	//if the client preses m2 while charging the charge will go bye bye.
+						EmitSoundToAll(Zap_Sound[GetRandomInt(0, sizeof(Zap_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
+					}
+					case 2:
+					{
+						EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
 					}
 					
-					Mana_Regen_Delay[client] = GameTime + 1.0;
-					Mana_Hud_Delay[client] = 0.0;
-					
-					float charge_percent_sound = (fl_Quincy_Charge[client] / fl_Quincy_Max_Battery[client]) * 100.0;
-					
-					if(fl_sound_timer[client]<GameTime)
-					{
-						fl_sound_timer[client] = GameTime + 0.1;
-						
-						switch(GetRandomInt(1, 2))
-						{
-							case 1:
-							{
-								EmitSoundToAll(Zap_Sound[GetRandomInt(0, sizeof(Zap_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
-							}
-							case 2:
-							{
-								EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
-							}
-							
-						}
-					
+				}
+			
 
-						
-					}
-					if(fl_Quincy_Max_Battery[client]>fl_Quincy_Charge[client])
-					{
-						int mana_cost;
-						mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-						
-						mana_cost = RoundToCeil(mana_cost*fl_Quincy_Charge_Multi[client]);
-						
-						if(Current_Mana[client]>=mana_cost)
-						{
-							fl_Quincy_Charge[client] += mana_cost;					
-							Current_Mana[client] -=mana_cost;
-						}
-					}
-				}
-				else if(charge_percent>10.0 && !b_lockout[client])
-				{
-					Quincy_Bow_Fire(client, weapon, charge_percent);
-					fl_Quincy_Charge[client] = 0.0;
-					charge_percent = 0.0;
-				}
-				else if(charge_percent>0 && !b_lockout[client])
-				{
-					fl_Quincy_Charge[client] = 0.0;
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetDefaultHudPosition(client);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Charge");
-				}
-				int flags = Quincy_Bow_Hex_Array[client];
-				if(flags & QUINCY_BOW_FAST_CHARGE_4)	//Hyper Barrage
-				{
-					if(charge_percent>QUINCY_BOW_HYPER_BARRAGE_MINIMUM)
-					{
-						float angles[3];
-						float UserLoc[3];
-						
-						GetClientEyePosition(client, UserLoc);
-						GetClientEyeAngles(client, angles);
-						int speed = RoundToCeil(charge_percent / 20.0);
-						
-						
-						
-						float distance = GetRandomFloat(float(speed)*10.0, float(speed)*25.0);
-	
-						float tempAngles[3], endLoc[3], Direction[3];
-						
-						float base = 180.0 / speed;
-						
-						float tmp=base;
-						
-						Handle swingTrace;
-						float Vec_offset[3] , vec[3];
-								
-						b_LagCompNPC_No_Layers = true;
-						StartLagCompensation_Base_Boss(client);
-						DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
-						FinishLagCompensation_Base_boss();
-					
-						int target = TR_GetEntityIndex(swingTrace);	
-						if(IsValidEnemy(client, target))
-						{
-							vec = WorldSpaceCenter(target);
-							
-						}
-						else
-						{
-							TR_GetEndPosition(vec, swingTrace);
-						}
-						Vec_offset = vec;
-								
-						delete swingTrace;
-						
-						UserLoc[2] -= 50.0;
-						
-						if(speed>QUINCY_BOW_MAX_HYPER_BARRAGE)
-							speed = QUINCY_BOW_MAX_HYPER_BARRAGE;
-						for(int i=1 ; i<=speed ; i++)
-						{	
-							if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
-							{
-								float firerate = 0.5;
-								firerate *= Attributes_Get(weapon, 5, 1.0);
-								firerate *= Attributes_Get(weapon, 6, 1.0);
-								
-								fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
-								
-								fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
-								
-								
-								tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
-								tempAngles[1] = angles[1]-90.0;
-								tempAngles[2] = 0.0;
-								
-								if(tempAngles[0]>=360)
-								{
-									tempAngles[0] -= 360;
-								}
-											
-								GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-								ScaleVector(Direction, distance);
-								AddVectors(UserLoc, Direction, endLoc);
-								
-								float fl_speed = 3000.0*(charge_percent/50.0);
-				
-								fl_speed *= Attributes_Get(weapon, 103, 1.0);
-									
-								fl_speed *= Attributes_Get(weapon, 104, 1.0);
-									
-								fl_speed *= Attributes_Get(weapon, 475, 1.0);
-								
-								if(fl_speed>3000.0)
-									fl_speed = 3000.0;
-									
-								float damage;
-								damage = 33.0*(charge_percent/100.0);
-								damage *= Attributes_Get(weapon, 410, 1.0);
-								Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
-							}
-						}
-					}
-				}
 				
 			}
-			else
+			if(fl_Quincy_Max_Battery[client]>fl_Quincy_Charge[client])
 			{
-				Delete_Quincy_Weapon(client);
+				int mana_cost;
+				mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+				
+				mana_cost = RoundToCeil(mana_cost*fl_Quincy_Charge_Multi[client]);
+				
+				if(Current_Mana[client]>=mana_cost)
+				{
+					fl_Quincy_Charge[client] += mana_cost;					
+					Current_Mana[client] -=mana_cost;
+				}
 			}
 		}
-		else
+		else if(charge_percent>10.0 && !b_lockout[client])
 		{
-			Kill_Quincy_Bow_Loop(client);
+			Quincy_Bow_Fire(client, weapon, charge_percent);
+			fl_Quincy_Charge[client] = 0.0;
+			charge_percent = 0.0;
 		}
+		else if(charge_percent>0 && !b_lockout[client])
+		{
+			fl_Quincy_Charge[client] = 0.0;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Charge");
+		}
+		int flags = Quincy_Bow_Hex_Array[client];
+		if(flags & QUINCY_BOW_FAST_CHARGE_4)	//Hyper Barrage
+		{
+			if(charge_percent>QUINCY_BOW_HYPER_BARRAGE_MINIMUM)
+			{
+				float angles[3];
+				float UserLoc[3];
+				
+				GetClientEyePosition(client, UserLoc);
+				GetClientEyeAngles(client, angles);
+				int speed = RoundToCeil(charge_percent / 20.0);
+				
+				
+				
+				float distance = GetRandomFloat(float(speed)*10.0, float(speed)*25.0);
+
+				float tempAngles[3], endLoc[3], Direction[3];
+				
+				float base = 180.0 / speed;
+				
+				float tmp=base;
+				
+				Handle swingTrace;
+				float Vec_offset[3] , vec[3];
+						
+				b_LagCompNPC_No_Layers = true;
+				StartLagCompensation_Base_Boss(client);
+				DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
+				FinishLagCompensation_Base_boss();
+			
+				int target = TR_GetEntityIndex(swingTrace);	
+				if(IsValidEnemy(client, target))
+				{
+					vec = WorldSpaceCenter(target);
+					
+				}
+				else
+				{
+					TR_GetEndPosition(vec, swingTrace);
+				}
+				Vec_offset = vec;
+						
+				delete swingTrace;
+				
+				UserLoc[2] -= 50.0;
+				
+				if(speed>QUINCY_BOW_MAX_HYPER_BARRAGE)
+					speed = QUINCY_BOW_MAX_HYPER_BARRAGE;
+				for(int i=1 ; i<=speed ; i++)
+				{	
+					if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
+					{
+						float firerate = 0.5;
+						firerate *= Attributes_Get(weapon, 5, 1.0);
+						firerate *= Attributes_Get(weapon, 6, 1.0);
+						
+						fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
+						
+						fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
+						
+						
+						tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
+						tempAngles[1] = angles[1]-90.0;
+						tempAngles[2] = 0.0;
+						
+						if(tempAngles[0]>=360)
+						{
+							tempAngles[0] -= 360;
+						}
+									
+						GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+						ScaleVector(Direction, distance);
+						AddVectors(UserLoc, Direction, endLoc);
+						
+						float fl_speed = 3000.0*(charge_percent/50.0);
+		
+						fl_speed *= Attributes_Get(weapon, 103, 1.0);
+							
+						fl_speed *= Attributes_Get(weapon, 104, 1.0);
+							
+						fl_speed *= Attributes_Get(weapon, 475, 1.0);
+						
+						if(fl_speed>3000.0)
+							fl_speed = 3000.0;
+							
+						float damage;
+						damage = 33.0*(charge_percent/100.0);
+						damage *= Attributes_Get(weapon, 410, 1.0);
+						Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
+					}
+				}
+			}
+		}
+		
 	}
 	else
 	{
-		Kill_Quincy_Bow_Loop(client);
-		
+		Delete_Quincy_Weapon(client);
 	}
 }
 static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
@@ -618,15 +591,7 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent)
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 }
-public void Kill_Quincy_Bow_Loop(int client)
-{
-	if (h_TimerQuincy_BowManagement[client] != INVALID_HANDLE)
-	{
-		Delete_Quincy_Weapon(client);
-		KillTimer(h_TimerQuincy_BowManagement[client]);
-		h_TimerQuincy_BowManagement[client] = INVALID_HANDLE;
-	}
-}
+
 public void Quincy_Touch(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -666,6 +631,9 @@ public void Quincy_Touch(int entity, int target)
 
 public void Quincy_Menu(int client, int weapon)
 {	
+	if(!IsValidClient(client))
+		return;
+		
 	Menu menu2 = new Menu(Quincy_Menu_Selection);
 	int flags = Quincy_Bow_Hex_Array[client];
 	
@@ -1159,58 +1127,56 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 	Handle trace = TR_TraceRayFilterEx(Vec_1, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
-			TR_GetEndPosition(Vec_2, trace);
-			CloseHandle(trace);
-			static float hullMin[3];
-			static float hullMax[3];
+		TR_GetEndPosition(Vec_2, trace);
+		static float hullMin[3];
+		static float hullMax[3];
 
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Quincy_Blade_BEAM_HitDetected[i] = false;
-			}
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			Quincy_Blade_BEAM_HitDetected[i] = false;
+		}
+		
+		hullMin[0] = -radius;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+		StartLagCompensation_Base_Boss(client);
+		Handle btrace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Quincy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+		delete btrace;
+		FinishLagCompensation_Base_boss();
+		if(VIPBuilding_Active())
+			dmg *= 0.5;
 			
-			hullMin[0] = -radius;
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			StartLagCompensation_Base_Boss(client);
-			Handle btrace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Quincy_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete btrace;
-			FinishLagCompensation_Base_boss();
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
+		for (int victim = 1; victim < MAXENTITIES; victim++)
+		{
+			if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 			{
-				if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-				{
-					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-				}
+				SDKHooks_TakeDamage(victim, client, client, dmg, DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			}
-			radius *= 2.0;
-			int r, g, b;
-			r = 15;
-			g = 179;
-			b = 235;
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 60);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
-			TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Laser, 0, 0, 0, 1.0, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 60);
-			TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Glow, 0, 0, 0, 1.75, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.5, glowColor, 0);
-			TE_SendToAll(0.0);
+		}
+		radius *= 2.0;
+		int r, g, b;
+		r = 15;
+		g = 179;
+		b = 235;
+		int colorLayer4[4];
+		SetColorRGBA(colorLayer4, r, g, b, 60);
+		int colorLayer3[4];
+		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
+		int colorLayer2[4];
+		SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
+		int colorLayer1[4];
+		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
+		TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Laser, 0, 0, 0, 1.0, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+		TE_SendToAll(0.0);
+		int glowColor[4];
+		SetColorRGBA(glowColor, r, g, b, 60);
+		TE_SetupBeamPoints(flPos_2, Vec_2, Beam_Glow, 0, 0, 0, 1.75, ClampBeamWidth(radius * 0.3 * 1.28), ClampBeamWidth(radius * 0.3 * 1.28), 0, 1.5, glowColor, 0);
+		TE_SendToAll(0.0);
 	}
-	else
-	{
-		delete trace;
-	}
+	delete trace;
 
 }
 static bool Quincy_BEAM_TraceUsers(int entity, int contentsMask, int client)

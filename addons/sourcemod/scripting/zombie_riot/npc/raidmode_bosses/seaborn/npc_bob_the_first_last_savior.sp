@@ -242,8 +242,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
 		return npc;
@@ -1123,6 +1122,7 @@ public Action Silvester_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }

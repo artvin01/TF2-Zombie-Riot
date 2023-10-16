@@ -144,7 +144,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
 		if(entity == INVALID_ENT_REFERENCE || b_NpcIsInvulnerable[entity])
 		{
-			SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9, DMG_SLASH);
+			SmiteNpcToDeath(npc.index);
 			return;
 		}
 

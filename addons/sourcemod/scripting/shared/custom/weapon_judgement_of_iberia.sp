@@ -20,7 +20,7 @@
 
 #define IRENE_KICKUP_1 "mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 
-Handle h_TimerIreneManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
 static bool b_WeaponAttackSpeedModified[MAXENTITIES];
@@ -76,11 +76,11 @@ void Reset_stats_Irene_Global()
 
 void Reset_stats_Irene_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
+	if (h_TimerIreneManagement[client] != null)
 	{
-		KillTimer(h_TimerIreneManagement[client]);
+		delete h_TimerIreneManagement[client];
 	}	
-	h_TimerIreneManagement[client] = INVALID_HANDLE;
+	h_TimerIreneManagement[client] = null;
 	i_IreneHitsDone[client] = 0;
 }
 
@@ -92,31 +92,6 @@ void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. c
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)
 {
-	//Show the timer, this is purely for looks and doesnt do anything.
-//	float cooldown = 0.65 * Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
-
-	//We wish to do a double attack.
-	//Delay it abit extra!
-
-	
-	/*
-	LAZY WAY:
-	DataPack pack;
-	CreateDataTimer(0.25, Timer_Do_Melee_Attack, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(GetClientUserId(client));
-	pack.WriteCell(EntIndexToEntRef(weapon));
-	pack.WriteString("tf_weapon_knife"); //We will hardcode this to tf_weapon_knife because i am lazy as fuck. 
-	*/
-	/* 
-		PRO WAY:
-		So that animations display properly, we wish to accelerate the attackspeed massively by 1
-		Issue: players can just delay the double attack
-		Fix for this would be just just reset back to the original attack speed if they dont attack.
-		This is annoying but this is really cool instead of the above LAZY method!
-
-	*/
-	//We save this onto the weapon if the modified attackspeed is not modified.
-
 	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
 	if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 	{
@@ -166,8 +141,8 @@ public void Enable_Irene(int client, int weapon) // Enable management, handle we
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerIreneManagement[client]);
-			h_TimerIreneManagement[client] = INVALID_HANDLE;
+			delete h_TimerIreneManagement[client];
+			h_TimerIreneManagement[client] = null;
 			DataPack pack;
 			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -191,22 +166,13 @@ public Action Timer_Management_Irene(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Irene_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Irene(client);
-		}
-		else
-			Kill_Timer_Irene(client);
-	}
-	else
-		Kill_Timer_Irene(client);
+		h_TimerIreneManagement[client] = null;
+		return Plugin_Stop;
+	}	
+	Irene_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
@@ -214,49 +180,23 @@ public Action Timer_Management_Irene(Handle timer, DataPack pack)
 
 public void Irene_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	if(f_Irenehuddelay[client] < GetGameTime())
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == 6) //Double check to see if its good or bad :(
-		{	
-			if(f_Irenehuddelay[client] < GetGameTime())
-			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-				{
-					if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
-					{
-						PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
-					}
-					else
-					{
-						PrintHintText(client,"Judgemet Of Iberia [READY!]");
-					}
-					
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_Irenehuddelay[client] = GetGameTime() + 0.5;
-				}
-			}
-		}
-		else
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			Kill_Timer_Irene(client);
+			if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+			{
+				PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+			}
+			else
+			{
+				PrintHintText(client,"Judgemet Of Iberia [READY!]");
+			}
+			
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_Irenehuddelay[client] = GetGameTime() + 0.5;
 		}
-	}
-	else
-	{
-		Kill_Timer_Irene(client);
-	}
-}
-
-public void Kill_Timer_Irene(int client)
-{
-	if (h_TimerIreneManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerIreneManagement[client]);
-		h_TimerIreneManagement[client] = INVALID_HANDLE;
 	}
 }
 

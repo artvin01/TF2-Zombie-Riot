@@ -4,7 +4,7 @@ char s_OriginalSkybox[255] = "sky_tf2_04";
 
 ConVar SkyName;
 
-public void SkyboxProps_OnPluginStart()
+void SkyboxProps_OnPluginStart()
 {
 	RegAdminCmd("spawnskyboxprop", SpawnProp, ADMFLAG_GENERIC, "Spawn a prop in the 3D skybox.");
 	RegAdminCmd("spawnskyboxparticle", SpawnAParticle, ADMFLAG_GENERIC, "Spawn a particle in the 3D skybox.");
@@ -18,7 +18,7 @@ public void SkyboxProps_OnPluginStart()
 #define SND_SPAWNED		"misc/rd_points_return01.wav"
 #define SND_CLEARED		"misc/rd_finale_beep01.wav"
 
-public SkyboxProps_OnMapStart()
+void SkyboxProps_OnMapStart()
 {
 	PrecacheSound(SND_SPAWNED, true);
 	PrecacheSound(SND_CLEARED, true);
@@ -284,7 +284,7 @@ public Action ResetSkybox(int client, int args)
 	return Plugin_Continue;
 }
 
-public void SkyboxProps_OnEntityDestroyed(int entity)
+void SkyboxProps_OnEntityDestroyed(int entity)
 {
 	b_IsSkyboxProp[entity] = false;
 }
@@ -305,7 +305,7 @@ void PlaySoundToClient(int client, char sound[255])
 	}
 }
 
-public int Animator_SpawnDummy(char model[255], char animation[255], float spawnLoc[3], float spawnAng[3], char skin[255], float rate, float life)
+static int Animator_SpawnDummy(char model[255], char animation[255], float spawnLoc[3], float spawnAng[3], char skin[255], float rate, float life)
 {
 	int ReturnValue = -1;
 	
@@ -340,7 +340,7 @@ public int Animator_SpawnDummy(char model[255], char animation[255], float spawn
 	return ReturnValue;
 }
 
-stock int SpawnParticle_R(float origin[3], char particle[255], float duration = 0.0)
+static int SpawnParticle_R(float origin[3], char particle[255], float duration = 0.0)
 {
 	int Effect = CreateEntityByName("info_particle_system");
 	if (IsValidEdict(Effect))

@@ -62,7 +62,7 @@ methodmap UnderTides < CClotBody
 	
 	public UnderTides(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 200.0}));
+		UnderTides npc = view_as<UnderTides>(CClotBody(vecPos, vecAng, "models/synth.mdl", "1.0", "15000", ally, false, true, _, _, {30.0, 30.0, 100.0}));
 		// 100,000 x 0.15
 
 		i_NpcInternalId[npc.index] = UNDERTIDES;
@@ -91,7 +91,7 @@ methodmap UnderTides < CClotBody
 			npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 15.0;
 			npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 30.0;
 
-			Citizen_MiniBossSpawn(npc.index);
+			Citizen_MiniBossSpawn();
 		}
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
@@ -148,61 +148,7 @@ public void UnderTides_ClotThink(int iNPC)
 		
 		npc.m_flNextThinkTime = gameTime + 0.1;
 
-		float AproxRandomSpaceToWalkTo[3];
-
-		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-
-		AproxRandomSpaceToWalkTo[2] += 50.0;
-
-		AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 1000.0),(AproxRandomSpaceToWalkTo[0] + 1000.0));
-		AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 1000.0),(AproxRandomSpaceToWalkTo[1] + 1000.0));
-
-		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-		
-		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
-		delete ToGroundTrace;
-
-		CNavArea area = TheNavMesh.GetNearestNavArea(AproxRandomSpaceToWalkTo, true);
-		if(area == NULL_AREA)
-			return;
-
-		int NavAttribs = area.GetAttributes();
-		if(NavAttribs & NAV_MESH_AVOID)
-		{
-			return;
-		}
-		
-		area.GetCenter(AproxRandomSpaceToWalkTo);
-
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-
-		static float hullcheckmaxs_Player_Again[3];
-		static float hullcheckmins_Player_Again[3];
-
-		hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
-		hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
-
-		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
-			return;
-
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			return;
-		
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			return;
-		
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			return;
-		
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-
-		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+		TeleportDiversioToRandLocation(npc.index);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
@@ -213,13 +159,13 @@ public void UnderTides_ClotThink(int iNPC)
 		npc.m_flNextRangedAttack = npc.m_flNextMeleeAttack + 15.0;
 		npc.m_flNextRangedSpecialAttack = npc.m_flNextMeleeAttack + 30.0;
 
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		
 		for(int i; i < ZR_MAX_SPAWNERS; i++)
 		{
 			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
-				Spawner_AddToArray(npc.index, true);
+				Spawns_AddToArray(npc.index, true);
 				i_ObjectsSpawners[i] = npc.index;
 				break;
 			}
@@ -572,7 +518,7 @@ void UnderTides_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, UnderTides_ClotThink);
 	
-	Spawner_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{

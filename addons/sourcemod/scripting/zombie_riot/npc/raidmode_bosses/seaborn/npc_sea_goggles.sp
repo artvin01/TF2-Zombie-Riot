@@ -236,8 +236,7 @@ methodmap SeaBlueGoggles < CClotBody
 
 		f_HurtRecentlyAndRedirected[npc.index] = 0.0;
 		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.

@@ -118,7 +118,7 @@ methodmap Addicition < CClotBody
 		if(data[0])
 			npc.SetHalfLifeStats();
 
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		
 		return npc;
 	}

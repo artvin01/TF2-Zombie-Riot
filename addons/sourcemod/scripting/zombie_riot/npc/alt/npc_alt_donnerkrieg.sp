@@ -212,6 +212,9 @@ methodmap Donnerkrieg < CClotBody
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
 		
+		
+		b_angered = false;
+		
 		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
@@ -283,7 +286,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
 	
-	if(!b_Blitz_Alive && !b_Begin_Dialogue && Donner_Takeover && b_Valid_Wave)
+	if(!b_Blitz_Alive && !b_Begin_Dialogue && Donner_Takeover && b_Sub_Valid_Wave)
 	{
 		if(!Donner_Takeover_Active)
 		{
@@ -766,7 +769,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					}
 					
 					EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
-					CreateTimer(1.0, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(1.0, Donner_Nightmare_Offset, EntRefToEntIndex(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
 			else
@@ -818,8 +821,9 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 	}
 }
 
-static Action Donner_Nightmare_Offset(Handle timer, int client)
+static Action Donner_Nightmare_Offset(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidEntity(client))
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(client);
@@ -844,28 +848,31 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 	}
 	
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && b_Valid_Wave)
+	if(RoundToCeil(damage)>=Health && b_Sub_Valid_Wave)
 	{
-		b_DoNotUnStuck[npc.index] = true;
-		b_CantCollidieAlly[npc.index] = true;
-		b_CantCollidie[npc.index] = true;
-		SetEntityCollisionGroup(npc.index, 24);
-		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
-		b_NpcIsInvulnerable[npc.index] = true;
-		RemoveNpcFromEnemyList(npc.index);
-		GiveProgressDelay(20.0);
-		
-		b_Donnerkrieg_Alive = false;
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-		damage = 0.0;
-		if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)
+		if(b_Valid_Wave)
 		{
-			b_timer_locked = true;
-			g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(20.0);
 			
+			b_Donnerkrieg_Alive = false;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
+			if(!b_Schwertkrieg_Alive && !b_Donnerkrieg_Alive && !b_timer_locked)
+			{
+				b_timer_locked = true;
+				g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime() + 20.0;
+				
+			}
 		}
 		b_angered = true;
-		
+			
 		if(Donner_Takeover_Active && !b_donner_locked)
 		{
 			b_donner_locked = true;
@@ -875,16 +882,14 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 			npc.m_bThisNpcIsABoss = false;
 				
 			//prepare takeover for schwert
-			RaidBossActive = INVALID_ENT_REFERENCE;
+			if(!b_Blitz_Alive && !Schwert_Takeover_Active)
+				RaidBossActive = INVALID_ENT_REFERENCE;
 			if(b_Schwertkrieg_Alive)
 			{
 				Schwert_Takeover = true;
 				Schwert_Takeover_Active = false;
 			}
-				
 		}
-		
-		
 		return Plugin_Handled;
 	}
 	
@@ -901,8 +906,6 @@ public void Donnerkrieg_NPCDeath(int entity)
 	
 	
 	b_Donnerkrieg_Alive = false;
-	
-	b_angered = false;
 	
 	b_Valid_Wave = false;
 	
@@ -993,7 +996,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
 	
 }
@@ -1065,12 +1068,13 @@ void NightmareCannon_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(NightmareCannon_BEAM_Duration[client], NightmareCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, NightmareCannon_TBB_Tick);
 	
 }
-public Action NightmareCannon_TBB_Timer(Handle timer, int client)
+public Action NightmareCannon_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
@@ -1188,7 +1192,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
+			delete trace;
 			ConformLineDistance(endPoint, startPoint, endPoint, float(NightmareCannon_BEAM_MaxDistance[client]));
 			float lineReduce = NightmareCannon_BEAM_BeamRadius[client] * 2.0 / 3.0;
 			float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -1276,6 +1280,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }

@@ -92,6 +92,7 @@ methodmap ArkSlug < CClotBody
 		i_NpcInternalId[npc.index] = ARK_SLUG;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.SetActivity("ACT_IDLE");
 

@@ -24,6 +24,7 @@ enum struct KillFeed
 	bool silent_kill;
 }
 
+#if defined ZR
 static const char BuildingName[][] =
 {
 	"Building",
@@ -39,11 +40,13 @@ static const char BuildingName[][] =
 	"Healing Station",
 	"Barracks"
 };
+#endif
 
 static int Bots[2];
 static int ForceTeam[MAXTF2PLAYERS];
 static char KillIcon[MAXENTITIES][32];
-static ArrayList FeedList;
+static ArrayList LowList;
+static ArrayList HighList;
 static Handle FeedTimer;
 
 void AdjustBotCount()
@@ -74,10 +77,11 @@ void AdjustBotCount()
 		}
 	}
 }
+
 void KillFeed_PluginStart()
 {
-	FeedList = new ArrayList(sizeof(KillFeed));
-
+	LowList = new ArrayList(sizeof(KillFeed));
+	HighList = new ArrayList(sizeof(KillFeed));
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -193,11 +197,14 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
 	int botNum;
+	bool priority;
 	KillFeed feed;
 
 	if(victim <= MaxClients)
 	{
 		feed.userid = GetClientUserId(victim);
+
+		priority = true;
 	}
 	else if(!b_NpcHasDied[victim])
 	{
@@ -210,7 +217,12 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		
 		botNum++;
 
+		priority = feed.victim_team != 3;
+
 #if defined ZR
+		if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			priority = true;
+
 		if(i_HasBeenHeadShotted[victim])
 		{
 			feed.customkill = TF_CUSTOM_HEADSHOT;
@@ -220,7 +232,6 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			feed.customkill = TF_CUSTOM_BACKSTAB;
 		}
 #endif
-
 	}
 #if defined ZR
 	else if(i_IsABuilding[victim])
@@ -234,6 +245,8 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		feed.userid = GetClientUserId(Bots[botNum]);
 		feed.victim_team = GetEntProp(victim, Prop_Send, "m_iTeamNum");
 		botNum++;
+
+		priority = true;
 	}
 #endif
 	else
@@ -354,7 +367,14 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		}
 	}
 
-	FeedList.PushArray(feed);
+	if(priority)
+	{
+		HighList.PushArray(feed);
+	}
+	else
+	{
+		LowList.PushArray(feed);
+	}
 
 	if(!FeedTimer)
 		ShowNextFeed();
@@ -362,11 +382,24 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 
 static void ShowNextFeed()
 {
-	if(FeedList.Length)
+	int lowLength = LowList.Length;
+	int highLength = HighList.Length;
+	if(lowLength || highLength)
 	{
+		bool priority;
+
 		KillFeed feedmain, feed;
-		FeedList.GetArray(0, feedmain);
-		FeedList.GetArray(0, feed);
+		if(highLength)
+		{
+			HighList.GetArray(0, feedmain);
+			HighList.GetArray(0, feed);
+			priority = true;
+		}
+		else
+		{
+			LowList.GetArray(0, feedmain);
+			LowList.GetArray(0, feed);
+		}
 
 		int victim = GetClientOfUserId(feed.userid);
 		int attacker = GetClientOfUserId(feed.attacker);
@@ -383,6 +416,10 @@ static void ShowNextFeed()
 				KillFeed_SetBotTeam(victim, feed.victim_team);
 				botUsed = true;
 			}
+		}
+		else
+		{
+			priority = true;
 		}
 
 		if(feed.attacker_name[0] && attacker)
@@ -402,7 +439,14 @@ static void ShowNextFeed()
 
 		do
 		{
-			FeedList.Erase(0);
+			if(HighList.Length)
+			{
+				HighList.Erase(0);
+			}
+			else
+			{
+				LowList.Erase(0);
+			}
 
 			Event event = CreateEvent("player_death", true);
 
@@ -416,15 +460,24 @@ static void ShowNextFeed()
 			event.SetInt("damagebits", feed.damagebits);
 			event.SetInt("inflictor_entindex", feed.inflictor_entindex);
 			event.SetInt("customkill", feed.customkill);
-			event.SetBool("silent_kill", feed.silent_kill);
+			event.SetBool("silent_kill", (!priority && feed.silent_kill));
 
 			list.Push(event);
 
-			if(!FeedList.Length)
-				break;
-			
 			// Add anything using the same team/name
-			FeedList.GetArray(0, feed);
+			if(HighList.Length)
+			{
+				HighList.GetArray(0, feed);
+				continue;
+			}
+			
+			if(LowList.Length)
+			{
+				LowList.GetArray(0, feed);
+				continue;
+			}
+
+			break;
 		}
 		while(feed.victim_team == feedmain.victim_team &&
 			feed.attacker_team == feedmain.attacker_team &&
@@ -447,14 +500,20 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 
 		if(event.GetBool("silent_kill"))
 		{
+			event.SetBool("silent_kill", false);
+
 			int victim = GetClientOfUserId(event.GetInt("userid"));
 			int attacker = GetClientOfUserId(event.GetInt("attacker"));
+			int assister = GetClientOfUserId(event.GetInt("assister"));
 
 			if(victim)
 				event.FireToClient(victim);
 			
 			if(attacker)
 				event.FireToClient(attacker);
+			
+			if(assister)
+				event.FireToClient(assister);
 		}
 		else
 		{

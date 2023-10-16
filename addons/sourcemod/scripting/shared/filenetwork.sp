@@ -170,6 +170,8 @@ public void FileNetwork_AddSoundFrame(DataPack pack)
 	char buffer[PLATFORM_MAX_PATH];
 	pack.ReadString(buffer, sizeof(buffer));
 
+	delete pack;
+
 	AddSoundFile(buffer);
 }
 

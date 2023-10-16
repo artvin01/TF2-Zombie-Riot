@@ -227,7 +227,7 @@ public void GoldBloon_ClotThink(int iNPC)
 			
 			if(alive < (total / 2))
 			{
-				SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9, DMG_SLASH);
+				SmiteNpcToDeath(npc.index);
 				return;
 			}
 		}
@@ -278,7 +278,7 @@ public void GoldBloon_ClotThink(int iNPC)
 	}
 	else
 	{
-		SDKHooks_TakeDamage(npc.index, 0, 0, 9999999.9, DMG_SLASH);
+		SmiteNpcToDeath(npc.index);
 	}
 }
 

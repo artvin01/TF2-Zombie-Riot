@@ -162,7 +162,7 @@ public void SeabornPyro_ClotThink(int iNPC)
 						{
 							if(target > MaxClients)
 							{
-								NPC_Ignite(target, npc.index, 5.0, -1);
+							//	NPC_Ignite(target, npc.index, 5.0, -1);
 							}
 							else
 							{

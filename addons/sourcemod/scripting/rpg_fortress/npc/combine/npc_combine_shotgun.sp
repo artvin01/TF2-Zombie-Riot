@@ -9,7 +9,7 @@ methodmap CombineShotgun < CombineSoldier
 		
 		i_NpcInternalId[npc.index] = COMBINE_SHOTGUN;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
@@ -84,6 +84,7 @@ public void CombineShotgun_ClotThink(int iNPC)
 						TR_GetEndPosition(vecTarget, swingTrace);
 
 						// E2 L5 = 105, E2 L10 = 120
+						KillFeed_SetKillIcon(npc.index, "club");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * 3.0, DMG_CLUB, -1, _, vecTarget);
 						npc.PlayFistHit();
 					}
@@ -140,6 +141,7 @@ public void CombineShotgun_ClotThink(int iNPC)
 								NormalizeVector(vecDir, vecDir);
 								
 								// E2 L5 = 10.5, E2 L10 = 12
+								KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
 								FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, Level[npc.index] * 0.25, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 							}
 

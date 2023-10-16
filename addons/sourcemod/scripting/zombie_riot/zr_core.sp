@@ -123,10 +123,11 @@ enum
 	WEAPON_HAZARD_DEMI = 52,
 	WEAPON_HAZARD_PERFECT = 53,
 	WEAPON_FIRE_WAND = 54,
-	WEAPON_CASINO = 55
+	WEAPON_CASINO = 55,
+	WEAPON_ION_BEAM = 56,
+	WEAPON_SEABORNMELEE = 57,
+	WEAPON_LEPER_MELEE = 58,
 }
-
-ArrayList SpawnerList;
 
 //int Bob_To_Player[MAXENTITIES];
 bool Bob_Exists = false;
@@ -200,6 +201,7 @@ float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
+int i_PreviousBuildingCollision[MAXENTITIES];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -280,7 +282,6 @@ int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
-float GlobalAntiSameFrameCheck_NPC_SpawnNext;
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
@@ -319,6 +320,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/music.sp"
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
+#include "zombie_riot/spawns.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -419,6 +421,9 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
 #include "zombie_riot/custom/weapon_casino.sp"
+#include "zombie_riot/custom/wand/weapon_ion_beam_wand.sp"
+#include "zombie_riot/custom/kit_seaborn.sp"
+#include "zombie_riot/custom/weapon_class_leper.sp"
 
 void ZR_PluginLoad()
 {
@@ -465,6 +470,7 @@ void ZR_PluginStart()
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
+	Spawns_PluginStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
 	for (int ent = -1; (ent = FindEntityByClassname(ent, "info_player_teamspawn")) != -1;) 
@@ -624,13 +630,15 @@ void ZR_MapStart()
 	Gladiia_MapStart();
 	WeaponBoard_Precache();
 	Weapon_German_MapStart();
+	Ion_Beam_Wand_MapStart();
+	OnMapStartLeper();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(2.0, GetClosestSpawners, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(2.0, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	char_MusicString1[0] = 0;
 	char_MusicString2[0] = 0;
@@ -643,6 +651,20 @@ void ZR_MapStart()
 	ResetMapStartSensalWeapon();
 	
 	//Store_RandomizeNPCStore(true);
+}
+
+public Action GlobalTimer(Handle timer)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			PlayerApplyDefaults(client);
+		}
+	}
+	Zombie_Delay_Warning();
+	Spawners_Timer();
+	return Plugin_Continue;
 }
 
 void ZR_ClientPutInServer(int client)
@@ -664,7 +686,7 @@ void ZR_ClientPutInServer(int client)
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
 	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
-	Timer_Knife_Management[client] = INVALID_HANDLE;
+	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
@@ -692,6 +714,8 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_SpikeLayer_Singular(client);
 	Reset_stats_Blemishine_Singular(client);
 	Reset_stats_Judge_Singular(client);
+	Reset_stats_Drink_Singular(client);
+	Reset_stats_Grenade_Singular(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -701,7 +725,7 @@ void ZR_ClientDisconnect(int client)
 	PlayerPoints[client] = 0;
 	i_PreviousPointAmount[client] = 0;
 	i_ExtraPlayerPoints[client] = 0;
-	Timer_Knife_Management[client] = INVALID_HANDLE;
+	Timer_Knife_Management[client] = null;
 	Escape_DropItem(client, false);
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
@@ -1178,7 +1202,7 @@ public void NPC_Despawn_bob(int entity)
 {
 	if(IsValidEntity(entity) && entity != 0)
 	{
-		BobTheGod_NPCDeath(entity);
+		SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	}
 	Bob_Exists_Index = -1;
 }
@@ -1447,12 +1471,6 @@ public void SetHealthAfterReviveAgain(int client)
 }
 
 //Set hp spam after normal revive
-
-
-public void NPC_SpawnNextRequestFrame(bool force)
-{
-	NPC_SpawnNext(false, false, false);
-}
 
 stock void UpdatePlayerPoints(int client)
 {
@@ -1841,4 +1859,41 @@ void GiveXP(int client, int xp)
 			PrintToChat(client, "%t", "None");
 		}
 	}
+}
+
+
+void PlayerApplyDefaults(int client)
+{
+	if(IsPlayerAlive(client) && GetClientTeam(client)==3)
+	{
+		if(IsFakeClient(client))
+		{
+			KickClient(client);	
+		}
+		else
+		{
+			ClientCommand(client, "retry");
+		}
+	}
+	else if(!IsFakeClient(client))
+	{
+		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
+		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
+		
+		if(point_difference > 0)
+		{
+			if(Waves_GetRound() +1 > 60)
+			{
+				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
+			}
+			else
+			{
+				GiveXP(client, point_difference);
+			}
+		}
+		
+		i_PreviousPointAmount[client] = PlayerPoints[client];
+    }
 }

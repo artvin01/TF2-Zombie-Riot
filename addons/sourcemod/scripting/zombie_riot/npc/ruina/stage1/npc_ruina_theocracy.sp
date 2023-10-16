@@ -302,15 +302,11 @@ public void Theocracy_ClotThink(int iNPC)
 			if(npc.m_flDoingAnimation<=GetGameTime(npc.index))
 				Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
-			bool buff_array[3];
-			buff_array[0] = true;
-			buff_array[1] = true;
-			buff_array[2] = true;
-			float buff_array_amt[3];
-			buff_array_amt[0] = 0.1;	//10% dmg bonus
-			buff_array_amt[1] = 1.25;	//going bellow 1.0 will reduce speed
-			buff_array_amt[2] = 0.1;	//10% dmg resist
-			Apply_Master_Buff(npc.index, buff_array, 250.0, 5.0, buff_array_amt);
+			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
+			Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.25);	//25% speed bonus, going bellow 1.0 will make npc's slower
+			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
+			Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
+			
 			
 			if(fl_rally_timer[npc.index]<=GetGameTime(npc.index) && !b_rally_active[npc.index])
 			{

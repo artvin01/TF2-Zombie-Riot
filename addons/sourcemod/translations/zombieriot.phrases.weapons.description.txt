@@ -2413,5 +2413,77 @@
 	{
 		"en"	"R. deals damage up to 5 enemies in a single shot, C. applies freeze, T.B.O. deals massive damage based on your clip.\nBlood ammo gives ammo on kill.\nGambling frenzy makes M2 ability free."
 	}
+	"Neuv pap0"
+	{
+		"en"	"''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown..."
+	}
+	"Neuv pap1"
+	{
+		"en"	"Your Understanding of the spell improves\nImages of a city flood your mind...\nOne things for certain though, this spell has become far more powerfull"
+	}
+	"Neuv pap2"
+	{
+		"en"	"Science And Witches\nHow could something so contradictory to one another be so intertwined with a spell"
+	}
+	"Neuv pap3"
+	{
+		"en"	"A new spell manifests into your mind\Hold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
+	}
+	"Neuv pap4"
+	{
+		"en"	"Truth or false, it’s the logic that dictates it all\nRising edge,\nTicks the clock\nStimulates your flip flop\nGenerate, Oscillate\nLet your blood fill the gates\nMultiplex, process registration"
+	}
+	"Neuv pap5"
+	{
+		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all he knows..."
+	}
+	"Skill Point Info"
+	{
+		"en"	"Hold MOUSE2 while pressing RELOAD on a pap to gain access to a skill point alocation system"
+	}
+	"Seaborn Infection Desc"
+	{
+		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit."
+	}
+	"Seaborn Claws Desc"
+	{
+		"en"	"Hits up to 3 targets and increased melee range."
+	}
+	"Seaborn Claws Pap 1"
+	{
+		"en"	"Hits up to 4 targets, doubled melee range, and ignores walls."
+	}
+	"Seaborn Claws Pap 2"
+	{
+		"en"	"Hits up to 5 targets, doubled melee range, and ignores walls."
+	}
+	"Seaborn Claws Pap 3"
+	{
+		"en"	"Ability grants self and all nearby players double fire rate with a slight damage penalty."
+	}
+	"Seaborn Spines Desc"
+	{
+		"en"	"A crossbow that does more damage the further the target is."
+	}
+	"Seaborn Spines Pap 1"
+	{
+		"en"	"Ability spawns a Shell Sea Runner."
+	}
+	"Seaborn Spines Pap 2"
+	{
+		"en"	"Ability spawns two Shell Sea Runners."
+	}
+	"Seaborn Spines Pap 3"
+	{
+		"en"	"Ability grants self and all nearby players double damage with a slight fire rate penalty."
+	}
+	"Seaborn Salve Desc"
+	{
+		"en"	"Heals allies up to 100 health and self up to 30 health."
+	}
+	"Seaborn Salve Pap 1"
+	{
+		"en"	"Heals allies up to 200 health and self up to 50 health."
+	}
 }
 

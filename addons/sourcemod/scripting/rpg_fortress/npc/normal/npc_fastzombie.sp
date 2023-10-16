@@ -135,7 +135,8 @@ methodmap FastZombie < CClotBody
 		i_NpcInternalId[npc.index] = FAST_ZOMBIE;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+
 		npc.SetActivity("ACT_IDLE");
 
 		npc.m_bisWalking = false;

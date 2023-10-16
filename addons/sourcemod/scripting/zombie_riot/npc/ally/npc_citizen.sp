@@ -1873,6 +1873,8 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
+	bool autoSeek = (npc.m_bCamo || VIPBuilding_Active());
+
 	// See if our target is still valid
 	if(npc.m_iTarget && (npc.m_iGunType == Cit_None || !IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo)))
 	{
@@ -1886,7 +1888,7 @@ public void Citizen_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 0.5;
 		if(npc.m_iGunType != Cit_None)
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, npc.m_bCamo ? FAR_FUTURE : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, autoSeek ? 99999.9 : (BaseRange[npc.m_iGunType] * npc.m_fGunRangeBonus), npc.m_bCamo, _, _, _, !autoSeek);
 			if(npc.m_iTarget > 0 && view_as<CClotBody>(npc.m_iTarget).m_bCamo)
 				npc.PlaySound(Cit_Behind);
 		}
@@ -2076,7 +2078,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN", 240.0);
@@ -2086,7 +2088,7 @@ public void Citizen_ClotThink(int iNPC)
 						if(npc.m_iWearable1 > 0)
 							AcceptEntityInput(npc.m_iWearable1, "Disable");
 					}
-					else if(!npc.m_bCamo && distance < 22500.0)	// Too close for the Pistol
+					else if(!autoSeek && distance < 22500.0)	// Too close for the Pistol
 					{
 						npc.SetActivity("ACT_RUN", 240.0);
 						walkStatus = 3;	// Back off
@@ -2166,7 +2168,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RIFLE", 210.0);
@@ -2175,7 +2177,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!npc.m_bCamo && distance < 150000.0)	// Too close, walk backwards
+						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_RIFLE", 90.0);
 							walkStatus = 2;	// Back off
@@ -2246,7 +2248,7 @@ public void Citizen_ClotThink(int iNPC)
 					bool cooldown = npc.m_flNextRangedAttack > gameTime;
 					if(reloadStatus == 2 && !cooldown)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2255,7 +2257,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else
 					{
-						if(!npc.m_bCamo && distance < 150000.0)	// Too close, walk backwards
+						if(!autoSeek && distance < 150000.0)	// Too close, walk backwards
 						{
 							npc.SetActivity("ACT_WALK_AIM_AR2", 90.0);
 							walkStatus = 2;	// Back off
@@ -2331,7 +2333,7 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_AR2", 210.0);
@@ -2407,14 +2409,14 @@ public void Citizen_ClotThink(int iNPC)
 					}
 					else if(reloadStatus == 2)	// We need to reload now
 					{
-						if(!npc.m_bCamo && healingTarget != -1 && distance < 150000.0)
+						if(!autoSeek && healingTarget != -1 && distance < 150000.0)
 						{
 							// Too close to safely reload
 							npc.SetActivity("ACT_RUN_RPG", 240.0);
 							walkStatus = 3;	// Back off
 						}
 					}
-					else if(!npc.m_bCamo && distance < 22500.0)	// Too close for the RPG
+					else if(!autoSeek && distance < 22500.0)	// Too close for the RPG
 					{
 						npc.SetActivity("ACT_RUN_RPG", 240.0);
 						walkStatus = 3;	// Back off
@@ -3044,33 +3046,17 @@ public void Citizen_ClotThink(int iNPC)
 	npc.m_bGetClosestTargetTimeAlly = false;
 }
 
-void Citizen_MiniBossSpawn(int spawner)
+void Citizen_MiniBossSpawn()
 {
-	int talkingTo;
-	float distance;
-	
-//	float vecMe[3]; vecMe = WorldSpaceCenter(spawner);
-	float vecMe[3];
-	GetEntPropVector(spawner, Prop_Data, "m_vecAbsOrigin", vecMe); 
-	float vecTarget[3];
 	for(int i = MaxClients + 1; i < MAXENTITIES; i++)
 	{
 		if(i_NpcInternalId[i] == CITIZEN && view_as<Citizen>(i).m_flidle_talk != FAR_FUTURE && IsValidEntity(i))
 		{
+			view_as<Citizen>(i).PlaySound(Cit_MiniBoss);
 			view_as<Citizen>(i).m_flidle_talk += 15.0;
-
-			vecTarget = WorldSpaceCenter(i);
-			float dist = GetVectorDistance(vecTarget, vecMe, true);
-			if(!talkingTo || dist < distance)
-			{
-				talkingTo = i;
-				distance = dist;
-			}
+			break;
 		}
 	}
-	
-	if(talkingTo)
-		view_as<Citizen>(talkingTo).PlaySound(Cit_MiniBoss);
 }
 
 void Citizen_MiniBossDeath(int entity)
@@ -3284,11 +3270,6 @@ public void Citizen_NPCDeath(int entity)
 	
 	
 	SDKUnhook(npc.index, SDKHook_Think, Citizen_ClotThink);
-	
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
-	
-	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
 	
 	if(npc.m_iWearable1 > 0 && IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

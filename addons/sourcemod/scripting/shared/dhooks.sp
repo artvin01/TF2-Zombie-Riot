@@ -71,11 +71,13 @@ void DHook_Setup()
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
-	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
+	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
+
 #if defined ZR
+	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
 #endif
@@ -143,9 +145,29 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
-
-	delete gamedata_lag_comp;
 	
+	delete gamedata_lag_comp;
+	GameData edictgamedata = LoadGameConfigFile("edict_limiter");
+
+	//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
+	//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
+	//	Patch TF2 not reusing edict slots and crashing with a ton of free slots
+	{
+		MemoryPatch ED_Alloc_IgnoreFree = MemoryPatch.CreateFromConf(edictgamedata, "ED_Alloc::nop");
+		if (!ED_Alloc_IgnoreFree.Validate())
+		{
+			SetFailState("Failed to verify ED_Alloc::nop.");
+		}
+		else if (ED_Alloc_IgnoreFree.Enable())
+		{
+			LogMessage("-> Enabled ED_Alloc::nop.");
+		}
+		else
+		{
+			SetFailState("Failed to enable ED_Alloc::nop.");
+		}
+	}
+	delete edictgamedata;
 }
 
 //cancel melee, we have our own.
@@ -861,14 +883,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			if(entity2 <= MaxClients && entity2 > 0)
-			{
-				return false;
-			}
-			else if(b_IsAlliedNpc[entity2])
-			{
-				return false;
-			}
 			else if(b_Is_Player_Projectile[entity2])
 			{
 				return false;
@@ -903,6 +917,14 @@ things i tried
 				return false;
 			}
 #endif
+			else if(entity2 <= MaxClients && entity2 > 0)
+			{
+				return false;
+			}
+			else if(b_IsAlliedNpc[entity2])
+			{
+				return false;
+			}
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
@@ -1724,19 +1746,19 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 	return MRES_Ignored;
 }
 
+#if defined ZR
 static int LastTeam;
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
 {
-#if defined ZR
 //	if(!Disconnecting)
 	{
 		LastTeam = GetEntProp(client, Prop_Send, "m_iTeamNum");
 		GameRules_SetProp("m_bPlayingMannVsMachine", true);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 	}
-#endif
 	return MRES_Ignored;
 }
+#endif
 /*
 public MRESReturn DHookCallback_GameModeUsesUpgrades_Pre(DHookReturn ret)
 {
@@ -1761,17 +1783,17 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 	return MRES_Supercede;	
 }
 */
+#if defined ZR
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPost(int client, DHookParam param)
 {
-#if defined ZR
 //	if(!Disconnecting)
 	{
 		GameRules_SetProp("m_bPlayingMannVsMachine", false);
 		SetEntProp(client, Prop_Send, "m_iTeamNum", LastTeam);
 	}
-#endif
 	return MRES_Ignored;
 }
+#endif
 
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {
@@ -1784,11 +1806,19 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 	if(weapon <= MaxClients)
 		return MRES_Ignored;
 
+	if(!b_TauntSpeedIncreace[client])
+	{
+		Attributes_Set(client, 201, 1.0);
+		f_DelayAttackspeedPreivous[client] = 1.0;
+	}
+	
 	static char buffer[36];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));
 	TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
 	if(class != TFClass_Unknown)
+	{
 		TF2_SetPlayerClass(client, class, false, false);
+	}
 
 	return MRES_Ignored;
 }

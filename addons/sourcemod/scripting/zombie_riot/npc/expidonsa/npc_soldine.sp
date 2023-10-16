@@ -466,8 +466,8 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 						if(!Knocked)
 							Custom_Knockback(npc.index, target_hit, 1500.0); 
 					} 
-					delete swingTrace;
 				}
+				delete swingTrace;
 			}
 			//A melee attack is happening, lets just follow the target_hit
 			return 0;

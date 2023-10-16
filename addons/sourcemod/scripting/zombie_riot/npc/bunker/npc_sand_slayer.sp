@@ -269,7 +269,7 @@ methodmap SandvichSlayer < CClotBody
 		int skin = 0;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		//Citizen_MiniBossSpawn(npc.index);
+		//Citizen_MiniBossSpawn();
 		
 		return npc;
 	}

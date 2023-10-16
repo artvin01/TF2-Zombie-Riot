@@ -55,7 +55,7 @@ static bool b_ForceSpawnNextTime;
 void Items_PluginStart()
 {
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
-	//RegConsoleCmd("zr_itemdebug", Items_DebugCmd);
+	RegAdminCmd("zr_itemdebug", Items_GiveCmd, ADMFLAG_RCON);
 }
 
 void Items_SetupConfig()
@@ -86,6 +86,8 @@ void Items_SetupConfig()
 			break;
 		}
 	}
+
+	delete kv;
 }
 
 void Items_ClearArray(int client)
@@ -127,14 +129,49 @@ bool Items_GetNextItem(int client, int &i, int &level, int &flags)
 	return false;
 }
 
-public Action Items_DebugCmd(int client, int args)
+public Action Items_GiveCmd(int client, int args)
 {
-	int length = OwnedItems.Length;
-	for(int i; i < length; i++)
+	if(args > 1)
 	{
-		static OwnedItem owned;
-		OwnedItems.GetArray(i, owned);
-		PrintToChatAll("%d %N %d %d", i, client, owned.Level, owned.Flags);
+		char targetName[MAX_TARGET_LENGTH];
+		GetCmdArg(2, targetName, sizeof(targetName));
+		
+		int id = Items_NameToId(targetName);
+		if(id == -1)
+		{
+			ReplyToCommand(client, "Invalid item name");
+			return Plugin_Handled;
+		}
+
+		char pattern[PLATFORM_MAX_PATH];
+		GetCmdArg(1, pattern, sizeof(pattern));
+
+		int length;
+		int targets[MAXPLAYERS];
+		bool targetNounIsMultiLanguage;
+		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
+		{
+			for(int i; i < length; i++)
+			{
+				if(Items_HasIdItem(targets[i], id))
+				{
+					ReplyToCommand(client, "%N already has this item", targets[i]);
+				}
+				else
+				{
+					Items_GiveIdItem(targets[i], id);
+					ReplyToCommand(client, "Gave %N this item", targets[i]);
+				}
+			}
+		}
+		else
+		{
+			ReplyToTargetError(client, length);
+		}
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: zr_giveitem <client> <item name>");
 	}
 	return Plugin_Handled;
 }
@@ -239,7 +276,7 @@ bool Items_GiveIdItem(int client, int id, bool addition = false)
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id), addition);
 }
 
-void Items_GiveNamedItem(int client, const char[] name)
+bool Items_GiveNamedItem(int client, const char[] name)
 {
 	if(name[0] && GiftItems)
 	{
@@ -251,10 +288,11 @@ void Items_GiveNamedItem(int client, const char[] name)
 			if(StrEqual(item.Name, name, false))
 			{
 				AddFlagOfLevel(client, IdToLevel(i), IdToFlag(i), false);
-				break;
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 char[] Items_GetNameOfId(int id)
@@ -733,4 +771,48 @@ public void GiftJumpTowardsYou(int Gift, int client)
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
 	TeleportEntity(Gift, NULL_VECTOR, NULL_VECTOR, vecJumpVel);
+}
+
+
+bool Item_ClientHasAllRarity(int client, int rarity)
+{
+	static GiftItem item;
+	int rand = GetURandomInt();
+	int length = GiftItems.Length;
+	int[] items = new int[length];
+	int maxitems;
+	rarity--;
+	for(int i; i < length; i++)
+	{
+		GiftItems.GetArray(i, item);
+		if(item.Rarity == rarity)
+		{
+			items[maxitems++] = i;
+		}
+	}
+
+	int start = (rand % maxitems);
+	int i = start;
+	do
+	{
+		i++;
+		if(i >= maxitems)
+		{
+			i = -1;
+			continue;
+		}
+		if(Items_GiveIdItem(client, items[i], false))	// Gives item, returns true if newly obtained, false if they already have
+		{
+			GiftItems.GetArray(items[i], item);
+			length = 0;
+			break;
+		}
+	}
+	while(i != start);
+	
+	if(length)
+	{
+		return true;
+	}
+	return false;
 }

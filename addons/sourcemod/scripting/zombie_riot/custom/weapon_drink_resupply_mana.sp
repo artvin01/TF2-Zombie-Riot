@@ -10,10 +10,10 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 	{
 		if(CurrentAmmo[client][Ammo_Potion_Supply] >= 1)
 		{
-			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, client, TIMER_FLAG_NO_MAPCHANGE);
+			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			if(Handle_on[client])
 			{
-				KillTimer(Give_bomb_back[client]);
+				delete Give_bomb_back[client];
 			}
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
@@ -56,11 +56,17 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 public void MagicRestore_MapStart()
 {
 	PrecacheSound("player/pl_scout_dodge_can_drink.wav");
-
+	Zero(Handle_on);
 }
 
-public Action Give_Back_Magic_Restore(Handle cut_timer, int client)
+public void Reset_stats_Drink_Singular(int client)
 {
+	Handle_on[client] = false;
+}
+
+public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
 	if (IsValidClient(client))
 	{
 		//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
@@ -71,7 +77,7 @@ public Action Give_Back_Magic_Restore(Handle cut_timer, int client)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Mana Regen Potion Back");
+		Handle_on[client] = false;
 	}
-	Handle_on[client] = false;
 	return Plugin_Handled;
 }

@@ -30,6 +30,8 @@ int i_Headshots[MAXTF2PLAYERS];
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+int Shared_BEAM_Laser;
+int Shared_BEAM_Glow;
 #endif
 
 #if defined RPG
@@ -37,6 +39,7 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES] = {0, ...};
 #endif
 
+PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
 
 float f3_AvoidOverrideMin[MAXENTITIES][3];
@@ -57,6 +60,10 @@ float fl_rocket_particle_radius[MAXENTITIES];
 static float f_DelayComputingOfPath[MAXENTITIES];
 static float f_PredictPos[MAXENTITIES][3];
 static float f_PredictDuration[MAXENTITIES];
+static float f_UnstuckSuckMonitor[MAXENTITIES];
+
+static int i_WasPathingToHere[MAXENTITIES];
+static float f3_WasPathingToHere[MAXENTITIES][3];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -66,15 +73,14 @@ static float f_PredictDuration[MAXENTITIES];
 #define TELEPORT_STUCK_CHECK_2 12.0
 #define TELEPORT_STUCK_CHECK_3 24.0
 
-//static PathFollower pPath[MAXENTITIES];
-
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
-int Shared_BEAM_Laser;
-int Shared_BEAM_Glow;
 static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_EntityInCrouchSpot[MAXENTITIES];
 static bool b_NpcResizedForCrouch[MAXENTITIES];
+
+int i_EntitiesHitAoeSwing_NpcSwing[MAXENTITIES]= {-1, ...};	//Who got hit
+int i_EntitiesHitAtOnceMax_NpcSwing; //How many do we stack
 
 public Action Command_PetMenu(int client, int args)
 {
@@ -169,6 +175,7 @@ public Action Command_PetMenu(int client, int args)
 	return Plugin_Handled;
 }
 
+
 void OnMapStart_NPC_Base()
 {
 	for (int i = 0; i < (sizeof(g_GibSound));   i++) { PrecacheSound(g_GibSound[i]);   }
@@ -195,8 +202,10 @@ void OnMapStart_NPC_Base()
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
+#if defined ZR
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Shared_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+#endif
 	PrecacheModel(ARROW_TRAIL);
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
@@ -213,6 +222,22 @@ void OnMapStart_NPC_Base()
 	Zero2(f_PredictPos);
 	
 	NPC_MapStart();
+
+	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
+	{
+		g_NpcPathFollower[NpcIndexNumber] = PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors);
+	}
+}
+
+void NpcStats_OnMapEnd()
+{
+	for (int NpcIndexNumber = 0; NpcIndexNumber < ZR_MAX_NPCS; NpcIndexNumber++)
+	{
+		if(g_NpcPathFollower[NpcIndexNumber].IsValid())
+		{
+			g_NpcPathFollower[NpcIndexNumber].Destroy();
+		}
+	}
 }
 
 Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType returntype, ThisPointerType thistype, DHookCallback callback)
@@ -338,6 +363,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
 		baseNPC.flDeathDropHeight = 2000.0;
 
+#if defined ZR
+		if(!Ally && VIPBuilding_Active())
+		{
+			baseNPC.flAcceleration = 90000.0;
+			baseNPC.flFrictionSideways = 90.0;
+		}
+#endif
+
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 
 		SetEntProp(npc, Prop_Data, "m_bSequenceLoops", true);
@@ -347,12 +380,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			SetEntityCollisionGroup(npc, 24);
 		}
+		else
+		{
+			AddNpcToAliveList(npc, 0);
+		}
 		
 		b_NpcCollisionType[npc] = 0;
 		if(!Ally)
 		{
 #if defined ZR
-			if(IgnoreBuildings || IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During an active raidboss, make sure that they ignore barricades
+			if(IgnoreBuildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //During an active raidboss, make sure that they ignore barricades
 #else
 			if(IgnoreBuildings)
 #endif
@@ -360,6 +397,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 				if(VIPBuilding_Active())
 				{
+					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
+					b_AvoidObstacleType[npc] = true;
 					Change_Npc_Collision(npc, num_ShouldCollideEnemyTDIgnoreBuilding);
 				}
 				else
@@ -373,6 +412,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #if defined ZR
 				if(VIPBuilding_Active())
 				{
+					f_AvoidObstacleNavTime[npc] = FAR_FUTURE;
+					b_AvoidObstacleType[npc] = true;
 					Change_Npc_Collision(npc, num_ShouldCollideEnemyTD);
 				}
 				else
@@ -1363,6 +1404,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= Zombie_DelayExtraSpeed();
 		}
+		if(b_IsAlliedNpc[this.index])
+		{
+			if(VIPBuilding_Active())
+				speed_for_return *= 2.0;
+		}
 #endif
 		return speed_for_return; 
 	}
@@ -1441,6 +1487,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()							{ return b_isWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_isWalking[this.index] = TempValueForProperty; }
+	}
+	property bool m_bDoNotGiveWaveDelay
+	{
+		public get()							{ return b_DoNotGiveWaveDelay[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_DoNotGiveWaveDelay[this.index] = TempValueForProperty; }
 	}
 	property float m_bisGiantWalkCycle
 	{
@@ -1751,7 +1802,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
-			this.SetLayerPlaybackRate(layer, 0.5);
+			this.SetLayerPlaybackRate(layer, 1.0);
 	}
 	public void RemoveGesture(const char[] anim)
 	{
@@ -1871,17 +1922,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public void RemovePather(int entity)
-	{
-		return;
-		/*
-		body.GetPathFollower().Destroy();
-		this.MyNextBotPointer().NotifyPathDestruction(pPath[this.index]);
-		pPath[this.index].Destroy();
-		pPath[this.index] = view_as<PathFollower>(0);
-		this.m_bPathing = false;
-		*/
-	}
 	public void StartPathing()
 	{
 		if(!CvarDisableThink.BoolValue)
@@ -1899,40 +1939,58 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		this.m_bPathing = false;
 	}
-	public void SetGoalEntity(int target)
+	public void SetGoalEntity(int target, bool ignoretime = false)
 	{
-		if(f_DelayComputingOfPath[this.index] < GetGameTime())
+		if(ignoretime || DelayPathing(this.index))
 		{
-			float AddComputingDelay = 0.3;
+			if(IsEntityTowerDefense(this.index))
+			{
+				if(this.m_bPathing && this.IsOnGround())
+				{
+					if(i_WasPathingToHere[this.index] == target)
+						return;
 
-			if(b_thisNpcIsARaid[this.index])
-			{
-				AddComputingDelay = 0.1;
+					i_WasPathingToHere[this.index] = target;
+				}
+				else
+				{
+					i_WasPathingToHere[this.index] = 0;
+				}
 			}
-			else if(b_thisNpcIsABoss[this.index])
+			if(this.m_bPathing)
 			{
-				AddComputingDelay = 0.2;
+				this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
+				float DistanceCheck[3];
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
+				AddDelayPather(this.index, DistanceCheck);
 			}
-			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
-			this.GetPathFollower().ComputeToTarget(this.GetBot(), target);
 		}
 	}
 	public void SetGoalVector(const float vec[3], bool ignoretime = false)
 	{	
-		if(f_DelayComputingOfPath[this.index] < GetGameTime() || ignoretime)
+		if(ignoretime || DelayPathing(this.index))
 		{
-			float AddComputingDelay = 0.3;
+			if(IsEntityTowerDefense(this.index))
+			{
+				if(this.m_bPathing && this.IsOnGround())
+				{
+					if(f3_WasPathingToHere[this.index][0] == vec[0] && f3_WasPathingToHere[this.index][1] == vec[1] && f3_WasPathingToHere[this.index][2] == vec[2])
+						return;
 
-			if(b_thisNpcIsARaid[this.index])
-			{
-				AddComputingDelay = 0.1;
+					f3_WasPathingToHere[this.index] = vec;
+				}
+				else
+				{
+					f3_WasPathingToHere[this.index][0] = 0.0;
+					f3_WasPathingToHere[this.index][1] = 0.0;
+					f3_WasPathingToHere[this.index][2] = 0.0;
+				}
 			}
-			else if(b_thisNpcIsABoss[this.index])
+			if(this.m_bPathing)
 			{
-				AddComputingDelay = 0.2;
+				this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
+				AddDelayPather(this.index, vec);
 			}
-			f_DelayComputingOfPath[this.index] = GetGameTime() + AddComputingDelay;
-			this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
 		}
 	}
 	public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
@@ -2036,6 +2094,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		}	
 		
 		SetEntityCollisionGroup(item, 1);
+		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
+
 		return item;
 	}
 
@@ -2092,9 +2153,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
 		SetEntityCollisionGroup(item, 1);
+		SetEntProp(item, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(item, Prop_Data, "m_nSolidType", 6); 
 		return item;
-	}
-	public bool DoSwingTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 55.0, int Npc_type = 0, int Ignore_Buildings = 0)
+	} 
+	public bool DoSwingTrace(Handle &trace,
+	int target,
+	 float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 },
+	  float vecSwingMins[3] = { -64.0, -64.0, -128.0 },
+	   float vecSwingStartOffset = 55.0,
+	    int Npc_type = 0,
+		 int Ignore_Buildings = 0,
+		  int countAoe = 0)
 	{
 		switch(Npc_type)
 		{
@@ -2138,7 +2208,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 #if defined ZR
 		bool ingore_buildings = false;
-		if(Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))))
 		{
 			ingore_buildings = true;
 		}
@@ -2146,7 +2216,25 @@ methodmap CClotBody < CBaseCombatCharacter
 		bool ingore_buildings = view_as<bool>(Ignore_Buildings);
 #endif
 		// See if we hit anything.
-		trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		if(countAoe > 0)
+		{
+			Zero(i_EntitiesHitAoeSwing_NpcSwing);
+			i_EntitiesHitAtOnceMax_NpcSwing = countAoe; //How many do we stack
+			
+			for(int repeat; repeat < 3; repeat ++)
+			{
+				vecSwingMins[repeat] *= 0.75;
+				vecSwingMins[repeat] *= 0.75;
+				vecSwingMaxs[repeat] *= 0.75;
+				vecSwingMaxs[repeat] *= 0.75;
+			}
+
+			trace = TR_TraceHullFilterEx( vecSwingStart, vecSwingEnd,vecSwingMins, vecSwingMaxs, 1073741824, ingore_buildings ? BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly : BulletAndMeleeTrace_MultiNpcTrace, this.index);
+		}	
+		else
+		{
+			trace = TR_TraceRayFilterEx( vecSwingStart, vecSwingEnd, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, ingore_buildings ? BulletAndMeleeTracePlayerAndBaseBossOnly : BulletAndMeleeTrace, this.index );
+		}
 		return (TR_GetFraction(trace) < 1.0);
 	}
 	public bool DoAimbotTrace(Handle &trace, int target, float vecSwingMaxs[3] = { 64.0, 64.0, 128.0 }, float vecSwingMins[3] = { -64.0, -64.0, -128.0 }, float vecSwingStartOffset = 44.0)
@@ -2561,7 +2649,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			int layerCount = this.GetNumAnimOverlays();
 			for(int i; i < layerCount; i++)
 			{
-				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 0.5);
+				view_as<CClotBody>(this.index).SetLayerPlaybackRate(i, 1.0);
 			}
 			view_as<CClotBody>(this.index).SetPlaybackRate(f_LayerSpeedFrozeRestore[this.index]);
 
@@ -2585,8 +2673,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 		
-		this.StudioFrameAdvance();
-		this.DispatchAnimEvents();
+	//	this.StudioFrameAdvance();
+	//	this.DispatchAnimEvents();
 		
 		//Run and StuckMonitor
 		if(this.m_flNextRunTime < GetGameTime())
@@ -2644,7 +2732,7 @@ methodmap CClotBody < CBaseCombatCharacter
 					}
 				}
 			}
-		//	f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
+			f_AvoidObstacleNavTime[this.index] = GetGameTime() + 0.1;
 		}
 
 		//increace the size of the avoid box by 2x
@@ -2674,10 +2762,18 @@ methodmap CClotBody < CBaseCombatCharacter
 		else
 		{
 			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
-			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});	
+			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
-
-
+#if defined ZR
+		if(VIPBuilding_Active() && !b_IsAlliedNpc[this.index])
+		{
+			if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
+			{
+				this.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
+				f_UnstuckSuckMonitor[this.index] = GetGameTime() + 1.0;
+			}
+		}
+#endif
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
 
@@ -2826,19 +2922,100 @@ public void NPC_Base_InitGamedata()
 
 static void OnCreate(CClotBody body)
 {
-	body.SetProp(Prop_Data, "zr_pPath", view_as<int>(PathFollower(PathCost, Path_FilterIgnoreActors, Path_FilterOnlyActors)));
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		if(!IsValidEntity(entity))
+		{
+			body.SetProp(Prop_Data, "zr_pPath", view_as<int>(g_NpcPathFollower[entitycount]));
+			i_ObjectsNpcsTotal[entitycount] = EntIndexToEntRef(body.index);
+			break;
+		}
+	}
 }
 
+void RemoveFromNpcPathList(CClotBody body)
+{
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+		if(entity == body.index)
+		{
+			body.SetProp(Prop_Data, "zr_pPath", 0);
+			i_ObjectsNpcsTotal[entitycount] = -1;
+			break;
+		}
+	}	
+}
 static void OnDestroy(CClotBody body)
 {
-	body.GetPathFollower().Destroy();
+	RemoveFromNpcAliveList(body.index);
+	if(!b_NpcHasDied[body.index])
+	{
+		RemoveFromNpcPathList(body);
+#if defined ZR
+		if(!b_IsAlliedNpc[body.index])
+		{
+			Zombies_Currently_Still_Ongoing -= 1;
+		}
+#endif
+	}
+	b_IsAlliedNpc[body.index] = false;
+	b_NpcHasDied[body.index] = true;
+	b_StaticNPC[body.index] = false;
+
+	
+#if defined ZR
+	if(IsValidEntity(body.m_iTeamGlow))
+		RemoveEntity(body.m_iTeamGlow);
+#endif
+
+	if(IsValidEntity(body.m_iSpawnProtectionEntity))
+		RemoveEntity(body.m_iSpawnProtectionEntity);
+
+	if(IsValidEntity(body.m_iTextEntity1))
+		RemoveEntity(body.m_iTextEntity1);
+	if(IsValidEntity(body.m_iTextEntity2))
+		RemoveEntity(body.m_iTextEntity2);
+	if(IsValidEntity(body.m_iTextEntity3))
+		RemoveEntity(body.m_iTextEntity3);
+	if(IsValidEntity(body.m_iTextEntity4))
+		RemoveEntity(body.m_iTextEntity4);
+	if(IsValidEntity(body.m_iFreezeWearable))
+		RemoveEntity(body.m_iFreezeWearable);
+	if(IsValidEntity(body.m_iWearable1))
+		RemoveEntity(body.m_iWearable1);
+	if(IsValidEntity(body.m_iWearable2))
+		RemoveEntity(body.m_iWearable2);
+	if(IsValidEntity(body.m_iWearable3))
+		RemoveEntity(body.m_iWearable3);
+	if(IsValidEntity(body.m_iWearable4))
+		RemoveEntity(body.m_iWearable4);
+	if(IsValidEntity(body.m_iWearable5))
+		RemoveEntity(body.m_iWearable5);
+	if(IsValidEntity(body.m_iWearable6))
+		RemoveEntity(body.m_iWearable6);
+	if(IsValidEntity(body.m_iWearable7))
+		RemoveEntity(body.m_iWearable7);
+
 }
 
 //Ragdoll
 public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int iInflictor, float flDamage, int iDamagetype, int iWeapon, const float vecDamageForce[3], const float vecDamagePosition[3])
 {	
+	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
+		//MUST be at top, or else there can be heavy issues regarding infinite loops!
+		b_NpcHasDied[pThis] = true;
+
+
+		//leaving these on can cause crashes.
+		SDKUnhook(pThis, SDKHook_TraceAttack, NPC_TraceAttack);
+		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
+		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
+
+		
 		int client = EntRefToEntIndex(LastHitRef[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
@@ -2883,7 +3060,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		npc.m_flNextDelayTime = 999999.9; //disable them thinking.
-		SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
+	//	SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
 		OnKillUniqueWeapon(iAttacker, iWeapon, pThis);
@@ -2905,25 +3082,38 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveEntity(npc.m_iFreezeWearable);
 		
 #if defined ZR
+		if(!b_IsAlliedNpc[pThis] && !b_DoNotGiveWaveDelay[pThis])
+		{
+			if(f_DelayNextWaveStartAdvancingDeathNpc < GetGameTime() + 1.5)
+			{
+				f_DelayNextWaveStartAdvancingDeathNpc = GetGameTime() + 1.5;
+			}
+		}
+		
 		if (EntRefToEntIndex(RaidBossActive) == pThis)
 		{
 			Raidboss_Clean_Everyone();
 		}
 		VausMagicaRemoveShield(pThis);
 #endif
-		b_NpcHasDied[pThis] = true;
 #if defined ZR
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif		
-	
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 		RemoveNpcThingsAgain(pThis);
 		NPCDeath(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		SetEntityCollisionGroup(pThis, 1);
+		SetEntProp(pThis, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(pThis, Prop_Data, "m_nSolidType", 6); 
 		b_ThisEntityIgnored[pThis] = true;
 	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
+	//Do not remove pather here.
+		RemoveNpcFromEnemyList(pThis, true);
+		b_IsAlliedNpc[pThis] = false;
+		b_StaticNPC[pThis] = false;
+			
 
 		if(!npc.m_bDissapearOnDeath)
 		{
@@ -3245,7 +3435,7 @@ public void SetNpcToDeadViaGib(int pThis)
 	
 	b_IsEntityNeverTranmitted[pThis] = true; //doesnt seem to work all the time, but the more the better.
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
-	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
 	SDKHook(pThis, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 	/*
 	if(PF_Exists(pThis))
@@ -3292,7 +3482,9 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 {
 	int event = DHookGetParamObjectPtrVar(hParams, 1, 0, ObjectValueType_Int);
 	CClotBody npc = view_as<CClotBody>(pThis);
-	
+	if(b_NpcHasDied[pThis])
+		return MRES_Ignored;
+		
 #if defined ZR
 	switch(i_NpcInternalId[pThis])
 	{
@@ -4018,12 +4210,20 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 			return false;
 		}
+		if(index == enemy)
+		{
+			return false;
+		}
+		if(b_ThisEntityIsAProjectileForUpdateContraints[enemy])
+		{
+			return false;
+		}
 
 		if(b_is_a_brush[enemy])
 		{
 			return false;
 		}
-
+		
 		if(enemy <= MaxClients || !b_NpcHasDied[enemy])
 		{
 			if(GetEntProp(index, Prop_Send, "m_iTeamNum") == GetEntProp(enemy, Prop_Send, "m_iTeamNum"))
@@ -4058,7 +4258,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		else if(i_IsABuilding[enemy])
 		{
 #if defined ZR
-			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			{
 				return false;
 			}
@@ -4345,6 +4545,8 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 	if(!b_NpcHasDied[entity] && !UseVectorDistance)
 	{
+		f_DelayComputingOfPath[entity] = 0.0;
+		//Reset Timer, let them repath!
 		CBaseNPC baseNPC = view_as<CClotBody>(entity).GetBaseNPC();
 		if(baseNPC == INVALID_NPC)
 		{
@@ -4584,7 +4786,11 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(b_IsAlliedNpc[entity])
+	if(IsValidClient(entity))
+	{	
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
+	}
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
@@ -4601,6 +4807,10 @@ stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], con
 stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
+	if(IsValidClient(entity))
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
+	}
 	if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
@@ -4618,7 +4828,11 @@ stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(b_IsAlliedNpc[entity])
+	if(IsValidClient(entity))
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
+	}
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	}
@@ -4635,7 +4849,11 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(b_IsAlliedNpc[entity])
+	if(IsValidClient(entity))
+	{
+		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
+	}
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
 	}
@@ -4806,6 +5024,7 @@ float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
+	SetEntPropFloat(iNPC, Prop_Data, "m_flSimulationTime",GetGameTime());
 }
 void NpcDrawWorldLogic(int entity)
 {
@@ -4893,7 +5112,35 @@ public void NpcBaseThink(int iNPC)
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
+	if(b_NpcHasDied[iNPC])
+	{
+		if(npc.GetPathFollower().IsValid())
+		{
+			npc.GetPathFollower().Invalidate(); //Remove its current path
+		}
+		npc.SetProp(Prop_Data, "zr_pPath", -1);
+		RemoveEntityToLagCompList(iNPC);
 
+		if(h_NpcCollissionHookType[iNPC] != 0)
+		{
+			if(!DHookRemoveHookID(h_NpcCollissionHookType[iNPC]))
+			{
+				PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+			}
+		}
+		if(h_NpcSolidHookType[iNPC] != 0)
+		{
+			if(!DHookRemoveHookID(h_NpcSolidHookType[iNPC]))
+			{
+				PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+			}
+		}
+		h_NpcCollissionHookType[iNPC] = 0;
+		h_NpcSolidHookType[iNPC] = 0;
+		RemoveFromNpcPathList(npc);
+		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
+		return;
+	}
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{
@@ -5424,7 +5671,7 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	pos_enemy = WorldSpaceCenter(enemy);
 
 #if defined ZR
-	bool ingore_buildings = (Ignore_Buildings || IsValidEntity(EntRefToEntIndex(RaidBossActive)));
+	bool ingore_buildings = (Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))));
 #else
 	bool ingore_buildings = Ignore_Buildings;
 #endif
@@ -5485,45 +5732,6 @@ public int Can_I_See_Ally(int attacker, int ally)
 	delete trace;
 	return Traced_Target;
 }
-
-/*
-void RequestFrames(RequestFrameCallback func, int frames, any data=0)
-{
-	DataPack pack = new DataPack();
-	pack.WriteFunction(func);
-	pack.WriteCell(data);
-	pack.WriteCell(frames);
-	RequestFrame(RequestFramesCallback, pack);
-}
-
-public void RequestFramesCallback(DataPack pack)
-{
-	pack.Reset();
-	RequestFrameCallback func = view_as<RequestFrameCallback>(pack.ReadFunction());
-	any data = pack.ReadCell();
-
-	int frames = pack.ReadCell();
-	if(frames < 2)
-	{
-		RequestFrame(func, data);
-		delete pack;
-	}
-	else
-	{
-		pack.Position--;
-		pack.WriteCell(frames-1, false);
-		RequestFrame(RequestFramesCallback, pack);
-	}
-}
-*/
-
-
-//	models/Gibs/HGIBS.mdl
-//	models/Gibs/HGIBS_scapula.mdl
-//	models/Gibs/HGIBS_spine.mdl
-//	models/Gibs/HGIBS_rib.mdl
-//	models/gibs/antlion_gib_large_1.mdl //COLOR RED!
-
 
 int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, float vel[3], bool Reduce_masively_Weight = false, bool big_gibs = false, bool metal_colour = false, bool Rotate = false, bool smaller_gibs = false, int BleedType = 0, bool nobleed = false)
 {
@@ -5603,6 +5811,10 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 
 	float Random_time = GetRandomFloat(6.0, 7.0);
+	if(CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
+	{
+		Random_time *= 0.5; //half the duration if there are too many gibs
+	}
 	SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 	
 	b_IsAGib[prop] = true;
@@ -7159,11 +7371,11 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_thisNpcIsABoss[entity] = false;
 	b_thisNpcIsARaid[entity] = false;
 	b_TryToAvoidTraverse[entity] = false;
-	b_StaticNPC[entity] = false;
 	b_NPCVelocityCancel[entity] = false;
 	b_NPCTeleportOutOfStuck[entity] = false;
 	fl_DoSpawnGesture[entity] = 0.0;
 	b_isWalking[entity] = true;
+	b_DoNotGiveWaveDelay[entity] = false;
 	b_TeamGlowDefault[entity] = false;
 	i_StepNoiseType[entity] = 0;
 	i_NpcStepVariation[entity] = 0;
@@ -7233,7 +7445,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;
-	b_NpcHasDied[entity] = false;
 	b_PlayHurtAnimation[entity] = false;
 	IgniteTimer[entity] = null;
 	IgniteFor[entity] = 0;
@@ -7245,7 +7456,12 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
 	f_CooldownForHurtParticle[entity] = 0.0;
-	f_DelayComputingOfPath[entity] = 0.0;
+	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
+	f_UnstuckSuckMonitor[entity] = 0.0;
+	i_WasPathingToHere[entity] = 0;
+	f3_WasPathingToHere[entity][0] = 0.0;
+	f3_WasPathingToHere[entity][1] = 0.0;
+	f3_WasPathingToHere[entity][2] = 0.0;
 	f_LowTeslarDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
@@ -7300,14 +7516,17 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #if defined ZR
 public void Raidboss_Clean_Everyone()
 {
+	if(VIPBuilding_Active())
+		return;
+
 	int base_boss;
 	while((base_boss=FindEntityByClassname(base_boss, "zr_base_npc")) != -1)
 	{
-		if(IsValidEntity(base_boss))
+		if(IsValidEntity(base_boss) && !b_NpcHasDied[base_boss])
 		{
 			if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				if(!b_Map_BaseBoss_No_Layers[base_boss] && !b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
+				if(!b_IsAlliedNpc[base_boss]) //Make sure it doesnt actually kill map base_bosses
 				{
 					Change_Npc_Collision(base_boss, 1); //Gives raid collision
 				}
@@ -8526,10 +8745,19 @@ float GetRandomRetargetTime()
 	return GetRandomFloat(3.0, 4.0);
 }
 
-public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
+void NpcStartTouch(CBaseNPC_Locomotion pThis, int target, bool DoNotLoop = false, int TouchedTarget = 0)
 {
-	int entity = pThis.GetBot().GetNextBotCombatCharacter();
+	int entity = TouchedTarget;
+	if(TouchedTarget == 0)
+	{
+		entity = pThis.GetBot().GetNextBotCombatCharacter();
+	}
 	CClotBody npc = view_as<CClotBody>(entity);
+	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target)) //If one entity touches me, then i touch them
+	{
+		NpcStartTouch(view_as<CBaseNPC_Locomotion>(0), entity, true, target);
+	}
+
 	if(fl_GetClosestTargetTimeTouch[entity] < GetGameTime() && f_TimeFrozenStill[entity] < GetGameTime(npc.index))
 	{
 		if(npc.m_iTarget != target)
@@ -8539,10 +8767,12 @@ public void NpcStartTouch(CBaseNPC_Locomotion pThis, int target)
 				if(!b_DoNotChangeTargetTouchNpc[entity] || (b_DoNotChangeTargetTouchNpc[entity] && i_NpcIsABuilding[target]))
 				{
 					fl_GetClosestTargetTimeTouch[entity] = GetGameTime() + 0.2; //Delay to itdoesnt kill server performance, even if its really cheap.
-					if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25) //a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
+				//	if(target > MaxClients || GetRandomFloat(0.0, 1.0) < 0.25)
+				//	a 25% chance that they will change targets, so they sometimes dont want to follow you, but only if yorue a client.
 					{
 						npc.m_iTarget = target;
 						npc.m_flGetClosestTargetTime = GetGameTime(entity) + GetRandomRetargetTime();
+						f_DelayComputingOfPath[entity] = 0.0;
 					}
 				}
 			}
@@ -8592,9 +8822,11 @@ public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)
 	return MRES_ChangedOverride;
 }
 
-void RemoveNpcFromEnemyList(int npc)
+void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)
 {
-	SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+	if(!ingoresetteam)
+		SetEntProp(npc, Prop_Send, "m_iTeamNum",view_as<int>(TFTeam_Red));
+		
 	//set to red just incase!
 	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++) //BLUE npcs.
 	{
@@ -8621,9 +8853,213 @@ bool MovementSpreadSpeedTooLow(float SubjectAbsVelocity[3])
 			SubjectAbsVel[Repeat] *= -1.0;
 		}
 	}
-	if(SubjectAbsVel[0] <= 20.0 && SubjectAbsVel[1] == 20.0 && SubjectAbsVel[2] == 20.0)
+	if(SubjectAbsVel[0] <= 20.0 && SubjectAbsVel[1] <= 20.0 && SubjectAbsVel[2] <= 20.0)
 	{
 		return true;
 	}
 	return false;
+}
+
+
+bool BulletAndMeleeTrace_MultiNpcTrace(int entity, int contentsMask, int iExclude)
+{
+	if(entity == 0)
+	{
+		return false;
+	}
+	if(entity == iExclude)
+	{
+		return false;
+	}
+	if(!IsValidEnemy(iExclude, entity, true, true)) //Must detect camo.
+	{
+		return false;
+	}
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, iExclude);
+	if(!type) //if it collised, return.
+	{
+		return false;
+	}
+
+	if(!SwingTraceMultiAoeIsInFront(iExclude, entity))
+		return false;
+
+	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
+	{
+		if(i_EntitiesHitAoeSwing_NpcSwing[i] <= 0)
+		{
+			i_EntitiesHitAoeSwing_NpcSwing[i] = entity;
+			break;
+		}
+	}
+	return false;
+}
+bool BulletAndMeleeTrace_MultiNpcPlayerAndBaseBossOnly(int entity, int contentsMask, int iExclude)
+{
+	if(entity == 0)
+	{
+		return false;
+	}
+	if(entity == iExclude)
+	{
+		return false;
+	}
+	if(!IsValidEnemy(iExclude, entity, true, true)) //Must detect camo.
+	{
+		return false;
+	}
+	bool type = BulletAndMeleeTracePlayerAndBaseBossOnly(entity, 0, iExclude);
+	if(!type) //if it collised, return.
+	{
+		return false;
+	}
+	if(!SwingTraceMultiAoeIsInFront(iExclude, entity))
+		return false;
+
+	for(int i=1; i <= (i_EntitiesHitAtOnceMax_NpcSwing); i++)
+	{
+		if(i_EntitiesHitAoeSwing_NpcSwing[i] <= 0)
+		{
+			i_EntitiesHitAoeSwing_NpcSwing[i] = entity;
+			break;
+		}
+	}
+	return false;
+}
+
+#define SWINGPITCHMAX_MAXANGLEPITCH	 90.0
+bool SwingTraceMultiAoeIsInFront(int owner, int enemy)
+{
+	float pos1[3];
+	float pos2[3];
+	float ang3[3];
+	float ang2[3];
+	GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", pos2);	
+	GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", pos1);	
+
+	
+	float pos4test;
+	pos4test = pos1[2] - pos2[2];
+	
+	if(pos4test > 75.0) //far above me, just hit.
+	{
+		return true;
+	}
+	GetVectorAnglesTwoPoints(pos2, pos1, ang3);
+	GetEntPropVector(owner, Prop_Data, "m_angRotation", ang2);
+
+	// fix all angles
+	ang3[0] = fixAngle(ang3[0]);
+	ang3[1] = fixAngle(ang3[1]);
+
+
+	if(!(fabs(ang2[1] - ang3[1]) <= SWINGPITCHMAX_MAXANGLEPITCH || (fabs(ang2[1] - ang3[1]) >= (360.0-SWINGPITCHMAX_MAXANGLEPITCH))))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool DelayPathing(int npcpather)
+{
+	if(f_DelayComputingOfPath[npcpather] < GetGameTime())
+		return true;
+
+	return false;
+}
+
+void AddDelayPather(int npcpather, const float DistanceCheap[3])
+{
+	float AddComputingDelay = 0.0;
+
+	if(b_thisNpcIsARaid[npcpather])
+	{
+		AddComputingDelay = 0.1;
+		f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
+	}
+	else
+	{
+		CClotBody npc = view_as<CClotBody>(npcpather);
+		float Length1 = npc.GetPathFollower().GetLength();
+		float DistanceCheap_pather[3];
+		GetEntPropVector(npcpather, Prop_Data, "m_vecAbsOrigin", DistanceCheap_pather);
+		float Length2 = GetVectorDistance(DistanceCheap_pather, DistanceCheap);
+		if(Length2 < 500.0)// close enough, update pather often.
+		{
+			AddComputingDelay = 0.3;
+		}
+		else
+		{
+			AddComputingDelay = 0.3 + (Length2 * 0.0005);
+		}
+
+		if(Length1 > 0.0)
+			f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
+		else
+			f_DelayComputingOfPath[npcpather] = GetGameTime() + 0.1;
+	}
+}
+
+stock void SmiteNpcToDeath(int entity)
+{
+	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
+}
+
+void MapStartResetNpc()
+{
+	for(int i=0; i < MAXENTITIES; i++)
+	{
+		b_NpcHasDied[i] = true;
+		b_StaticNPC[i] = false;
+		b_IsAlliedNpc[i] = false;
+		b_EnemyNpcWasIndexed[i][0] = false;
+		b_EnemyNpcWasIndexed[i][1] = false;
+	}
+	EnemyNpcAlive = 0;
+	EnemyNpcAliveStatic = 0;
+}
+
+/*
+	0 means normal enemy
+	1 means static
+*/
+void AddNpcToAliveList(int iNpc, int which)
+{
+	if(which == 0 && !b_EnemyNpcWasIndexed[iNpc][0])
+	{
+		b_EnemyNpcWasIndexed[iNpc][0] = true;
+		EnemyNpcAlive += 1;
+	}
+	if(which == 1)
+	{
+		if(!b_EnemyNpcWasIndexed[iNpc][0])
+		{
+			b_EnemyNpcWasIndexed[iNpc][0] = true;
+			EnemyNpcAlive += 1;
+		}
+		if(!b_EnemyNpcWasIndexed[iNpc][1])
+		{
+			b_EnemyNpcWasIndexed[iNpc][1] = true;
+			EnemyNpcAliveStatic += 1;
+		}
+	}
+}
+
+void RemoveFromNpcAliveList(int iNpc)
+{
+	if(b_EnemyNpcWasIndexed[iNpc][0])
+		EnemyNpcAlive -= 1;
+
+	if(b_EnemyNpcWasIndexed[iNpc][1])
+		EnemyNpcAliveStatic -= 1;
+
+	b_EnemyNpcWasIndexed[iNpc][0] = false;
+	b_EnemyNpcWasIndexed[iNpc][1] = false;
+
+	if(EnemyNpcAlive < 0)
+		EnemyNpcAlive = 0;
+
+	if(EnemyNpcAliveStatic < 0)
+		EnemyNpcAliveStatic = 0;
 }

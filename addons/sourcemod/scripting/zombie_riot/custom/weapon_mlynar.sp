@@ -9,7 +9,7 @@
 #define MYLNAR_MAXANGLEPITCH	90.0
 #define MYLNAR_MAXANGLEYAW		90.0
 
-Handle h_TimerMlynarManagement[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle h_TimerMlynarManagement[MAXPLAYERS+1] = {null, ...};
 static float f_MlynarHudDelay[MAXTF2PLAYERS];
 static float f_MlynarDmgMultiPassive[MAXTF2PLAYERS] = {1.0, ...};
 static float f_MlynarDmgMultiAgressiveClose[MAXTF2PLAYERS] = {1.0, ...};
@@ -58,11 +58,11 @@ void Mlynar_EntityCreated(int entity)
 }
 void Reset_stats_Mlynar_Singular(int client) //This is on disconnect/connect
 {
-	if (h_TimerMlynarManagement[client] != INVALID_HANDLE)
+	if (h_TimerMlynarManagement[client] != null)
 	{
-		KillTimer(h_TimerMlynarManagement[client]);
+		delete h_TimerMlynarManagement[client];
 	}	
-	h_TimerMlynarManagement[client] = INVALID_HANDLE;
+	h_TimerMlynarManagement[client] = null;
 	f_MlynarDmgMultiPassive[client] = 1.0;
 	f_MlynarDmgMultiAgressiveClose[client] = 1.0;
 	f_MlynarDmgMultiHurt[client] = 1.0;
@@ -218,8 +218,8 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				break;
 			}
 		}
+		FinishLagCompensation_Base_boss();
 	}
-	FinishLagCompensation_Base_boss();
 	delete pack;
 }
 public void Weapon_MlynarAttackM2(int client, int weapon, bool &result, int slot)
@@ -297,15 +297,15 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 
 public void Enable_Mlynar(int client, int weapon) 
 {
-	if (h_TimerMlynarManagement[client] != INVALID_HANDLE)
+	if (h_TimerMlynarManagement[client] != null)
 	{
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP) 
 		{
 			//Is the weapon it again?
 			//Yes?
-			KillTimer(h_TimerMlynarManagement[client]);
-			h_TimerMlynarManagement[client] = INVALID_HANDLE;
+			delete h_TimerMlynarManagement[client];
+			h_TimerMlynarManagement[client] = null;
 			DataPack pack;
 			h_TimerMlynarManagement[client] = CreateDataTimer(0.1, Timer_Management_Mlynar, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(client);
@@ -329,153 +329,119 @@ public Action Timer_Management_Mlynar(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
-	if(IsValidClient(client))
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		if (IsClientInGame(client))
-		{
-			if (IsPlayerAlive(client))
-			{
-				Mlynar_Cooldown_Logic(client, EntRefToEntIndex(pack.ReadCell()));
-			}
-			else
-				Kill_Timer_Mlynar(client);
-		}
-		else
-			Kill_Timer_Mlynar(client);
-	}
-	else
-		Kill_Timer_Mlynar(client);
+		h_TimerMlynarManagement[client] = null;
+		return Plugin_Stop;
+	}	
+	Mlynar_Cooldown_Logic(client, weapon);
 		
 	return Plugin_Continue;
 }
 
 public void Mlynar_Cooldown_Logic(int client, int weapon)
 {
-	if (!IsValidMulti(client))
-		return;
-		
-	if(IsValidEntity(weapon))
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP)
+		//Give power overtime.
+		if(f_MlynarAbilityActiveTime[client] < GetGameTime())
 		{
-			int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+			if(b_MlynarResetStats[client])
 			{
-				//Give power overtime.
-				if(f_MlynarAbilityActiveTime[client] < GetGameTime())
-				{
-					if(b_MlynarResetStats[client])
-					{
-						f_MlynarDmgMultiPassive[client] = 1.0;
-						f_MlynarDmgMultiAgressiveClose[client] = 1.0;
-						f_MlynarDmgMultiHurt[client] = 1.0;
-						f_MlynarDmgAfterAbility[client] = 1.0;
-					}
-					b_MlynarResetStats[client] = false;
-					f_MlynarDmgMultiPassive[client] += 0.0015;
-					if(f_MlynarDmgMultiPassive[client] > 2.0)
-					{
-						f_MlynarDmgMultiPassive[client] = 2.0;
-					}
-					float ClientPos[3];
-					ClientPos = WorldSpaceCenter(client);
-					//we have atleast one enemy near us, more do not equal more strength
-					//but the same enemy cannot give a huge amount of power over time.
-					for(int i=0; i < MAXENTITIES; i++)
-					{
-						HitEntitiesSphereMlynar[i] = false;
-					}
-					TR_EnumerateEntitiesSphere(ClientPos, MYLNAR_RANGE_AGGRO_GAIN, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Mlynar, client);
+				f_MlynarDmgMultiPassive[client] = 1.0;
+				f_MlynarDmgMultiAgressiveClose[client] = 1.0;
+				f_MlynarDmgMultiHurt[client] = 1.0;
+				f_MlynarDmgAfterAbility[client] = 1.0;
+			}
+			b_MlynarResetStats[client] = false;
+			f_MlynarDmgMultiPassive[client] += 0.0015;
+			if(f_MlynarDmgMultiPassive[client] > 2.0)
+			{
+				f_MlynarDmgMultiPassive[client] = 2.0;
+			}
+			float ClientPos[3];
+			ClientPos = WorldSpaceCenter(client);
+			//we have atleast one enemy near us, more do not equal more strength
+			//but the same enemy cannot give a huge amount of power over time.
+			for(int i=0; i < MAXENTITIES; i++)
+			{
+				HitEntitiesSphereMlynar[i] = false;
+			}
+			TR_EnumerateEntitiesSphere(ClientPos, MYLNAR_RANGE_AGGRO_GAIN, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Mlynar, client);
 
-					int GatherPower = 0;
-					for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+			int GatherPower = 0;
+			for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+			{
+				if (HitEntitiesSphereMlynar[entity_traced] > 0)
+				{
+					int entityindex = HitEntitiesSphereMlynar[entity_traced];
+					//do not get power from the same enemy more then 5 times. unless its a boss or raid, then allow more.
+					if(b_thisNpcIsARaid[entityindex])
 					{
-						if (HitEntitiesSphereMlynar[entity_traced] > 0)
-						{
-							int entityindex = HitEntitiesSphereMlynar[entity_traced];
-							//do not get power from the same enemy more then 5 times. unless its a boss or raid, then allow more.
-							if(b_thisNpcIsARaid[entityindex])
-							{
-								//There is no limit to how often you can gather power from a raid.
-								GatherPower += 10;
-							}
-							else if (b_thisNpcIsABoss[entityindex] && i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 400)
-							{
-								i_MlynarMaxDamageGetFromSameEnemy[entityindex] += 1;
-								GatherPower += 4;
-							}
-							else if(i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 100)
-							{
-								i_MlynarMaxDamageGetFromSameEnemy[entityindex] += 1;
-								GatherPower += 2;
-							}
-						}
-						else
-							break;
+						//There is no limit to how often you can gather power from a raid.
+						GatherPower += 10;
 					}
-					if(GatherPower > 0)
+					else if (b_thisNpcIsABoss[entityindex] && i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 400)
 					{
-						//we can gather power from upto 5 enemies at once, the more the faster.
-						if(GatherPower > 10)
-						{
-							GatherPower = 10;
-						}
-						f_MlynarDmgMultiAgressiveClose[client] += (0.0015 * float(GatherPower));
-						if(f_MlynarDmgMultiAgressiveClose[client] > 3.0)
-						{
-							f_MlynarDmgMultiAgressiveClose[client] = 3.0;
-						}
+						i_MlynarMaxDamageGetFromSameEnemy[entityindex] += 1;
+						GatherPower += 4;
 					}
-					//if the client was hurt by an enemy presumeably, then give extra power.
-					if(f_MlynarHurtDuration[client] > GetGameTime())
+					else if(i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 100)
 					{
-						f_MlynarDmgMultiHurt[client] += 0.01;
-						if(IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During raids, give power 2x as fast.
-						{
-							f_MlynarDmgMultiHurt[client] += 0.01;
-						}
-						if(f_MlynarDmgMultiHurt[client] > 3.0)
-						{
-							f_MlynarDmgMultiHurt[client] = 3.0;
-						}
+						i_MlynarMaxDamageGetFromSameEnemy[entityindex] += 1;
+						GatherPower += 2;
 					}
 				}
-
-				if(f_MlynarHudDelay[client] < GetGameTime())
+				else
+					break;
+			}
+			if(GatherPower > 0)
+			{
+				//we can gather power from upto 5 enemies at once, the more the faster.
+				if(GatherPower > 10)
 				{
-					float cooldown = Ability_Check_Cooldown(client, 2);
-					if(cooldown > 0.0)
-					{
-						PrintHintText(client,"Unbrilliant Glory [%.1f/%.1f]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", cooldown, MYLNAR_MAX_CHARGE_TIME, (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
-					}
-					else
-					{
-						PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
-					}
-					StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-					f_MlynarHudDelay[client] = GetGameTime() + 0.5;
+					GatherPower = 10;
+				}
+				f_MlynarDmgMultiAgressiveClose[client] += (0.0015 * float(GatherPower));
+				if(f_MlynarDmgMultiAgressiveClose[client] > 3.0)
+				{
+					f_MlynarDmgMultiAgressiveClose[client] = 3.0;
+				}
+			}
+			//if the client was hurt by an enemy presumeably, then give extra power.
+			if(f_MlynarHurtDuration[client] > GetGameTime())
+			{
+				f_MlynarDmgMultiHurt[client] += 0.01;
+				if(IsValidEntity(EntRefToEntIndex(RaidBossActive))) //During raids, give power 2x as fast.
+				{
+					f_MlynarDmgMultiHurt[client] += 0.01;
+				}
+				if(f_MlynarDmgMultiHurt[client] > 3.0)
+				{
+					f_MlynarDmgMultiHurt[client] = 3.0;
 				}
 			}
 		}
-		else
+
+		if(f_MlynarHudDelay[client] < GetGameTime())
 		{
-			Kill_Timer_Mlynar(client);
+			float cooldown = Ability_Check_Cooldown(client, 2);
+			if(cooldown > 0.0)
+			{
+				PrintHintText(client,"Unbrilliant Glory [%.1f/%.1f]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", cooldown, MYLNAR_MAX_CHARGE_TIME, (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
+			}
+			else
+			{
+				PrintHintText(client,"Unbrilliant Glory [READY]\nPower Gain: [%.1f％]\nAngered Precence: [%.1f％]\nProvoked Anger: [%.1f％]", (f_MlynarDmgMultiPassive[client] - 1.0) * 100.0, (f_MlynarDmgMultiAgressiveClose[client] - 1.0) * 100.0, (f_MlynarDmgMultiHurt[client] - 1.0) * 100.0);	
+			}
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_MlynarHudDelay[client] = GetGameTime() + 0.5;
 		}
-	}
-	else
-	{
-		Kill_Timer_Mlynar(client);
 	}
 }
 
-public void Kill_Timer_Mlynar(int client)
-{
-	if (h_TimerMlynarManagement[client] != INVALID_HANDLE)
-	{
-		KillTimer(h_TimerMlynarManagement[client]);
-		h_TimerMlynarManagement[client] = INVALID_HANDLE;
-	}
-}
 
 public bool TraceEntityEnumerator_Mlynar(int entity, int filterentity)
 {

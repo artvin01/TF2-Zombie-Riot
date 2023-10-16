@@ -42,7 +42,7 @@ void Cosmic_Map_Precache()
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
 
-static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
+static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1]={null, ...};
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 static int Cosmic_Dmg_Throttle[MAXPLAYERS+1]={0,...};
 static int Cosmic_TE_Throttle[MAXPLAYERS+1]={0,...};
@@ -181,6 +181,7 @@ public void Cosmic_Activate(int client, int weapon)
 				if(!Cosmic_Terror_On[client])
 				{
 					Cosmic_Terror_On[client]=true;
+					SDKUnhook(client, SDKHook_PreThink, Cosmic_Activate_Tick);
 					SDKHook(client, SDKHook_PreThink, Cosmic_Activate_Tick);
 				}
 				else
@@ -240,7 +241,8 @@ public Action Cosmic_Activate_Tick(int client)
 				{
 					if(Handle_on[client])
 					{
-						KillTimer(Revert_Weapon_Back_Timer[client]);
+						if(Revert_Weapon_Back_Timer[client] != null)
+							delete Revert_Weapon_Back_Timer[client];
 						
 						SDKUnhook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 					}
@@ -387,7 +389,8 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 {
 	if(!IsValidClient(client))
 	{
-		return Plugin_Handled;
+		Revert_Weapon_Back_Timer[client] = null;
+		return Plugin_Stop;
 	}
 	
 	EmitSoundToClient(client,"weapons/physcannon/physcannon_drop.wav",  _, _, _, _, 0.5, 80);
@@ -395,6 +398,7 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 	
 	Cosmic_Terror_Trace_Delay[client] = 0.0;
 	
+	SDKUnhook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 	SDKHook(client, SDKHook_PreThink, Cosmic_Heat_Tick);
 	Cosmic_Terror_Cooling_Reset[client]=false;
 	Handle_on[client] = false;
@@ -402,7 +406,8 @@ public Action Cosmic_Terror_Reset_Wep(Handle cut_timer, int client)
 	Cosmic_Terror_Full_Reset[client]=true;
 	Cosmic_Terror_On[client]=false;
 	SDKUnhook(client, SDKHook_PreThink, Cosmic_Activate_Tick);
-	return Plugin_Handled;
+	Revert_Weapon_Back_Timer[client] = null;
+	return Plugin_Stop;
 }
 void Cosmic_Terror_Charging(int client)
 {

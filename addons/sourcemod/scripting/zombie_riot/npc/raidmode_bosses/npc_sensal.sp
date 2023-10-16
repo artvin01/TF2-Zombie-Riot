@@ -226,7 +226,7 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Sensal(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		
@@ -272,6 +272,13 @@ methodmap Sensal < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -495,7 +502,7 @@ public Action Sensal_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
@@ -724,6 +731,12 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			SensalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
+
+			if(ZR_GetWaveCount()+1 >= 15)
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
+				
+			if(ZR_GetWaveCount()+1 >= 30)
+				npc.m_flNextRangedSpecialAttackHappens = gameTime + 5.5;
 		}
 	}
 	else if(ZR_GetWaveCount()+1 >= 30 && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
@@ -734,6 +747,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 						
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
+			SensalThrowScythes(npc);
 			ExpidonsaRemoveEffects(npc.index);
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
@@ -768,59 +782,66 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			
 			if(IsValidEnemy(npc.index, target))
 			{
+				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, { 150.0, 150.0, 150.0 }, { -150.0, -150.0, -150.0 })) 
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
-								
-					int target_traced = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target_traced > 0) 
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 					{
-						float damage = 24.0;
-						damage *= 1.15;
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							PlaySound = true;
+							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(targetTrace);
 
-						SDKHooks_TakeDamage(target_traced, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+							float damage = 24.0;
+							damage *= 1.15;
+
+							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
+								
+							
+							// Hit particle
 							
 						
-						// Hit particle
-						
-						
-						// Hit sound
-						npc.PlayMeleeHitSound();
-						
-						bool Knocked = false;
-									
-						if(IsValidClient(target_traced))
-						{
-							if (IsInvuln(target_traced))
+							
+							bool Knocked = false;
+										
+							if(IsValidClient(targetTrace))
 							{
-								Knocked = true;
-								Custom_Knockback(npc.index, target_traced, 900.0, true);
-								if(!NpcStats_IsEnemySilenced(npc.index))
+								if (IsInvuln(targetTrace))
 								{
-									TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
+									Knocked = true;
+									Custom_Knockback(npc.index, targetTrace, 900.0, true);
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
+								}
+								else
+								{
+									if(!NpcStats_IsEnemySilenced(npc.index))
+									{
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+									}
 								}
 							}
-							else
-							{
-								if(!NpcStats_IsEnemySilenced(npc.index))
-								{
-									TF2_AddCondition(target_traced, TFCond_LostFooting, 0.5);
-									TF2_AddCondition(target_traced, TFCond_AirCurrent, 0.5);
-								}
-							}
-						}
-									
-						if(!Knocked)
-							Custom_Knockback(npc.index, target_traced, 650.0); 
-					} 
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, targetTrace, 650.0); 
+						} 
+					}
 				}
-				delete swingTrace;
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
+				}
 			}
 		}
 	}
@@ -1211,7 +1232,19 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		delete trace;
 
 		Sensal npc = view_as<Sensal>(entity);
-		int Projectile = npc.FireParticleRocket(WorldSpaceCenter(npc.m_iTarget), damage , 400.0 , 100.0 , "",_,_,true,origin_altered);
+		float FloatVector[3];
+		
+		
+		if(IsValidEntity(npc.m_iTarget))
+		{
+			FloatVector = WorldSpaceCenter(npc.m_iTarget);
+		}
+		else
+		{
+			FloatVector = WorldSpaceCenter(entity);
+		}
+
+		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered);
 		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !

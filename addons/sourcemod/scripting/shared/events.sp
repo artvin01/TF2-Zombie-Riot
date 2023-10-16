@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float GiveCashDelay[MAXTF2PLAYERS];
-
 void Events_PluginStart()
 {
 	HookEvent("teamplay_round_start", OnRoundStart, EventHookMode_PostNoCopy);
@@ -48,7 +46,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zero(Resupplies_Supplied);
 	Zero(i_BarricadeHasBeenDamaged);
 	Zero(i_ExtraPlayerPoints);
-	Zero(GiveCashDelay);
 	CurrentGibCount = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -64,7 +61,6 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	RoundStartTime = GetGameTime()+0.1;
 	
 	Escape_RoundStart();
-	NPC_RoundStart();
 	Waves_RoundStart();
 #endif
 

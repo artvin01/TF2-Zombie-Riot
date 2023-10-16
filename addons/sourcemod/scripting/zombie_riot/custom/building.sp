@@ -998,7 +998,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
-	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
+	if(RaidBossActive && (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //They are ignored anyways
 	{
 		damage = 0.0;
 		return Plugin_Handled;
@@ -1193,6 +1193,12 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
+		static char buffer[36];
+		GetEntityClassname(entity, buffer, sizeof(buffer));
+		if(!StrContains(buffer, "obj_dispenser"))
+		{
+			return Plugin_Stop;
+		}
 		SetEntProp(entity, Prop_Send, "m_iAmmoShells", 150);
 		int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][0]);
 		int prop2 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
@@ -1338,7 +1344,7 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 	{
 		return;
 	}
-	if(RaidBossActive && IsValidEntity(RaidBossActive)) //They are ignored anyways
+	if(RaidBossActive && (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //They are ignored anyways
 	{
 		return;
 	}
@@ -1555,7 +1561,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 						{
 							if(b_Doing_Buildingpickup_Handle[client])
 							{
-								KillTimer(h_Pickup_Building[client]);
+								delete h_Pickup_Building[client];
 							}
 							b_Doing_Buildingpickup_Handle[client] = true;
 							DataPack pack;
@@ -2003,6 +2009,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);
+							SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 						}
 						else if(StrEqual(buffer, "zr_barricade") && i_BarricadesBuild[client] < MaxBarricadesAllowed(client)) // do not check for if too many barricades, doesnt make sense to do this anyways.
@@ -2016,7 +2023,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
-							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);							
+							SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
+							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);					
 						}
 						else if(StrEqual(buffer, "zr_elevator")) // bruh why.
 						{
@@ -2028,6 +2036,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
 							AcceptEntityInput(entity, "SetBuilder", client);
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", client);		
+							SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 							SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 							
 							Elevators_Currently_Build[client] += 1;
@@ -2537,17 +2546,28 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 							if(weapon != -1 && StoreWeapon[weapon] > 0)
 							{
-								if(i_CustomWeaponEquipLogic[weapon]==WEAPON_QUINCY_BOW)
+								switch(i_CustomWeaponEquipLogic[weapon])
 								{
-									
-									int buttons = GetClientButtons(client);
-									bool attack2 = (buttons & IN_ATTACK2) != 0;
-									if(attack2)
+									case WEAPON_QUINCY_BOW:
 									{
-										Quincy_Menu(client, weapon);
-										return true;
+										int buttons = GetClientButtons(client);
+										bool attack2 = (buttons & IN_ATTACK2) != 0;
+										if(attack2)
+										{
+											Quincy_Menu(client, weapon);
+											return true;
+										}
 									}
-									
+									case WEAPON_ION_BEAM:
+									{
+										int buttons = GetClientButtons(client);
+										bool attack2 = (buttons & IN_ATTACK2) != 0;
+										if(attack2)
+										{
+											Neuvellete_Menu(client, weapon);
+											return true;
+										}
+									}
 								}
 								if(Store_CanPapItem(client, StoreWeapon[weapon]))
 								{
@@ -3903,6 +3923,7 @@ static void Railgun_Boom(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 }
 
@@ -4052,6 +4073,7 @@ static void Railgun_Boom_Client(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 }
 
@@ -4364,7 +4386,7 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	
 	i_CurrentEquippedPerk[client] = what_perk;
 	
-	if(!Rogue_Mode() && owner != -1 && owner != client)
+	if(!Rogue_Mode() && owner > 0 && owner != client)
 	{
 		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
 		{
@@ -4727,23 +4749,6 @@ void Building_ClearRefBuffs(int ref)
 	{
 		Village_Effects.Erase(i);
 	}
-}
-
-void Building_RaidSpawned(int entity)
-{
-	return;
-	/*
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsValidEntity(i_HasSentryGunAlive[client]))
-		{
-			if(Village_Flags[client] & VILLAGE_004)
-			{
-				f_CrippleDebuff[entity] = FAR_FUTURE;
-				break;
-			}
-		}
-	}*/
 }
 
 bool Building_NeatherseaReduced(int entity)
@@ -5167,7 +5172,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		else
 		{
 			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [18 Bananas]");
-			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 20) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 18) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 			menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 		}
@@ -5175,7 +5180,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
 		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [12 Bananas]");
-		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 14) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 12) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 	}
 	else if(Village_Flags[client] & VILLAGE_002)
@@ -5894,6 +5899,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] += 180.0;
 				TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5918,6 +5924,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
 					TeleportEntity(prop1, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop1, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_1);
 				}
@@ -5927,6 +5934,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 			{
 				GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 				GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+				vAngles[1] += 180.0;
 				TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 			}
 			else
@@ -5951,6 +5959,7 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 
 					GetEntPropVector(Building_Index, Prop_Data, "m_vecAbsOrigin", vOrigin);
 					GetEntPropVector(Building_Index, Prop_Data, "m_angRotation", vAngles);
+					vAngles[1] += 180.0;
 					TeleportEntity(prop2, vOrigin, vAngles, NULL_VECTOR);
 					SDKHook(prop2, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmitProp_2);
 				}
@@ -8040,6 +8049,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 2 && collisionboxapplied != 2)
@@ -8059,6 +8069,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 3 && collisionboxapplied != 3)
@@ -8078,6 +8089,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 4 && collisionboxapplied != 4)
@@ -8097,6 +8109,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	else if(ModelTypeApplied == 5 && collisionboxapplied != 5)
@@ -8116,6 +8129,7 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
 		view_as<CClotBody>(entity).UpdateCollisionBox();
+		SDKUnhook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 		SDKHook(owner, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	}
 	if(Village_Flags[owner] & VILLAGE_500 && ModelTypeApplied != 5)

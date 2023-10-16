@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle HealingTimer[MAXTF2PLAYERS] = {INVALID_HANDLE, ...};
+static Handle HealingTimer[MAXTF2PLAYERS] = {null, ...};
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
 
-static Handle WeaponTimer[MAXTF2PLAYERS] = {INVALID_HANDLE, ...};
+static Handle WeaponTimer[MAXTF2PLAYERS] = {null, ...};
 static int WeaponRef[MAXTF2PLAYERS];
 static int WeaponCharge[MAXTF2PLAYERS];
 static int EliteLevel[MAXTF2PLAYERS];
@@ -23,30 +23,30 @@ void Gladiia_Enable(int client, int weapon)
 	{
 		case WEAPON_OCEAN, WEAPON_SPECTER:
 		{
-			if (HealingTimer[client] != INVALID_HANDLE)
+			if (HealingTimer[client] != null)
 			{
-				KillTimer(HealingTimer[client]);
+				delete HealingTimer[client];
 			}
-			HealingTimer[client] = INVALID_HANDLE;
+			HealingTimer[client] = null;
 
 			HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
 		}
 		case WEAPON_GLADIIA:
 		{
-			if (HealingTimer[client] != INVALID_HANDLE)
+			if (HealingTimer[client] != null)
 			{
-				KillTimer(HealingTimer[client]);
+				delete HealingTimer[client];
 			}
-			HealingTimer[client] = INVALID_HANDLE;
+			HealingTimer[client] = null;
 
 			HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
 
 			WeaponRef[client] = EntIndexToEntRef(weapon);
-			if (WeaponTimer[client] != INVALID_HANDLE)
+			if (WeaponTimer[client] != null)
 			{
-				KillTimer(WeaponTimer[client]);
+				delete WeaponTimer[client];
 			}
-			WeaponTimer[client] = INVALID_HANDLE;
+			WeaponTimer[client] = null;
 
 			float value = Attributes_Get(weapon, 861, -1.0);
 			
@@ -170,8 +170,17 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 		return Plugin_Continue;
 	}
+		
+	if(ParticleRef[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ParticleRef[client]);
+		if(entity > MaxClients)
+			RemoveEntity(entity);
+		
+		ParticleRef[client] = -1;
+	}
 
-	HealingTimer[client] = INVALID_HANDLE;
+	HealingTimer[client] = null;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -196,7 +205,7 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = INVALID_HANDLE;
+	WeaponTimer[client] = null;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -221,7 +230,7 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = INVALID_HANDLE;
+	WeaponTimer[client] = null;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -246,7 +255,7 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = INVALID_HANDLE;
+	WeaponTimer[client] = null;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -271,7 +280,7 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 		}
 	}
 
-	WeaponTimer[client] = INVALID_HANDLE;
+	WeaponTimer[client] = null;
 	EliteLevel[client] = 0;
 	return Plugin_Stop;
 }
@@ -399,14 +408,17 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			if(b_thisNpcIsABoss[entity])
 				weight++;
 
+			if(b_thisNpcIsARaid[entity])
+				weight++;
+
 			int force = strength - weight;
 			if(force >= 0)
 			{
 				if(module)
 					SDKHooks_TakeDamage(entity, client, client, 3200.0, DMG_PLASMA, weapon);
 
-				FreezeNpcInTime(entity, 0.4 + (force * 0.1));
-				Custom_Knockback(client, entity, -3000.0, true, true, true, 0.4 + (force * 0.1));
+				FreezeNpcInTime(entity, 0.3 + (force * 0.1));
+				Custom_Knockback(client, entity, -1500.0, true, true, true, 0.3 + (force * 0.1));
 				
 				EmitSoundToAll("weapons/grappling_hook_reel_stop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 			}

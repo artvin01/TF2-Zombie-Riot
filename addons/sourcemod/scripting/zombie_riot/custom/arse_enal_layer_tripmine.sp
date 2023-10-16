@@ -6,7 +6,7 @@ int Trip_NumMines[MAXPLAYERS+1] = {0, ...};
 int Trip_Owner[MAXENTITIES+1] = {-1, ...};
 float Trip_DMG[MAXPLAYERS+1] = {0.0, ...};
 float Trip_BlastDMG[MAXPLAYERS+1] = {0.0, ...};
-Handle Timer_Trip_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+Handle Timer_Trip_Management[MAXPLAYERS+1] = {null, ...};
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
 
@@ -318,9 +318,6 @@ public Action Trip_ArmMine(Handle Trip_ArmMine_Handle, any pack)
 
 public void Trip_TrackPlanted(int client)
 {
-	if (!IsValidMulti(client))
-		return;
-		
 	for(int entitycount; entitycount<i_MaxcountTraps; entitycount++)
 	{
 		int ent = EntRefToEntIndex(i_ObjectsTraps[entitycount]);
@@ -456,45 +453,26 @@ public bool Trip_PlayerCrossed(int client, int mask, any data)
 
 public void Enable_Arsenal(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
+	if (Timer_Trip_Management[client] != null)
 		return;
 		
 	if(i_AresenalTrap[weapon] > 0)
 	{	
-		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	}
-	else
-	{
-		Kill_Timer_Trap(client);
+		Timer_Trip_Management[client] = CreateTimer(0.1, Timer_Management_Trap, client, TIMER_REPEAT);
 	}
 }
 
 public Action Timer_Management_Trap(Handle timer, int client)
 {
-	if (IsClientInGame(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
-		if (IsPlayerAlive(client))
-		{
-			Trip_TrackPlanted(client);
-		}
-		else
-			Kill_Timer_Trap(client);
+		Timer_Trip_Management[client] = null;
+		return Plugin_Stop;
 	}
-	else
-		Kill_Timer_Trap(client);
+	Trip_TrackPlanted(client);
 		
 	return Plugin_Continue;
 }
-
-public void Kill_Timer_Trap(int client)
-{
-	if (Timer_Trip_Management[client] != INVALID_HANDLE)
-	{
-		KillTimer(Timer_Trip_Management[client]);
-		Timer_Trip_Management[client] = INVALID_HANDLE;
-	}
-}
-
 
 public void Weapon_Arsenal_Terroriser_M1(int client, int weapon, const char[] classname, bool &result)
 {

@@ -26,7 +26,7 @@ void Commands_PluginStart()
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
-	kv.GetSectionName(buffer, sizeof(buffer));
+	KvGetSectionName(kv, buffer, sizeof(buffer));
 	if(StrEqual(buffer, "+inspect_server", false))
 	{
 #if defined ZR

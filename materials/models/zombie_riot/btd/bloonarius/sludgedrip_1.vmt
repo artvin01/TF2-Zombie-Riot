@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/btd/bloonarius/sludgedrip_1"
+	"$surfaceprop" "rubber"
+}

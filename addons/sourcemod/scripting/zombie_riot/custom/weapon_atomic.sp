@@ -332,7 +332,6 @@ static void TBB_Tick(int client)
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(endPoint, trace);
-		CloseHandle(trace);
 		ConformLineDistance(endPoint, startPoint, endPoint, float(BeamWand_MaxDistance[client]));
 		float lineReduce = BeamWand_BeamRadius[client] * 2.0 / 3.0;
 		float curDist    = GetVectorDistance(startPoint, endPoint, false);
@@ -358,8 +357,8 @@ static void TBB_Tick(int client)
 		hullMax[2]             = -hullMin[2];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);    // 1073741824 is CONTENTS_LADDER?
 		delete trace;
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BeamWand_TraceUsers, client);    // 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 		//		int weapon = BeamWand_UseWeapon[client] ? GetPlayerWeaponSlot(client, 2) : -1;
 		/*
@@ -439,8 +438,6 @@ static void TBB_Tick(int client)
 		}
 		TE_SendToAll(0.0);
 	}
-	else
-	{
-		delete trace;
-	}
+
+	delete trace;
 }

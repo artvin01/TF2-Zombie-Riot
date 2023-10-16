@@ -125,7 +125,7 @@ methodmap Doctor < CClotBody
 		
 		npc.m_bLostHalfHealth = view_as<bool>(data[0]);
 
-		Citizen_MiniBossSpawn(npc.index);
+		Citizen_MiniBossSpawn();
 		return npc;
 	}
 	

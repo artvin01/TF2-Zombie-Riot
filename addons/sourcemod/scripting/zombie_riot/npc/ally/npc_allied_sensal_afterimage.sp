@@ -136,6 +136,7 @@ public void AlliedSensalAbility_ClotThink(int iNPC)
 			npc.m_flAttackHappens_2 = 0.0;
 			if(IsValidEnemy(npc.index, npc.m_iTarget, true, true))
 			{
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 30000.0);
 				AlliedSensalFireLaser(npc.m_iTarget, npc);
 			}
 			else
@@ -144,7 +145,10 @@ public void AlliedSensalAbility_ClotThink(int iNPC)
 				GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);
 				npc.m_iTarget = GetClosestEnemyToAttack;
 				if(npc.m_iTarget > 0)
+				{
+					npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 30000.0);
 					AlliedSensalFireLaser(npc.m_iTarget, npc);
+				}
 			}
 		}
 		return;
@@ -252,37 +256,42 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 	npc.PlayDeathSound();
 	npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 	
-	for (int building = 1; building < SENSAL_MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < SENSAL_MAX_TARGETS_HIT; building++)
 	{
 		SensalAllied_BEAM_BuildingHit[building] = 0;
 	}
-
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 
 	int Weapon = EntRefToEntIndex(i_Changed_WalkCycle[npc.index]);
 	float DamageFallOff = 1.0;
+	int EnemiesHit = 0;
 	for (int building = 0; building < SENSAL_MAX_TARGETS_HIT; building++)
 	{
-		if (SensalAllied_BEAM_BuildingHit[building])
+		if (SensalAllied_BEAM_BuildingHit[building] > 0)
 		{
 			if(IsValidEntity(SensalAllied_BEAM_BuildingHit[building]))
 			{
 				float damage = fl_heal_cooldown[entity];
 
+				SensalCauseKnockback(npc.index, SensalAllied_BEAM_BuildingHit[building]);		
 				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building]), _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
-				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;				
+				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;	
+				EnemiesHit += 1;
+				if(EnemiesHit >= 5)
+				{
+					break;
+				}
 			}
 		}
 	}
 }
 
-static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
+static bool BEAM_TraceUsers(int entity, int contentsMask, int iExclude)
 {
 	if (IsValidEntity(entity))
 	{
-		entity = Target_Hit_Wand_Detection(client, entity);
-		if(0 < entity)
+		if(IsValidEnemy(iExclude, entity, true, true))
 		{
 			for(int i=0; i < (SENSAL_MAX_TARGETS_HIT); i++)
 			{
@@ -305,4 +314,59 @@ void AlliedSensalFireLaser(int target, AlliedSensalAbility npc)
 public bool AlliedSensal_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
+}
+
+
+
+#define SENSAL_KNOCKBACK		750.0	// Knockback when push level and enemy weight is the same
+#define SENSAL_STUN_RATIO		0.00125	// Knockback when push level and enemy weight is the same
+
+void SensalCauseKnockback(int attacker, int victim)
+{
+	int weight = i_NpcWeight[victim];
+	if(weight > 5)
+		return;
+	
+	if(weight < 0)
+		weight = 1;
+	
+	float knockback = SENSAL_KNOCKBACK;
+	switch(weight)
+	{
+		case 0:
+		{
+			knockback *= 1.25;
+		}
+		case 2:
+		{
+			knockback *= 0.75;
+		}
+		case 3:
+		{
+			knockback *= 0.55;
+		}
+		case 4:
+		{
+			knockback *= 0.35;
+		}
+		case 5:
+		{
+			knockback *= 0.25;
+		}
+	}
+
+	knockback *= 2.0; //here we do math depending on how much extra pushforce they got.
+
+	if(b_thisNpcIsABoss[victim])
+	{
+		knockback *= 0.65; //They take half knockback
+	}
+
+	if(knockback < (SENSAL_KNOCKBACK * 2.0 * 0.25))
+	{
+		knockback = (SENSAL_KNOCKBACK * 2.0 * 0.25);
+	}
+	
+	FreezeNpcInTime(victim, knockback * SENSAL_STUN_RATIO);
+	Custom_Knockback(attacker, victim, knockback, true, true, true);
 }

@@ -21,68 +21,68 @@ static int EnemiesHit[ENFORCER_MAX_TARGETS];
 
 public void Weapon_Enforcer_M2_Weight2(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 2, 1.0);
+	AbilityM2(client, weapon, slot, 2, 1.5);
 }
 
 public void Weapon_Enforcer_M2_Weight3(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 3, 1.05);
+	AbilityM2(client, weapon, slot, 3, 1.75);
 }
 
 public void Weapon_Enforcer_M2_Weight5(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 5, 1.1);
+	AbilityM2(client, weapon, slot, 5, 1.85);
 }
 
 public void Weapon_Enforcer_M2_Weight8(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 8, 1.2);
+	AbilityM2(client, weapon, slot, 8, 2.0);
 }
 
 public void Weapon_Enforcer_M2_Weight12(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 12, 1.3);
+	AbilityM2(client, weapon, slot, 12, 2.1);
 }
 
 public void Weapon_Enforcer_M2_Weight17(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 17, 1.5);
+	AbilityM2(client, weapon, slot, 17, 2.15);
 }
 
 public void Weapon_Enforcer_M2_Weight23(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 23, 1.75);
+	AbilityM2(client, weapon, slot, 23, 2.5);
 }
 
 public void Weapon_Enforcer_M2_Weight30(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 30, 2.0);
+	AbilityM2(client, weapon, slot, 30, 2.6);
 }
 
 // Beyond this is freeplay level
 public void Weapon_Enforcer_M2_Weight38(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 38, 2.5);
+	AbilityM2(client, weapon, slot, 38, 2.8);
 }
 
 public void Weapon_Enforcer_M2_Weight47(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 47, 3.0);
+	AbilityM2(client, weapon, slot, 47, 3.5);
 }
 
 public void Weapon_Enforcer_M2_Weight57(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 57, 3.5);
+	AbilityM2(client, weapon, slot, 57, 4.0);
 }
 
 public void Weapon_Enforcer_M2_Weight68(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 68, 4.0);
+	AbilityM2(client, weapon, slot, 68, 4.3);
 }
 
 public void Weapon_Enforcer_M2_Weight80(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 80, 5.0);
+	AbilityM2(client, weapon, slot, 80, 5.2);
 }
 
 static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pushforcemulti)

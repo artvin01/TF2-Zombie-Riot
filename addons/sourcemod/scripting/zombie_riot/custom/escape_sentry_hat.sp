@@ -259,7 +259,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -275,7 +275,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -291,7 +291,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -307,7 +307,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -323,7 +323,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -339,7 +339,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -355,7 +355,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -371,7 +371,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -387,7 +387,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 							{
 								if(Doing_Handle_Mount[client])
 								{
-									KillTimer(Mount_Building[client]);
+									delete Mount_Building[client];
 								}
 								Doing_Handle_Mount[client] = true;
 								DataPack pack;
@@ -556,7 +556,8 @@ public Action Mount_Building_Timer(Handle sentryHud, DataPack pack)
 				else if (StrEqual(buffer, "zr_summoner"))
 				{
 					EquipDispenser(client, entity, 9);
-				}					
+				}	
+				RemoveBuildingDependency(entity);				
 			}
 		}
 	}

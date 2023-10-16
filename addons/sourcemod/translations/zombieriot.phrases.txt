@@ -2852,4 +2852,77 @@
 	{
 		"en"		"Extra Description"
 	}
+	"Neuvellete dmg"
+	{
+		"en"		"Extra Beam Damage"
+	}
+	"Neuvellete Turn"
+	{
+		"en"		"Extra Beam Turnrate"
+	}
+	"Neuvellete Mana"
+	{
+		"en"		"Lower Mana Cost"
+	}
+	"Neuvellete Range"
+	{
+		"en"		"Longer Beam Range"
+	}
+	"Neuvellete Pen"
+	{
+		"en"		"Beam can penetrate more targets"
+	}
+	"Neuvellete PenFallOff"
+	{
+		"en"		"Dmage penalty per target hit reduced"
+	}
+	"Neuvellete Nightmare"
+	{
+		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
+	}
+	"Neuvellete Pulse"
+	{
+		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
+	}
+	"Neuvellete Feedback"
+	{
+		"en"		"Feeback Loop: The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5x"
+	}
+	"Neuvellete Menu First"
+	{
+		"#format"	"{1:d}"
+		"en"		"Select what upgrade you wish to apply. You have [{1}] Upgrade points points Left"
+	}
+	"Neuvellete Menu Third"
+	{
+		"en"	"Current Upgrade Path:"
+	}
+	"Neuvellete pap0"
+	{
+		"en" 	"Tier 1:"
+	}
+	"Neuvellete pap1"
+	{
+		"en" 	"Tier 2:"
+	}
+	"Neuvellete pap2"
+	{
+		"en" 	"Tier 3:"
+	}
+	"Neuvellete pap3"
+	{
+		"en" 	"Tier 4:"
+	}
+	"Neuvellete pap4"	
+	{
+		"en" 	"Overclocks:"
+	}
+	"Neuvellete Overclock Info"
+	{
+		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs"
+	}
+	"Taunt Speed Increace"
+	{
+		"en" 	"Taunt Speed Increace"
+	}
 }

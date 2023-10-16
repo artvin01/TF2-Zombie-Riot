@@ -315,8 +315,8 @@ void GuardusSelfDefense(Guardus npc, float gameTime, int target, float distance)
 					GuardusAllyHeal);
 					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

@@ -160,7 +160,6 @@ public void Protecta_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
@@ -308,8 +307,8 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 					ProtectaAllyHeal);
 					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
-				delete swingTrace;
 			}
+			delete swingTrace;
 		}
 	}
 

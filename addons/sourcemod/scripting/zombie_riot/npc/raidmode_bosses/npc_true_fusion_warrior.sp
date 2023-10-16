@@ -264,7 +264,7 @@ methodmap TrueFusionWarrior < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -291,6 +291,14 @@ methodmap TrueFusionWarrior < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "True Fusion Warrior Spawn");
 			}
 		}
+		
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+		
 		b_thisNpcIsARaid[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -405,8 +413,7 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_flNextPull = GetGameTime(npc.index) + 5.0;
 		npc.m_bInKame = false;
 		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		return npc;
 	}
 }
@@ -437,6 +444,68 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
+
+	
+	if(b_angered_twice[npc.index])
+	{
+		npc.m_flNextThinkTime = 0.0;
+		int enemyGet = GetClosestAllyPlayer(npc.index);
+		if(IsValidEntity(enemyGet))
+			npc.FaceTowards(WorldSpaceCenter(enemyGet), 100.0);
+			
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+		npc.m_bInKame = false;
+		npc.m_bisWalking = false;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+				{
+					Music_Stop_All(client); //This is actually more expensive then i thought.
+				}
+				SetMusicTimer(client, GetTime() + 6);
+				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
+			}
+		}
+		if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
+		{
+			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, i thank you, and beware of the rogue machine... {red}Blitzkrieg.");
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			for (int client = 0; client < MaxClients; client++)
+			{
+				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+				{
+					Items_GiveNamedItem(client, "Cured Silvester");
+					CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
+				}
+			}
+		}
+		else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
+		{
+			i_SaidLineAlready[npc.index] = 4;
+			CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
+		}
+		else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
+		{
+			i_SaidLineAlready[npc.index] = 3;
+			CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and i will warn you of dangers.");
+		}
+		else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
+		{
+			i_SaidLineAlready[npc.index] = 2;
+			CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
+		}
+		else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
+		{
+			i_SaidLineAlready[npc.index] = 1;
+			CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
+		}
+		return; //He is trying to help.
+	}
 	
 	//Think throttling
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) {
@@ -532,64 +601,6 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				
 			//	ang[0] = clamp(ang[0], -44.0, 89.0);
 				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-			}
-			if(b_angered_twice[npc.index])
-			{
-				npc.m_flNextThinkTime = 0.0;
-				npc.FaceTowards(vecTarget, 100.0);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
-				npc.m_bInKame = false;
-				npc.m_bisWalking = false;
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client))
-					{
-						if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
-						{
-							Music_Stop_All(client); //This is actually more expensive then i thought.
-						}
-						SetMusicTimer(client, GetTime() + 6);
-						fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
-					}
-				}
-				if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
-				{
-					CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, i thank you, and beware of the rogue machine... {red}Blitzkrieg.");
-					npc.m_bDissapearOnDeath = true;
-
-					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-					for (int client = 0; client < MaxClients; client++)
-					{
-						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-						{
-							Items_GiveNamedItem(client, "Cured Silvester");
-							CPrintToChat(client,"{default}You gained his favor, you obtained: {yellow}''Cured Silvester''{default}!");
-						}
-					}
-				}
-				else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
-				{
-					i_SaidLineAlready[npc.index] = 4;
-					CPrintToChatAll("{gold}Silvester{default}: Help the world, retain the chaos!");
-				}
-				else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
-				{
-					i_SaidLineAlready[npc.index] = 3;
-					CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and i will warn you of dangers.");
-				}
-				else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
-				{
-					i_SaidLineAlready[npc.index] = 2;
-					CPrintToChatAll("{gold}Silvester{default}: A huge chaos is breaking out, you were able to knock some sense into me..!");
-				}
-				else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
-				{
-					i_SaidLineAlready[npc.index] = 1;
-					CPrintToChatAll("{gold}Silvester{default}: Listen to me, please!");
-				}
-				return; //He is trying to help.
 			}
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
@@ -865,93 +876,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				}
 			}
 			//Target close enough to hit
-			if(flDistanceToTarget < (125.0* 125.0) && !npc.m_bInKame || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-				{
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 5000.0);
-						if(npc.DoSwingTrace(swingTrace, closest,_,_,_,1))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									float damage = 24.0;
-									float damage_rage = 28.0;
-									if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-									{
-										damage = 20.0; //nerf
-										damage_rage = 21.0; //nerf
-									}
-									else if(ZR_GetWaveCount()+1 > 55)
-									{
-										damage = 19.0; //nerf
-										damage_rage = 20.0; //nerf
-									}
-
-									if(!npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
-											
-									if(npc.Anger)
-										SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
-										
-									
-									// Hit particle
-									
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-									bool Knocked = false;
-									
-									if(IsValidClient(target))
-									{
-										if (IsInvuln(target))
-										{
-											Knocked = true;
-											Custom_Knockback(npc.index, target, 900.0, true);
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-										}
-										else
-										{
-											TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-											TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-										}
-									}
-									
-									if(!Knocked)
-										Custom_Knockback(npc.index, target, 650.0); 
-								} 
-							}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
-					}
-				}
-			}
+			TrueFusionSelfDefense(npc, GetGameTime(npc.index));
 		}
 		else
 		{
@@ -961,7 +886,6 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	if  (!npc.m_bInKame)
 	{
 		npc.StartPathing();
-		
 	}
 	npc.PlayIdleAlertSound();
 }
@@ -1010,7 +934,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		SetVariantColor(view_as<int>({255, 255, 0, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 	}
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/20) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
@@ -1172,7 +1096,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	}
 			
 
-	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 }
 
@@ -1234,13 +1158,14 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, TrueFusionWarrior_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 	
 }
 
-public Action TrueFusionWarrior_TBB_Timer(Handle timer, int client)
+public Action TrueFusionWarrior_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
@@ -1417,6 +1342,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }
@@ -1649,4 +1575,121 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 			}
 */
 		}
+}
+
+
+void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
+{
+	if(npc.m_bInKame)
+		return;
+
+	//This code is only here so they defend themselves incase any enemy is too close to them. otherwise it is completly disconnected from any other logic.
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			if(IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				int HowManyEnemeisAoeMelee = 64;
+				Handle swingTrace;
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+				delete swingTrace;
+				bool PlaySound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							PlaySound = true;
+							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(target);
+
+							float damage = 24.0;
+							float damage_rage = 28.0;
+							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+							{
+								damage = 20.0; //nerf
+								damage_rage = 21.0; //nerf
+							}
+							else if(ZR_GetWaveCount()+1 > 55)
+							{
+								damage = 19.0; //nerf
+								damage_rage = 20.0; //nerf
+							}
+							if(!npc.Anger)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
+									
+							if(npc.Anger)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
+								
+							
+							// Hit particle
+							
+							
+							// Hit sound
+							bool Knocked = false;
+							
+							if(IsValidClient(target))
+							{
+								if (IsInvuln(target))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, target, 900.0, true);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+								else
+								{
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+							}
+							
+							if(!Knocked)
+								Custom_Knockback(npc.index, target, 650.0); 
+						}
+					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
+				}
+			}
+		}
+	}
+
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
+		{
+			float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
+
+			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
+			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
+			{
+				int Enemy_I_See;
+									
+				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+						
+				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					npc.m_iTarget = Enemy_I_See;
+
+					npc.PlayMeleeSound();
+
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+							
+					npc.m_flAttackHappens = gameTime + 0.3;
+
+					npc.m_flNextMeleeAttack = gameTime + 1.2;
+				}
+			}
+		}
+	}
 }

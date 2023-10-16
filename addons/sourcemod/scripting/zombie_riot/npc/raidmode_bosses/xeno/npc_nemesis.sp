@@ -170,7 +170,7 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossNemesis(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
 		
@@ -197,6 +197,12 @@ methodmap RaidbossNemesis < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -241,8 +247,7 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
 		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 		return npc;
 	}
@@ -256,6 +261,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	
 	if(RaidModeTime < GetGameTime())
 	{
+		i_RaidGrantExtra[npc.index] = 0;
 		int entity = CreateEntityByName("game_round_win"); //You loose.
 		DispatchKeyValue(entity, "force_map_reset", "1");
 		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
@@ -296,12 +302,24 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			npc.m_flRangedArmor = 0.30;
 		}
 		//silence doesnt completly delete it, but moreso, nerf it.
-
-		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3500;
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		if(f_NemesisSpecialDeathAnimation[npc.index] + 14.0 > GetGameTime(npc.index))
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			
+			float ProjLoc[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+			ProjLoc[2] += 70.0;
+
+			ProjLoc[0] += GetRandomFloat(-40.0, 40.0);
+			ProjLoc[1] += GetRandomFloat(-40.0, 40.0);
+			ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
+			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
+			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			}
 		}
 
 		if(f_NemesisSpecialDeathAnimation[npc.index] + 0.1 > GetGameTime(npc.index))
@@ -317,7 +335,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 20;
 			}
 		}
-		if(f_NemesisSpecialDeathAnimation[npc.index] + 3.0 > GetGameTime(npc.index))
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 3.0 > GetGameTime(npc.index))
 		{
 			if(npc.m_iChanged_WalkCycle != 12) 	
 			{
@@ -342,13 +360,23 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				int iActivity = npc.LookupActivity("ACT_FT_DOWN_3");
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.m_iChanged_WalkCycle = 14;
+				npc.SetPlaybackRate(0.4);
+				if(IsValidEntity(npc.m_iWearable1))
+				{
+					RemoveEntity(npc.m_iWearable1);
+				}
+				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
+				SetVariantString("1.0");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			}
 		}
-		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.0 > GetGameTime(npc.index))
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.5 < GetGameTime(npc.index))
 		{
 			f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
 			if(npc.m_iChanged_WalkCycle != 10) 	
 			{
+				i_GunMode[npc.index] = 1;
+				i_GunAmmo[npc.index] = 250;
 				int iActivity = npc.LookupActivity("ACT_FT_WALK");
 				if(iActivity > 0) npc.StartActivity(iActivity);
 				npc.m_iChanged_WalkCycle = 10;
@@ -359,13 +387,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 				npc.StartPathing();
 				f_NpcTurnPenalty[npc.index] = 1.0;
-				if(IsValidEntity(npc.m_iWearable1))
-				{
-					RemoveEntity(npc.m_iWearable1);
-				}
-				npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
-				SetVariantString("1.0");
-				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			}	
 		}
 		return;
@@ -375,11 +396,19 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 	}
 	
+	
 	if(npc.m_flDoingAnimation < gameTime && i_GunMode[npc.index] == 0)
 	{
 		Nemesis_TryDodgeAttack(npc.index);
 	}
-	
+
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
+	{
+		return;
+	}
+
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
+
 	if(f_NemesisRandomInfectionCycle[npc.index] < GetGameTime(npc.index))
 	{
 		f_NemesisRandomInfectionCycle[npc.index] = GetGameTime(npc.index) + 10.0;
@@ -406,6 +435,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 			i_GunMode[npc.index] = 1;
 			i_GunAmmo[npc.index] = 150;
+			npc.m_flAttackHappens = 0.0;
 
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_minigun/c_minigun.mdl");
 			SetVariantString("1.0");
@@ -806,7 +836,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		Most effective way is backstabbing during melee attacks.
 		*/
 
-
 		switch(ActionToTake)
 		{
 			case 1:
@@ -926,9 +955,11 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		{
 			RemoveEntity(npc.m_iWearable1);
 		}
+		RaidModeTime += 10.0;
 		i_GunMode[npc.index] = 1;
 		i_GunAmmo[npc.index] = 250;
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 50.0;
+		npc.m_flAttackHappens = 0.0;
 		f_NemesisSpecialDeathAnimation[npc.index] = GetGameTime(npc.index);
 		npc.PlayBoomSound();
 		npc.Anger = true; //	>:(
@@ -1024,7 +1055,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	GiveProgressDelay(3.0);
 	RaidModeTime += 999.0; //cant afford to delete it, since duo.
-	if(ZR_GetWaveCount()+1 == 65)
+	if(i_RaidGrantExtra[npc.index] == 1)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
@@ -1330,9 +1361,36 @@ stock float[] Nemesis_DodgeToDirection(CClotBody npc, float extra_backoff = 64.0
 
 void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 {
+	float Nemesis_Loc[3];
+	//poisition of the enemy we random decide to shoot.
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Nemesis_Loc);
+
+	Nemesis_Loc[2] += 10.0;
+	spawnRing_Vectors(Nemesis_Loc, INFECTION_RANGE * 3.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 200, 1, INFECTION_DELAY, 5.0, 0.0, 1,1.0);	
+	
+	float Nemesis_Ang[3];
+	Nemesis_Ang = {-90.0,0.0,0.0};
+	int particle = ParticleEffectAt(Nemesis_Loc, "green_steam_plume", 1.0);
+	TeleportEntity(particle, NULL_VECTOR, Nemesis_Ang, NULL_VECTOR);
+
+	DataPack pack;
+	CreateDataTimer(INFECTION_DELAY, Nemesis_DoInfectionThrowInternal, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
+	pack.WriteCell(MaxThrowCount); 	//who this attack belongs to
+}
+public Action Nemesis_DoInfectionThrowInternal(Handle timer, DataPack DataNem)
+{
+	DataNem.Reset();
+	int entity = EntRefToEntIndex(DataNem.ReadCell());
+	int MaxThrowCount = DataNem.ReadCell();
+	
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
+
 	int count;
 	int targets[MAX_TARGETS_HIT_NEMESIS];
 
+		
 	for(int client; client<=MaxClients; client++)
 	{
 		if(IsValidEntity(client) && IsValidEnemy(entity, client, false, false))
@@ -1404,6 +1462,7 @@ void Nemesis_DoInfectionThrow(int entity, int MaxThrowCount)
 			pack.WriteCell(VicLoc[2]);
 		}
 	}
+	return Plugin_Stop;
 }
 
 public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
@@ -1424,7 +1483,7 @@ public Action Nemesis_Infection_Throw(Handle timer, DataPack pack)
 		TeleportEntity(particle, NULL_VECTOR, Ang, NULL_VECTOR);
 		EmitSoundToAll("weapons/cow_mangler_explode.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, origin);
 	}
-	return Plugin_Handled;
+	return Plugin_Stop;
 }
 
 

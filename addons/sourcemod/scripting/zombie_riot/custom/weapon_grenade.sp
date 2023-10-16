@@ -12,6 +12,7 @@ public void Grenade_Custom_Precache()
 	static char model[PLATFORM_MAX_PATH];
 	model = "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl";
 	g_ProjectileModel = PrecacheModel(model);
+	Zero(Handle_on);
 }
 
 public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
@@ -22,7 +23,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
 		if(Handle_on[client])
 		{
-			KillTimer(Give_bomb_back[client]);
+			delete Give_bomb_back[client];
 		}
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -31,6 +32,11 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
 		CurrentAmmo[client][Ammo_Hand_Grenade] = GetAmmo(client, Ammo_Hand_Grenade);
 	}
+}
+
+public void Reset_stats_Grenade_Singular(int client)
+{
+	Handle_on[client] = false;
 }
 
 

@@ -38,18 +38,18 @@ static const float BloonSpeeds[] =
 static const int BloonHealth[] =
 {
 //	Health	Type		RGB	Multi
-	100,	// Red		1
-	200,	// Blue		2
-	300,	// Green	3
-	400,	// Yellow	4
-	500,	// Pink		5	x1
-	1100,	// Black	11	x6
-	1100,	// White	11	x6
-	1100,	// Purple	11	x6
-	2300,	// Lead		23	x13
-	2300,	// Zebra	23	x13
-	4700,	// Rainbow	47	x27
-	10400	// Ceramic	104	x64
+	150,	// Red		1
+	300,	// Blue		2
+	450,	// Green	3
+	600,	// Yellow	4
+	750,	// Pink		5	x1
+	1650,	// Black	11	x6
+	1650,	// White	11	x6
+	1650,	// Purple	11	x6
+	3450,	// Lead		23	x13
+	3450,	// Zebra	23	x13
+	7050,	// Rainbow	47	x27
+	15600	// Ceramic	104	x64
 };
 
 static const char Type[] = "12345bwpl789";
@@ -165,7 +165,7 @@ int Bloon_Health(bool fortified, int type)
 	if(type == Bloon_Ceramic)
 		return (BloonHealth[type] * 2) - BloonHealth[Bloon_Rainbow];
 	
-	return BloonHealth[type] * 2;
+	return BloonHealth[type];
 }
 
 void Bloon_MapStart()
@@ -478,6 +478,7 @@ methodmap Bloon < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.m_bDoNotGiveWaveDelay = true;
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloon_ClotDamagedPost);
@@ -579,55 +580,41 @@ public void Bloon_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
 		
-		//Target close enough to hit
 		if(flDistanceToTarget < 10000)
 		{
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
-				//Handle swingTrace;
-				//if(npc.DoAimbotTrace(swingTrace, PrimaryThreatIndex))
+				for(int i; i<9; i++)
 				{
-					int target = PrimaryThreatIndex;//TR_GetEntityIndex(swingTrace);
-					//if(target > 0)
+					if(npc.RegrowsInto(i) == npc.m_iType)
 					{
-						//float vecHit[3];
-						//TR_GetEndPosition(vecHit, swingTrace);
-						
-						for(int i; i<9; i++)
+						if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 						{
-							if(npc.RegrowsInto(i) == npc.m_iType)
+							if(npc.m_bFortified)
 							{
-								if(!ShouldNpcDealBonusDamage(target))
-								{
-									if(npc.m_bFortified)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, vecTarget);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, vecTarget);
-									}
-								}
-								else
-								{
-									if(npc.m_bFortified)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 4.2, DMG_CLUB, -1, _, vecTarget);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 2.0 + float(i) * 3.0, DMG_CLUB, -1, _, vecTarget);
-									}
-								}
-								//delete swingTrace;
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+							}
+							else
+							{
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
 							}
 						}
+						else
+						{
+							if(npc.m_bFortified)
+							{
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+							}
+							else
+							{
+								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceCenter(PrimaryThreatIndex));
+							}
+						}
+						//delete swingTrace;
 					}
-				}
+				}				
 			}
 		}
 		
@@ -753,6 +740,9 @@ public Action Bloon_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 
 public void Bloon_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
+	if(b_NpcHasDied[victim])
+		return;
+		
 	Bloon npc = view_as<Bloon>(victim);
 	npc.UpdateBloonOnDamage();
 }

@@ -53,7 +53,10 @@ static int PlayerIndex[10];
 static int RobotIndex[10];
 static int HandRef[MAXTF2PLAYERS];
 static int WeaponRef[MAXTF2PLAYERS];
+
+#if defined ZR
 static int TeutonModelIndex;
+#endif
 
 void ViewChange_MapStart()
 {
@@ -72,15 +75,21 @@ void ViewChange_MapStart()
 		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
 
+#if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
-	
+#endif
+
 	PrecacheModel(NIKO_PLAYERMODEL);
 }
 
 void ViewChange_PlayerModel(int client)
 {
 	{
+#if defined ZR
+		if((b_IsPlayerNiko[client]) && TeutonType[client] == TEUTON_NONE)
+#else
 		if(b_IsPlayerNiko[client])
+#endif
 		{
 			SetVariantString(NIKO_PLAYERMODEL);
 			AcceptEntityInput(client, "SetCustomModel");
@@ -88,8 +97,7 @@ void ViewChange_PlayerModel(int client)
 
 #if defined RPG
 			Party_PlayerModel(client, NIKO_PLAYERMODEL);
-#endif
-
+#endif		
 		}
 		else
 		{

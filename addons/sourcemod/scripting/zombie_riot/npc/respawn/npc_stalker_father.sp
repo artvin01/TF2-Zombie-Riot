@@ -47,6 +47,7 @@ methodmap StalkerFather < StalkerShared
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
@@ -284,7 +285,7 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 		return Plugin_Handled;
 	}
 	
-	if(damage > 999999.9)
+	if(damage > 9999999.9)
 		return Plugin_Continue;
 	
 	if(damagetype & DMG_DROWN)

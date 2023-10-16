@@ -559,6 +559,7 @@ static void TBB_Tick(int client)
 	{
 		delete trace;
 	}
+	delete trace;
 }
 
 static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, float damage, int weapon)
@@ -771,7 +772,6 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	
@@ -788,7 +788,6 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 			RemoveEntity(iCarrier);
 		}
 		
-		KillTimer(timer);
 		return Plugin_Stop;
 	}
 	

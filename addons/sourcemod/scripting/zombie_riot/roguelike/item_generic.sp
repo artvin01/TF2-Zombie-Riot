@@ -512,3 +512,93 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Ally(int entity, StringMap ma
 		map.SetValue("287", value * 1.15);
 	}
 }
+
+public void Rogue_Item_GenericDamage5_Weapon(int entity)
+{
+	// +5% damage bonus
+	Attributes_SetMulti(entity, 2, 1.05);
+	Attributes_SetMulti(entity, 410, 1.05);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		Attributes_SetMulti(entity, 1, 1.05);
+	}
+}
+public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +5% building damage
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.05);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +5% damage bonus
+			npc.m_fGunRangeBonus *= 1.05;
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// +5% damage bonus
+				npc.BonusDamageBonus *= 1.05;
+			}
+		}
+	}
+}
+
+public void Rogue_Item_GenericDamage10_Weapon(int entity)
+{
+	// +10% damage bonus
+	Attributes_SetMulti(entity, 2, 1.1);
+	Attributes_SetMulti(entity, 410, 1.1);
+
+	char buffer[36];
+	GetEntityClassname(entity, buffer, sizeof(buffer));
+	if(!StrEqual(buffer, "tf_weapon_medigun"))
+	{
+		Attributes_SetMulti(entity, 1, 1.1);
+	}
+}
+public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +10% building damage
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.1);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +10% damage bonus
+			npc.m_fGunRangeBonus *= 1.1;
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// +10% damage bonus
+				npc.BonusDamageBonus *= 1.1;
+			}
+		}
+	}
+}

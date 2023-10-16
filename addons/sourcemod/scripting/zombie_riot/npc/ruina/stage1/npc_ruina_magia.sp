@@ -268,19 +268,9 @@ public void Magia_ClotThink(int iNPC)
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
-	{
-		bool buff_array[3];
-		buff_array[0] = false;	//defense
-		buff_array[1] = true;	//speed
-		buff_array[2] = false;	//attack
-		
-		float buff_array_amt[3];
-		//buff_array_amt[0] = 0.2;	//20% dmg bonus
-		buff_array_amt[1] = 1.3;	//going bellow 1.0 will reduce speed. 30% speed boost
-		//buff_array_amt[2] = 0.05;	//5% dmg resist
+	{	
+		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
 				
-				
-		Apply_Master_Buff(npc.index, buff_array, 125.0, 1.0, buff_array_amt);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{

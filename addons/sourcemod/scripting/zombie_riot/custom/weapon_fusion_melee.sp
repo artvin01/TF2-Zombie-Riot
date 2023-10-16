@@ -127,13 +127,13 @@ static Action Empower_ringTracker(Handle ringTracker, int client)
 		}
 		else
 		{
-			KillTimer(ringTracker, false);
+			return Plugin_Stop;
 		}
 
 	}
 	else
 	{
-		KillTimer(ringTracker, false);
+		return Plugin_Stop;
 	}
 
 	return Plugin_Continue;
@@ -152,12 +152,12 @@ static Action Empower_ringTracker_effect(Handle ringTracker, int client)
 		}
 		else
 		{
-			KillTimer(ringTracker, false);
+			return Plugin_Stop;
 		}
 	}
 	else
 	{
-		KillTimer(ringTracker, false);
+		return Plugin_Stop;
 	}
 
 	return Plugin_Continue;

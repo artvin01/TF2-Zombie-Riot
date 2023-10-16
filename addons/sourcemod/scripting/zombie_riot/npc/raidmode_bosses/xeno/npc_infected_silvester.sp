@@ -284,7 +284,7 @@ methodmap RaidbossSilvester < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
@@ -310,6 +310,12 @@ methodmap RaidbossSilvester < CClotBody
 				SetGlobalTransTarget(client_check);
 				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
 			}
+		}
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 		
@@ -425,8 +431,7 @@ methodmap RaidbossSilvester < CClotBody
 
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;		
-		Citizen_MiniBossSpawn(npc.index);
-		Building_RaidSpawned(npc.index);
+		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
 		
@@ -472,7 +477,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 	if(b_angered_twice[npc.index])
 	{
-		int closestTarget = GetClosestTarget(npc.index);
+		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
 			npc.FaceTowards(WorldSpaceCenter(closestTarget), 100.0);
@@ -489,12 +494,8 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 
 	//Think throttling
-	/*
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
-	{
-		return;
-	}
-	*/
+	
+	
 	if(!npc.m_flNextChargeSpecialAttack)
 	{
 		if(npc.m_blPlayHurtAnimation)
@@ -523,10 +524,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		}
 	}
 
-	
-	/*
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
-*/
+
 	if(npc.m_flNextChargeSpecialAttack)
 	{
 		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
@@ -604,16 +602,6 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 	}
-	/*
-	if(npc.m_flNextRangedAttackHappening && npc.m_flDoingAnimation < GetGameTime(npc.index))
-	{
-		NPC_StartPathing(npc.index);
-		npc.m_bPathing = true;
-		npc.m_flSpeed = 330.0;
-		npc.m_iInKame = 0;
-		npc.m_flNextRangedAttackHappening = 0.0;
-	}
-	*/
 	if(npc.m_iInKame > 0 && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		if(npc.Anger)
@@ -873,7 +861,6 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		npc.m_flSpeed = 330.0;
 	}
-
 	if(IsEntityAlive(i_TargetToWalkTo[npc.index]))
 	{
 		int ActionToTake = -1;
@@ -1142,7 +1129,7 @@ public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && !Waves_InFreeplay())
+	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
@@ -1183,7 +1170,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			npc.PlayAngerSound();
 			npc.Anger = true; //	>:(
 			b_RageAnimated[npc.index] = false;
-			RaidModeTime += 85.0;
+			RaidModeTime += 60.0;
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
@@ -1259,67 +1246,71 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
+				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-				{
-								
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					
-					if(target > 0) 
-					{
-						float damage = 24.0;
-						float damage_rage = 28.0;
-						if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
-						{
-							damage = 20.0; //nerf
-							damage_rage = 21.0; //nerf
-						}
-						else if(ZR_GetWaveCount()+1 > 55)
-						{
-							damage = 17.5; //nerf
-							damage_rage = 18.5; //nerf
-						}
-
-						if(!npc.Anger)
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
-								
-						if(npc.Anger)
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
-							
-						
-						// Hit particle
-						
-						
-						// Hit sound
-						npc.PlayMeleeHitSound();
-						
-						bool Knocked = false;
-									
-						if(IsValidClient(target))
-						{
-							if (IsInvuln(target))
-							{
-								Knocked = true;
-								Custom_Knockback(npc.index, target, 900.0, true);
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-							}
-							else
-							{
-								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
-							}
-						}
-									
-						if(!Knocked)
-							Custom_Knockback(npc.index, target, 650.0); 
-					} 
-				}
+				npc.FaceTowards(WorldSpaceCenter(npc.m_iTarget), 20000.0);
+				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
+				bool PlaySound = false;
+				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+				{
+					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
+					{
+						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+						{
+							PlaySound = true;
+							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+							float vecHit[3];
+							vecHit = WorldSpaceCenter(target);
+							float damage = 24.0;
+							float damage_rage = 28.0;
+							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
+							{
+								damage = 20.0; //nerf
+								damage_rage = 21.0; //nerf
+							}
+							else if(ZR_GetWaveCount()+1 > 55)
+							{
+								damage = 17.5; //nerf
+								damage_rage = 18.5; //nerf
+							}
+
+							if(!npc.Anger)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);
+									
+							if(npc.Anger)
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage_rage * RaidModeScaling * 0.85, DMG_CLUB, -1, _, vecHit);									
+								
+							
+							// Hit particle
+							
+							bool Knocked = false;
+										
+							if(IsValidClient(target))
+							{
+								if (IsInvuln(target))
+								{
+									Knocked = true;
+									Custom_Knockback(npc.index, target, 900.0, true);
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+								else
+								{
+									TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+									TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+								}
+							}
+										
+							if(!Knocked)
+								Custom_Knockback(npc.index, target, 650.0); 
+						} 
+					}
+				}
+				if(PlaySound)
+				{
+					npc.PlayMeleeHitSound();
+				}
 			}
 		}
 	}
@@ -1486,6 +1477,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
 		if(spawn_index > MaxClients)
 		{
+			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
 			Zombies_Currently_Still_Ongoing += 1;
@@ -1828,13 +1820,14 @@ void Silvester_TBB_Ability(int client)
 	}
 			
 
-	CreateTimer(5.0, Silvester_TBB_Timer, client, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, Silvester_TBB_Timer, EntRefToEntIndex(client), TIMER_FLAG_NO_MAPCHANGE);
 	SDKHook(client, SDKHook_Think, Silvester_TBB_Tick);
 }
 
 
-public Action Silvester_TBB_Timer(Handle timer, int client)
+public Action Silvester_TBB_Timer(Handle timer, int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidEntity(client))
 		return Plugin_Continue;
 
@@ -1941,7 +1934,7 @@ public Action Silvester_TBB_Tick(int client)
 		if (TR_DidHit(trace))
 		{
 			TR_GetEndPosition(endPoint, trace);
-			CloseHandle(trace);
+			delete trace;
 			ConformLineDistance(endPoint, startPoint, endPoint, float(Silvester_BEAM_MaxDistance[client]));
 			float lineReduce = Silvester_BEAM_BeamRadius[client] * 2.0 / 3.0;
 			float curDist = GetVectorDistance(startPoint, endPoint, false);
@@ -2010,6 +2003,7 @@ public Action Silvester_TBB_Tick(int client)
 		{
 			delete trace;
 		}
+		delete trace;
 	}
 	return Plugin_Continue;
 }

@@ -83,6 +83,7 @@ methodmap ArkSlugInfused < CClotBody
 		i_NpcInternalId[npc.index] = ARK_SLUG_INFUSED;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.SetActivity("ACT_IDLE");
 
@@ -276,6 +277,8 @@ void ArkSlugInfused_NPCDeath(int entity)
 	
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+
 		float pos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos); 
 		pos[2] += 30;

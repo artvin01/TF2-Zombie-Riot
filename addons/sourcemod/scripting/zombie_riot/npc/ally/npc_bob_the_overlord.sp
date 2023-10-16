@@ -1840,8 +1840,6 @@ public void BobTheGod_NPCDeath(int entity)
 	}
 	
 	SDKUnhook(npc.index, SDKHook_Think, BobTheGod_ClotThink);
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
 	Has_a_bob[client] = 0;
 	/*
 	if(!npc.m_bGib)
@@ -1850,7 +1848,6 @@ public void BobTheGod_NPCDeath(int entity)
 	}
 	*/
 	//He cant die. He just goes away.
-	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

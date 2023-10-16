@@ -935,6 +935,8 @@ static void ShowMenu(int client, int entity)
 {
 	BarrackBody npc = view_as<BarrackBody>(entity);
 
+	SetGlobalTransTarget(client);
+
 	Menu menu = new Menu(BarrackBody_MenuH);
 	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", NPC_Names[i_NpcInternalId[entity]]);
 
