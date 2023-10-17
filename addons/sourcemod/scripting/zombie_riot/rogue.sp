@@ -1491,7 +1491,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 	char_RaidMusicSpecial1[0] = 0;
 
 	Rogue_Curse_BattleStart();
-	WaveStart_SubWaveStart();
+	WaveStart_SubWaveStart(GetGameTime());
 }
 
 static void StartStage(const Stage stage)
