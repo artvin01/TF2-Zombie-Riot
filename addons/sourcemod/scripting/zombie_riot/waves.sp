@@ -1785,7 +1785,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 	if(time == 0.0)
 		f_ZombieAntiDelaySpeedUp = Cooldown + 420.0;
 	else
-		f_ZombieAntiDelaySpeedUp = time;
+		f_ZombieAntiDelaySpeedUp = time + 420.0;
 	
 	i_ZombieAntiDelaySpeedUp = 0; //warning off
 }
