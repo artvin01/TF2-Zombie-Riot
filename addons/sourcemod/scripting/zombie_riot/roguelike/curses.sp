@@ -39,7 +39,7 @@ public void Rogue_Curse_Sensitive(bool enable)
 {
 	if(enable)
 	{
-		Rogue_GiveNamedArtifact("Sensitive");
+		Rogue_GiveNamedArtifact("Sensitive", true);
 	}
 	else
 	{
@@ -53,7 +53,7 @@ public void Rogue_SensitiveCurse_Ally(int entity, StringMap map)
 	{
 		float value = 1.0;
 		map.GetValue("412", value);
-		map.SetValue("412", value * 1.5);
+		map.SetValue("412", value * 1.25);
 	}
 }
 

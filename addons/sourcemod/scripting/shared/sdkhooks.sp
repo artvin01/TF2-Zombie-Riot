@@ -1552,145 +1552,162 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			Replicated_Damage *= 0.85;
 			damage *= 0.85;
 		}
-#endif
+
+		if(Rogue_Mode())
 		{
+			int scale = Rogue_GetRoundScale();
+			if(scale < 2)
+			{
+				Replicated_Damage *= 0.25;
+				damage *= 0.25;
+			}
+			else if(scale < 4)
+			{
+				Replicated_Damage *= 0.33;
+				damage *= 0.33;
+			}
+			else
+			{
+				damage *= 0.5;
+			}
+		}
+#endif
 			
 #if defined ZR
-		//	bool Though_Armor = false;
-		
-			if(i_CurrentEquippedPerk[victim] == 6)
-			{
+	//	bool Though_Armor = false;
+	
+		if(i_CurrentEquippedPerk[victim] == 6)
+		{
 
-				//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-				int flMaxHealth = SDKCall_GetMaxHealth(victim);
-			
-				if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
+			//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+			int flMaxHealth = SDKCall_GetMaxHealth(victim);
+		
+			if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
+			{
+				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+				
+				float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
+				
+				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
+				
+				EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
+				
+				Replicated_Damage *= 0.25;
+				damage *= 0.25;
+				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
 				{
-					f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
-					
-					float vecVictim[3]; vecVictim = WorldSpaceCenter(victim);
-					
-					ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
-					
-					EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
-					
-					Replicated_Damage *= 0.25;
-					damage *= 0.25;
-					for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+					if (IsValidEntity(baseboss_index))
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-						if (IsValidEntity(baseboss_index))
+						if(!b_NpcHasDied[baseboss_index])
 						{
-							if(!b_NpcHasDied[baseboss_index])
+							if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
 							{
-								if (GetEntProp(victim, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
+								float vecTarget[3]; vecTarget = WorldSpaceCenter(baseboss_index);
+								
+								float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
+								if(flDistanceToTarget < 90000)
 								{
-									float vecTarget[3]; vecTarget = WorldSpaceCenter(baseboss_index);
-									
-									float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
-									if(flDistanceToTarget < 90000)
-									{
-										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-										f_WidowsWineDebuff[baseboss_index] = GameTime + FL_WIDOWS_WINE_DURATION;
-									}
+									ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
+									f_WidowsWineDebuff[baseboss_index] = GameTime + FL_WIDOWS_WINE_DURATION;
 								}
 							}
 						}
 					}
 				}
 			}
+		}
 #endif	// ZR
+		
+		if(Resistance_Overall_Low[victim] > GameTime)
+		{
 			
-			if(Resistance_Overall_Low[victim] > GameTime)
-			{
-				
 #if defined ZR
-				Replicated_Damage *= 0.85;
+			Replicated_Damage *= 0.85;
 #endif
-				
-				damage *= 0.85;
-			}
+			
+			damage *= 0.85;
+		}
 #if defined ZR
-			if(i_HealthBeforeSuit[victim] == 0)
+		if(i_HealthBeforeSuit[victim] == 0)
+		{
+			int armorEnt = victim;
+			int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
+			if(vehicle != -1)
+				armorEnt = vehicle;
+
+			if(Armor_Charge[armorEnt] > 0)
 			{
-				int armorEnt = victim;
-				int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
-				if(vehicle != -1)
-					armorEnt = vehicle;
-
-				if(Armor_Charge[armorEnt] > 0)
+				int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
+				switch(GetRandomInt(1,3))
 				{
-					int dmg_through_armour = RoundToCeil(Replicated_Damage * 0.1);
-					switch(GetRandomInt(1,3))
-					{
-						case 1:
-							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-						
-						case 2:
-							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-						
-						case 3:
-							EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-					}						
-					if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[armorEnt])
-					{
-						int damage_recieved_after_calc;
-						damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[armorEnt];
-						Armor_Charge[armorEnt] = 0;
-						damage = float(damage_recieved_after_calc);
-						Replicated_Damage  = float(damage_recieved_after_calc);
-					}
-					else
-					{
-						Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * 0.9);
-						damage = 0.0;
-						damage += float(dmg_through_armour);
-						Replicated_Damage = 0.0;
-						Replicated_Damage += float(dmg_through_armour);
-				//		Though_Armor = true;
-					}
-				}
-
-				if(armorEnt == victim)
+					case 1:
+						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+					
+					case 2:
+						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+					
+					case 3:
+						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
+				}						
+				if(RoundToCeil(Replicated_Damage * 0.9) >= Armor_Charge[armorEnt])
 				{
-					switch(Armour_Level_Current[victim])
-					{
-						case 1:
-						{
-							damage *= 0.9;
-							Replicated_Damage *= 0.9;
-						}
-						case 2:
-						{
-							damage *= 0.85;
-							Replicated_Damage *= 0.85;
-						}
-						case 3:
-						{
-							damage *= 0.8;
-							Replicated_Damage *= 0.80;
-						}
-						case 4:
-						{
-							damage *= 0.75;
-							Replicated_Damage *= 0.75;
-						}
-						default:
-						{
-							damage *= 1.0;
-							Replicated_Damage *= 1.0;
-						}
-					}
+					int damage_recieved_after_calc;
+					damage_recieved_after_calc = RoundToCeil(Replicated_Damage) - Armor_Charge[armorEnt];
+					Armor_Charge[armorEnt] = 0;
+					damage = float(damage_recieved_after_calc);
+					Replicated_Damage  = float(damage_recieved_after_calc);
 				}
 				else
 				{
-					damage *= 0.65;
-					Replicated_Damage *= 0.65;
+					Armor_Charge[armorEnt] -= RoundToCeil(Replicated_Damage * 0.9);
+					damage = 0.0;
+					damage += float(dmg_through_armour);
+					Replicated_Damage = 0.0;
+					Replicated_Damage += float(dmg_through_armour);
+			//		Though_Armor = true;
 				}
 			}
-#endif	// ZR
-			
+
+			if(armorEnt == victim)
+			{
+				switch(Armour_Level_Current[victim])
+				{
+					case 1:
+					{
+						damage *= 0.9;
+						Replicated_Damage *= 0.9;
+					}
+					case 2:
+					{
+						damage *= 0.85;
+						Replicated_Damage *= 0.85;
+					}
+					case 3:
+					{
+						damage *= 0.8;
+						Replicated_Damage *= 0.80;
+					}
+					case 4:
+					{
+						damage *= 0.75;
+						Replicated_Damage *= 0.75;
+					}
+					default:
+					{
+						damage *= 1.0;
+						Replicated_Damage *= 1.0;
+					}
+				}
+			}
+			else
+			{
+				damage *= 0.65;
+				Replicated_Damage *= 0.65;
+			}
 		}
+#endif	// ZR
+
 #if defined RPG		
 		damage = BeserkHealthArmor_OnTakeDamage(victim, damage);
 

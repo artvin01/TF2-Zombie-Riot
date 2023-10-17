@@ -929,6 +929,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Changed;
 	}
 
+	if(Rogue_Mode())
+	{
+		damage *= 1.6667;
+	}
+
 	if(attacker < 0 || victim == attacker)
 	{
 		Damageaftercalc = 0.0;

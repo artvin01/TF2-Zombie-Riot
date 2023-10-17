@@ -990,7 +990,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +50%% more damage {green}but heal +100%% faster{yellow}."
+		"en"	"{red}Players take +25%% more damage {green}but heal +100%% faster{yellow}."
 	}
 	"Sensitive Lore"
 	{

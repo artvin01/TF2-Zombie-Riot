@@ -1240,12 +1240,12 @@ void Rogue_NextProgress()
 
 				if(Voting.Length)
 				{
-					TeleportToSpawn();
-					
 					SetFloorMusic(floor, true);
 
 					Rogue_StartGenericVote();
 					GameState = State_Vote;
+
+					TeleportToSpawn();
 
 					char_MusicString2[0] = 0;
 					char_RaidMusicSpecial1[0] = 0;
@@ -1611,7 +1611,12 @@ static void TeleportToSpawn()
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			if(TeutonType[client] == TEUTON_DEAD)
+				TF2_RespawnPlayer(client);
+			
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
+		}
 	}
 	
 	for(int i; i < i_MaxcountNpc; i++)

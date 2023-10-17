@@ -725,7 +725,7 @@ public bool Building_DispenserWall(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return false;
+	return !Rogue_Mode();
 }
 
 public bool Building_DispenserElevator(int client, int entity)
@@ -760,7 +760,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return false;
+	return !Rogue_Mode();
 }
 
 public bool Building_AmmoBox(int client, int entity)
@@ -801,7 +801,7 @@ public bool Building_AmmoBox(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return false;
+	return !Rogue_Mode();
 }
 
 public bool Building_ArmorTable(int client, int entity)
@@ -845,7 +845,7 @@ public bool Building_ArmorTable(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return false;
+	return !Rogue_Mode();
 }
 
 public bool Building_PerkMachine(int client, int entity)
@@ -891,7 +891,7 @@ public bool Building_PerkMachine(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return false;
+	return !Rogue_Mode();
 }
 
 public bool Building_PackAPunch(int client, int entity)
@@ -935,7 +935,7 @@ public bool Building_PackAPunch(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return false;
+	return !Rogue_Mode();
 }
 
 public Action Building_TimerDisableDispenser(Handle timer, int ref)
@@ -1008,10 +1008,24 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
-		damage *= 3.0;
+		int scale = Rogue_GetRoundScale();
+		if(scale < 2)
+		{
+			//damage *= 1.0;
+		}
+		else if(scale < 4)
+		{
+			damage *= 2.0;
+		}
+		else
+		{
+			damage *= 3.0;
+		}
 	}
+
 	damage *= fl_Extra_Damage[attacker];
 
 	if(f_FreeplayDamageExtra != 1.0)
