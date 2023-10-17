@@ -1179,8 +1179,8 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' weapons on hit get 2 seconds of reduced cooldown."
-		"ru"	"Это мини-статуэтка сломанной руки.\n- Всё оружие «Мастер цепей» и «Мультизаклинатель» при попадании получает 2 сек. уменьшения времени восстановления."
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' weapons on hit get 1 seconds of reduced cooldown."
+		"ru"	"Это мини-статуэтка сломанной руки.\n- Всё оружие «Мастер цепей» и «Мультизаклинатель» при попадании получает 1 сек. уменьшения времени восстановления."
 	}
 	"Bracelets of Agility"
 	{
