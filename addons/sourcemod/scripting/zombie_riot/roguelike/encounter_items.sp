@@ -543,7 +543,7 @@ public float Rogue_Encounter_BobResearch()
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Research Option 1");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Bob Research Desc 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Unknown Artifact Desc");
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Research Option 2");
