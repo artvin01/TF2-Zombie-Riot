@@ -704,6 +704,8 @@ void Rogue_RoundEnd()
 				CurrentCollection.Erase(i);
 			}
 		}
+
+		delete CurrentCollection;
 	}
 	
 	if(CurseOne != -1)
