@@ -3042,12 +3042,6 @@ public void MenuPage(int client, int section)
 			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
 			menu.AddItem("-2", buffer);
-
-			if(Rogue_Mode())
-			{
-				FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
-				menu.AddItem("-24", buffer);
-			}
 		}
 	}
 	
@@ -3308,6 +3302,12 @@ public void MenuPage(int client, int section)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
 			menu.AddItem("-22", buffer);
+		}
+
+		if(Rogue_Mode())
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
+			menu.AddItem("-24", buffer);
 		}
 		
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
