@@ -6017,7 +6017,7 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool noSetup = (!Rogue_NoDiscount() && !Waves_InSetup());
+	bool noSetup = (Rogue_NoDiscount() || !Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -6054,7 +6054,12 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 	if(!noSetup && !GregSale)
 	{
-		if(Rogue_GetRound() < 1 && Rogue_GetWave() < 1)//extra preround discount
+		if(Rogue_Mode())
+		{
+			if(!Rogue_Started())
+				cost = RoundToCeil(float(cost) * 0.35);
+		}
+		else if(CurrentRound < 2)//extra preround discount
 		{
 			if(StartCash < 750 && (!item.ParentKit || cost <= 1000)) //give super discount for normal waves
 			{
