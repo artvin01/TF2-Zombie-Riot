@@ -1162,7 +1162,7 @@ void Rogue_NextProgress()
 						strcopy(char_MusicString1, sizeof(char_MusicString1), "misc/halloween/gotohell.wav");
 						char_MusicString2[0] = 0;
 						char_RaidMusicSpecial1[0] = 0;
-						i_MusicLength1 = 7;
+						i_MusicLength1 = 9;
 						b_MusicCustom1 = false;
 					}
 					else
