@@ -362,7 +362,7 @@ public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
 	{
 		Artifact artifact;
 		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
-			Rogue_GiveNamedArtifact(vote.Name);
+			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
 
@@ -633,6 +633,6 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 		
 		Artifact artifact;
 		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
-			Rogue_GiveNamedArtifact(vote.Name);
+			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
