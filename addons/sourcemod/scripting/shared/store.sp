@@ -3042,12 +3042,6 @@ public void MenuPage(int client, int section)
 			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
 			menu.AddItem("-2", buffer);
-
-			if(Rogue_Mode())
-			{
-				FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
-				menu.AddItem("-24", buffer);
-			}
 		}
 	}
 	
@@ -3308,6 +3302,12 @@ public void MenuPage(int client, int section)
 		{
 			FormatEx(buffer, sizeof(buffer), "%t", "Loadouts");
 			menu.AddItem("-22", buffer);
+		}
+
+		if(Rogue_Mode())
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "Collected Artifacts");
+			menu.AddItem("-24", buffer);
 		}
 		
 		FormatEx(buffer, sizeof(buffer), "%t", "Help?");
@@ -6017,7 +6017,7 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool noSetup = (Rogue_NoDiscount() || !Waves_InSetup());
+	bool noSetup = (Rogue_NoDiscount() && !Waves_InSetup());
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -6052,14 +6052,14 @@ static void ItemCost(int client, Item item, int &cost)
 				GregSale = true;
 		}
 	}
+	
 	if(!noSetup && !GregSale)
 	{
-		if(Rogue_Mode())
+		if(Rogue_Mode() && !Rogue_Started())
 		{
-			if(!Rogue_Started())
-				cost = RoundToCeil(float(cost) * 0.35);
+			cost = RoundToCeil(float(cost) * 0.35);
 		}
-		else if(CurrentRound < 2)//extra preround discount
+		else if(!Rogue_Mode() && CurrentRound < 2)//extra preround discount
 		{
 			if(StartCash < 750 && (!item.ParentKit || cost <= 1000)) //give super discount for normal waves
 			{
