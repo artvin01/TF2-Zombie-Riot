@@ -634,6 +634,8 @@ static void DisplayHintVote()
 			Vote vote;
 			Voting.GetArray(top[0], vote);
 
+			SetGlobalTransTarget(LANG_SERVER);
+
 			char buffer[256];
 			FormatEx(buffer, sizeof(buffer), "Votes: %d/%d, %ds left\n1. %t: (%d)", count, total, RoundFloat(VoteEndTime - GetGameTime()), vote.Name, votes[top[0]]);
 
@@ -702,6 +704,8 @@ void Rogue_RoundEnd()
 				Call_Finish();
 
 				CurrentCollection.Erase(i);
+				i--;
+				length--;
 			}
 		}
 
@@ -1257,6 +1261,8 @@ void Rogue_NextProgress()
 		default:
 		{
 			PrintToChatAll("INVALID GAME STATE %d, REPORT BUG", GameState);
+			GameState = State_Stage;
+			Rogue_NextProgress();
 		}
 	}
 }
