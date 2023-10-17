@@ -51,6 +51,7 @@ static void StartShopVote()
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
 	int length = ShopListing.Length;
+	bool found;
 	for(int i; i < length; i++)
 	{
 		ShopListing.GetArray(i, artifact);
@@ -65,6 +66,7 @@ static void StartShopVote()
 			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
 			IntToString(i, vote.Config, sizeof(vote.Config));
 			list.PushArray(vote);
+			found = true;
 		}
 	}
 
@@ -74,7 +76,7 @@ static void StartShopVote()
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
 
-	Rogue_StartGenericVote(30.0);
+	Rogue_StartGenericVote(found ? 30.0 : 10.0);
 }
 public void Rogue_Vote_ShopEncounter(const Vote vote)
 {
