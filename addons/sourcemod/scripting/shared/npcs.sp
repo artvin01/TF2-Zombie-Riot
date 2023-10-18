@@ -929,9 +929,13 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Changed;
 	}
 
-	if(Rogue_Mode())
+	if(Rogue_Mode() && !b_IsAlliedNpc[victim])
 	{
-		damage *= 1.6667;
+		int scale = Rogue_GetRoundScale();
+		if(scale < 2)
+		{
+			damage *= 1.6667;
+		}
 	}
 
 	if(attacker < 0 || victim == attacker)
