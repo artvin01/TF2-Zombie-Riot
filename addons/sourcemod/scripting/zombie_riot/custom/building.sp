@@ -725,7 +725,7 @@ public bool Building_DispenserWall(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return Rogue_Mode();
+	return false;
 }
 
 public bool Building_DispenserElevator(int client, int entity)
@@ -760,7 +760,7 @@ public bool Building_DispenserElevator(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return Rogue_Mode();
+	return false;
 }
 
 public bool Building_AmmoBox(int client, int entity)
@@ -801,7 +801,7 @@ public bool Building_AmmoBox(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return Rogue_Mode();
+	return false;
 }
 
 public bool Building_ArmorTable(int client, int entity)
@@ -845,7 +845,7 @@ public bool Building_ArmorTable(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return Rogue_Mode();
+	return false;
 }
 
 public bool Building_PerkMachine(int client, int entity)
@@ -891,7 +891,7 @@ public bool Building_PerkMachine(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return Rogue_Mode();
+	return false;
 }
 
 public bool Building_PackAPunch(int client, int entity)
@@ -935,7 +935,7 @@ public bool Building_PackAPunch(int client, int entity)
 	SDKHook(entity, SDKHook_OnTakeDamagePost, Building_TakeDamagePost);
 	SDKHook(entity, SDKHook_Touch, Block_All_Touch);
 	Barracks_UpdateEntityUpgrades(client, entity, true);
-	return Rogue_Mode();
+	return false;
 }
 
 public Action Building_TimerDisableDispenser(Handle timer, int ref)
