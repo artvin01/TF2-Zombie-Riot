@@ -1558,17 +1558,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			int scale = Rogue_GetRoundScale();
 			if(scale < 2)
 			{
-				Replicated_Damage *= 0.25;
-				damage *= 0.25;
+				Replicated_Damage *= 0.50;
+				damage *= 0.50;
 			}
 			else if(scale < 4)
 			{
-				Replicated_Damage *= 0.33;
-				damage *= 0.33;
-			}
-			else
-			{
-				damage *= 0.5;
+				Replicated_Damage *= 0.75;
+				damage *= 0.75;
 			}
 		}
 #endif
