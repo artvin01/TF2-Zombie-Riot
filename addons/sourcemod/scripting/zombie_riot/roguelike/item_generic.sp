@@ -251,31 +251,34 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	}
 	if(b_NickelInjectedPack)
 	{
-		int maxhealth;
-		if(attacker <= MaxClients)
+		if(attacker > 0 && (b_IsAlliedNpc[attacker] || attacker <= MaxClients))
 		{
-			maxhealth = SDKCall_GetMaxHealth(attacker);
-		}
-		else
-		{
-			maxhealth = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
-		}	
-		int health = GetEntProp(attacker, Prop_Data, "m_iHealth");	
-		float damageMulti;
+			int maxhealth;
+			if(attacker <= MaxClients)
+			{
+				maxhealth = SDKCall_GetMaxHealth(attacker);
+			}
+			else
+			{
+				maxhealth = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
+			}	
+			int health = GetEntProp(attacker, Prop_Data, "m_iHealth");	
+			float damageMulti;
 
-		damageMulti = float(health) / float(maxhealth);
+			damageMulti = float(health) / float(maxhealth);
 
-		damageMulti *= 1.25;
+			damageMulti *= 1.25;
 
-		if(damageMulti > 1.0)
-		{
-			damageMulti = 1.0;
-		}
-		damageMulti += 0.35;
+			if(damageMulti > 1.0)
+			{
+				damageMulti = 1.0;
+			}
+			damageMulti += 0.35;
 
-		if(damageMulti > 1.0)
-		{
-			damage *= damageMulti;
+			if(damageMulti > 1.0)
+			{
+				damage *= damageMulti;
+			}
 		}
 	}
 }
