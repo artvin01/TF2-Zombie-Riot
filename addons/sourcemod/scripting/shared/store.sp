@@ -5651,6 +5651,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Vampire_KnifesDmgMulti(client, entity);
 		Activate_Neuvellete(client, entity);
 		SeaMelee_Enable(client, entity);
+		Enable_Leper(client, entity);
 #endif
 
 #if defined RPG
@@ -6017,7 +6018,9 @@ char[] TranslateItemDescription(int client, const char Desc[256], const char Rog
 
 static void ItemCost(int client, Item item, int &cost)
 {
-	bool noSetup = (Rogue_NoDiscount() && !Waves_InSetup());
+	//
+//	bool noSetup = (Rogue_NoDiscount() && !Waves_InSetup());
+	bool Setup = Waves_InSetup();
 	bool GregSale = false;
 
 	//these should account for selling.
@@ -6053,7 +6056,7 @@ static void ItemCost(int client, Item item, int &cost)
 		}
 	}
 	
-	if(!noSetup && !GregSale)
+	if(Setup && !GregSale)
 	{
 		if(Rogue_Mode() && !Rogue_Started())
 		{
