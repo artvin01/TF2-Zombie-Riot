@@ -335,7 +335,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			case WEAPON_LEPER_MELEE:
+			case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 			{
 				enemies_hit_aoe = LeperEnemyAoeHit(client);
 			}
@@ -474,7 +474,7 @@ int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			case WEAPON_LEPER_MELEE:
+			case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 			{
 				PlayCustomSoundLeper(client, target);
 				PlayOnceOnly = false;

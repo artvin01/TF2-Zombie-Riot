@@ -2057,6 +2057,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			WeaponSensal_Scythe_OnTakeDamage(attacker, victim,weapon, zr_custom_damage);
 		}
+		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
+		{
+			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
+		}
 	}
 #endif
 

@@ -5,10 +5,18 @@
 #define LEPER_AOE_SWING_HIT	"ambient/rottenburg/barrier_smash.wav"
 #define LEPER_SOLEMNY	"misc/halloween/spell_overheal.wav"
 
+#define LEPER_SOLEMNY_MAX		2
+#define LEPER_SOLEMNY_MAX_HITS	10
+
 #define LEPER_NORMAL_SWING 0
 #define LEPER_AOE_HEW 1
 int LeperSwingType[MAXPLAYERS+1];
 bool LeperSwingEffect[MAXPLAYERS+1];
+Handle Timer_Leper_Management[MAXPLAYERS+1] = {null, ...};
+float Leper_HudDelay[MAXPLAYERS+1];
+int Leper_SolemnyUses[MAXPLAYERS+1];
+int Leper_SolemnyCharge[MAXPLAYERS+1];
+float Leper_InAnimation[MAXPLAYERS+1];
 
 void OnMapStartLeper()
 {
@@ -17,6 +25,9 @@ void OnMapStartLeper()
 	PrecacheSound(LEPER_SOLEMNY);
 	Zero(LeperSwingEffect);
 	Zero(LeperSwingType);
+	Zero(Timer_Leper_Management);
+	Zero(Leper_HudDelay);
+	Zero(Leper_InAnimation);
 }
 
 int LeperEnemyAoeHit(int client)
@@ -87,7 +98,14 @@ public void Weapon_LeperHewCharge(int client, int weapon, bool &result, int slot
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
-		LeperSwingType[client] = 1;
+		switch(LeperSwingType[client])
+		{
+			case LEPER_NORMAL_SWING:
+				LeperSwingType[client] = LEPER_AOE_HEW;
+
+			case LEPER_AOE_HEW:
+				LeperSwingType[client] = LEPER_NORMAL_SWING;
+		}
 	}
 	else
 	{
@@ -102,12 +120,27 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
+		Leper_Hud_Logic(client, weapon, true);
+		if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+		if(Leper_SolemnyCharge[client] < LEPER_SOLEMNY_MAX_HITS)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+
+		Leper_SolemnyCharge[client] = 0;
+		Leper_SolemnyUses[client]++;
+
 		TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
 
 		SetEntityMoveType(client, MOVETYPE_NONE);
 		SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 0);
 		SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 0);
-		SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
+	//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
 		SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 0);
 		SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 1);
 		SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 1);
@@ -119,6 +152,23 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 		int ModelToDelete = 0;
 		int CameraDelete = SetCameraEffectLeperSolemny(client, ModelToDelete);
 		DataPack pack;
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_LEPER_MELEE:
+			{
+				StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.018, 18);
+				GiveArmorViaPercentage(client, 0.33, 1.0);
+			}
+			case WEAPON_LEPER_MELEE_PAP:
+			{
+				StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.028, 18);
+				GiveArmorViaPercentage(client, 0.5, 1.0);
+			}
+		}
+		/*
+		Grant 50% health and armor.
+		*/
+		Leper_InAnimation[client] = GetGameTime() + 1.85;
 		CreateDataTimer(1.85, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
 		pack.WriteCell(GetClientUserId(client));
@@ -134,15 +184,24 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 	}
 }
 //Freeze in place and cause effect.
+void RemoveSuperSwingLeper(int client)
+{
+	LeperSwingType[client] = LEPER_NORMAL_SWING;
+	Ability_Apply_Cooldown(client, 2, 15.0);
+}
 void LeperOnSuperHitEffect(int client)
 {
 	if(LeperSwingEffect[client])
 		return;
 	
+	//Ref doesnt matter as its a fixed array.
+	RequestFrame(RemoveSuperSwingLeper, client);
+
 	LeperSwingEffect[client] = true;
 	int ModelToDelete = 0;
 	int CameraDelete = SetCameraEffectLeperHew(client, ModelToDelete);
 	DataPack pack;
+	Leper_InAnimation[client] = GetGameTime() + 0.8;
 	CreateDataTimer(0.8, Leper_SuperHitInitital_After, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(client);
 	pack.WriteCell(GetClientUserId(client));
@@ -155,7 +214,7 @@ void LeperOnSuperHitEffect(int client)
 	SetEntityMoveType(client, MOVETYPE_NONE);
 	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 0);
 	SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 0);
-	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
+//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
 	SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 0);
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 1);
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 1);
@@ -187,7 +246,7 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetClientViewEntity(client, client);
 	TF2_RemoveCondition(client, TFCond_FreezeInput);
 	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 1);
-	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 1);
+//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 1);
 	SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 1);
 	SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 1);
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
@@ -410,4 +469,132 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	}
 
 	return viewcontrol;
+}
+
+
+
+
+
+public void Enable_Leper(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (Timer_Leper_Management[client] != null)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE_PAP) //2
+		{
+			//Is the weapon it again?
+			//Yes?
+			delete Timer_Leper_Management[client];
+			Timer_Leper_Management[client] = null;
+			DataPack pack;
+			Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE_PAP) //
+	{
+		DataPack pack;
+		Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+
+public Action Timer_Management_Leper(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		Timer_Leper_Management[client] = null;
+		return Plugin_Stop;
+	}	
+	Leper_Hud_Logic(client, weapon, false);
+		
+	return Plugin_Continue;
+}
+
+
+public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
+{
+	//Do your code here :)
+	if(Leper_HudDelay[client] > GetGameTime() && !ignoreCD)
+		return;
+
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		Leper_SolemnyCharge[client]--;
+		if(Leper_SolemnyCharge[client] <= 0)
+			Leper_SolemnyCharge[client] = 0;
+
+		return;
+	}
+
+	char LeperHud[256];
+	switch(LeperSwingType[client])
+	{
+		case LEPER_NORMAL_SWING:
+		{
+			Format(LeperHud, sizeof(LeperHud), "Hew Inactive [M2]\n");
+		}
+		case LEPER_AOE_HEW:
+		{
+			Format(LeperHud, sizeof(LeperHud), "Hew ACTIVE [M2]\n");
+		}
+	}
+	if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
+	{
+		Format(LeperHud, sizeof(LeperHud), "%sSolemny MAX USES", LeperHud);
+	}
+	else
+	{
+		if(Leper_SolemnyCharge[client] >= LEPER_SOLEMNY_MAX_HITS)
+		{
+			Format(LeperHud, sizeof(LeperHud), "%sSolemny [R] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
+		}
+		else
+		{
+			Format(LeperHud, sizeof(LeperHud), "%sSolemny (%i/%i)", LeperHud,Leper_SolemnyCharge[client], LEPER_SOLEMNY_MAX_HITS);	
+		}
+	}
+
+	PrintHintText(client,"%s",LeperHud);
+	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	Leper_HudDelay[client] = GetGameTime() + 0.5;
+}
+public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
+{
+	if (Leper_InAnimation[victim] > GetGameTime())
+	{
+		return damage * 0.5; //half damage during animations.
+	}
+	return damage; //half damage during animations.
+}
+void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_damage_custom)
+{
+	if(zr_damage_custom & ZR_DAMAGE_REFLECT_LOGIC)
+		return;
+
+	switch(LeperSwingType[attacker])
+	{
+		case LEPER_AOE_HEW:
+			damage *= 2.0;
+	}
+
+	Leper_SolemnyCharge[attacker]++;
+	if(Leper_SolemnyCharge[attacker] > LEPER_SOLEMNY_MAX_HITS)
+		Leper_SolemnyCharge[attacker] = LEPER_SOLEMNY_MAX_HITS;
+
+	Leper_Hud_Logic(attacker, weapon, true);
+}
+
+void LeperResetUses()
+{
+	Zero(Leper_SolemnyUses);
 }

@@ -2485,5 +2485,17 @@
 	{
 		"en"	"Heals allies up to 200 health and self up to 50 health."
 	}
+	"Leper Sword Desc"
+	{
+		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies\nYou aswell are able to selfheal if you hit enough enemies.\nDamage is huge but attack is slow, besure to not miss...\nDuring animations, you gain 50%% damage resistance."
+	}
+	"Leper Sword Desc Pap 1"
+	{
+		"en"	"Gain more Max Health, damage and resistance."
+	}
+	"Leper Sword Desc Pap 2"
+	{
+		"en"	"Gain more Max Health, damage and resistance.\nSolemny Gives you more health and armor."
+	}
 }
 

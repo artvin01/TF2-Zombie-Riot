@@ -1777,6 +1777,7 @@ void WaveEndLogicExtra()
 	SeaFounder_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
+	LeperResetUses();
 }
 
 void WaveStart_SubWaveStart(float time = 0.0)
