@@ -139,7 +139,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 	{
 		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 		int ammo = GetEntData(weapon, iAmmoTable, 4);//Get ammo clip
-		damageMod += 8 + ammo;
+		damageMod += 5 + ammo;
 		i_MegaShot[attacker] -= 1;
 		ApplyTempAttrib(weapon, 97, 1.2, 3.0);
 		SetEntData(weapon, iAmmoTable, 0, 4, true);
@@ -596,40 +596,40 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				}
 			}
 		}
-		case 5: //Your next X hits ricccoshchechest
+		case 5: //C bullets
 		{
 			switch(pap)
 			{
 				case 0:
 				{
-					i_Ricochet[client] += GetRandomInt(15,20);
+					i_CryoShot[client] += GetRandomInt(25,30);
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
 					ClientCommand(client, "playgamesound ui/hitsound_retro5.wav");
 				}
 				case 1:
 				{
-					i_Ricochet[client] += GetRandomInt(25,30); 
+					i_CryoShot[client] += GetRandomInt(40,45); 
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
 					ClientCommand(client, "playgamesound ui/hitsound_retro5.wav");
 				}
 				case 2:
 				{
-					i_Ricochet[client] += GetRandomInt(30,35); 
+					i_CryoShot[client] += GetRandomInt(50,55); 
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
 					ClientCommand(client, "playgamesound ui/hitsound_retro5.wav");
 				}
 				case 3:
 				{
-					i_Ricochet[client] += GetRandomInt(35,40); 
+					i_CryoShot[client] += GetRandomInt(55,70); 
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo shots]!");
 					ClientCommand(client, "playgamesound ui/hitsound_retro5.wav");
 				}
 			}
@@ -807,48 +807,78 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				}
 			}
 		}
-		case 11: //your next hit consumes your entire clip but gains that much damage
-		{
-			i_MegaShot[client] += 1;
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "[The Big One]");
-			ClientCommand(client, "playgamesound ui/killsound_squasher.wav");
-		}
-		case 12: //cryo bullets
+		case 11: //your next hits consumes your entire clip but gain that much damage
 		{
 			switch(pap)
 			{
 				case 0:
 				{
-					i_CryoShot[client] += GetRandomInt(20, 100);
+					i_MegaShot[client] += GetRandomInt(1, 2);
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[The Big One]");
+					ClientCommand(client, "playgamesound ui/killsound_squasher.wav");
+				}
+				case 1:
+				{
+					i_MegaShot[client] += GetRandomInt(1, 3);
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[The Big One]");
+					ClientCommand(client, "playgamesound ui/killsound_squasher.wav");
+				}
+				case 2:
+				{
+					i_MegaShot[client] += GetRandomInt(2, 3);
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[The Big One]");
+					ClientCommand(client, "playgamesound ui/killsound_squasher.wav");
+				}
+				case 3:
+				{
+					i_MegaShot[client] += GetRandomInt(2, 4);
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[The Big One]");
+					ClientCommand(client, "playgamesound ui/killsound_squasher.wav");
+				}
+			}
+		}
+		case 12: //R bullets
+		{
+			switch(pap)
+			{
+				case 0:
+				{
+					i_Ricochet[client] += GetRandomInt(40, 60);
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
 					ClientCommand(client, "playgamesound ui/killsound_electro.wav");
 				}
 				case 1:
 				{
-					i_CryoShot[client] += GetRandomInt(30, 100);
+					i_Ricochet[client] += GetRandomInt(50, 70);
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
 					ClientCommand(client, "playgamesound ui/killsound_electro.wav");
 				}
 				case 2:
 				{
-					i_CryoShot[client] += GetRandomInt(40, 100);
+					i_Ricochet[client] += GetRandomInt(55, 75);
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
 					ClientCommand(client, "playgamesound ui/killsound_electro.wav");
 				}
 				case 3:
 				{
-					i_CryoShot[client] += GetRandomInt(50, 100);
+					i_Ricochet[client] += GetRandomInt(65, 85);
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "[Cryo Shots]!");
+					ShowSyncHudText(client,  SyncHud_Notifaction, "[Ricochet]!");
 					ClientCommand(client, "playgamesound ui/killsound_electro.wav");
 				}
 			}		
@@ -880,7 +910,6 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						ApplyTempAttrib(weapon, 4, 1.3, 90.0);
 						
 						i_CryoShot[client] += 7;
-						i_MegaShot[client] += 1;
 						i_Ricochet[client] += 7;
 
 						SetDefaultHudPosition(client);
@@ -925,7 +954,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 						ApplyTempAttrib(weapon, 4, 1.3, 90.0);
 
 						i_CryoShot[client] += 7;
-						i_MegaShot[client] += 1;
+						i_MegaShot[client] += GetRandomInt(1,2);
 						i_Ricochet[client] += 7;
 
 						SetDefaultHudPosition(client);
