@@ -88,7 +88,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			if(IsValidEntity(npc.m_iWearable7))
 				RemoveEntity(npc.m_iWearable7);
 
-			npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,150.0);
+			npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,250.0);
 
 			if(IsValidEntity(npc.m_iWearable6))
 				RemoveEntity(npc.m_iWearable6);

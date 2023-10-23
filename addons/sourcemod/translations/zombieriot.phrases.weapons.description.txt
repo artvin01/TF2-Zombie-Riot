@@ -2355,7 +2355,7 @@
 	}
 	"Sensal Desc 1"
 	{
-		"en"	"Gain the ability to shoot projetiles with m2, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits\nA certain battery will double its capacity..."
+		"en"	"Gain the ability to shoot projetiles with R, they home onto targets.\nthey will focus the target you look at when using this ability.\nCharges with melee hits\nA certain battery will double its capacity..."
 	}
 	"Sensal Desc 2"
 	{
@@ -2487,7 +2487,7 @@
 	}
 	"Leper Sword Desc"
 	{
-		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies\nYou aswell are able to selfheal if you hit enough enemies.\nDamage is huge but attack is slow, besure to not miss...\nDuring animations, you gain 50%% damage resistance."
+		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nYou aswell are able to selfheal if you hit enough enemies. (M2)\nDamage is huge but attack is slow, dont's miss...\nDuring animations, you gain 50%% damage resistance."
 	}
 	"Leper Sword Desc Pap 1"
 	{

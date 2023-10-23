@@ -187,7 +187,7 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 void RemoveSuperSwingLeper(int client)
 {
 	LeperSwingType[client] = LEPER_NORMAL_SWING;
-	Ability_Apply_Cooldown(client, 2, 15.0);
+	Ability_Apply_Cooldown(client, 3, 15.0);
 }
 void LeperOnSuperHitEffect(int client)
 {
@@ -276,7 +276,7 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 	{
 		if(clientloop != client && !b_IsPlayerABot[clientloop] && IsClientInGame(clientloop))
 		{
-			EmitSoundToClient(clientloop, LEPER_AOE_SWING_HIT, client, SNDCHAN_AUTO, 0,_,0.8,pitch);	
+			EmitSoundToClient(clientloop, LEPER_AOE_SWING_HIT, client, SNDCHAN_AUTO, 90,_,0.8,pitch);	
 		}
 	}
 	ClientCommand(client,"playgamesound ambient/rottenburg/barrier_smash.wav");
@@ -409,7 +409,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	{
 		if(clientloop != client && !b_IsPlayerABot[clientloop] && IsClientInGame(clientloop))
 		{
-			EmitSoundToClient(clientloop, LEPER_SOLEMNY, client, SNDCHAN_AUTO, 0,_,0.8,pitch);	
+			EmitSoundToClient(clientloop, LEPER_SOLEMNY, client, SNDCHAN_AUTO, 90,_,0.8,pitch);	
 		}
 	}
 	ClientCommand(client,"playgamesound misc/halloween/spell_overheal.wav");
@@ -541,11 +541,11 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		case LEPER_NORMAL_SWING:
 		{
-			Format(LeperHud, sizeof(LeperHud), "Hew Inactive [M2]\n");
+			Format(LeperHud, sizeof(LeperHud), "Hew Inactive [R]\n");
 		}
 		case LEPER_AOE_HEW:
 		{
-			Format(LeperHud, sizeof(LeperHud), "Hew ACTIVE [M2]\n");
+			Format(LeperHud, sizeof(LeperHud), "Hew ACTIVE [R]\n");
 		}
 	}
 	if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
@@ -556,7 +556,7 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		if(Leper_SolemnyCharge[client] >= LEPER_SOLEMNY_MAX_HITS)
 		{
-			Format(LeperHud, sizeof(LeperHud), "%sSolemny [R] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
+			Format(LeperHud, sizeof(LeperHud), "%sSolemny [M2] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
 		}
 		else
 		{
