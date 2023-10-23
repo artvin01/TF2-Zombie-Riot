@@ -3006,6 +3006,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
+		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
+
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
 
@@ -3037,8 +3039,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			RemoveHudCooldown(client);
 			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
 		}
-
-		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 		
 		for(int entitycount; entitycount<i_MaxcountSticky; entitycount++)
 		{
