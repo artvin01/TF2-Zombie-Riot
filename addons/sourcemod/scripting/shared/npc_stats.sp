@@ -3006,6 +3006,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	RemoveFromNpcAliveList(pThis);
 	if(!b_NpcHasDied[pThis])
 	{
+		int client = EntRefToEntIndex(LastHitRef[pThis]);
 		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
@@ -3018,7 +3019,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
 		
-		int client = EntRefToEntIndex(LastHitRef[pThis]);
 		int Health = GetEntProp(pThis, Prop_Data, "m_iHealth");
 		Health *= -1;
 		
