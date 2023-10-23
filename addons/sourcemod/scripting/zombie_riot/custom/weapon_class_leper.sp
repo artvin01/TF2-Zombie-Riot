@@ -584,7 +584,7 @@ void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 	switch(LeperSwingType[attacker])
 	{
 		case LEPER_AOE_HEW:
-			damage *= 2.0;
+			damage *= 1.25;
 	}
 
 	Leper_SolemnyCharge[attacker]++;

@@ -215,6 +215,35 @@ public void OnPostThink(int client)
 	}
 		
 #if defined ZR
+	bool WasAirborn = false;
+
+	if (!(GetEntityFlags(client) & FL_ONGROUND))
+	{
+		WasAirborn = true;
+	}
+	else
+	{
+		int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
+		int GroundEntity = EntRefToEntIndex(RefGround);
+		if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
+		{
+			if(!b_NpcHasDied[GroundEntity])
+			{
+				WasAirborn = true;
+			}
+		}
+	}
+
+	if(WasAirborn && !b_PlayerWasAirbornKnockbackReduction[client])
+	{
+		b_PlayerWasAirbornKnockbackReduction[client] = true;
+		Attributes_SetMulti(client, 252, 0.25);
+	}
+	else if(!WasAirborn && b_PlayerWasAirbornKnockbackReduction[client])
+	{
+		b_PlayerWasAirbornKnockbackReduction[client] = false;
+		Attributes_SetMulti(client, 252, 4.0);
+	}
 	if(RollAngle_Regen_Delay[client] < GameTime)	
 	{
 		RollAngle_Regen_Delay[client] = GameTime + 0.5;

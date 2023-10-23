@@ -4726,6 +4726,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_StickyExtraGrenades[client] = false;
 	b_HasMechanic[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
+	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
 	
 	if(!IsFakeClient(client) && Was_phasing)
