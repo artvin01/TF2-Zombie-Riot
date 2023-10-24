@@ -279,6 +279,9 @@ public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 		if(healing > 30)
 			healing = 30;
 		
+		if(healing < 0)
+			healing = 0;
+		
 		if(healing > ammo)
 			healing = ammo;
 		
@@ -377,6 +380,9 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		int healing = maxHealth - health;
 		if(healing > 50)
 			healing = 50;
+		
+		if(healing < 0)
+			healing = 0;
 		
 		if(healing > ammo)
 			healing = ammo;

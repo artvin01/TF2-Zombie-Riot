@@ -1724,6 +1724,9 @@ void Store_EquipSlotCheck(int client, int slot)
 #endif
 {
 #if defined ZR
+	if(mainItem.IgnoreSlots)
+		return;
+	
 	int count;
 
 	int slot = mainItem.Slot;

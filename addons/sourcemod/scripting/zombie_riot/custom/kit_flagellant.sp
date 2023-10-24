@@ -597,6 +597,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityRenderMode(client, RENDER_NORMAL);
 		SetEntityRenderColor(client, 255, 255, 255, 255);
 		SetEntityCollisionGroup(client, 5);
+		DoOverlay(client, "");
 
 		int health = 50;
 		if(health > healing)
