@@ -2532,6 +2532,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_IsABow[entity] = true;
 		}
+		else if(!StrContains(classname, "tf_weapon_crossbow"))
+		{
+			b_IsABow[entity] = true;
+		}
 		else if(!StrContains(classname, "func_breakable"))
 		{
 			for (int i = 0; i < ZR_MAX_BREAKBLES; i++)
