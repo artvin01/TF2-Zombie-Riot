@@ -858,12 +858,14 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 
+
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			damage = 0.0;
 		}
 		if(!g_b_donner_died)
 		{
 			g_b_donner_died=true;
+			g_b_angered=true;
 			RaidModeTime += 22.5;
 			npc.m_bThisNpcIsABoss = false;
 			if(EntRefToEntIndex(RaidBossActive)==npc.index)

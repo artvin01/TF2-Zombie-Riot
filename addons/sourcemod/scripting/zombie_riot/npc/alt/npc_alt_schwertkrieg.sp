@@ -622,6 +622,7 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 		}
 		if(!g_b_schwert_died)
 		{
+			g_b_angered=true;
 			g_b_schwert_died=true;
 			if(EntRefToEntIndex(RaidBossActive)==npc.index)
 				RaidBossActive = INVALID_ENT_REFERENCE;
