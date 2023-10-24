@@ -2925,4 +2925,8 @@
 	{
 		"en" 	"Taunt Speed Increace"
 	}
+	"Must be below half health"
+	{
+		"en"	"You must be below half health of your max health"
+	}
 }

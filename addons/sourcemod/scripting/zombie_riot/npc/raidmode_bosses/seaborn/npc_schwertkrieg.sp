@@ -212,7 +212,6 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
 		
-		Schwert_Takeover_Active = false;
 		
 		return npc;
 	}

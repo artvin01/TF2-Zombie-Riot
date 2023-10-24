@@ -128,6 +128,8 @@ enum
 	WEAPON_SEABORNMELEE = 57,
 	WEAPON_LEPER_MELEE = 58,
 	WEAPON_LEPER_MELEE_PAP = 59,
+	WEAPON_FLAGELLANT_MELEE = 60,
+	WEAPON_FLAGELLANT_HEAL = 61
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -425,6 +427,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ion_beam_wand.sp"
 #include "zombie_riot/custom/kit_seaborn.sp"
 #include "zombie_riot/custom/weapon_class_leper.sp"
+#include "zombie_riot/custom/kit_flagellant.sp"
 
 void ZR_PluginLoad()
 {
@@ -633,6 +636,7 @@ void ZR_MapStart()
 	Weapon_German_MapStart();
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
+	Flagellant_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

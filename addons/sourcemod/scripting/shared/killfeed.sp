@@ -460,7 +460,7 @@ static void ShowNextFeed()
 			event.SetInt("damagebits", feed.damagebits);
 			event.SetInt("inflictor_entindex", feed.inflictor_entindex);
 			event.SetInt("customkill", feed.customkill);
-			event.SetBool("silent_kill", (!priority && feed.silent_kill));
+			event.SetBool("silent_kill", (!priority || feed.silent_kill));
 
 			list.Push(event);
 

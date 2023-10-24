@@ -465,14 +465,14 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		npc.m_flRangedArmor = 1.0;
 		b_nightmare_logic[npc.index] = false;
 		
-		if(b_angered)
-		{
-			fl_cannon_Recharged[npc.index] = GameTime + 60.0;
-		}
-		else		
-		{		
-			fl_cannon_Recharged[npc.index] = GameTime + 90.0;
-		}
+		//if(b_angered)
+		//{
+		fl_cannon_Recharged[npc.index] = GameTime + 60.0;
+		//}
+		//else		
+		//{		
+			//fl_cannon_Recharged[npc.index] = GameTime + 90.0;
+		//}
 		npc.m_flSpeed = 300.0;
 		
 		f_NpcTurnPenalty[npc.index] = 1.0;	//:)
@@ -524,7 +524,7 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 				//Predict their pos.
 				
 					
-				if(b_angered)	//thanks to the loss of his companion donner has gained A NECK
+				/*if(b_angered)	//thanks to the loss of his companion donner has gained A NECK
 				{
 					int iPitch = npc.LookupPoseParameter("body_pitch");
 					if(iPitch < 0)
@@ -539,18 +539,18 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 					float flPitch = npc.GetPoseParameter(iPitch);
 							
 					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-				}
+				}*/
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
 				{	
 
 					npc.FaceTowards(vecTarget);
 					float projectile_speed = 400.0;
 					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
-					if(b_angered)
-					{
-						npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					}
-					else
+					//if(b_angered)
+					//{
+					//	npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
+					//}
+					//else
 					{
 						npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 					}
@@ -940,14 +940,14 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 	{
 		if(!b_nightmare_logic[npc.index])
 		{
-			if(b_angered)
+			//if(b_angered)
 			{
 				fl_nightmare_grace_period[npc.index] = GameTime + 5.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
 			}
-			else
-			{
-				fl_nightmare_grace_period[npc.index] = GameTime + 10.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
-			}
+			//else
+			//{
+			//	fl_nightmare_grace_period[npc.index] = GameTime + 10.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
+			//}
 			
 			b_nightmare_logic[npc.index] = true;
 			
@@ -1064,15 +1064,15 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
 						
-					if(b_angered)
-					{
+					//if(b_angered)
+					//{
 						//npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
-						npc.AddActivityViaSequence("taunt_the_fist_bump");
-					}
-					else
-					{
-						npc.AddActivityViaSequence("taunt_the_fist_bump");
-					}
+						//npc.AddActivityViaSequence("taunt_the_fist_bump");
+					//}
+					//else
+					//{
+					npc.AddActivityViaSequence("taunt_the_fist_bump");
+					//}
 					
 					EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 					CreateTimer(1.0, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
@@ -1090,7 +1090,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 	else
 	{
 		
-		if(b_angered)	//thanks to the loss of his companion donner has gained A NECK
+		/*if(b_angered)	//thanks to the loss of his companion donner has gained A NECK
 		{
 					int iPitch = npc.LookupPoseParameter("body_pitch");
 					if(iPitch < 0)
@@ -1105,18 +1105,18 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					float flPitch = npc.GetPoseParameter(iPitch);
 							
 					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-		}
+		}*/
 				
 		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		
-		if(b_angered)
-		{
-			f_NpcTurnPenalty[npc.index] = 0.075;	//:)
-		}
-		else
-		{
-			f_NpcTurnPenalty[npc.index] = 0.0085;	//:)
-		}
+		//if(b_angered)
+	//	{
+		f_NpcTurnPenalty[npc.index] = 0.075;	//:)
+		//}
+		//else
+		//{
+		//	f_NpcTurnPenalty[npc.index] = 0.0085;	//:)
+		//}
 		
 		npc.m_flSpeed = 0.0;
 		npc.m_bPathing = true;
@@ -1250,7 +1250,7 @@ void RAid_Normal_Attack_BEAM_TBB_Ability(int client)
 	DonnerKriegCannon_BEAM_CanUse[client] = true;
 
 	float dmg = 23.0*RaidModeScaling;
-	if(b_angered)
+	//if(b_angered)
 	{
 		dmg *= 1.5;
 	}
@@ -1318,7 +1318,7 @@ void DonnerKriegCannon_TBB_Ability(int client)
 
 	DonnerKriegCannon_BEAM_CanUse[client] = true;
 	float dmg = 500.0*RaidModeScaling;
-	if(b_angered)
+	//if(b_angered)
 	{
 		dmg *= 1.5;
 	}

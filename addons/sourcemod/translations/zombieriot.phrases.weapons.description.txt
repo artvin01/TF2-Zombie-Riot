@@ -704,7 +704,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance to everyone after dealing enough damage, Receive +50 Extra HP"
+		"en"	"Give Resistance to everyone after dealing enough damage, receive +50 Extra HP"
 		"ru"	"Даёт сопр. всем после нанесения достаточного урона, получает +50 доп. ед. здоровья."
 		"chi"   "在造成足够伤害后给每个人抗性，额外获得50点HP"
 	}
@@ -2058,7 +2058,7 @@
 	}
 	"Yamato_Desc"
 	{
-		"en"	"Each time you deal damage you gain ''Motivation'', its used as an energy source your abiliites\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist\nArchetype changes to ''Duelist''"
+		"en"	"Each time you deal damage you gain ''Motivation'', its used as an energy source your abilities\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10%% melee dmg resist\nArchetype changes to ''Duelist''"
 		"ru"	"Каждый раз, когда вы нанос. урон, вы получ. «Мотивацию», которая исп. как источник энергии для ваших способн.\nR: Перекл. между «Вызванными мечами» и «Спиральными мечами»\nУдерж. ПКМ, чтобы выстрелить вызванными мечами во врагов!\nВы теряете 10%% сопротивления к повреждениям в ближнем бою\nАрхетип меняется на «Дуэлист»"
 	}
 	"Preaching Sword Desc"
@@ -2443,7 +2443,7 @@
 	}
 	"Seaborn Infection Desc"
 	{
-		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit."
+		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit.\nEffected by Ranged and Melee upgrades."
 	}
 	"Seaborn Claws Desc"
 	{
@@ -2497,5 +2497,44 @@
 	{
 		"en"	"Gain more Max Health, damage and resistance.\nSolemny Gives you more health and armor."
 	}
+	"The Flagellant Desc"
+	{
+		"en"	"Zealotry—an undying blight upon the soul.\nProvides extra health with the ability to heal but inflicts self-damage.\nEffected by Melee and Medigun upgrades."
+	}
+	"The Flagellant Extra Desc"
+	{
+		"en"	"Self-damage ignores armor, can be resisted as melee damage, but is lethal, causing a down or death. When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract Death itself. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
+	}
+	"Punish Desc"
+	{
+		"en"	"Melee attacks self-damage yourself for 1%% of your max health but inflicts 15 seconds of bleed on targets."
+	}
+	"Punish Pap 1"
+	{
+		"en"	"Gain an ability, for the duration, hits taken is stored and afterwards heals you depending on hits taken."
+	}
+	"Punish Pap 2"
+	{
+		"en"	"Gain +100 max health and increases healing and max healing received on ability"
+	}
+	"Punish Pap 3"
+	{
+		"en"	"Gain +100 max health, bleed lasts longer, and increases healing and max healing received on ability"
+	}
+	"Deathless Desc"
+	{
+		"en"	"When targeting an ally, heals them at the cost of your own health, Medigun upgrades increases healing and reduces self-damage.\nWhen targeting an enemy, cause an explosion that inflicts bleed, consumes 5%% of your max health."
+	}
+	"Deathless Pap 1"
+	{
+		"en"	"Adds alt-fire abilities.\nWhen targeting an ally, remove some armour, gives a damage and resistance buff, and heal yourself for 25%% max health.\nWhen targeting an enemy, deal massive damage, trigger all bleed at once, heals yourself for 35%% max health, with one use per wave."
+	}
+	"Deathless Pap 2"
+	{
+		"en"	"Gain +50 max health and slightly increases healing, max healing, and decreases healing cost on both weapons' ability."
+	}
+	"Deathless Pap 3"
+	{
+		"en"	"Gain +50 max health and massively increases self-healing alt-fire abilities on this weapon and bleed lasts longer.\nSlightly increases healing, max healing, and decreases healing cost on both weapons' ability."
+	}
 }
-

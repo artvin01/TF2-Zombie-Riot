@@ -350,7 +350,11 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_SEABORNMELEE:
 			{
 				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
-			}	
+			}
+			case WEAPON_FLAGELLANT_MELEE:
+			{
+				Flagellant_DoSwingTrace(client);
+			}
 		}	
 	}
 #endif
