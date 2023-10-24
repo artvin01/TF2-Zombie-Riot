@@ -51,10 +51,10 @@ void Flagellant_Enable(int client, int weapon)
 		{
 			HealLevel[client] = RoundFloat(Attributes_Get(weapon, 861, 0.0));
 			
-			DataPack pack = new DataPack();
+			DataPack pack;
+			CreateDataTimer(0.1, Flagellant_ThinkTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			RequestFrame(Flagellant_ThinkFrame, pack);
 		}
 	}
 }
@@ -70,7 +70,7 @@ void Flagellant_OnTakeDamage(int victim, float damage)
 		MoreMoreHits[victim]++;
 }
 
-public void Flagellant_ThinkFrame(DataPack pack)
+public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
@@ -122,12 +122,11 @@ public void Flagellant_ThinkFrame(DataPack pack)
 				TE_SendToClient(client);
 			}
 
-			RequestFrame(Flagellant_ThinkFrame, pack);
-			return;
+			return Plugin_Continue;
 		}
 	}
 	
-	delete pack;
+	return Plugin_Stop;
 }
 
 public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slot)
