@@ -84,6 +84,8 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 				float pos[3];
 				b_LagCompNPC_No_Layers = true;
 				StartPlayerOnlyLagComp(client, true);
+				b_LagCompAlliedPlayers = false;
+				b_LagCompNPC_No_Layers = true;
 				StartLagCompensation_Base_Boss(client);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 				FinishLagCompensation_Base_boss();
@@ -238,6 +240,8 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
+	b_LagCompAlliedPlayers = false;
+	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
@@ -419,8 +423,11 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		return;
 	}
 
+		
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
+	b_LagCompAlliedPlayers = false;
+	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
