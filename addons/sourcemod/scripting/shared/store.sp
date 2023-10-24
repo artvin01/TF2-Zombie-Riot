@@ -442,6 +442,7 @@ enum struct Item
 	bool WhiteOut;
 	char BuildingExistName[64];
 	bool ShouldThisCountSupportBuildings;
+	bool IgnoreSlots;
 	
 	ArrayList ItemInfos;
 	
@@ -1112,6 +1113,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
 	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
+	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
@@ -1735,7 +1737,7 @@ void Store_EquipSlotCheck(int client, int slot)
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, subItem);
-		if(subItem.Equipped[client])
+		if(subItem.Equipped[client] && !subItem.IgnoreSlots)
 		{
 			subItem.GetItemInfo(0, info);
 			

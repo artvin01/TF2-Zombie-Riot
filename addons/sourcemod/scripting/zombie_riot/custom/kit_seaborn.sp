@@ -286,7 +286,7 @@ public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 		
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
-		PrintHintText(client,"You Healed yourself for %d HP!, you gain a 15 healing cooldown.", healing);
+		PrintHintText(client, "You Healed yourself for %d HP!, you gain a 15 healing cooldown.", healing);
 
 		Ability_Apply_Cooldown(client, slot, 15.0);
 

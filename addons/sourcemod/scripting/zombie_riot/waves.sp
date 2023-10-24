@@ -734,7 +734,7 @@ void Waves_RoundStart()
 	else if(Voting)
 	{
 		float wait = zr_waitingtime.FloatValue;
-		if(wait < 90.0)
+		if(wait < 90.0 || Voting.Length < 3)
 			CanReVote = false;
 		
 		float time = wait - (CanReVote ? 60.0 : 30.0);

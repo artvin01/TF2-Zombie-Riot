@@ -61,7 +61,7 @@ void Flagellant_Enable(int client, int weapon)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.01);
+	TriggerSelfDamage(client, 0.05);
 }
 
 void Flagellant_OnTakeDamage(int victim, float damage)
@@ -82,7 +82,7 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 			{
 				float pos[3];
-				int target = GetClientPointVisible(client, 800.0, _, _, pos);
+				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 
 				bool validEnemy;
 				bool validAlly;
@@ -118,7 +118,7 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 				
 				pos[2] += 10.0;
 
-				TE_SetupBeamRingPoint(pos, 200.0, 201.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
+				TE_SetupBeamRingPoint(pos, 100.0, 101.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
 				TE_SendToClient(client);
 			}
 
@@ -221,7 +221,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	//StartPlayerOnlyLagComp(client);
 	//StartLagCompensation_Base_Boss(client);
 	float pos[3];
-	int target = GetClientPointVisible(client, 800.0, _, _, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 	//EndPlayerOnlyLagComp(client);
 
 	bool validEnemy;
@@ -330,7 +330,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	{
 		Rogue_OnAbilityUse(weapon);
 
-		TriggerSelfDamage(client, 0.05);
+		TriggerSelfDamage(client, 0.15);
 		
 		float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
 
@@ -382,7 +382,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	//StartPlayerOnlyLagComp(client);
 	//StartLagCompensation_Base_Boss(client);
 	float pos[3];
-	int target = GetClientPointVisible(client, 800.0, _, _, pos);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 	//EndPlayerOnlyLagComp(client);
 
 	bool validEnemy;
@@ -536,4 +536,37 @@ static void TriggerDeathDoor(int client, int &healing)
 			i_AmountDowned[client]--;
 		}
 	}
+}
+
+static int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3])
+{
+	float vecOrigin[3], vecAngles[3];
+	GetClientEyePosition(iClient, vecOrigin);
+	GetClientEyeAngles(iClient, vecAngles);
+	
+	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPC, iClient);
+	TR_GetEndPosition(vecEndOrigin, hTrace);
+	
+	int iReturn = -1;
+	int iHit = TR_GetEntityIndex(hTrace);
+	
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+		iReturn = iHit;
+	
+	delete hTrace;
+	return iReturn;
+}
+
+public bool Trace_ClientOrNPC(int entity, int mask, any data)
+{
+	if(entity == data)
+		return false;
+	
+	if(entity <= MaxClients)
+		return true;
+	
+	if(!b_NpcHasDied[entity])
+		return true;
+	
+	return false;
 }
