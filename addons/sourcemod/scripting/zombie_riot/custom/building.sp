@@ -2299,6 +2299,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
 									}
+									/*
 									else if (weaponindex == 305)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
@@ -2324,6 +2325,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}								
 									}
+									*/
 									else if(weaponindex == 411)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
