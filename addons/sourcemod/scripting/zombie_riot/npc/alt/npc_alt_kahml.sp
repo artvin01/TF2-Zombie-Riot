@@ -290,7 +290,7 @@ methodmap Kahmlstein < CClotBody
 		npc.GetAttachment("root", flPos, flAng);
 		
 		//IDLE
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 315.0;
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -551,9 +551,9 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 15 && i_kahml_combo_offest[npc.index] == 5 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{	//necksnap
-			npc.m_flSpeed = 290.0;
+			npc.m_flSpeed = 316.0;
 			fl_kahml_main_melee_damage[npc.index] = 750.0 * fl_kahml_galactic_strenght[npc.index];	//so will likely 1 shot most players unless they invest in armour
-			fl_attack_timeout[npc.index]=GetGameTime(npc.index) + 2.5;
+			fl_attack_timeout[npc.index]=GetGameTime(npc.index) + 0.5;
 			EmitSoundToAll("mvm/mvm_tank_horn.wav");
 			EmitSoundToAll("vo/heavy_domination16.mp3");
 			CPrintToChatAll("{blue}Kahmlstein{default}: {crimson}I Will BREAK YOU");
@@ -569,7 +569,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 16 && i_kahml_combo_offest[npc.index] == 6)
 		{
-			npc.m_flSpeed = 300.0;
+			npc.m_flSpeed = 320.0;
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 0.1;
 			fl_kahml_knockback[npc.index] = 0.0;
 		}
@@ -598,7 +598,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(b_kahml_annihilation_used[npc.index] && fl_kahml_annihilation_reset_timer[npc.index] <= GetGameTime(npc.index))
 		{
-			npc.m_flSpeed = 305.0;
+			npc.m_flSpeed = 320.0;
 			fl_kahml_bulletres[npc.index] = 1.0;
 			fl_kahml_meleeres[npc.index] = 1.0;
 			b_kahml_annihilation[npc.index]=false;
@@ -625,7 +625,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 			
 			fl_kahml_knockback[npc.index] = 0.0;
 			
-			npc.m_flSpeed = 310.0;
+			npc.m_flSpeed = 345.0;
 			
 			fl_kahml_melee_speed[npc.index] = 0.2;
 			
@@ -696,7 +696,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex, 0.3);
 		
-		if(npc.m_flCharge_Duration < GetGameTime(npc.index) && i_kahml_dash_charge[npc.index] > 0)
+		if(npc.m_flCharge_Duration < GetGameTime(npc.index) && i_kahml_dash_charge[npc.index] > 2)
 		{
 			//npc.m_flSpeed = 300.0;
 			if(npc.m_flCharge_delay < GetGameTime(npc.index))
@@ -704,12 +704,12 @@ public void Kahmlstein_ClotThink(int iNPC)
 				int Enemy_I_See;
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 10000)
+				if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > (250.0 * 250.0) && flDistanceToTarget < (500.0 * 500.0))
 				{
-					i_kahml_dash_charge[npc.index]--;
+					i_kahml_dash_charge[npc.index]-=2;
 					npc.PlayChargeSound();
 					npc.m_flCharge_delay = GetGameTime(npc.index) + 1.0;
-					npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
+					npc.m_flCharge_Duration = GetGameTime(npc.index) + 10.0;
 					PluginBot_Jump(npc.index, vecTarget);
 					npc.m_flSpeed = 400.0;
 				}
