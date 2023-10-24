@@ -128,6 +128,9 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 
 	if(b_LagCompNPC_OnlyAllies && !b_IsAlliedNpc[entity])
 		return false;
+
+	if(!b_LagCompNPC_OnlyAllies && b_IsAlliedNpc[entity])
+		return false;
 	
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
