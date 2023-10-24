@@ -118,7 +118,7 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 				
 				pos[2] += 10.0;
 
-				TE_SetupBeamRingPoint(pos, 300.0, 301.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
+				TE_SetupBeamRingPoint(pos, 200.0, 201.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
 				TE_SendToClient(client);
 			}
 
