@@ -285,6 +285,10 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 			if(healing > 0.0 && healthLost > 0.0)
 			{
+				int BeamIndex = ConnectWithBeam(client, target, 100, 250, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+				
 				StartHealingTimer(target, 0.1, healing / 20.0, 20);
 				StartHealingTimer(client, 0.1, healthLost / -20.0, 20);
 				MoreMoreHits[client] += 10;
