@@ -2108,6 +2108,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			return WeaponLeper_OnTakeDamagePlayer(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
+		{
+			Flagellant_OnTakeDamage(victim, damage);
+		}
 	}
 	return damage;
 }

@@ -2273,4 +2273,16 @@
 	{
 		"en"	"Seaborn Salve"
 	}
+	"The Flagellant"
+	{
+		"en"	"The Flagellant"
+	}
+	"Punish"
+	{
+		"en"	"Punish"
+	}
+	"Deathless"
+	{
+		"en"	"Deathless"
+	}
 }

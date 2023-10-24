@@ -5653,6 +5653,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Activate_Neuvellete(client, entity);
 		SeaMelee_Enable(client, entity);
 		Enable_Leper(client, entity);
+		Flagellant_Enable(client, entity);
 #endif
 
 #if defined RPG
