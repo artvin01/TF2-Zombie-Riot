@@ -82,7 +82,12 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 			{
 				float pos[3];
+				b_LagCompNPC_No_Layers = true;
+				StartPlayerOnlyLagComp(client, true);
+				StartLagCompensation_Base_Boss(client);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+				FinishLagCompensation_Base_boss();
+				EndPlayerOnlyLagComp(client);
 
 				bool validEnemy;
 				bool validAlly;
@@ -154,13 +159,13 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 
 	MoreMoreHealing[client] = RoundToFloor(SDKCall_GetMaxHealth(client) * ratio);
 
-	CreateTimer(0.2, Flagellant_MoreMoreTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.3, Flagellant_MoreMoreTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 public Action Flagellant_MoreMoreTimer(Handle timer, int userid)
 {
 	int client = GetClientOfUserId(userid);
-	if(client && TeutonType[client] != TEUTON_NONE && IsPlayerAlive(client))
+	if(client && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
 	{
 		float time = MoreMoreFor[client] - GetGameTime();
 
@@ -194,14 +199,28 @@ public Action Flagellant_MoreFinishTimer(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
-	if(client && TeutonType[client] != TEUTON_NONE && IsPlayerAlive(client))
+	if(client && TeutonType[client] == TEUTON_NONE && IsPlayerAlive(client))
 	{
 		int healing = pack.ReadCell();
 
 		TriggerDeathDoor(client, healing);
 
 		if(healing > 0)
+		{
+			float HealedAlly[3];
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
+			HealedAlly[2] += 70.0;
+			float HealedAllyRand[3];
+			for(int Repeat; Repeat < 20; Repeat++)
+			{
+				HealedAllyRand = HealedAlly;
+				HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
+				HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
+				HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
+				TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
+			}
 			StartHealingTimer(client, 0.2, float(healing) / 20.0, 20);	// Over 4 seconds
+		}
 	}
 	return Plugin_Stop;
 }
@@ -217,12 +236,13 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		return;
 	}
 
-	//b_LagCompNPC_No_Layers = true;
-	//StartPlayerOnlyLagComp(client);
-	//StartLagCompensation_Base_Boss(client);
+	b_LagCompNPC_No_Layers = true;
+	StartPlayerOnlyLagComp(client, true);
+	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
-	//EndPlayerOnlyLagComp(client);
+	FinishLagCompensation_Base_boss();
+	EndPlayerOnlyLagComp(client);
 
 	bool validEnemy;
 	bool validAlly;
@@ -292,9 +312,23 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				StartHealingTimer(target, 0.1, healing / 20.0, 20);
 				StartHealingTimer(client, 0.1, healthLost / -20.0, 20);
 				MoreMoreHits[client] += 10;
+				float HealedAlly[3];
+				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", HealedAlly);
+				HealedAlly[2] += 70.0;
+				float HealedAllyRand[3];
+				for(int Repeat; Repeat < 10; Repeat++)
+				{
+					HealedAllyRand = HealedAlly;
+					HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
+					HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
+					HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
+					TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
+				}
 				
 				ClientCommand(client, "playgamesound player/invuln_off_vaccinator.wav");
-				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+
+				if(target < MaxClients)
+					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
 				Give_Assist_Points(target, client);
 
@@ -341,6 +375,9 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
 		Explode_Logic_Custom(300.0 * multi, client, client, weapon, pos, _, _, _, false, 3, false, _, Flagellant_AcidHitPost);
+		pos[2] += 5.0;
+		ParticleEffectAt(pos, "bombinomicon_burningdebris", 0.5);
+
 		i_ExplosiveProjectileHexArray[client] = flags;
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
@@ -382,12 +419,13 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		return;
 	}
 
-	//b_LagCompNPC_No_Layers = true;
-	//StartPlayerOnlyLagComp(client);
-	//StartLagCompensation_Base_Boss(client);
+	b_LagCompNPC_No_Layers = true;
+	StartPlayerOnlyLagComp(client, true);
+	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
-	//EndPlayerOnlyLagComp(client);
+	FinishLagCompensation_Base_boss();
+	EndPlayerOnlyLagComp(client);
 
 	bool validEnemy;
 	bool validAlly;
@@ -419,10 +457,32 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.35 : 0.25));
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
+		{
 			StartHealingTimer(client, 0.1, healing / 20.0, 20);
+			float HealedAlly[3];
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
+			HealedAlly[2] += 70.0;
+			float HealedAllyRand[3];
+			for(int Repeat; Repeat < 10; Repeat++)
+			{
+				HealedAllyRand = HealedAlly;
+				HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
+				HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
+				HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
+				TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
+			}
+		}
 
 		ClientCommand(client, "playgamesound misc/halloween/merasmus_stun.wav");
 		ClientCommand(client, "playgamesound misc/halloween/merasmus_stun.wav");
+		
+		int BeamIndex = ConnectWithBeam(client, target, 100, 250, 100, 8.0, 8.0, 1.85, "sprites/laserbeam.vmt");
+
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+		float HealedAlly[3];
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", HealedAlly);
+		HealedAlly[2] += 10.0;
+		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
 		SeaSlider_AddNeuralDamage(target, client, 10, _, true);
 		f_HussarBuff[target] = GetGameTime() + 10.0;
@@ -466,7 +526,21 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 			int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.5 : 0.35));
 			TriggerDeathDoor(client, healing);
 			if(healing > 0)
+			{
 				StartHealingTimer(client, 0.1, healing / 10.0, 10);
+				float HealedAlly[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
+				HealedAlly[2] += 70.0;
+				float HealedAllyRand[3];
+				for(int Repeat; Repeat < 20; Repeat++)
+				{
+					HealedAllyRand = HealedAlly;
+					HealedAllyRand[0] += GetRandomFloat(-10.0, 10.0);
+					HealedAllyRand[1] += GetRandomFloat(-10.0, 10.0);
+					HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
+					TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
+				}
+			}
 			
 			float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
 			if(HealLevel[client] > 1)

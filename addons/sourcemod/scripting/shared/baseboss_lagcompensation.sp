@@ -67,10 +67,10 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* game/server/player_lagcompensation.cpp#L328 */
 void StartLagCompensation_Base_Boss(int client)
 {
-	if(DoingLagCompensation)
-		ThrowError("Already in BaseBoss Lag Comp");
+//	if(DoingLagCompensation)
+//		ThrowError("Already in BaseBoss Lag Comp");
 	
-	DoingLagCompensation = true;
+//	DoingLagCompensation = true;
 	
 	// Get true latency
 	
@@ -365,10 +365,10 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
-	if(!DoingLagCompensation)
-		ThrowError("Not in BaseBoss Lag Comp");
+//	if(!DoingLagCompensation)
+//		ThrowError("Not in BaseBoss Lag Comp");
 	
-	DoingLagCompensation = false;
+//	DoingLagCompensation = false;
 	
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{

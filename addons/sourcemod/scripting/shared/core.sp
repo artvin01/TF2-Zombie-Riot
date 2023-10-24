@@ -561,8 +561,8 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
-int i_assist_heal_player[MAXTF2PLAYERS];
-float f_assist_heal_player_time[MAXTF2PLAYERS];
+int i_assist_heal_player[MAXENTITIES];
+float f_assist_heal_player_time[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 

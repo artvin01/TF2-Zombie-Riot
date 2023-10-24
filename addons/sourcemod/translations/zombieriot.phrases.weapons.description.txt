@@ -2503,7 +2503,7 @@
 	}
 	"The Flagellant Extra Desc"
 	{
-		"en"	"Self-damage ignores armor, can be resisted as melee damage, but is lethal, causing a down or death. When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract Death itself. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
+		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract Death itself. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
 	}
 	"Punish Desc"
 	{
