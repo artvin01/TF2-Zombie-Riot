@@ -118,8 +118,7 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 				
 				pos[2] += 10.0;
 
-				TE_SetupBeamRingPoint(pos, 200.0, 201.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
-				TE_SendToClient(client);
+				spawnRing_Vectors(pos, 200.0 * 2.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.2, 5.0, 0.0, 1);
 			}
 
 			return Plugin_Continue;

@@ -238,12 +238,12 @@ public void OnPostThink(int client)
 	if(WasAirborn && !b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		b_PlayerWasAirbornKnockbackReduction[client] = true;
-		Attributes_SetMulti(client, 252, 0.25);
+		Attributes_SetMulti(client, 252, 0.5);
 	}
 	else if(!WasAirborn && b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		b_PlayerWasAirbornKnockbackReduction[client] = false;
-		Attributes_SetMulti(client, 252, 4.0);
+		Attributes_SetMulti(client, 252, 2.0);
 	}
 	if(RollAngle_Regen_Delay[client] < GameTime)	
 	{
