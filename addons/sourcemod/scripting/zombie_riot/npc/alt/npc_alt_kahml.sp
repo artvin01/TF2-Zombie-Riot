@@ -290,7 +290,7 @@ methodmap Kahmlstein < CClotBody
 		npc.GetAttachment("root", flPos, flAng);
 		
 		//IDLE
-		npc.m_flSpeed = 315.0;
+		npc.m_flSpeed = 310.0;
 		npc.m_iState = 0;
 		
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -551,7 +551,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 15 && i_kahml_combo_offest[npc.index] == 5 && !b_kahml_annihilation[npc.index] && !b_kahml_inNANOMACHINESSON[npc.index])
 		{	//necksnap
-			npc.m_flSpeed = 316.0;
+			npc.m_flSpeed = 310.0;
 			fl_kahml_main_melee_damage[npc.index] = 750.0 * fl_kahml_galactic_strenght[npc.index];	//so will likely 1 shot most players unless they invest in armour
 			fl_attack_timeout[npc.index]=GetGameTime(npc.index) + 0.5;
 			EmitSoundToAll("mvm/mvm_tank_horn.wav");
@@ -569,7 +569,7 @@ public void Kahmlstein_ClotThink(int iNPC)
 		}
 		if(i_kahml_combo[npc.index] == 16 && i_kahml_combo_offest[npc.index] == 6)
 		{
-			npc.m_flSpeed = 320.0;
+			npc.m_flSpeed = 315.0;
 			fl_kahml_combo_reset_timer[npc.index] = GetGameTime(npc.index) + 0.1;
 			fl_kahml_knockback[npc.index] = 0.0;
 		}
