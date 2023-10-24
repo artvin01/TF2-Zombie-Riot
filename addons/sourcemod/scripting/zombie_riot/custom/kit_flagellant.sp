@@ -72,6 +72,7 @@ void Flagellant_OnTakeDamage(int victim, float damage)
 
 public void Flagellant_ThinkFrame(DataPack pack)
 {
+	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client)
 	{
@@ -120,6 +121,8 @@ public void Flagellant_ThinkFrame(DataPack pack)
 				TE_SetupBeamRingPoint(pos, 300.0, 301.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
 				TE_SendToClient(client);
 			}
+
+			RequestFrame(Flagellant_ThinkFrame, pack);
 			return;
 		}
 	}
@@ -190,6 +193,7 @@ public Action Flagellant_MoreMoreTimer(Handle timer, int userid)
 
 public Action Flagellant_MoreFinishTimer(Handle timer, DataPack pack)
 {
+	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client && TeutonType[client] != TEUTON_NONE && IsPlayerAlive(client))
 	{
