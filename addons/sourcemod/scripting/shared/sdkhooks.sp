@@ -215,6 +215,7 @@ public void OnPostThink(int client)
 	}
 		
 #if defined ZR
+	//Reduce knockback when airborn, this is to fix issues regarding flying way too high up, making it really easy to tank groups!
 	bool WasAirborn = false;
 
 	if (!(GetEntityFlags(client) & FL_ONGROUND))
