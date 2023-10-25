@@ -205,6 +205,8 @@ methodmap Schwertkrieg < CClotBody
 
 		
 		npc.m_flMeleeArmor = 1.5;
+
+		npc.m_bThisNpcIsABoss = true;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
@@ -250,7 +252,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_schwert_died)
+	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}

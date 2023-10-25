@@ -263,6 +263,8 @@ methodmap Donnerkrieg < CClotBody
 		
 		g_b_angered=false;
 
+		npc.m_bThisNpcIsABoss = true;
+
 		//b_Begin_Dialogue = true;
 		
 	//	b_Schwertkrieg_Alive = false;
@@ -301,7 +303,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		return;
 	}
 
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died)
+	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
