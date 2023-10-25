@@ -23,7 +23,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 	ApplyTempAttrib(weapon, 6, 0.5, 10.0);
 
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 10.0);
-
+/*
 	float pos1[3], pos2[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	
@@ -50,7 +50,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 				}
 			}
 		}
-	}
+	}*/
 }
 
 void SeaMelee_Enable(int client, int weapon)
@@ -173,7 +173,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		if(entity > MaxClients)
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 	}
-	
+	/*
 	for(int target = 1; target <= MaxClients; target++)
 	{
 		if(client != target && IsClientInGame(target) && IsPlayerAlive(target))
@@ -196,7 +196,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 				}
 			}
 		}
-	}
+	}*/
 }
 
 public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)

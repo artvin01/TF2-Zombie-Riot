@@ -2459,7 +2459,7 @@
 	}
 	"Seaborn Claws Pap 3"
 	{
-		"en"	"Ability grants self and all nearby players double fire rate with a slight damage penalty."
+		"en"	"Ability grants increased movement speed, double fire rate, and a slight damage penalty."
 	}
 	"Seaborn Spines Desc"
 	{
@@ -2475,7 +2475,7 @@
 	}
 	"Seaborn Spines Pap 3"
 	{
-		"en"	"Ability grants self and all nearby players double damage with a slight fire rate penalty."
+		"en"	"Ability spawns three Shell Sea Runners and grants self double damage with a slight fire rate penalty."
 	}
 	"Seaborn Salve Desc"
 	{
