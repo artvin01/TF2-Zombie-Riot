@@ -2527,7 +2527,7 @@
 	}
 	"Deathless Pap 1"
 	{
-		"en"	"Adds alt-fire abilities.\nWhen targeting an ally, remove some armour, gives a damage and resistance buff, and heal yourself for 25%% max health.\nWhen targeting an enemy, deal massive damage, trigger all bleed at once, heals yourself for 35%% max health, with one use per wave."
+		"en"	"Adds alt-fire abilities.\nWhen targeting an ally, remove some armour, gives a damage and resistance buff, and heal yourself for 25%% max health.\nWhen targeting an enemy, deal massive damage, trigger all bleed at once, heals yourself for 35%% max health (once per wave)."
 	}
 	"Deathless Pap 2"
 	{
