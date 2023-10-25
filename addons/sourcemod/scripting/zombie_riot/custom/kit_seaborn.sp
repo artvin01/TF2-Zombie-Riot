@@ -112,7 +112,10 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 
 	int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 	if(entity > MaxClients)
+	{
 		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
+		CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+	}
 }
 
 public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
@@ -139,7 +142,10 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 	{
 		int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 		if(entity > MaxClients)
+		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
+			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
 	}
 }
 
@@ -171,7 +177,10 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	{
 		int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 		if(entity > MaxClients)
+		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
+			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
 	}
 	/*
 	for(int target = 1; target <= MaxClients; target++)
@@ -401,4 +410,13 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 	}
 
 	ClientCommand(client, "playgamesound items/medshotno1.wav");
+}
+
+public Action Seaborn_KillNPC(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+		SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
+	
+	return Plugin_Stop;
 }
