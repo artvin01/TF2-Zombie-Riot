@@ -43,6 +43,13 @@ int LeperEnemyAoeHit(int client)
 	return 1;
 }
 
+bool IsLeperInAnimation(int client)
+{
+	if(Leper_InAnimation[client] > GetGameTime())
+		return true;
+	
+	return false;
+}
 void PlayCustomSoundLeper(int client, int victim)
 {
 	switch(LeperSwingType[client])
@@ -117,6 +124,9 @@ public void Weapon_LeperHewCharge(int client, int weapon, bool &result, int slot
 }
 public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 {
+	if (Leper_InAnimation[client] > GetGameTime())
+		return;
+	
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown < 0.0)
 	{
@@ -252,10 +262,13 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
-	int entity, i;
-	while(TF2U_GetWearable(client, entity, i))
+	if(!b_IsPlayerNiko[client])
 	{
-		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
 	}
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	if (thirdperson[client])
@@ -532,6 +545,8 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 		Leper_SolemnyCharge[client]--;
 		if(Leper_SolemnyCharge[client] <= 0)
 			Leper_SolemnyCharge[client] = 0;
+			
+		Leper_HudDelay[client] = GetGameTime() + 0.5;
 
 		return;
 	}
