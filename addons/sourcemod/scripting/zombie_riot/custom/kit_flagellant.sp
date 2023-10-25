@@ -524,15 +524,15 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	}
 	else if(validEnemy)
 	{
+		Rogue_OnAbilityUse(weapon);
+
 		int round = Rogue_GetRoundScale();
 		bool raid = IsValidEntity(EntRefToEntIndex(RaidBossActive));
 		if(LastSepsis[client] != round || LastSepsisRaid[client] != raid)
 		{
 			LastSepsis[client] = round;
 			LastSepsisRaid[client] = raid;
-			
-			Rogue_OnAbilityUse(weapon);
-
+				
 			int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.5 : 0.35));
 			TriggerDeathDoor(client, healing);
 			if(healing > 0)
@@ -551,27 +551,41 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 					TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
 				}
 			}
-			
-			float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
-			if(HealLevel[client] > 1)
-				multi *= 1.2;
-			
-			f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
-			float extra = BleedAmountCountStack[target] * 1000.0;
 
-			SDKHooks_TakeDamage(target, client, client, (1000.0 * multi), DMG_PLASMA, weapon);
-			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, weapon, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
-
-			ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
-			Ability_Apply_Cooldown(client, slot, 25.0);
-			ClientCommand(client, "playgamesound misc/halloween/merasmus_spell.wav");
-			return;
+			TF2_AddCondition(client, TFCond_FocusBuff);
+			CreateTimer(1.0, Flagellant_CheckSepsisTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
+		
+		float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
+		if(HealLevel[client] > 1)
+			multi *= 1.2;
+		
+		f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
+		float extra = BleedAmountCountStack[target] * 1000.0;
 
-		ShowSyncHudText(client, SyncHud_Notifaction, "Sepsis will be ready after next wave");
+		SDKHooks_TakeDamage(target, client, client, (800.0 * multi), DMG_PLASMA, weapon);
+		SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, weapon, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+
+		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
+		Ability_Apply_Cooldown(client, slot, 25.0);
+		ClientCommand(client, "playgamesound misc/halloween/merasmus_spell.wav");
+		return;
 	}
 
 	ClientCommand(client, "playgamesound items/medshotno1.wav");
+}
+
+public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		if(LastSepsis[client] != Rogue_GetRoundScale() || LastSepsisRaid[client] != IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			return Plugin_Continue;
+
+		TF2_RemoveCondition(client, TFCond_FocusBuff);
+	}
+	return Plugin_Stop;
 }
 
 static void TriggerSelfDamage(int client, float multi)
