@@ -580,7 +580,7 @@ public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		if(LastSepsis[client] != Rogue_GetRoundScale() || LastSepsisRaid[client] != IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(LastSepsis[client] == Rogue_GetRoundScale() && LastSepsisRaid[client] == IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			return Plugin_Continue;
 
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
