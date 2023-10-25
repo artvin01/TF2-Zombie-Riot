@@ -174,157 +174,6 @@ public void SepcialBackstabLaughSpy(int attacker)
 {
 	EmitSoundToAll(g_WeebKnifeLaughBackstab[GetRandomInt(0, sizeof(g_WeebKnifeLaughBackstab) - 1)], attacker, SNDCHAN_VOICE, 70, _, 1.0);
 }
-/*
-bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUtlVector< trace_t >* pTargetTraceVector )
-{
-	// Setup a volume for the melee weapon to be swung - approx size, so all melee behave the same.
-	static Vector vecSwingMinsBase( -18, -18, -18 );
-	static Vector vecSwingMaxsBase( 18, 18, 18 );
-
-	float fBoundsScale = 1.0f;
-	CALL_ATTRIB_HOOK_FLOAT( fBoundsScale, melee_bounds_multiplier );
-	Vector vecSwingMins = vecSwingMinsBase * fBoundsScale;
-	Vector vecSwingMaxs = vecSwingMaxsBase * fBoundsScale;
-
-	// Get the current player.
-	CTFPlayer *pPlayer = GetTFPlayerOwner();
-	if ( !pPlayer )
-		return false;
-
-	// Setup the swing range.
-	float fSwingRange = GetSwingRange();
-
-	// Scale the range and bounds by the model scale if they're larger
-	// Not scaling down the range for smaller models because midgets need all the help they can get
-	if ( pPlayer->GetModelScale() > 1.0f )
-	{
-		fSwingRange *= pPlayer->GetModelScale();
-		vecSwingMins *= pPlayer->GetModelScale();
-		vecSwingMaxs *= pPlayer->GetModelScale();
-	}
-
-	CALL_ATTRIB_HOOK_FLOAT( fSwingRange, melee_range_multiplier );
-
-	Vector vecForward; 
-	AngleVectors( pPlayer->EyeAngles(), &vecForward );
-	Vector vecSwingStart = pPlayer->Weapon_ShootPosition();
-	Vector vecSwingEnd = vecSwingStart + vecForward * fSwingRange;
-
-	// In MvM, melee hits from the robot team wont hit teammates to ensure mobs of melee bots don't 
-	// swarm so tightly they hit each other and no-one else
-	bool bDontHitTeammates = pPlayer->GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules()->IsMannVsMachineMode();
-	CTraceFilterIgnoreTeammates ignoreTeammatesFilter( pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber() );
-
-	if ( bCleave )
-	{
-		Ray_t ray;
-		ray.Init( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs );
-		CBaseEntity *pList[256];
-		int nTargetCount = UTIL_EntitiesAlongRay( pList, ARRAYSIZE( pList ), ray, FL_CLIENT|FL_OBJECT );
-		
-		int nHitCount = 0;
-		for ( int i=0; i<nTargetCount; ++i )
-		{
-			CBaseEntity *pTarget = pList[i];
-			if ( pTarget == pPlayer )
-			{
-				// don't hit yourself
-				continue;
-			}
-
-			if ( bDontHitTeammates && pTarget->GetTeamNumber() == pPlayer->GetTeamNumber() )
-			{
-				// don't hit teammate
-				continue;
-			}
-
-			if ( pTargetTraceVector )
-			{
-				trace_t tr;
-				UTIL_TraceModel( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, pTarget, COLLISION_GROUP_NONE, &tr );
-				pTargetTraceVector->AddToTail();
-				pTargetTraceVector->Tail() = tr;
-			}
-			nHitCount++;
-		}
-
-		return nHitCount > 0;
-	}
-	else
-	{
-		bool bSapperHit = false;
-
-		// if this weapon can damage sappers, do that trace first
-		int iDmgSappers = 0;
-		CALL_ATTRIB_HOOK_INT( iDmgSappers, set_dmg_apply_to_sapper );
-		if ( iDmgSappers != 0 )
-		{
-			CTraceFilterIgnorePlayers ignorePlayersFilter( NULL, COLLISION_GROUP_NONE );
-			UTIL_TraceLine( vecSwingStart, vecSwingEnd, MASK_SOLID, &ignorePlayersFilter, &trace );
-			if ( trace.fraction >= 1.0 )
-			{
-				UTIL_TraceHull( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, MASK_SOLID, &ignorePlayersFilter, &trace );
-			}
-
-			if ( trace.fraction < 1.0f &&
-				 trace.m_pEnt &&
-				 trace.m_pEnt->IsBaseObject() &&
-				 trace.m_pEnt->GetTeamNumber() == pPlayer->GetTeamNumber() )
-			{
-				CBaseObject *pObject = static_cast< CBaseObject* >( trace.m_pEnt );
-				if ( pObject->HasSapper() )
-				{
-					bSapperHit = true;
-				}
-			}
-		}
-
-		if ( !bSapperHit )
-		{
-			// See if we hit anything.
-			if ( bDontHitTeammates )
-			{
-				UTIL_TraceLine( vecSwingStart, vecSwingEnd, MASK_SOLID, &ignoreTeammatesFilter, &trace );
-			}
-			else
-			{
-				CTraceFilterIgnoreFriendlyCombatItems filter( pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber() );
-				UTIL_TraceLine( vecSwingStart, vecSwingEnd, MASK_SOLID, &filter, &trace );
-			}
-
-			if ( trace.fraction >= 1.0 )
-			{
-				if ( bDontHitTeammates )
-				{
-					UTIL_TraceHull( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, MASK_SOLID, &ignoreTeammatesFilter, &trace );
-				}
-				else
-				{
-					CTraceFilterIgnoreFriendlyCombatItems filter( pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber() );
-					UTIL_TraceHull( vecSwingStart, vecSwingEnd, vecSwingMins, vecSwingMaxs, MASK_SOLID, &filter, &trace );
-				}
-
-				if ( trace.fraction < 1.0 )
-				{
-					// Calculate the point of intersection of the line (or hull) and the object we hit
-					// This is and approximation of the "best" intersection
-					CBaseEntity *pHit = trace.m_pEnt;
-					if ( !pHit || pHit->IsBSPModel() )
-					{
-						// Why duck hull min/max?
-						FindHullIntersection( vecSwingStart, trace, VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, pPlayer );
-					}
-
-					// This is the point on the actual surface (the hull could have hit space)
-					vecSwingEnd = trace.endpos;	
-				}
-			}
-		}
-
-		return ( trace.fraction < 1.0f );
-	}
-}
-*/
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
@@ -507,8 +356,16 @@ int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_
 stock bool IsValidCurrentWeapon(int client, int weapon)
 {
 	int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon == Active_weapon)
+	if(weapon > 1 && weapon == Active_weapon)
 	{
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
+			{
+				if(IsLeperInAnimation(client))
+					return false;
+			}
+		}
 		return true;
 	}
 	return false;
