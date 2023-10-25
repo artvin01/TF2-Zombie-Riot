@@ -585,7 +585,7 @@ public Action Flagellant_CheckSepsisTimer(Handle timer, int userid)
 
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
 	}
-	retrun Plugin_Stop;
+	return Plugin_Stop;
 }
 
 static void TriggerSelfDamage(int client, float multi)

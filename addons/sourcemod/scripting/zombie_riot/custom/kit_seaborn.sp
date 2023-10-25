@@ -163,7 +163,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 1.333, 10.0);
 	ApplyTempAttrib(weapon, 97, 1.333, 10.0);
 
-	float pos1[3], pos2[3], ang[3];
+	float pos1[3], /*pos2[3], */ang[3];
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
 	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
 
