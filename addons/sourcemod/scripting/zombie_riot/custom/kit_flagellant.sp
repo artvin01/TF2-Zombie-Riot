@@ -293,7 +293,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		{
 			float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
 			
-			float base = 25.0 + (HealLevel[client] * 7.5);
+			float base = 30.0 + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
 
 			float healing = base * multi;
@@ -301,7 +301,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 			if(healing > injured)
 				healing = injured;
 			
-			float healthLost = healing / (1.0 + (multi / 2.0)) * cost;
+			float healthLost = healing / (1.0 + (multi / 10.0)) * cost;
 			float healerHP = float(GetClientHealth(client) - 1);
 			if(healthLost > healerHP)
 			{
