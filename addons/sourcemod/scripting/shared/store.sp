@@ -3845,21 +3845,21 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.Equipped[client] = true;
 								StoreItems.SetArray(index, item);
 								
+								static Item subItem;
+								int length = StoreItems.Length;
+								for(int i; i < length; i++)
+								{
+									StoreItems.GetArray(i, subItem);
+									if(subItem.Section == index)
+									{
+										Store_EquipSlotCheck(client, subItem);
+										subItem.Equipped[client] = true;
+										StoreItems.SetArray(i, subItem);
+									}
+								}
+								
 								if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 								{
-									static Item subItem;
-									int length = StoreItems.Length;
-									for(int i; i < length; i++)
-									{
-										StoreItems.GetArray(i, subItem);
-										if(subItem.Section == index)
-										{
-											Store_EquipSlotCheck(client, subItem);
-											subItem.Equipped[client] = true;
-											StoreItems.SetArray(i, subItem);
-										}
-									}
-									
 									Store_ApplyAttribs(client);
 									Store_GiveAll(client, GetClientHealth(client));
 								}
@@ -3997,7 +3997,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttck") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								if(item.ParentKit)
 								{

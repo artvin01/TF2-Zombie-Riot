@@ -398,6 +398,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
 		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
 		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
+
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2);
 	}
 	else
 	{
@@ -657,7 +661,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		
 		bool PlayOnceOnly = false;
 		float playerPos[3];
-		for (int counter = 1; counter < MAXENTITIES; counter++)
+		for (int counter = i_EntitiesHitAtOnceMax; counter > 0; counter--)
 		{
 			if (i_EntitiesHitAoeSwing[counter] != -1)
 			{
@@ -686,11 +690,19 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					}
 					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
 					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
+					
+					switch(i_CustomWeaponEquipLogic[weapon])
+					{
+						case WEAPON_SEABORNMELEE:
+						{
+							damage *= 0.5;
+						}
+						default:
+						{
+							
+						}
+					}
 				}
-			}
-			else
-			{
-				break;
 			}
 		}
 		for (int i = 1; i < MAXENTITIES; i++)
@@ -748,7 +760,6 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	SagaAttackAfterSwing(client);
 #endif
 }
-
 static bool BulletAndMeleeTrace_Multi(int entity, int contentsMask, int client)
 {
 	bool type = BulletAndMeleeTrace(entity, contentsMask, client);

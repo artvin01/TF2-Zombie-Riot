@@ -69,22 +69,22 @@ void SeaMelee_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMel
 	{
 		case 1:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 2.0;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.5;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
 			ignore_walls = true;
 			enemies_hit_aoe = 4;
 		}
 		case 2:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 2.0;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.5;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
 			ignore_walls = true;
 			enemies_hit_aoe = 5;
 		}
 		default:
 		{
-			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.5;
-			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.15;
 			enemies_hit_aoe = 3;
 		}
 	}
