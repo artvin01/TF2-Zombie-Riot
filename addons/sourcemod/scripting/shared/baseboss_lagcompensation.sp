@@ -70,7 +70,7 @@ void StartLagCompensation_Base_Boss(int client)
 //	if(DoingLagCompensation)
 //		ThrowError("Already in BaseBoss Lag Comp");
 	
-//	DoingLagCompensation = true;
+	DoingLagCompensation = true;
 	
 	// Get true latency
 	
@@ -371,7 +371,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //	if(!DoingLagCompensation)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
-//	DoingLagCompensation = false;
+	DoingLagCompensation = false;
 	
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
