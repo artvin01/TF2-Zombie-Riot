@@ -356,9 +356,9 @@ int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_
 stock bool IsValidCurrentWeapon(int client, int weapon)
 {
 	int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon > 1 && weapon == Active_weapon)
+	if(weapon > 1 && Active_weapon > 1 && weapon == Active_weapon)
 	{
-		switch(i_CustomWeaponEquipLogic[weapon])
+		switch(i_CustomWeaponEquipLogic[Active_weapon])
 		{
 			case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
 			{

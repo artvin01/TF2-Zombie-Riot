@@ -1830,7 +1830,7 @@
 	
 	"Irene Weapon Desc"
 	{
-		"en"	"You double attack with each attack.\nHitting any enemy 42 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks.\nIf seaborn enemies exist, gain 15%% bonus attackspeed."
+		"en"	"You double attack with each attack.\nHitting any enemy 42 times will give you an ability.\nThis ability kicks enemies into the air and bombards them with AOE attacks.\nIf seaborns exist, gain 15%% bonus attackspeed."
 	}
 	
 	"Cosmic Terror Desc"

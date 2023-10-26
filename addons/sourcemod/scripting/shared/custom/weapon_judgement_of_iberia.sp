@@ -117,6 +117,27 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 			break;
 		}
 	}
+	if(!ThereWasSeaborn)
+	{
+		for(int clientloop=1; clientloop<=MaxClients; clientloop++)
+		{
+			if(!b_IsPlayerABot[clientloop] && IsClientInGame(clientloop) && IsPlayerAlive(clientloop))
+			{
+				int Active_weapon = GetEntPropEnt(clientloop, Prop_Send, "m_hActiveWeapon");
+				if(Active_weapon > 1)
+				{
+					switch(i_CustomWeaponEquipLogic[Active_weapon])
+					{
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
+						{
+							ThereWasSeaborn = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
 	{
