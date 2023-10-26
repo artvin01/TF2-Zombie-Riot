@@ -445,12 +445,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										{
 											AddAmmoClient(client_Hud, 21 ,_,4.0);
 										}
-										else if (weaponindex == 305)
-										{
-											AddAmmoClient(client_Hud, 21 ,_,4.0);
-											AddAmmoClient(client_Hud, 14 ,_,4.0);
-											//Yeah extra ammo, do i care ? no.							
-										}
 										else if(weaponindex == 411)
 										{
 											AddAmmoClient(client_Hud, 22 ,_,4.0);
