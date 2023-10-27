@@ -1801,4 +1801,8 @@
 	{
 		"en"	"Bladedance The Combine"
 	}
+	"Allied Leper Afterimage"
+	{
+		"en"	"Allied Leper Afterimage"
+	}
 }

@@ -157,6 +157,7 @@ bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
+bool LastMannScreenEffect;
 int LimitNpcs;
 
 //bool RaidMode; 							//Is this raidmode?
@@ -1304,6 +1305,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			if(Hurtviasdkhook != 0)
 			{
 				LastMann = true;
+				LastMannScreenEffect = false;
 			}
 		}
 	}
@@ -1337,8 +1339,11 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		else
 		{
 			if(!applied_lastmann_buffs_once)
+			{
+				CauseFadeInAndFadeOut(0,0.1,0.09,0.1);
 				Zero(delay_hud); //Allow the hud to immedietly update
-				
+			}
+
 			ExcuteRelay("zr_lasthuman");
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -1400,6 +1405,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
 						Armor_Charge[client] = Armor_Max;
+						f_ClientInvul[client] = GetGameTime() + 0.35;
 					}
 				}
 			}
