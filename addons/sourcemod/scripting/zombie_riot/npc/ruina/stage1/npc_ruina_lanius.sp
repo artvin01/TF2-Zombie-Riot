@@ -277,125 +277,73 @@ public void Lanius_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			
+		//Predict their pos.
+		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			//Predict their pos.
-			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
-			
-			if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
+		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
+		{
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+			static float flVel[3];
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
+		
+			if (flVel[0] >= 190.0)
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-				static float flVel[3];
-				GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-		
-				if (flVel[0] >= 190.0)
+				npc.FaceTowards(vPredictedPos);
+				npc.FaceTowards(vPredictedPos);
+				npc.m_flNextTeleport = GameTime + 30.0;
+				float Tele_Check = GetVectorDistance(WorldSpaceCenter(npc.index), vPredictedPos);
+					
+					
+				float start_offset[3], end_offset[3];
+				start_offset = WorldSpaceCenter(npc.index);
+					
+				if(Tele_Check > 200.0)
 				{
-					npc.FaceTowards(vPredictedPos);
-					npc.FaceTowards(vPredictedPos);
-					npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
-					float Tele_Check = GetVectorDistance(WorldSpaceCenter(npc.index), vPredictedPos);
-					
-					
-					float start_offset[3], end_offset[3];
-					start_offset = WorldSpaceCenter(npc.index);
-					
-					if(Tele_Check > 200.0)
+					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+					if(Succeed)
 					{
-						bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-						if(Succeed)
-						{
-							npc.PlayTeleportSound();
+						npc.PlayTeleportSound();
 							
-							float effect_duration = 0.25;
+						float effect_duration = 0.25;
+	
+						end_offset = WorldSpaceCenter(npc.index);
 							
+						start_offset[2]-= 25.0;
+						end_offset[2] -= 25.0;
 							
-							end_offset = WorldSpaceCenter(npc.index);
+						for(int help=1 ; help<=8 ; help++)
+						{	
+							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
 							
-							start_offset[2]-= 25.0;
-							end_offset[2] -= 25.0;
-							
-							for(int help=1 ; help<=8 ; help++)
-							{	
-								Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-								
-								start_offset[2] += 12.5;
-								end_offset[2] += 12.5;
-							}
+							start_offset[2] += 12.5;
+							end_offset[2] += 12.5;
 						}
-						else
-						{
-							npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
-						}
+					}
+					else
+					{
+						npc.m_flNextTeleport = GameTime + 1.0;
 					}
 				}
 			}
-				
-			
-			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-				//npc.FaceTowards(vecTarget, 1000.0);
-				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-				{
-					//Play attack ani
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-								
-								
-								
-								
-								// Hit sound
-								npc.PlayMeleeHitSound();
-								
-							} 
-						}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
-					}
-				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
+		}		
+		int status=0;
+		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, 10000.0, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
+		switch(status)
+		{
+			case 1:	//we swung
+				npc.PlayMeleeSound();
+			case 2:	//we hit something
+				npc.PlayMeleeHitSound();
+			case 3:	//we missed
+				npc.PlayMeleeMissSound();
+			//0 means nothing.
 		}
+	}
 	else
 	{
 		NPC_StopPathing(npc.index);

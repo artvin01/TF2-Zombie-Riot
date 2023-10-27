@@ -274,12 +274,13 @@ public void Magia_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+			
+			//Predict their pos.
+			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+			
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-			//Predict their pos.
-			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
 			if(flDistanceToTarget < 100000)
 			{

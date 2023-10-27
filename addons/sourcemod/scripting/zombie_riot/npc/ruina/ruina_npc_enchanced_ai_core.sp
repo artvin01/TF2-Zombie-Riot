@@ -165,8 +165,9 @@ public void Ruina_Master_Accpet_Slaves(int client)
 }
 public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	
-	Ruina_Npc_Shield_Logic(victim, damage, damageForce);
+	float GameTime=GetGameTime();
+	Ruina_Npc_Shield_Logic(victim, damage, damageForce, GameTime);
+	Ruina_OnTakeDamage_Extra_Logic(victim, GameTime);
 	
 	switch(i_NpcInternalId[victim])
 	{
@@ -210,9 +211,8 @@ public void Ruina_Npc_Give_Shield(int client, float strenght)
 	Ruina_Update_Shield(client);
 }
 
-static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[3])
+static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[3], float GameTime)
 {
-	float GameTime = GetGameTime();
 	
 	if(fl_ruina_shield_power[victim]>0.0)	//does this npc have shield power?
 	{
@@ -379,6 +379,39 @@ static int GetClosestHealer(int client)
 	}
 	return valid;
 }
+static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+	float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float Ratio = Health / Max_Health;
+		
+	if(Ratio<=0.10 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
+	{
+		fl_npc_healing_duration[npc.index] = GameTime + 2.5;
+	}
+	else if(fl_npc_healing_duration[npc.index] > GameTime && Ratio<0.5 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index] )	//heal until 50% hp
+	{
+		int Healer = GetClosestHealer(npc.index);
+		if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
+		{
+			float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Healer);
+			float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
+				
+			float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
+
+			fl_npc_healing_duration[npc.index] = GameTime + 2.5;		
+			if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
+			{
+				NPC_SetGoalEntity(npc.index, Healer);
+				npc.StartPathing();
+				npc.m_bPathing = true;
+				
+			}
+		}
+	}
+}
 
 static bool Check_If_I_Am_The_Right_Slave(int client, int other_client)
 {
@@ -435,212 +468,140 @@ public void Ruina_Master_Rally(int client, bool rally)
 	- Make the npc's :)
 */
 
-public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
+public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 {
-		CClotBody npc = view_as<CClotBody>(iNPC);
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	if(fl_npc_healing_duration[npc.index]>GameTime)
+		return;
 		
-		float GameTime = GetGameTime(npc.index);
+	int Backup_Target = PrimaryThreatIndex;
 		
-		int Backup_Target = PrimaryThreatIndex;
-		
-		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-		float Ratio = Health / Max_Health;
-		
-		if(Ratio<=0.10 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
+	if(!b_master_exists[npc.index])	//check if the npc is a master or not
+	{	
+		int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+		if(fl_master_change_timer[npc.index]<GameTime || !IsValidEntity(Master_Id_Main) || b_force_reasignment[Master_Id_Main])
 		{
-			fl_npc_healing_duration[npc.index] = GameTime + 2.5;
-		}
-		else if(fl_npc_healing_duration[npc.index] > GameTime && Ratio<0.5 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index] )	//heal until 50% hp
-		{
-			int Healer = GetClosestHealer(npc.index);
-			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
+			if(fl_master_change_timer[npc.index]<GameTime && IsValidEntity(Master_Id_Main))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
 			{
-				float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Healer);
-				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
-				
-				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
-				
-				if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
-				{
-					NPC_SetGoalEntity(npc.index, Healer);
-					npc.StartPathing();
-					npc.m_bPathing = true;
-					fl_npc_healing_duration[npc.index] = GameTime + 2.5;
-				}
-				return;	//override ALL logic
+				i_master_current_slaves[Master_Id_Main]--;
+				//CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
 			}
-		}
-		
-		if(!b_master_exists[npc.index])	//check if the npc is a master or not
-		{	
-			int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
-			if(fl_master_change_timer[npc.index]<GameTime || !IsValidEntity(Master_Id_Main) || b_force_reasignment[Master_Id_Main])
+				
+			int buffer_id_of_master = GetRandomMaster(npc.index);
+			if(IsValidEntity(buffer_id_of_master))
 			{
-				if(fl_master_change_timer[npc.index]<GameTime && IsValidEntity(Master_Id_Main))	//if the time came to reassign the current amount of slaves the master had gets reduced by 1
-				{
-					i_master_current_slaves[Master_Id_Main]--;
-					//CPrintToChatAll("Slave %i has had a timer change previus master %i now has %i slaves",npc.index, Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
-				}
-				
-				int buffer_id_of_master = GetRandomMaster(npc.index);
-				if(IsValidEntity(buffer_id_of_master))
-				{
-					i_master_id_ref[npc.index] = EntIndexToEntRef(buffer_id_of_master);
-					Master_Id_Main = buffer_id_of_master;
-				}
-				else
-				{
-					Master_Id_Main = -1;
-				}
-				
-				
-				if(IsValidEntity(Master_Id_Main))	//only add if the master id is valid
-					i_master_current_slaves[Master_Id_Main]++;
-				
-				//if(IsValidEntity(Master_Id_Main))				
-				//	CPrintToChatAll("Master %i has gained a slave. current count %i",Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
-				
-				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
-				
-			}
-			bool b_return = false;
-			if(IsValidEntity(Master_Id_Main))	//get master's target
-			{
-				CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
-				PrimaryThreatIndex = npc2.m_iTarget;
+				i_master_id_ref[npc.index] = EntIndexToEntRef(buffer_id_of_master);
+				Master_Id_Main = buffer_id_of_master;
 			}
 			else
 			{
-				PrimaryThreatIndex = Backup_Target;
-				//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
-				b_return = true;
+				Master_Id_Main = -1;
 			}
+				
+				
+			if(IsValidEntity(Master_Id_Main))	//only add if the master id is valid
+				i_master_current_slaves[Master_Id_Main]++;
+				
+			//if(IsValidEntity(Master_Id_Main))				
+			//	CPrintToChatAll("Master %i has gained a slave. current count %i",Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
+				
+			fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
+				
+		}
+		bool b_return = false;
+		if(IsValidEntity(Master_Id_Main))	//get master's target
+		{
+			CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
+			PrimaryThreatIndex = npc2.m_iTarget;
+		}
+		else
+		{
+			PrimaryThreatIndex = Backup_Target;
+			//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
+			b_return = true;
+		}
 			
 			
-			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
-			{
-				PrimaryThreatIndex = Backup_Target;
-				//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
-				b_return = true;
-			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
+		{
+			PrimaryThreatIndex = Backup_Target;
+			//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
+			b_return = true;
+		}
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 					
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			if(b_return)	//basic movement logic for when a npc no longer possese a master
+		if(b_return)	//basic movement logic for when a npc no longer possese a master
+		{
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
-				{
-									
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+								
+				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
 						
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				}
-				else 
-				{
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
-				npc.StartPathing();
-				return;
+				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
-			if(IsValidEntity(Master_Id_Main))
+			else 
 			{
-				switch(i_npc_type[npc.index])
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+			npc.StartPathing();
+			return;
+		}
+		if(IsValidEntity(Master_Id_Main))
+		{
+			switch(i_npc_type[npc.index])
+			{
+				case 1:	//melee, buisness as usual, just the target is the same as the masters
 				{
-					case 1:	//melee, buisness as usual, just the target is the same as the masters
-					{
-						if(b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
-						{
-							float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
-							float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
-							
-							float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
-							
-							if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
-							{
-								NPC_SetGoalEntity(npc.index, Master_Id_Main);
-								npc.StartPathing();
-								npc.m_bPathing = true;
-								
-							}
-							else
-							{
-								if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
-								{
-									NPC_StopPathing(npc.index);
-									npc.m_bPathing = false;
-								}
-								else	//but if master's target is too close we attack them
-								{
-									//Predict their pos.
-									if(flDistanceToTarget < npc.GetLeadRadius()) 
-									{
-										
-										float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-										
-										NPC_SetGoalVector(npc.index, vPredictedPos);
-									}
-									else 
-									{
-										NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-									}
-									npc.StartPathing();
-								}
-							}
-						}
-						else	//no? buisness as usual
-						{
-							//Predict their pos.
-							if(flDistanceToTarget < npc.GetLeadRadius()) 
-							{
-								
-								float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-								
-								NPC_SetGoalVector(npc.index, vPredictedPos);
-							}
-							else 
-							{
-								NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-							}
-							npc.StartPathing();
-						}
-						
-						
-						
-						
-						return;
-					}
-					case 2:	//ranged, target is the same, npc moves towards the master npc
+					if(b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 					{
 						float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
 						float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
-						
+							
 						float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
-						
-						if(dist > (100.0 * 100.0))
+							
+						if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
 						{
 							NPC_SetGoalEntity(npc.index, Master_Id_Main);
 							npc.StartPathing();
 							npc.m_bPathing = true;
-							
+								
 						}
 						else
 						{
-							NPC_StopPathing(npc.index);
-							npc.m_bPathing = false;
+							if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
+							{
+								NPC_StopPathing(npc.index);
+								npc.m_bPathing = false;
+							}
+							else	//but if master's target is too close we attack them
+							{
+								//Predict their pos.
+								if(flDistanceToTarget < npc.GetLeadRadius()) 
+								{
+										
+									float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+										
+									NPC_SetGoalVector(npc.index, vPredictedPos);
+								}
+								else 
+								{
+									NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+								}
+								npc.StartPathing();
+							}
 						}
-							
-	
-						
 					}
-					case 3:	//for the double type just gonna use melee npc logic
+					else	//no? buisness as usual
 					{
+						//Predict their pos.
 						if(flDistanceToTarget < npc.GetLeadRadius()) 
 						{
-									
+								
 							float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-									
+							
 							NPC_SetGoalVector(npc.index, vPredictedPos);
 						}
 						else 
@@ -648,39 +609,55 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 						}
 						npc.StartPathing();
-								
-						return;
-					}
+					}	
+					return;
 				}
-			}
-			else
-			{
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				case 2:	//ranged, target is the same, npc moves towards the master npc
 				{
-							
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-							
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				}
-				else 
-				{
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
-				npc.StartPathing();
+					float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
+					float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 						
-				return;
+					float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
+						
+					if(dist > (100.0 * 100.0))
+					{
+						NPC_SetGoalEntity(npc.index, Master_Id_Main);
+						npc.StartPathing();
+						npc.m_bPathing = true;
+						
+					}
+					else
+					{
+						NPC_StopPathing(npc.index);
+						npc.m_bPathing = false;
+					}	
+				}
+				case 3:	//for the double type just gonna use melee npc logic
+				{
+					if(flDistanceToTarget < npc.GetLeadRadius()) 
+					{
+									
+						float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+									
+						NPC_SetGoalVector(npc.index, vPredictedPos);
+					}
+					else 
+					{
+						NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					}
+					npc.StartPathing();
+								
+					return;
+				}
 			}
 		}
-		else	//if its a master buisness as usual
+		else
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-				
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-						
+							
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-						
+							
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -691,8 +668,106 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex)
 						
 			return;
 		}
+	}
+	else	//if its a master buisness as usual
+	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{
+						
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+						
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		npc.StartPathing();
+						
+		return;
+	}
 }
+public void Ruina_Basic_Npc_Logic(int iNPC, int PrimaryThreatIndex, float GameTime)	//this is here if I ever want to make "basic" npc's do anything special
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
 
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	if(flDistanceToTarget < npc.GetLeadRadius()) 
+	{				
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+						
+		NPC_SetGoalVector(npc.index, vPredictedPos);
+	}
+	else 
+	{
+		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+	}
+	npc.StartPathing();
+}
+public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distance, float range, float damage, float bonus_damage, const char[] attack_anim, float swing_speed, float swing_delay, float turn_speed, float gameTime, int &status)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			Handle swingTrace;
+			npc.FaceTowards(WorldSpaceCenter(target), turn_speed);
+			if(npc.DoSwingTrace(swingTrace, target)) 
+			{
+							
+				int new_target = TR_GetEntityIndex(swingTrace);	
+				
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+				
+				if(IsValidEnemy(npc.index, new_target))
+				{
+					if(!ShouldNpcDealBonusDamage(new_target))
+					{
+						SDKHooks_TakeDamage(new_target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+					}
+					else
+						SDKHooks_TakeDamage(new_target, npc.index, npc.index, bonus_damage, DMG_CLUB, -1, _, vecHit);
+
+					status=2;
+				} 
+				else
+				{
+					status=3;
+				}
+			}
+			delete swingTrace;
+		}
+	}
+
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		if(distance < range)
+		{
+			int Enemy_I_See;
+								
+			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				status=1;
+				npc.AddGesture(attack_anim);
+						
+				npc.m_flAttackHappens = gameTime + swing_delay;
+				npc.m_flNextMeleeAttack = gameTime + swing_speed;
+			}
+		}
+	}
+}
 public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -1205,3 +1280,142 @@ static void Ruina_spawnRing_Vector(float center[3], float range, float modif_X, 
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
+
+
+/*
+
+Names per stage:
+	Stage 1 -> Stage 2 -> Stage 3 -> Starge 4.
+
+	Each subsequent stage the npc gains a new ability, most of the time it will be an expanded version of what they have, or something new. alongside just higher base stats.
+
+	1: Magia -> Magnium -> Magianas -> Magianius
+	{
+		State: Slave AI
+		Class: Medic.
+		Ranged.
+		Retreats from enemies.
+		Battery: Buff's nearby Ranged npc's speed
+	}
+
+	2: Lanius -> Laniun -> Loonaris -> Loonarionus
+	{
+
+		State: Slave AI
+		Class: Scout.
+		Melee.
+		Teleporting.
+		Battery: Buff's nearby Melee npc's speed
+
+
+	}
+
+	3: Stella -> Stellaria -> Stellaris -> Stellarionus
+	{
+		state: Independant AI.
+		Class: Medic
+		Support: Healer
+		Heals nearby npc's
+	}
+
+	4: Astria -> Astriana -> Astrianis -> Astrianious
+	{
+		state: Master AI.
+		Class: Engie
+		Slow itself, boots nearby npc speed passively.
+		Battery: Nearby npc's get teleported to their target. (gonna have to think of more logic for this one so its not unfair)
+	}
+
+	5: Solaris -> Solaria -> Solaris -> Solarionus
+	{
+		State: Independant AI
+		Class: Medic
+		Ranged.
+		Flies.
+		Battery:
+	}
+
+	6: Europa -> Europis -> Eurainis -> Euranionis
+	{
+		State: Master AI.
+		Class: Pyro.
+		Summons "brainless" npc's
+		Battery: Summons itself.
+	}
+
+	7: Venium -> Valla -> Valianis -> Valiant
+	{
+		Builder, builds stuff that does STUFFFFF
+	}
+
+	8: Daedalus -> Draedon -> Draeonis -> Draconia
+	{
+		State: Slave.
+		Class: Demo
+		Support: Shield.
+		Battery: Provides shield to npc's within range.
+	}
+
+	9: Aether -> Aetheria -> Aetherium -> Aetherianus
+	{
+		State: Slave - Basic AI.
+		Class: Sniper
+		Ranged:
+
+		Attacks from a far with artilery spells. basically the railgunners of this wave.
+	}
+
+	10: Malius -> Maliana -> Malianium -> Malianius.
+	{
+		State: Master AI.
+		Class: Engie
+		Support: Battery
+		Npc's within range have their battery gain boosted.
+		Battery: all npc's within range have 50% of their battery filled instantly. Excludes itself, and other npc's of the same kind.
+	}
+
+	11: Ruriana -> Ruianus -> Ruliana -> Ruina
+	{
+		State: Master AI.
+		Class: Medic.
+		Ranged, Melee.
+
+		A hyper aggresive npc, kinda like a raidboss, but not that at that level
+
+		Battery: Ion Sweep - Tl;dr, Ion cannon's EVERYWHERE.
+	}
+	12: Laz -> Lazius -> Lazines -> Lazurus
+	{
+		State: Master AI.
+		Class: Scout.
+		Ranged: Laser.
+	}
+	13: Shiela -> Shielius -> Skydas -> Shieldalius.
+	{
+		State: Master AI.
+		Class: Heavy.
+		Passive: all npc's who have a shield within range have thier shield slowly recharged.
+		Battery: Provides a shield.
+	}
+	14: Drone -> Dronian -> Dronis -> Dronianis
+	{
+		State: Brainless AI.
+		Class: RNG BABY	//no joke ima try to make its class random on spawn
+		Melee, or ranged, again RNG BABY!!!!!
+		it only exists as a minnion to be spammed. it has nothing special for now
+	}
+
+	Stage 1 specials:
+
+	Adiantum - Boss. W14, W15.
+
+	Theocracy - Boss. W15
+
+	Stage 2 specials:
+
+	Stage 3 specials:
+
+	Stage 4 specials:
+
+
+*/
