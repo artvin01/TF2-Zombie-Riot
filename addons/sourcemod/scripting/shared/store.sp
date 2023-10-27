@@ -4001,7 +4001,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttck") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								if(item.ParentKit)
 								{
@@ -5909,7 +5909,15 @@ stock void Store_Unequip(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
+	ItemInfo info;
+	item.GetItemInfo(0, info);
 	item.Equipped[client] = false;
+
+	ItemCost(client, item, info.Cost);
+	if(info.Cost <= 0)
+	{
+		item.Owned[client] = 0;
+	}
 	StoreItems.SetArray(index, item);
 
 	if(item.ParentKit)
