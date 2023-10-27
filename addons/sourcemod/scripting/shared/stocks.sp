@@ -2746,9 +2746,9 @@ int CountPlayersOnRed(bool alive = false)
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
 #else
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
 #endif
 			amount++;
 	}
