@@ -1303,7 +1303,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			
 			if(Hurtviasdkhook != 0)
 			{
-				Zero(delay_hud); //Allow the hud to immedietly update
 				LastMann = true;
 			}
 		}
@@ -1337,6 +1336,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		}
 		else
 		{
+			if(!applied_lastmann_buffs_once)
+				Zero(delay_hud); //Allow the hud to immedietly update
+				
 			ExcuteRelay("zr_lasthuman");
 			for(int client=1; client<=MaxClients; client++)
 			{
