@@ -1365,7 +1365,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
 								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 5); //give them 5 seconds to react to full on panic.
+								SetMusicTimer(i, GetTime() + 1); //give them 5 seconds to react to full on panic.
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}
