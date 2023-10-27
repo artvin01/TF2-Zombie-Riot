@@ -875,7 +875,7 @@ public void OnPostThink(int client)
 		
 		if(LastMann || dieingstate[client] > 0)
 		{
-			DoOverlay(client, "debug/yuv");
+			ApplyLastmanOrDyingOverlay(client);
 		}
 
 		bool Has_Wave_Showing = false;
@@ -1825,7 +1825,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
-				DoOverlay(victim, "debug/yuv");
+				ApplyLastmanOrDyingOverlay(victim);
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
@@ -2162,4 +2162,14 @@ void NpcStuckZoneWarning(int client, float &damage)
 		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
 	}
 }
+
+void ApplyLastmanOrDyingOverlay(int client)
+{
+	DoOverlay(client, "debug/yuv");
+	if(LastMann)
+	{
+		DoOverlay(client, "zombie_riot/filmgrain/filmgrain", 1);
+	}
+}
 #endif	// ZR
+

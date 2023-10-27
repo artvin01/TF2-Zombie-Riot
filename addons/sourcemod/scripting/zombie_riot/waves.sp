@@ -818,7 +818,7 @@ public Action Waves_EndVote(Handle timer, float time)
 			{
 				if(IsClientInGame(client))
 				{
-					DoOverlay(client, "");
+					DoOverlay(client, "", 2);
 					if(VotedFor[client]>0 && VotedFor[client] <= length && GetClientTeam(client)==2)
 					{
 						votes[VotedFor[client]-1]++;
@@ -1269,7 +1269,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(IsClientInGame(client))
 					{
-						DoOverlay(client, "off");
+						DoOverlay(client, "", 2);
 						if(GetClientTeam(client)==2 && IsPlayerAlive(client))
 						{
 							GiveXP(client, round.Xp);
@@ -1547,7 +1547,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(IsClientInGame(client))
 					{
-						DoOverlay(client, "off");
+						DoOverlay(client, "", 2);
 						if(IsPlayerAlive(client) && GetClientTeam(client)==2)
 							GiveXP(client, round.Xp);
 					}

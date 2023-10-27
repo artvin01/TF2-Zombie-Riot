@@ -1634,20 +1634,26 @@ stock float AngleNormalize(float angle)
 	return angle;
 }
 
-void DoOverlay(int client, const char[] overlay)
+void DoOverlay(int client, const char[] overlay, int Methods = 0)
 {
-	//int flags = GetCommandFlags("r_screenoverlay");
-	//SetCommandFlags("r_screenoverlay", flags & ~FCVAR_CHEAT);
-	//if(overlay[0])
-	//{
+	if(Methods == 1 || Methods == 2)
+	{
+		int flags = GetCommandFlags("r_screenoverlay");
+		SetCommandFlags("r_screenoverlay", flags & ~FCVAR_CHEAT);
+		if(overlay[0])
+		{
+			ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
+		}
+		else
+		{
+			ClientCommand(client, "r_screenoverlay off");
+		}
+		SetCommandFlags("r_screenoverlay", flags);
+	}
+	if(Methods == 0 || Methods == 2)
+	{
 		SetEntPropString(client, Prop_Send, "m_szScriptOverlayMaterial", overlay);
-	//	ClientCommand(client, "r_screenoverlay \"%s\"", overlay);
-	//}
-	//else
-	//{
-	//	ClientCommand(client, "r_screenoverlay off");
-	//}
-	//SetCommandFlags("r_screenoverlay", flags);
+	}
 }
 
 public bool PlayersOnly(int entity, int contentsMask, any iExclude)

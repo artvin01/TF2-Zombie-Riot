@@ -1998,7 +1998,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						SetEntityCollisionGroup(target, 5);
 						PrintCenterText(client, "");
 						PrintCenterText(target, "");
-						DoOverlay(target, "");
+						DoOverlay(target, "", 2);
 						SetEntityHealth(target, 50);
 						RequestFrame(SetHealthAfterRevive, target);
 						int entity, i;

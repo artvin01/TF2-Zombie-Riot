@@ -1098,7 +1098,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				npc.m_bThisEntityIgnored = false;
 				SetEntityCollisionGroup(client, 5);
 				PrintCenterText(client, "");
-				DoOverlay(client, "");
+				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, client);
 				int entity, i;
@@ -1303,6 +1303,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			
 			if(Hurtviasdkhook != 0)
 			{
+				Zero(delay_hud); //Allow the hud to immedietly update
 				LastMann = true;
 			}
 		}
@@ -1724,7 +1725,7 @@ void ReviveAll(bool raidspawned = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
-			DoOverlay(client, "");
+			DoOverlay(client, "", 2);
 			if(GetClientTeam(client)==2)
 			{
 				if(TeutonType[client] != TEUTON_WAITING)

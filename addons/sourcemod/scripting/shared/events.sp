@@ -538,7 +538,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 		{
 			if(IsClientInGame(client))
 			{
-				DoOverlay(client, "");
+				DoOverlay(client, "", 2);
 				if(GetClientTeam(client)==2)
 				{
 					if(!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)
