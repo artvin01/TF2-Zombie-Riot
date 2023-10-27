@@ -93,6 +93,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
+	float ThirdpersonAnimModif;
 	
 	int Attack3AbilitySlot;
 	bool VisualDescOnly;
@@ -260,6 +261,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%smodif_attackspeed_anim", prefix);
+		this.ThirdpersonAnimModif			= kv.GetFloat(buffer, 1.0);
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size_viewmodel", prefix);
 		this.WeaponSizeOverrideViewmodel			= kv.GetFloat(buffer, 1.0);
@@ -5148,6 +5152,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_BackstabBossDmgPenalty[entity]		= info.BackstabDmgPentalty;
+					f_ModifThirdPersonAttackspeed[entity]	= info.ThirdpersonAnimModif;
 
 					HidePlayerWeaponModel(client, entity);
 					/*

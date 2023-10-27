@@ -265,6 +265,7 @@ int i_BackstabHealTicks[MAXENTITIES];
 bool b_BackstabLaugh[MAXENTITIES];
 float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
+float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 
@@ -2179,6 +2180,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			float attack_speed;
 			
 			attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+
+			if(f_ModifThirdPersonAttackspeed[weapon] != 1.0)
+				attack_speed *= f_ModifThirdPersonAttackspeed[weapon];
 			
 			if(attack_speed > 5.0)
 			{
