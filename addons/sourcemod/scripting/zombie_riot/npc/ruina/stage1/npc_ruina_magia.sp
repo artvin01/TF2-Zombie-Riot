@@ -308,7 +308,7 @@ public void Magia_ClotThink(int iNPC)
 				//npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
@@ -316,7 +316,7 @@ public void Magia_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget, 100000.0);
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayMeleeSound();
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index)+1.0;
+						npc.m_flNextMeleeAttack = GameTime+1.0;
 						npc.m_flAttackHappenswillhappen = true;
 						float flPos[3]; // original
 						float flAng[3]; // original

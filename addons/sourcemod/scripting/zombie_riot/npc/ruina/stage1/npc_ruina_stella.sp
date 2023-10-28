@@ -157,15 +157,6 @@ methodmap Stella < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		/*
-			nunhood						//Xms2013_Medic_Hood
-			ramses regalia				//Hw2013_Ramses_Regalia
-			lo-grav loafers				//Hw2013_Moon_Boots
-			angel of death				//Xms2013_Medic_Robe
-		
-		*/
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -176,25 +167,29 @@ methodmap Stella < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, Stella_ClotThink);
 		
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		/*
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl");
+		
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/medic_blighted_beak.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_bunnyhoppers_ballistics_vest/dec15_bunnyhoppers_ballistics_vest.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_emergency_supplies/jul13_emergency_supplies.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/all_class/hwn_spellbook_complete.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
 		
 		int skin = 1;	//1=blue, 0=red
@@ -205,14 +200,16 @@ methodmap Stella < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 				
-		*/		
+		
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+
+		Ruina_Set_Healer(npc.index);
 		
-		Stella_Create_Hand_Crest(npc.index);
+		Stella_Create_Crest(npc.index);
 		
 		return npc;
 	}
@@ -232,7 +229,7 @@ public void Stella_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 5.0);
+	Ruina_Add_Battery(npc.index, 1.0);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -264,13 +261,13 @@ public void Stella_ClotThink(int iNPC)
 	if(fl_ruina_battery[npc.index]>750.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.0;
+		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
 		fl_ruina_stella_healing_timer[npc.index]=0.0;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		Stella_Healing_Logic(npc.index, 500, 750.0, GameTime);
+		Stella_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -282,16 +279,16 @@ public void Stella_ClotThink(int iNPC)
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-		if(flDistanceToTarget < (500.0*500.0))
+		if(flDistanceToTarget < (750.0*750.0))
 		{
-			if(flDistanceToTarget < (250.0*250.0))
+			if(flDistanceToTarget < (500.0*500.0))
 			{
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				Stella_Healing_Logic(npc.index, 50, 175.0, GameTime);
+				Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5);
 			}
 			else
 			{
-				Stella_Healing_Logic(npc.index, 100, 250.0, GameTime);
+				Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5);
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
@@ -304,7 +301,7 @@ public void Stella_ClotThink(int iNPC)
 		}
 			
 		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
+		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE", 0.54, 0.4, 20000.0, GameTime, status);
 		switch(status)
 		{
 			case 1:	//we swung
@@ -329,11 +326,11 @@ public void Stella_ClotThink(int iNPC)
 static int i_particle[MAXENTITIES][11];
 static int i_laser[MAXENTITIES][8];
 
-static void Stella_Create_Hand_Crest(int client)
+static void Stella_Create_Crest(int client)
 {
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(client, "effect_hand_r", flPos, flAng);
+	GetAttachment(client, "root", flPos, flAng);
 	
 	
 	int r, g, b;
@@ -348,7 +345,7 @@ static void Stella_Create_Hand_Crest(int client)
 	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
 	
 	
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);
+	int particle_1 = ParticleEffectAt({0.0,0.0,100.0}, "", 0.0);
 	
 	SetParent(particle_0, particle_1);
 	
@@ -356,32 +353,31 @@ static void Stella_Create_Hand_Crest(int client)
 	//X axis- Left, Right	//this one im almost fully sure of
 	//Y axis - Foward, Back
 	//Z axis - Up Down
-	
-	
-	int particle_2 = ParticleEffectAt({0.0, 0.0, 15.0}, "", 0.0);
-	int particle_2_1 = ParticleEffectAt({0.0, 0.0, -15.0}, "", 0.0);
+
+	int particle_2 = ParticleEffectAt({112.5, 0.0, 50.0}, "", 0.0);
+	int particle_2_1 = ParticleEffectAt({-112.5, 0.0, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_2, particle_2_1, "",_, true);
 	
-	int particle_4 = ParticleEffectAt({15.0, 0.0, 0.0}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({-15.0, 0.0, 0.0}, "", 0.0);
+	int particle_4 = ParticleEffectAt({75.0, -75.0, 50.0}, "", 0.0);
+	int particle_4_1 = ParticleEffectAt({-75.0, 75.0, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_4, "",_, true);
 	SetParent(particle_4, particle_4_1, "",_, true);
 	
-	int particle_5 = ParticleEffectAt({7.5, 0.0, 7.5}, "", 0.0);
-	int particle_5_1 = ParticleEffectAt({-7.5, 0.0, -7.5}, "", 0.0);
+	int particle_5 = ParticleEffectAt({0.0, 112.5, 50.0}, "", 0.0);
+	int particle_5_1 = ParticleEffectAt({0.0, -112.5, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_5, "",_, true);
 	SetParent(particle_5, particle_5_1, "",_, true);
 	
-	int particle_6 = ParticleEffectAt({-7.5, 0.0, 7.5}, "", 0.0);
-	int particle_6_1 = ParticleEffectAt({7.5, 0.0, -7.5}, "", 0.0);
+	int particle_6 = ParticleEffectAt({-75.0, -75.0, 50.0}, "", 0.0);
+	int particle_6_1 = ParticleEffectAt({75.0, 75.0, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_6, "",_, true);
 	SetParent(particle_6, particle_6_1, "",_, true);
 
 
 	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "effect_hand_r",_);
+	SetParent(client, particle_0, "rooot",_);
 
 	
 	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
@@ -456,7 +452,7 @@ public void Stella_NPCDeath(int entity)
 	Delete_Hand_Crest(entity);
 	
 	SDKUnhook(npc.index, SDKHook_Think, Stella_ClotThink);
-	/*
+	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
@@ -465,5 +461,7 @@ public void Stella_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
-	*/
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	
 }

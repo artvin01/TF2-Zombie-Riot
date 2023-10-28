@@ -26,6 +26,7 @@ bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 
 float fl_ruina_stella_healing_timer[MAXENTITIES];
+static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 static float fl_ruina_shield_power[MAXENTITIES];
 static float fl_ruina_shield_strenght[MAXENTITIES];
@@ -40,6 +41,7 @@ static float fl_shield_break_timeout[MAXENTITIES];
 #define RUINA_RAIDBOSS_NPC_MAX_SHIELD 1000.0
 #define RUINA_SHIELD_NPC_TIMEOUT 15.0
 #define RUINA_SHIELD_ONTAKE_SOUND "weapons/flame_thrower_end.wav"
+#define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
 
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
@@ -50,6 +52,8 @@ static bool b_master_is_acepting[MAXENTITIES];	//if a master npc no longer wants
 static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
+
+#define RUINA_INTERNAL_HEALING_COOLDOWN 2.5	//This is a particle effect cooldown, to prevent too many of them appearing/blinding people.
 
 #define RUINA_NPC_PITCH 115
 
@@ -96,6 +100,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(b_npc_healer);
 	Zero(fl_npc_healing_duration);
 	Zero(fl_ruina_stella_healing_timer);
+	Zero(fl_ruina_internal_healing_timer);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -105,6 +110,8 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING);
 	
 	PrecacheSound(RUINA_SHIELD_ONTAKE_SOUND);
+
+	PrecacheModel(RUINA_POINT_MODEL);
 	
 	
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
@@ -394,30 +401,14 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime)
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	float Ratio = Health / Max_Health;
+
+	//CPrintToChatAll("Health %f", Health);
+	//CPrintToChatAll("Ratio %f", Ratio);
 		
 	if(Ratio<=0.10 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
 	{
 		fl_npc_healing_duration[npc.index] = GameTime + 2.5;
-	}
-	else if(fl_npc_healing_duration[npc.index] > GameTime && Ratio<0.5 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index] )	//heal until 50% hp
-	{
-		int Healer = GetClosestHealer(npc.index);
-		if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
-		{
-			float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Healer);
-			float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
-				
-			float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
-
-			fl_npc_healing_duration[npc.index] = GameTime + 2.5;		
-			if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
-			{
-				NPC_SetGoalEntity(npc.index, Healer);
-				npc.StartPathing();
-				npc.m_bPathing = true;
-				
-			}
-		}
+		//CPrintToChatAll("Healing Duration 1 %f", fl_npc_healing_duration[npc.index]);
 	}
 }
 
@@ -480,8 +471,37 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
-	if(fl_npc_healing_duration[npc.index]>GameTime)
-		return;
+	if(fl_npc_healing_duration[npc.index] > GameTime )	//heal until 50% hp
+	{
+		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+		float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float Ratio = Health / Max_Health;
+
+		//CPrintToChatAll("Health %f", Health);
+		//CPrintToChatAll("Ratio %f", Ratio);
+		if(Ratio<0.5 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])
+		{
+			int Healer = GetClosestHealer(npc.index);
+			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
+			{
+				//CPrintToChatAll("Healing Duration 2 | Valid healer | %f", fl_npc_healing_duration[npc.index]);
+				float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Healer);
+				float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
+					
+				float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
+
+				fl_npc_healing_duration[npc.index] = GameTime + 2.5;		
+				if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
+				{
+					NPC_SetGoalEntity(npc.index, Healer);
+					npc.StartPathing();
+					npc.m_bPathing = true;
+					
+				}
+				return;
+			}
+		}
+	}
 		
 	int Backup_Target = PrimaryThreatIndex;
 		
@@ -788,7 +808,9 @@ public void Ruina_Add_Battery(int iNPC, float Amt)
 public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	
+	if(fl_npc_healing_duration[npc.index] > GetGameTime(npc.index))
+		return;
+
 	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
 	if(IsValidEntity(Master_Id_Main))//do we have a master?
 	{
@@ -809,15 +831,14 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 }
 #define RUINA_BUFF_AMTS 5
-public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameTime)
+public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(fl_ruina_stella_healing_timer[npc.index]<=GameTime)
 	{
-		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index);
-		float cylce_speed = 1.0;
-		spawnRing_Vectors(npc_Loc, Range * 2.25, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, cylce_speed, 6.0, 0.1, 1, 1.0);
+		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
+		spawnRing_Vectors(npc_Loc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, cylce_speed, 6.0, 0.1, 1, 1.0);
 		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
 		Apply_Master_Buff(npc.index, 5, Range, 0.0, float(Healing), true);
 	}
@@ -828,13 +849,33 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 
 	CClotBody npc = view_as<CClotBody>(baseboss_index);
 
+	float GameTime = GetGameTime(npc.index);
+
+	
+
 	SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + Healing);
 	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 	{
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	}
 
-	Ruina_AttachParticle(baseboss_index, "spell_cast_wheel_red", 1.0, "root", 10.0);
+	if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
+		return;
+
+	fl_ruina_internal_healing_timer[npc.index]=GameTime+RUINA_INTERNAL_HEALING_COOLDOWN;
+
+	//Ruina_AttachParticle(npc.index, "spell_cast_wheel_red", RUINA_INTERNAL_HEALING_COOLDOWN*0.95, "head");
+	
+	float Loc[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+	Loc[2]+=75.0;
+	int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
+	if(IsValidEntity(entity))
+	{
+		Ruina_AttachParticle(entity, "spell_cast_wheel_red", 2.4, "nozzle");
+		//Ruina_Move_Entity(entity, Loc, 5.0);
+	}
+	
 }
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
@@ -880,15 +921,15 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 							{
 								switch(buff_type)
 								{
-									case 0:
-										Apply_Defense_buff(time, baseboss_index, amt);
 									case 1:
-										Apply_Speed_buff(time, baseboss_index, amt);
+										Apply_Defense_buff(time, baseboss_index, amt);
 									case 2:
-										Apply_Attack_buff(time, baseboss_index, amt);
+										Apply_Speed_buff(time, baseboss_index, amt);
 									case 3:
-										Ruina_Npc_Give_Shield(baseboss_index, amt);
+										Apply_Attack_buff(time, baseboss_index, amt);
 									case 4:
+										Ruina_Npc_Give_Shield(baseboss_index, amt);
+									case 5:
 										Stella_Healing_Buff(baseboss_index, amt);
 								}
 							}		
@@ -1369,6 +1410,89 @@ static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0
 	return -1;
 }
 
+static int Ruina_Create_Entity_Spesific(float Loc[3], int old_particle=-1, float time=0.0)
+{
+	if(!IsValidEntity(old_particle))
+	{
+		//i_laser_particle_index[client][cycle]= EntIndexToEntRef(ParticleEffectAt({0.0,0.0,0.0}, "", 0.0));
+		int particle_new = Ruina_Create_Entity(Loc, time);
+		return particle_new;
+	}
+	else
+	{
+		return old_particle;
+	}
+}
+static int Ruina_Create_Entity(float Loc[3], float duration)
+{
+	int prop = CreateEntityByName("prop_physics_override");
+	
+	if (IsValidEntity(prop))
+	{
+	
+		DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
+		
+		DispatchKeyValue(prop, "modelscale", "0.001");
+		
+		DispatchKeyValue(prop, "solid", "0"); 
+		
+		DispatchSpawn(prop);
+		
+		ActivateEntity(prop);
+		
+		SetEntProp(prop, Prop_Send, "m_fEffects", 32); //EF_NODRAW
+		
+		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12);
+		SetEntProp(prop, Prop_Data, "m_nSolidType", 6);
+		SetEntProp(prop, Prop_Send, "m_CollisionGroup", 1);
+
+		TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
+		
+		if (duration > 0.0)
+		{
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		return prop;
+	}
+	else
+	{
+		return -1;
+	}
+}
+/*static void Ruina_Move_Entity(int entity, float loc[3], float speed=10.0)
+{
+	if(IsValidEntity(entity))	
+	{
+		float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+		
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", Entity_Loc);
+		
+		MakeVectorFromPoints(Entity_Loc, loc, vecView);
+		GetVectorAngles(vecView, vecView);
+		
+		float dist = GetVectorDistance(Entity_Loc, loc);
+
+		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+		
+		Entity_Loc[0]+=vecFwd[0] * dist;
+		Entity_Loc[1]+=vecFwd[1] * dist;
+		Entity_Loc[2]+=vecFwd[2] * dist;
+			
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
+			
+		SubtractVectors(Entity_Loc, vecFwd, vecVel);
+		ScaleVector(vecVel, speed);
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVel);
+
+	}
+	//TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
+	
+}
+static void Ruina_Teleport_Entity(int entity, float loc[3])
+{
+	if(IsValidEntity(entity))	
+		TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
+}*/
 
 /*
 
