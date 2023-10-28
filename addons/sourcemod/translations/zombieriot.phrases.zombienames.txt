@@ -1805,4 +1805,8 @@
 	{
 		"en"	"Allied Leper Afterimage"
 	}
+	"Stella"
+	{
+		"en"	"Stella"
+	}
 }

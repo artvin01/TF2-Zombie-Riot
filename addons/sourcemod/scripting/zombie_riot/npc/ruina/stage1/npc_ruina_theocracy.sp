@@ -278,11 +278,27 @@ public void Theocracy_ClotThink(int iNPC)
 	{
 		if(npc.Anger)
 		{
-			i_string_Theory_battery[npc.index] += THEOCRACY_ANGERED_PASSIVE_GAIN;
+			if(NpcStats_IsEnemySilenced(npc.index))
+			{
+				i_string_Theory_battery[npc.index] += THEOCRACY_ANGERED_PASSIVE_GAIN*0.75;
+			}
+			else
+			{
+				i_string_Theory_battery[npc.index] += THEOCRACY_ANGERED_PASSIVE_GAIN;
+			}
+			
 		}
 		else
 		{
-			i_string_Theory_battery[npc.index] += THEOCRACY_PASSIVE_GAIN;
+			if(NpcStats_IsEnemySilenced(npc.index))
+			{
+				i_string_Theory_battery[npc.index] += THEOCRACY_PASSIVE_GAIN*0.75;
+			}
+			else
+			{
+				i_string_Theory_battery[npc.index] += THEOCRACY_PASSIVE_GAIN;
+			}
+			
 		}
 		
 	}

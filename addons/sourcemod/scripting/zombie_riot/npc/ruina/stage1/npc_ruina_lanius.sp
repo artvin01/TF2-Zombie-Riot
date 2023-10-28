@@ -236,7 +236,7 @@ public void Lanius_ClotThink(int iNPC)
 		return;
 	}
 	
-	fl_ruina_battery[npc.index] += 5.0;
+	Ruina_Add_Battery(npc.index, 5.0);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	

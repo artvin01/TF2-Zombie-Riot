@@ -25,6 +25,8 @@ float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 
+static float fl_ruina_stella_healing_timer[MAXENTITIES];
+
 static float fl_ruina_shield_power[MAXENTITIES];
 static float fl_ruina_shield_strenght[MAXENTITIES];
 static float fl_ruina_shield_timer[MAXENTITIES];
@@ -93,6 +95,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(b_npc_no_retreat);
 	Zero(b_npc_healer);
 	Zero(fl_npc_healing_duration);
+	Zero(fl_ruina_stella_healing_timer);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -102,7 +105,6 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING);
 	
 	PrecacheSound(RUINA_SHIELD_ONTAKE_SOUND);
-	
 	
 	
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
@@ -182,6 +184,9 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 			
 		case RUINA_MAGIA:
 			Magia_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_STELLA:
+			Stella_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
 }
@@ -336,6 +341,9 @@ public void Ruina_NPCDeath_Override(int entity)
 			
 		case RUINA_MAGIA:
 			Magia_NPCDeath(entity);
+		
+		case RUINA_STELLA:
+			Stella_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -768,6 +776,15 @@ public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distanc
 		}
 	}
 }
+public void Ruina_Add_Battery(int iNPC, float Amt)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	if(NpcStats_IsEnemySilenced(npc.index))
+		Amt*=0.75;
+
+	fl_ruina_battery[npc.index] += Amt;
+}
 public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -791,35 +808,65 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 		NPC_SetGoalVector(npc.index, vBackoffPos, true);
 	}
 }
+#define RUINA_BUFF_AMTS 5
+public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameTime)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	if(fl_ruina_stella_healing_timer[npc.index]<=GameTime)
+	{
+		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index);
+		float cylce_speed = 1.0;
+		spawnRing_Vectors(npc_Loc, Range * 2.25, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, cylce_speed, 6.0, 0.1, 1, 1.0);
+		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
+		bool buff_type[RUINA_BUFF_AMTS] = {false, false, false, false, true};
+		float amt[RUINA_BUFF_AMTS]; amt[4] = float(Healing);
+		Apply_Master_Buff(npc.index, buff_type, Range, 0.0, amt, true);
+	}
+}
+static void Stella_Healing_Buff(int baseboss_index, float Power)
+{
+	int Healing = RoundToFloor(Power);
+
+	CClotBody npc = view_as<CClotBody>(baseboss_index);
+
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + Healing);
+	if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+	{
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	}
+
+	Ruina_AttachParticle(baseboss_index, "spell_cast_wheel_red", 1.0, "root", 10.0);
+}
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
-	bool buff_type[4]; buff_type[0] = true; buff_type[1] = false; buff_type[2] = false; buff_type[3] = false; 
-	float amt[4]; amt[0] = power;
+	bool buff_type[RUINA_BUFF_AMTS] = {true, false, false, false, false};
+	float amt[RUINA_BUFF_AMTS]; amt[0] = power;
 	Apply_Master_Buff(client, buff_type, range, time, amt);
 }
 
 public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
-	bool buff_type[4]; buff_type[0] = false; buff_type[1] = true; buff_type[2] = false; buff_type[3] = false; 
-	float amt[4]; amt[1] = power;
+	bool buff_type[RUINA_BUFF_AMTS] = {false, true, false, false, false};
+	float amt[RUINA_BUFF_AMTS]; amt[1] = power;
 	Apply_Master_Buff(client, buff_type, range, time, amt);
 }
 
 public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
 {
-	bool buff_type[4]; buff_type[0] = false; buff_type[1] = false; buff_type[2] = true; buff_type[3] = false; 
-	float amt[4]; amt[2] = power;
+	bool buff_type[RUINA_BUFF_AMTS] = {false, false, true, false, false};
+	float amt[RUINA_BUFF_AMTS]; amt[2] = power;
 	Apply_Master_Buff(client, buff_type, range, time, amt);
 }
 
 public void Master_Apply_Shield_Buff(int client, float range, float power)
 {
-	bool buff_type[4]; buff_type[0] = false; buff_type[1] = false; buff_type[2] = false; buff_type[3] = true; 
-	float amt[4]; amt[3] = power;
+	bool buff_type[RUINA_BUFF_AMTS] = {false, false, false, true, false};
+	float amt[RUINA_BUFF_AMTS]; amt[3] = power;
 	Apply_Master_Buff(client, buff_type, range, 0.0, amt);
 }
 
-static void Apply_Master_Buff(int iNPC, bool buff_type[4], float range, float time, float amt[4])	//only works with npc's
+static void Apply_Master_Buff(int iNPC, bool buff_type[RUINA_BUFF_AMTS] = {false, false, false, false, false}, float range, float time, float amt[RUINA_BUFF_AMTS] = {0.0, 0.0, 0.0, 0.0, 0.0}, bool Override=false)	//only works with npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -831,7 +878,7 @@ static void Apply_Master_Buff(int iNPC, bool buff_type[4], float range, float ti
 		{
 			if(baseboss_index!=npc.index)
 			{
-				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || i_master_attracts[npc.index]==3)	//same type of npc, or a global type
+				if(i_npc_type[baseboss_index]==i_master_attracts[npc.index] || (i_master_attracts[npc.index]==3 || Override))	//same type of npc, or a global type
 				{
 					if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
 					{
@@ -849,6 +896,8 @@ static void Apply_Master_Buff(int iNPC, bool buff_type[4], float range, float ti
 									Apply_Attack_buff(time, baseboss_index, amt[2]);
 								if(buff_type[3])
 									Ruina_Npc_Give_Shield(baseboss_index, amt[3]);
+								if(buff_type[4])
+									Stella_Healing_Buff(baseboss_index, amt[4]);
 							}		
 						}
 					}
@@ -1280,6 +1329,52 @@ static void Ruina_spawnRing_Vector(float center[3], float range, float modif_X, 
 	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
 	TE_SendToAll();
 }
+static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+{
+	if (IsValidEntity(entity))
+	{
+		int part1 = CreateEntityByName("info_particle_system");
+		if (IsValidEdict(part1))
+		{
+			float pos[3];
+			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+			}
+			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+			}
+			
+			if (zTrans != 0.0)
+			{
+				pos[2] += zTrans;
+			}
+			
+			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
+			DispatchKeyValue(part1, "effect_name", type);
+			SetVariantString("!activator");
+			AcceptEntityInput(part1, "SetParent", entity, part1);
+			SetVariantString(point);
+			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+			DispatchKeyValue(part1, "targetname", "present");
+			DispatchSpawn(part1);
+			ActivateEntity(part1);
+			AcceptEntityInput(part1, "Start");
+			
+			if (duration > 0.0)
+			{
+				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			return part1;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	return -1;
+}
 
 
 /*
@@ -1315,7 +1410,7 @@ Names per stage:
 		state: Independant AI.
 		Class: Medic
 		Support: Healer
-		Heals nearby npc's
+		Heals nearby npc's within range in a AOE.
 	}
 
 	4: Astria -> Astriana -> Astrianis -> Astrianious

@@ -1111,7 +1111,7 @@
 	}
 	"Theocracy Desc"
 	{
-		"en"		"NEED DESC"
+		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multipl targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
 	}
 	"Benera Desc"
 	{
@@ -1143,15 +1143,15 @@
 	}
 	"Adiantum Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"The other half of Theocracy, doesn't have a battery\nWields a powerfull ion barrage, with a heafty cooldown\Master: Ranged npc's follow his orders..."
 	}
 	"Lanius Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems having warriors are inevitable...\nBattery: boosts the speed of friendly melee units"
 	}
 	"Magia Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"A Basic Mage of the Ruanians\nStays holds a magic crest\nBattery: boosts the speed of friendly ranged units"
 	}
 	"Heavy Punuel Desc"
 	{
@@ -1252,5 +1252,9 @@
 	"Bladedance The Combine Desc"
 	{
 		"en"	"What can be as strong as Bob?"
+	}
+	"Stella Desc"
+	{
+		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
 	}
 }
