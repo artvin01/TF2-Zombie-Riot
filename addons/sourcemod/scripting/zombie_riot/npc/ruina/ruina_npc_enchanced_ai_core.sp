@@ -25,7 +25,7 @@ float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 
-static float fl_ruina_stella_healing_timer[MAXENTITIES];
+float fl_ruina_stella_healing_timer[MAXENTITIES];
 
 static float fl_ruina_shield_power[MAXENTITIES];
 static float fl_ruina_shield_strenght[MAXENTITIES];
@@ -819,9 +819,7 @@ public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameT
 		float cylce_speed = 1.0;
 		spawnRing_Vectors(npc_Loc, Range * 2.25, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, cylce_speed, 6.0, 0.1, 1, 1.0);
 		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
-		bool buff_type[RUINA_BUFF_AMTS] = {false, false, false, false, true};
-		float amt[RUINA_BUFF_AMTS]; amt[4] = float(Healing);
-		Apply_Master_Buff(npc.index, buff_type, Range, 0.0, amt, true);
+		Apply_Master_Buff(npc.index, 5, Range, 0.0, float(Healing), true);
 	}
 }
 static void Stella_Healing_Buff(int baseboss_index, float Power)
@@ -840,33 +838,25 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 }
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
-	bool buff_type[RUINA_BUFF_AMTS] = {true, false, false, false, false};
-	float amt[RUINA_BUFF_AMTS]; amt[0] = power;
-	Apply_Master_Buff(client, buff_type, range, time, amt);
+	Apply_Master_Buff(client, 1, range, time, power);
 }
 
 public void Master_Apply_Speed_Buff(int client, float range, float time, float power)
 {
-	bool buff_type[RUINA_BUFF_AMTS] = {false, true, false, false, false};
-	float amt[RUINA_BUFF_AMTS]; amt[1] = power;
-	Apply_Master_Buff(client, buff_type, range, time, amt);
+	Apply_Master_Buff(client, 2, range, time, power);
 }
 
 public void Master_Apply_Attack_Buff(int client, float range, float time, float power)
 {
-	bool buff_type[RUINA_BUFF_AMTS] = {false, false, true, false, false};
-	float amt[RUINA_BUFF_AMTS]; amt[2] = power;
-	Apply_Master_Buff(client, buff_type, range, time, amt);
+	Apply_Master_Buff(client, 3, range, time, power);
 }
 
 public void Master_Apply_Shield_Buff(int client, float range, float power)
 {
-	bool buff_type[RUINA_BUFF_AMTS] = {false, false, false, true, false};
-	float amt[RUINA_BUFF_AMTS]; amt[3] = power;
-	Apply_Master_Buff(client, buff_type, range, 0.0, amt);
+	Apply_Master_Buff(client, 4, range, 0.0, power);
 }
 
-static void Apply_Master_Buff(int iNPC, bool buff_type[RUINA_BUFF_AMTS] = {false, false, false, false, false}, float range, float time, float amt[RUINA_BUFF_AMTS] = {0.0, 0.0, 0.0, 0.0, 0.0}, bool Override=false)	//only works with npc's
+static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)	//only works with npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -888,16 +878,19 @@ static void Apply_Master_Buff(int iNPC, bool buff_type[RUINA_BUFF_AMTS] = {false
 						{
 							if(i_NpcInternalId[baseboss_index] != i_NpcInternalId[npc.index]) //cannot buff itself
 							{
-								if(buff_type[0])
-									Apply_Defense_buff(time, baseboss_index, amt[0]);
-								if(buff_type[1])
-									Apply_Speed_buff(time, baseboss_index, amt[1]);
-								if(buff_type[2])
-									Apply_Attack_buff(time, baseboss_index, amt[2]);
-								if(buff_type[3])
-									Ruina_Npc_Give_Shield(baseboss_index, amt[3]);
-								if(buff_type[4])
-									Stella_Healing_Buff(baseboss_index, amt[4]);
+								switch(buff_type)
+								{
+									case 0:
+										Apply_Defense_buff(time, baseboss_index, amt);
+									case 1:
+										Apply_Speed_buff(time, baseboss_index, amt);
+									case 2:
+										Apply_Attack_buff(time, baseboss_index, amt);
+									case 3:
+										Ruina_Npc_Give_Shield(baseboss_index, amt);
+									case 4:
+										Stella_Healing_Buff(baseboss_index, amt);
+								}
 							}		
 						}
 					}
