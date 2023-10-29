@@ -377,25 +377,29 @@ static void Stella_Create_Crest(int client)
 
 	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "rooot",_);
+	SetParent(client, particle_0, "root",_);
 
+	/* 
+		particle_2 particle_4 particle_5 particle_6 particle_2_1 particle_4_1 particle_5_1 particle_6_1
+
+	*/
 	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
+	//i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
+	//i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
+	//i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+	//i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	/*i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
+	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_5_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
+	//i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
 	
 	
 	i_particle[client][0] = EntIndexToEntRef(particle_0);
@@ -411,7 +415,7 @@ static void Stella_Create_Crest(int client)
 }
 static void Delete_Hand_Crest(int client)
 {
-	for(int laser=0 ; laser<4 ; laser++)
+	for(int laser=0 ; laser<7 ; laser++)
 	{
 		int entity = EntRefToEntIndex(i_laser[client][laser]);
 		if(IsValidEntity(entity))

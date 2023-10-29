@@ -1257,4 +1257,8 @@
 	{
 		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
 	}
+	"Astria Desc"
+	{
+		"en"		"UHHHHHHHHH\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
+	}
 }

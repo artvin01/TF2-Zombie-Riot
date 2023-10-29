@@ -1809,4 +1809,8 @@
 	{
 		"en"	"Stella"
 	}
+	"Astria"
+	{
+		"en"	"Astria"
+	}
 }

@@ -28,6 +28,8 @@ float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_stella_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
+static float fl_ruina_internal_teleport_timer[MAXENTITIES];
+
 static float fl_ruina_shield_power[MAXENTITIES];
 static float fl_ruina_shield_strenght[MAXENTITIES];
 static float fl_ruina_shield_timer[MAXENTITIES];
@@ -54,6 +56,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
 
 #define RUINA_INTERNAL_HEALING_COOLDOWN 2.5	//This is a particle effect cooldown, to prevent too many of them appearing/blinding people.
+#define RUINA_INTERNAL_TELEPORT_COOLDOWN 5.0	//to prevent master npc's from teleporting the same npc 5 times in a row... also same reason as above
 
 #define RUINA_NPC_PITCH 115
 
@@ -101,6 +104,8 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_npc_healing_duration);
 	Zero(fl_ruina_stella_healing_timer);
 	Zero(fl_ruina_internal_healing_timer);
+
+	Zero(fl_ruina_internal_teleport_timer);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -136,7 +141,7 @@ public void Ruina_Set_No_Retreat(int client)
 {
 	b_npc_no_retreat[client] = true;
 }
-public void Ruina_Set_Master_Heirarchy(int client, bool melee, bool ranged, bool accepting, int max_slaves, int priority)
+public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int max_slaves, int priority)
 {
 	b_master_exists[client] = true;
 	
@@ -150,12 +155,7 @@ public void Ruina_Set_Master_Heirarchy(int client, bool melee, bool ranged, bool
 	
 	i_master_priority[client] = priority;
 	
-	if(melee)
-		i_master_attracts[client] = 1;
-	if(ranged)
-		i_master_attracts[client] = 2;
-	if(ranged && melee)
-		i_master_attracts[client] = 3;
+	i_master_attracts[client] = type;
 }
 
 public void Ruina_Master_Release_Slaves(int client)
@@ -194,6 +194,9 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 
 		case RUINA_STELLA:
 			Stella_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_ASTRIA:
+			Astria_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
 }
@@ -351,6 +354,9 @@ public void Ruina_NPCDeath_Override(int entity)
 		
 		case RUINA_STELLA:
 			Stella_NPCDeath(entity);
+		
+		case RUINA_ASTRIA:
+			Astria_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -877,6 +883,97 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 	}
 	
 }
+public void Astria_Teleport_Allies(int iNPC, float Range)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
+	spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+
+	Apply_Master_Buff(npc.index, 6, Range, 0.0, 0.0);
+}
+static void Astria_Teleportation(int iNPC)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime)
+		return;
+
+	fl_ruina_internal_teleport_timer[npc.index]=GameTime + RUINA_INTERNAL_TELEPORT_COOLDOWN;
+
+	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+	int PrimaryThreatIndex = npc.m_iTarget;
+
+	float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
+	spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+	
+	if(IsValidEntity(Master_Id_Main))	//get master's target
+	{
+		CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
+		PrimaryThreatIndex = npc2.m_iTarget;
+	}
+	else
+	{
+		PrimaryThreatIndex = npc.m_iTarget;
+	}
+
+	float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+
+	float Loc[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+	Loc[2]+=75.0;
+
+	float start_offset[3], end_offset[3];
+	start_offset = WorldSpaceCenter(npc.index);
+
+	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+	if(Succeed)
+	{	
+		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
+		if(IsValidEntity(entity))
+		{
+			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
+			//Ruina_Move_Entity(entity, Loc, 5.0);
+		}
+		float effect_duration = 0.25;
+	
+		end_offset = vPredictedPos;
+							
+		start_offset[2]-= 25.0;
+		end_offset[2] -= 25.0;
+							
+		for(int help=1 ; help<=8 ; help++)
+		{	
+			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+							
+			start_offset[2] += 12.5;
+			end_offset[2] += 12.5;
+		}
+	}
+}
+static void Astria_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
+{
+	int part1 = CreateEntityByName("info_particle_system");
+	if(IsValidEdict(part1))
+	{
+		TeleportEntity(part1, start_point, NULL_VECTOR, NULL_VECTOR);
+		DispatchKeyValue(part1, "effect_name", type);
+		SetVariantString("!activator");
+		DispatchSpawn(part1);
+		ActivateEntity(part1);
+		AcceptEntityInput(part1, "Start");
+		
+		DataPack pack;
+		CreateDataTimer(0.1, Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(part1));
+		pack.WriteCell(end_point[0]);
+		pack.WriteCell(end_point[1]);
+		pack.WriteCell(end_point[2]);
+		pack.WriteCell(duration);
+	}
+}
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, 1, range, time, power);
@@ -897,7 +994,7 @@ public void Master_Apply_Shield_Buff(int client, float range, float power)
 	Apply_Master_Buff(client, 4, range, 0.0, power);
 }
 
-static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)	//only works with npc's
+static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)	//only works with ruina npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
@@ -931,6 +1028,8 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 										Ruina_Npc_Give_Shield(baseboss_index, amt);
 									case 5:
 										Stella_Healing_Buff(baseboss_index, amt);
+									case 6:
+										Astria_Teleportation(baseboss_index);
 								}
 							}		
 						}
@@ -1528,6 +1627,7 @@ Names per stage:
 		Class: Medic
 		Support: Healer
 		Heals nearby npc's within range in a AOE.
+		Battery: Massive AOE healing for 2.5 seconds
 	}
 
 	4: Astria -> Astriana -> Astrianis -> Astrianious

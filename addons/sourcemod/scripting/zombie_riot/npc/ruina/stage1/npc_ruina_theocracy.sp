@@ -222,7 +222,7 @@ methodmap Theocracy < CClotBody
 		Theocracy_Create_Wings(npc.index);
 		
 		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, true, false, true, 15, 3);
+		Ruina_Set_Master_Heirarchy(npc.index, 1, true, 15, 3);
 		
 		fl_rally_timer[npc.index] = GetGameTime(npc.index) + 5.0;
 		b_rally_active[npc.index] = false;

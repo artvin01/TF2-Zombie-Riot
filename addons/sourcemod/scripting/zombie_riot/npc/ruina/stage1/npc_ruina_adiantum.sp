@@ -205,7 +205,7 @@ methodmap Adiantum < CClotBody
 		Adiantum_Create_Wings(npc.index);
 		
 		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
-		Ruina_Set_Master_Heirarchy(npc.index, false, true, true, 10, 3);	//attracts ranged npc's, can have a maxiumum of 10 of them, priority 3
+		Ruina_Set_Master_Heirarchy(npc.index, 2, true, 10, 3);	//attracts ranged npc's, can have a maxiumum of 10 of them, priority 3
 		
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
