@@ -29,6 +29,7 @@ float fl_ruina_stella_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
+static bool b_ruina_allow_teleport[MAXENTITIES];
 
 static float fl_ruina_shield_power[MAXENTITIES];
 static float fl_ruina_shield_strenght[MAXENTITIES];
@@ -62,6 +63,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 
 #define RUINA_BALL_PARTICLE_BLUE "drg_manmelter_trail_blue"
+#define RUINA_BALL_PARTICLE_RED "drg_manmelter_trail_red"
 
 #define RUINA_ION_CANNON_SOUND_SPAWN "ambient/machines/thumper_startup1.wav"
 #define RUINA_ION_CANNON_SOUND_TOUCHDOWN "mvm/ambient_mp3/mvm_siren.mp3"
@@ -106,6 +108,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_internal_healing_timer);
 
 	Zero(fl_ruina_internal_teleport_timer);
+	Zero(b_ruina_allow_teleport);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -156,6 +159,8 @@ public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int
 	i_master_priority[client] = priority;
 	
 	i_master_attracts[client] = type;
+
+	b_ruina_allow_teleport[client]=false;
 }
 
 public void Ruina_Master_Release_Slaves(int client)
@@ -595,7 +600,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 							
 						float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
-							
+			
 						if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
 						{
 							NPC_SetGoalEntity(npc.index, Master_Id_Main);
@@ -642,6 +647,12 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						{
 							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 						}
+
+						if(b_ruina_allow_teleport[npc.index])
+						{
+							Astria_Teleportation(npc.index, PrimaryThreatIndex);
+						}
+
 						npc.StartPathing();
 					}	
 					return;
@@ -658,6 +669,11 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						NPC_SetGoalEntity(npc.index, Master_Id_Main);
 						npc.StartPathing();
 						npc.m_bPathing = true;
+
+						if(b_ruina_allow_teleport[npc.index])
+						{
+							Astria_Teleportation(npc.index, Master_Id_Main);
+						}
 						
 					}
 					else
@@ -680,6 +696,11 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 					}
 					npc.StartPathing();
+
+					if(b_ruina_allow_teleport[npc.index])
+					{
+						Astria_Teleportation(npc.index, PrimaryThreatIndex);
+					}
 								
 					return;
 				}
@@ -888,41 +909,39 @@ public void Astria_Teleport_Allies(int iNPC, float Range)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
-	spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
 
 	Apply_Master_Buff(npc.index, 6, Range, 0.0, 0.0);
 }
-static void Astria_Teleportation(int iNPC)
+static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
 
 	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime)
+	{
+		b_ruina_allow_teleport[npc.index]=false;
 		return;
+	}
 
 	fl_ruina_internal_teleport_timer[npc.index]=GameTime + RUINA_INTERNAL_TELEPORT_COOLDOWN;
 
-	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
-	int PrimaryThreatIndex = npc.m_iTarget;
+	float vPredictedPos[3]; 
 
-	float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
-	spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
-	
-	if(IsValidEntity(Master_Id_Main))	//get master's target
+	if(IsValidAlly(npc.index, PrimaryThreatIndex))
 	{
-		CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
-		PrimaryThreatIndex = npc2.m_iTarget;
+		vPredictedPos = WorldSpaceCenter(PrimaryThreatIndex);	//teleport ontop of their heads :trolley:
+		vPredictedPos[2]+=100.0;
 	}
 	else
 	{
-		PrimaryThreatIndex = npc.m_iTarget;
+		vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);	//otherwise just normal buisness xd
 	}
-
-	float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+	
 
 	float Loc[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+	Loc = GetAbsOrigin(npc.index);
 	Loc[2]+=75.0;
 
 	float start_offset[3], end_offset[3];
@@ -931,6 +950,9 @@ static void Astria_Teleportation(int iNPC)
 	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
 	if(Succeed)
 	{	
+		b_ruina_allow_teleport[npc.index]=false;
+		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
+		spawnRing_Vectors(npc_Loc, 200.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
 		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
 		if(IsValidEntity(entity))
 		{
@@ -1029,7 +1051,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 									case 5:
 										Stella_Healing_Buff(baseboss_index, amt);
 									case 6:
-										Astria_Teleportation(baseboss_index);
+										b_ruina_allow_teleport[baseboss_index]=true;
 								}
 							}		
 						}

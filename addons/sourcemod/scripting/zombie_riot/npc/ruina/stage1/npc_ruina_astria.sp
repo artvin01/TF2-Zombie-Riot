@@ -50,6 +50,9 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
+static const char g_RangedAttackSounds[][] = {
+	"weapons/resuce_ranger_fire.wav",
+};
 
 void Astria_OnMapStart_NPC()
 {
@@ -61,6 +64,7 @@ void Astria_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	PrecacheModel("models/player/engineer.mdl");
 }
 
@@ -143,6 +147,11 @@ methodmap Astria < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
+
+	public void PlayRangedSound()
+	{
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
 	
 	
 	public Astria(int client, float vecPos[3], float vecAng[3], bool ally)
@@ -178,7 +187,7 @@ methodmap Astria < CClotBody
 		
 		SDKHook(npc.index, SDKHook_Think, Astria_ClotThink);
 		
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -275,10 +284,11 @@ public void Astria_ClotThink(int iNPC)
 		Master_Apply_Speed_Buff(npc.index, 200.0, 1.0, 1.25);
 		fl_ruina_battery_timer[npc.index]=GameTime+1.0;
 	}
+
+	Astria_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
-		//Predict their pos.
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
@@ -294,20 +304,6 @@ public void Astria_ClotThink(int iNPC)
 			Astria_Teleport_Allies(npc.index, 350.0);
 
 			Ruina_Master_Release_Slaves(npc.index);
-			
-		}
-
-		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, 10000.0, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
-		switch(status)
-		{
-			case 1:	//we swung
-				npc.PlayMeleeSound();
-			case 2:	//we hit something
-				npc.PlayMeleeHitSound();
-			case 3:	//we missed
-				npc.PlayMeleeMissSound();
-			//0 means nothing.
 		}
 	}
 	else
@@ -327,7 +323,7 @@ public Action Astria_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	fl_ruina_battery[npc.index] += damage*0.75;	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -346,9 +342,7 @@ public void Astria_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Astria_ClotThink);
-		
+	SDKUnhook(npc.index, SDKHook_Think, Astria_ClotThink);	
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -361,4 +355,49 @@ public void Astria_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	*/
+}
+
+static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
+{
+	int GetClosestEnemyToAttack;
+	//Ranged units will behave differently.
+	//Get the closest visible target via distance checks, not via pathing check.
+	GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);	//works with masters, slaves not so much
+	if(!IsValidEnemy(npc.index,GetClosestEnemyToAttack))	//no target, what to do while idle
+	{
+		return;
+	}
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+	{	
+		//target is within range, attack them
+		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+		{
+			Ruina_Runaway_Logic(npc.index, GetClosestEnemyToAttack);
+		}
+		else
+		{
+			if(gameTime > npc.m_flNextRangedAttack)
+			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
+				npc.PlayRangedSound();
+				//after we fire, we will have a short delay beteween the actual laser, and when it happens
+				//This will predict as its relatively easy to dodge
+				float projectile_speed = 800.0;
+				//lets pretend we have a projectile.
+				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+				{
+					vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+				}
+				float DamageDone = 25.0;
+				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
+				npc.FaceTowards(vecTarget, 20000.0);
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.25;
+			}
+		}
+	}
+	npc.m_iTarget = GetClosestEnemyToAttack;
 }
