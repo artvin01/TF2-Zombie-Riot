@@ -1252,7 +1252,7 @@ void CheckAlivePlayersforward(int killed=0)
 	CheckAlivePlayers(killed, _);
 }
 
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
 	if(!Waves_Started() || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
@@ -1266,7 +1266,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 				CurrentPlayers++;
 			}
 		}
-		return;
+		if(!TestLastman)
+			return;
 	}
 	
 	CheckIfAloneOnServer();
@@ -1316,6 +1317,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
+	if(TestLastman)
+	{
+		LastMann = true;
+		LastMannScreenEffect = false;
+		applied_lastmann_buffs_once = false;
+	}
+
 	if(LastMann)
 	{
 		static bool Died[MAXTF2PLAYERS];
@@ -1340,7 +1348,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		{
 			if(!applied_lastmann_buffs_once)
 			{
-				CauseFadeInAndFadeOut(0,0.1,0.09,0.1);
+				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
 				Zero(delay_hud); //Allow the hud to immedietly update
 			}
 
@@ -1377,6 +1385,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 							}
 						}
 						
+						/*
 						for(int i=1; i<=MaxClients; i++)
 						{
 							if(IsClientInGame(i) && !IsFakeClient(i))
@@ -1384,8 +1393,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 								SendConVarValue(i, sv_cheats, "1");
 							}
 						}
+						
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.3, SetTimeBack);
+						*/
 					
 						applied_lastmann_buffs_once = true;
 						
@@ -1405,7 +1416,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
 						Armor_Charge[client] = Armor_Max;
-						f_ClientInvul[client] = GetGameTime() + 0.35;
+						GiveCompleteInvul(client, 3.0);
 					}
 				}
 			}

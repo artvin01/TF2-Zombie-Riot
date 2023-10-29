@@ -331,7 +331,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			SetEntProp(npc, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 		}
-		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
+		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
 		DispatchSpawn(npc); //Do this at the end :)
@@ -533,7 +533,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
-		b_bThisNpcGotDefaultStats_INVERTED[npc] = true;
+		b_ThisWasAnNpc[npc] = true;
 
 		if(IsRaidBoss)
 		{
@@ -1157,8 +1157,8 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 	property bool m_bThisNpcGotDefaultStats_INVERTED //This is the only one, reasoning is that is that i kinda need to check globablly if any base_boss spawned outside of this plugin and apply stuff accordingly.
 	{
-		public get()							{ return b_bThisNpcGotDefaultStats_INVERTED[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_bThisNpcGotDefaultStats_INVERTED[this.index] = TempValueForProperty; }
+		public get()							{ return b_ThisWasAnNpc[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_ThisWasAnNpc[this.index] = TempValueForProperty; }
 	}
 	property bool m_bInSafeZone
 	{
@@ -4154,7 +4154,7 @@ stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 	{
 		if(index > MaxClients)
 		{
-			if(b_bThisNpcGotDefaultStats_INVERTED[index]) //It is an npc
+			if(b_ThisWasAnNpc[index]) //It is an npc
 			{
 				if(b_NpcHasDied[index]) //It died.
 				{
@@ -7440,7 +7440,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_HookDamageTaken[entity] = 0.0;
 	b_IsCamoNPC[entity] = false;
 	b_NoKillFeed[entity] = false;
-	b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
+	b_ThisWasAnNpc[entity] = false;
 	b_isGiantWalkCycle[entity] = 1.0;
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;

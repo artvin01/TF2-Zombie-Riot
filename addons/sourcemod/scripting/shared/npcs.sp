@@ -2741,6 +2741,16 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	float BaseDamageBeforeBuffs = damage;
+	if(b_ThisWasAnNpc[attacker])
+	{
+		if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+		{
+			if(i_CurrentEquippedPerk[attacker] == 5)
+			{
+				damage *= 1.25; //this should stack
+			}
+		}
+	}
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
 		if(f_HussarBuff[attacker] > GameTime) //hussar!

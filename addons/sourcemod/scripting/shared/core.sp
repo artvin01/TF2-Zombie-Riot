@@ -1032,7 +1032,7 @@ int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
-bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
+bool b_ThisWasAnNpc[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
@@ -1847,6 +1847,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	else if(buttons & IN_RELOAD)
 	{
 		holding[client] |= IN_RELOAD;
+
+	//	CheckAlivePlayers(0, 0, true);
 		
 		
 		#if defined ZR
@@ -2319,7 +2321,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 		i_CustomWeaponEquipLogic[entity] = 0;
-		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
+		b_ThisWasAnNpc[entity] = false;
 #if defined ZR
 		SetEntitySpike(entity, false);
 		i_WhatBuilding[entity] = 0;
