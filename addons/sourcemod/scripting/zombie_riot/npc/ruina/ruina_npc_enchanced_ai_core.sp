@@ -30,6 +30,7 @@ static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
 static bool b_ruina_allow_teleport[MAXENTITIES];
+#define RUINA_ASTRIA_TELEPORT_SOUND "misc/halloween_eyeball/book_spawn.wav"
 
 static float fl_ruina_shield_power[MAXENTITIES];
 static float fl_ruina_shield_strenght[MAXENTITIES];
@@ -119,6 +120,8 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	PrecacheSound(RUINA_SHIELD_ONTAKE_SOUND);
 
+	PrecacheSound(RUINA_ASTRIA_TELEPORT_SOUND);
+
 	PrecacheModel(RUINA_POINT_MODEL);
 	
 	
@@ -168,14 +171,14 @@ public void Ruina_Master_Release_Slaves(int client)
 	i_master_current_slaves[client] = 0;	//reset
 	b_force_reasignment[client]=true;
 	b_master_is_acepting[client] = false;
-	CPrintToChatAll("Master Released Slaves");
+	//CPrintToChatAll("Master Released Slaves");
 }
 public void Ruina_Master_Accpet_Slaves(int client)
 {
 	i_master_current_slaves[client] = 0;	//reset
 	b_force_reasignment[client]=false;
 	b_master_is_acepting[client] = true;
-	CPrintToChatAll("Master Accepting Slaves");
+	//CPrintToChatAll("Master Accepting Slaves");
 }
 public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -467,12 +470,12 @@ public void Ruina_Master_Rally(int client, bool rally)
 	Phase 2: Stable enough to begin making npc's.
 	Test it thoroughly, 
 	- does proper asignment work? (Check_If_I_Am_The_Right_Slave)	- yes!
-	- does rally work?		
+	- does rally work?			- 
 	- does melee rally work?	- Yes!
 	- does ranged rally work?	- most likely
 	- does both rally work?		- most likely
-	- does release work?	
-	- is there any leaking of npc slave count? - works.
+	- does release work?		- yes!
+	- is there any leaking of npc slave count? - works. probably? yet to see it leak so far.
 	
 	Phase 3:
 	- Make the npc's :)
@@ -540,12 +543,19 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 				
 				
 			if(IsValidEntity(Master_Id_Main))	//only add if the master id is valid
+			{
 				i_master_current_slaves[Master_Id_Main]++;
+				fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
+			}
+			else
+			{
+				fl_master_change_timer[npc.index] = GameTime + 2.0;
+			}
 				
 			//if(IsValidEntity(Master_Id_Main))				
 			//	CPrintToChatAll("Master %i has gained a slave. current count %i",Master_Id_Main, i_master_current_slaves[Master_Id_Main]);
 				
-			fl_master_change_timer[npc.index] = GameTime + RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER;
+			
 				
 		}
 		bool b_return = false;
@@ -586,6 +596,11 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
 			npc.StartPathing();
+
+			if(b_ruina_allow_teleport[npc.index])
+			{
+				Astria_Teleportation(npc.index, PrimaryThreatIndex);
+			}
 			return;
 		}
 		if(IsValidEntity(Master_Id_Main))
@@ -858,14 +873,14 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 }
 #define RUINA_BUFF_AMTS 5
-public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed)
+public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed, int color[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(fl_ruina_stella_healing_timer[npc.index]<=GameTime)
 	{
 		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
-		spawnRing_Vectors(npc_Loc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, cylce_speed, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(npc_Loc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, cylce_speed, 6.0, 0.1, 1, 1.0);
 		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
 		Apply_Master_Buff(npc.index, 5, Range, 0.0, float(Healing), true);
 	}
@@ -904,12 +919,12 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 	}
 	
 }
-public void Astria_Teleport_Allies(int iNPC, float Range)
+public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
-	float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
-	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+	float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=2.5;
+	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", colour[0], colour[1], colour[2], colour[3], 1, 0.5, 6.0, 0.1, 1, 1.0);
 
 	Apply_Master_Buff(npc.index, 6, Range, 0.0, 0.0);
 }
@@ -921,7 +936,6 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 
 	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime)
 	{
-		b_ruina_allow_teleport[npc.index]=false;
 		return;
 	}
 
@@ -950,9 +964,11 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
 	if(Succeed)
 	{	
+		EmitSoundToAll(RUINA_ASTRIA_TELEPORT_SOUND, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+
 		b_ruina_allow_teleport[npc.index]=false;
 		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
-		spawnRing_Vectors(npc_Loc, 200.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
 		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
 		if(IsValidEntity(entity))
 		{
@@ -968,7 +984,7 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 							
 		for(int help=1 ; help<=8 ; help++)
 		{	
-			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_RED, effect_duration, start_offset, end_offset);
 							
 			start_offset[2] += 12.5;
 			end_offset[2] += 12.5;
@@ -1629,6 +1645,12 @@ Names per stage:
 		Ranged.
 		Retreats from enemies.
 		Battery: Buff's nearby Ranged npc's speed
+
+		Magnia:
+		{
+			ICBM: Gains the ability to launch a "homing" projectile rocket.
+			ICBM's near a Magnia or above have homing. or other npc's that have this attribute. otherwise it just Goes straight. 
+		}
 	}
 
 	2: Lanius -> Laniun -> Loonaris -> Loonarionus
@@ -1639,6 +1661,10 @@ Names per stage:
 		Melee.
 		Teleporting.
 		Battery: Buff's nearby Melee npc's speed
+		Laniun:
+		{
+			
+		}
 
 
 	}
@@ -1657,7 +1683,7 @@ Names per stage:
 		state: Master AI.
 		Class: Engie
 		Slow itself, boots nearby npc speed passively.
-		Battery: Nearby npc's get teleported to their target. (gonna have to think of more logic for this one so its not unfair)
+		Battery: Nearby npc's gain the ability to teleporto once. cannot have multiple "charges" (since its a bool)
 	}
 
 	5: Solaris -> Solaria -> Solaris -> Solarionus

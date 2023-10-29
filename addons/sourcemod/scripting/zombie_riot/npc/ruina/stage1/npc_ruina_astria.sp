@@ -51,7 +51,7 @@ static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
 static const char g_RangedAttackSounds[][] = {
-	"weapons/resuce_ranger_fire.wav",
+	"weapons/rescue_ranger_fire.wav",
 };
 
 void Astria_OnMapStart_NPC()
@@ -163,7 +163,7 @@ methodmap Astria < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -191,25 +191,29 @@ methodmap Astria < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tele_shotgun/c_tele_shotgun.mdl");	//claidemor
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tele_shotgun/c_tele_shotgun.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		/*
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
+		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/heavy_big_chief.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_engineer.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hw2013_soldier_jiangshi_hat/hw2013_soldier_jiangshi_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -218,7 +222,7 @@ methodmap Astria < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);*/
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		
@@ -227,7 +231,7 @@ methodmap Astria < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, 2);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, 2, false, 15, 10);	//Priority 10: Teleporting/Movement masters
+		Ruina_Set_Master_Heirarchy(npc.index, 1, false, 15, 10);	//Priority 10: Teleporting/Movement masters
 		
 		return npc;
 	}
@@ -245,7 +249,7 @@ public void Astria_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 5.0);
+	Ruina_Add_Battery(npc.index, 7.5);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -287,24 +291,20 @@ public void Astria_ClotThink(int iNPC)
 
 	Astria_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
 
+	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0)
+	{
+		fl_ruina_battery[npc.index] = 0.0;
+
+		npc.m_flNextTeleport = GameTime + 30.0;
+
+		Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
+
+		Ruina_Master_Release_Slaves(npc.index);
+	}
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
-
-		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-
-		if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0 && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
-		{
-			fl_ruina_battery[npc.index] = 0.0;
-
-			npc.m_flNextTeleport = GameTime + 30.0;
-
-			Astria_Teleport_Allies(npc.index, 350.0);
-
-			Ruina_Master_Release_Slaves(npc.index);
-		}
 	}
 	else
 	{
@@ -346,7 +346,7 @@ public void Astria_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	/*if(IsValidEntity(npc.m_iWearable2))
+	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
@@ -354,7 +354,9 @@ public void Astria_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	*/
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	
 }
 
 static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin

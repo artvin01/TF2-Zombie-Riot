@@ -267,7 +267,7 @@ public void Stella_ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		Stella_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0);
+		Stella_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0, {255, 255, 255, 255});
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -284,11 +284,11 @@ public void Stella_ClotThink(int iNPC)
 			if(flDistanceToTarget < (500.0*500.0))
 			{
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5);
+				Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
 			}
 			else
 			{
-				Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5);
+				Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5, {20, 150, 255, 150});
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 			}
