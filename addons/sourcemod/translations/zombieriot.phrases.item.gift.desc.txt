@@ -1261,4 +1261,12 @@
 	{
 		"en"		"UHHHHHHHHH\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
 	}
+	"Aether Desc"
+	{
+		"en"		"A long ranged sniper that casts spells from a far.\nThis npc likes to group up with other long range support npc's"
+	}
+	"Europa Desc"
+	{
+		"en"		"This npc sits from a far summoning brainless drones\nBattery: Summons itself\nMaster: Low priority, commands ranged npc's"
+	}
 }

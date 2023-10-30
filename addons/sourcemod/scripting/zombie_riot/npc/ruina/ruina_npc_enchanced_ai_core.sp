@@ -14,6 +14,10 @@ static bool b_npc_no_retreat[MAXENTITIES];
 static bool b_npc_healer[MAXENTITIES];	//warp
 static float fl_npc_healing_duration[MAXENTITIES];
 
+static bool b_npc_sniper_anchor_point[MAXENTITIES];
+static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
+static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
+
 static char gLaser1;
 static int BeamWand_Laser;
 //static char gGlow1;	//blue
@@ -110,6 +114,10 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_ruina_internal_teleport_timer);
 	Zero(b_ruina_allow_teleport);
+
+	Zero(b_npc_sniper_anchor_point);
+	Zero(fl_npc_sniper_anchor_find_timer);
+	Zero(i_last_sniper_anchor_id_Ref);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -137,11 +145,18 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	b_npc_healer[client] = false;
 	b_npc_no_retreat[client] = false;
 	fl_npc_healing_duration[client] = 0.0;
+	b_npc_sniper_anchor_point[client]=false;
+	i_last_sniper_anchor_id_Ref[client]=-1;
 	
+}
+public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
+{
+	b_npc_sniper_anchor_point[client]=state;
 }
 public void Ruina_Set_Healer(int client)
 {
 	b_npc_healer[client] = true;
+	b_npc_sniper_anchor_point[client]=true;
 }
 public void Ruina_Set_No_Retreat(int client)
 {
@@ -205,6 +220,12 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 
 		case RUINA_ASTRIA:
 			Astria_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case RUINA_AETHER:
+			Aether_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_EUROPA:
+			Europa_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
 }
@@ -365,6 +386,12 @@ public void Ruina_NPCDeath_Override(int entity)
 		
 		case RUINA_ASTRIA:
 			Astria_NPCDeath(entity);
+		
+		case RUINA_AETHER:
+			Aether_NPCDeath(entity);
+
+		case RUINA_EUROPA:
+			Europa_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -397,6 +424,26 @@ static int GetClosestHealer(int client)
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
 		float dist = 99999999.9;
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_healer[baseboss_index])
+		{
+			float target_vec[3]; target_vec = GetAbsOrigin(baseboss_index);
+			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
+			if(dist>Distance)
+			{
+				valid = baseboss_index;
+			}
+		}
+	}
+	return valid;
+}
+static int GetClosestAnchor(int client)
+{
+	int valid = -1;
+	float Npc_Vec[3]; Npc_Vec=GetAbsOrigin(client);
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		float dist = 99999999.9;
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_sniper_anchor_point[baseboss_index])
 		{
 			float target_vec[3]; target_vec = GetAbsOrigin(baseboss_index);
 			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
@@ -621,6 +668,11 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 							NPC_SetGoalEntity(npc.index, Master_Id_Main);
 							npc.StartPathing();
 							npc.m_bPathing = true;
+
+							if(b_ruina_allow_teleport[npc.index])
+							{
+								Astria_Teleportation(npc.index, Master_Id_Main);
+							}
 								
 						}
 						else
@@ -778,6 +830,67 @@ public void Ruina_Basic_Npc_Logic(int iNPC, int PrimaryThreatIndex, float GameTi
 		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 	}
 	npc.StartPathing();
+}
+public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIndex, float GameTime, int &Anchor_Id)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	
+	Anchor_Id = EntRefToEntIndex(i_last_sniper_anchor_id_Ref[npc.index]);
+
+	if(fl_npc_sniper_anchor_find_timer[npc.index] < GameTime)
+	{
+		fl_npc_sniper_anchor_find_timer[npc.index] = GameTime + 5.0;
+
+		Anchor_Id = GetClosestAnchor(npc.index);
+
+		if(IsValidEntity(Anchor_Id))
+		{
+			i_last_sniper_anchor_id_Ref[npc.index]= EntIndexToEntRef(Anchor_Id);
+		}
+	}
+	if(IsValidEntity(Anchor_Id))
+	{
+		float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Anchor_Id);
+		float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
+						
+		float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
+						
+		if(dist > (100.0 * 100.0))
+		{
+			NPC_SetGoalEntity(npc.index, Anchor_Id);
+			npc.StartPathing();
+			npc.m_bPathing = true;
+
+			if(b_ruina_allow_teleport[npc.index])
+			{
+				Astria_Teleportation(npc.index, Anchor_Id);
+			}
+					
+		}
+		else
+		{
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+		}	
+	}
+	else
+	{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		{				
+			float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+							
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		npc.StartPathing();
+	}
 }
 public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distance, float range, float damage, float bonus_damage, const char[] attack_anim, float swing_speed, float swing_delay, float turn_speed, float gameTime, int &status)
 {
@@ -1718,7 +1831,7 @@ Names per stage:
 
 	9: Aether -> Aetheria -> Aetherium -> Aetherianus
 	{
-		State: Slave - Basic AI.
+		State: Slave - Indepentant Long range.
 		Class: Sniper
 		Ranged:
 

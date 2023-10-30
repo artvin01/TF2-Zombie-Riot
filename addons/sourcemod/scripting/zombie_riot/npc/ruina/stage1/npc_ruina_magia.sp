@@ -275,73 +275,72 @@ public void Magia_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			
-			//Predict their pos.
-			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+		//Predict their pos.
+		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			if(flDistanceToTarget < 100000)
+		if(flDistanceToTarget < 100000)
+		{
+			if(flDistanceToTarget < 50000)
 			{
-				if(flDistanceToTarget < 50000)
+				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+			}
+			else
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+			}
+				
+		}
+		else
+		{
+			npc.StartPathing();
+			npc.m_bPathing = true;
+		}
+			
+		//Target close enough to hit
+		if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
+		{
+			//Look at target so we hit.
+			//npc.FaceTowards(vecTarget, 1000.0);				
+			//Can we attack right now?
+			if(npc.m_flNextMeleeAttack < GameTime)
+			{
+				//Play attack ani
+				if (!npc.m_flAttackHappenswillhappen)
 				{
-					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					npc.FaceTowards(vecTarget, 100000.0);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.PlayMeleeSound();
+					npc.m_flNextMeleeAttack = GameTime+1.0;
+					npc.m_flAttackHappenswillhappen = true;
+					float flPos[3]; // original
+					float flAng[3]; // original
+						
+					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+						
+					float projectile_speed = 1000.0;
+					float target_vec[3];
+					target_vec = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+		
+					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+						
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.m_flAttackHappenswillhappen = false;
 				}
-				
-			}
-			else
-			{
-				npc.StartPathing();
-				npc.m_bPathing = true;
-			}
-			
-			//Target close enough to hit
-			if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-				//npc.FaceTowards(vecTarget, 1000.0);
-				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GameTime)
-				{
-					//Play attack ani
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.FaceTowards(vecTarget, 100000.0);
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlayMeleeSound();
-						npc.m_flNextMeleeAttack = GameTime+1.0;
-						npc.m_flAttackHappenswillhappen = true;
-						float flPos[3]; // original
-						float flAng[3]; // original
-						
-						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-						
-						float projectile_speed = 1000.0;
-						float target_vec[3];
-						target_vec = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
-		
-						npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
-						
-					}
-					else
-					{
-						npc.m_flAttackHappenswillhappen = false;
-					}
-				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
 			}
 		}
+		else
+		{
+			npc.StartPathing();
+				
+		}
+	}
 	else
 	{
 		NPC_StopPathing(npc.index);

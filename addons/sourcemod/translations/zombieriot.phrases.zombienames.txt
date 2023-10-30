@@ -1813,4 +1813,12 @@
 	{
 		"en"	"Astria"
 	}
+	"Aether"
+	{
+		"en"	"Aether"
+	}
+	"Europa"
+	{
+		"en"	"Europa"
+	}
 }
