@@ -232,7 +232,7 @@ public void Magia_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 5.0);
+	Ruina_Add_Battery(npc.index, 0.75);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -284,16 +284,27 @@ public void Magia_ClotThink(int iNPC)
 			
 		if(flDistanceToTarget < 100000)
 		{
-			if(flDistanceToTarget < 50000)
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			//Target close enough to hit
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 			{
-				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+				if(flDistanceToTarget < (75000))
+				{
+					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+				}
+				else
+				{
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+				}
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
-				
+				npc.StartPathing();
+				npc.m_bPathing = true;
+			}		
 		}
 		else
 		{

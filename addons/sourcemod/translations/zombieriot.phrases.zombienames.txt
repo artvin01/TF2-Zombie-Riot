@@ -1821,4 +1821,8 @@
 	{
 		"en"	"Europa"
 	}
+	"Ruina Drone"	
+	{
+		"en"	"Drone"
+	}
 }

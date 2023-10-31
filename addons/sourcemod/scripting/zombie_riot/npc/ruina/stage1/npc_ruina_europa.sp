@@ -13,39 +13,24 @@ static const char g_HurtSounds[][] = {
 	"vo/pyro_painsharp03.mp3",
 	"vo/pyro_painsharp04.mp3",
 	"vo/pyro_painsharp05.mp3",
-	"vo/pyro_painsharp06.mp3",
-	"vo/pyro_painsharp07.mp3",
-	"vo/pyro_painsharp08.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/pyro_standonthepoint01.mp3",
-	"vo/pyro_standonthepoint02.mp3",
-	"vo/pyro_standonthepoint03.mp3",
-	"vo/pyro_standonthepoint04.mp3",
-	"vo/pyro_standonthepoint05.mp3",
+	"vo/pyro_jeers01.mp3",	
+	"vo/pyro_jeers02.mp3",	
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/pyro_battlecry01.mp3",
-	"vo/pyro_battlecry02.mp3",
-	"vo/pyro_battlecry03.mp3",
-	"vo/pyro_battlecry04.mp3",
-	"vo/pyro_battlecry05.mp3",
+	"vo/taunts/pyro_taunts01.mp3",
+	"vo/taunts/pyro_taunts02.mp3",
+	"vo/taunts/pyro_taunts03.mp3",
+};
+static const char g_RangedAttackSounds[][] = {
+	"weapons/dragons_fury_shoot.wav",
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
-};
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+static const char g_RangedReloadSound[][] = {
+	"weapons/dragons_fury_pressure_build.wav",
 };
 
 void Europa_OnMapStart_NPC()
@@ -54,9 +39,8 @@ void Europa_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	PrecacheModel("models/player/pyro.mdl");
 }
 
@@ -108,26 +92,18 @@ methodmap Europa < CClotBody
 		PrintToServer("CClot::PlayDeathSound()");
 		#endif
 	}
-    public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+	public void PlayRangedSound() {
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
+		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+	public void PlayRangedReloadSound() {
+		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
-	}
-
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
+		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	
@@ -146,7 +122,11 @@ methodmap Europa < CClotBody
 		
 		
 		/*
-			
+			freedom staff		models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl
+			wraith wrap 	Hwn_Pyro_Spookyhood	"models/player/items/pyro/hwn_pyro_spookyhood.mdl"
+			mair mask		"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
+			pyromancer		Dec2014_Pyromancers_Raiments	"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl"
+			hypno-eyes
 		
 		*/
 		
@@ -163,20 +143,20 @@ methodmap Europa < CClotBody
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-    	/*
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_pyrorifle/c_dex_pyrorifle.mdl");
+    	
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/hwn_pyro_spookyhood.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_moon_boots/hw2013_moon_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/xms2013_pyro_robe/xms2013_pyro_robe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
@@ -187,7 +167,7 @@ methodmap Europa < CClotBody
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);*/
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 				
 				
 		fl_ruina_battery[npc.index] = 0.0;
@@ -195,8 +175,7 @@ methodmap Europa < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
-		Ruina_Set_Sniper_Anchor_Point(npc.index, true);     //long range npc's will flock to this npc
-		Ruina_Set_Master_Heirarchy(npc.index, 2, true, 5, 1);	//Priority 1: any fodder/leftover ranged npc's
+		Ruina_Set_Master_Heirarchy(npc.index, 2, false, 5, 1);		//doesn't acept any npc's
 
 		return npc;
 	}
@@ -216,7 +195,7 @@ public void Europa_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 5.0);
+	Ruina_Add_Battery(npc.index, 1.5);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -245,9 +224,23 @@ public void Europa_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>3000.0)
 	{
-		fl_ruina_battery[npc.index] = 0.0;
+		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
+		{
+			fl_ruina_battery[npc.index] = 0.0;
+			Europa_Spawn_Self(npc);
+		}
+		
+	}
+
+	if(fl_ruina_battery_timer[npc.index]<GameTime)
+	{
+		fl_ruina_battery_timer[npc.index]=GameTime+7.5;
+		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
+		{
+			Europa_Spawn_Minnions(npc);
+		}
 		
 	}
 
@@ -263,16 +256,28 @@ public void Europa_ClotThink(int iNPC)
 			
 		if(!IsValidEntity(Anchor_Id))
 		{
-			if(flDistanceToTarget < (1250.0*1250.0))
+			if(flDistanceToTarget < (750.0*750.0))
 			{
-				if(flDistanceToTarget < (750.0*750.0))
+				int Enemy_I_See;
+				
+				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				//Target close enough to hit
+				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					if(flDistanceToTarget < (250.0*250.0))
+					{
+						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					}
+					else
+					{
+						NPC_StopPathing(npc.index);
+						npc.m_bPathing = false;
+					}
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StartPathing();
+					npc.m_bPathing = true;
 				}
 			}
 			else
@@ -280,19 +285,8 @@ public void Europa_ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 			}
-		}	
-		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE", 0.54, 0.4, 20000.0, GameTime, status);
-		switch(status)
-		{
-			case 1:	//we swung
-				npc.PlayMeleeSound();
-			case 2:	//we hit something
-				npc.PlayMeleeHitSound();
-			case 3:	//we missed
-				npc.PlayMeleeMissSound();
-			//0 means nothing.
-        }
+		}
+		Europa_SelfDefense(npc, GameTime, Anchor_Id);
 	}
 	else
 	{
@@ -332,12 +326,135 @@ public void Europa_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, Europa_ClotThink);
 		
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+}
+static void Europa_Spawn_Minnions(Europa npc)
+{
+	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	
+	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	{
+		npc.g_TimesSummoned++;
+		for(int i; i<1; i++)
+		{
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			int spawn_index;
+			
+			spawn_index = Npc_Create(RUINA_DRONE, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+			maxhealth = RoundToNearest(maxhealth * 0.45);
+
+			if(spawn_index > MaxClients)
+			{
+				Zombies_Currently_Still_Ongoing += 1;
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			}
+		}
+	}
+}
+static void Europa_Spawn_Self(Europa npc)
+{
+	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+
+	if(maxhealth<100)
+		return;
+	
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+	int spawn_index;
+			
+	spawn_index = Npc_Create(RUINA_EUROPA, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+	maxhealth = RoundToNearest(maxhealth * 0.75);
+
+	if(spawn_index > MaxClients)
+	{
+		Zombies_Currently_Still_Ongoing += 1;
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+	}
+}
+static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty artvin
+{
+	int GetClosestEnemyToAttack;
+	//Ranged units will behave differently.
+	//Get the closest visible target via distance checks, not via pathing check.
+	GetClosestEnemyToAttack = GetClosestTarget(npc.index,_,_,_,_,_,_,true,_,_,true);	//works with masters, slaves not so much. seems to work with independant npc's too
+	if(!IsValidEnemy(npc.index,GetClosestEnemyToAttack))	//no target, what to do while idle
+	{
+		return;
+	}
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+
+	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+	if(flDistanceToTarget < (1000.0*1000.0))
+	{	
+		if(gameTime > npc.m_flNextRangedAttack)
+		{
+			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+			npc.PlayRangedSound();
+			//after we fire, we will have a short delay beteween the actual laser, and when it happens
+			//This will predict as its relatively easy to dodge
+			float projectile_speed = 500.0;
+			//lets pretend we have a projectile.
+			if(flDistanceToTarget < 1250.0*1250.0)
+				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+			{
+				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+			}
+			float DamageDone = 50.0;
+			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+		}
+	}
+	else
+	{
+		if(IsValidEntity(Anchor_Id))
+		{
+
+			CClotBody npc2 = view_as<CClotBody>(Anchor_Id);
+			int	target = npc2.m_iTarget;
+
+			if(IsValidEnemy(npc.index,target))
+			{
+				GetClosestEnemyToAttack = target;
+				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+
+				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+				if(gameTime > npc.m_flNextRangedAttack)
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+					npc.PlayRangedSound();
+					//after we fire, we will have a short delay beteween the actual laser, and when it happens
+					//This will predict as its relatively easy to dodge
+					float projectile_speed = 500.0;
+					//lets pretend we have a projectile.
+					if(flDistanceToTarget < 1250.0*1250.0)
+						vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+					{
+						vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+					}
+					float DamageDone = 25.0;
+					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+					npc.FaceTowards(vecTarget, 20000.0);
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+					npc.PlayRangedReloadSound();
+				}
+			}
+		}
+	}
+	npc.m_iTarget = GetClosestEnemyToAttack;
 }

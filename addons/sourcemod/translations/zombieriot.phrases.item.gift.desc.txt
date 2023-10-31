@@ -1259,7 +1259,7 @@
 	}
 	"Astria Desc"
 	{
-		"en"		"UHHHHHHHHH\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
+		"en"		"A slow npc that boosts the speed of nearby melee npc's\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
 	}
 	"Aether Desc"
 	{
@@ -1268,5 +1268,9 @@
 	"Europa Desc"
 	{
 		"en"		"This npc sits from a far summoning brainless drones\nBattery: Summons itself\nMaster: Low priority, commands ranged npc's"
+	}
+	"Ruina Drone Decs"
+	{
+		"en"		"A very bog standard melee spy, has no gimicks or trickery\nSlave: Melee"
 	}
 }

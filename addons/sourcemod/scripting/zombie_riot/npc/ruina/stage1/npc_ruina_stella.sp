@@ -229,7 +229,7 @@ public void Stella_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 1.0);
+	Ruina_Add_Battery(npc.index, 0.5);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -281,18 +281,32 @@ public void Stella_ClotThink(int iNPC)
 			
 		if(flDistanceToTarget < (750.0*750.0))
 		{
-			if(flDistanceToTarget < (500.0*500.0))
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			//Target close enough to hit
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 			{
+				if(flDistanceToTarget < (500.0*500.0))
+				{
+					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
+				}
+				else	
+				{
+					Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5, {20, 150, 255, 150});
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+				}
+			}
+			else				
+			{
+				npc.StartPathing();
+				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 				Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
-			}
-			else
-			{
-				Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5, {20, 150, 255, 150});
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-			}
 			
+			}	
 		}
 		else
 		{
@@ -324,7 +338,7 @@ public void Stella_ClotThink(int iNPC)
 }
 
 static int i_particle[MAXENTITIES][11];
-static int i_laser[MAXENTITIES][8];
+static int i_laser[MAXENTITIES][9];
 
 static void Stella_Create_Crest(int client)
 {
@@ -393,13 +407,20 @@ static void Stella_Create_Crest(int client)
 	//i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
 	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_5_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+
+	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
+
+	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+
+	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_4_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+
+	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+
+	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_4, particle_5_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+
 	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-	//i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+
+	i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
 	
 	i_particle[client][0] = EntIndexToEntRef(particle_0);
@@ -415,7 +436,7 @@ static void Stella_Create_Crest(int client)
 }
 static void Delete_Hand_Crest(int client)
 {
-	for(int laser=0 ; laser<7 ; laser++)
+	for(int laser=0 ; laser<8 ; laser++)
 	{
 		int entity = EntRefToEntIndex(i_laser[client][laser]);
 		if(IsValidEntity(entity))

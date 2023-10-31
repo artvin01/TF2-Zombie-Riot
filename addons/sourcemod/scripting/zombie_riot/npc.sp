@@ -378,10 +378,11 @@ enum
 	WEAPON_LEPER_AFTERIMAGE		= 330,
 	OVERLORD_ROGUE	= 331,
 	RAIDBOSS_BLADEDANCE = 332,
-	RUINA_STELLA = 333,
-	RUINA_ASTRIA = 334,
-	RUINA_AETHER = 335,
-	RUINA_EUROPA = 336,
+	RUINA_STELLA					= 333,
+	RUINA_ASTRIA 					= 334,
+	RUINA_AETHER 					= 335,
+	RUINA_EUROPA 					= 336,
+	RUINA_DRONE 					= 337,
 	
 
 	MAX_NPC_TYPES	// Add entries above this line
@@ -747,7 +748,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Stella",
 	"Astria",
 	"Aether",
-	"Europa"
+	"Europa",
+	"Ruina Drone"
 };
 
 // See items.sp for IDs to names
@@ -1115,7 +1117,8 @@ public const int NPCCategory[MAX_NPC_TYPES] =
 	-1,	//RUINA_STELLA
 	-1,	// Astria
 	-1,	//Aether
-	-1	//EUROPA
+	-1,	//EUROPA
+	-1	//RUINA_DRONE
 };
 
 public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
@@ -1478,7 +1481,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_ruina_stella",
 	"npc_ruina_astria",
 	"npc_ruina_aether",
-	"npc_ruina_europa"
+	"npc_ruina_europa",
+	"npc_ruina_drone"
 };
 
 void NPC_MapStart()
@@ -1691,6 +1695,7 @@ void NPC_MapStart()
 	Astria_OnMapStart_NPC();
 	Aether_OnMapStart_NPC();
 	Europa_OnMapStart_NPC();
+	Ruina_Drone_OnMapStart_NPC();
 	
 
 	//Expidonsa Waves
@@ -2599,6 +2604,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 
 		case RUINA_EUROPA:
 			entity = Europa(client, vecPos, vecAng, ally);
+
+		case RUINA_DRONE:
+			entity = Ruina_Drone(client, vecPos, vecAng, ally);
 			
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally);
@@ -3541,7 +3549,7 @@ public void NPCDeath(int entity)
 		case ISHARMLA_TRANS:
 			IsharmlaTrans_NPCDeath(entity);
 			
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA:
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE:
 			Ruina_NPCDeath_Override(entity); //all ruina npc deaths are here
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
@@ -4399,7 +4407,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			Isharmla_OnTakeDamage(victim, attacker, damage);
 			
 		
-		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA:	
+		case RUINA_THEOCRACY, RUINA_ADIANTUM, RUINA_LANIUS, RUINA_MAGIA, RUINA_STELLA, RUINA_ASTRIA, RUINA_AETHER, RUINA_EUROPA, RUINA_DRONE:	
 			Ruina_NPC_OnTakeDamage_Override(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 			
 		case SEA_RAIDBOSS_DONNERKRIEG:
@@ -4636,6 +4644,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_astria.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_aether.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_europa.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_drone.sp"
 
 //Alt
 

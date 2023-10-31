@@ -226,6 +226,9 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 
 		case RUINA_EUROPA:
 			Europa_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_DRONE:
+			Ruina_Drone_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
 }
@@ -392,6 +395,9 @@ public void Ruina_NPCDeath_Override(int entity)
 
 		case RUINA_EUROPA:
 			Europa_NPCDeath(entity);
+
+		case RUINA_DRONE:
+			Ruina_Drone_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -856,7 +862,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 						
 		float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 						
-		if(dist > (100.0 * 100.0))
+		if(dist > (225.0 * 225.0))
 		{
 			NPC_SetGoalEntity(npc.index, Anchor_Id);
 			npc.StartPathing();
@@ -975,6 +981,7 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 			float vBackoffPos[3];
 			vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			
 		}
 	}
 	else	//no?

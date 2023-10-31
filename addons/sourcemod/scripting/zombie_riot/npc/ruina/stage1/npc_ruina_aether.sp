@@ -34,12 +34,11 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/sniper_battlecry05.mp3",
 };
 static const char g_RangedAttackSounds[][] = {
-	"weapons/sniper_railgun_charged_shot_01.wav",
-	"weapons/sniper_railgun_charged_shot_02.wav",
+	"weapons/dragons_fury_shoot.wav",
 };
 
 static const char g_RangedReloadSound[][] = {
-	"weapons/sniper_railgun_world_reload.wav",
+	"weapons/dragons_fury_pressure_build.wav",
 };
 
 void Aether_OnMapStart_NPC()
@@ -103,14 +102,14 @@ methodmap Aether < CClotBody
 	}
 	
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-25, 80);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
 	public void PlayRangedReloadSound() {
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-25, 80);
+		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
@@ -127,12 +126,18 @@ methodmap Aether < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
-			
+			C_Bet_Brinkhood	models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl
+			"models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl"
+			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
+			Hwn_Spy_Misc2 "models/player/items/spy/hwn_spy_misc2.mdl"
+			Hazeguard "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
+
+			power spike? "models/workshop/player/items/sniper/hwn2023_power_spike_style1/hwn2023_power_spike_style1.mdl"
 		
 		*/
 		
@@ -150,21 +155,29 @@ methodmap Aether < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		/*npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/hw2013_moon_boots/hw2013_moon_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/xms2013_sniper_robe/xms2013_sniper_robe.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		
 		int skin = 1;	//1=blue, 0=red
@@ -173,7 +186,9 @@ methodmap Aether < CClotBody
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);*/
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				
 				
 		fl_ruina_battery[npc.index] = 0.0;
@@ -200,7 +215,7 @@ public void Aether_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 5.0);
+	//Ruina_Add_Battery(npc.index, 5.0);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -229,11 +244,11 @@ public void Aether_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	/*if(fl_ruina_battery[npc.index]>500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		
-	}
+	}*/
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -244,19 +259,32 @@ public void Aether_ClotThink(int iNPC)
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+		
+
 		if(!IsValidEntity(Anchor_Id))
 		{
-			if(flDistanceToTarget < 100000)
+			if(flDistanceToTarget < (2000.0*2000.0))
 			{
-				if(flDistanceToTarget < (50000))
+				int Enemy_I_See;
+				
+				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				//Target close enough to hit
+				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					if(flDistanceToTarget < (750.0*750.0))
+					{
+						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+					}
+					else
+					{
+						NPC_StopPathing(npc.index);
+						npc.m_bPathing = false;
+					}
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StartPathing();
+					npc.m_bPathing = true;
 				}
 			}
 			else
@@ -314,6 +342,10 @@ public void Aether_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }
 
 static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty artvin
@@ -329,33 +361,26 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
+	if(flDistanceToTarget < (2250.0*2250.0))
 	{	
-		//target is within range, attack them
-		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+		if(gameTime > npc.m_flNextRangedAttack)
 		{
-			Ruina_Runaway_Logic(npc.index, GetClosestEnemyToAttack);
-		}
-		else
-		{
-			if(gameTime > npc.m_flNextRangedAttack)
-			{
-				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
-				npc.PlayRangedSound();
-				//after we fire, we will have a short delay beteween the actual laser, and when it happens
-				//This will predict as its relatively easy to dodge
-				float projectile_speed = 1250.0;
-				//lets pretend we have a projectile.
+			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+			npc.PlayRangedSound();
+			//after we fire, we will have a short delay beteween the actual laser, and when it happens
+			//This will predict as its relatively easy to dodge
+			float projectile_speed = 1250.0;
+			//lets pretend we have a projectile.
+			if(flDistanceToTarget < 1250.0*1250.0)
 				vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
-				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
-				}
-				float DamageDone = 25.0;
-				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.75;
+			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+			{
+				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 			}
+			float DamageDone = 25.0;
+			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
 		}
 	}
 	else
@@ -369,23 +394,27 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 			if(IsValidEnemy(npc.index,target))
 			{
 				GetClosestEnemyToAttack = target;
+				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+
+				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 					npc.PlayRangedSound();
 					//after we fire, we will have a short delay beteween the actual laser, and when it happens
 					//This will predict as its relatively easy to dodge
 					float projectile_speed = 1250.0;
 					//lets pretend we have a projectile.
-					vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+					if(flDistanceToTarget < 1250.0*1250.0)
+						vecTarget = PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
 					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
 						vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 					}
 					float DamageDone = 25.0;
-					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
+					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.75;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
 					npc.PlayRangedReloadSound();
 				}
 			}

@@ -249,7 +249,7 @@ public void Astria_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 7.5);
+	Ruina_Add_Battery(npc.index, 2.5);
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -377,7 +377,27 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 		//target is within range, attack them
 		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 		{
-			Ruina_Runaway_Logic(npc.index, GetClosestEnemyToAttack);
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, GetClosestEnemyToAttack);
+			//Target close enough to hit
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+			{
+				if(flDistanceToTarget < (750.0*750.0))
+				{
+					Ruina_Runaway_Logic(npc.index, GetClosestEnemyToAttack);
+				}
+				else
+				{
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+				}
+			}
+			else
+			{
+				npc.StartPathing();
+				npc.m_bPathing = true;
+			}
 		}
 		else
 		{
