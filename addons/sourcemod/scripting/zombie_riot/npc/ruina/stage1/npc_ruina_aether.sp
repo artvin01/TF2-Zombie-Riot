@@ -12,12 +12,7 @@ static const char g_HurtSounds[][] = {
 	"vo/sniper_painsharp02.mp3",
 	"vo/sniper_painsharp03.mp3",
 	"vo/sniper_painsharp04.mp3",
-	"vo/sniper_painsharp05.mp3",
-	"vo/sniper_painsharp06.mp3",
-	"vo/sniper_painsharp07.mp3",
-	"vo/sniper_painsharp08.mp3",
 };
-
 static const char g_IdleSounds[][] = {
 	"vo/sniper_standonthepoint01.mp3",
 	"vo/sniper_standonthepoint02.mp3",

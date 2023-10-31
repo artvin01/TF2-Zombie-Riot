@@ -1825,4 +1825,8 @@
 	{
 		"en"	"Drone"
 	}
+	"Ruriana"
+	{
+		"en"	"Ruriana"
+	}
 }

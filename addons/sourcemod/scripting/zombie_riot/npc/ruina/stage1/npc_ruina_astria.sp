@@ -28,7 +28,6 @@ static const char g_IdleSounds[][] = {
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/engineer_battlecry01.mp3",
-	"vo/engineer_battlecry02.mp3",
 	"vo/engineer_battlecry03.mp3",
 	"vo/engineer_battlecry04.mp3",
 	"vo/engineer_battlecry05.mp3",

@@ -2,73 +2,59 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
-};
-
-static const char g_IdleSounds[][] = {
-	"vo/spy_laughshort01.mp3",
-	"vo/spy_laughshort02.mp3",
-	"vo/spy_laughshort03.mp3",
-	"vo/spy_laughshort04.mp3",
-	"vo/spy_laughshort05.mp3",
-	"vo/spy_laughshort06.mp3",
+	"vo/medic_painsharp01.mp3",
+	"vo/medic_painsharp02.mp3",
+	"vo/medic_painsharp03.mp3",
+	"vo/medic_painsharp04.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/medic_battlecry01.mp3",
+	"vo/medic_battlecry02.mp3",
+	"vo/medic_battlecry03.mp3",
+	"vo/medic_battlecry04.mp3",
+};
+
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/samurai/tf_katana_01.wav",
+	"weapons/samurai/tf_katana_02.wav",
+	"weapons/samurai/tf_katana_03.wav",
+	"weapons/samurai/tf_katana_04.wav",
+	"weapons/samurai/tf_katana_05.wav",
+	"weapons/samurai/tf_katana_06.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
-};
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/samurai/tf_katana_slice_01.wav",
+	"weapons/samurai/tf_katana_slice_02.wav",
+	"weapons/samurai/tf_katana_slice_03.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"weapons/cbar_miss1.wav",
 };
 
-void Ruina_Drone_OnMapStart_NPC()
+static int i_damage_taken[MAXENTITIES];
+
+void Ruriana_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	PrecacheModel("models/player/spy.mdl");
+	Zero(i_damage_taken);
 }
 
-methodmap Ruina_Drone < CClotBody
+methodmap Ruriana < CClotBody
 {
-	
-	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
 	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -129,61 +115,64 @@ methodmap Ruina_Drone < CClotBody
 	}
 	
 	
-	public Ruina_Drone(int client, float vecPos[3], float vecAng[3], bool ally)
+	
+	public Ruriana(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Ruina_Drone npc = view_as<Ruina_Drone>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1250", ally));
+		Ruriana npc = view_as<Ruriana>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_DRONE;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcInternalId[npc.index] = RUINA_RURIANA;
+		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		
-		/*
-			Bunsen Brave		Robo_Heavy_Chief
-			Claid					"models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-			Dark Helm - Ruina_Drone		Hw2013_The_Dark_Helm_(Class)
-			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-			Herzenvrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
-		
-		*/
-		
-		npc.m_flNextMeleeAttack = 0.0;
-		
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		SDKHook(npc.index, SDKHook_Think, Ruriana_ClotThink);
+
+		/*
+
+			Katana - models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl
+			Angel of Death - "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl"
+			Low Grav Loafers - "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl"
+			Big chief - "models/player/items/heavy/heavy_big_chief.mdl"
+			Demonic Dome - "models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_medic.mdl"
+			Festive Rack - "models/workshop/player/items/all_class/dec22_festive_rack_style1/dec22_festive_rack_style1_medic.mdl"
+
+		*/
 		
-		
-		
-		SDKHook(npc.index, SDKHook_Think, Ruina_Drone_ClotThink);
-		
+		//IDLE
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/heavy_big_chief.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec22_festive_rack_style1/dec22_festive_rack_style1_medic.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -193,9 +182,15 @@ methodmap Ruina_Drone < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+
+		//fl_ruina_battery[npc.index] = 0.0;
+		//b_ruina_battery_ability_active[npc.index] = false;
+		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
-		
+		Ruina_Set_Master_Heirarchy(npc.index, 1, true, 10, 4);		//priority 4, just lower then the actual bosses
+
 		return npc;
 	}
 	
@@ -204,16 +199,18 @@ methodmap Ruina_Drone < CClotBody
 
 //TODO 
 //Rewrite
-public void Ruina_Drone_ClotThink(int iNPC)
+public void Ruriana_ClotThink(int iNPC)
 {
-	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);
-	
+	Ruriana npc = view_as<Ruriana>(iNPC);
+
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-
+	
+	//Ruina_Add_Battery(npc.index, 1.0);
+	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -241,16 +238,22 @@ public void Ruina_Drone_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
+	/*if(fl_ruina_battery[npc.index]>1500.0)
+	{
+		fl_ruina_battery[npc.index] = 0.0;
+		
+	}*/
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
+		
 		int status=0;
-		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 25.0, 125.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
+		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 45.0, 200.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.6, 0.35, 20000.0, GameTime, status);
 		switch(status)
 		{
 			case 1:	//we swung
@@ -271,44 +274,64 @@ public void Ruina_Drone_ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-public Action Ruina_Drone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Ruriana_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Ruina_Drone npc = view_as<Ruina_Drone>(victim);
+	Ruriana npc = view_as<Ruriana>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+
+	float GameTime = GetGameTime(npc.index);
 	
-	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
+		int healing = RoundToFloor(i_damage_taken[npc.index]*0.5);
+
+		if(healing > RoundToFloor(Max_Health*0.1))
+			healing = RoundToFloor(Max_Health*0.1);
+
+		//CPrintToChatAll("Healing: %i",healing);
+			
+		Stella_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 1, 1, 175});
+
+		i_damage_taken[npc.index]=0;
+	}
+	else
+	{
+		i_damage_taken[npc.index]+=damage;
+	}
+
+	if (npc.m_flHeadshotCooldown < GameTime)
+	{
+		npc.m_flHeadshotCooldown = GameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
 	return Plugin_Changed;
 }
 
-public void Ruina_Drone_NPCDeath(int entity)
+public void Ruriana_NPCDeath(int entity)
 {
-	Ruina_Drone npc = view_as<Ruina_Drone>(entity);
+	Ruriana npc = view_as<Ruriana>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, Ruina_Drone_ClotThink);
+
+	SDKUnhook(npc.index, SDKHook_Think, Ruriana_ClotThink);
 		
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

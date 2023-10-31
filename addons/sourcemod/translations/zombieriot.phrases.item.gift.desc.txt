@@ -1273,4 +1273,8 @@
 	{
 		"en"		"A very bog standard melee spy, has no gimicks or trickery\nSlave: Melee"
 	}
+	"Ruriana Desc"
+	{
+		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10% of the npc's health"
+	}
 }

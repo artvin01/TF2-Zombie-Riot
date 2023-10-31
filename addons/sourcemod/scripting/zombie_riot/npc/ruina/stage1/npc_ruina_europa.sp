@@ -224,7 +224,7 @@ public void Europa_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>3000.0)
+	if(fl_ruina_battery[npc.index]>6000.0)
 	{
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{

@@ -229,6 +229,9 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 
 		case RUINA_DRONE:
 			Ruina_Drone_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_RURIANA:
+			Ruriana_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
 }
@@ -398,6 +401,9 @@ public void Ruina_NPCDeath_Override(int entity)
 
 		case RUINA_DRONE:
 			Ruina_Drone_NPCDeath(entity);
+		
+		case RUINA_RURIANA:
+			Ruriana_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
@@ -792,6 +798,10 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
+			if(b_ruina_allow_teleport[npc.index])
+			{
+				Astria_Teleportation(npc.index, PrimaryThreatIndex);
+			}
 			npc.StartPathing();
 						
 			return;
@@ -812,6 +822,10 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		else 
 		{
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		}
+		if(b_ruina_allow_teleport[npc.index])
+		{
+			Astria_Teleportation(npc.index, PrimaryThreatIndex);
 		}
 		npc.StartPathing();
 						
@@ -1825,7 +1839,20 @@ Names per stage:
 
 	7: Venium -> Valla -> Valianis -> Valiant
 	{
-		Builder, builds stuff that does STUFFFFF
+		State: Independant
+		Class: Engie
+		Has the ability to build a special building that once built spawns drones and maintains an ION
+	}
+	Building: "Magia Anchor"
+	{
+		spawns drones respective to the stage.
+		controls a special ION, 1 ion per stage.
+		A maximum of 4 of them can exist at a time.
+		once 4 exist, they have the abiltiy to summon a "Storm Weaver"
+	}
+	Special: "Storm Weaver":
+	{
+		A worm boss, it itself doesn't have a hitbox.
 	}
 
 	8: Daedalus -> Draedon -> Draeonis -> Draconia
@@ -1859,8 +1886,7 @@ Names per stage:
 		State: Master AI.
 		Class: Medic.
 		Ranged, Melee.
-
-		A hyper aggresive npc, kinda like a raidboss, but not that at that level
+		Passive: damage taken is healed to allies around.
 
 		Battery: Ion Sweep - Tl;dr, Ion cannon's EVERYWHERE.
 	}
@@ -1879,9 +1905,9 @@ Names per stage:
 	}
 	14: Drone -> Dronian -> Dronis -> Dronianis
 	{
-		State: Brainless AI.
-		Class: RNG BABY	//no joke ima try to make its class random on spawn
-		Melee, or ranged, again RNG BABY!!!!!
+		State: Melee AI.
+		Class: Spy
+		Melee.
 		it only exists as a minnion to be spammed. it has nothing special for now
 	}
 
