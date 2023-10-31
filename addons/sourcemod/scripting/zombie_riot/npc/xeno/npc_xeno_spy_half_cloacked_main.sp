@@ -292,9 +292,11 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 					npc.m_bmovedelay = true;
 				}
+				if(IsValidEntity(npc.m_iWearable1))
+					AcceptEntityInput(npc.m_iWearable1, "Disable");
+				if(IsValidEntity(npc.m_iWearable2))
+					AcceptEntityInput(npc.m_iWearable2, "Enable");
 
-				AcceptEntityInput(npc.m_iWearable1, "Disable");
-				AcceptEntityInput(npc.m_iWearable2, "Enable");
 			//	npc.FaceTowards(vecTarget);
 				
 			}
@@ -303,8 +305,10 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 				int iActivity_melee = npc.LookupActivity("ACT_MP_STAND_SECONDARY");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = false;
-				AcceptEntityInput(npc.m_iWearable1, "Enable");
-				AcceptEntityInput(npc.m_iWearable2, "Disable");
+				if(IsValidEntity(npc.m_iWearable1))
+					AcceptEntityInput(npc.m_iWearable1, "Enable");
+				if(IsValidEntity(npc.m_iWearable2))
+					AcceptEntityInput(npc.m_iWearable2, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
@@ -350,9 +354,11 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 						npc.m_bmovedelay = true;
 						npc.m_flSpeed = 260.0;
 					}
-	
-					AcceptEntityInput(npc.m_iWearable1, "Disable");
-					AcceptEntityInput(npc.m_iWearable2, "Enable");
+		
+					if(IsValidEntity(npc.m_iWearable1))
+						AcceptEntityInput(npc.m_iWearable1, "Disable");
+					if(IsValidEntity(npc.m_iWearable2))
+						AcceptEntityInput(npc.m_iWearable2, "Enable");
 				//	npc.FaceTowards(vecTarget, 1000.0);
 					npc.m_fbGunout = false;
 				}

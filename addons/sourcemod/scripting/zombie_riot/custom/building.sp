@@ -6973,8 +6973,6 @@ public Action Timer_SummonerThink(Handle timer, DataPack pack)
 						
 						view_as<BarrackBody>(mounted ? owner : entity).PlaySpawnSound();
 						int npc = Npc_Create(GetSData(CivType[owner], TrainingIndex[owner], NPCIndex), owner, pos, ang, true);
-						view_as<BarrackBody>(npc).BonusDamageBonus = 1.0;
-						view_as<BarrackBody>(npc).BonusFireRate = 1.0;
 						view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[owner], TrainingIndex[owner], SupplyCost);
 						Barracks_UpdateEntityUpgrades(owner, npc, true, true); //make sure upgrades if spawned, happen on full health!
 

@@ -1224,9 +1224,9 @@
 	
 	"Texan business Desc"
 	{
-		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 2x the damage.\nYou need to have enough upgrades for this to work."
-		"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
-		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成2倍伤害。你需要足够的金属才能让它工作。"
+		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 15x the damage.\nYou need to have enough upgrades for this to work."
+	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
+		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成15倍伤害。你需要足够的金属才能让它工作。"
 	}
 	
 	"Buildable Elevation Desc"

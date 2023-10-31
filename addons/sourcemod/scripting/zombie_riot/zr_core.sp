@@ -130,7 +130,8 @@ enum
 	WEAPON_LEPER_MELEE_PAP = 59,
 	WEAPON_FLAGELLANT_MELEE = 60,
 	WEAPON_FLAGELLANT_HEAL = 61,
-	WEAPON_SEABORN_MISC = 62
+	WEAPON_SEABORN_MISC = 62,
+	WEAPON_TEXAN_BUISNESS = 63
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -519,6 +520,7 @@ void ZR_MapStart()
 	Wand_Skull_Summon_ClearAll();
 	ShieldLogic_OnMapStart();
 	Rogue_OnAbilityUseMapStart();
+	Weapon_TexanBuisnesMapChange();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;

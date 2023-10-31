@@ -2169,7 +2169,7 @@ void ApplyLastmanOrDyingOverlay(int client)
 	if(LastMann)
 	{
 		if(LastMannScreenEffect)
-			DoOverlay(client, "zombie_riot/filmgrain/filmgrain_3", 1);
+			DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
 	}
 }
 

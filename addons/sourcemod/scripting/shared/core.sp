@@ -2434,6 +2434,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_BuildingRecievedHordings[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
+		view_as<BarrackBody>(entity).BonusDamageBonus = 1.0;
+		view_as<BarrackBody>(entity).BonusFireRate = 1.0;
 		Resistance_for_building_High[entity] = 0.0;
 		Armor_Charge[entity] = 0;
 		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;

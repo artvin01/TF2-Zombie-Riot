@@ -2061,6 +2061,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
 		}
+		case WEAPON_TEXAN_BUISNESS:
+		{
+			Weapon_TexanBuisness(attacker, damage, damagetype);
+		}
 	}
 #endif
 
@@ -2741,13 +2745,16 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	float BaseDamageBeforeBuffs = damage;
-	if(b_ThisWasAnNpc[attacker])
+	if(inflictor > 0)
 	{
-		if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+		if(b_ThisWasAnNpc[inflictor])
 		{
-			if(i_CurrentEquippedPerk[attacker] == 5)
+			if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
 			{
-				damage *= 1.25; //this should stack
+				if(i_CurrentEquippedPerk[inflictor] == 5)
+				{
+					damage *= 1.25; //this should stack
+				}
 			}
 		}
 	}
