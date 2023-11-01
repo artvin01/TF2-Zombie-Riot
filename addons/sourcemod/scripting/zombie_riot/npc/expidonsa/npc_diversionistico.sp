@@ -26,6 +26,10 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/knife_swing.wav",
 };
 
+static const char g_ZapAttackSounds[][] = {
+	"npc/assassin/ball_zap1.wav",
+};
+
 static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit1.wav",
 	"weapons/blade_hit2.wav",
@@ -37,6 +41,8 @@ static const char g_MeleeAttackBackstabSounds[][] = {
 	"player/spy_shield_break.wav",
 };
 
+int i_DiversioAntiCheese_PreviousEnemy[MAXENTITIES];
+int i_DiversioAntiCheese_Tolerance[MAXENTITIES];
 
 float LastSpawnDiversio;
 
@@ -46,12 +52,18 @@ void Diversionistico_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_ZapAttackSounds)); i++) { PrecacheSound(g_ZapAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackBackstabSounds)); i++) { PrecacheSound(g_MeleeAttackBackstabSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/spy.mdl");
 	LastSpawnDiversio = 0.0;
 }
 
+void DiversionSpawnNpcReset(int index)
+{
+	i_DiversioAntiCheese_PreviousEnemy[index] = 0;
+	i_DiversioAntiCheese_Tolerance[index] = 0;
+}
 
 methodmap Diversionistico < CClotBody
 {
@@ -84,6 +96,10 @@ methodmap Diversionistico < CClotBody
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayZapSound()
+	{
+		EmitSoundToAll(g_ZapAttackSounds[GetRandomInt(0, sizeof(g_ZapAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeBackstabSound(int target)
 	{
@@ -125,6 +141,7 @@ methodmap Diversionistico < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
 		b_TryToAvoidTraverse[npc.index] = true;
+		DiversionSpawnNpcReset(npc.index);
 		
 		
 		int skin = 1;
@@ -214,6 +231,8 @@ public void Diversionistico_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		int AntiCheeseReply = 0;
+
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.m_iTarget);
 	
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -223,15 +242,40 @@ public void Diversionistico_ClotThink(int iNPC)
 			b_TryToAvoidTraverse[npc.index] = false;
 			vPredictedPos = PredictSubjectPosition(npc, npc.m_iTarget);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 40.0 ,vPredictedPos);
+			AntiCheeseReply = DiversionAntiCheese(npc.m_iTarget, npc.index, vPredictedPos);
 			b_TryToAvoidTraverse[npc.index] = true;
-			NPC_SetGoalVector(npc.index, vPredictedPos, true);
+			if(AntiCheeseReply == 0)
+			{
+				if(!npc.m_bPathing)
+					NPC_StartPathing(npc.index);
 
+				NPC_SetGoalVector(npc.index, vPredictedPos, true);
+			}
+			else if(AntiCheeseReply == 1)
+			{
+				if(npc.m_bPathing)
+					NPC_StopPathing(npc.index);
+			}
 		}
 		else 
 		{
+			if(!npc.m_bPathing)
+				NPC_StartPathing(npc.index);
+
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DiversionisticoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		switch(AntiCheeseReply)
+		{
+			case 0:
+			{
+				DiversionisticoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+			}
+			case 1:
+			{
+				npc.m_flAttackHappens = 0.0;
+				DiversionisticoSelfDefenseRanged(npc,GetGameTime(npc.index), npc.m_iTarget); 
+			}
+		}
 	}
 	else
 	{
@@ -267,6 +311,8 @@ public void Diversionistico_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, Diversionistico_ClotThink);
 		
 	
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -277,7 +323,24 @@ public void Diversionistico_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 
 }
+void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int target)
+{
+	npc.FaceTowards(WorldSpaceCenter(target), 15000.0);
+	if(gameTime > npc.m_flNextRangedAttack)
+	{
+		npc.PlayZapSound();
+		npc.AddGesture("ACT_MP_THROW");
+		npc.m_flDoingAnimation = gameTime + 0.25;
+		npc.m_flNextRangedAttack = gameTime + 1.2;
+		float damageDealt = 85.0;
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenter(target));
+		if(IsValidEntity(npc.m_iWearable5))
+			RemoveEntity(npc.m_iWearable5);
 
+		npc.m_iWearable5 = ConnectWithBeam(npc.m_iWearable1, target, 100, 100, 250, 3.0, 3.0, 1.35, LASERBEAM);
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable5), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
 void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target, float distance)
 {
 	bool BackstabDone = false;
@@ -430,4 +493,39 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 	vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 	return vecSwingEnd;
+}
+
+int DiversionAntiCheese(int enemy, int npcindex, float vPredictedPos[3])
+{
+	int oldEnemy = EntRefToEntIndex(i_DiversioAntiCheese_PreviousEnemy[npcindex]);
+	if(oldEnemy != enemy)
+	{
+		i_DiversioAntiCheese_PreviousEnemy[npcindex] = EntIndexToEntRef(enemy);
+		i_DiversioAntiCheese_Tolerance[npcindex] = 0;
+	}
+
+	static float hullcheckmaxs_Player_Again[3];
+	static float hullcheckmins_Player_Again[3];
+	hullcheckmaxs_Player_Again = view_as<float>( { 10.0, 10.0, 40.0 } ); //Is the players back inside a wall? Most realistic check i could find.
+	hullcheckmins_Player_Again = view_as<float>( { -10.0, -10.0, 20.0 } );	
+	if(IsSpaceOccupiedIgnorePlayers(vPredictedPos, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npcindex))
+	{
+		i_DiversioAntiCheese_Tolerance[npcindex] += 1;
+	}
+	else
+	{
+		i_DiversioAntiCheese_Tolerance[npcindex] -= 1;
+	}
+
+	if(i_DiversioAntiCheese_Tolerance[npcindex] > 15)
+		i_DiversioAntiCheese_Tolerance[npcindex] = 15;
+
+	if(i_DiversioAntiCheese_Tolerance[npcindex] < 0)
+		i_DiversioAntiCheese_Tolerance[npcindex] = 0;
+
+	if(i_DiversioAntiCheese_Tolerance[npcindex] > 10)
+	{
+		return 1;
+	}
+	return 0;
 }
