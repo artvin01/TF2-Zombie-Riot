@@ -161,10 +161,7 @@ methodmap Venium < CClotBody
 		
 		
 		/*
-			nunhood						//Xms2013_Medic_Hood
-			ramses regalia				//Hw2013_Ramses_Regalia
-			lo-grav loafers				//Hw2013_Moon_Boots
-			angel of death				//Xms2013_Medic_Robe
+			
 		
 		*/
 		
@@ -213,7 +210,8 @@ methodmap Venium < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
+		Ruina_Set_No_Retreat(npc.index);	//no running away to heal!
 		
 		
 		return npc;
@@ -286,7 +284,7 @@ public void Venium_ClotThink(int iNPC)
 				}
 				else
 				{
-					NPC_SetGoalVector(iNPC, Anchor_Loc);
+					NPC_SetGoalVector(iNPC, Anchor_Loc);	//we are too far away from the anchor to charge it, go near it.
 					NPC_StartPathing(iNPC);
 					npc.StartPathing();
 					npc.m_bPathing = true;
@@ -295,7 +293,7 @@ public void Venium_ClotThink(int iNPC)
 			}
 			else	//active phase
 			{
-				
+				Venium_Post_Bult_Logic(npc, PrimaryThreatIndex, GameTime);	//anchor is built, if an enemy is too close we attack, otherwise just stay near the anchor
 			}
 		}
 		else
@@ -309,19 +307,16 @@ public void Venium_ClotThink(int iNPC)
 	}
 	else if(fl_ruina_battery_timer[npc.index] < GameTime)
 	{
-		Venium_Build_Anchor(npc);
+		Venium_Build_Anchor(npc);	//build anchor.
 	}
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	else if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//anchor is dead, we on cooldown, runaway from anyone
 	{
-			
-		//Predict their pos.
-		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 			
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-		if(flDistanceToTarget < 100000)
+
+		if(flDistanceToTarget < (2000.0*2000.0))
 		{
 			int Enemy_I_See;
 				
@@ -329,7 +324,7 @@ public void Venium_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 			{
-				if(flDistanceToTarget < (75000))
+				if(flDistanceToTarget < (1250.0*1250.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 				}
@@ -343,22 +338,15 @@ public void Venium_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
-			}		
+			}
 		}
 		else
 		{
 			npc.StartPathing();
 			npc.m_bPathing = true;
 		}
-			
 	}
-	else
-	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
+
 	npc.PlayIdleAlertSound();
 }
 public Action Venium_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -478,8 +466,43 @@ static void Venium_Build_Anchor(Venium npc)
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}
-
+		fl_ruina_battery[spawn_index]=10.0;
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
+		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
+	}
+}
+static void Venium_Post_Bult_Logic(Venium npc, int PrimaryThreatIndex, float GameTime)
+{
+	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	{
+			
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+		
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.5)
+		{
+			Ruina_Basic_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+			int status=0;
+			Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25, 45.0, 200.0, "ACT_MP_ATTACK_STAND_MELEE", 0.6, 0.35, 20000.0, GameTime, status);
+			switch(status)
+			{
+				case 1:	//we swung
+					npc.PlayMeleeSound();
+				case 2:	//we hit something
+					npc.PlayMeleeHitSound();
+				case 3:	//we missed
+					npc.PlayMeleeMissSound();
+				//0 means nothing.
+			}
+		}
+			
+	}
+	else
+	{
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
