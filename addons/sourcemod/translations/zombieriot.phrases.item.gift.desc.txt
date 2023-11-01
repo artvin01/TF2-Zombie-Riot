@@ -1277,4 +1277,12 @@
 	{
 		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10% of the npc's health"
 	}
+	"Venium Desc"
+	{
+		"en"		"An engineer that builds Magia anchors, apart from that, not very special"
+	}	
+	"Magia Anchor Desc"
+	{
+		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns..."
+	}
 }

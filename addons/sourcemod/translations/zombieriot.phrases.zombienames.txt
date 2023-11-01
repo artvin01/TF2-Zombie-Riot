@@ -1829,4 +1829,12 @@
 	{
 		"en"	"Ruriana"
 	}
+	"Venium"
+	{
+		"en"	"Venium"
+	}
+	"Magia Anchor"
+	{
+		"en"	"Magia Anchor"
+	}
 }
