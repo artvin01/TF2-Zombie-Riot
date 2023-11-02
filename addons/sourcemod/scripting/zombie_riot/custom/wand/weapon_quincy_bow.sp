@@ -496,8 +496,8 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	float time = 10.0;
 
 		
-	if(speed>4500.0)
-		speed = 4500.0;
+	if(speed>3000.0)
+		speed = 3000.0;
 	Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_QUINCY_BOW, weapon, "raygun_projectile_blue");
 	
 	fl_Quincy_Charge[client] = 0.0;
