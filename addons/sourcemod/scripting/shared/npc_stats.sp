@@ -361,7 +361,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//baseNPC.flRunSpeed = 300.0; //SEE Update Logic.
 		baseNPC.flFrictionSideways = 5.0;
 		baseNPC.flMaxYawRate = NPC_DEFAULT_YAWRATE;
-		baseNPC.flDeathDropHeight = 2000.0;
+		baseNPC.flDeathDropHeight = 999999.0;
 
 #if defined ZR
 		if(!Ally && VIPBuilding_Active())

@@ -259,6 +259,7 @@ public void Diversionistico_ClotThink(int iNPC)
 		}
 		else 
 		{
+			DiversionCalmDownCheese(npc.index);
 			if(!npc.m_bPathing)
 				NPC_StartPathing(npc.index);
 
@@ -494,7 +495,13 @@ float[] GetBehindTarget(int target, float Distance, float origin[3])
 
 	return vecSwingEnd;
 }
+void DiversionCalmDownCheese(int npcindex)
+{
+	i_DiversioAntiCheese_Tolerance[npcindex] -= 2;
 
+	if(i_DiversioAntiCheese_Tolerance[npcindex] < 0)
+		i_DiversioAntiCheese_Tolerance[npcindex] = 0;
+}
 int DiversionAntiCheese(int enemy, int npcindex, float vPredictedPos[3])
 {
 	int oldEnemy = EntRefToEntIndex(i_DiversioAntiCheese_PreviousEnemy[npcindex]);
@@ -514,16 +521,16 @@ int DiversionAntiCheese(int enemy, int npcindex, float vPredictedPos[3])
 	}
 	else
 	{
-		i_DiversioAntiCheese_Tolerance[npcindex] -= 1;
+		i_DiversioAntiCheese_Tolerance[npcindex] -= 2;
 	}
 
-	if(i_DiversioAntiCheese_Tolerance[npcindex] > 15)
-		i_DiversioAntiCheese_Tolerance[npcindex] = 15;
+	if(i_DiversioAntiCheese_Tolerance[npcindex] > 45)
+		i_DiversioAntiCheese_Tolerance[npcindex] = 45;
 
 	if(i_DiversioAntiCheese_Tolerance[npcindex] < 0)
 		i_DiversioAntiCheese_Tolerance[npcindex] = 0;
 
-	if(i_DiversioAntiCheese_Tolerance[npcindex] > 10)
+	if(i_DiversioAntiCheese_Tolerance[npcindex] > 30)
 	{
 		return 1;
 	}

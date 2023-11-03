@@ -527,8 +527,14 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 #if defined ZR
 void Store_OnCached(int client)
 {
-	if(!CashSpent[client] && Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
-		CashSpent[client] = -50;
+	if(!CashSpent[client])
+	{
+		if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
+			CashSpent[client] = -50;
+
+		if(Items_HasNamedItem(client, "ZR Content Creator [???]"))
+			CashSpent[client] = -50;
+	}
 }
 #endif
 

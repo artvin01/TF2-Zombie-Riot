@@ -349,6 +349,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 			}
 			else
 			{
+				DiversionCalmDownCheese(npc.index);
 				if(!npc.m_bPathing)
 					NPC_StartPathing(npc.index);
 
@@ -359,6 +360,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 		}
 		else 
 		{
+			DiversionCalmDownCheese(npc.index);
 			if(!npc.m_bPathing)
 				NPC_StartPathing(npc.index);
 

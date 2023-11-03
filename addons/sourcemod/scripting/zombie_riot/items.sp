@@ -55,7 +55,7 @@ static bool b_ForceSpawnNextTime;
 void Items_PluginStart()
 {
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
-	RegAdminCmd("zr_itemdebug", Items_GiveCmd, ADMFLAG_RCON);
+	RegAdminCmd("zr_give_item", Items_GiveCmd, ADMFLAG_RCON);
 }
 
 void Items_SetupConfig()
