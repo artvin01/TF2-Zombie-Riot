@@ -93,6 +93,7 @@ enum struct ItemInfo
 	float WeaponSizeOverride;
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
+	float ThirdpersonAnimModif;
 	
 	int Attack3AbilitySlot;
 	bool VisualDescOnly;
@@ -260,6 +261,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
+
+		Format(buffer, sizeof(buffer), "%smodif_attackspeed_anim", prefix);
+		this.ThirdpersonAnimModif			= kv.GetFloat(buffer, 1.0);
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size_viewmodel", prefix);
 		this.WeaponSizeOverrideViewmodel			= kv.GetFloat(buffer, 1.0);
@@ -523,8 +527,14 @@ static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 #if defined ZR
 void Store_OnCached(int client)
 {
-	if(!CashSpent[client] && Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
-		CashSpent[client] = -50;
+	if(!CashSpent[client])
+	{
+		if(Items_HasNamedItem(client, "ZR Contest Nominator [???]"))
+			CashSpent[client] = -50;
+
+		if(Items_HasNamedItem(client, "ZR Content Creator [???]"))
+			CashSpent[client] = -50;
+	}
 }
 #endif
 
@@ -3997,7 +4007,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttck") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								if(item.ParentKit)
 								{
@@ -5148,6 +5158,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					f_WeaponSizeOverride[entity]			= info.WeaponSizeOverride;
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_BackstabBossDmgPenalty[entity]		= info.BackstabDmgPentalty;
+					f_ModifThirdPersonAttackspeed[entity]	= info.ThirdpersonAnimModif;
 
 					HidePlayerWeaponModel(client, entity);
 					/*
@@ -5904,7 +5915,15 @@ stock void Store_Unequip(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
+	ItemInfo info;
+	item.GetItemInfo(0, info);
 	item.Equipped[client] = false;
+
+	ItemCost(client, item, info.Cost);
+	if(info.Cost <= 0)
+	{
+		item.Owned[client] = 0;
+	}
 	StoreItems.SetArray(index, item);
 
 	if(item.ParentKit)

@@ -130,7 +130,8 @@ enum
 	WEAPON_LEPER_MELEE_PAP = 59,
 	WEAPON_FLAGELLANT_MELEE = 60,
 	WEAPON_FLAGELLANT_HEAL = 61,
-	WEAPON_SEABORN_MISC = 62
+	WEAPON_SEABORN_MISC = 62,
+	WEAPON_TEXAN_BUISNESS = 63
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -157,6 +158,7 @@ bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
 int CurrentCash;
 bool LastMann;
+bool LastMannScreenEffect;
 int LimitNpcs;
 
 //bool RaidMode; 							//Is this raidmode?
@@ -518,6 +520,7 @@ void ZR_MapStart()
 	Wand_Skull_Summon_ClearAll();
 	ShieldLogic_OnMapStart();
 	Rogue_OnAbilityUseMapStart();
+	Weapon_TexanBuisnesMapChange();
 	RaidModeTime = 0.0;
 	f_TimerTickCooldownRaid = 0.0;
 	f_TimerTickCooldownShop = 0.0;
@@ -1098,7 +1101,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				npc.m_bThisEntityIgnored = false;
 				SetEntityCollisionGroup(client, 5);
 				PrintCenterText(client, "");
-				DoOverlay(client, "");
+				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, client);
 				int entity, i;
@@ -1251,7 +1254,7 @@ void CheckAlivePlayersforward(int killed=0)
 	CheckAlivePlayers(killed, _);
 }
 
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
 {
 	bool rogue = Rogue_Mode();
 	if(!Waves_Started() || (rogue && Rogue_InSetup()) || GameRules_GetRoundState() != RoundState_RoundRunning)
@@ -1265,7 +1268,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 				CurrentPlayers++;
 			}
 		}
-		return;
+		if(!TestLastman)
+			return;
 	}
 	
 	CheckIfAloneOnServer();
@@ -1304,6 +1308,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 			if(Hurtviasdkhook != 0)
 			{
 				LastMann = true;
+				LastMannScreenEffect = false;
 			}
 		}
 	}
@@ -1314,6 +1319,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 		LastMann = false;
 	
+	if(TestLastman)
+	{
+		LastMann = true;
+		LastMannScreenEffect = false;
+		applied_lastmann_buffs_once = false;
+	}
+
 	if(LastMann)
 	{
 		static bool Died[MAXTF2PLAYERS];
@@ -1336,6 +1348,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 		}
 		else
 		{
+			if(!applied_lastmann_buffs_once)
+			{
+				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
+				Zero(delay_hud); //Allow the hud to immedietly update
+			}
+
 			ExcuteRelay("zr_lasthuman");
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -1364,11 +1382,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
 								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 5); //give them 5 seconds to react to full on panic.
+								SetMusicTimer(i, GetTime() + 1); //give them 5 seconds to react to full on panic.
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}
 						
+						/*
 						for(int i=1; i<=MaxClients; i++)
 						{
 							if(IsClientInGame(i) && !IsFakeClient(i))
@@ -1376,8 +1395,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 								SendConVarValue(i, sv_cheats, "1");
 							}
 						}
+						
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.3, SetTimeBack);
+						*/
 					
 						applied_lastmann_buffs_once = true;
 						
@@ -1397,6 +1418,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0)
 						int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
 
 						Armor_Charge[client] = Armor_Max;
+						GiveCompleteInvul(client, 3.0);
 					}
 				}
 			}
@@ -1724,7 +1746,7 @@ void ReviveAll(bool raidspawned = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
-			DoOverlay(client, "");
+			DoOverlay(client, "", 2);
 			if(GetClientTeam(client)==2)
 			{
 				if(TeutonType[client] != TEUTON_WAITING)

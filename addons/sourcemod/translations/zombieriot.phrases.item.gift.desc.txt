@@ -1111,7 +1111,7 @@
 	}
 	"Theocracy Desc"
 	{
-		"en"		"NEED DESC"
+		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multipl targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
 	}
 	"Benera Desc"
 	{
@@ -1143,15 +1143,15 @@
 	}
 	"Adiantum Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"The other half of Theocracy, doesn't have a battery\nWields a powerfull ion barrage, with a heafty cooldown\Master: Ranged npc's follow his orders..."
 	}
 	"Lanius Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems having warriors are inevitable...\nBattery: boosts the speed of friendly melee units"
 	}
 	"Magia Desc"
 	{
-		"en"	"NEED DESC"
+		"en"	"A Basic Mage of the Ruanians\nStays holds a magic crest\nBattery: boosts the speed of friendly ranged units"
 	}
 	"Heavy Punuel Desc"
 	{
@@ -1252,5 +1252,37 @@
 	"Bladedance The Combine Desc"
 	{
 		"en"	"What can be as strong as Bob?"
+	}
+	"Stella Desc"
+	{
+		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
+	}
+	"Astria Desc"
+	{
+		"en"		"A slow npc that boosts the speed of nearby melee npc's\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
+	}
+	"Aether Desc"
+	{
+		"en"		"A long ranged sniper that casts spells from a far.\nThis npc likes to group up with other long range support npc's"
+	}
+	"Europa Desc"
+	{
+		"en"		"This npc sits from a far summoning brainless drones\nBattery: Summons itself\nMaster: Low priority, commands ranged npc's"
+	}
+	"Ruina Drone Decs"
+	{
+		"en"		"A very bog standard melee spy, has no gimicks or trickery\nSlave: Melee"
+	}
+	"Ruriana Desc"
+	{
+		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10% of the npc's health"
+	}
+	"Venium Desc"
+	{
+		"en"		"An engineer that builds Magia anchors, apart from that, not very special"
+	}	
+	"Magia Anchor Desc"
+	{
+		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns..."
 	}
 }

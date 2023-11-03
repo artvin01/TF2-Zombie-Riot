@@ -30,8 +30,18 @@ static char g_IdleAlertedSounds[][] = {
 	"vo/spy_battlecry03.mp3",
 	"vo/spy_battlecry04.mp3",
 };
-static char g_MeleeHitSounds[][] = {
+static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
+};
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
+};
+
+static const char g_MeleeMissSounds[][] = {
+	"weapons/bat_draw_swoosh1.wav",
+	"weapons/bat_draw_swoosh2.wav",
 };
 
 
@@ -43,6 +53,8 @@ public void Adiantum_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSound(g_DeathSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
 	
@@ -76,11 +88,26 @@ methodmap Adiantum < CClotBody
 		#endif
 	}
 	
+	public void PlayMeleeSound() {
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
+
+	public void PlayMeleeMissSound() {
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
 	public void PlayDeathSound() {
@@ -178,7 +205,7 @@ methodmap Adiantum < CClotBody
 		Adiantum_Create_Wings(npc.index);
 		
 		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
-		Ruina_Set_Master_Heirarchy(npc.index, false, true, true, 10, 3);	//attracts ranged npc's, can have a maxiumum of 10 of them, priority 3
+		Ruina_Set_Master_Heirarchy(npc.index, 2, true, 10, 3);	//attracts ranged npc's, can have a maxiumum of 10 of them, priority 3
 		
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
@@ -237,87 +264,38 @@ public void Adiantum_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			npc.PlayIdleSound();
+		npc.PlayIdleSound();
 		
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-			
-			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
 			
+		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 			
-			if(npc.m_flNextRangedBarrage_Spam < GameTime)
-			{
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			
+		if(npc.m_flNextRangedBarrage_Spam < GameTime)
+		{
 
-				Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);
-				Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
+			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);
+			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
 				
-				Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
-				npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
-			}
+			Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
+			npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
+		}
 				
-			
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 1000.0);
-				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GameTime)
-				{
-					//Play attack ani
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						npc.m_flAttackHappens = GameTime+0.4;
-						npc.m_flAttackHappens_bullshit = GameTime+0.54;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);	//kill!
-								}
-								else
-								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);	//kill!
-								}
-							
-								// Hit sound
-								npc.PlayMeleeHitSound();
-								
-							} 
-						}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GameTime + 0.8;
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GameTime + 0.8;
-					}
-				}
-			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
+		int status=0;
+		Ruina_Generic_Melee_Self_Defense(npc.index, PrimaryThreatIndex, flDistanceToTarget, 10000.0, 75.0, 350.0, "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", 0.54, 0.4, 20000.0, GameTime, status);
+		switch(status)
+		{
+			case 1:	//we swung
+				npc.PlayMeleeSound();
+			case 2:	//we hit something
+				npc.PlayMeleeHitSound();
+			case 3:	//we missed
+				npc.PlayMeleeMissSound();
+			//0 means nothing.
+		}
 	}
 	else
 	{

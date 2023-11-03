@@ -265,6 +265,7 @@ int i_BackstabHealTicks[MAXENTITIES];
 bool b_BackstabLaugh[MAXENTITIES];
 float f_BackstabBossDmgPenalty[MAXENTITIES];
 float f_BackstabBossDmgPenaltyNpcTime[MAXENTITIES][MAXTF2PLAYERS];
+float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 
@@ -1031,7 +1032,7 @@ int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
-bool b_bThisNpcGotDefaultStats_INVERTED[MAXENTITIES];
+bool b_ThisWasAnNpc[MAXENTITIES];
 float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
@@ -1846,6 +1847,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	else if(buttons & IN_RELOAD)
 	{
 		holding[client] |= IN_RELOAD;
+
+	//	CheckAlivePlayers(0, 0, true);
 		
 		
 		#if defined ZR
@@ -1997,7 +2000,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						SetEntityCollisionGroup(target, 5);
 						PrintCenterText(client, "");
 						PrintCenterText(target, "");
-						DoOverlay(target, "");
+						DoOverlay(target, "", 2);
 						SetEntityHealth(target, 50);
 						RequestFrame(SetHealthAfterRevive, target);
 						int entity, i;
@@ -2179,6 +2182,9 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			float attack_speed;
 			
 			attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+
+			if(f_ModifThirdPersonAttackspeed[weapon] != 1.0)
+				attack_speed *= f_ModifThirdPersonAttackspeed[weapon];
 			
 			if(attack_speed > 5.0)
 			{
@@ -2315,7 +2321,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 		i_CustomWeaponEquipLogic[entity] = 0;
-		b_bThisNpcGotDefaultStats_INVERTED[entity] = false;
+		b_ThisWasAnNpc[entity] = false;
 #if defined ZR
 		SetEntitySpike(entity, false);
 		i_WhatBuilding[entity] = 0;
@@ -2428,6 +2434,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_BuildingRecievedHordings[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
+		view_as<BarrackBody>(entity).BonusDamageBonus = 1.0;
+		view_as<BarrackBody>(entity).BonusFireRate = 1.0;
 		Resistance_for_building_High[entity] = 0.0;
 		Armor_Charge[entity] = 0;
 		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;

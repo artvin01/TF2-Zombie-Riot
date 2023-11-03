@@ -872,10 +872,10 @@ public void OnPostThink(int client)
 
 #if defined ZR
 		UpdatePlayerPoints(client);
-		
+
 		if(LastMann || dieingstate[client] > 0)
 		{
-			DoOverlay(client, "debug/yuv");
+			ApplyLastmanOrDyingOverlay(client);
 		}
 
 		bool Has_Wave_Showing = false;
@@ -1825,7 +1825,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				}
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
-				DoOverlay(victim, "debug/yuv");
+				ApplyLastmanOrDyingOverlay(victim);
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
@@ -2162,4 +2162,76 @@ void NpcStuckZoneWarning(int client, float &damage)
 		damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
 	}
 }
+
+void ApplyLastmanOrDyingOverlay(int client)
+{
+	DoOverlay(client, "debug/yuv");
+	if(LastMann)
+	{
+		if(LastMannScreenEffect)
+			DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+	}
+}
+
+void CauseFadeInAndFadeOut(int client = 0, float duration_in, float duration_hold, float duration_out)
+{
+	int SpawnFlags = 0;
+	if(client != 0)
+	{
+		SpawnFlags = 4;
+	}
+	char Buffer[32];
+	IntToString(SpawnFlags, Buffer, sizeof(Buffer));
+	int FadeEntity = CreateEntityByName("env_fade");
+	DispatchKeyValue(FadeEntity, "spawnflags", Buffer);
+	DispatchKeyValue(FadeEntity, "rendercolor", "0 0 0");
+	DispatchKeyValue(FadeEntity, "renderamt", "235");
+	FloatToString(duration_hold * 3.0, Buffer, sizeof(Buffer));
+	DispatchKeyValue(FadeEntity, "holdtime", Buffer);
+	FloatToString(duration_in, Buffer, sizeof(Buffer));
+	DispatchKeyValue(FadeEntity, "duration", Buffer);
+	DispatchSpawn(FadeEntity);
+	AcceptEntityInput(FadeEntity, "Fade");
+	CreateTimer((duration_in + duration_hold), Timer_CauseFadeInAndFadeOut, duration_out);
+}
+public Action Timer_CauseFadeInAndFadeOut(Handle timer, float duration_out)
+{
+	/*
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "env_fade")) != -1)
+	{
+		if (IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+	}
+	*/
+	Zero(delay_hud); //Allow the hud to immedietly update
+	LastMannScreenEffect = true;
+	int FadeEntity = CreateEntityByName("env_fade");
+	DispatchKeyValue(FadeEntity, "spawnflags", "1");
+	DispatchKeyValue(FadeEntity, "rendercolor", "0 0 0");
+	DispatchKeyValue(FadeEntity, "renderamt", "235");
+	DispatchKeyValue(FadeEntity, "holdtime", "0");
+	char Buffer[32];
+	FloatToString(duration_out, Buffer, sizeof(Buffer));
+	DispatchKeyValue(FadeEntity, "duration", Buffer);
+	DispatchSpawn(FadeEntity);
+	AcceptEntityInput(FadeEntity, "Fade");
+	CreateTimer(duration_out, Timer_CauseFadeInAndFadeDelete);
+	return Plugin_Stop;
+}
+public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
+{
+	int entity = -1;
+	while((entity = FindEntityByClassname(entity, "env_fade")) != -1)
+	{
+		if (IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+	}
+	return Plugin_Stop;
+}
 #endif	// ZR
+

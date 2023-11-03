@@ -1471,7 +1471,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Scout);
 	}
 	
-	DoOverlay(client, "");
+	DoOverlay(client, "", 2);
 	WeaponClass[client] = TFClass_Unknown;
 	
 #if defined ZR

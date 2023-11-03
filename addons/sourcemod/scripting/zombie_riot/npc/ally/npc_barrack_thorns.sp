@@ -169,7 +169,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.5));
 				}
 			}
-			if(ThornsLevelAt[npc.index] == 2)
+			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index] && ThornsLevelAt[npc.index] == 2)
 			{
 				ThornsDelayTimerUpgrade[npc.index] = FAR_FUTURE;
 			}
@@ -262,18 +262,18 @@ public void BarrackThorns_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < (1200.0 * 1200.0) || ThornsDecidedOnAttack[npc.index] == 3)
 				{
-					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),EnemyToAttack); 
+					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
 			}
 			else
 			{
 				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
 				{
-					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),EnemyToAttack); 
+					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
 				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
 				{
-					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),EnemyToAttack); 
+					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}				
 			}
 
@@ -329,7 +329,7 @@ void BarrackThorns_NPCDeath(int entity)
 	}
 }
 
-void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAttack)
+void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAttack, float flDistanceToTarget)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -372,7 +372,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget < (100.0 * 100.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{
@@ -406,7 +406,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 
 
 
-void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAttack)
+void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAttack, float flDistanceToTarget)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -459,7 +459,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{
@@ -493,7 +493,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 
 
 
-void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAttack)
+void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAttack, float flDistanceToTarget)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -553,7 +553,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (1200.0 * 1200.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{

@@ -429,6 +429,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 		
 		speed = 3000.0*(charge_percent/25.0);
 		
+		float multi_arrow_damage = 0.75*damage * Attributes_Get(weapon, 410, 1.0);
 		
 		if(charge_percent>50.0)
 		{
@@ -463,17 +464,17 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 				ScaleVector(Direction, 100.0);
 				AddVectors(Npc_Vec, Direction, endLoc);
 				
-				speed = 3000.0*(charge_percent/50.0);
+				float multi_arrow_speed = 3000.0*(charge_percent/50.0);
 				
-				speed *= Attributes_Get(weapon, 103, 1.0);
+				multi_arrow_speed *= Attributes_Get(weapon, 103, 1.0);
 					
-				speed *= Attributes_Get(weapon, 104, 1.0);
+				multi_arrow_speed *= Attributes_Get(weapon, 104, 1.0);
 					
-				speed *= Attributes_Get(weapon, 475, 1.0);
+				multi_arrow_speed *= Attributes_Get(weapon, 475, 1.0);
 				
 				if(speed>3000.0)
 					speed = 3000.0;
-				Quincy_Rocket_Launch(client, weapon, Npc_Vec, endLoc, speed, damage, "raygun_projectile_blue");
+				Quincy_Rocket_Launch(client, weapon, Npc_Vec, endLoc, multi_arrow_speed, multi_arrow_damage, "raygun_projectile_blue");
 			}
 			fl_Quincy_Charge[client] = 0.0;
 		}
@@ -496,7 +497,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 
 		
 	if(speed>3000.0)
-			speed = 3000.0;
+		speed = 3000.0;
 	Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_QUINCY_BOW, weapon, "raygun_projectile_blue");
 	
 	fl_Quincy_Charge[client] = 0.0;

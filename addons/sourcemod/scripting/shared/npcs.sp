@@ -135,7 +135,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
+			if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && b_HasBeenHereSinceStartOfWave[client])
 			{
 				if(TeutonType[client] == TEUTON_DEAD || dieingstate[client] > 0)
 				{
@@ -2061,6 +2061,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			WeaponLeper_OnTakeDamage(attacker, damage,weapon, zr_custom_damage);
 		}
+		case WEAPON_TEXAN_BUISNESS:
+		{
+			Weapon_TexanBuisness(attacker, damage, damagetype);
+		}
 	}
 #endif
 
@@ -2741,6 +2745,19 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
 	float BaseDamageBeforeBuffs = damage;
+	if(inflictor > 0)
+	{
+		if(b_ThisWasAnNpc[inflictor])
+		{
+			if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
+			{
+				if(i_CurrentEquippedPerk[inflictor] == 5)
+				{
+					damage *= 1.25; //this should stack
+				}
+			}
+		}
+	}
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
 		if(f_HussarBuff[attacker] > GameTime) //hussar!

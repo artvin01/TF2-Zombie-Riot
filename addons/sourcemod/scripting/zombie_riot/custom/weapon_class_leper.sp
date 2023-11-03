@@ -113,6 +113,7 @@ public void Weapon_LeperHewCharge(int client, int weapon, bool &result, int slot
 			case LEPER_AOE_HEW:
 				LeperSwingType[client] = LEPER_NORMAL_SWING;
 		}
+		Leper_Hud_Logic(client, weapon, true);
 	}
 	else
 	{

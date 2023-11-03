@@ -1801,4 +1801,40 @@
 	{
 		"en"	"Bladedance The Combine"
 	}
+	"Allied Leper Afterimage"
+	{
+		"en"	"Allied Leper Afterimage"
+	}
+	"Stella"
+	{
+		"en"	"Stella"
+	}
+	"Astria"
+	{
+		"en"	"Astria"
+	}
+	"Aether"
+	{
+		"en"	"Aether"
+	}
+	"Europa"
+	{
+		"en"	"Europa"
+	}
+	"Ruina Drone"	
+	{
+		"en"	"Drone"
+	}
+	"Ruriana"
+	{
+		"en"	"Ruriana"
+	}
+	"Venium"
+	{
+		"en"	"Venium"
+	}
+	"Magia Anchor"
+	{
+		"en"	"Magia Anchor"
+	}
 }
