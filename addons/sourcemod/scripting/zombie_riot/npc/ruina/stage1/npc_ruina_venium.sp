@@ -50,6 +50,9 @@ static char g_TeleportSounds[][] = {
 };
 
 static int i_anchor_id[MAXENTITIES];
+static int i_failsafe[MAXENTITIES];
+
+#define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
 
 void Venium_OnMapStart_NPC()
 {
@@ -157,7 +160,14 @@ methodmap Venium < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		if(npc.m_iChanged_WalkCycle != 0) 	
+		{
+			npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+			npc.m_iChanged_WalkCycle = 0;
+		}
+
 		i_anchor_id[npc.index]=-1;
+		i_failsafe[npc.index]=0;
 		
 		
 		/*
@@ -212,6 +222,8 @@ methodmap Venium < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, 1);	//is a melee npc
 		Ruina_Set_No_Retreat(npc.index);	//no running away to heal!
+
+		Ruina_Set_Recall_Status(npc.index, true);
 		
 		
 		return npc;
@@ -263,6 +275,7 @@ public void Venium_ClotThink(int iNPC)
 
 	if(IsValidEntity(Anchor))
 	{
+		i_failsafe[npc.index]=0;
 		fl_ruina_battery_timer[npc.index] = GameTime+30.0;	//A set timeout for rebuild an anchor.
 		float Anchor_Loc[3], Npc_Loc[3];
 
@@ -275,15 +288,26 @@ public void Venium_ClotThink(int iNPC)
 		{
 			if(fl_ruina_battery[Anchor]<255)	//charging phase
 			{
-				if(dist <= (100.0*100.0))
+				if(dist <= (145.0*145.0))
 				{
 					Ruina_Add_Battery(Anchor, 0.5);
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(Anchor_Loc, 15000.0);
+					if(npc.m_iChanged_WalkCycle != 1) 	
+					{
+						npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
+						npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
+						npc.m_iChanged_WalkCycle = 1;
+					}
 				}
 				else
 				{
+					if(npc.m_iChanged_WalkCycle != 0) 	
+					{
+						npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+						npc.m_iChanged_WalkCycle = 0;
+					}
 					NPC_SetGoalVector(iNPC, Anchor_Loc);	//we are too far away from the anchor to charge it, go near it.
 					NPC_StartPathing(iNPC);
 					npc.StartPathing();
@@ -294,6 +318,11 @@ public void Venium_ClotThink(int iNPC)
 			else	//active phase
 			{
 				Venium_Post_Bult_Logic(npc, PrimaryThreatIndex, GameTime);	//anchor is built, if an enemy is too close we attack, otherwise just stay near the anchor
+				if(npc.m_iChanged_WalkCycle != 0) 	
+				{
+					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+					npc.m_iChanged_WalkCycle = 0;
+				}
 			}
 		}
 		else
@@ -302,6 +331,11 @@ public void Venium_ClotThink(int iNPC)
 			NPC_StartPathing(iNPC);
 			npc.StartPathing();
 			npc.m_bPathing = true;
+			if(npc.m_iChanged_WalkCycle != 0) 	
+			{
+				npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				npc.m_iChanged_WalkCycle = 0;
+			}
 		}
 		
 	}
@@ -311,7 +345,12 @@ public void Venium_ClotThink(int iNPC)
 	}
 	else if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//anchor is dead, we on cooldown, runaway from anyone
 	{
-			
+		
+		if(npc.m_iChanged_WalkCycle != 0) 	
+		{
+			npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+			npc.m_iChanged_WalkCycle = 0;
+		}
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
@@ -421,8 +460,8 @@ static void Venium_Build_Anchor(Venium npc)
 	static float hullcheckmaxs_Player_Again[3];
 	static float hullcheckmins_Player_Again[3];
 
-	hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
-	hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	hullcheckmaxs_Player_Again = view_as<float>( { 45.0, 45.0, 82.0 } ); //Fat. very fett indeed
+	hullcheckmins_Player_Again = view_as<float>( { -45.0, -45.0, 0.0 } );	
 
 	if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 	{
@@ -451,8 +490,9 @@ static void Venium_Build_Anchor(Venium npc)
 		
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenter(npc.index), true);
 		
-	if(flDistanceToBuild < (500.0 * 500.0))
+	if(flDistanceToBuild < (2000.0 * 2000.0) && i_failsafe[npc.index] <= RUINA_ANCHOR_FAILSAFE_AMMOUNT)
 	{
+		i_failsafe[npc.index]++;
 		return; //The building is too close, we want to retry! it is unfair otherwise.
 	}
 	//Retry.

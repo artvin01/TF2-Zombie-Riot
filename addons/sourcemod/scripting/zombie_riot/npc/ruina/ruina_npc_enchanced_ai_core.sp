@@ -13,9 +13,11 @@ static bool b_npc_low_health[MAXENTITIES];
 static bool b_npc_no_retreat[MAXENTITIES];
 static bool b_npc_healer[MAXENTITIES];	//warp
 static float fl_npc_healing_duration[MAXENTITIES];
+static bool b_block_recall[MAXENTITIES];
 
 static bool b_npc_sniper_anchor_point[MAXENTITIES];
 static float fl_npc_sniper_anchor_find_timer[MAXENTITIES];
+static bool b_recall_achor[MAXENTITIES];
 static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
 static char gLaser1;
@@ -33,6 +35,8 @@ float fl_ruina_stella_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
+static int i_recall_entity_ref[MAXENTITIES];
+static bool b_ruina_recall_teleport[MAXENTITIES];
 static bool b_ruina_allow_teleport[MAXENTITIES];
 #define RUINA_ASTRIA_TELEPORT_SOUND "misc/halloween_eyeball/book_spawn.wav"
 
@@ -114,10 +118,13 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_ruina_internal_teleport_timer);
 	Zero(b_ruina_allow_teleport);
+	Zero(b_ruina_recall_teleport);
+	Zero(i_recall_entity_ref);
 
 	Zero(b_npc_sniper_anchor_point);
 	Zero(fl_npc_sniper_anchor_find_timer);
 	Zero(i_last_sniper_anchor_id_Ref);
+	Zero(b_recall_achor);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -147,7 +154,18 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	fl_npc_healing_duration[client] = 0.0;
 	b_npc_sniper_anchor_point[client]=false;
 	i_last_sniper_anchor_id_Ref[client]=-1;
+	i_recall_entity_ref[client]=-1;
+	b_recall_achor[client]=false;
+	b_block_recall[client]=false;
 	
+}
+public void Ruina_Set_Recall_Status(int client, bool state)
+{
+	b_block_recall[client]=state;
+}
+public void Ruina_Set_Recall_Anchor_Point(int client, bool state)
+{
+	b_recall_achor[client]=state;
 }
 public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
 {
@@ -179,6 +197,8 @@ public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int
 	i_master_attracts[client] = type;
 
 	b_ruina_allow_teleport[client]=false;
+
+	b_ruina_recall_teleport[client]=true;
 }
 
 public void Ruina_Master_Release_Slaves(int client)
@@ -479,6 +499,26 @@ static int GetClosestAnchor(int client)
 	}
 	return valid;
 }
+static int GetClosestRecall(int client)
+{
+	int valid = -1;
+	float Npc_Vec[3]; Npc_Vec=GetAbsOrigin(client);
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		float dist = 99999999.9;
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_recall_achor[baseboss_index])
+		{
+			float target_vec[3]; target_vec = GetAbsOrigin(baseboss_index);
+			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
+			if(dist>Distance)
+			{
+				valid = baseboss_index;
+			}
+		}
+	}
+	return valid;
+}
 static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
@@ -668,10 +708,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			}
 			npc.StartPathing();
 
-			if(b_ruina_allow_teleport[npc.index])
-			{
-				Astria_Teleportation(npc.index, PrimaryThreatIndex);
-			}
+			Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 			return;
 		}
 		if(IsValidEntity(Master_Id_Main))
@@ -693,10 +730,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 							npc.StartPathing();
 							npc.m_bPathing = true;
 
-							if(b_ruina_allow_teleport[npc.index])
-							{
-								Astria_Teleportation(npc.index, Master_Id_Main);
-							}
+							Ruina_Special_Logic(npc.index, Master_Id_Main);
 								
 						}
 						else
@@ -739,10 +773,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 						}
 
-						if(b_ruina_allow_teleport[npc.index])
-						{
-							Astria_Teleportation(npc.index, PrimaryThreatIndex);
-						}
+						Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 
 						npc.StartPathing();
 					}	
@@ -761,10 +792,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 						npc.StartPathing();
 						npc.m_bPathing = true;
 
-						if(b_ruina_allow_teleport[npc.index])
-						{
-							Astria_Teleportation(npc.index, Master_Id_Main);
-						}
+						Ruina_Special_Logic(npc.index, Master_Id_Main);
 						
 					}
 					else
@@ -788,10 +816,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 					}
 					npc.StartPathing();
 
-					if(b_ruina_allow_teleport[npc.index])
-					{
-						Astria_Teleportation(npc.index, PrimaryThreatIndex);
-					}
+					Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 								
 					return;
 				}
@@ -810,10 +835,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			{
 				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			}
-			if(b_ruina_allow_teleport[npc.index])
-			{
-				Astria_Teleportation(npc.index, PrimaryThreatIndex);
-			}
+			Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 			npc.StartPathing();
 						
 			return;
@@ -835,10 +857,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		{
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		}
-		if(b_ruina_allow_teleport[npc.index])
-		{
-			Astria_Teleportation(npc.index, PrimaryThreatIndex);
-		}
+		Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 		npc.StartPathing();
 						
 		return;
@@ -894,10 +913,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 			npc.StartPathing();
 			npc.m_bPathing = true;
 
-			if(b_ruina_allow_teleport[npc.index])
-			{
-				Astria_Teleportation(npc.index, Anchor_Id);
-			}
+			Ruina_Special_Logic(npc.index, Anchor_Id);
 					
 		}
 		else
@@ -1074,13 +1090,78 @@ public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 
 	Apply_Master_Buff(npc.index, 6, Range, 0.0, 0.0);
 }
+static void Recall_Teleportation(int iNPC)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime || NpcStats_IsEnemySilenced(npc.index))
+	{
+		return;
+	}
+
+	fl_ruina_internal_teleport_timer[npc.index]=GameTime + RUINA_INTERNAL_TELEPORT_COOLDOWN*0.5;
+
+	int anchor = EntRefToEntIndex(i_recall_entity_ref[npc.index]);
+	if(!IsValidEntity(anchor))
+	{
+		anchor = GetClosestRecall(npc.index);
+		if(!IsValidEntity(anchor))
+		{
+			b_ruina_recall_teleport[npc.index]=false;
+			return;	//we failed, giveup!
+		}
+	}
+	float vPredictedPos[3]; 
+
+	vPredictedPos = WorldSpaceCenter(anchor);	//teleport ontop of their heads :trolley:
+	vPredictedPos[2]+=100.0;
+
+	float Loc[3];
+	Loc = GetAbsOrigin(npc.index);
+	Loc[2]+=75.0;
+
+	float start_offset[3], end_offset[3];
+	start_offset = WorldSpaceCenter(npc.index);
+
+	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
+	if(Succeed)
+	{	
+		EmitSoundToAll(RUINA_ASTRIA_TELEPORT_SOUND, npc.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+
+		b_ruina_recall_teleport[npc.index]=false;
+		float npc_Loc[3]; npc_Loc = GetAbsOrigin(npc.index); npc_Loc[2]+=10.0;
+		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
+		if(IsValidEntity(entity))
+		{
+			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
+			//Ruina_Move_Entity(entity, Loc, 5.0);
+		}
+		float effect_duration = 0.25;
+	
+		end_offset = vPredictedPos;
+							
+		start_offset[2]-= 25.0;
+		end_offset[2] -= 25.0;
+							
+		for(int help=1 ; help<=8 ; help++)
+		{	
+			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_RED, effect_duration, start_offset, end_offset);
+							
+			start_offset[2] += 12.5;
+			end_offset[2] += 12.5;
+		}
+	}
+}
 static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
 
-	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime)
+	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime || NpcStats_IsEnemySilenced(npc.index))
 	{
 		return;
 	}
@@ -1158,6 +1239,53 @@ static void Astria_Teleport_Effect(char type[255], float duration = 0.0, float s
 		pack.WriteCell(duration);
 	}
 }
+public void Warp_Non_Combat_Npcs_Near(int iNPC, int type, float Distance_To_Target)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+
+	if(NpcStats_IsEnemySilenced(npc.index))
+		return;
+
+	float pos1[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+	for(int targ; targ<i_MaxcountNpc; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			if(!b_block_recall[baseboss_index])
+			{
+				if(baseboss_index!=npc.index)
+				{
+					if(i_npc_type[baseboss_index]==type || type==2)	//same type of npc, or a global type
+					{
+						if(GetEntProp(baseboss_index, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(baseboss_index))
+						{
+							CClotBody npc2 = view_as<CClotBody>(baseboss_index);
+
+							int PrimrayThreatIndex = npc2.m_iTarget;
+							if(IsValidEnemy(npc2.index, PrimrayThreatIndex))
+							{
+								float Loc[3]; Loc = WorldSpaceCenter(PrimrayThreatIndex);
+								float npc_Loc[3]; npc_Loc = WorldSpaceCenter(npc2.index);
+								float Dist = GetVectorDistance(Loc, npc_Loc, true);
+
+								if(Dist < Distance_To_Target*0.75)
+								{	
+									b_ruina_recall_teleport[baseboss_index]=true;
+								}
+							}
+							else
+							{
+								b_ruina_recall_teleport[baseboss_index]=true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 public void Master_Apply_Defense_Buff(int client, float range, float time, float power)
 {
 	Apply_Master_Buff(client, 1, range, time, power);
@@ -1177,11 +1305,28 @@ public void Master_Apply_Shield_Buff(int client, float range, float power)
 {
 	Apply_Master_Buff(client, 4, range, 0.0, power);
 }
+static void Ruina_Special_Logic(int iNPC, int Target)
+{
+	if(b_ruina_allow_teleport[iNPC])
+	{
+		Astria_Teleportation(iNPC, Target);
+		return;
+	}
+	if(b_ruina_recall_teleport[iNPC])
+	{
+		Recall_Teleportation(iNPC);
+		return;
+	}
+}
 
 static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)	//only works with ruina npc's
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	float pos1[3];
+	
+	if(NpcStats_IsEnemySilenced(npc.index))
+		return;
+
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
 	for(int targ; targ<i_MaxcountNpc; targ++)
 	{

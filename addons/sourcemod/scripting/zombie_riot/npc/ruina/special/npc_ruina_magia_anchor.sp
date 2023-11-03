@@ -80,12 +80,17 @@ static const char g_MeleeMissSounds[][] = {
 };
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
-#define RUINA_TOWER_CORE_MODEL_SIZE "10.0"
+#define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
 #define RUINA_ANCHOR_MODEL	"models/props_combine/combine_citadel001.mdl"
-#define RUINA_ANCHOR_MODEL_SIZE "0.1"
+#define RUINA_ANCHOR_MODEL_SIZE "0.075"
 
 static int i_currentwave[MAXENTITIES];
 //static float f_PlayerScalingBuilding;
+static int Heavens_Beam;
+
+#define MAGIA_ANCHOR_MAX_IONS 4
+static float fl_Heavens_Loc[MAXENTITIES][MAGIA_ANCHOR_MAX_IONS+1][3];
+static bool b_set_loc[MAXENTITIES];
 
 void Magia_Anchor_OnMapStart_NPC()
 {
@@ -98,6 +103,7 @@ void Magia_Anchor_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(RUINA_ANCHOR_MODEL);
 	PrecacheModel(RUINA_TOWER_CORE_MODEL);
+	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 }
 methodmap Magia_Anchor < CClotBody
 {
@@ -158,7 +164,7 @@ methodmap Magia_Anchor < CClotBody
 	
 	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], bool ally)
 	{
-		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL_SIZE, RUINA_TOWER_CORE_MODEL, "10000", ally, false,true,_,_,{30.0,30.0,350.0}));
+		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, "10000", ally, false,true,_,_,{30.0,30.0,350.0}));
 		
 		i_NpcInternalId[npc.index] = RUINA_MAGIA_ANCHOR;
 		i_NpcWeight[npc.index] = 999;
@@ -166,7 +172,7 @@ methodmap Magia_Anchor < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_ANCHOR_MODEL, _, _, _, 375.0);
+		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_ANCHOR_MODEL, _, _, _, 225.0);
 		SetVariantString(RUINA_ANCHOR_MODEL_SIZE);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
@@ -176,6 +182,8 @@ methodmap Magia_Anchor < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
+
+		b_set_loc[npc.index]=false;
 
 		Ruina_Set_Sniper_Anchor_Point(npc.index, true);
 		
@@ -204,7 +212,9 @@ methodmap Magia_Anchor < CClotBody
 		SDKHook(npc.index, SDKHook_Think, Magia_Anchor_ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
+
 		Ruina_Set_No_Retreat(npc.index);
+		Ruina_Set_Recall_Anchor_Point(npc.index, true);
 
 		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
@@ -223,6 +233,8 @@ methodmap Magia_Anchor < CClotBody
 public void Magia_Anchor_ClotThink(int iNPC)
 {
 	Magia_Anchor npc = view_as<Magia_Anchor>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
 /*
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -239,12 +251,12 @@ public void Magia_Anchor_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
 
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 	
 	if(fl_ruina_battery[npc.index]<=255)	//charging phase
 	{
@@ -255,7 +267,7 @@ public void Magia_Anchor_ClotThink(int iNPC)
 		{
 			alpha = 255;
 		}
-		PrintToChatAll("Alpha: %i", alpha);
+		//PrintToChatAll("Alpha: %i", alpha);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
 
@@ -265,7 +277,21 @@ public void Magia_Anchor_ClotThink(int iNPC)
 	}
 	else	//active phase. unlike villager's building, they won't commit sudoku if the builder dies
 	{
-	
+		Heavens_Full_Charge(npc, 3, 250.0, 100.0, 12.5);
+
+		if(npc.m_flNextMeleeAttack < GameTime)
+		{
+			int Target;
+			Target = GetClosestTarget(npc.index);
+			if(IsValidEnemy(npc.index, Target))
+			{
+				float Loc[3]; Loc = WorldSpaceCenter(Target);
+				float npc_Loc[3]; npc_Loc = WorldSpaceCenter(npc.index);
+				float Dist = GetVectorDistance(Loc, npc_Loc, true);
+				Warp_Non_Combat_Npcs_Near(npc.index, 2, Dist);
+				npc.m_flNextMeleeAttack = GameTime + 5.0;
+			}
+		}
 	}
 	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
 	{
@@ -312,4 +338,91 @@ public void Magia_Anchor_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+}
+
+static void Heavens_Full_Charge(Magia_Anchor npc, int amt, float Radius, float aDamage, float Speed)
+{
+	if(!b_set_loc[npc.index])
+	{
+		b_set_loc[npc.index]=true;
+		for(int ion=0 ; ion< MAGIA_ANCHOR_MAX_IONS ; ion++)
+		{
+			float loc[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", loc);
+			loc[0] += GetRandomFloat(350.0, -350.0);
+			loc[1] += GetRandomFloat(350.0, -350.0);
+			fl_Heavens_Loc[npc.index][ion] = loc;
+		}
+	}
+	for(int i=0 ; i< amt ; i++)
+	{
+		float loc[3]; loc = fl_Heavens_Loc[npc.index][i];
+		float Dist = -1.0;
+		float Target_Loc[3]; Target_Loc = loc;
+		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+		{
+			if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			{
+				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+				float distance = GetVectorDistance(client_loc, loc, true);
+				{
+					if(distance<Dist || Dist==-1)
+					{
+						Target_Loc = client_loc;
+					}
+				}
+	
+			}
+		}
+		
+		float Direction[3], vecAngles[3];
+		MakeVectorFromPoints(loc, Target_Loc, vecAngles);
+		GetVectorAngles(vecAngles, vecAngles);
+						
+		GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, Speed);
+		AddVectors(loc, Direction, loc);
+		
+		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
+		
+		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+		{
+			if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			{
+				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+				float distance = GetVectorDistance(client_loc, loc, true);
+				{
+					if(distance< (Radius * Radius))
+					{
+						float fake_damage = aDamage*(1.0 - (distance / (Radius * Radius)));	//reduce damage if the target just grazed it.
+						if(fake_damage<aDamage*0.25)
+							fake_damage=aDamage*0.25;
+						
+						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage * 0.85, DMG_CLUB, _, _, loc);
+						Client_Shake(client, 0, 5.0, 15.0, 0.1);
+					}
+				}
+	
+			}
+		}
+		
+		fl_Heavens_Loc[npc.index][i] = loc;
+		
+		int color[4];
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
+		color[3] = 75;
+		Heavens_SpawnBeam(loc, color, 7.5);
+	}
+}
+static void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size)
+{
+
+	float skyLoc[3];
+	skyLoc[0] = beamLoc[0];
+	skyLoc[1] = beamLoc[1];
+	skyLoc[2] = 9999.0;
+		
+	TE_SetupBeamPoints(skyLoc, beamLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
+	TE_SendToAll();
 }
