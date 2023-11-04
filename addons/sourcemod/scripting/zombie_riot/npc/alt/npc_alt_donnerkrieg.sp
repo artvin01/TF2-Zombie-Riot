@@ -913,7 +913,11 @@ public void Donnerkrieg_NPCDeath(int entity)
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 	b_NpcIsInvulnerable[npc.index] = false;
 			
-	RaidBossActive = INVALID_ENT_REFERENCE;
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+	{
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	}
+	
 	
 	
 	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");

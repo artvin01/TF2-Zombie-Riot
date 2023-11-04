@@ -651,7 +651,10 @@ public void Schwertkrieg_NPCDeath(int entity)
 			
 	npc.m_bThisNpcIsABoss = false;
 
-	RaidBossActive = INVALID_ENT_REFERENCE;
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+	{
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	}
 	
 	SDKUnhook(npc.index, SDKHook_Think, Schwertkrieg_ClotThink);
 		

@@ -1845,7 +1845,7 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		BlitzLight_Scale1[npc.index] = 200.0*smallmap;	//Best to do the scales in sets of numbers.
 		BlitzLight_Scale2[npc.index] = 400.0*smallmap;
 		BlitzLight_Scale3[npc.index] = 600.0*smallmap;
-		BlitzLight_DMG_Base[npc.index] = 2.0*smallmap;	//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
+		BlitzLight_DMG_Base[npc.index] = 25.0*smallmap;	//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
 		BlitzLight_Radius[npc.index] = 200.0*smallmap;	//Best to set radius as the same different of numbers when going up from scale 1, to 2. in this case scale goes up by 200 each time, so radius is 200.
 		BlitzLight_Duration_notick[npc.index] = GetGameTime(npc.index) + charge;	//Charge time.
 		
@@ -2075,18 +2075,23 @@ public void BlitzLight_DealDamage(int entity)
 	if(i_BlitzLight_dmg_throttle[npc.index] > 6)	//do damage 10 times a second.
 	{
 		i_BlitzLight_dmg_throttle[npc.index] = 0;	//damage throttle
-		float dmg_pen = 0.85;
+		float dmg_pen = 0.8;
 		if(i_currentwave[npc.index]>=60)
 		{
-			dmg_pen = 0.9;	//A slight buff to damage on wave 60
+			dmg_pen = 1.2;	//A slight buff to damage on wave 60
 		}
-		Explode_Logic_Custom((BlitzLight_DMG[npc.index]*i_HealthScale[npc.index]) * dmg_pen, entity, entity, -1, beamLoc, BlitzLight_DMG_Radius[npc.index]*1.25 , _ , _ , true);
+		Explode_Logic_Custom((BlitzLight_DMG[npc.index]) * dmg_pen, entity, entity, -1, beamLoc, BlitzLight_DMG_Radius[npc.index]*1.25 , _ , _ , true, _, _, 10.0, Blitzlight_Shake_Client);
 		//CPrintToChatAll("dmg: %fl", BlitzLight_DMG[npc.index]);
 		//CPrintToChatAll("radius: %fl", 1.25*BlitzLight_DMG_Radius[npc.index]);
 		beamLoc[2]+=10;
 		spawnRing_Vector(beamLoc, BlitzLight_DMG_Radius[npc.index]*2*1.25, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.1, 1.0, 0.1, 1);
 	}
 	i_BlitzLight_dmg_throttle[npc.index]++;
+}
+public void Blitzlight_Shake_Client(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidClient(victim))
+		Client_Shake(victim, 0, 7.5, 7.5, 0.075);
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
