@@ -464,7 +464,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 				ScaleVector(Direction, 100.0);
 				AddVectors(Npc_Vec, Direction, endLoc);
 				
-				float multi_arrow_speed = 3000.0*(charge_percent/50.0);
+				float multi_arrow_speed = 500.0*(charge_percent/50.0);
 				
 				multi_arrow_speed *= Attributes_Get(weapon, 103, 1.0);
 					
@@ -472,8 +472,8 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 					
 				multi_arrow_speed *= Attributes_Get(weapon, 475, 1.0);
 				
-				if(speed>3000.0)
-					speed = 3000.0;
+				if(speed>1000.0)
+					speed = 1000.0;
 				Quincy_Rocket_Launch(client, weapon, Npc_Vec, endLoc, multi_arrow_speed, multi_arrow_damage, "raygun_projectile_blue");
 			}
 			fl_Quincy_Charge[client] = 0.0;
@@ -1154,7 +1154,7 @@ static bool Quincy_Blade_BEAM_HitDetected[MAXENTITIES];
 		{
 			if (Quincy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
 			{
-				SDKHooks_TakeDamage(victim, client, client, dmg, DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+				SDKHooks_TakeDamage(victim, client, client, dmg, DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			}
 		}
 		radius *= 2.0;
@@ -1419,7 +1419,7 @@ public Action Quincy_StartTouch(int entity, int other)
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
 
-		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		
