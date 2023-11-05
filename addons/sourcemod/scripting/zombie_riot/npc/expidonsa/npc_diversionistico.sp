@@ -524,13 +524,13 @@ int DiversionAntiCheese(int enemy, int npcindex, float vPredictedPos[3])
 		i_DiversioAntiCheese_Tolerance[npcindex] -= 2;
 	}
 
-	if(i_DiversioAntiCheese_Tolerance[npcindex] > 45)
-		i_DiversioAntiCheese_Tolerance[npcindex] = 45;
+	if(i_DiversioAntiCheese_Tolerance[npcindex] > 15)
+		i_DiversioAntiCheese_Tolerance[npcindex] = 15;
 
 	if(i_DiversioAntiCheese_Tolerance[npcindex] < 0)
 		i_DiversioAntiCheese_Tolerance[npcindex] = 0;
 
-	if(i_DiversioAntiCheese_Tolerance[npcindex] > 30)
+	if(i_DiversioAntiCheese_Tolerance[npcindex] > 10)
 	{
 		return 1;
 	}
