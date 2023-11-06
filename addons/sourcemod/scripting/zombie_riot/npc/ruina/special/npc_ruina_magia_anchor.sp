@@ -186,6 +186,8 @@ methodmap Magia_Anchor < CClotBody
 		b_set_loc[npc.index]=false;
 
 		Ruina_Set_Sniper_Anchor_Point(npc.index, true);
+
+		i_magia_anchors_active++;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -285,10 +287,7 @@ public void Magia_Anchor_ClotThink(int iNPC)
 			Target = GetClosestTarget(npc.index);
 			if(IsValidEnemy(npc.index, Target))
 			{
-				float Loc[3]; Loc = WorldSpaceCenter(Target);
-				float npc_Loc[3]; npc_Loc = WorldSpaceCenter(npc.index);
-				float Dist = GetVectorDistance(Loc, npc_Loc, true);
-				Warp_Non_Combat_Npcs_Near(npc.index, 2, Dist);
+				Warp_Non_Combat_Npcs_Near(npc.index, 2, Target);
 				npc.m_flNextMeleeAttack = GameTime + 5.0;
 			}
 		}
@@ -329,7 +328,8 @@ public void Magia_Anchor_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
-	
+	i_magia_anchors_active--;
+
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Anchor_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))

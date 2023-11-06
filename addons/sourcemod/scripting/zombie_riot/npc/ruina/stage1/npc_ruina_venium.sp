@@ -339,7 +339,7 @@ public void Venium_ClotThink(int iNPC)
 		}
 		
 	}
-	else if(fl_ruina_battery_timer[npc.index] < GameTime)
+	else if(fl_ruina_battery_timer[npc.index] < GameTime && i_magia_anchors_active < 5)
 	{
 		Venium_Build_Anchor(npc);	//build anchor.
 	}
