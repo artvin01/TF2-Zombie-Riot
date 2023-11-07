@@ -36,6 +36,7 @@ static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 int i_magia_anchors_active;
 
+float fl_ruina_in_combat_timer[MAXENTITIES];
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
 static int i_recall_entity_ref[MAXENTITIES];
 static bool b_ruina_recall_teleport[MAXENTITIES];
@@ -127,6 +128,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_npc_sniper_anchor_find_timer);
 	Zero(i_last_sniper_anchor_id_Ref);
 	Zero(b_recall_achor);
+	Zero(fl_ruina_in_combat_timer);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -162,6 +164,10 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	b_recall_achor[client]=false;
 	b_block_recall[client]=false;
 	b_ruina_recall_teleport[client]=true;
+	fl_ruina_in_combat_timer[client]=0.0;
+
+	CClotBody npc = view_as<CClotBody>(client);
+	npc.m_iTarget=-1;	//set its target as invalid on spawn
 	
 }
 public void Ruina_Set_Recall_Status(int client, bool state)
@@ -448,6 +454,16 @@ public void Ruina_NPCDeath_Override(int entity)
 		
 		
 }
+public int Ruina_Get_Target(int iNPC, float GameTime)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+	}
+	return npc.m_iTarget;
+}
 static int i_previus_priority[MAXENTITIES];
 static int GetRandomMaster(int client)
 {
@@ -657,9 +673,12 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 			}
 		}
 	}
-		
-	int Backup_Target = PrimaryThreatIndex;
-		
+	/*
+		Masters have valid targets automatically inputed into the core due to them having the standard targeting
+		Slave npc's however don't instead on spawn the have a -1 target inputed, this is ofcourse invalid, the core compensates for that.
+		Simply put slave don't have the ability to find their own nearest target UNLESS they don't have a valid master, in that case they do find it.
+		(Previously slave npc's legit went through all the trouble of finding the nearest target even though it would be instantly overwritten by this core. bruh)
+	*/
 	if(!b_master_exists[npc.index])	//check if the npc is a master or not
 	{	
 		int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
@@ -704,18 +723,17 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		{
 			CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
 			PrimaryThreatIndex = npc2.m_iTarget;
+
+			if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//almost final check to see if its valid, if its not, find the nearest one. there is a chance that the refind timer is still active, in this case the return logic handles it.
+			{
+				PrimaryThreatIndex = Ruina_Get_Target(npc.index, GameTime);
+				//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
+				b_return = true;
+			}
 		}
-		else
+		else	//if we don't have a master, use normal npc targeting logic
 		{
-			PrimaryThreatIndex = Backup_Target;
-			//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
-			b_return = true;
-		}
-			
-			
-		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//check if its valid
-		{
-			PrimaryThreatIndex = Backup_Target;
+			PrimaryThreatIndex = Ruina_Get_Target(npc.index, GameTime);
 			//CPrintToChatAll("backup target used by npc %i, target is %N", npc.index, PrimaryThreatIndex);
 			b_return = true;
 		}
@@ -723,34 +741,45 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 					
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-		if(b_return)	//basic movement logic for when a npc no longer possese a master
+		if(b_return)	//basic movement logic for when a npc no longer possese a master.
 		{
-			if(flDistanceToTarget < npc.GetLeadRadius()) 
+			if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//the almost final check, if it fails it forces a refind.
 			{
-								
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-						
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			npc.StartPathing();
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+									
+					float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
+							
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				}
+				npc.StartPathing();
+				npc.m_bPathing = true;
 
-			Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
+				Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
+			}
+			else
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_flGetClosestTargetTime = 0.0;
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
 			return;
 		}
-		if(IsValidEntity(Master_Id_Main))
+		else
 		{
+			float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
+			float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 			switch(i_npc_type[npc.index])
 			{
 				case 1:	//melee, buisness as usual, just the target is the same as the masters
 				{
 					if(b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 					{
-						float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
-						float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 							
 						float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 			
@@ -811,8 +840,6 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 				}
 				case 2:	//ranged, target is the same, npc moves towards the master npc
 				{
-					float Master_Loc[3]; Master_Loc = WorldSpaceCenter(Master_Id_Main);
-					float Npc_Loc[3];	Npc_Loc = WorldSpaceCenter(npc.index);
 						
 					float dist = GetVectorDistance(Npc_Loc, Master_Loc, true);
 						
@@ -851,24 +878,6 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 					return;
 				}
 			}
-		}
-		else
-		{
-			if(flDistanceToTarget < npc.GetLeadRadius()) 
-			{
-							
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-							
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-			}
-			Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
-			npc.StartPathing();
-						
-			return;
 		}
 	}
 	else	//if its a master buisness as usual
@@ -1022,6 +1031,8 @@ public void Ruina_Generic_Melee_Self_Defense(int iNPC, int target, float distanc
 			{
 				status=1;
 				npc.AddGesture(attack_anim);
+
+				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 						
 				npc.m_flAttackHappens = gameTime + swing_delay;
 				npc.m_flNextMeleeAttack = gameTime + swing_speed;
@@ -1130,6 +1141,12 @@ static void Recall_Teleportation(int iNPC, int Target)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
+
+	if(fl_ruina_in_combat_timer[npc.index] > GameTime)
+	{
+		b_ruina_recall_teleport[npc.index]=false;
+		return;
+	}
 
 	if(fl_ruina_internal_teleport_timer[npc.index]>GameTime || NpcStats_IsEnemySilenced(npc.index))
 	{

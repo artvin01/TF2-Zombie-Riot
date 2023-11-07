@@ -404,6 +404,7 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
 				npc.PlayRangedSound();
+				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				//after we fire, we will have a short delay beteween the actual laser, and when it happens
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;

@@ -231,20 +231,13 @@ public void Ruina_Drone_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+	
+	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid
 
+	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(npc.m_flGetClosestTargetTime < GameTime)
+	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
-	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
-	{
-		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
-
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);

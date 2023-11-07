@@ -360,6 +360,7 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
+			fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 			npc.PlayRangedSound();
 			//after we fire, we will have a short delay beteween the actual laser, and when it happens
@@ -382,12 +383,12 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 	{
 		if(IsValidEntity(Anchor_Id))
 		{
-
 			CClotBody npc2 = view_as<CClotBody>(Anchor_Id);
 			int	target = npc2.m_iTarget;
 
 			if(IsValidEnemy(npc.index,target))
 			{
+				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				GetClosestEnemyToAttack = target;
 				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
 

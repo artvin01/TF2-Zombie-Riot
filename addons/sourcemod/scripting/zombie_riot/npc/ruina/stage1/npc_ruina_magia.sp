@@ -253,13 +253,9 @@ public void Magia_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GameTime)
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
-	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
+	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+
+	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
 	if(fl_ruina_battery[npc.index]>500.0)
 	{
@@ -270,13 +266,9 @@ public void Magia_ClotThink(int iNPC)
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
 		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
-				
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
-		//Predict their pos.
-		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 			
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
@@ -323,6 +315,7 @@ public void Magia_ClotThink(int iNPC)
 				//Play attack ani
 				if (!npc.m_flAttackHappenswillhappen)
 				{
+					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();

@@ -257,13 +257,9 @@ public void Lanius_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	
-	if(npc.m_flGetClosestTargetTime < GameTime)
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
-	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
+	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+
+	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
 	if(fl_ruina_battery[npc.index]>500.0)
 	{
@@ -275,12 +271,8 @@ public void Lanius_ClotThink(int iNPC)
 	{
 		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
 	}
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-			
-		//Predict their pos.
-		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
-
 		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 		
 		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);

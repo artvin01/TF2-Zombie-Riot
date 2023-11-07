@@ -401,6 +401,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
+			fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 			npc.PlayRangedSound();
 			//after we fire, we will have a short delay beteween the actual laser, and when it happens
@@ -431,6 +432,8 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 			{
 				GetClosestEnemyToAttack = target;
 				vecTarget = WorldSpaceCenter(GetClosestEnemyToAttack);
+
+				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 
 				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 				if(gameTime > npc.m_flNextRangedAttack)
