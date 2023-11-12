@@ -373,7 +373,8 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 	}
 	else
 	{
-		LowList.PushArray(feed);
+		if(LowList.PushArray(feed) > 49)
+			LowList.Erase(0);	// Too much queued, kill oldest
 	}
 
 	if(!FeedTimer)

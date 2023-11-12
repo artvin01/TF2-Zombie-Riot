@@ -349,7 +349,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 
 				Give_Assist_Points(target, client);
 
-				float cooldown = float(health) / 2.5;
+				float cooldown = float(health) / 10.0;
 				if(cooldown < 1.0)
 					cooldown = 1.0;
 				

@@ -1315,18 +1315,32 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 
 						if(item.ChildKit)
 						{
-							static Item parent;
-							StoreItems.GetArray(item.Section, parent);
+							// Increase sellback value of parent kit
+							static Item other;
+							StoreItems.GetArray(item.Section, other);
 
-							if(parent.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+							if(other.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
 							{
-								parent.Sell[client] = 0;
+								other.Sell[client] = 0;
 							}
 
-							parent.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-							parent.BuyWave[client] = -1;
+							other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+							other.BuyWave[client] = -1;
 
-							StoreItems.SetArray(item.Section, parent);
+							StoreItems.SetArray(item.Section, other);
+
+							// Packs all weapons part of the same kit
+							ItemInfo info2;
+							int length = StoreItems.Length;
+							for(int i; i < length; i++)
+							{
+								StoreItems.GetArray(item.Section, other);
+								if(other.Section == item.Section && i != values[0])
+								{
+									if(other.GetItemInfo(values[1], info2)) // If vaild, set new pack level
+										other.Owned[client] = values[1] + 1;
+								}
+							}
 						}
 						else
 						{

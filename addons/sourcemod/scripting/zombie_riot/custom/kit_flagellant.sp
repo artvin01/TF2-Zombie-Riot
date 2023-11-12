@@ -52,7 +52,14 @@ void Flagellant_Enable(int client, int weapon)
 			HealLevel[client] = RoundFloat(Attributes_Get(weapon, 861, 0.0));
 			
 			DataPack pack;
-			CreateDataTimer(0.1, Flagellant_ThinkTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			CreateDataTimer(0.1, Flagellant_HealerTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+			pack.WriteCell(GetClientUserId(client));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		case WEAPON_FLAGELLANT_DAMAGE:
+		{
+			DataPack pack;
+			CreateDataTimer(0.1, Flagellant_DamagerTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(GetClientUserId(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -70,7 +77,7 @@ void Flagellant_OnTakeDamage(int victim, float damage)
 		MoreMoreHits[victim]++;
 }
 
-public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
+public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
@@ -86,12 +93,11 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 				StartPlayerOnlyLagComp(client, true);
 				b_LagCompAlliedPlayers = false;
 				b_LagCompNPC_No_Layers = true;
-				b_LagCompNPC_OnlyAllies = false;
+				b_LagCompNPC_OnlyAllies = true;
 				StartLagCompensation_Base_Boss(client);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 				EndPlayerOnlyLagComp(client);
 
-				bool validEnemy;
 				bool validAlly;
 
 				if(target < 1)
@@ -105,22 +111,68 @@ public Action Flagellant_ThinkTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
-					{
-						if(!b_NpcIsInvulnerable[target])
-							validEnemy = true;
-					}
-					else if(!Citizen_ThatIsDowned(target))
+					if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !Citizen_ThatIsDowned(target))
 					{
 						validAlly = true;
 					}
 				}
 
-				static int color[4] = {50, 50, 50, 200};
-				color[0] = validAlly ? 50 : 255;
-				color[1] = validEnemy ? 50 : 255;
+				static int color[4] = {50, 255, 50, 200};
+				color[0] = validAlly ? 50 : 200;
 
-				if(validAlly || validEnemy)
+				if(validAlly)
+					pos = GetAbsOrigin(target);
+				
+				pos[2] += 10.0;
+
+				TE_SetupBeamRingPoint(pos, 100.0, 101.0, LaserIndex, LaserIndex, 0, 1, 0.1, 6.0, 0.1, color, 1, 0);
+				TE_SendToClient(client);
+			}
+
+			return Plugin_Continue;
+		}
+	}
+	
+	return Plugin_Stop;
+}
+
+public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(client)
+	{
+		int weapon = EntRefToEntIndex(pack.ReadCell());
+		if(weapon != -1)
+		{
+			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+			{
+				float pos[3];
+				b_LagCompNPC_No_Layers = true;
+				b_LagCompNPC_OnlyAllies = false;
+				StartLagCompensation_Base_Boss(client);
+				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+				EndPlayerOnlyLagComp(client);
+
+				bool validEnemy;
+
+				if(target < 1)
+				{
+
+				}
+				else if(!b_NpcHasDied[target])
+				{
+					if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+					{
+						if(!b_NpcIsInvulnerable[target])
+							validEnemy = true;
+					}
+				}
+
+				static int color[4] = {255, 50, 50, 200};
+				color[1] = validEnemy ? 50 : 200;
+
+				if(validEnemy)
 					pos = GetAbsOrigin(target);
 				
 				pos[2] += 10.0;
@@ -242,13 +294,12 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	StartPlayerOnlyLagComp(client, true);
 	b_LagCompAlliedPlayers = false;
 	b_LagCompNPC_No_Layers = true;
-	b_LagCompNPC_OnlyAllies = false;
+	b_LagCompNPC_OnlyAllies = true;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 	EndPlayerOnlyLagComp(client);
 
-	bool validEnemy;
 	bool validAlly;
 
 	if(target < 1)
@@ -262,12 +313,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
-		{
-			if(!b_NpcIsInvulnerable[target])
-				validEnemy = true;
-		}
-		else if(!b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
+		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
 		{
 			validAlly = true;
 		}
@@ -368,17 +414,54 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 			PrintHintText(client, "%N Is already at full hp.", target);
 		}
 	}
-	else if(validEnemy)
+
+	ClientCommand(client, "playgamesound items/medshotno1.wav");
+}
+
+public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int slot)
+{
+	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		return;
+	}
+
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	float pos[3];
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	EndPlayerOnlyLagComp(client);
+
+	bool validEnemy;
+
+	if(target < 1)
+	{
+
+	}
+	else if(!b_NpcHasDied[target])
+	{
+		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		{
+			if(!b_NpcIsInvulnerable[target])
+				validEnemy = true;
+		}
+	}
+
+	if(validEnemy)
 	{
 		Rogue_OnAbilityUse(weapon);
 
 		TriggerSelfDamage(client, 0.15);
 		
-		float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
+		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
-		Explode_Logic_Custom(300.0 * multi, client, client, weapon, pos, _, _, _, false, 3, false, _, Flagellant_AcidHitPost);
+		Explode_Logic_Custom(600.0 * multi, client, client, secondary, pos, _, _, _, false, 3, false, _, Flagellant_AcidHitPost);
 		pos[2] += 5.0;
 		ParticleEffectAt(pos, "bombinomicon_burningdebris", 0.5);
 
@@ -422,19 +505,17 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
-
 		
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	b_LagCompAlliedPlayers = false;
 	b_LagCompNPC_No_Layers = true;
-	b_LagCompNPC_OnlyAllies = false;
+	b_LagCompNPC_OnlyAllies = true;
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 	EndPlayerOnlyLagComp(client);
 
-	bool validEnemy;
 	bool validAlly;
 
 	if(target < 1)
@@ -448,12 +529,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
-		{
-			if(!b_NpcIsInvulnerable[target])
-				validEnemy = true;
-		}
-		else if(!b_NpcIsInvulnerable[target])
+		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target])
 		{
 			validAlly = true;
 		}
@@ -518,8 +594,57 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		}
 		
 		Ability_Apply_Cooldown(client, slot, 25.0);
+		return;
 	}
-	else if(validEnemy)
+
+	ClientCommand(client, "playgamesound items/medshotno1.wav");
+}
+
+public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int slot)
+{
+	int health = GetClientHealth(client);
+	int maxhealth = SDKCall_GetMaxHealth(client);
+	if(health > maxhealth / 2 && !dieingstate[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Must be below half health");
+		return;
+	}
+
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		return;
+	}
+	
+	b_LagCompNPC_No_Layers = true;
+	b_LagCompNPC_OnlyAllies = false;
+	StartLagCompensation_Base_Boss(client);
+	float pos[3];
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
+	EndPlayerOnlyLagComp(client);
+
+	bool validEnemy;
+
+	if(target < 1)
+	{
+
+	}
+	else if(!b_NpcHasDied[target])
+	{
+		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		{
+			if(!b_NpcIsInvulnerable[target])
+				validEnemy = true;
+		}
+	}
+
+	if(validEnemy)
 	{
 		Rogue_OnAbilityUse(weapon);
 
@@ -553,18 +678,20 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 			CreateTimer(1.0, Flagellant_CheckSepsisTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		
-		float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
+		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
 		f_NpcImmuneToBleed[target] = GetGameTime() + 0.6;
 		float extra = BleedAmountCountStack[target] * 1000.0;
 
-		SDKHooks_TakeDamage(target, client, client, (800.0 * multi), DMG_PLASMA, weapon);
-		SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, weapon, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+		SDKHooks_TakeDamage(target, client, client, (3200.0 * multi), DMG_PLASMA, secondary);
+		if(extra)
+			SDKHooks_TakeDamage(target, client, client, extra, DMG_SLASH, secondary, _, _, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 		ParticleEffectAt(pos, PARTICLE_JARATE, 2.0);
-		Ability_Apply_Cooldown(client, slot, 25.0);
+		Ability_Apply_Cooldown(client, slot, 50.0);
 		ClientCommand(client, "playgamesound misc/halloween/merasmus_spell.wav");
 		return;
 	}

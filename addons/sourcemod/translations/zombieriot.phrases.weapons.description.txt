@@ -2449,41 +2449,25 @@
 	{
 		"en"	"Hits up to 3 targets and increased melee range."
 	}
-	"Seaborn Claws Pap 1"
-	{
-		"en"	"Hits up to 4 targets, doubled melee range, and ignores walls."
-	}
-	"Seaborn Claws Pap 2"
-	{
-		"en"	"Hits up to 5 targets, doubled melee range, and ignores walls."
-	}
-	"Seaborn Claws Pap 3"
-	{
-		"en"	"Ability grants increased movement speed, double fire rate, and a slight damage penalty."
-	}
 	"Seaborn Spines Desc"
 	{
 		"en"	"A crossbow that does more damage the further the target is."
-	}
-	"Seaborn Spines Pap 1"
-	{
-		"en"	"Ability spawns a Shell Sea Runner."
-	}
-	"Seaborn Spines Pap 2"
-	{
-		"en"	"Ability spawns two Shell Sea Runners."
-	}
-	"Seaborn Spines Pap 3"
-	{
-		"en"	"Ability spawns three Shell Sea Runners and grants self double damage with a slight fire rate penalty."
 	}
 	"Seaborn Salve Desc"
 	{
 		"en"	"Heals allies up to 100 health and self up to 30 health."
 	}
-	"Seaborn Salve Pap 1"
+	"Seaborn Infection Pap 1"
 	{
-		"en"	"Heals allies up to 200 health and self up to 50 health."
+		"en"	"Claws now hits up to 4 targets, further increased melee range, and ignores walls.\nSpines gains an ability to spawn a Shell Sea Runner.\nSalve heals allies up to 200 health and self up to 50 health."
+	}
+	"Seaborn Infection Pap 2"
+	{
+		"en"	"Claws now hits up to 5 targets.\nSpines ability now spawns 2 Shell Sea Runners."
+	}
+	"Seaborn Infection Pap 3"
+	{
+		"en"	"Claws ability grants increased speed but less damage for a few seconds.\nSpines ability grants increased damage but less speed for a few seconds and spawns 3 Shell Sea Runners."
 	}
 	"Leper Sword Desc"
 	{
@@ -2505,36 +2489,36 @@
 	{
 		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract Death itself. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
 	}
+	"Acid Rain Desc"
+	{
+		"en"	"When targeting an enemy, cause an explosion that inflicts bleed, consumes 5%% of your max health, Medigun upgrades increases damage."
+	}
+	"Deathless Desc"
+	{
+		"en"	"When targeting an ally, heals them at the cost of your own health, Medigun upgrades increases healing and reduces self-damage."
+	}
 	"Punish Desc"
 	{
 		"en"	"Melee attacks self-damage yourself for 1%% of your max health but inflicts 15 seconds of bleed on targets."
 	}
-	"Punish Pap 1"
+	"Acid Rain Pap 1"
 	{
-		"en"	"Gain an ability, for the duration, hits taken is stored and afterwards heals you depending on hits taken."
-	}
-	"Punish Pap 2"
-	{
-		"en"	"Gain +100 max health and increases healing and max healing received on ability"
-	}
-	"Punish Pap 3"
-	{
-		"en"	"Gain +100 max health, bleed lasts longer, and increases healing and max healing received on ability"
-	}
-	"Deathless Desc"
-	{
-		"en"	"When targeting an ally, heals them at the cost of your own health, Medigun upgrades increases healing and reduces self-damage.\nWhen targeting an enemy, cause an explosion that inflicts bleed, consumes 5%% of your max health."
+		"en"	"Primary alt-fire ability ''More! MORE!'' hits one enemy for massive damage, trigger all bleed at once, heals yourself for 35%% max health (once per wave).\nSecondary and Melee also gain an alt-fire ability."
 	}
 	"Deathless Pap 1"
 	{
-		"en"	"Adds alt-fire abilities.\nWhen targeting an ally, remove some armour, gives a damage and resistance buff, and heal yourself for 25%% max health.\nWhen targeting an enemy, deal massive damage, trigger all bleed at once, heals yourself for 35%% max health (once per wave)."
+		"en"	"Secondary alt-fire ability ''Lash's Gift'' targets one ally, removing some armor but gives a damage and resistance buff, and heals yourself for 25%% max health.\nPrimary and Melee also gain an alt-fire ability."
 	}
-	"Deathless Pap 2"
+	"Punish Pap 1"
 	{
-		"en"	"Gain +50 max health and slightly increases healing, max healing, and decreases healing cost on both weapons' ability."
+		"en"	"Melee alt-fire ability ''Sepsis'' gives yourself to store damage taken to later be restored after the ability ends.\nPrimary and Secondary also gain an alt-fire ability."
 	}
-	"Deathless Pap 3"
+	"The Flagellant Pap 2"
 	{
-		"en"	"Gain +50 max health and massively increases self-healing alt-fire abilities on this weapon and bleed lasts longer.\nSlightly increases healing, max healing, and decreases healing cost on both weapons' ability."
+		"en"	"Gain +150 max health and increases healing given and received from abilities."
+	}
+	"The Flagellant Pap 3"
+	{
+		"en"	"Gain +150 max health, increases healing given and received from abilities, and bleed effects last longer."
 	}
 }

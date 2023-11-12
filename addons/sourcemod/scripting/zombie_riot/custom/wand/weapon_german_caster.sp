@@ -178,15 +178,17 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					
 					static float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
-					
-					Initiate_HomingProjectile(projectile,
-						client,
-						80.0,		// float lockonAngleMax,
-						20.0,		// float homingaSec,
-						false,		// bool LockOnlyOnce,
-						true,		// bool changeAngles,
-						ang_Look,	// float AnglesInitiate[3]);
-						target);
+					if(target > 0)
+					{
+						Initiate_HomingProjectile(projectile,
+							client,
+							80.0,		// float lockonAngleMax,
+							20.0,		// float homingaSec,
+							true,		// bool LockOnlyOnce,
+							true,		// bool changeAngles,
+							ang_Look,	// float AnglesInitiate[3]);
+							target);
+					}
 				}
 
 				PrintHintText(client, "Charges: %d", GermanCharges[client]);
