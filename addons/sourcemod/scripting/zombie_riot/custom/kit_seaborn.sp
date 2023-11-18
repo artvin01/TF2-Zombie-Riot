@@ -178,6 +178,10 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 		if(entity > MaxClients)
 		{
+			int maxhealth = SDKCall_GetMaxHealth(client);
+			maxhealth = RoundFloat(float(maxhealth) * 0.5); //2x health cus no resistance.
+			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}

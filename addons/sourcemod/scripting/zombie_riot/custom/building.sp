@@ -2230,7 +2230,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										max_mana_temp *= Mana_Regen_Level[client];	
 									}
 									if(b_AggreviatedSilence[client])
-										mana_regen_temp[client] *= 0.5;
+										mana_regen_temp *= 0.5;
 									/*
 									Current_Mana[client] += RoundToCeil(mana_regen[client]);
 										
