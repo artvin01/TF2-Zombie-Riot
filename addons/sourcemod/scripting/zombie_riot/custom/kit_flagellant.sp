@@ -292,10 +292,6 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
-	b_LagCompAlliedPlayers = false;
-	b_LagCompNPC_No_Layers = true;
-	b_LagCompNPC_OnlyAllies = true;
-	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 	EndPlayerOnlyLagComp(client);
@@ -508,10 +504,6 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
-	b_LagCompAlliedPlayers = false;
-	b_LagCompNPC_No_Layers = true;
-	b_LagCompNPC_OnlyAllies = true;
-	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 	EndPlayerOnlyLagComp(client);
