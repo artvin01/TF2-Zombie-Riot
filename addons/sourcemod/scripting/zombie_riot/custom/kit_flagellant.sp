@@ -91,10 +91,6 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				float pos[3];
 				b_LagCompNPC_No_Layers = true;
 				StartPlayerOnlyLagComp(client, true);
-				b_LagCompAlliedPlayers = false;
-				b_LagCompNPC_No_Layers = true;
-				b_LagCompNPC_OnlyAllies = true;
-				StartLagCompensation_Base_Boss(client);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 				EndPlayerOnlyLagComp(client);
 
