@@ -179,7 +179,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client);
-			maxhealth = RoundFloat(float(maxhealth) * 0.65); //2x health cus no resistance.
+			maxhealth = RoundFloat(float(maxhealth) * 0.5); //2x health cus no resistance.
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
