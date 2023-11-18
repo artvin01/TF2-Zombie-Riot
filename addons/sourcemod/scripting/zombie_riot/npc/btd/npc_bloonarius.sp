@@ -362,8 +362,8 @@ public void Bloonarius_ClotThink(int iNPC)
 		{
 			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
 			{
-				SDKHooks_TakeDamage(entity, 0, 0, 99999999.0, DMG_BLAST);
-				SDKHooks_TakeDamage(entity, 0, 0, 99999999.0, DMG_BLAST);
+				SmiteNpcToDeath(entity);
+				SmiteNpcToDeath(entity);
 			}
 		}
 		

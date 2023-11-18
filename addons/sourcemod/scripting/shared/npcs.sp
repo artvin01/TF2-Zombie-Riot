@@ -1160,10 +1160,29 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 	}
 
-	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
-	if(health <= 0)
+	bool SlayNpc = true;
+	if(health >= 1)
+	{
+		SlayNpc = false;
+	}
+	if(b_NpcIsInvulnerable[victim])
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
+		{
+			SlayNpc = false;
+		}
+	}
+	if(SlayNpc)
+	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
-
+	}
+	else
+	{
+		if(health <= 0)
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+	}
+	i_HexCustomDamageTypes[victim] = 0;
+		
 	Damageaftercalc = 0.0;
 }
 

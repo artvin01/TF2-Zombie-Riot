@@ -416,7 +416,9 @@ public Action Seaborn_KillNPC(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
-		SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
+	{
+		SmiteNpcToDeath(entity);
+	}
 	
 	return Plugin_Stop;
 }

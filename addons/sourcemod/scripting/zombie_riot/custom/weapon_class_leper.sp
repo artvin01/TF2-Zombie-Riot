@@ -249,7 +249,9 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 		RemoveEntity(camreadelete);
 
 	if(DeleteKillEntity != -1)
-		SDKHooks_TakeDamage(DeleteKillEntity, 0, 0, 99999999.9);
+	{
+		SmiteNpcToDeath(DeleteKillEntity);
+	}
 
 	if(!client)
 		return Plugin_Stop;

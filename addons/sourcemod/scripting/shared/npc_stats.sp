@@ -8052,7 +8052,7 @@ public void KillNpc(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity)) //Dont do this in a think pls.
 	{
-		SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+		SmiteNpcToDeath(entity);
 	}
 }
 

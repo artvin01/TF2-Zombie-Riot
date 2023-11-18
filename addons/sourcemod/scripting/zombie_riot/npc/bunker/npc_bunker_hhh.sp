@@ -391,7 +391,7 @@ public Action BunkerHeadlessHorse_OnTakeDamage(int iNPC, int &attacker, int &inf
 public void BunkerHeadlessHorse_NPCDeath(int entity)
 {
 	BunkerHeadlessHorse npc = view_as<BunkerHeadlessHorse>(entity);
-	SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
+	SmiteNpcToDeath(entity);
 	npc.PlayDeathScream();
 	SDKUnhook(entity, SDKHook_Think, BunkerHeadlessHorse_ClotThink);
 	
