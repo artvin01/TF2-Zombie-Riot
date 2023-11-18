@@ -21,6 +21,8 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 
+static int i_following_id[MAXENTITIES];
+
 void Ruina_Storm_Weaver_Mid_MapStart()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -30,7 +32,6 @@ void Ruina_Storm_Weaver_Mid_MapStart()
 	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
 
 }
-
 
 methodmap Storm_Weaver_Mid < CClotBody
 {
@@ -65,7 +66,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		#endif
 	}
 	
-	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], bool ally, float in_line_id)
 	{
 		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, "1.0", "1250", ally));
 		
@@ -73,6 +74,9 @@ methodmap Storm_Weaver_Mid < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+
+		
+		i_following_id[npc.index] = EntIndexToEntRef(RoundToFloor(in_line_id));
 
 
 		if(!ally)
@@ -145,6 +149,22 @@ public void Storm_Weaver_Mid_ClotThink(int iNPC)
 
 	int PrimaryThreatIndex = npc.m_iTarget;
 
+	int follow_id = EntRefToEntIndex(i_following_id[npc.index]);
+
+	if(IsValidEntity(follow_id))
+	{
+		float Follow_Loc[3];
+		GetEntPropVector(follow_id, Prop_Send, "m_vecOrigin", Follow_Loc);
+		Storm_Weaver_Middle_Movement(npc, Follow_Loc);
+	}
+	else
+	{	//commit death
+		npc.m_bDissapearOnDeath = true;	
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+	}
+
+	
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		
@@ -163,10 +183,13 @@ public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &infl
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	if(!b_storm_weaver_solo[npc.index])
+	if(!b_storm_weaver_solo)
 	{
-		//Storm_Weaver_Share_With_Anchor_Damage(npc, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Storm_Weaver_Daisy_Chain_Damage(EntRefToEntIndex(i_following_id[npc.index]), attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health(EntRefToEntIndex(i_following_id[npc.index])));
+
 		damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
 	}
 	else

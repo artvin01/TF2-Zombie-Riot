@@ -22,11 +22,12 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 #define RUINA_STORM_WEAVER_MODEL "models/props_borealis/bluebarrel001.mdl"
+#define RUINA_STORM_WEAVER_LENGHT 10
 
 static int i_anchor_ids[MAXENTITIES][RUINA_ANCHOR_HARD_LIMIT+1];
-bool b_storm_weaver_solo[MAXENTITIES];
+bool b_storm_weaver_solo;
+static int i_segment_id[MAXENTITIES][RUINA_STORM_WEAVER_LENGHT+1];
 static int i_traveling_to_anchor[MAXENTITIES];
-static float fl_heading_angles[MAXENTITIES][2];
 
 static int beam_model;
 
@@ -38,6 +39,7 @@ void Ruina_Storm_Weaver_MapStart()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 
 	Zero2(i_anchor_ids);
+	Zero2(i_segment_id);
 
 	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
 
@@ -117,7 +119,7 @@ methodmap Storm_Weaver < CClotBody
 
 		if(!solo)
 		{
-			b_storm_weaver_solo[npc.index]=false;
+			b_storm_weaver_solo=false;
 			int base_hp = 1000;
 			int Health = Storm_Weaver_Health(npc, base_hp);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", Health);
@@ -125,8 +127,10 @@ methodmap Storm_Weaver < CClotBody
 		}
 		else
 		{
-			b_storm_weaver_solo[npc.index]=true;
+			b_storm_weaver_solo=true;
 		}
+
+
 
 		i_traveling_to_anchor[npc.index]=-1;
 		//now the fun part, making him ignore all collisions...
@@ -140,16 +144,93 @@ methodmap Storm_Weaver < CClotBody
 
 		ParticleEffectAt(npc_vec, "eyeboss_death_vortex", 5.0);
 
+		int follow_id = npc.index;
+		for(int i=0 ; i< RUINA_STORM_WEAVER_LENGHT ; i++)
+		{
+			int buffer = Storm_Weaver_Create_Tail(npc, follow_id, i);
+			follow_id = buffer;
+		}
+
 		
 		return npc;
 	}
 	
 }
+static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section)
+{
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);	//what
+
+	int base_hp = 1000;
+	int Health = Storm_Weaver_Health(npc, base_hp);
+	int spawn_index;
+
+	char buffer[16];
+	IntToString(follow_ID, buffer, sizeof(buffer));
+
+	spawn_index = Npc_Create(RUINA_STORM_WEAVER_MID, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2, buffer);
+	i_segment_id[npc.index][Section] = EntIndexToEntRef(spawn_index);
+	if(spawn_index > MaxClients)
+	{
+		Zombies_Currently_Still_Ongoing += 1;
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
+	}
+	return spawn_index;
+}
+public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3])
+{
+	float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+		
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Entity_Loc);
+		
+	MakeVectorFromPoints(Entity_Loc, loc, vecView);
+	GetVectorAngles(vecView, vecView);
+		
+	float dist = 75.0;
+	float dist2 = GetVectorDistance(Entity_Loc, loc);
+
+	if(dist2>(250.0))	//just force teleport in these cases
+	{
+		TeleportEntity(npc.index, loc, NULL_VECTOR, NULL_VECTOR);
+		return;
+	}
+
+	if(dist2<dist)
+		dist = dist2;
+
+	if(dist<25.0)
+		dist=25.0;
+
+	GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+		
+	Entity_Loc[0]+=vecFwd[0] * dist;
+	Entity_Loc[1]+=vecFwd[1] * dist;
+	Entity_Loc[2]+=vecFwd[2] * dist;
+			
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", vecFwd);
+		
+	SubtractVectors(Entity_Loc, vecFwd, vecVel);
+	ScaleVector(vecVel, 10.0);
+	TeleportEntity(npc.index, NULL_VECTOR, vecView, NULL_VECTOR);
+	npc.SetVelocity(vecVel);
+}
+public void Storm_Weaver_Daisy_Chain_Damage(int Other, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+{
+	if(IsEntityAlive(Other) && !b_NpcIsInvulnerable[Other])
+	{
+		SDKHooks_TakeDamage(Other, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+	}
+}
+public int Storm_Weaver_Return_Health(int other)
+{
+	return GetEntProp(other, Prop_Data, "m_iHealth");
+}
 static void Storm_Weaver_Pulse_Solo_Mode(Storm_Weaver npc)
 {
 	for(int i= 0 ; i <= 8 ; i++)
 	{
-		if(i_magia_anchors_active < 5)
+		if(i_magia_anchors_active < 4)
 		{
 			Storm_Weaver_Force_Spawn_Anchors(npc);
 		}	
@@ -159,7 +240,7 @@ static void Storm_Weaver_Pulse_Solo_Mode(Storm_Weaver npc)
 
 	if(i_magia_anchors_active>=4)
 	{
-		b_storm_weaver_solo[npc.index]=false;
+		b_storm_weaver_solo=false;
 	}
 	
 }
@@ -348,7 +429,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 
-	if(b_storm_weaver_solo[npc.index])
+	if(b_storm_weaver_solo)
 	{
 		Storm_Weaver_Pulse_Solo_Mode(npc);
 	}
@@ -368,7 +449,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 	}
 	else	//random-ish wandering
 	{
-		if(!b_storm_weaver_solo[npc.index])
+		if(!b_storm_weaver_solo)
 		{
 			float Npc_Vec[3]; Npc_Vec=GetAbsOrigin(npc.index);
 			if(npc.m_flNextMeleeAttack < GameTime)
@@ -510,6 +591,8 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 	
 	GetEntPropVector(npc.index, Prop_Data, "m_vecVelocity", newVel);
 
+	float max_speed = 500.0;
+
 	for(int vec=0 ; vec <=2 ; vec++)
 	{
 		if(npc_vec[vec]<target_vec[vec])
@@ -536,15 +619,15 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 			}
 		}
 		
-		if(newVel[vec]>250.0 || newVel[vec] < -250.0)	//max speed
+		if(newVel[vec]>max_speed || newVel[vec] < max_speed*-1.0)	//max speed
 		{
 			if(newVel[vec]<0)
 			{
-				newVel[vec] = -250.0;
+				newVel[vec] = max_speed*-1;
 			}
 			else
 			{
-				newVel[vec] = 250.0;
+				newVel[vec] = max_speed;
 			}
 		}
 	}
@@ -626,7 +709,7 @@ public Action Storm_Weaver_OnTakeDamage(int victim, int &attacker, int &inflicto
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	if(!b_storm_weaver_solo[npc.index])
+	if(!b_storm_weaver_solo)
 	{
 		Storm_Weaver_Share_With_Anchor_Damage(npc, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
