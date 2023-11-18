@@ -302,9 +302,10 @@ public void OnPostThink(int client)
 		}
 	}
 #endif	// ZR
-	if(Mana_Regen_Delay[client] < GameTime)	
+	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))	
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
+		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
 			
 		has_mage_weapon[client] = false;
 
@@ -323,7 +324,12 @@ public void OnPostThink(int client)
 		mana_regen[client] = 10.0;
 			
 		if(LastMann)
-			mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
+		{
+			if(!b_AggreviatedSilence[client])	
+				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
+			else
+				mana_regen[client] *= 10.0; // only 10x the regen as they always regen.
+		}
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -337,7 +343,11 @@ public void OnPostThink(int client)
 #endif
 					
 		mana_regen[client] *= Mana_Regen_Level[client];
-		max_mana[client] *= Mana_Regen_Level[client];	
+		max_mana[client] *= Mana_Regen_Level[client];
+		if(b_AggreviatedSilence[client])	
+		{
+			mana_regen[client] *= 0.5;
+		}
 			
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 		{

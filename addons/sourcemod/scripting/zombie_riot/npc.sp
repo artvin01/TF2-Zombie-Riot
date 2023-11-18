@@ -2649,7 +2649,7 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Storm_Weaver(client, vecPos, vecAng, ally, data);
 
 		case RUINA_STORM_WEAVER_MID:
-			entity = Storm_Weaver_Mid(client, vecPos, vecAng, ally, data);
+			entity = Storm_Weaver_Mid(client, vecPos, vecAng, ally, StringToFloat(data));
 		
 		case SEA_RAIDBOSS_DONNERKRIEG:
 			entity = Raidboss_Donnerkrieg(client, vecPos, vecAng, ally);

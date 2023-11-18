@@ -665,6 +665,10 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
+				if(b_ProximityAmmo[attacker])
+				{
+					damage *= 1.1;
+				}
 				float AttackerPos[3];
 				float VictimPos[3];
 				
@@ -679,8 +683,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					distance = 0.1;
 				}
+				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
+				if(b_ProximityAmmo[attacker])
+				{
+					WeaponDamageFalloff *= 0.8;
+				}
 
-				damage *= Pow(i_WeaponDamageFalloff[weapon], (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
+				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
 		}
 		if(!i_WeaponCannotHeadshot[weapon])

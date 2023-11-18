@@ -1677,9 +1677,9 @@
 	
 	"Heavy Caliber Desc"
 	{
-		"en"	"15%% more Weapon damage, but 10%% less firerate"
-		"ru"	"На 15%% больше урон от оружия, но на 10%% меньше скорострельность"
-		"chi"   "武器伤害提高15%%，但射速降低10%%"
+		"en"	"15%% more Weapon damage, but 15%% less firerate"
+		"ru"	"На 15%% больше урон от оружия, но на 15%% меньше скорострельность"
+		"chi"   "武器伤害提高15%%，但射速降低15%%"
 	}
 	
 	"Army Belt Desc"
@@ -1695,6 +1695,10 @@
 		"ru"	"Выстрелы в голову наносят двукратно больше урона вместо 1,65-кратного, но наносят на 35%% меньше урона от выстрелов в тело"
 		"chi"   "爆头造成的伤害增加2.0倍，但造成的身体伤害减少35%%"
 	}
+	"Proximity Ammunition Desc"
+	{
+		"en"	"Your bullets deal 10%% more damage, however their damage falloff is amplified by 20%%\nMost hitscan weapons work with this, if the weapon has no damage falloff, then this does nothing."
+	}
 	
 	"Mage Fragility Desc"
 	{
@@ -1705,6 +1709,14 @@
 	"Mystical Overcharge Desc"
 	{
 		"en"	"Magic Weapons deal 20%% more damage, however you have 35%% less max mana and mana regen."
+	}
+	"Concentrated Agelitus Desc"
+	{
+		"en"	"Magic Weapons deal 5%% less damage, you have 10%% less max mana and mana regen, but your magic projectiles are 50% faster."
+	}
+	"Aggreviated Silence Desc"
+	{
+		"en"	"Your Mana will now always regenerate, however you have half the mana regen speed.\nYou also have 10%% less max mana and mana regen."
 	}
 	
 	"Heavy Fat Desc"

@@ -362,6 +362,7 @@ float f_ClientInvul[MAXENTITIES]; //Extra ontop of uber if they somehow lose it 
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
+float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 
@@ -518,6 +519,8 @@ int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
+bool b_AggreviatedSilence[MAXTF2PLAYERS];
+bool b_ProximityAmmo[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 float f_LeftForDead_Cooldown[MAXTF2PLAYERS];

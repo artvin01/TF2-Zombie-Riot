@@ -4779,6 +4779,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_LeftForDead[client] = false;
 	b_StickyExtraGrenades[client] = false;
 	b_HasMechanic[client] = false;
+	b_AggreviatedSilence[client] = false;
+	b_ProximityAmmo[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
@@ -5449,6 +5451,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 8)
 					{
 						i_MaxSupportBuildingsLimit[client] += info.SpecialAdditionViaNonAttributeInfo;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 9)
+					{
+						b_AggreviatedSilence[client] = true;
+					}
+					if(info.SpecialAdditionViaNonAttribute == 10)
+					{
+						b_ProximityAmmo[client] = true;
 					}
 
 #endif
