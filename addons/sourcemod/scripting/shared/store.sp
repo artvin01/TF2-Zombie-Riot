@@ -1341,7 +1341,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 								StoreItems.GetArray(i, other);
 								if(other.Section == item.Section && i != values[0])
 								{
-									if(other.GetItemInfo(values[1], info2)) // If vaild, set new pack level
+									if(other.GetItemInfo(values[1], info2) && info2.Cost) // If vaild, set new pack level
 									{
 										other.Owned[client] = values[1] + 1;
 										StoreItems.SetArray(i, other);
