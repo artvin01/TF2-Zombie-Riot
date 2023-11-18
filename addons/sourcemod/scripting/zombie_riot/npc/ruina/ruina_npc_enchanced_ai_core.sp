@@ -34,6 +34,7 @@ float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_stella_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
+#define RUINA_ANCHOR_HARD_LIMIT 10
 int i_magia_anchors_active;
 
 float fl_ruina_in_combat_timer[MAXENTITIES];
@@ -269,6 +270,12 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 		
 		case RUINA_MAGIA_ANCHOR:
 			Magia_Anchor_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case RUINA_STORM_WEAVER:
+			Storm_Weaver_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
+		case RUINA_STORM_WEAVER_MID:
+			Storm_Weaver_Mid_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	}
 		
 }
@@ -447,6 +454,12 @@ public void Ruina_NPCDeath_Override(int entity)
 		
 		case RUINA_MAGIA_ANCHOR:
 			Magia_Anchor_NPCDeath(entity);
+
+		case RUINA_STORM_WEAVER:
+			Storm_Weaver_NPCDeath(entity);
+
+		case RUINA_STORM_WEAVER_MID:
+			Storm_Weaver_Mid_NPCDeath(entity);
 			
 		default:
 			PrintToChatAll("This RUINA Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
