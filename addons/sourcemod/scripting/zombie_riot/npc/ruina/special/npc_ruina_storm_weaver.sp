@@ -18,18 +18,23 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/dragons_fury_shoot.wav",
 };
 
 #define RUINA_STORM_WEAVER_MODEL "models/props_borealis/bluebarrel001.mdl"
-#define RUINA_STORM_WEAVER_LENGHT 10
+#define RUINA_STORM_WEAVER_HEAD_MODEL "models/props_borealis/bluebarrel001.mdl"
+#define RUINA_STORM_WEAVER_MODEL_SIZE "1.0"	//1.0
+#define RUINA_STORM_WEAVER_LENGHT 10	//10
 
-static int i_anchor_ids[MAXENTITIES][RUINA_ANCHOR_HARD_LIMIT+1];
+#define RUINA_DAMAGE_INSTANCES_PER_FRAME 1	//a player can only dmg the worm x times a frame, to make piercing weapons not delete him stupidly easily
+
 bool b_storm_weaver_solo;
+int i_storm_weaver_health;
+int i_storm_weaver_damage_instance[MAXTF2PLAYERS+1];
 static int i_segment_id[MAXENTITIES][RUINA_STORM_WEAVER_LENGHT+1];
 static int i_traveling_to_anchor[MAXENTITIES];
 
-static int beam_model;
+//static int beam_model;
 
 
 void Ruina_Storm_Weaver_MapStart()
@@ -38,12 +43,12 @@ void Ruina_Storm_Weaver_MapStart()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 
-	Zero2(i_anchor_ids);
 	Zero2(i_segment_id);
 
-	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
+	PrecacheModel(RUINA_STORM_WEAVER_HEAD_MODEL);
+	Zero(i_storm_weaver_damage_instance);
 
-	beam_model = PrecacheModel(BLITZLIGHT_SPRITE);
+	//beam_model = PrecacheModel(BLITZLIGHT_SPRITE);
 }
 
 methodmap Storm_Weaver < CClotBody
@@ -81,7 +86,7 @@ methodmap Storm_Weaver < CClotBody
 	
 	public Storm_Weaver(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
-		Storm_Weaver npc = view_as<Storm_Weaver>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, "1.0", "1250", ally));
+		Storm_Weaver npc = view_as<Storm_Weaver>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_HEAD_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
 		i_NpcInternalId[npc.index] = RUINA_STORM_WEAVER;
 		i_NpcWeight[npc.index] = 999;
@@ -104,7 +109,7 @@ methodmap Storm_Weaver < CClotBody
 
 		Ruina_Set_No_Retreat(npc.index);
 
-		
+		Zero(i_storm_weaver_damage_instance);
 		
 		SDKHook(npc.index, SDKHook_Think, Storm_Weaver_ClotThink);
 		
@@ -113,23 +118,62 @@ methodmap Storm_Weaver < CClotBody
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
-		Find_Anchors(npc);
 
 		bool solo = StrContains(data, "solo") != -1;
+
+		if(i_magia_anchors_active<=0)
+			solo=true;
 
 		if(!solo)
 		{
 			b_storm_weaver_solo=false;
-			int base_hp = 1000;
-			int Health = Storm_Weaver_Health(npc, base_hp);
+			int Health = Storm_Weaver_Health();
+			i_storm_weaver_health = Health;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", Health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Health);
 		}
 		else
 		{
+			i_storm_weaver_health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 			b_storm_weaver_solo=true;
 		}
 
+
+		RaidModeScaling = float(ZR_GetWaveCount()+1);
+
+		if(RaidModeScaling < 55)
+		{
+			RaidModeScaling *= 0.16; //abit low, inreacing
+		}
+		else
+		{
+			RaidModeScaling *= 0.33;
+		}
+		
+		float amount_of_people = float(CountPlayersOnRed());
+
+		if(amount_of_people > 12.0)
+		{
+			amount_of_people = 12.0;
+		}
+
+		amount_of_people *= 0.12;
+		
+		if(amount_of_people < 1.0)
+			amount_of_people = 1.0;
+			
+		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+
+		/*
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "voice_player", 1, "%t", "Blitzkrieg Spawn");
+			}
+		}*/
 
 
 		i_traveling_to_anchor[npc.index]=-1;
@@ -151,6 +195,10 @@ methodmap Storm_Weaver < CClotBody
 			follow_id = buffer;
 		}
 
+		b_NoKnockbackFromSources[npc.index] = true;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+
+		SDKHook(npc.index, SDKHook_Touch, Storm_Weaver_Damage_Touch);
 		
 		return npc;
 	}
@@ -161,8 +209,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);	//what
 
-	int base_hp = 1000;
-	int Health = Storm_Weaver_Health(npc, base_hp);
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int spawn_index;
 
 	char buffer[16];
@@ -173,10 +220,22 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	if(spawn_index > MaxClients)
 	{
 		Zombies_Currently_Still_Ongoing += 1;
+		CClotBody tail = view_as<CClotBody>(spawn_index);
+		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
 	}
 	return spawn_index;
+}
+static void Storm_Weaver_Nuke_Tail(Storm_Weaver npc)
+{
+	for(int i=0 ; i< RUINA_STORM_WEAVER_LENGHT ; i++)
+	{
+		int Tail = EntRefToEntIndex(i_segment_id[npc.index][i]);
+		CClotBody tail = view_as<CClotBody>(Tail);
+		tail.m_bDissapearOnDeath = true;	
+		RequestFrame(KillNpc, EntIndexToEntRef(tail.index));
+	}
 }
 public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3])
 {
@@ -215,16 +274,9 @@ public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3])
 	TeleportEntity(npc.index, NULL_VECTOR, vecView, NULL_VECTOR);
 	npc.SetVelocity(vecVel);
 }
-public void Storm_Weaver_Daisy_Chain_Damage(int Other, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+public int Storm_Weaver_Return_Health()
 {
-	if(IsEntityAlive(Other) && !b_NpcIsInvulnerable[Other])
-	{
-		SDKHooks_TakeDamage(Other, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
-	}
-}
-public int Storm_Weaver_Return_Health(int other)
-{
-	return GetEntProp(other, Prop_Data, "m_iHealth");
+	return i_storm_weaver_health;
 }
 static void Storm_Weaver_Pulse_Solo_Mode(Storm_Weaver npc)
 {
@@ -236,12 +288,12 @@ static void Storm_Weaver_Pulse_Solo_Mode(Storm_Weaver npc)
 		}	
 	}
 
-	Find_Anchors(npc);
 
 	if(i_magia_anchors_active>=4)
 	{
 		b_storm_weaver_solo=false;
 	}
+
 	
 }
 static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
@@ -308,7 +360,8 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 		
 	float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceCenter(npc.index), true);
 		
-	if(flDistanceToBuild < (250.0 * 250.0))
+	float range = 250.0*i_magia_anchors_active;
+	if(flDistanceToBuild < (range * range))
 	{
 		return; //The building is too close, we want to retry! it is unfair otherwise.
 	}
@@ -320,15 +373,13 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	int spawn_index = Npc_Create(RUINA_MAGIA_ANCHOR, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
 	if(spawn_index > MaxClients)
 	{
-		int active_anchor = i_magia_anchors_active+1;
-		i_anchor_ids[npc.index][active_anchor] = EntIndexToEntRef(spawn_index);
 		if(!b_IsAlliedNpc[npc.index])
 		{
 			Zombies_Currently_Still_Ongoing += 1;
 		}
 		fl_ruina_battery[spawn_index]=255.0;	//force spawn them fully
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(spawn_index, 255, 255, 255, 255);
+		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
 
 		int i_health = RoundToFloor(Health);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", i_health);
@@ -336,23 +387,25 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	}
 }
 
-static int Storm_Weaver_Health(Storm_Weaver npc, int base_hp)
+static int Storm_Weaver_Health()
 {
-	int health = base_hp;	//baseline 1k
-	for(int anchor=1 ; anchor <= i_magia_anchors_active ; anchor++ )
+	int anchor_id[RUINA_ANCHOR_HARD_LIMIT+1]; Find_Anchors(anchor_id);
+
+	int health;
+	for(int anchor=0 ; anchor <= RUINA_ANCHOR_HARD_LIMIT ; anchor++ )
 	{
-		int Anchor_Id = EntRefToEntIndex(i_anchor_ids[npc.index][anchor]);
-		if(IsValidEntity(Anchor_Id))
+		int Anchor_Id = anchor_id[anchor];
+		if(IsEntityAlive(Anchor_Id) && !b_NpcIsInvulnerable[Anchor_Id])
 		{
 			health+=GetEntProp(Anchor_Id, Prop_Data, "m_iHealth");
 		}
 	}
-	return health;
+	return health+1;
 }
 
-static void Find_Anchors(Storm_Weaver npc)
+static void Find_Anchors(int array[RUINA_ANCHOR_HARD_LIMIT+1])
 {
-	int anchor_current=1;
+	int anchor_current=0;
 	for(int targ; targ<i_MaxcountNpc; targ++)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
@@ -360,14 +413,13 @@ static void Find_Anchors(Storm_Weaver npc)
 		{
 			if(i_NpcInternalId[baseboss_index] == RUINA_MAGIA_ANCHOR)
 			{
-				i_anchor_ids[npc.index][anchor_current]= EntIndexToEntRef(baseboss_index);
+				array[anchor_current]=baseboss_index;
 				anchor_current++;
 			}
 		}
 	}
 }
-
-public void Storm_Weaver_Share_With_Anchor_Damage(Storm_Weaver npc, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+public void Storm_Weaver_Share_With_Anchor_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	if(damagetype & DMG_CLUB)	//if a person is brave enough to melee this thing, reward them handsomely
 	{
@@ -383,14 +435,48 @@ public void Storm_Weaver_Share_With_Anchor_Damage(Storm_Weaver npc, int &attacke
 		return;
 	}
 
-	float ratio = damage / i_magia_anchors_active;
-	for(int anchor=1 ; anchor <= i_magia_anchors_active ; anchor++ )
+	int anchor_id[RUINA_ANCHOR_HARD_LIMIT+1]; Find_Anchors(anchor_id);
+
+	if(attacker>MAXTF2PLAYERS)
 	{
-		int Anchor_Id = EntRefToEntIndex(i_anchor_ids[npc.index][anchor]);
+		float ratio = damage / i_magia_anchors_active;
+		for(int anchor=0 ; anchor <= RUINA_ANCHOR_HARD_LIMIT ; anchor++ )
+		{
+			int Anchor_Id = anchor_id[anchor];
+			if(IsEntityAlive(Anchor_Id) && !b_NpcIsInvulnerable[Anchor_Id])
+			{
+				SDKHooks_TakeDamage(Anchor_Id, attacker, inflictor, ratio, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			}
+		}
+		return;
+	}
+
+	if(i_storm_weaver_damage_instance[attacker]>=RUINA_DAMAGE_INSTANCES_PER_FRAME)
+		return;
+
+	i_storm_weaver_damage_instance[attacker]++;
+
+	float ratio = damage / i_magia_anchors_active;
+	for(int anchor=0 ; anchor <= RUINA_ANCHOR_HARD_LIMIT ; anchor++ )
+	{
+		int Anchor_Id = anchor_id[anchor];
 		if(IsEntityAlive(Anchor_Id) && !b_NpcIsInvulnerable[Anchor_Id])
 		{
 			SDKHooks_TakeDamage(Anchor_Id, attacker, inflictor, ratio, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			RequestFrame(Nulify_Instance, attacker);
 		}
+	}
+}
+static void Nulify_Instance(int client)
+{
+	i_storm_weaver_damage_instance[client]=0;
+}
+
+static void Storm_Weaver_Damage_Touch(int entity, int other)
+{
+	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
+	{
+		SDKHooks_TakeDamage(other, entity, entity, 100.0*RaidModeScaling, DMG_CRUSH, -1, _);
 	}
 }
 
@@ -400,6 +486,8 @@ public void Storm_Weaver_ClotThink(int iNPC)
 {
 	Storm_Weaver npc = view_as<Storm_Weaver>(iNPC);
 	
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ 10.0);
+
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
 	{
@@ -425,7 +513,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index, true);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 
@@ -446,6 +534,34 @@ public void Storm_Weaver_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		Storm_Weaver_Heading_Control(npc, PrimaryThreatIndex, GameTime);
+		
+		int Enemy_I_See;
+				
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		{
+			float flDistanceToTarget, vecTarget[3];
+			vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+
+			flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			if(GameTime > npc.m_flNextRangedAttack)
+			{
+				npc.PlayMeleeHitSound();
+				float projectile_speed = 1250.0;
+				//lets pretend we have a projectile.
+				if(flDistanceToTarget < 1250.0*1250.0)
+					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, 40.0);
+
+				if(!Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex)) //cant see enemy in the predicted position, we will instead just attack normally
+				{
+					vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+				}
+				float DamageDone = 100.0*RaidModeScaling;
+				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+				npc.m_flNextRangedAttack = GameTime + 1.1;
+			}
+		}
 	}
 	else	//random-ish wandering
 	{
@@ -455,9 +571,11 @@ public void Storm_Weaver_ClotThink(int iNPC)
 			if(npc.m_flNextMeleeAttack < GameTime)
 			{
 				
-				for(int anchor=1 ; anchor <= i_magia_anchors_active ; anchor++ )
+				int anchor_id[RUINA_ANCHOR_HARD_LIMIT+1]; Find_Anchors(anchor_id);
+
+				for(int anchor=0 ; anchor <= RUINA_ANCHOR_HARD_LIMIT ; anchor++ )
 				{
-					int Anchor_Id = EntRefToEntIndex(i_anchor_ids[npc.index][anchor]);
+					int Anchor_Id = anchor_id[anchor];
 					if(IsEntityAlive(Anchor_Id))
 					{
 						float target_vec[3]; target_vec = GetAbsOrigin(Anchor_Id);
@@ -498,17 +616,17 @@ public void Storm_Weaver_ClotThink(int iNPC)
 
 
 }
-static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float GameTime)
+static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target)
 {
 	float Npc_Vec[3]; Npc_Vec=GetAbsOrigin(npc.index);
 
 
 	if(IsValidEnemy(npc.index, Target))
 	{
-		int New_Target = Storm_Weaver_Get_Target(npc);
+		int New_Target = Storm_Weaver_Get_Target(npc);	//warp
 		if(!IsValidEntity(New_Target))
 		{
-			npc.m_flSpeed = 250.0;
+			/*npc.m_flSpeed = 250.0;
 			b_NoGravity[npc.index] = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			
@@ -530,7 +648,8 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 			npc.StartPathing();
 			npc.m_bPathing = true;
 
-			return;
+			return;*/
+			New_Target = Target;
 		}
 
 		if(npc.IsOnGround())
@@ -543,11 +662,16 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 
-		float target_vec[3]; target_vec = GetAbsOrigin(New_Target);
+		float target_vec[3], flDistanceToTarget; target_vec = GetAbsOrigin(New_Target);
 
+		flDistanceToTarget = GetVectorDistance(target_vec, Npc_Vec, true);
+
+		if(flDistanceToTarget>(150.0*150.0))
+			target_vec[2]+=125.0;
+		else
+			target_vec[2]+=70.0;
+			
 		Storm_Weaver_Fly(npc, target_vec);
-
-		
 
 	}
 	else
@@ -605,7 +729,7 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 			{
 				newVel[vec] = 0.0;
 			}
-			
+			//newVel[vec] += 75.0;
 		}
 		else
 		{
@@ -617,6 +741,7 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 			{
 				newVel[vec] = 0.0;
 			}
+			//newVel[vec] -= 75.0;
 		}
 		
 		if(newVel[vec]>max_speed || newVel[vec] < max_speed*-1.0)	//max speed
@@ -631,6 +756,12 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 			}
 		}
 	}
+
+	/*if(!Storm_Weaver_Check_Heading_Walls(npc, 2, -1))	// don't let it touch the ground at all costs
+	{
+		newVel[2] = 0.0;
+		newVel[2] = 25.0;
+	}*/
 
 	npc.SetVelocity(newVel);
 
@@ -711,11 +842,11 @@ public Action Storm_Weaver_OnTakeDamage(int victim, int &attacker, int &inflicto
 		
 	if(!b_storm_weaver_solo)
 	{
-		Storm_Weaver_Share_With_Anchor_Damage(npc, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
 		damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
 
-		int Health = Storm_Weaver_Health(npc, 1);
+		int Health = Storm_Weaver_Health();
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Health);
 	}
 	else
@@ -744,6 +875,7 @@ public void Storm_Weaver_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
+	Storm_Weaver_Nuke_Tail(npc);
 	
 	SDKUnhook(npc.index, SDKHook_Think, Storm_Weaver_ClotThink);
 

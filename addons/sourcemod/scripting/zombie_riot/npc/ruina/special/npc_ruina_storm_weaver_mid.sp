@@ -18,7 +18,7 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/dragons_fury_shoot.wav",
 };
 
 static int i_following_id[MAXENTITIES];
@@ -68,7 +68,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 	
 	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], bool ally, float in_line_id)
 	{
-		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, "1.0", "1250", ally));
+		Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(CClotBody(vecPos, vecAng, RUINA_STORM_WEAVER_MODEL, RUINA_STORM_WEAVER_MODEL_SIZE, "1250", ally));
 		
 		i_NpcInternalId[npc.index] = RUINA_STORM_WEAVER_MID;
 		i_NpcWeight[npc.index] = 999;
@@ -105,7 +105,9 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		b_NoGravity[npc.index] = true;	//Found ya!
 
-		
+		b_NoKnockbackFromSources[npc.index] = true;
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+
 		return npc;
 	}
 	
@@ -157,17 +159,28 @@ public void Storm_Weaver_Mid_ClotThink(int iNPC)
 		GetEntPropVector(follow_id, Prop_Send, "m_vecOrigin", Follow_Loc);
 		Storm_Weaver_Middle_Movement(npc, Follow_Loc);
 	}
-	else
-	{	//commit death
-		npc.m_bDissapearOnDeath = true;	
-		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-	}
 
-	
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		
+		int Enemy_I_See;
+				
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		{
+			float vecTarget[3];
+			vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+
+			if(GameTime > npc.m_flNextRangedAttack)
+			{
+				npc.PlayMeleeHitSound();
+
+				float DamageDone = 100.0*RaidModeScaling;
+				npc.FireParticleRocket(vecTarget, DamageDone, 1250.0, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+				npc.m_flNextRangedAttack = GameTime + 5.0;
+			}
+		}
 	}
 	else
 	{
@@ -185,21 +198,13 @@ public Action Storm_Weaver_Mid_OnTakeDamage(int victim, int &attacker, int &infl
 		
 	if(!b_storm_weaver_solo)
 	{
-		Storm_Weaver_Daisy_Chain_Damage(EntRefToEntIndex(i_following_id[npc.index]), attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
 
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health(EntRefToEntIndex(i_following_id[npc.index])));
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
+	}
 
-		damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
-	}
-	else
-	{
-		if(damagetype & DMG_CLUB)	//if a person is brave enough to melee this thing, reward them handsomely
-		{
-			damage *=2.5;
-			fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
-		}
-	}
+	damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
