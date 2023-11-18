@@ -112,6 +112,7 @@ enum struct ItemInfo
 #if defined ZR
 	int RougeBuildMax;
 	int RougeBuildSupportNeeded;
+	int BuildSupportNeeded;
 	int ScrapCost;
 	int UnboxRarity;
 	bool CannotBeSavedByCookies;
@@ -394,6 +395,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%srogue_build_support_minimum", prefix);
 		this.RougeBuildSupportNeeded = kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%sbuild_support_minimum", prefix);
+		this.BuildSupportNeeded = kv.GetNum(buffer, -1);
 
 		Format(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
 		this.UnboxRarity = kv.GetNum(buffer, -1);
@@ -1668,6 +1672,13 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 							break;
 						}
 						else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
+						{
+							break;
+						}
+					}
+					else
+					{
+						if(info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 						{
 							break;
 						}
@@ -3274,6 +3285,11 @@ public void MenuPage(int client, int section)
 						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
 					}
+					if(!Rogue_Mode() && info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
+					{
+						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+						style = ITEMDRAW_DISABLED;
+					}
 					else if(Rogue_Mode() && info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
@@ -4404,6 +4420,15 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
+	if(Items_HasNamedItem(client, "Arkantos's Godly assistance"))
+	{
+		b_ArkantosBuffItem[client] = true;
+		map.SetValue("319", 2.0); //Increace banner duration
+	}
+	else
+	{
+		b_ArkantosBuffItem[client] = false;
+	}
 
 	if(i_CurrentEquippedPerk[client] == 4)
 	{

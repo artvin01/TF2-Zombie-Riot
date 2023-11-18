@@ -212,7 +212,11 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
 		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 		if(!dieingstate[client])
-			SetEntityHealth(client, 1);
+		{
+			if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+				SetEntityHealth(client, 1);
+		}
+			
 		
 		TF2_StunPlayer(client, 1.0, 0.0, TF_STUNFLAG_BONKSTUCK|TF_STUNFLAG_SOUND, 0);
 		StopSound(client, SNDCHAN_STATIC, "player/pl_impact_stun.wav");

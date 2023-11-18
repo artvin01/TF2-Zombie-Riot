@@ -1702,6 +1702,10 @@
 		"ru"	"На 25%% больше максимальной маны и регенерации маны, но у вас на 100 меньше ед. здоровья"
 		"chi"   "增加25%%的最大法力值和法力回复，生命值-100 "
 	}
+	"Mystical Overcharge Desc"
+	{
+		"en"	"Magic Weapons deal 20%% more damage, however you have 35%% less max mana and mana regen."
+	}
 	
 	"Heavy Fat Desc"
 	{
@@ -2028,9 +2032,7 @@
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards"
-		"ru"	"Получает способность становиться нематериальным, но теряет всю прочность и оглушается после этого."
-		"chi"   "获得无形的技能，但会失去所有生命值，之后会被击晕"
+		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
 	}
 	"Specter Pap 3"
 	{

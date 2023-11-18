@@ -401,6 +401,7 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
+bool b_ArkantosBuffItem[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
@@ -1379,6 +1380,7 @@ public void OnMapStart()
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	PrecacheSound("mvm/mvm_tank_horn.wav");
 }
 
 public void OnMapEnd()

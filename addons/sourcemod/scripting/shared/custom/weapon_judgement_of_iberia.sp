@@ -253,6 +253,18 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		}
 
 		int weapon_new = Store_GiveSpecificItem(client, "Irene's Handcannon");
+		float f_AttributeSet = Attributes_Get(weapon, 180, 0.0);
+		if(f_AttributeSet > 0.0)
+		{
+			Attributes_Set(weapon_new, 180, f_AttributeSet); // disable weapon switch
+		}
+
+		f_AttributeSet = Attributes_Get(weapon, 206, 1.0);
+		if(f_AttributeSet != 1.0)
+		{
+			Attributes_Set(weapon_new, 206, f_AttributeSet); // disable weapon switch
+		}
+
 		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
 

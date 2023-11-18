@@ -437,6 +437,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
+	Update_Ammo(client);
 	Escape_DropItem(client);
 	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 	{

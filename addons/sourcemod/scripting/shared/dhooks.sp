@@ -2067,6 +2067,23 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		BuffBannerActivate(client, weapon);
 		BuffBattilonsActivate(client, weapon);
 	}
+	if(b_ArkantosBuffItem[client])
+	{
+		int r = 200;
+		int g = 200;
+		int b = 255;
+		int a = 200;
+		
+		EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 60, _, 0.3);
+		
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.6, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
+	}
+
+
 #endif
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch
