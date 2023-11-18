@@ -346,7 +346,7 @@ public void OnPostThink(int client)
 		max_mana[client] *= Mana_Regen_Level[client];
 		if(b_AggreviatedSilence[client])	
 		{
-			mana_regen[client] *= 0.5;
+			mana_regen[client] *= 0.25;
 		}
 			
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))

@@ -1716,7 +1716,7 @@
 	}
 	"Aggreviated Silence Desc"
 	{
-		"en"	"Your Mana will now always regenerate, however you have half the mana regen speed.\nYou also have 10%% less max mana and mana regen."
+		"en"	"Your Mana will now always regenerate, however you have 1/4th the mana regen speed.\nYou also have 10%% less max mana and mana regen."
 	}
 	
 	"Heavy Fat Desc"
