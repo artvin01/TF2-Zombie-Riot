@@ -1338,11 +1338,14 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 							int length = StoreItems.Length;
 							for(int i; i < length; i++)
 							{
-								StoreItems.GetArray(item.Section, other);
+								StoreItems.GetArray(i, other);
 								if(other.Section == item.Section && i != values[0])
 								{
 									if(other.GetItemInfo(values[1], info2)) // If vaild, set new pack level
+									{
 										other.Owned[client] = values[1] + 1;
+										StoreItems.SetArray(i, other);
+									}
 								}
 							}
 						}
