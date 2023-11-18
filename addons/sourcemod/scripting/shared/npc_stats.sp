@@ -70,8 +70,8 @@ static float f3_WasPathingToHere[MAXENTITIES][3];
 #define NPC_DEFAULT_YAWRATE 225.0
 
 #define TELEPORT_STUCK_CHECK_1 5.0
-#define TELEPORT_STUCK_CHECK_2 12.0
-#define TELEPORT_STUCK_CHECK_3 24.0
+#define TELEPORT_STUCK_CHECK_2 18.0
+#define TELEPORT_STUCK_CHECK_3 35.0
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -3840,9 +3840,12 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 		}
 	}
 				
+	FoundSafeSpot = false;
 
 	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	{
 		FoundSafeSpot = true;
+	}
 
 	if(FoundSafeSpot)
 	{
@@ -8258,20 +8261,34 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	int ref;
 	
 	Handle hTrace;
-	if(entity <= MaxClients)	// Clients
+	int SolidityFlags;
+	if(entity <= MaxClients)
 	{
-		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+		SolidityFlags = MASK_PLAYERSOLID;
 	}
 	else if(b_IsAlliedNpc[entity])
 	{
-		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+		SolidityFlags = MASK_NPCSOLID | MASK_PLAYERSOLID;
 	}
 	else
 	{
-		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+		SolidityFlags = MASK_NPCSOLID;
 	}
+	hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, SolidityFlags, BulletAndMeleeTrace, entity);
+
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
+	float pos_player[3];
+	pos_player = WorldSpaceCenter(entity);
+	float Pos2Test_Higher[3];
+	Pos2Test_Higher = Pos;
+	Pos2Test_Higher[2] += 35.0;
+	hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
+	if ( TR_GetFraction(hTrace) < 1.0)
+	{
+		delete hTrace;
+		return false;
+	}
 	if(ref < 0) //It hit nothing, good!
 	{
 		if(!check_for_Ground_Clerance)
