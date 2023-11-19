@@ -440,7 +440,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 			if(IsClientInGame(client) && !IsFakeClient(client))
 			{
 				float volumeedited = volume;
-				if(entity > 0 && !b_NpcHasDied[entity])
+				if(entity > 0 && b_ThisWasAnNpc[entity])
 				{
 					volumeedited *= (f_ZombieVolumeSetting[client] + 1.0);
 				}

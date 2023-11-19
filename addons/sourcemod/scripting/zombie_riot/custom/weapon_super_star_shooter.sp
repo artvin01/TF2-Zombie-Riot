@@ -233,7 +233,7 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 	if (Timer_Starshooter_Management[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == 2) //2
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_STAR_SHOOTER) //2
 		{
 			//Is the weapon it again?
 			//Yes?
@@ -247,7 +247,7 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 		return;
 	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == 2) //
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_STAR_SHOOTER) //
 	{
 		DataPack pack;
 		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);

@@ -92,11 +92,11 @@ public float Player_OnTakeDamage_Fusion(int victim, float &damage, int attacker,
 			{
 				case 1:
 				{
-					EmitSoundToClient(victim, "weapons/rescue_ranger_charge_01.wav", victim, _, 75, _, 0.5, GetRandomInt(90, 100));
+					EmitSoundToClient(victim, "weapons/rescue_ranger_charge_01.wav", victim, _, 85, _, 0.8, GetRandomInt(90, 100));
 				}
 				case 2:
 				{
-					EmitSoundToClient(victim, "weapons/rescue_ranger_charge_02.wav", victim, _, 75, _, 0.5, GetRandomInt(90, 100));
+					EmitSoundToClient(victim, "weapons/rescue_ranger_charge_02.wav", victim, _, 85, _, 0.8, GetRandomInt(90, 100));
 				}
 			}
 		}
