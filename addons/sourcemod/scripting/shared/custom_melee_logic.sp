@@ -567,7 +567,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && Item_Index != 214)
+		if(target > 0 && IsValidEntity(target) && Item_Index != 214)
 		{
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
