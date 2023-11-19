@@ -2095,6 +2095,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
+		{
+			return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
 		case WEAPON_RIOT_SHIELD:
 		{
 			return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition);

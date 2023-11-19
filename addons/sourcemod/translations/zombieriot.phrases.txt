@@ -911,6 +911,10 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Crouch for ability"
+	{
+		"en" 		"Crouch to use this ability!"
+	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"

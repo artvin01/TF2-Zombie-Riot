@@ -316,8 +316,6 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 }
 
 //taken and edited from ff2_sarysapub3
-#define MINYAW_RAID_SHIELD -60.0
-#define MAXYAW_RAID_SHIELD 60.0
 public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
 	// need position of either the inflictor or the attacker

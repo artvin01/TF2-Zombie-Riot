@@ -1796,9 +1796,7 @@
 	}
 	"Fusion Blade Pap 2"
 	{
-		"en"	"More damage and 5%% melee resistance."
-		"ru"	"Больше урона и 5%% сопр. ближнему бою."
-		"chi"   "更多的伤害和5%的近战抗性。"
+		"en"	"More damage and 5%% melee resistance.\nYou take 10%% less damage from frontal attacks."
 	}
 	"Fusion Blade Pap 3"
 	{

@@ -533,7 +533,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		Storm_Weaver_Heading_Control(npc, PrimaryThreatIndex, GameTime);
+		Storm_Weaver_Heading_Control(npc, PrimaryThreatIndex);
 		
 		int Enemy_I_See;
 				
@@ -605,7 +605,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 			int Anchor_Id = EntRefToEntIndex(i_traveling_to_anchor[npc.index]);
 			if(IsValidEntity(Anchor_Id))
 			{
-				Storm_Weaver_Heading_Control(npc, Anchor_Id, GameTime);
+				Storm_Weaver_Heading_Control(npc, Anchor_Id);
 			}
 		}
 		else

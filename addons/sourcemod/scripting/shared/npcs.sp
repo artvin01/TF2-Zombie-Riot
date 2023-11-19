@@ -1978,10 +1978,6 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 #if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_FUSION:
-		{
-			return Npc_OnTakeDamage_Fusion(victim, damage, weapon);
-		}
 		case WEAPON_BOUNCING:
 		{
 			return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
