@@ -4365,6 +4365,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	//	case UNDERTIDES:
 	//		UnderTides_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
+		case CITIZEN_RUNNER:
+			CitizenRunner_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		
 		case SEABORN_KAZIMIERZ_KNIGHT:
 			KazimierzKnight_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		

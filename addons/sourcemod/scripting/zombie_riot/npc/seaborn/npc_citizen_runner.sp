@@ -35,6 +35,7 @@ methodmap CitizenRunner < CClotBody
 		
 		npc.m_flSpeed = 241.5;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flFlamerActive = GetGameTime() + 3.0;
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		SetVariantColor(view_as<int>({255, 200, 0, 200}));
@@ -172,3 +173,18 @@ public void CitizenRunner_PostDeath(const char[] output, int caller, int activat
 	RemoveEntity(caller);
 }
 */
+
+
+public Action CitizenRunner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	//Valid attackers only.
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	CitizenRunner npc = view_as<CitizenRunner>(victim);
+	
+	if(npc.m_flFlamerActive > GetGameTime())
+		damage *= 0.25;
+	
+	return Plugin_Changed;
+}

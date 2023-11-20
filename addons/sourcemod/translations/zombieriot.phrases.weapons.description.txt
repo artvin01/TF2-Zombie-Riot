@@ -715,7 +715,11 @@
 		"ru"	"V4lv3 н3 гл7пЫ3, TF2 пр0ст0 т4к ра5оТа3т"
 		"chi"   "一把有脾气的手枪，它想发射什么就发射什么"
 	}
-	"P15t0l Pap 1" 
+	"P15t0l Desc 1"
+	{
+		"en"	"Increaced damage."
+	}
+	"P15t0l Pap 2" 
 	{
 		"en"	"Weapon does whatever the fuck it wants now."
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."

@@ -327,3 +327,79 @@ static void TBB_Tick(int client)
 	}
 	delete trace;
 }
+
+float AttackDelayBobGun[MAXTF2PLAYERS];
+public void Weapon_BobsGunBullshit(int client, int weapon, const char[] classname, bool &result)
+{
+	AttackDelayBobGun[client] = 0.0;
+	SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+	SDKHook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+}
+
+public void BobsGunM2_PreThink(int client)
+{
+	if(GetClientButtons(client) & IN_ATTACK2)
+	{
+		if(AttackDelayBobGun[client] > GetGameTime())
+		{
+			return;
+		}
+		AttackDelayBobGun[client] = GetGameTime() + 0.05;
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+			return;
+		}
+		if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_BOBS_GUN)
+		{
+			SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+			return;
+		}
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+
+		Handle swingTrace;
+		float vecSwingForward[3];
+		float pos[3];
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+					
+		TR_GetEndPosition(pos, swingTrace);
+		delete swingTrace;
+		
+		TE_Particle("ExplosionCore_MidAir", pos, NULL_VECTOR, NULL_VECTOR, 
+		_, _, _, _, _, _, _, _, _, _, 0.0);
+
+		float damage = 112.0;
+
+		damage *= 7.0;
+		
+		damage *= Attributes_Get(weapon_active, 1, 1.0);
+						
+		damage *= Attributes_Get(weapon_active, 2, 1.0);
+		switch(GetRandomInt(1,3))
+		{
+			case 1:
+			{
+				EmitAmbientSound("weapons/explode1.wav", pos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 2:
+			{
+				EmitAmbientSound("weapons/explode2.wav", pos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+			case 3:
+			{
+				EmitAmbientSound("weapons/explode3.wav", pos, _, 85, _,0.9, GetRandomInt(95, 105));
+			}
+		}
+		Explode_Logic_Custom(damage, client, client, weapon_active, pos);
+		EmitSoundToAll("weapons/shotgun/shotgun_fire7.wav", client, SNDCHAN_WEAPON, 80, _, 1.0);
+
+		FinishLagCompensation_Base_boss();
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
+		return;
+	}
+}

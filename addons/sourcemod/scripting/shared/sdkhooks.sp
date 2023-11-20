@@ -772,7 +772,12 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
 		}
-		if(f_EmpowerStateOther[client] > GameTime) //Do not show fusion self buff.
+		if(f_EmpowerStateSelf[client] > GameTime)
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
+		}
+		if(f_EmpowerStateOther[client] > GameTime)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);

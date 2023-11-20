@@ -89,7 +89,6 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 			if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 			{
 				float pos[3];
-				b_LagCompNPC_No_Layers = true;
 				StartPlayerOnlyLagComp(client, true);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
 				EndPlayerOnlyLagComp(client);
@@ -148,7 +147,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				b_LagCompNPC_OnlyAllies = false;
 				StartLagCompensation_Base_Boss(client);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
-				EndPlayerOnlyLagComp(client);
+				FinishLagCompensation_Base_boss();
 
 				bool validEnemy;
 
@@ -425,7 +424,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
-	EndPlayerOnlyLagComp(client);
+	FinishLagCompensation_Base_boss();
 
 	bool validEnemy;
 
@@ -615,7 +614,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos);
-	EndPlayerOnlyLagComp(client);
+	FinishLagCompensation_Base_boss();
 
 	bool validEnemy;
 
