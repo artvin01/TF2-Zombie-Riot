@@ -299,7 +299,6 @@ public void Magia_Anchor_ClotThink(int iNPC)
 	//	SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 	//	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 		fl_ruina_battery[npc.index]=333.0;
-		PrintToChatAll("Built");
 	}
 
 }
@@ -340,7 +339,7 @@ public void Magia_Anchor_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 }
 
-static void Heavens_Full_Charge(Magia_Anchor npc, int amt, float Radius, float aDamage, float Speed)
+static void Heavens_Full_Charge(Magia_Anchor npc, int amt, float Radius, float aDamage, float Speed)	//rewerite this: to use a env_laser rather then TE, and also to make it prefer attacking other people then singular targets
 {
 	if(!b_set_loc[npc.index])
 	{
