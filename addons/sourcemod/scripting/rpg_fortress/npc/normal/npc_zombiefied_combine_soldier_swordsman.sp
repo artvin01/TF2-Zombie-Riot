@@ -118,6 +118,9 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	{
 		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		i_NpcInternalId[npc.index] = ZOMBIEFIED_COMBINE_SWORDSMAN;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -170,10 +173,10 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 {
 	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(iNPC);
 
+/*
 	SetVariantInt(1);
 	AcceptEntityInput(iNPC, "SetBodyGroup");
 
-/*
 	if(IsValidEntity(npc.m_iWearable5))
 	{
 		float Rotation[3];
