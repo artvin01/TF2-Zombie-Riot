@@ -230,7 +230,6 @@ bool DoingLagCompensation;
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
-bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
@@ -402,7 +401,6 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
-bool b_ArkantosBuffItem[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
@@ -1360,6 +1358,8 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb1.wav");
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
+
+	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	
 	MapStartResetAll();
 	

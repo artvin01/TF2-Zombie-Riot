@@ -302,7 +302,12 @@ public void OnPostThink(int client)
 		}
 	}
 #endif	// ZR
-	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))	
+
+#if defined ZR
+	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))
+#else
+	if(Mana_Regen_Delay[client] < GameTime)
+#endif
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
@@ -344,10 +349,13 @@ public void OnPostThink(int client)
 					
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
+
+#if defined ZR
 		if(b_AggreviatedSilence[client])	
 		{
 			mana_regen[client] *= 0.30;
 		}
+#endif
 			
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 		{
