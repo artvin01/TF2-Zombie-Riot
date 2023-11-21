@@ -5987,7 +5987,6 @@ stock void Store_Unequip(int client, int index)
 			StoreItems.GetArray(i, item);
 			if(item.Section == index)
 			{
-				item.Owned[client] = 0;
 				item.Equipped[client] = false;
 				StoreItems.SetArray(i, item);
 			}
