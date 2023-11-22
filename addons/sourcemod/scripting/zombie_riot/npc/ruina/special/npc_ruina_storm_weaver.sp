@@ -30,20 +30,22 @@ static const char g_IdleMusic[][] = {
 #define RUINA_STORM_WEAVER_MODEL_SIZE "1.0"	//1.0
 #define RUINA_STORM_WEAVER_LENGHT 10	//10
 
-#define RUINA_STORM_WEAVER_NOCLIP_SPEED 250.0
+#define RUINA_STORM_WEAVER_NOCLIP_SPEED 20.0
 #define RUINA_STORM_WEAVER_FLIGHT_SPEED 315.0
 
 #define RUINA_DAMAGE_INSTANCES_PER_FRAME 1	//a player can only dmg the worm x times a frame, to make piercing weapons not delete him stupidly easily
-#define RUINA_CANTSEE_TIMEOUT 5.0
+#define RUINA_CANTSEE_TIMEOUT 2.5
 
 bool b_storm_weaver_solo;
 int i_storm_weaver_health;
+static bool b_storm_weaver_noclip[MAXENTITIES];
 int i_storm_weaver_damage_instance[MAXTF2PLAYERS+1];
+static float fl_trace_timeout[MAXENTITIES];
 static float fl_recently_teleported[MAXENTITIES];
 static float fl_distance_to_keep[MAXENTITIES];
 static float fl_cantseetimeout[MAXENTITIES];
 static float fl_teleport_time[MAXENTITIES];
-static float fl_teleporting_time[MAXENTITIES];
+//static float fl_teleporting_time[MAXENTITIES];
 static int i_segment_id[MAXENTITIES][RUINA_STORM_WEAVER_LENGHT+1];
 static int i_traveling_to_anchor[MAXENTITIES];
 
@@ -58,6 +60,7 @@ void Ruina_Storm_Weaver_MapStart()
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 
 	Zero2(i_segment_id);
+	Zero(b_storm_weaver_noclip);
 
 	PrecacheModel(RUINA_STORM_WEAVER_HEAD_MODEL);
 	Zero(i_storm_weaver_damage_instance);
@@ -125,6 +128,8 @@ methodmap Storm_Weaver < CClotBody
 
 		Ruina_Set_No_Retreat(npc.index);
 
+		fl_trace_timeout[npc.index]=0.0;
+
 		Zero(i_storm_weaver_damage_instance);
 		
 		SDKHook(npc.index, SDKHook_Think, Storm_Weaver_ClotThink);
@@ -133,7 +138,7 @@ methodmap Storm_Weaver < CClotBody
 
 		RaidBossActive = EntIndexToEntRef(npc.index);	//temp raidmode stuff
 
-		fl_cantseetimeout[npc.index]=GetGameTime()+RUINA_CANTSEE_TIMEOUT+2.5;
+		//fl_cantseetimeout[npc.index]=GetGameTime()+RUINA_CANTSEE_TIMEOUT+2.5;
 		fl_teleport_time[npc.index]=0.0;
 		fl_recently_teleported[npc.index]=0.0;
 
@@ -222,6 +227,10 @@ methodmap Storm_Weaver < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		SDKHook(npc.index, SDKHook_Touch, Storm_Weaver_Damage_Touch);
+
+		b_storm_weaver_noclip[npc.index]=false;
+
+		Storm_Weaver_Delete_Collision(npc.index);
 		
 		return npc;
 	}
@@ -242,6 +251,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 	i_segment_id[npc.index][Section] = EntIndexToEntRef(spawn_index);
 	if(spawn_index > MaxClients)
 	{
+		b_storm_weaver_noclip[spawn_index]=false;
 		Zombies_Currently_Still_Ongoing += 1;
 		CClotBody tail = view_as<CClotBody>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
@@ -302,14 +312,21 @@ public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], boo
 	SubtractVectors(Entity_Loc, vecFwd, vecVel);
 	ScaleVector(vecVel, 10.0);
 	TeleportEntity(npc.index, NULL_VECTOR, vecView, NULL_VECTOR);
-	if(!Los)
-		npc.SetVelocity(vecVel);
-	else
+
+	npc.SetVelocity(vecVel);
+
+	if(Los)	//true=we cant see.
 	{
-		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(vecFwd, speed);
-		AddVectors(loc, vecFwd, loc);
-		TeleportEntity(npc.index, loc, vecView, NULL_VECTOR);
+		fl_cantseetimeout[npc.index] = GetGameTime() + RUINA_CANTSEE_TIMEOUT;
+		if(!b_storm_weaver_noclip[npc.index])
+		{
+			Storm_Weaver_Delete_Collision(npc.index);
+			return;
+		}
+	}
+	if(b_storm_weaver_noclip[npc.index] && fl_cantseetimeout[npc.index] <= GetGameTime())
+	{
+		Storm_Weaver_Restore_Collisions(npc.index);
 	}
 		
 }
@@ -516,10 +533,10 @@ static void Storm_Weaver_Damage_Touch(int entity, int other)
 	if(IsValidEnemy(entity, other, true, true)) //Must detect camo.
 	{
 		if(fl_recently_teleported[entity]<GetGameTime())
-			SDKHooks_TakeDamage(other, entity, entity, 100.0*RaidModeScaling, DMG_CRUSH, -1, _);
+			SDKHooks_TakeDamage(other, entity, entity, 2.5*RaidModeScaling, DMG_CRUSH, -1, _);
 	}
 }
-
+/*
 static void Teleport_To_Random_Anchor(Storm_Weaver npc)
 {
 	int anchor_id[RUINA_ANCHOR_HARD_LIMIT+1]; Find_Anchors(anchor_id);
@@ -536,8 +553,8 @@ static void Teleport_To_Random_Anchor(Storm_Weaver npc)
 		fl_teleporting_time[npc.index]=0.0;
 		Set_Tail_Dist_To_Keep(npc, 25.0);
 	}
-}
-
+}*/
+/*
 static void Set_Tail_Dist_To_Keep(Storm_Weaver npc, float dist)
 {
 	for(int i=0 ; i< RUINA_STORM_WEAVER_LENGHT ; i++)
@@ -545,28 +562,72 @@ static void Set_Tail_Dist_To_Keep(Storm_Weaver npc, float dist)
 		int Tail = EntRefToEntIndex(i_segment_id[npc.index][i]);
 		fl_distance_to_keep[Tail] = dist;
 	}
-}
-/*
-static void Set_Tail_And_Head_Collision(Storm_Weaver npc, bool state)
-{
-	//int type;
-	//if(state)
-	//	type =24;
-	//else
-	//	type = 6;
+}*/
 
-	//SetEntityCollisionGroup(npc.index, type);
-	b_CantCollidie[npc.index]=state;
-	for(int i=0 ; i< RUINA_STORM_WEAVER_LENGHT ; i++)
+public void Storm_Weaver_Delete_Collision(int iNPC)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
+
+	if(b_storm_weaver_noclip[npc.index])
+		return;
+
+	if(h_NpcCollissionHookType[iNPC] != 0)
 	{
-		int Tail = EntRefToEntIndex(i_segment_id[npc.index][i]);
-		if (IsValidEntity(Tail) && !b_NpcHasDied[Tail])
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[iNPC]))
 		{
-			b_CantCollidie[Tail]=state;
-			//SetEntityCollisionGroup(Tail, type);
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
 		}
 	}
-}*/
+	if(h_NpcSolidHookType[iNPC] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcSolidHookType[iNPC]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+		}
+	}
+
+	h_NpcSolidHookType[iNPC] = DHookRaw(g_hGetSolidMaskNone, true, view_as<Address>(baseNPC.GetBody()));
+
+	b_storm_weaver_noclip[npc.index]=true;
+			
+	SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12);
+	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
+	SetEntityCollisionGroup(npc.index, 24);
+
+}
+public void Storm_Weaver_Restore_Collisions(int iNPC)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
+
+	if(!b_storm_weaver_noclip[npc.index])
+		return;
+
+	if(h_NpcCollissionHookType[iNPC] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[iNPC]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+		}
+	}
+	
+	if(h_NpcSolidHookType[iNPC] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcSolidHookType[iNPC]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+		}
+	}
+
+	h_NpcSolidHookType[iNPC] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
+
+	b_storm_weaver_noclip[npc.index]=false;
+
+	SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 6);
+	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
+	SetEntityCollisionGroup(npc.index, 6);
+}
 
 //TODO 
 //Rewrite
@@ -624,7 +685,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 	}
 	int PrimaryThreatIndex = npc.m_iTarget;
 
-	bool teleporting=false;
+	/*bool teleporting=false;
 	if(fl_cantseetimeout[npc.index]<GameTime)	//we haven't been able to refind a proper target in 10 seconds, retreat to an anchor
 	{
 		fl_cantseetimeout[npc.index] = GameTime+RUINA_CANTSEE_TIMEOUT+2.5;
@@ -648,7 +709,7 @@ public void Storm_Weaver_ClotThink(int iNPC)
 	if(teleporting)
 		return; 
 	else
-		Set_Tail_Dist_To_Keep(npc, 25.0);
+		Set_Tail_Dist_To_Keep(npc, 25.0);*/
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -743,38 +804,13 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 	if(IsValidEnemy(npc.index, Target))
 	{
 		int New_Target = Storm_Weaver_Get_Target(npc);	//warp
-		bool noclip=false;
 		if(!IsValidEntity(New_Target))
 		{
-			/*npc.m_flSpeed = 250.0;
-			b_NoGravity[npc.index] = false;
-			npc.m_flGetClosestTargetTime = 0.0;
-			
-			float vecTarget[3]; vecTarget = WorldSpaceCenter(Target);
-		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-
-			if(flDistanceToTarget < npc.GetLeadRadius()) 
-			{
-									
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, Target);
-							
-				NPC_SetGoalVector(npc.index, vPredictedPos);
-			}
-			else 
-			{
-				NPC_SetGoalEntity(npc.index, Target);
-			}
-			npc.StartPathing();
-			npc.m_bPathing = true;
-
-			return;*/
-			noclip=true;
 			New_Target = Target;
 		}
 		else
 		{
-			fl_cantseetimeout[npc.index] = GameTime + RUINA_CANTSEE_TIMEOUT;
+			//fl_cantseetimeout[npc.index] = GameTime + RUINA_CANTSEE_TIMEOUT;
 		}
 
 		if(npc.IsOnGround())
@@ -796,72 +832,18 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 		else
 			target_vec[2]+=75.0;
 
-		if(!noclip)
-			Storm_Weaver_Fly(npc, target_vec);
-		else
-		{
-			fl_recently_teleported[npc.index] = GameTime + 2.5;
-			float distance = RUINA_STORM_WEAVER_NOCLIP_SPEED;
-			if(flDistanceToTarget<(distance*distance))
-			{
-				target_vec[2]-=40.0;
-				Storm_Weaver_Noclip(npc, target_vec, GetVectorDistance(target_vec, Npc_Vec));
-			}
-			else
-			{
-				Storm_Weaver_Noclip(npc, target_vec, distance);
-			}
-				
-		}
-			
 
+		Storm_Weaver_Fly(npc, target_vec, GameTime);
 
 	}
 	else
 	{
 		float target_vec[3]; target_vec = GetAbsOrigin(Target);
-		int I_see=Can_I_See_Ally(npc.index, Target);
-		if(I_see==Target)
-		{
-			fl_cantseetimeout[npc.index] = GameTime + RUINA_CANTSEE_TIMEOUT;
-			Storm_Weaver_Fly(npc, target_vec);
-		}
-		else
-		{
-			Storm_Weaver_Noclip(npc, target_vec);
-		}
-			
+
+		Storm_Weaver_Fly(npc, target_vec, GameTime);
 	}
 }
-static int i_force_teleport[MAXENTITIES];
-static void Storm_Weaver_Noclip(Storm_Weaver npc, float target_vec[3], float distance = RUINA_STORM_WEAVER_NOCLIP_SPEED)
-{
-	float Direction[3], vecAngles[3], npc_vec[3];
-	npc_vec=GetAbsOrigin(npc.index);
-
-	float Speed = distance;
-
-	float result_vec[3];
-
-	MakeVectorFromPoints(npc_vec, target_vec, vecAngles);
-	GetVectorAngles(vecAngles, vecAngles);
-							
-	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-	ScaleVector(Direction, Speed);
-	AddVectors(npc_vec, Direction, result_vec);
-
-	if(i_force_teleport[npc.index]>=10)
-	{
-		ParticleEffectAt(result_vec, "eyeboss_death_vortex", 0.1);
-		i_force_teleport[npc.index]=0;
-		TeleportEntity(npc.index, result_vec, vecAngles, NULL_VECTOR);
-	}
-	else
-	{
-		i_force_teleport[npc.index]++;
-	}
-}
-static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
+static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTime)
 {
 	float npc_vec[3]; npc_vec=GetAbsOrigin(npc.index);
 
@@ -877,30 +859,26 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 
 	float max_speed = RUINA_STORM_WEAVER_FLIGHT_SPEED;
 
+	float Acceleration = 75.0;
+
+
+
+
+	//if(speed)
+	//	Acceleration = RUINA_STORM_WEAVER_FLIGHT_SPEED*0.75;
+
 	for(int vec=0 ; vec <=2 ; vec++)
 	{
 		if(npc_vec[vec]<target_vec[vec])
 		{
-			if(Storm_Weaver_Check_Heading_Walls(npc, vec, 1))
-			{
-				newVel[vec] += 75.0;
-			}
-			else
-			{
-				newVel[vec] = 0.0;
-			}
+			newVel[vec] += Acceleration;
+
 			//newVel[vec] += 75.0;
 		}
 		else
 		{
-			if(Storm_Weaver_Check_Heading_Walls(npc, vec, -1))
-			{
-				newVel[vec] -= 75.0;
-			}
-			else
-			{
-				newVel[vec] = 0.0;
-			}
+			newVel[vec] -= Acceleration;
+
 			//newVel[vec] -= 75.0;
 		}
 		
@@ -926,41 +904,29 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3])
 	npc.SetVelocity(newVel);
 
 }
-static bool Storm_Weaver_Check_Heading_Walls(Storm_Weaver npc, int vec, int type)
+/*
+static bool Storm_Weaver_Check_Heading_Walls(Storm_Weaver npc)
 {
-	
+
 	float npc_vec[3]; npc_vec = GetAbsOrigin(npc.index);
-	
-	float tmp_vec[3]; tmp_vec = npc_vec;
-	tmp_vec[vec] += 80.0 * type;
-	float angles[3];
-	
-	MakeVectorFromPoints(npc_vec, tmp_vec, angles);
-	GetVectorAngles(angles, angles);
-		
-	float ground_vec[3];
-		
-	Handle trace = TR_TraceRayFilterEx(npc_vec, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-	if (TR_DidHit(trace))
+
+	float maxes[3] = { -30.0, -30.0, -30.0 };
+	float mins[3] = { 30.0, 30.0, 30.0 };
+
+	Handle hTrace = TR_TraceHullFilterEx(npc_vec, npc_vec, mins, maxes, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, npc.index);
+
+	if(TR_DidHit(hTrace))
 	{
-		TR_GetEndPosition(ground_vec, trace);
-		delete trace;
-		
-		if(GetVectorDistance(npc_vec, ground_vec, true) <= (80.0*80.0))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		delete hTrace;
+		return false;
 	}
 	else
 	{
-		delete trace;
-		return false;
+		delete hTrace;
+		return true;
 	}
-}
+
+}*/
 static int Storm_Weaver_Get_Target(Storm_Weaver npc)
 {
 	float npc_vec[3]; npc_vec = GetAbsOrigin(npc.index);
