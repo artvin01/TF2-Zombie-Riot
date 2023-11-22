@@ -219,6 +219,24 @@ methodmap EndSpeaker < CClotBody
 				i_ExplosiveProjectileHexArray[this.index] = EP_DEALS_DROWN_DAMAGE;
 				Explode_Logic_Custom(9999.9, -1, this.index, -1, vecTarget, DEEP_SEA_VORE_RANGE, _, _, true, _, false);
 				EmitSoundToAll(GrabBuff[GetRandomInt(0, sizeof(GrabBuff) - 1)], entity, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				
+				entity = CreateEntityByName("prop_dynamic_override");
+				if(entity != -1)
+				{
+					DispatchKeyValue(entity, "model", "models/props_island/crocodile/crocodile.mdl");
+					DispatchKeyValue(entity, "modelscale", "2.5");
+					DispatchKeyValue(entity, "solid", "0");
+					DispatchSpawn(entity);
+
+					TeleportEntity(entity, vecTarget, NULL_VECTOR, NULL_VECTOR);
+
+					SetVariantString("attack");
+					AcceptEntityInput(entity, "SetAnimation");
+
+					SetVariantString("OnUser4 !self:Kill::1:1,0,1");
+					AcceptEntityInput(entity, "AddOutput");
+					AcceptEntityInput(entity, "FireUser4");
+				}
 			}
 		}
 
