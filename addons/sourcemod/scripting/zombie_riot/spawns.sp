@@ -257,6 +257,8 @@ void Spawners_Timer()
 
 	// Get max spawner count
 	int maxSpawners = MapSpawnersActive.IntValue;
+	if(maxSpawners < 1)
+		maxSpawners = 1;
 
 	// Get list of points
 	ArrayList pointsList = new ArrayList();
@@ -282,35 +284,38 @@ void Spawners_Timer()
 			maxSpawners++;
 		
 		pointsList.Push(spawn.Points);
-    }
+	}
 	
 	if(maxSpawners > length)
 		maxSpawners = length;
-
-	// Sort points
-	pointsList.Sort(Sort_Descending, Sort_Float);
 	
-	// Get points of the X ranked score
-	HighestPoints = pointsList.Get(0);
-	float minPoints = pointsList.Get(maxSpawners - 1);
+	if(length)
+	{
+		// Sort points
+		pointsList.Sort(Sort_Descending, Sort_Float);
+		
+		// Get points of the X ranked score
+		HighestPoints = pointsList.Get(0);
+		float minPoints = pointsList.Get(maxSpawners - 1);
+		
+		// Enable if meet requirement
+		for(int index; index < length; index++)
+		{
+			SpawnerList.GetArray(index, spawn);
+
+			if(spawn.Points <= 0.0)
+			{
+				spawn.Enabled = false;
+			}
+			else
+			{
+				spawn.Enabled = spawn.Points >= minPoints;
+			}
+			SpawnerList.SetArray(index, spawn);
+		}
+	}
 
 	delete pointsList;
-
-	// Enable if meet requirement
-	for(int index; index < length; index++)
-	{
-		SpawnerList.GetArray(index, spawn);
-
-		if(spawn.Points <= 0.0)
-		{
-			spawn.Enabled = false;
-		}
-		else
-		{
-			spawn.Enabled = spawn.Points >= minPoints;
-		}
-		SpawnerList.SetArray(index, spawn);
-	}
 }
 
 int GetRandomActiveSpawner()

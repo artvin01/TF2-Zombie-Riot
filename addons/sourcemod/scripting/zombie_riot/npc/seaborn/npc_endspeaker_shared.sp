@@ -242,7 +242,7 @@ methodmap EndSpeaker < CClotBody
 
 		for(int i; i < count; i++)
 		{
-			SDKHooks_TakeDamage(remain[i], 0, 0, 99999999.9, DMG_DROWN);
+			SmiteNpcToDeath(remain[i]);
 		}
 
 		vecTarget = WorldSpaceCenter(this.index);
@@ -443,4 +443,23 @@ public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor,
 public void EndSpeaker_BurrowAnim(const char[] output, int caller, int activator, float delay)
 {
 	RemoveEntity(caller);
+}
+
+float[] EndSpeaker_GetPos(float pos[3])
+{
+	for(int i; i < i_MaxcountNpc; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		if(entity != INVALID_ENT_REFERENCE &&
+			i_NpcInternalId[entity] >= ENDSPEAKER_1 &&
+			i_NpcInternalId[entity] <= ENDSPEAKER_4 &&
+			IsEntityAlive(entity))
+		{
+			pos = WorldSpaceCenter(entity);
+			return HardMode;
+		}
+	}
+
+	pos = SpawnPos;
+	return HardMode;
 }

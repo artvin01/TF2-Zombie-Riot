@@ -88,9 +88,7 @@ public void Remains_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.5;
-
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(npc.index);
-	ShowScuffedRemainsCircle(vecTarget);
+	ShowScuffedRemainsCircle(npc.index);
 }
 
 void Remains_SpawnDrop(float pos[3], int type)
@@ -105,17 +103,58 @@ void Remains_NPCDeath(int entity)
 	SDKUnhook(entity, SDKHook_Think, Remains_ClotThink);
 }
 
-
-void ShowScuffedRemainsCircle(float vecTarget[3])
+static void ShowScuffedRemainsCircle(int entity)
 {
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	float vecTarget[3]; vecTarget = WorldSpaceCenter(entity);
+	int red = IsClosestRemain(entity) ? 200 : 50;
+
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] -= 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] -= 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] += 100.0;
 	vecTarget[2] += 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] += 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+}
+
+static bool IsClosestRemain(int thisEntity)
+{
+	float pos[3];
+	bool hard = EndSpeaker_GetPos(pos);
+
+	int remain1, remain2;
+	float dist1 = FAR_FUTURE;
+	float dist2 = FAR_FUTURE;
+	for(int i; i < i_MaxcountNpc_Allied; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
+		{
+			float distance = GetVectorDistance(GetWorldSpaceCenter(entity), pos, true);
+			if(distance < dist1)
+			{
+				remain2 = remain1;
+				dist2 = dist1;
+
+				remain1 = entity;
+				dist1 = distance;
+			}
+			else if(distance < dist2)
+			{
+				remain2 = entity;
+				dist2 = distance;
+			}
+		}
+	}
+
+	if(thisEntity == remain1)
+		return true;
+	
+	if(hard && thisEntity == remain2)
+		return true;
+	
+	return false;
 }
