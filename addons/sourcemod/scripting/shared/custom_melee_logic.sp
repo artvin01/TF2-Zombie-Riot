@@ -313,7 +313,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 }
 
-int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
+stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
 {
 	if(target == -1)
 		return ZEROSOUND;
@@ -358,6 +358,7 @@ stock bool IsValidCurrentWeapon(int client, int weapon)
 	int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon > 1 && Active_weapon > 1 && weapon == Active_weapon)
 	{
+#if defined ZR
 		switch(i_CustomWeaponEquipLogic[Active_weapon])
 		{
 			case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
@@ -366,6 +367,7 @@ stock bool IsValidCurrentWeapon(int client, int weapon)
 					return false;
 			}
 		}
+#endif
 		return true;
 	}
 	return false;
@@ -548,6 +550,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
 					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
 					
+#if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
 					{
 						case WEAPON_SEABORNMELEE:
@@ -559,6 +562,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 							
 						}
 					}
+#endif
+
 				}
 			}
 		}

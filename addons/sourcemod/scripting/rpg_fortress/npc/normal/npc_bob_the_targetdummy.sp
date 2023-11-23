@@ -35,6 +35,9 @@ methodmap BobTheTargetDummy < CClotBody
 	{
 		BobTheTargetDummy npc = view_as<BobTheTargetDummy>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		i_NpcInternalId[npc.index] = BOB_THE_TARGETDUMMY;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

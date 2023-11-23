@@ -7,6 +7,9 @@ methodmap CombinePistol < CombinePolice
 	{
 		CombinePistol npc = view_as<CombinePistol>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		i_NpcInternalId[npc.index] = COMBINE_PISTOL;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

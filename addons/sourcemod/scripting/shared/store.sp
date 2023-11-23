@@ -4266,6 +4266,8 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0, 1:
 				{
+					SetGlobalTransTarget(client);
+					
 					Menu menu2 = new Menu(Store_MenuPage);
 					menu2.SetTitle("%t", "Getting Your Items");
 					
@@ -5988,7 +5990,6 @@ stock void Store_Unequip(int client, int index)
 			StoreItems.GetArray(i, item);
 			if(item.Section == index)
 			{
-				item.Owned[client] = 0;
 				item.Equipped[client] = false;
 				StoreItems.SetArray(i, item);
 			}

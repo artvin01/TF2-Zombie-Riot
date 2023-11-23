@@ -105,6 +105,8 @@ methodmap Storm_Weaver_Mid < CClotBody
 
 		b_NoGravity[npc.index] = true;	//Found ya!
 
+		b_DoNotUnStuck[npc.index] = true;
+
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -157,7 +159,17 @@ public void Storm_Weaver_Mid_ClotThink(int iNPC)
 	{
 		float Follow_Loc[3];
 		GetEntPropVector(follow_id, Prop_Send, "m_vecOrigin", Follow_Loc);
-		Storm_Weaver_Middle_Movement(npc, Follow_Loc);
+
+		int I_see=Can_I_See_Ally(npc.index, follow_id);
+		if(I_see==follow_id)
+		{
+			Storm_Weaver_Middle_Movement(npc, Follow_Loc, false);	//we can see it, travel normally!
+		}
+		else
+		{
+			Storm_Weaver_Middle_Movement(npc, Follow_Loc, true);	//we can't see the thing we are following, noclip
+		}
+		
 	}
 
 

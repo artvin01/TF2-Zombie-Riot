@@ -665,10 +665,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
+
+#if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
 					damage *= 1.1;
 				}
+#endif
+
 				float AttackerPos[3];
 				float VictimPos[3];
 				
@@ -684,10 +688,13 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					distance = 0.1;
 				}
 				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
+
+#if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
 					WeaponDamageFalloff *= 0.8;
 				}
+#endif
 
 				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
@@ -938,6 +945,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		return Plugin_Changed;
 	}
 
+#if defined ZR
 	if(Rogue_Mode() && !b_IsAlliedNpc[victim])
 	{
 		int scale = Rogue_GetRoundScale();
@@ -946,6 +954,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage *= 1.6667;
 		}
 	}
+#endif
 
 	if(attacker < 0 || victim == attacker)
 	{
