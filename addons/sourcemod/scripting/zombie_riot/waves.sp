@@ -956,6 +956,16 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			if(Is_a_boss == 2)
 			{
+				if(LastMann)
+				{
+					PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+					GiveProgressDelay(30.0);
+				}
+				else
+				{
+					PrintToChatAll("You were given extra 10 seconds to prepare for the raidboss... Get ready.");
+					GiveProgressDelay(10.0);
+				}
 				Raidboss_Clean_Everyone();
 				Music_EndLastmann();
 				ReviveAll(true);

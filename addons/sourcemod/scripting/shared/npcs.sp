@@ -1018,7 +1018,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 #if defined ZR			
-			OnTakeDamageScalingWaveDamage(attacker, inflictor, damage, damagetype, weapon);
+			OnTakeDamageScalingWaveDamage(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 			OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
 
@@ -2367,7 +2367,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 	}
 }
 #if defined ZR
-bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
 
@@ -2375,6 +2375,18 @@ bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage,
 	if(ExtraDamageDealt <= 0.35)
 	{
 		ExtraDamageDealt = 0.35;
+	}
+	if(LastMann)
+	{
+		damage *= 1.35;
+		bool PlaySound = false;
+		if(f_MinicritSoundDelay[attacker] < GetGameTime())
+		{
+			PlaySound = true;
+			f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
+		}
+		
+		DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 	}
 	if(IsValidEntity(weapon))
 	{

@@ -2301,33 +2301,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
 									}
-									/*
-									else if (weaponindex == 305)
-									{
-										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										AddAmmoClient(client, 21 ,_,2.0);
-										AddAmmoClient(client, 14 ,_,2.0);
-										Ammo_Count_Used[client] += 1;
-										//Yeah extra ammo, do i care ? no.
-										
-										for(int i; i<Ammo_MAX; i++)
-										{
-											CurrentAmmo[client][i] = GetAmmo(client, i);
-										}	
-										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(!Rogue_Mode() && owner != -1 && owner != client)
-										{
-											Resupplies_Supplied[owner] += 2;
-											GiveCredits(owner, 20, true);
-											SetDefaultHudPosition(owner);
-											SetGlobalTransTarget(owner);
-											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-										}								
-									}
-									*/
 									else if(weaponindex == 411)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
@@ -2423,12 +2396,11 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										int Extra = 0;
 									
 										Extra = Armor_Level[client];
-										Armor_Max = MaxArmorCalculation(Extra, client, 0.5);
+										Armor_Max = MaxArmorCalculation(Extra, client, 0.75);
 											
 										if(Armor_Charge[client] < Armor_Max)
 										{
-												
-											GiveArmorViaPercentage(client, 0.05, 0.5);
+											GiveArmorViaPercentage(client, 0.1, 1.0);
 											
 									//		float Shave_Seconds_off = 5.0 * Extra;
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
@@ -5009,10 +4981,10 @@ static int VillagePointsLeft(int client)
 {
 	int level = MaxSupportBuildingsAllowed(client, true);	// 1 - 16
 
-	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+	if(Store_HasNamedItem(client, "Construction Novice"))
 		level++;
 	
-	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+	if(Store_HasNamedItem(client, "Construction Apprentice"))
 		level++;
 	
 	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
@@ -7063,10 +7035,10 @@ void CheckSummonerUpgrades(int client)
 {
 	SupplyRate[client] = 2;
 
-	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+	if(Store_HasNamedItem(client, "Construction Novice"))
 		SupplyRate[client]++;
 	
-	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+	if(Store_HasNamedItem(client, "Construction Apprentice"))
 		SupplyRate[client] += 2;
 	
 	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))

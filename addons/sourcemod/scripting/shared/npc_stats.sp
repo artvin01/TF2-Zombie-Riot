@@ -2797,6 +2797,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 
 	//return the bot's collision mask
+	public int GetSolidMaskNothing()
+	{
+		//What to collide with
+		return 0;
+	}
 	public int GetSolidMask()
 	{
 		//What to collide with

@@ -4563,6 +4563,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	return Plugin_Changed;
 }
 
+//BASES FOR ENEMIES
+
+#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 
 //NORMAL
 
@@ -4880,7 +4883,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_seaally_silvester.sp"
 #include "zombie_riot/npc/ally/npc_seaally_goggles.sp"
 
-#include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 #include "zombie_riot/npc/expidonsa/npc_benera.sp"
 #include "zombie_riot/npc/expidonsa/npc_pental.sp"
 #include "zombie_riot/npc/expidonsa/npc_defanda.sp"

@@ -292,17 +292,16 @@ void IgnitusSelfdefense(Ignitus npc, float gameTime, int target, float distance)
 						}
 						else
 						{
-							TF2_AddCondition(target, TFCond_Gas, 1.5);
 							StartBleedingTimer_Against_Client(target, npc.index, 4.0, 20);
+							TF2_IgnitePlayer(target, npc.index, 5.0);
 						}
 					}
 					if(!ShouldNpcDealBonusDamage(target))
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-					//	TF2_IgnitePlayer(target, npc.index, 5.0);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, vecHit);
 					}
 					else
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 650.0, DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
 
 					npc.PlayMeleeHitSound();
 				} 

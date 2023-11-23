@@ -1380,35 +1380,17 @@
 	
 	"Construction Novice Desc"
 	{
-		"en"	"50%% more building health and 2.0x sentry damage, 1 more support building added"
-		"ru"	"На 50%% больше здоровья построек и двукратный урон турели, получена ещё 1 постройка поддержки."
-		"chi"   "增加50%%的建筑血量和2.0倍的哨兵伤害，增加1个可建筑数"
-	}
-	
-	"Ikea Repair Handling book Desc"
-	{
-		"en"	"2x Repair Rate"
-		"ru"	"Двукратная скорость починки."
-		"chi"   "修复建筑生命值提高2倍"
-	}
-	
-	"Engineering Repair Handling book Desc"
-	{
-		"en"	"2x Repair Rate"
-		"ru"	"Двукратная скорость починки."
-		"chi"   "修复建筑生命值提高2倍"
+		"en"	"50%% more building health and 2.0x sentry damage, 1 more support building added and 50%% more repair Rate"
 	}
 	
 	"Construction Apprentice Desc"
 	{
-		"en"	"65%% more building health and 2.0x Sentry damage, 2 more support buildings added"
-		"ru"	"На 65%% больше здоровья построек и двукратный урон турели, получено ещё 2 постройки поддержки."
-		"chi"   "增加65%%的建筑血量和2.0倍的哨兵伤害，增加2个可建筑数"
+		"en"	"65%% more building health and 2.0x Sentry damage, 2 more support buildings added and 50%% more repair Rate"
 	}
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.5x Repair Rate"
+		"en"	"2.0x Repair Rate"
 		"ru"	"2,5-кратная скорость починки."
 		"chi"   "修复建筑生命值提高2.5倍"
 	}

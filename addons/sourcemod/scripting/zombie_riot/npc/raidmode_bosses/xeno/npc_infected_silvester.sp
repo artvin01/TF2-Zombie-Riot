@@ -443,6 +443,7 @@ methodmap RaidbossSilvester < CClotBody
 		
 		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+		SilvesterApplyEffects(npc.index, false);
 		return npc;
 	}
 }
@@ -485,6 +486,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
 		npc.StopPathing();
+		SilvesterApplyEffects(npc.index, true);
 		if(SharedGiveupSilvester(npc.index,ally))
 		{
 			npc.m_bDissapearOnDeath = true;
@@ -551,6 +553,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			i_NpcWeight[npc.index] = 4;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SilvesterApplyEffects(npc.index, true);
 
 				
 			SetVariantColor(view_as<int>({255, 255, 0, 200}));
@@ -638,11 +641,13 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		SilvesterApplyEffects(npc.index, false);
 	}
 	if(npc.m_flDoingSpecial && npc.m_flDoingSpecial < GetGameTime(npc.index))
 	{
 		npc.SetPlaybackRate(0.0);	//freeze in place.
 		npc.m_flDoingSpecial = 0.0;
+		SilvesterApplyEffects(npc.index, true);
 	}
 
 
@@ -970,6 +975,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					//	npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.5);	
 						npc.SetCycle(0.15);
+						SilvesterApplyEffects(npc.index, true);
 					}
 				}
 				else
@@ -985,6 +991,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.5);	
 					npc.SetCycle(0.15);
+					SilvesterApplyEffects(npc.index, true);
 				}
 			}
 			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
@@ -1094,6 +1101,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				{
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 20.0;
 				}
+				SilvesterApplyEffects(npc.index, true);
 			}
 			default:
 			{
@@ -1133,6 +1141,7 @@ public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inf
 	{
 		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
+			SilvesterApplyEffects(npc.index, true);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			b_angered_twice[npc.index] = true;
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
@@ -1161,6 +1170,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	{
 		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
+			SilvesterApplyEffects(npc.index, true);
 			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
 			{
 				RemoveEntity(i_LaserEntityIndex[npc.index]);
@@ -1193,6 +1203,7 @@ public void RaidbossSilvester_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	ExpidonsaRemoveEffects(entity);
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
 	//add 2 seconds so if its close, they dont lose to timer.
@@ -2063,4 +2074,399 @@ bool SharedGiveupSilvester(int entity, int entity2)
 		}
 	}
 	return false;
+}
+
+
+void SilvesterApplyEffects(int entity, bool withoutweapon = false)
+{
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
+	if(!npc.Anger)
+	{
+		ExpidonsaRemoveEffects(entity);
+		if(!withoutweapon)
+			SilvesterApplyEffectsForm1(entity);
+	}
+	else
+	{
+		ExpidonsaRemoveEffects(entity);
+		SilvesterApplyEffectsForm2(entity, withoutweapon);			
+	}
+}
+
+void SilvesterApplyEffectsForm1(int entity)
+{
+	int red = 255;
+	int green = 255;
+	int blue = 255;
+	float flPos[3];
+	float flAng[3];
+	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	int particle_2 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = ParticleEffectAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = ParticleEffectAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = ParticleEffectAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
+
+	
+	int particle_2_1 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3_1 = ParticleEffectAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4_1 = ParticleEffectAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5_1 = ParticleEffectAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
+	
+	SetParent(particle_1, particle_2_1, "",_, true);
+	SetParent(particle_1, particle_3_1, "",_, true);
+	SetParent(particle_1, particle_4_1, "",_, true);
+	SetParent(particle_1, particle_5_1, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(entity, particle_1, "effect_hand_R",_);
+
+
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
+
+	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[entity][0] = EntIndexToEntRef(particle_1);
+	i_ExpidonsaEnergyEffect[entity][1] = EntIndexToEntRef(particle_2);
+	i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
+	i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
+	i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
+	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(Laser_3);
+	
+	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_2_1);
+	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_3_1);
+	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_4_1);
+	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(particle_5_1);
+	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_1_1);
+	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_2_1);
+	i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(Laser_3_1);
+}
+
+
+void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
+{
+	int red = 255;
+	int green = 255;
+	int blue = 0;
+	float flPos[3];
+	float flAng[3];
+	if(!withoutweapon)
+	{
+		int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+		
+		int particle_2 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+		int particle_3 = ParticleEffectAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
+		int particle_4 = ParticleEffectAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
+		int particle_5 = ParticleEffectAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
+
+		
+		int particle_2_1 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+		int particle_3_1 = ParticleEffectAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
+		int particle_4_1 = ParticleEffectAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
+		int particle_5_1 = ParticleEffectAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
+
+		SetParent(particle_1, particle_2, "",_, true);
+		SetParent(particle_1, particle_3, "",_, true);
+		SetParent(particle_1, particle_4, "",_, true);
+		SetParent(particle_1, particle_5, "",_, true);
+		
+		SetParent(particle_1, particle_2_1, "",_, true);
+		SetParent(particle_1, particle_3_1, "",_, true);
+		SetParent(particle_1, particle_4_1, "",_, true);
+		SetParent(particle_1, particle_5_1, "",_, true);
+
+		Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+		SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+		SetParent(entity, particle_1, "effect_hand_R",_);
+
+
+		int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+		int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+		int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
+
+		int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+		int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+		int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 3.0, 1.0, 1.0, LASERBEAM);
+		
+
+		i_ExpidonsaEnergyEffect[entity][0] = EntIndexToEntRef(particle_1);
+		i_ExpidonsaEnergyEffect[entity][1] = EntIndexToEntRef(particle_2);
+		i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
+		i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
+		i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
+		i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_1);
+		i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_2);
+		i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(Laser_3);
+		
+		i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_2_1);
+		i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_3_1);
+		i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_4_1);
+		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(particle_5_1);
+		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_1_1);
+		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_2_1);
+		i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(Laser_3_1);
+			
+	}
+
+	//possible loop function?
+
+	/*
+		Fist axies from the POV of the person LOOKINGF at the equipper
+		flag
+
+		1st: left and right, negative is left, positive is right 
+		2nd: Up and down, negative up, positive down.
+		3rd: front and back, negative goes back.
+	*/
+	int ParticleOffsetMain = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	GetAttachment(entity, "flag", flPos, flAng);
+	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
+	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
+	SetParent(entity, ParticleOffsetMain, "flag",_);
+
+	int particle_1_Wingset_1 = ParticleEffectAt({35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
+
+	int particle_2_Wingset_1 = ParticleEffectAt({-16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_1 = ParticleEffectAt({16.0,16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_1 = ParticleEffectAt({-8.0,12.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_1 = ParticleEffectAt({12.0,-8.0,-12.0}, "", 0.0);
+
+
+	SetParent(particle_1_Wingset_1, particle_2_Wingset_1, "",_, true);
+	SetParent(particle_1_Wingset_1, particle_3_Wingset_1, "",_, true);
+	SetParent(particle_1_Wingset_1, particle_4_Wingset_1, "",_, true);
+	SetParent(particle_1_Wingset_1, particle_5_Wingset_1, "",_, true);
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_1, flPos);
+	SetEntPropVector(particle_1_Wingset_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_1_Wingset_1, "",_);
+	
+	int Laser_1_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_5_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_4_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_Wingset_1 = ConnectWithBeamClient(particle_4_Wingset_1, particle_3_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4_Wingset_1 = ConnectWithBeamClient(particle_5_Wingset_1, particle_3_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	
+	i_ExpidonsaEnergyEffect[entity][16] = EntIndexToEntRef(particle_1_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][17] = EntIndexToEntRef(particle_2_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][18] = EntIndexToEntRef(particle_3_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][19] = EntIndexToEntRef(particle_4_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][20] = EntIndexToEntRef(particle_5_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][21] = EntIndexToEntRef(Laser_1_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][22] = EntIndexToEntRef(Laser_2_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][23] = EntIndexToEntRef(Laser_3_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][24] = EntIndexToEntRef(Laser_4_Wingset_1);
+	
+	int particle_1_Wingset_2 = ParticleEffectAt({35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
+
+	int particle_2_Wingset_2 = ParticleEffectAt({16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_2 = ParticleEffectAt({-16.0,16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_2 = ParticleEffectAt({-8.0,-12.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_2 = ParticleEffectAt({12.0,8.0,-12.0}, "", 0.0);
+
+	SetParent(particle_1_Wingset_2, particle_2_Wingset_2, "",_, true);
+	SetParent(particle_1_Wingset_2, particle_3_Wingset_2, "",_, true);
+	SetParent(particle_1_Wingset_2, particle_4_Wingset_2, "",_, true);
+	SetParent(particle_1_Wingset_2, particle_5_Wingset_2, "",_, true);
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_2, flPos);
+	SetEntPropVector(particle_1_Wingset_2, Prop_Data, "m_angRotation", flAng);
+	SetParent(ParticleOffsetMain, particle_1_Wingset_2, "",_);
+	
+	int Laser_1_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_5_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_4_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_Wingset_2 = ConnectWithBeamClient(particle_4_Wingset_2, particle_3_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4_Wingset_2 = ConnectWithBeamClient(particle_5_Wingset_2, particle_3_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	
+	i_ExpidonsaEnergyEffect[entity][25] = EntIndexToEntRef(particle_1_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][26] = EntIndexToEntRef(particle_2_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][27] = EntIndexToEntRef(particle_3_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][28] = EntIndexToEntRef(particle_4_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][29] = EntIndexToEntRef(particle_5_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][30] = EntIndexToEntRef(Laser_1_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][31] = EntIndexToEntRef(Laser_2_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][32] = EntIndexToEntRef(Laser_3_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][33] = EntIndexToEntRef(Laser_4_Wingset_2);
+
+
+
+	
+	int particle_1_Wingset_3 = ParticleEffectAt({-35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
+
+	int particle_2_Wingset_3 = ParticleEffectAt({-16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_3 = ParticleEffectAt({16.0,16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_3 = ParticleEffectAt({-12.0,8.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_3 = ParticleEffectAt({8.0,-12.0,-12.0}, "", 0.0);
+
+	SetParent(particle_1_Wingset_3, particle_2_Wingset_3, "",_, true);
+	SetParent(particle_1_Wingset_3, particle_3_Wingset_3, "",_, true);
+	SetParent(particle_1_Wingset_3, particle_4_Wingset_3, "",_, true);
+	SetParent(particle_1_Wingset_3, particle_5_Wingset_3, "",_, true);
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_3, flPos);
+	SetEntPropVector(particle_1_Wingset_3, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_1_Wingset_3, "",_);
+	
+	int Laser_1_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_5_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_4_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_Wingset_3 = ConnectWithBeamClient(particle_4_Wingset_3, particle_3_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4_Wingset_3 = ConnectWithBeamClient(particle_5_Wingset_3, particle_3_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	
+	i_ExpidonsaEnergyEffect[entity][34] = EntIndexToEntRef(particle_1_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][35] = EntIndexToEntRef(particle_2_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][36] = EntIndexToEntRef(particle_3_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][37] = EntIndexToEntRef(particle_4_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][38] = EntIndexToEntRef(particle_5_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][39] = EntIndexToEntRef(Laser_1_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][40] = EntIndexToEntRef(Laser_2_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][41] = EntIndexToEntRef(Laser_3_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][42] = EntIndexToEntRef(Laser_4_Wingset_3);
+
+
+	
+	int particle_1_Wingset_4 = ParticleEffectAt({-35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
+
+	int particle_2_Wingset_4 = ParticleEffectAt({-16.0,16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_4 = ParticleEffectAt({16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_4 = ParticleEffectAt({8.0,12.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_4 = ParticleEffectAt({-12.0,-8.0,-12.0}, "", 0.0);
+
+	SetParent(particle_1_Wingset_4, particle_2_Wingset_4, "",_, true);
+	SetParent(particle_1_Wingset_4, particle_3_Wingset_4, "",_, true);
+	SetParent(particle_1_Wingset_4, particle_4_Wingset_4, "",_, true);
+	SetParent(particle_1_Wingset_4, particle_5_Wingset_4, "",_, true);
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_4, flPos);
+	SetEntPropVector(particle_1_Wingset_4, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_1_Wingset_4, "",_);
+	
+	int Laser_1_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_5_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_4_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_Wingset_4 = ConnectWithBeamClient(particle_4_Wingset_4, particle_3_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4_Wingset_4 = ConnectWithBeamClient(particle_5_Wingset_4, particle_3_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	
+	i_ExpidonsaEnergyEffect[entity][43] = EntIndexToEntRef(particle_1_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][44] = EntIndexToEntRef(particle_2_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][45] = EntIndexToEntRef(particle_3_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][46] = EntIndexToEntRef(particle_4_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][47] = EntIndexToEntRef(particle_5_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][48] = EntIndexToEntRef(Laser_1_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][49] = EntIndexToEntRef(Laser_2_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][50] = EntIndexToEntRef(Laser_3_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][51] = EntIndexToEntRef(Laser_4_Wingset_4);
+
+
+	
+	
+	int particle_1_Wingset_5 = ParticleEffectAt({-50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
+
+	int particle_2_Wingset_5 = ParticleEffectAt({-20.0,0.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_5 = ParticleEffectAt({20.0,0.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_5 = ParticleEffectAt({-3.0,14.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_5 = ParticleEffectAt({-3.0,-14.0,-12.0}, "", 0.0);
+
+	SetParent(particle_1_Wingset_5, particle_2_Wingset_5, "",_, true);
+	SetParent(particle_1_Wingset_5, particle_3_Wingset_5, "",_, true);
+	SetParent(particle_1_Wingset_5, particle_4_Wingset_5, "",_, true);
+	SetParent(particle_1_Wingset_5, particle_5_Wingset_5, "",_, true);
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_5, flPos);
+	SetEntPropVector(particle_1_Wingset_5, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_1_Wingset_5, "",_);
+	
+	int Laser_1_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_5_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_4_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_Wingset_5 = ConnectWithBeamClient(particle_4_Wingset_5, particle_3_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4_Wingset_5 = ConnectWithBeamClient(particle_5_Wingset_5, particle_3_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	
+	i_ExpidonsaEnergyEffect[entity][52] = EntIndexToEntRef(particle_1_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][53] = EntIndexToEntRef(particle_2_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][54] = EntIndexToEntRef(particle_3_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][55] = EntIndexToEntRef(particle_4_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][56] = EntIndexToEntRef(particle_5_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][57] = EntIndexToEntRef(Laser_1_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][58] = EntIndexToEntRef(Laser_2_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][59] = EntIndexToEntRef(Laser_3_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][60] = EntIndexToEntRef(Laser_4_Wingset_5);
+
+
+	int particle_1_Wingset_6 = ParticleEffectAt({50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
+
+	int particle_2_Wingset_6 = ParticleEffectAt({-20.0,0.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_6 = ParticleEffectAt({20.0,0.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_6 = ParticleEffectAt({3.0,14.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_6 = ParticleEffectAt({3.0,-14.0,-12.0}, "", 0.0);
+
+	SetParent(particle_1_Wingset_6, particle_2_Wingset_6, "",_, true);
+	SetParent(particle_1_Wingset_6, particle_3_Wingset_6, "",_, true);
+	SetParent(particle_1_Wingset_6, particle_4_Wingset_6, "",_, true);
+	SetParent(particle_1_Wingset_6, particle_5_Wingset_6, "",_, true);
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_6, flPos);
+	SetEntPropVector(particle_1_Wingset_6, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_1_Wingset_6, "",_);
+	
+	int Laser_1_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_5_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_4_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_3_Wingset_6 = ConnectWithBeamClient(particle_4_Wingset_6, particle_3_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4_Wingset_6 = ConnectWithBeamClient(particle_5_Wingset_6, particle_3_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	
+	i_ExpidonsaEnergyEffect[entity][61] = EntIndexToEntRef(particle_1_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][62] = EntIndexToEntRef(particle_2_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][63] = EntIndexToEntRef(particle_3_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][64] = EntIndexToEntRef(particle_4_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][65] = EntIndexToEntRef(particle_5_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][66] = EntIndexToEntRef(Laser_1_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_2_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_3_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(Laser_4_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][70] = EntIndexToEntRef(ParticleOffsetMain);
+
+
+
+
+
+/*
+
+	//XYZ
+	int particle_1_Wingset_99 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_2_Wingset_99 = ParticleEffectAt({0.0,-50.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_3_Wingset_99 = ParticleEffectAt({0.0,50.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_4_Wingset_99 = ParticleEffectAt({-50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_5_Wingset_99 = ParticleEffectAt({50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int Laser_1_Wingset_99 = ConnectWithBeamClient(particle_2_Wingset_99, particle_3_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+	int Laser_2_Wingset_99 = ConnectWithBeamClient(particle_4_Wingset_99, particle_5_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
+
+	SetParent(particle_1_Wingset_99, particle_2_Wingset_99, "",_, true);
+	SetParent(particle_1_Wingset_99, particle_3_Wingset_99, "",_, true);
+	SetParent(particle_1_Wingset_99, particle_4_Wingset_99, "",_, true);
+	SetParent(particle_1_Wingset_99, particle_5_Wingset_99, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_99, flPos);
+	SetParent(entity, particle_1_Wingset_99, "flag",_);
+*/
 }
