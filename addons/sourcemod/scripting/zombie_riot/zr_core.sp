@@ -137,6 +137,7 @@ enum
 	WEAPON_FUSION_PAP2 = 66,
 	WEAPON_STAR_SHOOTER = 67,
 	WEAPON_BOBS_GUN = 68,
+	WEAPON_IMPACT_LANCE = 69,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -438,7 +439,9 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/kit_seaborn.sp"
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
-#include "zombie_riot/custom/silvester_cosmetics_yay.sp"
+#include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
+//#include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
+#include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 
 void ZR_PluginLoad()
 {
@@ -649,6 +652,8 @@ void ZR_MapStart()
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
+	Wand_Impact_Lance_Mapstart();
+
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

@@ -5726,6 +5726,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Leper(client, entity);
 		Flagellant_Enable(client, entity);
 		EnableSilvesterCosmetic(client);
+		//Enable_Magia_Wings(client);
+		Enable_Impact_Lance(client, entity);
 #endif
 
 #if defined RPG

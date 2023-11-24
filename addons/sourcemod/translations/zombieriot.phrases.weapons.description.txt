@@ -2425,7 +2425,7 @@
 	}
 	"Neuv pap3"
 	{
-		"en"	"A new spell manifests into your mind\Hold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
+		"en"	"A new spell manifests into your mind\nHold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
 	}
 	"Neuv pap4"
 	{
@@ -2518,5 +2518,21 @@
 	"The Flagellant Pap 3"
 	{
 		"en"	"Gain +150 max health, increases healing given and received from abilities, and bleed effects last longer."
+	}
+	"Impact Lance Desc 1"
+	{
+		"en"	"A Magic Lance, has the ability to hit multiple enemies\nHas a longer reach\nHowever its width lower"
+	}
+	"Impact Lance Desc 2"
+	{
+		"en"	"The Lance can hit more targets\nLarger range\nSlightly more melee width"
+	}
+	"Impact Lance Desc 3"
+	{
+		"en"	"The Lance can hit more targets\nYou have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\nLarger range\nSlightly more melee width"
+	}
+	"Impact Lance Desc 4"
+	{
+		"en"	"The Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
 	}
 }
