@@ -312,6 +312,7 @@ static void Create_Hand_Particle(int client)
 	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	
 	int particle_1 = ParticleEffectAt({-4.0,0.0,0.0}, "raygun_projectile_blue_crit", 0.0);
+	AddEntityToThirdPersonTransitMode(client, particle_1);
 
 	//float RotateVector[3];
 	//RotateVector = {45.0,0.0,0.0};
@@ -346,12 +347,12 @@ static void Create_Hand_Particle(int client)
 	int green = 200;
 	int blue = 200;
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_5 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_6 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_2 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_3 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_5 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_6 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
 	
 
 	i_hand_particle[client][0] = EntIndexToEntRef(particle_1);

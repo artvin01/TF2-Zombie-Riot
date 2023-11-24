@@ -553,7 +553,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			i_NpcWeight[npc.index] = 4;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
-			SilvesterApplyEffects(npc.index, true);
+			SilvesterApplyEffects(npc.index, false);
 
 				
 			SetVariantColor(view_as<int>({255, 255, 0, 200}));

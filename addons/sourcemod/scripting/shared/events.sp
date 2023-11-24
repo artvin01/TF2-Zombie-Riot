@@ -455,6 +455,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	}
 
 	//Incase they die, do suit!
+	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
 	UnequipQuantumSet(client);
@@ -464,6 +465,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
 	Skulls_PlayerKilled(client);
+	// Save current uber.
+	ClientSaveUber(client);
 #endif
 
 #if defined RPG

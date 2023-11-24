@@ -2388,14 +2388,23 @@ bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, f
 	if(LastMann)
 	{
 		damage *= 1.35;
-		bool PlaySound = false;
-		if(f_MinicritSoundDelay[attacker] < GetGameTime())
+		int DisplayCritSoundTo;
+		if(attacker <= MaxClients)
+			DisplayCritSoundTo = attacker;
+		else if(inflictor <= MaxClients)
+			DisplayCritSoundTo = inflictor;
+
+		if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
 		{
-			PlaySound = true;
-			f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
+			bool PlaySound = false;
+			if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+			{
+				PlaySound = true;
+				f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+			}
+			
+			DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
 		}
-		
-		DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 	}
 	if(IsValidEntity(weapon))
 	{

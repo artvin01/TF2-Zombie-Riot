@@ -1989,6 +1989,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						SetEntityMoveType(target, MOVETYPE_WALK);
 						RequestFrame(Movetype_walk, target);
 						dieingstate[target] = 0;
+						ClientSaveUber(target);
 						
 						SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
 						f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;
@@ -2131,7 +2132,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public void Update_Ammo(int  client)
 {
-	if(IsValidClient(client))
+	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
@@ -2143,7 +2144,7 @@ public void Update_Ammo(int  client)
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
 #if defined ZR
-	if(i_HealthBeforeSuit[client] == 0)
+	if(i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		RequestFrame(Update_Ammo, client);
 	}

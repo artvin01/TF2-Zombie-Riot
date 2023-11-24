@@ -613,12 +613,12 @@ static void Create_Wings(int client, int viewmodelModel)
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
 	SetParent(viewmodelModel, particle_0, "flag",_);
 
-	i_wing_lasers[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_3, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_3_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_3, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_3_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
 	
 	i_wing_particles[client][0] = EntIndexToEntRef(particle_1);
 	

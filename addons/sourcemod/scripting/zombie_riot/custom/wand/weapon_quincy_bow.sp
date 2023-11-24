@@ -1060,19 +1060,19 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	SetEntPropVector(i_particle_right, Prop_Data, "m_angRotation", flAng_2); 
 	SetParent(viewmodelModel, i_particle_right, "effect_hand_r",_);
 	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));			//inner stick	//base
+	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM, client));			//inner stick	//base
 	
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));		//inner stick	//base
+	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));		//inner stick	//base
 	
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
+	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM, client));		//string	//base
 	
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
+	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, i_particle_right, r, g, b, f_start, f_end, amp, LASERBEAM, client));		//string	//base
 		
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_8, particle_8_1, r, g, b, f_start, f_end, amp, LASERBEAM));			//handle	//base
+	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_8, particle_8_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));			//handle	//base
 
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_7, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));			//outer stick	//base
+	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_7, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM, client));			//outer stick	//base
 	
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_7_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));		//outer stick	//base
+	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_7_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));		//outer stick	//base
 
 	i_particle[client][0] = EntIndexToEntRef(particle_0);
 	i_particle[client][1] = EntIndexToEntRef(particle_1);

@@ -335,6 +335,14 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	if (InMadness[client])
 		return;
 
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);

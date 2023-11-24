@@ -400,10 +400,10 @@ void SensalWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 	SetParent(Wearable, particle_1, attachment,_);
 
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 4.0, 4.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 4.0, 4.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 3.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 4.0, 4.0, 1.0, LASERBEAM, client);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 4.0, 4.0, 1.0, LASERBEAM, client);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM, client);
+	int Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 3.0, 2.0, 1.0, LASERBEAM, client);
 	
 
 	i_SensalEnergyEffect[client][0] = EntIndexToEntRef(particle_1);

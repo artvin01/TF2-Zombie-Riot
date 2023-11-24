@@ -117,8 +117,9 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 		{
 			ActivateEntity(particle);
 			AcceptEntityInput(particle, "start");
+			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 		}
-		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
+		//if it has no effect name, then it should always display, as its for other reasons.
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -1087,21 +1088,31 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
-	if(!IsValidClient(client))
+	if(!IsValidEntity(client))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
+	}
+	else
+	{
+		if(b_ThisWasAnNpc[client])
+		{
+			if(!b_NpcHasDied[client])
+			{
+				BleedAmountCountStack[OriginalIndex] -= 1;
+				return Plugin_Stop;
+			}
+		}
 	}
 		
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity == -1)
 		entity = 0;
 
-	float pos[3], ang[3];
+	float pos[3];
 	
 	pos = WorldSpaceCenter(client);
 	
-	GetClientEyeAngles(client, ang);
 	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
@@ -3920,8 +3931,10 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
+int i_OwnerEntityEnvLaser[MAXENTITIES];
+
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
-							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
+							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
 {
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
@@ -3938,6 +3951,11 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 	DispatchKeyValue(iBeam, "life", "0");
 
 	DispatchSpawn(iBeam);
+
+	if(ClientToHideFirstPerson > 0)
+	{
+		AddEntityToThirdPersonTransitMode(ClientToHideFirstPerson, iBeam);
+	}
 
 	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt));
 
@@ -3965,6 +3983,33 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 
 	return iBeam;
 }
+
+void AddEntityToThirdPersonTransitMode(int client, int entity)
+{
+	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+	SDKHook(entity, SDKHook_SetTransmit, ThirdersonTransmitEnvLaser);
+}
+
+public Action ThirdersonTransmitEnvLaser(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return Plugin_Continue;
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
+}
+
 
 #if defined ZR
 //bool identified if it went above max health or not.

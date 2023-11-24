@@ -56,7 +56,7 @@ void ApplyExtraSilvesterCosmeticEffects(int client, bool remove = false)
 
 public void EnableSilvesterCosmetic(int client) 
 {
-	bool HasWings = Items_HasNamedItem(client, "Silvester Cosmetic Wings [???]");
+	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Silvester Cosmetic Wings [???]"));
 	if (h_SilvesterCosmeticEffectManagement[client] != null)
 	{
 		//This timer already exists.
@@ -96,7 +96,13 @@ public Action TimerSilvesterCosmetic(Handle timer, DataPack pack)
 		h_SilvesterCosmeticEffectManagement[client] = null;
 		return Plugin_Stop;
 	}	
-
+	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Silvester Cosmetic Wings [???]"));
+	if(!HasWings)
+	{
+		ApplyExtraSilvesterCosmeticEffects(client,true);
+		h_SilvesterCosmeticEffectManagement[client] = null;
+		return Plugin_Stop;
+	}
 	ApplyExtraSilvesterCosmeticEffects(client);
 		
 	return Plugin_Continue;
@@ -144,10 +150,10 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	SetEntPropVector(particle_1_Wingset_1, Prop_Data, "m_angRotation", flAng); 
 	SetParent(ParticleOffsetMain, particle_1_Wingset_1, "",_);
 	
-	int Laser_1_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_5_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_4_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_1 = ConnectWithBeamClient(particle_4_Wingset_1, particle_3_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_1 = ConnectWithBeamClient(particle_5_Wingset_1, particle_3_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_5_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_2_Wingset_1 = ConnectWithBeamClient(particle_2_Wingset_1, particle_4_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_3_Wingset_1 = ConnectWithBeamClient(particle_4_Wingset_1, particle_3_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_4_Wingset_1 = ConnectWithBeamClient(particle_5_Wingset_1, particle_3_Wingset_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
 
 	
 	i_SilvesterCosmeticEffect[entity][0] = EntIndexToEntRef(particle_1_Wingset_1);
@@ -177,10 +183,10 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	SetEntPropVector(particle_1_Wingset_2, Prop_Data, "m_angRotation", flAng);
 	SetParent(ParticleOffsetMain, particle_1_Wingset_2, "",_);
 	
-	int Laser_1_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_5_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_4_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_2 = ConnectWithBeamClient(particle_4_Wingset_2, particle_3_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_2 = ConnectWithBeamClient(particle_5_Wingset_2, particle_3_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_5_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_2_Wingset_2 = ConnectWithBeamClient(particle_2_Wingset_2, particle_4_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_3_Wingset_2 = ConnectWithBeamClient(particle_4_Wingset_2, particle_3_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_4_Wingset_2 = ConnectWithBeamClient(particle_5_Wingset_2, particle_3_Wingset_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
 
 	
 	i_SilvesterCosmeticEffect[entity][9] = EntIndexToEntRef(particle_1_Wingset_2);
@@ -213,10 +219,10 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	SetEntPropVector(particle_1_Wingset_3, Prop_Data, "m_angRotation", flAng); 
 	SetParent(ParticleOffsetMain, particle_1_Wingset_3, "",_);
 	
-	int Laser_1_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_5_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_4_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_3 = ConnectWithBeamClient(particle_4_Wingset_3, particle_3_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_3 = ConnectWithBeamClient(particle_5_Wingset_3, particle_3_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_5_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_2_Wingset_3 = ConnectWithBeamClient(particle_2_Wingset_3, particle_4_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_3_Wingset_3 = ConnectWithBeamClient(particle_4_Wingset_3, particle_3_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_4_Wingset_3 = ConnectWithBeamClient(particle_5_Wingset_3, particle_3_Wingset_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
 
 	
 	i_SilvesterCosmeticEffect[entity][18] = EntIndexToEntRef(particle_1_Wingset_3);
@@ -247,10 +253,10 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	SetEntPropVector(particle_1_Wingset_4, Prop_Data, "m_angRotation", flAng); 
 	SetParent(ParticleOffsetMain, particle_1_Wingset_4, "",_);
 	
-	int Laser_1_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_5_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_4_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_4 = ConnectWithBeamClient(particle_4_Wingset_4, particle_3_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_4 = ConnectWithBeamClient(particle_5_Wingset_4, particle_3_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_5_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_2_Wingset_4 = ConnectWithBeamClient(particle_2_Wingset_4, particle_4_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_3_Wingset_4 = ConnectWithBeamClient(particle_4_Wingset_4, particle_3_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_4_Wingset_4 = ConnectWithBeamClient(particle_5_Wingset_4, particle_3_Wingset_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
 
 	
 	i_SilvesterCosmeticEffect[entity][27] = EntIndexToEntRef(particle_1_Wingset_4);
@@ -282,10 +288,10 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	SetEntPropVector(particle_1_Wingset_5, Prop_Data, "m_angRotation", flAng); 
 	SetParent(ParticleOffsetMain, particle_1_Wingset_5, "",_);
 	
-	int Laser_1_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_5_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_4_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_5 = ConnectWithBeamClient(particle_4_Wingset_5, particle_3_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_5 = ConnectWithBeamClient(particle_5_Wingset_5, particle_3_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_5_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_2_Wingset_5 = ConnectWithBeamClient(particle_2_Wingset_5, particle_4_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_3_Wingset_5 = ConnectWithBeamClient(particle_4_Wingset_5, particle_3_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_4_Wingset_5 = ConnectWithBeamClient(particle_5_Wingset_5, particle_3_Wingset_5, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
 
 	
 	i_SilvesterCosmeticEffect[entity][36] = EntIndexToEntRef(particle_1_Wingset_5);
@@ -316,10 +322,10 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	SetEntPropVector(particle_1_Wingset_6, Prop_Data, "m_angRotation", flAng); 
 	SetParent(ParticleOffsetMain, particle_1_Wingset_6, "",_);
 	
-	int Laser_1_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_5_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_2_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_4_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_3_Wingset_6 = ConnectWithBeamClient(particle_4_Wingset_6, particle_3_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4_Wingset_6 = ConnectWithBeamClient(particle_5_Wingset_6, particle_3_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_5_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_2_Wingset_6 = ConnectWithBeamClient(particle_2_Wingset_6, particle_4_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_3_Wingset_6 = ConnectWithBeamClient(particle_4_Wingset_6, particle_3_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
+	int Laser_4_Wingset_6 = ConnectWithBeamClient(particle_5_Wingset_6, particle_3_Wingset_6, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, entity);
 
 	
 	i_SilvesterCosmeticEffect[entity][45] = EntIndexToEntRef(particle_1_Wingset_6);
