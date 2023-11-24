@@ -539,7 +539,7 @@ methodmap Blitzkrieg < CClotBody
 		}
 		else if(i_currentwave[npc.index]>=60)
 		{
-			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
+			fl_blitzscale[npc.index] /= 5.0;	//blitz is quite scary on wave 60, so nerf him a bit
 			
 		}
 		if(i_currentwave[npc.index]>60 && !final)
@@ -1845,7 +1845,7 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		BlitzLight_Scale1[npc.index] = 200.0*smallmap;	//Best to do the scales in sets of numbers.
 		BlitzLight_Scale2[npc.index] = 400.0*smallmap;
 		BlitzLight_Scale3[npc.index] = 600.0*smallmap;
-		BlitzLight_DMG_Base[npc.index] = 45.0*smallmap;	//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
+		BlitzLight_DMG_Base[npc.index] = 80.0*smallmap;	//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
 		BlitzLight_Radius[npc.index] = 200.0*smallmap;	//Best to set radius as the same different of numbers when going up from scale 1, to 2. in this case scale goes up by 200 each time, so radius is 200.
 		BlitzLight_Duration_notick[npc.index] = GetGameTime(npc.index) + charge;	//Charge time.
 		

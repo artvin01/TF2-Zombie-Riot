@@ -279,7 +279,6 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-	npc.m_flMeleeArmor = 1.5;
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -456,6 +455,8 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 
+			npc.m_flMeleeArmor = 0.5;
+
 			npc_Loc[2]+=10.0;
 			int r, g, b, a;
 			r=145;
@@ -505,9 +506,16 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 				
 				
 				if(g_b_angered)
+				{
+					npc.m_flMeleeArmor = 1.0;
 					fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
+				}
 				else
+				{
+					npc.m_flMeleeArmor = 1.5;
 					fl_teleport_timer[npc.index]= GameTime+TELEPORT_STRIKE_Reuseable;
+				}
+					
 				
 				Schwertkrieg_Teleport_Boom(npc.index, vecSwingEnd, start_offset);
 				float effect_duration = 0.25;
@@ -527,12 +535,67 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			}
 			else
 			{
-				fl_teleport_timer[npc.index]= GameTime+5.0;	//retry in 5 seconds
+				vecSwingEnd[0] = vecPos[0] - VecForward[0] * (-100);
+				vecSwingEnd[1] = vecPos[1] - VecForward[1] * (-100);
+				vecSwingEnd[2] = vecPos[2];/*+ VecForward[2] * (100);*/
+
+				Succeed = NPC_Teleport(npc.index, vecSwingEnd);
+				if(Succeed)
+				{
+				
+					if(g_b_angered)
+					{
+						npc.m_flMeleeArmor = 1.0;
+						fl_teleport_timer[npc.index]= GameTime+(TELEPORT_STRIKE_Reuseable*0.5);
+					}
+					else
+					{
+						npc.m_flMeleeArmor = 1.5;
+						fl_teleport_timer[npc.index]= GameTime+TELEPORT_STRIKE_Reuseable;
+					}
+						
+					
+					Schwertkrieg_Teleport_Boom(npc.index, vecSwingEnd, start_offset);
+					float effect_duration = 0.25;
+				
+					end_offset = vecSwingEnd;
+									
+					//start_offset[2]+= 45;
+					//end_offset[2] += 45.0;
+									
+					for(int help=1 ; help<=8 ; help++)
+					{	
+						Schwert_Teleport_Effect("drg_manmelter_trail_red", effect_duration, start_offset, end_offset);
+										
+						start_offset[2] += 12.5;
+						end_offset[2] += 12.5;
+					}
+				}
+				else
+				{
+					fl_teleport_timer[npc.index]= GameTime+5.0;	//retry in 5 seconds
+					if(g_b_angered)
+					{
+						npc.m_flMeleeArmor = 1.0;
+					}
+					else
+					{
+						npc.m_flMeleeArmor = 1.5;
+					}
+				}
 			}
 		}
 		else
 		{
 			fl_teleport_timer[npc.index]= GameTime+1.0;	//retry in 1 second
+			if(g_b_angered)
+			{
+				npc.m_flMeleeArmor = 1.0;
+			}
+			else
+			{
+				npc.m_flMeleeArmor = 1.5;
+			}
 		}
 	}
 	if(npc.m_flDoingAnimation > GameTime)
@@ -542,7 +605,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 	else
 	{
 		if(g_b_angered)
-			npc.m_flSpeed = Schwertkrieg_Speed*1.25;
+			npc.m_flSpeed = Schwertkrieg_Speed*1.35;
 		else
 			npc.m_flSpeed = Schwertkrieg_Speed;
 	}
