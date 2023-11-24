@@ -456,6 +456,7 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 			EmitSoundToAll(TELEPORT_STRIKE_ACTIVATE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, npc_Loc);
 
 			npc.m_flMeleeArmor = 0.5;
+			npc.m_flRangedArmor = 0.5;
 
 			npc_Loc[2]+=10.0;
 			int r, g, b, a;
@@ -492,6 +493,8 @@ static void Schwertkrieg_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float 
 		vecSwingEnd[0] = vecPos[0] - VecForward[0] * (100);
 		vecSwingEnd[1] = vecPos[1] - VecForward[1] * (100);
 		vecSwingEnd[2] = vecPos[2];/*+ VecForward[2] * (100);*/
+
+		npc.m_flRangedArmor = 1.0;
 		int enemy = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 		if(IsValidEnemy(npc.index, enemy))
 		{
