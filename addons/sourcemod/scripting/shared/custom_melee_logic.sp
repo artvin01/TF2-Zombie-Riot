@@ -204,6 +204,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Flagellant_DoSwingTrace(client);
 			}
+			case WEAPON_IMPACT_LANCE:
+			{
+				enemies_hit_aoe = Wand_Impact_Lance_Multi_Hit(client, weapon, CustomMeleeRange, CustomMeleeWide);
+			}
 		}	
 	}
 #endif
