@@ -82,6 +82,7 @@ static int i_SaidLineAlready[MAXENTITIES];
 
 
 static bool b_InKame[MAXENTITIES];
+static bool b_enraged=false;
 
 void Donnerkrieg_OnMapStart_NPC()
 {
@@ -211,6 +212,8 @@ methodmap Donnerkrieg < CClotBody
 			
 		g_b_donner_died=false;
 
+		b_enraged=false;
+
 		b_health_stripped[npc.index] = false;
 		//IDLE
 		npc.m_flSpeed = 300.0;
@@ -332,11 +335,20 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(g_b_angered && !b_enraged)
+	{
+		if(!b_nightmare_logic[npc.index])
+		{
+			fl_cannon_Recharged[npc.index]=0.0;
+			b_enraged=true;
+		}
+	}
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
-			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 	if(g_b_donner_died && g_b_item_allowed)
 	{
@@ -449,7 +461,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		
 		if(g_b_angered)
 		{
-			fl_cannon_Recharged[npc.index] = GameTime + 60.0;
+			fl_cannon_Recharged[npc.index] = GameTime + 30.0;
 		}
 		else		
 		{		
@@ -639,7 +651,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		{
 			if(g_b_angered)
 			{
-				fl_nightmare_grace_period[npc.index] = GameTime + 5.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
+				fl_nightmare_grace_period[npc.index] = GameTime + 1.0;	//how long until the npc fires the cannon, basically for how long will the npc run away for
 			}
 			else
 			{
@@ -785,19 +797,19 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
 		{
-					int iPitch = npc.LookupPoseParameter("body_pitch");
-					if(iPitch < 0)
-						return;		
+			int iPitch = npc.LookupPoseParameter("body_pitch");
+			if(iPitch < 0)
+				return;		
 						
-					//Body pitch
-					float v[3], ang[3];
-					SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(PrimaryThreatIndex), v); 
-					NormalizeVector(v, v);
-					GetVectorAngles(v, ang); 
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(PrimaryThreatIndex), v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
 							
-					float flPitch = npc.GetPoseParameter(iPitch);
+			float flPitch = npc.GetPoseParameter(iPitch);
 							
-					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 		}
 				
 		npc.StartPathing();
@@ -806,7 +818,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		if(g_b_angered)
 		{
-			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 20.0);
+			npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 150.0);
 		}
 		else
 		{

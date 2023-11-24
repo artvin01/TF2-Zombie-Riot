@@ -100,7 +100,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 			b_LagCompNPC_No_Layers = true;
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
-			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 350.0, false, 45.0, true); //infinite range, and ignore walls!
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 200.0, false, 45.0, true); //infinite range, and ignore walls!
 			FinishLagCompensation_Base_boss();
 
 			int target = TR_GetEntityIndex(swingTrace);	
