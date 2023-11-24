@@ -21,6 +21,7 @@ public void Weapon_Grenade(int client, int weapon, const char[] classname, bool 
 	{
 		weapon_id[client] = weapon;
 		Give_bomb_back[client] = CreateTimer(15.0, Give_Back_Grenade, client, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(15.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 		if(Handle_on[client])
 		{
 			delete Give_bomb_back[client];

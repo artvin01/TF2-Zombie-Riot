@@ -11,6 +11,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 		if(CurrentAmmo[client][Ammo_Potion_Supply] >= 1)
 		{
 			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(60.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 			if(Handle_on[client])
 			{
 				delete Give_bomb_back[client];
@@ -63,7 +64,13 @@ public void Reset_stats_Drink_Singular(int client)
 {
 	Handle_on[client] = false;
 }
-
+public Action Give_Back_Magic_Restore_Ammo(Handle cut_timer, int client)
+{
+	if(!IsValidClient(client))
+		CurrentAmmo[client][Ammo_Potion_Supply] = 1;
+		
+	return Plugin_Handled;
+}
 public Action Give_Back_Magic_Restore(Handle cut_timer, int ref)
 {
 	int client = EntRefToEntIndex(ref);
