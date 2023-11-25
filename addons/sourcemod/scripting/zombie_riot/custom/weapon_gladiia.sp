@@ -48,7 +48,7 @@ void Gladiia_Enable(int client, int weapon)
 			}
 			WeaponTimer[client] = null;
 
-			float value = Attributes_Get(weapon, 861, -1.0);
+			float value = Attributes_Get(weapon, 868, -1.0);
 			
 			switch(RoundFloat(value))
 			{

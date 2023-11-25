@@ -343,7 +343,7 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 
 void Edited_TF2_RegeneratePlayer(int client)
 {
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #if defined ZR
 	KillDyingGlowEffect(client);
 #endif
@@ -360,7 +360,7 @@ void Edited_TF2_RegeneratePlayer(int client)
 
 void Edited_TF2_RespawnPlayer(int client)
 {
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 #if defined ZR
 	KillDyingGlowEffect(client);
@@ -394,10 +394,10 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 		LogStackTrace("%f - Set to %d %d", GetEngineTime(), classType, persistent);
 	}
 
-	TF2_SetPlayerClass(client, classType, weapons, persistent);
+	TF2_SetPlayerClass_ZR(client, classType, weapons, persistent);
 }
 
-#define TF2_SetPlayerClass SetPlayerClass*/
+#define TF2_SetPlayerClass_ZR SetPlayerClass*/
 #if !defined UseDownloadTable
 #define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
 #endif

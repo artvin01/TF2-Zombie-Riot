@@ -431,7 +431,24 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			Entity_Position = WorldSpaceCenter(attacker);
 
 			f_BoardReflectCooldown[victim][attacker] = GetGameTime() + 0.1;
-			SDKHooks_TakeDamage(attacker, victim, victim, ParriedDamage, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
+			
+			float ReflectPosVec[3];
+			ReflectPosVec = CalculateDamageForce(vecForward, 10000.0);
+			DataPack pack = new DataPack();
+			pack.WriteCell(EntIndexToEntRef(attacker));
+			pack.WriteCell(EntIndexToEntRef(victim));
+			pack.WriteCell(EntIndexToEntRef(victim));
+			pack.WriteFloat(ParriedDamage);
+			pack.WriteCell(DMG_CLUB);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteFloat(ReflectPosVec[0]);
+			pack.WriteFloat(ReflectPosVec[1]);
+			pack.WriteFloat(ReflectPosVec[2]);
+			pack.WriteFloat(Entity_Position[0]);
+			pack.WriteFloat(Entity_Position[1]);
+			pack.WriteFloat(Entity_Position[2]);
+			pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 		}
 
 		switch (ParryCounter)

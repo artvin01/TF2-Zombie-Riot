@@ -254,7 +254,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			{
 				WeaponClass[client] = class;
 				
-				TF2_SetPlayerClass(client, WeaponClass[client], _, false);
+				TF2_SetPlayerClass_ZR(client, WeaponClass[client], _, false);
 				Store_ApplyAttribs(client);
 				
 				ViewChange_DeleteHands(client);

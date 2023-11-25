@@ -780,7 +780,7 @@ stock void UnequipDispenser(int client)
 		{		
 			if(!StrContains(buffer, "obj_dispenser"))
 			{
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				int iBuilder = Spawn_Buildable(client);
 				SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -792,15 +792,15 @@ stock void UnequipDispenser(int client)
 				SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 				SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 0);
-			//	TF2_SetPlayerClass(client, TFClass_Engineer);
+			//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Spawn_Buildable(client);
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 				
 			}
 			else if(!StrContains(buffer, "obj_sentrygun"))
 			{
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				int iBuilder = Spawn_Buildable(client);
 				SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -812,10 +812,10 @@ stock void UnequipDispenser(int client)
 				SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder);
 				SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 0);				
-			//	TF2_SetPlayerClass(client, TFClass_Engineer);
+			//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 				TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 				Spawn_Buildable(client);
-				TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+				TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 			}	
 			/*
 			int iLink = GetEntPropEnt(entity, Prop_Send, "m_hEffectEntity");

@@ -560,10 +560,16 @@ static void Create_Halo(int client)
 {
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(client, "head", flPos, flAng);
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+	if(!IsValidEntity(viewmodelModel))
+		return;
+	GetAttachment(viewmodelModel, "head", flPos, flAng);
 	flPos[2] += 10.0;
 	int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
-	SetParent(client, particle, "head");
+	AddEntityToThirdPersonTransitMode(client, particle);
+	SetParent(viewmodelModel, particle, "head");
 	i_halo_particles[client] = EntRefToEntIndex(particle);
 }
 static void Create_Wings(int client, int viewmodelModel)

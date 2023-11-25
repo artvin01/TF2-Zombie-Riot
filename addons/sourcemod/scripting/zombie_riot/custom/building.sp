@@ -1529,7 +1529,7 @@ void Building_PlayerRunCmd(int client, int buttons)
 					if(!StrContains(buffer, "obj_dispenser"))
 					{
 						Building[client] = INVALID_FUNCTION;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -1541,13 +1541,13 @@ void Building_PlayerRunCmd(int client, int buttons)
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						
 					}
 					else if(!StrContains(buffer, "obj_sentrygun"))
 					{
 						Building[client] = INVALID_FUNCTION;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -1557,10 +1557,10 @@ void Building_PlayerRunCmd(int client, int buttons)
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 						Event_ObjectMoved_Custom(entity);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-					//	TF2_SetPlayerClass(client, TFClass_Engineer);
+					//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 					}	
 					GrabAt[client] = 1.0;
 					PrintCenterText(client, " ");
@@ -1639,7 +1639,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 					{
 						Building[client] = INVALID_FUNCTION;
 						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -1651,14 +1651,14 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						
 					}
 					else if(!StrContains(buffer, "obj_sentrygun"))
 					{
 						Building[client] = INVALID_FUNCTION;
 						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
@@ -1669,10 +1669,10 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 						Event_ObjectMoved_Custom(entity);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-					//	TF2_SetPlayerClass(client, TFClass_Engineer);
+					//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 					}	
 					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
 				}	
@@ -2687,7 +2687,7 @@ public Action Building_CheckTimer(Handle timer, int ref)
 }
 static void PlaceBuilding(int client, int weapon, Function callback, TFObjectType type, TFObjectMode mode=TFObjectMode_None)
 {
-	TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+	TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 	int iBuilder = Spawn_Buildable(client, view_as<int>(type));
 	if(iBuilder > MaxClients)
 	{

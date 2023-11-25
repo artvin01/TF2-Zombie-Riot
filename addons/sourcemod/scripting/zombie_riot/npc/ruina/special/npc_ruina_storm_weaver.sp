@@ -861,9 +861,6 @@ static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTi
 
 	float Acceleration = 75.0;
 
-
-
-
 	//if(speed)
 	//	Acceleration = RUINA_STORM_WEAVER_FLIGHT_SPEED*0.75;
 

@@ -1483,7 +1483,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			DoGlobalMultiScaling();
 
 			int postWaves = CurrentRound - length;
-			f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
+			f_FreeplayDamageExtra = 1.0 + (postWaves / 45.0);
 
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;

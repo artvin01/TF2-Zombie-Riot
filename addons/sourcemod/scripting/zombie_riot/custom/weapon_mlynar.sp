@@ -490,8 +490,22 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		}
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(attacker);
-
-		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, {0.0,0.0,1.0}, Entity_Position, _, ZR_DAMAGE_REFLECT_LOGIC);
+		
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteFloat(damageModif);
+		pack.WriteCell(DMG_CLUB);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteFloat(0.0);
+		pack.WriteFloat(0.0);
+		pack.WriteFloat(1.0);
+		pack.WriteFloat(Entity_Position[0]);
+		pack.WriteFloat(Entity_Position[1]);
+		pack.WriteFloat(Entity_Position[2]);
+		pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 	}
 		
 	return damage;

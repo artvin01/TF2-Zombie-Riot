@@ -195,7 +195,7 @@ public void OnPostThink(int client)
 #if !defined NoSendProxyClass
 	if(WeaponClass[client]!=TFClass_Unknown)
 	{
-		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 		if(GetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]") > 64.0)	// Otherwise, shaking
 			SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
 	}
@@ -1274,7 +1274,7 @@ public void OnPostThink(int client)
 public void OnPostThinkPost(int client)
 {
 	if(IsPlayerAlive(client) && CurrentClass[client]!=TFClass_Unknown)
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 }
 #endif
 
@@ -2160,10 +2160,10 @@ void UpdatePlayerFakeModel(int client)
 	if(PlayerModel > 0)
 	{
 		//setclass to actual class
-	//	TF2_SetPlayerClass(client, CurrentClass[client]);
+	//	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 		SDKCall_RecalculatePlayerBodygroups(client);
 		//set back to simulate viewmodel
-	//	TF2_SetPlayerClass(client, WeaponClass[client]);
+	//	TF2_SetPlayerClass_ZR(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}

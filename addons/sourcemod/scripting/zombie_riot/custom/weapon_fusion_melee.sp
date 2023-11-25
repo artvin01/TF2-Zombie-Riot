@@ -313,10 +313,17 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Silvester Shares His Power");	
 					float flPos[3];
 					float flAng[3];
-					GetAttachment(client, "head", flPos, flAng);
-					flPos[2] += 10.0;
-					int particle_halo = ParticleEffectAt(flPos, "unusual_symbols_parent_lightning", 10.0);
-					SetParent(client, particle_halo, "head");
+					int viewmodelModel;
+					viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+					if(!IsValidEntity(viewmodelModel))
+					{
+						GetAttachment(viewmodelModel, "head", flPos, flAng);
+						flPos[2] += 10.0;
+						int particle_halo = ParticleEffectAt(flPos, "unusual_symbols_parent_lightning", 10.0);
+						AddEntityToThirdPersonTransitMode(client, particle_halo);
+						SetParent(viewmodelModel, particle_halo, "head");
+					}
 					maxhealth = RoundToCeil(float(maxhealth) * 1.05);
 					ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
 					ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
@@ -650,9 +657,9 @@ void FusionWeaponEffectPap0(int owner, int client, int Wearable, char[] attachme
 	SetParent(Wearable, particle_1, attachment,_);
 
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 	
 
 	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -701,13 +708,13 @@ void FusionWeaponEffectPap1(int owner, int client, int Wearable, char[] attachme
 	SetParent(Wearable, particle_1, attachment,_);
 
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 
-	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 	
 
 	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -765,13 +772,13 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	SetParent(Wearable, particle_1, attachment,_);
 
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 
-	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 	
 
 	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -808,11 +815,11 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	green = 255;
 	blue = 255;
 
-	int Laser_1_l = ConnectWithBeamClient(particle_2_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2_l = ConnectWithBeamClient(particle_3_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3_l = ConnectWithBeamClient(particle_2_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_4_l = ConnectWithBeamClient(particle_3_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_5_l = ConnectWithBeamClient(particle_4_l, particle_5_l, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1_l = ConnectWithBeamClient(particle_2_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2_l = ConnectWithBeamClient(particle_3_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3_l = ConnectWithBeamClient(particle_2_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_4_l = ConnectWithBeamClient(particle_3_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_5_l = ConnectWithBeamClient(particle_4_l, particle_5_l, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, owner);
 
 	SetParent(particle_1_l, particle_2_l, "",_, true);
 
@@ -869,13 +876,13 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	SetParent(Wearable, particle_1, attachment,_);
 
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 
-	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_1_1 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2_1 = ConnectWithBeamClient(particle_3_1, particle_4_1, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3_1 = ConnectWithBeamClient(particle_4_1, particle_5_1, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, owner);
 	
 
 	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -912,11 +919,11 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	green = 255;
 	blue = 125;
 
-	int Laser_1_l = ConnectWithBeamClient(particle_2_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_2_l = ConnectWithBeamClient(particle_3_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_3_l = ConnectWithBeamClient(particle_2_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_4_l = ConnectWithBeamClient(particle_3_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
-	int Laser_5_l = ConnectWithBeamClient(particle_4_l, particle_5_l, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM, client);
+	int Laser_1_l = ConnectWithBeamClient(particle_2_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2_l = ConnectWithBeamClient(particle_3_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3_l = ConnectWithBeamClient(particle_2_l, particle_5_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_4_l = ConnectWithBeamClient(particle_3_l, particle_4_l, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_5_l = ConnectWithBeamClient(particle_4_l, particle_5_l, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM, owner);
 
 	SetParent(particle_1_l, particle_2_l, "",_, true);
 

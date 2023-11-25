@@ -246,7 +246,7 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 			{
 				CurrentClass[client_2] = TFClass_Scout;
 			}
-			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false);
+			TF2_SetPlayerClass_ZR(client_2, CurrentClass[client_2], false, false);
 		}
 	}
 	return MRES_Ignored;
@@ -274,7 +274,7 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 					{
 						WeaponClass[client_2] = TFClass_Scout;
 					}
-					TF2_SetPlayerClass(client_2, WeaponClass[client_2], false, false);
+					TF2_SetPlayerClass_ZR(client_2, WeaponClass[client_2], false, false);
 				}
 		}
 	}
@@ -1104,7 +1104,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
-		TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+		TF2_SetPlayerClass_ZR(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
 		LagCompMovePlayersExceptYou(Compensator);
 	}
 	
@@ -1117,7 +1117,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	int Compensator = param.Get(1);
 	if(b_LagCompNPC_BlockInteral)
 	{
-		TF2_SetPlayerClass(Compensator, WeaponClass[Compensator], false, false); 
+		TF2_SetPlayerClass_ZR(Compensator, WeaponClass[Compensator], false, false); 
 	//	return MRES_Supercede;
 	}
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
@@ -1656,7 +1656,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn 
 {
 	if(IsClientInGame(client))
 	{
-		TF2_SetPlayerClass(client, TFClass_Medic, false, false);
+		TF2_SetPlayerClass_ZR(client, TFClass_Medic, false, false);
 		GetChargeEffectBeingProvided = client;
 	}
 	return MRES_Ignored;
@@ -1667,9 +1667,9 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 	if(GetChargeEffectBeingProvided)
 	{
 		#if defined NoSendProxyClass
-		TF2_SetPlayerClass(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
+		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
 		#else
-		TF2_SetPlayerClass(GetChargeEffectBeingProvided, CurrentClass[GetChargeEffectBeingProvided], false, false);
+		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, CurrentClass[GetChargeEffectBeingProvided], false, false);
 		#endif
 		GetChargeEffectBeingProvided = 0;
 	}
@@ -1730,19 +1730,29 @@ public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam
 }
 #endif
 
+bool WasMedicPreRegen[MAXTF2PLAYERS];
+
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
 {
 	if(TF2_GetPlayerClass(client) == TFClass_Medic)
-		TF2_SetPlayerClass(client, TFClass_Unknown, false, false);
+	{
+		WasMedicPreRegen[client] = true;
+		TF2_SetPlayerClass_ZR(client, TFClass_Scout, false, false);
+	}
+	else
+	{
+		WasMedicPreRegen[client] = false;
+	}
 
 	return MRES_Ignored;
 }
 
 public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 {
-	if(TF2_GetPlayerClass(client) == TFClass_Unknown)
-		TF2_SetPlayerClass(client, TFClass_Medic, false, false);
-
+	if(WasMedicPreRegen[client])
+		TF2_SetPlayerClass_ZR(client, TFClass_Medic, false, false);
+		
+	WasMedicPreRegen[client] = false;
 	return MRES_Ignored;
 }
 
@@ -1817,7 +1827,7 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 	TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
 	if(class != TFClass_Unknown)
 	{
-		TF2_SetPlayerClass(client, class, false, false);
+		TF2_SetPlayerClass_ZR(client, class, false, false);
 	}
 
 	return MRES_Ignored;
@@ -1827,9 +1837,9 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 {
 	//Set class back to what it was
 	#if defined NoSendProxyClass
-	TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	#else
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 	#endif
 	return MRES_Ignored;
 }
@@ -2098,14 +2108,14 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
 {
 	PrintToChatAll("%f DHookGiveDefaultItems_Pre::%d", GetEngineTime(), CurrentClass[client]);
-	//TF2_SetPlayerClass(client, CurrentClass[client]);
+	//TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
 
 public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams) 
 {
 	PrintToChatAll("%f DHookGiveDefaultItems_Post::%d", GetEngineTime(), WeaponClass[client]);
-	//TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+	//TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
 }
 */
@@ -2117,7 +2127,7 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 	{
 		CurrentClass[client] = TFClass_Scout;
 	}
-	TF2_SetPlayerClass(client, CurrentClass[client]);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
 

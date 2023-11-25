@@ -278,6 +278,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					fl_Yamato_Motivation[client] -= YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN;	//blocks gain on hit.

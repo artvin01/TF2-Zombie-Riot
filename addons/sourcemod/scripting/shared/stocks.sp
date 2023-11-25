@@ -651,7 +651,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-	TF2_SetPlayerClass(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
+	TF2_SetPlayerClass_ZR(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
@@ -695,7 +695,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
-	TF2_SetPlayerClass(client, CurrentClass[client], _, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 	return entity;
 }
 //										 info.Attribs, info.Value, info.Attribs);
@@ -2305,7 +2305,7 @@ stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 		Attributes_Set(entity, 292, 3.0);
 		Attributes_Set(entity, 293, 59.0);
 		Attributes_Set(entity, 495, 60.0); //Kill eater score shit, i dont know.
-	//	TF2_SetPlayerClass(client, TFClass_Engineer);
+	//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 		return entity;
 	}	
 	return -1;
@@ -3239,10 +3239,11 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	playerPos[0] = pack.ReadFloat();
 	playerPos[1] = pack.ReadFloat();
 	playerPos[2] = pack.ReadFloat();
+	int damage_type_Custom = pack.ReadCell();
 	
 	if(IsValidEntity(Victim) && IsValidEntity(client) && IsValidEntity(weapon) && IsValidEntity(inflictor))
 	{
-		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos);
+		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos, _,damage_type_Custom);
 	}
 
 //	pack.delete;
@@ -3994,6 +3995,10 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 {
 	if(client > 0 && client <= MaxClients)
 	{
+		if(b_FirstPersonUsesWorldModel[client])
+		{
+			return Plugin_Continue;
+		}
 		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
 		if(owner == client)
 		{

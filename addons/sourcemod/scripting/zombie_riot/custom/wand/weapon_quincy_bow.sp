@@ -1272,6 +1272,7 @@ static void Penetrating_Shot(int client, float radius, float damage, float range
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					BeamWand_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;

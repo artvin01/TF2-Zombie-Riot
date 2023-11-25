@@ -148,8 +148,18 @@ public void UnderTides_ClotThink(int iNPC)
 		
 		npc.m_flNextThinkTime = gameTime + 0.1;
 
-		TeleportDiversioToRandLocation(npc.index);
-
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true);
+		switch(Decicion)
+		{
+			case 2:
+			{
+				return; //Retry, This can infinitly loop, yes, however, we have to.
+			}
+			case 3:
+			{
+				//todo code on what to do if random teleport is disabled
+			}
+		}
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.Anger = false;

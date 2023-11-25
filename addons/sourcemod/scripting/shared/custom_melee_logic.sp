@@ -206,7 +206,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			}
 			case WEAPON_IMPACT_LANCE:
 			{
-				enemies_hit_aoe = Wand_Impact_Lance_Multi_Hit(client, weapon, CustomMeleeRange, CustomMeleeWide);
+				Wand_Impact_Lance_Multi_Hit(client, CustomMeleeRange, CustomMeleeWide);
 			}
 		}	
 	}
