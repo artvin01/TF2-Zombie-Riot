@@ -2132,7 +2132,12 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public void Update_Ammo(int  client)
 {
+#if defined ZR
 	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+#endif
+#if defined RPG
+	if(IsValidClient(client))
+#endif
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
