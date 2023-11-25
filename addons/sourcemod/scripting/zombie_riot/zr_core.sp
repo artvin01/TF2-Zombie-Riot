@@ -440,7 +440,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
 #include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
-//#include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
+#include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 
 void ZR_PluginLoad()
