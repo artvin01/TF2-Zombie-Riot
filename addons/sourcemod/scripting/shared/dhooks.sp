@@ -1730,19 +1730,29 @@ public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam
 }
 #endif
 
+bool WasMedicPreRegen[MAXTF2PLAYERS];
+
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
 {
 	if(TF2_GetPlayerClass(client) == TFClass_Medic)
-		TF2_SetPlayerClass_ZR(client, TFClass_Unknown, false, false);
+	{
+		WasMedicPreRegen[client] = true;
+		TF2_SetPlayerClass_ZR(client, TFClass_Scout, false, false);
+	}
+	else
+	{
+		WasMedicPreRegen[client] = false;
+	}
 
 	return MRES_Ignored;
 }
 
 public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 {
-	if(TF2_GetPlayerClass(client) == TFClass_Unknown)
+	if(WasMedicPreRegen[client])
 		TF2_SetPlayerClass_ZR(client, TFClass_Medic, false, false);
-
+		
+	WasMedicPreRegen[client] = false;
 	return MRES_Ignored;
 }
 
