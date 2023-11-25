@@ -2313,7 +2313,7 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: ★✬☆☆☆"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: ★✬☆☆☆"
 	}
 	"Spike Shield Desc"
 	{
@@ -2321,7 +2321,7 @@
 	}
 	"Leaf Shield Desc"
 	{
-		"en"	"A shield that was born - Parrying heals you.\nDefence rating: ★★★☆☆"
+		"en"	"A shield that was born - Healing comes back faster after taking damage.\nDefence rating: ★★★☆☆"
 	}
 	"Rookie Shield Desc"
 	{
@@ -2333,7 +2333,7 @@
 	}
 	"Rampart Desc"
 	{
-		"en"	"An abomination, given life. You can feel it's breath - Parrying gives you additional, but temporary max HP.\nDefence rating: ★★★★★"
+		"en"	"An abomination, given life. You can feel it's breath - Parrying heals you for 5% of your HP.\nDefence rating: ★★★★★"
 	}
 	"Cudgel Desc"
 	{
