@@ -3239,10 +3239,11 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	playerPos[0] = pack.ReadFloat();
 	playerPos[1] = pack.ReadFloat();
 	playerPos[2] = pack.ReadFloat();
+	int damage_type_Custom = pack.ReadCell();
 	
 	if(IsValidEntity(Victim) && IsValidEntity(client) && IsValidEntity(weapon) && IsValidEntity(inflictor))
 	{
-		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos);
+		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos, _,damage_type_Custom);
 	}
 
 //	pack.delete;

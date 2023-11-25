@@ -661,6 +661,7 @@ static void Beam_Wand_Laser_Attack(int client, float endVec_2[3], int num, float
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
 					
