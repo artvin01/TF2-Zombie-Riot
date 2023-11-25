@@ -79,6 +79,7 @@ enum struct ItemInfo
 	int BackstabHealPerTick;
 	int BackstabHealTicks;
 	bool BackstabLaugh;
+	bool NoRefundWanted;
 	float BackstabDmgPentalty;
 	
 	Function FuncAttack;
@@ -184,6 +185,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sbackstab_laugh", prefix);
 		this.BackstabLaugh		= view_as<bool>(kv.GetNum(buffer, 0));
+
+		Format(buffer, sizeof(buffer), "%sno_refund_allowed", prefix);
+		this.NoRefundWanted = view_as<bool>(kv.GetNum(buffer));
 
 		//Format(buffer, sizeof(buffer), "%ssniperfix", prefix);
 		//this.SniperBugged = view_as<bool>(kv.GetNum(buffer));
@@ -1711,6 +1715,10 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					}
 					item.RogueBoughtRecently[client] += 1;
 					item.BuyWave[client] = Rogue_GetRoundScale();
+					if(info.NoRefundWanted)
+					{
+						item.BuyWave[client] = -1;
+					}
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
@@ -3180,7 +3188,6 @@ public void MenuPage(int client, int section)
 				}
 			}
 		}*/
-		
 		if(NPCOnly[client] == 2 || NPCOnly[client] == 3)
 		{
 			if(item.ItemInfos)
@@ -3192,7 +3199,6 @@ public void MenuPage(int client, int section)
 				{
 					ItemCost(client, item, info.Cost);
 					FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost - npcwallet);
-					
 					if(item.NPCSeller_First)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s", buffer, "{$$}");
@@ -3218,7 +3224,8 @@ public void MenuPage(int client, int section)
 			item.GetItemInfo(0, info);
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
-			menu.AddItem(info.Classname, TranslateItemName(client, item.Name, info.Custom_Name));
+			//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
+			menu.AddItem(info.Classname, TranslateItemName(client, item.Name, ""));
 			found = true;
 		}
 		else
@@ -3337,7 +3344,6 @@ public void MenuPage(int client, int section)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s {$}", buffer);
 				}
-				
 				menu.AddItem(info.Classname, buffer, style);
 				found = true;
 			}
@@ -3923,6 +3929,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.RogueBoughtRecently[client] += 1;
 									item.Sell[client] = ItemSell(base, info.Cost);
 									item.BuyWave[client] = Rogue_GetRoundScale();
+									if(info.NoRefundWanted)
+									{
+										item.BuyWave[client] = -1;
+									}
 									item.Equipped[client] = false;
 
 									if(!item.BoughtBefore[client])
@@ -3968,7 +3978,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
 								item.BuyWave[client] = Rogue_GetRoundScale();
-
+								if(info.NoRefundWanted)
+								{
+									item.BuyWave[client] = -1;
+								}
 								if(!item.BoughtBefore[client])
 								{
 									item.BoughtBefore[client] = true;
