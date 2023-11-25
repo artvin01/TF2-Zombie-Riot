@@ -5725,6 +5725,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
+		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_Judge(client, entity);

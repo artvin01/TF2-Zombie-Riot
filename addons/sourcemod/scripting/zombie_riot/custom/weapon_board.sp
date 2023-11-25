@@ -12,13 +12,22 @@ static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
 static int ParryCounter = 0;
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
+static Handle HealPurgatory_timer[MAXPLAYERS+1];
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
+
+static bool BlockHealEasy;
+
+
+//this code makes me sad
 
 void WeaponBoard_Precache()
 {
 	PrecacheSound("weapons/air_burster_explode1.wav");
 	Zero(f_ParryDuration);
 	Zero2(f_BoardReflectCooldown);
+	Zero(HealPurgatory_timer);
+	Zero(h_TimerWeaponBoardManagement);
+	Zero(f_WeaponBoardhuddelay);
 }
 
 void Board_EntityCreated(int entity) 
@@ -56,19 +65,13 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 	if (Board_Ability_1[victim] == true)
 	{
 		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
-		if (MaxHealth > 1500.0)
+		if (MaxHealth > 2000.0)
 		{
-			MaxHealth = 1500.0;
+			MaxHealth = 2000.0;
 		}
-		if (Board_Level[victim] == 2)
+		if (Board_Level[victim] == 5)
 		{
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.004, 5);
-			Board_Ability_1[victim] = false;
-		}
-		else if (Board_Level[victim] == 5)
-		{
-			ApplyTempAttrib(victim, 26, 1.14, 4.3);
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.004, 5);
+			StartHealingTimer(victim, 0.1, MaxHealth * 0.01, 5);
 			Board_Ability_1[victim] = false;
 		}
 		else if(Board_Level[victim] == 4)
@@ -317,37 +320,53 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
 }
+
+public Action HealPurgatory(Handle cut_timer, int client)
+{
+	HealPurgatory_timer[client] = null;
+	BlockHealEasy = false;
+	return Plugin_Handled;
+}
+
 //stuff that gets activated upon taking any damage
 public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
+	BlockHealEasy = true;
+	delete HealPurgatory_timer[victim];
 	if (f_ParryDuration[victim] > GetGameTime())
 	{
 		if(Board_Level[victim] == 1)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		}
 		else if(Board_Level[victim] == 2)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
 			SwagMeter(victim, weapon);
 		}
 		else if(Board_Level[victim] == 3)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		}
 		else if(Board_Level[victim] == 4)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 			SwagMeter(victim, weapon);
 		}
 		else if(Board_Level[victim] == 5)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
 			SwagMeter(victim, weapon);
 		}
 		else if(Board_Level[victim] == 6)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 			float time = GetGameTime() + 3.95;
 			if(f_CudgelDebuff[attacker] <= time)
 				f_CudgelDebuff[attacker] = time;
@@ -355,6 +374,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		else if(Board_Level[victim] == 0)
 		{
 			Board_Hits[victim] += 1;
+			HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		}
 		
 		if(f_AniSoundSpam[victim] < GetGameTime())
@@ -443,7 +463,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			}
 			default:
 			{
-				return damage * 0.7;
+				return damage * 0.5;
 			}
 		}
 
@@ -451,36 +471,43 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	else if(Board_Level[victim] == 0) //board
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 1) //spike
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.95;
 	}
 	else if(Board_Level[victim] == 2) //leaf
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
 		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 3) //rookie
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 4) //punish
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.85;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(5.0, HealPurgatory, victim);
 		return damage * 0.75;
 	}
 	else if(Board_Level[victim] == 6) //the last one cudgel
 	{
 		//PrintToChatAll("damage resist");
+		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
 		return damage * 0.8;
 	}
 	else
@@ -498,7 +525,17 @@ public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
+			if(BlockHealEasy == false)
+			{
+				PassiveBoardHeal(client);
+			}
 			StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
+		}
+		else
+		{
+			BlockHealEasy = true;
+			delete HealPurgatory_timer[client];
+			HealPurgatory_timer[client] = CreateTimer(5.0, HealPurgatory, client);
 		}
 	}
 }
@@ -621,19 +658,44 @@ public void Weapon_BoardHolster(int client)
 
 void PlayParrySoundBoard(int client)
 {
-	switch(GetRandomInt(1,3))
+	float wait;
+	if (wait < GetGameTime())
 	{
-		case 1:
+		wait == GetGameTime() + 1.5;
+		switch(GetRandomInt(1,3))
 		{
-			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh1.wav");
+			case 1:
+			{
+				ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh1.wav");
+			}
+			case 2:
+			{
+				ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh2.wav");
+			}
+			case 3:
+			{
+				ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh3.wav");
+			}
 		}
-		case 2:
+	}
+}
+
+public void PassiveBoardHeal(int client)
+{
+	float MaxHealth = float(SDKCall_GetMaxHealth(client));
+	if (MaxHealth > 2000.0)
+	{
+		MaxHealth = 2000.0;
+	}
+	switch(Board_Level[client])
+	{
+		case 1, 4:
 		{
-			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh2.wav");
+			StartHealingTimer(client, 0.0, MaxHealth * 0.005, 5);
 		}
-		case 3:
+		default:
 		{
-			ClientCommand(client, "playgamesound weapons/demo_charge_hit_flesh3.wav");
+			StartHealingTimer(client, 0.0, MaxHealth * 0.01, 5);
 		}
 	}
 }
