@@ -8,6 +8,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 #define IMPACT_WAND_PARTICLE_LANCE_BOOM2 "weapons/air_burster_explode2.wav"
 #define IMPACT_WAND_PARTICLE_LANCE_BOOM3 "weapons/air_burster_explode3.wav"
 
+static char gExplosive1;
 
 public void Wand_Impact_Lance_Mapstart()
 {
@@ -147,6 +148,10 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 
 			EmitSoundToAll(IMPACT_WAND_PARTICLE_LANCE_BOOM, client, SNDCHAN_STATIC, 90, _, 0.6);
 			EmitSoundToAll(IMPACT_WAND_PARTICLE_LANCE_BOOM, client, SNDCHAN_STATIC, 90, _, 0.6);
+
+			TE_SetupExplosion(SpawnLoc, gExplosive1, 10.0, 1, 0, 0, 0);
+			TE_SendToAll();
+
 			switch(GetRandomInt(1,3))
 			{
 				case 1:
@@ -159,7 +164,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 
 			i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
 		
-			float damage = 500.0;
+			float damage = 250.0;
 			
 			damage *=Attributes_Get(weapon, 410, 1.0);
 
