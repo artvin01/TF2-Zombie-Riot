@@ -138,11 +138,11 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 			}
 		}
 	}
-
+	
 	if(b_NpcIsInvulnerable[npc.index])
 	{
 		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
-		if(entity == INVALID_ENT_REFERENCE || b_NpcIsInvulnerable[entity])
+		if(entity == INVALID_ENT_REFERENCE || !IsValidEntity(entity) || b_NpcIsInvulnerable[entity])
 		{
 			SmiteNpcToDeath(npc.index);
 			return;

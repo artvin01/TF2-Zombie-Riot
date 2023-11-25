@@ -942,7 +942,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	bool GuranteedGib = false;
 	if((i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
 	{
-		return Plugin_Changed;
+		npcBase.m_bGib = true;
+		return Plugin_Continue;
 	}
 
 #if defined ZR

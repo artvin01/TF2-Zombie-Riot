@@ -9036,6 +9036,7 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 stock void SmiteNpcToDeath(int entity)
 {
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
+	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_SLASH, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 
 void MapStartResetNpc()
