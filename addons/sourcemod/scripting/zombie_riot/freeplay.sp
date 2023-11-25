@@ -30,7 +30,7 @@ void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = 10;
+	EnemyChance = 8;
 	EnemyCount = 5;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
@@ -63,7 +63,7 @@ int Freeplay_EnemyCount()
 
 bool Freeplay_ShouldAddEnemy()
 {
-	return !(GetURandomInt() % EnemyChance);
+	return !(GetURandomInt() % (EnemyChance + GetRandomInt(0,7)));
 }
 
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
@@ -115,7 +115,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else
 	{
 		if(enemy.Health)
-			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.0125)));
+			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.0090)));
 		
 		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01));
 
