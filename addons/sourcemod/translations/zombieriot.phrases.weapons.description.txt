@@ -2521,15 +2521,15 @@
 	}
 	"Impact Lance Desc 1"
 	{
-		"en"	"A Magic Lance, has the ability to hit multiple enemies\nHas a longer reach\nHowever its width lower"
+		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"The Lance can hit more targets\nLarger range\nSlightly more melee width"
+		"en"	"Larger range\nSlightly more melee width\nHigher Mana Cost"
 	}
 	"Impact Lance Desc 3"
 	{
-		"en"	"The Lance can hit more targets\nYou have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\nLarger range\nSlightly more melee width"
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\nLarger range\nSlightly more melee width\nHigher Mana Cost"
 	}
 	"Impact Lance Desc 4"
 	{

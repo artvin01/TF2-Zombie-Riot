@@ -18,10 +18,8 @@ public void Wand_Impact_Lance_Mapstart()
 	PrecacheSound(IMPACT_WAND_PARTICLE_LANCE_BOOM3);
 }
 
-public int Wand_Impact_Lance_Multi_Hit(int client, int weapon, float &CustomMeleeRange, float &CustomMeleeWide)
+public void Wand_Impact_Lance_Multi_Hit(int client, float &CustomMeleeRange, float &CustomMeleeWide)
 {
-	int base = 2;
-
 	CustomMeleeRange = 75.0;
 	CustomMeleeWide = 10.0;
 
@@ -29,27 +27,23 @@ public int Wand_Impact_Lance_Multi_Hit(int client, int weapon, float &CustomMele
 	{
 		case 0:
 		{
-			base = 3;
+			
 		}
 		case 1:
 		{
-			base= 4;
 			CustomMeleeRange +=15.0;
 		}
 		case 2:
 		{
-			base= 5;
 			CustomMeleeRange +=25.0;
 			CustomMeleeWide +=2.0;
 		}
 		case 3:
 		{
-			base= 6;
-			CustomMeleeRange +=30.0;
+			CustomMeleeRange +=45.0;
 			CustomMeleeWide +=5.0;
 		}
 	}
-	return base;
 }
 
 
