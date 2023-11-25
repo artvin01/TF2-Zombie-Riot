@@ -57,7 +57,7 @@ void SeaMelee_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE)
 	{
-		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 861, 0.0));
+		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 	}
 }
 

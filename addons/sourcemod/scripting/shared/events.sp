@@ -181,7 +181,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 		if(b_IsPlayerNiko[client])
 		{
@@ -428,7 +428,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));

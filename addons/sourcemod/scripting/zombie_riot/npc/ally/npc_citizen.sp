@@ -2808,8 +2808,8 @@ public void Citizen_ClotThink(int iNPC)
 						AcceptEntityInput(npc.m_iWearable1, "Disable");
 				}
 			}
-
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			if(IsValidEntity(npc.m_iTargetAlly))
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -2848,8 +2848,8 @@ public void Citizen_ClotThink(int iNPC)
 						AcceptEntityInput(npc.m_iWearable1, "Disable");
 				}
 			}
-			
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			if(IsValidEntity(npc.m_iTargetAlly))
+				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();

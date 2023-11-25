@@ -11,7 +11,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71:
+		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122:
 		{
 			return true;
 		}

@@ -4650,7 +4650,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		return; //STOP. BAD!
 	}
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 	int entity = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(entity != -1 && GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex") == 28)
@@ -4902,11 +4902,11 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	CheckMultiSlots(client);
 	
 //	Spawn_Buildable(client);
-//	TF2_SetPlayerClass(client, TFClass_Engineer, true, false);
+//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer, true, false);
 	/*
 	if(entity > MaxClients)
 	{
-		TF2_SetPlayerClass(client, TFClass_Engineer);
+		TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 	}
 	*/
 #if defined ZR

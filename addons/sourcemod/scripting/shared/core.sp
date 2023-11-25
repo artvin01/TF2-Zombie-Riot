@@ -284,8 +284,8 @@ int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
 
-TFClassType CurrentClass[MAXTF2PLAYERS];
-TFClassType WeaponClass[MAXTF2PLAYERS];
+TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
+TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
@@ -567,6 +567,7 @@ Function EntityFuncReload4[MAXENTITIES];
 int i_assist_heal_player[MAXENTITIES];
 float f_assist_heal_player_time[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
+bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 
 #if defined RPG
@@ -1656,6 +1657,7 @@ public void OnClientPutInServer(int client)
 #endif
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
+	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 	
 }
 
@@ -3312,6 +3314,11 @@ public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult res
 	if(result == ConVarQuery_Okay)
 		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
 }
+public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		b_FirstPersonUsesWorldModel[client] = view_as<bool>(StringToInt(cvarValue));
+}
 
 public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
@@ -3420,4 +3427,12 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
 	}
 	return Plugin_Continue;
+}
+
+void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true, bool persistent=true)
+{
+	if(classType < TFClass_Scout || classType > TFClass_Engineer)
+		classType = TFClass_Medic;
+	
+	TF2_SetPlayerClass(client, classType, weapons, persistent);
 }

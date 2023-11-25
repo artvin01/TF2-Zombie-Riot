@@ -45,11 +45,11 @@ void Flagellant_Enable(int client, int weapon)
 	{
 		case WEAPON_FLAGELLANT_MELEE:
 		{
-			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 861, 0.0));
+			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 		}
 		case WEAPON_FLAGELLANT_HEAL:
 		{
-			HealLevel[client] = RoundFloat(Attributes_Get(weapon, 861, 0.0));
+			HealLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 			
 			DataPack pack;
 			CreateDataTimer(0.1, Flagellant_HealerTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
