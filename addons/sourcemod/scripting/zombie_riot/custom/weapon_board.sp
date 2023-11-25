@@ -15,7 +15,7 @@ Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
 static Handle HealPurgatory_timer[MAXPLAYERS+1];
 static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
-static bool BlockHealEasy;
+static bool BlockHealEasy[MAXPLAYERS+1];
 
 
 //this code makes me sad
@@ -324,14 +324,14 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 public Action HealPurgatory(Handle cut_timer, int client)
 {
 	HealPurgatory_timer[client] = null;
-	BlockHealEasy = false;
+	BlockHealEasy[client] = false;
 	return Plugin_Handled;
 }
 
 //stuff that gets activated upon taking any damage
 public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
-	BlockHealEasy = true;
+	BlockHealEasy[victim] = true;
 	delete HealPurgatory_timer[victim];
 	if (f_ParryDuration[victim] > GetGameTime())
 	{
@@ -508,7 +508,7 @@ public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			if(BlockHealEasy == false)
+			if(BlockHealEasy[client] == false)
 			{
 				PassiveBoardHeal(client);
 			}
@@ -516,7 +516,7 @@ public void WeaponBoard_Cooldown_Logic(int client, int weapon)
 		}
 		else
 		{
-			BlockHealEasy = true;
+			BlockHealEasy[client] = true;
 			delete HealPurgatory_timer[client];
 			HealPurgatory_timer[client] = CreateTimer(5.0, HealPurgatory, client);
 		}
