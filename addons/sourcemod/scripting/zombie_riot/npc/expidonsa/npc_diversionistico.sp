@@ -408,10 +408,10 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-void TeleportDiversioToRandLocation(int iNPC)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false)
 {
 	if(zr_disablerandomvillagerspawn.BoolValue)
-		return;
+		return 3;
 	
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
 	for( int loop = 1; loop <= 500; loop++ ) 
@@ -451,6 +451,9 @@ void TeleportDiversioToRandLocation(int iNPC)
 		if(WasTooFarAway >= PlayersCount) //they arent even near to being close to anyone.
 			continue;
 
+		if(RespectOutOfBounds && IsPointOutsideMap(AproxRandomSpaceToWalkTo))
+			continue;
+
 		AproxRandomSpaceToWalkTo[2] += 20.0;
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
@@ -475,9 +478,11 @@ void TeleportDiversioToRandLocation(int iNPC)
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
+		return 1;
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
 		break;
 	}
+	return 2;
 }
 
 float[] GetBehindTarget(int target, float Distance, float origin[3])
