@@ -2167,7 +2167,19 @@ int Rogue_GetWave()	// Waves_GetWave()
 
 int Rogue_GetRoundScale()
 {
-	return Rogue_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
+	if(Waves_InFreeplay())
+	{
+		int RoundGive = CurrentRound;
+		if(RoundGive < 60)
+		{
+			RoundGive = 60; //should atleast always be treated as round 60.
+		}
+		return RoundGive;
+	}
+	else
+	{
+		return Rogue_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
+	}
 }
 
 void Rogue_AddExtraStage(int count)

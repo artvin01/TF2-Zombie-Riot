@@ -30,7 +30,7 @@ void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = 5;
+	EnemyChance = 10;
 	EnemyCount = 5;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
@@ -79,17 +79,27 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 2:
 			{
 				enemy.Index = RAIDMODE_BLITZKRIEG;
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound()) * MultiGlobal);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			case 3:
 			{
 				enemy.Index = XENO_RAIDBOSS_SILVESTER;
-				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(Waves_GetRound()) * MultiGlobal);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+			}
+			case 4:
+			{
+				enemy.Index = RAIDMODE_GOD_ARKANTOS;
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+			}
+			case 5:
+			{
+				enemy.Index = RAIDMODE_EXPIDONSA_SENSAL;
+				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			default:
 			{
 				enemy.Index = RAIDMODE_TRUE_FUSION_WARRIOR;
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(Waves_GetRound()) * MultiGlobal);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 		}
 
@@ -195,7 +205,7 @@ void Freeplay_SpawnEnemy(int entity)
 		case 3:
 		{
 			bool camo = true;
-			Building_CamoOrRegrowBlocker(camo, camo);
+			Building_CamoOrRegrowBlocker(entity, camo);
 			if(camo)
 			{
 				b_IsCamoNPC[entity] = true;
@@ -228,7 +238,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 44;
+		rand = GetURandomInt() % 48;
 	
 	char message[128];
 	switch(rand)
@@ -415,7 +425,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Juggernog");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Juggernog, And thus gain resistance.");
 			PerkMachine = 1;
 		}
 		case 24:
@@ -426,7 +436,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Deadshot Daiquiri");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Deadshot Daiquiri, And thus gain Extra Damage.");
 			PerkMachine = 2;
 		}
 		case 25:
@@ -437,7 +447,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Double Tap");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Double Tap, And thus gain Extra Damage.");
 			PerkMachine = 2;
 		}
 		case 26:
@@ -448,7 +458,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Widows Wine");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Widows Wine, And thus gain camo.");
 			PerkMachine = 3;
 		}
 		case 27:
@@ -459,7 +469,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Speed Cola");
+			strcopy(message, sizeof(message), "{red}All enemies are now using the perk Speed Cola, and thus cannot be slowed.");
 			PerkMachine = 4;
 		}
 		case 28:
@@ -470,7 +480,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{green}All enemies are now using the perk Quick Revive");
+			strcopy(message, sizeof(message), "{green}All enemies are now using the perk Quick Revive, this is useless and makes them lose perks.");
 			PerkMachine = 0;
 		}
 		case 29:
@@ -587,6 +597,26 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			strcopy(message, sizeof(message), "{green}The next 300 enemies gain Cudgel debuff");
 			CudgelDebuff += 300;
+		}
+		case 45:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be BlitzKrieg");
+			RaidFight = 2;
+		}
+		case 46:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Silvester And Goggles!");
+			RaidFight = 3;
+		}
+		case 47:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be God Arkantos!");
+			RaidFight = 4;
+		}
+		case 48:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Sensal!");
+			RaidFight = 5;
 		}
 		default:
 		{

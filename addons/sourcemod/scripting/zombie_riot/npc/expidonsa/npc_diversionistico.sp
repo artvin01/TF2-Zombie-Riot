@@ -478,9 +478,8 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false)
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
-		return 1;
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
-		break;
+		return 1;
 	}
 	return 2;
 }
