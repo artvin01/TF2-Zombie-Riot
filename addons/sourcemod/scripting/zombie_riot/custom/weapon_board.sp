@@ -691,11 +691,11 @@ public void PassiveBoardHeal(int client)
 	{
 		case 1, 4:
 		{
-			StartHealingTimer(client, 0.0, MaxHealth * 0.005, 5);
+			StartHealingTimer(client, 0.0, MaxHealth * 0.01, 1);
 		}
 		default:
 		{
-			StartHealingTimer(client, 0.0, MaxHealth * 0.01, 5);
+			StartHealingTimer(client, 0.0, MaxHealth * 0.01, 3);
 		}
 	}
 }
