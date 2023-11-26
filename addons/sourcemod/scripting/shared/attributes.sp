@@ -7,7 +7,7 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733, 309: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527: //gibs on hit
 		{
 			return true;
 		}
@@ -18,41 +18,6 @@ bool Attribute_ServerSide(int attribute)
 	}
 	return false;
 }
-/*
-bool Attribute_ClientSide(int attribute)
-{
-	switch(attribute)
-	{
-		case 1,2,3,4,5,6,26,96,97,303,298,49,252,201,
-		396,116,821,128,231,263,264,54,47,41,45,
-		353,107,465,464,740,169,314,178,287:
-		{
-			return true;
-		}
-		
-			This includes
-			damage attributes					-ingame dmg code, can be fixed though.
-			attackspeed
-			clip size
-			ammo override
-			Max ammo override
-			Reload speed
-			no doublejump
-			damage force reduction				- as its internal in tf2 too much
-			Animation speed/gesture speed
-			Buff banner type
-			No_Attack
-			provide on active
-			Medigun provide						- due to speed and stuff, vaccinator too
-			Attackrange and attack fatness		- due to clientside melee hit registration
-			speed penalty
-			Sniper charge
-			Bullets per shot
-		
-	}
-	return false;
-}
-*/
 void Attributes_EntityDestroyed(int entity)
 {
 	delete WeaponAttributes[entity];
