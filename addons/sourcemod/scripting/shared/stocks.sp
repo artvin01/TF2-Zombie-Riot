@@ -117,8 +117,8 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 		{
 			ActivateEntity(particle);
 			AcceptEntityInput(particle, "start");
-			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 		}
+			SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
 		//if it has no effect name, then it should always display, as its for other reasons.
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
