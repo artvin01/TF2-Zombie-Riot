@@ -138,6 +138,7 @@ enum
 	WEAPON_STAR_SHOOTER = 67,
 	WEAPON_BOBS_GUN = 68,
 	WEAPON_IMPACT_LANCE = 69,
+	WEAPON_BUFF_BANNER = 70,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -1981,4 +1982,79 @@ void ClientSaveUber(int client)
 			}
 		}
 	}
+}
+
+void ClientSaveRageMeterStatus(int client)
+{
+	if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+		f_SaveBannerRageMeter[client][0] = 1.0;
+	else
+		f_SaveBannerRageMeter[client][0] = 0.0;
+
+	float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter");
+	f_SaveBannerRageMeter[client][1] = rage;
+}
+
+void ClientApplyRageMeterStatus(int client)
+{
+	//Must delay for a frame, it gets applied later and im way too lazy to figure out what exact function it comes after
+	//for refference, medigun for example works on this frame.
+	RequestFrame(ClientApplyRageMeterStatusDelay, EntIndexToEntRef(client));
+}
+
+void ClientApplyRageMeterStatusDelay(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+
+	bool NoBanner = true;
+	int Bufftype = 0;
+	int ie, weapon;
+	SetEntProp(client, Prop_Send, "m_bRageDraining", view_as<int>(f_SaveBannerRageMeter[client][0]));
+	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", f_SaveBannerRageMeter[client][1]);
+	while(TF2_GetItem(client, weapon, ie))
+	{
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_ANCIENT_BANNER, WEAPON_BATTILONS, WEAPON_BUFF_BANNER:
+			{
+				Bufftype = RoundToNearest(Attributes_Get(weapon, 116, 0.0));
+				NoBanner = false;
+				if(b_ArkantosBuffItem[client])
+				{
+					Attributes_Set(weapon, 319, 2.0);
+				}
+				else
+				{
+					Attributes_Set(weapon, 319, 1.0);
+				}
+			}
+		}
+	}
+	if(!NoBanner && view_as<bool>(f_SaveBannerRageMeter[client][0]))
+	{
+		Handle pack;
+		CreateDataTimer(0.1, DeployBannerIconBuff, pack, TIMER_FLAG_NO_MAPCHANGE);
+		WritePackCell(pack, GetClientUserId(client));
+		WritePackCell(pack, Bufftype);
+	}
+}
+
+public Action DeployBannerIconBuff(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	int Bufftype = pack.ReadCell();
+	if(IsValidClient(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+	{
+		if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+		{
+			Event event = CreateEvent("deploy_buff_banner", true);
+			event.SetInt("buff_type", Bufftype);
+			event.SetInt("buff_owner", GetClientUserId(client));
+			event.Fire();
+		}
+	}
+	return Plugin_Stop;
 }

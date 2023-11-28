@@ -91,6 +91,7 @@ void DHook_Setup()
 	//nosoop
 
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
+	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -177,6 +178,10 @@ public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHoo
 	return MRES_Supercede;
 }
 
+public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHook)
+{
+	return MRES_Supercede;
+}
 void OnWrenchCreated(int entity) 
 {
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
@@ -2045,6 +2050,15 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(b_ArkantosBuffItem[client])
+	{
+		Attributes_Set(entity, 319, 2.0);
+	}
+	else
+	{
+		Attributes_Set(entity, 319, 1.0);
+	}
 	return MRES_Ignored;
 }
 
@@ -2079,18 +2093,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	}
 	if(b_ArkantosBuffItem[client])
 	{
-		int r = 200;
-		int g = 200;
-		int b = 255;
-		int a = 200;
-		
-		EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
-		
-		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
-		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
-		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
-		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
-		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+		RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
 	}
 
 
@@ -2100,6 +2103,25 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	return MRES_Ignored;
 }
 
+void DelayEffectOnHorn(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+	
+	int r = 200;
+	int g = 200;
+	int b = 255;
+	int a = 200;
+	
+	EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
+	
+	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
+	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
+	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
+	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
+	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+}
 /*
 ( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
 */

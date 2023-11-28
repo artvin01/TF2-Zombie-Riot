@@ -68,6 +68,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 		Timer_Banner_Management[client] = null;
 		return Plugin_Stop;
 	}	
+	b_ClientHasAncientBanner[client] = false;
 	float BannerPos[3];
 	float targPos[3];
 	GetClientAbsOrigin(client, BannerPos);
@@ -145,6 +146,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 
 	if(f_BannerDurationActive[client] > GetGameTime())
 	{
+		b_ClientHasAncientBanner[client] = false;
 		float BannerPos[3];
 		float targPos[3];
 		GetClientAbsOrigin(client, BannerPos);
@@ -225,6 +227,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 	}	
 	if(f_BannerDurationActive[client] > GetGameTime())
 	{
+		b_ClientHasAncientBanner[client] = false;
 		float BannerPos[3];
 		float targPos[3];
 		GetClientAbsOrigin(client, BannerPos);

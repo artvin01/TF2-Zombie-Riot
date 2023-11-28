@@ -316,6 +316,7 @@ int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
+float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
@@ -1992,6 +1993,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						RequestFrame(Movetype_walk, target);
 						dieingstate[target] = 0;
 						ClientSaveUber(target);
+						ClientSaveRageMeterStatus(target);
 						
 						SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
 						f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;

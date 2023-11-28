@@ -4441,7 +4441,6 @@ void Store_ApplyAttribs(int client)
 	if(Items_HasNamedItem(client, "Arkantos's Godly assistance"))
 	{
 		b_ArkantosBuffItem[client] = true;
-		map.SetValue("319", 2.0); //Increace banner duration
 	}
 	else
 	{
@@ -4719,35 +4718,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
-	int ie;
-	while(TF2_GetItem(client, entity, ie))
-	{
-		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		switch(index)
-		{
-			case 411:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-				}
-			}
-			case 211:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-				}
-			}
-			case 998:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-				}
-			}
-		}
-	}
+	ClientSaveRageMeterStatus(client);
+	ClientSaveUber(client);
 	/*
 	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
 	if(IsValidEntity(weapon))

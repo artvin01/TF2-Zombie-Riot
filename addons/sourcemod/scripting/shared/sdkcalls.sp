@@ -217,7 +217,6 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-	
 	delete gamedata;
 }
 
@@ -329,6 +328,7 @@ int FindAttachment(int index, const char[] pAttachmentName)
 			
 	return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
 }	
+
 
 public Address GetStudioHdr(int index)
 {
@@ -480,44 +480,8 @@ void Sdkcall_Load_Lagcomp()
 
 void Manual_Impulse_101(int client, int health)
 {
-	int ie, entity;
-	while(TF2_GetItem(client, entity, ie))
-	{
-		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		switch(index)
-		{
-			case 411:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					if(f_MedigunChargeSave[client][0] == 0.0)
-					{
-						f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-					}
-				}
-			}
-			case 211:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					if(f_MedigunChargeSave[client][1] == 0.0)
-					{
-						f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-					}
-				}
-			}
-			case 998:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					if(f_MedigunChargeSave[client][2] == 0.0)
-					{
-						f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-					}
-				}
-			}
-		}
-	}
+	ClientSaveRageMeterStatus(client);
+	ClientSaveUber(client);
 
 	SetConVarInt(sv_cheats, 1, false, false);
 	
@@ -555,8 +519,7 @@ void Manual_Impulse_101(int client, int health)
 //	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
 //	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all.
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
-	
-	
+	ClientApplyRageMeterStatus(client);
 	int iea, weapon;
 	while(TF2_GetItem(client, weapon, iea))
 	{
@@ -589,7 +552,6 @@ void Manual_Impulse_101(int client, int health)
 			}
 		}
 	}
-	
 	if(health > 0)
 		SetEntityHealth(client, health);
 }

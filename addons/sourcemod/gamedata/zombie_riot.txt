@@ -4,6 +4,13 @@
 	{
 		"Signatures"
 		{
+			"CWeaponMedigun::CreateMedigunShield"
+			{
+				// find entity_medigun_shield string with more then just 1 block, the main fuction, exit that and there should only be 1 function where its contained
+				//thats it.
+				"windows"	"\x55\x8B\xEC\x51\x8B\x15\x2A\x2A\x2A\x2A\x57"
+				"linux"		"@_ZN14CWeaponMedigun19CreateMedigunShieldEv"
+			}
 			"CTFPlayerShared::RecalculatePlayerBodygroups"
 			{
 				// string aPostInventoryA, most top function.
@@ -325,6 +332,13 @@
 		}
 		"Functions"
 		{
+			"CWeaponMedigun::CreateMedigunShield"
+			{
+				"signature"	"CWeaponMedigun::CreateMedigunShield"
+				"callconv"  "thiscall"
+				"return"	"void"
+				"this"		"entity"
+			}
 			"CTFWeaponBaseMelee::DoSwingTraceInternal"
 			{
 				"signature"	"CTFWeaponBaseMelee::DoSwingTraceInternal"
