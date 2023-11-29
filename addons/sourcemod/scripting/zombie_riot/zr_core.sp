@@ -1949,9 +1949,15 @@ void PlayerApplyDefaults(int client)
     }
 }
 
+float GetClientSaveUberGametime[MAXTF2PLAYERS];
+float GetClientSaveRageGametime[MAXTF2PLAYERS];
 
 void ClientSaveUber(int client)
 {
+	if(GetClientSaveUberGametime[client] == GetGameTime())
+		return;
+
+	GetClientSaveUberGametime[client] = GetGameTime();
 	int ie;
 	int entity;
 	while(TF2_GetItem(client, entity, ie))
@@ -1984,8 +1990,48 @@ void ClientSaveUber(int client)
 	}
 }
 
+void ClientApplyMedigunUber(int client)
+{
+	int iea, weapon;
+	while(TF2_GetItem(client, weapon, iea))
+	{
+		int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
+		{
+			case 411:
+			{
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					f_MedigunChargeSave[client][0] = 0.0;
+				}
+			}
+			case 211:
+			{
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
+					f_MedigunChargeSave[client][1] = 0.0;
+				}
+			}
+			case 998:
+			{
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
+					f_MedigunChargeSave[client][2] = 0.0;
+				}
+			}
+		}
+	}
+}
 void ClientSaveRageMeterStatus(int client)
 {
+	if(GetClientSaveRageGametime[client] == GetGameTime())
+		return;
+
+	GetClientSaveRageGametime[client] = GetGameTime();
+	
 	if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
 		f_SaveBannerRageMeter[client][0] = 1.0;
 	else
