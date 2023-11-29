@@ -15,6 +15,7 @@ static int i_current_pap_projectile[MAXENTITIES];
 #define IMPACT_WAND_PARTICLE_LANCE_BOOM3 "weapons/air_burster_explode3.wav"
 
 static int g_rocket_particle;
+static char gExplosive1;
 
 public void Wand_Impact_Lance_Mapstart()
 {
@@ -404,10 +405,10 @@ public Action Impact_Lance_StartTouch(int entity, int other)
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	Explode_Logic_Custom(f_projectile_dmg[entity], client, client, weapon, pos1, 250.0);
-	FinishLagCompensation_Base_boss();	
+	FinishLagCompensation_Base_boss();
 
-	//electrocuted_red
-	TE_Particle("electrocuted_red", pos1, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_SetupExplosion(pos1, gExplosive1, 10.0, 1, 0, 0, 0);
+	TE_SendToAll();
 
 	//spawnRing_Vectors(pos1, 250.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.75, 6.0, 0.1, 1, 1.0);
 	switch(GetRandomInt(1,3))
