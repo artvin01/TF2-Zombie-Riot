@@ -629,12 +629,10 @@ stock void SetAmmo(int client, int type, int ammo)
 
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
 {
-	// TODO: THIS IS BAD PERFORMANCE
-	// We spawn a weapon, give attributes, remove attributes, give attributes
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
 	if(weapon != -1)
 	{
-		DHook_HookStripWeapon(weapon); //Thanks suza! i love my min models
+		DHook_HookStripWeapon(weapon);
 	}
 	return weapon;
 }
@@ -3907,7 +3905,6 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 
 void AddEntityToThirdPersonTransitMode(int client, int entity)
 {
-	return;
 	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
 	SDKHook(entity, SDKHook_SetTransmit, ThirdersonTransmitEnvLaser);
 }
