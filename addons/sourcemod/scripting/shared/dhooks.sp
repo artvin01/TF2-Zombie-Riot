@@ -1,6 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum struct RawHooks
+{
+	int Ref;
+	int Pre;
+	int Post;
+}
+
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
@@ -29,6 +36,11 @@ static bool Dont_Move_Allied_Npc;											//dont move buildings
 static int TeamBeforeChange;											//dont move buildings	
 
 static bool b_LagCompNPC;
+
+static DynamicHook HookItemIterateAttribute;
+static ArrayList RawEntityHooks;
+static int m_bOnlyIterateItemViewAttributes;
+static int m_Item;
 
 /*
 // Offsets from mikusch but edited
@@ -137,7 +149,11 @@ void DHook_Setup()
 		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);
 		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
 	}
-		
+
+	HookItemIterateAttribute = CreateHook(gamedata, "CEconItemView::IterateAttributes");
+
+	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
+	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
 	
 	delete gamedata;
 	
@@ -169,6 +185,63 @@ void DHook_Setup()
 		}
 	}
 	delete edictgamedata;
+}
+
+void DHook_EntityDestoryed()
+{
+	RequestFrame(DHook_EntityDestoryedFrame);
+}
+
+public void DHook_EntityDestoryedFrame()
+{
+	int length = RawEntityHooks.Length;
+	if(length)
+	{
+		RawHooks raw;
+		for(int i; i < length; i++)
+		{
+			RawEntityHooks.GetArray(i, raw);
+			if(!IsValidEntity(raw.Ref))
+			{
+				if(raw.Pre != INVALID_HOOK_ID)
+					DynamicHook.RemoveHook(raw.Pre);
+				
+				if(raw.Post != INVALID_HOOK_ID)
+					DynamicHook.RemoveHook(raw.Post);
+				
+				RawEntityHooks.Erase(i--);
+				length--;
+			}
+		}
+	}
+}
+
+void DHook_HookStripWeapon(int entity)
+{
+	if(m_Item > 0 && m_bOnlyIterateItemViewAttributes > 0)
+	{
+		Address pCEconItemView = GetEntityAddress(entity) + view_as<Address>(m_Item);
+		
+		RawHooks raw;
+		
+		raw.Ref = EntIndexToEntRef(entity);
+		raw.Pre = HookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, DHook_IterateAttributesPre);
+		raw.Post = HookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, DHook_IterateAttributesPost);
+		
+		RawEntityHooks.PushArray(raw);
+	}
+}
+
+public MRESReturn DHook_IterateAttributesPre(Address pThis, DHookParam hParams)
+{
+	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), true, NumberType_Int8);
+	return MRES_Ignored;
+}
+
+public MRESReturn DHook_IterateAttributesPost(Address pThis, DHookParam hParams)
+{
+	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
+	return MRES_Ignored;
 }
 
 //cancel melee, we have our own.

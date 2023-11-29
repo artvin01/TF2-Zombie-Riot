@@ -26,10 +26,6 @@ static Handle g_hSDKUpdateBlocked;
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
 
-static DynamicHook g_hDHookItemIterateAttribute;
-static int g_iCEconItem_m_Item;
-static int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
-
 void SDKCall_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("sm-tf2.games");
@@ -171,17 +167,6 @@ void SDKCall_Setup()
 #endif
 	
 	//from kenzzer
-	
-	int iOffset = GameConfGetOffset(gamedata, "CEconItemView::IterateAttributes");
-	g_hDHookItemIterateAttribute = new DynamicHook(iOffset, HookType_Raw, ReturnType_Void, ThisPointer_Address);
-	if (g_hDHookItemIterateAttribute == null)
-	{
-		 SetFailState("Failed to create hook CEconItemView::IterateAttributes offset from SF2 gamedata!");
-	}
-	g_hDHookItemIterateAttribute.AddParam(HookParamType_ObjectPtr);
-
-	g_iCEconItem_m_Item = FindSendPropInfo("CEconEntity", "m_Item");
-	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, g_iCEconItemView_m_bOnlyIterateItemViewAttributes);
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFWeaponBaseMelee::GetShootSound");
@@ -415,26 +400,6 @@ void UpdateBlockedNavmesh()
 {
 	SDKCall(g_hSDKUpdateBlocked);
 }	
-
-
-static MRESReturn CEconItemView_IterateAttributes(Address pThis, DHookParam hParams)
-{
-    StoreToAddress(pThis + view_as<Address>(g_iCEconItemView_m_bOnlyIterateItemViewAttributes), true, NumberType_Int8, false);
-    return MRES_Ignored;
-}
-
-static MRESReturn CEconItemView_IterateAttributes_Post(Address pThis, DHookParam hParams)
-{
-    StoreToAddress(pThis + view_as<Address>(g_iCEconItemView_m_bOnlyIterateItemViewAttributes), false, NumberType_Int8, false);
-    return MRES_Ignored;
-}
-
-stock void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, int iItemDefIndex, int iLevel, int iQuality, int iEntity)
-{
-	Address pCEconItemView = GetEntityAddress(iEntity) + view_as<Address>(g_iCEconItem_m_Item);
-	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
-	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
-}
 
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {

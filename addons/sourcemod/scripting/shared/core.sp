@@ -2946,6 +2946,8 @@ public void Delete_instantly_Laser_ball(int entity)
 
 public void OnEntityDestroyed(int entity)
 {
+	DHook_EntityDestoryed();
+	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
 		//OnEntityDestroyed_LagComp(entity);
