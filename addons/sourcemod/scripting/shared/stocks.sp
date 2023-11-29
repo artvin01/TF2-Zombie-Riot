@@ -632,9 +632,9 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	// TODO: THIS IS BAD PERFORMANCE
 	// We spawn a weapon, give attributes, remove attributes, give attributes
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
-	if(IsValidEntity(weapon))
+	if(weapon != -1)
 	{
-		HandleAttributes(weapon, attrib, value, count, index, client); //Thanks suza! i love my min models
+		DHook_HookStripWeapon(weapon); //Thanks suza! i love my min models
 	}
 	return weapon;
 }
@@ -697,86 +697,6 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 	return entity;
-}
-//										 info.Attribs, info.Value, info.Attribs);
-public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count, int index, int client)
-{
-	RemoveAllDefaultAttribsExceptStrings(weapon, index, client);
-	
-	for(int i = 0; i < count; i++) 
-	{
-		Attributes_Set(weapon, attributes[i], values[i]);
-	}
-}
-
-void RemoveAllDefaultAttribsExceptStrings(int entity, int index, int client)
-{
-	Attributes_RemoveAll(entity);
-	
-	char valueType[2];
-	char valueFormat[64];
-	
-	int currentAttrib;
-	
-	ArrayList staticAttribs = TF2Econ_GetItemStaticAttributes(GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex"));
-	char Weaponname[64];
-	GetEntityClassname(entity, Weaponname, sizeof(Weaponname));
-	TF2Items_OnGiveNamedItem_Post_SDK(client, Weaponname, index, 5, 6, entity);
-	
-	for(int i = 0; i < staticAttribs.Length; i++)
-	{
-		currentAttrib = staticAttribs.Get(i, .block = 0);
-	
-		// Probably overkill
-		if(currentAttrib == 796 || currentAttrib == 724 || currentAttrib == 817 || currentAttrib == 834 
-			|| currentAttrib == 745 || currentAttrib == 731 || currentAttrib == 746)
-			continue;
-	
-		// "stored_as_integer" is absent from the attribute schema if its type is "string".
-		// TF2ED_GetAttributeDefinitionString returns false if it can't find the given string.
-		if(!TF2Econ_GetAttributeDefinitionString(currentAttrib, "stored_as_integer", valueType, sizeof(valueType)))
-			continue;
-	
-		TF2Econ_GetAttributeDefinitionString(currentAttrib, "description_format", valueFormat, sizeof(valueFormat));
-	
-		// Since we already know what we're working with and what we're looking for, we can manually handpick
-		// the most significative chars to check if they match. Eons faster than doing StrEqual or StrContains.
-	
-		
-		if(valueFormat[9] == 'a' && valueFormat[10] == 'd') // value_is_additive & value_is_additive_percentage
-		{
-			Attributes_Set(entity, currentAttrib, 0.0);
-		}
-		else if((valueFormat[9] == 'i' && valueFormat[18] == 'p')
-			|| (valueFormat[9] == 'p' && valueFormat[10] == 'e')) // value_is_percentage & value_is_inverted_percentage
-		{
-			Attributes_Set(entity, currentAttrib, 1.0);
-		}
-		else if(valueFormat[9] == 'o' && valueFormat[10] == 'r') // value_is_or
-		{
-			Attributes_Set(entity, currentAttrib, 0.0);
-		}
-		
-		NullifySpecificAttributes(entity,currentAttrib);
-	}
-	
-	delete staticAttribs;	
-}
-
-stock void NullifySpecificAttributes(int entity, int attribute)
-{
-	switch(attribute)
-	{
-		case 781: //Is sword
-		{
-			Attributes_Set(entity, attribute, 0.0);	
-		}
-		case 128: //Provide on active
-		{
-			Attributes_Set(entity, attribute, 0.0);	
-		}
-	}
-	
 }
 
 stock void TF2_RemoveItem(int client, int weapon)

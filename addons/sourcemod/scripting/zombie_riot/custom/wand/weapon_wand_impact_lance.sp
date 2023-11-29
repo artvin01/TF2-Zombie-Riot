@@ -402,10 +402,14 @@ public Action Impact_Lance_StartTouch(int entity, int other)
 
 	pos1[2]+=25.0;
 
+	i_ExplosiveProjectileHexArray[client] = EP_DEALS_CLUB_DAMAGE;
+
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	Explode_Logic_Custom(f_projectile_dmg[entity], client, client, weapon, pos1, 250.0);
 	FinishLagCompensation_Base_boss();
+
+	pos1[2]-=30.0;
 
 	TE_SetupExplosion(pos1, gExplosive1, 10.0, 1, 0, 0, 0);
 	TE_SendToAll();
