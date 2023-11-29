@@ -833,15 +833,13 @@
 	}
 	"Survivalist Blade Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, R changes between modes of throwing 3 knives or only 1"
-		"ru"	"Увелич. урон и скорость атаки, R - переключение между режимами метания 3-х ножей или только 1"
-		"chi"   "增加伤害和攻击速度，按R在投掷3把刀和1把刀的模式之间改变"
+		"en"	"Increased damage and attackspeed\nKnifes regen faster."
 	}
 	"Survivalist Blade Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20% of your maxhealth (cant kill you)\nbut you gain a 30% faster attackspeed and 35% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
-		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20% от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30% быстрой скорости атаки и 35% сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
-		"chi"   "增加伤害和攻击速度，R给你20%最大生命值的伤害加成(不会杀死你)\n但你获得30%的攻击速度和35%的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
+		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20%% of your maxhealth (cant kill you)\nbut you gain a 30%% faster attackspeed and 35%% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
+		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20%% от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30%% быстрой скорости атаки и 35%% сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
+		"chi"   "增加伤害和攻击速度，R给你20%%最大生命值的伤害加成(不会杀死你)\n但你获得30%%的攻击速度和35%的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
 	}
 	"Kunai Desc"
 	{

@@ -139,6 +139,9 @@ enum
 	WEAPON_BOBS_GUN = 68,
 	WEAPON_IMPACT_LANCE = 69,
 	WEAPON_BUFF_BANNER = 70,
+	WEAPON_SURVIVAL_KNIFE_PAP1 = 71,
+	WEAPON_SURVIVAL_KNIFE_PAP2 = 72,
+	WEAPON_SURVIVAL_KNIFE_PAP3 = 73,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -2031,7 +2034,7 @@ void ClientSaveRageMeterStatus(int client)
 		return;
 
 	GetClientSaveRageGametime[client] = GetGameTime();
-	
+
 	if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
 		f_SaveBannerRageMeter[client][0] = 1.0;
 	else
