@@ -2525,7 +2525,7 @@
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"Larger range\nSlightly more melee width\nHigher Mana Cost"
+		"en"	"Pressing R will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\nLarger range\nSlightly more melee width\nHigher Mana Cost"
 	}
 	"Impact Lance Desc 3"
 	{
