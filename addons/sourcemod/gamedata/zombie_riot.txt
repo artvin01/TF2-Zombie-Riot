@@ -332,6 +332,20 @@
 		}
 		"Functions"
 		{
+			"CEconItemView::IterateAttributes"
+			{
+				"offset"	"CEconItemView::IterateAttributes"
+				"hooktype"	"raw"
+				"return"	"void"
+				"this"		"address"
+				"arguments"
+				{
+					"IEconItemAttributeIterator"
+					{
+						"type"	"objectptr"
+					}
+				}
+			}
 			"CWeaponMedigun::CreateMedigunShield"
 			{
 				"signature"	"CWeaponMedigun::CreateMedigunShield"
