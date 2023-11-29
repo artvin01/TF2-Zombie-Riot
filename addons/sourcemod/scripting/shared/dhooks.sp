@@ -194,23 +194,26 @@ void DHook_EntityDestoryed()
 
 public void DHook_EntityDestoryedFrame()
 {
-	int length = RawEntityHooks.Length;
-	if(length)
+	if(RawEntityHooks)
 	{
-		RawHooks raw;
-		for(int i; i < length; i++)
+		int length = RawEntityHooks.Length;
+		if(length)
 		{
-			RawEntityHooks.GetArray(i, raw);
-			if(!IsValidEntity(raw.Ref))
+			RawHooks raw;
+			for(int i; i < length; i++)
 			{
-				if(raw.Pre != INVALID_HOOK_ID)
-					DynamicHook.RemoveHook(raw.Pre);
-				
-				if(raw.Post != INVALID_HOOK_ID)
-					DynamicHook.RemoveHook(raw.Post);
-				
-				RawEntityHooks.Erase(i--);
-				length--;
+				RawEntityHooks.GetArray(i, raw);
+				if(!IsValidEntity(raw.Ref))
+				{
+					if(raw.Pre != INVALID_HOOK_ID)
+						DynamicHook.RemoveHook(raw.Pre);
+					
+					if(raw.Post != INVALID_HOOK_ID)
+						DynamicHook.RemoveHook(raw.Post);
+					
+					RawEntityHooks.Erase(i--);
+					length--;
+				}
 			}
 		}
 	}
@@ -220,6 +223,9 @@ void DHook_HookStripWeapon(int entity)
 {
 	if(m_Item > 0 && m_bOnlyIterateItemViewAttributes > 0)
 	{
+		if(!RawEntityHooks)
+			RawEntityHooks = new ArrayList(sizeof(RawHooks));
+		
 		Address pCEconItemView = GetEntityAddress(entity) + view_as<Address>(m_Item);
 		
 		RawHooks raw;
