@@ -604,6 +604,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
+		SilvesterApplyEffects(npc.index, false);
 	}
 	if(npc.m_iInKame > 0 && !NpcStats_IsEnemySilenced(npc.index))
 	{
@@ -647,7 +648,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		npc.SetPlaybackRate(0.0);	//freeze in place.
 		npc.m_flDoingSpecial = 0.0;
-		SilvesterApplyEffects(npc.index, true);
+		SilvesterApplyEffects(npc.index, false);
 	}
 
 
@@ -985,6 +986,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					{
 						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
 					}
+					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.0;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
