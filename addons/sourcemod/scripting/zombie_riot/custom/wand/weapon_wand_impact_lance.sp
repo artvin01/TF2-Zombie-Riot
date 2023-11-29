@@ -241,10 +241,15 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 
 		if (Ability_Check_Cooldown(client, slot) > 0.0)
 		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+				
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Your Lance is not ready!");
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 			return;
 		}
 		Mana_Regen_Delay[client] = GameTime + 2.5;
