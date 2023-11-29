@@ -150,7 +150,7 @@ void DHook_Setup()
 		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
 	}
 
-	HookItemIterateAttribute = CreateHook(gamedata, "CEconItemView::IterateAttributes");
+	HookItemIterateAttribute = DynamicHook.FromConf(gamedata, "CEconItemView::IterateAttributes");
 
 	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
