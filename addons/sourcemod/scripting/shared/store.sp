@@ -3562,7 +3562,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					if(Level[client] > STARTER_WEAPON_LEVEL)
 					{
 						FormatEx(buffer, sizeof(buffer), "%t", "Cherrypick Weapon");
-						menu.AddItem("-30", buffer);
+						menu2.AddItem("-30", buffer);
 					}
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
