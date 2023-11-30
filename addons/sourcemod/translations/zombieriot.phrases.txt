@@ -2933,4 +2933,21 @@
 	{
 		"en"	"You must be below half health of your max health"
 	}
+	"Cherrypick Weapon"
+	{
+		"en"	"Search Store Using Tags"
+	}
+	"Tags List"
+	{
+		"#format"	"{1:s}"
+		"en"	"Tags: {1}"
+	}
+	"Search With Tags"
+	{
+		"en"	"Search With Tags"
+	}
+	"Clear Whitelist"
+	{
+		"en"	"Clear Whitelist"
+	}
 }

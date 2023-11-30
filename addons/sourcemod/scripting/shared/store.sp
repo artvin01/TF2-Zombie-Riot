@@ -455,6 +455,7 @@ enum struct Item
 	char BuildingExistName[64];
 	bool ShouldThisCountSupportBuildings;
 	bool IgnoreSlots;
+	char Tags[256];
 	
 	ArrayList ItemInfos;
 	
@@ -523,6 +524,9 @@ static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
 //static KeyValues StoreBalanceLog;
+static ArrayList StoreTags;
+static ArrayList ChoosenTags[MAXTF2PLAYERS];
+static bool UsingChoosenTags[MAXTF2PLAYERS];
 #endif	// ZR
 
 #if defined RPG
@@ -1025,6 +1029,9 @@ int Store_GetSpecialOfSlot(int client, int slot)
 
 void Store_ConfigSetup()
 {
+	delete StoreTags;
+	StoreTags = new ArrayList(ByteCountToCells(32));
+
 	if(StoreItems)
 	{
 		Item item;
@@ -1075,6 +1082,8 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 {
 	int cost = hiddenType == 2 ? 0 : kv.GetNum("cost", -1);
 	bool isItem = cost >= 0;
+	
+	char buffer[128], buffers[6][32];
 
 	Item item;
 	item.Section = section;
@@ -1082,17 +1091,16 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 	item.Hidden = view_as<bool>(kv.GetNum("hidden", hiddenType ? 1 : 0));
 	if(whitecount || blackcount)
 	{
-		char buffer[128], buffers[32][6];
-		kv.GetString("tags", buffer, sizeof(buffer));
+		kv.GetString("filter", buffer, sizeof(buffer));
 		if(buffer[0] || isItem)
 		{
-			int tags = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			int filters = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 			
 			if(whitecount)
 			{
 				item.Hidden = true;
 				
-				for(int a; a < tags; a++)
+				for(int a; a < filters; a++)
 				{
 					for(int b; b < whitecount; b++)
 					{
@@ -1110,7 +1118,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 			
 			if(blackcount)
 			{
-				for(int a; a < tags; a++)
+				for(int a; a < filters; a++)
 				{
 					for(int b; b < whitecount; b++)
 					{
@@ -1149,8 +1157,21 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][
 		item.Slot = kv.GetNum("slot", -1);
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
 		item.NPCWeaponAlways = item.NPCWeapon > 9;
-		item.ParentKit = view_as<bool>(kv.GetNum("weaponkit"));
 		item.ChildKit = hiddenType == 2;
+
+		if(!item.ChildKit)
+		{
+			item.ParentKit = view_as<bool>(kv.GetNum("weaponkit"));
+			
+			kv.GetString("tags", item.Tags, sizeof(item.Tags));
+			
+			int tags = ExplodeString(item.Tags, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			for(int i; i < tags; i++)
+			{
+				if(StoreTags.FindString(buffers[i]) == -1)
+					StoreTags.PushString(buffers[i]);
+			}
+		}
 		
 		item.ItemInfos = new ArrayList(sizeof(ItemInfo));
 		
@@ -1666,7 +1687,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				if(info.Cost > 0 && free)
 					return;
 				
-				if((item.ParentKit || base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
+				if((base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
 					if(Rogue_Mode())
 					{
@@ -1913,6 +1934,9 @@ void Store_ClientDisconnect(int client)
 			StoreItems.SetArray(i, item);
 		}
 	}
+
+	UsingChoosenTags[client] = false;
+	delete ChoosenTags[client];
 #endif
 
 #if defined RPG
@@ -3014,7 +3038,8 @@ public void MenuPage(int client, int section)
 						Repeat_Filler ++;
 						menu.AddItem(buffer2, "------", ITEMDRAW_DISABLED);	// 2
 					}
-					if(info.ExtraDesc[0])
+
+					if(item.Tags[0] || info.ExtraDesc[0])
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
 						{
@@ -3067,18 +3092,26 @@ public void MenuPage(int client, int section)
 		}
 		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 		{
-			if(Database_IsCached(client))
+			if(UsingChoosenTags[client])
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
+				menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
+			}
+			else if(Database_IsCached(client))
+			{
+				menu.SetTitle("%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client]);
 			}
 			else
 			{
-				menu.SetTitle("%t\n \n%t\n%t\n \n ", "TF2: Zombie Riot", "XP Loading", "Credits", CurrentCash-CashSpent[client]);
+				menu.SetTitle("%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "XP Loading", "Credits", CurrentCash-CashSpent[client]);
 			}
 		}
 		else
 		{
-			if(Database_IsCached(client))
+			if(UsingChoosenTags[client])
+			{
+				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
+			else if(Database_IsCached(client))
 			{
 				menu.SetTitle("%t\n \n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "XP and Level", Level[client], XP[client] - xpLevel, nextAt, "Credits", CurrentCash-CashSpent[client], "Store Discount");
 			}
@@ -3088,7 +3121,7 @@ public void MenuPage(int client, int section)
 			}
 		}
 		
-		if(!NPCOnly[client] && section == -1)
+		if(!UsingChoosenTags[client] && !NPCOnly[client] && section == -1)
 		{
 			char buffer[32];
 			FormatEx(buffer, sizeof(buffer), "%t", "Owned Items");
@@ -3138,6 +3171,28 @@ public void MenuPage(int client, int section)
 		else if(item.Hidden || item.Level > ClientLevel)
 		{
 			continue;
+		}
+
+		if(UsingChoosenTags[client])
+		{
+			if(item.ItemInfos)
+			{
+				int a;
+				int length2 = ChoosenTags[client].Length;
+				for(; a < length2; a++)
+				{
+					ChoosenTags[client].GetString(a, buffer, sizeof(buffer));
+					if(StrContains(item.Tags, buffer) == -1)
+						break;	// Failed
+				}
+
+				if(a < length2)
+					continue;
+			}
+			else if(StrEqual(item.Name, "Personal Items", false))
+			{
+				continue;
+			}
 		}
 		
 		if(NPCOnly[client] == 3)
@@ -3231,7 +3286,7 @@ public void MenuPage(int client, int section)
 		else
 		{
 			item.GetItemInfo(0, info);
-			if(item.ParentKit || info.Cost < 1001 || info.Cost <= CurrentCash)
+			if(UsingChoosenTags[client] || item.ParentKit || info.Cost < 1001 || info.Cost <= CurrentCash)
 			{
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
@@ -3281,6 +3336,11 @@ public void MenuPage(int client, int section)
 				else if(!info.Cost && item.Level)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
+				}
+				else if(info.Cost > 1000 && info.Cost > CurrentCash)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [%.0f%%]", TranslateItemName(client, item.Name, info.Custom_Name), float(CurrentCash) * 100.0 / float(info.Cost));
+					style = ITEMDRAW_DISABLED;
 				}
 				else
 				{
@@ -3349,7 +3409,20 @@ public void MenuPage(int client, int section)
 			}
 		}
 	}
-	
+
+	if(UsingChoosenTags[client])
+	{
+		if(!found)
+		{
+			FormatEx(buffer, sizeof(buffer), "%t", "None");
+			menu.AddItem("0", buffer, ITEMDRAW_DISABLED);
+		}
+		
+		menu.ExitBackButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+		return;
+	}
+
 	if(section == -1 && !NPCOnly[client])
 	{
 		if(Level[client] > STARTER_WEAPON_LEVEL)
@@ -3444,6 +3517,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						StoreItems.GetArray(item.Section, item);
 				}
 
+				if(item.Section < 0 && UsingChoosenTags[client])
+				{
+					Store_CherrypickMenu(client);
+					return 0;
+				}
+
 				MenuPage(client, item.Section);
 			}
 			/*
@@ -3480,6 +3559,11 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					Menu menu2 = new Menu(Store_MenuPage);
 					menu2.SetTitle("%t", "Help Title?");
 
+					if(Level[client] > STARTER_WEAPON_LEVEL)
+					{
+						FormatEx(buffer, sizeof(buffer), "%t", "Cherrypick Weapon");
+						menu.AddItem("-30", buffer);
+					}
 					
 					FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 					menu2.AddItem("-12", buffer);
@@ -3702,6 +3786,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				case -24:
 				{
 					Rogue_ArtifactMenu(client, 0);
+				}
+				case -30:
+				{
+					Store_CherrypickMenu(client);
 				}
 				default:
 				{
@@ -4156,9 +4244,31 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				case 4:
 				{
 					item.GetItemInfo(0, info);
+
 					char buffer[256];
-					FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, info.ExtraDesc, info.Rogue_Desc));
-					PrintToChat(client, buffer);
+
+					if(item.Tags[0])
+					{
+						char buffers[6][256];
+						int tags = ExplodeString(item.Tags, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+						if(tags)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, buffers[0], ""));
+
+							for(int i = 1; i < tags; i++)
+							{
+								Format(buffer, sizeof(buffer), "%s, %s", buffer, TranslateItemDescription(client, buffers[i], ""));
+							}
+
+							PrintToChat(client, "%t", "Tags List", buffer);
+						}
+					}
+
+					if(info.ExtraDesc[0])
+					{
+						FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, info.ExtraDesc, info.Rogue_Desc));
+						PrintToChat(client, buffer);
+					}
 				}
 			}
 			MenuPage(client, index);
@@ -4333,6 +4443,87 @@ public bool Store_SayCommand(int client)
 		PrintToChat(client, "%T", "Invalid Name", client);
 	}
 	return true;
+}
+
+static void Store_CherrypickMenu(int client, int item = 0)
+{
+	UsingChoosenTags[client] = false;
+
+	if(!ChoosenTags[client])
+		ChoosenTags[client] = new ArrayList(ByteCountToCells(32));
+	
+	SetGlobalTransTarget(client);
+	
+	Menu menu = new Menu(Store_CherrypickMenuH);
+	menu.SetTitle("%t\n%t\n \n", "TF2: Zombie Riot", "Cherrypick Weapon");
+	
+	char trans[32], buffer[256];
+
+	FormatEx(trans, sizeof(trans), "%t", "Search With Tags");
+	menu.AddItem(buffer, trans, ChoosenTags[client].Length ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+	FormatEx(trans, sizeof(trans), "%t", "Clear Whitelist");
+	menu.AddItem(buffer, trans, ChoosenTags[client].Length ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	
+	int length = StoreTags.Length;
+	for(int i; i < length; i++)
+	{
+		StoreTags.GetString(i, buffer, sizeof(buffer));
+		FormatEx(trans, sizeof(trans), "[%s] %s", ChoosenTags[client].FindString(buffer) == -1 ? " " : "X", TranslateItemDescription(client, buffer, ""));
+		menu.AddItem(buffer, trans);
+	}
+	
+	menu.ExitBackButton = true;
+	menu.DisplayAt(client, item / 7 * 7, MENU_TIME_FOREVER);
+}
+
+public int Store_CherrypickMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				MenuPage(client, -1);
+		}
+		case MenuAction_Select:
+		{
+			switch(choice)
+			{
+				case 0:
+				{
+					UsingChoosenTags[client] = true;
+					MenuPage(client, -1);
+				}
+				case 1:
+				{
+					delete ChoosenTags[client];
+					Store_CherrypickMenu(client, choice);
+				}
+				default:
+				{
+					char buffer[32];
+					menu.GetItem(choice, buffer, sizeof(buffer));
+					int pos = ChoosenTags[client].FindString(buffer);
+					if(pos == -1)
+					{
+						ChoosenTags[client].PushString(buffer);
+					}
+					else
+					{
+						ChoosenTags[client].Erase(pos);
+					}
+
+					Store_CherrypickMenu(client, choice);
+				}
+			}
+		}
+	}
+	return 0;
 }
 #endif	// ZR
 

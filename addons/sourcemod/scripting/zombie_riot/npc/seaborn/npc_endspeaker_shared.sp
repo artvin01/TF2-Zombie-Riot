@@ -445,7 +445,7 @@ public void EndSpeaker_BurrowAnim(const char[] output, int caller, int activator
 	RemoveEntity(caller);
 }
 
-float[] EndSpeaker_GetPos(float pos[3])
+bool EndSpeaker_GetPos(float pos[3])
 {
 	for(int i; i < i_MaxcountNpc; i++)
 	{

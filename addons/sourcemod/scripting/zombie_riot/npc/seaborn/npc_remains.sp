@@ -106,18 +106,18 @@ void Remains_NPCDeath(int entity)
 static void ShowScuffedRemainsCircle(int entity)
 {
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(entity);
-	int red = IsClosestRemain(entity) ? 200 : 50;
+	int alpha = IsClosestRemain(entity) ? 200 : 50;
 
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, alpha, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] -= 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, alpha, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] -= 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, alpha, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] += 100.0;
 	vecTarget[2] += 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.85, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, alpha, 1, 0.55, 6.0, 0.1, 1);
 	vecTarget[2] += 50.0;
-	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, 50, 255, 200, 1, 0.55, 6.0, 0.1, 1);
+	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0 * 0.60, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, alpha, 1, 0.55, 6.0, 0.1, 1);
 }
 
 static bool IsClosestRemain(int thisEntity)
