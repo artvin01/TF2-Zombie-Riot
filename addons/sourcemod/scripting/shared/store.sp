@@ -4573,10 +4573,6 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-
-	// Force priority
-	map.SetValue("95", 1.0);
-	map.SetValue("286", 1.0);
 #endif
 
 #if defined RPG
@@ -4787,7 +4783,7 @@ void Store_ApplyAttribs(int client)
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
 	int length = snapshot.Length;
-	int attribs = 4;
+	int attribs = 0;
 	for(int i; i < length; i++)
 	{
 		if(attribs && !(attribs % 16))
