@@ -382,19 +382,19 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					{
 						case 0:
 						{
-							SetEntityRenderColor(projectile, 100, 255, 180, 255);
+							SetEntityRenderColor(Drone, 100, 255, 180, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_1, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
 						}
 						case 1:
 						{
-							SetEntityRenderColor(projectile, 255, 140, 70, 255);
+							SetEntityRenderColor(Drone, 255, 140, 70, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_2, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
 						}
 						case 2:
 						{
-							SetEntityRenderColor(projectile, 120, 200, 255, 255);
+							SetEntityRenderColor(Drone, 120, 200, 255, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_3, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
 						}
