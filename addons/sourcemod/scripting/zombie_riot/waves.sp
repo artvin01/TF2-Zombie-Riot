@@ -229,14 +229,10 @@ bool Waves_CallVote(int client)
 				Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
 				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
 			}
-			else if(Level[client] < vote.Level && Database_IsCached(client))
-			{
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
-			}
 			else
 			{
-				menu.AddItem(vote.Config, vote.Name);
+				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 		}
 		
