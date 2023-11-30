@@ -1007,7 +1007,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 						{
 							npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
 						}
-						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.0;
+						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
 						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
@@ -1024,7 +1024,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					{
 						npc.m_flTimebeforekamehameha = GetGameTime(npc.index) + 40.0;
 					}
-					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.0;
+					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
