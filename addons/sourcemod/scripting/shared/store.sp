@@ -3070,6 +3070,17 @@ public void MenuPage(int client, int section)
 		{
 			menu.SetTitle("%t\n%t\n%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Father Grigori's Store","All Items are 20%% off here!", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
 		}
+		else if(UsingChoosenTags[client])
+		{
+			if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
+			{
+				menu.SetTitle("%t\n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
+			}
+			else
+			{
+				menu.SetTitle("%t\n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+			}
+		}
 		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 		{
 			menu.SetTitle("%t\n \n%t\n \n%s", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Credits", CurrentCash-CashSpent[client], TranslateItemName(client, item.Name, info.Custom_Name));
@@ -3154,6 +3165,20 @@ public void MenuPage(int client, int section)
 			if(item.Level > ClientLevel)
 				continue;
 		}
+		else if(UsingChoosenTags[client])
+		{
+			int a;
+			int length2 = ChoosenTags[client].Length;
+			for(; a < length2; a++)
+			{
+				ChoosenTags[client].GetString(a, buffer, sizeof(buffer));
+				if(StrContains(item.Tags, buffer) == -1)
+					break;	// Failed
+			}
+
+			if(a < length2)
+				continue;
+		}
 		else if(section == -2)
 		{
 			if((!starterPlayer && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.GiftId != -1)
@@ -3171,28 +3196,6 @@ public void MenuPage(int client, int section)
 		else if(item.Hidden || item.Level > ClientLevel)
 		{
 			continue;
-		}
-
-		if(UsingChoosenTags[client])
-		{
-			if(item.ItemInfos)
-			{
-				int a;
-				int length2 = ChoosenTags[client].Length;
-				for(; a < length2; a++)
-				{
-					ChoosenTags[client].GetString(a, buffer, sizeof(buffer));
-					if(StrContains(item.Tags, buffer) == -1)
-						break;	// Failed
-				}
-
-				if(a < length2)
-					continue;
-			}
-			else if(StrEqual(item.Name, "Personal Items", false))
-			{
-				continue;
-			}
 		}
 		
 		if(NPCOnly[client] == 3)
@@ -3514,13 +3517,14 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				{
 					StoreItems.GetArray(index, item);
 					if(item.Section != -1)
+					{
 						StoreItems.GetArray(item.Section, item);
-				}
-
-				if(item.Section < 0 && UsingChoosenTags[client])
-				{
-					Store_CherrypickMenu(client);
-					return 0;
+					}
+					else if(UsingChoosenTags[client])
+					{
+						Store_CherrypickMenu(client);
+						return 0;
+					}
 				}
 
 				MenuPage(client, item.Section);
