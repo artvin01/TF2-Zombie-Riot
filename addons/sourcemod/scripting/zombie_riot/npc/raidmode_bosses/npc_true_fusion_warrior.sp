@@ -468,7 +468,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		}
 		if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 		{
-			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, i thank you, and beware of the rogue machine... {red}Blitzkrieg.");
+			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			for (int client = 0; client < MaxClients; client++)
@@ -488,7 +488,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 		{
 			i_SaidLineAlready[npc.index] = 3;
-			CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and i will warn you of dangers.");
+			CPrintToChatAll("{gold}Silvester{default}: I thank you, but i will need help from you later, and I will warn you of dangers.");
 		}
 		else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 		{
@@ -954,7 +954,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 			SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_TBB_Tick);
 
-			CPrintToChatAll("{gold}Silvester{default}: Stop, Stop please i beg you, i was infected!!");
+			CPrintToChatAll("{gold}Silvester{default}: Stop, stop please I beg you, I was infected!");
 			int i = MaxClients + 1;
 			while((i = FindEntityByClassname(i, "obj_sentrygun")) != -1)
 			{

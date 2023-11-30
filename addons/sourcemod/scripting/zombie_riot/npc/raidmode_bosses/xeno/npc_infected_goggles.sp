@@ -913,7 +913,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, i wont stop you no more...");
+			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, I won't stop you no more...");
 			return Plugin_Handled;
 		}
 

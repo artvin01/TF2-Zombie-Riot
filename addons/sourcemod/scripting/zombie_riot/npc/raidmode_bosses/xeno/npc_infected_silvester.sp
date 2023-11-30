@@ -566,7 +566,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Thats it!");
+						CPrintToChatAll("{gold}Silvester{default}: That's it!");
 					}
 					case 3:
 					{
@@ -584,7 +584,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: If you wont listen, ill erase you before you become one of them!");
+						CPrintToChatAll("{gold}Silvester{default}: If you wont listen, I'll erase you before you become one of them!");
 					}
 					case 3:
 					{
@@ -1195,7 +1195,7 @@ public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inf
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{gold}Silvester{default}: You wont listen to our warnings do you!?");
+			CPrintToChatAll("{gold}Silvester{default}: You won't listen to our warnings do you!?");
 			return Plugin_Handled;
 		}
 	}
@@ -1246,7 +1246,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You're blind to your own arrogance!!");
+						CPrintToChatAll("{gold}Silvester{default}: You're blind to your own arrogance!");
 					}
 					case 2:
 					{
@@ -1254,7 +1254,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You refuse to listen and thus pay the price!");
+						CPrintToChatAll("{gold}Silvester{default}: You refuse to listen and thus, pay the price!");
 					}
 				}
 			}
@@ -2126,7 +2126,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we cant beat him.");
+					CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
