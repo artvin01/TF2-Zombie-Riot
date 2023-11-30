@@ -3289,7 +3289,7 @@ static void MapStartResetAll()
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, Handle &item)
 {
-	if(!StrContains(classname, "tf_wear"))
+	/*if(!StrContains(classname, "tf_wear"))
 	{
 		switch(index)
 		{	
@@ -3304,11 +3304,11 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 			}
 		}
 	}
-	else
+	else*/
 	{
 		return Plugin_Stop;
 	}
-	return Plugin_Continue;
+	//return Plugin_Continue;
 }
 
 //ty miku for tellingg
