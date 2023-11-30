@@ -10,10 +10,13 @@
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
 float f_FlimsyDMG[3] = { 500.0, 750.0, 1000.0 };
 float f_FlimsyRadius[3] = { 300.0, 350.0, 400.0 };
-float f_FlimsyVelocity[3] = { 800.0, 1200.0, 1600.0 };
+float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };
 
-//SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device chain lightning on impact.
+//SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
 float f_ShockChance[3] = { 0.08, 0.12, 0.16 };
+float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };
+float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };
+float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };
 bool b_ShockEnabled[3] = { true, true, true };
 
 //MORTAR MARKER: A beacon which marks the spot it lands on for a special mortar strike, which scales with ranged upgrades.
@@ -36,7 +39,7 @@ bool b_SkeletonEnabled[3] = { false, true, true };
 float f_IceChance[3] = { 0.00, 0.04, 0.08 };
 bool b_IceEnabled[3] = { false, true, true };
 
-//TRASH: Fires a garbage bag which explodes on impact and applies a powerful poison to all zombies hit by it. Poisoned zombies are given the lesser Medusa debuff.
+//TRASH: Fires a garbage bag which explodes on impact and applies a powerful poison to all zombies hit by it. Poisoned zombies are given the lesser Medusa debuff and take damage over time.
 float f_TrashChance[3] = { 0.00, 0.03, 0.06 };
 bool b_TrashEnabled[3] = { false, true, true };
 
@@ -54,17 +57,32 @@ static int i_TrashWeapon[2049] = { -1, ... };
 static int i_TrashTier[2049] = { 0, ... };
 
 #define MODEL_ROCKET				"models/weapons/w_models/w_rocket.mdl"
+#define MODEL_DRG					"models/weapons/w_models/w_drg_ball.mdl"
 
 #define SOUND_FLIMSY_BLAST			"weapons/explode1.wav"
+#define SOUND_SHOCK					"misc/halloween/spell_lightning_ball_impact.wav"
+#define SOUND_SHOCK_FIRE			"misc/halloween/spell_lightning_ball_cast.wav"
 
-#define PARTICLE_FLIMSY_TRAIL		"rockettrail"
-#define PARTICLE_EXPLOSION_GENERIC	"ExplosionCore_Wall"
+#define PARTICLE_FLIMSY_TRAIL		"drg_manmelter_trail_red"
+#define PARTICLE_EXPLOSION_GENERIC	"ExplosionCore_MidAir"
+#define PARTICLE_SHOCK_1			"drg_cow_rockettrail_normal"
+#define PARTICLE_SHOCK_2			"critical_rocket_red"
+#define PARTICLE_SHOCK_3			"critical_rocket_redsparks"
+#define PARTICLE_SHOCK_1_MAX		"drg_cow_rockettrail_normal_blue"
+#define PARTICLE_SHOCK_2_MAX		"critical_rocket_blue"
+#define PARTICLE_SHOCK_3_MAX		"critical_rocket_bluesparks"
+#define PARTICLE_SHOCK_BLAST		"drg_cow_explosioncore_charged"
+#define PARTICLE_SHOCK_BLAST_MAX	"drg_cow_explosioncore_charged_blue"
+#define PARTICLE_SHOCK_CHAIN		""
+#define PARTICLE_SHOCK_CHAIN_MAX	""
 
 void Trash_Cannon_Precache()
 {
 	PrecacheModel(MODEL_ROCKET, true);
 	
 	PrecacheSound(SOUND_FLIMSY_BLAST, true);
+	PrecacheSound(SOUND_SHOCK, true);
+	PrecacheSound(SOUND_SHOCK_FIRE, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -125,29 +143,10 @@ public void Trash_Cannon_Shoot(int client, int weapon, bool crit, int tier)
 
 public void Trash_FlimsyRocket(int client, int weapon, int tier)
 {
-	CPrintToChatAll("Flimsy rocket!");
-	
-	int rocket = Trash_LaunchPhysProp(client, MODEL_ROCKET, f_FlimsyVelocity[tier], weapon);
-	if (IsValidEntity(rocket))
-	{
-		float ang[3];
-		for (int i = 0; i < 3; i++)
-		{
-			ang[i] = GetRandomFloat(0.0, 360.0);
-		}
-		
-		TeleportEntity(rocket, NULL_VECTOR, ang, NULL_VECTOR);
-		
-		Trash_AttachParticle(rocket, PARTICLE_FLIMSY_TRAIL, 6.0, "trail");
-		SDKHook(rocket, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(rocket, SDKHook_StartTouch, Flimsy_OnTouch);
-		
-		i_TrashWeapon[rocket] = EntIndexToEntRef(weapon);
-		i_TrashTier[rocket] = tier;
-	}
+	int rocket = Trash_LaunchPhysProp(client, MODEL_ROCKET, GetRandomFloat(0.8, 1.2), f_FlimsyVelocity[tier], weapon, tier, Flimsy_Explode, true, true);
 }
 
-public Action Flimsy_OnTouch(int entity, int other)
+public MRESReturn Flimsy_Explode(int entity)
 {
 	float position[3];
 	
@@ -167,6 +166,8 @@ public Action Flimsy_OnTouch(int entity, int other)
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false);
 	
 	RemoveEntity(entity);
+	
+	return MRES_Supercede; //DONT.
 }
 
 public bool Trash_Shock(int client, int weapon, int tier)
@@ -177,7 +178,49 @@ public bool Trash_Shock(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_ShockChance[tier])
 		return false;
 		
-	return true;
+	int rocket = Trash_LaunchPhysProp(client, MODEL_DRG, 0.001, f_ShockVelocity[tier], weapon, tier, Shock_Explode, true, true);
+	
+	if (IsValidEntity(rocket))
+	{
+		EmitSoundToAll(SOUND_SHOCK_FIRE, client, SNDCHAN_STATIC, 80, _, 1.0);
+		
+		Trash_AttachParticle(rocket, tier > 1 ? PARTICLE_SHOCK_1_MAX : PARTICLE_SHOCK_1, 6.0, "");
+		Trash_AttachParticle(rocket, tier > 1 ? PARTICLE_SHOCK_2_MAX : PARTICLE_SHOCK_2, 6.0, "");
+		Trash_AttachParticle(rocket, tier > 1 ? PARTICLE_SHOCK_3_MAX : PARTICLE_SHOCK_3, 6.0, "");
+		
+		return true;
+	}
+	
+	return false;
+}
+
+public MRESReturn Shock_Explode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, tier > 1 ? PARTICLE_SHOCK_BLAST_MAX : PARTICLE_SHOCK_BLAST, 1.0);
+	EmitSoundToAll(SOUND_SHOCK, entity, SNDCHAN_STATIC, 80, _, 1.0);
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_ShockDMG[tier];
+	float radius = f_ShockRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, _, _, _, Shock_Hit);
+	
+	RemoveEntity(entity);
+	
+	return MRES_Supercede; //DONT.
+}
+
+public void Shock_Hit(int entity, int victim, float damage, int weapon)
+{
+	
 }
 
 public bool Trash_Mortar(int client, int weapon, int tier)
@@ -268,20 +311,26 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	return true;
 }
 
-public int Trash_LaunchPhysProp(int client, char model[255], float velocity, int weapon)
+public int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin)
 {
-	int prop = CreateEntityByName("prop_physics_override");
+	int prop = CreateEntityByName("tf_projectile_rocket");
 			
 	if (IsValidEntity(prop))
 	{
-		b_EntityIgnoredByShield[prop] = true;
+		b_Is_Player_Projectile[prop] = true;
 		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
-		DispatchKeyValue(prop, "spawnflags", "4"); 
-		DispatchKeyValue(prop, "model", model);
+				
+		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+		SetEntProp(prop, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
 				
 		DispatchSpawn(prop);
 				
 		ActivateEntity(prop);
+		
+		SetEntityModel(prop, model);
+		char scaleChar[16];
+		Format(scaleChar, sizeof(scaleChar), "%f", scale);
+		DispatchKeyValue(prop, "modelscale", scaleChar);
 		
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
 		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
@@ -295,13 +344,33 @@ public int Trash_LaunchPhysProp(int client, char model[255], float velocity, int
 		if (IsValidEntity(weapon))
 		{
 			//TODO: Modify velocity based on attributes
+			i_TrashWeapon[prop] = EntIndexToEntRef(weapon);
 		}
+		
+		SetEntityMoveType(prop, MOVETYPE_FLYGRAVITY);
 		
 		propVel[0] = buffer[0]*velocity;
 		propVel[1] = buffer[1]*velocity;
 		propVel[2] = buffer[2]*velocity;
+		
+		if (ForceRandomAngles)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				ang[i] = GetRandomFloat(0.0, 360.0);
+			}
+		}
 			
 		TeleportEntity(prop, pos, ang, propVel);
+		
+		if (Spin)
+		{
+			//TODO: Figure out a way to do this that looks good and doesn't require OnGameFrame.
+		}
+		
+		i_TrashTier[prop] = tier;
+		
+		g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
 		
 		return prop;
 	}
@@ -372,4 +441,19 @@ stock void Trash_AttachParticle(int entity, char type[255], float duration = 0.0
 			}
 		}
 	}
+}
+
+public Action SpinEffect(int ent)
+{
+	float ang[3];
+	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);
+		
+	for (int i = 0; i < 3; i++)
+	{
+		ang[i] += 4.0;
+	}
+		
+	TeleportEntity(ent, NULL_VECTOR, ang, NULL_VECTOR);
+		
+	return Plugin_Continue;
 }
