@@ -4573,6 +4573,9 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
+
+	// Force priority
+	map.SetValue("94", 1.0);
 #endif
 
 #if defined RPG
