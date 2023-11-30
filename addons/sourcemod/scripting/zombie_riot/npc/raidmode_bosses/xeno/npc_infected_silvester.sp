@@ -584,7 +584,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: If you wont listen, I'll erase you before you become one of them!");
+						CPrintToChatAll("{gold}Silvester{default}: If you won't listen, I'll erase you before you become one of them!");
 					}
 					case 3:
 					{
