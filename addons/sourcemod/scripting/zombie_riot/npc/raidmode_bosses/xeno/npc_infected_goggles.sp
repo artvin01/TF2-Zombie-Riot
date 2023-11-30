@@ -415,13 +415,34 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	}
 	if(npc.Anger)
 	{
-		npc.m_flRangedArmor = 0.45;
-		npc.m_flMeleeArmor = 0.5625;
+		npc.m_flRangedArmor = 0.25;
+		npc.m_flMeleeArmor = 0.3;
 	}
 	else
 	{
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.25;
+		b_NpcIsInvulnerable[npc.index] = false;
+		switch(IsSilvesterTransforming(ally))
+		{
+			case 0:
+			{
+				npc.m_flRangedArmor = 0.25;
+				npc.m_flMeleeArmor = 0.3;
+			}
+			case 1:
+			{
+				b_NpcIsInvulnerable[npc.index] = true;
+			}
+			case 2:
+			{
+				npc.m_flRangedArmor = 0.7;
+				npc.m_flMeleeArmor = 0.75;
+			}
+			case 3:
+			{
+				npc.m_flRangedArmor = 1.0;
+				npc.m_flMeleeArmor = 1.25;
+			}
+		}
 	}
 
 	if(npc.m_flPiggyFor)
@@ -477,7 +498,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				else
 				{
 					npc.m_flSwitchCooldown = gameTime + 8.0;
-					npc.m_flNextMeleeAttack = gameTime + 2.5;
+					npc.m_flNextMeleeAttack = gameTime + 2.0;
 					npc.m_iGunType = 1;
 
 					if(IsValidEntity(npc.m_iWearable3))
@@ -496,7 +517,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				else
 				{
 					npc.m_flSwitchCooldown = gameTime + 8.0;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
 					npc.m_iGunType = 2;
 
 					if(IsValidEntity(npc.m_iWearable3))
@@ -513,7 +534,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			else
 			{
 				npc.m_flSwitchCooldown = gameTime + 5.0;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 0.5;
 				npc.m_iGunType = 0;
 
 				if(IsValidEntity(npc.m_iWearable3))
@@ -624,7 +645,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 										if(npc.Anger)
 										{
-											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.35 * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);
+											SDKHooks_TakeDamage(target, npc.index, npc.index, (14.5 + (float(tier) * 2.0)) * 1.65 * RaidModeScaling * 1.25, DMG_CLUB, -1, _, vecHit);
 										}
 										else
 										{
@@ -673,7 +694,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.PlayRangedSpecialSound();
 								npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
-								npc.m_flNextRangedSpecialAttack = gameTime + 45.0;
+								npc.m_flNextRangedSpecialAttack = gameTime + 25.0;
 								npc.m_flSwitchCooldown = gameTime + 3.0;
 
 								npc.m_flNextMeleeAttack = gameTime + 0.5;	// When to set new activity
@@ -772,7 +793,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						damage *= 3.5;
 						if(npc.Anger)
 						{
-							damage *= 2.0;
+							damage *= 2.5;
 						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}

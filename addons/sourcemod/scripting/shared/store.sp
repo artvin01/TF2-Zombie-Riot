@@ -4575,7 +4575,8 @@ void Store_ApplyAttribs(int client)
 	}
 
 	// Force priority
-	map.SetValue("94", 1.0);
+	map.SetValue("95", 1.0);
+	map.SetValue("286", 1.0);
 #endif
 
 #if defined RPG
@@ -4653,6 +4654,10 @@ void Store_ApplyAttribs(int client)
 	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 1.15);
+	}
+	else
+	{
+		map.SetValue("287", 1.0);
 	}
 #endif	// ZR
 

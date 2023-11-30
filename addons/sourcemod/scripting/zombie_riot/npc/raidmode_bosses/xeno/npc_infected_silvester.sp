@@ -555,6 +555,44 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
 			SilvesterApplyEffects(npc.index, false);
 
+			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
+			if(IsEntityAlive(AllyEntity) && !IsPartnerGivingUpGoggles(AllyEntity))
+			{
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Come here!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Thats it!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Meet your real deal!");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: It's over you little..!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: If you wont listen, ill erase you before you become one of them!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: GO TO HELL YOU MERCS!!!");
+					}
+				}
+			}
+
 				
 			SetVariantColor(view_as<int>({255, 255, 0, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
@@ -1183,6 +1221,43 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			npc.Anger = true; //	>:(
 			b_RageAnimated[npc.index] = false;
 			RaidModeTime += 60.0;
+			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
+			if(IsEntityAlive(AllyEntity) && !IsPartnerGivingUpGoggles(AllyEntity))
+			{
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You think this was all?");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You have no idea...");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You think this is it?");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You're blind to your own arrogance!!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You think im weak alone?!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You refuse to listen and thus pay the price!");
+					}
+				}
+			}
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
@@ -2471,4 +2546,24 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	Custom_SDKCall_SetLocalOrigin(particle_1_Wingset_99, flPos);
 	SetParent(entity, particle_1_Wingset_99, "flag",_);
 */
+}
+
+
+int IsSilvesterTransforming(int silvester)
+{
+	if(!IsValidEntity(silvester))
+		return 0;
+
+	RaidbossSilvester npc = view_as<RaidbossSilvester>(silvester);
+	if(npc.m_flNextChargeSpecialAttack > GetGameTime())
+	{
+		return 1; //Transforming, make goggles immune to damage.
+	}
+
+	if(npc.Anger)
+	{
+		return 2; //he's angry, get resisstances.
+	}
+
+	return 3;
 }

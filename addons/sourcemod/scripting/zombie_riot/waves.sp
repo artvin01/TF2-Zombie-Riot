@@ -954,19 +954,22 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
 			
-			if(Is_a_boss == 2)
+			if(Is_a_boss >= 2)
 			{
-				if(LastMann)
+				if(Is_a_boss == 2)
 				{
-					PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
-					GiveProgressDelay(30.0);
-					f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
-				}
-				else
-				{
-					PrintToChatAll("You were given extra 10 seconds to prepare for the raidboss... Get ready.");
-					GiveProgressDelay(10.0);
-					f_DelaySpawnsForVariousReasons = GetGameTime() + 10.0;
+					if(LastMann)
+					{
+						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+						GiveProgressDelay(30.0);
+						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
+					}
+					else
+					{
+						PrintToChatAll("You were given extra 10 seconds to prepare for the raidboss... Get ready.");
+						GiveProgressDelay(10.0);
+						f_DelaySpawnsForVariousReasons = GetGameTime() + 10.0;
+					}
 				}
 				Raidboss_Clean_Everyone();
 				Music_EndLastmann();

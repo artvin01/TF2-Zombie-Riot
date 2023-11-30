@@ -28,6 +28,8 @@ methodmap BarrackTeuton < BarrackBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		*/
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		return npc;
 	}

@@ -1368,6 +1368,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				{
 					Died[client] = true;
 					SDKHooks_TakeDamage(client, client, client, 99999.0, DMG_DROWN, _, _, _, true);
+					ForcePlayerSuicide(client);
 				}
 			}
 		}
