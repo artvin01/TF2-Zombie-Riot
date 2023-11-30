@@ -178,7 +178,7 @@ public const char ItemArchetype[][] =
 	"Explosive Mind",	// 8 Most Explosive weapons
 //SUPPORT ITEMS
 	"Team Support",		// 9
-	"Debuff",			// 10
+	"ArchDebuff",			// 10
 //MELEE'S
 	"Brawler",			// 11 most fist melee's
 	"Ambusher",			// 12 spy backstab weapons
