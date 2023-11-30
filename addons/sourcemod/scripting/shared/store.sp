@@ -4776,7 +4776,7 @@ void Store_ApplyAttribs(int client)
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
 	int length = snapshot.Length;
-	int attribs;
+	int attribs = 4;
 	for(int i; i < length; i++)
 	{
 		if(attribs && !(attribs % 16))
@@ -4785,6 +4785,7 @@ void Store_ApplyAttribs(int client)
 				break;
 			
 			Attributes_RemoveAll(entity);
+			attribs++;
 		}
 
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
@@ -4801,27 +4802,45 @@ void Store_ApplyAttribs(int client)
 #endif
 
 			{
-				Attributes_Set(entity, index, value);
 				
 #if defined ZR
-				if(index == 701)
-					Armor_Level[client] = RoundToCeil(value);
-					
-				if(index == 777)
-					Jesus_Blessing[client] = RoundToCeil(value);
-					
-				if(index == 785)
-					i_HeadshotAffinity[client] = RoundToCeil(value);
-					
-				if(index == 830)
-					i_BarbariansMind[client] = RoundToCeil(value);
-					
-				if(index == 527)
-					i_SoftShoes[client] = RoundToCeil(value);
-					
-				if(index == 805)
-					i_BadHealthRegen[client] = RoundToCeil(value);
-#endif
+				switch(index)
+				{
+					case 701:
+					{
+						Armor_Level[client] = RoundToCeil(value);
+						continue;
+					}
+					case 777:
+					{
+						Jesus_Blessing[client] = RoundToCeil(value);
+						continue;
+					}
+					case 785:
+					{
+						i_HeadshotAffinity[client] = RoundToCeil(value);
+						continue;
+					}
+					case 830:
+					{
+						i_BarbariansMind[client] = RoundToCeil(value);
+						continue;
+					}
+					case 527:
+					{
+						i_SoftShoes[client] = RoundToCeil(value);
+						continue;
+					}
+					case 805:
+					{
+						i_BadHealthRegen[client] = RoundToCeil(value);
+						continue;
+					}
+				}
+#endif	// ZR
+
+				if(Attributes_Set(entity, index, value))
+					attribs++;
 			}
 
 		}

@@ -54,7 +54,7 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 	return defaul;
 }
 
-void Attributes_Set(int entity, int attrib, float value)
+bool Attributes_Set(int entity, int attrib, float value)
 {
 	if(!WeaponAttributes[entity])
 		WeaponAttributes[entity] = new StringMap();
@@ -63,8 +63,11 @@ void Attributes_Set(int entity, int attrib, float value)
 	IntToString(attrib, buffer, sizeof(buffer));
 	WeaponAttributes[entity].SetValue(buffer, value);
 
-	if(!Attribute_ServerSide(attrib))
-		TF2Attrib_SetByDefIndex(entity, attrib, value);
+	if(Attribute_ServerSide(attrib))
+		return false;
+	
+	TF2Attrib_SetByDefIndex(entity, attrib, value);
+	return true;
 }
 
 stock void Attributes_SetAdd(int entity, int attrib, float amount)
