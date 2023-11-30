@@ -238,21 +238,21 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
 		
 		SetEntityModel(projectile, SKULL_MODEL);
-		DispatchKeyValue(projectile, "modelscale", "1.45");
+		DispatchKeyValue(projectile, "modelscale", "1.33");
 		
 		switch(tier)
 		{
 			case 0:
 			{
-				SetEntityRenderColor(projectile, 0, 255, 100, 255);
+				SetEntityRenderColor(projectile, 100, 255, 180, 255);
 			}
 			case 1:
 			{
-				SetEntityRenderColor(projectile, 255, 70, 0, 255);
+				SetEntityRenderColor(projectile, 255, 140, 70, 255);
 			}
 			case 2:
 			{
-				SetEntityRenderColor(projectile, 0, 166, 255, 255);
+				SetEntityRenderColor(projectile, 120, 200, 255, 255);
 			}
 		}
 		
@@ -348,7 +348,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SetEntityModel(Drone, SKULL_MODEL);
 					
-					DispatchKeyValue(Drone, "modelscale", "1.45");
+					DispatchKeyValue(Drone, "modelscale", "1.33");
 					DispatchKeyValue(Drone, "StartDisabled", "false");
 		
 					DispatchKeyValue(prop, "Health", "9999999999");
@@ -382,19 +382,19 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					{
 						case 0:
 						{
-							SetEntityRenderColor(Drone, 0, 255, 100, 255);
+							SetEntityRenderColor(projectile, 100, 255, 180, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_1, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
 						}
 						case 1:
 						{
-							SetEntityRenderColor(Drone, 255, 70, 0, 255);
+							SetEntityRenderColor(projectile, 255, 140, 70, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_2, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
 						}
 						case 2:
 						{
-							SetEntityRenderColor(Drone, 0, 166, 255, 255);
+							SetEntityRenderColor(projectile, 120, 200, 255, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_3, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
 						}
