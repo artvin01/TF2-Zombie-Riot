@@ -633,6 +633,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
+		npc.m_flDoingAnimation = GetGameTime() + 0.1;
 	}
 	else if(npc.m_iInKame == 1)
 	{
@@ -686,7 +687,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		npc.SetPlaybackRate(0.0);	//freeze in place.
 		npc.m_flDoingSpecial = 0.0;
-		SilvesterApplyEffects(npc.index, false);
+		SilvesterApplyEffects(npc.index, true);
 	}
 
 
