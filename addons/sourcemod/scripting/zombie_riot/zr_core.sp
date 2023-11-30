@@ -446,6 +446,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
+#include "zombie_riot/custom/weapon_trash_cannon.sp"
 
 void ZR_PluginLoad()
 {
@@ -657,6 +658,7 @@ void ZR_MapStart()
 	OnMapStartLeper();
 	Flagellant_MapStart();
 	Wand_Impact_Lance_Mapstart();
+	Trash_Cannon_Precache();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;

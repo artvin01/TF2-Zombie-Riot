@@ -19,7 +19,7 @@
 
 //Level 1 skulls are green, level 2 are orange, level 3 are bright blue.
 
-#define SKULL_MODEL				"models/freak_fortress_2/new_spookmaster/skullrocket.mdl"
+#define SKULL_MODEL				"models/props_mvm/mvm_human_skull_collide.mdl"//"models/freak_fortress_2/new_spookmaster/skullrocket.mdl"
 #define SKULL_PARTICLE_1		"superrare_burning2"
 #define SKULL_PARTICLE_2		"superrare_burning1"
 #define SKULL_PARTICLE_3		"drg_cow_rockettrail_normal_blue"
@@ -238,21 +238,25 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		TeleportEntity(projectile, pos, NULL_VECTOR, NULL_VECTOR);
 		
 		SetEntityModel(projectile, SKULL_MODEL);
+		DispatchKeyValue(projectile, "modelscale", "1.45");
+		
 		switch(tier)
 		{
 			case 0:
 			{
-				SetEntProp(projectile, Prop_Send, "m_nSkin", 2);
+				SetEntityRenderColor(projectile, 0, 255, 100, 255);
 			}
 			case 1:
 			{
-				SetEntProp(projectile, Prop_Send, "m_nSkin", 0);
+				SetEntityRenderColor(projectile, 255, 70, 0, 255);
 			}
 			case 2:
 			{
-				SetEntProp(projectile, Prop_Send, "m_nSkin", 1);
+				SetEntityRenderColor(projectile, 0, 166, 255, 255);
 			}
 		}
+		
+		SetEntityRenderFx(projectile, RENDERFX_GLOWSHELL);
 		
 		EmitSoundToAll(SKULL_SOUND_LAUNCH, projectile);
 		switch(GetRandomInt(1, 3))
@@ -344,7 +348,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					
 					SetEntityModel(Drone, SKULL_MODEL);
 					
-					DispatchKeyValue(Drone, "modelscale", "1.0");
+					DispatchKeyValue(Drone, "modelscale", "1.45");
 					DispatchKeyValue(Drone, "StartDisabled", "false");
 		
 					DispatchKeyValue(prop, "Health", "9999999999");
@@ -378,23 +382,25 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					{
 						case 0:
 						{
-							SetEntProp(Drone, Prop_Send, "m_nSkin", 2);
+							SetEntityRenderColor(Drone, 0, 255, 100, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_1, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
 						}
 						case 1:
 						{
-							SetEntProp(Drone, Prop_Send, "m_nSkin", 0);
+							SetEntityRenderColor(Drone, 255, 70, 0, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_2, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_2, 3.0, "bloodpoint");
 						}
 						case 2:
 						{
-							SetEntProp(Drone, Prop_Send, "m_nSkin", 1);
+							SetEntityRenderColor(Drone, 0, 166, 255, 255);
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_3, _, "bloodpoint");
 							Skull_AttachParticle(Drone, SKULL_PARTICLE_SUMMON_3, 3.0, "bloodpoint");
 						}
 					}
+					
+					SetEntityRenderFx(Drone, RENDERFX_GLOWSHELL);
 
 					EmitSoundToAll(SKULL_SOUND_SUMMON, Drone);
 					EmitSoundToClient(client, SKULL_SOUND_SUMMON, Drone);
