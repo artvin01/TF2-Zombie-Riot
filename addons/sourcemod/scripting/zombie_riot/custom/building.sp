@@ -1168,12 +1168,21 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			{
 				Building_Max_Health[entity] = 1;
 			}
-			
-			red = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			
-			red = 255 - red;
+
+			int BuildingHealth = GetEntProp(entity, Prop_Send, "m_iHealth");
+			if(BuildingHealth > Building_Max_Health[entity])
+			{
+				red = 0;
+				green = 0;
+				blue = 255;
+			}
+			else
+			{
+				red = BuildingHealth * 255  / Building_Max_Health[entity];
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+				green = BuildingHealth * 255  / Building_Max_Health[entity];		
+				red = 255 - red;		
+			}
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		//	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, red, green, blue, 255);
@@ -1196,17 +1205,18 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int red = 0;
 			int green = 0;
 			int blue = 0;
+			int Alpha = 125;
 			
-			SetEntityRenderColor(entity, red, green, blue, 255);
+			SetEntityRenderColor(entity, red, green, blue, Alpha);
 			if(IsValidEntity(prop1))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(prop1, red, green, blue, 100);
+				SetEntityRenderColor(prop1, red, green, blue, Alpha);
 			}
 			if(IsValidEntity(prop2))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(prop2, red, green, blue, 255);
+				SetEntityRenderColor(prop2, red, green, blue, Alpha);
 			}
 
 		}
@@ -1237,12 +1247,27 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 			int red = 255;
 			int green = 255;
 			int blue = 0;
+			int BuildingHealth = GetEntProp(entity, Prop_Send, "m_iHealth");
+
+			if(Building_Max_Health[entity] <= 0)
+			{
+				Building_Max_Health[entity] = 1;
+			}
+
+			if(BuildingHealth > Building_Max_Health[entity])
+			{
+				red = 0;
+				green = 0;
+				blue = 255;
+			}
+			else
+			{
+				red = BuildingHealth * 255  / Building_Max_Health[entity];
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+				green = BuildingHealth * 255  / Building_Max_Health[entity];		
+				red = 255 - red;		
+			}
 			
-			red = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			
-			red = 255 - red;
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		//	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, red, green, blue, 255);
@@ -1347,6 +1372,7 @@ void Building_SetBuildingRepair(int entity, int health)
 		}
 		else
 		{
+			Building_Repair_Health[entity] = 0;
 			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
 			Building_cannot_be_repaired[entity] = true;
 		}
@@ -1408,6 +1434,7 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 	
 	if(dmg)
 	{
+		Building_Repair_Health[entity] = 0;
 		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
 		if(health < 1)
 			health = 1;

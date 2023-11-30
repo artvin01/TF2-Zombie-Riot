@@ -1147,15 +1147,26 @@ public Action Timer_Dieing(Handle timer, int client)
 		if(!b_LeftForDead[client])
 		{
 			int color[4];
-			color[0] = 255;
-			color[1] = 255;
-			color[2] = 0;
-			color[3] = 255;
-				
-			color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
-			color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+			int HealthRemaining = GetEntProp(client, Prop_Send, "m_iHealth");
+			if(HealthRemaining < 210)
+			{
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
 					
-			color[0] = 255 - color[0];
+				color[0] = HealthRemaining * 255  / 210; // red  200 is the max health you can have while dying.
+				color[1] = HealthRemaining * 255  / 210;	// green
+						
+				color[0] = 255 - color[0];
+			}
+			else
+			{
+				color[0] = 0;
+				color[1] = 0;
+				color[2] = 255;
+				color[3] = 255;
+			}
 
 			int particle = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(IsValidEntity(particle))
