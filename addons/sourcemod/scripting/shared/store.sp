@@ -3506,6 +3506,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 		{
 			if(choice == MenuCancel_ExitBack)
 			{
+				if(UsingChoosenTags[client])
+				{
+					Store_CherrypickMenu(client);
+					return 0;
+				}
+				
 				static Item item;
 				menu.GetItem(0, item.Name, sizeof(item.Name));
 				int index = StringToInt(item.Name);
@@ -3517,14 +3523,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 				{
 					StoreItems.GetArray(index, item);
 					if(item.Section != -1)
-					{
 						StoreItems.GetArray(item.Section, item);
-					}
-					else if(UsingChoosenTags[client])
-					{
-						Store_CherrypickMenu(client);
-						return 0;
-					}
 				}
 
 				MenuPage(client, item.Section);
