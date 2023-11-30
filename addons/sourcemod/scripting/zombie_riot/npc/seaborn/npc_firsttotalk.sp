@@ -97,6 +97,7 @@ methodmap FirstToTalk < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		vecMe[2] += 500.0;
 		npc.m_iWearable1 = ParticleEffectAt(vecMe, "env_rain_128", -1.0);
 		SetParent(npc.index, npc.m_iWearable1);
 		return npc;

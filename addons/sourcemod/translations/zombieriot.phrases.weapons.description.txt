@@ -41,7 +41,7 @@
 		"en"		"Archetype: Team Support"
 		"ru"		"Архетип: Командная поддержка"
 	}
-	"Debuff"
+	"ArchDebuff"
 	{
 		"en"		"Archetype: Debuff"
 		"ru"		"Архетип: Ослабление"

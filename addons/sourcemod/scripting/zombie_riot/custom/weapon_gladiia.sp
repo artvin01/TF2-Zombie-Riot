@@ -144,7 +144,10 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 							if(ParticleRef[client] == -1)
 							{
-								int entity = ParticleEffectAt(WorldSpaceCenter(client), "env_rain_128", -1.0);
+								float pos[3]; pos = WorldSpaceCenter(client);
+								pos[2] += 500.0;
+
+								int entity = ParticleEffectAt(pos, "env_rain_128", -1.0);
 								if(entity > MaxClients)
 								{
 									SetParent(client, entity);
