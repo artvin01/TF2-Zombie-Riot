@@ -141,7 +141,7 @@ enum
 	WEAPON_BUFF_BANNER = 70,
 	WEAPON_SURVIVAL_KNIFE_PAP1 = 71,
 	WEAPON_SURVIVAL_KNIFE_PAP2 = 72,
-	WEAPON_SURVIVAL_KNIFE_PAP3 = 74,
+	WEAPON_SURVIVAL_KNIFE_PAP3 = 73,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -1441,11 +1441,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
 						}
 						//if in quantum suit, dont.
-						
-						int Extra = 0;
-							
-						Extra = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
-						int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+
+						int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 
 						Armor_Charge[client] = Armor_Max;
 						GiveCompleteInvul(client, 3.0);
@@ -1598,7 +1595,7 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
 {
 	int Armor_Max;
 	
-	Armor_Max = MaxArmorCalculation(_, client, MaxMulti);
+	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
 	/*
 	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
 	{

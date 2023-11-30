@@ -4808,32 +4808,32 @@ void Store_ApplyAttribs(int client)
 				{
 					case 701:
 					{
-						Armor_Level[client] = RoundToCeil(value);
+						Armor_Level[client] = RoundToNearest(value);
 						continue;
 					}
 					case 777:
 					{
-						Jesus_Blessing[client] = RoundToCeil(value);
+						Jesus_Blessing[client] = RoundToNearest(value);
 						continue;
 					}
 					case 785:
 					{
-						i_HeadshotAffinity[client] = RoundToCeil(value);
+						i_HeadshotAffinity[client] = RoundToNearest(value);
 						continue;
 					}
 					case 830:
 					{
-						i_BarbariansMind[client] = RoundToCeil(value);
+						i_BarbariansMind[client] = RoundToNearest(value);
 						continue;
 					}
 					case 527:
 					{
-						i_SoftShoes[client] = RoundToCeil(value);
+						i_SoftShoes[client] = RoundToNearest(value);
 						continue;
 					}
 					case 805:
 					{
-						i_BadHealthRegen[client] = RoundToCeil(value);
+						i_BadHealthRegen[client] = RoundToNearest(value);
 						continue;
 					}
 				}

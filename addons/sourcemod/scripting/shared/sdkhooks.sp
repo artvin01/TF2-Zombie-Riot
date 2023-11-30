@@ -944,8 +944,7 @@ public void OnPostThink(int client)
 		}
 		else
 		{
-			int Extra = Armor_Level[client];
-			Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+			Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 		}
 
 		int red = 255;
