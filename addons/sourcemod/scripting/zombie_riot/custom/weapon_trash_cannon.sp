@@ -56,8 +56,14 @@ float f_SkeletonSpread[3] = { 8.0, 8.0, 8.0 };			//Skeleton projectile deviation
 
 bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on this pap tier?
 
-//NICE ICE: Fires a big block of ice which deals high contact damage and explodes, freezing all zombies hit by it.
-float f_IceChance[3] = { 0.00, 0.04, 0.08 };
+//NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
+int i_IceMaxTargets[3] = { 2, 4, 6 };
+
+float f_IceChance[3] = { 0.00, 0.04, 0.06 };
+float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
+float f_IceRadius[3] = { 400.0, 500.0, 600.0 };
+float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
+
 bool b_IceEnabled[3] = { false, true, true };
 
 //TRASH: Fires a garbage bag which explodes on impact and applies a powerful poison to all zombies hit by it. Poisoned zombies are given the lesser Medusa debuff and take damage over time.
@@ -79,6 +85,7 @@ static int i_TrashTier[2049] = { 0, ... };
 
 #define MODEL_ROCKET				"models/weapons/w_models/w_rocket.mdl"
 #define MODEL_DRG					"models/weapons/w_models/w_drg_ball.mdl"
+#define MODEL_ICE					"models/props_moonbase/moon_cube_crystal00.mdl"
 
 #define SOUND_FLIMSY_BLAST			"weapons/explode1.wav"
 #define SOUND_SHOCK					"misc/halloween/spell_lightning_ball_impact.wav"
@@ -87,6 +94,8 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_PYRE_FIRE				"misc/halloween/spell_fireball_cast.wav"
 #define SOUND_SKELETON_FIRE			"misc/halloween/spell_blast_jump.wav"
 #define SOUND_SKELETON_BREAK		"misc/halloween/skeleton_break.wav"
+#define SOUND_ICE_FIRE				"player/sleigh_bells/tf_xmas_sleigh_bells_01.wav"
+#define SOUND_ICE_BREAK				"weapons/cow_mangler_explosion_charge_05.wav"
 
 public const char s_SkeletonGibs[][] =
 {
@@ -111,10 +120,14 @@ public const char s_SkeletonGibs[][] =
 #define PARTICLE_SHOCK_CHAIN		"spell_lightningball_hit_red"
 #define PARTICLE_SHOCK_CHAIN_MAX	"spell_lightningball_hit_blue"
 #define PARTICLE_SKELETON_BREAK		"spell_skeleton_goop_green"
+#define PARTICLE_ICE				"utaunt_snowflakesaura_parent"
+#define PARTICLE_ICE_BREAK			"utaunt_snowring_space_parent"
 
 void Trash_Cannon_Precache()
 {
 	PrecacheModel(MODEL_ROCKET, true);
+	PrecacheModel(MODEL_DRG, true);
+	PrecacheModel(MODEL_ICE, true);
 	for (int i = 0; i < sizeof(s_SkeletonGibs); i++)
 	{
 		PrecacheModel(s_SkeletonGibs[i]);
@@ -127,6 +140,8 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_PYRE_FIRE, true);
 	PrecacheSound(SOUND_SKELETON_FIRE, true);
 	PrecacheSound(SOUND_SKELETON_BREAK, true);
+	PrecacheSound(SOUND_ICE_FIRE, true);
+	PrecacheSound(SOUND_ICE_BREAK, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -451,7 +466,48 @@ public bool Trash_Ice(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_IceChance[tier])
 		return false;
 		
+	float vel = f_IceVelocity[tier];
+	//TODO: Increase velocity based on attributes
+		
+	int ice = Trash_LaunchPhysProp(client, MODEL_ICE, GetRandomFloat(0.8, 1.0), vel, weapon, tier, Ice_Explode, true, true);
+	if (IsValidEntity(ice))
+	{
+		Trash_AttachParticle(ice, PARTICLE_ICE, 6.0, "");
+		EmitSoundToAll(SOUND_ICE_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
+		SetEntityRenderMode(ice, RENDER_TRANSALPHA);
+		SetEntityRenderColor(ice, 120, 180, 255, 200);
+	}
+		
 	return true;
+}
+
+public MRESReturn Ice_Explode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_ICE_BREAK, 1.0);
+	EmitSoundToAll(SOUND_ICE_BREAK, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_IceDMG[tier];
+	float radius = f_IceRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_IceMaxTargets[tier], _, _, CryoWandHitM2, Trash_IceHitPre);
+	
+	RemoveEntity(entity);
+	
+	return MRES_Supercede; //DONT.
+}
+
+void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
+{
+	f_HealthBeforeHurt[victim] = 9999999999.0;		//A little hack to guarantee a freeze. Anything that doesn't have anywhere near 999 billion, 999 million, 999 thousand, 999 HP will always be frozen. 
 }
 
 public bool Trash_Trash(int client, int weapon, int tier)
