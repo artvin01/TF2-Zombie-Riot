@@ -8,16 +8,22 @@
 //		- 5.9136 is the multiplier to use for calculating damage at max ranged upgrades.
 
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
-float f_FlimsyDMG[3] = { 500.0, 750.0, 1000.0 };
-float f_FlimsyRadius[3] = { 300.0, 350.0, 400.0 };
-float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };
+float f_FlimsyDMG[3] = { 500.0, 750.0, 1000.0 };		//Flimsy Rocket base damage.
+float f_FlimsyRadius[3] = { 300.0, 350.0, 400.0 };		//Flimsy Rocket explosion radius.
+float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
 
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
-float f_ShockChance[3] = { 0.08, 0.12, 0.16 };
-float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };
-float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };
-float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };
-bool b_ShockEnabled[3] = { true, true, true };
+int i_ShockMaxHits[3] = { 6, 10, 14 };					//Max number of zombies hit by the shock.
+
+float f_ShockChance[3] = { 1.0, 0.12, 0.16 };			//Chance for Shock Stock to be fired.
+float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
+float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
+float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };		//Initial blast radius.
+float f_ShockChainRadius[3] = { 600.0, 800.0, 1000.0 };	//Chain lightning radius.
+float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
+float f_ShockPassangerTime[3] = { 0.2, 0.25, 0.3 };			//Duration to apply the Passanger's Device debuff to zombies hit by Shock Stock chain lightning.
+
+bool b_ShockEnabled[3] = { true, true, true };			//Is Shock Stock enabled on this pap level?
 
 //MORTAR MARKER: A beacon which marks the spot it lands on for a special mortar strike, which scales with ranged upgrades.
 float f_MortarChance[3] = { 0.04, 0.06, 0.08 };
@@ -73,8 +79,8 @@ static int i_TrashTier[2049] = { 0, ... };
 #define PARTICLE_SHOCK_3_MAX		"critical_rocket_bluesparks"
 #define PARTICLE_SHOCK_BLAST		"drg_cow_explosioncore_charged"
 #define PARTICLE_SHOCK_BLAST_MAX	"drg_cow_explosioncore_charged_blue"
-#define PARTICLE_SHOCK_CHAIN		""
-#define PARTICLE_SHOCK_CHAIN_MAX	""
+#define PARTICLE_SHOCK_CHAIN		"spell_lightningball_hit_red"
+#define PARTICLE_SHOCK_CHAIN_MAX	"spell_lightningball_hit_blue"
 
 void Trash_Cannon_Precache()
 {
@@ -143,7 +149,7 @@ public void Trash_Cannon_Shoot(int client, int weapon, bool crit, int tier)
 
 public void Trash_FlimsyRocket(int client, int weapon, int tier)
 {
-	int rocket = Trash_LaunchPhysProp(client, MODEL_ROCKET, GetRandomFloat(0.8, 1.2), f_FlimsyVelocity[tier], weapon, tier, Flimsy_Explode, true, true);
+	Trash_LaunchPhysProp(client, MODEL_ROCKET, GetRandomFloat(0.8, 1.2), f_FlimsyVelocity[tier], weapon, tier, Flimsy_Explode, true, true);
 }
 
 public MRESReturn Flimsy_Explode(int entity)
@@ -211,16 +217,70 @@ public MRESReturn Shock_Explode(int entity)
 	
 	//TODO: Modify damage and radius based on attributes
 	
-	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, _, _, _, Shock_Hit);
+	Shock_ChainToVictim(entity, owner, weapon, damage, radius, position, tier, 0);
 	
 	RemoveEntity(entity);
 	
 	return MRES_Supercede; //DONT.
 }
 
-public void Shock_Hit(int entity, int victim, float damage, int weapon)
+static float f_NextShockTime[2049] = { 0.0, ... };
+
+public void Shock_ChainToVictim(int inflictor, int client, int weapon, float damage, float radius, float position[3], int tier, int NumHits)
 {
+	if (NumHits >= i_ShockMaxHits[tier])
+		return;
+		
+	int victim = Shock_GetClosestVictim(position, radius);
+	float gt = GetGameTime();
+	if (IsValidEntity(victim))
+	{
+		float vicLoc[3];
+		vicLoc = WorldSpaceCenter(victim);
+		SDKHooks_TakeDamage(victim, inflictor, client, damage, DMG_BLAST | DMG_ALWAYSGIB, weapon);
+		
+		if (f_PassangerDebuff[victim] < gt)
+			f_PassangerDebuff[victim] = gt + f_ShockPassangerTime[tier];
+		else
+			f_PassangerDebuff[victim] += f_ShockPassangerTime[tier];
+		
+		f_NextShockTime[victim] = gt + 0.01;
+		
+		ParticleEffectAt(vicLoc, tier > 1 ? PARTICLE_SHOCK_BLAST_MAX : PARTICLE_SHOCK_BLAST, 1.0);
+		SpawnParticle_ControlPoints(position, vicLoc, tier > 1 ? PARTICLE_SHOCK_CHAIN_MAX : PARTICLE_SHOCK_CHAIN, 1.0);
+		
+		if (NumHits < i_ShockMaxHits[tier])
+		{
+			Shock_ChainToVictim(inflictor, client, weapon, damage * f_ShockDMGReductionPerHit[tier], f_ShockChainRadius[tier], vicLoc, tier, NumHits + 1);
+		}
+	}
+}
+
+public int Shock_GetClosestVictim(float position[3], float radius)
+{
+	int closest = -1;
+	float dist = 999999999.0;
 	
+	for (int i = 0; i < i_MaxcountNpc; i++)
+	{
+		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		
+		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && f_NextShockTime[ent] <= GetGameTime())
+		{
+			float vicLoc[3];  
+			vicLoc = WorldSpaceCenter(ent);
+			
+			float targDist = GetVectorDistance(position, vicLoc, true);  
+				
+			if(targDist <= (radius * radius) && targDist < dist)
+			{
+				closest = ent;
+				dist = targDist;
+			}
+		}
+	}
+	
+	return closest;
 }
 
 public bool Trash_Mortar(int client, int weapon, int tier)
@@ -457,3 +517,46 @@ public Action SpinEffect(int ent)
 		
 	return Plugin_Continue;
 }
+
+stock void SpawnParticle_ControlPoints(float StartPos[3], float EndPos[3], char particleType[255], float duration)
+{
+	 int particle  = CreateEntityByName("info_particle_system");
+	 int particle2 = CreateEntityByName("info_particle_system");
+	 int ent = ParticleEffectAt(StartPos, "", 0.0);
+	 int controlpoint = ParticleEffectAt(EndPos, "", 0.0);
+ 
+	 if (IsValidEdict(particle) && IsValidEdict(particle2) && IsValidEdict(ent) && IsValidEdict(controlpoint))
+	 {
+		  TeleportEntity(particle, StartPos, NULL_VECTOR, NULL_VECTOR); 
+		  TeleportEntity(particle2, EndPos, NULL_VECTOR, NULL_VECTOR);
+		  
+		  char tName[128];
+		  Format(tName, sizeof(tName), "target%i", ent);
+		  DispatchKeyValue(ent, "targetname", tName);
+		  
+		  char cpName[128];
+		  Format(cpName, sizeof(cpName), "Xtarget%i", controlpoint);
+		  
+		  DispatchKeyValue(particle2, "targetname", cpName);
+		  
+		  DispatchKeyValue(particle, "targetname", "tf2particle");
+		  DispatchKeyValue(particle, "parentname", tName);
+		  DispatchKeyValue(particle, "effect_name", particleType);
+		  DispatchKeyValue(particle, "cpoint1", cpName);
+		  
+		  DispatchSpawn(particle);
+		  SetVariantString(tName);
+		  AcceptEntityInput(particle, "SetParent", particle, particle, 0);
+		  
+		  SetVariantString("flag");
+		  AcceptEntityInput(particle, "SetParentAttachment", particle, particle, 0);
+		  
+		  ActivateEntity(particle);
+		  AcceptEntityInput(particle, "start");
+		  
+		  CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+		  CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+		  CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(controlpoint), TIMER_FLAG_NO_MAPCHANGE);
+		  CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(ent), TIMER_FLAG_NO_MAPCHANGE);
+	 }
+} 
