@@ -35,7 +35,7 @@ bool b_MortarEnabled[3] = { true, true, true };
 int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
 int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
 
-float f_ArrowsChance[3] = { 0.02, 0.04, 0.08 };			//Chance for Bundle of Arrows to be fired.
+float f_ArrowsChance[3] = { 0.02, 0.06, 0.1 };			//Chance for Bundle of Arrows to be fired.
 float f_ArrowsDMG[3] = { 300.0, 600.0, 800.0 };			//Base arrow damage.
 float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
 float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
@@ -61,7 +61,7 @@ bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on thi
 //NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
 int i_IceMaxTargets[3] = { 2, 4, 6 };
 
-float f_IceChance[3] = { 0.00, 0.04, 0.06 };
+float f_IceChance[3] = { 0.00, 0.06, 0.1 };
 float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
 float f_IceRadius[3] = { 400.0, 500.0, 600.0 };
 float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
@@ -74,7 +74,7 @@ int i_TrashMiniMaxTargets[3] = { 2, 3, 3 };				//Max targets hit by the blast of
 int i_TrashMinExtras[3] = { 6, 8, 12 };					//Minimum number of extra projectiles created when the trash bag explodes.
 int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectiles created when the trash bag explodes.
 
-float f_TrashChance[3] = { 0.04, 0.08, 0.1 };			//Chance for Trash to be fired.
+float f_TrashChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
 float f_TrashMiniVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
 float f_TrashDMG[3] = { 800.0, 1000.0, 1200.0 };			//Base damage for the trash bag.
@@ -84,9 +84,18 @@ float f_TrashMiniRadius[3] = { 200.0, 250.0, 300.0 };		//Blast radius for the ex
 
 bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
-//MICRO-MISSILES: Fires a burst of X micro-missiles which aggressively home in on the nearest enemy and explode.
-float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };
-bool b_MissilesEnabled[3] = { false, false, true };
+//MICRO-MISSILES: Fires a burst of X micro-missiles which aggressively home in on the nearest enemy after a short delay and explode.
+int i_MissilesCount[3] = { 2, 3, 4 };						//The number of micro-missiles fired.
+int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit by the blast.
+
+float f_MissilesChance[3] = { 0.00, 0.00, 0.08 };			//The chance for Micro-Missiles to be fired.
+float f_MissilesDMG[3] = { 800.0, 1200.0, 1600.0 };			//Base missile damage.
+float f_MissilesVelocity[3] = { 1600.0, 2000.0, 2400.0 };	//Base missile velocity.
+float f_MissilesRadius[3] = { 200.0, 300.0, 400.0 };		//Base blast radius.
+float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.
+float f_MissilesHomingStartTime[3] = { 0.2, 0.15, 0.1 };	//Delay after firing before micro-missiles begin to home.
+
+bool b_MissilesEnabled[3] = { false, false, true };			//Are Micro-Missiles enabled on this PaP tier?
 
 //MONDO MASSACRE: The strongest possible roll. Fires an EXTREMELY powerful, VERY big bomb which deals a base damage of 100k within an enormous blast radius.
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
@@ -114,6 +123,7 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_TRASH_FIRE			"weapons/loose_cannon_shoot.wav"
 #define SOUND_TRASH_BREAK			"physics/metal/metal_box_break1.wav"
 #define SOUND_TRASH_MINI_BREAK		"physics/flesh/flesh_squishy_impact_hard3.wav"
+#define SOUND_MISSILES_BEGIN_HOMING	"weapons/sentry_spot_client.wav"
 
 public const char s_SkeletonGibs[][] =
 {
@@ -189,6 +199,7 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_TRASH_FIRE, true);
 	PrecacheSound(SOUND_TRASH_BREAK, true);
 	PrecacheSound(SOUND_TRASH_MINI_BREAK, true);
+	PrecacheSound(SOUND_MISSILES_BEGIN_HOMING, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -656,7 +667,62 @@ public bool Trash_Missiles(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_MissilesChance[tier])
 		return false;
 		
+	for (int i = 0; i < i_MissilesCount[tier]; i++)
+	{
+		float ang[3];
+		GetClientEyeAngles(client, ang);
+		ang[0] = -60.0;
+		ang[1] += GetRandomFloat(-f_MissilesSpread[tier], f_MissilesSpread[tier]);
+		ang[2] += GetRandomFloat(-f_MissilesSpread[tier], f_MissilesSpread[tier]);
+		
+		int missile = Trash_LaunchPhysProp(client, MODEL_ROCKET, 0.5, f_MissilesVelocity[tier], weapon, tier, Missiles_Explode, false, false, ang, true);
+		if (IsValidEntity(missile))
+		{
+			CreateTimer(f_MissilesHomingStartTime[tier], Missiles_BeginHoming, EntIndexToEntRef(missile), TIMER_FLAG_NO_MAPCHANGE);
+			SetEntityMoveType(missile, MOVETYPE_FLY);
+		}
+	}
+		
 	return true;
+}
+
+public MRESReturn Missiles_Explode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_EXPLOSION_GENERIC, 1.0);
+	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 1.0);
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_MissilesDMG[tier];
+	float radius = f_MissilesRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_MissilesMaxTargets[tier]);
+	
+	RemoveEntity(entity);
+	
+	return MRES_Supercede; //DONT.
+}
+
+public Action Missiles_BeginHoming(Handle begin, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (IsValidEntity(ent))
+	{
+		int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+		float ang[3];
+		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+		Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
+		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 1.0);
+	}
+	
+	return Plugin_Continue;
 }
 
 public bool Trash_Mondo(int client, int weapon, int tier)
@@ -735,10 +801,11 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		}
 			
 		TeleportEntity(prop, pos, ang, propVel);
+		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
 		
 		if (Spin)
 		{
-			//TODO: Figure out a way to do this that looks good and doesn't require OnGameFrame.
+			RequestFrame(SpinEffect, EntIndexToEntRef(prop));
 		}
 		
 		i_TrashTier[prop] = tier;
@@ -843,8 +910,13 @@ stock void Trash_AttachParticle(int entity, char type[255], float duration = 0.0
 	}
 }
 
-public Action SpinEffect(int ent)
+public void SpinEffect(int ref)
 {
+	int ent = EntRefToEntIndex(ref);
+	
+	if (!IsValidEntity(ent))
+		return;
+		
 	float ang[3];
 	GetEntPropVector(ent, Prop_Send, "m_angRotation", ang);
 		
@@ -855,7 +927,7 @@ public Action SpinEffect(int ent)
 		
 	TeleportEntity(ent, NULL_VECTOR, ang, NULL_VECTOR);
 		
-	return Plugin_Continue;
+	RequestFrame(SpinEffect, EntIndexToEntRef(ent));
 }
 
 stock void SpawnParticle_ControlPoints(float StartPos[3], float EndPos[3], char particleType[255], float duration)
