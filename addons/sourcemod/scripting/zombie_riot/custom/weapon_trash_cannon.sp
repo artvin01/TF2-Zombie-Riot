@@ -8,6 +8,8 @@
 //		- 5.9136 is the multiplier to use for calculating damage at max ranged upgrades.
 
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
+int i_FlimsyMaxTargets[3] = { 8, 10, 12 };				//Max targets hit by the blast.
+
 float f_FlimsyDMG[3] = { 500.0, 750.0, 1000.0 };		//Flimsy Rocket base damage.
 float f_FlimsyRadius[3] = { 300.0, 350.0, 400.0 };		//Flimsy Rocket explosion radius.
 float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
@@ -15,7 +17,7 @@ float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
 int i_ShockMaxHits[3] = { 6, 10, 14 };					//Max number of zombies hit by the shock.
 
-float f_ShockChance[3] = { 0.08, 0.12, 0.16 };			//Chance for Shock Stock to be fired.
+float f_ShockChance[3] = { 0.08, 0.1, 0.12 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
 float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
 float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };		//Initial blast radius.
@@ -23,7 +25,7 @@ float f_ShockChainRadius[3] = { 600.0, 800.0, 1000.0 };	//Chain lightning radius
 float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
 float f_ShockPassangerTime[3] = { 0.2, 0.25, 0.3 };			//Duration to apply the Passanger's Device debuff to zombies hit by Shock Stock chain lightning.
 
-bool b_ShockEnabled[3] = { true, true, true };			//Is Shock Stock enabled on this pap level?
+bool b_ShockEnabled[3] = { false, true, true };			//Is Shock Stock enabled on this pap level?
 
 //MORTAR MARKER: A beacon which marks the spot it lands on for a special mortar strike, which scales with ranged upgrades.
 float f_MortarChance[3] = { 0.04, 0.06, 0.08 };
@@ -48,7 +50,7 @@ float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 bool b_PyreEnabled[3] = { true, true, true };			//Is Pyre enabled on this pap level?
 
 //SKELETON: Fires a shotgun blast of skeleton gibs which deal huge damage, but have a small radius and can only hit one zombie each.
-float f_SkeletonChance[3] = { 0.00, 0.04, 0.08 };		//Chance for Skeleton to be fired.
+float f_SkeletonChance[3] = { 0.00, 0.06, 0.1 };		//Chance for Skeleton to be fired.
 float f_SkeletonVel[3] = { 800.0, 1000.0, 1200.0 };		//Skeleton projectile velocity.
 float f_SkeletonDMG[3] = { 1000.0, 1200.0, 1600.0 };	//Skeleton damage.
 float f_SkeletonRadius[3] = { 90.0, 95.0, 100.0 };		//Skeleton radius.
@@ -66,9 +68,21 @@ float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
 
 bool b_IceEnabled[3] = { false, true, true };
 
-//TRASH: Fires a garbage bag which explodes on impact and applies a powerful poison to all zombies hit by it. Poisoned zombies are given the lesser Medusa debuff and take damage over time.
-float f_TrashChance[3] = { 0.00, 0.03, 0.06 };
-bool b_TrashEnabled[3] = { false, true, true };
+//TRASH: Fires a garbage bag which explodes on impact, releasing a cluster of smaller projectiles.
+int i_TrashMaxTargets[3] = { 8, 10, 12 };				//Max targets hit by the blast.
+int i_TrashMiniMaxTargets[3] = { 2, 3, 3 };				//Max targets hit by the blast of extra projectiles.
+int i_TrashMinExtras[3] = { 6, 8, 12 };					//Minimum number of extra projectiles created when the trash bag explodes.
+int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectiles created when the trash bag explodes.
+
+float f_TrashChance[3] = { 0.04, 0.08, 0.1 };			//Chance for Trash to be fired.
+float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
+float f_TrashMiniVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
+float f_TrashDMG[3] = { 800.0, 1000.0, 1200.0 };			//Base damage for the trash bag.
+float f_TrashMiniDMG[3] = { 400.0, 500.0, 600.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
+float f_TrashRadius[3] = { 400.0, 450.0, 500.0 };			//Blast radius for the trash bag.
+float f_TrashMiniRadius[3] = { 200.0, 250.0, 300.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
+
+bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
 //MICRO-MISSILES: Fires a burst of X micro-missiles which aggressively home in on the nearest enemy and explode.
 float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };
@@ -86,6 +100,7 @@ static int i_TrashTier[2049] = { 0, ... };
 #define MODEL_ROCKET				"models/weapons/w_models/w_rocket.mdl"
 #define MODEL_DRG					"models/weapons/w_models/w_drg_ball.mdl"
 #define MODEL_ICE					"models/props_moonbase/moon_cube_crystal00.mdl"
+#define MODEL_TRASH					"models/props_soho/trashbag001.mdl"
 
 #define SOUND_FLIMSY_BLAST			"weapons/explode1.wav"
 #define SOUND_SHOCK					"misc/halloween/spell_lightning_ball_impact.wav"
@@ -96,6 +111,9 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_SKELETON_BREAK		"misc/halloween/skeleton_break.wav"
 #define SOUND_ICE_FIRE				"player/sleigh_bells/tf_xmas_sleigh_bells_01.wav"
 #define SOUND_ICE_BREAK				"weapons/cow_mangler_explosion_charge_05.wav"
+#define SOUND_TRASH_FIRE			"weapons/loose_cannon_shoot.wav"
+#define SOUND_TRASH_BREAK			"physics/metal/metal_box_break1.wav"
+#define SOUND_TRASH_MINI_BREAK		"physics/flesh/flesh_squishy_impact_hard3.wav"
 
 public const char s_SkeletonGibs[][] =
 {
@@ -105,6 +123,21 @@ public const char s_SkeletonGibs[][] =
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_r.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl"
+};
+
+public const char s_TrashProps[][] =
+{
+	"models/props_soho/bulb001.mdl",
+	"models/props_soho/bottlecrate001.mdl",
+	"models/props_halloween/eyeball_projectile.mdl",
+	"models/props_halloween/flask_erlenmeyer.mdl",
+	"models/props_halloween/flask_bottle.mdl",
+	"models/props_halloween/hwn_spellbook_magazine.mdl",
+	"models/props_halloween/jackolantern_01.mdl",
+	"models/props_halloween/smlprop_spider.mdl",
+	"models/props_farm/padlock.mdl",
+	"models/props_farm/tools_shovel.mdl",
+	"models/props_2fort/frog.mdl"
 };
 
 #define PARTICLE_FLIMSY_TRAIL		"drg_manmelter_trail_red"
@@ -122,15 +155,26 @@ public const char s_SkeletonGibs[][] =
 #define PARTICLE_SKELETON_BREAK		"spell_skeleton_goop_green"
 #define PARTICLE_ICE				"utaunt_snowflakesaura_parent"
 #define PARTICLE_ICE_BREAK			"utaunt_snowring_space_parent"
+#define PARTICLE_TRASH				"merasmus_ambient"
+#define PARTICLE_TRASH_BREAK		"spell_skeleton_goop_green"
+#define PARTICLE_TRASH_MINI			"superrare_burning2"
+#define PARTICLE_TRASH_BREAK_MINI	"spell_skeleton_goop_green"
 
 void Trash_Cannon_Precache()
 {
 	PrecacheModel(MODEL_ROCKET, true);
 	PrecacheModel(MODEL_DRG, true);
 	PrecacheModel(MODEL_ICE, true);
+	PrecacheModel(MODEL_TRASH, true);
+	
 	for (int i = 0; i < sizeof(s_SkeletonGibs); i++)
 	{
 		PrecacheModel(s_SkeletonGibs[i]);
+	}
+	
+	for (int j = 0; j < sizeof(s_TrashProps); j++)
+	{
+		PrecacheModel(s_TrashProps[j]);
 	}
 	
 	PrecacheSound(SOUND_FLIMSY_BLAST, true);
@@ -142,6 +186,9 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_SKELETON_BREAK, true);
 	PrecacheSound(SOUND_ICE_FIRE, true);
 	PrecacheSound(SOUND_ICE_BREAK, true);
+	PrecacheSound(SOUND_TRASH_FIRE, true);
+	PrecacheSound(SOUND_TRASH_BREAK, true);
+	PrecacheSound(SOUND_TRASH_MINI_BREAK, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -222,7 +269,7 @@ public MRESReturn Flimsy_Explode(int entity)
 	
 	//TODO: Modify damage and radius based on attributes
 	
-	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false);
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_FlimsyMaxTargets[tier]);
 	
 	RemoveEntity(entity);
 	
@@ -518,7 +565,87 @@ public bool Trash_Trash(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_TrashChance[tier])
 		return false;
 		
+	float vel = f_TrashVelocity[tier];
+	//TODO: Increase velocity based on attributes
+		
+	int trash = Trash_LaunchPhysProp(client, MODEL_TRASH, GetRandomFloat(0.8, 1.2), vel, weapon, tier, Trash_Explode, true, true);
+	if (IsValidEntity(trash))
+	{
+		Trash_AttachParticle(trash, PARTICLE_TRASH, 6.0, "");
+		EmitSoundToAll(SOUND_TRASH_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
+	}
+		
 	return true;
+}
+
+public MRESReturn Trash_Explode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_TRASH_BREAK, 1.0);
+	EmitSoundToAll(SOUND_TRASH_BREAK, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_TrashDMG[tier];
+	float radius = f_TrashRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_TrashMaxTargets[tier]);
+	
+	RemoveEntity(entity);
+	
+	float vel = f_TrashMiniVelocity[tier];
+	//TODO: Scale vel with atts
+	
+	position[2] += 25.0;
+	
+	for (int i = 0; i < GetRandomInt(i_TrashMinExtras[tier], i_TrashMaxExtras[tier]); i++)
+	{
+		char placeholder[255];
+		strcopy(placeholder, 255, s_TrashProps[GetRandomInt(0, sizeof(s_TrashProps) - 1)]);
+		
+		float ang[3];
+		ang[0] = GetRandomFloat(-20.0, -90.0);
+		ang[1] = GetRandomFloat(0.0, 360.0);
+		ang[2] = GetRandomFloat(0.0, 360.0);
+		
+		int mini = Trash_LaunchPhysProp(owner, placeholder, GetRandomFloat(0.8, 1.0), vel, weapon, tier, Trash_MiniExplode, true, true, ang, true, _, position, true);
+		if (IsValidEntity(mini))
+		{
+			Trash_AttachParticle(mini, PARTICLE_TRASH_MINI, 6.0, "");
+		}
+	}
+	
+	return MRES_Supercede; //DONT.
+}
+
+public MRESReturn Trash_MiniExplode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_TRASH_BREAK_MINI, 1.0);
+	EmitSoundToAll(SOUND_TRASH_MINI_BREAK, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_TrashMiniDMG[tier];
+	float radius = f_TrashMiniRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_TrashMiniMaxTargets[tier]);
+	
+	RemoveEntity(entity);
+	
+	return MRES_Supercede; //DONT.
 }
 
 public bool Trash_Missiles(int client, int weapon, int tier)
@@ -543,7 +670,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	return true;
 }
 
-int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0)
+int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0, float posOverride[3] = NULL_VECTOR, bool usePosOverride = false)
 {
 	int prop = CreateEntityByName("tf_projectile_rocket");
 			
@@ -578,6 +705,11 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		if (useAngOverride)
 		{
 			ang = angOverride;
+		}
+		
+		if (usePosOverride)
+		{
+			pos = posOverride;
 		}
 
 		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
