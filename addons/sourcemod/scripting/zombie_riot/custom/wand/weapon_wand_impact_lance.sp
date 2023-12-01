@@ -35,11 +35,11 @@ public void Wand_Impact_Lance_Multi_Hit(int client, float &CustomMeleeRange, flo
 
 	switch(i_Current_Pap[client])
 	{
-		case 0:
+		case 0:	//baseline pap 0
 		{
 			
 		}
-		case 1:
+		case 1:	//normal pap 1
 		{
 			CustomMeleeRange +=15.0;
 		}
@@ -52,6 +52,21 @@ public void Wand_Impact_Lance_Multi_Hit(int client, float &CustomMeleeRange, flo
 		{
 			CustomMeleeRange +=45.0;
 			CustomMeleeWide +=5.0;
+		}
+
+		case 4:	//alt pap 1
+		{
+			CustomMeleeRange +=7.5;
+		}
+		case 5:
+		{
+			CustomMeleeRange +=15.0;
+			CustomMeleeWide +=5.0;
+		}
+		case 6:
+		{
+			CustomMeleeRange +=25.0;
+			CustomMeleeWide +=15.0;
 		}
 	}
 }
@@ -111,7 +126,9 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 		return;
 	}
 
-	int mana_cost = 400;
+	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	mana_cost = RoundToFloor(mana_cost*4.0);
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -235,7 +252,7 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 	}
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
-	mana_cost = RoundToFloor(mana_cost*2.0);
+	mana_cost = RoundToFloor(mana_cost*3.0);
 
 	if(mana_cost <= Current_Mana[client])
 	{
@@ -267,7 +284,6 @@ public void Impact_Lance_Throw_Lance(int client, int weapon, bool crit, int slot
 		float damage = 65.0;
 		
 		
-		//note: redo attributes for better customizability
 		damage *=Attributes_Get(weapon, 410, 1.0);
 				
 		speed *= Attributes_Get(weapon, 103, 1.0);
@@ -501,6 +517,18 @@ bool Impact_Lance_CosmeticEffects_IfNotAvaiable(int client)	//warp
 		{
 			thingsToLoop = 24;
 		}
+		case 4:
+		{
+			thingsToLoop = 14;
+		}
+		case 5:
+		{
+			thingsToLoop = 16;
+		}
+		case 6:
+		{
+			thingsToLoop = 22;
+		}
 	}
 	for(int loop = 0; loop<thingsToLoop; loop++)
 	{
@@ -622,6 +650,18 @@ void Impact_Lance_Effects(int client, int Wearable, char[] attachment = "effect_
 		{
 			Impact_Lance_EffectPap3(client, Wearable, attachment);
 		}
+		case 4:
+		{
+			Impact_Lance_EffectPap4(client, Wearable, attachment);
+		}
+		case 5:
+		{
+			Impact_Lance_EffectPap5(client, Wearable, attachment);
+		}
+		case 6:
+		{
+			Impact_Lance_EffectPap6(client, Wearable, attachment);
+		}
 	}
 }
 void Impact_Lance_Effects_Projectile(int client, int entity)
@@ -634,21 +674,21 @@ void Impact_Lance_Effects_Projectile(int client, int entity)
 	flAng[2] *=-1;
 	switch(i_current_pap_projectile[entity])
 	{
-		case 0:
-		{
-			Impact_Lance_EffectPap_proj_0(entity, flAng);
-		}
-		case 1:
+		case 4:
 		{
 			Impact_Lance_EffectPap_proj_1(entity, flAng);
 		}
-		case 2:
+		case 5:
 		{
 			Impact_Lance_EffectPap_proj_2(entity, flAng);
 		}
-		case 3:
+		case 6:
 		{
 			Impact_Lance_EffectPap_proj_3(entity, flAng);
+		}
+		default:
+		{
+			Impact_Lance_EffectPap_proj_0(entity, flAng);
 		}
 	}
 }
@@ -1100,16 +1140,23 @@ void Impact_Lance_EffectPap_proj_1(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);
+		/*
+		{x, y, z};
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);
+		x = Right = -x, Left = x
+		y = Forward = y, backwrads = -y
+		z is inverted values
+		 
+	*/
 
-	int particle_4 = ParticleEffectAt({0.0,60.0, 5.0}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({0.0,60.0, -5.0}, "", 0.0);
+	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
 
-	int particle_5 = ParticleEffectAt({0.0,-10.0, 0.0}, "", 0.0);
+	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+
+	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1118,29 +1165,27 @@ void Impact_Lance_EffectPap_proj_1(int client, float flAng[3])
 	SetParent(particle_1, particle_3_1, "",_, true);
 	SetParent(particle_1, particle_4, "",_, true);
 	SetParent(particle_1, particle_4_1, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
 
 	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
 	SetParent(client, particle_1, "",_);
 
 
-	float amp = 0.1;
+	float amp = 0.01;
 
 	float blade_start = 2.0;
-	float blade_end = 0.5;
+	float blade_end = 0.25;
 	//handguard
 	float handguard_size = 1.0;
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_6 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
 
-	int Laser_4 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM );			//blade
-	int Laser_5 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM );		//blade
+	int laser_5 = ConnectWithBeamClient(particle_4, particle_4_1, red, green, blue, blade_end, blade_start, amp, LASERBEAM);	//core blade
 
-	int Laser_7 = ConnectWithBeamClient(particle_2, particle_5, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
-	int Laser_8 = ConnectWithBeamClient(particle_2_1, particle_5, red, green, blue, blade_start, blade_end, amp, LASERBEAM );
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM);		//blade to handguard
+	int Laser_7 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM);
 	
 
 	i_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -1153,12 +1198,10 @@ void Impact_Lance_EffectPap_proj_1(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
 	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
 	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
 }
 
 
@@ -1182,17 +1225,14 @@ void Impact_Lance_EffectPap_proj_2(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -7.5}, "", 0.0);
+	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0);
+	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,70.0,2.5}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({0.0,70.0, -2.5}, "", 0.0);
-
-	int particle_5 = ParticleEffectAt({0.0,-10.0, 5.0}, "", 0.0);
-	int particle_5_1 = ParticleEffectAt({0.0,-10.0, -5.0}, "", 0.0);
+	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1201,30 +1241,30 @@ void Impact_Lance_EffectPap_proj_2(int client, float flAng[3])
 	SetParent(particle_1, particle_3_1, "",_, true);
 	SetParent(particle_1, particle_4, "",_, true);
 	SetParent(particle_1, particle_4_1, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_1, particle_5_1, "",_, true);
 
 	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
 	SetParent(client, particle_1, "",_);
 
 
-	float amp = 0.1;
+	float amp = 0.01;
 
 	float blade_start = 2.0;
-	float blade_end = 0.5;
+	float blade_end = 0.25;
 	//handguard
 	float handguard_size = 1.0;
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_6 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
 
-	int Laser_4 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM);			//blade
-	int Laser_5 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM);		//blade
+	int laser_5 = ConnectWithBeamClient(particle_4, particle_4_1, red, green, blue, blade_end, blade_start, amp, LASERBEAM );	//core blade
 
-	int Laser_7 = ConnectWithBeamClient(particle_2, particle_5, red, green, blue, blade_start, blade_end, amp, LASERBEAM);			//inner blade
-	int Laser_8 = ConnectWithBeamClient(particle_2_1, particle_5_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM);	//	inner blade
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM );		//core blade to handguard
+	int Laser_7 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM );
+
+	int Laser_8 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM );		//blade edge to handguard
+	int Laser_9 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM );
 	
 
 	i_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -1237,13 +1277,12 @@ void Impact_Lance_EffectPap_proj_2(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
 	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
 	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(particle_5_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
 
 }
 
@@ -1266,22 +1305,17 @@ void Impact_Lance_EffectPap_proj_3(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -7.5}, "", 0.0);
+	int particle_2 = ParticleEffectAt({0.0, 10.0, 5.0}, "", 0.0); 	//top
+	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -5.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0);
+	int particle_3 = ParticleEffectAt({10.0,25.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = ParticleEffectAt({-10.0,25.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,70.0,2.5}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({0.0,70.0, -2.5}, "", 0.0);
+	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
-	int particle_5 = ParticleEffectAt({0.0,-10.0, 5.0}, "", 0.0);
-	int particle_5_1 = ParticleEffectAt({0.0,-10.0, -5.0}, "", 0.0);
-
-	int particle_6 = ParticleEffectAt({12.0,-5.0, 0.0}, "", 0.0);
-	int particle_6_1 = ParticleEffectAt({-12.0,-5.0, 0.0}, "", 0.0);
-
-	int particle_7 = ParticleEffectAt({0.0,-10.0, 0.0}, "", 0.0);
+	int particle_5 = ParticleEffectAt({15.0,30.0,0.0}, "", 0.0);			//Left
+	int particle_5_1 = ParticleEffectAt({-15.0,30.0,0.0}, "", 0.0);			//Right
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1292,36 +1326,37 @@ void Impact_Lance_EffectPap_proj_3(int client, float flAng[3])
 	SetParent(particle_1, particle_4_1, "",_, true);
 	SetParent(particle_1, particle_5, "",_, true);
 	SetParent(particle_1, particle_5_1, "",_, true);
-	SetParent(particle_1, particle_6, "",_, true);
-	SetParent(particle_1, particle_6_1, "",_, true);
-	SetParent(particle_1, particle_7, "",_, true);
 
 	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
 	SetParent(client, particle_1, "",_);
 
 
-	float amp = 0.1;
+	float amp = 0.01;
 
 	float blade_start = 2.0;
-	float blade_end = 0.5;
+	float blade_end = 0.25;
 	//handguard
 	float handguard_size = 1.0;
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
 	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
-	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
-	int Laser_6 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM );
 
-	int Laser_4 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM);			//blade
-	int Laser_5 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM);		//blade
+	int laser_5 = ConnectWithBeamClient(particle_4, particle_4_1, red, green, blue, blade_end, blade_start, amp, LASERBEAM );	//core blade
 
-	int Laser_7 = ConnectWithBeamClient(particle_2, particle_5, red, green, blue, blade_start, blade_end, amp, LASERBEAM);			//inner blade
-	int Laser_8 = ConnectWithBeamClient(particle_2_1, particle_5_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM);	//	inner blade
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM );		//core blade to handguard
+	int Laser_7 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM );
 
-	int Laser_9 = ConnectWithBeamClient(particle_6, particle_3, red, green, blue, blade_end, handguard_size, amp, LASERBEAM);			//wing start
-	int Laser_10 = ConnectWithBeamClient(particle_6_1, particle_3_1, red, green, blue, blade_end, handguard_size, amp, LASERBEAM);		//wing start
-	int Laser_11 = ConnectWithBeamClient(particle_6, particle_7, red, green, blue, blade_end, blade_start, amp, LASERBEAM );			//wing end
-	int Laser_12 = ConnectWithBeamClient(particle_6_1, particle_7, red, green, blue, blade_end, blade_start, amp, LASERBEAM );			//wing end
+	int Laser_8 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM );		//blade edge to handguard
+	int Laser_9 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM );
+
+	int Laser_10 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, handguard_size, handguard_size, amp, LASERBEAM );
+	int Laser_11 = ConnectWithBeamClient(particle_5_1, particle_3_1, red, green, blue, handguard_size, handguard_size, amp, LASERBEAM );
+
+	int Laser_12 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM );
+	int Laser_13 = ConnectWithBeamClient(particle_5_1, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM );
+
 	
 
 	i_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
@@ -1334,19 +1369,268 @@ void Impact_Lance_EffectPap_proj_3(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
 	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
 	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(particle_5_1);
-	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_9);
-	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(Laser_10);
-	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_11);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_10);
+	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_11);
+	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(particle_5_1);
 	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_12);
-	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(particle_7);
-	i_Impact_Lance_CosmeticEffect[client][23] = EntIndexToEntRef(particle_6);
-	i_Impact_Lance_CosmeticEffect[client][24] = EntIndexToEntRef(particle_6_1);
+	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(Laser_13);
+
+}
+
+void Impact_Lance_EffectPap4(int client, int Wearable, char[] attachment = "effect_hand_r")
+{
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	/*
+		{x, y, z};
+
+		x = Right = -x, Left = x
+		y = Forward = y, backwrads = -y
+		z is inverted values
+		 
+	*/
+
+	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
+
+	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+
+	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_2_1, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_3_1, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_4_1, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(Wearable, particle_1, attachment,_);
+
+
+	float amp = 0.01;
+
+	float blade_start = 2.0;
+	float blade_end = 0.25;
+	//handguard
+	float handguard_size = 1.0;
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+
+	int laser_5 = ConnectWithBeamClient(particle_4, particle_4_1, red, green, blue, blade_end, blade_start, amp, LASERBEAM ,client);	//core blade
+
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM ,client);		//blade to handguard
+	int Laser_7 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM ,client);
+	
+
+	i_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
+	i_Impact_Lance_CosmeticEffect[client][1] = EntIndexToEntRef(particle_2);
+	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
+	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
+	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+}
+
+
+void Impact_Lance_EffectPap5(int client, int Wearable, char[] attachment = "effect_hand_r")
+{
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	/*
+		{x, y, z};
+
+		x = Right = -x, Left = x
+		y = Forward = y, backwrads = -y
+		z is inverted values
+		 
+	*/
+
+	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
+
+	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+
+	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_2_1, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_3_1, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_4_1, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(Wearable, particle_1, attachment,_);
+
+
+	float amp = 0.01;
+
+	float blade_start = 2.0;
+	float blade_end = 0.25;
+	//handguard
+	float handguard_size = 1.0;
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+
+	int laser_5 = ConnectWithBeamClient(particle_4, particle_4_1, red, green, blue, blade_end, blade_start, amp, LASERBEAM ,client);	//core blade
+
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM ,client);		//core blade to handguard
+	int Laser_7 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM ,client);
+
+	int Laser_8 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM ,client);		//blade edge to handguard
+	int Laser_9 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM ,client);
+	
+
+	i_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
+	i_Impact_Lance_CosmeticEffect[client][1] = EntIndexToEntRef(particle_2);
+	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
+	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
+	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
+}
+
+
+
+void Impact_Lance_EffectPap6(int client, int Wearable, char[] attachment = "effect_hand_r")
+{
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	/*
+		{x, y, z};
+
+		x = Right = -x, Left = x
+		y = Forward = y, backwrads = -y
+		z is inverted values
+		 
+	*/
+
+	int particle_2 = ParticleEffectAt({0.0, 10.0, 5.0}, "", 0.0); 	//top
+	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -5.0}, "", 0.0);	//bottom
+
+	int particle_3 = ParticleEffectAt({10.0,25.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = ParticleEffectAt({-10.0,25.0,0.0}, "", 0.0);			//Right
+
+	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+
+	int particle_5 = ParticleEffectAt({15.0,30.0,0.0}, "", 0.0);			//Left
+	int particle_5_1 = ParticleEffectAt({-15.0,30.0,0.0}, "", 0.0);			//Right
+
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_2_1, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_3_1, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_4_1, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
+	SetParent(particle_1, particle_5_1, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(Wearable, particle_1, attachment,_);
+
+
+	float amp = 0.01;
+
+	float blade_start = 2.0;
+	float blade_end = 0.25;
+	//handguard
+	float handguard_size = 1.0;
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM ,client);
+
+	int laser_5 = ConnectWithBeamClient(particle_4, particle_4_1, red, green, blue, blade_end, blade_start, amp, LASERBEAM ,client);	//core blade
+
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM ,client);		//core blade to handguard
+	int Laser_7 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, handguard_size, blade_start, amp, LASERBEAM ,client);
+
+	int Laser_8 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM ,client);		//blade edge to handguard
+	int Laser_9 = ConnectWithBeamClient(particle_3_1, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM ,client);
+
+	int Laser_10 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, handguard_size, handguard_size, amp, LASERBEAM ,client);
+	int Laser_11 = ConnectWithBeamClient(particle_5_1, particle_3_1, red, green, blue, handguard_size, handguard_size, amp, LASERBEAM ,client);
+
+	int Laser_12 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM ,client);
+	int Laser_13 = ConnectWithBeamClient(particle_5_1, particle_4, red, green, blue, handguard_size, blade_end, amp, LASERBEAM ,client);
+
+	
+
+	i_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
+	i_Impact_Lance_CosmeticEffect[client][1] = EntIndexToEntRef(particle_2);
+	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
+	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
+	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_10);
+	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_11);
+	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(particle_5_1);
+	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_12);
+	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(Laser_13);
 
 }

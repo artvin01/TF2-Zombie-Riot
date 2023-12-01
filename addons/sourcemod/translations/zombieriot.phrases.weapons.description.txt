@@ -2523,14 +2523,26 @@
 	}
 	"Impact Lance Desc 2"
 	{
-		"en"	"Pressing R will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\nLarger range\nSlightly more melee width\nHigher Mana Cost"
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n15% melee Resistance"
 	}
 	"Impact Lance Desc 3"
 	{
-		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\nLarger range\nSlightly more melee width\nHigher Mana Cost"
+		"en"	"Larger range\nSlightly more melee width\nHigher Mana Cost"
 	}
 	"Impact Lance Desc 4"
 	{
 		"en"	"The Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
+	}
+	"Impact Lance Desc 5"
+	{
+		"en"	"Pressing R will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
+	}
+	"Impact Lance Desc 6"
+	{
+		"en"	"Larger range\nSlightly more melee width"
+	}
+	"Impact Lance Desc 7"
+	{
+		"en"	"The Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
 	}
 }
