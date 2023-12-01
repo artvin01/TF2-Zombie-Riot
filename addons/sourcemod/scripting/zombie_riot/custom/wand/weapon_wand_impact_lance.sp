@@ -575,7 +575,7 @@ public Action Timer_Impact_Lance_Cosmetic(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		ApplyExtra_Impact_Lance_CosmeticEffects(client,true);
 		h_Impact_Lance_CosmeticEffectManagement[client] = null;
