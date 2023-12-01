@@ -40,8 +40,12 @@ float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
 
 //PYRE: A fireball which is affected by gravity.
-float f_PyreChance[3] = { 0.05, 0.08, 0.12 };
-bool b_PyreEnabled[3] = { true, true, true };
+float f_PyreChance[3] = { 0.05, 0.08, 0.12 };			//Chance for Pyre to be fired.
+float f_PyreDMG[3] = { 1000.0, 1500.0, 2000.0 };		//Damage dealt by fireballs.
+float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
+float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
+
+bool b_PyreEnabled[3] = { true, true, true };			//Is Pyre enabled on this pap level?
 
 //SKELETON: Fires a shotgun blast of skeleton gibs which deal huge contact damage.
 float f_SkeletonChance[3] = { 0.00, 0.04, 0.08 };
@@ -75,6 +79,7 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_SHOCK					"misc/halloween/spell_lightning_ball_impact.wav"
 #define SOUND_SHOCK_FIRE			"misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_ARROWS_FIRE			"weapons/bow_shoot.wav"
+#define SOUND_PYRE_FIRE				"misc/halloween/spell_fireball_cast.wav"
 
 #define PARTICLE_FLIMSY_TRAIL		"drg_manmelter_trail_red"
 #define PARTICLE_EXPLOSION_GENERIC	"ExplosionCore_MidAir"
@@ -97,6 +102,7 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_SHOCK, true);
 	PrecacheSound(SOUND_SHOCK_FIRE, true);
 	PrecacheSound(SOUND_ARROWS_FIRE, true);
+	PrecacheSound(SOUND_PYRE_FIRE, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -348,6 +354,38 @@ public bool Trash_Pyre(int client, int weapon, int tier)
 		
 	if (GetRandomFloat(0.0, 1.0) > f_PyreChance[tier])
 		return false;
+	
+	float damage = f_PyreDMG[tier];
+	float vel = f_PyreVel[tier];
+	//TODO: Increase damage and velocity based on attributes
+	
+	int entity = CreateEntityByName("tf_projectile_spellfireball");
+	if(IsValidEntity(entity))
+	{
+		float ang[3], pos[3], velVec[3], buffer[3];
+		GetClientEyePosition(client, pos);
+		GetClientEyeAngles(client, ang);
+	
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+		velVec[0] = buffer[0] * vel;
+		velVec[1] = buffer[1] * vel;
+		velVec[2] = buffer[2] * vel;
+	
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		
+		DispatchSpawn(entity);
+		
+		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+		SetEntityGravity(entity, f_PyreGravity[tier]);
+		TeleportEntity(entity, pos, ang, velVec);
+		
+		f_CustomGrenadeDamage[entity] = damage;
+		SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+	}
+		
+	EmitSoundToAll(SOUND_PYRE_FIRE, client, SNDCHAN_STATIC, 90, _, 1.0);
 		
 	return true;
 }
