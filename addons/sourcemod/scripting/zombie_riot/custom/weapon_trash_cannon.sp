@@ -4,9 +4,6 @@
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Weapon_Damage[3] = { 100.0, 250.0, 500.0 }; Default damage is 100, pap1 is 250, pap2 is 500.
 
-//NOTES:
-//		- 5.9136 is the multiplier to use for calculating damage at max ranged upgrades.
-
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
 int i_FlimsyMaxTargets[3] = { 8, 10, 12 };				//Max targets hit by the blast.
 
@@ -17,7 +14,7 @@ float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
 int i_ShockMaxHits[3] = { 6, 10, 14 };					//Max number of zombies hit by the shock.
 
-float f_ShockChance[3] = { 0.08, 0.1, 0.12 };			//Chance for Shock Stock to be fired.
+float f_ShockChance[3] = { 0.1, 0.12, 0.14 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
 float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
 float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };		//Initial blast radius.
@@ -28,21 +25,22 @@ float f_ShockPassangerTime[3] = { 0.2, 0.25, 0.3 };			//Duration to apply the Pa
 bool b_ShockEnabled[3] = { false, true, true };			//Is Shock Stock enabled on this pap level?
 
 //MORTAR MARKER: A beacon which marks the spot it lands on for a special mortar strike, which scales with ranged upgrades.
+//UNUSED - decided it was just another source of AoE damage so there was no real reason to bother with it.
 float f_MortarChance[3] = { 0.04, 0.06, 0.08 };
-bool b_MortarEnabled[3] = { true, true, true };
+bool b_MortarEnabled[3] = { false, false, false };
 
 //BUNDLE OF ARROWS: A giant shotgun blast of Huntsman arrows.
 int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
 int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
 
-float f_ArrowsChance[3] = { 0.02, 0.06, 0.1 };			//Chance for Bundle of Arrows to be fired.
+float f_ArrowsChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Bundle of Arrows to be fired.
 float f_ArrowsDMG[3] = { 300.0, 600.0, 800.0 };			//Base arrow damage.
 float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
 float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
 
 //PYRE: A fireball which is affected by gravity.
-float f_PyreChance[3] = { 0.05, 0.08, 0.12 };			//Chance for Pyre to be fired.
+float f_PyreChance[3] = { 0.06, 0.1, 0.14 };			//Chance for Pyre to be fired.
 float f_PyreDMG[3] = { 1000.0, 1500.0, 2000.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
@@ -50,7 +48,7 @@ float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 bool b_PyreEnabled[3] = { true, true, true };			//Is Pyre enabled on this pap level?
 
 //SKELETON: Fires a shotgun blast of skeleton gibs which deal huge damage, but have a small radius and can only hit one zombie each.
-float f_SkeletonChance[3] = { 0.00, 0.06, 0.1 };		//Chance for Skeleton to be fired.
+float f_SkeletonChance[3] = { 0.00, 0.1, 0.14 };		//Chance for Skeleton to be fired.
 float f_SkeletonVel[3] = { 800.0, 1000.0, 1200.0 };		//Skeleton projectile velocity.
 float f_SkeletonDMG[3] = { 1000.0, 1200.0, 1600.0 };	//Skeleton damage.
 float f_SkeletonRadius[3] = { 90.0, 95.0, 100.0 };		//Skeleton radius.
@@ -76,7 +74,7 @@ int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectile
 
 float f_TrashChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
-float f_TrashMiniVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
+float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
 float f_TrashDMG[3] = { 800.0, 1000.0, 1200.0 };			//Base damage for the trash bag.
 float f_TrashMiniDMG[3] = { 400.0, 500.0, 600.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
 float f_TrashRadius[3] = { 400.0, 450.0, 500.0 };			//Blast radius for the trash bag.
@@ -87,13 +85,15 @@ bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap 
 //MICRO-MISSILES: Fires a burst of X micro-missiles which aggressively home in on the nearest enemy after a short delay and explode.
 int i_MissilesCount[3] = { 2, 3, 4 };						//The number of micro-missiles fired.
 int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit by the blast.
+int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
 
 float f_MissilesChance[3] = { 0.00, 0.00, 0.08 };			//The chance for Micro-Missiles to be fired.
-float f_MissilesDMG[3] = { 800.0, 1200.0, 1600.0 };			//Base missile damage.
-float f_MissilesVelocity[3] = { 1600.0, 2000.0, 2400.0 };	//Base missile velocity.
+float f_MissilesDMG[3] = { 400.0, 600.0, 800.0 };			//Base missile damage.
+float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
 float f_MissilesRadius[3] = { 200.0, 300.0, 400.0 };		//Base blast radius.
 float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.
 float f_MissilesHomingStartTime[3] = { 0.2, 0.15, 0.1 };	//Delay after firing before micro-missiles begin to home.
+float f_MissilesWaveDelay[3] = { 0.1, 0.2, 0.1 };			//Delay between sets.
 
 bool b_MissilesEnabled[3] = { false, false, true };			//Are Micro-Missiles enabled on this PaP tier?
 
@@ -130,6 +130,7 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_TRASH_FIRE			"weapons/loose_cannon_shoot.wav"
 #define SOUND_TRASH_BREAK			"physics/metal/metal_box_break1.wav"
 #define SOUND_TRASH_MINI_BREAK		"physics/flesh/flesh_squishy_impact_hard3.wav"
+#define SOUND_MISSILES_FIRE			"weapons/airstrike_fire_01.wav"
 #define SOUND_MISSILES_BEGIN_HOMING	"weapons/sentry_spot_client.wav"
 #define SOUND_MONDO_FIRE			"mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 #define SOUND_MONDO_BREAK_1			"mvm/mvm_tank_explode.wav"
@@ -211,6 +212,7 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_TRASH_FIRE, true);
 	PrecacheSound(SOUND_TRASH_BREAK, true);
 	PrecacheSound(SOUND_TRASH_MINI_BREAK, true);
+	PrecacheSound(SOUND_MISSILES_FIRE, true);
 	PrecacheSound(SOUND_MISSILES_BEGIN_HOMING, true);
 	PrecacheSound(SOUND_MONDO_FIRE, true);
 	PrecacheSound(SOUND_MONDO_BREAK_1, true);
@@ -290,10 +292,8 @@ public MRESReturn Flimsy_Explode(int entity)
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	int tier = i_TrashTier[entity];
 	
-	float damage = f_FlimsyDMG[tier];
-	float radius = f_FlimsyRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
+	float damage = f_FlimsyDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_FlimsyRadius[tier] * Attributes_Get(weapon, 99, 1.0);
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_FlimsyMaxTargets[tier]);
 	
@@ -338,11 +338,9 @@ public MRESReturn Shock_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_ShockDMG[tier];
-	float radius = f_ShockRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
-	
+	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_ShockRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+
 	Shock_ChainToVictim(entity, owner, weapon, damage, radius, position, tier, 0);
 	
 	RemoveEntity(entity);
@@ -375,9 +373,11 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 		ParticleEffectAt(vicLoc, tier > 1 ? PARTICLE_SHOCK_BLAST_MAX : PARTICLE_SHOCK_BLAST, 1.0);
 		SpawnParticle_ControlPoints(position, vicLoc, tier > 1 ? PARTICLE_SHOCK_CHAIN_MAX : PARTICLE_SHOCK_CHAIN, 1.0);
 		
+		float shockRad = f_ShockChainRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+		
 		if (NumHits < i_ShockMaxHits[tier])
 		{
-			Shock_ChainToVictim(inflictor, client, weapon, damage * f_ShockDMGReductionPerHit[tier], f_ShockChainRadius[tier], vicLoc, tier, NumHits + 1);
+			Shock_ChainToVictim(inflictor, client, weapon, damage * f_ShockDMGReductionPerHit[tier], shockRad, vicLoc, tier, NumHits + 1);
 		}
 	}
 }
@@ -404,9 +404,8 @@ public bool Trash_Arrows(int client, int weapon, int tier)
 	float ang[3], pos[3];
 	GetClientEyePosition(client, pos);
 	
-	float damage = f_ArrowsDMG[tier];
-	float vel = f_ArrowsVelocity[tier];
-	//TODO: Increase damage and velocity based on attributes
+	float damage = f_ArrowsDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float vel = f_ArrowsVelocity[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
 	
 	for (int i = 0; i < GetRandomInt(i_ArrowsMinArrows[tier], i_ArrowsMaxArrows[tier]); i++)
 	{
@@ -440,10 +439,9 @@ public bool Trash_Pyre(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_PyreChance[tier])
 		return false;
 	
-	float damage = f_PyreDMG[tier];
-	float vel = f_PyreVel[tier];
-	//TODO: Increase damage and velocity based on attributes
-	
+	float damage = f_PyreDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float vel = f_PyreVel[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
+
 	int entity = CreateEntityByName("tf_projectile_spellfireball");
 	if(IsValidEntity(entity))
 	{
@@ -482,9 +480,6 @@ public bool Trash_Skeleton(int client, int weapon, int tier)
 		
 	if (GetRandomFloat(0.0, 1.0) > f_SkeletonChance[tier])
 		return false;
-		
-	float vel = f_SkeletonVel[tier];
-	//TODO: Increase velocity based on attributes
 	
 	int skin = GetRandomInt(0, 3);
 	
@@ -499,7 +494,7 @@ public bool Trash_Skeleton(int client, int weapon, int tier)
 		char placeholder[255];
 		strcopy(placeholder, 255, s_SkeletonGibs[i]);
 		
-		Trash_LaunchPhysProp(client, placeholder, GetRandomFloat(0.8, 1.2), vel, weapon, tier, Skeleton_Explode, true, false, ang, true, skin);
+		Trash_LaunchPhysProp(client, placeholder, GetRandomFloat(0.8, 1.2), f_SkeletonVel[tier], weapon, tier, Skeleton_Explode, true, false, ang, true, skin);
 	}
 	
 	EmitSoundToAll(SOUND_SKELETON_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
@@ -519,11 +514,9 @@ public MRESReturn Skeleton_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_SkeletonDMG[tier];
-	float radius = f_SkeletonRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
-	
+	float damage = f_SkeletonDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_SkeletonRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, 1);
 	
 	RemoveEntity(entity);
@@ -540,7 +533,6 @@ public bool Trash_Ice(int client, int weapon, int tier)
 		return false;
 		
 	float vel = f_IceVelocity[tier];
-	//TODO: Increase velocity based on attributes
 		
 	int ice = Trash_LaunchPhysProp(client, MODEL_ICE, GetRandomFloat(0.8, 1.0), vel, weapon, tier, Ice_Explode, true, true);
 	if (IsValidEntity(ice))
@@ -566,10 +558,8 @@ public MRESReturn Ice_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_IceDMG[tier];
-	float radius = f_IceRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
+	float damage = f_IceDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_IceRadius[tier] * Attributes_Get(weapon, 99, 1.0);
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_IceMaxTargets[tier], _, _, CryoWandHitM2, Trash_IceHitPre);
 	
@@ -592,7 +582,6 @@ public bool Trash_Trash(int client, int weapon, int tier)
 		return false;
 		
 	float vel = f_TrashVelocity[tier];
-	//TODO: Increase velocity based on attributes
 		
 	int trash = Trash_LaunchPhysProp(client, MODEL_TRASH, GetRandomFloat(0.8, 1.2), vel, weapon, tier, Trash_Explode, true, true);
 	if (IsValidEntity(trash))
@@ -616,18 +605,15 @@ public MRESReturn Trash_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_TrashDMG[tier];
-	float radius = f_TrashRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
+	float damage = f_TrashDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_TrashRadius[tier] * Attributes_Get(weapon, 99, 1.0);
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_TrashMaxTargets[tier]);
 	
 	RemoveEntity(entity);
 	
 	float vel = f_TrashMiniVelocity[tier];
-	//TODO: Scale vel with atts
-	
+
 	position[2] += 25.0;
 	
 	for (int i = 0; i < GetRandomInt(i_TrashMinExtras[tier], i_TrashMaxExtras[tier]); i++)
@@ -662,10 +648,8 @@ public MRESReturn Trash_MiniExplode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_TrashMiniDMG[tier];
-	float radius = f_TrashMiniRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
+	float damage = f_TrashMiniDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_TrashMiniRadius[tier] * Attributes_Get(weapon, 99, 1.0);
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_TrashMiniMaxTargets[tier]);
 	
@@ -681,12 +665,35 @@ public bool Trash_Missiles(int client, int weapon, int tier)
 		
 	if (GetRandomFloat(0.0, 1.0) > f_MissilesChance[tier])
 		return false;
+	
+	DataPack pack = new DataPack();
+	CreateDataTimer(f_MissilesWaveDelay[tier], Missiles_FireWave, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, GetClientUserId(client));
+	WritePackCell(pack, EntIndexToEntRef(weapon));
+	WritePackCell(pack, tier);
+	WritePackCell(pack, i_MissilesNumWaves[tier]);
 		
+	return true;
+}
+
+public Action Missiles_FireWave(Handle timed, DataPack pack)
+{
+	ResetPack(pack);
+	int client = GetClientOfUserId(ReadPackCell(pack));
+	int weapon = EntRefToEntIndex(ReadPackCell(pack));
+	int tier = ReadPackCell(pack);
+	int remaining = ReadPackCell(pack);
+	
+	if (!IsValidClient(client) || !IsValidEntity(weapon) || remaining < 1)
+		return Plugin_Continue;
+	
+	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 80, _, 1.0);
+	
 	for (int i = 0; i < i_MissilesCount[tier]; i++)
 	{
 		float ang[3];
 		GetClientEyeAngles(client, ang);
-		ang[0] = -60.0;
+		ang[0] += GetRandomFloat(-3.0, 3.0);
 		ang[1] += GetRandomFloat(-f_MissilesSpread[tier], f_MissilesSpread[tier]);
 		ang[2] += GetRandomFloat(-f_MissilesSpread[tier], f_MissilesSpread[tier]);
 		
@@ -697,8 +704,15 @@ public bool Trash_Missiles(int client, int weapon, int tier)
 			SetEntityMoveType(missile, MOVETYPE_FLY);
 		}
 	}
-		
-	return true;
+	
+	DataPack pack2 = new DataPack();
+	CreateDataTimer(f_MissilesWaveDelay[tier], Missiles_FireWave, pack2, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack2, GetClientUserId(client));
+	WritePackCell(pack2, EntIndexToEntRef(weapon));
+	WritePackCell(pack2, tier);
+	WritePackCell(pack2, remaining - 1);
+	
+	return Plugin_Continue;
 }
 
 public MRESReturn Missiles_Explode(int entity)
@@ -713,10 +727,8 @@ public MRESReturn Missiles_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_MissilesDMG[tier];
-	float radius = f_MissilesRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
+	float damage = f_MissilesDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_MissilesRadius[tier] * Attributes_Get(weapon, 99, 1.0);
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_MissilesMaxTargets[tier]);
 	
@@ -771,10 +783,8 @@ public MRESReturn Mondo_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	
-	float damage = f_MondoDMG[tier];
-	float radius = f_MondoRadius[tier];
-	
-	//TODO: Modify damage and radius based on attributes
+	float damage = f_MondoDMG[tier] * Attributes_Get(weapon, 2, 1.0);
+	float radius = f_MondoRadius[tier] * Attributes_Get(weapon, 99, 1.0);
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, 0.925, _, false, i_MondoMaxTargets[tier]);
 	
@@ -848,7 +858,12 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 		
 		if (IsValidEntity(weapon))
 		{
-			//TODO: Modify velocity based on attributes
+			velocity *= Attributes_Get(weapon, 103, 1.0);
+		
+			velocity *= Attributes_Get(weapon, 104, 1.0);
+		
+			velocity *= Attributes_Get(weapon, 475, 1.0);
+			
 			i_TrashWeapon[prop] = EntIndexToEntRef(weapon);
 		}
 		
