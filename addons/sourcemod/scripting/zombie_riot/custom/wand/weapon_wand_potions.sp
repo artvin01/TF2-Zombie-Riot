@@ -744,6 +744,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
+
 public Action Weapon_Wand_PotionEndShrink(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);

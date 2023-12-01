@@ -323,8 +323,8 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		i_current_pap_projectile[entity] = i_Current_Pap[client];
 		f_projectile_dmg[entity] = damage;
 		
-		i_Impact_Lance_wep[entity]=weapon;
-		i_Impact_Lance_index[entity]=client;
+		i_Impact_Lance_wep[entity]= EntIndexToEntRef(weapon);
+		i_Impact_Lance_index[entity]= EntIndexToEntRef(client);
 		
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
@@ -395,7 +395,7 @@ public MRESReturn Impact_Lance_RocketExplodePre(int entity)
 public Action Impact_Lance_StartTouch(int entity, int other)
 {
 	int client = EntRefToEntIndex(i_Impact_Lance_index[entity]);
-	int weapon =EntRefToEntIndex(i_Impact_Lance_wep[entity]);
+	int weapon = EntRefToEntIndex(i_Impact_Lance_wep[entity]);
 
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -552,7 +552,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 			h_Impact_Lance_CosmeticEffectManagement[client] = null;
 			DataPack pack;
 			h_Impact_Lance_CosmeticEffectManagement[client] = CreateDataTimer(0.1, Timer_Impact_Lance_Cosmetic, pack, TIMER_REPEAT);
-			pack.WriteCell(EntIndexToEntRef(client));
+			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 		return;
@@ -564,7 +564,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 		ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
 		DataPack pack;
 		h_Impact_Lance_CosmeticEffectManagement[client] = CreateDataTimer(0.1, Timer_Impact_Lance_Cosmetic, pack, TIMER_REPEAT);
-		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
@@ -573,7 +573,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 public Action Timer_Impact_Lance_Cosmetic(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
+	int client = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{

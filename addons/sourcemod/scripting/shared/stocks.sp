@@ -3985,6 +3985,7 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 
 void AddEntityToThirdPersonTransitMode(int client, int entity)
 {
+	return;
 	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
 	SDKHook(entity, SDKHook_SetTransmit, ThirdersonTransmitEnvLaser);
 }
