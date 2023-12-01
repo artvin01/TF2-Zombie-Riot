@@ -47,9 +47,14 @@ float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 
 bool b_PyreEnabled[3] = { true, true, true };			//Is Pyre enabled on this pap level?
 
-//SKELETON: Fires a shotgun blast of skeleton gibs which deal huge contact damage.
-float f_SkeletonChance[3] = { 0.00, 0.04, 0.08 };
-bool b_SkeletonEnabled[3] = { false, true, true };
+//SKELETON: Fires a shotgun blast of skeleton gibs which deal huge damage, but have a small radius and can only hit one zombie each.
+float f_SkeletonChance[3] = { 0.00, 0.04, 0.08 };		//Chance for Skeleton to be fired.
+float f_SkeletonVel[3] = { 800.0, 1000.0, 1200.0 };		//Skeleton projectile velocity.
+float f_SkeletonDMG[3] = { 1000.0, 1200.0, 1600.0 };	//Skeleton damage.
+float f_SkeletonRadius[3] = { 90.0, 95.0, 100.0 };		//Skeleton radius.
+float f_SkeletonSpread[3] = { 8.0, 8.0, 8.0 };			//Skeleton projectile deviation.
+
+bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on this pap tier?
 
 //NICE ICE: Fires a big block of ice which deals high contact damage and explodes, freezing all zombies hit by it.
 float f_IceChance[3] = { 0.00, 0.04, 0.08 };
@@ -80,6 +85,18 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_SHOCK_FIRE			"misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_ARROWS_FIRE			"weapons/bow_shoot.wav"
 #define SOUND_PYRE_FIRE				"misc/halloween/spell_fireball_cast.wav"
+#define SOUND_SKELETON_FIRE			"misc/halloween/spell_blast_jump.wav"
+#define SOUND_SKELETON_BREAK		"misc/halloween/skeleton_break.wav"
+
+public const char s_SkeletonGibs[][] =
+{
+	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_l.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper_gib_arm_r.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper_gib_leg_r.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl"
+};
 
 #define PARTICLE_FLIMSY_TRAIL		"drg_manmelter_trail_red"
 #define PARTICLE_EXPLOSION_GENERIC	"ExplosionCore_MidAir"
@@ -93,16 +110,23 @@ static int i_TrashTier[2049] = { 0, ... };
 #define PARTICLE_SHOCK_BLAST_MAX	"drg_cow_explosioncore_charged_blue"
 #define PARTICLE_SHOCK_CHAIN		"spell_lightningball_hit_red"
 #define PARTICLE_SHOCK_CHAIN_MAX	"spell_lightningball_hit_blue"
+#define PARTICLE_SKELETON_BREAK		"spell_skeleton_goop_green"
 
 void Trash_Cannon_Precache()
 {
 	PrecacheModel(MODEL_ROCKET, true);
+	for (int i = 0; i < sizeof(s_SkeletonGibs); i++)
+	{
+		PrecacheModel(s_SkeletonGibs[i]);
+	}
 	
 	PrecacheSound(SOUND_FLIMSY_BLAST, true);
 	PrecacheSound(SOUND_SHOCK, true);
 	PrecacheSound(SOUND_SHOCK_FIRE, true);
 	PrecacheSound(SOUND_ARROWS_FIRE, true);
 	PrecacheSound(SOUND_PYRE_FIRE, true);
+	PrecacheSound(SOUND_SKELETON_FIRE, true);
+	PrecacheSound(SOUND_SKELETON_BREAK, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -245,7 +269,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 	if (NumHits >= i_ShockMaxHits[tier])
 		return;
 		
-	int victim = Shock_GetClosestVictim(position, radius);
+	int victim = Trash_GetClosestVictim(position, radius, true);
 	float gt = GetGameTime();
 	if (IsValidEntity(victim))
 	{
@@ -268,33 +292,6 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 			Shock_ChainToVictim(inflictor, client, weapon, damage * f_ShockDMGReductionPerHit[tier], f_ShockChainRadius[tier], vicLoc, tier, NumHits + 1);
 		}
 	}
-}
-
-public int Shock_GetClosestVictim(float position[3], float radius)
-{
-	int closest = -1;
-	float dist = 999999999.0;
-	
-	for (int i = 0; i < i_MaxcountNpc; i++)
-	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
-		
-		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && f_NextShockTime[ent] <= GetGameTime())
-		{
-			float vicLoc[3];  
-			vicLoc = WorldSpaceCenter(ent);
-			
-			float targDist = GetVectorDistance(position, vicLoc, true);  
-				
-			if(targDist <= (radius * radius) && targDist < dist)
-			{
-				closest = ent;
-				dist = targDist;
-			}
-		}
-	}
-	
-	return closest;
 }
 
 public bool Trash_Mortar(int client, int weapon, int tier)
@@ -398,7 +395,52 @@ public bool Trash_Skeleton(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_SkeletonChance[tier])
 		return false;
 		
+	float vel = f_SkeletonVel[tier];
+	//TODO: Increase velocity based on attributes
+	
+	int skin = GetRandomInt(0, 3);
+	
+	for (int i = 0; i < sizeof(s_SkeletonGibs); i++)
+	{
+		float ang[3];
+		GetClientEyeAngles(client, ang);
+		ang[0] += GetRandomFloat(-f_SkeletonSpread[tier], f_SkeletonSpread[tier]);
+		ang[1] += GetRandomFloat(-f_SkeletonSpread[tier], f_SkeletonSpread[tier]);
+		ang[2] += GetRandomFloat(-f_SkeletonSpread[tier], f_SkeletonSpread[tier]);
+		
+		char placeholder[255];
+		strcopy(placeholder, 255, s_SkeletonGibs[i]);
+		
+		Trash_LaunchPhysProp(client, placeholder, GetRandomFloat(0.8, 1.2), vel, weapon, tier, Skeleton_Explode, true, false, ang, true, skin);
+	}
+	
+	EmitSoundToAll(SOUND_SKELETON_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
+		
 	return true;
+}
+
+public MRESReturn Skeleton_Explode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_SKELETON_BREAK, 1.0);
+	EmitSoundToAll(SOUND_SKELETON_BREAK, entity, SNDCHAN_STATIC, 80, _, 1.0, GetRandomInt(80, 110));
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_SkeletonDMG[tier];
+	float radius = f_SkeletonRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, 1);
+	
+	RemoveEntity(entity);
+	
+	return MRES_Supercede; //DONT.
 }
 
 public bool Trash_Ice(int client, int weapon, int tier)
@@ -445,7 +487,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	return true;
 }
 
-public int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin)
+int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0)
 {
 	int prop = CreateEntityByName("tf_projectile_rocket");
 			
@@ -469,9 +511,18 @@ public int Trash_LaunchPhysProp(int client, char model[255], float scale, float 
 		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", client);
 		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
 		
+		char skinChar[16];
+		Format(skinChar, 16, "%i", skin);
+		DispatchKeyValue(prop, "skin", skinChar);
+		
 		float pos[3], ang[3], propVel[3], buffer[3];
 		GetClientEyePosition(client, pos);
 		GetClientEyeAngles(client, ang);
+		
+		if (useAngOverride)
+		{
+			ang = angOverride;
+		}
 
 		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
 		
@@ -510,6 +561,33 @@ public int Trash_LaunchPhysProp(int client, char model[255], float scale, float 
 	}
 	
 	return -1;
+}
+
+public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
+{
+	int closest = -1;
+	float dist = 999999999.0;
+	
+	for (int i = 0; i < i_MaxcountNpc; i++)
+	{
+		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		
+		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
+		{
+			float vicLoc[3];  
+			vicLoc = WorldSpaceCenter(ent);
+			
+			float targDist = GetVectorDistance(position, vicLoc, true);  
+				
+			if(targDist <= (radius * radius) && targDist < dist)
+			{
+				closest = ent;
+				dist = targDist;
+			}
+		}
+	}
+	
+	return closest;
 }
 
 public Queue Rand_GenerateScrambledQueue(int numSlots)
