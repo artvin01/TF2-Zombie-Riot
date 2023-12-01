@@ -552,7 +552,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 			h_Impact_Lance_CosmeticEffectManagement[client] = null;
 			DataPack pack;
 			h_Impact_Lance_CosmeticEffectManagement[client] = CreateDataTimer(0.1, Timer_Impact_Lance_Cosmetic, pack, TIMER_REPEAT);
-			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(client));
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 		return;
@@ -564,7 +564,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 		ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
 		DataPack pack;
 		h_Impact_Lance_CosmeticEffectManagement[client] = CreateDataTimer(0.1, Timer_Impact_Lance_Cosmetic, pack, TIMER_REPEAT);
-		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
@@ -573,7 +573,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 public Action Timer_Impact_Lance_Cosmetic(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int client = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
