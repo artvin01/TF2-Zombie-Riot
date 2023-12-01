@@ -15,7 +15,7 @@ float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
 int i_ShockMaxHits[3] = { 6, 10, 14 };					//Max number of zombies hit by the shock.
 
-float f_ShockChance[3] = { 1.0, 0.12, 0.16 };			//Chance for Shock Stock to be fired.
+float f_ShockChance[3] = { 0.08, 0.12, 0.16 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
 float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
 float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };		//Initial blast radius.
@@ -30,8 +30,14 @@ float f_MortarChance[3] = { 0.04, 0.06, 0.08 };
 bool b_MortarEnabled[3] = { true, true, true };
 
 //BUNDLE OF ARROWS: A giant shotgun blast of Huntsman arrows.
-float f_ArrowsChance[3] = { 0.00, 0.04, 0.08 };
-bool b_ArrowsEnabled[3] = { false, true, true };
+int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
+int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
+
+float f_ArrowsChance[3] = { 0.02, 0.04, 0.08 };			//Chance for Bundle of Arrows to be fired.
+float f_ArrowsDMG[3] = { 300.0, 600.0, 800.0 };			//Base arrow damage.
+float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
+float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
+bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
 
 //PYRE: A fireball which is affected by gravity.
 float f_PyreChance[3] = { 0.05, 0.08, 0.12 };
@@ -53,7 +59,7 @@ bool b_TrashEnabled[3] = { false, true, true };
 float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };
 bool b_MissilesEnabled[3] = { false, false, true };
 
-//MONDO MASSACRE: The strongest possible roll. Fires an EXTREMELY powerful rocket which deals a base damage of 100k within an enormous blast radius.
+//MONDO MASSACRE: The strongest possible roll. Fires an EXTREMELY powerful, VERY big bomb which deals a base damage of 100k within an enormous blast radius.
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
 bool b_MondoEnabled[3] = { false, false, true };
 
@@ -68,6 +74,7 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_FLIMSY_BLAST			"weapons/explode1.wav"
 #define SOUND_SHOCK					"misc/halloween/spell_lightning_ball_impact.wav"
 #define SOUND_SHOCK_FIRE			"misc/halloween/spell_lightning_ball_cast.wav"
+#define SOUND_ARROWS_FIRE			"weapons/bow_shoot.wav"
 
 #define PARTICLE_FLIMSY_TRAIL		"drg_manmelter_trail_red"
 #define PARTICLE_EXPLOSION_GENERIC	"ExplosionCore_MidAir"
@@ -89,6 +96,7 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_FLIMSY_BLAST, true);
 	PrecacheSound(SOUND_SHOCK, true);
 	PrecacheSound(SOUND_SHOCK_FIRE, true);
+	PrecacheSound(SOUND_ARROWS_FIRE, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -301,6 +309,34 @@ public bool Trash_Arrows(int client, int weapon, int tier)
 		
 	if (GetRandomFloat(0.0, 1.0) > f_ArrowsChance[tier])
 		return false;
+		
+	float ang[3], pos[3];
+	GetClientEyePosition(client, pos);
+	
+	float damage = f_ArrowsDMG[tier];
+	float vel = f_ArrowsVelocity[tier];
+	//TODO: Increase damage and velocity based on attributes
+	
+	for (int i = 0; i < GetRandomInt(i_ArrowsMinArrows[tier], i_ArrowsMaxArrows[tier]); i++)
+	{
+		GetClientEyeAngles(client, ang);
+		ang[0] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
+		ang[1] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
+		ang[2] += GetRandomFloat(-f_ArrowsSpread[tier], f_ArrowsSpread[tier]);
+		
+		int arrow = SDKCall_CTFCreateArrow(pos, ang, vel, 0.1, 8, client, client);
+		if (IsValidEntity(arrow))
+		{
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(arrow));
+			SetEntityCollisionGroup(arrow, 27);
+			SetEntDataFloat(arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
+			SetEntPropEnt(arrow, Prop_Send, "m_hOriginalLauncher", weapon);
+			SetEntPropEnt(arrow, Prop_Send, "m_hLauncher", weapon);
+			SetEntProp(arrow, Prop_Send, "m_bCritical", false);
+		}
+	}
+	
+	EmitSoundToAll(SOUND_ARROWS_FIRE, client, SNDCHAN_STATIC, 110, _, 1.0);
 		
 	return true;
 }
