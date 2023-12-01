@@ -98,7 +98,13 @@ float f_MissilesHomingStartTime[3] = { 0.2, 0.15, 0.1 };	//Delay after firing be
 bool b_MissilesEnabled[3] = { false, false, true };			//Are Micro-Missiles enabled on this PaP tier?
 
 //MONDO MASSACRE: The strongest possible roll. Fires an EXTREMELY powerful, VERY big bomb which deals a base damage of 100k within an enormous blast radius.
+int i_MondoMaxTargets[3] = { 999, 999, 999 };
+
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
+float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
+float f_MondoDMG[3] = { 100000.0, 100000.0, 100000.0 };
+float f_MondoRadius[3] = { 1000.0, 1500.0, 2000.0 };
+
 bool b_MondoEnabled[3] = { false, false, true };
 
 static int i_TrashNumEffects = 9;
@@ -110,6 +116,7 @@ static int i_TrashTier[2049] = { 0, ... };
 #define MODEL_DRG					"models/weapons/w_models/w_drg_ball.mdl"
 #define MODEL_ICE					"models/props_moonbase/moon_cube_crystal00.mdl"
 #define MODEL_TRASH					"models/props_soho/trashbag001.mdl"
+#define MODEL_MONDO					"models/weapons/w_models/w_cannonball.mdl"
 
 #define SOUND_FLIMSY_BLAST			"weapons/explode1.wav"
 #define SOUND_SHOCK					"misc/halloween/spell_lightning_ball_impact.wav"
@@ -124,6 +131,9 @@ static int i_TrashTier[2049] = { 0, ... };
 #define SOUND_TRASH_BREAK			"physics/metal/metal_box_break1.wav"
 #define SOUND_TRASH_MINI_BREAK		"physics/flesh/flesh_squishy_impact_hard3.wav"
 #define SOUND_MISSILES_BEGIN_HOMING	"weapons/sentry_spot_client.wav"
+#define SOUND_MONDO_FIRE			"mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
+#define SOUND_MONDO_BREAK_1			"mvm/mvm_tank_explode.wav"
+#define SOUND_MONDO_BREAK_2			"misc/doomsday_missile_explosion.wav"
 
 public const char s_SkeletonGibs[][] =
 {
@@ -169,6 +179,7 @@ public const char s_TrashProps[][] =
 #define PARTICLE_TRASH_BREAK		"spell_skeleton_goop_green"
 #define PARTICLE_TRASH_MINI			"superrare_burning2"
 #define PARTICLE_TRASH_BREAK_MINI	"spell_skeleton_goop_green"
+#define PARTICLE_EXPLOSION_MONDO	"fireSmokeExplosion"
 
 void Trash_Cannon_Precache()
 {
@@ -176,6 +187,7 @@ void Trash_Cannon_Precache()
 	PrecacheModel(MODEL_DRG, true);
 	PrecacheModel(MODEL_ICE, true);
 	PrecacheModel(MODEL_TRASH, true);
+	PrecacheModel(MODEL_MONDO, true);
 	
 	for (int i = 0; i < sizeof(s_SkeletonGibs); i++)
 	{
@@ -200,6 +212,9 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_TRASH_BREAK, true);
 	PrecacheSound(SOUND_TRASH_MINI_BREAK, true);
 	PrecacheSound(SOUND_MISSILES_BEGIN_HOMING, true);
+	PrecacheSound(SOUND_MONDO_FIRE, true);
+	PrecacheSound(SOUND_MONDO_BREAK_1, true);
+	PrecacheSound(SOUND_MONDO_BREAK_2, true);
 }
 
 public void Trash_Cannon_EntityDestroyed(int ent)
@@ -733,7 +748,58 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier])
 		return false;
 		
+	int M_O_N_D_O = Trash_LaunchPhysProp(client, MODEL_MONDO, 5.0, f_MondoVelocity[tier], weapon, tier, Mondo_Explode, true, true);
+	if (IsValidEntity(M_O_N_D_O))
+	{
+		EmitSoundToAll(SOUND_MONDO_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
+		EmitSoundToAll(SOUND_MONDO_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0, 80);
+	}
+		
 	return true;
+}
+
+public MRESReturn Mondo_Explode(int entity)
+{
+	float position[3];
+	int tier = i_TrashTier[entity];
+	
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	ParticleEffectAt(position, PARTICLE_EXPLOSION_MONDO, 1.0);
+	EmitSoundToAll(SOUND_MONDO_BREAK_1, _, _, 120);
+	EmitSoundToAll(SOUND_MONDO_BREAK_2, _, _, 120, _, _, 80);
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	
+	float damage = f_MondoDMG[tier];
+	float radius = f_MondoRadius[tier];
+	
+	//TODO: Modify damage and radius based on attributes
+	
+	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, 0.925, _, false, i_MondoMaxTargets[tier]);
+	
+	RemoveEntity(entity);
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsValidClient(i))
+		{
+			Client_Shake(i, SHAKE_START, 250.0, _, 6.0);
+			DoOverlay(i, "lights/white005", 0);
+			CreateTimer(0.1, Mondo_RemoveOverlay, GetClientUserId(i), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	
+	return MRES_Supercede; //DONT.
+}
+
+public Action Mondo_RemoveOverlay(Handle helpmeimblind, int id)
+{
+	int client = GetClientOfUserId(id);
+	if (IsValidClient(client))
+		DoOverlay(client, "");
+		
+	return Plugin_Continue;
 }
 
 int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocity, int weapon, int tier, DHookCallback CollideCallback, bool ForceRandomAngles, bool Spin, float angOverride[3] = NULL_VECTOR, bool useAngOverride = false, int skin = 0, float posOverride[3] = NULL_VECTOR, bool usePosOverride = false)
@@ -850,7 +916,7 @@ public Queue Rand_GenerateScrambledQueue(int numSlots)
 	Queue scramble = new Queue();
 	Handle genericArray = CreateArray(255);
 	
-	for (int i = 0; i < numSlots; i++)
+	for (int i = 0; i <= numSlots; i++)
 	{
 		PushArrayCell(genericArray, i);
 	}
