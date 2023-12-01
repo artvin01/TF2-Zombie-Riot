@@ -697,7 +697,7 @@ Handle g_hGetBonePosition;
 //PluginBot SDKCalls
 Handle g_hGetSolidMask;
 Handle g_hGetSolidMaskAlly;
-Handle g_hGetSolidMaskNone;
+//Handle g_hGetSolidMaskNone;
 //DHooks
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited

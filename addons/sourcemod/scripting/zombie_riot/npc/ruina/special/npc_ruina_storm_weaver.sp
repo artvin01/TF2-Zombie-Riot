@@ -566,7 +566,7 @@ static void Set_Tail_Dist_To_Keep(Storm_Weaver npc, float dist)
 
 public void Storm_Weaver_Delete_Collision(int iNPC)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	/*CClotBody npc = view_as<CClotBody>(iNPC);
 	CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
 
 	if(b_storm_weaver_noclip[npc.index])
@@ -593,12 +593,12 @@ public void Storm_Weaver_Delete_Collision(int iNPC)
 			
 	SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12);
 	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6);
-	SetEntityCollisionGroup(npc.index, 24);
+	SetEntityCollisionGroup(npc.index, 24);*/
 
 }
 public void Storm_Weaver_Restore_Collisions(int iNPC)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	/*CClotBody npc = view_as<CClotBody>(iNPC);
 	CBaseNPC baseNPC = view_as<CClotBody>(npc).GetBaseNPC();
 
 	if(!b_storm_weaver_noclip[npc.index])
@@ -626,8 +626,13 @@ public void Storm_Weaver_Restore_Collisions(int iNPC)
 
 	SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 6);
 	SetEntProp(npc.index, Prop_Data, "m_nSolidType", 2); 
-	SetEntityCollisionGroup(npc.index, 6);
+	SetEntityCollisionGroup(npc.index, 6);*/
 }
+
+/*
+	core.sp - line 700
+	npc_stats.sp - line 2800, 2903, 6468
+*/
 
 //TODO 
 //Rewrite

@@ -2797,11 +2797,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 
 	//return the bot's collision mask
-	public int GetSolidMaskNothing()
+	/*public int GetSolidMaskNothing()
 	{
 		//What to collide with
 		return 0;
-	}
+	}*/
 	public int GetSolidMask()
 	{
 		//What to collide with
@@ -2900,7 +2900,7 @@ public void NPC_Base_InitGamedata()
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 	g_hGetSolidMaskAlly		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
-	g_hGetSolidMaskNone		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskNone);	//warp
+	//g_hGetSolidMaskNone		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskNone);	//warp
 
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
@@ -6464,15 +6464,15 @@ public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle h
 	DHookSetReturn(hReturn, (MASK_NPCSOLID|MASK_PLAYERSOLID)); 
 	return MRES_Supercede; 
 }
-
+/*
 public MRESReturn IBody_GetSolidMaskNone(Address pThis, Handle hReturn, Handle hParams)	//warp	  
 { 
-/*	DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
+	//DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
 	//causes crashes, and its unnceccacary?
-*/
+
 	DHookSetReturn(hReturn, 0); 
 	return MRES_Supercede; 
-}
+}*/
 
 stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
 {
