@@ -632,14 +632,14 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
 	if(weapon != -1)
 	{
-		//HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
+		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
 	}
 	return weapon;
 }
 
 stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
 {
-	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION);
+	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
 		return -1;
 	
@@ -696,8 +696,6 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 	return entity;
 }
-
-/*
 //										 info.Attribs, info.Value, info.Attribs);
 public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
@@ -778,7 +776,7 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 	}
 	
 }
-*/
+
 stock void TF2_RemoveItem(int client, int weapon)
 {
 	/*if(TF2_IsWearable(weapon))

@@ -3074,11 +3074,11 @@ public void MenuPage(int client, int section)
 		{
 			if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
 			{
-				menu.SetTitle("%t\n%t\n \n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
+				menu.SetTitle("%t\n%t\n%t\n \n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client]);
 			}
 			else
 			{
-				menu.SetTitle("%t\n%t\n \n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
+				menu.SetTitle("%t\n%t\n%t\n%t\n ", starterPlayer ? "Starter Mode" : "TF2: Zombie Riot", "Cherrypick Weapon", "Credits", CurrentCash-CashSpent[client], "Store Discount");
 			}
 		}
 		else if(CurrentRound < 2 || Rogue_NoDiscount() || !Waves_InSetup())
@@ -3511,7 +3511,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					Store_CherrypickMenu(client);
 					return 0;
 				}
-
+				
 				static Item item;
 				menu.GetItem(0, item.Name, sizeof(item.Name));
 				int index = StringToInt(item.Name);

@@ -37,10 +37,10 @@ static int TeamBeforeChange;											//dont move buildings
 
 static bool b_LagCompNPC;
 
-//static DynamicHook HookItemIterateAttribute;
-//static ArrayList RawEntityHooks;
-//static int m_bOnlyIterateItemViewAttributes;
-//static int m_Item;
+static DynamicHook HookItemIterateAttribute;
+static ArrayList RawEntityHooks;
+static int m_bOnlyIterateItemViewAttributes;
+static int m_Item;
 
 /*
 // Offsets from mikusch but edited
@@ -150,10 +150,10 @@ void DHook_Setup()
 		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
 	}
 
-	//HookItemIterateAttribute = DynamicHook.FromConf(gamedata, "CEconItemView::IterateAttributes");
+	HookItemIterateAttribute = DynamicHook.FromConf(gamedata, "CEconItemView::IterateAttributes");
 
-	//m_Item = FindSendPropInfo("CEconEntity", "m_Item");
-	//FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
+	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
+	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
 	
 	delete gamedata;
 	
@@ -189,9 +189,9 @@ void DHook_Setup()
 
 void DHook_EntityDestoryed()
 {
-	//RequestFrame(DHook_EntityDestoryedFrame);
+	RequestFrame(DHook_EntityDestoryedFrame);
 }
-/*
+
 public void DHook_EntityDestoryedFrame()
 {
 	if(RawEntityHooks)
@@ -249,7 +249,7 @@ public MRESReturn DHook_IterateAttributesPost(Address pThis, DHookParam hParams)
 	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
 	return MRES_Ignored;
 }
-*/
+
 //cancel melee, we have our own.
 public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHookParam param)
 {
