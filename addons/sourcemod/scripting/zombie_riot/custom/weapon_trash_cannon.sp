@@ -219,10 +219,14 @@ void Trash_Cannon_Precache()
 	PrecacheSound(SOUND_MONDO_BREAK_2, true);
 }
 
+static float f_NextShockTime[2049] = { 0.0, ... };
+
 public void Trash_Cannon_EntityDestroyed(int ent)
 {
-	if (!IsValidEdict(ent))
+	if (ent < 1 || ent > 2048)
 		return;
+		
+	f_NextShockTime[ent] = 0.0;
 }
 
 public void Weapon_Trash_Cannon_Fire(int client, int weapon, bool crit)
@@ -347,8 +351,6 @@ public MRESReturn Shock_Explode(int entity)
 	
 	return MRES_Supercede; //DONT.
 }
-
-static float f_NextShockTime[2049] = { 0.0, ... };
 
 public void Shock_ChainToVictim(int inflictor, int client, int weapon, float damage, float radius, float position[3], int tier, int NumHits)
 {
