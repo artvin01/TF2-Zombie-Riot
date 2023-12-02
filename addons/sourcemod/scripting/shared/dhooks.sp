@@ -2130,14 +2130,6 @@ public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if(b_ArkantosBuffItem[client])
-	{
-		Attributes_Set(entity, 319, 2.0);
-	}
-	else
-	{
-		Attributes_Set(entity, 319, 1.0);
-	}
 	return MRES_Ignored;
 }
 

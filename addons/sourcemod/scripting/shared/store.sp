@@ -4634,10 +4634,12 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("252", KnockbackResistance);
 	if(Items_HasNamedItem(client, "Arkantos's Godly assistance"))
 	{
+		map.SetValue("319", 2.0);
 		b_ArkantosBuffItem[client] = true;
 	}
 	else
 	{
+		map.SetValue("319", 1.0);
 		b_ArkantosBuffItem[client] = false;
 	}
 

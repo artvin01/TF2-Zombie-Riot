@@ -2081,14 +2081,6 @@ void ClientApplyRageMeterStatusDelay(int ref)
 			{
 				Bufftype = RoundToNearest(Attributes_Get(weapon, 116, 0.0));
 				NoBanner = false;
-				if(b_ArkantosBuffItem[client])
-				{
-					Attributes_Set(weapon, 319, 2.0);
-				}
-				else
-				{
-					Attributes_Set(weapon, 319, 1.0);
-				}
 			}
 		}
 	}

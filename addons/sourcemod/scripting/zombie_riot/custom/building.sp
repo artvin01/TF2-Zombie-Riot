@@ -2258,12 +2258,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									}
 									if(b_AggreviatedSilence[client])
 										mana_regen_temp *= 0.30;
-									/*
-									Current_Mana[client] += RoundToCeil(mana_regen[client]);
-										
-									if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-										Current_Mana[client] = RoundToCeil(max_mana[client]);
-									*/
 									
 									if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 									{
@@ -2300,7 +2294,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										SetGlobalTransTarget(client);
 										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Max Mana Reached");
 									}
-									
 								}
 								else
 								{
