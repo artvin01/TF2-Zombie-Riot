@@ -5,20 +5,20 @@
 //Example: Weapon_Damage[3] = { 100.0, 250.0, 500.0 }; Default damage is 100, pap1 is 250, pap2 is 500.
 
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
-int i_FlimsyMaxTargets[3] = { 8, 10, 12 };				//Max targets hit by the blast.
+int i_FlimsyMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 
 float f_FlimsyDMG[3] = { 500.0, 750.0, 1000.0 };		//Flimsy Rocket base damage.
-float f_FlimsyRadius[3] = { 300.0, 350.0, 400.0 };		//Flimsy Rocket explosion radius.
+float f_FlimsyRadius[3] = { 200.0, 250.0, 300.0 };		//Flimsy Rocket explosion radius.
 float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
 
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
-int i_ShockMaxHits[3] = { 6, 10, 14 };					//Max number of zombies hit by the shock.
+int i_ShockMaxHits[3] = { 6, 7, 8 };					//Max number of zombies hit by the shock.
 
 float f_ShockChance[3] = { 0.1, 0.12, 0.14 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
 float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
-float f_ShockRadius[3] = { 300.0, 350.0, 400.0 };		//Initial blast radius.
-float f_ShockChainRadius[3] = { 600.0, 800.0, 1000.0 };	//Chain lightning radius.
+float f_ShockRadius[3] = { 200.0, 250.0, 300.0 };		//Initial blast radius.
+float f_ShockChainRadius[3] = { 400.0, 600.0, 800.0 };	//Chain lightning radius.
 float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
 float f_ShockPassangerTime[3] = { 0.2, 0.25, 0.3 };			//Duration to apply the Passanger's Device debuff to zombies hit by Shock Stock chain lightning.
 
@@ -57,18 +57,18 @@ float f_SkeletonSpread[3] = { 8.0, 8.0, 8.0 };			//Skeleton projectile deviation
 bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on this pap tier?
 
 //NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
-int i_IceMaxTargets[3] = { 2, 4, 6 };
+int i_IceMaxTargets[3] = { 3, 4, 5 };
 
 float f_IceChance[3] = { 0.00, 0.06, 0.1 };
 float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
-float f_IceRadius[3] = { 400.0, 500.0, 600.0 };
+float f_IceRadius[3] = { 300.0, 350.0, 400.0 };
 float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
 
 bool b_IceEnabled[3] = { false, true, true };
 
 //TRASH: Fires a garbage bag which explodes on impact, releasing a cluster of smaller projectiles.
-int i_TrashMaxTargets[3] = { 8, 10, 12 };				//Max targets hit by the blast.
-int i_TrashMiniMaxTargets[3] = { 2, 3, 3 };				//Max targets hit by the blast of extra projectiles.
+int i_TrashMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
+int i_TrashMiniMaxTargets[3] = { 2, 3, 4 };				//Max targets hit by the blast of extra projectiles.
 int i_TrashMinExtras[3] = { 6, 8, 12 };					//Minimum number of extra projectiles created when the trash bag explodes.
 int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectiles created when the trash bag explodes.
 
@@ -78,7 +78,7 @@ float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity f
 float f_TrashDMG[3] = { 800.0, 1000.0, 1200.0 };			//Base damage for the trash bag.
 float f_TrashMiniDMG[3] = { 400.0, 500.0, 600.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
 float f_TrashRadius[3] = { 400.0, 450.0, 500.0 };			//Blast radius for the trash bag.
-float f_TrashMiniRadius[3] = { 200.0, 250.0, 300.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
+float f_TrashMiniRadius[3] = { 200.0, 225.0, 250.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
 
 bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
@@ -90,7 +90,7 @@ int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles 
 float f_MissilesChance[3] = { 0.00, 0.00, 0.08 };			//The chance for Micro-Missiles to be fired.
 float f_MissilesDMG[3] = { 400.0, 600.0, 800.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
-float f_MissilesRadius[3] = { 200.0, 300.0, 400.0 };		//Base blast radius.
+float f_MissilesRadius[3] = { 200.0, 250.0, 300.0 };		//Base blast radius.
 float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.
 float f_MissilesHomingStartTime[3] = { 0.2, 0.15, 0.1 };	//Delay after firing before micro-missiles begin to home.
 float f_MissilesWaveDelay[3] = { 0.1, 0.2, 0.1 };			//Delay between sets.
@@ -687,7 +687,7 @@ public Action Missiles_FireWave(Handle timed, DataPack pack)
 	if (!IsValidClient(client) || !IsValidEntity(weapon) || remaining < 1)
 		return Plugin_Continue;
 	
-	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 80, _, 1.0);
+	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 1.0);
 	
 	for (int i = 0; i < i_MissilesCount[tier]; i++)
 	{
