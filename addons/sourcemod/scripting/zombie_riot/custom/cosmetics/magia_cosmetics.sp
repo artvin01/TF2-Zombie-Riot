@@ -54,7 +54,7 @@ public void EnableMagiaCosmetic(int client)
 	if(TeutonType[client] != TEUTON_NONE)
 		return;
 		
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Cosmetic Wings [???]"));
+	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));
 	if (h_MagiaCosmeticEffectManagement[client] != null)
 	{
 		//This timer already exists.
@@ -98,7 +98,7 @@ public Action TimerMagiaCosmetic(Handle timer, DataPack pack)
 		h_MagiaCosmeticEffectManagement[client] = null;
 		return Plugin_Stop;
 	}
-	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Cosmetic Wings [???]"));
+	bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));
 	if(!HasWings)
 	{
 		ApplyExtraMagiaCosmeticEffects(client,true);
@@ -109,7 +109,7 @@ public Action TimerMagiaCosmetic(Handle timer, DataPack pack)
 		
 	return Plugin_Continue;
 }
-void MagiaCosmeticEffects(int entity, int wearable)	//Magia Cosmetic Wings [???]
+void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 {
 	int red = 185;
 	int green = 205;
