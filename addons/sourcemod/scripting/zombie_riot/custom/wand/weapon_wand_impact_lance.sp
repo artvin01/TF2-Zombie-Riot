@@ -71,12 +71,12 @@ public void Wand_Impact_Lance_Multi_Hit(int client, float &CustomMeleeRange, flo
 	}
 }
 
-
-public void Impact_Lance_M1(int client, int weapon, bool crit)
+void LanceDamageCalc(int client, int weapon, float &damage, bool checkvalidity = false)
 {
 	float GameTime = GetGameTime();
 	if(fl_thorwn_lance[client]>GameTime)
 	{
+		damage = 0.0;
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -87,26 +87,22 @@ public void Impact_Lance_M1(int client, int weapon, bool crit)
 
 	if(mana_cost <= Current_Mana[client])
 	{
-		
-		Mana_Regen_Delay[client] = GameTime + 1.5;
-		Mana_Hud_Delay[client] = 0.0;
-		
-		Current_Mana[client] -= mana_cost;
-		
-		delay_hud[client] = 0.0;
+		if(!checkvalidity)
+		{
+			Mana_Regen_Delay[client] = GameTime + 1.5;
+			Mana_Hud_Delay[client] = 0.0;
+			
+			Current_Mana[client] -= mana_cost;
+			
+			delay_hud[client] = 0.0;
 
-		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
-
-		float damage = Attributes_Get(weapon, 410, 1.0);
-
-		ApplyTempAttrib(weapon, 2, damage);
-
-		i_IsWandWeapon[weapon] = false;
-		RequestFrame(Impact_Lance_Reset_Wandstate, EntIndexToEntRef(weapon));
-
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			damage *= Attributes_Get(weapon, 410, 1.0);
+		}
 	}
 	else
 	{
+		damage = 0.0;
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
@@ -141,7 +137,6 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
 			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 200.0, false, 45.0, true); //infinite range, and ignore walls!
-			FinishLagCompensation_Base_boss();
 
 			int target = TR_GetEntityIndex(swingTrace);	
 			TR_GetEndPosition(SpawnLoc, swingTrace);
@@ -467,13 +462,6 @@ public Action Timer_RemoveEntity_Impact_Lance_Projectile(Handle timer, DataPack 
 	return Plugin_Stop; 
 }
 
-public void Impact_Lance_Reset_Wandstate(int ref)
-{
-	int weapon = EntRefToEntIndex(ref);
-	if(weapon != -1)
-		i_IsWandWeapon[weapon] = true;
-}
-
 
 
 #define IMPACT_LANCE_EFFECTS 25
@@ -571,6 +559,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 		{
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 			Impact_Lance_CosmeticRemoveEffects(client);
 			ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
 			//Is the weapon it again?
@@ -587,6 +576,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 	{
+		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 		Impact_Lance_CosmeticRemoveEffects(client);
 		ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
 		DataPack pack;

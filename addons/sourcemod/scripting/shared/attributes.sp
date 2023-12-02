@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static StringMap WeaponAttributes[MAXENTITIES + 1];
+StringMap WeaponAttributes[MAXENTITIES + 1];
 
 bool Attribute_ServerSide(int attribute)
 {

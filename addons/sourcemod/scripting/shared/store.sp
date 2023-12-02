@@ -50,7 +50,7 @@ enum struct ItemInfo
 	bool DontMoveAlliedNpcs;
 	bool BlockLagCompInternal;
 
-	bool IsWand;
+	int IsWand;
 	bool IsWrench;
 	bool InternalMeleeTrace;
 	bool GregBlockSell;
@@ -236,7 +236,7 @@ enum struct ItemInfo
 		this.NoHeadshot				= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%sis_a_wand", prefix);
-		this.IsWand	= view_as<bool>(kv.GetNum(buffer));
+		this.IsWand	= view_as<int>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
@@ -340,7 +340,7 @@ enum struct ItemInfo
 			this.Attrib[i] = StringToInt(buffers[i*2]);
 			if(!this.Attrib[i])
 			{
-				LogError("Found invalid attribute on '%s'", name);
+				LogMessage("Found invalid attribute on '%s'", name);
 				this.Attribs = i;
 				break;
 			}
@@ -360,7 +360,7 @@ enum struct ItemInfo
 			this.Attrib2[i] = StringToInt(buffers[i*2]);
 			if(!this.Attrib2[i])
 			{
-				LogError("Found invalid attribute_2 on '%s'", name);
+				LogMessage("Found invalid attribute_2 on '%s'", name);
 				this.Attribs2 = i;
 				break;
 			}
@@ -5297,11 +5297,30 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				if(GiveWeaponIndex > 0)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs);	
+					/*
+					LogMessage("Weapon Spawned!");
+					LogMessage("Name of client %N and index %i",client,client);
+					LogMessage("info.Classname: %s",info.Classname);
+					LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
+					char AttributePrint[255];
+					for(int i=0; i<info.Attribs; i++)
+					{
+						Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, info.Attrib[i]);	
+						Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, info.Value[i]);	
+					}
+					LogMessage("attributes: ''%s''",AttributePrint);
+					LogMessage("info.Attribs: %i",info.Attribs);
+					*/
 				}
 				else
 				{
 					PrintToChatAll("Somehow have an invalid GiveWeaponIndex!!!!! [%i] report to admin now!",GiveWeaponIndex);
-					PrintToChatAll("info.Classname %s ",info.Classname);
+					LogMessage("Weapon Spawned thats bad!");
+					LogMessage("Name of client %N and index %i",client,client);
+					LogMessage("info.Classname: %s",info.Classname);
+					LogMessage("info.Attrib: %s",info.Attrib);
+					LogMessage("info.Value: %s",info.Value);
+					LogMessage("info.Attribs: %s",info.Attribs);
 					ThrowError("Somehow have an invalid GiveWeaponIndex!!!!! [%i] info.Classname %s ",GiveWeaponIndex,info.Classname);
 				}
 
@@ -5377,9 +5396,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						}
 					}
 					
-					if(info.IsWand)
+					if(info.IsWand > 0)
 					{
-						i_IsWandWeapon[entity] = true;
+						i_IsWandWeapon[entity] = info.IsWand;
 					}
 					if(info.IsWrench)
 					{
@@ -5493,7 +5512,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			return entity;
 		}
 #endif
-
 	}
 	else
 	{
@@ -5827,6 +5845,30 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
+		/*
+		LogMessage("Weapon Spawned Post!");
+		LogMessage("Name of client %N and index %i",client,client);
+		static char classname[84];
+		GetEntityClassname(entity, classname, sizeof(classname));
+		LogMessage("classname: %s",classname);
+		int itemdefindex1 = 0;
+		itemdefindex1 = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		LogMessage("itemdefindex: %i",itemdefindex1);
+		char AttributePrint[255];
+		int atttributes_alive = 0;
+		for(int i=1; i<1000; i++)
+		{
+			if(!Attribute_ServerSide(i) && Attributes_Has(entity, i))
+			{	
+				atttributes_alive++;
+				float Attribute = Attributes_Get(entity, i, 1.0);
+				Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, i);	
+				Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, Attribute);	
+			}
+		}
+		LogMessage("attributes: ''%s''",WeaponAttributes[entity]);
+		LogMessage("info.Attribs: %i",atttributes_alive);
+		*/
 //CC CONTRACT diffiulty
 //30% slower attackspeedfor all weapons.
 #if defined RPG

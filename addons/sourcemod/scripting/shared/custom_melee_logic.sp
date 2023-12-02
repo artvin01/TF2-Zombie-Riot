@@ -431,6 +431,19 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	pack.ReadString(classname, 32);
 	if(client && weapon != -1 && IsValidCurrentWeapon(client, weapon))
 	{
+		float damage_test_validity = 1.0; 
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_IMPACT_LANCE: //yes, if we miss, then we do other stuff.
+			{
+				LanceDamageCalc(client, weapon, damage_test_validity, true);
+			}
+		}
+		if(damage_test_validity == 0.0) //here we put weapons that have special rules regarding attacking via a melee, can they even attack? etc etc.
+		{
+			delete pack;
+			return;
+		}
 		int aoeSwing = 1;
 
 		Handle swingTrace;
@@ -520,7 +533,13 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		
 			
 		damage *= Attributes_Get(weapon, 1, 1.0);
-				
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_IMPACT_LANCE: //yes, if we miss, then we do other stuff.
+			{
+				LanceDamageCalc(client, weapon, damage);
+			}
+		}
 		
 		bool PlayOnceOnly = false;
 		float playerPos[3];
