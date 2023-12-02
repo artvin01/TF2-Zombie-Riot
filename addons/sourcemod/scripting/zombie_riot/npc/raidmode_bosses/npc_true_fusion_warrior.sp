@@ -357,7 +357,6 @@ methodmap TrueFusionWarrior < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
@@ -1036,7 +1035,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	InfoTargetParentAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1098,7 +1097,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	InfoTargetParentAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;

@@ -956,7 +956,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(npc.index, "effect_hand_l", flPos, flAng);
-			int particler = InfoTargetParentAt(flPos, "raygun_projectile_blue_crit", 0.25);
+			int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
 			SetParent(npc.index, particler, "effect_hand_l");
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 35.0;
@@ -1109,7 +1109,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				float flPos[3]; // original
 				float flAng[3]; // original
 				GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-				int particler = InfoTargetParentAt(flPos, "raygun_projectile_blue_crit", 2.0);
+				int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 2.0);
 				SetParent(npc.index, particler, "effect_hand_r");
 
 				int MaxCount = RoundToNearest(0.5 * RaidModeScaling);
@@ -1262,7 +1262,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
-			InfoTargetParentAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
+			ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
 		}
 	}
 }
@@ -1849,11 +1849,11 @@ void Silvester_TBB_Ability(int client)
 	float flPos[3]; // original
 	float flAng[3]; // original
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
-	int particlel = InfoTargetParentAt(flPos, "eyeboss_death_vortex", 4.0);
+	int particlel = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
 	SetParent(client, particlel, "effect_hand_r");
 
 	GetAttachment(client, "effect_hand_l", flPos, flAng);
-	int particler = InfoTargetParentAt(flPos, "eyeboss_death_vortex", 4.0);
+	int particler = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
 	SetParent(client, particler, "effect_hand_l");
 			
 	Silvester_BEAM_IsUsing[client] = false;

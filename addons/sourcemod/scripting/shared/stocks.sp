@@ -105,6 +105,11 @@ stock int InfoTargetParentAt(float position[3], const char[] todo_remove_massrep
 	int info = CreateEntityByName("info_target");
 	if (info != -1)
 	{
+		if(todo_remove_massreplace_fix[0])
+		{
+			PrintToChatAll("an info target had a name, please report this to admins!!!!");
+			ThrowError("shouldnt have a name, but does, fix it!");
+		}
 		TeleportEntity(info, position, NULL_VECTOR, NULL_VECTOR);
 		SetEntPropFloat(info, Prop_Data, "m_flSimulationTime", GetGameTime());
 		

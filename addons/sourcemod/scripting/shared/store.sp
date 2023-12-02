@@ -5181,7 +5181,7 @@ void Delete_Clip(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		RequestFrame(Delete_Clip_again, EntIndexToEntRef(entity));
+		RequestFrame(Delete_Clip_again, ref);
 		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
 		int ammo = GetEntData(entity, iAmmoTable, 4);
 		
