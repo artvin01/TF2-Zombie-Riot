@@ -347,5 +347,4 @@ void SilvesterCosmeticEffects(int entity, int wearable)
 	i_SilvesterCosmeticEffect[entity][52] = EntIndexToEntRef(Laser_3_Wingset_6);
 	i_SilvesterCosmeticEffect[entity][53] = EntIndexToEntRef(Laser_4_Wingset_6);
 	i_SilvesterCosmeticEffect[entity][54] = EntIndexToEntRef(ParticleOffsetMain);
-
 }
