@@ -1015,8 +1015,8 @@ stock void SpawnParticle_ControlPoints(float StartPos[3], float EndPos[3], char 
 {
 	 int particle  = CreateEntityByName("info_particle_system");
 	 int particle2 = CreateEntityByName("info_particle_system");
-	 int ent = ParticleEffectAt(StartPos, "", 0.0);
-	 int controlpoint = ParticleEffectAt(EndPos, "", 0.0);
+	 int ent = InfoTargetParentAt(StartPos, "", 0.0);
+	 int controlpoint = InfoTargetParentAt(EndPos, "", 0.0);
  
 	 if (IsValidEdict(particle) && IsValidEdict(particle2) && IsValidEdict(ent) && IsValidEdict(controlpoint))
 	 {

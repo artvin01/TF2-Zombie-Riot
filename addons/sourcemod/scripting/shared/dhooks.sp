@@ -1572,7 +1572,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
-		RequestFrame(SetHealthAfterRevive, client);
+		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 	}
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;

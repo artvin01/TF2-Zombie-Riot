@@ -5176,11 +5176,12 @@ static void CheckMultiSlots(int client)
 	}
 }
 
-void Delete_Clip(int entity)
+void Delete_Clip(int ref)
 {
+	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		RequestFrame(Delete_Clip_again, entity);
+		RequestFrame(Delete_Clip_again, EntIndexToEntRef(entity));
 		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
 		int ammo = GetEntData(entity, iAmmoTable, 4);
 		
@@ -5192,8 +5193,9 @@ void Delete_Clip(int entity)
 	}
 }
 
-void Delete_Clip_again(int entity)
+void Delete_Clip_again(int ref)
 {
+	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
 		int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
@@ -5359,8 +5361,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								{
 									if(!info.HasNoClip)
 									{
-										RequestFrame(Delete_Clip, entity);
-										Delete_Clip(entity);
+										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
+										Delete_Clip(EntIndexToEntRef(entity));
 									}
 									if(info.NoHeadshot)
 									{

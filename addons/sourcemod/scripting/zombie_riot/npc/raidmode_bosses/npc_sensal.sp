@@ -935,7 +935,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 		
 		GetEntPropVector(iNpc, Prop_Data, "m_vecAbsOrigin", flPos);
 	}
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	int particle_2;
 	int particle_3;
 	int particle_4;
@@ -943,18 +943,18 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	if(attachment[0])
 	{
 		
-		particle_2 = ParticleEffectAt({0.0,0.0,30.0}, "", 0.0); //First offset we go by
-		particle_3 = ParticleEffectAt({0.0,0.0,-100.0}, "", 0.0); //First offset we go by
-		particle_4 = ParticleEffectAt({0.0,35.0,-100.0}, "", 0.0); //First offset we go by
-		particle_5 = ParticleEffectAt({0.0,70.0,-85.0}, "", 0.0); //First offset we go by
+		particle_2 = InfoTargetParentAt({0.0,0.0,30.0}, "", 0.0); //First offset we go by
+		particle_3 = InfoTargetParentAt({0.0,0.0,-100.0}, "", 0.0); //First offset we go by
+		particle_4 = InfoTargetParentAt({0.0,35.0,-100.0}, "", 0.0); //First offset we go by
+		particle_5 = InfoTargetParentAt({0.0,70.0,-85.0}, "", 0.0); //First offset we go by
 
 	}
 	else
 	{
-		particle_2 = ParticleEffectAt({0.0,25.0,0.0}, "", 0.0); //First offset we go by
-		particle_3 = ParticleEffectAt({0.0,-40.0,0.0}, "", 0.0); //First offset we go by
-		particle_4 = ParticleEffectAt({12.0,-40.0,0.0}, "", 0.0); //First offset we go by
-		particle_5 = ParticleEffectAt({35.0,-30.0,0.0}, "", 0.0); //First offset we go by
+		particle_2 = InfoTargetParentAt({0.0,25.0,0.0}, "", 0.0); //First offset we go by
+		particle_3 = InfoTargetParentAt({0.0,-40.0,0.0}, "", 0.0); //First offset we go by
+		particle_4 = InfoTargetParentAt({12.0,-40.0,0.0}, "", 0.0); //First offset we go by
+		particle_5 = InfoTargetParentAt({35.0,-30.0,0.0}, "", 0.0); //First offset we go by
 	}
 	int particle_6;
 	if(colour == 0)
@@ -965,7 +965,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 		}
 		else
 		{
-			particle_6 = ParticleEffectAt({50.0,-25.0,0.0}, "", 0.0); //First offset we go by
+			particle_6 = InfoTargetParentAt({50.0,-25.0,0.0}, "", 0.0); //First offset we go by
 		}
 	}
 	else
@@ -976,7 +976,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 		}
 		else
 		{
-			particle_6 = ParticleEffectAt({50.0,-25.0,0.0}, "", 0.0); //First offset we go by
+			particle_6 = InfoTargetParentAt({50.0,-25.0,0.0}, "", 0.0); //First offset we go by
 		}
 	}
 	

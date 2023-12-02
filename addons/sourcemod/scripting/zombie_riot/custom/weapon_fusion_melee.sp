@@ -640,12 +640,12 @@ void FusionWeaponEffectPap0(int owner, int client, int Wearable, char[] attachme
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 
-	int particle_2 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -680,18 +680,18 @@ void FusionWeaponEffectPap1(int owner, int client, int Wearable, char[] attachme
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
-	int particle_2 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({-2.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({-5.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({-2.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	
-	int particle_2_1 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = ParticleEffectAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = ParticleEffectAt({2.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3_1 = InfoTargetParentAt({15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4_1 = InfoTargetParentAt({5.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5_1 = InfoTargetParentAt({2.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -744,18 +744,18 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
-	int particle_2 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({-2.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({-5.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({-2.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	
-	int particle_2_1 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = ParticleEffectAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = ParticleEffectAt({2.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3_1 = InfoTargetParentAt({15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4_1 = InfoTargetParentAt({5.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5_1 = InfoTargetParentAt({2.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -799,11 +799,11 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_3_1);
 
 	
-	int particle_1_l = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2_l = ParticleEffectAt({-5.0,-5.0,25.0}, "", 0.0); 
-	int particle_3_l = ParticleEffectAt({-5.0,-5.0,-25.0}, "", 0.0);
-	int particle_4_l = ParticleEffectAt({-5.0,15.0,0.0}, "", 0.0); 
-	int particle_5_l = ParticleEffectAt({-5.0,-15.0,0.0}, "", 0.0);
+	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
+	int particle_2_l = InfoTargetParentAt({-5.0,-5.0,25.0},"", 0.0); 
+	int particle_3_l = InfoTargetParentAt({-5.0,-5.0,-25.0},"", 0.0);
+	int particle_4_l = InfoTargetParentAt({-5.0,15.0,0.0},"", 0.0); 
+	int particle_5_l = InfoTargetParentAt({-5.0,-15.0,0.0},"", 0.0);
 
 	SetParent(particle_1_l, particle_2_l, "",_, true);
 	SetParent(particle_1_l, particle_3_l, "",_, true);
@@ -848,18 +848,18 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
 	
-	int particle_2 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({-2.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({-5.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({-2.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	
-	int particle_2_1 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = ParticleEffectAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = ParticleEffectAt({2.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0,-15.0,0.0},"", 0.0); //First offset we go by
+	int particle_3_1 = InfoTargetParentAt({15.0,0.0,0.0},"", 0.0); //First offset we go by
+	int particle_4_1 = InfoTargetParentAt({5.0,10.0,0.0},"", 0.0); //First offset we go by
+	int particle_5_1 = InfoTargetParentAt({2.0,50.0,0.0},"", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -903,11 +903,11 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_3_1);
 
 	
-	int particle_1_l = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2_l = ParticleEffectAt({-5.0,-5.0,25.0}, "", 0.0); 
-	int particle_3_l = ParticleEffectAt({-5.0,-5.0,-25.0}, "", 0.0);
-	int particle_4_l = ParticleEffectAt({-5.0,15.0,0.0}, "", 0.0); 
-	int particle_5_l = ParticleEffectAt({-5.0,-15.0,0.0}, "", 0.0);
+	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
+	int particle_2_l = InfoTargetParentAt({-5.0,-5.0,25.0},"", 0.0); 
+	int particle_3_l = InfoTargetParentAt({-5.0,-5.0,-25.0},"", 0.0);
+	int particle_4_l = InfoTargetParentAt({-5.0,15.0,0.0},"", 0.0); 
+	int particle_5_l = InfoTargetParentAt({-5.0,-15.0,0.0},"", 0.0);
 
 	SetParent(particle_1_l, particle_2_l, "",_, true);
 	SetParent(particle_1_l, particle_3_l, "",_, true);

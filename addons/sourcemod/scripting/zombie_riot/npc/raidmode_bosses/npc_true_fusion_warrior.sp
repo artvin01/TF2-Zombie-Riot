@@ -980,7 +980,7 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 
 			npc.GetAttachment("head", flPos, flAng);
 		
-			npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
+			npc.m_iWearable6 = InfoTargetParentAt_Parent(flPos, "utaunt_astralbodies_greenorange_parent", npc.index, "head", {0.0,0.0,0.0});
 */
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -1036,7 +1036,7 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	InfoTargetParentAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1098,7 +1098,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
+	InfoTargetParentAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1714,18 +1714,18 @@ void FusionApplyEffectsForm1(int entity)
 	int blue = 255;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	
-	int particle_2 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 	
-	int particle_2_1 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = ParticleEffectAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = ParticleEffectAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = ParticleEffectAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3_1 = InfoTargetParentAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4_1 = InfoTargetParentAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5_1 = InfoTargetParentAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -1777,18 +1777,18 @@ void FusionApplyEffectsForm2(int entity)
 	int blue = 0;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	
-	int particle_2 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 	
-	int particle_2_1 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = ParticleEffectAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = ParticleEffectAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = ParticleEffectAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3_1 = InfoTargetParentAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4_1 = InfoTargetParentAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5_1 = InfoTargetParentAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);

@@ -100,12 +100,30 @@ stock int GivePropAttachment(int entity, const char[] model)
 	return prop;
 }
 
+stock int InfoTargetParentAt(float position[3], const char[] todo_remove_massreplace_fix, float duration = 0.1)
+{
+	int info = CreateEntityByName("info_target");
+	if (info != -1)
+	{
+		TeleportEntity(info, position, NULL_VECTOR, NULL_VECTOR);
+		SetEntPropFloat(info, Prop_Data, "m_flSimulationTime", GetGameTime());
+		
+		DispatchSpawn(info);
+
+		//if it has no effect name, then it should always display, as its for other reasons.
+		if (duration > 0.0)
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(info), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return info;
+}
+
 stock int ParticleEffectAt(float position[3], const char[] effectName, float duration = 0.1)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+		SetEntPropFloat(particle, Prop_Data, "m_flSimulationTime", GetGameTime());
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		if(effectName[0])
 			DispatchKeyValue(particle, "effect_name", effectName);
@@ -133,6 +151,8 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 	if (particle != -1)
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+		SetEntPropFloat(particle, Prop_Data, "m_flSimulationTime", GetGameTime());
+
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		if(effectName[0])
 			DispatchKeyValue(particle, "effect_name", effectName);

@@ -341,10 +341,10 @@ void ProtectaEffects(int iNpc)
 	float flAng[3];
 	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	
-	int particle_2 = ParticleEffectAt({0.0,0.0,20.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,0.0,20.0}, "", 0.0); //First offset we go by
 	int particle_3 = ParticleEffectAt({0.0,0.0,-40.0}, "eyeboss_projectile", 0.0); //First offset we go by
 	
 	SetParent(particle_1, particle_2, "",_, true);

@@ -1990,7 +1990,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					if(dieingstate[target] <= 0)
 					{
 						SetEntityMoveType(target, MOVETYPE_WALK);
-						RequestFrame(Movetype_walk, target);
+						RequestFrame(Movetype_walk, EntRefToEntIndex(target));
 						dieingstate[target] = 0;
 						ClientSaveUber(target);
 						ClientSaveRageMeterStatus(target);
@@ -2013,7 +2013,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						PrintCenterText(target, "");
 						DoOverlay(target, "", 2);
 						SetEntityHealth(target, 50);
-						RequestFrame(SetHealthAfterRevive, target);
+						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
 						int entity, i;
 						while(TF2U_GetWearable(target, entity, i))
 						{
@@ -2112,8 +2112,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public void Movetype_walk(int client)
+public void Movetype_walk(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
 		SetEntityMoveType(client, MOVETYPE_WALK);
@@ -2765,6 +2766,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "info_particle_system"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
+			b_ThisEntityIgnored[entity] = true;
+		}
+		else if(!StrContains(classname, "info_target"))
+		{
 			b_ThisEntityIgnored[entity] = true;
 		}
 		else if(!StrContains(classname, "func_regenerate"))

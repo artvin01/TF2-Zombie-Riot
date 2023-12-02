@@ -957,7 +957,7 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	float flAng_2[3];
 	GetAttachment(viewmodelModel, "effect_hand_r", flPos_2, flAng_2);
 	
-	int i_particle_right = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);
+	int i_particle_right = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
 	
 	float Direction[3], zero_zero[3] = {0.0, 100.0, 0.0};	//use this to get a "fake" forward vec
 	
@@ -975,7 +975,7 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	f_end = 1.0;
 	amp = 0.1;
 	
-	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
 	
 	float part_0[3] = { 0.0, 12.5, 0.0 };
 	part_0[0] += offest1;
@@ -984,7 +984,7 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	test(part_0, zero_zero, Direction); //ScaleVector(Direction, -1.0);
 	AddVectors(part_0, Direction, part_0);
 	
-	int particle_1 = ParticleEffectAt(part_0, "", 0.0);
+	int particle_1 = InfoTargetParentAt(part_0, "", 0.0);
 	
 	SetParent(particle_0, particle_1);
 	
@@ -1034,18 +1034,18 @@ static void Spawn_Weapon(int client, int viewmodelModel)
 	//Y axis - Foward, Back
 	//Z axis - Up Down
 	
-	int particle_6 = ParticleEffectAt(part_1, "", 0.0);
-	int particle_6_1 = ParticleEffectAt(part_1_1, "", 0.0);
+	int particle_6 = InfoTargetParentAt(part_1, "", 0.0);
+	int particle_6_1 = InfoTargetParentAt(part_1_1, "", 0.0);
 	SetParent(particle_1, particle_6, "",_, true);
 	SetParent(particle_6, particle_6_1, "",_, true);
 	
-	int particle_7 = ParticleEffectAt(part_2, "", 0.0);
-	int particle_7_1 = ParticleEffectAt(part_2_1, "", 0.0);
+	int particle_7 = InfoTargetParentAt(part_2, "", 0.0);
+	int particle_7_1 = InfoTargetParentAt(part_2_1, "", 0.0);
 	SetParent(particle_1, particle_7, "",_, true);
 	SetParent(particle_7, particle_7_1, "",_, true);
 	
-	int particle_8 = ParticleEffectAt(part_3, "", 0.0);	//hadle
-	int particle_8_1 = ParticleEffectAt(part_3_1, "", 0.0);
+	int particle_8 = InfoTargetParentAt(part_3, "", 0.0);	//hadle
+	int particle_8_1 = InfoTargetParentAt(part_3_1, "", 0.0);
 	SetParent(particle_1, particle_8, "",_, true);
 	SetParent(particle_8, particle_8_1, "",_, true);
 	

@@ -325,10 +325,10 @@ static void Adiantum_Create_Wings(int client)
 	f_end = 1.0;
 	amp = 1.0;
 	
-	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
 	
 	
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
 	
 	SetParent(particle_0, particle_1);
 	
@@ -340,8 +340,8 @@ static void Adiantum_Create_Wings(int client)
 	//ALL OF THESE ARE RELATIVE TO THE BACKPACK POINT THINGY, or well the viewmodel, but its easier to visualise if using the back
 	//Left?
 	
-	int particle_2 = ParticleEffectAt({20.0, 10.5, 2.5}, "", 0.0);	//x,y,z	//Z axis IS NOT UP/DOWN, its forward and backwards. somehow
-	int particle_2_1 = ParticleEffectAt({45.0, 35.0, -5.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({20.0, 10.5, 2.5}, "", 0.0);	//x,y,z	//Z axis IS NOT UP/DOWN, its forward and backwards. somehow
+	int particle_2_1 = InfoTargetParentAt({45.0, 35.0, -5.0}, "", 0.0);
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_2, particle_2_1, "",_, true);
 

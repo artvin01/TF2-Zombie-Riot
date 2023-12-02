@@ -1898,19 +1898,22 @@ enum PlayerAnimEvent_t
 39	PLAYERANIMEVENT_COUNT
 };
 */
-public void Try_Backstab_Anim_Again(int attacker)
+public void Try_Backstab_Anim_Again(int ref)
 {
-	if(Animation_Retry[attacker] > 0)
+	int attacker = EntRefToEntIndex(ref);
+	if(IsValidClient(attacker) && IsPlayerAlive(attacker))
 	{
-		RequestFrame(Try_Backstab_Anim_Again, attacker);
+		if(Animation_Retry[attacker] > 0)
+		{
+			RequestFrame(Try_Backstab_Anim_Again, ref);
+		}
+		Animation_Retry[attacker] -= 1;
+		TE_Start("PlayerAnimEvent");
+		TE_WriteEnt("m_hPlayer", attacker);
+		TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+		TE_WriteNum("m_nData", Animation_Index[attacker]);
+		TE_SendToAll();
 	}
-	Animation_Retry[attacker] -= 1;
-	TE_Start("PlayerAnimEvent");
-	TE_WriteEnt("m_hPlayer", attacker);
-	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-	TE_WriteNum("m_nData", Animation_Index[attacker]);
-	TE_SendToAll();
-					
 }
 
 
@@ -2605,7 +2608,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 						{
 							Animation_Retry[attacker] = 4;
-							RequestFrame(Try_Backstab_Anim_Again, attacker);
+							RequestFrame(Try_Backstab_Anim_Again, EntIndexToEntRef(attacker));
 							TE_Start("PlayerAnimEvent");
 							Animation_Setting[attacker] = 1;
 							Animation_Index[attacker] = 33;

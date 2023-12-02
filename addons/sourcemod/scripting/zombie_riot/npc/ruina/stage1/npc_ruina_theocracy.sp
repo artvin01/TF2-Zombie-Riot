@@ -702,10 +702,10 @@ static void Theocracy_Create_Wings(int client)
 	f_end = 1.0;
 	amp = 1.0;
 	
-	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
 	
 	
-	int particle_1 = ParticleEffectAt({0.0,15.0,-12.5}, "", 0.0);
+	int particle_1 = InfoTargetParentAt({0.0,15.0,-12.5}, "", 0.0);
 	
 	SetParent(particle_0, particle_1);
 	
@@ -719,8 +719,8 @@ static void Theocracy_Create_Wings(int client)
 
 
 	//Right? probably right?
-	int particle_2 = ParticleEffectAt({-35.0, 10.5, 2.5}, "", 0.0);
-	int particle_2_1 = ParticleEffectAt({-90.0, 35.0, -5.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({-35.0, 10.5, 2.5}, "", 0.0);
+	int particle_2_1 = InfoTargetParentAt({-90.0, 35.0, -5.0}, "", 0.0);
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_2, particle_2_1, "",_, true);
 

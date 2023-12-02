@@ -357,7 +357,7 @@ void SensalWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 		
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 	}
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	int particle_2;
 	int particle_3;
 	int particle_4;
@@ -365,28 +365,28 @@ void SensalWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 	if(attachment[0])
 	{
 		
-		particle_2 = ParticleEffectAt({0.0,0.0,19.5}, "", 0.0); //First offset we go by
-		particle_3 = ParticleEffectAt({0.0,0.0,-65.0}, "", 0.0); //First offset we go by
-		particle_4 = ParticleEffectAt({0.0,22.75,-65.0}, "", 0.0); //First offset we go by
-		particle_5 = ParticleEffectAt({0.0,45.5,-55.25}, "", 0.0); //First offset we go by
+		particle_2 = InfoTargetParentAt({0.0,0.0,19.5}, "", 0.0); //First offset we go by
+		particle_3 = InfoTargetParentAt({0.0,0.0,-65.0}, "", 0.0); //First offset we go by
+		particle_4 = InfoTargetParentAt({0.0,22.75,-65.0}, "", 0.0); //First offset we go by
+		particle_5 = InfoTargetParentAt({0.0,45.5,-55.25}, "", 0.0); //First offset we go by
 
 	}
 	else
 	{
-		particle_2 = ParticleEffectAt({0.0,16.0,0.0}, "", 0.0); //First offset we go by
-		particle_3 = ParticleEffectAt({0.0,-26.0,0.0}, "", 0.0); //First offset we go by
-		particle_4 = ParticleEffectAt({7.8,-26.0,0.0}, "", 0.0); //First offset we go by
-		particle_5 = ParticleEffectAt({22.75,-19.5,0.0}, "", 0.0); //First offset we go by
+		particle_2 = InfoTargetParentAt({0.0,16.0,0.0}, "", 0.0); //First offset we go by
+		particle_3 = InfoTargetParentAt({0.0,-26.0,0.0}, "", 0.0); //First offset we go by
+		particle_4 = InfoTargetParentAt({7.8,-26.0,0.0}, "", 0.0); //First offset we go by
+		particle_5 = InfoTargetParentAt({22.75,-19.5,0.0}, "", 0.0); //First offset we go by
 	}
 	int particle_6;
 
 	if(attachment[0])
 	{
-		particle_6 = ParticleEffectAt({0.0,65.0,-45.5}, "", 0.0); //First offset we go by
+		particle_6 = InfoTargetParentAt({0.0,65.0,-45.5}, "", 0.0); //First offset we go by
 	}
 	else
 	{
-		particle_6 = ParticleEffectAt({32.5,-16.5,0.0}, "", 0.0); //First offset we go by
+		particle_6 = InfoTargetParentAt({32.5,-16.5,0.0}, "", 0.0); //First offset we go by
 	}
 
 	SetParent(particle_1, particle_2, "",_, true);

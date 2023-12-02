@@ -710,7 +710,7 @@ void Impact_Lance_EffectPap0(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -721,13 +721,13 @@ void Impact_Lance_EffectPap0(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -778,7 +778,7 @@ void Impact_Lance_EffectPap1(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -789,16 +789,16 @@ void Impact_Lance_EffectPap1(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);
 
-	int particle_4 = ParticleEffectAt({0.0,60.0, 5.0}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({0.0,60.0, -5.0}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({0.0,60.0, 5.0}, "", 0.0);
+	int particle_4_1 = InfoTargetParentAt({0.0,60.0, -5.0}, "", 0.0);
 
-	int particle_5 = ParticleEffectAt({0.0,-10.0, 0.0}, "", 0.0);
+	int particle_5 = InfoTargetParentAt({0.0,-10.0, 0.0}, "", 0.0);
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -859,7 +859,7 @@ void Impact_Lance_EffectPap2(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -870,17 +870,17 @@ void Impact_Lance_EffectPap2(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -7.5}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -7.5}, "", 0.0);
 
-	int particle_3 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0);
+	int particle_3 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0);
 
-	int particle_4 = ParticleEffectAt({0.0,70.0,2.5}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({0.0,70.0, -2.5}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({0.0,70.0,2.5}, "", 0.0);
+	int particle_4_1 = InfoTargetParentAt({0.0,70.0, -2.5}, "", 0.0);
 
-	int particle_5 = ParticleEffectAt({0.0,-10.0, 5.0}, "", 0.0);
-	int particle_5_1 = ParticleEffectAt({0.0,-10.0, -5.0}, "", 0.0);
+	int particle_5 = InfoTargetParentAt({0.0,-10.0, 5.0}, "", 0.0);
+	int particle_5_1 = InfoTargetParentAt({0.0,-10.0, -5.0}, "", 0.0);
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -942,7 +942,7 @@ void Impact_Lance_EffectPap3(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -953,22 +953,22 @@ void Impact_Lance_EffectPap3(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -7.5}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -7.5}, "", 0.0);
 
-	int particle_3 = ParticleEffectAt({5.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-5.0,10.0,0.0}, "", 0.0);
+	int particle_3 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0);
 
-	int particle_4 = ParticleEffectAt({0.0,70.0,2.5}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({0.0,70.0, -2.5}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({0.0,70.0,2.5}, "", 0.0);
+	int particle_4_1 = InfoTargetParentAt({0.0,70.0, -2.5}, "", 0.0);
 
-	int particle_5 = ParticleEffectAt({0.0,-10.0, 5.0}, "", 0.0);
-	int particle_5_1 = ParticleEffectAt({0.0,-10.0, -5.0}, "", 0.0);
+	int particle_5 = InfoTargetParentAt({0.0,-10.0, 5.0}, "", 0.0);
+	int particle_5_1 = InfoTargetParentAt({0.0,-10.0, -5.0}, "", 0.0);
 
-	int particle_6 = ParticleEffectAt({12.0,-5.0, 0.0}, "", 0.0);
-	int particle_6_1 = ParticleEffectAt({-12.0,-5.0, 0.0}, "", 0.0);
+	int particle_6 = InfoTargetParentAt({12.0,-5.0, 0.0}, "", 0.0);
+	int particle_6_1 = InfoTargetParentAt({-12.0,-5.0, 0.0}, "", 0.0);
 
-	int particle_7 = ParticleEffectAt({0.0,-10.0, 0.0}, "", 0.0);
+	int particle_7 = InfoTargetParentAt({0.0,-10.0, 0.0}, "", 0.0);
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1048,7 +1048,7 @@ void Impact_Lance_EffectPap_proj_0(int client, float flAng[3])
 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1059,13 +1059,13 @@ void Impact_Lance_EffectPap_proj_0(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1118,7 +1118,7 @@ void Impact_Lance_EffectPap_proj_1(int client, float flAng[3])
 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1138,14 +1138,14 @@ void Impact_Lance_EffectPap_proj_1(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
-	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = InfoTargetParentAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1203,7 +1203,7 @@ void Impact_Lance_EffectPap_proj_2(int client, float flAng[3])
 	float flPos[3];
 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1214,14 +1214,14 @@ void Impact_Lance_EffectPap_proj_2(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
-	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = InfoTargetParentAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1283,7 +1283,7 @@ void Impact_Lance_EffectPap_proj_3(int client, float flAng[3])
 	float flPos[3];
 
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1294,17 +1294,17 @@ void Impact_Lance_EffectPap_proj_3(int client, float flAng[3])
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 5.0}, "", 0.0); 	//top
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -5.0}, "", 0.0);	//bottom
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 5.0}, "", 0.0); 	//top
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -5.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({10.0,25.0,0.0}, "", 0.0);			//Left
-	int particle_3_1 = ParticleEffectAt({-10.0,25.0,0.0}, "", 0.0);			//Right
+	int particle_3 = InfoTargetParentAt({10.0,25.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = InfoTargetParentAt({-10.0,25.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
-	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = InfoTargetParentAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
-	int particle_5 = ParticleEffectAt({15.0,30.0,0.0}, "", 0.0);			//Left
-	int particle_5_1 = ParticleEffectAt({-15.0,30.0,0.0}, "", 0.0);			//Right
+	int particle_5 = InfoTargetParentAt({15.0,30.0,0.0}, "", 0.0);			//Left
+	int particle_5_1 = InfoTargetParentAt({-15.0,30.0,0.0}, "", 0.0);			//Right
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1380,7 +1380,7 @@ void Impact_Lance_EffectPap4(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1391,14 +1391,14 @@ void Impact_Lance_EffectPap4(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
-	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = InfoTargetParentAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1454,7 +1454,7 @@ void Impact_Lance_EffectPap5(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1465,14 +1465,14 @@ void Impact_Lance_EffectPap5(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 10.0}, "", 0.0); 	//top
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -10.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({10.0,10.0,0.0}, "", 0.0);			//Left
-	int particle_3_1 = ParticleEffectAt({-10.0,10.0,0.0}, "", 0.0);			//Right
+	int particle_3 = InfoTargetParentAt({10.0,10.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = InfoTargetParentAt({-10.0,10.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
-	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = InfoTargetParentAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
 
 	SetParent(particle_1, particle_2, "",_, true);
@@ -1534,7 +1534,7 @@ void Impact_Lance_EffectPap6(int client, int Wearable, char[] attachment = "effe
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	/*
 		{x, y, z};
@@ -1545,17 +1545,17 @@ void Impact_Lance_EffectPap6(int client, int Wearable, char[] attachment = "effe
 		 
 	*/
 
-	int particle_2 = ParticleEffectAt({0.0, 10.0, 5.0}, "", 0.0); 	//top
-	int particle_2_1 = ParticleEffectAt({0.0, 10.0, -5.0}, "", 0.0);	//bottom
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 5.0}, "", 0.0); 	//top
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -5.0}, "", 0.0);	//bottom
 
-	int particle_3 = ParticleEffectAt({10.0,25.0,0.0}, "", 0.0);			//Left
-	int particle_3_1 = ParticleEffectAt({-10.0,25.0,0.0}, "", 0.0);			//Right
+	int particle_3 = InfoTargetParentAt({10.0,25.0,0.0}, "", 0.0);			//Left
+	int particle_3_1 = InfoTargetParentAt({-10.0,25.0,0.0}, "", 0.0);			//Right
 
-	int particle_4 = ParticleEffectAt({0.0,50.0, 0.0}, "", 0.0);			//front
-	int particle_4_1 = ParticleEffectAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
+	int particle_4 = InfoTargetParentAt({0.0,50.0, 0.0}, "", 0.0);			//front
+	int particle_4_1 = InfoTargetParentAt({0.0,-25.0, 0.0}, "", 0.0);			//front-mid
 
-	int particle_5 = ParticleEffectAt({15.0,30.0,0.0}, "", 0.0);			//Left
-	int particle_5_1 = ParticleEffectAt({-15.0,30.0,0.0}, "", 0.0);			//Right
+	int particle_5 = InfoTargetParentAt({15.0,30.0,0.0}, "", 0.0);			//Left
+	int particle_5_1 = InfoTargetParentAt({-15.0,30.0,0.0}, "", 0.0);			//Right
 
 
 	SetParent(particle_1, particle_2, "",_, true);

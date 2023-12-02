@@ -956,7 +956,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(npc.index, "effect_hand_l", flPos, flAng);
-			int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.25);
+			int particler = InfoTargetParentAt(flPos, "raygun_projectile_blue_crit", 0.25);
 			SetParent(npc.index, particler, "effect_hand_l");
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 35.0;
@@ -1109,7 +1109,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				float flPos[3]; // original
 				float flAng[3]; // original
 				GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-				int particler = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 2.0);
+				int particler = InfoTargetParentAt(flPos, "raygun_projectile_blue_crit", 2.0);
 				SetParent(npc.index, particler, "effect_hand_r");
 
 				int MaxCount = RoundToNearest(0.5 * RaidModeScaling);
@@ -1262,7 +1262,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 			
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
-			ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
+			InfoTargetParentAt(pos, "utaunt_electricity_cloud1_WY", 5.5);
 		}
 	}
 }
@@ -1808,7 +1808,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			SpawnParticlePos[2] += 80.0;
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 			SpawnParticlePos[2] -= 80.0;
-	//		ParticleEffectAt(SpawnParticlePos, "medic_resist_fire", 1.0);
+	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{
 				EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, SpawnParticlePos);		
@@ -1849,11 +1849,11 @@ void Silvester_TBB_Ability(int client)
 	float flPos[3]; // original
 	float flAng[3]; // original
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
-	int particlel = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
+	int particlel = InfoTargetParentAt(flPos, "eyeboss_death_vortex", 4.0);
 	SetParent(client, particlel, "effect_hand_r");
 
 	GetAttachment(client, "effect_hand_l", flPos, flAng);
-	int particler = ParticleEffectAt(flPos, "eyeboss_death_vortex", 4.0);
+	int particler = InfoTargetParentAt(flPos, "eyeboss_death_vortex", 4.0);
 	SetParent(client, particler, "effect_hand_l");
 			
 	Silvester_BEAM_IsUsing[client] = false;
@@ -2178,18 +2178,18 @@ void SilvesterApplyEffectsForm1(int entity)
 	int blue = 255;
 	float flPos[3];
 	float flAng[3];
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	
-	int particle_2 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 	
-	int particle_2_1 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-	int particle_3_1 = ParticleEffectAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4_1 = ParticleEffectAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
-	int particle_5_1 = ParticleEffectAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+	int particle_3_1 = InfoTargetParentAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4_1 = InfoTargetParentAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
+	int particle_5_1 = InfoTargetParentAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -2243,18 +2243,18 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	float flAng[3];
 	if(!withoutweapon)
 	{
-		int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+		int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 		
-		int particle_2 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-		int particle_3 = ParticleEffectAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
-		int particle_4 = ParticleEffectAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
-		int particle_5 = ParticleEffectAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
+		int particle_2 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+		int particle_3 = InfoTargetParentAt({-20.5,0.0,0.0}, "", 0.0); //First offset we go by
+		int particle_4 = InfoTargetParentAt({-6.75,13.5,0.0}, "", 0.0); //First offset we go by
+		int particle_5 = InfoTargetParentAt({-2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 		
-		int particle_2_1 = ParticleEffectAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
-		int particle_3_1 = ParticleEffectAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
-		int particle_4_1 = ParticleEffectAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
-		int particle_5_1 = ParticleEffectAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
+		int particle_2_1 = InfoTargetParentAt({0.0,-20.5,0.0}, "", 0.0); //First offset we go by
+		int particle_3_1 = InfoTargetParentAt({20.5,0.0,0.0}, "", 0.0); //First offset we go by
+		int particle_4_1 = InfoTargetParentAt({6.75,13.5,0.0}, "", 0.0); //First offset we go by
+		int particle_5_1 = InfoTargetParentAt({2.7,67.5,0.0}, "", 0.0); //First offset we go by
 
 		SetParent(particle_1, particle_2, "",_, true);
 		SetParent(particle_1, particle_3, "",_, true);
@@ -2309,18 +2309,18 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 		2nd: Up and down, negative up, positive down.
 		3rd: front and back, negative goes back.
 	*/
-	int ParticleOffsetMain = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	GetAttachment(entity, "flag", flPos, flAng);
 	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
 	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
 	SetParent(entity, ParticleOffsetMain, "flag",_);
 
-	int particle_1_Wingset_1 = ParticleEffectAt({35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_1 = InfoTargetParentAt({35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
 
-	int particle_2_Wingset_1 = ParticleEffectAt({-16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_1 = ParticleEffectAt({16.0,16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_1 = ParticleEffectAt({-8.0,12.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_1 = ParticleEffectAt({12.0,-8.0,-12.0}, "", 0.0);
+	int particle_2_Wingset_1 = InfoTargetParentAt({-16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_1 = InfoTargetParentAt({16.0,16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_1 = InfoTargetParentAt({-8.0,12.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_1 = InfoTargetParentAt({12.0,-8.0,-12.0}, "", 0.0);
 
 
 	SetParent(particle_1_Wingset_1, particle_2_Wingset_1, "",_, true);
@@ -2349,12 +2349,12 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	i_ExpidonsaEnergyEffect[entity][23] = EntIndexToEntRef(Laser_3_Wingset_1);
 	i_ExpidonsaEnergyEffect[entity][24] = EntIndexToEntRef(Laser_4_Wingset_1);
 	
-	int particle_1_Wingset_2 = ParticleEffectAt({35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_2 = InfoTargetParentAt({35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
 
-	int particle_2_Wingset_2 = ParticleEffectAt({16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_2 = ParticleEffectAt({-16.0,16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_2 = ParticleEffectAt({-8.0,-12.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_2 = ParticleEffectAt({12.0,8.0,-12.0}, "", 0.0);
+	int particle_2_Wingset_2 = InfoTargetParentAt({16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_2 = InfoTargetParentAt({-16.0,16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_2 = InfoTargetParentAt({-8.0,-12.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_2 = InfoTargetParentAt({12.0,8.0,-12.0}, "", 0.0);
 
 	SetParent(particle_1_Wingset_2, particle_2_Wingset_2, "",_, true);
 	SetParent(particle_1_Wingset_2, particle_3_Wingset_2, "",_, true);
@@ -2385,12 +2385,12 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 
 
 	
-	int particle_1_Wingset_3 = ParticleEffectAt({-35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_3 = InfoTargetParentAt({-35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
 
-	int particle_2_Wingset_3 = ParticleEffectAt({-16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_3 = ParticleEffectAt({16.0,16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_3 = ParticleEffectAt({-12.0,8.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_3 = ParticleEffectAt({8.0,-12.0,-12.0}, "", 0.0);
+	int particle_2_Wingset_3 = InfoTargetParentAt({-16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_3 = InfoTargetParentAt({16.0,16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_3 = InfoTargetParentAt({-12.0,8.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_3 = InfoTargetParentAt({8.0,-12.0,-12.0}, "", 0.0);
 
 	SetParent(particle_1_Wingset_3, particle_2_Wingset_3, "",_, true);
 	SetParent(particle_1_Wingset_3, particle_3_Wingset_3, "",_, true);
@@ -2420,12 +2420,12 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 
 
 	
-	int particle_1_Wingset_4 = ParticleEffectAt({-35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_4 = InfoTargetParentAt({-35.0,40.0,-15.0}, "", 0.0); //This is the root bone basically
 
-	int particle_2_Wingset_4 = ParticleEffectAt({-16.0,16.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_4 = ParticleEffectAt({16.0,-16.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_4 = ParticleEffectAt({8.0,12.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_4 = ParticleEffectAt({-12.0,-8.0,-12.0}, "", 0.0);
+	int particle_2_Wingset_4 = InfoTargetParentAt({-16.0,16.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_4 = InfoTargetParentAt({16.0,-16.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_4 = InfoTargetParentAt({8.0,12.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_4 = InfoTargetParentAt({-12.0,-8.0,-12.0}, "", 0.0);
 
 	SetParent(particle_1_Wingset_4, particle_2_Wingset_4, "",_, true);
 	SetParent(particle_1_Wingset_4, particle_3_Wingset_4, "",_, true);
@@ -2456,12 +2456,12 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 
 	
 	
-	int particle_1_Wingset_5 = ParticleEffectAt({-50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_5 = InfoTargetParentAt({-50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
 
-	int particle_2_Wingset_5 = ParticleEffectAt({-20.0,0.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_5 = ParticleEffectAt({20.0,0.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_5 = ParticleEffectAt({-3.0,14.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_5 = ParticleEffectAt({-3.0,-14.0,-12.0}, "", 0.0);
+	int particle_2_Wingset_5 = InfoTargetParentAt({-20.0,0.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_5 = InfoTargetParentAt({20.0,0.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_5 = InfoTargetParentAt({-3.0,14.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_5 = InfoTargetParentAt({-3.0,-14.0,-12.0}, "", 0.0);
 
 	SetParent(particle_1_Wingset_5, particle_2_Wingset_5, "",_, true);
 	SetParent(particle_1_Wingset_5, particle_3_Wingset_5, "",_, true);
@@ -2490,12 +2490,12 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	i_ExpidonsaEnergyEffect[entity][60] = EntIndexToEntRef(Laser_4_Wingset_5);
 
 
-	int particle_1_Wingset_6 = ParticleEffectAt({50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_6 = InfoTargetParentAt({50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
 
-	int particle_2_Wingset_6 = ParticleEffectAt({-20.0,0.0,-12.0}, "", 0.0); 
-	int particle_3_Wingset_6 = ParticleEffectAt({20.0,0.0,-12.0}, "", 0.0); 
-	int particle_4_Wingset_6 = ParticleEffectAt({3.0,14.0,-12.0}, "", 0.0); 
-	int particle_5_Wingset_6 = ParticleEffectAt({3.0,-14.0,-12.0}, "", 0.0);
+	int particle_2_Wingset_6 = InfoTargetParentAt({-20.0,0.0,-12.0}, "", 0.0); 
+	int particle_3_Wingset_6 = InfoTargetParentAt({20.0,0.0,-12.0}, "", 0.0); 
+	int particle_4_Wingset_6 = InfoTargetParentAt({3.0,14.0,-12.0}, "", 0.0); 
+	int particle_5_Wingset_6 = InfoTargetParentAt({3.0,-14.0,-12.0}, "", 0.0);
 
 	SetParent(particle_1_Wingset_6, particle_2_Wingset_6, "",_, true);
 	SetParent(particle_1_Wingset_6, particle_3_Wingset_6, "",_, true);
@@ -2531,11 +2531,11 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 /*
 
 	//XYZ
-	int particle_1_Wingset_99 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2_Wingset_99 = ParticleEffectAt({0.0,-50.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_3_Wingset_99 = ParticleEffectAt({0.0,50.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_4_Wingset_99 = ParticleEffectAt({-50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_5_Wingset_99 = ParticleEffectAt({50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1_Wingset_99 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_2_Wingset_99 = InfoTargetParentAt({0.0,-50.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_3_Wingset_99 = InfoTargetParentAt({0.0,50.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_4_Wingset_99 = InfoTargetParentAt({-50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_5_Wingset_99 = InfoTargetParentAt({50.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	int Laser_1_Wingset_99 = ConnectWithBeamClient(particle_2_Wingset_99, particle_3_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 	int Laser_2_Wingset_99 = ConnectWithBeamClient(particle_4_Wingset_99, particle_5_Wingset_99, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 

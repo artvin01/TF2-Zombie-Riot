@@ -323,16 +323,16 @@ static void Create_Hand_Particle(int client)
 //	VectorSet = {8.0,8.0,-8.0};
 	VectorSet = {-4.000,12.000,-5.657};
 //RotateVectorViaAngleVector(RotateVector, VectorSet);
-	int	particle_2 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_2 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	VectorSet = {-12.000,4.000,5.657};
-	int	particle_3 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_3 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	VectorSet = {-5.657,-5.657,-8.000};
-	int	particle_4 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_4 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	VectorSet = {6.828,-1.172,4.000};
-	int	particle_5 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_5 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);

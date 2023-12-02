@@ -291,7 +291,7 @@ void BlemishineAuraEffects(int client, float duration)
 	float flAng[3];
 	GetAttachment(viewmodelModel, "flag", flPos, flAng);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", duration);
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", duration);
 	int particle_2 = ParticleEffectAt({50.0,-10.0,10.0}, "rockettrail_fire_airstrike", duration);
 	int particle_2_1 = ParticleEffectAt({80.0,-5.0,-20.0}, "rockettrail_fire_airstrike", duration);
 	SetParent(particle_1, particle_2, "",_, true);

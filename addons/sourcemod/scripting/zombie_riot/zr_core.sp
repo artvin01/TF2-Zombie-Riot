@@ -1101,7 +1101,7 @@ public Action Timer_Dieing(Handle timer, int client)
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				RequestFrame(Movetype_walk, client);
+				RequestFrame(Movetype_walk, EntRefToEntIndex(client));
 				dieingstate[client] = 0;
 					
 				SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", client);
@@ -1122,7 +1122,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				PrintCenterText(client, "");
 				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
-				RequestFrame(SetHealthAfterRevive, client);
+				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -1490,26 +1490,29 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 }
 
 //Revival raid spam
-public void SetHealthAfterReviveRaid(int client)
+public void SetHealthAfterReviveRaid(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
 		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+		RequestFrame(SetHealthAfterReviveRaidAgain, ref);	
 	}
 }
 
-public void SetHealthAfterReviveRaidAgain(int client)
+public void SetHealthAfterReviveRaidAgain(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
 		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, ref);	
 	}
 }
 
-public void SetHealthAfterReviveRaidAgainAgain(int client)
+public void SetHealthAfterReviveRaidAgainAgain(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
 		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
@@ -1518,16 +1521,18 @@ public void SetHealthAfterReviveRaidAgainAgain(int client)
 //Revival raid spam
 
 //Set hp spam after normal revive
-public void SetHealthAfterRevive(int client)
+public void SetHealthAfterRevive(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
-		RequestFrame(SetHealthAfterReviveAgain, client);	
+		RequestFrame(SetHealthAfterReviveAgain, ref);	
 	}
 }
 
-public void SetHealthAfterReviveAgain(int client)
+public void SetHealthAfterReviveAgain(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
 		SetEntityHealth(client, 50);
@@ -1812,7 +1817,7 @@ void ReviveAll(bool raidspawned = false)
 					if(!raidspawned)
 					{
 						SetEntityHealth(client, 50);
-						RequestFrame(SetHealthAfterRevive, client);
+						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 					}
 				}
 				if(raidspawned)
@@ -1820,7 +1825,7 @@ void ReviveAll(bool raidspawned = false)
 					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
 					{
 						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-						RequestFrame(SetHealthAfterReviveRaid, client);	
+						RequestFrame(SetHealthAfterReviveRaid, EntIndexToEntRef(client));	
 					}
 				}
 			}

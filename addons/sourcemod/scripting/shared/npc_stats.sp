@@ -9036,7 +9036,7 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 
 stock void SmiteNpcToDeath(int entity)
 {
-	if(b_ThisWasAnNpc[entity])
+	if(!b_ThisWasAnNpc[entity])
 		return;
 		
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
