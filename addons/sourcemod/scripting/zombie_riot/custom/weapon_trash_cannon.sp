@@ -107,10 +107,14 @@ float f_MondoRadius[3] = { 1000.0, 1500.0, 2000.0 };
 
 bool b_MondoEnabled[3] = { false, false, true };
 
-static int i_TrashNumEffects = 9;
+static int i_TrashNumEffects = 8;
 
 static int i_TrashWeapon[2049] = { -1, ... };
 static int i_TrashTier[2049] = { 0, ... };
+
+static int i_NextShot[MAXPLAYERS + 1] = { 0, ... };
+static float f_TrashNextHUD[MAXPLAYERS + 1] = { 0.0, ... };
+Handle Timer_Trash[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 
 #define MODEL_ROCKET				"models/weapons/w_models/w_rocket.mdl"
 #define MODEL_DRG					"models/weapons/w_models/w_drg_ball.mdl"
@@ -229,6 +233,82 @@ public void Trash_Cannon_EntityDestroyed(int ent)
 	f_NextShockTime[ent] = 0.0;
 }
 
+public void Enable_Trash_Cannon(int client, int weapon)
+{
+	if (Timer_Trash[client] != null)
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TRASH_CANNON)
+		{
+			delete Timer_Trash[client];
+			Timer_Trash[client] = null;
+			DataPack pack;
+			Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TRASH_CANNON)
+	{
+		DataPack pack;
+		Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+public Action Timer_TrashControl(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		Timer_Trash[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Trash_HUD(client, weapon);
+
+	return Plugin_Continue;
+}
+
+public void Trash_HUD(int client, int weapon)
+{
+	if(f_TrashNextHUD[client] < GetGameTime())
+	{
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon)
+		{
+			switch(i_NextShot[client])
+			{
+				case 1:
+					PrintHintText(client, "NEXT: Shock Stock");
+				case 2:
+					PrintHintText(client, "NEXT: Mortar Marker");
+				case 3:
+					PrintHintText(client, "NEXT: Bundle of Arrows");
+				case 4:
+					PrintHintText(client, "NEXT: Fireball");
+				case 5:
+					PrintHintText(client, "NEXT: An Entire Human Skeleton");
+				case 6:
+					PrintHintText(client, "NEXT: Nice Ice");
+				case 7:
+					PrintHintText(client, "NEXT: Literal Trash");
+				case 8:
+					PrintHintText(client, "NEXT: Micro-Missile Barrage");
+				default:
+					PrintHintText(client, "NEXT: Flimsy Rocket");
+			}
+			
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		}
+		f_TrashNextHUD[client] = GetGameTime() + 0.5;
+	}
+}
+
 public void Weapon_Trash_Cannon_Fire(int client, int weapon, bool crit)
 {
 	Trash_Cannon_Shoot(client, weapon, crit, 0);
@@ -242,41 +322,74 @@ public void Weapon_Trash_Cannon_Fire_Pap2(int client, int weapon, bool crit)
 	Trash_Cannon_Shoot(client, weapon, crit, 2);
 }
 
-public void Trash_Cannon_Shoot(int client, int weapon, bool crit, int tier)
+public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 {
 	Queue scramble = Rand_GenerateScrambledQueue(i_TrashNumEffects);
 	
 	bool success = false;
+	int effect = 0;
 	while (!success && !scramble.Empty)
 	{
-		int effect = scramble.Pop();
+		effect = scramble.Pop();
 		switch(effect)
 		{
 			case 1:
-				success = Trash_Shock(client, weapon, tier);
+				success = Trash_RollShock(client, tier);
 			case 2:
-				success = Trash_Mortar(client, weapon, tier);
+				success = Trash_RollMortar(client, tier);
 			case 3:
-				success = Trash_Arrows(client, weapon, tier);
+				success = Trash_RollArrows(client, tier);
 			case 4:
-				success = Trash_Pyre(client, weapon, tier);
+				success = Trash_RollPyre(client, tier);
 			case 5:
-				success = Trash_Skeleton(client, weapon, tier);
+				success = Trash_RollSkeleton(client, tier);
 			case 6:
-				success = Trash_Ice(client, weapon, tier);
+				success = Trash_RollIce(client, tier);
 			case 7:
-				success = Trash_Trash(client, weapon, tier);
+				success = Trash_RollTrash(client, tier);
 			case 8:
-				success = Trash_Missiles(client, weapon, tier);
-			case 9:
-				success = Trash_Mondo(client, weapon, tier);
+				success = Trash_RollMissiles(client, tier);
 		}
 	}
 	
-	delete scramble;
-	
 	if (!success)
-		Trash_FlimsyRocket(client, weapon, tier);
+		i_NextShot[client] = 0;
+	else
+		i_NextShot[client] = effect;
+		
+	Trash_HUD(client, weapon);
+	
+	delete scramble;
+}
+
+public void Trash_Cannon_Shoot(int client, int weapon, bool crit, int tier)
+{
+	if (!Trash_Mondo(client, weapon, tier))	//Mondo will override EVERY other possible roll if it is obtained.
+	{
+		switch(i_NextShot[client])
+		{
+			case 1:
+				Trash_Shock(client, weapon, tier);
+			case 2:
+				Trash_Mortar(client, weapon, tier);
+			case 3:
+				Trash_Arrows(client, weapon, tier);
+			case 4:
+				Trash_Pyre(client, weapon, tier);
+			case 5:
+				Trash_Skeleton(client, weapon, tier);
+			case 6:
+				Trash_Ice(client, weapon, tier);
+			case 7:
+				Trash_Trash(client, weapon, tier);
+			case 8:
+				Trash_Missiles(client, weapon, tier);
+			default:
+				Trash_FlimsyRocket(client, weapon, tier);
+		}
+	}
+	
+	Trash_Cannon_ChooseNext(client, weapon, tier);
 }
 
 public void Trash_FlimsyRocket(int client, int weapon, int tier)
@@ -306,7 +419,7 @@ public MRESReturn Flimsy_Explode(int entity)
 	return MRES_Supercede; //DONT.
 }
 
-public bool Trash_Shock(int client, int weapon, int tier)
+public bool Trash_RollShock(int client, int tier)
 {
 	if (!b_ShockEnabled[tier])
 		return false;
@@ -314,6 +427,11 @@ public bool Trash_Shock(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_ShockChance[tier])
 		return false;
 		
+	return true;
+}
+
+public void Trash_Shock(int client, int weapon, int tier)
+{
 	int rocket = Trash_LaunchPhysProp(client, MODEL_DRG, 0.001, f_ShockVelocity[tier], weapon, tier, Shock_Explode, true, true);
 	
 	if (IsValidEntity(rocket))
@@ -323,11 +441,7 @@ public bool Trash_Shock(int client, int weapon, int tier)
 		Trash_AttachParticle(rocket, tier > 1 ? PARTICLE_SHOCK_1_MAX : PARTICLE_SHOCK_1, 6.0, "");
 		Trash_AttachParticle(rocket, tier > 1 ? PARTICLE_SHOCK_2_MAX : PARTICLE_SHOCK_2, 6.0, "");
 		Trash_AttachParticle(rocket, tier > 1 ? PARTICLE_SHOCK_3_MAX : PARTICLE_SHOCK_3, 6.0, "");
-		
-		return true;
 	}
-	
-	return false;
 }
 
 public MRESReturn Shock_Explode(int entity)
@@ -384,7 +498,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 	}
 }
 
-public bool Trash_Mortar(int client, int weapon, int tier)
+public bool Trash_RollMortar(int client, int tier)
 {
 	if (!b_MortarEnabled[tier])
 		return false;
@@ -395,7 +509,12 @@ public bool Trash_Mortar(int client, int weapon, int tier)
 	return true;
 }
 
-public bool Trash_Arrows(int client, int weapon, int tier)
+public void Trash_Mortar(int client, int weapon, int tier)
+{
+	return;
+}
+
+public bool Trash_RollArrows(int client, int tier)
 {
 	if (!b_ArrowsEnabled[tier])
 		return false;
@@ -403,6 +522,11 @@ public bool Trash_Arrows(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_ArrowsChance[tier])
 		return false;
 		
+	return true;
+}
+
+public void Trash_Arrows(int client, int weapon, int tier)
+{
 	float ang[3], pos[3];
 	GetClientEyePosition(client, pos);
 	
@@ -429,18 +553,21 @@ public bool Trash_Arrows(int client, int weapon, int tier)
 	}
 	
 	EmitSoundToAll(SOUND_ARROWS_FIRE, client, SNDCHAN_STATIC, 110, _, 1.0);
-		
-	return true;
 }
 
-public bool Trash_Pyre(int client, int weapon, int tier)
+public bool Trash_RollPyre(int client, int tier)
 {
 	if (!b_PyreEnabled[tier])
 		return false;
 		
 	if (GetRandomFloat(0.0, 1.0) > f_PyreChance[tier])
 		return false;
-	
+		
+	return true;
+}
+
+public void Trash_Pyre(int client, int weapon, int tier)
+{
 	float damage = f_PyreDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float vel = f_PyreVel[tier] * Attributes_Get(weapon, 103, 1.0) * Attributes_Get(weapon, 104, 1.0) * Attributes_Get(weapon, 475, 1.0);
 
@@ -471,18 +598,21 @@ public bool Trash_Pyre(int client, int weapon, int tier)
 	}
 		
 	EmitSoundToAll(SOUND_PYRE_FIRE, client, SNDCHAN_STATIC, 90, _, 1.0);
-		
-	return true;
 }
 
-public bool Trash_Skeleton(int client, int weapon, int tier)
+public bool Trash_RollSkeleton(int client, int tier)
 {
 	if (!b_SkeletonEnabled[tier])
 		return false;
 		
 	if (GetRandomFloat(0.0, 1.0) > f_SkeletonChance[tier])
 		return false;
-	
+		
+	return true;
+}
+
+public void Trash_Skeleton(int client, int weapon, int tier)
+{
 	int skin = GetRandomInt(0, 3);
 	
 	for (int i = 0; i < sizeof(s_SkeletonGibs); i++)
@@ -500,8 +630,6 @@ public bool Trash_Skeleton(int client, int weapon, int tier)
 	}
 	
 	EmitSoundToAll(SOUND_SKELETON_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
-		
-	return true;
 }
 
 public MRESReturn Skeleton_Explode(int entity)
@@ -526,7 +654,7 @@ public MRESReturn Skeleton_Explode(int entity)
 	return MRES_Supercede; //DONT.
 }
 
-public bool Trash_Ice(int client, int weapon, int tier)
+public bool Trash_RollIce(int client, int tier)
 {
 	if (!b_IceEnabled[tier])
 		return false;
@@ -534,6 +662,11 @@ public bool Trash_Ice(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_IceChance[tier])
 		return false;
 		
+	return true;
+}
+
+public void Trash_Ice(int client, int weapon, int tier)
+{		
 	float vel = f_IceVelocity[tier];
 		
 	int ice = Trash_LaunchPhysProp(client, MODEL_ICE, GetRandomFloat(0.8, 1.0), vel, weapon, tier, Ice_Explode, true, true);
@@ -544,8 +677,6 @@ public bool Trash_Ice(int client, int weapon, int tier)
 		SetEntityRenderMode(ice, RENDER_TRANSALPHA);
 		SetEntityRenderColor(ice, 120, 180, 255, 200);
 	}
-		
-	return true;
 }
 
 public MRESReturn Ice_Explode(int entity)
@@ -575,7 +706,7 @@ void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 	f_HealthBeforeHurt[victim] = 9999999999.0;		//A little hack to guarantee a freeze. Anything that doesn't have anywhere near 999 billion, 999 million, 999 thousand, 999 HP will always be frozen. 
 }
 
-public bool Trash_Trash(int client, int weapon, int tier)
+public bool Trash_RollTrash(int client, int tier)
 {
 	if (!b_TrashEnabled[tier])
 		return false;
@@ -583,6 +714,11 @@ public bool Trash_Trash(int client, int weapon, int tier)
 	if (GetRandomFloat(0.0, 1.0) > f_TrashChance[tier])
 		return false;
 		
+	return true;
+}
+
+public void Trash_Trash(int client, int weapon, int tier)
+{	
 	float vel = f_TrashVelocity[tier];
 		
 	int trash = Trash_LaunchPhysProp(client, MODEL_TRASH, GetRandomFloat(0.8, 1.2), vel, weapon, tier, Trash_Explode, true, true);
@@ -591,8 +727,6 @@ public bool Trash_Trash(int client, int weapon, int tier)
 		Trash_AttachParticle(trash, PARTICLE_TRASH, 6.0, "");
 		EmitSoundToAll(SOUND_TRASH_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0);
 	}
-		
-	return true;
 }
 
 public MRESReturn Trash_Explode(int entity)
@@ -660,22 +794,25 @@ public MRESReturn Trash_MiniExplode(int entity)
 	return MRES_Supercede; //DONT.
 }
 
-public bool Trash_Missiles(int client, int weapon, int tier)
+public bool Trash_RollMissiles(int client, int tier)
 {
 	if (!b_MissilesEnabled[tier])
 		return false;
 		
 	if (GetRandomFloat(0.0, 1.0) > f_MissilesChance[tier])
 		return false;
-	
+		
+	return true;
+}
+
+public void Trash_Missiles(int client, int weapon, int tier)
+{
 	DataPack pack = new DataPack();
 	CreateDataTimer(f_MissilesWaveDelay[tier], Missiles_FireWave, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, GetClientUserId(client));
 	WritePackCell(pack, EntIndexToEntRef(weapon));
 	WritePackCell(pack, tier);
 	WritePackCell(pack, i_MissilesNumWaves[tier]);
-		
-	return true;
 }
 
 public Action Missiles_FireWave(Handle timed, DataPack pack)

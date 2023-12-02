@@ -5987,6 +5987,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		EnableSilvesterCosmetic(client);
 		EnableMagiaCosmetic(client);
 		Enable_Impact_Lance(client, entity);
+		Enable_Trash_Cannon(client, entity);
 #endif
 
 #if defined RPG
