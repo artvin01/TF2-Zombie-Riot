@@ -2420,15 +2420,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									else
 									{
 										int Armor_Max = 150;
-										int Extra = 0;
 									
-										Armor_Max = MaxArmorCalculation(Extra, client, 0.75);
+										Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 0.75);
 											
 										if(Armor_Charge[client] < Armor_Max)
 										{
 											GiveArmorViaPercentage(client, 0.1, 1.0);
 											
-									//		float Shave_Seconds_off = 5.0 * Extra;
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
@@ -2468,20 +2466,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				{
 						int Armor_Max = 300;
 						int Extra = 0;
-					
-					
+
 						Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
-							
-							//armoar
 							
 						if(Armor_Charge[client] < Armor_Max)
 						{
 								
 							GiveArmorViaPercentage(client, 0.2, 1.0);
 							
-					//		float Shave_Seconds_off = 5.0 * Extra;
-							
-						//	Armor_Ready[client] = GetGameTime() + 10.0; //ehhhhhhhh make it rlly small
 							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
 
 							float pos[3];

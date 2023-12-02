@@ -669,7 +669,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 				if(b_ProximityAmmo[attacker])
 				{
-					damage *= 1.1;
+					damage *= 1.15;
 				}
 #endif
 

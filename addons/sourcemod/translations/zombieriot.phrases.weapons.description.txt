@@ -1371,9 +1371,9 @@
 	
 	"Repair Handling book for dummies Desc"
 	{
-		"en"	"50%% more repair Rate"
-		"ru"	"На 50%% выше скорость починки."
-		"chi"   "修复建筑生命值提高50%%"
+		"en"	"2x more repair Rate"
+		"ru"	"На 2x выше скорость починки."
+		"chi"   "修复建筑生命值提高2x"
 	}
 	
 	"Construction Novice Desc"
@@ -1681,7 +1681,7 @@
 	}
 	"Proximity Ammunition Desc"
 	{
-		"en"	"Your bullets deal 10%% more damage, however their damage falloff is amplified by 20%%\nMost hitscan weapons work with this, if the weapon has no damage falloff, then this does nothing."
+		"en"	"Your bullets deal 15%% more damage, however their damage falloff is amplified by 20%%\nMost hitscan weapons work with this, if the weapon has no damage falloff, then this does nothing."
 	}
 	
 	"Mage Fragility Desc"
