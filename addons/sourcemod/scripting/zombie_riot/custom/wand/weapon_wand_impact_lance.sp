@@ -148,6 +148,7 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 			delete swingTrace;
 			if(!IsValidEnemy(client, target, true))
 			{
+				FinishLagCompensation_Base_boss();
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
@@ -210,10 +211,8 @@ public void Impact_Lance_Impact_Driver(int client, int weapon, bool crit, int sl
 		
 			float damage = 250.0;
 			
-			damage *=Attributes_Get(weapon, 410, 1.0);
+			damage *= Attributes_Get(weapon, 410, 1.0);
 
-			b_LagCompNPC_No_Layers = true;
-			StartLagCompensation_Base_Boss(client);
 			Explode_Logic_Custom(damage, client, client, weapon, SpawnLoc, 250.0);
 			FinishLagCompensation_Base_boss();
 		}
