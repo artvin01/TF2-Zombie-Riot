@@ -5300,7 +5300,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				}
 				else
 				{
-					LogError("Somehow have an invalid GiveWeaponIndex!!!!! [%i]",GiveWeaponIndex);
+					PrintToChatAll("Somehow have an invalid GiveWeaponIndex!!!!! [%i] report to admin now!",GiveWeaponIndex);
+					PrintToChatAll("info.Classname %s ",info.Classname);
+					ThrowError("Somehow have an invalid GiveWeaponIndex!!!!! [%i]",GiveWeaponIndex);
 				}
 
 #if defined ZR
