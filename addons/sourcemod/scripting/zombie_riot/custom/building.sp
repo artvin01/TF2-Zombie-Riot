@@ -1043,7 +1043,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 
 	damage *= fl_Extra_Damage[attacker];
 
-	if(f_FreeplayDamageExtra != 1.0)
+	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
 		damage *= f_FreeplayDamageExtra;
 	}

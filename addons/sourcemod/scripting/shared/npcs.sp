@@ -2197,7 +2197,7 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 #if defined ZR
 	if(b_IsAlliedNpc[victim])
 	{
-		if(f_FreeplayDamageExtra != 1.0)
+		if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 		{
 			damage *= f_FreeplayDamageExtra;
 		}

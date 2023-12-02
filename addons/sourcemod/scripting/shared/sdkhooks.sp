@@ -1509,7 +1509,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		Replicated_Damage *= difficulty_math + 1.0;
 	}
 	//freeplay causes more damage taken.
-	if(f_FreeplayDamageExtra != 1.0)
+	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
 		damage *= f_FreeplayDamageExtra;
 		Replicated_Damage *= f_FreeplayDamageExtra;
