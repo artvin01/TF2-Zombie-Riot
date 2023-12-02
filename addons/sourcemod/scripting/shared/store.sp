@@ -5302,7 +5302,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				{
 					PrintToChatAll("Somehow have an invalid GiveWeaponIndex!!!!! [%i] report to admin now!",GiveWeaponIndex);
 					PrintToChatAll("info.Classname %s ",info.Classname);
-					ThrowError("Somehow have an invalid GiveWeaponIndex!!!!! [%i]",GiveWeaponIndex);
+					ThrowError("Somehow have an invalid GiveWeaponIndex!!!!! [%i] info.Classname %s ",GiveWeaponIndex,info.Classname);
 				}
 
 #if defined ZR
