@@ -630,6 +630,13 @@ void IsBuildingNotFloating(int building)
 	}
 	if(!IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
 	{
+
+		float endPos4[3];
+		endPos4 = endPos2;
+		endPos4[2] += 40.0;
+		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+		TE_SetupBeamPoints(endPos4, endPos2, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+		TE_SendToAll();
 		//This failed, lets do a trace
 		Handle hTrace;
 		float endPos3[3];

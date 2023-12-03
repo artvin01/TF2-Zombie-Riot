@@ -187,14 +187,17 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 {
 	float damage = Skulls_LaunchDMG[tier];
-	damage *= Attributes_Get(weapon, 410, 1.0);
-			
 	float velocity = Skulls_LaunchVel[tier];
-	velocity *= Attributes_Get(weapon, 103, 1.0);
-	
-	velocity *= Attributes_Get(weapon, 104, 1.0);
-	
-	velocity *= Attributes_Get(weapon, 475, 1.0);
+	if(IsValidEntity(weapon))
+	{
+		damage *= Attributes_Get(weapon, 410, 1.0);
+				
+		velocity *= Attributes_Get(weapon, 103, 1.0);
+		
+		velocity *= Attributes_Get(weapon, 104, 1.0);
+		
+		velocity *= Attributes_Get(weapon, 475, 1.0);
+	}
 		
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
 	
@@ -213,6 +216,10 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		RemoveEntity(npc.m_iWearable6);
 
 	RemoveEntity(ent);
+	if(!IsValidEntity(weapon))
+	{
+		return;
+	}
 	char particle[255];
 	
 	switch(tier)
@@ -540,9 +547,17 @@ public void Skulls_Management(int client)
 			WandSkulls_HealthHud(npc);
 			if (!IsValidEntity(EntRefToEntIndex(Skull_Weapon[ent])))	//Make sure the skull has a weapon index associated with it at all times. The index doesn't affect any stats, it's just there so Wand_Projectile_Spawn doesn't freak out when I pass it an invalid weapon. Side-note: support for just not having a weapon index would be great for Wand_Projectile_Spawn.
 			{
-				Skull_Weapon[ent] = EntIndexToEntRef(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
+				int i, weapon;
+				while(TF2_GetItem(client, weapon, i))
+				{
+					if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SKULL_SERVANT)
+					{
+						Skull_Weapon[ent] = EntIndexToEntRef(weapon);
+						break;
+					}
+				}
 			}
-			
+
 			if (GetGameTime() >= Skull_LifetimeEnd[ent])	//Skulls auto-launch themselves after a certain time period. This is to prevent players from buying this wand, getting a bunch of skulls, then selling it but keeping the skulls.
 			{
 				Skulls_LaunchSkull(ent, EntRefToEntIndex(Skull_Weapon[ent]), client, Skull_Tier[ent]);

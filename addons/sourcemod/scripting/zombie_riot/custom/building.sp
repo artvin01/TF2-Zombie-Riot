@@ -1504,106 +1504,9 @@ bool AllowBuildingCurrently()
 	
 	return true;
 }
-
-/*
-void Building_PlayerRunCmd(int client, int buttons)
-{
-	if(GrabRef[client] != INVALID_ENT_REFERENCE)
-	{
-		int entity = EntRefToEntIndex(GrabRef[client]);
-		if(GrabAt[client] == 1.0)
-		{
-			if(entity > MaxClients)
-			{
-				if(GetEntProp(entity, Prop_Send, "m_bCarried"))
-				{
-					GrabAt[client] = 0.0;
-				//	SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.0);
-				}
-				
-				return;
-			}
-			
-			GrabAt[client] = 0.0;
-		}
-		else if(entity > MaxClients && GetEntProp(entity, Prop_Send, "m_bCarried"))
-		{
-			return;
-		}
-		
-		//Attributes_Set(client, 353, 1.0);
-		TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-		GrabRef[client] = INVALID_ENT_REFERENCE;
-	}
-	else if(GrabAt[client])
-	{
-		if((buttons & IN_ATTACK2))
-		{
-			if(GrabAt[client] > GetGameTime())
-				return;
-				
-			int entity = GetClientPointVisible(client);
-			if(entity > MaxClients)
-			{
-				static char buffer[64];
-				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
-				{
-					CClotBody npc = view_as<CClotBody>(entity);
-					npc.bBuildingIsPlaced = false;
-					GrabRef[client] = INVALID_ENT_REFERENCE;
-				//	GrabRef[client] = EntIndexToEntRef(entity); //This is not needed.
-				//	Attributes_Set(client, 698, 0.0);
-					if(!StrContains(buffer, "obj_dispenser"))
-					{
-						Building[client] = INVALID_FUNCTION;
-						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						int iBuilder = Spawn_Buildable(client);
-						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
-						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
-						
-						SDKCall(g_hSDKMakeCarriedObjectDispenser, entity, client);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						Spawn_Buildable(client);
-						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
-						
-					}
-					else if(!StrContains(buffer, "obj_sentrygun"))
-					{
-						Building[client] = INVALID_FUNCTION;
-						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						int iBuilder = Spawn_Buildable(client);
-						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
-						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
-						
-						SDKCall(g_hSDKMakeCarriedObjectSentry, entity, client);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-					//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						Spawn_Buildable(client);
-						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
-					}	
-					GrabAt[client] = 1.0;
-					PrintCenterText(client, " ");
-					return;
-				}
-			}
-		}
-		GrabAt[client] = 0.0;
-		PrintCenterText(client, " ");
-	}
-}
-*/
-
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
-		int entity = GetClientPointVisible(client, _ , true, true);
+		int entity = GetClientPointVisible(client, _ , true, true,_,1);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -1653,7 +1556,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true, true);
+			int looking_at = GetClientPointVisible(client, _ , true, true,_,1);
 			if (looking_at == entity)
 			{
 				static char buffer[64];
@@ -1672,9 +1575,9 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
 						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
 						
+						Event_ObjectMoved_Custom(entity);
 						SDKCall(g_hSDKMakeCarriedObjectDispenser, entity, client);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
@@ -1692,9 +1595,9 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
 						
 						
+						Event_ObjectMoved_Custom(entity);
 						SDKCall(g_hSDKMakeCarriedObjectSentry, entity, client);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 					//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
@@ -3312,7 +3215,7 @@ public bool BuildingCustomCommand(int client)
 				}
 				else
 				{
-					int looking_at = GetClientPointVisible(client);
+					int looking_at = GetClientPointVisible(client, _ , _, _,_,1);
 					if(IsValidEntity(looking_at) && looking_at > 0)
 					{
 						GetEntPropString(looking_at, Prop_Data, "m_iName", buffer, sizeof(buffer));
@@ -3373,7 +3276,7 @@ public bool BuildingCustomCommand(int client)
 				}
 				else
 				{
-					int looking_at = GetClientPointVisible(client);
+					int looking_at = GetClientPointVisible(client, _ , _, _,_,1);
 					if(IsValidEntity(looking_at) && looking_at > 0)
 					{
 						GetEntPropString(looking_at, Prop_Data, "m_iName", buffer, sizeof(buffer));

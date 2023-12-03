@@ -4796,7 +4796,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{	
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
@@ -4817,11 +4817,11 @@ stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], con
 stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
 	}
-	if(b_IsAlliedNpc[entity])
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
 	}
@@ -4838,7 +4838,7 @@ stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	}
@@ -4859,7 +4859,7 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
 	}
