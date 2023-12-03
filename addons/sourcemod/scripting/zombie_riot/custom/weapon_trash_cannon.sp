@@ -408,6 +408,29 @@ public MRESReturn Flimsy_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	int tier = i_TrashTier[entity];
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_SKULL_SERVANT)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_FlimsyDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float radius = f_FlimsyRadius[tier] * Attributes_Get(weapon, 99, 1.0);
