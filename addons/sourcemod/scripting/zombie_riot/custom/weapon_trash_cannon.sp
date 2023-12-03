@@ -255,6 +255,7 @@ public void Enable_Trash_Cannon(int client, int weapon)
 		Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		f_TrashNextHUD[client] = 0.0;
 	}
 }
 
@@ -269,14 +270,14 @@ public Action Timer_TrashControl(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}	
 
-	Trash_HUD(client, weapon);
+	Trash_HUD(client, weapon, false);
 
 	return Plugin_Continue;
 }
 
-public void Trash_HUD(int client, int weapon)
+public void Trash_HUD(int client, int weapon, bool forced)
 {
-	if(f_TrashNextHUD[client] < GetGameTime())
+	if(f_TrashNextHUD[client] < GetGameTime() || forced)
 	{
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon)
@@ -357,7 +358,7 @@ public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 	else
 		i_NextShot[client] = effect;
 		
-	Trash_HUD(client, weapon);
+	Trash_HUD(client, weapon, true);
 	
 	delete scramble;
 }
