@@ -409,7 +409,7 @@
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once\nDeals 2x dmg against raids."
+		"en"		"Load 4 bullets and shoot all at once\nDeals 40%% dmg against raids."
 	}
 	
 	"Boomstick Pap 1"
