@@ -118,6 +118,7 @@ public void Weapon_German_Frame(DataPack pack)
 			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", duration);
 		}
 	}
+	delete pack;
 }
 
 public Action Weapon_German_Timer(Handle timer, int client)

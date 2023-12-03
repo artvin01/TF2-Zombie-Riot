@@ -1414,8 +1414,9 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		int Iondamage = ReadPackCell(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
-		if(!IsValidEntity(client))
+		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
+			delete data;
 			return;
 		}
 		
@@ -1495,6 +1496,8 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 				nphi += 5.0;
 		}
 		Iondistance -= 10;
+
+		delete data;
 		
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
@@ -1508,7 +1511,7 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
-		CreateTimer(0.1, TrueFusionwarrior_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		CreateTimer(0.1, TrueFusionwarrior_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else
 		{
 			startPosition[2] += 25.0;

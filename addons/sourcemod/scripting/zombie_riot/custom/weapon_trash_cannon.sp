@@ -408,7 +408,7 @@ public MRESReturn Flimsy_Explode(int entity)
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
 	int tier = i_TrashTier[entity];
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -478,7 +478,7 @@ public MRESReturn Shock_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -689,7 +689,7 @@ public MRESReturn Skeleton_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -759,7 +759,7 @@ public MRESReturn Ice_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -832,7 +832,7 @@ public MRESReturn Trash_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -898,7 +898,7 @@ public MRESReturn Trash_MiniExplode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -962,7 +962,7 @@ public Action Missiles_FireWave(Handle timed, DataPack pack)
 	int remaining = ReadPackCell(pack);
 	
 	if (!IsValidClient(client) || !IsValidEntity(weapon) || remaining < 1)
-		return Plugin_Continue;
+		return Plugin_Stop;
 	
 	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 1.0);
 	
@@ -989,7 +989,7 @@ public Action Missiles_FireWave(Handle timed, DataPack pack)
 	WritePackCell(pack2, tier);
 	WritePackCell(pack2, remaining - 1);
 	
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public MRESReturn Missiles_Explode(int entity)
@@ -1003,7 +1003,7 @@ public MRESReturn Missiles_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.
@@ -1082,7 +1082,7 @@ public MRESReturn Mondo_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
-	if(IsValidClient(owner))
+	if(!IsValidClient(owner))
 	{
 		RemoveEntity(entity);
 		return MRES_Supercede; //DONT.

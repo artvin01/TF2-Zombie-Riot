@@ -1621,8 +1621,9 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		int Iondamage = ReadPackCell(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
-		if(!IsValidEntity(client))
+		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
+			delete data;
 			return;
 		}
 		
@@ -1702,6 +1703,8 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 				nphi += 5.0;
 		}
 		Iondistance -= 10;
+
+		delete data;
 		
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
@@ -1715,7 +1718,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
-		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else	//Normal Ioc Damge on wave
 		{
 
