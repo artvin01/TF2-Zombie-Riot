@@ -2059,7 +2059,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			if(b_thisNpcIsARaid[victim])
 			{
-				damage *= 2.0; //due to how dangerous it is to get closer.
+				damage *= 1.4; //due to how dangerous it is to get closer.
 			}
 		}
 		case WEAPON_VAMPKNIVES_1:
