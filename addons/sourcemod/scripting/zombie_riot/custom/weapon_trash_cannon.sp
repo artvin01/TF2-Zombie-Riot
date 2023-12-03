@@ -506,6 +506,16 @@ public MRESReturn Shock_Explode(int entity)
 	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float radius = f_ShockRadius[tier];
 
+	for (int i = 0; i < i_MaxcountNpc; i++)
+	{
+		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		
+		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
+		{
+			f_NextShockTime[ent] = 0.0;
+		}
+	}
+
 	Shock_ChainToVictim(entity, owner, weapon, damage, radius, position, tier, 0);
 	
 	RemoveEntity(entity);
