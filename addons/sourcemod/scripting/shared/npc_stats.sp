@@ -8308,7 +8308,10 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	if(ref < 0) //It hit nothing, good!
 	{
 		if(!check_for_Ground_Clerance)
+		{
+			delete hTrace;
 			return true;
+		}
 
 		//We aint done yet!
 		float Pos2Test[3];
@@ -8333,9 +8336,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 		{
 			return true;
 		}
-		
 	}
-	
 	//It Hit something, bad!
 	return false;
 }

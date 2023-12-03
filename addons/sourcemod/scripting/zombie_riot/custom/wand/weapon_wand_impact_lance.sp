@@ -389,7 +389,7 @@ public Action Impact_Lance_Timer_Update(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = EntRefToEntIndex(pack.ReadCell());
 	int Entity = EntRefToEntIndex(pack.ReadCell());
-	if (IsValidEntity(Entity))
+	if (IsValidEntity(Entity) && IsValidClient(client))
 	{
 		fl_thorwn_lance[client] = GetGameTime()+2.0;
 		return Plugin_Continue;

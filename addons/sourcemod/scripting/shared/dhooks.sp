@@ -2129,7 +2129,6 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
-	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	return MRES_Ignored;
 }
 

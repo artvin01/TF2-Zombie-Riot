@@ -418,7 +418,7 @@ public MRESReturn Flimsy_Explode(int entity)
 		int i, weapon1;
 		while(TF2_GetItem(owner, weapon1, i))
 		{
-			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_SKULL_SERVANT)
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
 			{
 				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
 				weapon = weapon1;
@@ -433,7 +433,7 @@ public MRESReturn Flimsy_Explode(int entity)
 	}
 	
 	float damage = f_FlimsyDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_FlimsyRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_FlimsyRadius[tier];
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_FlimsyMaxTargets[tier]);
 	
@@ -478,9 +478,32 @@ public MRESReturn Shock_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_ShockRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_ShockRadius[tier];
 
 	Shock_ChainToVictim(entity, owner, weapon, damage, radius, position, tier, 0);
 	
@@ -512,7 +535,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 		ParticleEffectAt(vicLoc, tier > 1 ? PARTICLE_SHOCK_BLAST_MAX : PARTICLE_SHOCK_BLAST, 1.0);
 		SpawnParticle_ControlPoints(position, vicLoc, tier > 1 ? PARTICLE_SHOCK_CHAIN_MAX : PARTICLE_SHOCK_CHAIN, 1.0);
 		
-		float shockRad = f_ShockChainRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+		float shockRad = f_ShockChainRadius[tier];
 		
 		if (NumHits < i_ShockMaxHits[tier])
 		{
@@ -666,9 +689,32 @@ public MRESReturn Skeleton_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_SkeletonDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_SkeletonRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_SkeletonRadius[tier];
 
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, 1);
 	
@@ -713,9 +759,32 @@ public MRESReturn Ice_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_IceDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_IceRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_IceRadius[tier];
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_IceMaxTargets[tier], _, _, CryoWandHitM2, Trash_IceHitPre);
 	
@@ -763,9 +832,32 @@ public MRESReturn Trash_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_TrashDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_TrashRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_TrashRadius[tier];
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_TrashMaxTargets[tier]);
 	
@@ -806,9 +898,32 @@ public MRESReturn Trash_MiniExplode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_TrashMiniDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_TrashMiniRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_TrashMiniRadius[tier];
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_TrashMiniMaxTargets[tier]);
 	
@@ -888,9 +1003,32 @@ public MRESReturn Missiles_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_MissilesDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_MissilesRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_MissilesRadius[tier];
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, _, _, false, i_MissilesMaxTargets[tier]);
 	
@@ -911,7 +1049,7 @@ public Action Missiles_BeginHoming(Handle begin, int ref)
 		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 1.0);
 	}
 	
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 public bool Trash_Mondo(int client, int weapon, int tier)
@@ -944,9 +1082,32 @@ public MRESReturn Mondo_Explode(int entity)
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
+	if(IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
+	if(!IsValidEntity(weapon))
+	{
+		int i, weapon1;
+		while(TF2_GetItem(owner, weapon1, i))
+		{
+			if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_TRASH_CANNON)
+			{
+				i_TrashWeapon[entity] = EntIndexToEntRef(weapon1);
+				weapon = weapon1;
+				break;
+			}
+		}
+	}
+	if(!IsValidEntity(weapon))
+	{
+		RemoveEntity(entity);
+		return MRES_Supercede; //DONT.
+	}
 	
 	float damage = f_MondoDMG[tier] * Attributes_Get(weapon, 2, 1.0);
-	float radius = f_MondoRadius[tier] * Attributes_Get(weapon, 99, 1.0);
+	float radius = f_MondoRadius[tier];
 	
 	Explode_Logic_Custom(damage, owner, owner, weapon, position, radius, 0.925, _, false, i_MondoMaxTargets[tier]);
 	

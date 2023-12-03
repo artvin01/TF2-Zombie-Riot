@@ -2361,7 +2361,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				case 1:
 				{
 						int Armor_Max = 300;
-						int Extra = 0;
 
 						Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 							
