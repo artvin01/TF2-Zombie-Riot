@@ -517,7 +517,7 @@ void ZR_MapStart()
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	OnMapStart_Build_on_Build();
-	WaveStart_SubWaveStart();
+	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
 	Music_ClearAll();

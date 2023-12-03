@@ -46,6 +46,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zero(Resupplies_Supplied);
 	Zero(i_BarricadeHasBeenDamaged);
 	Zero(i_ExtraPlayerPoints);
+	WaveStart_SubWaveStart(GetGameTime());
 	CurrentGibCount = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
