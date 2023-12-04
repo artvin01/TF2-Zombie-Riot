@@ -242,7 +242,7 @@ public void Enable_Trash_Cannon(int client, int weapon)
 			delete Timer_Trash[client];
 			Timer_Trash[client] = null;
 			DataPack pack;
-			Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -252,7 +252,7 @@ public void Enable_Trash_Cannon(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TRASH_CANNON)
 	{
 		DataPack pack;
-		Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		f_TrashNextHUD[client] = 0.0;

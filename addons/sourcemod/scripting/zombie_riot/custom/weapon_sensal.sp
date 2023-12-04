@@ -80,7 +80,7 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 		b_ClientPossesBattery[client] = Items_HasNamedItem(client, "Expidonsan Battery Device");
 		ApplyExtraSensalWeaponEffects(client);
 		DataPack pack;
-		h_TimerSensalWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_SensalWeapon, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerSensalWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_SensalWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

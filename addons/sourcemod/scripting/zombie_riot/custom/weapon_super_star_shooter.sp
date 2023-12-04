@@ -240,7 +240,7 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 			delete Timer_Starshooter_Management[client];
 			Timer_Starshooter_Management[client] = null;
 			DataPack pack;
-			Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -250,7 +250,7 @@ public void Enable_StarShooter(int client, int weapon) // Enable management, han
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_STAR_SHOOTER) //
 	{
 		DataPack pack;
-		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Starshooter_Management[client] = CreateDataTimer(0.1, Timer_Management_StarShooter, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

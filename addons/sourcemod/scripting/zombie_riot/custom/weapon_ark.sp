@@ -545,7 +545,7 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 			delete h_TimerWeaponArkManagement[client];
 			h_TimerWeaponArkManagement[client] = null;
 			DataPack pack;
-			h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -555,7 +555,7 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ARK)
 	{
 		DataPack pack;
-		h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -793,7 +793,7 @@ public void Enable_LappLand(int client, int weapon) // Enable management, handle
 			delete h_TimerLappLandManagement[client];
 			h_TimerLappLandManagement[client] = null;
 			DataPack pack;
-			h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -803,7 +803,7 @@ public void Enable_LappLand(int client, int weapon) // Enable management, handle
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LAPPLAND)
 	{
 		DataPack pack;
-		h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

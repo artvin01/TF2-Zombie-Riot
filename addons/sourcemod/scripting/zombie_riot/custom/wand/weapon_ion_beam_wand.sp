@@ -269,7 +269,7 @@ public void Activate_Neuvellete(int client, int weapon)
 				Give_Skill_Points(client, pap);
 
 			DataPack pack;
-			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
@@ -288,7 +288,7 @@ public void Activate_Neuvellete(int client, int weapon)
 			Give_Skill_Points(client, pap);
 		
 		DataPack pack;
-		h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

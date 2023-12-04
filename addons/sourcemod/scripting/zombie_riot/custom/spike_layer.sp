@@ -507,7 +507,7 @@ public void Enable_SpikeLayer(int client, int weapon)
 			delete h_TimerSpikeLayerManagement[client];
 			h_TimerSpikeLayerManagement[client] = null;
 			DataPack pack;
-			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -517,7 +517,7 @@ public void Enable_SpikeLayer(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)
 	{
 		DataPack pack;
-		h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

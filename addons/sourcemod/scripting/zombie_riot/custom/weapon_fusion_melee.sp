@@ -971,7 +971,7 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 	{
 		ApplyExtraFusionWeaponEffects(client,_ ,weapon);
 		DataPack pack;
-		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_FusionWeapon, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_FusionWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

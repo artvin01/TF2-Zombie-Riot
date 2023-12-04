@@ -503,7 +503,7 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 			delete Timer_Leper_Management[client];
 			Timer_Leper_Management[client] = null;
 			DataPack pack;
-			Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -513,7 +513,7 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE_PAP) //
 	{
 		DataPack pack;
-		Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

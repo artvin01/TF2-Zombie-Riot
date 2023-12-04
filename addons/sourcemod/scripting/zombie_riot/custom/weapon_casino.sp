@@ -1033,7 +1033,7 @@ public void Enable_Casino(int client, int weapon) // Enable management, handle w
 			delete Timer_Casino_Management[client];
 			Timer_Casino_Management[client] = null;
 			DataPack pack;
-			Timer_Casino_Management[client] = CreateDataTimer(0.1, Timer_Management_Casino, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Casino_Management[client] = CreateDataTimer(0.1, Timer_Management_Casino, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -1045,7 +1045,7 @@ public void Enable_Casino(int client, int weapon) // Enable management, handle w
 		i_Current_Pap[client] = Casino_Get_Pap(weapon);
 
 		DataPack pack;
-		Timer_Casino_Management[client] = CreateDataTimer(0.1, Timer_Management_Casino, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Casino_Management[client] = CreateDataTimer(0.1, Timer_Management_Casino, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

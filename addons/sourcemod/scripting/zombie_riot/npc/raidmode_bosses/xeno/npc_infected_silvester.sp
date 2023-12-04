@@ -612,7 +612,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		if(npc.m_iInKame == 2)
 		{
 			i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(i_TargetToWalkTo[npc.index] == -1)
+			if(IsValidEntity(i_TargetToWalkTo[npc.index]))
 			{
 				i_TargetToWalkTo[npc.index] = GetClosestTarget(npc.index);
 			}
@@ -625,7 +625,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	if(npc.m_iInKame == 2)
 	{
-		if(i_TargetToWalkTo[npc.index] != -1)
+		if(IsValidEntity(i_TargetToWalkTo[npc.index]))
 		{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(i_TargetToWalkTo[npc.index]);
 			npc.FaceTowards(vecTarget, 80.0);
