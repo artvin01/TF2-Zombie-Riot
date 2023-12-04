@@ -1098,9 +1098,7 @@
 	
 	"Necromancy Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side."
-		"ru"	"Расходует ману с каждым выстрелом. М2 - вызывает 1 дружественного комбайна DDT."
-		"chi"   "每次射击消耗法力值。按下鼠标右键在你附近召唤一个DDT来帮你攻击敌人。"
+		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
 	}
 	"Necromancy Staff Pap 1"
 	{
