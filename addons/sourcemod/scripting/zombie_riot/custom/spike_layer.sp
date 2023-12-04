@@ -283,7 +283,7 @@ public Action Detect_Spike_Still(Handle timer, int ref)
 	//	int client = GetEntPropEnt(entity, Prop_Send, "m_hLauncher"); //Doesnt save this shit for some reason. use array as usual!
 	//	int client = Spike_Owner[entity];
 		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(IsClientInGame(client))
+		if(IsValidClient(client))
 		{
 			if(entity>MaxClients && IsValidEntity(entity))
 			{

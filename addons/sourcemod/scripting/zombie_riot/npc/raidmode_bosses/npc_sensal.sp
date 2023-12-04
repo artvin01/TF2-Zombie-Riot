@@ -940,14 +940,23 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	int particle_3;
 	int particle_4;
 	int particle_5;
+	int particle_3_u;
+	int particle_4_u;
+	int particle_5_u;
+	int particle_6_b;
+	int particle_6_up;
 	if(attachment[0])
 	{
-		
 		particle_2 = InfoTargetParentAt({0.0,0.0,30.0}, "", 0.0); //First offset we go by
 		particle_3 = InfoTargetParentAt({0.0,0.0,-100.0}, "", 0.0); //First offset we go by
 		particle_4 = InfoTargetParentAt({0.0,35.0,-100.0}, "", 0.0); //First offset we go by
 		particle_5 = InfoTargetParentAt({0.0,70.0,-85.0}, "", 0.0); //First offset we go by
 
+		particle_3_u = InfoTargetParentAt({0.0,0.0,-80.0}, "", 0.0); //First offset we go by
+		particle_4_u = InfoTargetParentAt({0.0,35.0,-80.0}, "", 0.0); //First offset we go by
+		particle_5_u = InfoTargetParentAt({0.0,70.0,-70.0}, "", 0.0); //First offset we go by
+		particle_6_b = InfoTargetParentAt({0.0,-15.0,-90.0}, "", 0.0); //First offset we go by
+		particle_6_up = InfoTargetParentAt({0.0,0.0,-110.0}, "", 0.0); //First offset we go by
 	}
 	else
 	{
@@ -961,7 +970,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	{
 		if(attachment[0])
 		{
-			particle_6 = ParticleEffectAt({0.0,100.0,-70.0}, "raygun_projectile_blue_crit", 0.0); //First offset we go by
+			particle_6 = ParticleEffectAt({0.0,100.0,-60.0}, "raygun_projectile_blue_crit", 0.0); //First offset we go by
 		}
 		else
 		{
@@ -972,7 +981,7 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	{
 		if(attachment[0])
 		{
-			particle_6 = ParticleEffectAt({0.0,100.0,-70.0}, "raygun_projectile_red_crit", 0.0); //First offset we go by
+			particle_6 = ParticleEffectAt({0.0,100.0,-60.0}, "raygun_projectile_red_crit", 0.0); //First offset we go by
 		}
 		else
 		{
@@ -985,17 +994,47 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	SetParent(particle_1, particle_4, "",_, true);
 	SetParent(particle_1, particle_5, "",_, true);
 	SetParent(particle_1, particle_6, "",_, true);
+	if(attachment[0])
+	{
+		SetParent(particle_1, particle_3_u, "",_, true);
+		SetParent(particle_1, particle_4_u, "",_, true);
+		SetParent(particle_1, particle_5_u, "",_, true);
+		SetParent(particle_1, particle_6_b, "",_, true);
+		SetParent(particle_1, particle_6_up, "",_, true);
+	}
 
 	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
 	SetParent(iNpc, particle_1, attachment,_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 5.0, 4.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 4.0, 2.0, 1.0, LASERBEAM);
-	
+	int Laser_1;
+	if(attachment[0])
+	{
+		Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
+	}
+	else
+	{
+		Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
+	}
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 5.0, 4.0, 1.0, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
+	int Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 3.0, 0.5, 1.0, LASERBEAM);
+	int Laser_2_u;
+	int Laser_3_u;
+	int Laser_4_u;
+	int Laser_1_b;
+	int Laser_2_b;
+	int Laser_2_up;
+	if(attachment[0])
+	{
+		Laser_2_u = ConnectWithBeamClient(particle_3_u, particle_4_u, red, green, blue, 4.0, 3.5, 1.0, LASERBEAM);
+		Laser_3_u = ConnectWithBeamClient(particle_4_u, particle_5_u, red, green, blue, 3.5, 2.5, 1.0, LASERBEAM);
+		Laser_4_u = ConnectWithBeamClient(particle_5_u, particle_6, red, green, blue, 2.5, 0.5, 1.0, LASERBEAM);
+		
+		Laser_1_b = ConnectWithBeamClient(particle_3, particle_6_b, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
+		Laser_2_b = ConnectWithBeamClient(particle_3_u, particle_6_b, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
+		Laser_2_up = ConnectWithBeamClient(particle_3, particle_6_up, red, green, blue, 4.0, 2.5, 1.0, LASERBEAM);
+	}
+		
 
 	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
@@ -1007,6 +1046,20 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_2);
 	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(Laser_3);
 	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_4);
+	if(attachment[0])
+	{
+		i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(particle_3_u);
+		i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(particle_4_u);
+		i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(particle_5_u);
+		i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(particle_6_b);
+		i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(particle_6_up);
+		i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(Laser_2_u);
+		i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(Laser_3_u);
+		i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(Laser_4_u);
+		i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(Laser_1_b);
+		i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_2_b);
+		i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_2_up);
+	}
 }
 
 

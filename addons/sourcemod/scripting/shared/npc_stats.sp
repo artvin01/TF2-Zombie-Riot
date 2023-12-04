@@ -8338,6 +8338,7 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 		}
 	}
 	//It Hit something, bad!
+	delete hTrace;
 	return false;
 }
 
