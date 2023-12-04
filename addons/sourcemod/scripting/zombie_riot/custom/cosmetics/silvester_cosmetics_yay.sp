@@ -46,6 +46,9 @@ void ApplyExtraSilvesterCosmeticEffects(int client, bool remove = false)
 		return;
 	}
 
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+		
 	if(SilvesterCosmeticEffects_IfNotAvaiable(client))
 	{
 		SilvesterCosmeticRemoveEffects(client);

@@ -301,11 +301,13 @@ static void Create_Hand_Particle(int client)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 
-	for(int RepeatDeletion; RepeatDeletion < 15; RepeatDeletion ++)
+	for(int RepeatDeletion; RepeatDeletion < 11; RepeatDeletion ++)
 	{
 		if(IsValidEntity(i_hand_particle[client][RepeatDeletion]))
 			RemoveEntity(i_hand_particle[client][RepeatDeletion]);
 	}
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
 		
 	float flPos[3];
 	float flAng[3];

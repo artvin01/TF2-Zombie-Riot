@@ -472,6 +472,11 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 		
+	if(AtEdictLimit(EDICT_PLAYER))
+	{
+		Destroy_Halo_And_Wings(client, 3);
+		return;
+	}
 	
 	if(first)
 	{
@@ -565,6 +570,13 @@ static void Create_Halo(int client)
 
 	if(!IsValidEntity(viewmodelModel))
 		return;
+
+	if(AtEdictLimit(EDICT_PLAYER))
+	{
+		Destroy_Halo_And_Wings(client, 3);
+		return;
+	}
+		
 	GetAttachment(viewmodelModel, "head", flPos, flAng);
 	flPos[2] += 10.0;
 	int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);

@@ -12,6 +12,9 @@ public void Fists_of_Kahml(int client, int weapon, const char[] classname, bool 
 	if(!IsValidEntity(viewmodelModel))
 		return;
 	
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+		
 	float flPos[3]; // original
 	float flAng[3]; // original
 

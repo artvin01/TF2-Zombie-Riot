@@ -4714,7 +4714,7 @@ stock bool AtEdictLimit(int type)
 	{
 		case EDICT_NPC:
 		{
-			if(CurrentEntities < 1600)
+			if(CurrentEntities < 300)
 				return false;
 		}
 		case EDICT_PLAYER:

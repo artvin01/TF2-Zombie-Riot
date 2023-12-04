@@ -915,8 +915,16 @@ void ResetSensalWeapon(Sensal npc, int weapon_Type)
 
 void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
 {
-	if(AtEdictLimit(EDICT_RAID))
-		return;
+	bool LowEdictMode = false;
+	if(AtEdictLimit(EDICT_NPC))
+	{
+		//Free up an edict.
+		if(attachment[0])
+		{
+			return;
+		}
+		LowEdictMode = true;
+	}
 	
 	int red = 35;
 	int green = 35;
@@ -994,16 +1002,19 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_1, particle_6, "",_, true);
-	if(attachment[0])
+	if(!LowEdictMode)
 	{
-		SetParent(particle_1, particle_3_u, "",_, true);
-		SetParent(particle_1, particle_4_u, "",_, true);
-		SetParent(particle_1, particle_5_u, "",_, true);
-		SetParent(particle_1, particle_6_b, "",_, true);
-		SetParent(particle_1, particle_6_up, "",_, true);
+		SetParent(particle_1, particle_4, "",_, true);
+		SetParent(particle_1, particle_5, "",_, true);
+		SetParent(particle_1, particle_6, "",_, true);
+		if(attachment[0])
+		{
+			SetParent(particle_1, particle_3_u, "",_, true);
+			SetParent(particle_1, particle_4_u, "",_, true);
+			SetParent(particle_1, particle_5_u, "",_, true);
+			SetParent(particle_1, particle_6_b, "",_, true);
+			SetParent(particle_1, particle_6_up, "",_, true);
+		}
 	}
 
 	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
@@ -1018,50 +1029,65 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	{
 		Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
 	}
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 5.0, 4.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 3.0, 0.5, 1.0, LASERBEAM);
+	int Laser_2;
+	int Laser_3;
+	int Laser_4;
 	int Laser_2_u;
 	int Laser_3_u;
 	int Laser_4_u;
 	int Laser_1_b;
 	int Laser_2_b;
 	int Laser_2_up;
-	if(attachment[0])
+	if(!LowEdictMode)
 	{
-		Laser_2_u = ConnectWithBeamClient(particle_3_u, particle_4_u, red, green, blue, 4.0, 3.5, 1.0, LASERBEAM);
-		Laser_3_u = ConnectWithBeamClient(particle_4_u, particle_5_u, red, green, blue, 3.5, 2.5, 1.0, LASERBEAM);
-		Laser_4_u = ConnectWithBeamClient(particle_5_u, particle_6, red, green, blue, 2.5, 0.5, 1.0, LASERBEAM);
-		
-		Laser_1_b = ConnectWithBeamClient(particle_3, particle_6_b, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
-		Laser_2_b = ConnectWithBeamClient(particle_3_u, particle_6_b, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
-		Laser_2_up = ConnectWithBeamClient(particle_3, particle_6_up, red, green, blue, 4.0, 2.5, 1.0, LASERBEAM);
+		Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 5.0, 4.0, 1.0, LASERBEAM);
+		Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
+		Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 3.0, 0.5, 1.0, LASERBEAM);
+		if(attachment[0])
+		{
+			Laser_2_u = ConnectWithBeamClient(particle_3_u, particle_4_u, red, green, blue, 4.0, 3.5, 1.0, LASERBEAM);
+			Laser_3_u = ConnectWithBeamClient(particle_4_u, particle_5_u, red, green, blue, 3.5, 2.5, 1.0, LASERBEAM);
+			Laser_4_u = ConnectWithBeamClient(particle_5_u, particle_6, red, green, blue, 2.5, 0.5, 1.0, LASERBEAM);
+			
+			Laser_1_b = ConnectWithBeamClient(particle_3, particle_6_b, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
+			Laser_2_b = ConnectWithBeamClient(particle_3_u, particle_6_b, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM);
+			Laser_2_up = ConnectWithBeamClient(particle_3, particle_6_up, red, green, blue, 4.0, 2.5, 1.0, LASERBEAM);
+		}
 	}
 		
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_6);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(Laser_3);
-	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_4);
-	if(attachment[0])
+	if(!LowEdictMode)
 	{
-		i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(particle_3_u);
-		i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(particle_4_u);
-		i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(particle_5_u);
-		i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(particle_6_b);
-		i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(particle_6_up);
-		i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(Laser_2_u);
-		i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(Laser_3_u);
-		i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(Laser_4_u);
-		i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(Laser_1_b);
-		i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_2_b);
-		i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_2_up);
+		i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
+		i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
+		i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
+		i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
+		i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
+		i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_6);
+		i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_1);
+		i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_2);
+		i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(Laser_3);
+		i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_4);
+		if(attachment[0])
+		{
+			i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(particle_3_u);
+			i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(particle_4_u);
+			i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(particle_5_u);
+			i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(particle_6_b);
+			i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(particle_6_up);
+			i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(Laser_2_u);
+			i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(Laser_3_u);
+			i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(Laser_4_u);
+			i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(Laser_1_b);
+			i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_2_b);
+			i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_2_up);
+		}
+	}
+	else
+	{
+		i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
+		i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
+		i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
+		i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_1);
 	}
 }
 

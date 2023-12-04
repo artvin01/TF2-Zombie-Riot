@@ -287,6 +287,9 @@ void BlemishineAuraEffects(int client, float duration)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+		
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(viewmodelModel, "flag", flPos, flAng);

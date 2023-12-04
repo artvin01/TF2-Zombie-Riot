@@ -42,6 +42,9 @@ void ApplyExtraMagiaCosmeticEffects(int client, bool remove = false)
 		MagiaCosmeticRemoveEffects(client);
 		return;
 	}
+	
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
 
 	if(MagiaCosmeticEffects_IfNotAvaiable(client))
 	{

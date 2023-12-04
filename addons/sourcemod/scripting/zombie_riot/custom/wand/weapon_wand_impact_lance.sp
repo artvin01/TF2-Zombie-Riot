@@ -544,6 +544,9 @@ void ApplyExtra_Impact_Lance_CosmeticEffects(int client, bool remove = false)
 		return;
 	}
 
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+		
 	if(Impact_Lance_CosmeticEffects_IfNotAvaiable(client))
 	{
 		Impact_Lance_CosmeticRemoveEffects(client);
