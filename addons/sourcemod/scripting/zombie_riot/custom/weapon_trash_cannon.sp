@@ -34,7 +34,7 @@ int i_ArrowsMinArrows[3] = { 6, 8, 12 };		//Minimum number of arrows fired.
 int i_ArrowsMaxArrows[3] = { 8, 12, 16 };		//Maximum number of arrows fired.
 
 float f_ArrowsChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Bundle of Arrows to be fired.
-float f_ArrowsDMG[3] = { 500.0, 1000.0, 1500.0 };			//Base arrow damage.
+float f_ArrowsDMG[3] = { 600.0, 800.0, 1000.0 };			//Base arrow damage.
 float f_ArrowsVelocity[3] = { 1200.0, 1600.0, 2000.0 }; //Arrow velocity.
 float f_ArrowsSpread[3] = { 10.0, 8.0, 6.0 };			//Arrow spread penalty.
 bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled on this pap level?
@@ -59,7 +59,7 @@ bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on thi
 //NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
 int i_IceMaxTargets[3] = { 3, 4, 5 };
 
-float f_IceChance[3] = { 0.00, 0.06, 0.1 };
+float f_IceChance[3] = { 0.00, 0.025, 0.05 };
 float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
 float f_IceRadius[3] = { 300.0, 350.0, 400.0 };
 float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
