@@ -570,7 +570,7 @@ public void Activate_Yamato(int client, int weapon) // Enable management, handle
 			delete TimerYamatoManagement[client];
 			TimerYamatoManagement[client] = null;
 			DataPack pack;
-			TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
@@ -583,7 +583,7 @@ public void Activate_Yamato(int client, int weapon) // Enable management, handle
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAMATO)
 	{
 		DataPack pack;
-		TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

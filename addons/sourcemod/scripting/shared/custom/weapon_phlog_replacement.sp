@@ -62,7 +62,7 @@ public void Enable_PHLOG(int client, int weapon) // Enable management, handle we
 			delete h_TimerPHLOGManagement[client];
 			h_TimerPHLOGManagement[client] = null;
 			DataPack pack;
-			h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -72,7 +72,7 @@ public void Enable_PHLOG(int client, int weapon) // Enable management, handle we
 	if(i_CustomWeaponEquipLogic[weapon] == 7) //7 is for PHLOG.
 	{
 		DataPack pack;
-		h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerPHLOGManagement[client] = CreateDataTimer(0.1, Timer_Management_PHLOG, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

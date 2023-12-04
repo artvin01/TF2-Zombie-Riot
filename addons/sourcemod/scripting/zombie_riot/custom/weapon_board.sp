@@ -567,7 +567,7 @@ public void Enable_WeaponBoard(int client, int weapon) // Enable management, han
 			delete h_TimerWeaponBoardManagement[client];
 			h_TimerWeaponBoardManagement[client] = null;
 			DataPack pack;
-			h_TimerWeaponBoardManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponBoard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerWeaponBoardManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponBoard, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -577,7 +577,7 @@ public void Enable_WeaponBoard(int client, int weapon) // Enable management, han
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BOARD)
 	{
 		DataPack pack;
-		h_TimerWeaponBoardManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponBoard, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerWeaponBoardManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponBoard, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

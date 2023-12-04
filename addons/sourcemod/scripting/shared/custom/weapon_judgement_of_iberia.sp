@@ -165,7 +165,7 @@ public void Enable_Irene(int client, int weapon) // Enable management, handle we
 			delete h_TimerIreneManagement[client];
 			h_TimerIreneManagement[client] = null;
 			DataPack pack;
-			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -175,7 +175,7 @@ public void Enable_Irene(int client, int weapon) // Enable management, handle we
 	if(i_CustomWeaponEquipLogic[weapon] == 6) //6 is for irene.
 	{
 		DataPack pack;
-		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

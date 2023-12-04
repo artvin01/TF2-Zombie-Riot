@@ -450,7 +450,7 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 			h_TimerSpecterAlterManagement[client] = null;
 
 			DataPack pack;
-			h_TimerSpecterAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SpecterAlter, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerSpecterAlterManagement[client] = CreateDataTimer(0.1, Timer_Management_SpecterAlter, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
