@@ -111,6 +111,9 @@ public Action TimerMagiaCosmetic(Handle timer, DataPack pack)
 }
 void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 {
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+	
 	int red = 185;
 	int green = 205;
 	int blue = 237;

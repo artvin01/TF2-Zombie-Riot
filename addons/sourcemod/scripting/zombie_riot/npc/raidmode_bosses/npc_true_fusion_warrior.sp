@@ -1711,6 +1711,9 @@ void FusionApplyEffects(int entity, int form)
 
 void FusionApplyEffectsForm1(int entity)
 {
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+	
 	int red = 255;
 	int green = 255;
 	int blue = 255;
@@ -1774,6 +1777,9 @@ void FusionApplyEffectsForm1(int entity)
 
 void FusionApplyEffectsForm2(int entity)
 {
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+	
 	int red = 255;
 	int green = 255;
 	int blue = 0;

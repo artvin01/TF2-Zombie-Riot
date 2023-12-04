@@ -317,6 +317,9 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 
 void DefandaEffects(int iNpc)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);

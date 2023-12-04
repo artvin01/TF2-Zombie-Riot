@@ -119,6 +119,9 @@ public Action TimerSilvesterCosmetic(Handle timer, DataPack pack)
 
 void SilvesterCosmeticEffects(int entity, int wearable)
 {
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+	
 	int red = 190;
 	int green = 190;
 	int blue = 0;

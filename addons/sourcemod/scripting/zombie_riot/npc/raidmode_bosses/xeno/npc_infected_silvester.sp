@@ -2173,6 +2173,9 @@ void SilvesterApplyEffects(int entity, bool withoutweapon = false)
 
 void SilvesterApplyEffectsForm1(int entity)
 {
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+	
 	int red = 255;
 	int green = 255;
 	int blue = 255;
@@ -2236,6 +2239,9 @@ void SilvesterApplyEffectsForm1(int entity)
 
 void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 {
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+	
 	int red = 255;
 	int green = 255;
 	int blue = 0;

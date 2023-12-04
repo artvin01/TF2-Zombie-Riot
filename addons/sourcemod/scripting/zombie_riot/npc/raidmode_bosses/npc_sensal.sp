@@ -915,6 +915,9 @@ void ResetSensalWeapon(Sensal npc, int weapon_Type)
 
 void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
 {
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+	
 	int red = 35;
 	int green = 35;
 	int blue = 255;

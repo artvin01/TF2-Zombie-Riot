@@ -284,6 +284,9 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 
 void PentalEffects(int iNpc)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);

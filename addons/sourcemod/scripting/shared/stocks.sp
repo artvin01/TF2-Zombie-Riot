@@ -4707,3 +4707,32 @@ stock int GetOwnerLoop(int entity)
 	else
 		return entity;
 }
+
+stock bool AtEdictLimit(int type)
+{
+	switch(type)
+	{
+		case EDICT_NPC:
+		{
+			if(CurrentEntities < 1600)
+				return false;
+		}
+		case EDICT_PLAYER:
+		{
+			if(CurrentEntities < 1700)
+				return false;
+		}
+		case EDICT_RAID:
+		{
+			if(CurrentEntities < 1800)
+				return false;
+		}
+		case EDICT_EFFECT:
+		{
+			if(CurrentEntities < 1900)
+				return false;
+		}
+	}
+
+	return true;
+}

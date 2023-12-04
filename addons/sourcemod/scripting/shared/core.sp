@@ -50,6 +50,14 @@ enum OSType
     OS_Unknown
 }
 
+enum
+{
+	EDICT_NPC = 0,
+	EDICT_PLAYER,
+	EDICT_RAID,
+	EDICT_EFFECT
+}
+
 #define LagCompensation
 
 #define HaveLayersForLagCompensation
@@ -78,6 +86,7 @@ ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 
+int CurrentEntities;
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
 //#define CompensatePlayers
@@ -2322,6 +2331,9 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
+	if(entity > CurrentEntities)
+		CurrentEntities = entity;
+
 #if defined ZR
 	if (!StrContains(classname, "info_player_teamspawn")) 
 	{
@@ -2949,12 +2961,20 @@ public void Delete_instantly_Laser_ball(int entity)
 }
 */
 
+public Action Timer_FreeEdict(Handle timer)
+{
+	CurrentEntities--;
+	return Plugin_Continue;
+}
+
 public void OnEntityDestroyed(int entity)
 {
 	DHook_EntityDestoryed();
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		CreateTimer(1.01, Timer_FreeEdict);
+
 		//OnEntityDestroyed_LagComp(entity);
 		
 		if(entity > MaxClients)
