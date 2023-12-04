@@ -1739,6 +1739,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
+						item.Sell[client] = item.Sell[client] / 2;
 					}
 					if(!item.BoughtBefore[client])
 					{
@@ -4023,6 +4024,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									if(info.NoRefundWanted)
 									{
 										item.BuyWave[client] = -1;
+										item.Sell[client] = item.Sell[client] / 2;
 									}
 									item.Equipped[client] = false;
 
@@ -4072,6 +4074,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(info.NoRefundWanted)
 								{
 									item.BuyWave[client] = -1;
+									item.Sell[client] = item.Sell[client] / 2;
 								}
 								if(!item.BoughtBefore[client])
 								{
