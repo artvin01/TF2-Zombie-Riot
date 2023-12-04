@@ -87,7 +87,7 @@ int i_MissilesCount[3] = { 2, 3, 4 };						//The number of micro-missiles fired.
 int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit by the blast.
 int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
 
-float f_MissilesChance[3] = { 0.00, 0.00, 0.08 };			//The chance for Micro-Missiles to be fired.
+float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };			//The chance for Micro-Missiles to be fired.
 float f_MissilesDMG[3] = { 400.0, 600.0, 800.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
 float f_MissilesRadius[3] = { 200.0, 250.0, 300.0 };		//Base blast radius.
@@ -255,6 +255,7 @@ public void Enable_Trash_Cannon(int client, int weapon)
 		Timer_Trash[client] = CreateDataTimer(0.1, Timer_TrashControl, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		f_TrashNextHUD[client] = 0.0;
 	}
 }
 
@@ -269,14 +270,14 @@ public Action Timer_TrashControl(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}	
 
-	Trash_HUD(client, weapon);
+	Trash_HUD(client, weapon, false);
 
 	return Plugin_Continue;
 }
 
-public void Trash_HUD(int client, int weapon)
+public void Trash_HUD(int client, int weapon, bool forced)
 {
-	if(f_TrashNextHUD[client] < GetGameTime())
+	if(f_TrashNextHUD[client] < GetGameTime() || forced)
 	{
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon)
@@ -357,7 +358,7 @@ public void Trash_Cannon_ChooseNext(int client, int weapon, int tier)
 	else
 		i_NextShot[client] = effect;
 		
-	Trash_HUD(client, weapon);
+	Trash_HUD(client, weapon, true);
 	
 	delete scramble;
 }
@@ -504,6 +505,16 @@ public MRESReturn Shock_Explode(int entity)
 	
 	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float radius = f_ShockRadius[tier];
+
+	for (int i = 0; i < i_MaxcountNpc; i++)
+	{
+		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		
+		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
+		{
+			f_NextShockTime[ent] = 0.0;
+		}
+	}
 
 	Shock_ChainToVictim(entity, owner, weapon, damage, radius, position, tier, 0);
 	
