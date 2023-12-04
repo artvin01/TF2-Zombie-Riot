@@ -9,9 +9,11 @@ static Handle GermanTimer[MAXTF2PLAYERS];
 static Handle GermanSilence[MAXTF2PLAYERS];
 static int GermanCharges[MAXTF2PLAYERS];
 static int GermanWeapon[MAXTF2PLAYERS];
+static float f3_GermanFiredFromHere[MAXENTITIES][3];
 
 void Weapon_German_MapStart()
 {
+	Zero2(f3_GermanFiredFromHere);
 	PrecacheSound(WAND_GERMAN_HIT_SOUND);
 }
 
@@ -176,7 +178,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					
 					EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
-					
+					f3_GermanFiredFromHere[projectile] = WorldSpaceCenter(client);
 					static float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 					if(target > 0)
@@ -255,8 +257,22 @@ void Weapon_German_WandTouch(int entity, int target)
 		Entity_Position = WorldSpaceCenter(target);
 
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		
+		float DamageWand = f_WandDamage[entity];
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
+		float distance = GetVectorDistance(f3_GermanFiredFromHere[entity], Entity_Position, true);
+		
+		distance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+		if(distance < 0.1)
+		{
+			distance = 0.1;
+		}
+		float WeaponDamageFalloff = 0.85;
+
+		DamageWand *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
+
+		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)

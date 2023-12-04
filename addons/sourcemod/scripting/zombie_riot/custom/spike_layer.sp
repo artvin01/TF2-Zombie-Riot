@@ -117,7 +117,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 			return;
 		}
 		
-		float Calculate_HP_Spikes = 90.0; 
+		float Calculate_HP_Spikes = 45.0; 
 		
 		float Bonus_damage;
 			
@@ -211,7 +211,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 			return;
 		}
 		
-		float Calculate_HP_Spikes = 110.0; 
+		float Calculate_HP_Spikes = 55.0; 
 		
 		float Bonus_damage;
 			
