@@ -3962,8 +3962,7 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 {
 	{
 		// TEMP BLOCK PLAYERS
-		if((iEnt > 0 && iEnt <= MaxClients) || (iEnt2 > 0 && iEnt2 <= MaxClients))
-			return -1;
+		return -1;
 	}
 	
 	int iBeam = CreateEntityByName("env_beam");
@@ -4726,7 +4725,7 @@ stock bool AtEdictLimit(int type)
 		case EDICT_PLAYER:
 		{
 			//if(CurrentEntities < 1700)
-				return false;
+			//	return false;
 		}
 		case EDICT_RAID:
 		{

@@ -7035,8 +7035,7 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 {
 	{
 		// TEMP BLOCK PLAYERS
-		if((iEnt > 0 && iEnt <= MaxClients) || (iEnt2 > 0 && iEnt2 <= MaxClients))
-			return -1;
+		return -1;
 	}
 
 	int iBeam = CreateEntityByName("env_beam");
