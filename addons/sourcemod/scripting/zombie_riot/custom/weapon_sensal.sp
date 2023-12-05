@@ -399,7 +399,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 				90.0,			// float lockonAngleMax,
 				45.0,				//float homingaSec,
 				false,				// bool LockOnlyOnce,
-				false,				// bool changeAngles,
+				true,				// bool changeAngles,
 				fAng,
 				target);			// float AnglesInitiate[3]);
 			
@@ -449,7 +449,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 				90.0,			// float lockonAngleMax,
 				45.0,				//float homingaSec,
 				false,				// bool LockOnlyOnce,
-				false,				// bool changeAngles,
+				true,				// bool changeAngles,
 				fAng,
 				target);			// float AnglesInitiate[3]);
 			fAng[1] -= 90.0;

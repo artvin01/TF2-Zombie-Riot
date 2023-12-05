@@ -908,6 +908,14 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");	
 			SetVariantInt(1);
 			AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+			if(colour)
+			{
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
+			}
 		}
 	}
 	else
@@ -1185,7 +1193,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		 	70.0,			// float lockonAngleMax,
 		   	10.0,				//float homingaSec,
 			true,				// bool LockOnlyOnce,
-			false,				// bool changeAngles,
+			true,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
 
 		if(volume == 0.25)
@@ -1630,7 +1638,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 					70.0,			// float lockonAngleMax,
 					10.0,				//float homingaSec,
 					true,				// bool LockOnlyOnce,
-					false,				// bool changeAngles,
+					true,				// bool changeAngles,
 					ang_Look,			
 					enemy[i]); //home onto this enemy
 			}
