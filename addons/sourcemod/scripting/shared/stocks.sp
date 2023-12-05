@@ -3960,6 +3960,12 @@ int i_OwnerEntityEnvLaser[MAXENTITIES];
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
 {
+	{
+		// TEMP BLOCK PLAYERS
+		if((iEnt > 0 && iEnt <= MaxClients) || (iEnt2 > 0 && iEnt2 <= MaxClients))
+			return -1;
+	}
+	
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
 		return -1;
@@ -4719,7 +4725,7 @@ stock bool AtEdictLimit(int type)
 		}
 		case EDICT_PLAYER:
 		{
-			if(CurrentEntities < 1700)
+			//if(CurrentEntities < 1700)
 				return false;
 		}
 		case EDICT_RAID:

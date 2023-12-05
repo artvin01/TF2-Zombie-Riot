@@ -7033,6 +7033,12 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt",
 							float vector1[3]= {0.0,0.0,0.0},float vector2[3]= {0.0,0.0,0.0}, char[] attachment1= "")
 {
+	{
+		// TEMP BLOCK PLAYERS
+		if((iEnt > 0 && iEnt <= MaxClients) || (iEnt2 > 0 && iEnt2 <= MaxClients))
+			return -1;
+	}
+
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
 		return -1;
