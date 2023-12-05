@@ -171,7 +171,7 @@ enum
 	PHANTOM_KNIGHT				= 137, //Lucian "Blood diamond"
 	ALT_MEDIC_HEALER_3			= 138, //3 being the 3rd stage of alt waves.
 	
-	THE_GAMBLER				= 139,
+	THE_GAMBLER					= 139,
 	PABLO_GONZALES				= 140,
 	DOKTOR_MEDICK				= 141,
 	KAPTAIN_HEAVY				= 142,

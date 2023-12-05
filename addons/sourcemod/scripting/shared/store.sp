@@ -95,6 +95,8 @@ enum struct ItemInfo
 	float WeaponSizeOverrideViewmodel;
 	char WeaponModelOverride[128];
 	float ThirdpersonAnimModif;
+	int WeaponVMTExtraSetting;
+	int Weapon_Bodygroup;
 	
 	int Attack3AbilitySlot;
 	bool VisualDescOnly;
@@ -263,6 +265,12 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%smodel_weapon_override", prefix);
 		kv.GetString(buffer, this.WeaponModelOverride, sizeof(buffer));
+		
+		Format(buffer, sizeof(buffer), "%sweapon_vmt_setting", prefix);
+		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum(buffer, -1));
+
+		Format(buffer, sizeof(buffer), "%sweapon_bodygroup", prefix);
+		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum(buffer, -1));
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
@@ -5443,18 +5451,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					f_WeaponSizeOverrideViewmodel[entity]	= info.WeaponSizeOverrideViewmodel;
 					f_BackstabBossDmgPenalty[entity]		= info.BackstabDmgPentalty;
 					f_ModifThirdPersonAttackspeed[entity]	= info.ThirdpersonAnimModif;
+					
+					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
+					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
 
 					HidePlayerWeaponModel(client, entity);
-					/*
-					if(info.WeaponModelOverride[0])
-					{
-						SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[entity]);
-						for(int i; i<4; i++)
-						{
-							SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_WeaponModelIndexOverride[entity], _, i);
-						}
-					}
-					*/
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;

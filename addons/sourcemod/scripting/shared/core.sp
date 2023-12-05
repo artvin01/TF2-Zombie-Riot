@@ -641,6 +641,8 @@ bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 int i_WeaponSoundIndexOverride[MAXENTITIES];
 int i_WeaponModelIndexOverride[MAXENTITIES];
+int i_WeaponVMTExtraSetting[MAXENTITIES];
+int i_WeaponBodygroup[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 
@@ -758,8 +760,9 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_216.mdl"
+#define NIKO_PLAYERMODEL		 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_216.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
 
@@ -1372,6 +1375,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	
 	MapStartResetAll();
 	
@@ -2362,6 +2366,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_WeaponSizeOverride[entity] = 1.0;
 		f_WeaponSizeOverrideViewmodel[entity] = 1.0;
 		i_WeaponModelIndexOverride[entity] = 0;
+		i_WeaponVMTExtraSetting[entity] = -1;
+		i_WeaponBodygroup[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;

@@ -1,10 +1,8 @@
 static Handle h_TimerSensalWeaponManagement[MAXPLAYERS+1] = {null, ...};
 
-#define MAX_SENSAL_ENERGY_EFFECTS 21
 #define SENSAL_MELEE_CHARGE_ON_HIT 0.25
 #define SENSAL_MELEE_CHARGE_ON_HIT_2 0.1
 
-static int i_SensalEnergyEffect[MAXENTITIES][MAX_SENSAL_ENERGY_EFFECTS];
 static float f_SensalAbilityCharge_1[MAXENTITIES];
 static float f_SensalAbilityCharge_2[MAXENTITIES];
 static float f_Sensalhuddelay[MAXPLAYERS+1]={0.0, ...};
@@ -24,32 +22,6 @@ bool IsSensalWeapon(int Index)
 
 	return false;
 }
-void SensalWeaponRemoveEffects(int iNpc)
-{
-	for(int loop = 0; loop<MAX_SENSAL_ENERGY_EFFECTS; loop++)
-	{
-		int entity = EntRefToEntIndex(i_SensalEnergyEffect[iNpc][loop]);
-		if(IsValidEntity(entity))
-		{
-			RemoveEntity(entity);
-		}
-		i_SensalEnergyEffect[iNpc][loop] = INVALID_ENT_REFERENCE;
-	}
-}
-
-bool SensalWeaponCheckEffects_IfNotAvaiable(int iNpc)
-{
-	for(int loop = 0; loop<MAX_SENSAL_ENERGY_EFFECTS; loop++)
-	{
-		int entity = EntRefToEntIndex(i_SensalEnergyEffect[iNpc][loop]);
-		if(!IsValidEntity(entity))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 
 #define SensalWeapon_SOUND "ambient_mp3/lair/cap_1_tone_metal_movement2.mp3"
 #define SensalWeapon_SOUND_MELEE "ambient/water/water_splash1.wav"
@@ -62,7 +34,6 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 		if(IsSensalWeapon(i_CustomWeaponEquipLogic[weapon]))
 		{
 			b_ClientPossesBattery[client] = Items_HasNamedItem(client, "Expidonsan Battery Device");
-			ApplyExtraSensalWeaponEffects(client);
 			//Is the weapon it again?
 			//Yes?
 			delete h_TimerSensalWeaponManagement[client];
@@ -78,7 +49,6 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 	if(IsSensalWeapon(i_CustomWeaponEquipLogic[weapon]))
 	{
 		b_ClientPossesBattery[client] = Items_HasNamedItem(client, "Expidonsan Battery Device");
-		ApplyExtraSensalWeaponEffects(client);
 		DataPack pack;
 		h_TimerSensalWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_SensalWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -88,40 +58,11 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 
 void ResetMapStartSensalWeapon()
 {
-	for( int client = 1; client <= MaxClients; client++ ) 
-	{
-		ApplyExtraSensalWeaponEffects(client, true);
-	}
+	i_ProjectileIndex_Sensal = PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	for (int i = 0; i < (sizeof(g_SyctheHitSound));   i++) { PrecacheSound(g_SyctheHitSound[i]);   }
 	Zero(f_Sensalhuddelay);
 	PrecacheSound(SensalWeapon_SOUND);
 	PrecacheSound(SensalWeapon_SOUND_MELEE);
-}
-
-void ApplyExtraSensalWeaponEffects(int client, bool remove = false)
-{
-	if(remove)
-	{
-		SensalWeaponRemoveEffects(client);
-		return;
-	}
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-
-	if(!IsValidEntity(viewmodelModel))
-	{
-		SensalWeaponRemoveEffects(client);
-		return;
-	}
-
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-		
-	if(SensalWeaponCheckEffects_IfNotAvaiable(client))
-	{
-		SensalWeaponRemoveEffects(client);
-		SensalWeaponEffects(client, client, viewmodelModel, "effect_hand_r");
-	}
 }
 
 public void Sensal_Ability_M2(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
@@ -238,7 +179,6 @@ public Action Timer_Management_SensalWeapon(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		ApplyExtraSensalWeaponEffects(client, true);
 		h_TimerSensalWeaponManagement[client] = null;
 		return Plugin_Stop;
 	}	
@@ -246,12 +186,7 @@ public Action Timer_Management_SensalWeapon(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		ApplyExtraSensalWeaponEffects(client, false);
 		SensalTimerHudShow(client, weapon);
-	}
-	else
-	{
-		ApplyExtraSensalWeaponEffects(client, true);
 	}
 		
 	return Plugin_Continue;
@@ -336,178 +271,6 @@ void SensalTimerHudShow(int client, int weapon)
 		}
 	}
 }
-
-void SensalWeaponEffects(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
-{
-	bool LowEdictMode = false;
-	if(AtEdictLimit(EDICT_NPC))
-	{
-		//Free up an edict.
-		if(attachment[0])
-		{
-			return;
-		}
-		LowEdictMode = true;
-	}
-	int red = 125;
-	int green = 125;
-	int blue = 255;
-	bool RecolourToRed = b_ClientPossesBattery[owner];
-	if(RecolourToRed)
-	{
-		red = 255;
-		green = 125;
-		blue = 125;
-	}
-	float flPos[3];
-	float flAng[3];
-	if(attachment[0])
-	{
-		GetAttachment(Wearable, "effect_hand_r", flPos, flAng);
-	}
-	else
-	{
-		
-		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-	}
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2;
-	int particle_3;
-	int particle_4;
-	int particle_5;
-	int particle_3_u;
-	int particle_4_u;
-	int particle_5_u;
-	int particle_6_b;
-	int particle_6_up;
-	if(attachment[0])
-	{
-		particle_2 = InfoTargetParentAt({0.0,0.0,19.5}, "", 0.0); //First offset we go by
-		particle_3 = InfoTargetParentAt({0.0,0.0,-65.0}, "", 0.0); //First offset we go by
-		particle_4 = InfoTargetParentAt({0.0,22.75,-65.0}, "", 0.0); //First offset we go by
-		particle_5 = InfoTargetParentAt({0.0,45.5,-55.25}, "", 0.0); //First offset we go by
-		
-		particle_3_u = InfoTargetParentAt({0.0,0.0,-55.0}, "", 0.0); //First offset we go by
-		particle_4_u = InfoTargetParentAt({0.0,22.75,-55.0}, "", 0.0); //First offset we go by
-		particle_5_u = InfoTargetParentAt({0.0,45.5,-45.25}, "", 0.0); //First offset we go by
-		particle_6_b = InfoTargetParentAt({0.0,-10.0,-60.25}, "", 0.0); //First offset we go by
-		particle_6_up = InfoTargetParentAt({0.0,0.0,-70.0}, "", 0.0); //First offset we go by
-	}
-	else
-	{
-		particle_2 = InfoTargetParentAt({0.0,16.0,0.0}, "", 0.0); //First offset we go by
-		particle_3 = InfoTargetParentAt({0.0,-26.0,0.0}, "", 0.0); //First offset we go by
-		if(!LowEdictMode)
-		{
-			particle_4 = InfoTargetParentAt({7.8,-26.0,0.0}, "", 0.0); //First offset we go by
-			particle_5 = InfoTargetParentAt({22.75,-19.5,0.0}, "", 0.0); //First offset we go by
-		}
-	}
-	int particle_6;
-	if(!LowEdictMode)
-	{
-		if(attachment[0])
-		{
-			particle_6 = InfoTargetParentAt({0.0,65.0,-35.5}, "", 0.0); //First offset we go by
-		}
-		else
-		{
-			particle_6 = InfoTargetParentAt({32.5,-16.5,0.0}, "", 0.0); //First offset we go by
-		}
-	}
-
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	if(!LowEdictMode)
-	{
-		SetParent(particle_1, particle_4, "",_, true);
-		SetParent(particle_1, particle_5, "",_, true);
-		SetParent(particle_1, particle_6, "",_, true);
-		if(attachment[0])
-		{
-			SetParent(particle_1, particle_3_u, "",_, true);
-			SetParent(particle_1, particle_4_u, "",_, true);
-			SetParent(particle_1, particle_5_u, "",_, true);
-			SetParent(particle_1, particle_6_b, "",_, true);
-			SetParent(particle_1, particle_6_up, "",_, true);
-		}
-	}
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(Wearable, particle_1, attachment,_);
-	
-	int Laser_1;
-	if(attachment[0])
-	{
-		Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 4.0, 4.0, 1.0, LASERBEAM, client);
-	}
-	else
-	{
-		Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 4.0, 4.0, 1.0, LASERBEAM, client);
-	}
-	int Laser_2;
-	int Laser_3;
-	int Laser_4;
-	int Laser_2_u;
-	int Laser_3_u;
-	int Laser_4_u;
-	int Laser_1_b;
-	int Laser_2_b;
-	int Laser_2_up;
-	if(!LowEdictMode)
-	{
-		Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 4.0, 3.0, 1.0, LASERBEAM, client);
-		Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 3.0, 2.0, 1.0, LASERBEAM, client);
-		Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 2.0, 0.5, 1.0, LASERBEAM, client);
-		if(attachment[0])
-		{
-			Laser_2_u = ConnectWithBeamClient(particle_3_u, particle_4_u, red, green, blue, 3.0, 2.5, 1.0, LASERBEAM, client);
-			Laser_3_u = ConnectWithBeamClient(particle_4_u, particle_5_u, red, green, blue, 2.5, 1.5, 1.0, LASERBEAM, client);
-			Laser_4_u = ConnectWithBeamClient(particle_5_u, particle_6, red, green, blue, 1.5, 0.5, 1.0, LASERBEAM, client);
-			
-			Laser_1_b = ConnectWithBeamClient(particle_3, particle_6_b, red, green, blue, 3.0, 2.0, 1.0, LASERBEAM, client);
-			Laser_2_b = ConnectWithBeamClient(particle_3_u, particle_6_b, red, green, blue, 3.0, 2.0, 1.0, LASERBEAM, client);
-			Laser_2_up = ConnectWithBeamClient(particle_3, particle_6_up, red, green, blue, 3.0, 1.5, 1.0, LASERBEAM, client);
-		}
-	}
-	
-	if(!LowEdictMode)
-	{
-		i_SensalEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-		i_SensalEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-		i_SensalEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-		i_SensalEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
-		i_SensalEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-		i_SensalEnergyEffect[client][5] = EntIndexToEntRef(particle_6);
-		i_SensalEnergyEffect[client][6] = EntIndexToEntRef(Laser_1);
-		i_SensalEnergyEffect[client][7] = EntIndexToEntRef(Laser_2);
-		i_SensalEnergyEffect[client][8] = EntIndexToEntRef(Laser_3);
-		i_SensalEnergyEffect[client][9] = EntIndexToEntRef(Laser_4);
-		if(attachment[0])
-		{
-			i_SensalEnergyEffect[client][10] = EntIndexToEntRef(particle_3_u);
-			i_SensalEnergyEffect[client][11] = EntIndexToEntRef(particle_4_u);
-			i_SensalEnergyEffect[client][12] = EntIndexToEntRef(particle_5_u);
-			i_SensalEnergyEffect[client][13] = EntIndexToEntRef(particle_6_b);
-			i_SensalEnergyEffect[client][14] = EntIndexToEntRef(particle_6_up);
-			i_SensalEnergyEffect[client][15] = EntIndexToEntRef(Laser_2_u);
-			i_SensalEnergyEffect[client][16] = EntIndexToEntRef(Laser_3_u);
-			i_SensalEnergyEffect[client][17] = EntIndexToEntRef(Laser_4_u);
-			i_SensalEnergyEffect[client][18] = EntIndexToEntRef(Laser_1_b);
-			i_SensalEnergyEffect[client][19] = EntIndexToEntRef(Laser_2_b);
-			i_SensalEnergyEffect[client][20] = EntIndexToEntRef(Laser_2_up);
-		}
-	}
-	else
-	{
-		i_SensalEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
-		i_SensalEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
-		i_SensalEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
-		i_SensalEnergyEffect[client][7] = EntIndexToEntRef(Laser_1);
-	}
-}
-
 
 void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int zr_damage_custom)
 {
@@ -609,10 +372,27 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	{
 		for(int Repeat; Repeat <= 2; Repeat++)
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
-			SensalWeaponEffects(client, projectile, projectile, "");
+			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
+			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
+			{
+				SetEntProp(projectile, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex_Sensal, _, i);
+			}
+			SetEntityModel(projectile, WEAPON_CUSTOM_WEAPONRY_1);
+			if(b_ClientPossesBattery[client])
+			{
+				SetEntityRenderColor(projectile, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(projectile, 255, 255, 255, 0);
+			}
+			SetVariantInt(2);
+			AcceptEntityInput(projectile, "SetBodyGroup");
+			CClotBody npc = view_as<CClotBody>(projectile);
+			npc.AddActivityViaSequence("scythe_spin");
+			SetEntPropFloat(projectile, Prop_Send, "m_flModelScale", 1.35);
+
 			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			
 			Initiate_HomingProjectile(projectile,
 			client,
@@ -642,10 +422,27 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		fAng[1] += 45.0;
 		for(int Repeat; Repeat <= 1; Repeat++)
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, _ , Pos_player);
-			SensalWeaponEffects(client, projectile, projectile, "");
+			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
+			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
+			{
+				SetEntProp(projectile, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex_Sensal, _, i);
+			}
+			SetEntityModel(projectile, WEAPON_CUSTOM_WEAPONRY_1);
+			if(b_ClientPossesBattery[client])
+			{
+				SetEntityRenderColor(projectile, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(projectile, 255, 255, 255, 0);
+			}
+			SetVariantInt(2);
+			AcceptEntityInput(projectile, "SetBodyGroup");
+			CClotBody npc = view_as<CClotBody>(projectile);
+			npc.AddActivityViaSequence("scythe_spin");
+			SetEntPropFloat(projectile, Prop_Send, "m_flModelScale", 1.35);
+
 			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			
 			Initiate_HomingProjectile(projectile,
 			client,
@@ -671,7 +468,6 @@ public Action Timer_RemoveEntityWeaponSensal(Handle timer, any entid)
 		{
 			RemoveEntity(Particle);
 		}
-		SensalWeaponRemoveEffects(entity);
 		RemoveEntity(entity);
 		
 	}
@@ -694,7 +490,6 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SensalWeaponRemoveEffects(entity);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, 80, _, 0.8);
 		
 		float ProjectileLoc[3];
@@ -715,11 +510,23 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 	}
 	else if(target == 0)
 	{
-		SensalWeaponRemoveEffects(entity);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
 		}
 		RemoveEntity(entity);
+	}
+}
+
+
+void SensalApplyRecolour(int client, int entity)
+{
+	if(b_ClientPossesBattery[client])
+	{
+		SetEntityRenderColor(entity, 255, 255, 255, 1);
+	}
+	else
+	{
+		SetEntityRenderColor(entity, 255, 255, 255, 0);
 	}
 }

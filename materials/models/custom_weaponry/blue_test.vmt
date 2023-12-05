@@ -1,0 +1,38 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/custom_weaponry/weaponry_trans_white"
+	
+	"$frame" "0"
+
+	
+	"$alpha" "255.0"
+	"$defaultalpha" "255.0"
+	
+	"$phong" "1"
+	"$phongboost" "1.0"
+	"$phongexponent" "100"
+	"$phongfresnelranges"	"[1 5 10]"
+	"$halflambert" "1"
+
+	"$cloakPassEnabled" "1"
+	"Proxies"
+	{
+		"Alpha"
+		{
+			// sets $alpha
+		}
+		// alpha acts as our skin index, so set the appropriate frame
+		"Equals"
+		{
+			"srcVar1"	"$alpha"
+			"resultVar"	"$frame"
+		}
+	
+		// change alpha back, don't want to change the rendering
+		"Equals"
+		{
+			"srcVar1"	"$defaultalpha"
+			"resultVar"	"$alpha"
+		}		
+	}	
+}
