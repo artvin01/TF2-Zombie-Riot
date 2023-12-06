@@ -16,7 +16,7 @@
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
-static int i_hand_particle[MAXTF2PLAYERS+1][15];
+static int i_hand_particle[MAXTF2PLAYERS+1][11];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 
 static float fl_ion_charge_ammount[MAXTF2PLAYERS+1];
@@ -362,12 +362,12 @@ static void Create_Hand_Particle(int client)
 	i_hand_particle[client][2] = EntIndexToEntRef(particle_3);
 	i_hand_particle[client][3] = EntIndexToEntRef(particle_4);
 	i_hand_particle[client][4] = EntIndexToEntRef(particle_5);
-	i_hand_particle[client][6] = EntIndexToEntRef(Laser_1);
-	i_hand_particle[client][7] = EntIndexToEntRef(Laser_2);
-	i_hand_particle[client][8] = EntIndexToEntRef(Laser_3);
-	i_hand_particle[client][9] = EntIndexToEntRef(Laser_4);
-	i_hand_particle[client][10] = EntIndexToEntRef(Laser_5);
-	i_hand_particle[client][11] = EntIndexToEntRef(Laser_6);
+	i_hand_particle[client][5] = EntIndexToEntRef(Laser_1);
+	i_hand_particle[client][6] = EntIndexToEntRef(Laser_2);
+	i_hand_particle[client][7] = EntIndexToEntRef(Laser_3);
+	i_hand_particle[client][8] = EntIndexToEntRef(Laser_4);
+	i_hand_particle[client][9] = EntIndexToEntRef(Laser_5);
+	i_hand_particle[client][10] = EntIndexToEntRef(Laser_6);
 }
 public Action Timer_Management_Neuvellete(Handle timer, DataPack pack)
 {

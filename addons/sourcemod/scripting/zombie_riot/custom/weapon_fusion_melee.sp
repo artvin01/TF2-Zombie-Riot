@@ -536,7 +536,7 @@ void Npc_OnTakeDamage_SpeedFists(int attacker, int victim, float &damage)
 }
 
 
-#define MAX_FUSION_ENERGY_EFFECTS 26
+#define MAX_FUSION_ENERGY_EFFECTS 25
 static int i_FusionEnergyEffect[MAXENTITIES][MAX_FUSION_ENERGY_EFFECTS];
 
 void FusionWeaponRemoveEffects(int iNpc)
@@ -667,9 +667,9 @@ void FusionWeaponEffectPap0(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
 	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
 	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3);
 }
 
 
@@ -722,17 +722,17 @@ void FusionWeaponEffectPap1(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
 	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
 	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3);
 	
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_2_1);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_3_1);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(particle_5_1);
-	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_1_1);
-	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_2_1);
-	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_3_1);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_2_1);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_3_1);
+	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_5_1);
+	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_1);
+	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
+	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
 }
 
 
@@ -786,17 +786,17 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
 	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
 	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3);
 	
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_2_1);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_3_1);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(particle_5_1);
-	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_1_1);
-	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_2_1);
-	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_3_1);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_2_1);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_3_1);
+	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_5_1);
+	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_1);
+	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
+	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
 
 	
 	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
@@ -828,16 +828,16 @@ void FusionWeaponEffectPap2(int owner, int client, int Wearable, char[] attachme
 	SetEntPropVector(particle_1_l, Prop_Data, "m_angRotation", flAng); 
 	SetParent(Wearable, particle_1_l, "effect_hand_l",_);
 
-	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_1_l);
-	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_2_l);
-	i_FusionEnergyEffect[client][18] = EntIndexToEntRef(particle_3_l);
-	i_FusionEnergyEffect[client][19] = EntIndexToEntRef(particle_4_l);
-	i_FusionEnergyEffect[client][20] = EntIndexToEntRef(particle_5_l);
-	i_FusionEnergyEffect[client][21] = EntIndexToEntRef(Laser_1_l);
-	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_2_l);
-	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_3_l);
-	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_4_l);
-	i_FusionEnergyEffect[client][25] = EntIndexToEntRef(Laser_5_l);
+	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(particle_1_l);
+	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_2_l);
+	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_3_l);
+	i_FusionEnergyEffect[client][18] = EntIndexToEntRef(particle_4_l);
+	i_FusionEnergyEffect[client][19] = EntIndexToEntRef(particle_5_l);
+	i_FusionEnergyEffect[client][20] = EntIndexToEntRef(Laser_1_l);
+	i_FusionEnergyEffect[client][21] = EntIndexToEntRef(Laser_2_l);
+	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_3_l);
+	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_4_l);
+	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_5_l);
 
 }
 
@@ -890,17 +890,17 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
 	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
 	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
-	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_1);
-	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_2);
-	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(Laser_1);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(Laser_2);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(Laser_3);
 	
-	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_2_1);
-	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_3_1);
-	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(particle_5_1);
-	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_1_1);
-	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_2_1);
-	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_3_1);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_2_1);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(particle_3_1);
+	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(particle_5_1);
+	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_1);
+	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_1);
+	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_1);
 
 	
 	int particle_1_l = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
@@ -932,16 +932,16 @@ void FusionWeaponEffectPap3(int owner, int client, int Wearable, char[] attachme
 	SetEntPropVector(particle_1_l, Prop_Data, "m_angRotation", flAng); 
 	SetParent(Wearable, particle_1_l, "effect_hand_l",_);
 
-	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_1_l);
-	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_2_l);
-	i_FusionEnergyEffect[client][18] = EntIndexToEntRef(particle_3_l);
-	i_FusionEnergyEffect[client][19] = EntIndexToEntRef(particle_4_l);
-	i_FusionEnergyEffect[client][20] = EntIndexToEntRef(particle_5_l);
-	i_FusionEnergyEffect[client][21] = EntIndexToEntRef(Laser_1_l);
-	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_2_l);
-	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_3_l);
-	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_4_l);
-	i_FusionEnergyEffect[client][25] = EntIndexToEntRef(Laser_5_l);
+	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(particle_1_l);
+	i_FusionEnergyEffect[client][16] = EntIndexToEntRef(particle_2_l);
+	i_FusionEnergyEffect[client][17] = EntIndexToEntRef(particle_3_l);
+	i_FusionEnergyEffect[client][18] = EntIndexToEntRef(particle_4_l);
+	i_FusionEnergyEffect[client][19] = EntIndexToEntRef(particle_5_l);
+	i_FusionEnergyEffect[client][20] = EntIndexToEntRef(Laser_1_l);
+	i_FusionEnergyEffect[client][21] = EntIndexToEntRef(Laser_2_l);
+	i_FusionEnergyEffect[client][22] = EntIndexToEntRef(Laser_3_l);
+	i_FusionEnergyEffect[client][23] = EntIndexToEntRef(Laser_4_l);
+	i_FusionEnergyEffect[client][24] = EntIndexToEntRef(Laser_5_l);
 
 }
 

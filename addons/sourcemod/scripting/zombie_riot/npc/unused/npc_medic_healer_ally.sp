@@ -696,12 +696,6 @@ public int SummonMe(float pos[3], float ang[3], char name[64])
 
 
 stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255, float fStartWidth=1.0, float fEndWidth=1.0, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt"){
-	
-	{
-		// TEMP BLOCK PLAYERS
-		return -1;
-	}
-
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
 		return -1;

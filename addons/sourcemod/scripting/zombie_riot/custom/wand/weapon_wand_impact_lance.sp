@@ -627,31 +627,31 @@ void Impact_Lance_Effects(int client, int Wearable, char[] attachment = "effect_
 	switch(i_Current_Pap[client])
 	{
 		case 0:
-		{
+		{	// 12
 			Impact_Lance_EffectPap0(client, Wearable, attachment);
 		}
 		case 1:
-		{
+		{	// 16
 			Impact_Lance_EffectPap1(client, Wearable, attachment);
 		}
 		case 2:
-		{
+		{	// 17
 			Impact_Lance_EffectPap2(client, Wearable, attachment);
 		}
 		case 3:
-		{
+		{	// 24
 			Impact_Lance_EffectPap3(client, Wearable, attachment);
 		}
 		case 4:
-		{
+		{	// 14
 			Impact_Lance_EffectPap4(client, Wearable, attachment);
 		}
 		case 5:
-		{
+		{	// 16
 			Impact_Lance_EffectPap5(client, Wearable, attachment);
 		}
 		case 6:
-		{
+		{	// 22
 			Impact_Lance_EffectPap6(client, Wearable, attachment);
 		}
 	}
@@ -764,13 +764,13 @@ void Impact_Lance_EffectPap0(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
 }
 
 
@@ -840,17 +840,17 @@ void Impact_Lance_EffectPap1(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
 }
 
 
@@ -923,18 +923,18 @@ void Impact_Lance_EffectPap2(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(particle_5_1);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(particle_5_1);
 
 }
 
@@ -1019,25 +1019,25 @@ void Impact_Lance_EffectPap3(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(particle_5_1);
-	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_9);
-	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(Laser_10);
-	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_11);
-	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_12);
-	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(particle_7);
-	i_Impact_Lance_CosmeticEffect[client][23] = EntIndexToEntRef(particle_6);
-	i_Impact_Lance_CosmeticEffect[client][24] = EntIndexToEntRef(particle_6_1);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(particle_5_1);
+	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_10);
+	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(Laser_11);
+	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_12);
+	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(particle_7);
+	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(particle_6);
+	i_Impact_Lance_CosmeticEffect[client][23] = EntIndexToEntRef(particle_6_1);
 
 }
 
@@ -1102,13 +1102,13 @@ void Impact_Lance_EffectPap_proj_0(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_5);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
 }
 
 
@@ -1185,15 +1185,15 @@ void Impact_Lance_EffectPap_proj_1(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_7);
 }
 
 
@@ -1264,17 +1264,17 @@ void Impact_Lance_EffectPap_proj_2(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_9);
 
 }
 
@@ -1356,23 +1356,23 @@ void Impact_Lance_EffectPap_proj_3(int client, float flAng[3])
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
-	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_10);
-	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_11);
-	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(particle_5_1);
-	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_12);
-	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(Laser_13);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_10);
+	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_11);
+	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(particle_5_1);
+	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_12);
+	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_13);
 
 }
 
@@ -1438,15 +1438,15 @@ void Impact_Lance_EffectPap4(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_7);
 }
 
 
@@ -1515,17 +1515,17 @@ void Impact_Lance_EffectPap5(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_9);
 }
 
 
@@ -1607,22 +1607,22 @@ void Impact_Lance_EffectPap6(int client, int Wearable, char[] attachment = "effe
 	i_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
 	i_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
 	i_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
-	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(particle_4);
-	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_1);
-	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_2);
-	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_3);
-	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_4);
-	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(particle_4_1);
-	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(laser_5);
-	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_6);
-	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
-	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
-	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_9);
-	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_10);
-	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_11);
-	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(particle_5);
-	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(particle_5_1);
-	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_12);
-	i_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(Laser_13);
+	i_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(particle_4_1);
+	i_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(laser_5);
+	i_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(Laser_6);
+	i_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(Laser_7);
+	i_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_8);
+	i_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_9);
+	i_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(Laser_10);
+	i_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_11);
+	i_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(particle_5);
+	i_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(particle_5_1);
+	i_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_12);
+	i_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(Laser_13);
 
 }
