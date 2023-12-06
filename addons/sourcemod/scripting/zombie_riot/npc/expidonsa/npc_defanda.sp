@@ -344,7 +344,7 @@ void DefandaEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
 }
 
 
