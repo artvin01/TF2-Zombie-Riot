@@ -2223,17 +2223,17 @@ void SilvesterApplyEffectsForm1(int entity)
 	i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
 	i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(Laser_3);
+	i_ExpidonsaEnergyEffect[entity][5] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_3);
 	
-	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_2_1);
-	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_3_1);
-	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_4_1);
-	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(particle_5_1);
-	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_1_1);
-	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_2_1);
-	i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(Laser_3_1);
+	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(particle_2_1);
+	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_3_1);
+	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_4_1);
+	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
+	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
+	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
+	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
 }
 
 
@@ -2291,17 +2291,17 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 		i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
 		i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
 		i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
-		i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_1);
-		i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_2);
-		i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(Laser_3);
+		i_ExpidonsaEnergyEffect[entity][5] = EntIndexToEntRef(Laser_1);
+		i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_2);
+		i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_3);
 		
-		i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_2_1);
-		i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_3_1);
-		i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_4_1);
-		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(particle_5_1);
-		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_1_1);
-		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_2_1);
-		i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(Laser_3_1);
+		i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(particle_2_1);
+		i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_3_1);
+		i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_4_1);
+		i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
+		i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
+		i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
+		i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
 			
 	}
 
@@ -2345,15 +2345,15 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	int Laser_4_Wingset_1 = ConnectWithBeamClient(particle_5_Wingset_1, particle_3_Wingset_1, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 
 	
-	i_ExpidonsaEnergyEffect[entity][16] = EntIndexToEntRef(particle_1_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][17] = EntIndexToEntRef(particle_2_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][18] = EntIndexToEntRef(particle_3_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][19] = EntIndexToEntRef(particle_4_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][20] = EntIndexToEntRef(particle_5_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][21] = EntIndexToEntRef(Laser_1_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][22] = EntIndexToEntRef(Laser_2_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][23] = EntIndexToEntRef(Laser_3_Wingset_1);
-	i_ExpidonsaEnergyEffect[entity][24] = EntIndexToEntRef(Laser_4_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(particle_1_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][16] = EntIndexToEntRef(particle_2_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][17] = EntIndexToEntRef(particle_3_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][18] = EntIndexToEntRef(particle_4_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][19] = EntIndexToEntRef(particle_5_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][20] = EntIndexToEntRef(Laser_1_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][21] = EntIndexToEntRef(Laser_2_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][22] = EntIndexToEntRef(Laser_3_Wingset_1);
+	i_ExpidonsaEnergyEffect[entity][23] = EntIndexToEntRef(Laser_4_Wingset_1);
 	
 	int particle_1_Wingset_2 = InfoTargetParentAt({35.0,-40.0,-15.0}, "", 0.0); //This is the root bone basically
 
@@ -2378,15 +2378,15 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	int Laser_4_Wingset_2 = ConnectWithBeamClient(particle_5_Wingset_2, particle_3_Wingset_2, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 
 	
-	i_ExpidonsaEnergyEffect[entity][25] = EntIndexToEntRef(particle_1_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][26] = EntIndexToEntRef(particle_2_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][27] = EntIndexToEntRef(particle_3_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][28] = EntIndexToEntRef(particle_4_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][29] = EntIndexToEntRef(particle_5_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][30] = EntIndexToEntRef(Laser_1_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][31] = EntIndexToEntRef(Laser_2_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][32] = EntIndexToEntRef(Laser_3_Wingset_2);
-	i_ExpidonsaEnergyEffect[entity][33] = EntIndexToEntRef(Laser_4_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][24] = EntIndexToEntRef(particle_1_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][25] = EntIndexToEntRef(particle_2_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][26] = EntIndexToEntRef(particle_3_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][27] = EntIndexToEntRef(particle_4_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][28] = EntIndexToEntRef(particle_5_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][29] = EntIndexToEntRef(Laser_1_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][30] = EntIndexToEntRef(Laser_2_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][31] = EntIndexToEntRef(Laser_3_Wingset_2);
+	i_ExpidonsaEnergyEffect[entity][32] = EntIndexToEntRef(Laser_4_Wingset_2);
 
 
 
@@ -2414,15 +2414,15 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	int Laser_4_Wingset_3 = ConnectWithBeamClient(particle_5_Wingset_3, particle_3_Wingset_3, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 
 	
-	i_ExpidonsaEnergyEffect[entity][34] = EntIndexToEntRef(particle_1_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][35] = EntIndexToEntRef(particle_2_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][36] = EntIndexToEntRef(particle_3_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][37] = EntIndexToEntRef(particle_4_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][38] = EntIndexToEntRef(particle_5_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][39] = EntIndexToEntRef(Laser_1_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][40] = EntIndexToEntRef(Laser_2_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][41] = EntIndexToEntRef(Laser_3_Wingset_3);
-	i_ExpidonsaEnergyEffect[entity][42] = EntIndexToEntRef(Laser_4_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][33] = EntIndexToEntRef(particle_1_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][34] = EntIndexToEntRef(particle_2_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][35] = EntIndexToEntRef(particle_3_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][36] = EntIndexToEntRef(particle_4_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][37] = EntIndexToEntRef(particle_5_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][38] = EntIndexToEntRef(Laser_1_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][39] = EntIndexToEntRef(Laser_2_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][40] = EntIndexToEntRef(Laser_3_Wingset_3);
+	i_ExpidonsaEnergyEffect[entity][41] = EntIndexToEntRef(Laser_4_Wingset_3);
 
 
 	
@@ -2449,15 +2449,15 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	int Laser_4_Wingset_4 = ConnectWithBeamClient(particle_5_Wingset_4, particle_3_Wingset_4, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 
 	
-	i_ExpidonsaEnergyEffect[entity][43] = EntIndexToEntRef(particle_1_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][44] = EntIndexToEntRef(particle_2_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][45] = EntIndexToEntRef(particle_3_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][46] = EntIndexToEntRef(particle_4_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][47] = EntIndexToEntRef(particle_5_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][48] = EntIndexToEntRef(Laser_1_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][49] = EntIndexToEntRef(Laser_2_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][50] = EntIndexToEntRef(Laser_3_Wingset_4);
-	i_ExpidonsaEnergyEffect[entity][51] = EntIndexToEntRef(Laser_4_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][42] = EntIndexToEntRef(particle_1_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][43] = EntIndexToEntRef(particle_2_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][44] = EntIndexToEntRef(particle_3_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][45] = EntIndexToEntRef(particle_4_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][46] = EntIndexToEntRef(particle_5_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][47] = EntIndexToEntRef(Laser_1_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][48] = EntIndexToEntRef(Laser_2_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][49] = EntIndexToEntRef(Laser_3_Wingset_4);
+	i_ExpidonsaEnergyEffect[entity][50] = EntIndexToEntRef(Laser_4_Wingset_4);
 
 
 	
@@ -2485,15 +2485,15 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	int Laser_4_Wingset_5 = ConnectWithBeamClient(particle_5_Wingset_5, particle_3_Wingset_5, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 
 	
-	i_ExpidonsaEnergyEffect[entity][52] = EntIndexToEntRef(particle_1_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][53] = EntIndexToEntRef(particle_2_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][54] = EntIndexToEntRef(particle_3_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][55] = EntIndexToEntRef(particle_4_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][56] = EntIndexToEntRef(particle_5_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][57] = EntIndexToEntRef(Laser_1_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][58] = EntIndexToEntRef(Laser_2_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][59] = EntIndexToEntRef(Laser_3_Wingset_5);
-	i_ExpidonsaEnergyEffect[entity][60] = EntIndexToEntRef(Laser_4_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][51] = EntIndexToEntRef(particle_1_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][52] = EntIndexToEntRef(particle_2_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][53] = EntIndexToEntRef(particle_3_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][54] = EntIndexToEntRef(particle_4_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][55] = EntIndexToEntRef(particle_5_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][56] = EntIndexToEntRef(Laser_1_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][57] = EntIndexToEntRef(Laser_2_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][58] = EntIndexToEntRef(Laser_3_Wingset_5);
+	i_ExpidonsaEnergyEffect[entity][59] = EntIndexToEntRef(Laser_4_Wingset_5);
 
 
 	int particle_1_Wingset_6 = InfoTargetParentAt({50.0,0.0,-15.0}, "", 0.0); //This is the root bone basically
@@ -2519,16 +2519,16 @@ void SilvesterApplyEffectsForm2(int entity, bool withoutweapon = false)
 	int Laser_4_Wingset_6 = ConnectWithBeamClient(particle_5_Wingset_6, particle_3_Wingset_6, red, green, blue, 3.0, 3.0, 1.0, LASERBEAM);
 
 	
-	i_ExpidonsaEnergyEffect[entity][61] = EntIndexToEntRef(particle_1_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][62] = EntIndexToEntRef(particle_2_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][63] = EntIndexToEntRef(particle_3_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][64] = EntIndexToEntRef(particle_4_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][65] = EntIndexToEntRef(particle_5_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][66] = EntIndexToEntRef(Laser_1_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_2_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_3_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(Laser_4_Wingset_6);
-	i_ExpidonsaEnergyEffect[entity][70] = EntIndexToEntRef(ParticleOffsetMain);
+	i_ExpidonsaEnergyEffect[entity][60] = EntIndexToEntRef(particle_1_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][61] = EntIndexToEntRef(particle_2_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][62] = EntIndexToEntRef(particle_3_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][63] = EntIndexToEntRef(particle_4_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][64] = EntIndexToEntRef(particle_5_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][65] = EntIndexToEntRef(Laser_1_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][66] = EntIndexToEntRef(Laser_2_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][67] = EntIndexToEntRef(Laser_3_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][68] = EntIndexToEntRef(Laser_4_Wingset_6);
+	i_ExpidonsaEnergyEffect[entity][69] = EntIndexToEntRef(ParticleOffsetMain);
 
 
 

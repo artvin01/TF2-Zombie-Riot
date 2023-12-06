@@ -336,12 +336,12 @@ void SiccerinoEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
 	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_3_i);
-	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_5_i);
-	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(Laser_3);
-	i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(Laser_1_i);
-	i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(Laser_2_i);
-	i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(Laser_3_i);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_3_i);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_5_i);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_3);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_1_i);
+	i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(Laser_2_i);
+	i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(Laser_3_i);
 }

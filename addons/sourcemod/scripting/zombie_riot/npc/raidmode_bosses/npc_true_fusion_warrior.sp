@@ -1761,17 +1761,17 @@ void FusionApplyEffectsForm1(int entity)
 	i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
 	i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(Laser_3);
+	i_ExpidonsaEnergyEffect[entity][5] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_3);
 	
-	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_2_1);
-	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_3_1);
-	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_4_1);
-	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(particle_5_1);
-	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_1_1);
-	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_2_1);
-	i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(Laser_3_1);
+	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(particle_2_1);
+	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_3_1);
+	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_4_1);
+	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
+	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
+	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
+	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
 }
 
 
@@ -1827,15 +1827,15 @@ void FusionApplyEffectsForm2(int entity)
 	i_ExpidonsaEnergyEffect[entity][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[entity][3] = EntIndexToEntRef(particle_4);
 	i_ExpidonsaEnergyEffect[entity][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(Laser_3);
+	i_ExpidonsaEnergyEffect[entity][5] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[entity][6] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[entity][7] = EntIndexToEntRef(Laser_3);
 	
-	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_2_1);
-	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_3_1);
-	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_4_1);
-	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(particle_5_1);
-	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_1_1);
-	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_2_1);
-	i_ExpidonsaEnergyEffect[entity][15] = EntIndexToEntRef(Laser_3_1);
+	i_ExpidonsaEnergyEffect[entity][8] = EntIndexToEntRef(particle_2_1);
+	i_ExpidonsaEnergyEffect[entity][9] = EntIndexToEntRef(particle_3_1);
+	i_ExpidonsaEnergyEffect[entity][10] = EntIndexToEntRef(particle_4_1);
+	i_ExpidonsaEnergyEffect[entity][11] = EntIndexToEntRef(particle_5_1);
+	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
+	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
+	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
 }
