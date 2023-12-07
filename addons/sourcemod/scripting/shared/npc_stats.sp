@@ -7105,7 +7105,7 @@ stock void ApplyBeamThinkRemoval(int ref)
 
 stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.0}, int beam, char[] attachment = "")
 {
-	int entity = CreateEntityByName("info_target");
+	int entity = CreateEntityByName("info_teleport_destination");
 	DispatchSpawn(entity);
 
 	//Visualise.
