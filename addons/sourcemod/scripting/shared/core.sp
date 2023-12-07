@@ -2974,20 +2974,21 @@ public void Delete_instantly_Laser_ball(int entity)
 	}
 }
 */
-
+/*
 public Action Timer_FreeEdict(Handle timer)
 {
 	CurrentEntities--;
 	return Plugin_Continue;
 }
-
+*/
 public void OnEntityDestroyed(int entity)
 {
 	DHook_EntityDestoryed();
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
-		CreateTimer(1.01, Timer_FreeEdict);
+		CurrentEntities--;
+	//	CreateTimer(1.01, Timer_FreeEdict);
 
 		//OnEntityDestroyed_LagComp(entity);
 		
