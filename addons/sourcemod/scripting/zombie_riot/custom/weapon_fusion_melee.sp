@@ -559,19 +559,19 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 	{
 		case WEAPON_FUSION:
 		{
-			thingsToLoop = 8;
+			thingsToLoop = 7;
 		}
 		case WEAPON_FUSION_PAP1:
 		{
-			thingsToLoop = 15;
+			thingsToLoop = 14;
 		}
 		case WEAPON_FUSION_PAP2:
 		{
-			thingsToLoop = 25;
+			thingsToLoop = 24;
 		}
 		case WEAPON_NEARL:
 		{
-			thingsToLoop = 15;
+			thingsToLoop = 14;
 		}
 	}
 	for(int loop = 0; loop<thingsToLoop; loop++)
