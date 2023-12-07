@@ -2171,6 +2171,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 
 void DelayEffectOnHorn(int ref)
 {
+	//i do not trust banner durations.
 	int client = EntRefToEntIndex(ref);
 	if(!IsValidClient(client))
 		return;
@@ -2206,6 +2207,26 @@ void DelayEffectOnHorn(int ref)
 	CreateDataTimer(0.1, TimerSetBannerExtraDuration, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(ExtendDuration + GetGameTime());
+	
+	DataPack pack2;
+	CreateDataTimer(0.1, TimerGrantBannerDuration, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack2.WriteCell(EntIndexToEntRef(client));
+
+	//"Expidonsan Battery Device"
+}
+public Action TimerGrantBannerDuration(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+
+	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
+		return Plugin_Stop;
+	
+	f_BannerDurationActive[client] = GetGameTime() + 0.25;
+
+	return Plugin_Continue;
 }
 
 public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
@@ -2223,7 +2244,6 @@ public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bRageDraining", 1);
 
 	return Plugin_Continue;
-
 }
 /*
 ( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
