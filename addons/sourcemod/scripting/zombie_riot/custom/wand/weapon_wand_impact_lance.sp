@@ -1545,7 +1545,7 @@ void Impact_Lance_EffectPap6(int client, int Wearable, char[] attachment = "effe
 		x = Right = -x, Left = x
 		y = Forward = y, backwrads = -y
 		z is inverted values
-		 
+		 t
 	*/
 
 	int particle_2 = InfoTargetParentAt({0.0, 10.0, 5.0}, "", 0.0); 	//top

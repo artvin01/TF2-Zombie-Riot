@@ -2790,6 +2790,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 		}
+		else if(!StrContains(classname, "info_teleport_destination"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
+		else if(!StrContains(classname, "env_laser"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
 		else if(!StrContains(classname, "func_regenerate"))
 		{
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_Regenerate_StartTouch);

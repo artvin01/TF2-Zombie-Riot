@@ -102,7 +102,7 @@ stock int GivePropAttachment(int entity, const char[] model)
 
 stock int InfoTargetParentAt(float position[3], const char[] todo_remove_massreplace_fix, float duration = 0.1)
 {
-	int info = CreateEntityByName("info_target");
+	int info = CreateEntityByName("info_teleport_destination");
 	if (info != -1)
 	{
 		if(todo_remove_massreplace_fix[0])
@@ -3960,7 +3960,7 @@ int i_OwnerEntityEnvLaser[MAXENTITIES];
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
 {
-	int iBeam = CreateEntityByName("env_beam");
+	int iBeam = CreateEntityByName("env_laser");
 	if(iBeam <= MaxClients)
 		return -1;
 
