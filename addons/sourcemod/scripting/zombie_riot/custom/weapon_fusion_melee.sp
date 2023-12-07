@@ -571,7 +571,7 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 		}
 		case WEAPON_NEARL:
 		{
-			thingsToLoop = 14;
+			thingsToLoop = 24;
 		}
 	}
 	for(int loop = 0; loop<thingsToLoop; loop++)
