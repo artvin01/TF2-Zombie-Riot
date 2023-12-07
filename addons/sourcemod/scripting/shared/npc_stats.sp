@@ -7033,7 +7033,7 @@ stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt",
 							float vector1[3]= {0.0,0.0,0.0},float vector2[3]= {0.0,0.0,0.0}, char[] attachment1= "")
 {
-	int iBeam = CreateEntityByName("env_laser");
+	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
 		return -1;
 
@@ -7105,7 +7105,7 @@ stock void ApplyBeamThinkRemoval(int ref)
 
 stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.0}, int beam, char[] attachment = "")
 {
-	int entity = CreateEntityByName("info_teleport_destination");
+	int entity = CreateEntityByName("info_target");
 	DispatchSpawn(entity);
 
 	//Visualise.
