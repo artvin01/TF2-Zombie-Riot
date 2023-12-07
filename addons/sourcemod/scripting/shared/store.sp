@@ -4879,6 +4879,8 @@ void Store_ApplyAttribs(int client)
 	delete map;
 
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
+	EnableSilvesterCosmetic(client);
+	EnableMagiaCosmetic(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -5988,8 +5990,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		SeaMelee_Enable(client, entity);
 		Enable_Leper(client, entity);
 		Flagellant_Enable(client, entity);
-		EnableSilvesterCosmetic(client);
-		EnableMagiaCosmetic(client);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
 #endif
