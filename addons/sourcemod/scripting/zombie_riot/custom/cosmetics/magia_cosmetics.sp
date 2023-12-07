@@ -182,6 +182,7 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 	int laser_left_wing_4 = ConnectWithBeamClient(particle_left_wing_2, particle_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM, entity);
 	int laser_left_wing_5 = ConnectWithBeamClient(particle_left_wing_3, particle_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM, entity);
 
+	i_MagiaCosmeticEffect[entity][0] = EntIndexToEntRef(ParticleOffsetMain);
 	i_MagiaCosmeticEffect[entity][1] = EntIndexToEntRef(particle_left_core);
 	i_MagiaCosmeticEffect[entity][2] = EntIndexToEntRef(particle_left_wing_1);
 	i_MagiaCosmeticEffect[entity][3] = EntIndexToEntRef(particle_left_wing_3);
@@ -243,9 +244,4 @@ void MagiaCosmeticEffects(int entity, int wearable)	//Magia Wings [???]
 	i_MagiaCosmeticEffect[entity][19] = EntIndexToEntRef(laser_right_wing_3);
 	i_MagiaCosmeticEffect[entity][20] = EntIndexToEntRef(laser_right_wing_4);
 	i_MagiaCosmeticEffect[entity][21] = EntIndexToEntRef(laser_right_wing_5);
-
-	i_MagiaCosmeticEffect[entity][0] = EntIndexToEntRef(ParticleOffsetMain);
-
-
-
 }

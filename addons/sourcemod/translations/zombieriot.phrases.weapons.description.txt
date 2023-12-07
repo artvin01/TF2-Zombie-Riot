@@ -1381,7 +1381,7 @@
 	
 	"Construction Apprentice Desc"
 	{
-		"en"	"65%% more building health and 2.0x Sentry damage, 2 more support buildings added and 50%% more repair Rate"
+		"en"	"65%% more building health and 2.9x Sentry damage, 2 more support buildings added and 50%% more repair Rate"
 	}
 	
 	"Alien Repair Handling book Desc"
@@ -1393,9 +1393,7 @@
 	
 	"Construction Worker Desc"
 	{
-		"en"	"65%% more building health, increased sentry dmg by 1.75x and increased attack speed by 1.5x, 3 more support buildings added"
-		"ru"	"На 65%% больше здоровья построек, 1,75-кратное увеличение урона турели и 1,5-кратное увеличение скорости атаки, получено ещё 3 постройки поддержки."
-		"chi"   "增加65%%的建筑血量和1.75倍的哨兵伤害1.5倍攻击速度，增加3个可建筑数"
+		"en"	"65%% more building health, increased sentry dmg by 2.4x and increased attack speed by 1.65x, 3 more support buildings added"
 	}
 	
 	"Cosmic Repair Handling book Desc"
@@ -1407,23 +1405,22 @@
 	
 	"Construction Expert Desc"
 	{
-		"en"	"1.7x more building health and 2.5x Sentry damage and increased attack speed by 1.5x, 4 more support buildings added"
-		"ru"	"1,7x-кратное увеличение здоровья построек и 2,5-кратное урона турели, а также 1,5-кратное увеличение скорости атаки, получено ещё 4 постройки поддержки."
-		"chi"   "增加1.7倍的建筑血量和2.5倍的哨兵伤害1.5倍攻击速度，增加4个可建筑数"
+		"en"	"1.7x more building health and 2.0x Sentry damage and increased attack speed by 1.5x, 4 more support buildings added"
+
 	}
 	
 	"Construction Master Desc"
 	{
-		"en"	"1.4x more building health and 3.3x Sentry damage, 5 more support buildings added"
-		"ru"	"1,4-кратное увеличение здоровья построек и 3,3-кратное урона турели, получено ещё 5 построек поддержки."
-		"chi"   "增加1.4倍的建筑血量和3.3倍的哨兵伤害，增加5个可建筑数"
+		"en"	"1.4x more building health and 3.1x Sentry damage, 5 more support buildings added"
+		"ru"	"1,4-кратное увеличение здоровья построек и 3,1-кратное урона турели, получено ещё 5 построек поддержки."
+		"chi"   "增加1.4倍的建筑血量和3.1倍的哨兵伤害，增加5个可建筑数"
 	}
 	
 	"Construction Killer Desc"
 	{
-		"en"	"1.9x Sentry damage"
-		"ru"	"1,9-кратный урон турели."
-		"chi"   "增加1.9倍哨兵伤害"
+		"en"	"2.0x Sentry damage"
+		"ru"	"2,0-кратный урон турели."
+		"chi"   "增加2.0倍哨兵伤害"
 	}
 	
 	"Accurate Marksman Desc"

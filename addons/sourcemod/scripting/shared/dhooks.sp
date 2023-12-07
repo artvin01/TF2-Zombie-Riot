@@ -2160,10 +2160,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		BuffBannerActivate(client, weapon);
 		BuffBattilonsActivate(client, weapon);
 	}
-	if(b_ArkantosBuffItem[client])
-	{
-		RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
-	}
+	RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
 
 
 #endif
@@ -2177,19 +2174,56 @@ void DelayEffectOnHorn(int ref)
 	int client = EntRefToEntIndex(ref);
 	if(!IsValidClient(client))
 		return;
+
+	float ExtendDuration = 10.0;
+
+	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
+
+	if(b_ArkantosBuffItem[client])
+	{
 	
-	int r = 200;
-	int g = 200;
-	int b = 255;
-	int a = 200;
+		int r = 200;
+		int g = 200;
+		int b = 255;
+		int a = 200;
+		ExtendDuration *= 2.0;
+		EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
+		
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+	}
+
+	if(ExtendDuration <= 10.0)
+	{
+		return;
+	}
+	ExtendDuration -= 9.0;
+
+	DataPack pack;
+	CreateDataTimer(0.1, TimerSetBannerExtraDuration, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(ExtendDuration + GetGameTime());
+}
+
+public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client))
+		return Plugin_Stop;
 	
-	EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
-	
-	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
-	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
-	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
-	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
-	spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+	float TimeUntillStopExtend = pack.ReadFloat();
+	if(TimeUntillStopExtend < GetGameTime())
+		return Plugin_Stop;
+
+	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 90.0);
+	SetEntProp(client, Prop_Send, "m_bRageDraining", 1);
+
+	return Plugin_Continue;
+
 }
 /*
 ( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )

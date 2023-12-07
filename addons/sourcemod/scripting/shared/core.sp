@@ -2794,7 +2794,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 		}
-		else if(!StrContains(classname, "env_laser"))
+		else if(!StrContains(classname, "env_beam"))
 		{
 			b_ThisEntityIgnored[entity] = true;
 		}
