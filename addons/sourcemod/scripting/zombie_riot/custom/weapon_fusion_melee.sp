@@ -574,7 +574,7 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 			thingsToLoop = 24;
 		}
 	}
-	for(int loop = 0; loop<thingsToLoop; loop++)
+	for(int loop = 0; loop <=thingsToLoop; loop++)
 	{
 		int entity = EntRefToEntIndex(i_FusionEnergyEffect[iNpc][loop]);
 		if(!IsValidEntity(entity))
