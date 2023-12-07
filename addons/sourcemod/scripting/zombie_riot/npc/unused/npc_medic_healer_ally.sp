@@ -691,6 +691,50 @@ public int SummonMe(float pos[3], float ang[3], char name[64])
 	return Clot(0, pos, ang, "models/player/medic.mdl").index;
 }
 
+
+
+
+
+stock int ConnectWithBeam(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255, float fStartWidth=1.0, float fEndWidth=1.0, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt"){
+	int iBeam = CreateEntityByName("env_laser");
+	if(iBeam <= MaxClients)
+		return -1;
+
+	if(!IsValidEntity(iBeam))
+		return -1;
+
+	SetEntityModel(iBeam, Model);
+	char sColor[16];
+	Format(sColor, sizeof(sColor), "%d %d %d", iRed, iGreen, iBlue);
+
+	DispatchKeyValue(iBeam, "rendercolor", sColor);
+	DispatchKeyValue(iBeam, "life", "0");
+
+	DispatchSpawn(iBeam);
+
+	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt));
+	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt2), 1);
+
+	SetEntProp(iBeam, Prop_Send, "m_nNumBeamEnts", 2);
+	SetEntProp(iBeam, Prop_Send, "m_nBeamType", 2);
+
+	SetEntPropFloat(iBeam, Prop_Data, "m_fWidth", fStartWidth);
+	SetEntPropFloat(iBeam, Prop_Data, "m_fEndWidth", fEndWidth);
+
+	SetEntPropFloat(iBeam, Prop_Data, "m_fAmplitude", fAmp);
+
+	SetVariantFloat(32.0);
+	AcceptEntityInput(iBeam, "Amplitude");
+	AcceptEntityInput(iBeam, "TurnOn");
+	
+	SetVariantInt(0);
+	AcceptEntityInput(iBeam, "TouchType");
+
+	SetVariantString("0");
+	AcceptEntityInput(iBeam, "damage");
+	return iBeam;
+}
+
 stock int TF2_CreateParticle(int iEnt, const char[] attachment, const char[] particle)
 {
 	int b = CreateEntityByName("info_particle_system");

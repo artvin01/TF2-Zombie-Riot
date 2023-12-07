@@ -234,7 +234,7 @@ public void OnPostThink(int client)
 			}
 		}
 	}
-	
+
 	if(WasAirborn && !b_PlayerWasAirbornKnockbackReduction[client])
 	{
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
