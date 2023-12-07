@@ -4660,7 +4660,7 @@ void Store_ApplyAttribs(int client)
 	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
 	{		
-		map.SetValue("287", 1.15);	
+		map.SetValue("287", 1.15);
 	}
 	else
 	{

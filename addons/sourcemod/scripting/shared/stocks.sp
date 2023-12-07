@@ -3960,7 +3960,7 @@ int i_OwnerEntityEnvLaser[MAXENTITIES];
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
 {
-	int iBeam = CreateEntityByName("env_beam");
+	int iBeam = CreateEntityByName("env_laser");
 	if(iBeam <= MaxClients)
 		return -1;
 

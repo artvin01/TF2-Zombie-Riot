@@ -259,7 +259,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
 					}
 				}
-				if(i_WeaponBodygroup[active] != 0)
+				if(i_WeaponBodygroup[active] != -1)
 				{
 					SetVariantInt(i_WeaponBodygroup[active]);
 					AcceptEntityInput(entity, "SetBodyGroup");
