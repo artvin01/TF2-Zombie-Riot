@@ -4972,13 +4972,13 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	if(watch_entity_attribs != INVALID_ENT_REFERENCE)
 		TF2_RemoveWearable(client, watch_entity_attribs);
 
-	watch_entity_attribs = GiveWearable(client, 0);
-	Attributes_Set(watch_entity_attribs, 221, -99.0);
-	Attributes_Set(watch_entity_attribs, 160, 1.0);
-	Attributes_Set(watch_entity_attribs, 35, 0.0);
-	Attributes_Set(watch_entity_attribs, 816, 1.0);
+	watch_entity_attribs = GiveWearable(client, 167);
+//	Attributes_Set(watch_entity_attribs, 221, -99.0);
+//	Attributes_Set(watch_entity_attribs, 160, 1.0);
+//	Attributes_Set(watch_entity_attribs, 35, 0.0);
+//	Attributes_Set(watch_entity_attribs, 816, 1.0);
 	Attributes_Set(watch_entity_attribs, 671, 1.0);
-	Attributes_Set(watch_entity_attribs, 34, 999.0);
+//	Attributes_Set(watch_entity_attribs, 34, 999.0);
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(watch_entity_attribs);
 	
 #if defined ZR
