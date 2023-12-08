@@ -319,7 +319,7 @@ public bool AlliedSensal_TraceWallsOnly(int entity, int contentsMask)
 
 
 #define SENSAL_KNOCKBACK		750.0	// Knockback when push level and enemy weight is the same
-#define SENSAL_STUN_RATIO		0.00125	// Knockback when push level and enemy weight is the same
+#define SENSAL_STUN_RATIO		0.00075	// Knockback when push level and enemy weight is the same
 
 void SensalCauseKnockback(int attacker, int victim)
 {

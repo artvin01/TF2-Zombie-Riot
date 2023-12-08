@@ -309,6 +309,9 @@ void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int z
 	{
 		f_SensalAbilityCharge_2[attacker] = (b_ClientPossesBattery[attacker] ? 2.0 : 1.0);
 	}
+
+	f_Sensalhuddelay[attacker] = 0.0;
+	SensalTimerHudShow(attacker, weapon);
 }
 
 void SummonScytheSensalProjectile(int client, int weapon)
