@@ -2208,16 +2208,13 @@ void DelayEffectOnHorn(int ref)
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(ExtendDuration + GetGameTime());
 	
-	DataPack pack2;
-	CreateDataTimer(0.1, TimerGrantBannerDuration, pack2, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack2.WriteCell(EntIndexToEntRef(client));
+	CreateTimer(0.1, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	//"Expidonsan Battery Device"
 }
-public Action TimerGrantBannerDuration(Handle timer, DataPack pack)
+public Action TimerGrantBannerDuration(Handle timer, int ref)
 {
-	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(ref);
 	if(!IsValidClient(client))
 		return Plugin_Stop;
 
