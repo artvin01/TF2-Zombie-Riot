@@ -89,6 +89,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
@@ -96,6 +97,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", fVel);
 	//	SetEntProp(entity, Prop_Send, "m_flDestroyableTime", GetGameTime());
 		//make rockets visible on spawn.
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 		
 		SetEntityCollisionGroup(entity, 27);
 		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
@@ -337,9 +340,12 @@ int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float M
 		static float rocketang[3];
 		GetEntPropVector(rocket, Prop_Send, "m_vecOrigin", rocketOrigin);
 		GetEntPropVector(rocket, Prop_Data, "m_angRotation", rocketang);
+		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, rocketOrigin, rocketang, NULL_VECTOR);
+		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
 		DispatchSpawn(entity);
 		SetEntityCollisionGroup(entity, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
+		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntProp(entity, Prop_Data, "m_nSolidType", 6); 
 		SetParent(rocket, entity);
