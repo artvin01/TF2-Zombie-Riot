@@ -373,24 +373,19 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		for(int Repeat; Repeat <= 2; Repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(projectile, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex_Sensal, _, i);
-			}
-			SetEntityModel(projectile, WEAPON_CUSTOM_WEAPONRY_1);
+
+			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
+
 			if(b_ClientPossesBattery[client])
 			{
-				SetEntityRenderColor(projectile, 255, 255, 255, 1);
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 			}
 			else
 			{
-				SetEntityRenderColor(projectile, 255, 255, 255, 0);
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
 			}
 			SetVariantInt(2);
-			AcceptEntityInput(projectile, "SetBodyGroup");
-			CClotBody npc = view_as<CClotBody>(projectile);
-			npc.AddActivityViaSequence("scythe_spin");
-			SetEntPropFloat(projectile, Prop_Send, "m_flModelScale", 1.35);
+			AcceptEntityInput(ModelApply, "SetBodyGroup");
 
 			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			
@@ -423,24 +418,19 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		for(int Repeat; Repeat <= 1; Repeat++)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, WEAPON_SENSAL_SCYTHE, weapon, "", fAng, false , Pos_player);
-			for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-			{
-				SetEntProp(projectile, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex_Sensal, _, i);
-			}
-			SetEntityModel(projectile, WEAPON_CUSTOM_WEAPONRY_1);
+
+			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
+
 			if(b_ClientPossesBattery[client])
 			{
-				SetEntityRenderColor(projectile, 255, 255, 255, 1);
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 			}
 			else
 			{
-				SetEntityRenderColor(projectile, 255, 255, 255, 0);
+				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
 			}
 			SetVariantInt(2);
-			AcceptEntityInput(projectile, "SetBodyGroup");
-			CClotBody npc = view_as<CClotBody>(projectile);
-			npc.AddActivityViaSequence("scythe_spin");
-			SetEntPropFloat(projectile, Prop_Send, "m_flModelScale", 1.35);
+			AcceptEntityInput(ModelApply, "SetBodyGroup");
 
 			CreateTimer(time, Timer_RemoveEntityWeaponSensal, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			

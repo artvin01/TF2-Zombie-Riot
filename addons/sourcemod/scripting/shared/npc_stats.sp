@@ -2324,7 +2324,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
@@ -2379,7 +2379,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
@@ -2495,7 +2495,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			b_EntityIsArrow[entity] = true;

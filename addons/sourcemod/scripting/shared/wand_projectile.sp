@@ -8,6 +8,22 @@ void WandStocks_Map_Precache()
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
 }
 
+int iref_PropAppliedToRocket[MAXENTITIES];
+//todo:
+//Redo entirely, these projectiles are invis once
+// spawning for some god knows what reason that pisses me the fuck off.
+//somehow make another projectile.
+//for now, we set another model and parent this beacuse fuck this shit.
+
+void WandProjectile_GamedataInit()
+{
+	CEntityFactory EntityFactory = new CEntityFactory("zr_projectile_base", OnCreate_Proj, OnDestroy_Proj);
+	EntityFactory.DeriveFromClass("tf_projectile_rocket");
+	EntityFactory.BeginDataMapDesc()
+	.EndDataMapDesc(); 
+
+	EntityFactory.Install();
+}
 int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
@@ -60,7 +76,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 	fVel[1] = fBuf[1]*speed;
 	fVel[2] = fBuf[2]*speed;
 
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		i_WandOwner[entity] = EntIndexToEntRef(client);
@@ -281,4 +297,61 @@ public void Wand_Base_StartTouch(int entity, int other)
 		}	
 	}
 #endif
+}
+
+
+
+static void OnCreate_Proj(CClotBody body)
+{
+	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
+	if(IsValidEntity(extra_index))
+		RemoveEntity(extra_index);
+
+	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	return;
+}
+static void OnDestroy_Proj(CClotBody body)
+{
+	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[body.index]);
+	if(IsValidEntity(extra_index))
+		RemoveEntity(extra_index);
+
+	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+	return;
+}
+
+int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation)
+{
+	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
+	if(IsValidEntity(extra_index))
+		RemoveEntity(extra_index);
+	
+	int entity = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity))
+	{
+		DispatchKeyValue(entity, "targetname", "ApplyCustomModelToWandProjectile");
+		DispatchKeyValue(entity, "model", modelstringname);
+		
+		
+		static float rocketOrigin[3];
+		static float rocketang[3];
+		GetEntPropVector(rocket, Prop_Send, "m_vecOrigin", rocketOrigin);
+		GetEntPropVector(rocket, Prop_Data, "m_angRotation", rocketang);
+		TeleportEntity(entity, rocketOrigin, rocketang, NULL_VECTOR);
+		DispatchSpawn(entity);
+		SetEntityCollisionGroup(entity, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+		SetEntProp(entity, Prop_Data, "m_nSolidType", 6); 
+		SetParent(rocket, entity);
+		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
+		
+		if(defaultAnimation[0])
+		{
+			CClotBody npc = view_as<CClotBody>(entity);
+			npc.AddActivityViaSequence(defaultAnimation);
+		}
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelSize);
+		return entity;
+	}
+	return -1;
 }

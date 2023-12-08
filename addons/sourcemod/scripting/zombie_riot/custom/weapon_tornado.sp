@@ -219,7 +219,7 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 	fVel[1] = fBuf[1]*speed;
 	fVel[2] = fBuf[2]*speed;
 
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		fl_tornado_dmg[entity]=damage;
@@ -237,18 +237,19 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
 		}
-		
+		float ModelSizeAdd = 2.0;
 		if(bl_tornado_barrage_mode[client])	//we make the rocket smaller on barrage mode.
 		{
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.0);
+			ModelSizeAdd = 2.0;
 		}
 		else
 		{
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 3.0);
+			ModelSizeAdd = 3.0;
 		}
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Tornado_RocketExplodePre); //In this case I reused code that was reused due to laziness, I am the ultiamte lazy. *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Tornado_Blitz_StartTouch);
+		ApplyCustomModelToWandProjectile(entity, "models/weapons/w_bullet.mdl", ModelSizeAdd, "");
 	}
 	return;
 }

@@ -1230,6 +1230,7 @@ public void OnPluginStart()
 	OnPluginStart_LagComp();
 #endif
 	NPC_Base_InitGamedata();
+	WandProjectile_GamedataInit();
 	
 #if defined ZR
 	ZR_PluginStart();
@@ -2712,6 +2713,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+		}
+		else if(!StrContains(classname, "zr_projectile_base"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);

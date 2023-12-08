@@ -2142,7 +2142,7 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 	vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 	vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 										
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		fl_blitz_rocket_dmg[entity] = rocket_damage;

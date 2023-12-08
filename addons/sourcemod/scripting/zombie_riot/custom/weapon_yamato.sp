@@ -415,7 +415,7 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 	vecForward[1] = Cosine(DegToRad(Angles[0]))*Sine(DegToRad(Angles[1]))*speed;
 	vecForward[2] = Sine(DegToRad(Angles[0]))*-speed;
 
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		

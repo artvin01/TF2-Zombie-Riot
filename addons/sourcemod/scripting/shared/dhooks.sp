@@ -2133,10 +2133,11 @@ public MRESReturn Dhook_BlowHorn_Post(int entity)
 
 public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 {
+	/*
 	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
 	if(IsValidClient(client))
 		f_BannerDurationActive[client] = GetGameTime() + 1.1;
-
+	*/
 	return MRES_Supercede;
 }
 
@@ -2208,7 +2209,7 @@ void DelayEffectOnHorn(int ref)
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(ExtendDuration + GetGameTime());
 	
-	CreateTimer(0.1, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.25, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	//"Expidonsan Battery Device"
 }
@@ -2221,7 +2222,11 @@ public Action TimerGrantBannerDuration(Handle timer, int ref)
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
 		return Plugin_Stop;
 	
-	f_BannerDurationActive[client] = GetGameTime() + 0.25;
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+	Event event = CreateEvent("deploy_buff_banner", true);
+	event.SetInt("buff_type", 1);
+	event.SetInt("buff_owner", GetClientUserId(client));
+	event.Fire();
 
 	return Plugin_Continue;
 }

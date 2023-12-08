@@ -920,25 +920,18 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 	}
 	else
 	{
-		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-		{
-			SetEntProp(iNpc, Prop_Send, "m_nModelIndexOverrides", i_ProjectileIndex_Sensal, _, i);
-		}
-		SetEntityModel(iNpc, WEAPON_CUSTOM_WEAPONRY_1);
-		SetEntityRenderMode(iNpc, RENDER_NORMAL);
+		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
+
 		if(colour)
 		{
-			SetEntityRenderColor(iNpc, 255, 255, 255, 1);
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 		}
 		else
 		{
-			SetEntityRenderColor(iNpc, 255, 255, 255, 0);
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
 		}
 		SetVariantInt(2);
-		AcceptEntityInput(iNpc, "SetBodyGroup");
-		CClotBody npc = view_as<CClotBody>(iNpc);
-		npc.AddActivityViaSequence("scythe_spin");
-		SetEntPropFloat(iNpc, Prop_Send, "m_flModelScale", 1.65);
+		AcceptEntityInput(ModelApply, "SetBodyGroup");
 	}
 }
 
