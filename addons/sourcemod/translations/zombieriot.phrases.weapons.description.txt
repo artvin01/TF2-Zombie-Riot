@@ -2346,7 +2346,7 @@
 	}
 	"Sensal Desc 2"
 	{
-		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell."
+		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
 	}
 	"Sensal Desc 3"
 	{

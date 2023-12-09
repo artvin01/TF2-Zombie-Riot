@@ -664,19 +664,19 @@ public void SurvivalKnifeAttackM2_PreThink(int client)
 		{
 			case WEAPON_10:
 			{
-				Survival_Knife_Tier1_Alt(client, weapon_active, false, 1);
+				Survival_Knife_Tier1_Alt(client, weapon_active, false, 2);
 			}
 			case WEAPON_SURVIVAL_KNIFE_PAP1:
 			{
-				Survival_Knife_Tier2_Alt(client, weapon_active, false, 1);
+				Survival_Knife_Tier2_Alt(client, weapon_active, false, 2);
 			}
 			case WEAPON_SURVIVAL_KNIFE_PAP2:
 			{
-				Survival_Knife_Tier3_Alt(client, weapon_active, false, 1);
+				Survival_Knife_Tier3_Alt(client, weapon_active, false, 2);
 			}
 			case WEAPON_SURVIVAL_KNIFE_PAP3:
 			{
-				Survival_Knife_Tier3_Alt(client, weapon_active, false, 1);
+				Survival_Knife_Tier3_Alt(client, weapon_active, false, 2);
 			}
 		}
 

@@ -7,6 +7,7 @@ static float f_SensalAbilityCharge_1[MAXENTITIES];
 static float f_SensalAbilityCharge_2[MAXENTITIES];
 static float f_Sensalhuddelay[MAXPLAYERS+1]={0.0, ...};
 static bool b_ClientPossesBattery[MAXPLAYERS+1]={false, ...};
+static float f_Sensal_MaxCharge_1[MAXENTITIES];
 
 static char g_SyctheHitSound[][] = {
 	"ambient/machines/slicer1.wav",
@@ -65,20 +66,58 @@ void ResetMapStartSensalWeapon()
 	PrecacheSound(SensalWeapon_SOUND_MELEE);
 }
 
+float f_AttackDelaySensal[MAXTF2PLAYERS];
+public void Sensal_Ability_M2_Auto(int client, int weapon, const char[] classname, bool &result)
+{
+	f_AttackDelaySensal[client] = 0.0;
+	SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+	SDKHook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+}
+
+public void Sensal_Ability_M2_Auto_Prethink(int client)
+{
+	if(GetClientButtons(client) & IN_RELOAD)
+	{
+		if(f_AttackDelaySensal[client] > GetGameTime())
+		{
+			return;
+		}
+		f_AttackDelaySensal[client] = GetGameTime() + 0.05;
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+			return;
+		}
+		if(!IsSensalWeapon(i_CustomWeaponEquipLogic[weapon_active]))
+		{
+			SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+			return;
+		}
+		Sensal_Ability_M2(client, weapon_active, false, 3);
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+		return;
+	}
+}
 public void Sensal_Ability_M2(int client, int weapon, bool crit, int slot) // the main ability used to recover the unique mana needed to for the weapon to fire projectiles
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0 || CvarInfiniteCash.BoolValue)
 	{
+		Ability_Apply_Cooldown(client, slot, 0.25);
 		if(f_SensalAbilityCharge_1[client] >= 0.5 || CvarInfiniteCash.BoolValue)
 		{
 			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 0.5);
 			SummonScytheSensalProjectile(client, weapon);
 			f_SensalAbilityCharge_1[client] -= 0.5;
 			if(f_SensalAbilityCharge_1[client] < 0.0)
 			{
 				f_SensalAbilityCharge_1[client] = 0.0;
 			}
+			f_Sensalhuddelay[client] = 0.0;
+			SensalTimerHudShow(client, weapon);
 		}
 		else
 		{
@@ -87,18 +126,6 @@ public void Sensal_Ability_M2(int client, int weapon, bool crit, int slot) // th
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Sensal Scythes Not Fully Charged");	
 		}
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-		
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-			
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 	}
 }
 
@@ -148,6 +175,8 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 				fl_heal_cooldown[spawn_index] = damage;
 				i_Changed_WalkCycle[spawn_index] = EntIndexToEntRef(weapon);
 			}
+			f_Sensalhuddelay[client] = 0.0;
+			SensalTimerHudShow(client, weapon);
 		}
 		else
 		{
@@ -183,6 +212,17 @@ public Action Timer_Management_SensalWeapon(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}	
 
+	f_Sensal_MaxCharge_1[client] = 1.0;
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_SENSAL_SCYTHE_PAP_2, WEAPON_SENSAL_SCYTHE_PAP_3:
+		{
+			f_Sensal_MaxCharge_1[client] *= 2.0;
+		}
+	}
+	if(b_ClientPossesBattery[client])
+		f_Sensal_MaxCharge_1[client] *= 2.0;
+	
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
@@ -206,20 +246,13 @@ void SensalTimerHudShow(int client, int weapon)
 			case WEAPON_SENSAL_SCYTHE_PAP_1, WEAPON_SENSAL_SCYTHE_PAP_2:
 			{
 				char SensalHud[255];
-				if(f_SensalAbilityCharge_1[client] >= (b_ClientPossesBattery[client] ? 2.0 : 1.0))
+				if(f_SensalAbilityCharge_1[client] >= f_Sensal_MaxCharge_1[client])
 				{
 					FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [READY]",SensalHud);		
 				}
 				else
 				{
-					if(b_ClientPossesBattery[client])
-					{
-						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / 200％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0);		
-					}
-					else
-					{
-						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / 100％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0);	
-					}
+					FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / %.0f％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0, f_Sensal_MaxCharge_1[client] * 100.0);		
 				}
 				PrintHintText(client, "%s", SensalHud);
 				StopSound(client, SNDCHAN_STATIC, "ui/hint.wav");
@@ -227,7 +260,7 @@ void SensalTimerHudShow(int client, int weapon)
 			case WEAPON_SENSAL_SCYTHE_PAP_3:
 			{
 				char SensalHud[255];
-				if(f_SensalAbilityCharge_1[client] >= (b_ClientPossesBattery[client] ? 2.0 : 1.0))
+				if(f_SensalAbilityCharge_1[client] >= f_Sensal_MaxCharge_1[client])
 				{
 					if(b_ClientPossesBattery[client])
 						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [READY x2]",SensalHud);
@@ -236,14 +269,7 @@ void SensalTimerHudShow(int client, int weapon)
 				}
 				else
 				{
-					if(b_ClientPossesBattery[client])
-					{
-						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / 200％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0);		
-					}
-					else
-					{
-						FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / 100％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0);	
-					}
+					FormatEx(SensalHud, sizeof(SensalHud), "%sScythe Summoning [%.0f％ / %.0f％]",SensalHud, f_SensalAbilityCharge_1[client] * 100.0, f_Sensal_MaxCharge_1[client] * 100.0);		
 				}
 
 				
@@ -290,9 +316,9 @@ void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int z
 		f_SensalAbilityCharge_1[attacker] += SENSAL_MELEE_CHARGE_ON_HIT * 0.5;
 	}
 
-	if(f_SensalAbilityCharge_1[attacker] > (b_ClientPossesBattery[attacker] ? 2.0 : 1.0))
+	if(f_SensalAbilityCharge_1[attacker] > f_Sensal_MaxCharge_1[attacker])
 	{
-		f_SensalAbilityCharge_1[attacker] = (b_ClientPossesBattery[attacker] ? 2.0 : 1.0);
+		f_SensalAbilityCharge_1[attacker] = f_Sensal_MaxCharge_1[attacker];
 	}
 
 	f_SensalAbilityCharge_2[attacker] += SENSAL_MELEE_CHARGE_ON_HIT_2;
