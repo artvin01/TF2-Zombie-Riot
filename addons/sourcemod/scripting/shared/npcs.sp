@@ -762,23 +762,24 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
+					float damage_save = 50.0;
+					damage_save *= Attributes_Get(weapon, 2, 1.0);
+					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(f_ChargeTerroriserSniper[weapon] > 149.0)
-					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject * 2;
-					}
-					else
-					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					}
 					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						BombsToInject += 1;
 					}
 					if(i_HeadshotAffinity[attacker] == 1)
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						BombsToInject += 1;
 					}
+					if(f_ChargeTerroriserSniper[weapon] > 149.0)
+					{
+						BombsToInject *= 2;
+					}
+					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+					i_HowManyBombsHud[victim] += BombsToInject;
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
@@ -819,11 +820,27 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			{
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
+					float damage_save = 50.0;
+					damage_save *= Attributes_Get(weapon, 2, 1.0);
+					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(i_HeadshotAffinity[attacker] == 1)
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] -= BombsToInject;
+						BombsToInject -= 1;
 					}
+					if(f_ChargeTerroriserSniper[weapon] > 149.0)
+					{
+						BombsToInject *= 2;
+					}
+
+					BombsToInject /= 2;
+					if(BombsToInject < 1)
+						BombsToInject = 1;
+						
+					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+					i_HowManyBombsHud[victim] += BombsToInject;
+					Apply_Particle_Teroriser_Indicator(victim);
+					damage = 0.0;
 				}
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
@@ -1346,6 +1363,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+	}
+	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!%i", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
 	}
 		
 	if(IgniteFor[victim] > 0) //burn
@@ -1963,7 +1986,9 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 					float flPos[3];
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
 					flPos[2] += 40.0;
+					int BomsToBoom = i_HowManyBombsOnThisEntity[entity][client];
 					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
+					i_HowManyBombsHud[entity] -= BomsToBoom;
 					i_HowManyBombsOnThisEntity[entity][client] = 0;
 					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 					Cause_Terroriser_Explosion(client, entity, damage, flPos);
@@ -1972,6 +1997,7 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 		}
 #endif
 		//This is the only time it happens ever
+		i_HowManyBombsHud[entity] = 0;
 		i_HowManyBombsOnThisEntity[entity][client] = 0;
 		f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 	}
@@ -2495,6 +2521,7 @@ stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor
 		return false;
 
 #if defined ZR
+/*
 	if(i_ArsenalBombImplanter[weapon] > 0)
 	{
 		int BombsToInject = i_ArsenalBombImplanter[weapon];
@@ -2504,14 +2531,17 @@ stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor
 		if(f_ChargeTerroriserSniper[weapon] > 149.0)
 		{
 			i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject * 2;
+			i_HowManyBombsHud[victim] += BombsToInject * 2;
 		}
 		else
 		{
 			i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+			i_HowManyBombsHud[victim] += BombsToInject;
 		}
 		Apply_Particle_Teroriser_Indicator(victim);
 		damage = 0.0;
 	}
+*/
 	if(i_HighTeslarStaff[weapon] == 1)
 	{
 		f_HighTeslarDebuff[victim] = GameTime + 5.0;

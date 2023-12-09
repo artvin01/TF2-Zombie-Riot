@@ -496,12 +496,13 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 					float damage = 50.0;
 					damage *= Attributes_Get(weapon, 2, 1.0);
 
+					int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
 					damage *= i_HowManyBombsOnThisEntity[npc][client];
 
 					float EntLoc2[3];
 					
 					EntLoc2 = WorldSpaceCenter(npc);
-
+					i_HowManyBombsHud[npc] -= BomsToBoom;
 					i_HowManyBombsOnThisEntity[npc][client] = 0;
 					Cause_Terroriser_Explosion(client, npc, damage, EntLoc2, true);
 				}

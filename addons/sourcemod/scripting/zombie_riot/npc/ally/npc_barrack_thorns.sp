@@ -356,7 +356,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 						float damage = 2000.0;
 						if(ThornsLevelAt[npc.index] == 2)
 						{
-							damage *= 2.5;
+							damage *= 2.0;
 						}
 						else if(ThornsLevelAt[npc.index] == 1)
 						{
@@ -432,7 +432,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					float damage = 1500.0;
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 2.5;
+						damage *= 2.0;
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{
@@ -525,7 +525,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 1.75;
+						damage *= 1.5;
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{

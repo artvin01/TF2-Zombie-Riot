@@ -2849,6 +2849,10 @@ int inflictor = 0)
 	else //only nerf blue npc radius!
 	{
 		explosionRadius *= 0.90;
+		if(explosion_range_dmg_falloff != EXPLOSION_RANGE_FALLOFF)
+		{
+			explosion_range_dmg_falloff = 0.8;
+		}
 		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
@@ -3053,6 +3057,17 @@ int inflictor = 0)
 					}
 				}
 				damage_1 += GetBeforeDamage;
+
+				ClosestDistance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+				if(ClosestDistance < 0.1)
+				{
+					ClosestDistance = 0.1;
+				}
+				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
+				//idealy we should fire a trace and see the distance from the trace
+				//ill do it in abit if i dont forget.
+				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
 				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
