@@ -652,8 +652,8 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 15%% resistance during heal."
-		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 15%% сопр. во время лечен."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal."
+		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 10%% сопр. во время лечен."
 		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%%的伤害和抗性。"
 	}
 	
@@ -704,9 +704,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance to everyone after dealing enough damage, receive +50 Extra HP"
-		"ru"	"Даёт сопр. всем после нанесения достаточного урона, получает +50 доп. ед. здоровья."
-		"chi"   "在造成足够伤害后给每个人抗性，额外获得50点HP"
+		"en"	"Give Resistance (25%%) to everyone after dealing enough damage, receive +50 Extra HP"
 	}
 	
 	"P15t0l Desc"
@@ -739,9 +737,7 @@
 	}
 	"Buff Banner Desc"
 	{
-		"en"	"Give minicrits to everyone after dealing enough damage"
-		"ru"	"Даёт мини-криты всем после нанесения достаточного урона."
-		"chi"   "在造成足够的伤害后给每个人迷你暴击"
+		"en"	"Extra 25%% damage to all allies after dealing enough damage"
 	}
 	"Buff Banner Pap 1"
 	{
@@ -2266,7 +2262,7 @@
 	}
 	"Ancient Banner Desc"
 	{
-		"en"	"Give everyone 25%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
+		"en"	"Give everyone 20%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
 	}
 	"quincy pap0"	//todo: make the desc's abit cooler sounding
 	{

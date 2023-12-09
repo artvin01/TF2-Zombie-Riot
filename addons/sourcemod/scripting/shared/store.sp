@@ -531,7 +531,7 @@ static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
-//static KeyValues StoreBalanceLog;
+static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
 static ArrayList ChoosenTags[MAXTF2PLAYERS];
 static bool UsingChoosenTags[MAXTF2PLAYERS];
@@ -1053,7 +1053,7 @@ void Store_ConfigSetup()
 		delete StoreItems;
 	}
 	
-	//delete StoreBalanceLog;
+	delete StoreBalanceLog;
 	StoreItems = new ArrayList(sizeof(Item));
 	
 	char buffer[PLATFORM_MAX_PATH];
@@ -1081,9 +1081,9 @@ void Store_ConfigSetup()
 		ConfigSetup(-1, kv, 0, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
 
-	//BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
-	//StoreBalanceLog = new KeyValues("UsageLog");
-	//StoreBalanceLog.ImportFromFile(buffer);
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
+	StoreBalanceLog = new KeyValues("UsageLog");
+	StoreBalanceLog.ImportFromFile(buffer);
 }
 
 static void ConfigSetup(int section, KeyValues kv, int hiddenType, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
@@ -1569,12 +1569,12 @@ void Store_Reset()
 		StoreItems.SetArray(i, item);
 	}
 
-	//if(StoreBalanceLog)
-	//{
-	//	char buffer[PLATFORM_MAX_PATH];
-	//	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
-	//	StoreBalanceLog.ExportToFile(buffer);
-	//}
+	if(StoreBalanceLog)
+	{
+		char buffer[PLATFORM_MAX_PATH];
+		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
+		StoreBalanceLog.ExportToFile(buffer);
+	}
 #endif
 
 #if defined RPG
@@ -1752,8 +1752,8 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					if(!item.BoughtBefore[client])
 					{
 						item.BoughtBefore[client] = true;
-						//StoreBalanceLog.Rewind();
-						//StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+						StoreBalanceLog.Rewind();
+						StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 					}
 					StoreItems.SetArray(a, item);
 					return;
@@ -3979,8 +3979,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									if(!item.BoughtBefore[client])
 									{
 										item.BoughtBefore[client] = true;
-										//StoreBalanceLog.Rewind();
-										//StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+										StoreBalanceLog.Rewind();
+										StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 									}
 									
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -4039,8 +4039,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									if(!item.BoughtBefore[client])
 									{
 										item.BoughtBefore[client] = true;
-										//StoreBalanceLog.Rewind();
-										//StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+										StoreBalanceLog.Rewind();
+										StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 									}
 									
 									ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -4087,8 +4087,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								if(!item.BoughtBefore[client])
 								{
 									item.BoughtBefore[client] = true;
-									//StoreBalanceLog.Rewind();
-									//StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+									StoreBalanceLog.Rewind();
+									StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 								}
 								
 								StoreItems.SetArray(index, item);

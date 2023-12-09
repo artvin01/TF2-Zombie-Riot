@@ -11,7 +11,7 @@ float BannerDefaultRange(int client)
 {
 	if(b_ArkantosBuffItem[client])
 	{
-		return 950625.0; //1.5x range
+		return 511225.0; //1.1x range
 	}
 	else
 	{
@@ -327,12 +327,12 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.75, true, 1.25);
+					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2);
 
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.75, false, 1.25);
+					ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
 				}
 			}
 		}
@@ -343,11 +343,11 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.75, true, 1.25);
+					ModifyEntityAncientBuff(ally, 2, 0.8, true, 1.2);
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
+					ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
 				}
 			}
 		}
@@ -358,7 +358,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				ModifyEntityAncientBuff(ally, 1, 0.75, false, 1.25);
+				ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
@@ -366,7 +366,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
-				ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
+				ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
 			}
 		}
 		Timer_AncientBanner = null;

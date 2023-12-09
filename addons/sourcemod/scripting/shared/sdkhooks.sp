@@ -1558,6 +1558,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.5; //half the damage when small.
 			Replicated_Damage *= 0.5;
 		}
+		if(f_BattilonsNpcBuff[victim] > GameTime)
+		{
+			damage *= 0.75;
+			Replicated_Damage *= 0.75;
+		}	
 		damage *= fl_Extra_Damage[attacker];
 		Replicated_Damage *= fl_Extra_Damage[attacker];
 		
@@ -1679,10 +1684,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			
 #if defined ZR
-			Replicated_Damage *= 0.85;
+			Replicated_Damage *= 0.9;
 #endif
 			
-			damage *= 0.85;
+			damage *= 0.9;
 		}
 #if defined ZR
 		if(i_HealthBeforeSuit[victim] == 0)

@@ -2823,11 +2823,11 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 	}
 	if(f_BattilonsNpcBuff[victim] > GameTime)
 	{
-		damage *= 0.65;
+		damage *= 0.75;
 	}		
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
-		damage *= 0.85;
+		damage *= 0.9;
 	}
 }
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -2875,7 +2875,7 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	}
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * 0.25;
 	}
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{
