@@ -48,8 +48,6 @@ static char gExplosive1;
 static int i_LaserEntityIndex[MAXENTITIES+1]={-1, ...};
 
 
-#define LASERBEAM "sprites/laserbeam.vmt"
-
 
 #define THEOCRACY_MELEE_DMG 100.0			//50%<hp%
 #define THEOCRACY_ANGERED_MELEE_DMG 125.0	//50%>hp%
