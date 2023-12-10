@@ -145,6 +145,7 @@ enum
 	WEAPON_TRASH_CANNON = 74,
 	WEAPON_SKULL_SERVANT = 75,
 	WEAPON_NECRO_WANDS = 76,
+	WEAPON_KIT_BLITZKRIEG_CORE = 77,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -450,6 +451,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
+#include "zombie_riot/custom/kit_blitzkrieg.sp"
 
 void ZR_PluginLoad()
 {
@@ -664,6 +666,7 @@ void ZR_MapStart()
 	Flagellant_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
+	Kit_Blitzkrieg_Precache();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;

@@ -2530,4 +2530,16 @@
 	{
 		"en"	"The Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
 	}
+	"Tornado Blitz Kit Desc"
+	{
+		"en"	"A fast firing Rocket Launcher, Must be manually reloaded!\nOnce you start reloading you become unable to fire the weapon\nHowever you can still use your melee while it is ''reloading''"
+	}
+	"Blitz Blade Desc"
+	{
+		"en"	"When your primary is reloading, this melee gains the ability to hit multiple targets\nAlso gains a damage bonus and larger range/width"
+	}
+	"Ion Blitz Desc"
+	{
+		"en"	"Once you have enough charges you can summon an ION cannon"
+	}
 }
