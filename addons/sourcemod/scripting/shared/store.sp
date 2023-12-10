@@ -30,6 +30,7 @@ enum struct ItemInfo
 	char Desc[256];
 	char Rogue_Desc[256];
 	char ExtraDesc[256];
+	char ExtraDesc_1[256];
 	
 	bool HasNoClip;
 	bool SemiAuto;
@@ -151,6 +152,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sextra_desc", prefix);
 		kv.GetString(buffer, this.ExtraDesc, 256);
+
+		Format(buffer, sizeof(buffer), "%sextra_desc_more", prefix);
+		kv.GetString(buffer, this.ExtraDesc_1, 256);
 
 		Format(buffer, sizeof(buffer), "%srogue_desc", prefix);
 		kv.GetString(buffer, this.Rogue_Desc, 256);
@@ -4282,6 +4286,9 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s", TranslateItemDescription(client, info.ExtraDesc, info.Rogue_Desc));
 						PrintToChat(client, buffer);
+						char buffer2[256];
+						FormatEx(buffer2, sizeof(buffer2), "%s", TranslateItemDescription(client, info.ExtraDesc_1, info.Rogue_Desc));
+						PrintToChat(client, buffer2);
 					}
 				}
 			}
@@ -4660,11 +4667,11 @@ void Store_ApplyAttribs(int client)
 	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //Increace sentry damage! Not attack rate, could end ugly.
 	{		
-		map.SetValue("287", 1.15);
+		map.SetValue("287", 0.65);
 	}
 	else
 	{
-		map.SetValue("287", 1.0);
+		map.SetValue("287", 0.5);
 	}
 #endif	// ZR
 
@@ -4879,6 +4886,7 @@ void Store_ApplyAttribs(int client)
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 	EnableSilvesterCosmetic(client);
 	EnableMagiaCosmetic(client);
+	Building_Check_ValidSupportcount(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)

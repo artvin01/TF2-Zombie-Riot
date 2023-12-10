@@ -543,6 +543,9 @@ public void BuilderMenu(int client)
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Mark Building For Deletion");
 		menu.AddItem("-1", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Un-Claim Building");
+		menu.AddItem("-2", buffer);
 									
 		menu.ExitButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -565,6 +568,13 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 					if(IsValidClient(client))
 					{
 						DeleteBuildingLookedAt(client);
+					}
+				}
+				case -2:
+				{
+					if(IsValidClient(client))
+					{
+						Un_ClaimBuildingLookedAt(client);
 					}
 				}
 				default:

@@ -2112,6 +2112,15 @@
 		"ru"		"Удалить текущую отмеченную постройку?"
 		"chi"		"删除当前标记的建筑物?"
 	}
+	
+	"Un-Claim Building"
+	{
+		"en"		"Un-Claim a building."
+	}
+	"UnClaim Current Marked Building"
+	{
+		"en"		"Un-Claim the current marked building?"
+	}
 	"Builder Extra Gear Menu"
 	{
 		"en"		"Builder extra gear menu"

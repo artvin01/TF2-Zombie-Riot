@@ -505,6 +505,7 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
+	Building_PluginStart();
 }
 
 void ZR_MapStart()

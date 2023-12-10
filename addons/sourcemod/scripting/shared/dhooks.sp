@@ -398,6 +398,11 @@ public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
 }
 
+void PipeApplyDamageCustom(int entity)
+{
+	f_CustomGrenadeDamage[entity] = GetEntPropFloat(entity, Prop_Send, "m_flDamage");
+}
+
 void See_Projectile_Team(int entity)
 {
 	if (entity < 0 || entity > 2048)

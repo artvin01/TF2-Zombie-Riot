@@ -192,6 +192,50 @@ public Action Check_If_Owner_Dead(Handle sentryHud, int ref)
 }
 
 int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
+int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
+
+
+public void Un_ClaimBuildingLookedAt(int client)
+{
+	int entity = GetClientPointVisible(client, _ , true, true);
+	if(entity > MaxClients)
+	{
+		if (IsValidEntity(entity) && BuildingIsSupport(entity))
+		{
+			static char buffer[64];
+			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
+			{
+				if(!StrContains(buffer, "obj_"))
+				{
+					if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
+					{
+						i_BuildingSelectedToBeUnClaimed[client] = EntIndexToEntRef(entity);
+						DataPack pack;
+						CreateDataTimer(0.1, UnclaimBuildingTimer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+						pack.WriteCell(client);
+						pack.WriteCell(EntIndexToEntRef(entity));
+						pack.WriteCell(GetClientUserId(client));
+						Menu menu = new Menu(UnClaimBuildingMenu);
+
+						SetGlobalTransTarget(client);
+						
+						menu.SetTitle("%t", "UnClaim Current Marked Building");
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Yes");
+						menu.AddItem("-1", buffer);
+						FormatEx(buffer, sizeof(buffer), "%t", "No");
+						menu.AddItem("-2", buffer);
+									
+						menu.ExitButton = true;
+						menu.Display(client, MENU_TIME_FOREVER);
+						
+						i_BuildingSelectedToBeUnClaimed[client] = EntIndexToEntRef(entity);
+					}
+				}
+			}
+		}
+	}
+}
 
 public void DeleteBuildingLookedAt(int client)
 {
@@ -417,6 +461,38 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 		UnequipDispenser(client);
 	}
 }
+public Action UnclaimBuildingTimer(Handle sentryHud, DataPack pack)
+{
+	pack.Reset();
+	int original_index = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = GetClientOfUserId(pack.ReadCell());
+
+	if(IsValidClient(client))
+	{
+		if (IsValidEntity(entity) && entity == EntRefToEntIndex(i_BuildingSelectedToBeUnClaimed[client]))
+		{
+			static float m_vecMaxs[3];
+			static float m_vecMins[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", m_vecMins);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", m_vecMaxs);
+			float fPos[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", fPos);
+			TE_DrawBox(client, fPos, m_vecMins, m_vecMaxs, 0.2, view_as<int>({255, 0, 0, 255}));
+			return Plugin_Continue;
+		}
+		else
+		{
+			i_BuildingSelectedToBeUnClaimed[original_index] = -1;
+			return Plugin_Stop;
+		}
+	}
+	else
+	{
+		i_BuildingSelectedToBeUnClaimed[original_index] = -1;
+		return Plugin_Stop;
+	}
+}
 
 public Action DeleteBuildingTimer(Handle sentryHud, DataPack pack)
 {
@@ -451,6 +527,64 @@ public Action DeleteBuildingTimer(Handle sentryHud, DataPack pack)
 	}
 }
 
+public int UnClaimBuildingMenu(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+			{
+				i_BuildingSelectedToBeUnClaimed[client] = -1;		
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+			{
+				i_BuildingSelectedToBeUnClaimed[client] = -1;		
+			}
+		}
+		case MenuAction_Select:
+		{
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -1:
+				{
+					if(IsValidClient(client))
+					{
+						int entity = EntRefToEntIndex(i_BuildingSelectedToBeUnClaimed[client]);
+						if (IsValidEntity(entity))
+						{
+							int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+							if(builder_owner == client)
+							{
+								SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+								if(h_ClaimedBuilding[client][entity] != null)
+									delete h_ClaimedBuilding[client][entity];
+
+								i_SupportBuildingsBuild[client] -= 1;
+								//not enough support slots.
+							}
+						}
+						i_BuildingSelectedToBeUnClaimed[client] = -1;	
+					}
+				}
+				default:
+				{
+					if(IsValidClient(client))
+					{
+						i_BuildingSelectedToBeUnClaimed[client] = -1;		
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
 
 public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choice)
 {

@@ -210,9 +210,20 @@ static int Beam_Glow;
 
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 
+Handle h_ClaimedBuilding[MAXPLAYERS + 1][MAXENTITIES];
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
 static float Perk_Machine_Sickness[MAXTF2PLAYERS];
 
+void Building_PluginStart()
+{
+	for(int i; i < MAXPLAYERS + 1; i++)
+	{
+		for(int i1; i1 < MAXENTITIES; i1++)
+		{
+			h_ClaimedBuilding[i][i1] = null;
+		}
+	}
+}
 void Building_MapStart()
 {
 	if(Village_Effects)
@@ -769,10 +780,14 @@ public bool Building_AmmoBox(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 
@@ -810,10 +825,14 @@ public bool Building_ArmorTable(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 
@@ -857,10 +876,14 @@ public bool Building_PerkMachine(int client, int entity)
 	
 //	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 
@@ -900,10 +923,14 @@ public bool Building_PackAPunch(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 	
@@ -950,37 +977,6 @@ public Action Building_TimerDisableDispenser(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
-
-/*
-void Building_IncreaseSentryLevel(int client)
-{
-	int level = RoundFloat(Attributes_FindOnPlayerZR(client, 148)) + 1;
-	
-	int sentry = MaxClients+1;
-	while((sentry=FindEntityByClassname(sentry, "obj_sentrygun")) != -1)
-	{
-		if(GetEntPropEnt(sentry, Prop_Send, "m_hBuilder") == client)
-		{
-			SetEntProp(sentry, Prop_Send, "m_iUpgradeLevel", level);
-			switch(level)
-			{
-				case 2:
-				{
-					SetEntityModel(sentry, "models/buildables/sentry2.mdl");
-				}
-				case 3:
-				{
-					SetEntityModel(sentry, "models/buildables/sentry3.mdl");
-				}
-				default:
-				{
-					SetEntityModel(sentry, "models/buildables/sentry1.mdl");
-				}
-			}
-		}
-	}
-}
-*/
 
 public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -1959,10 +1955,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
+							if(h_ClaimedBuilding[client][entity] != null)
+								delete h_ClaimedBuilding[client][entity];
+
 							DataPack pack;
-							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+							h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(EntIndexToEntRef(client)); 
+							pack.WriteCell(entity); 
 							pack.WriteCell(client); //Need original client index id please.
 							i_SupportBuildingsBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
@@ -2630,16 +2630,26 @@ public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  D
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = EntRefToEntIndex(pack.ReadCell()); 
+	int entity_original_index = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	if(!IsValidEntity(entity))
 	{
 		i_SupportBuildingsBuild[client_original_index] -= 1;
+		h_ClaimedBuilding[client_original_index][entity_original_index] = null;
 		return Plugin_Stop;
 	}
 	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_SupportBuildingsBuild[client_original_index] -= 1;
+		h_ClaimedBuilding[client_original_index][entity_original_index] = null;
+		return Plugin_Stop;
+	}
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	if(owner != client_original_index)
+	{
+		i_SupportBuildingsBuild[client_original_index] -= 1;
+		h_ClaimedBuilding[client_original_index][entity_original_index] = null;
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
@@ -3623,7 +3633,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 35.0;
+			damage *= 45.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3635,7 +3645,7 @@ public Action MortarFire(Handle timer, int client)
 			sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 			
 			float AOE_range = 350.0 * sentry_range;
-			
+
 			Explode_Logic_Custom(damage, client, client, -1, f_MarkerPosition[client], AOE_range, 1.45, _, false);
 			
 			CreateEarthquake(f_MarkerPosition[client], 0.5, 350.0, 16.0, 255.0);
@@ -8076,5 +8086,68 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 		i_VillageModelAppliance[entity] = 4;
 		SetEntityModel(entity, VILLAGE_MODEL);
+	}
+}
+
+float BuildingWeaponDamageModif(int Type)
+{
+	switch(Type)
+	{
+		case 1:
+		{
+			//1 means its a weapon
+			return 1.85;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+}
+
+bool BuildingIsSupport(int entity)
+{
+	switch(i_WhatBuilding[entity])
+	{
+		case BuildingPackAPunch, BuildingPerkMachine, BuildingArmorTable,BuildingAmmobox:
+			return true;
+		
+		default:
+			return false;
+	}
+}
+void Building_Check_ValidSupportcount(int client)
+{
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity) && BuildingIsSupport(entity))
+		{
+			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+			if(builder_owner == client)
+			{
+				if(i_SupportBuildingsBuild[client] > MaxSupportBuildingsAllowed(client, false))
+				{
+					SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+					if(h_ClaimedBuilding[client][entity] != null)
+						delete h_ClaimedBuilding[client][entity];
+
+					i_SupportBuildingsBuild[client] -= 1;
+					//not enough support slots.
+				}
+				else
+				{	
+					if(MaxSupportBuildingsAllowed(client, false) <= 1 && i_WhatBuilding[entity] == BuildingPackAPunch)
+					{
+						SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+						if(h_ClaimedBuilding[client][entity] != null)
+							delete h_ClaimedBuilding[client][entity];
+
+						i_SupportBuildingsBuild[client] -= 1;
+						//cannot support pap.
+					}
+				}
+			}
+		}
 	}
 }
