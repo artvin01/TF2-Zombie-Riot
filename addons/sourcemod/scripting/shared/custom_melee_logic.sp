@@ -208,6 +208,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Wand_Impact_Lance_Multi_Hit(client, CustomMeleeRange, CustomMeleeWide);
 			}
+			case WEAPON_KIT_BLITZKRIEG_CORE:
+			{
+				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif
@@ -540,6 +544,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			case WEAPON_IMPACT_LANCE: //yes, if we miss, then we do other stuff.
 			{
 				LanceDamageCalc(client, weapon, damage);
+			}
+			case WEAPON_KIT_BLITZKRIEG_CORE:
+			{
+				Blitzkrieg_Kit_Custom_Damage_Calc(client, damage);
 			}
 		}
 		
