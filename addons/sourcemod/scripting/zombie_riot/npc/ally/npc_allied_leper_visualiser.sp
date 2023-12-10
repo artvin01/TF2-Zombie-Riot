@@ -96,7 +96,12 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 			float flPos[3]; // original
 			float flAng[3]; // original
 			npc.GetAttachment("head", flPos, flAng);
-			npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "xms_snowburst", npc.index, "head", {0.0,0.0,0.0});
+			npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_leaftaunt_fallingleaves", npc.index, "head", {0.0,0.0,-50.0});
+
+			
+			SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.m_iWearable7, 255, 165, 0, 255);
+
 		}
 
 		npc.m_flNextMeleeAttack = 0.0;
@@ -181,10 +186,14 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 					if(IsValidEntity(npc.m_iWearable6))
 						RemoveEntity(npc.m_iWearable6);
 
+						
+					SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSALPHA);
+					SetEntityRenderColor(npc.m_iWearable7, 255, 165, 0, 255);
+
 					float flPos[3]; // original
 					float flAng[3]; // original
 					npc.GetAttachment("head", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "xms_snowburst", npc.index, "head", {0.0,0.0,0.0});
+					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_leaftaunt_fallingleaves", npc.index, "head", {0.0,0.0,-50.0});
 				}
 			}
 		}
