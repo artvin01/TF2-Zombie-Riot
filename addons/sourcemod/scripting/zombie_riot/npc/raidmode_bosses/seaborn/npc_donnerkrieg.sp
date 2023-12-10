@@ -1407,8 +1407,6 @@ public bool DonnerKriegCannon_BEAM_TraceUsers(int entity, int contentsMask, int 
 	return false;
 }
 
-#define MAXTF2PLAYERS	36
-
 static void DonnerKriegCannon_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
