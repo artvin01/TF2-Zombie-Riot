@@ -6,7 +6,6 @@
 #define SENSAL_LASER_THICKNESS 25
 
 static bool BlockLoseSay;
-int i_ProjectileIndex_Sensal;
 
 static bool b_angered_twice[MAXENTITIES];
 static int i_SaidLineAlready[MAXENTITIES];

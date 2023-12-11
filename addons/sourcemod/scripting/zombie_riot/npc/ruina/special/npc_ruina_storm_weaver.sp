@@ -848,7 +848,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target, float Gam
 		Storm_Weaver_Fly(npc, target_vec, GameTime);
 	}
 }
-static void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTime)
+stock void Storm_Weaver_Fly(Storm_Weaver npc, float target_vec[3], float GameTime)
 {
 	float npc_vec[3]; npc_vec=GetAbsOrigin(npc.index);
 
