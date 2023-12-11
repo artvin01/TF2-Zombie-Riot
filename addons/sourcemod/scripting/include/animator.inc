@@ -155,7 +155,7 @@ Action Camera_ApplyCamera(Handle apply, any pack)
 stock int Camera_AttachCamera(int ent, int client, float xOffset, float yOffset, float zOffset, float xOverride = 0.0, float yOverride = 0.0, float zOverride = 0.0, bool test = false)
 {
 	int cam = CreateEntityByName("info_particle_system");
-	int info = CreateEntityByName("info_target");
+	int info = CreateEntityByName("info_teleport_destination");
 	if (IsValidEntity(cam) && IsValidEntity(ent) && IsValidEntity(info))
 	{
 		float pos[3];

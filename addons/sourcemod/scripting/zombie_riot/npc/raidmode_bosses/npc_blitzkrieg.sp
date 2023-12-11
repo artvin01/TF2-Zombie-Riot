@@ -533,13 +533,13 @@ methodmap Blitzkrieg < CClotBody
 		
 		bool final = StrContains(data, "final_item") != -1;
 		fl_blitzscale[npc.index] = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
-		if(i_currentwave[npc.index]<30)
+		if(i_currentwave[npc.index]<=30)
 		{
-			fl_blitzscale[npc.index] *= 2.0;	//blitz is quite weak on wave 15
+			fl_blitzscale[npc.index] *= 2.0;	//blitz is quite weak on wave 15, and 30
 		}
 		else if(i_currentwave[npc.index]>=60)
 		{
-			fl_blitzscale[npc.index] /= 6.0;	//blitz is quite scary on wave 60, so nerf him a bit
+			fl_blitzscale[npc.index] /= 3.0;	//blitz is quite scary on wave 60, so nerf him a bit
 			
 		}
 		if(i_currentwave[npc.index]>60 && !final)
@@ -1621,8 +1621,9 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		int Iondamage = ReadPackCell(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
-		if(!IsValidEntity(client))
+		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
+			delete data;
 			return;
 		}
 		
@@ -1702,6 +1703,8 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 				nphi += 5.0;
 		}
 		Iondistance -= 10;
+
+		delete data;
 		
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
@@ -1715,7 +1718,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
-		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		CreateTimer(0.1, Blitzkrieg_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else	//Normal Ioc Damge on wave
 		{
 
@@ -1845,7 +1848,7 @@ public void BlitzLight_Invoke(int ref, int enemy, float timer, float charge)
 		BlitzLight_Scale1[npc.index] = 200.0*smallmap;	//Best to do the scales in sets of numbers.
 		BlitzLight_Scale2[npc.index] = 400.0*smallmap;
 		BlitzLight_Scale3[npc.index] = 600.0*smallmap;
-		BlitzLight_DMG_Base[npc.index] = 45.0*smallmap;	//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
+		BlitzLight_DMG_Base[npc.index] = 80.0*smallmap;	//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
 		BlitzLight_Radius[npc.index] = 200.0*smallmap;	//Best to set radius as the same different of numbers when going up from scale 1, to 2. in this case scale goes up by 200 each time, so radius is 200.
 		BlitzLight_Duration_notick[npc.index] = GetGameTime(npc.index) + charge;	//Charge time.
 		
@@ -2139,7 +2142,7 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 	vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 	vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 										
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		fl_blitz_rocket_dmg[entity] = rocket_damage;

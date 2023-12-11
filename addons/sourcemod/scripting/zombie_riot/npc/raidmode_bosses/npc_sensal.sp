@@ -362,7 +362,7 @@ methodmap Sensal < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SensalEffects(npc.index);
+		SensalEffects(npc.index, view_as<int>(npc.Anger));
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -542,7 +542,6 @@ public void Sensal_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
-	ExpidonsaRemoveEffects(entity);
 	SDKUnhook(npc.index, SDKHook_Think, Sensal_ClotThink);
 		
 	
@@ -576,7 +575,7 @@ public void Sensal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your Actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
 		}
 		case 1:
 		{
@@ -694,7 +693,10 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				npc.m_flDead_Ringer_Invis_bool = false;
 			}
 
-			ExpidonsaRemoveEffects(npc.index);
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				RemoveEntity(npc.m_iWearable7);
+			}
 			npc.AddActivityViaSequence("taunt05");
 			npc.m_flAttackHappens = 0.0;
 			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
@@ -748,7 +750,10 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
 			SensalThrowScythes(npc);
-			ExpidonsaRemoveEffects(npc.index);
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				RemoveEntity(npc.m_iWearable7);
+			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
 			NPC_StopPathing(npc.index);
@@ -878,135 +883,55 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 	return 0;
 }
 
-/*
-void Sensal_Rocket_Base_Explode(int entity, int damage, const float VecPos[3])
-{
-	PrintToChatAll("Boom! Sensal_Rocket_Base_Explode");
-}
-*/
-/*
-void ResetSensalWeapon(Sensal npc, int weapon_Type)
-{
-	
-	if(IsValidEntity(npc.m_iWearable1))
-	{
-		RemoveEntity(npc.m_iWearable1);
-	}
-	switch(weapon_Type)
-	{
-		case 1:
-		{
-			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		}
-		case 0:
-		{
-			float flPos[3];
-			float flAng[3];
-			npc.GetAttachment("effect_hand_r", flPos, flAng);
-			npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-		}
-	}
-	
-}
-*/
-
 
 void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
 {
-	int red = 35;
-	int green = 35;
-	int blue = 255;
-	if(colour == 1)
-	{
-		red = 255;
-		green = 35;
-		blue = 35;
-	}
-	float flPos[3];
-	float flAng[3];
 	if(attachment[0])
 	{
-		GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
-	}
-	else
-	{
-		
-		GetEntPropVector(iNpc, Prop_Data, "m_vecAbsOrigin", flPos);
-	}
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
-	int particle_2;
-	int particle_3;
-	int particle_4;
-	int particle_5;
-	if(attachment[0])
-	{
-		
-		particle_2 = ParticleEffectAt({0.0,0.0,30.0}, "", 0.0); //First offset we go by
-		particle_3 = ParticleEffectAt({0.0,0.0,-100.0}, "", 0.0); //First offset we go by
-		particle_4 = ParticleEffectAt({0.0,35.0,-100.0}, "", 0.0); //First offset we go by
-		particle_5 = ParticleEffectAt({0.0,70.0,-85.0}, "", 0.0); //First offset we go by
-
-	}
-	else
-	{
-		particle_2 = ParticleEffectAt({0.0,25.0,0.0}, "", 0.0); //First offset we go by
-		particle_3 = ParticleEffectAt({0.0,-40.0,0.0}, "", 0.0); //First offset we go by
-		particle_4 = ParticleEffectAt({12.0,-40.0,0.0}, "", 0.0); //First offset we go by
-		particle_5 = ParticleEffectAt({35.0,-30.0,0.0}, "", 0.0); //First offset we go by
-	}
-	int particle_6;
-	if(colour == 0)
-	{
-		if(attachment[0])
+		CClotBody npc = view_as<CClotBody>(iNpc);
+		if(IsValidEntity(npc.m_iWearable7))
 		{
-			particle_6 = ParticleEffectAt({0.0,100.0,-70.0}, "raygun_projectile_blue_crit", 0.0); //First offset we go by
+			if(colour)
+			{
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
+			}
 		}
 		else
 		{
-			particle_6 = ParticleEffectAt({50.0,-25.0,0.0}, "", 0.0); //First offset we go by
+			npc.m_iWearable7 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+			SetVariantString("1.35");
+			AcceptEntityInput(npc.m_iWearable7, "SetModelScale");	
+			SetVariantInt(1);
+			AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+			if(colour)
+			{
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 1);
+			}
+			else
+			{
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 0);
+			}
 		}
 	}
 	else
 	{
-		if(attachment[0])
+		int ModelApply = ApplyCustomModelToWandProjectile(iNpc, WEAPON_CUSTOM_WEAPONRY_1, 1.65, "scythe_spin");
+
+		if(colour)
 		{
-			particle_6 = ParticleEffectAt({0.0,100.0,-70.0}, "raygun_projectile_red_crit", 0.0); //First offset we go by
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 		}
 		else
 		{
-			particle_6 = ParticleEffectAt({50.0,-25.0,0.0}, "", 0.0); //First offset we go by
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
 		}
+		SetVariantInt(2);
+		AcceptEntityInput(ModelApply, "SetBodyGroup");
 	}
-	
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_1, particle_3, "",_, true);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_1, particle_6, "",_, true);
-
-	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
-	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
-	SetParent(iNpc, particle_1, attachment,_);
-
-
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 5.0, 5.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 5.0, 4.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_5, particle_6, red, green, blue, 4.0, 2.0, 1.0, LASERBEAM);
-	
-
-	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
-	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
-	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
-	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_6);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(Laser_3);
-	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_4);
 }
 
 
@@ -1017,7 +942,6 @@ public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflic
 	{
 		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
-			ExpidonsaRemoveEffects(npc.index);
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 3.0;
 			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 			npc.PlayAngerSound();
@@ -1025,7 +949,10 @@ public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflic
 			b_RageAnimated[npc.index] = false;
 			RaidModeTime += 60.0;
 			npc.m_bisWalking = false;
-			
+			if(IsValidEntity(npc.m_iWearable7))
+			{
+				RemoveEntity(npc.m_iWearable7);
+			}
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
 			ParticleEffectAt(pos, "utaunt_electricity_cloud1_WY", 3.0);
@@ -1244,14 +1171,13 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 			FloatVector = WorldSpaceCenter(entity);
 		}
 
-		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered);
+		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
 		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 		b_RageProjectile[Projectile] = npc.Anger;
 		//dont exist !
 		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
 		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		static float ang_Look[3];
 		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 		Initiate_HomingProjectile(Projectile,
@@ -1259,7 +1185,7 @@ public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
 		 	70.0,			// float lockonAngleMax,
 		   	10.0,				//float homingaSec,
 			true,				// bool LockOnlyOnce,
-			false,				// bool changeAngles,
+			true,				// bool changeAngles,
 			  ang_Look);// float AnglesInitiate[3]);
 
 		if(volume == 0.25)
@@ -1296,7 +1222,6 @@ public Action Timer_RemoveEntitySensal(Handle timer, any entid)
 	int entity = EntRefToEntIndex(entid);
 	if(IsValidEntity(entity))
 	{
-		ExpidonsaRemoveEffects(entity);
 		RemoveEntity(entity);
 	}
 	return Plugin_Stop;
@@ -1336,7 +1261,6 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		{
 			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 		}
-		ExpidonsaRemoveEffects(entity);
 		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
@@ -1354,7 +1278,6 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-		ExpidonsaRemoveEffects(entity);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -1363,19 +1286,6 @@ public void Sensal_Particle_StartTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
-public Action TimerRotateMainEffect(Handle cut_timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if (IsValidEntity(entity))
-	{
-		float ang_Look[3];
-		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang_Look); 
-		ang_Look[1] += 35.0;
-		SetEntPropVector(entity, Prop_Data, "m_angRotation", ang_Look); 
-		return Plugin_Continue;
-	}
-	return Plugin_Stop;
-}
 
 bool SensalTalkPostWin(Sensal npc)
 {
@@ -1384,7 +1294,10 @@ bool SensalTalkPostWin(Sensal npc)
 
 	if(npc.m_iChanged_WalkCycle != 6)
 	{
-		ExpidonsaRemoveEffects(npc.index);
+		if(IsValidEntity(npc.m_iWearable7))
+		{
+			RemoveEntity(npc.m_iWearable7);
+		}
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
 		npc.m_bisWalking = true;
 		npc.m_iChanged_WalkCycle = 6;
@@ -1406,7 +1319,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apoligize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1422,12 +1335,12 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But i see that this was to protect you guys, yet you were able to destroy Nemesis.");
+		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Nemesis.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got send to rescue him and we just saw you lot attacking him.");
+		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
@@ -1437,7 +1350,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
+		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
 	}
 	return true; //He is trying to help.
 }
@@ -1701,7 +1614,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 					break;
 					
 				Foundenemies = true;
-				int Projectile = npc.FireParticleRocket(WorldSpaceCenter(enemy[i]), SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos);
+				int Projectile = npc.FireParticleRocket(WorldSpaceCenter(enemy[i]), SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
 				SensalEffects(Projectile,view_as<int>(npc.Anger),"");
 				b_RageProjectile[Projectile] = npc.Anger;
 
@@ -1710,7 +1623,6 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
 				
 				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
-				CreateTimer(0.0, TimerRotateMainEffect, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 				static float ang_Look[3];
 				GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 				Initiate_HomingProjectile(Projectile,
@@ -1718,7 +1630,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 					70.0,			// float lockonAngleMax,
 					10.0,				//float homingaSec,
 					true,				// bool LockOnlyOnce,
-					false,				// bool changeAngles,
+					true,				// bool changeAngles,
 					ang_Look,			
 					enemy[i]); //home onto this enemy
 			}

@@ -74,6 +74,7 @@ methodmap Isharmla < CClotBody
 		*/
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
+		vecMe[2] += 500.0;
 		npc.m_iWearable2 = ParticleEffectAt(vecMe, "env_rain_512", -1.0);
 		SetParent(npc.index, npc.m_iWearable2);
 

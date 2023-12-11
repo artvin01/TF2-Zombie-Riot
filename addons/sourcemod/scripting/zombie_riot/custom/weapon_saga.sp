@@ -106,7 +106,7 @@ void Saga_Enable(int client, int weapon)
 		WeaponRef[client] = EntIndexToEntRef(weapon);
 		delete WeaponTimer[client];
 
-		float value = Attributes_Get(weapon, 861, -1.0);
+		float value = Attributes_Get(weapon, 868, -1.0);
 		if(value == -1.0)
 		{
 			// Elite 0 Special 1
@@ -310,7 +310,7 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 	{
 		damage = float(GetEntProp(victim, Prop_Data, "m_iHealth") - 1);
 
-		SagaCrippled[victim] = Attributes_Get(weapon, 861, -1.0) == -1.0 ? 1.0 : 2.0;
+		SagaCrippled[victim] = Attributes_Get(weapon, 868, -1.0) == -1.0 ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);

@@ -132,17 +132,17 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	if(b_NpcIsInvulnerable[npc.index])
 	{
 		int entity = EntRefToEntIndex(npc.m_iTargetAlly);
-		if(entity == INVALID_ENT_REFERENCE || b_NpcIsInvulnerable[entity])
+		if(entity == INVALID_ENT_REFERENCE || !IsValidEntity(entity) ||  b_NpcIsInvulnerable[entity])
 		{
-			SDKHooks_TakeDamage(npc.index, 0, 0, 199999999.9, DMG_SLASH);
+			SmiteNpcToDeath(npc.index);
 			return;
 		}
 
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 
-		health += maxhealth / 200;	// 20 seconds
-		if(health > maxhealth)
+		health += maxhealth / 100;	// 20 seconds
+		if(health > (maxhealth / 2))
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 

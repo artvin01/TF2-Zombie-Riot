@@ -46,7 +46,7 @@ public void PoisonZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 
-	PrecacheModel("models/zombie/classic.mdl");
+	PrecacheModel("models/zombie/poison.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
 }
 

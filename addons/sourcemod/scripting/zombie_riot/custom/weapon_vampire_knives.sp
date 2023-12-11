@@ -7,7 +7,6 @@
 #define SND_BLOODLUST_KNIFE	"weapons/cleaver_hit_02.wav"
 #define SND_KNIFE_MISS		"weapons/cleaver_hit_world.wav"
 
-#define MODEL_KNIFE		"models/weapons/c_models/c_knife/c_knife.mdl"
 #define MODEL_CLEAVER	"models/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl"
 
 public void Vampire_Knives_Precache()

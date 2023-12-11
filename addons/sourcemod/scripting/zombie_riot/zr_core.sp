@@ -132,7 +132,20 @@ enum
 	WEAPON_FLAGELLANT_HEAL = 61,
 	WEAPON_SEABORN_MISC = 62,
 	WEAPON_TEXAN_BUISNESS = 63,
-	WEAPON_FLAGELLANT_DAMAGE = 64
+	WEAPON_FLAGELLANT_DAMAGE = 64,
+	WEAPON_FUSION_PAP1 = 65,
+	WEAPON_FUSION_PAP2 = 66,
+	WEAPON_STAR_SHOOTER = 67,
+	WEAPON_BOBS_GUN = 68,
+	WEAPON_IMPACT_LANCE = 69,
+	WEAPON_BUFF_BANNER = 70,
+	WEAPON_SURVIVAL_KNIFE_PAP1 = 71,
+	WEAPON_SURVIVAL_KNIFE_PAP2 = 72,
+	WEAPON_SURVIVAL_KNIFE_PAP3 = 73,
+	WEAPON_TRASH_CANNON = 74,
+	WEAPON_SKULL_SERVANT = 75,
+	WEAPON_NECRO_WANDS = 76,
+	WEAPON_KIT_BLITZKRIEG_CORE = 77,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -209,6 +222,8 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 int i_PreviousBuildingCollision[MAXENTITIES];
+bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
+bool b_ArkantosBuffItem[MAXENTITIES];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -288,6 +303,9 @@ float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 float f_BuildingIsNotReady[MAXTF2PLAYERS];
+
+float f_MedigunChargeSave[MAXTF2PLAYERS][4];
+float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
@@ -432,6 +450,11 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/kit_seaborn.sp"
 #include "zombie_riot/custom/weapon_class_leper.sp"
 #include "zombie_riot/custom/kit_flagellant.sp"
+#include "zombie_riot/custom/cosmetics/silvester_cosmetics_yay.sp"
+#include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
+#include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
+#include "zombie_riot/custom/weapon_trash_cannon.sp"
+#include "zombie_riot/custom/kit_blitzkrieg.sp"
 
 void ZR_PluginLoad()
 {
@@ -487,6 +510,7 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
+	Building_PluginStart();
 }
 
 void ZR_MapStart()
@@ -500,6 +524,7 @@ void ZR_MapStart()
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	OnMapStart_Build_on_Build();
+	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
 	Music_ClearAll();
@@ -642,6 +667,10 @@ void ZR_MapStart()
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
+	Wand_Impact_Lance_Mapstart();
+	Trash_Cannon_Precache();
+	Kit_Blitzkrieg_Precache();
+
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1083,7 +1112,7 @@ public Action Timer_Dieing(Handle timer, int client)
 					MakePlayerGiveResponseVoice(client, 3); //Revived response!
 				}
 				SetEntityMoveType(client, MOVETYPE_WALK);
-				RequestFrame(Movetype_walk, client);
+				RequestFrame(Movetype_walk, EntRefToEntIndex(client));
 				dieingstate[client] = 0;
 					
 				SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", client);
@@ -1104,7 +1133,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				PrintCenterText(client, "");
 				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
-				RequestFrame(SetHealthAfterRevive, client);
+				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -1129,15 +1158,26 @@ public Action Timer_Dieing(Handle timer, int client)
 		if(!b_LeftForDead[client])
 		{
 			int color[4];
-			color[0] = 255;
-			color[1] = 255;
-			color[2] = 0;
-			color[3] = 255;
-				
-			color[0] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210; // red  200 is the max health you can have while dying.
-			color[1] = GetEntProp(client, Prop_Send, "m_iHealth") * 255  / 210;	// green
+			int HealthRemaining = GetEntProp(client, Prop_Send, "m_iHealth");
+			if(HealthRemaining < 210)
+			{
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
 					
-			color[0] = 255 - color[0];
+				color[0] = HealthRemaining * 255  / 210; // red  200 is the max health you can have while dying.
+				color[1] = HealthRemaining * 255  / 210;	// green
+						
+				color[0] = 255 - color[0];
+			}
+			else
+			{
+				color[0] = 0;
+				color[1] = 0;
+				color[2] = 255;
+				color[3] = 255;
+			}
 
 			int particle = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 			if(IsValidEntity(particle))
@@ -1212,7 +1252,7 @@ public void NPC_Despawn_bob(int entity)
 {
 	if(IsValidEntity(entity) && entity != 0)
 	{
-		SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC); //Kill it so it triggers the neccecary shit.
+		SmiteNpcToDeath(entity);
 	}
 	Bob_Exists_Index = -1;
 }
@@ -1339,6 +1379,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				{
 					Died[client] = true;
 					SDKHooks_TakeDamage(client, client, client, 99999.0, DMG_DROWN, _, _, _, true);
+					ForcePlayerSuicide(client);
 				}
 			}
 		}
@@ -1412,11 +1453,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
 						}
 						//if in quantum suit, dont.
-						
-						int Extra = 0;
-							
-						Extra = RoundToNearest(Attributes_FindOnPlayerZR(client, 701));
-						int Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+
+						int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 
 						Armor_Charge[client] = Armor_Max;
 						GiveCompleteInvul(client, 3.0);
@@ -1463,26 +1501,29 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 }
 
 //Revival raid spam
-public void SetHealthAfterReviveRaid(int client)
+public void SetHealthAfterReviveRaid(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
 		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-		RequestFrame(SetHealthAfterReviveRaidAgain, client);	
+		RequestFrame(SetHealthAfterReviveRaidAgain, ref);	
 	}
 }
 
-public void SetHealthAfterReviveRaidAgain(int client)
+public void SetHealthAfterReviveRaidAgain(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
 		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-		RequestFrame(SetHealthAfterReviveRaidAgainAgain, client);	
+		RequestFrame(SetHealthAfterReviveRaidAgainAgain, ref);	
 	}
 }
 
-public void SetHealthAfterReviveRaidAgainAgain(int client)
+public void SetHealthAfterReviveRaidAgainAgain(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
 		SetEntityHealth(client, SDKCall_GetMaxHealth(client));
@@ -1491,16 +1532,18 @@ public void SetHealthAfterReviveRaidAgainAgain(int client)
 //Revival raid spam
 
 //Set hp spam after normal revive
-public void SetHealthAfterRevive(int client)
+public void SetHealthAfterRevive(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{	
-		RequestFrame(SetHealthAfterReviveAgain, client);	
+		RequestFrame(SetHealthAfterReviveAgain, ref);	
 	}
 }
 
-public void SetHealthAfterReviveAgain(int client)
+public void SetHealthAfterReviveAgain(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
 		SetEntityHealth(client, 50);
@@ -1569,7 +1612,7 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti)
 {
 	int Armor_Max;
 	
-	Armor_Max = MaxArmorCalculation(_, client, MaxMulti);
+	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
 	/*
 	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
 	{
@@ -1785,7 +1828,7 @@ void ReviveAll(bool raidspawned = false)
 					if(!raidspawned)
 					{
 						SetEntityHealth(client, 50);
-						RequestFrame(SetHealthAfterRevive, client);
+						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 					}
 				}
 				if(raidspawned)
@@ -1793,7 +1836,7 @@ void ReviveAll(bool raidspawned = false)
 					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
 					{
 						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
-						RequestFrame(SetHealthAfterReviveRaid, client);	
+						RequestFrame(SetHealthAfterReviveRaid, EntIndexToEntRef(client));	
 					}
 				}
 			}
@@ -1917,6 +1960,7 @@ void PlayerApplyDefaults(int client)
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
 		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_showpluginmessages", ConVarCallback_Plugin_message); //cl_showpluginmessages
+		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)
@@ -1933,4 +1977,152 @@ void PlayerApplyDefaults(int client)
 		
 		i_PreviousPointAmount[client] = PlayerPoints[client];
     }
+}
+
+float GetClientSaveUberGametime[MAXTF2PLAYERS];
+float GetClientSaveRageGametime[MAXTF2PLAYERS];
+
+void ClientSaveUber(int client)
+{
+	if(GetClientSaveUberGametime[client] == GetGameTime())
+		return;
+
+	GetClientSaveUberGametime[client] = GetGameTime();
+	int ie;
+	int entity;
+	while(TF2_GetItem(client, entity, ie))
+	{
+		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
+		{
+			case 411:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+				}
+			}
+			case 211:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+				}
+			}
+			case 998:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
+				}
+			}
+		}
+	}
+}
+
+void ClientApplyMedigunUber(int client)
+{
+	int iea, weapon;
+	while(TF2_GetItem(client, weapon, iea))
+	{
+		int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
+		{
+			case 411:
+			{
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
+					f_MedigunChargeSave[client][0] = 0.0;
+				}
+			}
+			case 211:
+			{
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
+					f_MedigunChargeSave[client][1] = 0.0;
+				}
+			}
+			case 998:
+			{
+				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
+				{
+					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
+					f_MedigunChargeSave[client][2] = 0.0;
+				}
+			}
+		}
+	}
+}
+void ClientSaveRageMeterStatus(int client)
+{
+	if(GetClientSaveRageGametime[client] == GetGameTime())
+		return;
+
+	GetClientSaveRageGametime[client] = GetGameTime();
+
+	if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+		f_SaveBannerRageMeter[client][0] = 1.0;
+	else
+		f_SaveBannerRageMeter[client][0] = 0.0;
+
+	float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter");
+	f_SaveBannerRageMeter[client][1] = rage;
+}
+
+void ClientApplyRageMeterStatus(int client)
+{
+	//Must delay for a frame, it gets applied later and im way too lazy to figure out what exact function it comes after
+	//for refference, medigun for example works on this frame.
+	RequestFrame(ClientApplyRageMeterStatusDelay, EntIndexToEntRef(client));
+}
+
+void ClientApplyRageMeterStatusDelay(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+
+	bool NoBanner = true;
+	int Bufftype = 0;
+	int ie, weapon;
+	SetEntProp(client, Prop_Send, "m_bRageDraining", view_as<int>(f_SaveBannerRageMeter[client][0]));
+	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", f_SaveBannerRageMeter[client][1]);
+	while(TF2_GetItem(client, weapon, ie))
+	{
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_ANCIENT_BANNER, WEAPON_BATTILONS, WEAPON_BUFF_BANNER:
+			{
+				Bufftype = RoundToNearest(Attributes_Get(weapon, 116, 0.0));
+				NoBanner = false;
+			}
+		}
+	}
+	if(!NoBanner && view_as<bool>(f_SaveBannerRageMeter[client][0]))
+	{
+		Handle pack;
+		CreateDataTimer(0.1, DeployBannerIconBuff, pack, TIMER_FLAG_NO_MAPCHANGE);
+		WritePackCell(pack, GetClientUserId(client));
+		WritePackCell(pack, Bufftype);
+	}
+}
+
+public Action DeployBannerIconBuff(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	int Bufftype = pack.ReadCell();
+	if(IsValidClient(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+	{
+		if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+		{
+			Event event = CreateEvent("deploy_buff_banner", true);
+			event.SetInt("buff_type", Bufftype);
+			event.SetInt("buff_owner", GetClientUserId(client));
+			event.Fire();
+		}
+	}
+	return Plugin_Stop;
 }

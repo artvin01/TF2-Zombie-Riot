@@ -337,8 +337,20 @@ public void NecroCombine_ClotThink(int iNPC)
 									
 									if(target > 0) 
 									{
-										
-										SDKHooks_TakeDamage(target, owner, owner, (65.0 * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
+										float damage = 65.0;
+										int weapon = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+										if(weapon > 0)
+										{
+											if(i_CustomWeaponEquipLogic[weapon] != WEAPON_NECRO_WANDS)
+											{
+												damage *= 0.5;
+											}
+										}
+										else
+										{
+											damage *= 0.5;
+										}
+										SDKHooks_TakeDamage(target, owner, owner, (damage * npc.m_flExtraDamage), DMG_SLASH, -1, _, vecHit); //Do acid so i can filter it well.
 										
 										// Hit particle
 										

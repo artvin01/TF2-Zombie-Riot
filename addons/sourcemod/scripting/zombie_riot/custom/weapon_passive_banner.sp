@@ -7,6 +7,17 @@ bool b_ClientHasAncientBanner[MAXENTITIES];
 bool b_EntityRecievedBuff[MAXENTITIES];
 Handle Timer_AncientBanner = null;
 
+float BannerDefaultRange(int client)
+{
+	if(b_ArkantosBuffItem[client])
+	{
+		return 511225.0; //1.1x range
+	}
+	else
+	{
+		return 422500.0;
+	}
+}
 void BannerOnEntityCreated(int entity)
 {
 	b_ClientHasAncientBanner[entity] = false;
@@ -57,6 +68,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 		Timer_Banner_Management[client] = null;
 		return Plugin_Stop;
 	}	
+	b_ClientHasAncientBanner[client] = false;
 	float BannerPos[3];
 	float targPos[3];
 	GetClientAbsOrigin(client, BannerPos);
@@ -65,7 +77,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 		if(IsClientInGame(ally) && IsPlayerAlive(ally))
 		{
 			GetClientAbsOrigin(ally, targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 			{
 				f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
 				i_ExtraPlayerPoints[client] += 1;
@@ -78,7 +90,7 @@ public Action Timer_Management_Banner(Handle timer, DataPack pack)
 		if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 		{
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-			if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+			if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 			{
 				f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
 				i_ExtraPlayerPoints[client] += 1;
@@ -134,6 +146,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 
 	if(f_BannerDurationActive[client] > GetGameTime())
 	{
+		b_ClientHasAncientBanner[client] = false;
 		float BannerPos[3];
 		float targPos[3];
 		GetClientAbsOrigin(client, BannerPos);
@@ -142,7 +155,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
 				GetClientAbsOrigin(ally, targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
 					f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
 					i_ExtraPlayerPoints[client] += 1;
@@ -155,7 +168,7 @@ public Action Timer_Management_Banner_1(Handle timer, DataPack pack)
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
 					f_BuffBannerNpcBuff[ally] = GetGameTime() + 0.5;
 					i_ExtraPlayerPoints[client] += 1;
@@ -214,6 +227,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 	}	
 	if(f_BannerDurationActive[client] > GetGameTime())
 	{
+		b_ClientHasAncientBanner[client] = false;
 		float BannerPos[3];
 		float targPos[3];
 		GetClientAbsOrigin(client, BannerPos);
@@ -222,7 +236,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
 				GetClientAbsOrigin(ally, targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
 					f_BattilonsNpcBuff[ally] = GetGameTime() + 1.1;
 					i_ExtraPlayerPoints[client] += 1;
@@ -235,7 +249,7 @@ public Action Timer_Management_Banner_2(Handle timer, DataPack pack)
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
 				GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-				if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+				if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 				{
 					f_BattilonsNpcBuff[ally] = GetGameTime() + 0.5;
 					i_ExtraPlayerPoints[client] += 1;
@@ -285,7 +299,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				if(IsClientInGame(ally) && IsPlayerAlive(ally))
 				{
 					GetClientAbsOrigin(ally, targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
 						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
 					}
@@ -297,7 +311,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 				{
 					GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
-					if (GetVectorDistance(BannerPos, targPos, true) <= 422500.0) // 650.0
+					if (GetVectorDistance(BannerPos, targPos, true) <= BannerDefaultRange(client)) // 650.0
 					{
 						f_AncientBannerNpcBuff[ally] = GetGameTime() + 0.5;
 					}
@@ -313,12 +327,12 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.75, true, 1.25);
+					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2);
 
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 1, 0.75, false, 1.25);
+					ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
 				}
 			}
 		}
@@ -329,11 +343,11 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			{
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.75, true, 1.25);
+					ModifyEntityAncientBuff(ally, 2, 0.8, true, 1.2);
 				}
 				else
 				{
-					ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
+					ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
 				}
 			}
 		}
@@ -344,7 +358,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 		{
 			if(IsClientInGame(ally) && IsPlayerAlive(ally))
 			{
-				ModifyEntityAncientBuff(ally, 1, 0.75, false, 1.25);
+				ModifyEntityAncientBuff(ally, 1, 0.8, false, 1.2);
 			}
 		}
 		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)
@@ -352,7 +366,7 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
 			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
 			{
-				ModifyEntityAncientBuff(ally, 2, 0.75, false, 1.25);
+				ModifyEntityAncientBuff(ally, 2, 0.8, false, 1.2);
 			}
 		}
 		Timer_AncientBanner = null;

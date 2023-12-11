@@ -26,10 +26,6 @@ static Handle g_hSDKUpdateBlocked;
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
 
-static DynamicHook g_hDHookItemIterateAttribute;
-static int g_iCEconItem_m_Item;
-static int g_iCEconItemView_m_bOnlyIterateItemViewAttributes;
-
 void SDKCall_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("sm-tf2.games");
@@ -172,17 +168,6 @@ void SDKCall_Setup()
 	
 	//from kenzzer
 	
-	int iOffset = GameConfGetOffset(gamedata, "CEconItemView::IterateAttributes");
-	g_hDHookItemIterateAttribute = new DynamicHook(iOffset, HookType_Raw, ReturnType_Void, ThisPointer_Address);
-	if (g_hDHookItemIterateAttribute == null)
-	{
-		 SetFailState("Failed to create hook CEconItemView::IterateAttributes offset from SF2 gamedata!");
-	}
-	g_hDHookItemIterateAttribute.AddParam(HookParamType_ObjectPtr);
-
-	g_iCEconItem_m_Item = FindSendPropInfo("CEconEntity", "m_Item");
-	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, g_iCEconItemView_m_bOnlyIterateItemViewAttributes);
-	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFWeaponBaseMelee::GetShootSound");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
@@ -217,7 +202,6 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-	
 	delete gamedata;
 }
 
@@ -330,6 +314,7 @@ int FindAttachment(int index, const char[] pAttachmentName)
 	return SDKCall(g_hStudio_FindAttachment, pStudioHdr, pAttachmentName) + 1;
 }	
 
+
 public Address GetStudioHdr(int index)
 {
 	if(IsValidEntity(index))
@@ -416,26 +401,6 @@ void UpdateBlockedNavmesh()
 	SDKCall(g_hSDKUpdateBlocked);
 }	
 
-
-static MRESReturn CEconItemView_IterateAttributes(Address pThis, DHookParam hParams)
-{
-    StoreToAddress(pThis + view_as<Address>(g_iCEconItemView_m_bOnlyIterateItemViewAttributes), true, NumberType_Int8, false);
-    return MRES_Ignored;
-}
-
-static MRESReturn CEconItemView_IterateAttributes_Post(Address pThis, DHookParam hParams)
-{
-    StoreToAddress(pThis + view_as<Address>(g_iCEconItemView_m_bOnlyIterateItemViewAttributes), false, NumberType_Int8, false);
-    return MRES_Ignored;
-}
-
-stock void TF2Items_OnGiveNamedItem_Post_SDK(int iClient, char[] sClassname, int iItemDefIndex, int iLevel, int iQuality, int iEntity)
-{
-	Address pCEconItemView = GetEntityAddress(iEntity) + view_as<Address>(g_iCEconItem_m_Item);
-	g_hDHookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, CEconItemView_IterateAttributes);
-	g_hDHookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, CEconItemView_IterateAttributes_Post);
-}
-
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 {
 	int bot = SDKCall(
@@ -480,44 +445,11 @@ void Sdkcall_Load_Lagcomp()
 
 void Manual_Impulse_101(int client, int health)
 {
-	int ie, entity;
-	while(TF2_GetItem(client, entity, ie))
-	{
-		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		switch(index)
-		{
-			case 411:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					if(f_MedigunChargeSave[client][0] == 0.0)
-					{
-						f_MedigunChargeSave[client][0] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-					}
-				}
-			}
-			case 211:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					if(f_MedigunChargeSave[client][1] == 0.0)
-					{
-						f_MedigunChargeSave[client][1] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-					}
-				}
-			}
-			case 998:
-			{
-				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
-				{
-					if(f_MedigunChargeSave[client][2] == 0.0)
-					{
-						f_MedigunChargeSave[client][2] = GetEntPropFloat(entity, Prop_Send, "m_flChargeLevel");
-					}
-				}
-			}
-		}
-	}
+
+#if defined ZR
+	ClientSaveRageMeterStatus(client);
+	ClientSaveUber(client);
+#endif
 
 	SetConVarInt(sv_cheats, 1, false, false);
 	
@@ -551,45 +483,13 @@ void Manual_Impulse_101(int client, int health)
 		SetAmmo(client, i, CurrentAmmo[client][i]);
 	}
 	
-	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 0.0);
-//	SetEntProp(client, Prop_Send, "m_bWearingSuit", true);
-//	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all.
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
-	
-	
-	int iea, weapon;
-	while(TF2_GetItem(client, weapon, iea))
-	{
-		int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-		switch(index)
-		{
-			case 411:
-			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
-				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][0]);
-					f_MedigunChargeSave[client][0] = 0.0;
-				}
-			}
-			case 211:
-			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
-				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][1]);
-					f_MedigunChargeSave[client][1] = 0.0;
-				}
-			}
-			case 998:
-			{
-				if(HasEntProp(weapon, Prop_Send, "m_flChargeLevel"))
-				{
-					SetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel", f_MedigunChargeSave[client][2]);
-					f_MedigunChargeSave[client][2] = 0.0;
-				}
-			}
-		}
-	}
-	
+
+#if defined ZR
+	ClientApplyRageMeterStatus(client);
+	ClientApplyMedigunUber(client);
+#endif
+
 	if(health > 0)
 		SetEntityHealth(client, health);
 }

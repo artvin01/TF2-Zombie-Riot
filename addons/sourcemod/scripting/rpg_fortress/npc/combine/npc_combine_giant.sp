@@ -7,6 +7,9 @@ methodmap CombineGiant < CombineWarrior
 	{
 		CombineGiant npc = view_as<CombineGiant>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", ally, false, true));
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
+		
 		i_NpcInternalId[npc.index] = COMBINE_GIANT;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");

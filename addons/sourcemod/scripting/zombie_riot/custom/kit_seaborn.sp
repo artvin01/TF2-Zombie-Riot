@@ -57,7 +57,7 @@ void SeaMelee_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE)
 	{
-		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 861, 0.0));
+		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 	}
 }
 
@@ -178,6 +178,10 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		int entity = Npc_Create(SEARUNNER, client, pos1, ang, true);
 		if(entity > MaxClients)
 		{
+			int maxhealth = SDKCall_GetMaxHealth(client);
+			maxhealth = RoundFloat(float(maxhealth) * 0.5); //2x health cus no resistance.
+			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -416,7 +420,9 @@ public Action Seaborn_KillNPC(Handle timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity) && !b_NpcHasDied[entity])
-		SDKHooks_TakeDamage(entity, 0, 0, 999999999.0, DMG_GENERIC);
+	{
+		SmiteNpcToDeath(entity);
+	}
 	
 	return Plugin_Stop;
 }

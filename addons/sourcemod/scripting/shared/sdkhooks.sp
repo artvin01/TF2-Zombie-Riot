@@ -195,7 +195,7 @@ public void OnPostThink(int client)
 #if !defined NoSendProxyClass
 	if(WeaponClass[client]!=TFClass_Unknown)
 	{
-		TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 		if(GetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]") > 64.0)	// Otherwise, shaking
 			SetEntPropFloat(client, Prop_Send, "m_vecViewOffset[2]", ViewHeights[WeaponClass[client]]);
 	}
@@ -302,9 +302,15 @@ public void OnPostThink(int client)
 		}
 	}
 #endif	// ZR
-	if(Mana_Regen_Delay[client] < GameTime)	
+
+#if defined ZR
+	if(Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime))
+#else
+	if(Mana_Regen_Delay[client] < GameTime)
+#endif
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
+		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
 			
 		has_mage_weapon[client] = false;
 
@@ -323,7 +329,12 @@ public void OnPostThink(int client)
 		mana_regen[client] = 10.0;
 			
 		if(LastMann)
-			mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
+		{
+			if(!b_AggreviatedSilence[client])	
+				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
+			else
+				mana_regen[client] *= 10.0; // only 10x the regen as they always regen.
+		}
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -337,7 +348,14 @@ public void OnPostThink(int client)
 #endif
 					
 		mana_regen[client] *= Mana_Regen_Level[client];
-		max_mana[client] *= Mana_Regen_Level[client];	
+		max_mana[client] *= Mana_Regen_Level[client];
+
+#if defined ZR
+		if(b_AggreviatedSilence[client])	
+		{
+			mana_regen[client] *= 0.30;
+		}
+#endif
 			
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]))
 		{
@@ -762,7 +780,12 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
 		}
-		if(f_EmpowerStateOther[client] > GameTime) //Do not show fusion self buff.
+		if(f_EmpowerStateSelf[client] > GameTime)
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
+		}
+		if(f_EmpowerStateOther[client] > GameTime)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
@@ -921,8 +944,7 @@ public void OnPostThink(int client)
 		}
 		else
 		{
-			int Extra = Armor_Level[client];
-			Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
+			Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 		}
 
 		int red = 255;
@@ -1251,7 +1273,7 @@ public void OnPostThink(int client)
 public void OnPostThinkPost(int client)
 {
 	if(IsPlayerAlive(client) && CurrentClass[client]!=TFClass_Unknown)
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 }
 #endif
 
@@ -1487,7 +1509,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		Replicated_Damage *= difficulty_math + 1.0;
 	}
 	//freeplay causes more damage taken.
-	if(f_FreeplayDamageExtra != 1.0)
+	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
 		damage *= f_FreeplayDamageExtra;
 		Replicated_Damage *= f_FreeplayDamageExtra;
@@ -1536,6 +1558,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.5; //half the damage when small.
 			Replicated_Damage *= 0.5;
 		}
+		if(f_BattilonsNpcBuff[victim] > GameTime)
+		{
+			damage *= 0.75;
+			Replicated_Damage *= 0.75;
+		}	
 		damage *= fl_Extra_Damage[attacker];
 		Replicated_Damage *= fl_Extra_Damage[attacker];
 		
@@ -1657,10 +1684,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			
 #if defined ZR
-			Replicated_Damage *= 0.85;
+			Replicated_Damage *= 0.9;
 #endif
 			
-			damage *= 0.85;
+			damage *= 0.9;
 		}
 #if defined ZR
 		if(i_HealthBeforeSuit[victim] == 0)
@@ -2085,6 +2112,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
+		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
+		{
+			return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
 		case WEAPON_RIOT_SHIELD:
 		{
 			return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition);
@@ -2133,10 +2164,10 @@ void UpdatePlayerFakeModel(int client)
 	if(PlayerModel > 0)
 	{
 		//setclass to actual class
-	//	TF2_SetPlayerClass(client, CurrentClass[client]);
+	//	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 		SDKCall_RecalculatePlayerBodygroups(client);
 		//set back to simulate viewmodel
-	//	TF2_SetPlayerClass(client, WeaponClass[client]);
+	//	TF2_SetPlayerClass_ZR(client, WeaponClass[client]);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
 	}

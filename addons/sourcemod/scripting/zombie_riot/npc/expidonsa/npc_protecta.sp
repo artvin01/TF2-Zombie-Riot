@@ -337,14 +337,17 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 
 void ProtectaEffects(int iNpc)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	
-	int particle_2 = ParticleEffectAt({0.0,0.0,20.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,0.0,20.0}, "", 0.0); //First offset we go by
 	int particle_3 = ParticleEffectAt({0.0,0.0,-40.0}, "eyeboss_projectile", 0.0); //First offset we go by
 	
 	SetParent(particle_1, particle_2, "",_, true);
@@ -361,7 +364,7 @@ void ProtectaEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
-	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
 }
 
 

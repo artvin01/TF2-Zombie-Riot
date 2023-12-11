@@ -222,7 +222,7 @@ methodmap NaziPanzer < CClotBody
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*1200.0;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-1200.0;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			SetEntityCollisionGroup(entity, 19);

@@ -140,7 +140,6 @@ void ViewChange_PlayerModel(int client)
 		
 				SDKCall_EquipWearable(client, entity);
 				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
-				
 				i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
 
 #if defined RPG
@@ -204,6 +203,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
 				else
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
+
 				
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
@@ -220,6 +220,27 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 
 				SDKCall_EquipWearable(client, entity);
+
+				if(i_WeaponVMTExtraSetting[active] != -1)
+				{
+					
+#if defined ZR
+					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
+					{
+						SensalApplyRecolour(client, entity);
+					}
+					else
+#endif
+
+					{
+						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
+					}
+				}
+				if(i_WeaponBodygroup[active] != -1)
+				{
+					SetVariantInt(i_WeaponBodygroup[active]);
+					AcceptEntityInput(entity, "SetBodyGroup");
+				}
 			}
 
 			entity = CreateEntityByName("tf_wearable");
@@ -231,6 +252,27 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				else
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
 				
+				if(i_WeaponVMTExtraSetting[active] != -1)
+				{
+
+#if defined ZR
+					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
+					{
+						SensalApplyRecolour(client, entity);
+					}
+					else
+#endif
+
+					{
+						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
+					}
+				}
+				if(i_WeaponBodygroup[active] != -1)
+				{
+					SetVariantInt(i_WeaponBodygroup[active]);
+					AcceptEntityInput(entity, "SetBodyGroup");
+				}
+
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 				SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
@@ -254,7 +296,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			{
 				WeaponClass[client] = class;
 				
-				TF2_SetPlayerClass(client, WeaponClass[client], _, false);
+				TF2_SetPlayerClass_ZR(client, WeaponClass[client], _, false);
 				Store_ApplyAttribs(client);
 				
 				ViewChange_DeleteHands(client);

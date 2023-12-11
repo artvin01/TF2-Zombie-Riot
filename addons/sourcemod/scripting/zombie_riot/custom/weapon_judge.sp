@@ -36,7 +36,7 @@ public void Enable_Judge(int client, int weapon)
 			delete h_TimerJudgeManagement[client];
 			h_TimerJudgeManagement[client] = null;
 			DataPack pack;
-			h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -46,7 +46,7 @@ public void Enable_Judge(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE || i_CustomWeaponEquipLogic[weapon] == WEAPON_JUDGE_PAP)  //9 Is for Passanger
 	{
 		DataPack pack;
-		h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerJudgeManagement[client] = CreateDataTimer(0.1, Timer_Management_Judge, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

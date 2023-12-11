@@ -547,6 +547,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 
 void BarracksVillager_MenuSpecial(int client, int entity)
 {
+	SetGlobalTransTarget(client);
 	BarrackVillager npc = view_as<BarrackVillager>(entity);
 
 	Menu menu = new Menu(BarrackVillager_MenuH);

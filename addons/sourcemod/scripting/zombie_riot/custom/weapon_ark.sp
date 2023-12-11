@@ -474,10 +474,26 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 		pack.WriteFloat(Entity_Position[2]);
 		
 		RequestFrame(TeleportParticleArk, pack);
-	
-		
-		SDKHooks_TakeDamage(attacker, victim, victim, damage_reflected, DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);
-		
+
+		float ReflectPosVec[3];
+		ReflectPosVec = CalculateDamageForce(vecForward, 10000.0);
+
+		DataPack packdmg = new DataPack();
+		packdmg.WriteCell(EntIndexToEntRef(attacker));
+		packdmg.WriteCell(EntIndexToEntRef(victim));
+		packdmg.WriteCell(EntIndexToEntRef(victim));
+		packdmg.WriteFloat(damage_reflected);
+		packdmg.WriteCell(DMG_CLUB);
+		packdmg.WriteCell(EntIndexToEntRef(weapon));
+		packdmg.WriteFloat(ReflectPosVec[0]);
+		packdmg.WriteFloat(ReflectPosVec[1]);
+		packdmg.WriteFloat(ReflectPosVec[2]);
+		packdmg.WriteFloat(Entity_Position[0]);
+		packdmg.WriteFloat(Entity_Position[1]);
+		packdmg.WriteFloat(Entity_Position[2]);
+		packdmg.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, packdmg);
+
 		return damage * 0.1;
 	}
 	else 
@@ -529,7 +545,7 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 			delete h_TimerWeaponArkManagement[client];
 			h_TimerWeaponArkManagement[client] = null;
 			DataPack pack;
-			h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -539,7 +555,7 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ARK)
 	{
 		DataPack pack;
-		h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerWeaponArkManagement[client] = CreateDataTimer(0.1, Timer_Management_WeaponArk, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -777,7 +793,7 @@ public void Enable_LappLand(int client, int weapon) // Enable management, handle
 			delete h_TimerLappLandManagement[client];
 			h_TimerLappLandManagement[client] = null;
 			DataPack pack;
-			h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -787,7 +803,7 @@ public void Enable_LappLand(int client, int weapon) // Enable management, handle
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LAPPLAND)
 	{
 		DataPack pack;
-		h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_LappLand, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

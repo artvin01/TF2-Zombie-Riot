@@ -475,7 +475,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		}
 		if(!villagerexists)
 		{
-			SDKHooks_TakeDamage(iNPC, 0, 0, 99999999.0, DMG_BLAST); //Kill it so it triggers the neccecary shit.
+			SmiteNpcToDeath(iNPC);
 			return;
 		}
 

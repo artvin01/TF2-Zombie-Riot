@@ -117,7 +117,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 			return;
 		}
 		
-		float Calculate_HP_Spikes = 90.0; 
+		float Calculate_HP_Spikes = 45.0; 
 		
 		float Bonus_damage;
 			
@@ -126,6 +126,8 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
 		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+
+		Bonus_damage *= BuildingWeaponDamageModif(1);
 		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;
@@ -211,7 +213,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 			return;
 		}
 		
-		float Calculate_HP_Spikes = 110.0; 
+		float Calculate_HP_Spikes = 55.0; 
 		
 		float Bonus_damage;
 			
@@ -220,6 +222,8 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
 		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+
+		Bonus_damage *= BuildingWeaponDamageModif(1);
 		
 		if (Bonus_damage <= 1.0)
 			Bonus_damage = 1.0;
@@ -283,7 +287,7 @@ public Action Detect_Spike_Still(Handle timer, int ref)
 	//	int client = GetEntPropEnt(entity, Prop_Send, "m_hLauncher"); //Doesnt save this shit for some reason. use array as usual!
 	//	int client = Spike_Owner[entity];
 		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(IsClientInGame(client))
+		if(IsValidClient(client))
 		{
 			if(entity>MaxClients && IsValidEntity(entity))
 			{
@@ -507,7 +511,7 @@ public void Enable_SpikeLayer(int client, int weapon)
 			delete h_TimerSpikeLayerManagement[client];
 			h_TimerSpikeLayerManagement[client] = null;
 			DataPack pack;
-			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -517,7 +521,7 @@ public void Enable_SpikeLayer(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SPIKELAYER)
 	{
 		DataPack pack;
-		h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerSpikeLayerManagement[client] = CreateDataTimer(0.1, Timer_Management_SpikeLayer, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

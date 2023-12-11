@@ -165,7 +165,7 @@ public void Enable_Irene(int client, int weapon) // Enable management, handle we
 			delete h_TimerIreneManagement[client];
 			h_TimerIreneManagement[client] = null;
 			DataPack pack;
-			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -175,7 +175,7 @@ public void Enable_Irene(int client, int weapon) // Enable management, handle we
 	if(i_CustomWeaponEquipLogic[weapon] == 6) //6 is for irene.
 	{
 		DataPack pack;
-		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerIreneManagement[client] = CreateDataTimer(0.1, Timer_Management_Irene, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -253,10 +253,25 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		}
 
 		int weapon_new = Store_GiveSpecificItem(client, "Irene's Handcannon");
-		i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
-		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
+		if(IsValidEntity(weapon_new))
+		{
+			float f_AttributeSet = Attributes_Get(weapon, 180, 0.0);
+			if(f_AttributeSet > 0.0)
+			{
+				Attributes_Set(weapon_new, 180, f_AttributeSet);
+			}
 
-		ViewChange_Switch(client, weapon_new, "tf_weapon_revolver");
+			f_AttributeSet = Attributes_Get(weapon, 206, 1.0);
+			if(f_AttributeSet < 1.0)
+			{
+				Attributes_SetMulti(weapon_new, 206, f_AttributeSet);
+			}
+
+			i_RefWeaponDelete[client] = EntIndexToEntRef(weapon_new);
+			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon_new);
+
+			ViewChange_Switch(client, weapon_new, "tf_weapon_revolver");
+		}
 
 		//We want to lag compensate this.
 		b_LagCompNPC_No_Layers = true;

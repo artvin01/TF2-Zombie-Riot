@@ -1,58 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static StringMap WeaponAttributes[MAXENTITIES + 1];
+StringMap WeaponAttributes[MAXENTITIES + 1];
 
 bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733, 309: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319: //gibs on hit
 		{
 			return true;
 		}
-		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71:
+		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122:
 		{
 			return true;
 		}
 	}
 	return false;
 }
-/*
-bool Attribute_ClientSide(int attribute)
-{
-	switch(attribute)
-	{
-		case 1,2,3,4,5,6,26,96,97,303,298,49,252,201,
-		396,116,821,128,231,263,264,54,47,41,45,
-		353,107,465,464,740,169,314,178,287:
-		{
-			return true;
-		}
-		
-			This includes
-			damage attributes					-ingame dmg code, can be fixed though.
-			attackspeed
-			clip size
-			ammo override
-			Max ammo override
-			Reload speed
-			no doublejump
-			damage force reduction				- as its internal in tf2 too much
-			Animation speed/gesture speed
-			Buff banner type
-			No_Attack
-			provide on active
-			Medigun provide						- due to speed and stuff, vaccinator too
-			Attackrange and attack fatness		- due to clientside melee hit registration
-			speed penalty
-			Sniper charge
-			Bullets per shot
-		
-	}
-	return false;
-}
-*/
 void Attributes_EntityDestroyed(int entity)
 {
 	delete WeaponAttributes[entity];
@@ -89,7 +54,7 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 	return defaul;
 }
 
-void Attributes_Set(int entity, int attrib, float value)
+bool Attributes_Set(int entity, int attrib, float value)
 {
 	if(!WeaponAttributes[entity])
 		WeaponAttributes[entity] = new StringMap();
@@ -98,8 +63,11 @@ void Attributes_Set(int entity, int attrib, float value)
 	IntToString(attrib, buffer, sizeof(buffer));
 	WeaponAttributes[entity].SetValue(buffer, value);
 
-	if(!Attribute_ServerSide(attrib))
-		TF2Attrib_SetByDefIndex(entity, attrib, value);
+	if(Attribute_ServerSide(attrib))
+		return false;
+	
+	TF2Attrib_SetByDefIndex(entity, attrib, value);
+	return true;
 }
 
 stock void Attributes_SetAdd(int entity, int attrib, float amount)

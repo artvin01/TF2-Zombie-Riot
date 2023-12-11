@@ -100,12 +100,35 @@ stock int GivePropAttachment(int entity, const char[] model)
 	return prop;
 }
 
+stock int InfoTargetParentAt(float position[3], const char[] todo_remove_massreplace_fix, float duration = 0.1)
+{
+	int info = CreateEntityByName("info_teleport_destination");
+	if (info != -1)
+	{
+		if(todo_remove_massreplace_fix[0])
+		{
+			PrintToChatAll("an info target had a name, please report this to admins!!!!");
+			ThrowError("shouldnt have a name, but does, fix it!");
+		}
+		TeleportEntity(info, position, NULL_VECTOR, NULL_VECTOR);
+		SetEntPropFloat(info, Prop_Data, "m_flSimulationTime", GetGameTime());
+		
+		DispatchSpawn(info);
+
+		//if it has no effect name, then it should always display, as its for other reasons.
+		if (duration > 0.0)
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(info), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return info;
+}
+
 stock int ParticleEffectAt(float position[3], const char[] effectName, float duration = 0.1)
 {
 	int particle = CreateEntityByName("info_particle_system");
 	if (particle != -1)
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+		SetEntPropFloat(particle, Prop_Data, "m_flSimulationTime", GetGameTime());
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		if(effectName[0])
 			DispatchKeyValue(particle, "effect_name", effectName);
@@ -119,6 +142,7 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 			AcceptEntityInput(particle, "start");
 		}
 		SetEdictFlags(particle, (GetEdictFlags(particle) & ~FL_EDICT_ALWAYS));	
+		//if it has no effect name, then it should always display, as its for other reasons.
 		if (duration > 0.0)
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -132,6 +156,8 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 	if (particle != -1)
 	{
 		TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+		SetEntPropFloat(particle, Prop_Data, "m_flSimulationTime", GetGameTime());
+
 		DispatchKeyValue(particle, "targetname", "rpg_fortress");
 		if(effectName[0])
 			DispatchKeyValue(particle, "effect_name", effectName);
@@ -628,12 +654,10 @@ stock void SetAmmo(int client, int type, int ammo)
 
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count)
 {
-	// TODO: THIS IS BAD PERFORMANCE
-	// We spawn a weapon, give attributes, remove attributes, give attributes
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count);
-	if(IsValidEntity(weapon))
+	if(weapon != -1)
 	{
-		HandleAttributes(weapon, attrib, value, count, index, client); //Thanks suza! i love my min models
+		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
 	}
 	return weapon;
 }
@@ -650,7 +674,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-	TF2_SetPlayerClass(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
+	TF2_SetPlayerClass_ZR(client, TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true)), _, false);
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
@@ -694,13 +718,13 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
-	TF2_SetPlayerClass(client, CurrentClass[client], _, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 	return entity;
 }
 //										 info.Attribs, info.Value, info.Attribs);
-public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count, int index, int client)
+public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
-	RemoveAllDefaultAttribsExceptStrings(weapon, index, client);
+	RemoveAllDefaultAttribsExceptStrings(weapon);
 	
 	for(int i = 0; i < count; i++) 
 	{
@@ -708,7 +732,7 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	}
 }
 
-void RemoveAllDefaultAttribsExceptStrings(int entity, int index, int client)
+void RemoveAllDefaultAttribsExceptStrings(int entity)
 {
 	Attributes_RemoveAll(entity);
 	
@@ -720,7 +744,7 @@ void RemoveAllDefaultAttribsExceptStrings(int entity, int index, int client)
 	ArrayList staticAttribs = TF2Econ_GetItemStaticAttributes(GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex"));
 	char Weaponname[64];
 	GetEntityClassname(entity, Weaponname, sizeof(Weaponname));
-	TF2Items_OnGiveNamedItem_Post_SDK(client, Weaponname, index, 5, 6, entity);
+	DHook_HookStripWeapon(entity);
 	
 	for(int i = 0; i < staticAttribs.Length; i++)
 	{
@@ -1087,21 +1111,31 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	pack.Reset();
 	int client = EntRefToEntIndex(pack.ReadCell());
 	int OriginalIndex = pack.ReadCell();
-	if(!IsValidClient(client))
+	if(!IsValidEntity(client))
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		return Plugin_Stop;
+	}
+	else
+	{
+		if(b_ThisWasAnNpc[client])
+		{
+			if(!b_NpcHasDied[client])
+			{
+				BleedAmountCountStack[OriginalIndex] -= 1;
+				return Plugin_Stop;
+			}
+		}
 	}
 		
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(entity == -1)
 		entity = 0;
 
-	float pos[3], ang[3];
+	float pos[3];
 	
 	pos = WorldSpaceCenter(client);
 	
-	GetClientEyeAngles(client, ang);
 	SDKHooks_TakeDamage(client, entity, entity, pack.ReadFloat(), DMG_SLASH | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	int bleed_count = pack.ReadCell();
@@ -2294,7 +2328,7 @@ stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 		Attributes_Set(entity, 292, 3.0);
 		Attributes_Set(entity, 293, 59.0);
 		Attributes_Set(entity, 495, 60.0); //Kill eater score shit, i dont know.
-	//	TF2_SetPlayerClass(client, TFClass_Engineer);
+	//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 		return entity;
 	}	
 	return -1;
@@ -2814,7 +2848,11 @@ int inflictor = 0)
 	}
 	else //only nerf blue npc radius!
 	{
-		explosionRadius *= 0.75;
+		explosionRadius *= 0.90;
+		if(explosion_range_dmg_falloff != EXPLOSION_RANGE_FALLOFF)
+		{
+			explosion_range_dmg_falloff = 0.8;
+		}
 		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
@@ -3019,6 +3057,17 @@ int inflictor = 0)
 					}
 				}
 				damage_1 += GetBeforeDamage;
+
+				ClosestDistance -= 1600.0;// Give 60 units of range cus its not going from their hurt pos
+
+				if(ClosestDistance < 0.1)
+				{
+					ClosestDistance = 0.1;
+				}
+				//we apply 50% more range, reason being is that this goes for collision boxes, so it can be abit off
+				//idealy we should fire a trace and see the distance from the trace
+				//ill do it in abit if i dont forget.
+				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
 				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius), vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
@@ -3228,10 +3277,11 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	playerPos[0] = pack.ReadFloat();
 	playerPos[1] = pack.ReadFloat();
 	playerPos[2] = pack.ReadFloat();
+	int damage_type_Custom = pack.ReadCell();
 	
 	if(IsValidEntity(Victim) && IsValidEntity(client) && IsValidEntity(weapon) && IsValidEntity(inflictor))
 	{
-		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos);
+		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos, _,damage_type_Custom);
 	}
 
 //	pack.delete;
@@ -3920,8 +3970,10 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
+int i_OwnerEntityEnvLaser[MAXENTITIES];
+
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
-							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt")
+							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
 {
 	int iBeam = CreateEntityByName("env_beam");
 	if(iBeam <= MaxClients)
@@ -3938,6 +3990,11 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 	DispatchKeyValue(iBeam, "life", "0");
 
 	DispatchSpawn(iBeam);
+
+	if(ClientToHideFirstPerson > 0)
+	{
+		AddEntityToThirdPersonTransitMode(ClientToHideFirstPerson, iBeam);
+	}
 
 	SetEntPropEnt(iBeam, Prop_Send, "m_hAttachEntity", EntIndexToEntRef(iEnt));
 
@@ -3965,6 +4022,37 @@ stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=25
 
 	return iBeam;
 }
+
+void AddEntityToThirdPersonTransitMode(int client, int entity)
+{
+	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+	SDKHook(entity, SDKHook_SetTransmit, ThirdersonTransmitEnvLaser);
+}
+
+public Action ThirdersonTransmitEnvLaser(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		if(b_FirstPersonUsesWorldModel[client])
+		{
+			return Plugin_Continue;
+		}
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return Plugin_Continue;
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
+}
+
 
 #if defined ZR
 //bool identified if it went above max health or not.
@@ -4633,4 +4721,33 @@ stock int GetOwnerLoop(int entity)
 		return GetOwnerLoop(owner);
 	else
 		return entity;
+}
+
+stock bool AtEdictLimit(int type)
+{
+	switch(type)
+	{
+		case EDICT_NPC:
+		{
+			if(CurrentEntities < 1600)
+				return false;
+		}
+		case EDICT_PLAYER:
+		{
+			if(CurrentEntities < 1700)
+				return false;
+		}
+		case EDICT_RAID:
+		{
+			if(CurrentEntities < 1800)
+				return false;
+		}
+		case EDICT_EFFECT:
+		{
+			if(CurrentEntities < 1900)
+				return false;
+		}
+	}
+
+	return true;
 }

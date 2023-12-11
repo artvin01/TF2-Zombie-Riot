@@ -50,6 +50,14 @@ enum OSType
     OS_Unknown
 }
 
+enum
+{
+	EDICT_NPC = 0,
+	EDICT_PLAYER,
+	EDICT_RAID,
+	EDICT_EFFECT
+}
+
 #define LagCompensation
 
 #define HaveLayersForLagCompensation
@@ -78,6 +86,7 @@ ConVar CvarRerouteToIpAfk;
 ConVar CvarKickPlayersAt;
 ConVar CvarMaxPlayerAlive;
 
+int CurrentEntities;
 bool Toggle_sv_cheats = false;
 bool b_MarkForReload = false; //When you wanna reload the plugin on map change...
 //#define CompensatePlayers
@@ -178,7 +187,7 @@ public const char ItemArchetype[][] =
 	"Explosive Mind",	// 8 Most Explosive weapons
 //SUPPORT ITEMS
 	"Team Support",		// 9
-	"Debuff",			// 10
+	"ArchDebuff",			// 10
 //MELEE'S
 	"Brawler",			// 11 most fist melee's
 	"Ambusher",			// 12 spy backstab weapons
@@ -230,7 +239,6 @@ bool DoingLagCompensation;
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
-bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
 bool b_IsAloneOnServer = false;
@@ -285,8 +293,8 @@ int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 
 //bool Wand_Fired;
 
-TFClassType CurrentClass[MAXTF2PLAYERS];
-TFClassType WeaponClass[MAXTF2PLAYERS];
+TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
+TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
@@ -315,8 +323,6 @@ int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no boun
 float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
-
-float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
@@ -362,6 +368,7 @@ float f_ClientInvul[MAXENTITIES]; //Extra ontop of uber if they somehow lose it 
 
 int Current_Mana[MAXTF2PLAYERS];
 float Mana_Regen_Delay[MAXTF2PLAYERS];
+float Mana_Regen_Delay_Aggreviated[MAXTF2PLAYERS];
 float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 float Mana_Hud_Delay[MAXTF2PLAYERS];
 
@@ -403,6 +410,7 @@ bool f_ClientServerShowMessages[MAXTF2PLAYERS];
 bool b_IsABow[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
+int i_HowManyBombsHud[MAXENTITIES];
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
@@ -517,6 +525,8 @@ int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
 bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
+bool b_AggreviatedSilence[MAXTF2PLAYERS];
+bool b_ProximityAmmo[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 float f_LeftForDead_Cooldown[MAXTF2PLAYERS];
@@ -565,6 +575,7 @@ Function EntityFuncReload4[MAXENTITIES];
 int i_assist_heal_player[MAXENTITIES];
 float f_assist_heal_player_time[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
+bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
 
 #if defined RPG
@@ -619,7 +630,7 @@ float f_WandDamage[MAXENTITIES]; //
 int i_WandOwner[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
-bool i_IsWandWeapon[MAXENTITIES]; 
+int i_IsWandWeapon[MAXENTITIES]; 
 bool i_IsWrench[MAXENTITIES]; 
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 bool b_is_a_brush[MAXENTITIES]; 
@@ -628,16 +639,18 @@ bool b_IsARespawnroomVisualiser[MAXENTITIES];
 float f_ImmuneToFalldamage[MAXENTITIES]; 
 int i_WeaponSoundIndexOverride[MAXENTITIES];
 int i_WeaponModelIndexOverride[MAXENTITIES];
+int i_WeaponVMTExtraSetting[MAXENTITIES];
+int i_WeaponBodygroup[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
 
-#define EXPLOSION_AOE_DAMAGE_FALLOFF 1.5
+#define EXPLOSION_AOE_DAMAGE_FALLOFF 1.55
 #define LASER_AOE_DAMAGE_FALLOFF 1.65
 #define EXPLOSION_RADIUS 150.0
-#define EXPLOSION_RANGE_FALLOFF 0.4 //obsolete.
+#define EXPLOSION_RANGE_FALLOFF 0.5 //obsolete.
 
 //#define DO_NOT_COMPENSATE_THESE 211, 442, 588, 30665, 264, 939, 880, 1123, 208, 1178, 594, 954, 1127, 327, 1153, 425, 1081, 740, 130, 595, 207, 351, 1083, 58, 528, 1151, 996, 1092, 752, 308, 1007, 1004, 1005, 206, 305
 
@@ -693,6 +706,7 @@ Handle g_hGetBonePosition;
 //PluginBot SDKCalls
 Handle g_hGetSolidMask;
 Handle g_hGetSolidMaskAlly;
+//Handle g_hGetSolidMaskNone;
 //DHooks
 //Handle g_hGetCurrencyValue;
 DynamicHook g_DHookRocketExplode; //from mikusch but edited
@@ -744,8 +758,9 @@ enum
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define NIKO_PLAYERMODEL "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
-#define COMBINE_CUSTOM_MODEL "models/zombie_riot/combine_attachment_police_216.mdl"
+#define NIKO_PLAYERMODEL		 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_216.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 
 #define DEFAULT_UPDATE_DELAY_FLOAT 0.0//0.0151 //Make it 0 for now
 
@@ -1213,6 +1228,7 @@ public void OnPluginStart()
 	OnPluginStart_LagComp();
 #endif
 	NPC_Base_InitGamedata();
+	WandProjectile_GamedataInit();
 	
 #if defined ZR
 	ZR_PluginStart();
@@ -1356,6 +1372,9 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb1.wav");
 	PrecacheSound(")weapons/pipe_bomb2.wav");
 	PrecacheSound(")weapons/pipe_bomb3.wav");
+
+	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	
 	MapStartResetAll();
 	
@@ -1379,6 +1398,7 @@ public void OnMapStart()
 	g_iHaloMaterial_Trace = PrecacheModel("materials/sprites/halo01.vmt");
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	PrecacheSound("mvm/mvm_tank_horn.wav");
 }
 
 public void OnMapEnd()
@@ -1650,6 +1670,7 @@ public void OnClientPutInServer(int client)
 #endif
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
+	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 	
 }
 
@@ -1981,8 +2002,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					if(dieingstate[target] <= 0)
 					{
 						SetEntityMoveType(target, MOVETYPE_WALK);
-						RequestFrame(Movetype_walk, target);
+						RequestFrame(Movetype_walk, EntRefToEntIndex(target));
 						dieingstate[target] = 0;
+						ClientSaveUber(target);
+						ClientSaveRageMeterStatus(target);
 						
 						SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
 						f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;
@@ -2002,7 +2025,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						PrintCenterText(target, "");
 						DoOverlay(target, "", 2);
 						SetEntityHealth(target, 50);
-						RequestFrame(SetHealthAfterRevive, target);
+						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
 						int entity, i;
 						while(TF2U_GetWearable(target, entity, i))
 						{
@@ -2101,8 +2124,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public void Movetype_walk(int client)
+public void Movetype_walk(int ref)
 {
+	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
 		SetEntityMoveType(client, MOVETYPE_WALK);
@@ -2125,7 +2149,12 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 
 public void Update_Ammo(int  client)
 {
+#if defined ZR
+	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+#endif
+#if defined RPG
 	if(IsValidClient(client))
+#endif
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
@@ -2137,7 +2166,7 @@ public void Update_Ammo(int  client)
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
 #if defined ZR
-	if(i_HealthBeforeSuit[client] == 0)
+	if(i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		RequestFrame(Update_Ammo, client);
 	}
@@ -2197,7 +2226,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			f_DelayAttackspeedPreivous[client] = attack_speed;
 		}
 
-		if(!i_IsWandWeapon[weapon] && StrContains(classname, "tf_weapon_wrench"))
+		if(i_IsWandWeapon[weapon] != 1 && StrContains(classname, "tf_weapon_wrench"))
 		{
 			if(Panic_Attack[weapon] != 0.0 && !i_IsWrench[weapon])
 			{
@@ -2305,6 +2334,9 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
+	if(entity > CurrentEntities)
+		CurrentEntities = entity;
+
 #if defined ZR
 	if (!StrContains(classname, "info_player_teamspawn")) 
 	{
@@ -2333,6 +2365,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_WeaponSizeOverride[entity] = 1.0;
 		f_WeaponSizeOverrideViewmodel[entity] = 1.0;
 		i_WeaponModelIndexOverride[entity] = 0;
+		i_WeaponVMTExtraSetting[entity] = -1;
+		i_WeaponBodygroup[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;
@@ -2593,6 +2627,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			ApplyExplosionDhook_Pipe(entity, true);
 			//SDKHook_SpawnPost doesnt work
 		}
@@ -2667,6 +2702,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
 			ApplyExplosionDhook_Pipe(entity, false);
+			SDKHook(entity, SDKHook_SpawnPost, PipeApplyDamageCustom);
 			
 #if defined ZR
 			SDKHook(entity, SDKHook_SpawnPost, Is_Pipebomb);
@@ -2677,6 +2713,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 			//SDKHook_SpawnPost doesnt work
 		}
 		else if(!StrContains(classname, "tf_projectile_rocket"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, See_Projectile_Team);
+		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			RequestFrame(See_Projectile_Team, EntIndexToEntRef(entity));
+		}
+		else if(!StrContains(classname, "zr_projectile_base"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
@@ -2749,6 +2796,18 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "info_particle_system"))
 		{
 			Hook_DHook_UpdateTransmitState(entity);
+			b_ThisEntityIgnored[entity] = true;
+		}
+		else if(!StrContains(classname, "info_target"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
+		else if(!StrContains(classname, "info_teleport_destination"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+		}
+		else if(!StrContains(classname, "env_beam"))
+		{
 			b_ThisEntityIgnored[entity] = true;
 		}
 		else if(!StrContains(classname, "func_regenerate"))
@@ -2927,11 +2986,22 @@ public void Delete_instantly_Laser_ball(int entity)
 	}
 }
 */
-
+/*
+public Action Timer_FreeEdict(Handle timer)
+{
+	CurrentEntities--;
+	return Plugin_Continue;
+}
+*/
 public void OnEntityDestroyed(int entity)
 {
+	DHook_EntityDestoryed();
+	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		CurrentEntities--;
+	//	CreateTimer(1.01, Timer_FreeEdict);
+
 		//OnEntityDestroyed_LagComp(entity);
 		
 		if(entity > MaxClients)
@@ -3300,6 +3370,11 @@ public void ConVarCallback(QueryCookie cookie, int client, ConVarQueryResult res
 	if(result == ConVarQuery_Okay)
 		f_ClientMusicVolume[client] = StringToFloat(cvarValue);
 }
+public void ConVarCallback_FirstPersonViewModel(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
+{
+	if(result == ConVarQuery_Okay)
+		b_FirstPersonUsesWorldModel[client] = view_as<bool>(StringToInt(cvarValue));
+}
 
 public void ConVarCallbackDuckToVolume(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
 {
@@ -3408,4 +3483,12 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 		KickClient(client, "You were in spectator and the server was full try: %s",buffer);
 	}
 	return Plugin_Continue;
+}
+
+void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true, bool persistent=true)
+{
+	if(classType < TFClass_Scout || classType > TFClass_Engineer)
+		classType = TFClass_Medic;
+	
+	TF2_SetPlayerClass(client, classType, weapons, persistent);
 }

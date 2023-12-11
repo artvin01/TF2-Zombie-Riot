@@ -70,8 +70,8 @@ static float f3_WasPathingToHere[MAXENTITIES][3];
 #define NPC_DEFAULT_YAWRATE 225.0
 
 #define TELEPORT_STUCK_CHECK_1 5.0
-#define TELEPORT_STUCK_CHECK_2 12.0
-#define TELEPORT_STUCK_CHECK_3 24.0
+#define TELEPORT_STUCK_CHECK_2 18.0
+#define TELEPORT_STUCK_CHECK_3 35.0
 
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
@@ -2324,7 +2324,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
@@ -2355,7 +2355,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return entity;
 	}
-	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0)
+	public int FireParticleRocket(float vecTarget[3], float rocket_damage, float rocket_speed, float damage_radius , const char[] rocket_particle = "", bool do_aoe_dmg=false , bool FromBlueNpc=true, bool Override_Spawn_Loc = false, float Override_VEC[3] = {0.0,0.0,0.0}, int flags = 0, int inflictor = INVALID_ENT_REFERENCE, float bonusdmg = 1.0, bool hide_projectile = true)
 	{
 		float vecForward[3], vecSwingStart[3], vecAngles[3];
 		this.GetVectors(vecForward, vecSwingStart, vecAngles);
@@ -2379,7 +2379,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
@@ -2404,9 +2404,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
 	
 			//Make it entirely invis. Shouldnt even render these 8 polygons.
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
-			SetEntityRenderColor(entity, 255, 255, 255, 0);
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+			if(hide_projectile)
+			{
+				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderColor(entity, 255, 255, 255, 0);
+			}
 			
 			int particle = 0;
 	
@@ -2492,7 +2495,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
 		vecForward[2] = Sine(DegToRad(vecAngles[0]))*-rocket_speed;
 
-		int entity = CreateEntityByName("tf_projectile_rocket");
+		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
 			b_EntityIsArrow[entity] = true;
@@ -2797,6 +2800,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 
 	//return the bot's collision mask
+	/*public int GetSolidMaskNothing()
+	{
+		//What to collide with
+		return 0;
+	}*/
 	public int GetSolidMask()
 	{
 		//What to collide with
@@ -2893,8 +2901,9 @@ public void NPC_Base_InitGamedata()
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
 
-	g_hGetSolidMask		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
+	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 	g_hGetSolidMaskAlly		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskAlly);
+	//g_hGetSolidMaskNone		= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMaskNone);	//warp
 
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
@@ -2960,6 +2969,7 @@ static void OnDestroy(CClotBody body)
 		}
 #endif
 	}
+	b_ThisWasAnNpc[body.index] = false;
 	b_IsAlliedNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
@@ -3840,9 +3850,12 @@ bool Player_Teleport_Safe(int client, float endPos[3])
 		}
 	}
 				
+	FoundSafeSpot = false;
 
 	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+	{
 		FoundSafeSpot = true;
+	}
 
 	if(FoundSafeSpot)
 	{
@@ -4786,7 +4799,7 @@ stock int GetClosestAllyPlayer(int entity, bool Onlyplayers = false)
 stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{	
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, entity);
 	}
@@ -4807,11 +4820,11 @@ stock bool IsSpaceOccupiedWorldOnly(const float pos[3], const float mins[3], con
 stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
 	}
-	if(b_IsAlliedNpc[entity])
+	else if(b_IsAlliedNpc[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, entity);
 	}
@@ -4828,7 +4841,7 @@ stock bool IsSpaceOccupiedWorldandBuildingsOnly(const float pos[3], const float 
 stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayDontHitPlayersOrEntityCombat, entity);
 	}
@@ -4849,7 +4862,7 @@ stock bool IsSpaceOccupiedIgnorePlayers(const float pos[3], const float mins[3],
 stock bool IsSpaceOccupiedDontIgnorePlayers(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
 {
 	Handle hTrace;
-	if(IsValidClient(entity))
+	if(IsValidClient(entity) || i_IsABuilding[entity])
 	{
 		hTrace = TR_TraceHullFilterEx(pos, pos, mins, maxs, MASK_PLAYERSOLID, TraceRayHitPlayersOnly, entity);	
 	}
@@ -6455,6 +6468,15 @@ public MRESReturn IBody_GetSolidMaskAlly(Address pThis, Handle hReturn, Handle h
 	DHookSetReturn(hReturn, (MASK_NPCSOLID|MASK_PLAYERSOLID)); 
 	return MRES_Supercede; 
 }
+/*
+public MRESReturn IBody_GetSolidMaskNone(Address pThis, Handle hReturn, Handle hParams)	//warp	  
+{ 
+	//DHookSetReturn(hReturn, view_as<CClotBody>(view_as<INextBotComponent>(pThis).GetBot().GetEntity()).GetSolidMaskAlly());
+	//causes crashes, and its unnceccacary?
+
+	DHookSetReturn(hReturn, 0); 
+	return MRES_Supercede; 
+}*/
 
 stock float[] PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead = 0.0, bool ignore = false)
 {
@@ -7083,7 +7105,7 @@ stock void ApplyBeamThinkRemoval(int ref)
 
 stock int Create_BeamParent(int parented, float f3_PositionTemp[3] = {0.0,0.0,0.0}, int beam, char[] attachment = "")
 {
-	int entity = CreateEntityByName("info_particle_system");
+	int entity = CreateEntityByName("info_teleport_destination");
 	DispatchSpawn(entity);
 
 	//Visualise.
@@ -8052,7 +8074,7 @@ public void KillNpc(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity)) //Dont do this in a think pls.
 	{
-		SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+		SmiteNpcToDeath(entity);
 	}
 }
 
@@ -8258,24 +8280,41 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 	int ref;
 	
 	Handle hTrace;
-	if(entity <= MaxClients)	// Clients
+	int SolidityFlags;
+	if(entity <= MaxClients)
 	{
-		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+		SolidityFlags = MASK_PLAYERSOLID;
 	}
 	else if(b_IsAlliedNpc[entity])
 	{
-		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID | MASK_PLAYERSOLID, BulletAndMeleeTrace, entity);
+		SolidityFlags = MASK_NPCSOLID | MASK_PLAYERSOLID;
 	}
 	else
 	{
-		hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, MASK_NPCSOLID, BulletAndMeleeTrace, entity);
+		SolidityFlags = MASK_NPCSOLID;
 	}
+	hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, SolidityFlags, BulletAndMeleeTrace, entity);
+
 	ref = TR_GetEntityIndex(hTrace);
 	delete hTrace;
+	float pos_player[3];
+	pos_player = WorldSpaceCenter(entity);
+	float Pos2Test_Higher[3];
+	Pos2Test_Higher = Pos;
+	Pos2Test_Higher[2] += 35.0;
+	hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
+	if ( TR_GetFraction(hTrace) < 1.0)
+	{
+		delete hTrace;
+		return false;
+	}
 	if(ref < 0) //It hit nothing, good!
 	{
 		if(!check_for_Ground_Clerance)
+		{
+			delete hTrace;
 			return true;
+		}
 
 		//We aint done yet!
 		float Pos2Test[3];
@@ -8300,10 +8339,9 @@ bool IsSafePosition(int entity, float Pos[3], float mins[3], float maxs[3], bool
 		{
 			return true;
 		}
-		
 	}
-	
 	//It Hit something, bad!
+	delete hTrace;
 	return false;
 }
 
@@ -8398,9 +8436,9 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%s#",HealthText);
 	}
-	if(b_HasBombImplanted[npc.index])
+	if(i_HowManyBombsHud[npc.index] > 0)
 	{
-		Format(HealthText, sizeof(HealthText), "%s!",HealthText);
+		Format(HealthText, sizeof(HealthText), "%s!%i",HealthText, i_HowManyBombsHud[npc.index]);
 	}
 	if(f_TimeFrozenStill[npc.index] > GetGameTime(npc.index))
 	{
@@ -9003,13 +9041,18 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 
 stock void SmiteNpcToDeath(int entity)
 {
+	if(!b_ThisWasAnNpc[entity])
+		return;
+		
 	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
+	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_SLASH, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 
 void MapStartResetNpc()
 {
 	for(int i=0; i < MAXENTITIES; i++)
 	{
+		b_ThisWasAnNpc[i] = false;
 		b_NpcHasDied[i] = true;
 		b_StaticNPC[i] = false;
 		b_IsAlliedNpc[i] = false;

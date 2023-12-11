@@ -2285,4 +2285,12 @@
 	{
 		"en"	"Deathless"
 	}
+	"Ion-Blitz"
+	{
+		"en"	"Ion-Blitz"
+	}
+	"Blitz-Blade"
+	{
+		"en"	"Blitz-Blade"
+	}
 }

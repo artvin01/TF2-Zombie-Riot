@@ -91562,7 +91562,7 @@ entity
 entity
 {
 	"id" "251494"
-	"classname" "info_target"
+	"classname" "info_teleport_destination"
 	"angles" "0 0 0"
 	"spawnflags" "0"
 	"targetname" "blue_anti_stuck_tele"

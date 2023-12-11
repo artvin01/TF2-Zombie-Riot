@@ -103,7 +103,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			
 			Create_Halo_And_Wings(client, true);
 			DataPack pack;
-			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -116,7 +116,7 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 		
 		Create_Halo_And_Wings(client, true);
 		DataPack pack;
-		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -472,6 +472,11 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 		
+	if(AtEdictLimit(EDICT_PLAYER))
+	{
+		Destroy_Halo_And_Wings(client, 3);
+		return;
+	}
 	
 	if(first)
 	{
@@ -560,10 +565,23 @@ static void Create_Halo(int client)
 {
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(client, "head", flPos, flAng);
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+	if(!IsValidEntity(viewmodelModel))
+		return;
+
+	if(AtEdictLimit(EDICT_PLAYER))
+	{
+		Destroy_Halo_And_Wings(client, 3);
+		return;
+	}
+		
+	GetAttachment(viewmodelModel, "head", flPos, flAng);
 	flPos[2] += 10.0;
 	int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
-	SetParent(client, particle, "head");
+	AddEntityToThirdPersonTransitMode(client, particle);
+	SetParent(viewmodelModel, particle, "head");
 	i_halo_particles[client] = EntRefToEntIndex(particle);
 }
 static void Create_Wings(int client, int viewmodelModel)
@@ -582,10 +600,10 @@ static void Create_Wings(int client, int viewmodelModel)
 	f_end = 1.0;
 	amp = 1.0;
 	
-	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
 	
 	
-	int particle_1 = ParticleEffectAt({0.0,15.0,-12.5}, "", 0.0);
+	int particle_1 = InfoTargetParentAt({0.0,15.0,-12.5}, "", 0.0);
 	
 	SetParent(particle_0, particle_1);
 	
@@ -597,15 +615,15 @@ static void Create_Wings(int client, int viewmodelModel)
 	//ALL OF THESE ARE RELATIVE TO THE BACKPACK POINT THINGY, or well the viewmodel, but its easier to visualise if using the back
 	//Left?
 	
-	int particle_2 = ParticleEffectAt({20.0, 10.5, 2.5}, "", 0.0);	//x,y,z	//Z axis IS NOT UP/DOWN, its forward and backwards. somehow
-	int particle_2_1 = ParticleEffectAt({45.0, 35.0, -5.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({20.0, 10.5, 2.5}, "", 0.0);	//x,y,z	//Z axis IS NOT UP/DOWN, its forward and backwards. somehow
+	int particle_2_1 = InfoTargetParentAt({45.0, 35.0, -5.0}, "", 0.0);
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_2, particle_2_1, "",_, true);
 
 
 	//Right? probably right?
-	int particle_3 = ParticleEffectAt({-20.0, 10.5, 2.5}, "", 0.0);
-	int particle_3_1 = ParticleEffectAt({-45.0, 35.0, -5.0}, "", 0.0);
+	int particle_3 = InfoTargetParentAt({-20.0, 10.5, 2.5}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-45.0, 35.0, -5.0}, "", 0.0);
 	SetParent(particle_1, particle_3, "",_, true);
 	SetParent(particle_3, particle_3_1, "",_, true);
 
@@ -613,12 +631,12 @@ static void Create_Wings(int client, int viewmodelModel)
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
 	SetParent(viewmodelModel, particle_0, "flag",_);
 
-	i_wing_lasers[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_3, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_3_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	i_wing_lasers[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_wing_lasers[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3, particle_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_3, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_3_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
+	i_wing_lasers[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM, client));
 	
 	i_wing_particles[client][0] = EntIndexToEntRef(particle_1);
 	

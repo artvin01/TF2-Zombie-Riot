@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define CURRENT_MAX_LEVEL	55 // E2 L25
+#define CURRENT_MAX_LEVEL	60 // E2 L30
 
 //static Handle HudLevel;
 static Cookie SpawnCookie;

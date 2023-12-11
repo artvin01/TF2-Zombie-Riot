@@ -1,6 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum struct RawHooks
+{
+	int Ref;
+	int Pre;
+	int Post;
+}
+
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
 static int GetChargeEffectBeingProvided;
@@ -29,6 +36,11 @@ static bool Dont_Move_Allied_Npc;											//dont move buildings
 static int TeamBeforeChange;											//dont move buildings	
 
 static bool b_LagCompNPC;
+
+static DynamicHook HookItemIterateAttribute;
+static ArrayList RawEntityHooks;
+static int m_bOnlyIterateItemViewAttributes;
+static int m_Item;
 
 /*
 // Offsets from mikusch but edited
@@ -91,6 +103,7 @@ void DHook_Setup()
 	//nosoop
 
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
+	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -136,7 +149,11 @@ void DHook_Setup()
 		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);
 		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
 	}
-		
+
+	HookItemIterateAttribute = DynamicHook.FromConf(gamedata, "CEconItemView::IterateAttributes");
+
+	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
+	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
 	
 	delete gamedata;
 	
@@ -148,7 +165,6 @@ void DHook_Setup()
 	
 	delete gamedata_lag_comp;
 	GameData edictgamedata = LoadGameConfigFile("edict_limiter");
-
 	//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
 	//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
 	//	Patch TF2 not reusing edict slots and crashing with a ton of free slots
@@ -170,6 +186,69 @@ void DHook_Setup()
 	delete edictgamedata;
 }
 
+void DHook_EntityDestoryed()
+{
+	RequestFrame(DHook_EntityDestoryedFrame);
+}
+
+public void DHook_EntityDestoryedFrame()
+{
+	if(RawEntityHooks)
+	{
+		int length = RawEntityHooks.Length;
+		if(length)
+		{
+			RawHooks raw;
+			for(int i; i < length; i++)
+			{
+				RawEntityHooks.GetArray(i, raw);
+				if(!IsValidEntity(raw.Ref))
+				{
+					if(raw.Pre != INVALID_HOOK_ID)
+						DynamicHook.RemoveHook(raw.Pre);
+					
+					if(raw.Post != INVALID_HOOK_ID)
+						DynamicHook.RemoveHook(raw.Post);
+					
+					RawEntityHooks.Erase(i--);
+					length--;
+				}
+			}
+		}
+	}
+}
+
+void DHook_HookStripWeapon(int entity)
+{
+	if(m_Item > 0 && m_bOnlyIterateItemViewAttributes > 0)
+	{
+		if(!RawEntityHooks)
+			RawEntityHooks = new ArrayList(sizeof(RawHooks));
+		
+		Address pCEconItemView = GetEntityAddress(entity) + view_as<Address>(m_Item);
+		
+		RawHooks raw;
+		
+		raw.Ref = EntIndexToEntRef(entity);
+		raw.Pre = HookItemIterateAttribute.HookRaw(Hook_Pre, pCEconItemView, DHook_IterateAttributesPre);
+		raw.Post = HookItemIterateAttribute.HookRaw(Hook_Post, pCEconItemView, DHook_IterateAttributesPost);
+		
+		RawEntityHooks.PushArray(raw);
+	}
+}
+
+public MRESReturn DHook_IterateAttributesPre(Address pThis, DHookParam hParams)
+{
+	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), true, NumberType_Int8);
+	return MRES_Ignored;
+}
+
+public MRESReturn DHook_IterateAttributesPost(Address pThis, DHookParam hParams)
+{
+	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
+	return MRES_Ignored;
+}
+
 //cancel melee, we have our own.
 public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHookParam param)
 {
@@ -177,6 +256,10 @@ public MRESReturn DHook_DoSwingTracePre(int entity, DHookReturn returnHook, DHoo
 	return MRES_Supercede;
 }
 
+public MRESReturn DHook_CreateMedigunShieldPre(int entity, DHookReturn returnHook)
+{
+	return MRES_Supercede;
+}
 void OnWrenchCreated(int entity) 
 {
 	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
@@ -246,7 +329,7 @@ public MRESReturn SpeakConceptIfAllowed_Pre(int client, Handle hReturn, Handle h
 			{
 				CurrentClass[client_2] = TFClass_Scout;
 			}
-			TF2_SetPlayerClass(client_2, CurrentClass[client_2], false, false);
+			TF2_SetPlayerClass_ZR(client_2, CurrentClass[client_2], false, false);
 		}
 	}
 	return MRES_Ignored;
@@ -274,7 +357,7 @@ public MRESReturn SpeakConceptIfAllowed_Post(int client, Handle hReturn, Handle 
 					{
 						WeaponClass[client_2] = TFClass_Scout;
 					}
-					TF2_SetPlayerClass(client_2, WeaponClass[client_2], false, false);
+					TF2_SetPlayerClass_ZR(client_2, WeaponClass[client_2], false, false);
 				}
 		}
 	}
@@ -313,6 +396,11 @@ public void ApplyExplosionDhook_Pipe(int entity, bool Sticky)
 	//Hacky? yes, But i gotta.
 	
 	//I have to do it twice, if its a custom spawn i have to do it insantly, if its a tf2 spawn then i have to do it seperatly.
+}
+
+void PipeApplyDamageCustom(int entity)
+{
+	f_CustomGrenadeDamage[entity] = GetEntPropFloat(entity, Prop_Send, "m_flDamage");
 }
 
 void See_Projectile_Team(int entity)
@@ -1104,7 +1192,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
-		TF2_SetPlayerClass(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
+		TF2_SetPlayerClass_ZR(Compensator, TFClass_Scout, false, false); //Make sure they arent a medic during this! Reason: Mediguns lag comping, need both to be a medic and have a medigun
 		LagCompMovePlayersExceptYou(Compensator);
 	}
 	
@@ -1117,7 +1205,7 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	int Compensator = param.Get(1);
 	if(b_LagCompNPC_BlockInteral)
 	{
-		TF2_SetPlayerClass(Compensator, WeaponClass[Compensator], false, false); 
+		TF2_SetPlayerClass_ZR(Compensator, WeaponClass[Compensator], false, false); 
 	//	return MRES_Supercede;
 	}
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
@@ -1488,7 +1576,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
-		RequestFrame(SetHealthAfterRevive, client);
+		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 	}
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
@@ -1656,7 +1744,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn 
 {
 	if(IsClientInGame(client))
 	{
-		TF2_SetPlayerClass(client, TFClass_Medic, false, false);
+		TF2_SetPlayerClass_ZR(client, TFClass_Medic, false, false);
 		GetChargeEffectBeingProvided = client;
 	}
 	return MRES_Ignored;
@@ -1667,9 +1755,9 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 	if(GetChargeEffectBeingProvided)
 	{
 		#if defined NoSendProxyClass
-		TF2_SetPlayerClass(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
+		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
 		#else
-		TF2_SetPlayerClass(GetChargeEffectBeingProvided, CurrentClass[GetChargeEffectBeingProvided], false, false);
+		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, CurrentClass[GetChargeEffectBeingProvided], false, false);
 		#endif
 		GetChargeEffectBeingProvided = 0;
 	}
@@ -1730,19 +1818,29 @@ public MRESReturn DHook_IsPlayerClassPre(int client, DHookReturn ret, DHookParam
 }
 #endif
 
+bool WasMedicPreRegen[MAXTF2PLAYERS];
+
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
 {
 	if(TF2_GetPlayerClass(client) == TFClass_Medic)
-		TF2_SetPlayerClass(client, TFClass_Unknown, false, false);
+	{
+		WasMedicPreRegen[client] = true;
+		TF2_SetPlayerClass_ZR(client, TFClass_Scout, false, false);
+	}
+	else
+	{
+		WasMedicPreRegen[client] = false;
+	}
 
 	return MRES_Ignored;
 }
 
 public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 {
-	if(TF2_GetPlayerClass(client) == TFClass_Unknown)
-		TF2_SetPlayerClass(client, TFClass_Medic, false, false);
-
+	if(WasMedicPreRegen[client])
+		TF2_SetPlayerClass_ZR(client, TFClass_Medic, false, false);
+		
+	WasMedicPreRegen[client] = false;
 	return MRES_Ignored;
 }
 
@@ -1817,7 +1915,7 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 	TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
 	if(class != TFClass_Unknown)
 	{
-		TF2_SetPlayerClass(client, class, false, false);
+		TF2_SetPlayerClass_ZR(client, class, false, false);
 	}
 
 	return MRES_Ignored;
@@ -1827,9 +1925,9 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 {
 	//Set class back to what it was
 	#if defined NoSendProxyClass
-	TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	#else
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 	#endif
 	return MRES_Ignored;
 }
@@ -2040,10 +2138,11 @@ public MRESReturn Dhook_BlowHorn_Post(int entity)
 
 public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 {
+	/*
 	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
 	if(IsValidClient(client))
 		f_BannerDurationActive[client] = GetGameTime() + 1.1;
-
+	*/
 	return MRES_Supercede;
 }
 
@@ -2067,12 +2166,93 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		BuffBannerActivate(client, weapon);
 		BuffBattilonsActivate(client, weapon);
 	}
+	RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
+
+
 #endif
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch
 	return MRES_Ignored;
 }
 
+stock void DelayEffectOnHorn(int ref)
+{
+	//i do not trust banner durations.
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+
+	float ExtendDuration = 10.0;
+
+	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
+
+#if defined ZR
+	if(b_ArkantosBuffItem[client])
+	{
+		int r = 200;
+		int g = 200;
+		int b = 255;
+		int a = 200;
+		ExtendDuration *= 1.5;
+		EmitSoundToAll("mvm/mvm_tank_horn.wav", client, SNDCHAN_STATIC, 80, _, 0.45);
+		
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
+		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+	}
+#endif
+
+	if(ExtendDuration <= 10.0)
+	{
+		return;
+	}
+	ExtendDuration -= 9.0;
+
+	DataPack pack;
+	CreateDataTimer(0.1, TimerSetBannerExtraDuration, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(ExtendDuration + GetGameTime());
+	
+	CreateTimer(0.25, TimerGrantBannerDuration, EntIndexToEntRef(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+
+	//"Expidonsan Battery Device"
+}
+public Action TimerGrantBannerDuration(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+
+	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
+		return Plugin_Stop;
+	
+	f_BannerDurationActive[client] = GetGameTime() + 0.35;
+	Event event = CreateEvent("deploy_buff_banner", true);
+	event.SetInt("buff_type", 1);
+	event.SetInt("buff_owner", GetClientUserId(client));
+	event.Fire();
+
+	return Plugin_Continue;
+}
+
+public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client))
+		return Plugin_Stop;
+	
+	float TimeUntillStopExtend = pack.ReadFloat();
+	if(TimeUntillStopExtend < GetGameTime())
+		return Plugin_Stop;
+
+	SetEntPropFloat(client, Prop_Send, "m_flRageMeter", 90.0);
+	SetEntProp(client, Prop_Send, "m_bRageDraining", 1);
+
+	return Plugin_Continue;
+}
 /*
 ( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
 */
@@ -2081,14 +2261,14 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
 {
 	PrintToChatAll("%f DHookGiveDefaultItems_Pre::%d", GetEngineTime(), CurrentClass[client]);
-	//TF2_SetPlayerClass(client, CurrentClass[client]);
+	//TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
 
 public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams) 
 {
 	PrintToChatAll("%f DHookGiveDefaultItems_Post::%d", GetEngineTime(), WeaponClass[client]);
-	//TF2_SetPlayerClass(client, WeaponClass[client], false, false);
+	//TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
 }
 */
@@ -2100,7 +2280,7 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 	{
 		CurrentClass[client] = TFClass_Scout;
 	}
-	TF2_SetPlayerClass(client, CurrentClass[client]);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
 

@@ -1285,4 +1285,8 @@
 	{
 		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns..."
 	}
+	"Storm Weaver Desc"
+	{
+		"en"		"A servant of The Scourge" 	//NEED DESC
+	}
 }

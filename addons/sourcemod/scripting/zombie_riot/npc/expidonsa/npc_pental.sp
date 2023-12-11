@@ -284,17 +284,20 @@ void PentalSelfDefense(Pental npc, float gameTime, int target, float distance)
 
 void PentalEffects(int iNpc)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	
-	int particle_2 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
 	
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);

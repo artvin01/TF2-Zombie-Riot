@@ -132,15 +132,18 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 	if(cooldown < 0.0)
 	{
 		Leper_Hud_Logic(client, weapon, true);
-		if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
+		if(!CvarInfiniteCash.BoolValue)
 		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			return;
-		}
-		if(Leper_SolemnyCharge[client] < LEPER_SOLEMNY_MAX_HITS)
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			return;
+			if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
+			if(Leper_SolemnyCharge[client] < LEPER_SOLEMNY_MAX_HITS)
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
 		}
 
 		Leper_SolemnyCharge[client] = 0;
@@ -249,7 +252,9 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 		RemoveEntity(camreadelete);
 
 	if(DeleteKillEntity != -1)
-		SDKHooks_TakeDamage(DeleteKillEntity, 0, 0, 99999999.9);
+	{
+		SmiteNpcToDeath(DeleteKillEntity);
+	}
 
 	if(!client)
 		return Plugin_Stop;
@@ -501,7 +506,7 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 			delete Timer_Leper_Management[client];
 			Timer_Leper_Management[client] = null;
 			DataPack pack;
-			Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -511,7 +516,7 @@ public void Enable_Leper(int client, int weapon) // Enable management, handle we
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_LEPER_MELEE_PAP) //
 	{
 		DataPack pack;
-		Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Leper_Management[client] = CreateDataTimer(0.1, Timer_Management_Leper, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

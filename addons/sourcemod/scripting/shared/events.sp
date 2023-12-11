@@ -46,6 +46,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zero(Resupplies_Supplied);
 	Zero(i_BarricadeHasBeenDamaged);
 	Zero(i_ExtraPlayerPoints);
+	WaveStart_SubWaveStart(GetGameTime());
 	CurrentGibCount = 0;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -181,7 +182,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
-		TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 		if(b_IsPlayerNiko[client])
 		{
@@ -428,7 +429,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-	TF2_SetPlayerClass(client, CurrentClass[client], false, false);
+	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
@@ -437,6 +438,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
+	Update_Ammo(client);
 	Escape_DropItem(client);
 	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
 	{
@@ -454,6 +456,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	}
 
 	//Incase they die, do suit!
+	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
 	UnequipQuantumSet(client);
@@ -463,6 +466,8 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
 	Skulls_PlayerKilled(client);
+	// Save current uber.
+	ClientSaveUber(client);
 #endif
 
 #if defined RPG

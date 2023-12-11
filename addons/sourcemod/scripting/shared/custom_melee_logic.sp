@@ -204,6 +204,14 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Flagellant_DoSwingTrace(client);
 			}
+			case WEAPON_IMPACT_LANCE:
+			{
+				Wand_Impact_Lance_Multi_Hit(client, CustomMeleeRange, CustomMeleeWide);
+			}
+			case WEAPON_KIT_BLITZKRIEG_CORE:
+			{
+				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif
@@ -313,7 +321,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 
 }
 
-int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
+stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int weapon_index, int weapon, bool &PlayOnceOnly = false)
 {
 	if(target == -1)
 		return ZEROSOUND;
@@ -358,6 +366,7 @@ stock bool IsValidCurrentWeapon(int client, int weapon)
 	int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon > 1 && Active_weapon > 1 && weapon == Active_weapon)
 	{
+#if defined ZR
 		switch(i_CustomWeaponEquipLogic[Active_weapon])
 		{
 			case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
@@ -366,6 +375,7 @@ stock bool IsValidCurrentWeapon(int client, int weapon)
 					return false;
 			}
 		}
+#endif
 		return true;
 	}
 	return false;
@@ -425,6 +435,23 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	pack.ReadString(classname, 32);
 	if(client && weapon != -1 && IsValidCurrentWeapon(client, weapon))
 	{
+
+#if defined ZR
+		float damage_test_validity = 1.0; 
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_IMPACT_LANCE: //yes, if we miss, then we do other stuff.
+			{
+				LanceDamageCalc(client, weapon, damage_test_validity, true);
+			}
+		}
+		if(damage_test_validity == 0.0) //here we put weapons that have special rules regarding attacking via a melee, can they even attack? etc etc.
+		{
+			delete pack;
+			return;
+		}
+#endif
+
 		int aoeSwing = 1;
 
 		Handle swingTrace;
@@ -510,11 +537,29 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 						
 			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+
+#if defined ZR
+			damage *= BuildingWeaponDamageModif(1);
+#endif
+
 		}
 		
 			
 		damage *= Attributes_Get(weapon, 1, 1.0);
-				
+
+#if defined ZR
+		switch(i_CustomWeaponEquipLogic[weapon])
+		{
+			case WEAPON_IMPACT_LANCE: //yes, if we miss, then we do other stuff.
+			{
+				LanceDamageCalc(client, weapon, damage);
+			}
+			case WEAPON_KIT_BLITZKRIEG_CORE:
+			{
+				Blitzkrieg_Kit_Custom_Damage_Calc(client, damage);
+			}
+		}
+#endif
 		
 		bool PlayOnceOnly = false;
 		float playerPos[3];
@@ -548,6 +593,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
 					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
 					
+#if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
 					{
 						case WEAPON_SEABORNMELEE:
@@ -559,6 +605,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 							
 						}
 					}
+#endif
+
 				}
 			}
 		}
@@ -567,7 +615,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && Item_Index != 214)
+		if(target > 0 && IsValidEntity(target) && Item_Index != 214)
 		{
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);

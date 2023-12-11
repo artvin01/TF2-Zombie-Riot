@@ -648,7 +648,7 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 			damage = 0.0;
 			RaidModeTime += 60.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			CPrintToChatAll("{lightblue}God Arkantos{default}: Thats it, i will make you listen.");
+			CPrintToChatAll("{lightblue}God Arkantos{default}: That's it, I will make you listen.");
 			return Plugin_Handled;
 		}
 	}
@@ -916,11 +916,11 @@ public void GodArkantos_NPCDeath(int entity)
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know what you are doing!!");
+				CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know what you are doing!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: We should be fighting together, not against eachother, the {blue}sea{default} will be your doom...");
+				CPrintToChatAll("{lightblue}God Arkantos{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
 			}
 		}
 	}
@@ -1562,7 +1562,7 @@ void ArkantosSayWords()
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know the dangers youre getting yourself into fighting me and my army at the same time!");
+			CPrintToChatAll("{lightblue}God Arkantos{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
 		}
 		case 1:
 		{
@@ -1595,17 +1595,17 @@ bool ArkantosForceTalk()
 			case 0:
 			{
 				ReviveAll(true);
-				CPrintToChatAll("{lightblue}God Arkantos{default}: Since you refuse to listen, i will have to restrain you.");
+				CPrintToChatAll("{lightblue}God Arkantos{default}: Since you refuse to listen, I will have to restrain you.");
 				i_TalkDelayCheck += 1;
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: I am not your enemy and i can revive all my allies, so do not worry.");
+				CPrintToChatAll("{lightblue}God Arkantos{default}: I am not your enemy and I can revive all my allies, so do not worry.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: The true enemy is the {blue}sea{default}, if we dont beat them, then were done for. They can infect any one of us.");
+				CPrintToChatAll("{lightblue}God Arkantos{default}: The true enemy is the {blue}sea{default}, if we don't beat them, then were done for. They can infect any one of us.");
 				i_TalkDelayCheck += 1;
 			}
 			case 3:

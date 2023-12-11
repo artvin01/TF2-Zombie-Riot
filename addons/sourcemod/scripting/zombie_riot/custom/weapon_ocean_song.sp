@@ -40,7 +40,7 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 	{
 		ApplyExtraOceanEffects(client);
 		DataPack pack;
-		h_TimerOceanSongManagement[client] = CreateDataTimer(0.1, Timer_Management_OceanSong, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerOceanSongManagement[client] = CreateDataTimer(0.1, Timer_Management_OceanSong, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -236,7 +236,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	i_Particle_2[client] = EntIndexToEntRef(particle2);
 
 
-	i_Laser_1[client] = EntIndexToEntRef(ConnectWithBeamClient(particle, particle2, 200, 65, 65, 4.0, 2.0, 1.0, LASERBEAM));
+	i_Laser_1[client] = EntIndexToEntRef(ConnectWithBeamClient(particle, particle2, 200, 65, 65, 4.0, 2.0, 1.0, LASERBEAM, client));
 }
 //main code responsible for checking if the player is alive etc. and actualy giving the buffs
 public Action Timer_Management_OceanSong(Handle timer, DataPack pack)

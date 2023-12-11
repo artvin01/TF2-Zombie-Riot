@@ -1837,4 +1837,8 @@
 	{
 		"en"	"Magia Anchor"
 	}
+	"Storm Weaver"
+	{
+		"en"	"Storm Weaver"
+	}
 }

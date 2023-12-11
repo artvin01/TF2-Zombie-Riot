@@ -278,6 +278,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 					pack.WriteFloat(playerPos[0]);
 					pack.WriteFloat(playerPos[1]);
 					pack.WriteFloat(playerPos[2]);
+					pack.WriteCell(0);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					
 					fl_Yamato_Motivation[client] -= YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN;	//blocks gain on hit.
@@ -414,7 +415,7 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 	vecForward[1] = Cosine(DegToRad(Angles[0]))*Sine(DegToRad(Angles[1]))*speed;
 	vecForward[2] = Sine(DegToRad(Angles[0]))*-speed;
 
-	int entity = CreateEntityByName("tf_projectile_rocket");
+	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
 		
@@ -569,7 +570,7 @@ public void Activate_Yamato(int client, int weapon) // Enable management, handle
 			delete TimerYamatoManagement[client];
 			TimerYamatoManagement[client] = null;
 			DataPack pack;
-			TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
@@ -582,7 +583,7 @@ public void Activate_Yamato(int client, int weapon) // Enable management, handle
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAMATO)
 	{
 		DataPack pack;
-		TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}

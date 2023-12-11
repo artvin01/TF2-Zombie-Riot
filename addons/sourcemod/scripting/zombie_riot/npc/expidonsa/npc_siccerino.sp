@@ -291,20 +291,23 @@ void SiccerinoSelfDefense(Siccerino npc, float gameTime, int target, float dista
 
 void SiccerinoEffects(int iNpc)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
 	
-	int particle_2 = ParticleEffectAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
-	int particle_3 = ParticleEffectAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_4 = ParticleEffectAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5 = ParticleEffectAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({0.0,10.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({10.0,50.0,0.0}, "", 0.0); //First offset we go by
 
-	int particle_3_i = ParticleEffectAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
-	int particle_5_i = ParticleEffectAt({-10.0,50.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5_i = InfoTargetParentAt({-10.0,50.0,0.0}, "", 0.0); //First offset we go by
 	
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -333,12 +336,12 @@ void SiccerinoEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
 	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
-	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_3_i);
-	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_5_i);
-	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1);
-	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2);
-	i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(Laser_3);
-	i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(Laser_1_i);
-	i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(Laser_2_i);
-	i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(Laser_3_i);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_3_i);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_5_i);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_3);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_1_i);
+	i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(Laser_2_i);
+	i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(Laser_3_i);
 }

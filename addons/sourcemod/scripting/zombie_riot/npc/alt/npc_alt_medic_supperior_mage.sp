@@ -906,8 +906,9 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		int Iondamage = ReadPackCell(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
-		if(!IsValidEntity(client))
+		if(!IsValidEntity(client) || b_NpcHasDied[client])
 		{
+			delete data;
 			return;
 		}
 		
@@ -988,6 +989,8 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		}
 		Iondistance -= 10;
 		
+		delete data;
+
 		Handle nData = CreateDataPack();
 		WritePackFloat(nData, startPosition[0]);
 		WritePackFloat(nData, startPosition[1]);
@@ -1000,7 +1003,7 @@ public void NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIonBeam(float startPosition[3], con
 		ResetPack(nData);
 		
 		if (Iondistance > -30)
-		CreateTimer(0.1, NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+		CreateTimer(0.1, NPC_ALT_MEDIC_SUPPERIOR_MAGE_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else
 		{
 			if(!b_Anger[client])

@@ -287,11 +287,14 @@ void BlemishineAuraEffects(int client, float duration)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
+		
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(viewmodelModel, "flag", flPos, flAng);
 
-	int particle_1 = ParticleEffectAt({0.0,0.0,0.0}, "", duration);
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", duration);
 	int particle_2 = ParticleEffectAt({50.0,-10.0,10.0}, "rockettrail_fire_airstrike", duration);
 	int particle_2_1 = ParticleEffectAt({80.0,-5.0,-20.0}, "rockettrail_fire_airstrike", duration);
 	SetParent(particle_1, particle_2, "",_, true);
@@ -307,10 +310,10 @@ void BlemishineAuraEffects(int client, float duration)
 	SetParent(viewmodelModel, particle_1, "flag",_);
 
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_1, 200, 166, 35, 2.0, 6.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_3, particle_1, 200, 166, 35, 2.0, 6.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_3_1, particle_3, 200, 166, 35, 1.0, 2.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_2_1, particle_2, 200, 166, 35, 1.0, 2.0, 1.0, LASERBEAM);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_1, 200, 166, 35, 2.0, 6.0, 1.0, LASERBEAM, client);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_1, 200, 166, 35, 2.0, 6.0, 1.0, LASERBEAM, client);
+	int Laser_3 = ConnectWithBeamClient(particle_3_1, particle_3, 200, 166, 35, 1.0, 2.0, 1.0, LASERBEAM, client);
+	int Laser_4 = ConnectWithBeamClient(particle_2_1, particle_2, 200, 166, 35, 1.0, 2.0, 1.0, LASERBEAM, client);
 
 	CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(Laser_1), TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(Laser_2), TIMER_FLAG_NO_MAPCHANGE);

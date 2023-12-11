@@ -3,7 +3,7 @@
 
 enum
 {
-	Mode_None = -1
+	Mode_None = -1,
 	Mode_NPCIndex = 0,
 	Mode_SpawnRate,
 	Mode_SpawnHealth,

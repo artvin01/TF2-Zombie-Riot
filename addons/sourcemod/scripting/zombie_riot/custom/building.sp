@@ -210,9 +210,20 @@ static int Beam_Glow;
 
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 
+Handle h_ClaimedBuilding[MAXPLAYERS + 1][MAXENTITIES];
 static Handle h_Pickup_Building[MAXPLAYERS + 1];
 static float Perk_Machine_Sickness[MAXTF2PLAYERS];
 
+void Building_PluginStart()
+{
+	for(int i; i < MAXPLAYERS + 1; i++)
+	{
+		for(int i1; i1 < MAXENTITIES; i1++)
+		{
+			h_ClaimedBuilding[i][i1] = null;
+		}
+	}
+}
 void Building_MapStart()
 {
 	if(Village_Effects)
@@ -769,10 +780,14 @@ public bool Building_AmmoBox(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 
@@ -810,10 +825,14 @@ public bool Building_ArmorTable(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 
@@ -857,10 +876,14 @@ public bool Building_PerkMachine(int client, int entity)
 	
 //	SDKHook(entity, SDKHook_SetTransmit, BuildingSetAlphaClientSideReady_SetTransmit);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 
@@ -900,10 +923,14 @@ public bool Building_PackAPunch(int client, int entity)
 	b_SentryIsCustom[entity] = false;
 	CreateTimer(0.5, Building_TimerDisableDispenser, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
+	if(h_ClaimedBuilding[client][entity] != null)
+		delete h_ClaimedBuilding[client][entity];
+
 	DataPack pack;
-	CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+	h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(entity));
 	pack.WriteCell(EntIndexToEntRef(client)); 
+	pack.WriteCell(entity); 
 	pack.WriteCell(client); //Need original client index id please.
 	i_SupportBuildingsBuild[client] += 1;
 	
@@ -950,37 +977,6 @@ public Action Building_TimerDisableDispenser(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
-
-/*
-void Building_IncreaseSentryLevel(int client)
-{
-	int level = RoundFloat(Attributes_FindOnPlayerZR(client, 148)) + 1;
-	
-	int sentry = MaxClients+1;
-	while((sentry=FindEntityByClassname(sentry, "obj_sentrygun")) != -1)
-	{
-		if(GetEntPropEnt(sentry, Prop_Send, "m_hBuilder") == client)
-		{
-			SetEntProp(sentry, Prop_Send, "m_iUpgradeLevel", level);
-			switch(level)
-			{
-				case 2:
-				{
-					SetEntityModel(sentry, "models/buildables/sentry2.mdl");
-				}
-				case 3:
-				{
-					SetEntityModel(sentry, "models/buildables/sentry3.mdl");
-				}
-				default:
-				{
-					SetEntityModel(sentry, "models/buildables/sentry1.mdl");
-				}
-			}
-		}
-	}
-}
-*/
 
 public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -1043,7 +1039,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 
 	damage *= fl_Extra_Damage[attacker];
 
-	if(f_FreeplayDamageExtra != 1.0)
+	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
 		damage *= f_FreeplayDamageExtra;
 	}
@@ -1168,12 +1164,21 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			{
 				Building_Max_Health[entity] = 1;
 			}
-			
-			red = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			
-			red = 255 - red;
+
+			int BuildingHealth = GetEntProp(entity, Prop_Send, "m_iHealth");
+			if(BuildingHealth > Building_Max_Health[entity])
+			{
+				red = 0;
+				green = 0;
+				blue = 255;
+			}
+			else
+			{
+				red = BuildingHealth * 255  / Building_Max_Health[entity];
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+				green = BuildingHealth * 255  / Building_Max_Health[entity];		
+				red = 255 - red;		
+			}
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		//	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, red, green, blue, 255);
@@ -1196,17 +1201,18 @@ public Action Building_Set_HP_Colour(Handle dashHud, int ref)
 			int red = 0;
 			int green = 0;
 			int blue = 0;
+			int Alpha = 125;
 			
-			SetEntityRenderColor(entity, red, green, blue, 255);
+			SetEntityRenderColor(entity, red, green, blue, Alpha);
 			if(IsValidEntity(prop1))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(prop1, red, green, blue, 100);
+				SetEntityRenderColor(prop1, red, green, blue, Alpha);
 			}
 			if(IsValidEntity(prop2))
 			{
 			//	SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-				SetEntityRenderColor(prop2, red, green, blue, 255);
+				SetEntityRenderColor(prop2, red, green, blue, Alpha);
 			}
 
 		}
@@ -1237,12 +1243,27 @@ public Action Building_Set_HP_Colour_Sentry(Handle dashHud, int ref)
 			int red = 255;
 			int green = 255;
 			int blue = 0;
+			int BuildingHealth = GetEntProp(entity, Prop_Send, "m_iHealth");
+
+			if(Building_Max_Health[entity] <= 0)
+			{
+				Building_Max_Health[entity] = 1;
+			}
+
+			if(BuildingHealth > Building_Max_Health[entity])
+			{
+				red = 0;
+				green = 0;
+				blue = 255;
+			}
+			else
+			{
+				red = BuildingHealth * 255  / Building_Max_Health[entity];
+			//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
+				green = BuildingHealth * 255  / Building_Max_Health[entity];		
+				red = 255 - red;		
+			}
 			
-			red = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-		//	blue = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			green = GetEntProp(entity, Prop_Send, "m_iHealth") * 255  / Building_Max_Health[entity];
-			
-			red = 255 - red;
 			SetEntityCollisionGroup(entity, BUILDINGCOLLISIONNUMBER);
 		//	SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, red, green, blue, 255);
@@ -1347,6 +1368,7 @@ void Building_SetBuildingRepair(int entity, int health)
 		}
 		else
 		{
+			Building_Repair_Health[entity] = 0;
 			SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 0);
 			Building_cannot_be_repaired[entity] = true;
 		}
@@ -1408,6 +1430,7 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 	
 	if(dmg)
 	{
+		Building_Repair_Health[entity] = 0;
 		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth")-dmg;
 		if(health < 1)
 			health = 1;
@@ -1477,106 +1500,9 @@ bool AllowBuildingCurrently()
 	
 	return true;
 }
-
-/*
-void Building_PlayerRunCmd(int client, int buttons)
-{
-	if(GrabRef[client] != INVALID_ENT_REFERENCE)
-	{
-		int entity = EntRefToEntIndex(GrabRef[client]);
-		if(GrabAt[client] == 1.0)
-		{
-			if(entity > MaxClients)
-			{
-				if(GetEntProp(entity, Prop_Send, "m_bCarried"))
-				{
-					GrabAt[client] = 0.0;
-				//	SetEntPropFloat(entity, Prop_Send, "m_flPercentageConstructed", 0.0);
-				}
-				
-				return;
-			}
-			
-			GrabAt[client] = 0.0;
-		}
-		else if(entity > MaxClients && GetEntProp(entity, Prop_Send, "m_bCarried"))
-		{
-			return;
-		}
-		
-		//Attributes_Set(client, 353, 1.0);
-		TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-		GrabRef[client] = INVALID_ENT_REFERENCE;
-	}
-	else if(GrabAt[client])
-	{
-		if((buttons & IN_ATTACK2))
-		{
-			if(GrabAt[client] > GetGameTime())
-				return;
-				
-			int entity = GetClientPointVisible(client);
-			if(entity > MaxClients)
-			{
-				static char buffer[64];
-				if(GetEntityClassname(entity, buffer, sizeof(buffer)) && !StrContains(buffer, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder")==client)
-				{
-					CClotBody npc = view_as<CClotBody>(entity);
-					npc.bBuildingIsPlaced = false;
-					GrabRef[client] = INVALID_ENT_REFERENCE;
-				//	GrabRef[client] = EntIndexToEntRef(entity); //This is not needed.
-				//	Attributes_Set(client, 698, 0.0);
-					if(!StrContains(buffer, "obj_dispenser"))
-					{
-						Building[client] = INVALID_FUNCTION;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						int iBuilder = Spawn_Buildable(client);
-						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
-						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
-						
-						SDKCall(g_hSDKMakeCarriedObjectDispenser, entity, client);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
-						
-					}
-					else if(!StrContains(buffer, "obj_sentrygun"))
-					{
-						Building[client] = INVALID_FUNCTION;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						int iBuilder = Spawn_Buildable(client);
-						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
-						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
-						
-						SDKCall(g_hSDKMakeCarriedObjectSentry, entity, client);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
-						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-					//	TF2_SetPlayerClass(client, TFClass_Engineer);
-						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
-						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
-					}	
-					GrabAt[client] = 1.0;
-					PrintCenterText(client, " ");
-					return;
-				}
-			}
-		}
-		GrabAt[client] = 0.0;
-		PrintCenterText(client, " ");
-	}
-}
-*/
-
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
-		int entity = GetClientPointVisible(client, _ , true, true);
+		int entity = GetClientPointVisible(client, _ , true, true,_,1);
 		if(entity > MaxClients)
 		{
 			if (IsValidEntity(entity))
@@ -1626,7 +1552,7 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 		PrintCenterText(client, " ");
 		if (IsValidEntity(entity))
 		{
-			int looking_at = GetClientPointVisible(client, _ , true, true);
+			int looking_at = GetClientPointVisible(client, _ , true, true,_,1);
 			if (looking_at == entity)
 			{
 				static char buffer[64];
@@ -1639,40 +1565,40 @@ public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 					{
 						Building[client] = INVALID_FUNCTION;
 						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
 						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
 						
+						Event_ObjectMoved_Custom(entity);
 						SDKCall(g_hSDKMakeCarriedObjectDispenser, entity, client);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						
 					}
 					else if(!StrContains(buffer, "obj_sentrygun"))
 					{
 						Building[client] = INVALID_FUNCTION;
 						BuildingWeapon[client] = INVALID_ENT_REFERENCE;
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						int iBuilder = Spawn_Buildable(client);
 						SetEntProp(iBuilder, Prop_Send, "m_hObjectBeingBuilt", entity); 
 						SetEntProp(iBuilder, Prop_Send, "m_iBuildState", 2); 
 						
 						
+						Event_ObjectMoved_Custom(entity);
 						SDKCall(g_hSDKMakeCarriedObjectSentry, entity, client);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-						Event_ObjectMoved_Custom(entity);
 						SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", iBuilder); 
-					//	TF2_SetPlayerClass(client, TFClass_Engineer);
+					//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
 						TF2_RemoveWeaponSlot(client, TFWeaponSlot_PDA);
 						Spawn_Buildable(client);
-						TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+						TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 					}	
 					TeleportEntity(entity, OFF_THE_MAP, NULL_VECTOR, NULL_VECTOR); //They stay invis in that pos, move away.
 				}	
@@ -2029,10 +1955,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
 						if(i_SupportBuildingsBuild[client] < MaxSupportBuildingsAllowed(client, false) && (StrEqual(buffer, "zr_ammobox") || StrEqual(buffer, "zr_armortable") || StrEqual(buffer, "zr_perkmachine") || StrEqual(buffer, "zr_packapunch")))
 						{
+							if(h_ClaimedBuilding[client][entity] != null)
+								delete h_ClaimedBuilding[client][entity];
+
 							DataPack pack;
-							CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
+							h_ClaimedBuilding[client][entity] = CreateDataTimer(0.5, Timer_ClaimedBuildingremoveSupportCounterOnDeath, pack, TIMER_REPEAT);
 							pack.WriteCell(EntIndexToEntRef(entity));
 							pack.WriteCell(EntIndexToEntRef(client)); 
+							pack.WriteCell(entity); 
 							pack.WriteCell(client); //Need original client index id please.
 							i_SupportBuildingsBuild[client] += 1;
 							SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
@@ -2229,12 +2159,8 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										mana_regen_temp *= Mana_Regen_Level[client];
 										max_mana_temp *= Mana_Regen_Level[client];	
 									}
-									/*
-									Current_Mana[client] += RoundToCeil(mana_regen[client]);
-										
-									if(Current_Mana[client] < RoundToCeil(max_mana[client]))
-										Current_Mana[client] = RoundToCeil(max_mana[client]);
-									*/
+									if(b_AggreviatedSilence[client])
+										mana_regen_temp *= 0.30;
 									
 									if(Current_Mana[client] < RoundToCeil(max_mana_temp))
 									{
@@ -2271,7 +2197,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 										SetGlobalTransTarget(client);
 										ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Max Mana Reached");
 									}
-									
 								}
 								else
 								{
@@ -2299,33 +2224,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
 										}
 									}
-									/*
-									else if (weaponindex == 305)
-									{
-										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-										AddAmmoClient(client, 21 ,_,2.0);
-										AddAmmoClient(client, 14 ,_,2.0);
-										Ammo_Count_Used[client] += 1;
-										//Yeah extra ammo, do i care ? no.
-										
-										for(int i; i<Ammo_MAX; i++)
-										{
-											CurrentAmmo[client][i] = GetAmmo(client, i);
-										}	
-										fl_NextThinkTime[entity] = GetGameTime() + 2.0;
-										i_State[entity] = -1;
-										Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
-										if(!Rogue_Mode() && owner != -1 && owner != client)
-										{
-											Resupplies_Supplied[owner] += 2;
-											GiveCredits(owner, 20, true);
-											SetDefaultHudPosition(owner);
-											SetGlobalTransTarget(owner);
-											ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-										}								
-									}
-									*/
 									else if(weaponindex == 411)
 									{
 										ClientCommand(client, "playgamesound items/ammo_pickup.wav");
@@ -2418,17 +2316,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 									else
 									{
 										int Armor_Max = 150;
-										int Extra = 0;
 									
-										Extra = Armor_Level[client];
-										Armor_Max = MaxArmorCalculation(Extra, client, 0.5);
+										Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 0.75);
 											
 										if(Armor_Charge[client] < Armor_Max)
 										{
-												
-											GiveArmorViaPercentage(client, 0.05, 0.5);
+											GiveArmorViaPercentage(client, 0.1, 1.0);
 											
-									//		float Shave_Seconds_off = 5.0 * Extra;
 											fl_NextThinkTime[entity] = GetGameTime() + 2.0;
 											i_State[entity] = -1;
 											Building_Collect_Cooldown[entity][client] = GetGameTime() + 5.0;
@@ -2467,22 +2361,14 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				case 1:
 				{
 						int Armor_Max = 300;
-						int Extra = 0;
-					
-						Extra = Armor_Level[client];
-							
-						Armor_Max = MaxArmorCalculation(Extra, client, 1.0);
-							
-							//armoar
+
+						Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 							
 						if(Armor_Charge[client] < Armor_Max)
 						{
 								
 							GiveArmorViaPercentage(client, 0.2, 1.0);
 							
-					//		float Shave_Seconds_off = 5.0 * Extra;
-							
-						//	Armor_Ready[client] = GetGameTime() + 10.0; //ehhhhhhhh make it rlly small
 							Building_Collect_Cooldown[entity][client] = GetGameTime() + 45.0; //small also
 
 							float pos[3];
@@ -2713,7 +2599,7 @@ public Action Building_CheckTimer(Handle timer, int ref)
 }
 static void PlaceBuilding(int client, int weapon, Function callback, TFObjectType type, TFObjectMode mode=TFObjectMode_None)
 {
-	TF2_SetPlayerClass(client, TFClass_Engineer, false, false);
+	TF2_SetPlayerClass_ZR(client, TFClass_Engineer, false, false);
 	int iBuilder = Spawn_Buildable(client, view_as<int>(type));
 	if(iBuilder > MaxClients)
 	{
@@ -2744,16 +2630,26 @@ public Action Timer_ClaimedBuildingremoveSupportCounterOnDeath(Handle htimer,  D
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int client = EntRefToEntIndex(pack.ReadCell()); 
+	int entity_original_index = pack.ReadCell();
 	int client_original_index = pack.ReadCell(); //Need original!
 	
 	if(!IsValidEntity(entity))
 	{
 		i_SupportBuildingsBuild[client_original_index] -= 1;
+		h_ClaimedBuilding[client_original_index][entity_original_index] = null;
 		return Plugin_Stop;
 	}
 	if(!IsValidClient(client)) //Are they valid ? no ? DIE!
 	{
 		i_SupportBuildingsBuild[client_original_index] -= 1;
+		h_ClaimedBuilding[client_original_index][entity_original_index] = null;
+		return Plugin_Stop;
+	}
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	if(owner != client_original_index)
+	{
+		i_SupportBuildingsBuild[client_original_index] -= 1;
+		h_ClaimedBuilding[client_original_index][entity_original_index] = null;
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
@@ -3328,7 +3224,7 @@ public bool BuildingCustomCommand(int client)
 				}
 				else
 				{
-					int looking_at = GetClientPointVisible(client);
+					int looking_at = GetClientPointVisible(client, _ , _, _,_,1);
 					if(IsValidEntity(looking_at) && looking_at > 0)
 					{
 						GetEntPropString(looking_at, Prop_Data, "m_iName", buffer, sizeof(buffer));
@@ -3389,7 +3285,7 @@ public bool BuildingCustomCommand(int client)
 				}
 				else
 				{
-					int looking_at = GetClientPointVisible(client);
+					int looking_at = GetClientPointVisible(client, _ , _, _,_,1);
 					if(IsValidEntity(looking_at) && looking_at > 0)
 					{
 						GetEntPropString(looking_at, Prop_Data, "m_iName", buffer, sizeof(buffer));
@@ -3737,7 +3633,7 @@ public Action MortarFire(Handle timer, int client)
 		{
 			float damage = 10.0;
 							
-			damage *= 35.0;
+			damage *= 45.0;
 			
 			float attack_speed;
 			float sentry_range;
@@ -3749,7 +3645,7 @@ public Action MortarFire(Handle timer, int client)
 			sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 			
 			float AOE_range = 350.0 * sentry_range;
-			
+
 			Explode_Logic_Custom(damage, client, client, -1, f_MarkerPosition[client], AOE_range, 1.45, _, false);
 			
 			CreateEarthquake(f_MarkerPosition[client], 0.5, 350.0, 16.0, 255.0);
@@ -5007,10 +4903,10 @@ static int VillagePointsLeft(int client)
 {
 	int level = MaxSupportBuildingsAllowed(client, true);	// 1 - 16
 
-	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+	if(Store_HasNamedItem(client, "Construction Novice"))
 		level++;
 	
-	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+	if(Store_HasNamedItem(client, "Construction Apprentice"))
 		level++;
 	
 	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
@@ -6553,8 +6449,8 @@ static const int SummonerBase[][] =
 	{ BARRACK_LONGBOW, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 	{ BARRACK_CHAMPION, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ BARRACK_MONK, 210, 0, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ BARRACK_HUSSAR, 0, 400, 100, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ BARRACK_MONK, 210, 50, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ BARRACK_HUSSAR, 100, 400, 35, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
 	{ BARRACKS_TEUTONIC_KNIGHT, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ BARRACKS_VILLAGER, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
@@ -7061,10 +6957,10 @@ void CheckSummonerUpgrades(int client)
 {
 	SupplyRate[client] = 2;
 
-	if(Store_HasNamedItem(client, "Repair Handling book for dummies"))
+	if(Store_HasNamedItem(client, "Construction Novice"))
 		SupplyRate[client]++;
 	
-	if(Store_HasNamedItem(client, "Ikea Repair Handling book"))
+	if(Store_HasNamedItem(client, "Construction Apprentice"))
 		SupplyRate[client] += 2;
 	
 	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
@@ -8190,5 +8086,68 @@ void BuildingVillageChangeModel(int owner, int entity)
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 		i_VillageModelAppliance[entity] = 4;
 		SetEntityModel(entity, VILLAGE_MODEL);
+	}
+}
+
+float BuildingWeaponDamageModif(int Type)
+{
+	switch(Type)
+	{
+		case 1:
+		{
+			//1 means its a weapon
+			return 1.85;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+}
+
+bool BuildingIsSupport(int entity)
+{
+	switch(i_WhatBuilding[entity])
+	{
+		case BuildingPackAPunch, BuildingPerkMachine, BuildingArmorTable,BuildingAmmobox:
+			return true;
+		
+		default:
+			return false;
+	}
+}
+void Building_Check_ValidSupportcount(int client)
+{
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity) && BuildingIsSupport(entity))
+		{
+			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+			if(builder_owner == client)
+			{
+				if(i_SupportBuildingsBuild[client] > MaxSupportBuildingsAllowed(client, false))
+				{
+					SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+					if(h_ClaimedBuilding[client][entity] != null)
+						delete h_ClaimedBuilding[client][entity];
+
+					i_SupportBuildingsBuild[client] -= 1;
+					//not enough support slots.
+				}
+				else
+				{	
+					if(MaxSupportBuildingsAllowed(client, false) <= 1 && i_WhatBuilding[entity] == BuildingPackAPunch)
+					{
+						SetEntPropEnt(entity, Prop_Send, "m_hBuilder", -1);
+						if(h_ClaimedBuilding[client][entity] != null)
+							delete h_ClaimedBuilding[client][entity];
+
+						i_SupportBuildingsBuild[client] -= 1;
+						//cannot support pap.
+					}
+				}
+			}
+		}
 	}
 }

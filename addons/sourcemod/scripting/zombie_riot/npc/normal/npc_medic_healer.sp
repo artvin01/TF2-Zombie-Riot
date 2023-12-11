@@ -268,8 +268,11 @@ public void MedicHealer_ClotThink(int iNPC)
 					Building_CamoOrRegrowBlocker(PrimaryThreatIndex, _, regrow);
 					if(regrow && !NpcStats_IsEnemySilenced(npc.index))
 					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
+						if(IsValidEntity(npc.m_iWearable4))
+						{
+							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+							SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
+						}
 						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 50);
 						if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
 						{
@@ -278,8 +281,11 @@ public void MedicHealer_ClotThink(int iNPC)
 					}
 					else
 					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
+						if(IsValidEntity(npc.m_iWearable4))
+						{
+							SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+							SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
+						}
 					}
 					
 					npc.FaceTowards(WorldSpaceCenter(PrimaryThreatIndex), 2000.0);

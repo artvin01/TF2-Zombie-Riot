@@ -7,6 +7,9 @@ methodmap CombineSwordsman < CombineWarrior
 	{
 		CombineSwordsman npc = view_as<CombineSwordsman>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		i_NpcInternalId[npc.index] = COMBINE_SWORDSMAN;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

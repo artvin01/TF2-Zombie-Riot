@@ -229,14 +229,10 @@ bool Waves_CallVote(int client)
 				Format(vote.Name, sizeof(vote.Name), "%s (Cooldown)", vote.Name);
 				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
 			}
-			else if(Level[client] < vote.Level && Database_IsCached(client))
-			{
-				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-				menu.AddItem(vote.Config, vote.Name, ITEMDRAW_DISABLED);
-			}
 			else
 			{
-				menu.AddItem(vote.Config, vote.Name);
+				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 		}
 		
@@ -954,8 +950,23 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
 			
-			if(Is_a_boss == 2)
+			if(Is_a_boss >= 2)
 			{
+				if(Is_a_boss == 2)
+				{
+					if(LastMann)
+					{
+						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+						GiveProgressDelay(30.0);
+						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
+					}
+					else
+					{
+						PrintToChatAll("You were given extra 10 seconds to prepare for the raidboss... Get ready.");
+						GiveProgressDelay(10.0);
+						f_DelaySpawnsForVariousReasons = GetGameTime() + 10.0;
+					}
+				}
 				Raidboss_Clean_Everyone();
 				Music_EndLastmann();
 				ReviveAll(true);
@@ -1471,7 +1482,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			DoGlobalMultiScaling();
 
 			int postWaves = CurrentRound - length;
-			f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
+			f_FreeplayDamageExtra = 1.0 + (postWaves / 45.0);
 
 			Rounds.GetArray(length, round);
 			length = round.Waves.Length;

@@ -47,13 +47,6 @@ static char g_TeleportSounds[][] = {
 
 static int i_ally_index;
 
-
-#define TELEPORT_STRIKE_ACTIVATE		"misc/halloween/gotohell.wav"
-#define TELEPORT_STRIKE_TELEPORT		"weapons/bison_main_shot.wav"
-#define TELEPORT_STRIKE_EXPLOSION		"weapons/vaccinator_charge_tier_03.wav"
-#define TELEPORT_STRIKE_HIT				"vo/taunts/medic/medic_taunt_kill_22.mp3"
-#define TELEPORT_STRIKE_MISS			"vo/medic_negativevocalization04.mp3"
-
 void Raidboss_Schwertkrieg_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }

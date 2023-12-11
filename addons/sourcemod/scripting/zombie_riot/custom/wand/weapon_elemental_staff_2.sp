@@ -344,7 +344,7 @@ public void Enable_Passanger(int client, int weapon) // Enable management, handl
 			delete h_TimerPassangerManagement[client];
 			h_TimerPassangerManagement[client] = null;
 			DataPack pack;
-			h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -354,7 +354,7 @@ public void Enable_Passanger(int client, int weapon) // Enable management, handl
 	if(i_CustomWeaponEquipLogic[weapon] == 9) //9 Is for Passanger
 	{
 		DataPack pack;
-		h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerPassangerManagement[client] = CreateDataTimer(0.1, Timer_Management_Passanger, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -589,7 +589,7 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!
 	PassangerHandLightningEffect(client, lightningpos);
 	DataPack pack;
-	CreateDataTimer(PASSANGER_DELAY_ABILITY, TimerPassangerAbility, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(PASSANGER_DELAY_ABILITY, TimerPassangerAbility, pack, TIMER_REPEAT);
 	pack.WriteCell(client);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteFloat(damage);

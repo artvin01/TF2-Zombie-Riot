@@ -509,6 +509,9 @@ static void Venium_Build_Anchor(Venium npc)
 		fl_ruina_battery[spawn_index]=10.0;
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
+
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", 50000);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
 	}
 }
 static void Venium_Post_Bult_Logic(Venium npc, int PrimaryThreatIndex, float GameTime)

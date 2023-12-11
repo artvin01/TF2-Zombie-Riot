@@ -16,7 +16,7 @@
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
-static int i_hand_particle[MAXTF2PLAYERS+1][15];
+static int i_hand_particle[MAXTF2PLAYERS+1][11];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 
 static float fl_ion_charge_ammount[MAXTF2PLAYERS+1];
@@ -269,7 +269,7 @@ public void Activate_Neuvellete(int client, int weapon)
 				Give_Skill_Points(client, pap);
 
 			DataPack pack;
-			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			
@@ -288,7 +288,7 @@ public void Activate_Neuvellete(int client, int weapon)
 			Give_Skill_Points(client, pap);
 		
 		DataPack pack;
-		h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -301,17 +301,20 @@ static void Create_Hand_Particle(int client)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 
-	for(int RepeatDeletion; RepeatDeletion < 15; RepeatDeletion ++)
+	for(int RepeatDeletion; RepeatDeletion < 11; RepeatDeletion ++)
 	{
 		if(IsValidEntity(i_hand_particle[client][RepeatDeletion]))
 			RemoveEntity(i_hand_particle[client][RepeatDeletion]);
 	}
+	if(AtEdictLimit(EDICT_PLAYER))
+		return;
 		
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	
 	int particle_1 = ParticleEffectAt({-4.0,0.0,0.0}, "raygun_projectile_blue_crit", 0.0);
+	AddEntityToThirdPersonTransitMode(client, particle_1);
 
 	//float RotateVector[3];
 	//RotateVector = {45.0,0.0,0.0};
@@ -322,16 +325,16 @@ static void Create_Hand_Particle(int client)
 //	VectorSet = {8.0,8.0,-8.0};
 	VectorSet = {-4.000,12.000,-5.657};
 //RotateVectorViaAngleVector(RotateVector, VectorSet);
-	int	particle_2 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_2 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	VectorSet = {-12.000,4.000,5.657};
-	int	particle_3 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_3 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	VectorSet = {-5.657,-5.657,-8.000};
-	int	particle_4 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_4 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	VectorSet = {6.828,-1.172,4.000};
-	int	particle_5 = ParticleEffectAt(VectorSet, "", 0.0); //First offset we go by
+	int	particle_5 = InfoTargetParentAt(VectorSet, "", 0.0); //First offset we go by
 
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_1, particle_3, "",_, true);
@@ -346,12 +349,12 @@ static void Create_Hand_Particle(int client)
 	int green = 200;
 	int blue = 200;
 
-	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_2 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_3 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_5 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
-	int Laser_6 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_2 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_3 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_5 = ConnectWithBeamClient(particle_5, particle_3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
+	int Laser_6 = ConnectWithBeamClient(particle_5, particle_4, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM, client);
 	
 
 	i_hand_particle[client][0] = EntIndexToEntRef(particle_1);
@@ -359,12 +362,12 @@ static void Create_Hand_Particle(int client)
 	i_hand_particle[client][2] = EntIndexToEntRef(particle_3);
 	i_hand_particle[client][3] = EntIndexToEntRef(particle_4);
 	i_hand_particle[client][4] = EntIndexToEntRef(particle_5);
-	i_hand_particle[client][6] = EntIndexToEntRef(Laser_1);
-	i_hand_particle[client][7] = EntIndexToEntRef(Laser_2);
-	i_hand_particle[client][8] = EntIndexToEntRef(Laser_3);
-	i_hand_particle[client][9] = EntIndexToEntRef(Laser_4);
-	i_hand_particle[client][10] = EntIndexToEntRef(Laser_5);
-	i_hand_particle[client][11] = EntIndexToEntRef(Laser_6);
+	i_hand_particle[client][5] = EntIndexToEntRef(Laser_1);
+	i_hand_particle[client][6] = EntIndexToEntRef(Laser_2);
+	i_hand_particle[client][7] = EntIndexToEntRef(Laser_3);
+	i_hand_particle[client][8] = EntIndexToEntRef(Laser_4);
+	i_hand_particle[client][9] = EntIndexToEntRef(Laser_5);
+	i_hand_particle[client][10] = EntIndexToEntRef(Laser_6);
 }
 public Action Timer_Management_Neuvellete(Handle timer, DataPack pack)
 {
@@ -1605,6 +1608,7 @@ static void Beam_Wand_Laser_Attack(int client, float playerPos[3], float endVec_
 						pack.WriteFloat(trg_loc[0]);
 						pack.WriteFloat(trg_loc[1]);
 						pack.WriteFloat(trg_loc[2]);
+						pack.WriteCell(0);
 						RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
 						

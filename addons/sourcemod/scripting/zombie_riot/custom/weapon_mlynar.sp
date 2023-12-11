@@ -307,7 +307,7 @@ public void Enable_Mlynar(int client, int weapon)
 			delete h_TimerMlynarManagement[client];
 			h_TimerMlynarManagement[client] = null;
 			DataPack pack;
-			h_TimerMlynarManagement[client] = CreateDataTimer(0.1, Timer_Management_Mlynar, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			h_TimerMlynarManagement[client] = CreateDataTimer(0.1, Timer_Management_Mlynar, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -317,7 +317,7 @@ public void Enable_Mlynar(int client, int weapon)
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR || i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP)  //9 Is for Passanger
 	{
 		DataPack pack;
-		h_TimerMlynarManagement[client] = CreateDataTimer(0.1, Timer_Management_Mlynar, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		h_TimerMlynarManagement[client] = CreateDataTimer(0.1, Timer_Management_Mlynar, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -490,8 +490,22 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		}
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(attacker);
-
-		SDKHooks_TakeDamage(attacker, victim, victim, damageModif, DMG_CLUB, weapon, {0.0,0.0,1.0}, Entity_Position, _, ZR_DAMAGE_REFLECT_LOGIC);
+		
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteCell(EntIndexToEntRef(victim));
+		pack.WriteFloat(damageModif);
+		pack.WriteCell(DMG_CLUB);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteFloat(0.0);
+		pack.WriteFloat(0.0);
+		pack.WriteFloat(1.0);
+		pack.WriteFloat(Entity_Position[0]);
+		pack.WriteFloat(Entity_Position[1]);
+		pack.WriteFloat(Entity_Position[2]);
+		pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 	}
 		
 	return damage;

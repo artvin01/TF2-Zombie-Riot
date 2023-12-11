@@ -356,10 +356,10 @@ static void Stella_Create_Crest(int client)
 	f_end = 1.0;
 	amp = 0.1;
 	
-	int particle_0 = ParticleEffectAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
 	
 	
-	int particle_1 = ParticleEffectAt({0.0,0.0,100.0}, "", 0.0);
+	int particle_1 = InfoTargetParentAt({0.0,0.0,100.0}, "", 0.0);
 	
 	SetParent(particle_0, particle_1);
 	
@@ -368,23 +368,23 @@ static void Stella_Create_Crest(int client)
 	//Y axis - Foward, Back
 	//Z axis - Up Down
 
-	int particle_2 = ParticleEffectAt({112.5, 0.0, 50.0}, "", 0.0);
-	int particle_2_1 = ParticleEffectAt({-112.5, 0.0, 50.0}, "", 0.0);
+	int particle_2 = InfoTargetParentAt({112.5, 0.0, 50.0}, "", 0.0);
+	int particle_2_1 = InfoTargetParentAt({-112.5, 0.0, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_2, "",_, true);
 	SetParent(particle_2, particle_2_1, "",_, true);
 	
-	int particle_4 = ParticleEffectAt({75.0, -75.0, 50.0}, "", 0.0);
-	int particle_4_1 = ParticleEffectAt({-75.0, 75.0, 50.0}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({75.0, -75.0, 50.0}, "", 0.0);
+	int particle_4_1 = InfoTargetParentAt({-75.0, 75.0, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_4, "",_, true);
 	SetParent(particle_4, particle_4_1, "",_, true);
 	
-	int particle_5 = ParticleEffectAt({0.0, 112.5, 50.0}, "", 0.0);
-	int particle_5_1 = ParticleEffectAt({0.0, -112.5, 50.0}, "", 0.0);
+	int particle_5 = InfoTargetParentAt({0.0, 112.5, 50.0}, "", 0.0);
+	int particle_5_1 = InfoTargetParentAt({0.0, -112.5, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_5, "",_, true);
 	SetParent(particle_5, particle_5_1, "",_, true);
 	
-	int particle_6 = ParticleEffectAt({-75.0, -75.0, 50.0}, "", 0.0);
-	int particle_6_1 = ParticleEffectAt({75.0, 75.0, 50.0}, "", 0.0);
+	int particle_6 = InfoTargetParentAt({-75.0, -75.0, 50.0}, "", 0.0);
+	int particle_6_1 = InfoTargetParentAt({75.0, 75.0, 50.0}, "", 0.0);
 	SetParent(particle_1, particle_6, "",_, true);
 	SetParent(particle_6, particle_6_1, "",_, true);
 

@@ -21,7 +21,13 @@ static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 #define KNIFE_SPEED_2 2700.0
 #define KNIFE_SPEED_3 3000.0
 
-
+bool IsSurvivalKnife(int weaponid)
+{
+	if(weaponid == WEAPON_10 || weaponid == WEAPON_SURVIVAL_KNIFE_PAP1 || weaponid == WEAPON_SURVIVAL_KNIFE_PAP2 || weaponid == WEAPON_SURVIVAL_KNIFE_PAP3)
+		return true;
+	
+	return false;
+}
 
 public void Survival_Knife_ClearAll()
 {
@@ -77,7 +83,7 @@ public void Enable_Management_Knife(int client, int weapon) // Enable management
 	if (Timer_Knife_Management[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == 10) //10 Is for Survival Knife
+		if(IsSurvivalKnife(i_CustomWeaponEquipLogic[weapon])) //10 Is for Survival Knife
 		{
 			int iTier = i_SurvivalKnifeCount[weapon];
 			
@@ -90,18 +96,25 @@ public void Enable_Management_Knife(int client, int weapon) // Enable management
 					Knife_Max[client] = 3;	// Max knife
 			//		Knife_Count[client] = 3;	// Knife count
 				}
-				
+					
 				case 2:
 				{
 					CD_KnifeSet[client] = 4.5;	// Cd for knife
 					Knife_Max[client] = 6;	// Max knife
 			//		Knife_Count[client] = 6;	// Knife count
 				}
-				
+					
 				case 3:
 				{
 					CD_KnifeSet[client] = 3.3;	// Cd for knife
 					Knife_Max[client] = 7;	// Max knife
+			//		Knife_Count[client] = 7;	// Knife count
+				}
+				
+				case 4:
+				{
+					CD_KnifeSet[client] = 2.8;	// Cd for knife
+					Knife_Max[client] = 8;	// Max knife
 			//		Knife_Count[client] = 7;	// Knife count
 				}
 			}
@@ -111,14 +124,14 @@ public void Enable_Management_Knife(int client, int weapon) // Enable management
 			delete Timer_Knife_Management[client];
 			Timer_Knife_Management[client] = null;
 			DataPack pack;
-			Timer_Knife_Management[client] = CreateDataTimer(0.1, Timer_Management_Survival, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			Timer_Knife_Management[client] = CreateDataTimer(0.1, Timer_Management_Survival, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
 		return;
 	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == 10) //10 Is for Survival Knife
+	if(IsSurvivalKnife(i_CustomWeaponEquipLogic[weapon])) //10 Is for Survival Knife
 	{
 		int iTier = i_SurvivalKnifeCount[weapon];
 			
@@ -145,10 +158,17 @@ public void Enable_Management_Knife(int client, int weapon) // Enable management
 				Knife_Max[client] = 7;	// Max knife
 		//		Knife_Count[client] = 7;	// Knife count
 			}
+			
+			case 4:
+			{
+				CD_KnifeSet[client] = 2.8;	// Cd for knife
+				Knife_Max[client] = 8;	// Max knife
+		//		Knife_Count[client] = 7;	// Knife count
+			}
 		}
 
 		DataPack pack;
-		Timer_Knife_Management[client] = CreateDataTimer(0.1, Timer_Management_Survival, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+		Timer_Knife_Management[client] = CreateDataTimer(0.1, Timer_Management_Survival, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -181,33 +201,7 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			int iTier = i_SurvivalKnifeCount[weapon];
-			if(iTier == 2)
-			{
-				if(Knife_Count[client] != Knife_Max[client])
-				{
-					if(Knife_Triple_Mode[client])
-					{
-						PrintHintText(client,"Triple Throw! Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
-					}
-					else
-					{
-						PrintHintText(client,"Knives [%i/%i] (Recharge in: %.1f)",Knife_Count[client], Knife_Max[client],CD_Knife[client]-GetGameTime());
-					}
-				}
-				else
-				{
-					if(Knife_Triple_Mode[client])
-					{
-						PrintHintText(client,"Triple Throw! Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);
-					}
-					else
-					{
-						PrintHintText(client,"Knives [%i/%i]",Knife_Count[client],Knife_Max[client]);	
-					}
-				}
-			}
-			else if(InMadness[client])
+			if(InMadness[client])
 			{
 				PrintHintText(client,"Infinite Knives!");				
 			}
@@ -235,11 +229,12 @@ public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot
 {
 	if (CD_Throw[client]>GetGameTime())
 		return;
-	
+
+	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+
 	if(Knife_Count[client]>0)
 	{
 		Knife_Count[client] -= 1;
-		CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
 		Throw_Knife(client, weapon, KNIFE_SPEED_1, 0);
 		
 		SetDefaultHudPosition(client);
@@ -273,7 +268,8 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 
 	if (CD_Throw[client]>GetGameTime())
 		return;
-	
+		
+	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
 	if (!Knife_Triple_Mode[client])
 	{
 		if(Knife_Count[client]>0)
@@ -335,6 +331,14 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	if (InMadness[client])
 		return;
 
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(weapon);
@@ -418,7 +422,7 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 
 	if (CD_Throw[client]>GetGameTime())
 		return;
-	
+	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
 	if (!InMadness[client])
 	{
 		if(Knife_Count[client]>0)
@@ -623,4 +627,63 @@ public Action Event_Knife_Touch(int entity, int other)
 		RemoveEntity(entity);
 	}
 	return Plugin_Handled;
+}
+
+float f_AttackDelayKnife[MAXTF2PLAYERS];
+
+public void Survival_Knife_ThrowBlade(int client, int weapon, const char[] classname, bool &result)
+{
+	f_AttackDelayKnife[client] = 0.0;
+	SDKUnhook(client, SDKHook_PreThink, SurvivalKnifeAttackM2_PreThink);
+	SDKHook(client, SDKHook_PreThink, SurvivalKnifeAttackM2_PreThink);
+}
+
+
+public void SurvivalKnifeAttackM2_PreThink(int client)
+{
+	if(GetClientButtons(client) & IN_ATTACK2)
+	{
+		if(f_AttackDelayKnife[client] > GetGameTime())
+		{
+			return;
+		}
+		f_AttackDelayKnife[client] = GetGameTime() + 0.05;
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PreThink, SurvivalKnifeAttackM2_PreThink);
+			return;
+		}
+		if(!IsSurvivalKnife(i_CustomWeaponEquipLogic[weapon_active]))
+		{
+			SDKUnhook(client, SDKHook_PreThink, SurvivalKnifeAttackM2_PreThink);
+			return;
+		}
+
+		switch(i_CustomWeaponEquipLogic[weapon_active])
+		{
+			case WEAPON_10:
+			{
+				Survival_Knife_Tier1_Alt(client, weapon_active, false, 2);
+			}
+			case WEAPON_SURVIVAL_KNIFE_PAP1:
+			{
+				Survival_Knife_Tier2_Alt(client, weapon_active, false, 2);
+			}
+			case WEAPON_SURVIVAL_KNIFE_PAP2:
+			{
+				Survival_Knife_Tier3_Alt(client, weapon_active, false, 2);
+			}
+			case WEAPON_SURVIVAL_KNIFE_PAP3:
+			{
+				Survival_Knife_Tier3_Alt(client, weapon_active, false, 2);
+			}
+		}
+
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PreThink, SurvivalKnifeAttackM2_PreThink);
+		return;
+	}
 }

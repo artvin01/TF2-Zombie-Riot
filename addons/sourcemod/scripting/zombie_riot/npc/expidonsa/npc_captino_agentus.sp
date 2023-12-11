@@ -304,7 +304,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						if(Succeed)
 						{
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-							maxhealth /= 10;
+							maxhealth /= 20;
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 							

@@ -911,6 +911,10 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Crouch for ability"
+	{
+		"en" 		"Crouch to use this ability!"
+	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"
@@ -2108,6 +2112,15 @@
 		"ru"		"Удалить текущую отмеченную постройку?"
 		"chi"		"删除当前标记的建筑物?"
 	}
+	
+	"Un-Claim Building"
+	{
+		"en"		"Un-Claim a building."
+	}
+	"UnClaim Current Marked Building"
+	{
+		"en"		"Un-Claim the current marked building?"
+	}
 	"Builder Extra Gear Menu"
 	{
 		"en"		"Builder extra gear menu"
@@ -2928,5 +2941,22 @@
 	"Must be below half health"
 	{
 		"en"	"You must be below half health of your max health"
+	}
+	"Cherrypick Weapon"
+	{
+		"en"	"Search Store Using Tags"
+	}
+	"Tags List"
+	{
+		"#format"	"{1:s}"
+		"en"	"Tags: {1}"
+	}
+	"Search With Tags"
+	{
+		"en"	"Search With Tags"
+	}
+	"Clear Whitelist"
+	{
+		"en"	"Clear Whitelist"
 	}
 }

@@ -665,6 +665,14 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
+
+#if defined ZR
+				if(b_ProximityAmmo[attacker])
+				{
+					damage *= 1.15;
+				}
+#endif
+
 				float AttackerPos[3];
 				float VictimPos[3];
 				
@@ -679,8 +687,16 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				{
 					distance = 0.1;
 				}
+				float WeaponDamageFalloff = i_WeaponDamageFalloff[weapon];
 
-				damage *= Pow(i_WeaponDamageFalloff[weapon], (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
+#if defined ZR
+				if(b_ProximityAmmo[attacker])
+				{
+					WeaponDamageFalloff *= 0.8;
+				}
+#endif
+
+				damage *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 			}
 		}
 		if(!i_WeaponCannotHeadshot[weapon])
@@ -746,23 +762,24 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 #if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
+					float damage_save = 50.0;
+					damage_save *= Attributes_Get(weapon, 2, 1.0);
+					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(f_ChargeTerroriserSniper[weapon] > 149.0)
-					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject * 2;
-					}
-					else
-					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
-					}
 					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						BombsToInject += 1;
 					}
 					if(i_HeadshotAffinity[attacker] == 1)
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+						BombsToInject += 1;
 					}
+					if(f_ChargeTerroriserSniper[weapon] > 149.0)
+					{
+						BombsToInject *= 2;
+					}
+					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+					i_HowManyBombsHud[victim] += BombsToInject;
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
@@ -801,14 +818,34 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			else
 			{
+
+#if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
+					float damage_save = 50.0;
+					damage_save *= Attributes_Get(weapon, 2, 1.0);
+					f_BombEntityWeaponDamageApplied[victim][attacker] = damage_save;
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
 					if(i_HeadshotAffinity[attacker] == 1)
 					{
-						i_HowManyBombsOnThisEntity[victim][attacker] -= BombsToInject;
+						BombsToInject -= 1;
 					}
+					if(f_ChargeTerroriserSniper[weapon] > 149.0)
+					{
+						BombsToInject *= 2;
+					}
+
+					BombsToInject /= 2;
+					if(BombsToInject < 1)
+						BombsToInject = 1;
+						
+					i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+					i_HowManyBombsHud[victim] += BombsToInject;
+					Apply_Particle_Teroriser_Indicator(victim);
+					damage = 0.0;
 				}
+#endif
+
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 0.65;
@@ -926,9 +963,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	bool GuranteedGib = false;
 	if((i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
 	{
-		return Plugin_Changed;
+		npcBase.m_bGib = true;
+		return Plugin_Continue;
 	}
 
+#if defined ZR
 	if(Rogue_Mode() && !b_IsAlliedNpc[victim])
 	{
 		int scale = Rogue_GetRoundScale();
@@ -937,6 +976,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			damage *= 1.6667;
 		}
 	}
+#endif
 
 	if(attacker < 0 || victim == attacker)
 	{
@@ -1009,7 +1049,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			OnTakeDamageBuildingBonusDamage(attacker, inflictor, damage, damagetype, weapon, GameTime);
 
 #if defined ZR			
-			OnTakeDamageScalingWaveDamage(attacker, inflictor, damage, damagetype, weapon);
+			OnTakeDamageScalingWaveDamage(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 			OnTakeDamageVehicleDamage(attacker, inflictor, damage, damagetype);
 
@@ -1160,10 +1200,29 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 	}
 
-	i_HexCustomDamageTypes[victim] = 0; //Reset it back to 0.
-	if(health <= 0)
+	bool SlayNpc = true;
+	if(health >= 1)
+	{
+		SlayNpc = false;
+	}
+	if(b_NpcIsInvulnerable[victim])
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
+		{
+			SlayNpc = false;
+		}
+	}
+	if(SlayNpc)
+	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
-
+	}
+	else
+	{
+		if(health <= 0)
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+	}
+	i_HexCustomDamageTypes[victim] = 0;
+		
 	Damageaftercalc = 0.0;
 }
 
@@ -1308,6 +1367,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Debuff_added_hud = true;
 		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s❣%i", Debuff_Adder, BleedAmountCountStack[victim]);			
+	}
+	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
+	{
+		Debuff_added = true;
+		Debuff_added_hud = true;
+		FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s!%i", Debuff_Adder, i_HowManyBombsOnThisEntity[victim][attacker]);
 	}
 		
 	if(IgniteFor[victim] > 0) //burn
@@ -1860,19 +1925,22 @@ enum PlayerAnimEvent_t
 39	PLAYERANIMEVENT_COUNT
 };
 */
-public void Try_Backstab_Anim_Again(int attacker)
+public void Try_Backstab_Anim_Again(int ref)
 {
-	if(Animation_Retry[attacker] > 0)
+	int attacker = EntRefToEntIndex(ref);
+	if(IsValidClient(attacker) && IsPlayerAlive(attacker))
 	{
-		RequestFrame(Try_Backstab_Anim_Again, attacker);
+		if(Animation_Retry[attacker] > 0)
+		{
+			RequestFrame(Try_Backstab_Anim_Again, ref);
+		}
+		Animation_Retry[attacker] -= 1;
+		TE_Start("PlayerAnimEvent");
+		TE_WriteEnt("m_hPlayer", attacker);
+		TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+		TE_WriteNum("m_nData", Animation_Index[attacker]);
+		TE_SendToAll();
 	}
-	Animation_Retry[attacker] -= 1;
-	TE_Start("PlayerAnimEvent");
-	TE_WriteEnt("m_hPlayer", attacker);
-	TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-	TE_WriteNum("m_nData", Animation_Index[attacker]);
-	TE_SendToAll();
-					
 }
 
 
@@ -1922,7 +1990,9 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 					float flPos[3];
 					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
 					flPos[2] += 40.0;
+					int BomsToBoom = i_HowManyBombsOnThisEntity[entity][client];
 					float damage = f_BombEntityWeaponDamageApplied[entity][client] * i_HowManyBombsOnThisEntity[entity][client];
+					i_HowManyBombsHud[entity] -= BomsToBoom;
 					i_HowManyBombsOnThisEntity[entity][client] = 0;
 					f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 					Cause_Terroriser_Explosion(client, entity, damage, flPos);
@@ -1931,6 +2001,7 @@ stock void CleanAllAppliedEffects_BombImplanter(int entity, bool do_boom = false
 		}
 #endif
 		//This is the only time it happens ever
+		i_HowManyBombsHud[entity] = 0;
 		i_HowManyBombsOnThisEntity[entity][client] = 0;
 		f_BombEntityWeaponDamageApplied[entity][client] = 0.0;
 	}
@@ -1950,10 +2021,6 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 #if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_FUSION:
-		{
-			return Npc_OnTakeDamage_Fusion(victim, damage, weapon);
-		}
 		case WEAPON_BOUNCING:
 		{
 			return SniperMonkey_BouncingBullets(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
@@ -2022,7 +2089,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			if(b_thisNpcIsARaid[victim])
 			{
-				damage *= 2.0; //due to how dangerous it is to get closer.
+				damage *= 1.4; //due to how dangerous it is to get closer.
 			}
 		}
 		case WEAPON_VAMPKNIVES_1:
@@ -2160,7 +2227,7 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 #if defined ZR
 	if(b_IsAlliedNpc[victim])
 	{
-		if(f_FreeplayDamageExtra != 1.0)
+		if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 		{
 			damage *= f_FreeplayDamageExtra;
 		}
@@ -2343,7 +2410,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 	}
 }
 #if defined ZR
-bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 	float ExtraDamageDealt;
 
@@ -2351,6 +2418,27 @@ bool OnTakeDamageScalingWaveDamage(int &attacker, int &inflictor, float &damage,
 	if(ExtraDamageDealt <= 0.35)
 	{
 		ExtraDamageDealt = 0.35;
+	}
+	if(LastMann)
+	{
+		damage *= 1.35;
+		int DisplayCritSoundTo;
+		if(attacker <= MaxClients)
+			DisplayCritSoundTo = attacker;
+		else if(inflictor <= MaxClients)
+			DisplayCritSoundTo = inflictor;
+
+		if(DisplayCritSoundTo > 0 && DisplayCritSoundTo <= MaxClients)
+		{
+			bool PlaySound = false;
+			if(f_MinicritSoundDelay[DisplayCritSoundTo] < GetGameTime())
+			{
+				PlaySound = true;
+				f_MinicritSoundDelay[DisplayCritSoundTo] = GetGameTime() + 0.25;
+			}
+			
+			DisplayCritAboveNpc(victim, DisplayCritSoundTo, PlaySound,_,_,true); //Display crit above head
+		}
 	}
 	if(IsValidEntity(weapon))
 	{
@@ -2437,6 +2525,7 @@ stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor
 		return false;
 
 #if defined ZR
+/*
 	if(i_ArsenalBombImplanter[weapon] > 0)
 	{
 		int BombsToInject = i_ArsenalBombImplanter[weapon];
@@ -2446,14 +2535,17 @@ stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor
 		if(f_ChargeTerroriserSniper[weapon] > 149.0)
 		{
 			i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject * 2;
+			i_HowManyBombsHud[victim] += BombsToInject * 2;
 		}
 		else
 		{
 			i_HowManyBombsOnThisEntity[victim][attacker] += BombsToInject;
+			i_HowManyBombsHud[victim] += BombsToInject;
 		}
 		Apply_Particle_Teroriser_Indicator(victim);
 		damage = 0.0;
 	}
+*/
 	if(i_HighTeslarStaff[weapon] == 1)
 	{
 		f_HighTeslarDebuff[victim] = GameTime + 5.0;
@@ -2550,7 +2642,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 						{
 							Animation_Retry[attacker] = 4;
-							RequestFrame(Try_Backstab_Anim_Again, attacker);
+							RequestFrame(Try_Backstab_Anim_Again, EntIndexToEntRef(attacker));
 							TE_Start("PlayerAnimEvent");
 							Animation_Setting[attacker] = 1;
 							Animation_Index[attacker] = 33;
@@ -2735,11 +2827,11 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 	}
 	if(f_BattilonsNpcBuff[victim] > GameTime)
 	{
-		damage *= 0.65;
+		damage *= 0.75;
 	}		
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
-		damage *= 0.85;
+		damage *= 0.9;
 	}
 }
 void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -2787,7 +2879,7 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	}
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 	{
-		damage += BaseDamageBeforeBuffs * 0.35;
+		damage += BaseDamageBeforeBuffs * 0.25;
 	}
 	if(f_HighTeslarDebuff[victim] > GameTime)
 	{

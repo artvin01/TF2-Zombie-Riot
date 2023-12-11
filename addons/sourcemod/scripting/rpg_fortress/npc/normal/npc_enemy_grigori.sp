@@ -899,8 +899,9 @@ public void FatherGrigori_IonAttack(Handle &data)
 	int Iondamage = ReadPackCell(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
 		
-	if(!IsValidEntity(client))
+	if(!IsValidEntity(client) || b_NpcHasDied[client])
 	{
+		delete data;
 		return;
 	}
 		
@@ -980,6 +981,8 @@ public void FatherGrigori_IonAttack(Handle &data)
 			nphi += 5.0;
 	}
 	Iondistance -= 5;
+
+	delete data;
 		
 	Handle nData = CreateDataPack();
 	WritePackFloat(nData, startPosition[0]);
@@ -993,7 +996,7 @@ public void FatherGrigori_IonAttack(Handle &data)
 	ResetPack(nData);
 		
 	if (Iondistance > -50)
-	CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE|TIMER_DATA_HNDL_CLOSE);
+	CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 	else
 	{
 		startPosition[2] += 25.0;

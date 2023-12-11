@@ -41,7 +41,7 @@
 		"en"		"Archetype: Team Support"
 		"ru"		"Архетип: Командная поддержка"
 	}
-	"Debuff"
+	"ArchDebuff"
 	{
 		"en"		"Archetype: Debuff"
 		"ru"		"Архетип: Ослабление"
@@ -409,7 +409,7 @@
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once\nDeals 2x dmg against raids."
+		"en"		"Load 4 bullets and shoot all at once\nDeals 40%% dmg against raids."
 	}
 	
 	"Boomstick Pap 1"
@@ -652,8 +652,8 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 15%% resistance during heal."
-		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 15%% сопр. во время лечен."
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal."
+		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 10%% сопр. во время лечен."
 		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%%的伤害和抗性。"
 	}
 	
@@ -704,9 +704,7 @@
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance to everyone after dealing enough damage, receive +50 Extra HP"
-		"ru"	"Даёт сопр. всем после нанесения достаточного урона, получает +50 доп. ед. здоровья."
-		"chi"   "在造成足够伤害后给每个人抗性，额外获得50点HP"
+		"en"	"Give Resistance (25%%) to everyone after dealing enough damage, receive +50 Extra HP"
 	}
 	
 	"P15t0l Desc"
@@ -715,7 +713,11 @@
 		"ru"	"V4lv3 н3 гл7пЫ3, TF2 пр0ст0 т4к ра5оТа3т"
 		"chi"   "一把有脾气的手枪，它想发射什么就发射什么"
 	}
-	"P15t0l Pap 1" 
+	"P15t0l Desc 1"
+	{
+		"en"	"Increaced damage."
+	}
+	"P15t0l Pap 2" 
 	{
 		"en"	"Weapon does whatever the fuck it wants now."
 		"ru"	"Оружие теперь делает, чёрт возьми всё, что ему вздумается."
@@ -735,9 +737,7 @@
 	}
 	"Buff Banner Desc"
 	{
-		"en"	"Give minicrits to everyone after dealing enough damage"
-		"ru"	"Даёт мини-криты всем после нанесения достаточного урона."
-		"chi"   "在造成足够的伤害后给每个人迷你暴击"
+		"en"	"Extra 25%% damage to all allies after dealing enough damage"
 	}
 	"Buff Banner Pap 1"
 	{
@@ -829,15 +829,13 @@
 	}
 	"Survivalist Blade Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, R changes between modes of throwing 3 knives or only 1"
-		"ru"	"Увелич. урон и скорость атаки, R - переключение между режимами метания 3-х ножей или только 1"
-		"chi"   "增加伤害和攻击速度，按R在投掷3把刀和1把刀的模式之间改变"
+		"en"	"Increased damage and attackspeed\nKnifes regen faster."
 	}
 	"Survivalist Blade Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20% of your maxhealth (cant kill you)\nbut you gain a 30% faster attackspeed and 35% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
-		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20% от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30% быстрой скорости атаки и 35% сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
-		"chi"   "增加伤害和攻击速度，R给你20%最大生命值的伤害加成(不会杀死你)\n但你获得30%的攻击速度和35%的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
+		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20%% of your maxhealth (cant kill you)\nbut you gain a 30%% faster attackspeed and 35%% damage resistance buff.\nDuring Rage you also have infinite throwable knives."
+		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20%% от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30%% быстрой скорости атаки и 35%% сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
+		"chi"   "增加伤害和攻击速度，R给你20%%最大生命值的伤害加成(不会杀死你)\n但你获得30%%的攻击速度和35%的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
 	}
 	"Kunai Desc"
 	{
@@ -1096,9 +1094,7 @@
 	
 	"Necromancy Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side."
-		"ru"	"Расходует ману с каждым выстрелом. М2 - вызывает 1 дружественного комбайна DDT."
-		"chi"   "每次射击消耗法力值。按下鼠标右键在你附近召唤一个DDT来帮你攻击敌人。"
+		"en"	"Consumes mana with each shot. M2 Summons 1 Combine DDT on your side.\nNot having your wand in your hand will disencurage your minion and half its damage."
 	}
 	"Necromancy Staff Pap 1"
 	{
@@ -1278,23 +1274,19 @@
 	
 	"Buildable Sentry Desc"
 	{
-		"en"	"Infinite uses with cooldown."
-		"ru"	"Бесконечное использование с перезарядкой."
-		"chi"   "无限次使用。"
+		"en"	"Infinite uses with cooldown.\nGood against everything."
 	}
 	
 	"Buildable Mortar Desc"
 	{
-		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto. Infinite uses with cooldown."
+		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto. Infinite uses with cooldown.\nDeals massive group damage, good against massses."
 		"ru"	"Нажмите «МЕДИК!», чтобы выбрать место, на которое мортира выпустит снаряд. Используется бесконечно с перезарядкой."
 		"chi"   "按E选择迫击炮发射炮弹的地点。无限次使用。"
 	}
 	
 	"Buildable Railgun Desc"
 	{
-		"en"	"Use it with MEDIC to make it shoot a giant laser. Infinite uses with cooldown."
-		"ru"	"Нажмите «МЕДИК!», чтобы она стреляла гигантским лазером. Используется бесконечно с перезарядкой."
-		"chi"   "按E发射一个强力的激光炮。无限次使用。"
+		"en"	"Use it with MEDIC to make it shoot a giant laser. Infinite uses with cooldown.\nDeals huge damage to the first enemy hit, good against single bosses."
 	}
 	
 	"Buildable Healing Station Desc"
@@ -1369,51 +1361,31 @@
 	
 	"Repair Handling book for dummies Desc"
 	{
-		"en"	"50%% more repair Rate"
-		"ru"	"На 50%% выше скорость починки."
-		"chi"   "修复建筑生命值提高50%%"
+		"en"	"2x more repair Rate"
+		"ru"	"На 2x выше скорость починки."
+		"chi"   "修复建筑生命值提高2x"
 	}
 	
 	"Construction Novice Desc"
 	{
-		"en"	"50%% more building health and 2.0x sentry damage, 1 more support building added"
-		"ru"	"На 50%% больше здоровья построек и двукратный урон турели, получена ещё 1 постройка поддержки."
-		"chi"   "增加50%%的建筑血量和2.0倍的哨兵伤害，增加1个可建筑数"
-	}
-	
-	"Ikea Repair Handling book Desc"
-	{
-		"en"	"2x Repair Rate"
-		"ru"	"Двукратная скорость починки."
-		"chi"   "修复建筑生命值提高2倍"
-	}
-	
-	"Engineering Repair Handling book Desc"
-	{
-		"en"	"2x Repair Rate"
-		"ru"	"Двукратная скорость починки."
-		"chi"   "修复建筑生命值提高2倍"
+		"en"	"50%% more building health and 5.0x sentry damage, 1 more support building added and 50%% more repair Rate"
 	}
 	
 	"Construction Apprentice Desc"
 	{
-		"en"	"65%% more building health and 2.0x Sentry damage, 2 more support buildings added"
-		"ru"	"На 65%% больше здоровья построек и двукратный урон турели, получено ещё 2 постройки поддержки."
-		"chi"   "增加65%%的建筑血量和2.0倍的哨兵伤害，增加2个可建筑数"
+		"en"	"65%% more building health and 3.1x Sentry damage, 2 more support buildings added and 50%% more repair Rate"
 	}
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.5x Repair Rate"
+		"en"	"2.0x Repair Rate"
 		"ru"	"2,5-кратная скорость починки."
 		"chi"   "修复建筑生命值提高2.5倍"
 	}
 	
 	"Construction Worker Desc"
 	{
-		"en"	"65%% more building health, increased sentry dmg by 1.75x and increased attack speed by 1.5x, 3 more support buildings added"
-		"ru"	"На 65%% больше здоровья построек, 1,75-кратное увеличение урона турели и 1,5-кратное увеличение скорости атаки, получено ещё 3 постройки поддержки."
-		"chi"   "增加65%%的建筑血量和1.75倍的哨兵伤害1.5倍攻击速度，增加3个可建筑数"
+		"en"	"65%% more building health, increased sentry dmg by 1.4x and increased attack speed by 1.2x, 3 more support buildings added"
 	}
 	
 	"Cosmic Repair Handling book Desc"
@@ -1425,23 +1397,20 @@
 	
 	"Construction Expert Desc"
 	{
-		"en"	"1.7x more building health and 2.5x Sentry damage and increased attack speed by 1.5x, 4 more support buildings added"
-		"ru"	"1,7x-кратное увеличение здоровья построек и 2,5-кратное урона турели, а также 1,5-кратное увеличение скорости атаки, получено ещё 4 постройки поддержки."
-		"chi"   "增加1.7倍的建筑血量和2.5倍的哨兵伤害1.5倍攻击速度，增加4个可建筑数"
+		"en"	"1.7x more building health and 2.25x Sentry damage and increased attack speed by 1.2x, 4 more support buildings added"
+
 	}
 	
 	"Construction Master Desc"
 	{
-		"en"	"1.4x more building health and 3.3x Sentry damage, 5 more support buildings added"
-		"ru"	"1,4-кратное увеличение здоровья построек и 3,3-кратное урона турели, получено ещё 5 построек поддержки."
-		"chi"   "增加1.4倍的建筑血量和3.3倍的哨兵伤害，增加5个可建筑数"
+		"en"	"1.4x more building health and 2.6x Sentry damage, 5 more support buildings added"
 	}
 	
 	"Construction Killer Desc"
 	{
-		"en"	"1.9x Sentry damage"
-		"ru"	"1,9-кратный урон турели."
-		"chi"   "增加1.9倍哨兵伤害"
+		"en"	"2.5x Sentry damage"
+		"ru"	"2,5-кратный урон турели."
+		"chi"   "增加2.5倍哨兵伤害"
 	}
 	
 	"Accurate Marksman Desc"
@@ -1677,9 +1646,9 @@
 	
 	"Heavy Caliber Desc"
 	{
-		"en"	"15%% more Weapon damage, but 10%% less firerate"
-		"ru"	"На 15%% больше урон от оружия, но на 10%% меньше скорострельность"
-		"chi"   "武器伤害提高15%%，但射速降低10%%"
+		"en"	"15%% more Weapon damage, but 15%% less firerate"
+		"ru"	"На 15%% больше урон от оружия, но на 15%% меньше скорострельность"
+		"chi"   "武器伤害提高15%%，但射速降低15%%"
 	}
 	
 	"Army Belt Desc"
@@ -1695,12 +1664,28 @@
 		"ru"	"Выстрелы в голову наносят двукратно больше урона вместо 1,65-кратного, но наносят на 35%% меньше урона от выстрелов в тело"
 		"chi"   "爆头造成的伤害增加2.0倍，但造成的身体伤害减少35%%"
 	}
+	"Proximity Ammunition Desc"
+	{
+		"en"	"Your bullets deal 15%% more damage, however their damage falloff is amplified by 20%%\nMost hitscan weapons work with this, if the weapon has no damage falloff, then this does nothing."
+	}
 	
 	"Mage Fragility Desc"
 	{
 		"en"	"25%% more max mana and mana regen but you will have 100 less HP"
 		"ru"	"На 25%% больше максимальной маны и регенерации маны, но у вас на 100 меньше ед. здоровья"
 		"chi"   "增加25%%的最大法力值和法力回复，生命值-100 "
+	}
+	"Mystical Overcharge Desc"
+	{
+		"en"	"Magic Weapons deal 20%% more damage, however you have 35%% less max mana and mana regen."
+	}
+	"Concentrated Agelitus Desc"
+	{
+		"en"	"Magic Weapons deal 5%% less damage, you have 10%% less max mana and mana regen, but your magic projectiles are 50% faster."
+	}
+	"Aggreviated Silence Desc"
+	{
+		"en"	"Your Mana will now always regenerate, however you have 70%% less mana regen speed.\nYou also have 10%% less max mana and mana regen."
 	}
 	
 	"Heavy Fat Desc"
@@ -1780,9 +1765,7 @@
 	}
 	"Fusion Blade Pap 2"
 	{
-		"en"	"More damage and 5%% melee resistance."
-		"ru"	"Больше урона и 5%% сопр. ближнему бою."
-		"chi"   "更多的伤害和5%的近战抗性。"
+		"en"	"More damage and 5%% melee resistance.\nYou take 10%% less damage from frontal attacks."
 	}
 	"Fusion Blade Pap 3"
 	{
@@ -2028,9 +2011,7 @@
 	}
 	"Specter Pap 2b"
 	{
-		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards"
-		"ru"	"Получает способность становиться нематериальным, но теряет всю прочность и оглушается после этого."
-		"chi"   "获得无形的技能，但会失去所有生命值，之后会被击晕"
+		"en"	"Gains the ability to go intangible but lose all health and become stunned afterwards.\nDuring raids, you instead gain 75% resistance and your health doesnt drain."
 	}
 	"Specter Pap 3"
 	{
@@ -2275,7 +2256,7 @@
 	}
 	"Ancient Banner Desc"
 	{
-		"en"	"Give everyone 25%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
+		"en"	"Give everyone 20%% more attackspeed, reloadspeed and healspeed during the duration of the banner."
 	}
 	"quincy pap0"	//todo: make the desc's abit cooler sounding
 	{
@@ -2315,7 +2296,7 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: ★✬☆☆☆"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nPassively heals you, gets interrupted when taking damage/switching weapons.\nDefence rating: ★✬☆☆☆"
 	}
 	"Spike Shield Desc"
 	{
@@ -2323,7 +2304,7 @@
 	}
 	"Leaf Shield Desc"
 	{
-		"en"	"A shield that was born - Parrying heals you.\nDefence rating: ★★★☆☆"
+		"en"	"A shield that was born - Healing comes back faster after taking damage.\nDefence rating: ★★★☆☆"
 	}
 	"Rookie Shield Desc"
 	{
@@ -2335,7 +2316,7 @@
 	}
 	"Rampart Desc"
 	{
-		"en"	"An abomination, given life. You can feel it's breath - Parrying gives you additional, but temporary max HP.\nDefence rating: ★★★★★"
+		"en"	"An abomination, given life. You can feel it's breath - Parrying heals you for 5% of your HP.\nDefence rating: ★★★★★"
 	}
 	"Cudgel Desc"
 	{
@@ -2359,7 +2340,7 @@
 	}
 	"Sensal Desc 2"
 	{
-		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell."
+		"en"	"Increaced damage and resistance, gain 1 more scythe with your ability.\nYour ability charges faster aswell and you gain 2x the charge battery."
 	}
 	"Sensal Desc 3"
 	{
@@ -2427,7 +2408,7 @@
 	}
 	"Neuv pap3"
 	{
-		"en"	"A new spell manifests into your mind\Hold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
+		"en"	"A new spell manifests into your mind\nHold M2 to charge up a Hexagonal Cannon\nUnfortunately you are unable to fully reconstruct it, even then, its quite potent"
 	}
 	"Neuv pap4"
 	{
@@ -2520,5 +2501,45 @@
 	"The Flagellant Pap 3"
 	{
 		"en"	"Gain +150 max health, increases healing given and received from abilities, and bleed effects last longer."
+	}
+	"Impact Lance Desc 1"
+	{
+		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
+	}
+	"Impact Lance Desc 2"
+	{
+		"en"	"You have the ability to accelerate a particle to high speeds\nYou will be knocked backwards, can only be used if you are facing a enemy\n15% melee Resistance"
+	}
+	"Impact Lance Desc 3"
+	{
+		"en"	"Larger range\nSlightly more melee width\nHigher Mana Cost"
+	}
+	"Impact Lance Desc 4"
+	{
+		"en"	"The Impact Lance, a true work of Magical engineering, with it at full power\nIts power can nearly pierce the heavens!"
+	}
+	"Impact Lance Desc 5"
+	{
+		"en"	"Pressing R will allow you to throw your lance, Costs 2x primary attack in mana\nThe lance becomes unusable for 2 seconds unless you have a certain god's godly assistance\n5% Melee resistance"
+	}
+	"Impact Lance Desc 6"
+	{
+		"en"	"Larger range\nSlightly more melee width"
+	}
+	"Impact Lance Desc 7"
+	{
+		"en"	"The Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
+	}
+	"Tornado Blitz Kit Desc"
+	{
+		"en"	"A fast firing Rocket Launcher, Must be manually reloaded!\nOnce you start reloading you become unable to fire the weapon\nHowever you can still use your melee while it is ''reloading''"
+	}
+	"Blitz Blade Desc"
+	{
+		"en"	"When your primary is reloading, this melee gains the ability to hit multiple targets\nAlso gains a damage bonus and larger range/width"
+	}
+	"Ion Blitz Desc"
+	{
+		"en"	"Once you have enough charges you can summon an ION cannon"
 	}
 }

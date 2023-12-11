@@ -48,7 +48,7 @@ void Gladiia_Enable(int client, int weapon)
 			}
 			WeaponTimer[client] = null;
 
-			float value = Attributes_Get(weapon, 861, -1.0);
+			float value = Attributes_Get(weapon, 868, -1.0);
 			
 			switch(RoundFloat(value))
 			{
@@ -144,7 +144,10 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 							if(ParticleRef[client] == -1)
 							{
-								int entity = ParticleEffectAt(WorldSpaceCenter(client), "env_rain_128", -1.0);
+								float pos[3]; pos = WorldSpaceCenter(client);
+								pos[2] += 500.0;
+
+								int entity = ParticleEffectAt(pos, "env_rain_128", -1.0);
 								if(entity > MaxClients)
 								{
 									SetParent(client, entity);

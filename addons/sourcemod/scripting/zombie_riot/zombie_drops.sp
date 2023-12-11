@@ -417,6 +417,8 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 											mana_regen_temp *= Mana_Regen_Level[client_Hud];
 											max_mana_temp *= Mana_Regen_Level[client_Hud];	
 										}
+										if(b_AggreviatedSilence[client_Hud])
+											mana_regen_temp *= 0.30;
 										/*
 										Current_Mana[client] += RoundToCeil(mana_regen[client]);
 											

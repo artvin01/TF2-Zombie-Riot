@@ -28,6 +28,7 @@ methodmap TownGuardPistol < BaseSquad
 		}
 		
 		Format(model, sizeof(model), "models/humans/group03/%s_bloody.mdl", model);
+		PrecacheModel(model);
 
 		TownGuardPistol npc = view_as<TownGuardPistol>(BaseSquad(vecPos, vecAng, model, "1.15", true, true));
 		

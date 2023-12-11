@@ -7,6 +7,9 @@ methodmap CombineOverlord < CombineSoldier
 	{
 		CombineOverlord npc = view_as<CombineOverlord>(BaseSquad(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", ally, false));
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
@@ -53,9 +56,6 @@ methodmap CombineOverlord < CombineSoldier
 public void CombineOverlord_ClotThink(int iNPC)
 {
 	CombineOverlord npc = view_as<CombineOverlord>(iNPC);
-
-	SetVariantInt(1);
-	AcceptEntityInput(npc.index, "SetBodyGroup");
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)

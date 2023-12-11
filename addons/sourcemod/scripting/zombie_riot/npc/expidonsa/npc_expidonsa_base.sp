@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
-#define MAX_EXPI_ENERGY_EFFECTS 20
+//
+#define MAX_EXPI_ENERGY_EFFECTS 71
 
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
 int i_ExpidonsaShieldCapacity[MAXENTITIES];
