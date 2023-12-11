@@ -4,13 +4,12 @@
 static Handle h_TimerKitBlitzkriegManagement[MAXPLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXPLAYERS+1];
 static float fl_primary_reloading[MAXPLAYERS+1];
-static int i_last_ammo[MAXPLAYERS+1];
 static bool b_primary_lock[MAXPLAYERS+1];
 static int i_ion_charge[MAXPLAYERS+1];
+static float fl_primary_dmg_amt[MAXPLAYERS+1];
+static int i_barrage[MAXPLAYERS+1];
+static float fl_ammo_efficiency[MAXPLAYERS+1];
 
-static int i_tornado_index[MAXENTITIES+1];
-static int i_tornado_wep[MAXENTITIES+1];
-static float fl_tornado_dmg[MAXENTITIES+1];
 static int g_particleImpactTornado;
 
 static char gGlow1;
@@ -27,14 +26,15 @@ static char gLaser1;
 #define BLITZKRIEG_KIT_SHOOT_SOUND3 "weapons/airstrike_fire_03.wav"
 
 #define BLITZKRIEG_KIT_ION_PASIVE_SOUND "ambient/energy/weld1.wav" 
-#define BLITZKRIEG_KIT_ION_EXPLOSION_SOUND "ambient/explosions/explode_9.wav"
-
+#define BLITZKRIEG_KIT_ION_EXPLOSION_SOUND "misc/doomsday_missile_explosion.wav"
 
 public void Kit_Blitzkrieg_Precache()
 {
 	Zero(fl_primary_reloading);
 	Zero(fl_hud_timer);
 	Zero(i_ion_charge);
+	Zero(i_barrage);
+	Zero(fl_ammo_efficiency);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheModel(BLITZKRIEG_KIT_ROCKET_MODEL);
 	PrecacheSound(BLITZKRIEG_KIT_SHOOT_SOUND1);
@@ -47,12 +47,6 @@ public void Kit_Blitzkrieg_Precache()
 
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt", true);
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
-}
-
-public void Blitzkrieg_Kit_OnBuy(int client)
-{
-	i_last_ammo[client]=0;
-	fl_primary_reloading[client] = 0.0;
 }
 
 public void Enable_Blitzkrieg_Kit(int client, int weapon)
@@ -70,6 +64,9 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			h_TimerKitBlitzkriegManagement[client] = CreateDataTimer(0.1, Timer_Management_KitBlitzkrieg, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
+			fl_primary_reloading[client] = 0.0;
+			i_barrage[client]=0;
+			b_primary_lock[client]=true;	//we have to reload it due to an update removing our entire clip
 		}
 		return;
 	}
@@ -80,6 +77,9 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		h_TimerKitBlitzkriegManagement[client] = CreateDataTimer(0.1, Timer_Management_KitBlitzkrieg, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		fl_primary_reloading[client] = 0.0;
+		fl_primary_dmg_amt[client] = 100.0;
+		i_barrage[client]=0;
 	}
 }
 
@@ -111,7 +111,7 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 	{
 		case 1: //primary 1
 		{
-			BlitzHud(client, GameTime);
+			BlitzHud(client, GameTime, 1);
 
 			if(b_primary_lock[client])
 			{
@@ -124,24 +124,18 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 		}
 		case 2: //secondary 1
 		{
-			BlitzHud(client, GameTime);
+			BlitzHud(client, GameTime, 2);
 		}
 		case 3: //melee 1
 		{
-			BlitzHud(client, GameTime);
-		}
-		default:	//weapon contains none of the apropriate id's kill it.
-		{
-			h_TimerKitBlitzkriegManagement[client] = null;
-			CPrintToChatAll("Killed timer via default switch");
-			return Plugin_Stop;
+			BlitzHud(client, GameTime, 3);
 		}
 	}
 		
 	return Plugin_Continue;
 }
 
-static void BlitzHud(int client, float GameTime)
+static void BlitzHud(int client, float GameTime, int wep)
 {
 	if(fl_hud_timer[client]>GameTime)
 		return;
@@ -150,13 +144,18 @@ static void BlitzHud(int client, float GameTime)
 
 	char HUDText[255] = "";
 
-	Format(HUDText, sizeof(HUDText), "%sIon Charges: [%i/%i]", HUDText, i_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
+	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%i/%i]", HUDText, i_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
+	if(i_barrage[client] && wep==1)
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nBarrage Active!", HUDText);
+	}
 	
 	if(fl_primary_reloading[client]>GameTime)
 	{
 		float Duration = fl_primary_reloading[client] - GameTime;
 		Format(HUDText, sizeof(HUDText), "%s\nPrimary Reloading... [%.1f]", HUDText, Duration);
 	}
+
 
 	PrintHintText(client, HUDText);
 	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -170,18 +169,20 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 
 	int max_clip = RoundFloat(Attributes_Get(weapon, 868, 40.0));
 
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	int current_ammo = GetAmmo(client, Ammo_type);
-	if(current_ammo < max_clip)	//abort abort!
+	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");	//ammo type
+	int reserve_ammo = GetAmmo(client, Ammo_type);							//reserve
+	int ammo = GetEntData(weapon, iAmmoTable, 4);							//clip
+	if(reserve_ammo < max_clip)	//abort abort!
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Ammo to reload weapon!");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Ammo to Fully reload weapon!");
 		return;
 	}
 
-	if(current_ammo==max_clip)	//why?
+	if(ammo>=max_clip)	//why?
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -190,9 +191,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		return;
 	}
 
-	int ammo = i_last_ammo[client];
-
-	int amt_reloaded = max_clip - i_last_ammo[client]+1;	//need to make it eat 1 extra due to stuff.
+	int amt_reloaded = max_clip - ammo;
 
 	//CPrintToChatAll("%i", max_clip);
 	//CPrintToChatAll("%i", ammo);
@@ -201,7 +200,10 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 
 	//CPrintToChatAll("%f", ratio);
 
-	float time = 30.0*ratio;
+	float time = 10.0*ratio;	//30
+
+	time *=Attributes_Get(weapon, 97, 1.0);
+
 	if(time<=2.5)
 		time=2.5;
 	
@@ -210,11 +212,8 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 
 	fl_primary_reloading[client] = GameTime + time;
 
-	i_last_ammo[client] = max_clip;
-
 	//8 is rockets
-	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-	SetAmmo(client, Ammo_type, current_ammo-amt_reloaded);
+	SetAmmo(client, Ammo_type, reserve_ammo-amt_reloaded);
 	SetEntData(weapon, iAmmoTable, max_clip, 4, true);
 
 	b_primary_lock[client]=true;
@@ -227,25 +226,47 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
 }
-
-
-static void Play_Proper_Sound(int client)
+public void Blitzkrieg_Kit_Barrage_1(int client, int weapon, const char[] classname, bool &result)
 {
-	switch(GetRandomInt(0, 2))
+	if(i_barrage[client])
 	{
-		case 0: EmitSoundToAll(BLITZKRIEG_KIT_SHOOT_SOUND1, client, SNDCHAN_STATIC, GetRandomInt(80 , 100), _, 0.4, GetRandomInt(90, 110));
-		case 1: EmitSoundToAll(BLITZKRIEG_KIT_SHOOT_SOUND2, client, SNDCHAN_STATIC, GetRandomInt(80 , 100), _, 0.4, GetRandomInt(90, 110));
-		case 2: EmitSoundToAll(BLITZKRIEG_KIT_SHOOT_SOUND3, client, SNDCHAN_STATIC, GetRandomInt(80 , 100), _, 0.4, GetRandomInt(90, 110));
+		i_barrage[client]=0;
+	}
+	else
+	{
+		i_barrage[client]=1;
 	}
 }
-public void Blitzkrieg_Kit_Primary_Fire(int client, int weapon, const char[] classname, bool &result)
+public void Blitzkrieg_Kit_Barrage_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Play_Proper_Sound(client);
-	Blitzkrieg_Kit_Rocket(client, weapon);
+	if(i_barrage[client])
+	{
+		i_barrage[client]=0;
+	}
+	else
+	{
+		i_barrage[client]=2;
+	}
+}
+public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.25);
+}
+public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.4);
+}
+public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.55);
+}
+public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
+{
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.7);
 }
 
 
-static void Blitzkrieg_Kit_Rocket(int client, int weapon)
+static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency)
 {
 	float speedMult = 1250.0;
 	float dmgProjectile = 100.0;
@@ -260,17 +281,102 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon)
 	
 	speedMult *= Attributes_Get(weapon, 475, 1.0);
 
-	Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon);
+	fl_primary_dmg_amt[client] = dmgProjectile;
+
+	float fAng[3];
+	GetClientEyeAngles(client, fAng);
+
+	if(fl_ammo_efficiency[client]>=1.0)
+	{
+		Add_One_Ammo(weapon);
+		fl_ammo_efficiency[client]-=1.0;
+	}
+	else
+	{
+		fl_ammo_efficiency[client]+=efficiency;
+	}
+
+
+
+
+	float GameTime = GetGameTime();
+
+	if(i_barrage[client])
+	{
+		dmgProjectile *=0.9;
+		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+		int ammo = GetEntData(weapon, iAmmoTable, 4);
+		if(ammo<10)
+		{
+			i_barrage[client]=0;	//no more barrage, too low ammo
+		}
+	}
+	switch(i_barrage[client])
+	{
+		case 0:
+		{
+			Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng);
+		}
+		case 1:
+		{
+			for(int rocket=1 ; rocket < 3 ; rocket++)	//fire off 3 rockets.
+			{
+				float angles[3]; angles=fAng;
+				angles[0] = angles[0]+GetRandomFloat(-5.0,5.0);
+				angles[1] = angles[1]+GetRandomFloat(-5.0,5.0);
+				angles[2] = angles[2]+GetRandomFloat(-0.25,0.25);
+				Remove_One_Ammo(weapon);
+				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, angles);			
+			}
+			fAng[0] +=GetRandomFloat(-5.0,5.0);
+			fAng[1] +=GetRandomFloat(-5.0,5.0);
+			fAng[2] +=GetRandomFloat(-0.25,0.25);
+			Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng);
+		}
+		case 2:
+		{
+			for(int rocket=1 ; rocket < 5 ; rocket++)	//fire off 5 rockets.
+			{
+				float angles[3]; angles=fAng;
+				angles[0] = angles[0]+GetRandomFloat(-5.0,5.0);
+				angles[1] = angles[1]+GetRandomFloat(-5.0,5.0);
+				angles[2] = angles[2]+GetRandomFloat(-0.25,0.25);
+				Remove_One_Ammo(weapon);
+				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, angles);			
+			}
+			fAng[0] +=GetRandomFloat(-5.0,5.0);
+			fAng[1] +=GetRandomFloat(-5.0,5.0);
+			fAng[2] +=GetRandomFloat(-0.25,0.25);
+			Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng);
+		}
+	}
 }
 
-static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon)
+static void Remove_One_Ammo(int entity)
+{
+	if(IsValidEntity(entity))
+	{
+		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+		int ammo = GetEntData(entity, iAmmoTable, 4);
+		ammo -= 1;
+		SetEntData(entity, iAmmoTable, ammo, 4, true);
+	}
+}
+static void Add_One_Ammo(int entity)
+{
+	if(IsValidEntity(entity))
+	{
+		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+		int ammo = GetEntData(entity, iAmmoTable, 4);
+		ammo += 1;
+		SetEntData(entity, iAmmoTable, ammo, 4, true);
+	}
+}
+
+static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon, float fAng[3])
 {
 
-	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-	i_last_ammo[client] = GetEntData(weapon, iAmmoTable, 4);
-
-	float fAng[3], fPos[3];
-	GetClientEyeAngles(client, fAng);
+	float fPos[3];
 	GetClientEyePosition(client, fPos);
 
 	float tmp[3];
@@ -289,46 +395,12 @@ static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, in
 	fPos[1] += actualBeamOffset[1];
 	fPos[2] += actualBeamOffset[2];
 
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "", fAng, false , fPos);
 
-	float fVel[3], fBuf[3];
-	GetAngleVectors(fAng, fBuf, NULL_VECTOR, NULL_VECTOR);
-	fVel[0] = fBuf[0]*speed;
-	fVel[1] = fBuf[1]*speed;
-	fVel[2] = fBuf[2]*speed;
-
-	int entity = CreateEntityByName("zr_projectile_base");
-	if(IsValidEntity(entity))
-	{
-		fl_tornado_dmg[entity]=damage;
-		i_tornado_wep[entity]=EntIndexToEntRef(weapon);
-		i_tornado_index[entity]=EntIndexToEntRef(client);
-		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
-		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
-		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
-		DispatchSpawn(entity);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
-		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
-		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
-
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Blitzkrieg_Kit_RocketExplodePre);
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Blitzkrieg_Kit_Rocket_StartTouch);
-
-		ApplyCustomModelToWandProjectile(entity, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
-	}
-	return;
-}
-public MRESReturn Blitzkrieg_Kit_RocketExplodePre(int entity)
-{
-	//CPrintToChatAll("explode pre");
-	return MRES_Supercede;
+	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
 }
 public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int other)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -339,15 +411,15 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int other)
 		static float Entity_Position[3];
 		Entity_Position = WorldSpaceCenter(target);
 		
-		int owner = EntRefToEntIndex(i_tornado_index[entity]);
-		int weapon = EntRefToEntIndex(i_tornado_wep[entity]);
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float pos1[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
 
-		SDKHooks_TakeDamage(target, owner, owner, fl_tornado_dmg[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
 
 		if(IsValidClient(owner))
 		{
@@ -578,7 +650,7 @@ public void Blitzkrieg_Kit_IonAttack(Handle &data)
 	{
 
 		startPosition[2] += 25.0;
-		Explode_Logic_Custom(Iondamage, client, client, -1, startPosition, 400.0 , _ , _ , false);
+		Explode_Logic_Custom(Iondamage, client, client, -1, startPosition, 300.0 , _ , _ , false);
 		startPosition[2] -= 25.0;
 					
 		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -611,7 +683,7 @@ public void Blitzkrieg_Kit_IonAttack(Handle &data)
 				dist = GetVectorDistance(vClientPosition, position, false);
 				if (dist < 500.0)
 				{
-					Client_Shake(i, 0, 10.0, 25.0, 7.5);
+					Client_Shake(i, 0, 10.0, 25.0, 3.75);
 				}
 			}
 		}	
@@ -631,9 +703,13 @@ public void Blitzkrieg_Kit_Custom_Melee_Logic(int client, float &CustomMeleeRang
 	}
 }
 
-public void Blitzkrieg_Kit_Custom_Damage_Calc(int client, float &damage)
+public void Blitzkrieg_Kit_Custom_Damage_Calc(int client, int weapon, float &damage)
 {
 	float GameTime = GetGameTime();
+
+	damage = fl_primary_dmg_amt[client];
+
+	damage *= Attributes_Get(weapon, 868, 1.0);
 
 	if(fl_primary_reloading[client]>GameTime)
 	{

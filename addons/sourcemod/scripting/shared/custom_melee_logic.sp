@@ -556,7 +556,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
-				Blitzkrieg_Kit_Custom_Damage_Calc(client, damage);
+				Blitzkrieg_Kit_Custom_Damage_Calc(client, weapon, damage);
 			}
 		}
 #endif

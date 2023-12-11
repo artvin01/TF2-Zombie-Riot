@@ -2542,4 +2542,8 @@
 	{
 		"en"	"Once you have enough charges you can summon an ION cannon"
 	}
+	"Blitz Kit Desc"
+	{
+		"en"	"You have 3 weapons, a rocket launcher that shoots fast.\nA secondary that fires an ION if you have enough charge, you get that from hitting npc's with your primary\nAnd a melee that becomes stronger when your primary is reloading
+	}
 }
