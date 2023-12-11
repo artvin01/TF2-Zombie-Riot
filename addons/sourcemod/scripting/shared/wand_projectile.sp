@@ -323,7 +323,7 @@ static void OnDestroy_Proj(CClotBody body)
 	return;
 }
 
-int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation)
+stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, float ModelSize, char[] defaultAnimation)
 {
 	int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[rocket]);
 	if(IsValidEntity(extra_index))

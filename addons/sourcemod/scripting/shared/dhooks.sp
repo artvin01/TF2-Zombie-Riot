@@ -2175,7 +2175,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 	return MRES_Ignored;
 }
 
-void DelayEffectOnHorn(int ref)
+stock void DelayEffectOnHorn(int ref)
 {
 	//i do not trust banner durations.
 	int client = EntRefToEntIndex(ref);
@@ -2186,6 +2186,7 @@ void DelayEffectOnHorn(int ref)
 
 	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
 
+#if defined ZR
 	if(b_ArkantosBuffItem[client])
 	{
 		int r = 200;
@@ -2201,6 +2202,7 @@ void DelayEffectOnHorn(int ref)
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
 		spawnRing(client, 50.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
 	}
+#endif
 
 	if(ExtendDuration <= 10.0)
 	{

@@ -324,9 +324,6 @@ float f_SemiAutoStats_FireRate[MAXENTITIES];
 int i_SemiAutoStats_MaxAmmo[MAXENTITIES];
 float f_SemiAutoStats_ReloadTime[MAXENTITIES];
 
-float f_MedigunChargeSave[MAXTF2PLAYERS][4];
-float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
-
 float Increaced_Sentry_damage_Low[MAXENTITIES];
 float Increaced_Sentry_damage_High[MAXENTITIES];
 float Resistance_for_building_Low[MAXENTITIES];

@@ -445,8 +445,11 @@ void Sdkcall_Load_Lagcomp()
 
 void Manual_Impulse_101(int client, int health)
 {
+
+#if defined ZR
 	ClientSaveRageMeterStatus(client);
 	ClientSaveUber(client);
+#endif
 
 	SetConVarInt(sv_cheats, 1, false, false);
 	
@@ -481,8 +484,12 @@ void Manual_Impulse_101(int client, int health)
 	}
 	
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
+
+#if defined ZR
 	ClientApplyRageMeterStatus(client);
 	ClientApplyMedigunUber(client);
+#endif
+
 	if(health > 0)
 		SetEntityHealth(client, health);
 }

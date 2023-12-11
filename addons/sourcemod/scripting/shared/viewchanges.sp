@@ -223,11 +223,15 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
+					
+#if defined ZR
 					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{
 						SensalApplyRecolour(client, entity);
 					}
 					else
+#endif
+
 					{
 						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
 					}
@@ -250,11 +254,15 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
+
+#if defined ZR
 					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{
 						SensalApplyRecolour(client, entity);
 					}
 					else
+#endif
+
 					{
 						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
 					}
