@@ -3490,8 +3490,6 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
-		PrintToServer("test fail!");
-		LogStackTrace("TF2_SetPlayerClass_ZR test!");
 		classType = TFClass_Medic;
 	}
 	
