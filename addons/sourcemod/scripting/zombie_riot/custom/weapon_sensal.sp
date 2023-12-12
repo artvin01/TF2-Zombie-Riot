@@ -59,7 +59,6 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 
 void ResetMapStartSensalWeapon()
 {
-	i_ProjectileIndex_Sensal = PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	for (int i = 0; i < (sizeof(g_SyctheHitSound));   i++) { PrecacheSound(g_SyctheHitSound[i]);   }
 	Zero(f_Sensalhuddelay);
 	PrecacheSound(SensalWeapon_SOUND);

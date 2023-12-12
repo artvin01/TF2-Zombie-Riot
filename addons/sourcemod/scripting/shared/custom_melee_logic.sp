@@ -435,6 +435,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 	pack.ReadString(classname, 32);
 	if(client && weapon != -1 && IsValidCurrentWeapon(client, weapon))
 	{
+
+#if defined ZR
 		float damage_test_validity = 1.0; 
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
@@ -448,6 +450,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			delete pack;
 			return;
 		}
+#endif
+
 		int aoeSwing = 1;
 
 		Handle swingTrace;
@@ -534,11 +538,16 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						
 			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 
+#if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
+#endif
+
 		}
 		
 			
 		damage *= Attributes_Get(weapon, 1, 1.0);
+
+#if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
 			case WEAPON_IMPACT_LANCE: //yes, if we miss, then we do other stuff.
@@ -550,6 +559,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 				Blitzkrieg_Kit_Custom_Damage_Calc(client, damage);
 			}
 		}
+#endif
 		
 		bool PlayOnceOnly = false;
 		float playerPos[3];

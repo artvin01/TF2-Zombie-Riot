@@ -818,6 +818,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			else
 			{
+
+#if defined ZR
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					float damage_save = 50.0;
@@ -842,6 +844,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
+#endif
+
 				if(i_HeadshotAffinity[attacker] == 1)
 				{
 					damage *= 0.65;

@@ -4884,9 +4884,12 @@ void Store_ApplyAttribs(int client)
 	delete map;
 
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
+
+#if defined ZR
 	EnableSilvesterCosmetic(client);
 	EnableMagiaCosmetic(client);
 	Building_Check_ValidSupportcount(client);
+#endif
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -4954,10 +4957,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			}
 		}
 	}
+
+#if defined ZR
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	ClientSaveRageMeterStatus(client);
 	ClientSaveUber(client);
+#endif
+
 	/*
 	int weapon = GetPlayerWeaponSlot(client, 1); //Secondary
 	if(IsValidEntity(weapon))

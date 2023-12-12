@@ -533,13 +533,13 @@ methodmap Blitzkrieg < CClotBody
 		
 		bool final = StrContains(data, "final_item") != -1;
 		fl_blitzscale[npc.index] = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
-		if(i_currentwave[npc.index]<30)
+		if(i_currentwave[npc.index]<=30)
 		{
-			fl_blitzscale[npc.index] *= 2.0;	//blitz is quite weak on wave 15
+			fl_blitzscale[npc.index] *= 2.0;	//blitz is quite weak on wave 15, and 30
 		}
 		else if(i_currentwave[npc.index]>=60)
 		{
-			fl_blitzscale[npc.index] /= 5.0;	//blitz is quite scary on wave 60, so nerf him a bit
+			fl_blitzscale[npc.index] /= 3.0;	//blitz is quite scary on wave 60, so nerf him a bit
 			
 		}
 		if(i_currentwave[npc.index]>60 && !final)

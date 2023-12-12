@@ -304,6 +304,9 @@ int g_CarriedDispenser[MAXPLAYERS+1];
 int i_BeingCarried[MAXENTITIES];
 float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
+float f_MedigunChargeSave[MAXTF2PLAYERS][4];
+float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
+
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
