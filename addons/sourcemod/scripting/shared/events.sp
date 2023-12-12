@@ -173,6 +173,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		TextStore_DepositBackpack(client, false, Level[client] < 5);
 #endif
 
+		ForcePlayerCrouch(client, false);
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
