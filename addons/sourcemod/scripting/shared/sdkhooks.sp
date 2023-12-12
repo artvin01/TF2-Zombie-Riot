@@ -1850,13 +1850,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					}
 					dieingstate[victim] = 500;
 				}
+				ForcePlayerCrouch(victim, true);
 				//cooldown for left for dead.
 				SpecterResetHudTime(victim);
 				ApplyLastmanOrDyingOverlay(victim);
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-				Attributes_Set(victim, 489, 0.15);
+				Attributes_Set(victim, 489, 0.65);
 			//	Attributes_Set(victim, 820, 1.0);
 			//	Attributes_Set(victim, 819, 1.0);	
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);

@@ -118,6 +118,12 @@ public Action Command_TpOn(int client, int args)
 	{
 		return Plugin_Handled;
 	}
+#if defined ZR
+	if(dieingstate[client] > 0)
+	{
+		return Plugin_Handled;
+	}
+#endif
 	if (IsPlayerAlive(client) && !thirdperson[client])													   // If they arn't alive, they won't have the cam set, it'll spam.
 	{
 		SetVariantInt(1);

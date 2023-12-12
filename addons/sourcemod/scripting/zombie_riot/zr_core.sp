@@ -1785,6 +1785,7 @@ void ReviveAll(bool raidspawned = false)
 					SetEntityRenderColor(entity, 255, 255, 255, 255);
 				}
 			}
+			ForcePlayerCrouch(client, false);
 			//just make visible.
 			SetEntityRenderMode(client, RENDER_NORMAL);
 			SetEntityRenderColor(client, 255, 255, 255, 255);
@@ -2125,4 +2126,50 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 		}
 	}
 	return Plugin_Stop;
+}
+
+void SetForceButtonState(int client, bool apply, int button_flag)
+{
+	int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+
+	if(apply)
+	{
+		Buttons |= button_flag;
+	}
+	else
+	{
+		Buttons &= ~button_flag;
+	}
+	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
+//	SetEntProp(client, Prop_Send, "m_afButtonForced", Buttons);
+}
+
+void ForcePlayerCrouch(int client, bool enable)
+{
+	if(enable)
+	{
+		SetVariantInt(1);
+		AcceptEntityInput(client, "SetForcedTauntCam");
+		SetForceButtonState(client, true, IN_DUCK);
+		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
+		SetEntProp(client, Prop_Send, "m_bDucked", true);
+		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+	}
+	else
+	{
+		if(thirdperson[client])
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
+		else
+		{
+			SetVariantInt(0);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
+		SetForceButtonState(client, false, IN_DUCK);
+		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
+		SetEntProp(client, Prop_Send, "m_bDucked", false);
+		SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);
+	}
 }

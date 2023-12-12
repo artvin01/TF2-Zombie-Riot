@@ -347,6 +347,7 @@ void Edited_TF2_RegeneratePlayer(int client)
 #if defined ZR
 	KillDyingGlowEffect(client);
 #endif
+	ForcePlayerCrouch(client, false);
 	//delete at all times, they have no purpose here, you respawn.
 	TF2_RegeneratePlayer(client);
 
@@ -365,6 +366,7 @@ void Edited_TF2_RespawnPlayer(int client)
 #if defined ZR
 	KillDyingGlowEffect(client);
 #endif
+	ForcePlayerCrouch(client, false);
 	//delete at all times, they have no purpose here, you respawn.
 	TF2_RespawnPlayer(client);
 

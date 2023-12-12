@@ -81,7 +81,7 @@ void DHook_Setup()
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
 	
 	
-	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre);
+	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
 	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
@@ -1742,7 +1742,7 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 
 public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn ret)
 {
-	if(IsClientInGame(client))
+	if(IsClientInGame(client) && !IsInsideManageRegularWeapons)
 	{
 		TF2_SetPlayerClass_ZR(client, TFClass_Medic, false, false);
 		GetChargeEffectBeingProvided = client;
@@ -1752,7 +1752,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPre(int client, DHookReturn 
 
 public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn ret)
 {
-	if(GetChargeEffectBeingProvided)
+	if(GetChargeEffectBeingProvided && !IsInsideManageRegularWeapons)
 	{
 		#if defined NoSendProxyClass
 		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
@@ -2276,6 +2276,7 @@ public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams)
 public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 {
 	// Gives our desired class's wearables
+	IsInsideManageRegularWeapons = true;
 	if(!CurrentClass[client])
 	{
 		CurrentClass[client] = TFClass_Scout;
@@ -2283,7 +2284,11 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
 	return MRES_Ignored;
 }
-
+public MRESReturn DHook_ManageRegularWeaponsPost(int client, DHookParam param)
+{
+	IsInsideManageRegularWeapons = false;
+	return MRES_Ignored;
+}
 #define MAX_YAW_SHIELD_DELETE_SIDEWAY 25.0
 bool ShieldDeleteProjectileCheck(int owner, int enemy)
 {

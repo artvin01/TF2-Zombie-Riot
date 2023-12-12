@@ -4874,7 +4874,8 @@ void Store_ApplyAttribs(int client)
 #if defined ZR
 	if(dieingstate[client] > 0)
 	{
-		Attributes_Set(client, 489, 0.15);
+		ForcePlayerCrouch(client, true);
+		Attributes_Set(client, 489, 0.65);
 	}
 #endif
 	
