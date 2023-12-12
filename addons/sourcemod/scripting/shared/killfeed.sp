@@ -480,10 +480,8 @@ static void ShowNextFeed()
 
 			break;
 		}
-		while(feed.victim_team == feedmain.victim_team &&
-			feed.attacker_team == feedmain.attacker_team &&
-			StrEqual(feed.victim_name, feedmain.victim_name) &&
-			StrEqual(feed.attacker_name, feedmain.attacker_name));
+		while((!feed.victim_name[0] || (feed.victim_team == feedmain.victim_team && StrEqual(feed.victim_name, feedmain.victim_name))) &&
+			(!feed.attacker_name[0] || (feed.attacker_team == feedmain.attacker_team && StrEqual(feed.attacker_name, feedmain.attacker_name))));
 
 		// Need time to change the bot's display name
 		FeedTimer = CreateTimer(botUsed ? 0.2 : 0.0, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
