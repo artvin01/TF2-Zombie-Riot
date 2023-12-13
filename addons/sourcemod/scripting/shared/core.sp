@@ -265,6 +265,7 @@ bool i_HasBeenHeadShotted[MAXENTITIES];
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
+bool b_NetworkedCrouch[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
