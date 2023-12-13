@@ -126,14 +126,16 @@ void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	#endif
 	
-	#if !defined NoSendProxyClass
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
-	#endif
 }
 
 public void OnPreThinkPost(int client)
 {
+	if(b_NetworkedCrouch[client])
+	{
+		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
+	}
 	if(CvarMpSolidObjects)
 	{
 #if defined ZR
@@ -1269,13 +1271,13 @@ public void OnPostThink(int client)
 #endif
 }
 
-#if !defined NoSendProxyClass
 public void OnPostThinkPost(int client)
 {
-	if(IsPlayerAlive(client) && CurrentClass[client]!=TFClass_Unknown)
-		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+	if(b_NetworkedCrouch[client])
+	{
+		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
+	}
 }
-#endif
 
 /*
 public void OnPreThink(int client)

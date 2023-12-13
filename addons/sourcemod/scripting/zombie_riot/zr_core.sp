@@ -1424,7 +1424,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							if(IsClientInGame(i) && !IsFakeClient(i))
 							{
 								Music_Stop_All(i);
-								SetMusicTimer(i, GetTime() + 1); //give them 5 seconds to react to full on panic.
+								SetMusicTimer(i, GetTime() + 2); //give them 2 seconds, long enough for client predictions to fade.
 								SetEntPropEnt(i, Prop_Send, "m_hObserverTarget", client);
 							}
 						}
@@ -2141,7 +2141,6 @@ void SetForceButtonState(int client, bool apply, int button_flag)
 		Buttons &= ~button_flag;
 	}
 	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
-//	SetEntProp(client, Prop_Send, "m_afButtonForced", Buttons);
 }
 
 void ForcePlayerCrouch(int client, bool enable)
@@ -2152,24 +2151,30 @@ void ForcePlayerCrouch(int client, bool enable)
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		SetForceButtonState(client, true, IN_DUCK);
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 0);
+		b_NetworkedCrouch[client] = true;
 		SetEntProp(client, Prop_Send, "m_bDucked", true);
 		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 	}
 	else
 	{
-		if(thirdperson[client])
+		int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+		if(Buttons & IN_DUCK)
 		{
-			SetVariantInt(1);
-			AcceptEntityInput(client, "SetForcedTauntCam");
+			if(thirdperson[client])
+			{
+				SetVariantInt(1);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			else
+			{
+				SetVariantInt(0);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			SetForceButtonState(client, false, IN_DUCK);
+			b_NetworkedCrouch[client] = false;
+			SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
+			SetEntProp(client, Prop_Send, "m_bDucked", false);
+			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
 		}
-		else
-		{
-			SetVariantInt(0);
-			AcceptEntityInput(client, "SetForcedTauntCam");
-		}
-		SetForceButtonState(client, false, IN_DUCK);
-		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
-		SetEntProp(client, Prop_Send, "m_bDucked", false);
-		SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);
 	}
 }

@@ -713,7 +713,7 @@ static void TriggerDeathDoor(int client, int &healing)
 	if(dieingstate[client] > 0)
 	{
 		dieingstate[client] = 0;
-
+		ForcePlayerCrouch(client, false);
 		Store_ApplyAttribs(client);
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 		int entity, i;
