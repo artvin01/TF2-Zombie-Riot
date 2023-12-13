@@ -7,7 +7,7 @@ static float fl_primary_reloading[MAXPLAYERS+1];
 static bool b_primary_lock[MAXPLAYERS+1];
 static int i_ion_charge[MAXPLAYERS+1];
 static float fl_primary_dmg_amt[MAXPLAYERS+1];
-static int i_barrage[MAXPLAYERS+1];
+static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 
 static int g_particleImpactTornado;
@@ -33,7 +33,6 @@ public void Kit_Blitzkrieg_Precache()
 	Zero(fl_primary_reloading);
 	Zero(fl_hud_timer);
 	Zero(i_ion_charge);
-	Zero(i_barrage);
 	Zero(fl_ammo_efficiency);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheModel(BLITZKRIEG_KIT_ROCKET_MODEL);
@@ -65,7 +64,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 			fl_primary_reloading[client] = 0.0;
-			i_barrage[client]=0;
+			i_patten_type[client]=0;
 			b_primary_lock[client]=true;	//we have to reload it due to an update removing our entire clip
 		}
 		return;
@@ -79,7 +78,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		fl_primary_reloading[client] = 0.0;
 		fl_primary_dmg_amt[client] = 100.0;
-		i_barrage[client]=0;
+		i_patten_type[client]=0;
 	}
 }
 
@@ -145,10 +144,19 @@ static void BlitzHud(int client, float GameTime, int wep)
 	char HUDText[255] = "";
 
 	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%i/%i]", HUDText, i_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
-	if(i_barrage[client] && wep==1)
+	
+	switch(i_patten_type[client])
 	{
-		Format(HUDText, sizeof(HUDText), "%s\nBarrage Active!", HUDText);
+		case 0:
+		{
+			Format(HUDText, sizeof(HUDText), "%s\nPattern: Alpha", HUDText);
+		}
+		case 1:
+		{
+			Format(HUDText, sizeof(HUDText), "%s\nPattern: Beta", HUDText);
+		}
 	}
+	
 	
 	if(fl_primary_reloading[client]>GameTime)
 	{
@@ -219,6 +227,8 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	b_primary_lock[client]=true;
 	Attributes_Set(weapon, 821, 1.0);
 
+	fl_primary_reloading[client]=0;
+
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
@@ -226,49 +236,34 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
 }
-public void Blitzkrieg_Kit_Barrage_1(int client, int weapon, const char[] classname, bool &result)
+public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] classname, bool &result)
 {
-	if(i_barrage[client])
-	{
-		i_barrage[client]=0;
-	}
+	if(i_patten_type[client])
+		i_patten_type[client]=0;
 	else
-	{
-		i_barrage[client]=1;
-	}
-}
-public void Blitzkrieg_Kit_Barrage_2(int client, int weapon, const char[] classname, bool &result)
-{
-	if(i_barrage[client])
-	{
-		i_barrage[client]=0;
-	}
-	else
-	{
-		i_barrage[client]=2;
-	}
+		i_patten_type[client]=1;
 }
 public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.25);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 3, 19.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.4);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 3, 19.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.55);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.40, 5, 14.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.7);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.55, 7, 10.0);
 }
 
 
-static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency)
+static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing)
 {
-	float speedMult = 1250.0;
+	float speedMult = 1000.0;
 	float dmgProjectile = 100.0;
 		
 	dmgProjectile *= Attributes_Get(weapon, 1, 1.0);
@@ -296,60 +291,110 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency)
 		fl_ammo_efficiency[client]+=efficiency;
 	}
 
+	float fPos[3];
+	GetClientEyePosition(client, fPos);
 
+	float tmp[3];
+	float actualBeamOffset[3];
+	float BEAM_BeamOffset[3];
+	BEAM_BeamOffset[0] = 0.0;
+	BEAM_BeamOffset[1] = -8.0;
+	BEAM_BeamOffset[2] = -10.0;
 
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(tmp, fAng, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	fPos[0] += actualBeamOffset[0];
+	fPos[1] += actualBeamOffset[1];
+	fPos[2] += actualBeamOffset[2];
 
-	float GameTime = GetGameTime();
-
-	if(i_barrage[client])
-	{
-		dmgProjectile *=0.9;
-		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-		int ammo = GetEntData(weapon, iAmmoTable, 4);
-		if(ammo<10)
-		{
-			i_barrage[client]=0;	//no more barrage, too low ammo
-		}
-	}
-	switch(i_barrage[client])
+	switch(i_patten_type[client])
 	{
 		case 0:
 		{
-			Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng);
+			int type=3;
+			for(int i=1 ; i<=spread ; i++)
+			{
+				float end_vec[3];
+				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing);
+				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng, end_vec);
+				if(type==3)
+					type=1;
+				else
+					type=3;
+			}
 		}
 		case 1:
 		{
-			for(int rocket=1 ; rocket < 3 ; rocket++)	//fire off 3 rockets.
+			int type=3;
+			Handle swingTrace;
+			float vecSwingForward[3] , vec[3];
+					
+			b_LagCompNPC_No_Layers = true;
+			StartLagCompensation_Base_Boss(client);
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, false); //infinite range, and (doesn't)ignore walls!	
+			FinishLagCompensation_Base_boss();
+
+			int target = TR_GetEntityIndex(swingTrace);	
+			if(IsValidEnemy(client, target))
 			{
-				float angles[3]; angles=fAng;
-				angles[0] = angles[0]+GetRandomFloat(-5.0,5.0);
-				angles[1] = angles[1]+GetRandomFloat(-5.0,5.0);
-				angles[2] = angles[2]+GetRandomFloat(-0.25,0.25);
-				Remove_One_Ammo(weapon);
-				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, angles);			
+				vec = WorldSpaceCenter(target);
 			}
-			fAng[0] +=GetRandomFloat(-5.0,5.0);
-			fAng[1] +=GetRandomFloat(-5.0,5.0);
-			fAng[2] +=GetRandomFloat(-0.25,0.25);
-			Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng);
-		}
-		case 2:
-		{
-			for(int rocket=1 ; rocket < 5 ; rocket++)	//fire off 5 rockets.
+			else
 			{
-				float angles[3]; angles=fAng;
-				angles[0] = angles[0]+GetRandomFloat(-5.0,5.0);
-				angles[1] = angles[1]+GetRandomFloat(-5.0,5.0);
-				angles[2] = angles[2]+GetRandomFloat(-0.25,0.25);
-				Remove_One_Ammo(weapon);
-				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, angles);			
+				TR_GetEndPosition(vec, swingTrace);
 			}
-			fAng[0] +=GetRandomFloat(-5.0,5.0);
-			fAng[1] +=GetRandomFloat(-5.0,5.0);
-			fAng[2] +=GetRandomFloat(-0.25,0.25);
-			Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng);
+			for(int i=1 ; i<=spread ; i++)
+			{
+				float end_vec[3];
+				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing*1.25);
+				float ang_Look[3];
+				MakeVectorFromPoints(end_vec, vec, ang_Look);
+				GetVectorAngles(ang_Look, ang_Look);
+
+				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, ang_Look, end_vec);
+				if(type==3)
+					type=1;
+				else
+					type=3;
+			}
 		}
 	}
+}
+
+static void Do_Vector_Stuff(int cycle, float start_pos[3], float end_Pos[3], float angles[3], int loop_for, int type, float spacing)
+{	
+
+	float tempAngles[3], Direction[3], buffer_loc[3];
+		
+	tempAngles[0] = angles[0];
+	tempAngles[1] = angles[1];
+	tempAngles[2] = angles[2]+90.0*type;
+
+	if(type==1)
+		cycle-=1;
+							
+	GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+	ScaleVector(Direction, spacing*cycle);
+	AddVectors(start_pos, Direction, buffer_loc);
+
+	float dist = (spacing*loop_for) - GetVectorDistance(start_pos, buffer_loc);
+
+	if(type==1)
+		dist -=spacing*2.0;	//I can't belive this actually worked, fucking lmao
+
+	Get_Fake_Forward_Vec(dist, angles, end_Pos, buffer_loc);
+}
+
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
 }
 
 static void Remove_One_Ammo(int entity)
@@ -373,33 +418,13 @@ static void Add_One_Ammo(int entity)
 	}
 }
 
-static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon, float fAng[3])
+static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
 {
-
-	float fPos[3];
-	GetClientEyePosition(client, fPos);
-
-	float tmp[3];
-	float actualBeamOffset[3];
-	float BEAM_BeamOffset[3];
-	BEAM_BeamOffset[0] = 0.0;
-	BEAM_BeamOffset[1] = -8.0;
-	BEAM_BeamOffset[2] = -10.0;
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, fAng, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	fPos[0] += actualBeamOffset[0];
-	fPos[1] += actualBeamOffset[1];
-	fPos[2] += actualBeamOffset[2];
-
 	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, WEAPON_KIT_BLITZKRIEG_CORE, weapon, "", fAng, false , fPos);
 
 	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
 }
-public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int other)
+public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 {
 	if (target > 0)	
 	{
