@@ -78,6 +78,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				Bonus_damage = 1.0;
 				
 			Calculate_HP_Spikes *= Bonus_damage;
+
 		
 			int TripMine = CreateEntityByName("tf_projectile_pipe_remote");
 		  

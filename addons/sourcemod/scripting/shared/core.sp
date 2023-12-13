@@ -235,6 +235,7 @@ Handle g_hSnapEyeAngles;
 Handle g_hSetAbsVelocity;
 
 bool DoingLagCompensation;
+bool IsInsideManageRegularWeapons;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
@@ -3488,7 +3489,11 @@ public Action RedirectPlayerSpec(Handle timer, int ref)
 void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true, bool persistent=true)
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
+	{
+		PrintToServer("test fail!");
+		LogStackTrace("TF2_SetPlayerClass_ZR test!");
 		classType = TFClass_Medic;
+	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
 }

@@ -532,14 +532,14 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		else
 		{
 			damage = 30.0;
-			float attack_speed;
-				
+			float attack_speed;		
 			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
 						
 			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
+			damage *= 0.5;
 #endif
 
 		}
