@@ -2157,19 +2157,23 @@ void ForcePlayerCrouch(int client, bool enable)
 	}
 	else
 	{
-		if(thirdperson[client])
+		int Buttons = GetEntProp(client, Prop_Data, "m_afButtonForced");
+		if(Buttons & IN_DUCK)
 		{
-			SetVariantInt(1);
-			AcceptEntityInput(client, "SetForcedTauntCam");
+			if(thirdperson[client])
+			{
+				SetVariantInt(1);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			else
+			{
+				SetVariantInt(0);
+				AcceptEntityInput(client, "SetForcedTauntCam");
+			}
+			SetForceButtonState(client, false, IN_DUCK);
+			SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
+			SetEntProp(client, Prop_Send, "m_bDucked", false);
+			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
 		}
-		else
-		{
-			SetVariantInt(0);
-			AcceptEntityInput(client, "SetForcedTauntCam");
-		}
-		SetForceButtonState(client, false, IN_DUCK);
-		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
-		SetEntProp(client, Prop_Send, "m_bDucked", false);
-		SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);
 	}
 }
