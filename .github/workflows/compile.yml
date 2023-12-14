@@ -73,5 +73,4 @@ jobs:
       - name: Compile ${{ matrix.sm-version }}
         run: |
           spcomp -E -O2 -v2 -i "include" zombie_riot.sp
-          spcomp -E -O2 -v2 -i "include" rpg_fortress.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
