@@ -265,6 +265,7 @@ bool i_HasBeenHeadShotted[MAXENTITIES];
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
+bool b_NetworkedCrouch[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
 float f_ClientConnectTime[MAXENTITIES];	
 float f_BackstabDmgMulti[MAXENTITIES];
@@ -3490,8 +3491,6 @@ void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons=true,
 {
 	if(classType < TFClass_Scout || classType > TFClass_Engineer)
 	{
-		PrintToServer("test fail!");
-		LogStackTrace("TF2_SetPlayerClass_ZR test!");
 		classType = TFClass_Medic;
 	}
 	
