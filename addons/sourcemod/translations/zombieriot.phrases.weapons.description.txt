@@ -2530,16 +2530,32 @@
 	{
 		"en"	"The Impact Lance, a true work of Magical engineering, Fast, agile, and deadly!\nIt can almost scratch the heavens"
 	}
-	"Tornado Blitz Kit Desc"
+	"Hurricane Blitz desc 1"
 	{
-		"en"	"A fast firing Rocket Launcher, Must be manually reloaded!\nOnce you start reloading you become unable to fire the weapon\nHowever you can still use your melee while it is ''reloading''"
+		"en"	"A fast firing Rocket Launcher, Must be manually reloaded!\nOnce you start reloading you become unable to fire the weapon\nHowever you can still use your melee while it is ''reloading''\nFires multiple rockets in 1 shot!"
 	}
-	"Blitz Blade Desc"
+	"Blitz Blade Desc 1"
 	{
-		"en"	"When your primary is reloading, this melee gains the ability to hit multiple targets\nAlso gains a damage bonus and larger range/width"
+		"en"	"When your primary is reloading, this melee gains the ability to hit multiple targets\nAlso gains a damage bonus and larger range/width\nScales from Ranged Damage Upgrades"
 	}
-	"Ion Blitz Desc"
+	"Ion Blitz Desc 1"
 	{
 		"en"	"Once you have enough charges you can summon an ION cannon"
+	}
+	"Blitz Kit Desc"
+	{
+		"en"	"You have 3 weapons, a rocket launcher that shoots fast.\nA secondary that fires an ION if you have enough charge, you get that from hitting npc's with your primary\nAnd a melee that becomes stronger when your primary is reloading
+	}
+	"Hurricane Blitz desc 2"
+	{
+		"en" 	"Higher damage, more rockets per shot, higher ammo efficiency"
+	}
+	"Ion Blitz Desc 2"
+	{
+		"en"	"Higher Damage, More effects!"
+	}
+	"Blitz Blade Desc 2"
+	{
+		"en"	"More Damage"
 	}
 }

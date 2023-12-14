@@ -278,6 +278,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Sensal_WandTouch(entity, target);
 		}
+		case WEAPON_KIT_BLITZKRIEG_CORE:
+		{
+			Blitzkrieg_Kit_Rocket_StartTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])

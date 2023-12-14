@@ -2293,4 +2293,8 @@
 	{
 		"en"	"Blitz-Blade"
 	}
+	"Hurricane-Blitz"
+	{
+		"en"	"Hurricane-Blitz"
+	}
 }
