@@ -759,7 +759,7 @@ public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_
 	}
 	else
 	{
-		i_colour[client]={145, 47, 47, 255};
+		i_colour[client]={145, 47, 47, 200};
 	}
 }
 
