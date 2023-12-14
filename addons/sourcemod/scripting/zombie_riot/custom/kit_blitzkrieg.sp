@@ -9,16 +9,20 @@ static int i_ion_charge[MAXPLAYERS+1];
 static float fl_primary_dmg_amt[MAXPLAYERS+1];
 static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
+static int i_ion_effects[MAXPLAYERS+1];
 
 static int g_particleImpactTornado;
 
-static char gGlow1;
 static char gExplosive1;
 static char gLaser1;
 
-#define BLITZKRIEG_KIT_MAX_ION_CHARGES 128
-#define BLITZKREIG_KIT_ION_COST_CHARGE 64
-#define BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION 0.5
+#define BLITZKRIEG_KIT_MAX_ION_CHARGES 256
+#define BLITZKREIG_KIT_ION_COST_CHARGE 128
+#define BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION 1.0
+
+#define BLITZKRIEG_KIT_ION_CHARGE_TIME 3.5
+#define BLITZKRIEG_KIT_ION_RADIUS 300.0
+#define BLITZKRIEG_KIT_ION_COOLDOWN 30.0
 
 #define BLITZKRIEG_KIT_ROCKET_MODEL "models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl"
 #define BLITZKRIEG_KIT_SHOOT_SOUND1 "weapons/airstrike_fire_01.wav"
@@ -45,7 +49,6 @@ public void Kit_Blitzkrieg_Precache()
 
 
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt", true);
-	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
 }
 
 public void Enable_Blitzkrieg_Kit(int client, int weapon)
@@ -145,15 +148,18 @@ static void BlitzHud(int client, float GameTime, int wep)
 
 	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%i/%i]", HUDText, i_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
 	
-	switch(i_patten_type[client])
+	if(wep==1)
 	{
-		case 0:
+		switch(i_patten_type[client])
 		{
-			Format(HUDText, sizeof(HUDText), "%s\nPattern: Alpha", HUDText);
-		}
-		case 1:
-		{
-			Format(HUDText, sizeof(HUDText), "%s\nPattern: Beta", HUDText);
+			case 0:
+			{
+				Format(HUDText, sizeof(HUDText), "%s\nPattern: Alpha", HUDText);
+			}
+			case 1:
+			{
+				Format(HUDText, sizeof(HUDText), "%s\nPattern: Beta", HUDText);
+			}
 		}
 	}
 	
@@ -208,7 +214,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 
 	//CPrintToChatAll("%f", ratio);
 
-	float time = 10.0*ratio;	//30
+	float time = 30.0*ratio;	//30
 
 	time *=Attributes_Get(weapon, 97, 1.0);
 
@@ -227,7 +233,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	b_primary_lock[client]=true;
 	Attributes_Set(weapon, 821, 1.0);
 
-	fl_primary_reloading[client]=0;
+	//fl_primary_reloading[client]=0;
 
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
@@ -315,7 +321,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 		case 0:
 		{
 			int type=3;
-			for(int i=1 ; i<=spread ; i++)
+			for(int i=0 ; i<spread ; i++)
 			{
 				float end_vec[3];
 				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing);
@@ -346,7 +352,8 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			{
 				TR_GetEndPosition(vec, swingTrace);
 			}
-			for(int i=1 ; i<=spread ; i++)
+			delete swingTrace;
+			for(int i=0 ; i<spread ; i++)
 			{
 				float end_vec[3];
 				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing*1.25);
@@ -374,16 +381,13 @@ static void Do_Vector_Stuff(int cycle, float start_pos[3], float end_Pos[3], flo
 	tempAngles[2] = angles[2]+90.0*type;
 
 	if(type==1)
-		cycle-=1;
+		cycle+=1;
 							
 	GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
 	ScaleVector(Direction, spacing*cycle);
 	AddVectors(start_pos, Direction, buffer_loc);
 
 	float dist = (spacing*loop_for) - GetVectorDistance(start_pos, buffer_loc);
-
-	if(type==1)
-		dist -=spacing*2.0;	//I can't belive this actually worked, fucking lmao
 
 	Get_Fake_Forward_Vec(dist, angles, end_Pos, buffer_loc);
 }
@@ -395,17 +399,6 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
-}
-
-static void Remove_One_Ammo(int entity)
-{
-	if(IsValidEntity(entity))
-	{
-		int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-		int ammo = GetEntData(entity, iAmmoTable, 4);
-		ammo -= 1;
-		SetEntData(entity, iAmmoTable, ammo, 4, true);
-	}
 }
 static void Add_One_Ammo(int entity)
 {
@@ -424,6 +417,8 @@ static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, in
 
 	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "");
 }
+
+
 public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 {
 	if (target > 0)	
@@ -491,8 +486,7 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 	}
 	return;
 }
-
-public void Blitzkrieg_Kit_Seconadry_Ion(int client, int weapon, bool &result, int slot)
+public void Blitzkrieg_Kit_Seconadry_Ion_1(int client, int weapon, bool &result, int slot)
 {
 	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
 	{
@@ -505,8 +499,10 @@ public void Blitzkrieg_Kit_Seconadry_Ion(int client, int weapon, bool &result, i
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+
+		i_ion_effects[client] = 3;
 		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
 
 		float damage = Attributes_Get(weapon, 868, 1000.0);
 
@@ -529,7 +525,187 @@ public void Blitzkrieg_Kit_Seconadry_Ion(int client, int weapon, bool &result, i
 		{   
 			TR_GetEndPosition(vEnd, trace);
 
-			vEnd[2]+=25.0;
+			vEnd[2]+=10.0;
+			
+			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
+		}
+		delete trace;
+		FinishLagCompensation_Base_boss();
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+					
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+public void Blitzkrieg_Kit_Seconadry_Ion_2(int client, int weapon, bool &result, int slot)
+{
+	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
+		return;
+	}
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+
+		i_ion_effects[client] = 4;
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
+
+		float damage = Attributes_Get(weapon, 868, 1000.0);
+
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
+			
+
+		float vAngles[3];
+		float vOrigin[3];
+		float vEnd[3];
+			
+		GetClientEyePosition(client, vOrigin);
+		GetClientEyeAngles(client, vAngles);
+		b_LagCompNPC_ExtendBoundingBox = true;
+		StartLagCompensation_Base_Boss(client);
+		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+
+		if(TR_DidHit(trace))
+		{   
+			TR_GetEndPosition(vEnd, trace);
+
+			vEnd[2]+=10.0;
+			
+			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
+		}
+		delete trace;
+		FinishLagCompensation_Base_boss();
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+					
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+public void Blitzkrieg_Kit_Seconadry_Ion_3(int client, int weapon, bool &result, int slot)
+{
+	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
+		return;
+	}
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+
+		i_ion_effects[client] = 5;
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
+
+		float damage = Attributes_Get(weapon, 868, 1000.0);
+
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
+			
+
+		float vAngles[3];
+		float vOrigin[3];
+		float vEnd[3];
+			
+		GetClientEyePosition(client, vOrigin);
+		GetClientEyeAngles(client, vAngles);
+		b_LagCompNPC_ExtendBoundingBox = true;
+		StartLagCompensation_Base_Boss(client);
+		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+
+		if(TR_DidHit(trace))
+		{   
+			TR_GetEndPosition(vEnd, trace);
+
+			vEnd[2]+=10.0;
+			
+			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
+		}
+		delete trace;
+		FinishLagCompensation_Base_boss();
+
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+				
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+					
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+public void Blitzkrieg_Kit_Seconadry_Ion_4(int client, int weapon, bool &result, int slot)
+{
+	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
+		return;
+	}
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+
+		i_ion_effects[client] = 6;
+		Rogue_OnAbilityUse(weapon);
+		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
+
+		float damage = Attributes_Get(weapon, 868, 1000.0);
+
+		damage *= Attributes_Get(weapon, 1, 1.0);
+
+		damage *= Attributes_Get(weapon, 2, 1.0);
+			
+
+		float vAngles[3];
+		float vOrigin[3];
+		float vEnd[3];
+			
+		GetClientEyePosition(client, vOrigin);
+		GetClientEyeAngles(client, vAngles);
+		b_LagCompNPC_ExtendBoundingBox = true;
+		StartLagCompensation_Base_Boss(client);
+		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+
+		if(TR_DidHit(trace))
+		{   
+			TR_GetEndPosition(vEnd, trace);
+
+			vEnd[2]+=10.0;
 			
 			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
 		}
@@ -552,24 +728,30 @@ public void Blitzkrieg_Kit_Seconadry_Ion(int client, int weapon, bool &result, i
 }
 
 static int i_colour[MAXTF2PLAYERS+1][4];
+static float fl_ion_chargeup[MAXTF2PLAYERS+1];
+static float fl_ion_loc[MAXTF2PLAYERS+1][3];
+static float fl_ion_throttle[MAXTF2PLAYERS+1];
+static float fl_ion_damage[MAXTF2PLAYERS+1];
 
 public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_damage)	//Ion cannon from above
 {
-	float distance=200.0; // /29 for duartion till boom
-	float IOCDist=350.0;
-	float IOCdamage=ion_damage;
-		
-	Handle data = CreateDataPack();
-	WritePackFloat(data, vecTarget[0]);
-	WritePackFloat(data, vecTarget[1]);
-	WritePackFloat(data, vecTarget[2]);
-	WritePackCell(data, distance); // Distance
-	WritePackFloat(data, 0.0); // nphi
-	WritePackCell(data, IOCDist); // Range
-	WritePackCell(data, IOCdamage); // Damge
-	WritePackCell(data, EntIndexToEntRef(client));
-	ResetPack(data);
-	Blitzkrieg_Kit_IonAttack(data);
+
+
+	EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
+	EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
+
+	fl_ion_loc[client] = vecTarget;
+
+	fl_ion_damage[client] = ion_damage;
+
+	float GameTime = GetGameTime();
+
+	fl_ion_chargeup[client] = GameTime + BLITZKRIEG_KIT_ION_CHARGE_TIME;
+
+	fl_ion_throttle[client]=0.0;
+
+	SDKUnhook(client, SDKHook_PreThink, Blitzkrieg_Kit_Ion);
+	SDKHook(client, SDKHook_PreThink, Blitzkrieg_Kit_Ion);
 
 	if(Store_HasNamedItem(client, "Blitzkrieg's Army"))
 	{
@@ -580,140 +762,95 @@ public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_
 		i_colour[client]={145, 47, 47, 255};
 	}
 }
-public Action Blitzkrieg_Kit_DrawIon(Handle Timer, any data)
+
+public Action Blitzkrieg_Kit_Ion(int client)
 {
-	Blitzkrieg_Kit_IonAttack(data);
-		
-	return (Plugin_Stop);
-}
-	
-public void Blitzkrieg_Kit_DrawIonBeam(float startPosition[3], const int color[4])
-{
-	float position[3];
-	position[0] = startPosition[0];
-	position[1] = startPosition[1];
-	position[2] = startPosition[2] + 3000.0;	
-	
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.15, 25.0, 25.0, 0, 1.0, color, 3 );
-	TE_SendToAll();
-	position[2] -= 1490.0;
-	TE_SetupGlowSprite(startPosition, gGlow1, 0.5, 1.0, 255);
-	TE_SendToAll();
-}
+	float GameTime = GetGameTime();
 
-public void Blitzkrieg_Kit_IonAttack(Handle &data)
-{
-	float startPosition[3];
-	float position[3];
-	startPosition[0] = ReadPackFloat(data);
-	startPosition[1] = ReadPackFloat(data);
-	startPosition[2] = ReadPackFloat(data);
-	float Iondistance = ReadPackCell(data);
-	float nphi = ReadPackFloat(data);
-	float Ionrange = ReadPackCell(data);
-	float Iondamage = ReadPackCell(data);
-	int client = EntRefToEntIndex(ReadPackCell(data));
+	if(fl_ion_throttle[client]>GameTime)
+		return Plugin_Continue;
 
-	if(!IsValidClient(client))
-	{
-		delete data;
-		return;
-	}
+	fl_ion_throttle[client] = GameTime+0.075;
 
-		
-	if (Iondistance > 0)
-	{
-		EmitSoundToAll(BLITZKRIEG_KIT_ION_PASIVE_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-			
-		// Stage 1
+	float vec[3]; vec = fl_ion_loc[client];
+	float sky_vec[3]; sky_vec = vec;
+	sky_vec[2]+=9999.0;
 
-		int loop =3;
+	int color[4]; color = i_colour[client];
 
-		for(int amt=0 ; amt < loop ; amt++)
-		{
-			float s=Sine((nphi+(360.0/loop)*amt)/360*6.28)*Iondistance;
-			float c=Cosine((nphi+(360.0/loop)*amt)/360*6.28)*Iondistance;
-				
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[2] = startPosition[2];
-				
-			position[0] += s;
-			position[1] += c;
-			Blitzkrieg_Kit_DrawIonBeam(position, i_colour[client]);
-		
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] -= s;
-			position[1] -= c;
-			Blitzkrieg_Kit_DrawIonBeam(position, i_colour[client]);
-		}
-	
-		if (nphi >= 360)
-			nphi = 0.0;
-		else
-			nphi += 5.0;
-	}
-	Iondistance -= 10;
-
-	delete data;
-		
-	Handle nData = CreateDataPack();
-	WritePackFloat(nData, startPosition[0]);
-	WritePackFloat(nData, startPosition[1]);
-	WritePackFloat(nData, startPosition[2]);
-	WritePackCell(nData, Iondistance);
-	WritePackFloat(nData, nphi);
-	WritePackCell(nData, Ionrange);
-	WritePackCell(nData, Iondamage);
-	WritePackCell(nData, EntIndexToEntRef(client));
-	ResetPack(nData);
-		
-	if (Iondistance > -30)
-		CreateTimer(0.1, Blitzkrieg_Kit_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
-	else
+	if(GameTime>fl_ion_chargeup[client])	//fire!
 	{
 
-		startPosition[2] += 25.0;
-		Explode_Logic_Custom(Iondamage, client, client, -1, startPosition, 300.0 , _ , _ , false);
-		startPosition[2] -= 25.0;
-					
-		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
-		TE_SendToAll();
-		position[0] = startPosition[0];
-		position[1] = startPosition[1];
-		position[2] += startPosition[2] + 900.0;
-		startPosition[2] += -200;
-		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, i_colour[client], 3);
-		TE_SendToAll();
-		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, i_colour[client], 3);
-		TE_SendToAll();
-		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, i_colour[client], 3);
-		TE_SendToAll();
-		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, i_colour[client], 3);
-		TE_SendToAll();
-		
-		position[2] = startPosition[2] + 50.0;
-		// Sound
-		EmitSoundToAll(BLITZKRIEG_KIT_ION_EXPLOSION_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-				
+		Explode_Logic_Custom(fl_ion_damage[client], client, client, -1, vec, BLITZKRIEG_KIT_ION_RADIUS);
+
+		EmitSoundToAll(BLITZKRIEG_KIT_ION_EXPLOSION_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, vec); //fl_ion_damage[client]
+
 		float vClientPosition[3];
 		float dist;
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			if (IsClientConnected(i) && IsClientInGame(i) && IsPlayerAlive(i))
+			if(IsValidClient(i))
 			{	
 				GetClientEyePosition(i, vClientPosition);
-		
-				dist = GetVectorDistance(vClientPosition, position, false);
-				if (dist < 500.0)
+	
+				dist = GetVectorDistance(vClientPosition, vec, false);
+				if(dist < BLITZKRIEG_KIT_ION_RADIUS*2.0)
 				{
-					Client_Shake(i, 0, 10.0, 25.0, 3.75);
+					Client_Shake(i, 0, 10.0, 17.5, 3.0);
 				}
 			}
-		}	
+		}
+
+		TE_SetupExplosion(vec, gExplosive1, 10.0, 1, 0, 0, 0);
+		TE_SendToAll();
+
+		spawnRing_Vector(vec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , color[0], color[1], color[2], color[3], 1, 0.10, 5.0, 1.25, 1 , BLITZKRIEG_KIT_ION_RADIUS*3.25);
+		spawnRing_Vector(vec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , color[0], color[1], color[2], color[3], 1, 0.2, 5.0, 1.25, 1 , BLITZKRIEG_KIT_ION_RADIUS*2.0);
+		spawnRing_Vector(vec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , color[0], color[1], color[2], color[3], 1, 0.35, 5.0, 1.25, 1 , BLITZKRIEG_KIT_ION_RADIUS*1.75);
+				
+		vec[2]-=100.0;
+		TE_SetupBeamPoints(vec, sky_vec, gLaser1, 0, 0, 0, 2.2, 30.0, 30.0, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(vec, sky_vec, gLaser1, 0, 0, 0, 2.1, 50.0, 50.0, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(vec, sky_vec, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(vec, sky_vec, gLaser1, 0, 0, 0, 1.9, 100.0, 100.0, 0, 1.0, color, 3);
+		TE_SendToAll();
+
+		SDKUnhook(client, SDKHook_PreThink, Blitzkrieg_Kit_Ion);
+		return Plugin_Stop;
+
 	}
+
+	float duration = fl_ion_chargeup[client] - GameTime;
+	float radius = BLITZKRIEG_KIT_ION_RADIUS * (duration/BLITZKRIEG_KIT_ION_CHARGE_TIME);
+
+	int amt=i_ion_effects[client];
+
+	for(int ion=1 ; ion <=amt  ; ion++)
+	{
+		float tempAngles[3], Direction[3], EndLoc[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = (float(ion) * (360.0/amt));
+		tempAngles[2] = 0.0;
+			
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, radius);
+		AddVectors(vec, Direction, EndLoc);
+
+		sky_vec = EndLoc;
+		sky_vec[2]+=1000.0;
+		EndLoc[2]-=100.0;
+
+		TE_SetupBeamPoints(EndLoc, sky_vec, gLaser1, 0, 0, 0, 0.08, 15.0, 45.0, 0, 0.75, color, 3);
+		TE_SendToAll();
+
+	}
+
+	return Plugin_Continue;
 }
+
 
 
 public void Blitzkrieg_Kit_Custom_Melee_Logic(int client, float &CustomMeleeRange, float &CustomMeleeWide, int &enemies_hit_aoe)
@@ -742,4 +879,26 @@ public void Blitzkrieg_Kit_Custom_Damage_Calc(int client, int weapon, float &dam
 
 		fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
 	}
+}
+static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+{
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
+	
+	int ICE_INT = PrecacheModel(sprite);
+	
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = alpha;
+	
+	if (endRange == -69.0)
+	{
+		endRange = range + 0.5;
+	}
+	
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SendToAll();
 }
