@@ -725,7 +725,7 @@ void Waves_RoundStart()
 	
 	if(Rogue_Mode())
 	{
-		Rogue_StartSetup();
+		
 	}
 	else if(Voting)
 	{
@@ -764,6 +764,11 @@ void Waves_RoundStart()
 			if(IsClientInGame(client) && IsPlayerAlive(client))
 				TF2_RegeneratePlayer(client);
 		}
+	}
+
+	if(Rogue_Mode())
+	{
+		Rogue_StartSetup();
 	}
 }
 
