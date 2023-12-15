@@ -2004,7 +2004,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					if(dieingstate[target] <= 0)
 					{
 						i_Reviving_This_Client[client] = 0;
-						f_Reviving_This_Client[client] = 0;
+						f_Reviving_This_Client[client] = 0.0;
 						SetEntityMoveType(target, MOVETYPE_WALK);
 						RequestFrame(Movetype_walk, EntRefToEntIndex(target));
 						dieingstate[target] = 0;
