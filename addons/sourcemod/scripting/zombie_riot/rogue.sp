@@ -689,6 +689,7 @@ void Rogue_RoundEnd()
 	CurrentStage = -1;
 	CurrentCount = -1;
 	delete CurrentExclude;
+	delete CurrentMissed;
 	CurrentIngots = 0;
 	BonusLives = 0;
 
