@@ -43,6 +43,7 @@ public void Kit_Blitzkrieg_Precache()
 	Zero(fl_ammo_efficiency);
 	Zero(fl_ion_timer_recharge);
 	Zero(b_force_reload);
+	Zero(i_last_ammo);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheModel(BLITZKRIEG_KIT_ROCKET_MODEL);
 	PrecacheSound(BLITZKRIEG_KIT_SHOOT_SOUND1);
