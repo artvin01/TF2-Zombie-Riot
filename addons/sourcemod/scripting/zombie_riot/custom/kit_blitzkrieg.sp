@@ -10,6 +10,9 @@ static float fl_primary_dmg_amt[MAXPLAYERS+1];
 static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 static int i_ion_effects[MAXPLAYERS+1];
+static float fl_ion_timer_recharge[MAXPLAYERS+1];
+static bool b_force_reload[MAXPLAYERS+1];
+static int i_last_ammo[MAXPLAYERS+1];
 
 static int g_particleImpactTornado;
 
@@ -38,6 +41,9 @@ public void Kit_Blitzkrieg_Precache()
 	Zero(fl_hud_timer);
 	Zero(i_ion_charge);
 	Zero(fl_ammo_efficiency);
+	Zero(fl_ion_timer_recharge);
+	Zero(b_force_reload);
+	Zero(i_last_ammo);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	PrecacheModel(BLITZKRIEG_KIT_ROCKET_MODEL);
 	PrecacheSound(BLITZKRIEG_KIT_SHOOT_SOUND1);
@@ -66,9 +72,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 			h_TimerKitBlitzkriegManagement[client] = CreateDataTimer(0.1, Timer_Management_KitBlitzkrieg, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			fl_primary_reloading[client] = 0.0;
-			i_patten_type[client]=0;
-			b_primary_lock[client]=true;	//we have to reload it due to an update removing our entire clip
+			b_force_reload[client]=true;	//force a simulated reload that doesn't add a timer!
 		}
 		return;
 	}
@@ -82,6 +86,7 @@ public void Enable_Blitzkrieg_Kit(int client, int weapon)
 		fl_primary_reloading[client] = 0.0;
 		fl_primary_dmg_amt[client] = 100.0;
 		i_patten_type[client]=0;
+		b_force_reload[client]=true;
 	}
 }
 
@@ -123,6 +128,21 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 					Attributes_Set(weapon_holding, 821, 0.0);
 				}
 			}
+			if(b_force_reload[client])
+			{
+				b_force_reload[client]=false;
+
+				if(fl_primary_reloading[client]>GameTime)	//if the weapon was still reloading, make sure its lock logic is still valid!
+				{
+					Blitzkrieg_Kit_Simulate_Reload(client, weapon_holding);
+					b_primary_lock[client]=true;
+					Attributes_Set(weapon_holding, 821, 1.0);
+				}
+				else
+				{
+					Blitzkrieg_Kit_Simulate_Reload(client, weapon_holding, false);	//weapon was not reloading, add a reload timer
+				}
+			}
 		}
 		case 2: //secondary 1
 		{
@@ -161,6 +181,12 @@ static void BlitzHud(int client, float GameTime, int wep)
 				Format(HUDText, sizeof(HUDText), "%s\nPattern: Beta", HUDText);
 			}
 		}
+	}
+
+	if(fl_ion_timer_recharge[client]>GameTime)
+	{
+		float Duration = fl_ion_timer_recharge[client] - GameTime;
+		Format(HUDText, sizeof(HUDText), "%s\nION Recharging... [%.1f]", HUDText, Duration);
 	}
 	
 	
@@ -226,7 +252,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 
 	fl_primary_reloading[client] = GameTime + time;
 
-	//8 is rockets
+	//8 is rockets ammo
 	SetAmmo(client, Ammo_type, reserve_ammo-amt_reloaded);
 	SetEntData(weapon, iAmmoTable, max_clip, 4, true);
 
@@ -241,6 +267,49 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		int animation = 10;
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
 	}
+}
+static void Blitzkrieg_Kit_Simulate_Reload(int client, int weapon, bool fresh=true)
+{
+	int max_clip = RoundFloat(Attributes_Get(weapon, 868, 40.0));
+
+	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");	//ammo type
+	int reserve_ammo = GetAmmo(client, Ammo_type);							//reserve
+	int ammo = i_last_ammo[client];		
+	//CPrintToChatAll("%i", ammo);							//clip
+	if(reserve_ammo < max_clip)	
+	{
+		return;
+	}
+
+	int amt_reloaded = max_clip-ammo;
+
+	if(!fresh && ammo<max_clip)
+	{
+		float GameTime = GetGameTime();
+		b_primary_lock[client]=true;
+		Attributes_Set(weapon, 821, 1.0);
+		float ratio = 1.0-(float(ammo)/float(max_clip));	//what?
+
+		//CPrintToChatAll("%f", ratio);
+
+		float time = 30.0*ratio;	//30
+
+		time *=Attributes_Get(weapon, 97, 1.0);
+
+		if(time<=2.5)
+			time=2.5;
+		
+		if(time>120.0)	//incase somehow it goes insanely high.
+			time=30.0;
+
+		fl_primary_reloading[client] = GameTime + time;
+	}
+
+	//8 is rockets
+	SetAmmo(client, Ammo_type, reserve_ammo-amt_reloaded);
+	SetEntData(weapon, iAmmoTable, max_clip, 4, true);
+
 }
 public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] classname, bool &result)
 {
@@ -269,6 +338,7 @@ public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] c
 
 static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing)
 {
+	
 	float speedMult = 1000.0;
 	float dmgProjectile = 100.0;
 		
@@ -296,6 +366,10 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 	{
 		fl_ammo_efficiency[client]+=efficiency;
 	}
+
+	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	int ammo = GetEntData(weapon, iAmmoTable, 4);							//clip
+	i_last_ammo[client] = ammo-1;
 
 	float fPos[3];
 	GetClientEyePosition(client, fPos);
@@ -488,186 +562,24 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 }
 public void Blitzkrieg_Kit_Seconadry_Ion_1(int client, int weapon, bool &result, int slot)
 {
-	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
-		return;
-	}
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
-	{
-		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
-
-		i_ion_effects[client] = 3;
-		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
-
-		float damage = Attributes_Get(weapon, 868, 1000.0);
-
-		damage *= Attributes_Get(weapon, 1, 1.0);
-
-		damage *= Attributes_Get(weapon, 2, 1.0);
-			
-
-		float vAngles[3];
-		float vOrigin[3];
-		float vEnd[3];
-			
-		GetClientEyePosition(client, vOrigin);
-		GetClientEyeAngles(client, vAngles);
-		b_LagCompNPC_ExtendBoundingBox = true;
-		StartLagCompensation_Base_Boss(client);
-		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-
-		if(TR_DidHit(trace))
-		{   
-			TR_GetEndPosition(vEnd, trace);
-
-			vEnd[2]+=10.0;
-			
-			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
-		}
-		delete trace;
-		FinishLagCompensation_Base_boss();
-
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-				
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-					
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-	}
+	Blitzkrieg_Kit_ion_trace(client, 3, weapon);
 }
 public void Blitzkrieg_Kit_Seconadry_Ion_2(int client, int weapon, bool &result, int slot)
 {
-	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
-		return;
-	}
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
-	{
-		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
-
-		i_ion_effects[client] = 4;
-		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
-
-		float damage = Attributes_Get(weapon, 868, 1000.0);
-
-		damage *= Attributes_Get(weapon, 1, 1.0);
-
-		damage *= Attributes_Get(weapon, 2, 1.0);
-			
-
-		float vAngles[3];
-		float vOrigin[3];
-		float vEnd[3];
-			
-		GetClientEyePosition(client, vOrigin);
-		GetClientEyeAngles(client, vAngles);
-		b_LagCompNPC_ExtendBoundingBox = true;
-		StartLagCompensation_Base_Boss(client);
-		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-
-		if(TR_DidHit(trace))
-		{   
-			TR_GetEndPosition(vEnd, trace);
-
-			vEnd[2]+=10.0;
-			
-			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
-		}
-		delete trace;
-		FinishLagCompensation_Base_boss();
-
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-				
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-					
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-	}
+	Blitzkrieg_Kit_ion_trace(client, 4, weapon);
 }
 public void Blitzkrieg_Kit_Seconadry_Ion_3(int client, int weapon, bool &result, int slot)
 {
-	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
-		return;
-	}
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
-	{
-		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
-
-		i_ion_effects[client] = 5;
-		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
-
-		float damage = Attributes_Get(weapon, 868, 1000.0);
-
-		damage *= Attributes_Get(weapon, 1, 1.0);
-
-		damage *= Attributes_Get(weapon, 2, 1.0);
-			
-
-		float vAngles[3];
-		float vOrigin[3];
-		float vEnd[3];
-			
-		GetClientEyePosition(client, vOrigin);
-		GetClientEyeAngles(client, vAngles);
-		b_LagCompNPC_ExtendBoundingBox = true;
-		StartLagCompensation_Base_Boss(client);
-		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-
-		if(TR_DidHit(trace))
-		{   
-			TR_GetEndPosition(vEnd, trace);
-
-			vEnd[2]+=10.0;
-			
-			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
-		}
-		delete trace;
-		FinishLagCompensation_Base_boss();
-
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
-				
-		if(Ability_CD <= 0.0)
-			Ability_CD = 0.0;
-					
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-	}
+	Blitzkrieg_Kit_ion_trace(client, 5, weapon);
 }
 public void Blitzkrieg_Kit_Seconadry_Ion_4(int client, int weapon, bool &result, int slot)
 {
+	Blitzkrieg_Kit_ion_trace(client, 6, weapon);
+}
+
+static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
+{
+
 	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -676,46 +588,10 @@ public void Blitzkrieg_Kit_Seconadry_Ion_4(int client, int weapon, bool &result,
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
 		return;
 	}
-	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	float GameTime = GetGameTime();
+	if (fl_ion_timer_recharge[client]>GameTime)
 	{
-		i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
-
-		i_ion_effects[client] = 6;
-		Rogue_OnAbilityUse(weapon);
-		Ability_Apply_Cooldown(client, slot, BLITZKRIEG_KIT_ION_COOLDOWN);
-
-		float damage = Attributes_Get(weapon, 868, 1000.0);
-
-		damage *= Attributes_Get(weapon, 1, 1.0);
-
-		damage *= Attributes_Get(weapon, 2, 1.0);
-			
-
-		float vAngles[3];
-		float vOrigin[3];
-		float vEnd[3];
-			
-		GetClientEyePosition(client, vOrigin);
-		GetClientEyeAngles(client, vAngles);
-		b_LagCompNPC_ExtendBoundingBox = true;
-		StartLagCompensation_Base_Boss(client);
-		Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-
-		if(TR_DidHit(trace))
-		{   
-			TR_GetEndPosition(vEnd, trace);
-
-			vEnd[2]+=10.0;
-			
-			Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
-		}
-		delete trace;
-		FinishLagCompensation_Base_boss();
-
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		float Ability_CD =fl_ion_timer_recharge[client]-GameTime;
 				
 		if(Ability_CD <= 0.0)
 			Ability_CD = 0.0;
@@ -723,8 +599,40 @@ public void Blitzkrieg_Kit_Seconadry_Ion_4(int client, int weapon, bool &result,
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;
 	}
+
+	i_ion_effects[client] = patern;
+
+	Rogue_OnAbilityUse(weapon);
+
+	float damage = Attributes_Get(weapon, 868, 1000.0);
+
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+			
+
+	float vAngles[3];
+	float vOrigin[3];
+	float vEnd[3];
+			
+	GetClientEyePosition(client, vOrigin);
+	GetClientEyeAngles(client, vAngles);
+	b_LagCompNPC_ExtendBoundingBox = true;
+	StartLagCompensation_Base_Boss(client);
+	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+
+	if(TR_DidHit(trace))
+	{   
+		TR_GetEndPosition(vEnd, trace);
+		vEnd[2]+=10.0;
+			
+		Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
+	}
+	delete trace;
+	FinishLagCompensation_Base_boss();
 }
 
 static int i_colour[MAXTF2PLAYERS+1][4];
@@ -736,7 +644,6 @@ static float fl_ion_damage[MAXTF2PLAYERS+1];
 public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_damage)	//Ion cannon from above
 {
 
-
 	EmitSoundToClient(client, NEUVELLETE_ION_CAST_SOUND, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
 	EmitSoundToClient(client, NEUVELLETE_ION_EXTRA_SOUND0, _, SNDCHAN_STATIC, 100, _, SNDVOL_NORMAL, SNDPITCH_NORMAL); 
 
@@ -745,6 +652,10 @@ public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_
 	fl_ion_damage[client] = ion_damage;
 
 	float GameTime = GetGameTime();
+
+	i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+
+	fl_ion_timer_recharge[client] = GameTime +BLITZKRIEG_KIT_ION_COOLDOWN;
 
 	fl_ion_chargeup[client] = GameTime + BLITZKRIEG_KIT_ION_CHARGE_TIME;
 
@@ -877,6 +788,7 @@ public void Blitzkrieg_Kit_Custom_Damage_Calc(int client, int weapon, float &dam
 	{
 		damage *=1.25;
 
+		fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
 		fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
 	}
 }
