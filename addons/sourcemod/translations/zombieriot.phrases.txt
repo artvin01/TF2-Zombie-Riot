@@ -777,6 +777,11 @@
 		"nl"		"Je hebt {1} geld gekregen van deze golf!"
 		"chi"       "回合胜利!你获得了 {1} 的现金奖励!"
 	}
+	"Cash Gained!"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Gained {1} cash!"
+	}
 	"Cash Gained This Wave Village"
 	{
 		"#format"	"{1:d}"
@@ -1590,12 +1595,7 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot"
-		"ru" 		"TF2: Восстание зомби"
-		"de"		"TF2: Zombie Aufstand"
-		"pt"		"TF2: Invasão Zumbi"
-		"nl"		"TF2: Zombie Opstand"
-		"chi"       "TF2：僵尸暴动"
+		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!"
 	}
 	"Father Grigori's Store"
 	{

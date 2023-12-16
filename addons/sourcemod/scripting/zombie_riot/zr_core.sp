@@ -224,6 +224,8 @@ int SupplyRate[MAXTF2PLAYERS];
 int i_PreviousBuildingCollision[MAXENTITIES];
 bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
+int i_Reviving_This_Client[MAXTF2PLAYERS];
+float f_Reviving_This_Client[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -523,6 +525,8 @@ void ZR_MapStart()
 	RoundStartTime = 0.0;
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
+	Zero(f_Reviving_This_Client);
+	Zero(i_Reviving_This_Client);
 	OnMapStart_Build_on_Build();
 	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
@@ -2177,4 +2181,12 @@ void ForcePlayerCrouch(int client, bool enable)
 			SetEntityFlags(client, GetEntityFlags(client)&~FL_DUCKING);	
 		}
 	}
+}
+
+
+void GrantAllPlayersCredits_Rogue(int cash)
+{
+	cash *= (Rogue_GetRound()+1);
+	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CurrentCash += cash;
 }

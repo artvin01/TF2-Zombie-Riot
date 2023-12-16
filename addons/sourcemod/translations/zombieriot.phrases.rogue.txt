@@ -1079,8 +1079,8 @@
 	}
 	"Support Squad Desc"
 	{
-		"en"	"{green}Start with +20 Australium Ignots and +500 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
-		"ru"	"{green}Начните с +20 слитками австралия и +500 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"en"	"{green}Start with +20 Australium Ignots and +250 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"ru"	"{green}Начните с +20 слитками австралия и +250 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
 	}
 	"Spearhead Squad"
 	{
@@ -1139,8 +1139,7 @@
 	}
 	"Malfunctioning Shield Desc"
 	{
-		"en"	"A broken shield that is still useable.\n- Every minute gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
-		"ru"	"Сломанный щит, который ещё можно использовать.\n- Каждую минуту получайте щит, который полностью блокирует одну ед. урона.\n- Также этот щит применяется при вступлении в новую битву."
+		"en"	"A broken shield that is still useable.\n- Every 10 seconds gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
 	}
 	"Bob's Exchange Money"
 	{

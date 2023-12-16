@@ -689,7 +689,9 @@ void Rogue_RoundEnd()
 	CurrentStage = -1;
 	CurrentCount = -1;
 	delete CurrentExclude;
+	delete CurrentMissed;
 	CurrentIngots = 0;
+	BonusLives = 0;
 
 	if(CurrentCollection)
 	{
@@ -1546,7 +1548,7 @@ static void StartStage(const Stage stage)
 	{
 		entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+			SmiteNpcToDeath(entity);
 	}
 	
 	for(int i; i < i_MaxcountNpc_Allied; i++)
