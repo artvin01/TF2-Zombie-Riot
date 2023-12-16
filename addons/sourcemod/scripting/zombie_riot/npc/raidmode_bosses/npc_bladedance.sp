@@ -101,7 +101,7 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], bool ally)
+	public RaidbossBladedance(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
 		
@@ -120,6 +120,14 @@ methodmap RaidbossBladedance < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+
+		
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
@@ -156,9 +164,12 @@ methodmap RaidbossBladedance < CClotBody
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 				LookAtTarget(client_check, npc.index);
 		}
-		
+
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		RaidModeScaling = 9999999.99;
-		RaidModeTime = GetGameTime() + 300.0;
+		RaidModeTime = GetGameTime() + ((300.0) * (MultiGlobal * 0.75));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -403,6 +414,18 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
+	if(i_RaidGrantExtra[npc.index] == 1)
+	{
+		for (int client = 0; client < MaxClients; client++)
+		{
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			{
+				Items_GiveNamedItem(client, "Bob's true fear");
+				CPrintToChat(client,"{default}This battle wasnt something that should have happend. This is... {red}''Bob's True fear.''{default}!");
+			}
+		}
+	}
+
 	SDKUnhook(entity, SDKHook_Think, RaidbossBladedance_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))

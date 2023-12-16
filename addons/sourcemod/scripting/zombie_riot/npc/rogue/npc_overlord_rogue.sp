@@ -176,7 +176,7 @@ methodmap OverlordRogue < CClotBody
 		#endif
 	}
 	
-	public OverlordRogue(int client, float vecPos[3], float vecAng[3], bool ally)
+	public OverlordRogue(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "100000", ally));
 		
@@ -199,6 +199,13 @@ methodmap OverlordRogue < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		SDKHook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);
+		
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 	//	npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
@@ -522,6 +529,18 @@ public void OverlordRogue_NPCDeath(int entity)
 	npc.PlayDeathSound();	
 	
 	SDKUnhook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);
+
+	if(i_RaidGrantExtra[npc.index] == 1)
+	{
+		for (int client = 0; client < MaxClients; client++)
+		{
+			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+			{
+				Items_GiveNamedItem(client, "Overlords Final Wish");
+				CPrintToChat(client,"{default}You defeated the final overlord and thus he bestows you... {red}''His final wish.''{default}!");
+			}
+		}
+	}
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

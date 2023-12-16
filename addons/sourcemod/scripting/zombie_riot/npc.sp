@@ -2760,10 +2760,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
 
 		case OVERLORD_ROGUE:
-			entity = OverlordRogue(client, vecPos, vecAng, ally);
+			entity = OverlordRogue(client, vecPos, vecAng, ally, data);
 
 		case RAIDBOSS_BLADEDANCE:
-			entity = RaidbossBladedance(client, vecPos, vecAng, ally);
+			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
