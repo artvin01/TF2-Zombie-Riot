@@ -187,7 +187,7 @@ methodmap Donnerkrieg < CClotBody
 	
 	
 	
-	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
@@ -207,7 +207,12 @@ methodmap Donnerkrieg < CClotBody
 		{
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
+		bool final = StrContains(data, "raid_ally") != -1;
 		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
 		g_b_donner_died=false;
@@ -287,39 +292,33 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
-	if(!Rogue_Mode())
+	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//donnerkrieg handles the timer if its the same index
 	{
-		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index)	//donnerkrieg handles the timer if its the same index
+		if(RaidModeTime < GameTime)
 		{
-			if(RaidModeTime < GameTime)
-			{
-				int entity = CreateEntityByName("game_round_win"); //You loose.
-				DispatchKeyValue(entity, "force_map_reset", "1");
-				SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "RoundWin");
-				Music_RoundEnd(entity);
-				RaidBossActive = INVALID_ENT_REFERENCE;
-				SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
-			}
+			int entity = CreateEntityByName("game_round_win"); //You loose.
+			DispatchKeyValue(entity, "force_map_reset", "1");
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+			DispatchSpawn(entity);
+			AcceptEntityInput(entity, "RoundWin");
+			Music_RoundEnd(entity);
+			RaidBossActive = INVALID_ENT_REFERENCE;
+			SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 		}
 	}
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	if(!Rogue_Mode())
+	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60)
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+	else
+	{
+		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_donner_died && i_RaidGrantExtra[npc.index] == 1)
 		{
-			RaidBossActive=EntIndexToEntRef(npc.index);
-		}
-		else
-		{
-			if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_donner_died)
-			{
-				RaidBossActive = INVALID_ENT_REFERENCE;
-			}
+			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 	}
 	
@@ -355,111 +354,108 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
-	if(!Rogue_Mode())
+	if(g_b_donner_died && g_b_item_allowed && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(g_b_donner_died && g_b_item_allowed)
+		npc.m_flNextThinkTime = 0.0;
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.SetActivity("ACT_MP_CROUCH_MELEE");
+		npc.m_bisWalking = false;
+		if(g_b_schwert_died && RaidBossActive == INVALID_ENT_REFERENCE)
 		{
-			npc.m_flNextThinkTime = 0.0;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
-			npc.SetActivity("ACT_MP_CROUCH_MELEE");
-			npc.m_bisWalking = false;
-			if(g_b_schwert_died && RaidBossActive == INVALID_ENT_REFERENCE)
+			for(int client=1; client<=MaxClients; client++)
 			{
-				for(int client=1; client<=MaxClients; client++)
+				if(IsClientInGame(client))
 				{
-					if(IsClientInGame(client))
+					if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
 					{
-						if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
-						{
-							Music_Stop_All(client); //This is actually more expensive then i thought.
-						}
-						SetMusicTimer(client, GetTime() + 6);
-						fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
+						Music_Stop_All(client); //This is actually more expensive then i thought.
 					}
-				}
-				if(GameTime > g_f_blitz_dialogue_timesincehasbeenhurt)
-				{
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
-					npc.m_bDissapearOnDeath = true;
-							
-					
-					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-					for (int client = 0; client < MaxClients; client++)
-					{
-						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
-						{
-							Items_GiveNamedItem(client, "Blitzkrieg's Army");
-							CPrintToChat(client,"{default}You now have access to: {crimson}''Blitzkrieg's Army''{default}!");
-						}
-					}
-				}
-				else if(GameTime + 3.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 8)
-				{
-					i_SaidLineAlready[npc.index] = 8;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: With Blitzkrieg gone, the army has been set free, and so...");
-				}
-				else if(GameTime + 5.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 7)
-				{
-					i_SaidLineAlready[npc.index] = 7;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: However, that doesn't matter anymore");
-				}
-				else if(GameTime + 8.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 6)
-				{
-					i_SaidLineAlready[npc.index] = 6;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: The corruption had fully gotten to him");
-				}
-				else if(GameTime + 10.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 5)
-				{
-					i_SaidLineAlready[npc.index] = 5;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: If we hadn't complied he would have destroyed us");
-				}
-				else if(GameTime + 12.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 4)
-				{
-					i_SaidLineAlready[npc.index] = 4;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: We had no choice.");
-				}
-				else if(GameTime + 14.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 3)
-				{
-					i_SaidLineAlready[npc.index] = 3;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: We don't have to fight anymore, for you see...");
-				}
-				else if(GameTime + 16.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 2)
-				{
-					i_SaidLineAlready[npc.index] = 2;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: You Stopped The rouge Machine.");
-				}
-				else if(GameTime + 18.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 1)
-				{
-					i_SaidLineAlready[npc.index] = 1;
-					CPrintToChatAll("{crimson}Donnerkrieg{default}: Wait no please stop");
-					ReviveAll(true);
+					SetMusicTimer(client, GetTime() + 6);
+					fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 				}
 			}
-			if(npc.m_bInKame)
+			if(GameTime > g_f_blitz_dialogue_timesincehasbeenhurt)
 			{
-				npc.m_bInKame = false;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
+				npc.m_bDissapearOnDeath = true;
+						
 				
-				npc.m_flRangedArmor = 1.0;
-		
-				if(IsValidEntity(npc.m_iWearable5))
-					RemoveEntity(npc.m_iWearable5);
-				if(IsValidEntity(npc.m_iWearable6))
-					RemoveEntity(npc.m_iWearable6);
-					
-				NightmareCannon_BEAM_IsUsing[npc.index] = false;
-			
-				NightmareCannon_BEAM_TicksActive[npc.index] = 0;
-				
-				fl_nightmare_end_timer[npc.index] = 0.0;
-				
-				StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-				StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-				StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-				EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", npc.index, SNDCHAN_STATIC, 80, _, 1.0);
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "Blitzkrieg's Army");
+						CPrintToChat(client,"{default}You now have access to: {crimson}''Blitzkrieg's Army''{default}!");
+					}
+				}
 			}
-			return; //He is trying to help.
+			else if(GameTime + 3.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 8)
+			{
+				i_SaidLineAlready[npc.index] = 8;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: With Blitzkrieg gone, the army has been set free, and so...");
+			}
+			else if(GameTime + 5.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 7)
+			{
+				i_SaidLineAlready[npc.index] = 7;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: However, that doesn't matter anymore");
+			}
+			else if(GameTime + 8.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 6)
+			{
+				i_SaidLineAlready[npc.index] = 6;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: The corruption had fully gotten to him");
+			}
+			else if(GameTime + 10.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 5)
+			{
+				i_SaidLineAlready[npc.index] = 5;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: If we hadn't complied he would have destroyed us");
+			}
+			else if(GameTime + 12.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 4)
+			{
+				i_SaidLineAlready[npc.index] = 4;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: We had no choice.");
+			}
+			else if(GameTime + 14.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 3)
+			{
+				i_SaidLineAlready[npc.index] = 3;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: We don't have to fight anymore, for you see...");
+			}
+			else if(GameTime + 16.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 2)
+			{
+				i_SaidLineAlready[npc.index] = 2;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: You Stopped The rouge Machine.");
+			}
+			else if(GameTime + 18.0 > g_f_blitz_dialogue_timesincehasbeenhurt && i_SaidLineAlready[npc.index] < 1)
+			{
+				i_SaidLineAlready[npc.index] = 1;
+				CPrintToChatAll("{crimson}Donnerkrieg{default}: Wait no please stop");
+				ReviveAll(true);
+			}
 		}
+		if(npc.m_bInKame)
+		{
+			npc.m_bInKame = false;
+			
+			npc.m_flRangedArmor = 1.0;
+	
+			if(IsValidEntity(npc.m_iWearable5))
+				RemoveEntity(npc.m_iWearable5);
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+				
+			NightmareCannon_BEAM_IsUsing[npc.index] = false;
+		
+			NightmareCannon_BEAM_TicksActive[npc.index] = 0;
+			
+			fl_nightmare_end_timer[npc.index] = 0.0;
+			
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", npc.index, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		return; //He is trying to help.
 	}
 	if(fl_nightmare_end_timer[npc.index] < GameTime && b_nightmare_logic[npc.index])
 	{	
@@ -864,62 +860,58 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(!Rogue_Mode())
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
+	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
 	{
-		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-		if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0)
+		if(g_b_item_allowed)
 		{
-			if(g_b_item_allowed)
-			{
-				b_DoNotUnStuck[npc.index] = true;
-				b_CantCollidieAlly[npc.index] = true;
-				b_CantCollidie[npc.index] = true;
-				SetEntityCollisionGroup(npc.index, 24);
-				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
-				b_NpcIsInvulnerable[npc.index] = true;
-				RemoveNpcFromEnemyList(npc.index);
-				GiveProgressDelay(20.0);
+			b_DoNotUnStuck[npc.index] = true;
+			b_CantCollidieAlly[npc.index] = true;
+			b_CantCollidie[npc.index] = true;
+			SetEntityCollisionGroup(npc.index, 24);
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+			b_NpcIsInvulnerable[npc.index] = true;
+			RemoveNpcFromEnemyList(npc.index);
+			GiveProgressDelay(20.0);
 
 
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-				damage = 0.0;
-			}
-			if(!g_b_donner_died)
-			{
-				g_b_donner_died=true;
-				g_b_angered=true;
-				RaidModeTime += 22.5;
-				npc.m_bThisNpcIsABoss = false;
-				if(EntRefToEntIndex(RaidBossActive)==npc.index)
-					RaidBossActive = INVALID_ENT_REFERENCE;
-				g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime(npc.index)+20.0;
-			}
-			if(npc.m_bInKame)
-			{
-				npc.m_bInKame = false;
-				
-				npc.m_flRangedArmor = 1.0;
-		
-				if(IsValidEntity(npc.m_iWearable5))
-					RemoveEntity(npc.m_iWearable5);
-				if(IsValidEntity(npc.m_iWearable6))
-					RemoveEntity(npc.m_iWearable6);
-					
-				NightmareCannon_BEAM_IsUsing[npc.index] = false;
-			
-				NightmareCannon_BEAM_TicksActive[npc.index] = 0;
-				
-				fl_nightmare_end_timer[npc.index] = 0.0;
-				
-				StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-				StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-				StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-				EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", npc.index, SNDCHAN_STATIC, 80, _, 1.0);
-			}
-			return Plugin_Handled;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			damage = 0.0;
 		}
-	}
+		if(!g_b_donner_died)
+		{
+			g_b_donner_died=true;
+			g_b_angered=true;
+			RaidModeTime += 22.5;
+			npc.m_bThisNpcIsABoss = false;
+			if(EntRefToEntIndex(RaidBossActive)==npc.index)
+				RaidBossActive = INVALID_ENT_REFERENCE;
+			g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime(npc.index)+20.0;
+		}
+		if(npc.m_bInKame)
+		{
+			npc.m_bInKame = false;
+			
+			npc.m_flRangedArmor = 1.0;
 	
+			if(IsValidEntity(npc.m_iWearable5))
+				RemoveEntity(npc.m_iWearable5);
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+				
+			NightmareCannon_BEAM_IsUsing[npc.index] = false;
+		
+			NightmareCannon_BEAM_TicksActive[npc.index] = 0;
+			
+			fl_nightmare_end_timer[npc.index] = 0.0;
+			
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+			EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", npc.index, SNDCHAN_STATIC, 80, _, 1.0);
+		}
+		return Plugin_Handled;
+	}
 	return Plugin_Changed;
 }
 

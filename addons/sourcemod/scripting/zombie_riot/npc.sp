@@ -2217,10 +2217,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Mecha_Scout(client, vecPos, vecAng, ally);
 		
 		case ALT_DONNERKRIEG:
-			entity = Donnerkrieg(client, vecPos, vecAng, ally);
+			entity = Donnerkrieg(client, vecPos, vecAng, ally, data);
 		
 		case ALT_SCHWERTKRIEG:
-			entity = Schwertkrieg(client, vecPos, vecAng, ally);
+			entity = Schwertkrieg(client, vecPos, vecAng, ally, data);
 		
 		case PHANTOM_KNIGHT:
 			entity = PhantomKnight(client, vecPos, vecAng, ally);
