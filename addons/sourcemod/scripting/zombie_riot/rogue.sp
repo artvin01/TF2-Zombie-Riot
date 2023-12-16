@@ -283,6 +283,7 @@ static int ExtraStageCount;
 bool b_LeaderSquad;
 bool b_GatheringSquad;
 bool b_ResearchSquad;
+float f_ProvokedAngerCD[MAXENTITIES];
 
 void Rogue_PluginStart()
 {
@@ -363,6 +364,7 @@ bool Rogue_NoDiscount()
 void Rogue_MapStart()
 {
 	InRogueMode = false;
+	Zero(f_ProvokedAngerCD);
 }
 
 void Rogue_SetupVote(KeyValues kv)
