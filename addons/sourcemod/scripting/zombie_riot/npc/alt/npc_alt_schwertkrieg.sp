@@ -232,7 +232,7 @@ public void Schwertkrieg_ClotThink(int iNPC)
 
 	float GameTime = GetGameTime(npc.index);
 	
-	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index)	//schwertkrieg handles the timer if its the same index
+	if(!Rogue_Mode() && ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index)	//schwertkrieg handles the timer if its the same index
 	{
 		if(RaidModeTime < GameTime)
 		{
@@ -251,16 +251,18 @@ public void Schwertkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-	
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60)
+	if(!Rogue_Mode())
 	{
-		RaidBossActive=EntIndexToEntRef(npc.index);
-	}
-	else
-	{
-		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died)
+		if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_schwert_died && ZR_GetWaveCount()+1 >=60)
 		{
-			RaidBossActive = INVALID_ENT_REFERENCE;
+			RaidBossActive=EntIndexToEntRef(npc.index);
+		}
+		else
+		{
+			if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_schwert_died)
+			{
+				RaidBossActive = INVALID_ENT_REFERENCE;
+			}
 		}
 	}
 
@@ -286,24 +288,25 @@ public void Schwertkrieg_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
-	
-	if(g_b_schwert_died && g_b_item_allowed)	//Schwertkrieg is mute,
+	if(!Rogue_Mode())
 	{
-		
-		npc.m_flNextThinkTime = 0.0;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-		npc.SetActivity("ACT_MP_CROUCH_MELEE");
-		npc.m_bisWalking = false;
-		if(g_b_donner_died && RaidBossActive == INVALID_ENT_REFERENCE)
+		if(g_b_schwert_died && g_b_item_allowed)	//Schwertkrieg is mute,
 		{
-			if(GetGameTime() > g_f_blitz_dialogue_timesincehasbeenhurt)
+			npc.m_flNextThinkTime = 0.0;
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.SetActivity("ACT_MP_CROUCH_MELEE");
+			npc.m_bisWalking = false;
+			if(g_b_donner_died && RaidBossActive == INVALID_ENT_REFERENCE)
 			{
-				npc.m_bDissapearOnDeath = true;	
-				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-			}
-		}			
-		return; //He is trying to help.
+				if(GetGameTime() > g_f_blitz_dialogue_timesincehasbeenhurt)
+				{
+					npc.m_bDissapearOnDeath = true;	
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				}
+			}			
+			return; //He is trying to help.
+		}
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -671,34 +674,36 @@ public Action Schwertkrieg_OnTakeDamage(int victim, int &attacker, int &inflicto
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
-	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0)
-	{
-		if(g_b_item_allowed)
+	if(!Rogue_Mode())
+	{	
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
+		if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0)
 		{
-			b_DoNotUnStuck[npc.index] = true;
-			b_CantCollidieAlly[npc.index] = true;
-			b_CantCollidie[npc.index] = true;
-			SetEntityCollisionGroup(npc.index, 24);
-			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him
-			b_NpcIsInvulnerable[npc.index] = true;
-			RemoveNpcFromEnemyList(npc.index);
-			GiveProgressDelay(20.0);
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-			damage = 0.0;
+			if(g_b_item_allowed)
+			{
+				b_DoNotUnStuck[npc.index] = true;
+				b_CantCollidieAlly[npc.index] = true;
+				b_CantCollidie[npc.index] = true;
+				SetEntityCollisionGroup(npc.index, 24);
+				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him
+				b_NpcIsInvulnerable[npc.index] = true;
+				RemoveNpcFromEnemyList(npc.index);
+				GiveProgressDelay(20.0);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+				damage = 0.0;
+			}
+			if(!g_b_schwert_died)
+			{
+				g_b_angered=true;
+				g_b_schwert_died=true;
+				if(EntRefToEntIndex(RaidBossActive)==npc.index)
+					RaidBossActive = INVALID_ENT_REFERENCE;
+				RaidModeTime += 22.5;
+				npc.m_bThisNpcIsABoss = false;
+				g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime(npc.index)+20.0;
+			}
+			return Plugin_Handled;
 		}
-		if(!g_b_schwert_died)
-		{
-			g_b_angered=true;
-			g_b_schwert_died=true;
-			if(EntRefToEntIndex(RaidBossActive)==npc.index)
-				RaidBossActive = INVALID_ENT_REFERENCE;
-			RaidModeTime += 22.5;
-			npc.m_bThisNpcIsABoss = false;
-			g_f_blitz_dialogue_timesincehasbeenhurt = GetGameTime(npc.index)+20.0;
-		}
-		return Plugin_Handled;
 	}
 	
 	return Plugin_Changed;

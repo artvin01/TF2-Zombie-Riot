@@ -12,6 +12,7 @@
 
 static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
+static float TonicBuff_CD[MAXTF2PLAYERS];
 
 bool Wands_Potions_HasBuff(int client)
 {
@@ -39,6 +40,7 @@ void Wand_Potions_Precache()
 	PrecacheSound(SOUND_TRANSFORM2);
 	PrecacheSound(SOUND_SHRINK);
 
+	Zero(TonicBuff_CD);
 	Zero(TonicBuff);
 }
 
@@ -490,7 +492,16 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
-
+	if(TonicBuff_CD[client] > GetGameTime())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", TonicBuff_CD[client] - GetGameTime());
+		return;
+	}
+	
+	TonicBuff_CD[client] = GetGameTime() + 10.0;
 	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
@@ -515,7 +526,16 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
-
+	if(TonicBuff_CD[client] > GetGameTime())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", TonicBuff_CD[client] - GetGameTime());
+		return;
+	}
+	
+	TonicBuff_CD[client] = GetGameTime() + 10.0;
 	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
