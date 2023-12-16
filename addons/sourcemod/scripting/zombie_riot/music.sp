@@ -309,7 +309,7 @@ void Music_PostThink(int client)
 					{
 						if(b_MusicCustom1)
 						{
-							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, f_MusicVolume1);
 						}
 						else
 						{
@@ -322,7 +322,7 @@ void Music_PostThink(int client)
 					{
 						if(b_MusicCustom2)
 						{
-							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, f_MusicVolume1);
 						}
 						else
 						{
