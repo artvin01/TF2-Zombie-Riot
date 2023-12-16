@@ -3508,7 +3508,8 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 	{
 		case MenuAction_End:
 		{
-			InShopMenu[client] = false;
+			if(IsValidClient(client))
+				InShopMenu[client] = false;
 			delete menu;
 		}
 		case MenuAction_Cancel:
