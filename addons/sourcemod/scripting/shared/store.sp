@@ -535,6 +535,7 @@ static int NPCOnly[MAXTF2PLAYERS];
 static int NPCCash[MAXTF2PLAYERS];
 static int NPCTarget[MAXTF2PLAYERS];
 static bool InLoadoutMenu[MAXTF2PLAYERS];
+static bool InShopMenu[MAXTF2PLAYERS];
 static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
 static ArrayList ChoosenTags[MAXTF2PLAYERS];
@@ -690,23 +691,7 @@ void Store_WeaponSwitch(int client, int weapon)
 }
 
 #if defined ZR
-/*
-void Store_RemoveSellValue()
-{
-	static Item item;
-	int length = StoreItems.Length;
-	for(int i; i<length; i++)
-	{
-		StoreItems.GetArray(i, item);
-		for(int a; a < MAXTF2PLAYERS; a++)
-		{
-			item.Sell[a] = 0;
-			item.BuyWave[a] = -1;
-		}
-		StoreItems.SetArray(i, item);
-	}
-}
-*/
+
 bool Store_FindBarneyAGun(int entity, int value, int budget, bool packs)
 {
 	if(StoreItems)
@@ -2794,12 +2779,19 @@ public void Store_Menu(int client)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
+		NPCOnly[client] = 0;
+		if(InShopMenu[client])
+		{
+			InShopMenu[client] = false;
+			ClientCommand(client, "slot10");
+			CancelClientMenu(client);
+			return;
+		}
 		if(ClientTutorialStep(client) == 1)
 		{
 			SetClientTutorialStep(client, 2);
 			DoTutorialStep(client, false);	
 		}
-		NPCOnly[client] = 0;
 		MenuPage(client, -1);
 	}
 }
@@ -2827,6 +2819,7 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 public void MenuPage(int client, int section)
 {
 	SetGlobalTransTarget(client);
+	InShopMenu[client] = true;
 	
 	Menu menu;
 	
@@ -2842,6 +2835,7 @@ public void MenuPage(int client, int section)
 
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 	{
+		InShopMenu[client] = false;
 		return;
 	}
 	BarracksCheckItems(client);
@@ -3513,6 +3507,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 	{
 		case MenuAction_End:
 		{
+			InShopMenu[client] = false;
 			delete menu;
 		}
 		case MenuAction_Cancel:
@@ -3541,12 +3536,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 
 				MenuPage(client, item.Section);
 			}
-			/*
-			else if(choice != MenuCancel_Disconnected)
+			if(choice == MenuCancel_Exit)
 			{
-				StopSound(client, SNDCHAN_STATIC, "#items/tf_music_upgrade_machine.wav");
+				InShopMenu[client] = false;
 			}
-			*/
 		}
 		case MenuAction_Select:
 		{

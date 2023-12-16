@@ -74,7 +74,7 @@ public void AnyShieldOnObtained()
 	if (GlobalShieldTimer != INVALID_HANDLE)
 		return;
 
-	GlobalShieldTimer = CreateTimer(60.0, ShieldRegenTimer,_,TIMER_REPEAT);
+	GlobalShieldTimer = CreateTimer(10.0, ShieldRegenTimer,_,TIMER_REPEAT);
 }
 public Action ShieldRegenTimer(Handle timer, int client)
 {

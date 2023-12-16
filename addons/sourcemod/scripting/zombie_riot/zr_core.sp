@@ -2182,3 +2182,11 @@ void ForcePlayerCrouch(int client, bool enable)
 		}
 	}
 }
+
+
+void GrantAllPlayersCredits_Rogue(int cash)
+{
+	cash *= (Rogue_GetRound()+1);
+	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CurrentCash += cash;
+}

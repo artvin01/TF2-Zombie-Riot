@@ -24,8 +24,8 @@ public void Rogue_Support_Collect()
 	{
 		if(IsClientInGame(client))
 		{
-			CashRecievedNonWave[client] += 500;
-			CashSpent[client] -= 500;
+			CashRecievedNonWave[client] += 250;
+			CashSpent[client] -= 250;
 		}
 	}
 }
