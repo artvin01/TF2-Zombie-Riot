@@ -1913,6 +1913,7 @@ void Store_ClientDisconnect(int client)
 	
 #if defined ZR
 	Database_SaveGameData(client);
+	InShopMenu[client] = false;
 
 	CashSpent[client] = 0;
 	CashSpentGivePostSetup[client] = 0;
