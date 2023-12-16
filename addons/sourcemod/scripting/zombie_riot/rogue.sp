@@ -849,7 +849,7 @@ void Rogue_BattleVictory()
 	}
 	else
 	{
-		Rogue_SetProgressTime(30.0, true);
+		Rogue_SetProgressTime(5.0, true);
 
 		Floor floor;
 		Floors.GetArray(CurrentFloor, floor);
@@ -1555,14 +1555,23 @@ static void StartStage(const Stage stage)
 	{
 		entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+		{
+			if(i_NpcInternalId[entity] == REMAINS)
+			{
+				SmiteNpcToDeath(entity);
+			}
+			else
+			{
+				TeleportEntity(entity, pos, ang, NULL_VECTOR);	
+			}
+		}
 	}
 
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
-			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9);
+		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+			RemoveEntity(entity);
 	}
 
 	if(b_LeaderSquad)
@@ -1638,8 +1647,8 @@ static void TeleportToSpawn()
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity])
-			SDKHooks_TakeDamage(entity, 0, 0, 99999999.9, DMG_ACID);
+		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+			RemoveEntity(entity);
 	}
 }
 
