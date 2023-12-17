@@ -1,10 +1,15 @@
-
+float f_HandOfElderMagesAntiSpam[MAXENTITIES];
 void OnTakeDamage_HandOfElderMages(int client, int holding_weapon)
 {
 	if(b_HandOfElderMages)
 	{
+		//dont give twice a frame!
+		if(f_HandOfElderMagesAntiSpam[holding_weapon] == GetGameTime())
+			return;
+		
 		if(i_WeaponArchetype[holding_weapon] == 19 || i_WeaponArchetype[holding_weapon] == 20) //todo: do this only with multi caster and chaincaster items
 		{
+			f_HandOfElderMagesAntiSpam[holding_weapon] = GetGameTime();
 			Saga_ChargeReduction(client, holding_weapon, 1.0);
 		}	
 	}
