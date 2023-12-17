@@ -551,12 +551,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		kv.GetString("music_track_1", round.music_round_1, sizeof(round.music_round_1));
 		round.music_duration_1 = kv.GetNum("music_seconds_1");
 		round.music_custom_1 = view_as<bool>(kv.GetNum("music_download_1"));
-		round.music_volume_1 = view_as<bool>(kv.GetFloat("music_volume_1", 2.0));
+		round.music_volume_1 = kv.GetFloat("music_volume_1", 2.0);
 		
 		kv.GetString("music_track_2", round.music_round_2, sizeof(round.music_round_2));
 		round.music_duration_2 = kv.GetNum("music_seconds_2");
 		round.music_custom_2 = view_as<bool>(kv.GetNum("music_download_2"));
-		round.music_volume_2 = view_as<bool>(kv.GetFloat("music_volume_2", 2.0));
+		round.music_volume_2 = kv.GetFloat("music_volume_2", 2.0);
 		
 		if(round.music_round_1[0])
 		{

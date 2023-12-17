@@ -6990,6 +6990,10 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 	{
 		SupplyRateCalc *= 1.15;
 	}
+	if(Rogue_Mode())
+	{
+		SupplyRateCalc *= 2.0;
+	}
 	SupplyRateCalc *= multi;
 	WoodAmount[client] += SupplyRateCalc * 1.15;
 	FoodAmount[client] += SupplyRateCalc * 1.40;
@@ -7515,10 +7519,16 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 
 							ResearchIndex[client] = item;
 							ResearchStartedIn[client] = GetGameTime();
-							ResearchIn[client] = ResearchStartedIn[client] + float(GetRData(item, TrainTime));
+							
+							float TimeUntillResearch = float(GetRData(item, TrainTime));
+							if(Rogue_Mode())
+							{
+								TimeUntillResearch *= 0.5;
+							}
+							ResearchIn[client] = ResearchStartedIn[client] + TimeUntillResearch;
 							if(CvarInfiniteCash.BoolValue)
 							{
-								ResearchIn[client] = GetGameTime(); 
+								ResearchIn[client] = GetGameTime() + 0.1; 
 							}
 							
 							WoodAmount[client] -= woodcost;
