@@ -168,7 +168,11 @@ public void BarrackVillager_ClotThink(int iNPC)
 						VillagerDesiredBuildLocation[npc.index][0] = 0.0;
 						VillagerDesiredBuildLocation[npc.index][1] = 0.0;
 						VillagerDesiredBuildLocation[npc.index][2] = 0.0;
+						
 						npc.f_VillagerBuildCooldown = GameTime + 120.0;
+						if(Rogue_Mode())
+							npc.f_VillagerBuildCooldown = GameTime + 60.0;
+
 						npc.m_iTowerLinked = spawn_index;
 						player.m_iTowerLinked = spawn_index;
 						if(!b_IsAlliedNpc[iNPC])
@@ -224,14 +228,22 @@ public void BarrackVillager_ClotThink(int iNPC)
 				float flDistanceToTarget = GetVectorDistance(BuildingPos, MePos, true);
 				if(flDistanceToTarget < (50.0*50.0)) //we are close enough, lets build.
 				{
-					i_AttacksTillMegahit[BuildingAlive] += 1;
-					if(GetEntProp(BuildingAlive, Prop_Data, "m_iHealth") < GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"))
+					if(Rogue_Mode())
 					{
-						SetEntProp(BuildingAlive, Prop_Data, "m_iHealth", GetEntProp(BuildingAlive, Prop_Data, "m_iHealth") + (GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth") / 222));
-						if(GetEntProp(BuildingAlive, Prop_Data, "m_iHealth") >= GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"))
+						i_AttacksTillMegahit[BuildingAlive] += 1;
+						if(GetEntProp(BuildingAlive, Prop_Data, "m_iHealth") < GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"))
 						{
-							SetEntProp(BuildingAlive, Prop_Data, "m_iHealth", GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"));
+							SetEntProp(BuildingAlive, Prop_Data, "m_iHealth", GetEntProp(BuildingAlive, Prop_Data, "m_iHealth") + (GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth") / 222));
+							if(GetEntProp(BuildingAlive, Prop_Data, "m_iHealth") >= GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"))
+							{
+								SetEntProp(BuildingAlive, Prop_Data, "m_iHealth", GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"));
+							}
 						}
+					}
+					else
+					{
+						i_AttacksTillMegahit[BuildingAlive] += 255;
+						SetEntProp(BuildingAlive, Prop_Data, "m_iHealth", GetEntProp(BuildingAlive, Prop_Data, "m_iMaxHealth"));
 					}
 					npc.FaceTowards(BuildingPos, 10000.0); //build.
 					if(npc.m_iChanged_WalkCycle != 6)

@@ -2217,10 +2217,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = Mecha_Scout(client, vecPos, vecAng, ally);
 		
 		case ALT_DONNERKRIEG:
-			entity = Donnerkrieg(client, vecPos, vecAng, ally);
+			entity = Donnerkrieg(client, vecPos, vecAng, ally, data);
 		
 		case ALT_SCHWERTKRIEG:
-			entity = Schwertkrieg(client, vecPos, vecAng, ally);
+			entity = Schwertkrieg(client, vecPos, vecAng, ally, data);
 		
 		case PHANTOM_KNIGHT:
 			entity = PhantomKnight(client, vecPos, vecAng, ally);
@@ -2760,10 +2760,10 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			entity = AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
 
 		case OVERLORD_ROGUE:
-			entity = OverlordRogue(client, vecPos, vecAng, ally);
+			entity = OverlordRogue(client, vecPos, vecAng, ally, data);
 
 		case RAIDBOSS_BLADEDANCE:
-			entity = RaidbossBladedance(client, vecPos, vecAng, ally);
+			entity = RaidbossBladedance(client, vecPos, vecAng, ally, data);
 
 		default:
 			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);

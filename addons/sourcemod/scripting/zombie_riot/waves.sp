@@ -58,9 +58,11 @@ enum struct Round
 	char music_round_1[255];
 	int music_duration_1;
 	bool music_custom_1;
+	float music_volume_1;
 	char music_round_2[255];
 	int music_duration_2;
 	bool music_custom_2;
+	float music_volume_2;
 	char music_round_outro[255];
 	bool music_custom_outro;
 	char Message[255];
@@ -549,10 +551,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		kv.GetString("music_track_1", round.music_round_1, sizeof(round.music_round_1));
 		round.music_duration_1 = kv.GetNum("music_seconds_1");
 		round.music_custom_1 = view_as<bool>(kv.GetNum("music_download_1"));
+		round.music_volume_1 = kv.GetFloat("music_volume_1", 2.0);
 		
 		kv.GetString("music_track_2", round.music_round_2, sizeof(round.music_round_2));
 		round.music_duration_2 = kv.GetNum("music_seconds_2");
 		round.music_custom_2 = view_as<bool>(kv.GetNum("music_download_2"));
+		round.music_volume_2 = kv.GetFloat("music_volume_2", 2.0);
 		
 		if(round.music_round_1[0])
 		{
@@ -725,7 +729,7 @@ void Waves_RoundStart()
 	
 	if(Rogue_Mode())
 	{
-		Rogue_StartSetup();
+		
 	}
 	else if(Voting)
 	{
@@ -764,6 +768,11 @@ void Waves_RoundStart()
 			if(IsClientInGame(client) && IsPlayerAlive(client))
 				TF2_RegeneratePlayer(client);
 		}
+	}
+
+	if(Rogue_Mode())
+	{
+		Rogue_StartSetup();
 	}
 }
 
@@ -1347,6 +1356,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			b_MusicCustom1 = round.music_custom_1;
 			b_MusicCustom2 = round.music_custom_2;
+
+			f_MusicVolume1 = round.music_volume_1;
+			f_MusicVolume2 = round.music_volume_2;
 			
 			if(round.Setup > 1.0)
 			{

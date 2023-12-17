@@ -117,6 +117,7 @@ void ViewChange_PlayerModel(int client)
 						SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
 					}
 					UpdatePlayerFakeModel(client);
+					MedicAdjustModel(client);
 
 				}
 				else
@@ -317,6 +318,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 9);
 				}
 			}
+			MedicAdjustModel(client);
 			return;
 		}
 	}
@@ -324,6 +326,38 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 	WeaponClass[client] = TFClass_Unknown;
 	WeaponRef[client] = INVALID_ENT_REFERENCE;
 	i_Viewmodel_WeaponModel[client] = INVALID_ENT_REFERENCE;
+}
+void MedicAdjustModel(int client)
+{
+	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(ViewmodelPlayerModel))
+		return;
+
+	if(CurrentClass[client] != view_as<TFClassType>(5))
+		return;
+	
+	bool RemoveMedicBackpack = true;
+	int ie;
+	int entity;
+	while(TF2_GetItem(client, entity, ie))
+	{
+		int index = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
+		switch(index)
+		{
+			case 211:
+			{
+				if(HasEntProp(entity, Prop_Send, "m_flChargeLevel"))
+				{
+					RemoveMedicBackpack = false;
+					break;
+				}
+			}
+		}
+	}
+	if(RemoveMedicBackpack)
+	{
+		SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 1);
+	}
 }
 
 void ViewChange_DeleteHands(int client)

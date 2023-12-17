@@ -187,7 +187,7 @@ methodmap Donnerkrieg < CClotBody
 	
 	
 	
-	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
@@ -207,7 +207,12 @@ methodmap Donnerkrieg < CClotBody
 		{
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
+		bool final = StrContains(data, "raid_ally") != -1;
 		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
 		g_b_donner_died=false;
@@ -287,7 +292,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
-	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index)	//donnerkrieg handles the timer if its the same index
+	if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//donnerkrieg handles the timer if its the same index
 	{
 		if(RaidModeTime < GameTime)
 		{
@@ -305,14 +310,13 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	{
 		return;
 	}
-
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60)
+	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
 	else
 	{
-		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_donner_died)
+		if(ZR_GetWaveCount()+1 >=60 && EntRefToEntIndex(RaidBossActive)==npc.index && g_b_donner_died && i_RaidGrantExtra[npc.index] == 1)
 		{
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
@@ -350,9 +354,8 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
-	if(g_b_donner_died && g_b_item_allowed)
+	if(g_b_donner_died && g_b_item_allowed && i_RaidGrantExtra[npc.index] == 1)
 	{
-
 		npc.m_flNextThinkTime = 0.0;
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -857,9 +860,8 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");	//npc becomes imortal when at 1 hp and when its a valid wave	//warp_item
-	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0)
+	if(RoundToCeil(damage)>=Health && ZR_GetWaveCount()+1>=60.0 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		if(g_b_item_allowed)
 		{
@@ -910,7 +912,6 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 		}
 		return Plugin_Handled;
 	}
-	
 	return Plugin_Changed;
 }
 

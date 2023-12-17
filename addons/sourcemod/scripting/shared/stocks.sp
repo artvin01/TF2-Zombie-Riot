@@ -414,6 +414,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	return iReturn;
 }
 
+
 stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
@@ -421,6 +422,11 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	GetClientEyeAngles(iClient, vecAngles);
 	
 	i_PreviousInteractedEntity[iClient] = 0; //didnt find any
+	
+	if(f_Reviving_This_Client[iClient] < GetGameTime())
+	{
+		i_Reviving_This_Client[iClient] = 0;
+	}
 
 	Handle hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_DontHitAlivePlayer, iClient);
 	TR_GetEndPosition(vecEndOrigin, hTrace);
@@ -430,6 +436,17 @@ stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 	
 	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
 		iReturn = iHit;
+
+	if(iReturn > 0)
+	{
+		i_Reviving_This_Client[iClient] = iReturn;
+		f_Reviving_This_Client[iClient] = GetGameTime() + 0.35;
+	}
+	else
+	{
+		i_Reviving_This_Client[iClient] = 0;
+		f_Reviving_This_Client[iClient] = 0.0;
+	}
 	
 	delete hTrace;
 	return iReturn;
@@ -1580,6 +1597,13 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	
 	{
 		return false;
+	}
+	if(f_Reviving_This_Client[data] > GetGameTime())
+	{
+		if(i_Reviving_This_Client[data] != entity)
+		{
+			return false;
+		}
 	}
 	
 	return entity!=data;

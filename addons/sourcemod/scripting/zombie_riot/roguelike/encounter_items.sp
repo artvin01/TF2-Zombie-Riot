@@ -178,6 +178,8 @@ public float Rogue_Encounter_SwordInStone()	// Note: Occurs in Floor 4
 }
 public void Rogue_Vote_SwordInStone(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(650);
+
 	switch(index)
 	{
 		case 0:
@@ -218,6 +220,8 @@ public float Rogue_Encounter_Theatrical()
 }
 public void Rogue_Vote_Theatrical(const Vote votee, int index)
 {
+	GrantAllPlayersCredits_Rogue(650);
+
 	switch(index)
 	{
 		case 0:
@@ -270,6 +274,7 @@ public float Rogue_Encounter_Eccentric()	// Note: Occurs in Floor 4
 }
 public void Rogue_Vote_EccentricCost(const Vote votee, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
 	if(!index && Rogue_GetIngots() > 3)
 	{
 		PrintToChatAll("%t", "Eccentric Lore 1");
@@ -308,6 +313,7 @@ public void Rogue_Vote_EccentricCost(const Vote votee, int index)
 }
 public void Rogue_Vote_EccentricItem(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
 	switch(index)
 	{
 		case 0:
@@ -356,6 +362,7 @@ public float Rogue_Encounter_ForcefieldChest()
 }
 public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
 	if(index)
 	{
 		Rogue_GiveNamedArtifact(vote.Name);
@@ -383,6 +390,8 @@ public float Rogue_Encounter_Camp()
 }
 public void Rogue_Vote_Camp(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
+
 	Ammo_Count_Ready += 30;
 	PrintToChatAll("%t", "Camp Lore");
 
@@ -421,6 +430,8 @@ public float Rogue_Encounter_CoffinOfEvil()
 }
 public void Rogue_Vote_CoffinOfEvil(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
+
 	if(index)
 	{
 		PrintToChatAll("%t", "Coffin of Evil Lore 2");
@@ -468,6 +479,8 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 	if(!Rogue_HasFriendship())
 		choice++;
 	
+	GrantAllPlayersCredits_Rogue(350);
+
 	switch(choice)
 	{
 		case 0:
@@ -521,6 +534,8 @@ public float Rogue_Encounter_BrokenCrown()
 }
 public void Rogue_Vote_BrokenCrown(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
+
 	if(index)
 	{
 		PrintToChatAll("%t", "Broken Crown Lore 2");
@@ -556,6 +571,8 @@ public float Rogue_Encounter_BobResearch()
 }
 public void Rogue_Vote_BobResearch(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(450);
+
 	if(index)
 	{
 		PrintToChatAll("%t", "Bob Research Lore 2");
@@ -589,6 +606,8 @@ public float Rogue_Encounter_BobFinal()
 }
 public void Rogue_Vote_BobFinal(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(1000);
+
 	if(index)
 	{
 		PrintToChatAll("%t", "Bob Final Lore 2");
@@ -623,6 +642,8 @@ public float Rogue_Encounter_BrokenBridge()
 }
 public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 {
+	GrantAllPlayersCredits_Rogue(650);
+
 	if(Rogue_GetIngots() < 3 || index)
 	{
 		PrintToChatAll("%t", "Broken Bridge Lore 2");
