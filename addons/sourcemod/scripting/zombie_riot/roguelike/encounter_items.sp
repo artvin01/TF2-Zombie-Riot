@@ -388,6 +388,7 @@ public float Rogue_Encounter_Camp()
 
 	return 25.0;
 }
+
 public void Rogue_Vote_Camp(const Vote vote, int index)
 {
 	GrantAllPlayersCredits_Rogue(450);

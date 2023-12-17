@@ -370,7 +370,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 					npc.m_flNextRangedAttackHappening = gameTime + 0.4;
 
 					npc.m_flDoingAnimation = gameTime + 0.7;
-					npc.m_flNextRangedAttack = gameTime + 2.0;
+					npc.m_flNextRangedAttack = gameTime + 1.0;
 
 					npc.m_bisWalking = false;
 					NPC_StopPathing(npc.index);
