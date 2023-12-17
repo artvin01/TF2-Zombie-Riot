@@ -217,6 +217,9 @@ methodmap OverlordRogue < CClotBody
 		npc.m_fbRangedSpecialOn = true;
 		npc.m_flNextChargeSpecialAttack = 0.0;
 		npc.m_flNextDelayTime = GetGameTime(npc.index) + 30.0;
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidModeScaling = 100000.0;
+		RaidModeTime = GetGameTime() + 999.9;
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
@@ -541,6 +544,8 @@ public void OverlordRogue_NPCDeath(int entity)
 			}
 		}
 	}
+
+	RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

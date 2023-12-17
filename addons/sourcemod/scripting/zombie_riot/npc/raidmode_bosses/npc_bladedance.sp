@@ -429,4 +429,6 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+
+	RaidBossActive = INVALID_ENT_REFERENCE;
 }
