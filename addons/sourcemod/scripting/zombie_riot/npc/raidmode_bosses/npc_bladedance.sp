@@ -278,12 +278,8 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			{
 				if(entity != npc.index && !b_NpcHasDied[entity] && GetEntProp(entity, Prop_Send, "m_iTeamNum") != team)
 				{
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-					if(GetVectorDistance(pos, vecTarget, true) < 600000.0)	// 775 HU
-					{
-						f_GodArkantosBuff[entity] = GetGameTime() + 8.0;
-						ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
-					}
+					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
+					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 				}
 			}
 			
@@ -302,10 +298,10 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
 				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 400.0);
-				npc.FireRocket(vPredictedPos, 500.0, 400.0, "models/effects/combineball.mdl");
+				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 100);
+				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 200);
 			}
 		}
 	}

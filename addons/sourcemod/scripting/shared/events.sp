@@ -457,7 +457,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	}
 
 	//Incase they die, do suit!
-	i_CurrentEquippedPerk[client] = 0;
+	if(!Rogue_Mode())
+		i_CurrentEquippedPerk[client] = 0;
+		
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
 	UnequipQuantumSet(client);
