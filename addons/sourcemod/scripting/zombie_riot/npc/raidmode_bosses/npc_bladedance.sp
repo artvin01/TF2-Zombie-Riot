@@ -173,6 +173,7 @@ methodmap RaidbossBladedance < CClotBody
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = true;
 		Raidboss_Clean_Everyone();
 
 		return npc;
@@ -410,14 +411,14 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(i_RaidGrantExtra[npc.index] == 1)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 			{
 				Items_GiveNamedItem(client, "Bob's true fear");
-				CPrintToChat(client,"{default}This battle wasnt something that should have happend. This is... {red}''Bob's True fear.''{default}!");
+				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
 			}
 		}
 	}

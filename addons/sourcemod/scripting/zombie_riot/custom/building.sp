@@ -994,7 +994,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
-	if(RaidBossActive && (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //They are ignored anyways
+	if(RaidBossActive && (RaidbossIgnoreBuildingsLogic(2))) //They are ignored anyways
 	{
 		damage = 0.0;
 		return Plugin_Handled;
@@ -1395,7 +1395,7 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 	{
 		return;
 	}
-	if(RaidBossActive && (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //They are ignored anyways
+	if(RaidBossActive && (RaidbossIgnoreBuildingsLogic(2))) //They are ignored anyways
 	{
 		return;
 	}

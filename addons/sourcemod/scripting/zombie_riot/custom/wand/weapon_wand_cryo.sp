@@ -216,7 +216,7 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 			Cryo_FreezeLevel[victim] += (f_HealthBeforeHurt[victim] - Health_After_Hurt);
 			float maxHealth = float(GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
 			float damageRequiredForFreeze = Cryo_FreezeRequirement;
-			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(b_thisNpcIsARaid[victim])
 			{
 				damageRequiredForFreeze *= 0.05; //Reduce way further so its good against raids.
 			}
@@ -405,7 +405,7 @@ public void Cryo_Touch(int entity, int other)
 				Cryo_FreezeLevel[target] += (Health_Before_Hurt - Health_After_Hurt);
 				float maxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
 				float damageRequiredForFreeze = Cryo_FreezeRequirement;
-				if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+				if(b_thisNpcIsARaid[target])
 				{
 					damageRequiredForFreeze *= 0.05; //Reduce way further so its good against raids.
 				}
@@ -457,7 +457,7 @@ public void Cryo_FreezeZombie(int zombie)
 		}
 	}
 
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	if(b_thisNpcIsARaid[zombie])
 	{
 		FreezeDuration *= 0.75; //Less duration against raids.
 	}

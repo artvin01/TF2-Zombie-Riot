@@ -7,6 +7,7 @@ int Trip_Owner[MAXENTITIES+1] = {-1, ...};
 float Trip_DMG[MAXPLAYERS+1] = {0.0, ...};
 float Trip_BlastDMG[MAXPLAYERS+1] = {0.0, ...};
 Handle Timer_Trip_Management[MAXPLAYERS+1] = {null, ...};
+static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
 
@@ -36,6 +37,8 @@ void Aresenal_Weapons_Map_Precache()
 	PrecacheSound(TERRORIZER_BLAST2);
 	PrecacheSound(TERRORIZER_BLAST3);
 	LaserSprite = PrecacheModel(SPRITE_SPRITE, false);
+	
+	Zero(f_DeleteAllSpikesDelay);
 }
 
 
@@ -110,7 +113,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 				SetEntityModel(TripMine, TRIP_MODEL);
 				DispatchKeyValue(TripMine, "StartDisabled", "false");
 				DispatchSpawn(TripMine);
-				SetEntitySpike(TripMine, true);
+				SetEntitySpike(TripMine, 2);
 						
 				SetEntityMoveType(TripMine, MOVETYPE_NONE);
 				SetEntProp(TripMine, Prop_Data, "m_takedamage", 0);
@@ -207,6 +210,95 @@ public void Weapon_Arsenal_Trap_M2(int client, int weapon, const char[] classnam
 					{
 						Trip_Owner[entity] = -1;
 						//ONLY give back ammo IF the Spike has full health.
+						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
+						for(int i; i<Ammo_MAX; i++)
+						{
+							CurrentAmmo[client][i] = GetAmmo(client, i);
+						}	
+						RemoveEntity(entity);
+					}
+				}
+			}
+		}
+	}
+}
+
+public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classname, bool &result)
+{
+	static float angles[3];
+	GetClientEyeAngles(client, angles);
+	if(angles[0] < -85.0)
+	{
+		if(f_DeleteAllSpikesDelay[client] > GetGameTime())
+		{
+			bool PlaySound = false;
+			for( int entity = 1; entity <= MAXENTITIES; entity++ ) 
+			{
+				if (IsValidEntity(entity))
+				{
+					static char buffer[64];
+					GetEntityClassname(entity, buffer, sizeof(buffer));
+					if(IsEntitySpikeValue(entity) == 2 && !StrContains(buffer, "tf_projectile_pipe_remote"))
+					{
+						int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+						if(owner == client) //Hardcode to this index.
+						{
+							SetEntitySpike(entity, 0);
+							Trip_Owner[entity] = -1;
+							//ONLY give back ammo IF the Spike has full health.
+							int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+							PlaySound = true;
+							SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type)+1);
+							for(int i; i<Ammo_MAX; i++)
+							{
+								CurrentAmmo[client][i] = GetAmmo(client, i);
+							}	
+							RemoveEntity(entity);
+						}
+					}
+				}
+			}
+			if(PlaySound)
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup Done");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			}
+			else
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup None");
+			}
+			return;
+		}
+		f_DeleteAllSpikesDelay[client] = GetGameTime() + 0.2;
+		
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Spike Masspickup Confirm");
+		return;
+	}
+	int entity = GetClientPointVisible(client);
+	if(entity > 0)
+	{
+		static char buffer[64];
+		if(GetEntityClassname(entity, buffer, sizeof(buffer)))
+		{
+			if(IsEntitySpikeValue(entity) == 2 && !StrContains(buffer, "tf_projectile_pipe_remote"))
+			{
+				if(IsValidEntity(weapon))
+				{
+					int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+					if(owner == client) //Hardcode to this index.
+					{
+						SetEntitySpike(entity, 0);
+						Trip_Owner[entity] = -1;
 						int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 						ClientCommand(client, "playgamesound items/ammo_pickup.wav");

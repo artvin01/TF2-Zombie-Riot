@@ -1706,17 +1706,36 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	
 		if(Timer_Show < 0.0)
 			Timer_Show = 0.0;
+
+		if(Timer_Show > 800.0)
+			RaidModeTime = 99999999.9;
 			
 		SetGlobalTransTarget(attacker);
 		SetHudTextParams(-1.0, 0.05, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
-		if(!b_NpcIsInvulnerable[victim])
+		//todo: better showcase of timer.
+		if(Timer_Show > 800.0)
 		{
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
+			if(!b_NpcIsInvulnerable[victim])
+			{
+				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%%]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
+			}
+			else
+			{
+				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%%]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
+			}
 		}
 		else
 		{
-			ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
+			if(!b_NpcIsInvulnerable[victim])
+			{
+				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s-%0.f","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);	
+			}
+			else
+			{
+				ShowSyncHudText(attacker, SyncHudRaid, "[%t | %t : %.1f%% | %t: %.1f]\n%s\n%d / %d \n%s %t","Raidboss", "Power", RaidModeScaling * 100, "TIME LEFT", Timer_Show, NPC_Names[i_NpcInternalId[victim]], Health, MaxHealth, Debuff_Adder, "Invulnerable Npc");		
+			}		
 		}
+
 	}
 #endif	// ZR
 
@@ -1761,7 +1780,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 	if(!b_NpcIsInvulnerable[victim])
 	{
 #if defined ZR
-		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(RaidbossIgnoreBuildingsLogic())
 		{
 			raidboss_active = true;
 		}

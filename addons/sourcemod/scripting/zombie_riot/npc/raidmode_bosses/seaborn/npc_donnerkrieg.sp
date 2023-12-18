@@ -261,6 +261,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		*/
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		

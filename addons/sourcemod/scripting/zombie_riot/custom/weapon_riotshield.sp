@@ -71,7 +71,7 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 
 		bool RaidActive = false;
 
-		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(RaidbossIgnoreBuildingsLogic())
 			RaidActive = true;
 
 		for (int enemy_hit = 0; enemy_hit < MAX_TARGETS_HIT; enemy_hit++)
@@ -358,7 +358,7 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	// now it's a simple check
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
-		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)) || b_thisNpcIsABoss[attacker])
+		if(b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker])
 		{
 			damage *= 0.65; //35% res instead of 61%, too op against singular.
 		}

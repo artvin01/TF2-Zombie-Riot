@@ -866,7 +866,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(i_NpcIsABuilding[victim])
 		return Plugin_Continue;
 		
-	if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	if(!b_thisNpcIsARaid[attacker])
 	{
 		damage *= 0.5;
 	}

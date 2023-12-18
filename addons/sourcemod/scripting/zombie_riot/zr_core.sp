@@ -1804,7 +1804,7 @@ void ReviveAll(bool raidspawned = false)
 				{
 					b_HasBeenHereSinceStartOfWave[client] = true;
 				}
-				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD)/* && !IsValidEntity(EntRefToEntIndex(RaidBossActive))*/)
+				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
 				{
 					applied_lastmann_buffs_once = false;
 					DHook_RespawnPlayer(client);

@@ -389,7 +389,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(!Ally)
 		{
 #if defined ZR
-			if(IgnoreBuildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))) //During an active raidboss, make sure that they ignore barricades
+			if(IgnoreBuildings || (RaidbossIgnoreBuildingsLogic(2))) //During an active raidboss, make sure that they ignore barricades
 #else
 			if(IgnoreBuildings)
 #endif
@@ -2208,7 +2208,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 #if defined ZR
 		bool ingore_buildings = false;
-		if(Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))))
+		if(Ignore_Buildings || (RaidbossIgnoreBuildingsLogic(2)))
 		{
 			ingore_buildings = true;
 		}
@@ -4271,7 +4271,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		else if(i_IsABuilding[enemy])
 		{
 #if defined ZR
-			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
 			}
@@ -4493,7 +4493,7 @@ stock int GetClosestTarget(int entity,
 	
 #if defined ZR
 	CClotBody npcSearch = view_as<CClotBody>(entity);
-	if(searcher_team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)) && !IgnoreBuildings && ((npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
+	if(searcher_team != 2 && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((npcSearch.m_iTarget > 0 && i_IsABuilding[npcSearch.m_iTarget]) || IgnorePlayers)) //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
 	if(!IgnoreBuildings && searcher_team != 2)
 #endif
@@ -5684,7 +5684,7 @@ int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false)
 	pos_enemy = WorldSpaceCenter(enemy);
 
 #if defined ZR
-	bool ingore_buildings = (Ignore_Buildings || (!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive))));
+	bool ingore_buildings = (Ignore_Buildings || (RaidbossIgnoreBuildingsLogic(2)));
 #else
 	bool ingore_buildings = Ignore_Buildings;
 #endif
@@ -9105,4 +9105,50 @@ void RemoveFromNpcAliveList(int iNpc)
 
 	if(EnemyNpcAliveStatic < 0)
 		EnemyNpcAliveStatic = 0;
+}
+
+bool RaidAllowsBuildings = false;
+
+bool RaidbossIgnoreBuildingsLogic(int value = 0)
+{
+	switch(value)
+	{
+		//if a raidboss exists, but we have a rule to make it still target buildings, set to true!
+		case 1:
+		{
+			if(RaidAllowsBuildings)
+				return false;
+
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				//do ignore
+				return true;
+			}
+			//do not ignore
+			return false;
+		}
+		//same as above, but if it has the tower defense mode on, also ignore
+		case 2:
+		{
+			if(RaidAllowsBuildings)
+				return false;
+
+			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				//do ignore
+				return true;
+			}
+			//do not ignore
+			return false;
+		}
+		default:
+		{
+			//just to see if a raid is existant
+			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			{
+				return true;
+			}
+			return false;
+		}
+	}
 }

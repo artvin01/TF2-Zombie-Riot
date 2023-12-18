@@ -153,7 +153,7 @@ public void Weapon_SpecterBone(int client, int weapon, bool &result, int slot)
 		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, SPECTER_BONE_FRACTURE_DURATION);
 		MakePlayerGiveResponseVoice(client, 1); //haha!
 
-		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(RaidbossIgnoreBuildingsLogic())
 		{
 			ApplyTempAttrib(weapon, 412, 0.25, SPECTER_BONE_FRACTURE_DURATION);
 		}
@@ -213,7 +213,7 @@ public Action Specter_BoneTimer(Handle timer, int userid)
 		f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 		if(!dieingstate[client])
 		{
-			if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(!RaidbossIgnoreBuildingsLogic())
 				SetEntityHealth(client, 1);
 		}
 			

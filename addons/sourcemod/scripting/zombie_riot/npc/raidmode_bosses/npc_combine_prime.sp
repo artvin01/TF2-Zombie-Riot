@@ -179,6 +179,7 @@ methodmap CombinePrime < CClotBody
 		//Raid logic
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		
 		npc.m_bThisNpcIsABoss = true;
 		

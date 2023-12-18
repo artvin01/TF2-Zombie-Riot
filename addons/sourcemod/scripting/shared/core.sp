@@ -1280,7 +1280,7 @@ public Action Timer_Temp(Handle timer)
 	}
 	
 #if defined ZR
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	if(RaidbossIgnoreBuildingsLogic())
 	{
 		if (RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
@@ -2323,8 +2323,12 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 	{
 		if (!IsValidEntity(i_ObjectsSpawners[i]))
 		{
-			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
-				Spawns_AddToArray(entity);
+			bool Allyspawn = false;
+
+			if(GetEntProp(entity, Prop_Data, "m_iTeamNum") == 2)
+				Allyspawn = true;
+
+			Spawns_AddToArray(entity,_, Allyspawn);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;

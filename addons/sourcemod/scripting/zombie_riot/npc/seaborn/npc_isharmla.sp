@@ -64,14 +64,13 @@ methodmap Isharmla < CClotBody
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSALPHA);
 
-		/*
 		if(!ally && !IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 900.0;
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
 			RaidModeScaling = 0.0;
+			RaidAllowsBuildings = true;
 		}
-		*/
 
 		float vecMe[3]; vecMe = WorldSpaceCenter(npc.index);
 		vecMe[2] += 500.0;
@@ -117,6 +116,7 @@ public void Isharmla_ClotThink(int iNPC)
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeScaling = 0.0;
+			RaidAllowsBuildings = true;
 		}
 
 		npc.m_iTargetAlly = -1;

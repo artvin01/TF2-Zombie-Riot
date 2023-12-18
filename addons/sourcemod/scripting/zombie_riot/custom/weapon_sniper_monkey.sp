@@ -20,7 +20,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 		
 		if(SmartBounce)
 		{
-			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(RaidbossIgnoreBuildingsLogic())
 			{
 				damage *= 1.5;
 			}
@@ -78,7 +78,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			LastHitTarget = victim;
 			
 			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 4);
-			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(RaidbossIgnoreBuildingsLogic())
 			{
 				damage *= 1.5;
 			}			

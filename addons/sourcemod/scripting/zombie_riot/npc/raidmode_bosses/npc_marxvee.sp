@@ -60,6 +60,7 @@ methodmap Marxvee < CClotBody
 		Raidboss_Clean_Everyone();
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		

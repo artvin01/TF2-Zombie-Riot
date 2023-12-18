@@ -280,6 +280,7 @@ methodmap CorruptedSpyRaid < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

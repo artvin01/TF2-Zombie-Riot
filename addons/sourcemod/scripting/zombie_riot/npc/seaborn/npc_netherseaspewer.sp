@@ -288,7 +288,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 		}
 	}
 
-	if(team != 2 && !IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	if(team != 2 && !RaidbossIgnoreBuildingsLogic(1))
 	{
 		for(int a; a < i_MaxcountBuilding; a++)
 		{

@@ -292,6 +292,7 @@ methodmap Sensal < CClotBody
 
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		b_RageAnimated[npc.index] = false;

@@ -520,7 +520,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
 
 	//deal more damage during raids, otherwise its really weak in most cases.
-	if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+	if(RaidbossIgnoreBuildingsLogic())
 	{
 		damage *= 1.25;
 	}

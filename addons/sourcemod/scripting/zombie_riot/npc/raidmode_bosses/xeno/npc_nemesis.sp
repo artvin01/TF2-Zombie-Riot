@@ -190,6 +190,7 @@ methodmap RaidbossNemesis < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemesis_OnTakeDamagePost);
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 
@@ -1055,7 +1056,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	GiveProgressDelay(3.0);
 	RaidModeTime += 999.0; //cant afford to delete it, since duo.
-	if(i_RaidGrantExtra[npc.index] == 1)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
 		{
@@ -1066,9 +1067,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 			}
 		}
 	}
-		
-//	AcceptEntityInput(npc.index, "KillHierarchy");
-//	npc.Anger = false;
+	
 	Citizen_MiniBossDeath(entity);
 }
 

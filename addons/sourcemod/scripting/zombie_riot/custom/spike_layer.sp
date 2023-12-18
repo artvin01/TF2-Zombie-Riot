@@ -60,7 +60,7 @@ static int Spike_Health[MAXENTITIES]={0, ...};
 static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
 static int Spikes_AliveCap[MAXPLAYERS+1]={30, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
-static bool Is_Spike[MAXENTITIES]={false, ...};
+static int Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
 Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {null, ...};
 static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
@@ -69,10 +69,17 @@ static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
 
 bool IsEntitySpike(int entity)
 {
+	if(Is_Spike[entity] > 0)
+		return true;
+	
+	return false;
+}
+int IsEntitySpikeValue(int entity)
+{
 	return Is_Spike[entity];
 }
 
-void SetEntitySpike(int entity, bool set)
+void SetEntitySpike(int entity, int set)
 {
 	Is_Spike[entity] = set;
 }
@@ -172,7 +179,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
 			DispatchSpawn(entity);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vel);
-			Is_Spike[entity] = true;
+			SetEntitySpike(entity, 1);
 		//	Spike_Owner[entity] = client;
 
 		//	HasSentry[client] = EntIndexToEntRef(entity);
@@ -257,7 +264,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.75);
 			Spike_Health[entity] = RoundToCeil(Calculate_HP_Spikes);
 			Spike_MaxHealth[entity] = RoundToCeil(Calculate_HP_Spikes);
-			Is_Spike[entity] = true;
+			SetEntitySpike(entity, 1);
 		//	SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher", weapon);
 		//	SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
 		/*
@@ -320,7 +327,7 @@ public Action Detect_Spike_Still(Handle timer, int ref)
 			if(entity>MaxClients && IsValidEntity(entity))
 			{
 			//	Spikes_Alive[client] -= 1;
-				Is_Spike[entity] = false;
+				SetEntitySpike(entity, 0);
 				RemoveEntity(entity);
 			}
 				
@@ -372,7 +379,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 								SDKHooks_TakeDamage(baseboss_index, client, client, float(Spike_Health[entity]), DMG_BULLET, -1, NULL_VECTOR, Spikepos);
 
 								RemoveEntity(entity);
-								Is_Spike[entity] = false;
+								SetEntitySpike(entity, 0);
 								Spikes_Alive[client] -= 1;
 								Spikes_AliveGlobal -= 1;
 
@@ -390,7 +397,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 			{
 				Spikes_AliveGlobal -= 1;
 				Spikes_Alive[original_client] -= 1; // I dont knowhow this happend or how to delete you off it, im sorry. Youre lost. Edit: Actually, this is fine to do! Arrays dont care if its a valid entity or not, luckly.
-				Is_Spike[entity] = false;
+				SetEntitySpike(entity, 0);
 				RemoveEntity(entity);
 				return Plugin_Stop;
 			}
@@ -401,7 +408,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 	{
 		Spikes_AliveGlobal -= 1;
 		Spikes_Alive[original_client] -= 1; // I dont knowhow this happend or how to delete you off it, im sorry. Youre lost. Edit: Actually, this is fine to do! Arrays dont care if its a valid entity or not, luckly.
-		Is_Spike[original_entity] = false;
+		SetEntitySpike(original_entity, 0);
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
@@ -422,12 +429,12 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 				{
 					static char buffer[64];
 					GetEntityClassname(entity, buffer, sizeof(buffer));
-					if(Is_Spike[entity] && !StrContains(buffer, "tf_projectile_pipe_remote"))
+					if(Is_Spike[entity] == 1 && !StrContains(buffer, "tf_projectile_pipe_remote"))
 					{
 						int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 						if(owner == client) //Hardcode to this index.
 						{
-							Is_Spike[entity] = false;
+							Is_Spike[entity] = 0;
 							if(Spike_Health[entity] == Spike_MaxHealth[entity])
 							{
 								//ONLY give back ammo IF the Spike has full health.
@@ -473,7 +480,7 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 		static char buffer[64];
 		if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 		{
-			if(Is_Spike[entity] && !StrContains(buffer, "tf_projectile_pipe_remote"))
+			if(Is_Spike[entity] == 1 && !StrContains(buffer, "tf_projectile_pipe_remote"))
 			{
 				if(IsValidEntity(weapon))
 				{
@@ -502,6 +509,7 @@ public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, b
 		}
 	}
 }
+
 
 public void Enable_SpikeLayer(int client, int weapon) 
 {

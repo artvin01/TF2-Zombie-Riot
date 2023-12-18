@@ -127,7 +127,6 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 		TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Enforcer_TraceTargets, client);	// 1073741824 is CONTENTS_LADDER?
 		FinishLagCompensation_Base_boss();
 
-	//	bool RaidActive = IsValidEntity(EntRefToEntIndex(RaidBossActive));
 		for(int i; i < ammo; i++)
 		{
 			if(!EnemiesHit[i])

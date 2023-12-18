@@ -142,8 +142,8 @@
 	}
 	"Sword and Stone Lore"
 	{
-		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone. He claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler. However, he has no way to pull out the sword from the stone."
-		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне. Он утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем. Однако у него нет способа вытащить меч из камня."
+		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone.\nHe claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler.\nHowever, he has no way to pull out the sword from the stone."
+		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне.\nОн утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем.\nОднако у него нет способа вытащить меч из камня."
 	}
 	"Sword and Stone Option 1"
 	{
@@ -170,15 +170,18 @@
 		"en"	"Doesn't look like it's necessary"
 		"ru"	"Не думаю, что оно больше нужно"
 	}
-	"Sword and Stone Lore 3"
+	"Sword and Stone Lore 3a"
 	{
-		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government. Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
-		"ru"	"«Странные камни, лежащие в крепостях и раздающие мечи, не являются основой для системы правления. Верховная исполнительная власть проистекает из мандата масс, а не из какой-то фарсовой геологической церемонии.» Рыцарь считает, что вы правы, и уходит на удовлетворённой ноте."
+		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government."
+	}
+	"Sword and Stone Lore 3b"
+	{
+		"en"	"Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
 	}
 	"Theatrical Lore"
 	{
-		"en"	"You find a middle-aged man rambling away in front of a dressing table. He notices you and howls in your direction, asking you to deliver the prop on the table to the actress. You look at the dressing table and find a crown entwined with thorns."
-		"ru"	"Вы обнаруживаете мужчину средних лет, бредущего к туалетному столику. Он замечает вас и завывает в вашу сторону, прося передать актрисе реквизит, лежащий на столике. Вы смотрите на туалетный столик и обнаруживаете корону, увитую шипами."
+		"en"	"You find a middle-aged man rambling away in front of a dressing table.\nHe notices you and howls in your direction, asking you to deliver the prop on the table to the actress.\nYou look at the dressing table and find a crown entwined with thorns."
+		"ru"	"Вы обнаруживаете мужчину средних лет, бредущего к туалетному столику.\nОн замечает вас и завывает в вашу сторону, прося передать актрисе реквизит, лежащий на столике.\n Вы смотрите на туалетный столик и обнаруживаете корону, увитую шипами."
 	}
 	"Theatrical Option 1"
 	{
@@ -190,10 +193,13 @@
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 10 боеприпасов"
 	}
-	"Theatrical Lore 1"
+	"Theatrical Lore 1a"
 	{
-		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden. You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
-		"ru"	"Вы порезали пальцы, когда протягивали руку за короной. Вы сразу же отпускаете корону, роняя её на пол и разбивая пополам. Мужчина средних лет уже собирается накричать на вас, но внезапно оборачивается. Вы что-то слышите. Мужчина чешет ухо. Видимо, актриса больше не хочет играть королеву и сбежала. Вскоре после этого он уходит. Закончив шараду, вы поднимаете неповреждённую полукрону, освобождённую от колючек."
+		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden."
+	}
+	"Theatrical Lore 1b"
+	{
+		"en"	"You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
 	}
 	"Theatrical Option 2"
 	{
@@ -207,8 +213,8 @@
 	}
 	"Eccentric Lore"
 	{
-		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh. ''You don't understand that Combine, do you? You seem to trust him, though.'' The strange woman looks at you through her helmet and scarf. ''I can tell you all about his past. Are you interested?'' She reaches out her shriveled hands, seemingly asking for something."
-		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом. «Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.» Странная женщина смотрит на вас через шлем и шарф. «Я могу рассказать вам всё о его прошлом. Вы заинтересованы?» Она протягивает свои сморщенные руки, как бы прося о чём-то."
+		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Combine, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
+		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
 	}
 	"Eccentric Option 1"
 	{
@@ -220,10 +226,13 @@
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 4 слитков австралия"
 	}
-	"Eccentric Lore 1"
+	"Eccentric Lore 1a"
 	{
-		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload. 'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other.''"
-		"ru"	"\"Он принадлежит к линии лордов комбайнов, могущественных и защищающих дело, в которое они верят. Другие лорды видят иначе, чем он. «Тень» видит так: напустить тьму на мир и покончить с ним, как можно скорее. «Взбешённый клинок» видит так: поставить всех друг против друга, чтобы каждый боролся за себя. «Белый цветок» не видит ничего в человечестве, позволяя только природе существовать. Что касается «Первейшего», ну, скажем так, запутанно, что они оба имеют против друг-друга.\""
+		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
+	}
+	"Eccentric Lore 1b"
+	{
+		"en"	"'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other.''"
 	}
 	"Eccentric Option 2"
 	{
@@ -240,10 +249,13 @@
 		"en"	"Ask about the ''Shadow''"
 		"ru"	"Спросить о «Тени»"
 	}
-	"Eccentric Lore 1-1"
+	"Eccentric Lore 1-1a"
 	{
 		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
-		"ru"	"\"А, «Тень.» крадущаяся тень, никогда не знаешь, когда он нанесёт удар. Если вы когда-нибудь почувствуете, что отключились от мира - это он наносит удар. К счастью, пока его развлекают мелкие шалости. Когда он выходит из тени, давайте просто скажем, что мы исчезаем, закрываемся.\""
+	}
+	"Eccentric Lore 1-1b"
+	{
+		"en"	"Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
 	}
 	"Eccentric Option 1-2"
 	{
@@ -327,8 +339,8 @@
 	}
 	"Coffin of Evil Lore"
 	{
-		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources. In the center of the room is a massive coffin with many gems and jewels affixed. Just as you are about to inspect the coffin, you hear a voice from inside it. It seems to be asking for your help to open the coffin."
-		"ru"	"Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света. В центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений. В тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри. Похоже, он просит вас помочь открыть гроб."
+		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
+		"ru"	"Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
 	}
 	"Coffin of Evil Option 1"
 	{
@@ -362,8 +374,8 @@
 	}
 	"Eye for an Eye Lore"
 	{
-		"en"	"A refined, well-dressed Combine stands before you. He politely asks if you know of an innocent man who was once wrongfully punished because of him. You ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here. The man promises a sizable reward if you lend him your help."
-		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн. Он вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него. Вы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь. Мужчина обещает крупную награду, если вы окажете ему помощь."
+		"en"	"A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
+		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
 	}
 	"Eye for an Eye Option 1"
 	{
@@ -424,7 +436,7 @@
 	}
 	"Broken Crown Lore"
 	{
-		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it. You feel you've seen these before, an aura of rage surrounds it."
+		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
 	}
 	"Broken Crown Option 1"
 	{
@@ -452,7 +464,7 @@
 	}
 	"Bob Research Lore"
 	{
-		"en"	"You find yourself in a blank room. In the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
+		"en"	"You find yourself in a blank room.\nIn the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
 	}
 	"Bob Research Option 1"
 	{
@@ -472,7 +484,7 @@
 	}
 	"Bob Final Lore"
 	{
-		"en"	"You find yourself in a blank room. You find the same tiny office setup from before but the lights are off."
+		"en"	"You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
 	}
 	"Bob Final Option 1"
 	{

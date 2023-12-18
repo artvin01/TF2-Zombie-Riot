@@ -152,9 +152,7 @@ public void Rogue_Vote_ItemEncounter(const Vote vote)
 
 public float Rogue_Encounter_SwordInStone()	// Note: Occurs in Floor 4
 {
-	PrintToChatAll("%t", "Sword and Stone Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_SwordInStone, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_SwordInStone, "Sword and Stone Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Sword and Stone Option 1");
@@ -194,16 +192,15 @@ public void Rogue_Vote_SwordInStone(const Vote vote, int index)
 		}
 		default:
 		{
-			PrintToChatAll("%t", "Sword and Stone Lore 3");
+			PrintToChatAll("%t", "Sword and Stone Lore 3a");
+			PrintToChatAll("%t", "Sword and Stone Lore 3b");
 		}
 	}
 }
 
 public float Rogue_Encounter_Theatrical()
 {
-	PrintToChatAll("%t", "Theatrical Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Theatrical, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Theatrical, "Theatrical Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Theatrical Option 1");
@@ -226,7 +223,8 @@ public void Rogue_Vote_Theatrical(const Vote votee, int index)
 	{
 		case 0:
 		{
-			PrintToChatAll("%t", "Theatrical Lore 1");
+			PrintToChatAll("%t", "Theatrical Lore 1a");
+			PrintToChatAll("%t", "Theatrical Lore 1b");
 
 			Ammo_Count_Ready -= 10;
 
@@ -252,9 +250,7 @@ public void Rogue_Vote_Theatrical(const Vote votee, int index)
 
 public float Rogue_Encounter_Eccentric()	// Note: Occurs in Floor 4
 {
-	PrintToChatAll("%t", "Eccentric Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EccentricCost, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EccentricCost, 	"Eccentric Lore");
 	Vote vote;
 
 	if(Rogue_GetIngots() > 3)
@@ -277,7 +273,8 @@ public void Rogue_Vote_EccentricCost(const Vote votee, int index)
 	GrantAllPlayersCredits_Rogue(450);
 	if(!index && Rogue_GetIngots() > 3)
 	{
-		PrintToChatAll("%t", "Eccentric Lore 1");
+		PrintToChatAll("%t", "Eccentric Lore 1a");
+		PrintToChatAll("%t", "Eccentric Lore 1b");
 
 		Rogue_AddIngots(-4);
 
@@ -319,7 +316,8 @@ public void Rogue_Vote_EccentricItem(const Vote vote, int index)
 		case 0:
 		{
 			Rogue_GiveNamedArtifact(vote.Config);
-			PrintToChatAll("%t", "Eccentric Lore 1-1");
+			PrintToChatAll("%t", "Eccentric Lore 1-1a");
+			PrintToChatAll("%t", "Eccentric Lore 1-1b");
 		}
 		case 1:
 		{
@@ -412,9 +410,7 @@ public void Rogue_Vote_Camp(const Vote vote, int index)
 
 public float Rogue_Encounter_CoffinOfEvil()
 {
-	PrintToChatAll("%t", "Coffin of Evil Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_CoffinOfEvil, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_CoffinOfEvil, "Coffin of Evil Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Coffin of Evil Option 1");
@@ -450,9 +446,7 @@ public void Rogue_Vote_CoffinOfEvil(const Vote vote, int index)
 
 public float Rogue_Encounter_EyeForAnEye()
 {
-	PrintToChatAll("%t", "Eye for an Eye Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EyeForAnEye, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EyeForAnEye, "Eye for an Eye Lore");
 	Vote vote;
 
 	if(Rogue_HasFriendship())
@@ -516,9 +510,7 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 
 public float Rogue_Encounter_BrokenCrown()
 {
-	PrintToChatAll("%t", "Broken Crown Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BrokenCrown, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BrokenCrown, "Broken Crown Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Broken Crown Option 1");
@@ -553,9 +545,7 @@ public void Rogue_Vote_BrokenCrown(const Vote vote, int index)
 
 public float Rogue_Encounter_BobResearch()
 {
-	PrintToChatAll("%t", "Bob Research Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobResearch, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobResearch, "Bob Research Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Research Option 1");
@@ -588,9 +578,7 @@ public void Rogue_Vote_BobResearch(const Vote vote, int index)
 
 public float Rogue_Encounter_BobFinal()
 {
-	PrintToChatAll("%t", "Bob Final Lore");
-
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobFinal, "Lore Title");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BobFinal, "Bob Final Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 1");

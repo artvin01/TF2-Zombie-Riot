@@ -402,7 +402,7 @@ void Music_PostThink(int client)
 				}
 			}
 		}
-		if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+		if(RaidbossIgnoreBuildingsLogic())
 		{
 			f_intencity += 9999.9; //absolute max.
 			GlobalIntencity += 9999;

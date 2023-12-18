@@ -6,6 +6,7 @@ enum struct SpawnerData
 {
 	int EntRef;
 	bool BaseBoss;
+	bool AllySpawner;
 	char Name[64];
 
 	float Cooldown;
@@ -85,7 +86,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(!StrEqual(name, spawn.Name))	// Invalid name, ignore
 				continue;
 		}
-		else if(!spawn.Enabled)	// Disabled, ignore
+		else if(!spawn.Enabled || spawn.AllySpawner)	// Disabled, ignore
 		{
 			continue;
 		}
@@ -106,7 +107,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			nonBossSpawners++;
 		}
 		
-		if((spawn.Cooldown < gameTime && spawn.Points >= bestPoints) || (name[0] && bestIndex == -1))
+		if((spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 		{
 			bestIndex = i;
 			bestPoints = spawn.Points;
@@ -153,7 +154,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	return true;
 }
 
-void Spawns_AddToArray(int ref, bool base_boss = false)
+void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false)
 {
 	if(!SpawnerList)
 		SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -164,6 +165,7 @@ void Spawns_AddToArray(int ref, bool base_boss = false)
 
 		spawn.EntRef = ref;
 		spawn.BaseBoss = base_boss;
+		spawn.AllySpawner = allyspawner;
 		GetEntPropString(ref, Prop_Data, "m_iName", spawn.Name, sizeof(spawn.Name));
 
 		SpawnerList.PushArray(spawn);
@@ -213,8 +215,11 @@ void Spawners_Timer()
 				for(int index; index < length; index++)
 				{
 					SpawnerList.GetArray(index, spawn);
+					if(spawn.AllySpawner)
+						continue;
 					
 					int entity_Ref = spawn.EntRef;
+					
 					if(!spawn.BaseBoss && GetEntProp(entity_Ref, Prop_Data, "m_bDisabled"))
 					{
 						continue;
@@ -318,7 +323,7 @@ void Spawners_Timer()
 	delete pointsList;
 }
 
-int GetRandomActiveSpawner()
+int GetRandomActiveSpawner(const char[] name = "")
 {
 	SpawnerData spawn;
 	
@@ -327,8 +332,15 @@ int GetRandomActiveSpawner()
 	{
 		SpawnerList.GetArray(i, spawn);
 		
-		if(!spawn.Enabled)	// Disabled, ignore
+		if(name[0])
+		{
+			if(!StrEqual(name, spawn.Name))	// Invalid name, ignore
+				continue;
+		}
+		else if(!spawn.Enabled || spawn.AllySpawner)	// Disabled, ignore
+		{
 			continue;
+		}
 		
 		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 		{

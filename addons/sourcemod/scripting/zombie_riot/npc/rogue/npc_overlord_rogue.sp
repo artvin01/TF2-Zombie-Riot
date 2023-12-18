@@ -60,6 +60,8 @@ static const char g_MeleeMissSounds[][] = {
 	")weapons/cbar_miss1.wav",
 };
 
+static char SpawnPoint[128];
+
 void OverlordRogue_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -207,6 +209,10 @@ methodmap OverlordRogue < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		
+		strcopy(SpawnPoint, sizeof(SpawnPoint), data);
+		ReplaceString(SpawnPoint, sizeof(SpawnPoint), "final_item ", "");
+		ReplaceString(SpawnPoint, sizeof(SpawnPoint), "final_item", "");
+
 	//	npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iState = 0;
@@ -218,6 +224,7 @@ methodmap OverlordRogue < CClotBody
 		npc.m_flNextChargeSpecialAttack = 0.0;
 		npc.m_flNextDelayTime = GetGameTime(npc.index) + 30.0;
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = true;
 		RaidModeScaling = 100000.0;
 		RaidModeTime = GetGameTime() + 999.9;
 
@@ -422,9 +429,9 @@ public void OverlordRogue_ClotThink(int iNPC)
 									KillFeed_SetKillIcon(npc.index, "sword");
 
 									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 400.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
 									
 									KillFeed_SetKillIcon(npc.index, "firedeath");
 
@@ -488,7 +495,7 @@ public Action OverlordRogue_OnTakeDamage(int victim, int &attacker, int &inflict
 {
 	if((attacker < 1 || attacker > MaxClients) && damage > 100000.0 && (damagetype & DMG_DROWN))
 	{
-		int Spawner_entity = GetRandomActiveSpawner();
+		int Spawner_entity = GetRandomActiveSpawner(SpawnPoint);
 		if(IsValidEntity(Spawner_entity))
 		{
 			damage = 100000.0;
@@ -533,7 +540,7 @@ public void OverlordRogue_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_Think, OverlordRogue_ClotThink);
 
-	if(i_RaidGrantExtra[npc.index] == 1)
+	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_RoundRunning)
 	{
 		for (int client = 0; client < MaxClients; client++)
 		{

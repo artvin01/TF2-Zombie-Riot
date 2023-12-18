@@ -214,6 +214,7 @@ methodmap GodArkantos < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
 
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_WALK");

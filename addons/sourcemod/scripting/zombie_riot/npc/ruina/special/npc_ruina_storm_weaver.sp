@@ -137,6 +137,7 @@ methodmap Storm_Weaver < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 
 		RaidBossActive = EntIndexToEntRef(npc.index);	//temp raidmode stuff
+		RaidAllowsBuildings = false;
 
 		//fl_cantseetimeout[npc.index]=GetGameTime()+RUINA_CANTSEE_TIMEOUT+2.5;
 		fl_teleport_time[npc.index]=0.0;
