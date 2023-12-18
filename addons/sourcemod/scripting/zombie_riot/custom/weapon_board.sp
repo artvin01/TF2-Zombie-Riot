@@ -52,7 +52,7 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 	float Range = 250.0;
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(victim);				
-	Explode_Logic_Custom(damage, victim, victim, weapon, _, Range, 1.0, 0.0, false, 6,_,_);
+	Explode_Logic_Custom(damage, victim, victim, weapon, _, Range, 1.0, _, false, 6,_,_);
 	FinishLagCompensation_Base_boss();
 
 	i_ExplosiveProjectileHexArray[victim] = value;

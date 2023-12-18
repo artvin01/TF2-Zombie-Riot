@@ -129,7 +129,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_SLASH doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
 			LastHitTarget = victim;
 			
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, 0.0, false, 4);		
+			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, _, false, 4);		
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
 			i_Ricochet[attacker] -= 1;
