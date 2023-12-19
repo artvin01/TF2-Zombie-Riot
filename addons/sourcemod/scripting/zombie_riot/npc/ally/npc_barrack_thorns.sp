@@ -353,7 +353,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 					if(target > 0) 
 					{
 						ThornsAbilityAttackTimes[npc.index] += 1;
-						float damage = 2000.0;
+						float damage = 1000.0;
 						if(ThornsLevelAt[npc.index] == 2)
 						{
 							damage *= 2.0;
@@ -429,7 +429,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 				{
 					ThornsAbilityAttackTimes[npc.index] += 1;
 
-					float damage = 1500.0;
+					float damage = 750.0;
 					if(ThornsLevelAt[npc.index] == 2)
 					{
 						damage *= 2.0;
@@ -516,11 +516,11 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 				{
 					npc.PlayRangedSoundAbility();
 
-					float damage = 2000.0;
+					float damage = 1000.0;
 
 					if(ThornsAbilityActiveTimes[npc.index] > 1)
 					{
-						damage = 2500.0;
+						damage = 1250.0;
 					}
 					
 					if(ThornsLevelAt[npc.index] == 2)
