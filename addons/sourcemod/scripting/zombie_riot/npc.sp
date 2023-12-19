@@ -2795,10 +2795,7 @@ public void NPCDeath(int entity)
 			{
 				case SEABORN_KAZIMIERZ_BESERKER:
 				{
-					if(i_NpcInternalId[entity] != SEABORN_KAZIMIERZ_BESERKER)
-					{
-						KazimierzBeserker_AllyDeath(entity, baseboss_index);	
-					}
+					KazimierzBeserker_AllyDeath(entity, baseboss_index);	
 				}
 			}
 		}

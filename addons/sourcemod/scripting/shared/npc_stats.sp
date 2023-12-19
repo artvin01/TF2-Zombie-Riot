@@ -3929,7 +3929,8 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		}
 		if(!b_IsAlliedNpc[bot_entidx])
 		{
-			return false;
+			return true;
+			//return false;
 		}
 		if(b_CantCollidie[other_entidx])
 		{
@@ -3959,7 +3960,8 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		}
 		if(!b_IsAlliedNpc[bot_entidx])
 		{
-			return false;
+			return true;
+		//	return false;
 		}
 		if(b_CantCollidieAlly[other_entidx])
 		{

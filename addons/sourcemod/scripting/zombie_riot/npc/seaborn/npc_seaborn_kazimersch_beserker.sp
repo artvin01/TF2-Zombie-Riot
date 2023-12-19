@@ -455,7 +455,7 @@ public void KazimierzBeserker_AllyDeath(int ally, int self)
 	float SelfPos[3];
 	GetEntPropVector(self, Prop_Data, "m_vecAbsOrigin", SelfPos);
 	float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 24.0))
 	{
 		npc.m_iAlliesDied += 1;
 
