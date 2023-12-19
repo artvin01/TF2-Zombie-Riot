@@ -37,7 +37,6 @@ public void Barrack_Alt_Mecha_Barrager_MapStart()
 
 static int i_ammo_count[MAXENTITIES];
 static bool b_we_are_reloading[MAXENTITIES];
-static float fl_idle_timer[MAXENTITIES];
 
 methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 {
@@ -79,9 +78,8 @@ methodmap Barrack_Alt_Mecha_Barrager < BarrackBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_ammo_count[npc.index]=0;
+		i_ammo_count[npc.index]=25;
 		b_we_are_reloading[npc.index]=false;
-		fl_idle_timer[npc.index] = 2.0 + GetGameTime(npc.index);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_drg_righteousbison/c_drg_righteousbison.mdl");
 		SetVariantString("1.0");
@@ -125,7 +123,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
-		if(i_ammo_count[npc.index]==0 && !b_we_are_reloading[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
+		if(i_ammo_count[npc.index]<=0 && !b_we_are_reloading[npc.index])	//the npc will prefer to fully reload the clip before attacking, unless the target is too close.
 		{
 			b_we_are_reloading[npc.index]=true;
 		}
@@ -136,14 +134,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			i_ammo_count[npc.index]++;
 			npc.PlayRangedReloadSound();
 		}
-		if(fl_idle_timer[npc.index] <= GameTime && npc.m_flReloadIn<GameTime && !b_we_are_reloading[npc.index] && i_ammo_count[npc.index]<10)	//reload if not attacking/idle for long
-		{
-			npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY2");
-			npc.m_flReloadIn = 0.75* npc.BonusFireRate + GameTime;
-			i_ammo_count[npc.index]++;
-			npc.PlayRangedReloadSound();
-		}
-		if(i_ammo_count[npc.index]>=10)	//npc will stop reloading once clip size is full.
+		if(i_ammo_count[npc.index]>=30)	//npc will stop reloading once clip size is full.
 		{
 			b_we_are_reloading[npc.index]=false;
 		}
@@ -153,7 +144,7 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
 			
-			if((i_ammo_count[npc.index]==0 || b_we_are_reloading[npc.index]))	//Run away if ammo is 0 or we are reloading. Don't run if target is too close
+			if(b_we_are_reloading[npc.index])
 			{
 				
 				int Enemy_I_See;
@@ -165,12 +156,11 @@ public void Barrack_Alt_Mecha_Barrager_ClotThink(int iNPC)
 					BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 999999.0, _, false);
 				}
 			}
-			else if(flDistanceToTarget < 750000 && i_ammo_count[npc.index]>0)
+			else if(flDistanceToTarget < 750000 && !b_we_are_reloading[npc.index])
 			{
 				BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_SECONDARY2", "ACT_MP_RUN_SECONDARY2", 700000.0, _, false);
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				fl_idle_timer[npc.index] = 2.5 + GameTime;
 				//Can we attack right now?
 				int Enemy_I_See;		
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);

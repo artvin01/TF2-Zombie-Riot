@@ -187,6 +187,21 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			npc.PlayIdleAlertSound();
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+		
+			
+			int iPitch = npc.LookupPoseParameter("body_pitch");
+			if(iPitch < 0)
+				return;	
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(WorldSpaceCenter(npc.index), vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+					
+			float flPitch = npc.GetPoseParameter(iPitch);
+					
+			//	ang[0] = clamp(ang[0], -44.0, 89.0);
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 
 			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 			{
@@ -237,15 +252,26 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			else
 			{
+				if(npc.m_bAllowBackWalking)
+					npc.FaceTowards(vecTarget);
+
 				BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
-				if(flDistanceToTarget < 300000 && npc.m_flNextMeleeAttack < GameTime)
+				if(flDistanceToTarget < 300000)
 				{
-					npc.PlayPullSound();
-					npc.m_flNextMeleeAttack = GameTime + 1.5 * npc.BonusFireRate;
-					npc.AddGesture("ACT_MP_THROW");
-					npc.FaceTowards(vecTarget, 20000.0);
-					npc.FaceTowards(vecTarget, 20000.0);
-					Normal_Attack_BEAM_Iku_Ability(npc.index);
+					npc.m_bAllowBackWalking = true;
+					if(npc.m_flNextMeleeAttack < GameTime)
+					{
+						npc.PlayPullSound();
+						npc.m_flNextMeleeAttack = GameTime + 1.5 * npc.BonusFireRate;
+						npc.AddGesture("ACT_MP_THROW");
+						npc.FaceTowards(vecTarget, 20000.0);
+						npc.FaceTowards(vecTarget, 20000.0);
+						Normal_Attack_BEAM_Iku_Ability(npc.index);
+					}
+				}
+				else
+				{
+					npc.m_bAllowBackWalking = false;
 				}
 
 				npc.StartPathing();
@@ -254,7 +280,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
+				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
 					npc.m_iAmountProjectiles += 1;
 					npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
