@@ -90,7 +90,7 @@ public void Weapon_Wand_FireBallSpell2(int client, int weapon, bool &result, int
 				Attributes_Set(client, 698, 0.0);
 								
 				TF2_RemoveWeaponSlot(client, 5);
-				f_FireBallDamage[client] = 150.0;
+				f_FireBallDamage[client] = 75.0;
 				f_FireBallDamage[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "");
@@ -154,7 +154,7 @@ public void Weapon_Wand_FireBallSpell3(int client, int weapon, bool &result, int
 				Attributes_Set(client, 698, 0.0);
 								
 				TF2_RemoveWeaponSlot(client, 5);
-				f_FireBallDamage[client] = 150.0;
+				f_FireBallDamage[client] = 75.0;
 				f_FireBallDamage[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "");
@@ -218,7 +218,7 @@ public void Weapon_Wand_FireBallSpell4(int client, int weapon, bool &result, int
 				Attributes_Set(client, 698, 0.0);
 								
 				TF2_RemoveWeaponSlot(client, 5);
-				f_FireBallDamage[client] = 150.0;
+				f_FireBallDamage[client] = 75.0;
 				f_FireBallDamage[client] *= Attributes_Get(weapon, 410, 1.0);
 				
 				int spellbook = SpawnWeapon_Special(client, "tf_weapon_spellbook", 1070, 100, 5, "");

@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define BASE_SPAWNER_COOLDOWN 0.30
 
 enum struct SpawnerData
 {
@@ -17,6 +18,7 @@ enum struct SpawnerData
 static ArrayList SpawnerList;
 static ConVar MapSpawnersActive;
 static float HighestPoints;
+static float LastNamedSpawn;
 
 void Spawns_PluginStart()
 {
@@ -26,13 +28,23 @@ void Spawns_PluginStart()
 void Spawns_MapEnd()
 {
 	delete SpawnerList;
+	LastNamedSpawn = 0.0;
 }
 
-
-bool Spawns_CanSpawnNext()
+bool Spawns_CanSpawnNext(bool rogue)
 {
-	SpawnerData spawn;
 	float gameTime = GetGameTime();
+
+	if(rogue)
+	{
+		if(LastNamedSpawn > gameTime)
+			return false;
+		
+		LastNamedSpawn = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobal);
+		return true;
+	}
+
+	SpawnerData spawn;
 
 	//bool error = true;
 	int length = SpawnerList.Length;
@@ -40,8 +52,10 @@ bool Spawns_CanSpawnNext()
 	{
 		SpawnerList.GetArray(i, spawn);
 		
-		if(!spawn.Enabled)	// Disabled, ignore
+		if(!spawn.Enabled || spawn.AllySpawner)	// Disabled, ignore
+		{
 			continue;
+		}
 		
 		if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
 		{
@@ -50,16 +64,16 @@ bool Spawns_CanSpawnNext()
 			length--;
 			continue;
 		}
+		
 		if(!spawn.BaseBoss)
 		{
 			if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled"))	// Map disabled, ignore
 				continue;
 		}
+
 		if(spawn.Points <= 0.0)	// Map disabled, ignore
 			continue;
 		
-		
-		//error = false;
 		if(spawn.Cooldown < gameTime)
 			return true;
 	}
@@ -107,7 +121,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			nonBossSpawners++;
 		}
 		
-		if((spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+		if((spawn.Cooldown < gameTime && spawn.Points >= bestPoints) || (name[0] && bestIndex == -1))
 		{
 			bestIndex = i;
 			bestPoints = spawn.Points;
@@ -120,12 +134,18 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	SpawnerList.GetArray(bestIndex, spawn);
 	GetEntPropVector(spawn.EntRef, Prop_Data, "m_vecOrigin", pos);
 	GetEntPropVector(spawn.EntRef, Prop_Data, "m_angRotation", ang);
-	
 	if(cooldownOverride < 0.0)	// Normal cooldown time
 	{
 		if(nonBossSpawners == 1)
 		{
-			spawn.Cooldown = gameTime + (0.30 / MultiGlobal);
+			spawn.Cooldown = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobal);
+		}
+		else if(name[0])
+		{
+			float playerSpeedUp = 1.0 + (MultiGlobal * 0.5);
+			float baseTime = 2.0 + (nonBossSpawners * 0.15);
+
+			spawn.Cooldown = gameTime + (baseTime / playerSpeedUp);
 		}
 		else
 		{
