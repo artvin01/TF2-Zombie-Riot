@@ -1335,15 +1335,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 
 			if(RoundHasCustomMusic) //only do it when there was actually custom music previously
-			{
-				for(int client=1; client<=MaxClients; client++)
+			{	
+				bool ReplaceMusic = false;
+				if(!StrEqual(char_MusicString1, round.music_round_1))
 				{
-					if(IsClientInGame(client))
+					ReplaceMusic = true;
+				}
+				if(!StrEqual(char_MusicString2, round.music_round_2))
+				{
+					ReplaceMusic = true;
+				}
+				
+				if(ReplaceMusic)
+				{
+					for(int client=1; client<=MaxClients; client++)
 					{
-						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 1); //This is here beacuse of raid music.
-						Music_Stop_All(client);
-					}
-				}	
+						if(IsClientInGame(client))
+						{
+							SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 2); //This is here beacuse of raid music.
+							Music_Stop_All(client);
+						}
+					}	
+				}
 			}
 
 			//This should nullfy anyways if nothings in it

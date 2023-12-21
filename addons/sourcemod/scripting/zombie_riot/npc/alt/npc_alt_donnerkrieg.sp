@@ -211,6 +211,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		if(final)
 		{
+			RaidModeScaling = 10.0;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
