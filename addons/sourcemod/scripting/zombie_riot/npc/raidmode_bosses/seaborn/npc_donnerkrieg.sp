@@ -77,30 +77,13 @@ static float fl_cannon_Recharged[MAXENTITIES];
 
 
 static float fl_nightmare_end_timer[MAXENTITIES];
+static bool DonnerKriegCannon_BEAM_HitDetected[MAXENTITIES];
 
 static int i_AmountProjectiles[MAXENTITIES];
 
 static bool b_health_stripped[MAXENTITIES];
 
-static bool DonnerKriegCannon_BEAM_CanUse[MAXENTITIES];
-static bool DonnerKriegCannon_BEAM_IsUsing[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_TicksActive[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_Laser;
-static int DonnerKriegCannon_BEAM_Glow;
-static float DonnerKriegCannon_BEAM_CloseDPT[MAXENTITIES];
-static float DonnerKriegCannon_BEAM_FarDPT[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_MaxDistance[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_BeamRadius[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_ColorHex[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_ChargeUpTime[MAXENTITIES];
-static float DonnerKriegCannon_BEAM_CloseBuildingDPT[MAXENTITIES];
-static float DonnerKriegCannon_BEAM_FarBuildingDPT[MAXENTITIES];
-static float DonnerKriegCannon_BEAM_Duration[MAXENTITIES];
-static float DonnerKriegCannon_BEAM_BeamOffset[MAXENTITIES][3];
-static float DonnerKriegCannon_BEAM_ZOffset[MAXENTITIES];
-static bool DonnerKriegCannon_BEAM_HitDetected[MAXENTITIES];
-static int DonnerKriegCannon_BEAM_BuildingHit[MAXENTITIES];
-static bool DonnerKriegCannon_BEAM_UseWeapon[MAXENTITIES];
+#define DONNERKRIEG_TE_DURATION 0.07
 
 
 static int Heavens_Beam;
@@ -118,6 +101,9 @@ float fl_schwertkrieg_sniper_rampage_timer;
 #define RAIDBOSS_DONNERKRIEG_SCHWERTKRIEG_SNIPER_RAMPAGE_REFRESH_TIME 10.0	//tl;dr, if a sniper doesn't attack in 10 seconds, schwertkrieg goes to normal operations
 
 static int i_ally_index;
+
+static int DonnerKriegCannon_BEAM_Glow;
+static int DonnerKriegCannon_BEAM_Laser;
 
 bool b_raidboss_schwertkrieg_alive;
 bool b_raidboss_donnerkrieg_alive;
@@ -146,7 +132,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	//PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert.mp3");
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert.mp3");
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
@@ -329,7 +315,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		//Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert.mp3", 190, true);
+		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert.mp3", 190, true);
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 			
@@ -458,9 +444,15 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
-			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
+
+	/*
+
+
+	*/
+	
 	if(fl_nightmare_end_timer[npc.index] < GameTime && b_nightmare_logic[npc.index])
 	{	
 		npc.m_flRangedArmor = 1.0;
@@ -477,6 +469,8 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 		npc.m_flSpeed = 300.0;
 		
 		f_NpcTurnPenalty[npc.index] = 1.0;	//:)
+
+		npc.SetPlaybackRate(1.0);
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -514,92 +508,59 @@ public void Raidboss_Donnerkrieg_ClotThink(int iNPC)
 			fl_nightmare_end_timer[npc.index] = GameTime + 20.0;
 			Raidboss_Donnerkrieg_Nightmare_Logic(npc.index, PrimaryThreatIndex);
 		}
+
+		float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			
+		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+
+		int iPitch = npc.LookupPoseParameter("body_pitch");
+		if(iPitch < 0)
+			return;		
+						
+		//Body pitch
+		float v[3], ang[3];
+		SubtractVectors(WorldSpaceCenter(npc.index), vecTarget, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+								
+		float flPitch = npc.GetPoseParameter(iPitch);
+								
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 		if(!b_nightmare_logic[npc.index])
 		{	
-	
-				float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-				
-				Donner_Movement(npc.index, PrimaryThreatIndex);
-				//Predict their pos.
-				
-					
-				/*if(b_angered)	//thanks to the loss of his companion donner has gained A NECK
-				{
-					int iPitch = npc.LookupPoseParameter("body_pitch");
-					if(iPitch < 0)
-						return;		
-						
-					//Body pitch
-					float v[3], ang[3];
-					SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(PrimaryThreatIndex), v); 
-					NormalizeVector(v, v);
-					GetVectorAngles(v, ang); 
-							
-					float flPitch = npc.GetPoseParameter(iPitch);
-							
-					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-				}*/
-				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
-				{	
+			if(npc.m_flAttackHappens > GameTime)
+			{
+				npc.FaceTowards(vecTarget, 5000.0);
+			}
 
-					npc.FaceTowards(vecTarget);
-					float projectile_speed = 400.0;
-					vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
-					//if(b_angered)
-					//{
-					//	npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					//}
-					//else
-					{
-						npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					}
+			Donner_Movement(npc.index, PrimaryThreatIndex);
+				
+			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
+			{	
+
+				npc.FaceTowards(vecTarget);
+				float projectile_speed = 400.0;
+				vecTarget = PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed);
+
+				npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 						
 					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 
-					npc.m_iAmountProjectiles += 1;
-					npc.PlayRangedSound();
-					npc.AddGesture("ACT_MP_THROW");
-					npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
-					if (npc.m_iAmountProjectiles >= 15.0)
-					{
-						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
-					}
+				npc.m_iAmountProjectiles += 1;
+				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_THROW");
+				npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
+				if (npc.m_iAmountProjectiles >= 15.0)
+				{
+					npc.m_iAmountProjectiles = 0;
+					npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
 				}
+			}
 				
-				//Target close enough to hit
-				if(flDistanceToTarget < 100000 || npc.m_flAttackHappenswillhappen)
-				{
-					//Look at target so we hit.
-				//	npc.FaceTowards(vecTarget, 1000.0);
+			Donnerkrieg_Normal_Attack(npc, GameTime, flDistanceToTarget, vecTarget);
 					
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GameTime)
-					{
-						//Play attack ani
-						if (!npc.m_flAttackHappenswillhappen)
-						{
-							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GameTime+0.4;
-							npc.m_flAttackHappens_bullshit = GameTime+0.54;
-							npc.m_flAttackHappenswillhappen = true;
-							npc.FaceTowards(vecTarget);
-							RAid_Normal_Attack_BEAM_TBB_Ability(npc.index);
-						}
-						if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GameTime + 0.6;
-						}
-					}
-				}
-				else
-				{
-					npc.StartPathing();
-				}
+					
+			npc.StartPathing();
 		}
 		else
 		{
@@ -639,8 +600,6 @@ static void Donner_Movement(int client, int PrimaryThreatIndex)
 	{
 					
 		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-					
-
 					
 		NPC_SetGoalVector(npc.index, vPredictedPos);
 	} 
@@ -968,9 +927,9 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 				}
 				case 4:
 				{
-					switch(GetRandomInt(0,100))
+					switch(GetRandomInt(0,10))
 					{
-						case 50:
+						case 5:
 						{
 							CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: Oh not again now train's gone and {aliceblue}Left{snow}.");	
 							b_train_line_used[npc.index] = true;
@@ -1007,7 +966,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 				float vBackoffPos[3];
 				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
-				
+
 				if(fl_nightmare_grace_period[npc.index]<GameTime)
 				{
 					fl_nightmare_grace_period[npc.index] = GameTime + 99.0;
@@ -1048,7 +1007,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 						
 					}
 					
-					f_NpcTurnPenalty[npc.index] = 0.01;	//:)
+					f_NpcTurnPenalty[npc.index] = 0.05;	//:)
 					
 					npc.m_bInKame = true;
 					
@@ -1062,7 +1021,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 					npc.GetAttachment("root", flPos, flAng);
 					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0});
 						
-					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
+					//npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
 						
 					//if(b_angered)
@@ -1070,13 +1029,17 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 						//npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 						//npc.AddActivityViaSequence("taunt_the_fist_bump");
 					//}
-					//else
-					//{
-					npc.AddActivityViaSequence("taunt_the_fist_bump");
-					//}
+
+					npc.FaceTowards(vecTarget, 20000.0);
+
+					npc.AddActivityViaSequence("taunt_replay");
+
+					npc.SetPlaybackRate(1.1);	
+					npc.SetCycle(0.0);
 					
 					EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
-					CreateTimer(1.0, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+
+					CreateTimer(0.75, Donner_Nightmare_Offset, npc.index, TIMER_FLAG_NO_MAPCHANGE);
 				}
 			}
 			else
@@ -1090,34 +1053,11 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 	}
 	else
 	{
-		
-		/*if(b_angered)	//thanks to the loss of his companion donner has gained A NECK
-		{
-					int iPitch = npc.LookupPoseParameter("body_pitch");
-					if(iPitch < 0)
-						return;		
-						
-					//Body pitch
-					float v[3], ang[3];
-					SubtractVectors(WorldSpaceCenter(npc.index), WorldSpaceCenter(PrimaryThreatIndex), v); 
-					NormalizeVector(v, v);
-					GetVectorAngles(v, ang); 
-							
-					float flPitch = npc.GetPoseParameter(iPitch);
-							
-					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-		}*/
-				
+
 		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-		
-		//if(b_angered)
-	//	{
-		f_NpcTurnPenalty[npc.index] = 0.075;	//:)
-		//}
-		//else
-		//{
-		//	f_NpcTurnPenalty[npc.index] = 0.0085;	//:)
-		//}
+
+		f_NpcTurnPenalty[npc.index] = 0.1;	//:)
+
 		
 		npc.m_flSpeed = 0.0;
 		npc.m_bPathing = true;
@@ -1126,21 +1066,23 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex
 	}
 }
 
+
 static Action Donner_Nightmare_Offset(Handle timer, int client)
 {
 	if(IsValidEntity(client))
 	{
 		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
+		npc.SetPlaybackRate(0.0);
+		ParticleEffectAt(WorldSpaceCenter(npc.index), "eyeboss_death_vortex", 1.0);
+		EmitSoundToAll("mvm/mvm_tank_ping.wav");
 		fl_nightmare_end_timer[npc.index] = GetGameTime(npc.index) + 15.0;
-		DonnerKriegCannon_TBB_Ability(npc.index);
+		Donnerkrieg_Main_Nightmare_Cannon(npc);
 	}
 	return Plugin_Handled;
 }
 public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(victim);
-	
-	
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -1238,160 +1180,395 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable6))	//temp particles
 		RemoveEntity(npc.m_iWearable6);
 }
-void RAid_Normal_Attack_BEAM_TBB_Ability(int client)
+static bool b_hit_something;
+static bool Donnerkrieg_Is_Target_Infront(Raidboss_Donnerkrieg npc, float Radius, float &dist=0.0)
 {
-	for (int building = 1; building < MaxClients; building++)
-	{
-		DonnerKriegCannon_BEAM_BuildingHit[building] = false;
-	}
+	float startPoint[3], angles[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+	startPoint = GetAbsOrigin(npc.index);
+	startPoint[2] += 50.0;
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+	if(iPitch < 0)
+		return false;
 			
-	DonnerKriegCannon_BEAM_IsUsing[client] = false;
-	DonnerKriegCannon_BEAM_TicksActive[client] = 0;
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	angles[0] = flPitch;
+	startPoint = GetAbsOrigin(npc.index);
+	startPoint[2] += 50.0;
 
-	DonnerKriegCannon_BEAM_CanUse[client] = true;
-
-	float dmg = 23.0*RaidModeScaling;
-	//if(b_angered)
+	b_hit_something=false;
+	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
 	{
-		dmg *= 1.5;
-	}
-	DonnerKriegCannon_BEAM_CloseDPT[client] = dmg;
-	DonnerKriegCannon_BEAM_FarDPT[client] = dmg;
-	DonnerKriegCannon_BEAM_MaxDistance[client] = 1000;
-	DonnerKriegCannon_BEAM_BeamRadius[client] = 10;
-	DonnerKriegCannon_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	DonnerKriegCannon_BEAM_ChargeUpTime[client] = 12;
-	DonnerKriegCannon_BEAM_CloseBuildingDPT[client] = 0.0;
-	DonnerKriegCannon_BEAM_FarBuildingDPT[client] = 0.0;
-	DonnerKriegCannon_BEAM_Duration[client] = 0.25;
-	
-	DonnerKriegCannon_BEAM_BeamOffset[client][0] = 0.0;
-	DonnerKriegCannon_BEAM_BeamOffset[client][1] = 0.0;
-	DonnerKriegCannon_BEAM_BeamOffset[client][2] = 0.0;
+		float endPoint[3];
+		TR_GetEndPosition(endPoint, trace);
+		delete trace;
 
-	DonnerKriegCannon_BEAM_ZOffset[client] = 0.0;
-	DonnerKriegCannon_BEAM_UseWeapon[client] = false;
+		dist = GetVectorDistance(startPoint, endPoint, true);
 
-	DonnerKriegCannon_BEAM_IsUsing[client] = true;
-	DonnerKriegCannon_BEAM_TicksActive[client] = 0;
-	
-	switch(GetRandomInt(1, 4))
+		static float hullMin[3];
+		static float hullMax[3];
+		hullMin[0] = -Radius;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, Check_Target, npc.index);	// 1073741824 is CONTENTS_LADDER?
+		if(b_hit_something)
+		{
+			delete trace;
+			return true;
+		}
+		else
+		{
+			delete trace;
+		}
+	}		
+	else
 	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);				
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", client, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);	
-		}		
+		delete trace;
 	}
-			
-
-	CreateTimer(DonnerKriegCannon_BEAM_Duration[client], DonnerKriegCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, DonnerKriegCannon_TBB_Tick);
 	
+
+	return false;
 }
-void DonnerKriegCannon_TBB_Ability(int client)
+static bool Check_Target(int entity, int contentsMask, int client)
 {
-	for (int building = 1; building < MaxClients; building++)
+	if (IsEntityAlive(entity))
 	{
-		DonnerKriegCannon_BEAM_BuildingHit[building] = false;
+		if(GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+			b_hit_something=true;
 	}
-	
-	ParticleEffectAt(WorldSpaceCenter(client), "eyeboss_death_vortex", 2.0);
-	EmitSoundToAll("mvm/mvm_tank_ping.wav");
-			
-	DonnerKriegCannon_BEAM_IsUsing[client] = false;
-	DonnerKriegCannon_BEAM_TicksActive[client] = 0;
-
-	DonnerKriegCannon_BEAM_CanUse[client] = true;
-	float dmg = 500.0*RaidModeScaling;
-	//if(b_angered)
-	{
-		dmg *= 1.5;
-	}
-	DonnerKriegCannon_BEAM_CloseDPT[client] = dmg;
-	DonnerKriegCannon_BEAM_FarDPT[client] = dmg;
-	DonnerKriegCannon_BEAM_MaxDistance[client] = 10000;
-	DonnerKriegCannon_BEAM_BeamRadius[client] = 150;
-	DonnerKriegCannon_BEAM_ColorHex[client] = ParseColor("ff0303");
-	DonnerKriegCannon_BEAM_ChargeUpTime[client] = 150;
-	DonnerKriegCannon_BEAM_CloseBuildingDPT[client] = 0.0;
-	DonnerKriegCannon_BEAM_FarBuildingDPT[client] = 0.0;
-	DonnerKriegCannon_BEAM_Duration[client] = 15.0;
-	
-	DonnerKriegCannon_BEAM_BeamOffset[client][0] = 0.0;	//forward/back
-	DonnerKriegCannon_BEAM_BeamOffset[client][1] = -1.0;	//left right
-	DonnerKriegCannon_BEAM_BeamOffset[client][2] = 25.0;	//up down
-
-	DonnerKriegCannon_BEAM_ZOffset[client] = 0.0;
-	DonnerKriegCannon_BEAM_UseWeapon[client] = false;
-
-	DonnerKriegCannon_BEAM_IsUsing[client] = true;
-	DonnerKriegCannon_BEAM_TicksActive[client] = 0;
-	
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
-	
-	switch(GetRandomInt(1, 4))
-	{
-		case 1:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch1.wav", _, _, _, _, 1.0);			
-		}
-		case 2:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", _, _, _, _, 1.0);
-		}
-		case 3:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("weapons/physcannon/superphys_launch3.wav", _, _, _, _, 1.0);			
-		}
-		case 4:
-		{
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("weapons/physcannon/superphys_launch4.wav", _, _, _, _, 1.0);
-		}		
-	}
-			
-
-	CreateTimer(DonnerKriegCannon_BEAM_Duration[client], DonnerKriegCannon_TBB_Timer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-	SDKHook(client, SDKHook_Think, DonnerKriegCannon_TBB_Tick);
-	
+	return false;
 }
-public Action DonnerKriegCannon_TBB_Timer(Handle timer, int ref)
+static float fl_normal_attack_duration[MAXENTITIES];
+static void Donnerkrieg_Normal_Attack(Raidboss_Donnerkrieg npc, float GameTime, float flDistanceToTarget, float vecTarget[3])
 {
-	int client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(client))
+	if(npc.m_flNextMeleeAttack < GameTime && !npc.m_flAttackHappenswillhappen)
+	{
+		if(flDistanceToTarget < (2500.0*2500.0))
+		{
+			if(Donnerkrieg_Is_Target_Infront(npc, 75.0))
+			{
+				npc.AddGesture("ACT_MP_THROW");
+				npc.PlayMeleeSound();
+				npc.m_flAttackHappens = GameTime+0.2;
+				npc.m_flAttackHappenswillhappen=true;
+				npc.FaceTowards(vecTarget);
+			}
+			else
+			{
+				npc.FaceTowards(vecTarget);
+			}
+		}
+	}
+	else if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappenswillhappen)
+	{
+		npc.FaceTowards(vecTarget);
+		npc.m_flAttackHappenswillhappen=false;
+		npc.m_flNextMeleeAttack=GameTime +2.5;
+		fl_normal_attack_duration[npc.index] = GameTime+0.25;
+		Donnerkrieg_Shoot_Laser(npc);
+	}
+}
+static void Donnerkrieg_Shoot_Laser(Raidboss_Donnerkrieg npc)
+{
+	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Laser_Think);
+	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Laser_Think);
+}
+public Action Donnerkrieg_Laser_Think(int iNPC)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_normal_attack_duration[npc.index]<GameTime)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Laser_Think);
+		return Plugin_Stop;
+	}
+
+	float angles[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+	if(iPitch < 0)
 		return Plugin_Continue;
 
-	DonnerKriegCannon_BEAM_IsUsing[client] = false;
-	
-	DonnerKriegCannon_BEAM_TicksActive[client] = 0;
-	
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	StopSound(client, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-	
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	angles[0] = flPitch;
+
+	float flAng[3]; // original
+	float startPoint[3];
+	GetAttachment(npc.index, "effect_hand_r", startPoint, flAng);
+
+	float radius = 75.0;
+
+	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		float endPoint[3];
+		TR_GetEndPosition(endPoint, trace);
+		delete trace;
+
+		Donnerkrieg_Laser_Trace(npc, startPoint, endPoint, radius, 60.0);
+
+		float diameter = radius *4.0;
+		int r=255, g=255, b=255;
+		int colorLayer4[4];
+		SetColorRGBA(colorLayer4, r, g, b, 30);
+		int colorLayer3[4];
+		SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
+		int colorLayer2[4];
+		SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
+		int colorLayer1[4];
+		SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
+		TE_SetupBeamPoints(startPoint, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+		TE_SendToAll(0.0);
+		TE_SetupBeamPoints(startPoint, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer2, 3);
+		TE_SendToAll(0.0);
+		TE_SetupBeamPoints(startPoint, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer3, 3);
+		TE_SendToAll(0.0);
+		TE_SetupBeamPoints(startPoint, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter), ClampBeamWidth(diameter), 0, 1.0, colorLayer4, 3);
+		TE_SendToAll(0.0);
+		int glowColor[4];
+		SetColorRGBA(glowColor, r, g, b, 30);
+		TE_SetupBeamPoints(startPoint, endPoint, DonnerKriegCannon_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter*2.5), ClampBeamWidth(diameter), 0, 2.5, glowColor, 0);
+		TE_SendToAll(0.0);
+
+	}
+	else
+	{
+		delete trace;
+	}
+
 	return Plugin_Continue;
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
+}
+static float fl_initial_windup[MAXENTITIES];
+static float fl_spinning_angle[MAXENTITIES];
+static void Donnerkrieg_Main_Nightmare_Cannon(Raidboss_Donnerkrieg npc)
+{
+	npc.m_bInKame=true;
+	fl_initial_windup[npc.index] = GetGameTime(npc.index)+0.5;
+	fl_spinning_angle[npc.index]=0.0;
+	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
+	SDKHook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
+}
+public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
+{
+	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+
+	if(fl_nightmare_end_timer[npc.index]<GameTime)
+	{
+		npc.m_bInKame=false;
+		SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_Main_Nightmare_Tick);
+		return Plugin_Stop;
+	}
+
+	float angles[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angles);
+
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+	if(iPitch < 0)
+		return Plugin_Continue;
+
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	angles[0] = flPitch;
+
+	float Pos[3];
+	Pos = GetAbsOrigin(npc.index);
+	Pos[2]+=50.0;
+
+
+	fl_spinning_angle[npc.index]+=2.5;
+		
+	if(fl_spinning_angle[npc.index]>=360.0)
+		fl_spinning_angle[npc.index] = 0.0;
+
+	float Start_Loc[3];
+
+	Get_Fake_Forward_Vec(30.0, angles, Start_Loc, Pos);
+
+	float radius = 50.0;
+
+	Handle trace = TR_TraceRayFilterEx(Start_Loc, angles, 11, RayType_Infinite, NightmareCannon_BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		float endPoint[3];
+		TR_GetEndPosition(endPoint, trace);
+		delete trace;
+
+		float Dist = GetVectorDistance(Start_Loc, endPoint);
+
+		Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 5, Dist, false, radius, 1.0);			//5
+		Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, 2.0);		//15
+		Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 3, Dist, false, radius/3.0, -2.0);		//18
+
+		if(fl_initial_windup[npc.index] < GameTime)
+		{
+
+			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius, 150.0);
+
+			Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, true, radius/2.0, -1.0);		//12
+
+			float diameter = radius *2.0;
+			int r=20, g=150, b=255;
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, r, g, b, 30);
+			int colorLayer3[4];
+			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
+			int colorLayer2[4];
+			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
+			int colorLayer1[4];
+			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
+			TE_SetupBeamPoints(Start_Loc, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(Start_Loc, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer2, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(Start_Loc, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer3, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(Start_Loc, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter), ClampBeamWidth(diameter), 0, 1.0, colorLayer4, 3);
+			TE_SendToAll(0.0);
+			int glowColor[4];
+			SetColorRGBA(glowColor, r, g, b, 30);
+			TE_SetupBeamPoints(Start_Loc, endPoint, DonnerKriegCannon_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter*2.5), ClampBeamWidth(diameter), 0, 2.5, glowColor, 0);
+			TE_SendToAll(0.0);
+		}
+		else
+		{
+			Donnerkrieg_Create_Spinning_Beams(npc, Start_Loc, angles, 7, Dist, false, radius/2.0, -1.0);		//12
+		}
+	}
+	else
+	{
+		delete trace;
+	}
+
+	return Plugin_Continue;
+}
+static void Donnerkrieg_Create_Spinning_Beams(Raidboss_Donnerkrieg npc, float Origin[3], float Angles[3], int loop_for, float Main_Beam_Dist, bool Type=true, float distance_stuff, float ang_multi)
+{
+	
+	float buffer_vec[10][3];
+		
+	for(int i=1 ; i<=loop_for ; i++)
+	{	
+		float tempAngles[3], Direction[3], endLoc[3], End_Loc[3];
+		tempAngles[0] = Angles[0];
+		tempAngles[1] = Angles[1];	//has to the same as the beam
+		tempAngles[2] = (fl_spinning_angle[npc.index]+((360.0/loop_for)*float(i)))*ang_multi;	//we use the roll angle vector to make it speeen
+		
+		if(tempAngles[2]>360.0)
+			tempAngles[2] -= 360.0;
+	
+					
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+		ScaleVector(Direction, distance_stuff);
+		AddVectors(Origin, Direction, endLoc);
+		
+		buffer_vec[i] = endLoc;
+		
+		Get_Fake_Forward_Vec(Main_Beam_Dist, Angles, End_Loc, endLoc);
+		
+		if(Type)
+		{
+			int r=1, g=1, b=255, a=225;
+			float diameter = 15.0;
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, r, g, b, a);
+			int colorLayer1[4];
+			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
+										
+			TE_SetupBeamPoints(endLoc, End_Loc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, colorLayer1, 3);
+										
+			TE_SendToAll();
+		}
+		
+	}
+	
+	int color[4]; color[0] = 1; color[1] = 255; color[2] = 255; color[3] = 255;
+	
+	TE_SetupBeamPoints(buffer_vec[1], buffer_vec[loop_for], DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, 5.0, 5.0, 0, 0.01, color, 3);	
+	TE_SendToAll(0.0);
+	for(int i=1 ; i<loop_for ; i++)
+	{
+		TE_SetupBeamPoints(buffer_vec[i], buffer_vec[i+1], DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, 5.0, 5.0, 0, 0.01, color, 3);	
+		TE_SendToAll(0.0);
+	}
+	
+}
+static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[3], float End_Point[3], float Radius, float dps, int infection=0)
+{
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		DonnerKriegCannon_BEAM_HitDetected[i] = false;
+	}
+
+	float hullMin[3], hullMax[3];
+	hullMin[0] = -Radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, DonnerKriegCannon_BEAM_TraceUsers, npc.index);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (DonnerKriegCannon_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		{
+			float playerPos[3];
+			switch(infection)
+			{
+				case 0:
+				{
+					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+					float Dmg = dps;
+
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						Dmg *= 5.0;
+					}
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
+				}
+				case 1:
+				{
+					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+					float Dmg = dps/2.0;
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						Dmg *= 5.0;
+					}
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
+
+					SeaSlider_AddNeuralDamage(victim, npc.index, RoundToFloor((Dmg/12)), false);
+				}
+				case 3:
+				{
+					float Dmg = dps/2.0;
+					SeaSlider_AddNeuralDamage(victim, npc.index, RoundToFloor((Dmg/6)), false);
+				}
+			}
+		}
+	}
 }
 
 public bool DonnerKriegCannon_BEAM_TraceWallsOnly(int entity, int contentsMask)
@@ -1406,181 +1583,4 @@ public bool DonnerKriegCannon_BEAM_TraceUsers(int entity, int contentsMask, int 
 		DonnerKriegCannon_BEAM_HitDetected[entity] = true;
 	}
 	return false;
-}
-
-static void DonnerKriegCannon_GetBeamDrawStartPoint(int client, float startPoint[3])
-{
-	float angles[3];
-	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOrigin(client);
-	startPoint[2] += 50.0;
-	
-	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-			return;	
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	angles[0] = flPitch;
-	startPoint = GetAbsOrigin(client);
-	startPoint[2] += 50.0;
-	
-	if (0.0 == DonnerKriegCannon_BEAM_BeamOffset[client][0] && 0.0 == DonnerKriegCannon_BEAM_BeamOffset[client][1] && 0.0 == DonnerKriegCannon_BEAM_BeamOffset[client][2])
-	{
-		return;
-	}
-	float tmp[3];
-	float actualBeamOffset[3];
-	tmp[0] = DonnerKriegCannon_BEAM_BeamOffset[client][0];
-	tmp[1] = DonnerKriegCannon_BEAM_BeamOffset[client][1];
-	tmp[2] = 0.0;
-	VectorRotate(tmp, angles, actualBeamOffset);
-	actualBeamOffset[2] = DonnerKriegCannon_BEAM_BeamOffset[client][2];
-	startPoint[0] += actualBeamOffset[0];
-	startPoint[1] += actualBeamOffset[1];
-	startPoint[2] += actualBeamOffset[2];
-}
-
-public Action DonnerKriegCannon_TBB_Tick(int client)
-{
-	static int tickCountClient[MAXENTITIES];
-	if(!IsValidEntity(client) || !DonnerKriegCannon_BEAM_IsUsing[client])
-	{
-		tickCountClient[client] = 0;
-		SDKUnhook(client, SDKHook_Think, DonnerKriegCannon_TBB_Tick);
-		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
-		npc.m_bInKame = false;
-	}
-
-	int tickCount = tickCountClient[client];
-	tickCountClient[client]++;
-	
-	
-
-	DonnerKriegCannon_BEAM_TicksActive[client] = tickCount;
-	float diameter = float(DonnerKriegCannon_BEAM_BeamRadius[client] * 4);
-	int r = GetR(DonnerKriegCannon_BEAM_ColorHex[client]);
-	int g = GetG(DonnerKriegCannon_BEAM_ColorHex[client]);
-	int b = GetB(DonnerKriegCannon_BEAM_ColorHex[client]);
-	if (DonnerKriegCannon_BEAM_ChargeUpTime[client] <= tickCount)
-	{
-		static float angles[3];
-		static float startPoint[3];
-		static float endPoint[3];
-		static float hullMin[3];
-		static float hullMax[3];
-		static float playerPos[3];
-		GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-		Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
-		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return Plugin_Continue;
-			
-		float flPitch = npc.GetPoseParameter(iPitch);
-		flPitch *= -1.0;
-		angles[0] = flPitch;
-		startPoint = GetAbsOrigin(client);
-		startPoint[2] += 50.0;
-		
-		if(!b_nightmare_logic[npc.index])
-		{
-			float flAng[3]; // original
-			GetAttachment(npc.index, "effect_hand_r", startPoint, flAng);
-		}
-
-		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, DonnerKriegCannon_BEAM_TraceWallsOnly);
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(endPoint, trace);
-			delete trace;
-			ConformLineDistance(endPoint, startPoint, endPoint, float(DonnerKriegCannon_BEAM_MaxDistance[client]));
-			float lineReduce = DonnerKriegCannon_BEAM_BeamRadius[client] * 2.0 / 3.0;
-			float curDist = GetVectorDistance(startPoint, endPoint, false);
-			if (curDist > lineReduce)
-			{
-				ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
-			}
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				DonnerKriegCannon_BEAM_HitDetected[i] = false;
-			}
-			
-			if(!b_health_stripped)
-			{
-				int PrimaryThreatIndex = npc.m_iTarget;
-				if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
-				{
-					float target_vec[3]; target_vec = GetAbsOrigin(PrimaryThreatIndex);
-					endPoint[2] = target_vec[2];
-				}
-			}
-			
-			hullMin[0] = -float(DonnerKriegCannon_BEAM_BeamRadius[client]);
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, DonnerKriegCannon_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (DonnerKriegCannon_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-				{
-					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-					float distance = GetVectorDistance(startPoint, playerPos, false);
-					float damage = DonnerKriegCannon_BEAM_CloseDPT[client] + (DonnerKriegCannon_BEAM_FarDPT[client]-DonnerKriegCannon_BEAM_CloseDPT[client]) * (distance/DonnerKriegCannon_BEAM_MaxDistance[client]);
-					if (damage < 0)
-						damage *= -1.0;
-
-					if(ShouldNpcDealBonusDamage(victim))
-					{
-						damage *= 5.0;
-					}
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, startPoint);	// 2048 is DMG_NOGIB?
-				}
-			}
-			static float belowBossEyes[3];
-			if(!b_nightmare_logic[npc.index])
-			{
-				belowBossEyes = startPoint;
-				
-			}
-			else
-			{
-				
-				DonnerKriegCannon_GetBeamDrawStartPoint(client, belowBossEyes);
-			}
-			
-			int colorLayer4[4];
-			SetColorRGBA(colorLayer4, r, g, b, 30);
-			int colorLayer3[4];
-			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 30);
-			int colorLayer2[4];
-			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 30);
-			int colorLayer1[4];
-			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer2, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer3, 3);
-			TE_SendToAll(0.0);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter), ClampBeamWidth(diameter), 0, 1.0, colorLayer4, 3);
-			TE_SendToAll(0.0);
-			int glowColor[4];
-			SetColorRGBA(glowColor, r, g, b, 30);
-			TE_SetupBeamPoints(belowBossEyes, endPoint, DonnerKriegCannon_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter*2.5), ClampBeamWidth(diameter), 0, 2.5, glowColor, 0);
-			TE_SendToAll(0.0);
-			
-			
-		}
-		else
-		{
-			delete trace;
-		}
-		delete trace;
-	}
-	return Plugin_Continue;
 }

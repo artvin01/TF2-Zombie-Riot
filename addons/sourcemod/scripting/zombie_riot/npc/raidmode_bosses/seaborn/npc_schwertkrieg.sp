@@ -46,6 +46,7 @@ static char g_TeleportSounds[][] = {
 //Logic for duo raidboss
 
 static int i_ally_index;
+static float fl_focus_timer[MAXENTITIES];
 
 void Raidboss_Schwertkrieg_OnMapStart_NPC()
 {
@@ -67,6 +68,8 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("passtime/tv2.wav");
 	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav");
+
+	Zero(fl_focus_timer);
 }
 
 methodmap Raidboss_Schwertkrieg < CClotBody
@@ -156,6 +159,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+
+		fl_focus_timer[npc.index]=0.0;
 		
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
@@ -203,6 +208,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_flMeleeArmor = 1.5;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
+
+
 		
 		
 		
@@ -214,34 +221,56 @@ public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
 }
-static void Schwertkrieg_Get_Target(int ref, int &PrimaryThreatIndex)
+static int Schwertkrieg_Get_Target(Raidboss_Schwertkrieg npc, float GameTime)
 {
-	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(ref);
 	
 	if(shared_goal)	//yes my master...
 	{
-		PrimaryThreatIndex = schwert_target;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
+		if(IsValidEnemy(npc.index, schwert_target))
+			return schwert_target;	//if "shared goal" is active both npc's target the same target, the target is set by donnerkrieg
+		else
+			return npc.m_iTarget;
 	}
 	
 	if(b_schwert_focus_snipers)
 	{
-		float loc[3]; loc = GetAbsOrigin(npc.index);
-		float Dist = -1.0;
-		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)	//get the furthest away valid sniper target
+		if(fl_focus_timer[npc.index] < GameTime)
 		{
-			if(IsValidClient(client) && b_donner_valid_sniper_threats[client] && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			fl_focus_timer[npc.index] = GameTime + GetRandomFloat(2.5 , 7.5);
+			float loc[3]; loc = GetAbsOrigin(npc.index);
+			float Dist = -1.0;
+			int target=-1;
+			for(int client=0 ; client <=MAXTF2PLAYERS ; client++)	//get the furthest away valid sniper target
 			{
-				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
-				float distance = GetVectorDistance(client_loc, loc, true);
+				if(IsValidClient(client) && b_donner_valid_sniper_threats[client] && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
 				{
-					if(distance>Dist)
+					float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+					float distance = GetVectorDistance(client_loc, loc, true);
 					{
-						PrimaryThreatIndex = client;
+						if(distance>Dist)
+						{
+							target = client;
+						}
 					}
 				}
 			}
+			if(IsValidEnemy(npc.index, target))
+			{
+				npc.m_iTarget = target;
+				return target;
+			}
+			else
+			{
+				return npc.m_iTarget;
+			}
+		}
+		else
+		{
+			return npc.m_iTarget;
 		}
 	}
+
+	return npc.m_iTarget;
 }
 //TODO 
 //Rewrite
@@ -251,17 +280,16 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 	
 	if(!b_raidboss_donnerkrieg_alive)	//While This I do need
 		Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(EntRefToEntIndex(i_ally_index), npc.index, false);	//donner first, schwert second
-	
 
 
+	float GameTime = GetGameTime(npc.index);
 
-	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 			
@@ -272,33 +300,30 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
-	npc.m_flMeleeArmor = 1.5;
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}	
 	
-	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	Schwertkrieg_Get_Target(npc.index, PrimaryThreatIndex);
+	int PrimaryThreatIndex = Schwertkrieg_Get_Target(npc, GameTime);
 	
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 			float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
+			float npc_Vec[3]; npc_Vec = WorldSpaceCenter(npc.index);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, npc_Vec, true);
 			
-			
-			Schwert_Movement(npc.index, PrimaryThreatIndex);
+			Schwert_Movement(npc, flDistanceToTarget, PrimaryThreatIndex);
 
 			Schwert_Teleport_Core(npc.index, PrimaryThreatIndex);
 			
@@ -308,19 +333,19 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.2;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.35;
+						npc.m_flAttackHappens = GameTime+0.2;
+						npc.m_flAttackHappens_bullshit = GameTime+0.35;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -362,13 +387,13 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
+						npc.m_flNextMeleeAttack = GameTime + 0.3;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.3;
+						npc.m_flNextMeleeAttack = GameTime + 0.3;
 					}
 				}
 			}
@@ -444,26 +469,17 @@ static void Schwert_Teleport_Core(int ref, int PrimaryThreatIndex)
 				}
 			}
 }
-static void Schwert_Movement(int client, int PrimaryThreatIndex)
-{
-	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(client);
-	
-	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
-			
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
-	
+static void Schwert_Movement(Raidboss_Schwertkrieg npc, float flDistanceToTarget, int target)
+{	
 	if(flDistanceToTarget < npc.GetLeadRadius())
 	{
-					
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, PrimaryThreatIndex);
-					
-
-					
+		float vPredictedPos[3]; vPredictedPos = PredictSubjectPosition(npc, target);
+								
 		NPC_SetGoalVector(npc.index, vPredictedPos);
 	} 
 	else 
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		NPC_SetGoalEntity(npc.index, target);
 	}
 }
 
