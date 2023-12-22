@@ -282,6 +282,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Blitzkrieg_Kit_Rocket_StartTouch(entity, target);
 		}
+		case WEAPON_QUIBAI:
+		{
+			Melee_QuibaiArkTouch(entity, target);
+		}
 	}
 #else
 	switch(i_WandIdNumber[entity])

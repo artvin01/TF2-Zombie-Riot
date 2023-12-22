@@ -189,6 +189,12 @@ public void OnPreThinkPost(int client)
 public void OnPostThink(int client)
 {
 	float GameTime = GetGameTime();
+
+	if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
+	{
+		EntityIsInHazard_Teleport(client);
+	}
+	SaveLastValidPositionEntity(client);
 	if(b_DisplayDamageHud[client])
 	{
 		b_DisplayDamageHud[client] = false;
@@ -1356,6 +1362,14 @@ public Action Player_OnTakeDamageAlivePost(int victim, int &attacker, int &infli
 	{
 		i_PlayerDamaged[victim] += RoundToCeil(damage);
 	}
+	if((damagetype & DMG_DROWN)/* && !b_ThisNpcIsSawrunner[attacker]*/)
+	{
+		//the player has died to a stuckzone.
+		if(dieingstate[victim] > 0)
+		{
+			TeleportBackToLastSavePosition(victim);
+		}
+	}
 	if(i_WasInUber)
 	{
 		TF2_AddCondition(victim, TFCond_Ubercharged, i_WasInUber);
@@ -1483,8 +1497,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
-			NpcStuckZoneWarning(victim, damage);
-			Replicated_Damage = damage;
+			if(damage < 10000.0)
+			{
+				NpcStuckZoneWarning(victim, damage);
+				Replicated_Damage = damage;
+			}
+			else
+			{
+				Replicated_Damage = damage;
+			}
+			//it will instakill otherwise.
 		}
 		else
 		{

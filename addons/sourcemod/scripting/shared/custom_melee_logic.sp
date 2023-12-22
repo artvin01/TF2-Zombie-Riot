@@ -485,6 +485,14 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					delete pack;
 					return;
 				}
+				case WEAPON_QUIBAI:
+				{
+					Weapon_ark_QuibaiRangedAttack(client, weapon);
+					delete swingTrace;
+					FinishLagCompensation_Base_boss();
+					delete pack;
+					return;
+				}
 				case WEAPON_GLADIIA:
 				{
 					Gladiia_RangedAttack(client, weapon);

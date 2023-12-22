@@ -950,7 +950,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	float GameTime = GetGameTime();
 	b_DoNotDisplayHurtHud[victim] = false;
-
+	
+	if((damagetype & DMG_DROWN))
+	{
+		TeleportBackToLastSavePosition(victim);
+	}
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
 	{
@@ -2067,6 +2071,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_LAPPLAND: //pap ark alt
 		{
 			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
+		}
+		case WEAPON_QUIBAI: //pap ark alt
+		{
+			return Npc_OnTakeDamage_Quibai(damage, attacker, damagetype, inflictor, victim, weapon);
 		}
 		case WEAPON_SPECTER:
 		{

@@ -956,6 +956,8 @@ int i_NpcWeight[MAXENTITIES]; //This is used for scaling.
 bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
 float f3_VecTeleportBackSaveJump[MAXENTITIES][3];
+float f3_VecTeleportBackSave_OutOfBounds[MAXENTITIES][3];
+float f_GameTimeTeleportBackSave_OutOfBounds[MAXENTITIES];
 bool b_NPCVelocityCancel[MAXENTITIES];
 bool b_NPCTeleportOutOfStuck[MAXENTITIES];
 float fl_DoSpawnGesture[MAXENTITIES];
@@ -2354,6 +2356,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		f3_VecTeleportBackSave_OutOfBounds[entity][0] = 0.0;
+		f3_VecTeleportBackSave_OutOfBounds[entity][1] = 0.0;
+		f3_VecTeleportBackSave_OutOfBounds[entity][2] = 0.0;
+		f_GameTimeTeleportBackSave_OutOfBounds[entity] = 0.0;
 		f_ClientInvul[entity] = 0.0;
 		f_BackstabDmgMulti[entity] = 0.0;
 		f_KnockbackPullDuration[entity] = 0.0;
