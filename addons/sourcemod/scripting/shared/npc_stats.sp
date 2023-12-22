@@ -272,6 +272,7 @@ public Action NPCStats_StartTouch(const char[] output, int entity, int caller, f
 	return Plugin_Continue;
 }
 
+
 public Action NPCStats_EndTouch(const char[] output, int entity, int caller, float delay)
 {
 	if(caller > 0 && caller < MAXENTITIES)
@@ -291,6 +292,7 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 	}
 	return Plugin_Continue;
 }
+
 
 methodmap CClotBody < CBaseCombatCharacter
 {
@@ -5122,7 +5124,7 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 public void NpcBaseThink(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	
+
 //	static float FakeRotationFix[3];
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
@@ -5156,6 +5158,7 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
+	SaveLastValidPositionEntity(iNPC);
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{
@@ -9152,5 +9155,126 @@ bool RaidbossIgnoreBuildingsLogic(int value = 0)
 			}
 			return false;
 		}
+	}
+}
+
+void EntityIsInHazard_Teleport(int entity)
+{
+	float AbsOrigin[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+	static float hullcheckmaxs_Player[3];
+	static float hullcheckmins_Player[3];
+	hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+	hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );		
+	if(b_IsGiant[entity])
+	{
+		hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else
+	{
+		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+
+	if(b_NpcResizedForCrouch[entity])
+	{
+		hullcheckmaxs_Player[2] = 41.0;
+	}		
+	if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+	{
+		TeleportBackToLastSavePosition(entity);
+	}
+}
+void TeleportBackToLastSavePosition(int entity)
+{
+	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
+	{
+		b_npcspawnprotection[entity] = true;
+		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
+		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
+	}
+}
+
+void SaveLastValidPositionEntity(int entity)
+{
+	//first see if they are on the ground
+	if(f_GameTimeTeleportBackSave_OutOfBounds[entity] > GetGameTime())
+		return;
+
+	f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 0.5;
+	//dont save location too often
+
+	if(entity <= MaxClients)
+	{
+		if (!IsPlayerAlive(entity))
+			return;
+		
+		bool SavePosition = true;
+		if (!(GetEntityFlags(entity) & FL_ONGROUND))
+		{
+			SavePosition = false;
+		}
+		else
+		{
+			int RefGround =  GetEntPropEnt(entity, Prop_Send, "m_hGroundEntity");
+			int GroundEntity = EntRefToEntIndex(RefGround);
+			if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
+			{
+				if(!b_NpcHasDied[GroundEntity])
+				{
+					SavePosition = false;
+				}
+			}
+		}
+		if(!SavePosition)
+			return;
+
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+		static float hullcheckmaxs_Player[3];
+		static float hullcheckmins_Player[3];
+		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+			return;
+
+		//This should be a safe space for us to save the location for later teleporting.
+		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;
+	}
+	else
+	{
+		//This is an npc!
+		CClotBody npc = view_as<CClotBody>(entity);
+
+		//do not save when in air
+		if (!npc.IsOnGround())
+			return;
+			
+		float AbsOrigin[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
+		static float hullcheckmaxs_Player[3];
+		static float hullcheckmins_Player[3];
+		if(b_IsGiant[entity])
+		{
+			hullcheckmaxs_Player = view_as<float>( { 30.0, 30.0, 120.0 } );
+			hullcheckmins_Player = view_as<float>( { -30.0, -30.0, 0.0 } );	
+		}
+		else
+		{
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
+		}
+
+		if(b_NpcResizedForCrouch[entity])
+		{
+			hullcheckmaxs_Player[2] = 41.0;
+		}	
+		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
+			return;
+
+		//This should be a safe space for us to save the location for later teleporting.
+		f3_VecTeleportBackSave_OutOfBounds[entity] = AbsOrigin;		
 	}
 }

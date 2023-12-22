@@ -3868,6 +3868,13 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 	return true;
 }
 
+
+bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[3])
+{
+	HazardResult = false;
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers, _);
+	return HazardResult;
+}
 bool IsPointNoBuild(const float pos1[3])
 {
 	HazardResult = false;

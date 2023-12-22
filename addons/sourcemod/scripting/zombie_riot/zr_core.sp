@@ -146,6 +146,7 @@ enum
 	WEAPON_SKULL_SERVANT = 75,
 	WEAPON_NECRO_WANDS = 76,
 	WEAPON_KIT_BLITZKRIEG_CORE = 77,
+	WEAPON_QUIBAI = 78,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -1109,6 +1110,7 @@ public Action Timer_Dieing(Handle timer, int client)
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;
 			PrintCenterText(client, "%t", "Reviving", dieingstate[client]);
 			
+
 			if(dieingstate[client] <= 0)
 			{
 				if(dieingstate[client] != -5)

@@ -17,12 +17,14 @@ static int Ark_Level[MAXPLAYERS+1]={0, ...};
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 
 
-
+#define SOUND_QUIBAI_SHOT 	"weapons/stunstick/alyx_stunner2.wav"
 #define SOUND_LAPPLAND_SHOT 	"weapons/fx/nearmiss/dragons_fury_nearmiss.wav"
 #define SOUND_LAPPLAND_ABILITY 	"items/powerup_pickup_plague.wav"
 
 #define LAPPLAND_SILENCE_DUR_NORMAL 3.0
 #define LAPPLAND_SILENCE_DUR_ABILITY 6.0
+#define QUIBAI_SILENCE_DUR_NORMAL 4.0
+#define QUIBAI_SILENCE_DUR_ABILITY 8.0
 
 Handle h_TimerWeaponArkManagement[MAXPLAYERS+1] = {null, ...};
 static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
@@ -37,6 +39,7 @@ Handle h_TimerLappLandManagement[MAXPLAYERS+1] = {null, ...};
 static int i_LappLandHitsDone[MAXPLAYERS+1]={0, ...};
 static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_LappLandhuddelay[MAXPLAYERS+1]={0.0, ...};
+static int i_QuibaiAttacksMade[MAXPLAYERS+1]={0, ...};
 
 void Ark_autoaim_Map_Precache()
 {
@@ -47,6 +50,7 @@ void Ark_autoaim_Map_Precache()
 	PrecacheSound(SOUND_WAND_SHOT);
 	PrecacheSound(SOUND_ZAP);
 	PrecacheSound(SOUND_LAPPLAND_SHOT);
+	PrecacheSound(SOUND_QUIBAI_SHOT);
 	PrecacheSound(SOUND_LAPPLAND_ABILITY);
 	Zero(f_AniSoundSpam);
 	Zero(h_TimerLappLandManagement);
@@ -591,6 +595,7 @@ public bool Weapon_ark_LappLand_Attack_InAbility(int client) //second pap versio
 	}
 	return true;
 }
+
 void Weapon_ark_LapplandRangedAttack(int client, int weapon)
 {
 	//woopsies!
@@ -676,7 +681,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 				GetAttachment(owner, "effect_hand_r", flPos, flAng);				
 				int particle_Hand = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 20.0);
 				SetParent(owner, particle_Hand, "effect_hand_r");
-				Weapon_Ark_SilenceAOE(target); //lag comp or not, doesnt matter.
+				Weapon_Ark_SilenceAOE(target, LAPPLAND_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
 				i_LappLandHitsDone[owner] = 0;
 				
 				MakePlayerGiveResponseVoice(owner, 1); //haha!
@@ -686,7 +691,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 		}
 		else
 		{
-			Weapon_Ark_SilenceAOE(target); //lag comp or not, doesnt matter.
+			Weapon_Ark_SilenceAOE(target, LAPPLAND_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
 		}
 
 		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
@@ -872,13 +877,13 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 					i_LappLandHitsDone[attacker] = 0;
 					f_LappLandAbilityActive[attacker] = GetGameTime() + 20.0;
 					MakePlayerGiveResponseVoice(attacker, 1); //haha!
-					Weapon_Ark_SilenceAOE(victim); //lag comp or not, doesnt matter.
+					Weapon_Ark_SilenceAOE(victim, LAPPLAND_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
 					damage *= 2.0; //2x dmg
 				}
 			}
 			else
 			{
-				Weapon_Ark_SilenceAOE(victim); //lag comp or not, doesnt matter.
+				Weapon_Ark_SilenceAOE(victim, LAPPLAND_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
 				damage *= 2.0; //2x dmg
 			}
 		}
@@ -886,7 +891,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 	return damage;
 }
 
-void Weapon_Ark_SilenceAOE(int enemyStruck)
+void Weapon_Ark_SilenceAOE(int enemyStruck, float duration)
 {
 	float VictimPos[3];
 	float EnemyPos[3];
@@ -899,8 +904,345 @@ void Weapon_Ark_SilenceAOE(int enemyStruck)
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", EnemyPos);
 			if (GetVectorDistance(EnemyPos, VictimPos, true) <= (LAPPLAND_AOE_SILENCE_RANGE_SQUARED))
 			{
-				NpcStats_SilenceEnemy(entity, LAPPLAND_SILENCE_DUR_ABILITY);
+				NpcStats_SilenceEnemy(entity, duration);
 			}
 		}
 	}
+}
+
+
+
+
+public void Enable_Quibai(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
+{
+	if (h_TimerLappLandManagement[client] != null)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUIBAI)
+		{
+			//Is the weapon it again?
+			//Yes?
+
+			delete h_TimerLappLandManagement[client];
+			h_TimerLappLandManagement[client] = null;
+			DataPack pack;
+			h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_Quibai, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUIBAI)
+	{
+		DataPack pack;
+		h_TimerLappLandManagement[client] = CreateDataTimer(0.1, Timer_Management_Quibai, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+
+// use the same h_TimerLappLandManagement manager because theres no reason to have 2, there is only ever 1 of each as its 1 pap line.
+public Action Timer_Management_Quibai(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_TimerLappLandManagement[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Quibai_Cooldown_Logic(client, weapon);
+		
+	return Plugin_Continue;
+}
+
+#define QUIBAI_MAX_HITS_NEEDED 100 //Double the amount because we do double hits.
+
+public void Quibai_Cooldown_Logic(int client, int weapon)
+{
+	if(f_LappLandhuddelay[client] < GetGameTime())
+	{
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			if(f_LappLandAbilityActive[client] < GetGameTime())
+			{
+				PrintHintText(client,"Questioning Snow [%i%/%i]", i_LappLandHitsDone[client], QUIBAI_MAX_HITS_NEEDED);
+			}
+			else
+			{
+				float TimeLeft = f_LappLandAbilityActive[client] - GetGameTime();
+				PrintHintText(client,"Raging Snow [%.1f]",TimeLeft);
+			}
+			
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_LappLandhuddelay[client] = GetGameTime() + 0.5;
+		}
+	}
+}
+
+
+float Npc_OnTakeDamage_Quibai(float damage ,int attacker, int damagetype, int inflictor, int victim, int weapon)
+{
+	if(inflictor == attacker) //make sure it doesnt gain things here if the projectile hit.
+	{
+		if(damagetype & DMG_CLUB) //We only count normal melee hits.
+		{
+			ChangeAttackspeedQuibai(attacker,weapon);
+			if(f_LappLandAbilityActive[attacker] < GetGameTime())
+			{
+				NpcStats_SilenceEnemy(victim, QUIBAI_SILENCE_DUR_NORMAL);
+				i_LappLandHitsDone[attacker] += 2;
+				if(i_LappLandHitsDone[attacker] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
+				{
+					i_LappLandHitsDone[attacker] = QUIBAI_MAX_HITS_NEEDED;
+				}
+			}
+			else
+			{
+				Weapon_Ark_SilenceAOE(victim, QUIBAI_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
+				damage *= 2.0; //2x dmg
+			}
+		}
+	}
+	return damage;
+}
+
+
+public void Melee_QuibaiArkTouch(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if (target > 0)	
+	{
+		//Code to do damage position and ragdolls
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		Entity_Position = WorldSpaceCenter(target);
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		if(f_LappLandAbilityActive[owner] < GetGameTime())
+		{
+			NpcStats_SilenceEnemy(target, QUIBAI_SILENCE_DUR_NORMAL);
+			i_LappLandHitsDone[owner] += 1;
+			if(i_LappLandHitsDone[owner] >= QUIBAI_MAX_HITS_NEEDED) //We do not go above this, no double charge.
+			{
+				i_LappLandHitsDone[owner] = QUIBAI_MAX_HITS_NEEDED;
+			}
+		}
+		else
+		{
+			Weapon_Ark_SilenceAOE(target, QUIBAI_SILENCE_DUR_ABILITY); //lag comp or not, doesnt matter.
+		}
+		ChangeAttackspeedQuibai(owner,weapon);
+		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForce(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		
+		
+		
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		switch(GetRandomInt(1,5)) 
+		{
+			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 5:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+	   	}
+		RemoveEntity(entity);
+	}
+	else if(target == 0)
+	{
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		switch(GetRandomInt(1,4)) 
+		{
+			case 1:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 2:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 3:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 4:EmitSoundToAll(SOUND_AUTOAIM_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+		}
+		RemoveEntity(entity);
+	}
+}
+
+
+
+void Weapon_ark_QuibaiRangedAttack(int client, int weapon, bool Firedshotalready = false)
+{
+	ChangeAttackspeedQuibai(client,weapon);
+	//woopsies!
+	//no need for lag comp, we are already in one.
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+	
+	EmitSoundToAll(SOUND_QUIBAI_SHOT, client, _, 75, _, 0.25, GetRandomInt(90, 110));
+
+	float damage = 65.0;
+	damage *= 0.6; //Reduction
+	if(f_LappLandAbilityActive[client] > GetGameTime())
+	{
+		if(!Firedshotalready)
+		{
+			DataPack pack;
+			CreateDataTimer(0.2, FireAnotherShotQuibai, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(client)); 
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		damage *= 1.35;
+	}
+			
+	float speed = 1100.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	damage *= Attributes_Get(weapon, 1, 1.0);
+	speed *= Attributes_Get(weapon, 103, 1.0);
+
+	speed *= Attributes_Get(weapon, 104, 1.0);
+
+	speed *= Attributes_Get(weapon, 475, 1.0);
+
+
+	float time = 2000.0/speed;
+	time *= Attributes_Get(weapon, 101, 1.0);
+
+	time *= Attributes_Get(weapon, 102, 1.0);
+
+	if(IsValidEnemy(client, target))
+	{
+
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_QUIBAI, weapon, "rockettrail_airstrike_line");
+		
+
+		if(Can_I_See_Enemy_Only(target,projectile)) //Insta home!
+		{
+			HomingProjectile_TurnToTarget(target, projectile);
+		}
+
+		DataPack pack;
+		CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		pack.WriteCell(EntIndexToEntRef(projectile)); //projectile
+		pack.WriteCell(EntIndexToEntRef(target));		//victim to annihilate :)
+		//We have found a victim.
+	}
+	else
+	{
+		Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_QUIBAI, weapon, "rockettrail_airstrike_line");
+		//no enemy, fire projectile blindly!, maybe itll hit an enemy!
+	}
+}
+public Action FireAnotherShotQuibai(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int Client = EntRefToEntIndex(pack.ReadCell());
+	int Weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(Client) && IsValidEntity(Weapon))
+	{
+		Weapon_ark_QuibaiRangedAttack(Client, Weapon, true);
+	}
+	return Plugin_Stop;
+}
+public void Weapon_Quibai_Ability(int client, int weapon, bool crit, int slot)
+{
+	QuibaiAbilityM2(client, weapon, slot);
+}
+
+static void QuibaiAbilityM2(int client, int weapon, int slot)
+{
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+	}
+	else
+	{
+		if(i_LappLandHitsDone[client] >= QUIBAI_MAX_HITS_NEEDED)
+		{
+			int viewmodelModel;
+			viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+				
+			float flPos[3]; // original
+			if(IsValidEntity(viewmodelModel))
+			{
+				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+				flPos[2] -= 20.0;
+						
+				int particler = ParticleEffectAt(flPos, "utaunt_snowring_space_parent", 25.0);
+						
+				SetParent(viewmodelModel, particler);
+			}
+			EmitSoundToAll(SOUND_LAPPLAND_ABILITY, client, _, 90, _, 1.0);
+			i_LappLandHitsDone[client] = 0;
+			MakePlayerGiveResponseVoice(client, 1); //haha!
+			f_LappLandAbilityActive[client] = GetGameTime() + 25.0;
+			i_QuibaiAttacksMade[client] = 0;
+			ChangeAttackspeedQuibai(client,weapon);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
+	}
+}
+
+void ChangeAttackspeedQuibai(int client, int weapon)
+{
+	if(weapon < 1)
+		return;
+
+	if(f_LappLandAbilityActive[client] > GetGameTime())
+	{
+		i_QuibaiAttacksMade[client]++;
+		if(i_QuibaiAttacksMade[client] > 20)
+		{
+			i_QuibaiAttacksMade[client] = 20;
+		}
+		Attributes_Set(weapon, 396, QuibaiAttackSpeed(i_QuibaiAttacksMade[client]));
+		Attributes_Set(weapon, 1, QuibaiAttackSpeed(i_QuibaiAttacksMade[client] / 2));
+	}
+	else
+	{
+		i_QuibaiAttacksMade[client] = 0;
+		Attributes_Set(weapon, 396, QuibaiAttackSpeed(i_QuibaiAttacksMade[client]));
+		Attributes_Set(weapon, 1, QuibaiAttackSpeed(i_QuibaiAttacksMade[client] / 2));
+	}
+}
+
+
+
+float QuibaiAttackSpeed(int number_bef)
+{
+	float Number = 1.0;
+	if(number_bef == 0)
+	{
+		return Number;
+	}
+	Number -= (0.03 * number_bef);
+
+	return Number;
 }

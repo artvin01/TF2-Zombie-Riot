@@ -950,7 +950,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	float GameTime = GetGameTime();
 	b_DoNotDisplayHurtHud[victim] = false;
-
+	
+	if((damagetype & DMG_DROWN))
+	{
+		TeleportBackToLastSavePosition(victim);
+	}
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
 	{
@@ -1149,7 +1153,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(damage <= 0.0)
 	{
 		Damageaftercalc = 0.0;
-		return Plugin_Handled;	
+		return Plugin_Changed;
 	}
 	Damageaftercalc = damage;
 	
@@ -1162,7 +1166,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if((Damageaftercalc > 0.0 || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
@@ -2067,6 +2071,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_LAPPLAND: //pap ark alt
 		{
 			return Npc_OnTakeDamage_LappLand(damage, attacker, damagetype, inflictor, victim);
+		}
+		case WEAPON_QUIBAI: //pap ark alt
+		{
+			return Npc_OnTakeDamage_Quibai(damage, attacker, damagetype, inflictor, victim, weapon);
 		}
 		case WEAPON_SPECTER:
 		{

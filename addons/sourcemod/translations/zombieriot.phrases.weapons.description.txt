@@ -902,6 +902,10 @@
 	{
 		"en"	"Ability pulls even heavier enemies."
 	}
+	"Fractured Ark Pap 11"
+	{
+		"en"	"Your ability is now a manual activation but takes longer to charge.\nEach hit during the ability massively increases your attackspeed upto a limit.\nYou fire 2 projectiles at once while having the ability on.\nYour silence lasts abit longer."
+	}
 	
 	"Longsword Desc"
 	{

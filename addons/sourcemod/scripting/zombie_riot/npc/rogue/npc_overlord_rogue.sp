@@ -493,24 +493,6 @@ public void OverlordRogue_ClotThink(int iNPC)
 
 public Action OverlordRogue_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if((attacker < 1 || attacker > MaxClients) && damage > 100000.0 && (damagetype & DMG_DROWN))
-	{
-		int Spawner_entity = GetRandomActiveSpawner(SpawnPoint);
-		if(IsValidEntity(Spawner_entity))
-		{
-			damage = 100000.0;
-			
-			float pos[3];
-			float ang[3];
-			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-			TeleportEntity(victim, pos, ang, NULL_VECTOR);
-			b_npcspawnprotection[victim] = true;
-			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		}
-		
-		return Plugin_Changed;
-	}
 
 	//Valid attackers only.
 	if(attacker < 1)
