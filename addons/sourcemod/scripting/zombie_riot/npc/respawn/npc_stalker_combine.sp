@@ -199,7 +199,7 @@ methodmap StalkerCombine < StalkerShared
 		
 		i_NpcInternalId[npc.index] = STALKER_COMBINE;
 		i_NpcWeight[npc.index] = 5;
-		fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
+	//	fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -249,7 +249,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	float gameTime = GetGameTime(iNPC);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
-	
+	/*
 	if(Waves_InSetup())
 	{
 		for(int i; i < 9; i++)
@@ -261,7 +261,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 		FreezeNpcInTime(npc.index, 0.5);
 		return;
 	}
-	
+	*/
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();	
 	
@@ -358,7 +358,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 						float damage = 180.0;
 
 						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
-							damage *= 2.0;
+							damage *= 8.0;
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
@@ -415,7 +415,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 			{
 				state = -1;
 			}
-			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.8) && npc.m_flNextMeleeAttack < gameTime)
+			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.65) && npc.m_flNextMeleeAttack < gameTime)
 			{
 				state = 1;
 			}

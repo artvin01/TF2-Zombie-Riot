@@ -211,8 +211,11 @@ methodmap Donnerkrieg < CClotBody
 		
 		if(final)
 		{
-			RaidModeScaling = 10.0;
 			i_RaidGrantExtra[npc.index] = 1;
+		}
+		else
+		{
+			RaidModeScaling = 10.0;	//just a safety net
 		}
 		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
 			
@@ -261,10 +264,6 @@ methodmap Donnerkrieg < CClotBody
 		
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		
-		if((ZR_GetWaveCount()+1)<60)
-		{
-			RaidModeScaling = 10.0;	//just a safety net
-		}
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		

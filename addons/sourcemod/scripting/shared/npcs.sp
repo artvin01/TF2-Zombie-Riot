@@ -1149,7 +1149,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(damage <= 0.0)
 	{
 		Damageaftercalc = 0.0;
-		return Plugin_Handled;	
+		return Plugin_Changed;
 	}
 	Damageaftercalc = damage;
 	
@@ -1162,7 +1162,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		return;
 		
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if((Damageaftercalc > 0.0 || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_NpcIsInvulnerable[victim] && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc > 0.0 || b_NpcIsInvulnerable[victim] || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 	{
 		if(inflictor > 0 && inflictor <= MaxClients)
 		{
