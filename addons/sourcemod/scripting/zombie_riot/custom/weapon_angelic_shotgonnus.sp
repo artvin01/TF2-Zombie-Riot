@@ -1,0 +1,688 @@
+#pragma semicolon 1
+#pragma newdecls required
+static float f_AngelicShotgunHudCD[MAXTF2PLAYERS];
+#define ANGELIC_STACKS_UNTILL_DOUBLE 2
+#define ANGELIC_ABILITY_CHARGE_1 32
+#define ANGELIC_ABILITY_CHARGE_2 40
+#define ANGELIC_SHOTGUN_ABILTIY_SOUND_1 "items/powerup_pickup_vampire.wav"
+#define ANGELIC_SHOTGUN_SHOOT_ABILITY "weapons/shotgun/shotgun_dbl_fire7.wav"
+static Handle h_TimerAngelicShotgun[MAXPLAYERS+1] = {null, ...};
+static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
+static int i_AbilityChargeAngelic[MAXPLAYERS+1] = {0, ...};
+static int i_AngelicShotgunHalo[MAXPLAYERS+1][24];
+static bool i_AbilityActiveAngelic[MAXPLAYERS+1] = {false, ...};
+static float f_DoubleHitGameTime[MAXENTITIES];
+static float f_DoubleHitGameTimeTimeSince[MAXENTITIES];
+static int f_DoubleHitStack[MAXENTITIES];
+
+static int b_HasHitAlreadyAngelic[MAXENTITIES];
+
+public void AngelicShotgun_MapStart()
+{
+	Zero(f_AngelicShotgunHudCD);
+	PrecacheSound(ANGELIC_SHOTGUN_ABILTIY_SOUND_1);
+	PrecacheSound(ANGELIC_SHOTGUN_SHOOT_ABILITY);
+	Zero(i_AbilityActiveAngelic);
+	Zero(i_AbilityChargeAngelic);
+	Zero(f_DoubleHitGameTimeTimeSince);
+}
+
+void AngelicShotgun_Enable(int client, int weapon)
+{
+	if (h_TimerAngelicShotgun[client] != null)
+	{
+		//This timer already exists.
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANGELIC_SHOTGUN)
+		{
+			//Is the weapon it again?
+			//Yes?
+			delete h_TimerAngelicShotgun[client];
+			h_TimerAngelicShotgun[client] = null;
+			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
+			
+			DataPack pack;
+			h_TimerAngelicShotgun[client] = CreateDataTimer(0.1, Timer_Management_Angelic_Shotgun, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ANGELIC_SHOTGUN)
+	{
+		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
+		
+		DataPack pack;
+		h_TimerAngelicShotgun[client] = CreateDataTimer(0.1, Timer_Management_Angelic_Shotgun, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+public void Weapon_AngelicShotgun(int attacker, float &damage, int damagetype)
+{
+	if(damagetype & DMG_CLUB)
+	{
+		if(i_AbilityActiveAngelic[attacker])
+		{
+			damage *= 1.65;
+		}
+	}
+}
+static int Fantasy_Blade_Get_Pap(int weapon)
+{
+	int pap=0;
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return pap;
+}
+
+#define DEFAULT_MELEE_RANGE 64.0
+#define DEFAULT_MELEE_BOUNDS 22.0
+void Angelic_Shotgun_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
+{
+	switch(i_Current_Pap[client])
+	{
+		case 3:
+		{
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.25;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.25;
+			enemies_hit_aoe = 3;
+		}
+		case 1,2:
+		{
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.2;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.2;
+			enemies_hit_aoe = 3;
+		}
+		default:
+		{
+			CustomMeleeRange = DEFAULT_MELEE_RANGE * 1.15;
+			CustomMeleeWide = DEFAULT_MELEE_BOUNDS * 1.15;
+			enemies_hit_aoe = 2;
+		}
+	}
+	if(i_AbilityActiveAngelic[client])
+	{
+		CustomMeleeRange *= 1.15;
+		CustomMeleeWide *= 1.15;	
+	}
+}
+
+public Action Timer_Management_Angelic_Shotgun(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_TimerAngelicShotgun[client] = null;
+		return Plugin_Stop;
+	}	
+	switch(i_Current_Pap[client])
+	{
+		case 0:
+		{
+			i_AbilityActiveAngelic[client] = false;
+		}
+	}
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+	{
+		RestoreOrDestroyAngelicShotgun(client, i_AbilityActiveAngelic[client]);
+	}
+	else
+	{
+		RestoreOrDestroyAngelicShotgun(client, false);
+	}
+	Angelic_Shotgun_Cooldown_Logic(client, weapon);
+	return Plugin_Continue;
+}
+
+public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
+{
+	if(f_AngelicShotgunHudCD[client] < GetGameTime())
+	{
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+		{
+			char AbilityHud[255];
+
+			switch(i_Current_Pap[client])
+			{
+				case 3:
+				{
+					if(i_AbilityActiveAngelic[client])
+					{
+						FormatEx(AbilityHud, sizeof(AbilityHud), "TELA [%i/%i]",i_AbilityChargeAngelic[client] / 2,ANGELIC_ABILITY_CHARGE_2 / 2);
+					}
+					else
+					{
+						if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_2)
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Absolutus ordo [READY]");
+						}
+						else
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Absolutus ordo [%i/%i]",i_AbilityChargeAngelic[client],ANGELIC_ABILITY_CHARGE_2);
+						}					
+					}
+				}
+				case 2:
+				{
+					if(i_AbilityActiveAngelic[client])
+					{
+						FormatEx(AbilityHud, sizeof(AbilityHud), "AMMO [%i/%i]",i_AbilityChargeAngelic[client] / 2,ANGELIC_ABILITY_CHARGE_2 / 2);
+					}
+					else
+					{
+						if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_2)
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Provisio iuris [READY]");
+						}
+						else
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Provisio iuris [%i/%i]",i_AbilityChargeAngelic[client],ANGELIC_ABILITY_CHARGE_2);
+						}					
+					}
+				}
+				case 1:
+				{
+					if(i_AbilityActiveAngelic[client])
+					{
+						FormatEx(AbilityHud, sizeof(AbilityHud), "AMMO [%i/%i]",i_AbilityChargeAngelic[client] / 2,ANGELIC_ABILITY_CHARGE_1 / 2);
+					}
+					else
+					{
+						if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_1)
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Angelic Law [READY]");
+						}
+						else
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Angelic Law [%i/%i]",i_AbilityChargeAngelic[client],ANGELIC_ABILITY_CHARGE_1);
+						}					
+					}
+
+				}
+				default:
+				{
+					f_AngelicShotgunHudCD[client] = GetGameTime() + 0.5;
+					return;
+				}
+			}
+			PrintHintText(client,"%s",AbilityHud);
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_AngelicShotgunHudCD[client] = GetGameTime() + 0.5;
+		}
+	}
+}
+
+
+
+
+void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int enemy)
+{
+	if(!i_AbilityActiveAngelic[client])
+	{
+		if(!b_HasHitAlreadyAngelic[client])
+		{
+			switch(i_Current_Pap[client])
+			{
+				case 2,3:
+				{
+					i_AbilityChargeAngelic[client] += 1;
+					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_2)
+					{
+						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_2;
+					}
+				}
+				case 1:
+				{
+					i_AbilityChargeAngelic[client] += 1;
+					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_1)
+					{
+						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_1;
+					}
+				}
+			}
+
+		}
+	}
+	b_HasHitAlreadyAngelic[client] = true;
+
+	switch(i_Current_Pap[client])
+	{
+		case 3:
+		{
+			damage *= 0.65;
+			if(dieingstate[client] == 0)
+			{
+				float HealingPerHit = 10.0;
+				if(b_thisNpcIsARaid[enemy])
+					HealingPerHit *= 2.0;
+				else if(b_thisNpcIsABoss[enemy])
+					HealingPerHit *= 1.35;
+				if(i_AbilityActiveAngelic[client])
+					HealingPerHit *= 1.5;
+
+				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.35);
+				if(healingdone > 0)
+					ApplyHealEvent(client, healingdone);
+
+			}
+		}
+		case 2:
+		{
+			damage *= 0.65;
+			if(dieingstate[client] == 0)
+			{
+				float HealingPerHit = 6.0;
+				if(b_thisNpcIsARaid[enemy])
+					HealingPerHit *= 2.0;
+				else if(b_thisNpcIsABoss[enemy])
+					HealingPerHit *= 1.35;
+				if(i_AbilityActiveAngelic[client])
+					HealingPerHit *= 1.5;
+				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.25);
+				if(healingdone > 0)
+					ApplyHealEvent(client, healingdone);
+			}
+		}
+		case 1:
+		{
+			damage *= 0.55;
+			if(dieingstate[client] == 0)
+			{
+				float HealingPerHit = 5.0;
+				if(b_thisNpcIsARaid[enemy])
+					HealingPerHit *= 2.0;
+				else if(b_thisNpcIsABoss[enemy])
+					HealingPerHit *= 1.35;
+				if(i_AbilityActiveAngelic[client])
+					HealingPerHit *= 1.5;
+				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.25);
+				if(healingdone > 0)
+					ApplyHealEvent(client, healingdone);
+			}
+		}
+		default:
+		{
+			damage *= 0.5;
+			if(dieingstate[client] == 0)
+			{
+				float HealingPerHit = 2.0;
+				if(b_thisNpcIsARaid[enemy])
+					HealingPerHit *= 2.0;
+				else if(b_thisNpcIsABoss[enemy])
+					HealingPerHit *= 1.35;
+				if(i_AbilityActiveAngelic[client])
+					HealingPerHit *= 1.5;
+				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.15);
+				if(healingdone > 0)
+					ApplyHealEvent(client, healingdone);
+			}
+		}
+	}
+}
+public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
+{
+	AddAmmoClient(client, 3, 1, 1.0, true);
+	bool GiveDoubleStrike = false;
+	if(i_AbilityActiveAngelic[client])
+	{
+		GiveDoubleStrike = true;
+		i_AbilityChargeAngelic[client] -= 1;
+	}
+	else
+	{
+		b_HasHitAlreadyAngelic[client] = false;
+		if(f_DoubleHitGameTimeTimeSince[client] < GetGameTime() || i_NextAttackDoubleHit[weapon])
+		{
+			f_DoubleHitGameTime[client] = 0.0;
+			f_DoubleHitStack[client] = 0;
+		}
+		if(f_DoubleHitGameTime[client] != GetGameTime())
+		{
+			if(f_DoubleHitGameTimeTimeSince[client] > GetGameTime() && !i_NextAttackDoubleHit[weapon])
+			{
+				if(i_Current_Pap[client] >= 3)
+					f_DoubleHitStack[client] += 1;
+
+				f_DoubleHitStack[client] += 1;
+			}
+		}
+		f_DoubleHitGameTime[client] = GetGameTime();
+		f_DoubleHitGameTimeTimeSince[client] = GetGameTime() + 5.0;
+		if(f_DoubleHitStack[client] >= ANGELIC_STACKS_UNTILL_DOUBLE)
+		{
+			GiveDoubleStrike = true;
+			f_DoubleHitStack[client] = 0;
+		}
+		if(i_AbilityActiveAngelic[client] && i_NextAttackDoubleHit[weapon] == 0)
+		{
+			GiveDoubleStrike = true;
+		}
+		
+	}
+	if(GiveDoubleStrike)
+	{
+		f_DoubleHitStack[client] = 0;
+		float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+		if(!b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+		{
+			if(i_AbilityActiveAngelic[client])
+				EmitSoundToAll(ANGELIC_SHOTGUN_SHOOT_ABILITY, client, _, 75, _, 0.60);
+			i_NextAttackDoubleHit[weapon] = 2;
+			b_WeaponAttackSpeedModified[weapon] = true;
+			attackspeed = (attackspeed * 0.08);
+			Attributes_Set(weapon, 6, attackspeed);
+		}
+		else
+		{
+			if(i_AbilityActiveAngelic[client])
+				i_NextAttackDoubleHit[weapon] = 0;
+			else
+				i_NextAttackDoubleHit[weapon] = 1;
+			b_WeaponAttackSpeedModified[weapon] = false;
+			attackspeed = (attackspeed / 0.08);
+			Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
+		}
+	}
+	else
+	{
+		i_NextAttackDoubleHit[weapon] = 0;
+		float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+		if(b_WeaponAttackSpeedModified[weapon]) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+		{
+			i_NextAttackDoubleHit[weapon] = 1;
+			b_WeaponAttackSpeedModified[weapon] = false;
+			attackspeed = (attackspeed / 0.08);
+			Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
+		}
+	}
+
+	if(i_AbilityActiveAngelic[client])
+	{
+		if(i_AbilityChargeAngelic[client] <= 0)
+		{
+			i_AbilityActiveAngelic[client] = false;
+			i_AbilityChargeAngelic[client] = 0;
+		}
+	}
+	//effects below.
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+	
+	float flPos[3];
+	float flAng[3];
+	float flPos2[3];
+	float flAng2[3];
+	GetAttachment(weapon, "muzzle", flPos2, flAng);
+	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng2);
+	int particle = ParticleEffectAt(flPos, "rocketbackblast", 0.25);
+	AddEntityToThirdPersonTransitMode(client, particle);
+	SetEntPropVector(particle, Prop_Data, "m_angRotation", flAng); 
+}
+
+
+
+public void Angelic_ShotgunAbilityM2(int client, int weapon, bool crit, int slot)
+{
+	switch(i_Current_Pap[client])
+	{
+		case 2,3:
+		{
+			if(i_AbilityChargeAngelic[client] < ANGELIC_ABILITY_CHARGE_2)
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Not Enough Shards");
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
+
+		}
+		case 1:
+		{
+			if(i_AbilityChargeAngelic[client] < ANGELIC_ABILITY_CHARGE_1)
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Not Enough Shards");
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
+
+		}
+		default:
+		{
+			return;
+		}
+	}
+
+	MakePlayerGiveResponseVoice(client, 1); //haha!
+	switch(i_Current_Pap[client])
+	{
+		case 1,2,3:
+		{
+			EmitSoundToAll(ANGELIC_SHOTGUN_ABILTIY_SOUND_1, client, _, 75, _, 0.60);
+		}
+	}
+	//effects below.
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+	
+	i_AbilityActiveAngelic[client] = true;
+	RestoreOrDestroyAngelicShotgun(client, i_AbilityActiveAngelic[client]);
+}
+
+
+
+void RestoreOrDestroyAngelicShotgun(int client, bool Activate)
+{
+	if(!Activate)
+	{
+		AngelicShotgunRemoveEffects(client);
+		return;
+	}
+	else
+	{
+		if(!AngelicShotgun_MissingEffects(client))
+		{
+			return;
+		}
+	}
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(viewmodelModel))
+		return;
+	
+	AngelicShotgunRemoveEffects(client);
+
+	switch(i_Current_Pap[client])
+	{
+		case 3:
+		{
+			float flPos[3];
+			float flAng[3];
+			GetAttachment(viewmodelModel, "head", flPos, flAng);
+			int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
+			AddEntityToThirdPersonTransitMode(client, particle);
+			SetParent(viewmodelModel, particle, "head");
+			i_AngelicShotgunHalo[client][0] = EntIndexToEntRef(particle);
+
+
+			int red = 200;
+			int green = 200;
+			int blue = 255;
+			int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
+
+			int particle_2 = InfoTargetParentAt({0.0,9.0,-9.0},"", 0.0); //First offset we go by
+			int particle_3 = InfoTargetParentAt({0.0,9.0,9.0},"", 0.0); //First offset we go by
+			int particle_4 = InfoTargetParentAt({0.0,-9.0,9.0},"", 0.0); //First offset we go by
+			int particle_5 = InfoTargetParentAt({0.0,-9.0,-9.0},"", 0.0); //First offset we go by
+
+			SetParent(particle_1, particle_2, "",_, true);
+			SetParent(particle_1, particle_3, "",_, true);
+			SetParent(particle_1, particle_4, "",_, true);
+			SetParent(particle_1, particle_5, "",_, true);
+
+			Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+			SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+			SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
+
+			int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
+			int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
+			int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			
+
+			i_AngelicShotgunHalo[client][1] = EntIndexToEntRef(particle_1);
+			i_AngelicShotgunHalo[client][2] = EntIndexToEntRef(particle_2);
+			i_AngelicShotgunHalo[client][3] = EntIndexToEntRef(particle_3);
+			i_AngelicShotgunHalo[client][4] = EntIndexToEntRef(particle_4);
+			i_AngelicShotgunHalo[client][5] = EntIndexToEntRef(particle_5);
+			i_AngelicShotgunHalo[client][6] = EntIndexToEntRef(Laser_1);
+			i_AngelicShotgunHalo[client][7] = EntIndexToEntRef(Laser_2);
+			i_AngelicShotgunHalo[client][8] = EntIndexToEntRef(Laser_3);
+			i_AngelicShotgunHalo[client][9] = EntIndexToEntRef(Laser_4);
+
+			//Broken 2nd halo
+			red = 100;
+			green = 100;
+			blue = 200;
+			int particle_1_2 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
+
+			int particle_2_2 = InfoTargetParentAt({-12.0,12.0,2.0},"", 0.0); //First offset we go by
+			int particle_3_2 = InfoTargetParentAt({12.0,12.0,-2.0},"", 0.0); //First offset we go by
+			int particle_4_2 = InfoTargetParentAt({9.0,-9.0,0.0},"", 0.0); //First offset we go by
+			int particle_5_2 = InfoTargetParentAt({-9.0,-9.0,0.0},"", 0.0); //First offset we go by
+
+			SetParent(particle_1_2, particle_2_2, "",_, true);
+			SetParent(particle_1_2, particle_3_2, "",_, true);
+			SetParent(particle_1_2, particle_4_2, "",_, true);
+			SetParent(particle_1_2, particle_5_2, "",_, true);
+
+			Custom_SDKCall_SetLocalOrigin(particle_1_2, flPos);
+			SetEntPropVector(particle_1_2, Prop_Data, "m_angRotation", flAng); 
+			SetParent(viewmodelModel, particle_1_2, "head",_);
+
+			int Laser_1_2 = ConnectWithBeamClient(particle_2_2, particle_3_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
+			int Laser_2_2 = ConnectWithBeamClient(particle_3_2, particle_4_2, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
+			int Laser_3_2 = ConnectWithBeamClient(particle_4_2, particle_5_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			int Laser_4_2 = ConnectWithBeamClient(particle_5_2, particle_2_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+
+			i_AngelicShotgunHalo[client][10] = EntIndexToEntRef(particle_1_2);
+			i_AngelicShotgunHalo[client][11] = EntIndexToEntRef(particle_2_2);
+			i_AngelicShotgunHalo[client][12] = EntIndexToEntRef(particle_3_2);
+			i_AngelicShotgunHalo[client][13] = EntIndexToEntRef(particle_4_2);
+			i_AngelicShotgunHalo[client][14] = EntIndexToEntRef(particle_5_2);
+			i_AngelicShotgunHalo[client][15] = EntIndexToEntRef(Laser_1_2);
+			i_AngelicShotgunHalo[client][16] = EntIndexToEntRef(Laser_2_2);
+			i_AngelicShotgunHalo[client][17] = EntIndexToEntRef(Laser_3_2);
+			i_AngelicShotgunHalo[client][18] = EntIndexToEntRef(Laser_4_2);
+		}
+		case 2:
+		{
+			float flPos[3];
+			float flAng[3];
+			GetAttachment(viewmodelModel, "head", flPos, flAng);
+			int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
+			AddEntityToThirdPersonTransitMode(client, particle);
+			SetParent(viewmodelModel, particle, "head");
+			i_AngelicShotgunHalo[client][0] = EntIndexToEntRef(particle);
+
+
+			int red = 200;
+			int green = 200;
+			int blue = 255;
+			int particle_1 = InfoTargetParentAt({0.0,0.0,0.0},"", 0.0); //This is the root bone basically
+
+			int particle_2 = InfoTargetParentAt({0.0,9.0,-9.0},"", 0.0); //First offset we go by
+			int particle_3 = InfoTargetParentAt({0.0,9.0,9.0},"", 0.0); //First offset we go by
+			int particle_4 = InfoTargetParentAt({0.0,-9.0,9.0},"", 0.0); //First offset we go by
+			int particle_5 = InfoTargetParentAt({0.0,-9.0,-9.0},"", 0.0); //First offset we go by
+
+			SetParent(particle_1, particle_2, "",_, true);
+			SetParent(particle_1, particle_3, "",_, true);
+			SetParent(particle_1, particle_4, "",_, true);
+			SetParent(particle_1, particle_5, "",_, true);
+
+			Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+			SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+			SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
+
+			int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
+			int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, red, green, blue, 2.0, 2.0, 1.0, LASERBEAM, client);
+			int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			int Laser_4 = ConnectWithBeamClient(particle_5, particle_2, red, green, blue, 2.0, 1.0, 1.0, LASERBEAM, client);
+			
+
+			i_AngelicShotgunHalo[client][1] = EntIndexToEntRef(particle_1);
+			i_AngelicShotgunHalo[client][2] = EntIndexToEntRef(particle_2);
+			i_AngelicShotgunHalo[client][3] = EntIndexToEntRef(particle_3);
+			i_AngelicShotgunHalo[client][4] = EntIndexToEntRef(particle_4);
+			i_AngelicShotgunHalo[client][5] = EntIndexToEntRef(particle_5);
+			i_AngelicShotgunHalo[client][6] = EntIndexToEntRef(Laser_1);
+			i_AngelicShotgunHalo[client][7] = EntIndexToEntRef(Laser_2);
+			i_AngelicShotgunHalo[client][8] = EntIndexToEntRef(Laser_3);
+			i_AngelicShotgunHalo[client][9] = EntIndexToEntRef(Laser_4);
+		}
+		case 1:
+		{
+			float flPos[3];
+			float flAng[3];
+			GetAttachment(viewmodelModel, "head", flPos, flAng);
+			int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
+			AddEntityToThirdPersonTransitMode(client, particle);
+			SetParent(viewmodelModel, particle, "head");
+			i_AngelicShotgunHalo[client][0] = EntIndexToEntRef(particle);
+		}
+	}
+
+}
+
+
+bool AngelicShotgun_MissingEffects(int client)
+{
+	for(int loop = 0; loop<LoopAmountEffects(client); loop++)
+	{
+		int entity = EntRefToEntIndex(i_AngelicShotgunHalo[client][loop]);
+		if(!IsValidEntity(entity))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void AngelicShotgunRemoveEffects(int client)
+{
+	for(int loop = 0; loop<20; loop++)
+	{
+		int entity = EntRefToEntIndex(i_AngelicShotgunHalo[client][loop]);
+		if(IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+		i_AngelicShotgunHalo[client][loop] = INVALID_ENT_REFERENCE;
+	}
+}
+
+int LoopAmountEffects(int client)
+{
+	switch(i_Current_Pap[client])
+	{
+		case 3:
+			return 19;
+		case 2:
+			return 10;
+		case 1:
+			return 1;
+		default:
+			return 0;
+	}
+}

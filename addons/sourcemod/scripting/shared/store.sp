@@ -112,6 +112,8 @@ enum struct ItemInfo
 	int WeaponForceClass;
 	
 	int CustomWeaponOnEquip;
+	int Weapon_Override_Slot;
+	int Melee_AttackDelayFrame;
 	
 #if defined ZR
 	int RougeBuildMax;
@@ -330,6 +332,12 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sint_ability_onequip", prefix);
 		this.CustomWeaponOnEquip 		= kv.GetNum(buffer);
+
+		Format(buffer, sizeof(buffer), "%soverride_weapon_slot", prefix);
+		this.Weapon_Override_Slot 		= kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%smelee_attack_frame_delay", prefix);
+		this.Melee_AttackDelayFrame 		= kv.GetNum(buffer, 12);
 		
 		Format(buffer, sizeof(buffer), "%sattack_3_ability_slot", prefix);
 		this.Attack3AbilitySlot			= kv.GetNum(buffer);
@@ -5302,6 +5310,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			if(info.Classname[0])
 			{
 				slot = TF2_GetClassnameSlot(info.Classname);
+				if(info.Weapon_Override_Slot != -1)
+				{
+					slot = info.Weapon_Override_Slot;
+				}
 				if(slot == TFWeaponSlot_Melee)
 					found = true;
 				
@@ -5368,6 +5380,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						i_CustomWeaponEquipLogic[entity] = info.CustomWeaponOnEquip;
 					}
+					i_OverrideWeaponSlot[entity] = info.Weapon_Override_Slot;
+					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
 					
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
@@ -6003,6 +6017,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Trash_Cannon(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
 		Enable_Quibai(client, entity);
+		AngelicShotgun_Enable(client, entity);
 #endif
 
 #if defined RPG

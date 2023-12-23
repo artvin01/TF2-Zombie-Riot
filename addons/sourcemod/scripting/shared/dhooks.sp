@@ -1973,6 +1973,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		float HealAmmount = 20.0;
 
 		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
+		
 
 		
 		float GameTime = GetGameTime();
@@ -1980,6 +1981,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		{
 			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
 		}
+		HealAmmount *= TargetHealingPenaltyOrBonus(target);
 		
 		if(ammo_amount_left > RoundToCeil(HealAmmount))
 		{

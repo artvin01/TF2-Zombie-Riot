@@ -23,7 +23,8 @@
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Irenehuddelay[MAXTF2PLAYERS];
 static int i_IreneHitsDone[MAXTF2PLAYERS];
-static bool b_WeaponAttackSpeedModified[MAXENTITIES];
+bool b_WeaponAttackSpeedModified[MAXENTITIES];
+int i_NextAttackDoubleHit[MAXENTITIES];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
 static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
@@ -88,6 +89,7 @@ void Reset_stats_Irene_Singular_Weapon(int weapon) //This is on weapon remake. c
 {
 	b_WeaponAttackSpeedModified[weapon] = false;
 	b_WeaponAttackSpeedModifiedSeaborn[weapon] = false;
+	i_NextAttackDoubleHit[weapon] = 0;
 }
 
 public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slot)

@@ -2159,6 +2159,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Weapon_TexanBuisness(attacker, damage, damagetype);
 		}
+		case WEAPON_ANGELIC_SHOTGUN:
+		{
+			Weapon_AngelicShotgun(attacker, damage, damagetype);
+		}
 	}
 #endif
 

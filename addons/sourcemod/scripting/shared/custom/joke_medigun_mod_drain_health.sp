@@ -574,10 +574,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						healing_Amount *= 0.25;
 					}
+					healing_Amount *= TargetHealingPenaltyOrBonus(healTarget);
 					if(f_TimeUntillNormalHeal[owner] > GetGameTime())
 					{
 						healing_Amount_Self *= 0.25;
 					}
+					healing_Amount_Self *= TargetHealingPenaltyOrBonus(healTarget);
 					
 					
 					int i_SelfHealAmount;
