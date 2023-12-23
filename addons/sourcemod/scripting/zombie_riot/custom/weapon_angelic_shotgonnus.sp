@@ -127,6 +127,13 @@ public Action Timer_Management_Angelic_Shotgun(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
+		int MetalAmmo = GetAmmo(client, Ammo_Metal);
+		if(MetalAmmo < 10)
+		{
+			SetAmmo(client, Ammo_Metal, 10);
+		}
+		//anti safe softlock
+		//and that free 10 ammo just isnt worth it lol
 		RestoreOrDestroyAngelicShotgun(client, i_AbilityActiveAngelic[client]);
 	}
 	else
