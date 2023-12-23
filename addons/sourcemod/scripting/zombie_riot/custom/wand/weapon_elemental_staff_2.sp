@@ -448,7 +448,7 @@ public bool TraceEntityEnumerator_Passanger(int entity, int filterentity)
 {
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
 	{
-		b_PassangerExtraCharge[client] = false;
+		b_PassangerExtraCharge[filterentity] = false;
 		return false; //stop.
 	}
 	//always keep going!
@@ -612,7 +612,7 @@ void Passanger_CauseCoolSoundEffect(float StartLightningPos[3])
 
 void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
-	float damage = 165.0;
+	float damage = 150.0;
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
 
 
