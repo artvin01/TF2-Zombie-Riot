@@ -210,7 +210,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 
 
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
 		return npc;
@@ -223,6 +224,11 @@ public void Schwertkrieg_Set_Ally_Index(int ref)
 }
 static int Schwertkrieg_Get_Target(Raidboss_Schwertkrieg npc, float GameTime)
 {
+
+	if(schwert_retreat)
+	{
+		return EntRefToEntIndex(i_ally_index);
+	}
 	
 	if(shared_goal)	//yes my master...
 	{
