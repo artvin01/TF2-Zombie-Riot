@@ -221,6 +221,9 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 
 void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int enemy)
 {
+	if(b_thisNpcIsARaid[enemy])
+		damage *= 1.10;
+		
 	if(!i_AbilityActiveAngelic[client])
 	{
 		if(!b_HasHitAlreadyAngelic[client])
@@ -230,6 +233,8 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 				case 2,3:
 				{
 					i_AbilityChargeAngelic[client] += 1;
+					if(b_thisNpcIsARaid[enemy])
+						i_AbilityChargeAngelic[client] += 1;
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_2)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_2;
@@ -238,13 +243,15 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 				case 1:
 				{
 					i_AbilityChargeAngelic[client] += 1;
+					if(b_thisNpcIsARaid[enemy])
+						i_AbilityChargeAngelic[client] += 1;
+
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_1)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_1;
 					}
 				}
 			}
-
 		}
 	}
 	b_HasHitAlreadyAngelic[client] = true;
@@ -258,7 +265,7 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 			{
 				float HealingPerHit = 10.0;
 				if(b_thisNpcIsARaid[enemy])
-					HealingPerHit *= 2.0;
+					HealingPerHit *= 4.0;
 				else if(b_thisNpcIsABoss[enemy])
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
@@ -277,7 +284,7 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 			{
 				float HealingPerHit = 6.0;
 				if(b_thisNpcIsARaid[enemy])
-					HealingPerHit *= 2.0;
+					HealingPerHit *= 4.0;
 				else if(b_thisNpcIsABoss[enemy])
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
@@ -294,7 +301,7 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 			{
 				float HealingPerHit = 5.0;
 				if(b_thisNpcIsARaid[enemy])
-					HealingPerHit *= 2.0;
+					HealingPerHit *= 4.0;
 				else if(b_thisNpcIsABoss[enemy])
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
@@ -311,7 +318,7 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 			{
 				float HealingPerHit = 2.0;
 				if(b_thisNpcIsARaid[enemy])
-					HealingPerHit *= 2.0;
+					HealingPerHit *= 4.0;
 				else if(b_thisNpcIsABoss[enemy])
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
