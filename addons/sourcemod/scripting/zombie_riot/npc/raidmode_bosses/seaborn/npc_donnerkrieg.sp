@@ -1193,7 +1193,8 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	Donnerkrieg_Set_Sniper_Threat_Value(npc, attacker, damage, weapon);
+	if(attacker < MAXTF2PLAYERS)
+		Donnerkrieg_Set_Sniper_Threat_Value(npc, attacker, damage, weapon);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -1205,6 +1206,9 @@ public Action Raidboss_Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &
 }
 static void Donnerkrieg_Set_Sniper_Threat_Value(Raidboss_Donnerkrieg npc, int PrimaryThreatIndex, float damage, int weapon)
 {
+	if(!IsValidEntity(weapon))
+		return;
+		
 	float vecTarget[3]; vecTarget = WorldSpaceCenter(PrimaryThreatIndex);
 	
 	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenter(npc.index), true);
