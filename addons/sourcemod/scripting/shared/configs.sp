@@ -296,7 +296,8 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			if(attrib[i] == 298)
 			{
 				val = RoundFloat(value[i]);
-				break;
+				if(val == 0)
+					val = 1;
 			}
 		}
 		
@@ -495,6 +496,8 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 			if(attrib[i] == 298)
 			{
 				val = RoundFloat(value[i]);
+				if(val == 0)
+					val = 1;
 				break;
 			}
 		}
@@ -568,6 +571,9 @@ bool Config_CreateNPCStats(const char[] classname, const int[] attrib, const flo
 			if(attrib[i] == 298)
 			{
 				val = RoundFloat(value[i]);
+				if(val == 0)
+					val = 1;
+					
 				break;
 			}
 		}

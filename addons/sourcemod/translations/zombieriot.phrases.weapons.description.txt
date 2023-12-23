@@ -2560,4 +2560,20 @@
 	{
 		"en"	"More Damage"
 	}
+	"Angelic Shotgonnus Desc"
+	{
+		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 75%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nYou do not gain base extra melee res with this weapon like most other melee's"
+	}
+	"Angelic Shotgonnus Desc Pap 1"
+	{
+		"en"	"You deal more damage, gain an ability to always double hit and heal more.\nYou hit more enemies at once.\nOverheal is increaced."
+	}
+	"Angelic Shotgonnus Desc Pap 2"
+	{
+		"en"	"You deal more damage, you heal more, your range increaces and your ability holds more charge."
+	}
+	"Angelic Shotgonnus Desc Pap 3"
+	{
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced."
+	}
 }

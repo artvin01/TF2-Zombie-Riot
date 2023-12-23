@@ -200,6 +200,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
+			case WEAPON_ANGELIC_SHOTGUN:
+			{
+				Angelic_Shotgun_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
 			case WEAPON_FLAGELLANT_MELEE:
 			{
 				Flagellant_DoSwingTrace(client);
@@ -599,6 +603,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}	
 					}
 					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
+					playerPos[2] += 45.0;
 					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
 					
 #if defined ZR
@@ -608,13 +613,16 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							damage *= 0.5;
 						}
+						case WEAPON_ANGELIC_SHOTGUN:
+						{
+							Angelic_Shotgun_Meleetrace_Hit(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+						}
 						default:
 						{
 							
 						}
 					}
 #endif
-
 				}
 			}
 		}

@@ -284,6 +284,8 @@ bool b_DoNotUnStuck[MAXENTITIES];
 bool b_PlayerIsInAnotherPart[MAXENTITIES];
 
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
+int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
+int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
 
@@ -2204,8 +2206,13 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	}
 	
 	float GameTime = GetGameTime();
-	
-	if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+	int WeaponSlot = TF2_GetClassnameSlot(classname);
+
+	if(i_OverrideWeaponSlot[weapon] != -1)
+	{
+		WeaponSlot = i_OverrideWeaponSlot[weapon];
+	}
+	if(WeaponSlot == TFWeaponSlot_Melee)
 	{
 		//If it stoo fast then we dont want to do it eveytime, that can be laggy and it doesnt even change anything.
 		//Also check if its the exact same number again, if it is, dont even set it.
@@ -2273,7 +2280,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 				}
 				f_DelayAttackspeedPanicAttack[weapon] = 1.0;				
 			}
-			if(!StrContains(classname, "tf_weapon_knife") && i_InternalMeleeTrace[weapon])
+			if((!StrContains(classname, "tf_weapon_knife") || i_MeleeAttackFrameDelay[weapon] == 0) && i_InternalMeleeTrace[weapon])
 			{
 				DataPack pack = new DataPack();
 				pack.WriteCell(GetClientUserId(client));
@@ -2284,19 +2291,10 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			else if(i_InternalMeleeTrace[weapon])
 			{
 				DataPack pack = new DataPack();
-				//The delay is usually 0.2 seconds.
-			
-		//		CreateDataTimer(0.2, Timer_Do_Melee_Attack, pack, TIMER_FLAG_NO_MAPCHANGE);
-
-				//every 0.1 has 6 frames
-				//soo..
-				//we will use request frames in this case, reasoningbeing is that melee's should be relieable, timers have an ugly 0.1 delay thing where it
-				//only does check every 0.1 seconds.
-				//passanger ability for example could benifit from this, although thats unneeded.
 				pack.WriteCell(GetClientUserId(client));
 				pack.WriteCell(EntIndexToEntRef(weapon));
 				pack.WriteString(classname);
-				RequestFrames(Timer_Do_Melee_Attack, 12, pack);
+				RequestFrames(Timer_Do_Melee_Attack, i_MeleeAttackFrameDelay[weapon], pack);
 			}
 		}
 	}
