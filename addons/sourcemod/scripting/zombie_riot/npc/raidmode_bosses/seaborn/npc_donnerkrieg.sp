@@ -136,7 +136,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_1.mp3");
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_2.mp3");
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
@@ -319,7 +319,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_1.mp3", 290, true);
+		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_2.mp3", 290, true);
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 			
