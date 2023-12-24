@@ -8,10 +8,9 @@ static const char g_DeathSounds[][] = {
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
+	"vo/medic_laughshort01.mp3",
+	"vo/medic_laughshort02.mp3",
+	"vo/medic_laughshort03.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -22,13 +21,15 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/ubersaw_hit1.wav",
-	"weapons/ubersaw_hit2.wav",
-	"weapons/ubersaw_hit3.wav",
-	"weapons/ubersaw_hit4.wav",
+	"weapons/batsaber_hit_flesh1.wav",
+	"weapons/batsaber_hit_flesh2.wav",
+	"weapons/batsaber_hit_world1.wav",
+	"weapons/batsaber_hit_world2.wav",
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/batsaber_swing1.wav",
+	"weapons/batsaber_swing2.wav",
+	"weapons/batsaber_swing3.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
@@ -72,6 +73,8 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	Zero(fl_focus_timer);
 }
 
+static int i_schwert_hand_particle[MAXENTITIES];
+
 methodmap Raidboss_Schwertkrieg < CClotBody
 {
 	
@@ -79,7 +82,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -93,7 +96,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		
 		#if defined DEBUG_SOUND
@@ -103,7 +106,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -111,14 +114,14 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -126,14 +129,14 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
 	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
@@ -151,7 +154,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		b_raidboss_schwertkrieg_alive = true;
@@ -161,6 +164,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		fl_focus_timer[npc.index]=0.0;
+
 		
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
@@ -171,41 +175,68 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		//IDLE
 		npc.m_flSpeed =330.0;
 		
-		int skin = 5;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
+		/*
+
+			breakneck baggies	"models/workshop/player/items/all_class/jogon/jogon_medic.mdl"
+			lo-grav loafers		"models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl"
+			puffed practitioner	"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl"
+
+			das blutliebhaber	"models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl"
+			Herzensbrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
+			dark helm			"models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_medic.mdl"
+			quadwrangler		"models/player/items/medic/qc_glove.mdl"
+
+		*/
+
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/medic_zombie.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_medic.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-		
-		npc.GetAttachment("eyeglow_L", flPos, flAng);
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_medic.mdl");
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
+		npc.m_iWearable7 = npc.EquipItem("head", "models/player/items/medic/qc_glove.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 		
 		npc.StartPathing();
-		
+
+		float flPos[3], flAng[3];
+				
+		npc.GetAttachment("eyeglow_L", flPos, flAng);
+		i_schwert_hand_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
+		npc.GetAttachment("root", flPos, flAng);
+
 		
 		npc.m_flMeleeArmor = 1.5;
 		
@@ -216,6 +247,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		Schwertkrieg_Create_Wings(npc);
+		Schwert_Impact_Lance_Create(npc.index);
 		
 		
 		return npc;
@@ -318,9 +350,20 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
-		
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		if(IsValidAlly(npc.index, EntRefToEntIndex(i_ally_index)))	//schwert will always prefer attacking enemies who are near donnerkrieg.
+		{
+			npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(i_ally_index),_,_,_,_,_,_,true);
+			if(npc.m_iTarget == -1)
+			{
+				npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(i_ally_index));
+			}
+		}
+		else
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+		
 	}	
 	
 	int PrimaryThreatIndex = Schwertkrieg_Get_Target(npc, GameTime);
@@ -343,15 +386,18 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
+
+				float Swing_Speed = 1.0;
+				float Swing_Delay = 0.2;
 				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GameTime+0.2;
-						npc.m_flAttackHappens_bullshit = GameTime+0.35;
+						npc.m_flAttackHappens = GameTime+Swing_Delay;
+						npc.m_flAttackHappens_bullshit = GameTime+Swing_Speed;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
@@ -368,7 +414,7 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								float meleedmg= 17.5*RaidModeScaling;	//schwert hurts like a fucking truck
+								float meleedmg= 25.0*RaidModeScaling;	//schwert hurts like a fucking truck
 								
 								if(target <= MaxClients)
 								{
@@ -391,19 +437,40 @@ public void Raidboss_Schwertkrieg_ClotThink(int iNPC)
 								{
 									SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg * 5, DMG_CLUB, -1, _, vecHit);
 								}
+
+								bool Knocked = false;
+								
+								if(IsValidClient(target))
+								{
+									if (IsInvuln(target))
+									{
+										Knocked = true;
+										Custom_Knockback(npc.index, target, 900.0, true);
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									}
+									else
+									{
+										TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+										TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+									}
+								}
+									
+								if(!Knocked)
+									Custom_Knockback(npc.index, target, 650.0); 
 								
 								npc.PlayMeleeHitSound();	
 							
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GameTime + 0.3;
+						npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
 						npc.m_flAttackHappenswillhappen = false;
 					}
 					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GameTime + 0.3;
+						npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
 					}
 				}
 			}
@@ -529,6 +596,7 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
 
 	Schwertkrieg_Delete_Wings(npc);
+	Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -542,6 +610,16 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+
+	int particle = EntRefToEntIndex(i_schwert_hand_particle[npc.index]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+		i_schwert_hand_particle[npc.index]=INVALID_ENT_REFERENCE;
+	}
+		
 }
 static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
 {
@@ -564,7 +642,7 @@ static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float 
 		pack.WriteCell(duration);
 	}
 }
-#define SCHWERTKRIEG_PARTICLE_EFFECT_AMT 60
+#define SCHWERTKRIEG_PARTICLE_EFFECT_AMT 30
 static int i_schwert_particle_index[MAXENTITIES][SCHWERTKRIEG_PARTICLE_EFFECT_AMT];
 
 static void Schwertkrieg_Delete_Wings(Raidboss_Schwertkrieg npc)
@@ -730,5 +808,131 @@ static void Schwertkrieg_Create_Wings(Raidboss_Schwertkrieg npc)
 	i_schwert_particle_index[npc.index][26] = EntIndexToEntRef(laser_right_wing_4);
 	i_schwert_particle_index[npc.index][27] = EntIndexToEntRef(laser_right_wing_5);
 	i_schwert_particle_index[npc.index][28] = EntIndexToEntRef(laser_right_wing_6);
+
+}
+
+#define SCHWERTKRIEG_LANCE_EFFECTS 25
+
+static int i_Schwert_Impact_Lance_CosmeticEffect[MAXENTITIES][SCHWERTKRIEG_LANCE_EFFECTS];
+
+static void Schwert_Impact_Lance_CosmeticRemoveEffects(int iNpc)
+{
+	for(int loop = 0; loop<SCHWERTKRIEG_LANCE_EFFECTS; loop++)
+	{
+		int entity = EntRefToEntIndex(i_Schwert_Impact_Lance_CosmeticEffect[iNpc][loop]);
+		if(IsValidEntity(entity))
+		{
+			RemoveEntity(entity);
+		}
+		i_Schwert_Impact_Lance_CosmeticEffect[iNpc][loop] = INVALID_ENT_REFERENCE;
+	}
+}
+
+static void Schwert_Impact_Lance_Create(int client, char[] attachment = "effect_hand_r")
+{
+
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+
+	Schwert_Impact_Lance_CosmeticRemoveEffects(client);
+
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	/*
+		{x, y, z};
+
+		x = Right = -x, Left = x
+		y = Forward = y, backwrads = -y
+		z is inverted values
+		 
+	*/
+
+	int particle_2 = InfoTargetParentAt({0.0, 10.0, 7.5}, "", 0.0); //First offset we go by
+	int particle_2_1 = InfoTargetParentAt({0.0, 10.0, -7.5}, "", 0.0);
+
+	int particle_3 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0);
+	int particle_3_1 = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0);
+
+	int particle_4 = InfoTargetParentAt({0.0,70.0,2.5}, "", 0.0);
+	int particle_4_1 = InfoTargetParentAt({0.0,70.0, -2.5}, "", 0.0);
+
+	int particle_5 = InfoTargetParentAt({0.0,-10.0, 5.0}, "", 0.0);
+	int particle_5_1 = InfoTargetParentAt({0.0,-10.0, -5.0}, "", 0.0);
+
+	int particle_6 = InfoTargetParentAt({12.0,-5.0, 0.0}, "", 0.0);
+	int particle_6_1 = InfoTargetParentAt({-12.0,-5.0, 0.0}, "", 0.0);
+
+	int particle_7 = InfoTargetParentAt({0.0,-10.0, 0.0}, "", 0.0);
+
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_2_1, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_3_1, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_4_1, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
+	SetParent(particle_1, particle_5_1, "",_, true);
+	SetParent(particle_1, particle_6, "",_, true);
+	SetParent(particle_1, particle_6_1, "",_, true);
+	SetParent(particle_1, particle_7, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(client, particle_1, attachment,_);
+
+
+	float amp = 0.1;
+
+	float blade_start = 2.0;
+	float blade_end = 0.5;
+	//handguard
+	float handguard_size = 1.0;
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_2_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_2_1, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+	int Laser_6 = ConnectWithBeamClient(particle_2, particle_3_1, red, green, blue, handguard_size, handguard_size, 0.5, LASERBEAM);
+
+	int Laser_4 = ConnectWithBeamClient(particle_2, particle_4, red, green, blue, blade_start, blade_end, amp, LASERBEAM);			//blade
+	int Laser_5 = ConnectWithBeamClient(particle_2_1, particle_4_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM);		//blade
+
+	int Laser_7 = ConnectWithBeamClient(particle_2, particle_5, red, green, blue, blade_start, blade_end, amp, LASERBEAM );			//inner blade
+	int Laser_8 = ConnectWithBeamClient(particle_2_1, particle_5_1, red, green, blue, blade_start, blade_end, amp, LASERBEAM );	//	inner blade
+
+	int Laser_9 = ConnectWithBeamClient(particle_6, particle_3, red, green, blue, blade_end, handguard_size, amp, LASERBEAM );			//wing start
+	int Laser_10 = ConnectWithBeamClient(particle_6_1, particle_3_1, red, green, blue, blade_end, handguard_size, amp, LASERBEAM );		//wing start
+	int Laser_11 = ConnectWithBeamClient(particle_6, particle_7, red, green, blue, blade_end, blade_start, amp, LASERBEAM );			//wing end
+	int Laser_12 = ConnectWithBeamClient(particle_6_1, particle_7, red, green, blue, blade_end, blade_start, amp, LASERBEAM );			//wing end
+	
+
+	i_Schwert_Impact_Lance_CosmeticEffect[client][0] = EntIndexToEntRef(particle_1);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][1] = EntIndexToEntRef(particle_2);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][2] = EntIndexToEntRef(particle_2_1);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][3] = EntIndexToEntRef(particle_3);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][4] = EntIndexToEntRef(particle_3_1);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][5] = EntIndexToEntRef(particle_4);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][6] = EntIndexToEntRef(Laser_1);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][7] = EntIndexToEntRef(Laser_2);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][8] = EntIndexToEntRef(Laser_3);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][9] = EntIndexToEntRef(Laser_4);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][10] = EntIndexToEntRef(Laser_5);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][11] = EntIndexToEntRef(Laser_6);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][12] = EntIndexToEntRef(particle_4_1);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][13] = EntIndexToEntRef(particle_5);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][14] = EntIndexToEntRef(Laser_7);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][15] = EntIndexToEntRef(Laser_8);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][16] = EntIndexToEntRef(particle_5_1);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][17] = EntIndexToEntRef(Laser_9);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][18] = EntIndexToEntRef(Laser_10);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][19] = EntIndexToEntRef(Laser_11);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][20] = EntIndexToEntRef(Laser_12);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][21] = EntIndexToEntRef(particle_7);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][22] = EntIndexToEntRef(particle_6);
+	i_Schwert_Impact_Lance_CosmeticEffect[client][23] = EntIndexToEntRef(particle_6_1);
 
 }

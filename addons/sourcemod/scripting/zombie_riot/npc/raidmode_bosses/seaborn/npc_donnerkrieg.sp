@@ -136,7 +136,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_2.mp3");
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_5.mp3");
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
@@ -162,7 +162,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		#if defined DEBUG_SOUND
@@ -176,7 +176,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		
 		#if defined DEBUG_SOUND
@@ -186,7 +186,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -194,14 +194,14 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -209,7 +209,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
@@ -319,7 +319,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_2.mp3", 290, true);
+		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_5.mp3", 290, true);
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 			
@@ -1719,7 +1719,7 @@ public bool DonnerKriegCannon_BEAM_TraceUsers(int entity, int contentsMask, int 
 	return false;
 }
 
-#define DONNERKRIEG_PARTICLE_EFFECT_AMT 60
+#define DONNERKRIEG_PARTICLE_EFFECT_AMT 30
 static int i_donner_particle_index[MAXENTITIES][DONNERKRIEG_PARTICLE_EFFECT_AMT];
 
 static void Donnerkrieg_Delete_Wings(Raidboss_Donnerkrieg npc)
