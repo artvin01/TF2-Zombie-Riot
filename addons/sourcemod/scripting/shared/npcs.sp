@@ -1259,8 +1259,6 @@ stock void Generic_OnTakeDamage(int victim, int attacker)
 
 static float f_damageAddedTogether[MAXTF2PLAYERS];
 static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
-static float f_HudCooldownAntiSpam[MAXTF2PLAYERS];
-static float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 
 static int i_HudVictimToDisplay[MAXTF2PLAYERS];
 
