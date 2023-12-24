@@ -164,10 +164,12 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
+
+		RaidModeTime = GetGameTime(npc.index) + 500.0;
 			
 		
 		//IDLE
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed =330.0;
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -212,6 +214,8 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+		Schwertkrieg_Create_Wings(npc);
 		
 		
 		return npc;
@@ -523,6 +527,8 @@ public void Raidboss_Schwertkrieg_NPCDeath(int entity)
 	npc.m_bThisNpcIsABoss = false;
 	
 	SDKUnhook(npc.index, SDKHook_Think, Raidboss_Schwertkrieg_ClotThink);
+
+	Schwertkrieg_Delete_Wings(npc);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -557,4 +563,172 @@ static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float 
 		pack.WriteCell(end_point[2]);
 		pack.WriteCell(duration);
 	}
+}
+#define SCHWERTKRIEG_PARTICLE_EFFECT_AMT 60
+static int i_schwert_particle_index[MAXENTITIES][SCHWERTKRIEG_PARTICLE_EFFECT_AMT];
+
+static void Schwertkrieg_Delete_Wings(Raidboss_Schwertkrieg npc)
+{
+
+	for(int i=0 ; i < SCHWERTKRIEG_PARTICLE_EFFECT_AMT ; i++)
+	{
+		int particle = EntRefToEntIndex(i_schwert_particle_index[npc.index][i]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		i_schwert_particle_index[npc.index][i]=INVALID_ENT_REFERENCE;
+	}
+}
+
+static void Schwertkrieg_Create_Wings(Raidboss_Schwertkrieg npc)
+{
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+
+	Schwertkrieg_Delete_Wings(npc);
+
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+
+
+	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	GetAttachment(npc.index, "back_lower", flPos, flAng);
+	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
+	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
+	SetParent(npc.index, ParticleOffsetMain, "back_lower",_);
+
+
+	//Left
+
+	float core_loc[3] = {0.0, 20.0, -25.0};
+
+	int particle_left_core = InfoTargetParentAt(core_loc, "", 0.0);
+
+
+	/*
+		X = +Left, -Right
+		Y = -Up, +Down
+		Z = +Backwards, -Forward
+	*/
+	int particle_left_wing_1 = InfoTargetParentAt({15.5, 15.0, -15.0}, "", 0.0);	//middle upper
+	int particle_left_wing_2 = InfoTargetParentAt({2.5, 20.0, -15.0}, "", 0.0);		//middle mid
+	int particle_left_wing_6 = InfoTargetParentAt({18.5, 27.5, 5.0}, "", 0.0);		//middle lower
+	
+	int particle_left_wing_3 = InfoTargetParentAt({45.0, 35.0, -7.5}, "", 0.0);	//side upper		//raygun_projectile_blue_crit
+	int particle_left_wing_4 = InfoTargetParentAt({40.0, 45.0, -7.5}, "", 0.0);	//side lower
+
+	int particle_left_wing_5 = InfoTargetParentAt({25.5, 60.0, 15.0}, "", 0.0);	//lower left
+
+	SetParent(particle_left_core, particle_left_wing_1, "",_, true);
+	SetParent(particle_left_core, particle_left_wing_2, "",_, true);
+	SetParent(particle_left_core, particle_left_wing_3, "",_, true);
+	SetParent(particle_left_core, particle_left_wing_4, "",_, true);
+	SetParent(particle_left_core, particle_left_wing_5, "",_, true);
+	SetParent(particle_left_core, particle_left_wing_6, "",_, true);
+	//SetParent(particle_left_core, particle_2_Wingset_1, "",_, true);
+
+
+
+	Custom_SDKCall_SetLocalOrigin(particle_left_core, flPos);
+	SetEntPropVector(particle_left_core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_left_core, "",_);
+
+	float start_1 = 2.0;
+	float end_1 = 0.5;
+	float amp =0.1;
+
+	int laser_left_wing_1 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+
+	int laser_left_wing_2 = ConnectWithBeamClient(particle_left_wing_1, particle_left_wing_3, red, green, blue, start_1, end_1, amp, LASERBEAM);
+	int laser_left_wing_3 = ConnectWithBeamClient(particle_left_wing_3, particle_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	int laser_left_wing_4 = ConnectWithBeamClient(particle_left_wing_4, particle_left_wing_5, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	int laser_left_wing_5 = ConnectWithBeamClient(particle_left_wing_5, particle_left_wing_6, red, green, blue, end_1, start_1, amp, LASERBEAM);
+	int laser_left_wing_6 = ConnectWithBeamClient(particle_left_wing_6, particle_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+
+
+	i_schwert_particle_index[npc.index][0] = EntIndexToEntRef(ParticleOffsetMain);
+	i_schwert_particle_index[npc.index][1] = EntIndexToEntRef(particle_left_core);
+	i_schwert_particle_index[npc.index][2] = EntIndexToEntRef(particle_left_wing_1);
+	i_schwert_particle_index[npc.index][3] = EntIndexToEntRef(particle_left_wing_2);
+	i_schwert_particle_index[npc.index][4] = EntIndexToEntRef(particle_left_wing_3);
+	i_schwert_particle_index[npc.index][5] = EntIndexToEntRef(particle_left_wing_4);
+	i_schwert_particle_index[npc.index][6] = EntIndexToEntRef(particle_left_wing_5);
+	i_schwert_particle_index[npc.index][7] = EntIndexToEntRef(particle_left_wing_6);
+
+	i_schwert_particle_index[npc.index][8] = EntIndexToEntRef(laser_left_wing_1);
+	i_schwert_particle_index[npc.index][9] = EntIndexToEntRef(laser_left_wing_2);
+	i_schwert_particle_index[npc.index][10] = EntIndexToEntRef(laser_left_wing_2);
+	i_schwert_particle_index[npc.index][11] = EntIndexToEntRef(laser_left_wing_3);
+	i_schwert_particle_index[npc.index][12] = EntIndexToEntRef(laser_left_wing_4);
+	i_schwert_particle_index[npc.index][13] = EntIndexToEntRef(laser_left_wing_5);
+	i_schwert_particle_index[npc.index][14] = EntIndexToEntRef(laser_left_wing_6);
+
+	//right
+
+	
+	int particle_right_core = InfoTargetParentAt(core_loc, "", 0.0);
+
+
+	/*
+		X = +Left, -Right
+		Y = -Up, +Down
+		Z = +Backwards, -Forward
+	*/
+
+	
+
+	int particle_right_wing_1 = InfoTargetParentAt({-15.5, 15.0, -15.0}, "", 0.0);	//middle upper
+	int particle_right_wing_2 = InfoTargetParentAt({-2.5, 20.0, -15.0}, "", 0.0);		//middle mid
+	int particle_right_wing_6 = InfoTargetParentAt({-18.5, 27.5, 5.0}, "", 0.0);		//middle lower
+	
+	int particle_right_wing_3 = InfoTargetParentAt({-45.0, 35.0, -7.5}, "", 0.0);	//side upper		//raygun_projectile_blue_crit
+	int particle_right_wing_4 = InfoTargetParentAt({-40.0, 45.0, -7.5}, "", 0.0);	//side lower
+
+	int particle_right_wing_5 = InfoTargetParentAt({-25.5, 60.0, 15.0}, "", 0.0);	//lower right
+
+	SetParent(particle_right_core, particle_right_wing_1, "",_, true);
+	SetParent(particle_right_core, particle_right_wing_2, "",_, true);
+	SetParent(particle_right_core, particle_right_wing_3, "",_, true);
+	SetParent(particle_right_core, particle_right_wing_4, "",_, true);
+	SetParent(particle_right_core, particle_right_wing_5, "",_, true);
+	SetParent(particle_right_core, particle_right_wing_6, "",_, true);
+	//SetParent(particle_right_core, particle_2_Wingset_1, "",_, true);
+
+
+
+	Custom_SDKCall_SetLocalOrigin(particle_right_core, flPos);
+	SetEntPropVector(particle_right_core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_right_core, "",_);
+
+	int laser_right_wing_1 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+
+	int laser_right_wing_2 = ConnectWithBeamClient(particle_right_wing_1, particle_right_wing_3, red, green, blue, start_1, end_1, amp, LASERBEAM);
+	int laser_right_wing_3 = ConnectWithBeamClient(particle_right_wing_3, particle_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	int laser_right_wing_4 = ConnectWithBeamClient(particle_right_wing_4, particle_right_wing_5, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	int laser_right_wing_5 = ConnectWithBeamClient(particle_right_wing_5, particle_right_wing_6, red, green, blue, end_1, start_1, amp, LASERBEAM);
+	int laser_right_wing_6 = ConnectWithBeamClient(particle_right_wing_6, particle_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+
+
+	i_schwert_particle_index[npc.index][15] = EntIndexToEntRef(particle_right_core);
+	i_schwert_particle_index[npc.index][16] = EntIndexToEntRef(particle_right_wing_1);
+	i_schwert_particle_index[npc.index][17] = EntIndexToEntRef(particle_right_wing_2);
+	i_schwert_particle_index[npc.index][18] = EntIndexToEntRef(particle_right_wing_3);
+	i_schwert_particle_index[npc.index][19] = EntIndexToEntRef(particle_right_wing_4);
+	i_schwert_particle_index[npc.index][20] = EntIndexToEntRef(particle_right_wing_5);
+	i_schwert_particle_index[npc.index][21] = EntIndexToEntRef(particle_right_wing_6);
+
+	i_schwert_particle_index[npc.index][22] = EntIndexToEntRef(laser_right_wing_1);
+	i_schwert_particle_index[npc.index][23] = EntIndexToEntRef(laser_right_wing_2);
+	i_schwert_particle_index[npc.index][24] = EntIndexToEntRef(laser_right_wing_2);
+	i_schwert_particle_index[npc.index][25] = EntIndexToEntRef(laser_right_wing_3);
+	i_schwert_particle_index[npc.index][26] = EntIndexToEntRef(laser_right_wing_4);
+	i_schwert_particle_index[npc.index][27] = EntIndexToEntRef(laser_right_wing_5);
+	i_schwert_particle_index[npc.index][28] = EntIndexToEntRef(laser_right_wing_6);
+
 }

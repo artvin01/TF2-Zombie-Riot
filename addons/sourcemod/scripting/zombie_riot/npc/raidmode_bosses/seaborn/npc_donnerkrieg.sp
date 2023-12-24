@@ -136,7 +136,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
-	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert.mp3");
+	PrecacheSoundCustom("#zombiesurvival/seaborn/donner_schwert_1.mp3");
 	
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 	
@@ -257,7 +257,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime(npc.index) + 2000.0;
+		RaidModeTime = GetGameTime(npc.index) + 500.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		
@@ -319,7 +319,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		
 		
-		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert.mp3", 190, true);
+		Music_SetRaidMusic("#zombiesurvival/seaborn/donner_schwert_1.mp3", 290, true);
 		
 		SDKHook(npc.index, SDKHook_Think, Raidboss_Donnerkrieg_ClotThink);
 			
@@ -412,6 +412,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		CPrintToChatAll("{aliceblue}Donnerkrieg{snow}: We have arrived to render judgement");
 		
+		Donnerkrieg_Wings_Create(npc);
 		
 		//Reused silvester duo code here
 		
@@ -1259,6 +1260,8 @@ public void Raidboss_Donnerkrieg_NPCDeath(int entity)
 	
 	shared_goal = false;
 	b_raidboss_donnerkrieg_alive = false;
+
+	Donnerkrieg_Delete_Wings(npc);
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.
 	//add 2 seconds so if its close, they dont lose to timer.
@@ -1714,4 +1717,188 @@ public bool DonnerKriegCannon_BEAM_TraceUsers(int entity, int contentsMask, int 
 		DonnerKriegCannon_BEAM_HitDetected[entity] = true;
 	}
 	return false;
+}
+
+#define DONNERKRIEG_PARTICLE_EFFECT_AMT 60
+static int i_donner_particle_index[MAXENTITIES][DONNERKRIEG_PARTICLE_EFFECT_AMT];
+
+static void Donnerkrieg_Delete_Wings(Raidboss_Donnerkrieg npc)
+{
+
+	for(int i=0 ; i < DONNERKRIEG_PARTICLE_EFFECT_AMT ; i++)
+	{
+		int particle = EntRefToEntIndex(i_donner_particle_index[npc.index][i]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+		i_donner_particle_index[npc.index][i]=INVALID_ENT_REFERENCE;
+	}
+}
+
+static void Donnerkrieg_Wings_Create(Raidboss_Donnerkrieg npc)
+{
+
+	if(AtEdictLimit(EDICT_RAID))
+		return;
+
+	Donnerkrieg_Delete_Wings(npc);
+
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+
+
+	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	GetAttachment(npc.index, "back_lower", flPos, flAng);
+	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
+	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
+	SetParent(npc.index, ParticleOffsetMain, "back_lower",_);
+
+
+	//Left
+
+	float core_loc[3] = {0.0, 15.0, -20.0};
+
+
+	//upper left
+
+	int particle_upper_left_core = InfoTargetParentAt(core_loc, "", 0.0);
+
+
+	
+	float start_1 = 2.0;
+	float end_1 = 0.5;
+	float amp =0.1;
+
+	/*
+		X = +Left, -Right
+		Y = -Up, +Down
+		Z = +Backwards, -Forward
+	*/
+
+	int particle_upper_left_wing_1 = InfoTargetParentAt({7.5, 0.0, -9.5}, "", 0.0);	//middle mid
+	int particle_upper_left_wing_2 = InfoTargetParentAt({20.5, 10.0, -15.0}, "", 0.0);		//middle lower
+	int particle_upper_left_wing_3 = InfoTargetParentAt({5.0, -25.0, 0.0}, "", 0.0);		//middle up	
+
+	int particle_upper_left_wing_4 = InfoTargetParentAt({50.0, -15.0, 5.0}, "", 0.0);	//side up
+	int particle_upper_left_wing_5 = InfoTargetParentAt({60.0, -10.0, 10.0}, "", 0.0);	//side mid
+	int particle_upper_left_wing_6 = InfoTargetParentAt({55.0, 0.0, 2.5}, "", 0.0);	//side low
+
+
+	SetParent(particle_upper_left_core, particle_upper_left_wing_1, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_2, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_3, "",_, true);
+
+	SetParent(particle_upper_left_core, particle_upper_left_wing_4, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_5, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_6, "",_, true);
+
+
+
+	Custom_SDKCall_SetLocalOrigin(particle_upper_left_core, flPos);
+	SetEntPropVector(particle_upper_left_core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_upper_left_core, "",_);
+
+	//start_1 = 2.0;
+	//end_1 = 0.5;
+	//amp =0.1;
+
+	int laser_upper_left_wing_1 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	int laser_upper_left_wing_2 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	
+	int laser_upper_left_wing_3 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	int laser_upper_left_wing_4 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_left_wing_5 = ConnectWithBeamClient(particle_upper_left_wing_3, particle_upper_left_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
+	int laser_upper_left_wing_6 = ConnectWithBeamClient(particle_upper_left_wing_2, particle_upper_left_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_left_wing_7 = ConnectWithBeamClient(particle_upper_left_wing_4, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+
+	
+	i_donner_particle_index[npc.index][0] = EntIndexToEntRef(ParticleOffsetMain);
+	i_donner_particle_index[npc.index][1] = EntIndexToEntRef(particle_upper_left_core);
+	i_donner_particle_index[npc.index][2] = EntIndexToEntRef(laser_upper_left_wing_1);
+	i_donner_particle_index[npc.index][3] = EntIndexToEntRef(laser_upper_left_wing_2);
+	i_donner_particle_index[npc.index][4] = EntIndexToEntRef(laser_upper_left_wing_3);
+	i_donner_particle_index[npc.index][5] = EntIndexToEntRef(laser_upper_left_wing_4);
+	i_donner_particle_index[npc.index][6] = EntIndexToEntRef(laser_upper_left_wing_5);
+	i_donner_particle_index[npc.index][7] = EntIndexToEntRef(laser_upper_left_wing_6);
+	i_donner_particle_index[npc.index][8] = EntIndexToEntRef(laser_upper_left_wing_7);
+
+	i_donner_particle_index[npc.index][9] = EntIndexToEntRef(particle_upper_left_wing_1);
+	i_donner_particle_index[npc.index][10] = EntIndexToEntRef(particle_upper_left_wing_2);
+	i_donner_particle_index[npc.index][11] = EntIndexToEntRef(particle_upper_left_wing_3);
+	i_donner_particle_index[npc.index][12] = EntIndexToEntRef(particle_upper_left_wing_4);
+	i_donner_particle_index[npc.index][13] = EntIndexToEntRef(particle_upper_left_wing_5);
+	i_donner_particle_index[npc.index][14] = EntIndexToEntRef(particle_upper_left_wing_6);
+
+
+	//upper right
+
+	int particle_upper_right_core = InfoTargetParentAt(core_loc, "", 0.0);
+
+
+	/*
+		X = +Left, -Right
+		Y = -Up, +Down
+		Z = +Backwards, -Forward
+	*/
+
+	int particle_upper_right_wing_1 = InfoTargetParentAt({-7.5, 0.0, -9.5}, "", 0.0);	//middle mid
+	int particle_upper_right_wing_2 = InfoTargetParentAt({-20.5, 10.0, -15.0}, "", 0.0);		//middle lower
+	int particle_upper_right_wing_3 = InfoTargetParentAt({-5.0, -25.0, 0.0}, "", 0.0);		//middle up	
+
+	int particle_upper_right_wing_4 = InfoTargetParentAt({-50.0, -15.0, 5.0}, "", 0.0);	//side up
+	int particle_upper_right_wing_5 = InfoTargetParentAt({-60.0, -10.0, 10.0}, "", 0.0);	//side mid
+	int particle_upper_right_wing_6 = InfoTargetParentAt({-55.0, 0.0, 2.5}, "", 0.0);	//side low
+
+
+	SetParent(particle_upper_right_core, particle_upper_right_wing_1, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_2, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_3, "",_, true);
+
+	SetParent(particle_upper_right_core, particle_upper_right_wing_4, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_5, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_6, "",_, true);
+
+
+
+	Custom_SDKCall_SetLocalOrigin(particle_upper_right_core, flPos);
+	SetEntPropVector(particle_upper_right_core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_upper_right_core, "",_);
+
+	//start_1 = 2.0;
+	//end_1 = 0.5;
+	//amp =0.1;
+
+	int laser_upper_right_wing_1 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	int laser_upper_right_wing_2 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	
+	int laser_upper_right_wing_3 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	int laser_upper_right_wing_4 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_right_wing_5 = ConnectWithBeamClient(particle_upper_right_wing_3, particle_upper_right_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
+	int laser_upper_right_wing_6 = ConnectWithBeamClient(particle_upper_right_wing_2, particle_upper_right_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_right_wing_7 = ConnectWithBeamClient(particle_upper_right_wing_4, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	i_donner_particle_index[npc.index][15] = EntIndexToEntRef(particle_upper_right_core);
+	i_donner_particle_index[npc.index][16] = EntIndexToEntRef(laser_upper_right_wing_1);
+	i_donner_particle_index[npc.index][17] = EntIndexToEntRef(laser_upper_right_wing_2);
+	i_donner_particle_index[npc.index][18] = EntIndexToEntRef(laser_upper_right_wing_3);
+	i_donner_particle_index[npc.index][19] = EntIndexToEntRef(laser_upper_right_wing_4);
+	i_donner_particle_index[npc.index][20] = EntIndexToEntRef(laser_upper_right_wing_5);
+	i_donner_particle_index[npc.index][21] = EntIndexToEntRef(laser_upper_right_wing_6);
+	i_donner_particle_index[npc.index][22] = EntIndexToEntRef(laser_upper_right_wing_7);
+
+	i_donner_particle_index[npc.index][23] = EntIndexToEntRef(particle_upper_right_wing_1);
+	i_donner_particle_index[npc.index][24] = EntIndexToEntRef(particle_upper_right_wing_2);
+	i_donner_particle_index[npc.index][25] = EntIndexToEntRef(particle_upper_right_wing_3);
+	i_donner_particle_index[npc.index][26] = EntIndexToEntRef(particle_upper_right_wing_4);
+	i_donner_particle_index[npc.index][27] = EntIndexToEntRef(particle_upper_right_wing_5);
+	i_donner_particle_index[npc.index][28] = EntIndexToEntRef(particle_upper_right_wing_6);
 }
