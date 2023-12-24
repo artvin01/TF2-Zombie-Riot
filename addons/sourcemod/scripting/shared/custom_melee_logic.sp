@@ -604,6 +604,19 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 					}
 					GetEntPropVector(i_EntitiesHitAoeSwing[counter], Prop_Data, "m_vecAbsOrigin", playerPos);
 					playerPos[2] += 45.0;
+#if defined ZR
+					switch(i_CustomWeaponEquipLogic[weapon])
+					{
+						case WEAPON_ANGELIC_SHOTGUN:
+						{
+							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+						}
+						default:
+						{
+							
+						}
+					}
+#endif
 					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForce(vecSwingForward, 20000.0), playerPos);
 					
 #if defined ZR
@@ -615,7 +628,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						}
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
-							Angelic_Shotgun_Meleetrace_Hit(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
+							Angelic_Shotgun_Meleetrace_Hit_After(client, damage, weapon, i_EntitiesHitAoeSwing[counter]);
 						}
 						default:
 						{

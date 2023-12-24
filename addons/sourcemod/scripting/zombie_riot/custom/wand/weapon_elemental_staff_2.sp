@@ -160,7 +160,7 @@ static int BeamWand_Glow;
 #define PASSANGER_DURATION 8
 #define PASSANGER_DELAY_ABILITY 0.2
 #define PASSANGER_MAX_ABILITIES 2
-#define PASSANGER_ABILITY_REGARGE_TIME 45.0
+#define PASSANGER_ABILITY_REGARGE_TIME 38.0
 #define SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO "misc/halloween/spell_lightning_ball_cast.wav"
 #define SOUND_WAND_LIGHTNING_ABILITY_PAP_HIT "misc/halloween/spell_lightning_ball_impact.wav"
 #define SOUND_WAND_PASSANGER "npc/scanner/scanner_electric2.wav"
@@ -388,7 +388,7 @@ void Passanger_ChargeReduced(int client, float time)
 	if(h_TimerPassangerManagement[client] != null)
 		f_PassangerAbilityCooldownRegen[client] -= time;
 }
-
+bool b_PassangerExtraCharge[MAXTF2PLAYERS];
 public void Passanger_Cooldown_Logic(int client, int weapon)
 {
 	if(f_PassangerHudDelay[client] < GetGameTime())
@@ -402,27 +402,58 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 				f_PassangerAbilityCooldownRegen[client] = FAR_FUTURE;
 				i_PassangerAbilityCount[client] = 2;
 			}
-
 		}
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			
-			if(i_PassangerAbilityCount[client] != 2)
+			b_PassangerExtraCharge[client] = true;
+			float ClientPos[3];
+			ClientPos = WorldSpaceCenter(client);
+			TR_EnumerateEntitiesSphere(ClientPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
+
+			if(b_PassangerExtraCharge[client])
 			{
-				PrintHintText(client,"Glorious Shards [%i/%i] (Recharge in: %.1f)",i_PassangerAbilityCount[client], PASSANGER_MAX_ABILITIES,f_PassangerAbilityCooldownRegen[client]-GetGameTime());
+				f_PassangerAbilityCooldownRegen[client] -= 0.2;
+			}
+			if(b_PassangerExtraCharge[client])
+			{
+				if(i_PassangerAbilityCount[client] != 2)
+				{
+					PrintHintText(client,"Glorious Shards!! [%i/%i] (Recharge in: %.1f)",i_PassangerAbilityCount[client], PASSANGER_MAX_ABILITIES,f_PassangerAbilityCooldownRegen[client]-GetGameTime());
+				}
+				else
+				{
+					PrintHintText(client,"Glorious Shards!! [%i/%i]",PASSANGER_MAX_ABILITIES,PASSANGER_MAX_ABILITIES);
+				}
 			}
 			else
 			{
-				PrintHintText(client,"Glorious Shards [%i/%i]",PASSANGER_MAX_ABILITIES,PASSANGER_MAX_ABILITIES);
+				if(i_PassangerAbilityCount[client] != 2)
+				{
+					PrintHintText(client,"Glorious Shards [%i/%i] (Recharge in: %.1f)",i_PassangerAbilityCount[client], PASSANGER_MAX_ABILITIES,f_PassangerAbilityCooldownRegen[client]-GetGameTime());
+				}
+				else
+				{
+					PrintHintText(client,"Glorious Shards [%i/%i]",PASSANGER_MAX_ABILITIES,PASSANGER_MAX_ABILITIES);
+				}				
 			}
+
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			f_PassangerHudDelay[client] = GetGameTime() + 0.5;
 		}
 	}
 }
 
-
+public bool TraceEntityEnumerator_Passanger(int entity, int filterentity)
+{
+	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
+	{
+		b_PassangerExtraCharge[filterentity] = false;
+		return false; //stop.
+	}
+	//always keep going!
+	return true;
+}
 public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, int slot)
 {
 	if(i_PassangerAbilityCount[client] > 0 || CvarInfiniteCash.BoolValue)
@@ -520,11 +551,10 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
 
 	//deal more damage during raids, otherwise its really weak in most cases.
-	if(RaidbossIgnoreBuildingsLogic())
+	if(b_PassangerExtraCharge[client])
 	{
-		damage *= 1.25;
+		damage *= 1.1;
 	}
-
 	if(Firstlightning)
 	{
 		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenter(target), 1);
@@ -543,7 +573,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			damage = (original_damage * (0.15 * loop));
 			if(b_thisNpcIsARaid[enemy])
 			{
-				damage *= 1.35;
+				damage *= 1.5;
 			}
 			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
@@ -582,7 +612,7 @@ void Passanger_CauseCoolSoundEffect(float StartLightningPos[3])
 
 void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
-	float damage = 165.0;
+	float damage = 150.0;
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
 
 

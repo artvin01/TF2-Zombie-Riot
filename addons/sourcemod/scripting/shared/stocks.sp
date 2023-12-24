@@ -4092,6 +4092,9 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0)
 {
 //	bool isNotClient = false;
+	if(b_HealthyEssence)
+		healing_Amount *= 1.25;
+		
 	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 	int flMaxHealth;
 	if(entity > MaxClients)

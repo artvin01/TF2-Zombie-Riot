@@ -2,6 +2,7 @@
 #pragma newdecls required
 static float f_AngelicShotgunHudCD[MAXTF2PLAYERS];
 #define ANGELIC_STACKS_UNTILL_DOUBLE 2
+#define ANGELIC_ABILITY_CHARGE_0 10
 #define ANGELIC_ABILITY_CHARGE_1 32
 #define ANGELIC_ABILITY_CHARGE_2 40
 #define ANGELIC_SHOTGUN_ABILTIY_SOUND_1 "items/powerup_pickup_vampire.wav"
@@ -16,6 +17,7 @@ static float f_DoubleHitGameTimeTimeSince[MAXENTITIES];
 static int f_DoubleHitStack[MAXENTITIES];
 
 static int b_HasHitAlreadyAngelic[MAXENTITIES];
+static bool FireCritOntoEnemy[MAXPLAYERS+1];
 
 public void AngelicShotgun_MapStart()
 {
@@ -58,13 +60,68 @@ void AngelicShotgun_Enable(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
+
+bool AngelicShotgun_CritDo(int client)
+{
+	float RandmValue = GetRandomFloat(1.0,0.0);
+	float ValueToCalc = 0.0;
+	switch(i_Current_Pap[client])
+	{
+		case 3:
+		{
+			ValueToCalc = 0.34;
+		}
+		case 2:
+		{
+			ValueToCalc = 0.25;
+		}
+		case 1:
+		{
+			ValueToCalc = 0.18;
+		}
+		default:
+		{
+			ValueToCalc = 0.15;
+		}
+	}
+	int ExtraChance;
+	if(i_AbilityActiveAngelic[client])
+	{
+		if(i_Current_Pap[client] >= 2)
+		{
+			ExtraChance = ANGELIC_ABILITY_CHARGE_2 - i_AbilityChargeAngelic[client];
+		}
+		else if(i_Current_Pap[client] >= 1)
+		{
+			ExtraChance = ANGELIC_ABILITY_CHARGE_1 - i_AbilityChargeAngelic[client];
+		}
+		else
+		{
+			ExtraChance = ANGELIC_ABILITY_CHARGE_0 - i_AbilityChargeAngelic[client];
+		}
+	}
+	ValueToCalc += float(ExtraChance) * 0.015; //each ammo spend gives an extra 1.5% chance to crit.
+	
+	if(RandmValue < ValueToCalc)
+	{
+		return true;
+	}
+	return false;
+}
 public void Weapon_AngelicShotgun(int attacker, float &damage, int damagetype)
 {
 	if(damagetype & DMG_CLUB)
 	{
 		if(i_AbilityActiveAngelic[attacker])
 		{
-			damage *= 1.65;
+			if(i_Current_Pap[attacker] == 0)
+			{
+				damage *= 1.3;
+			}
+			else
+			{	
+				damage *= 1.65;
+			}
 		}
 	}
 }
@@ -115,18 +172,19 @@ public Action Timer_Management_Angelic_Shotgun(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerAngelicShotgun[client] = null;
+		RestoreOrDestroyAngelicShotgun(client, false);
 		return Plugin_Stop;
 	}	
-	switch(i_Current_Pap[client])
-	{
-		case 0:
-		{
-			i_AbilityActiveAngelic[client] = false;
-		}
-	}
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
+		int MetalAmmo = GetAmmo(client, Ammo_Metal);
+		if(MetalAmmo < 10)
+		{
+			SetAmmo(client, Ammo_Metal, 10);
+		}
+		//anti safe softlock
+		//and that free 10 ammo just isnt worth it lol
 		RestoreOrDestroyAngelicShotgun(client, i_AbilityActiveAngelic[client]);
 	}
 	else
@@ -205,8 +263,21 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 				}
 				default:
 				{
-					f_AngelicShotgunHudCD[client] = GetGameTime() + 0.5;
-					return;
+					if(i_AbilityActiveAngelic[client])
+					{
+						FormatEx(AbilityHud, sizeof(AbilityHud), "AMMO [%i/%i]",i_AbilityChargeAngelic[client] / 2,ANGELIC_ABILITY_CHARGE_0 / 2);
+					}
+					else
+					{
+						if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_1)
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Angelic Code [READY]");
+						}
+						else
+						{
+							FormatEx(AbilityHud, sizeof(AbilityHud), "Angelic Code [%i/%i]",i_AbilityChargeAngelic[client],ANGELIC_ABILITY_CHARGE_0);
+						}					
+					}
 				}
 			}
 			PrintHintText(client,"%s",AbilityHud);
@@ -219,8 +290,11 @@ public void Angelic_Shotgun_Cooldown_Logic(int client, int weapon)
 
 
 
-void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int enemy)
+void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon, int enemy)
 {
+	if(b_thisNpcIsARaid[enemy])
+		damage *= 1.10;
+		
 	if(!i_AbilityActiveAngelic[client])
 	{
 		if(!b_HasHitAlreadyAngelic[client])
@@ -230,6 +304,8 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 				case 2,3:
 				{
 					i_AbilityChargeAngelic[client] += 1;
+					if(b_thisNpcIsARaid[enemy])
+						i_AbilityChargeAngelic[client] += 1;
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_2)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_2;
@@ -238,22 +314,44 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 				case 1:
 				{
 					i_AbilityChargeAngelic[client] += 1;
+					if(b_thisNpcIsARaid[enemy])
+						i_AbilityChargeAngelic[client] += 1;
+
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_1)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_1;
 					}
 				}
-			}
+				case 0:
+				{
+					i_AbilityChargeAngelic[client] += 1;
+					if(b_thisNpcIsARaid[enemy])
+						i_AbilityChargeAngelic[client] += 1;
 
+					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_0)
+					{
+						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_0;
+					}
+				}
+			}
 		}
 	}
 	b_HasHitAlreadyAngelic[client] = true;
-
+	if(FireCritOntoEnemy[client])
+	{
+		damage *= 1.35;
+		bool PlaySound = false;
+		if(f_MinicritSoundDelay[client] < GetGameTime())
+		{
+			PlaySound = true;
+			f_MinicritSoundDelay[client] = GetGameTime() + 0.01;
+		}
+		DisplayCritAboveNpc(enemy, client, PlaySound); //Display crit above head
+	}
 	switch(i_Current_Pap[client])
 	{
 		case 3:
 		{
-			damage *= 0.65;
 			if(dieingstate[client] == 0)
 			{
 				float HealingPerHit = 10.0;
@@ -263,6 +361,8 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
 					HealingPerHit *= 1.5;
+				if(FireCritOntoEnemy[client])
+					HealingPerHit *= 1.25;
 
 				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.35);
 				if(healingdone > 0)
@@ -272,7 +372,6 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 		}
 		case 2:
 		{
-			damage *= 0.65;
 			if(dieingstate[client] == 0)
 			{
 				float HealingPerHit = 6.0;
@@ -282,6 +381,8 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
 					HealingPerHit *= 1.5;
+				if(FireCritOntoEnemy[client])
+					HealingPerHit *= 1.25;
 				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.25);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
@@ -289,7 +390,6 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 		}
 		case 1:
 		{
-			damage *= 0.55;
 			if(dieingstate[client] == 0)
 			{
 				float HealingPerHit = 5.0;
@@ -299,6 +399,8 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
 					HealingPerHit *= 1.5;
+				if(FireCritOntoEnemy[client])
+					HealingPerHit *= 1.25;
 				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.25);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
@@ -306,7 +408,6 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 		}
 		default:
 		{
-			damage *= 0.5;
 			if(dieingstate[client] == 0)
 			{
 				float HealingPerHit = 2.0;
@@ -316,6 +417,8 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 					HealingPerHit *= 1.35;
 				if(i_AbilityActiveAngelic[client])
 					HealingPerHit *= 1.5;
+				if(FireCritOntoEnemy[client])
+					HealingPerHit *= 1.25;
 				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.15);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
@@ -323,10 +426,37 @@ void Angelic_Shotgun_Meleetrace_Hit(int client, float &damage, int weapon, int e
 		}
 	}
 }
+
+
+void Angelic_Shotgun_Meleetrace_Hit_After(int client, float &damage, int weapon, int enemy)
+{
+	switch(i_Current_Pap[client])
+	{
+		case 3:
+		{
+			damage *= 0.65;
+		}
+		case 2:
+		{
+			damage *= 0.65;
+		}
+		case 1:
+		{
+			damage *= 0.55;
+		}
+		default:
+		{
+			damage *= 0.5;
+		}
+	}
+}
 public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 {
 	AddAmmoClient(client, 3, 1, 1.0, true);
 	bool GiveDoubleStrike = false;
+	//reset hud due to fast doublehits
+	f_HudCooldownAntiSpam[client] = 0.0;
+	f_HudCooldownAntiSpamRaid[client] = 0.0;
 	if(i_AbilityActiveAngelic[client])
 	{
 		GiveDoubleStrike = true;
@@ -408,6 +538,14 @@ public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 			i_AbilityChargeAngelic[client] = 0;
 		}
 	}
+	if(AngelicShotgun_CritDo(client))
+	{
+		FireCritOntoEnemy[client] = true;
+	}
+	else
+	{
+		FireCritOntoEnemy[client] = false;
+	}
 	//effects below.
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -457,14 +595,22 @@ public void Angelic_ShotgunAbilityM2(int client, int weapon, bool crit, int slot
 		}
 		default:
 		{
-			return;
+			if(i_AbilityChargeAngelic[client] < ANGELIC_ABILITY_CHARGE_0)
+			{
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "Not Enough Shards");
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
+			}
+
 		}
 	}
 
 	MakePlayerGiveResponseVoice(client, 1); //haha!
 	switch(i_Current_Pap[client])
 	{
-		case 1,2,3:
+		case 0,1,2,3:
 		{
 			EmitSoundToAll(ANGELIC_SHOTGUN_ABILTIY_SOUND_1, client, _, 75, _, 0.60);
 		}
@@ -472,10 +618,10 @@ public void Angelic_ShotgunAbilityM2(int client, int weapon, bool crit, int slot
 	//effects below.
 	int viewmodelModel;
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	i_AbilityActiveAngelic[client] = true;
 	if(!IsValidEntity(viewmodelModel))
 		return;
 	
-	i_AbilityActiveAngelic[client] = true;
 	RestoreOrDestroyAngelicShotgun(client, i_AbilityActiveAngelic[client]);
 }
 

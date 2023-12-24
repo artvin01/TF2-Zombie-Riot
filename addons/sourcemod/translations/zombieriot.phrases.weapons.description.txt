@@ -1066,8 +1066,7 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increased Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack will also chain across 4 enemies but attack 3x slower, each attack will heavily slow the enemy for a short time.\nArchetype changes to ''Chain Caster''"
-		"ru"	"Значительно увеличенный урон.\nВаша способность изменяется на двойную заряженную, случайную атаку, многоударную цепную атаку молнией.\nВаша атака также будет цепной по 4 врагам, но атаковать в 3 раза медленнее, каждая атака будет сильно замедлять врага на короткое время.\nАрхетип меняется на «Мастер цепей»"
+		"en"	"Massively increased Damage.\nYour ability changes to a 2x charged, randomly targetting, multistrike Lighting chaining attack.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !! and 10%% more dmg and faster ability charge.\nArchetype changes to ''Chain Caster''"
 	}
 	
 	"Beam Wand Desc"
@@ -2562,18 +2561,18 @@
 	}
 	"Angelic Shotgonnus Desc"
 	{
-		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 75%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nYou do not gain base extra melee res with this weapon like most other melee's"
+		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 85%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
 	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
-		"en"	"You deal more damage, gain an ability to always double hit and heal more.\nYou hit more enemies at once.\nOverheal is increaced."
+		"en"	"You deal more damage, ability get smore capacity.\nYou hit more enemies at once.\nOverheal is increaced.\nCrit Chance Increaces."
 	}
 	"Angelic Shotgonnus Desc Pap 2"
 	{
-		"en"	"You deal more damage, you heal more, your range increaces and your ability holds more charge."
+		"en"	"You deal more damage, you heal more, your range increaces and your ability holds more charge.\nCrit Chance Increaces."
 	}
 	"Angelic Shotgonnus Desc Pap 3"
 	{
-		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced."
+		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced.\nCrit Chance Increaces."
 	}
 }

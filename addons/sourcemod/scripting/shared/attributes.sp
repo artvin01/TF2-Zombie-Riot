@@ -330,6 +330,8 @@ void Attributes_OnKill(int client, int weapon)
 	{
 		value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
 
+		value *= TargetHealingPenaltyOrBonus(client);
+
 		if(value)
 			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
 		
