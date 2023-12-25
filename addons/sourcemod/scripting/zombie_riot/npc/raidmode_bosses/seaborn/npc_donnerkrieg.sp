@@ -737,7 +737,7 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(int donner, int schwert
 		
 	}
 }
-#define HEAVENS_LIGHT_MAXIMUM_IONS 18
+#define HEAVENS_LIGHT_MAXIMUM_IONS 3*5		//3  is a must, then the other multi is whatever, just make sure its an integer. fun fact: going above 5 will kill TE limit!
 
 static float fl_heavens_damage;
 static float fl_heavens_charge_time;
@@ -746,19 +746,83 @@ static float fl_heavens_radius;
 static float fl_heavens_speed;
 
 static float fl_Heavens_Loc[HEAVENS_LIGHT_MAXIMUM_IONS+1][3];
+static float fl_Heavens_Target_Loc[HEAVENS_LIGHT_MAXIMUM_IONS+1][3];
+static bool b_targeted_by_heavens[MAXTF2PLAYERS+1];
+static float fl_was_targeted[MAXTF2PLAYERS+1];
+static float fl_heavens_rng_loc_timer[HEAVENS_LIGHT_MAXIMUM_IONS+1];
+static int i_heavens_target_id[HEAVENS_LIGHT_MAXIMUM_IONS+1];
 static float fl_Heavens_Angle;
+
+static int HeavenLight_GetTarget(int ID, float loc[3])
+{
+	float Dist = -1.0;
+	int client_id=-1;
+	for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+	{
+		if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+		{
+			if(!b_targeted_by_heavens[client] || client==i_heavens_target_id[ID])
+			{
+				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
+				float distance = GetVectorDistance(client_loc, loc, true);
+				{
+					if(distance<Dist || Dist==-1.0)
+					{
+						Dist = distance;
+						client_id = client;
+					}
+				}
+			}
+		}
+	}
+	if(IsValidClient(client_id))
+	{
+		fl_was_targeted[client_id] = GetGameTime()+0.25;
+		b_targeted_by_heavens[client_id]=true;
+		i_heavens_target_id[ID]=client_id;
+	}
+	return client_id;
+}
+
+static void GetRandomLoc(Raidboss_Donnerkrieg npc, float Loc[3], int Num)
+{
+
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
+
+	Loc[0] = GetRandomFloat((Loc[0] - 200.0*Num),(Loc[0] + 200.0*Num));
+	Loc[1] = GetRandomFloat((Loc[1] - 200.0*Num),(Loc[1] + 200.0*Num));
+
+	Handle ToGroundTrace = TR_TraceRayFilterEx(Loc, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+		
+	TR_GetEndPosition(Loc, ToGroundTrace);
+	delete ToGroundTrace;
+
+	CNavArea area = TheNavMesh.GetNearestNavArea(Loc, true);
+	if(area == NULL_AREA)
+		return;
+
+	int NavAttribs = area.GetAttributes();
+	if(NavAttribs & NAV_MESH_AVOID)
+	{
+		return;
+	}
+			
+
+	area.GetCenter(Loc);
+}
 
 static void Invoke_Heavens_Light(int ref)
 {
 	float Heavens_Duration, GameTime = GetGameTime();
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
 	fl_heavens_damage = 100.0;
-	fl_heavens_charge_time = 7.5;
-	Heavens_Duration = 25.0;
-	fl_heavens_radius = 200.0;	//This is per individual beam
+	fl_heavens_charge_time = 10.0;
+	Heavens_Duration = 60.0;
+	fl_heavens_radius = 150.0;	//This is per individual beam
 	fl_heavens_speed = 2.5;
 	
-	
+	Zero(i_heavens_target_id);
+	Zero(fl_heavens_rng_loc_timer);
 	fl_Heavens_Angle = 0.0;
 	float time = Heavens_Duration + fl_heavens_charge_time;
 	
@@ -779,6 +843,7 @@ public Action Heavens_End_Timer(Handle timer, int ref)
 	
 	return Plugin_Continue;
 }
+//static int TE_used;
 public Action Heavens_TBB_Tick(int client)
 {
 	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(client);
@@ -786,8 +851,12 @@ public Action Heavens_TBB_Tick(int client)
 	if(!IsValidEntity(client))
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Heavens_TBB_Tick);
+		return Plugin_Stop;
 	}
+
 	float GameTime = GetGameTime();
+
+	//TE_used=0;
 	
 	if(fl_heavens_charge_gametime>GameTime)
 	{
@@ -796,33 +865,47 @@ public Action Heavens_TBB_Tick(int client)
 	}
 	else
 	{
-		Heavens_Full_Charge(npc.index);
+		for(int player=0 ; player <=MAXTF2PLAYERS ; player++)
+		{
+			if(fl_was_targeted[player]< GameTime)
+			{
+				b_targeted_by_heavens[player]=false;
+			}
+		}
+
+		Heavens_Full_Charge(npc, GameTime);
 	}
 	
 	return Plugin_Continue;
 }
-static void Heavens_Full_Charge(int ref)
+static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 {
-	Raidboss_Donnerkrieg npc = view_as<Raidboss_Donnerkrieg>(ref);
 	for(int i=0 ; i< HEAVENS_LIGHT_MAXIMUM_IONS ; i++)
 	{
 		float loc[3]; loc = fl_Heavens_Loc[i];
-		float Dist = -1.0;
 		float Target_Loc[3]; Target_Loc = loc;
-		for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
+
+		int Target = HeavenLight_GetTarget(i, loc);
+		
+
+		if(IsValidClient(Target))
 		{
-			if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+			GetEntPropVector(Target, Prop_Data, "m_vecAbsOrigin", Target_Loc);
+			fl_Heavens_Target_Loc[i] = Target_Loc;
+		}
+		else
+		{
+			if(fl_heavens_rng_loc_timer[i] < GameTime)
 			{
-				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
-				float distance = GetVectorDistance(client_loc, loc, true);
-				{
-					if(distance<Dist || Dist==-1)
-					{
-						Target_Loc = client_loc;
-					}
-				}
-	
+				fl_heavens_rng_loc_timer[i] = GameTime+GetRandomFloat(1.0, 5.0);
+				GetRandomLoc(npc, Target_Loc, i);
+				fl_Heavens_Target_Loc[i] = Target_Loc;
 			}
+			else
+			{
+				Target_Loc = fl_Heavens_Target_Loc[i];
+			}
+			
 		}
 		
 		float Direction[3], vecAngles[3];
@@ -844,12 +927,40 @@ static void Heavens_Full_Charge(int ref)
 				{
 					if(distance< (fl_heavens_radius * fl_heavens_radius))
 					{
-						float fake_damage = fl_heavens_damage*(1.01 - (distance / (fl_heavens_radius * fl_heavens_radius)));	//reduce damage if the target just grazed it.
-						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage * 0.85, DMG_CLUB, _, _, loc);
+						float ratio = (1.0 - (distance / (fl_heavens_radius * fl_heavens_radius)));
+						if(ratio<0.4)
+							ratio = 0.4;
+						float fake_damage = fl_heavens_damage*ratio;	//reduce damage if the target just grazed it.
+						SDKHooks_TakeDamage(client, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
 						Client_Shake(client, 0, 5.0, 15.0, 0.1);
 					}
 				}
 	
+			}
+		}
+
+		for(int entitycount_again; entitycount_again<i_MaxcountNpc_Allied; entitycount_again++)	// now murder red npc's :)
+		{
+			int ally = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again]);
+			if (IsValidEntity(ally) && !b_NpcHasDied[ally])
+			{
+				float target_vec[3]; target_vec = GetAbsOrigin(ally);
+				float dist=GetVectorDistance(loc, target_vec, true);
+
+				if(dist< (fl_heavens_radius * fl_heavens_radius))
+				{
+					float ratio = (1.0 - (dist / (fl_heavens_radius * fl_heavens_radius)));
+					if(ratio<0.4)
+						ratio = 0.4;	// L + Ratio. :3
+					float fake_damage = fl_heavens_damage*ratio;	//reduce damage if the target just grazed it.
+
+					if(ShouldNpcDealBonusDamage(ally))
+					{
+						fake_damage *=2.0;
+					}
+					SDKHooks_TakeDamage(ally, npc.index, npc.index, fake_damage, DMG_CLUB, _, _, loc);
+				}
+
 			}
 		}
 		
@@ -860,7 +971,8 @@ static void Heavens_Full_Charge(int ref)
 		color[1] = 50;
 		color[2] = 50;
 		color[3] = 75;
-		Heavens_SpawnBeam(loc, color, 7.5);
+
+		Heavens_SpawnBeam(loc, color, 7.5, true);
 	}
 }
 static void Heavens_Light_Charging(int ref, float ratio)
@@ -908,11 +1020,11 @@ static void Heavens_Light_Charging(int ref, float ratio)
 			}
 		}
 		
-		for (int j = 0; j < 6; j++)
+		for (int j = 0; j < (HEAVENS_LIGHT_MAXIMUM_IONS/3); j++)
 		{
 			float tempAngles[3], endLoc[3], Direction[3];
 			tempAngles[0] = 0.0;
-			tempAngles[1] = angMult * (UserAng[1] + (float(j) * 60.0));
+			tempAngles[1] = angMult * (UserAng[1] + (float(j) * (360.0/(HEAVENS_LIGHT_MAXIMUM_IONS/3))));
 			tempAngles[2] = 0.0;
 			
 			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
@@ -931,15 +1043,17 @@ static void Heavens_Light_Charging(int ref, float ratio)
 				color[1] = 50;
 				color[2] = 50;
 				color[3] = 75;
-				Heavens_SpawnBeam(endLoc, color, 7.5);
+
+				Heavens_SpawnBeam(endLoc, color, 7.5, true);
 			}
 			else
 			{
 				Heavens_Spawn8(endLoc, 150.0*ratio, ratio);
 			}
-			int beam_index = (i*6)+j;
+			int beam_index = (i*(HEAVENS_LIGHT_MAXIMUM_IONS/3))+j;
 			
 			fl_Heavens_Loc[beam_index] = endLoc;
+			fl_Heavens_Target_Loc[beam_index] = endLoc;
 		}
 	}
 }
@@ -966,27 +1080,124 @@ static void Heavens_Spawn8(float startLoc[3], float space, float ratio)
 		color[1] = RoundFloat(255.0 * ratio);
 		color[2] = RoundFloat(255.0 * ratio);
 		color[3] = 150;
-		Heavens_SpawnBeam(endLoc, color, 2.0);
-	}
-	int color[4];
-	color[0] = 255;
-	color[1] = RoundFloat(255.0 * ratio);
-	color[2] = RoundFloat(255.0 * ratio);
-	color[3] = 150;
-	
-	TE_SetupBeamRingPoint(startLoc, space * 2.0, space * 2.0, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, 2.0, 0.1, color, 1, 0);
-	TE_SendToAll();
-}
-void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size)
-{
 
-	float skyLoc[3];
+		Heavens_SpawnBeam(endLoc, color, 2.0, false);
+
+		
+	}
+}
+/*
+public void Doonerkrieg_Delay_TE_Beam(DataPack pack)
+{
+	pack.Reset();
+	float endLoc[3], size;
+	int color[4];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+	color[0] = pack.ReadCell();
+	color[1] = pack.ReadCell();
+	color[2] = pack.ReadCell();
+	color[3] = pack.ReadCell();
+	size = pack.ReadCell();
+
+	float skyLoc[3], groundLoc[3];
+	skyLoc[0] = endLoc[0];
+	skyLoc[1] = endLoc[1];
+	skyLoc[2] = 9999.0;
+	groundLoc = endLoc;
+	groundLoc[2] -= 200.0;
+
+	TE_SetupBeamPoints(skyLoc, groundLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
+	TE_SendToAll();
+		
+	delete pack;
+}
+public void Doonerkrieg_Delay_TE_Ring(DataPack pack)
+{
+	pack.Reset();
+	float endLoc[3];
+	int color[4];
+	endLoc[0] = pack.ReadCell();
+	endLoc[1] = pack.ReadCell();
+	endLoc[2] = pack.ReadCell();
+	color[0] = pack.ReadCell();
+	color[1] = pack.ReadCell();
+	color[2] = pack.ReadCell();
+	color[3] = pack.ReadCell();
+
+	spawnRing_Vector(endLoc, fl_heavens_radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
+		
+	delete pack;
+}*/
+void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings)
+{
+	/*
+	TE_used += 1;
+	if(TE_used > 15)
+	{
+		int DelayFrames = (TE_used / 16)+1;
+		DelayFrames *= 2;
+		DataPack pack_TE = new DataPack();
+		pack_TE.WriteCell(beamLoc[0]);
+		pack_TE.WriteCell(beamLoc[1]);
+		pack_TE.WriteCell(beamLoc[2]);
+		pack_TE.WriteCell(color[0]);
+		pack_TE.WriteCell(color[1]);
+		pack_TE.WriteCell(color[2]);
+		pack_TE.WriteCell(color[3]);
+		pack_TE.WriteCell(size);
+		RequestFrames(Doonerkrieg_Delay_TE_Beam, DelayFrames, pack_TE);
+		//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+	}
+	else
+	{
+		float skyLoc[3], groundLoc[3];
+		skyLoc[0] = beamLoc[0];
+		skyLoc[1] = beamLoc[1];
+		skyLoc[2] = 9999.0;
+		groundLoc = beamLoc;
+		groundLoc[2] -= 200.0;
+
+
+		TE_SetupBeamPoints(skyLoc, groundLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
+		TE_SendToAll();
+	}
+
+	TE_used += 1;
+	if(TE_used > 15)
+	{
+		int DelayFrames = (TE_used / 16)+1;
+		DelayFrames *= 2;
+		DataPack pack_TE = new DataPack();
+		pack_TE.WriteCell(beamLoc[0]);
+		pack_TE.WriteCell(beamLoc[1]);
+		pack_TE.WriteCell(beamLoc[2]);
+		pack_TE.WriteCell(color[0]);
+		pack_TE.WriteCell(color[1]);
+		pack_TE.WriteCell(color[2]);
+		pack_TE.WriteCell(color[3]);
+		RequestFrames(Doonerkrieg_Delay_TE_Ring, DelayFrames, pack_TE);
+		//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
+	}
+	else
+	{
+		spawnRing_Vector(beamLoc, fl_heavens_radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
+	}*/
+
+	float skyLoc[3], groundLoc[3];
 	skyLoc[0] = beamLoc[0];
 	skyLoc[1] = beamLoc[1];
 	skyLoc[2] = 9999.0;
-		
-	TE_SetupBeamPoints(skyLoc, beamLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
+	groundLoc = beamLoc;
+	groundLoc[2] -= 200.0;
+
+
+	TE_SetupBeamPoints(skyLoc, groundLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
 	TE_SendToAll();
+
+	if(rings)
+		spawnRing_Vector(beamLoc, fl_heavens_radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
 }
 static void Raidboss_Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 {
@@ -1901,4 +2112,26 @@ static void Donnerkrieg_Wings_Create(Raidboss_Donnerkrieg npc)
 	i_donner_particle_index[npc.index][26] = EntIndexToEntRef(particle_upper_right_wing_4);
 	i_donner_particle_index[npc.index][27] = EntIndexToEntRef(particle_upper_right_wing_5);
 	i_donner_particle_index[npc.index][28] = EntIndexToEntRef(particle_upper_right_wing_6);
+}
+static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+{
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
+	
+	int ICE_INT = PrecacheModel(sprite);
+	
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = alpha;
+	
+	if (endRange == -69.0)
+	{
+		endRange = range + 0.5;
+	}
+	
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SendToAll();
 }
