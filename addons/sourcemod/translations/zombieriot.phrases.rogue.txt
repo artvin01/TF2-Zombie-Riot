@@ -1524,7 +1524,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knive weapons weapons grant +10 health regen."
+		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knife and ''Abyssal hunter'' weapons weapons grant +10 health regen."
 	}
 	"Hand of Flesh"
 	{
@@ -1582,12 +1582,12 @@
 	{
 		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100%% max mana and regen"
 	}
-	"Hand of Poland"
+	"Hand of the Elite"
 	{
-		"en"	"Hand of Poland"
+		"en"	"Hand of the Elite"
 	}
-	"Hand of Poland Desc"
+	"Hand of the Elite"
 	{
-		"en"	"Still reading.\n{green}''Kazimierz'' weapons gain +75%% damage bonus while over half health"
+		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75%% damage bonus while over half health"
 	}
 }

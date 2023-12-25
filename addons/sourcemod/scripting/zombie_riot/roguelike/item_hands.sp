@@ -29,7 +29,7 @@ public void Rogue_HandSupport_HealTick(int client)
 		
 	if(IsValidEntity(weapon))
 	{
-		if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24)	// Team Support and vamp knives
+		if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 ||i_WeaponArchetype[weapon] == 22)	// Team Support and vamp knives
 		{
 			// +10 health regen
 			int healing_Amount = HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);		
@@ -152,7 +152,7 @@ public void Rogue_HandCaster_Weapon(int entity)
 
 public void Rogue_HandKazimierz_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 23)	// Kazimierz
+	if(i_WeaponArchetype[entity] == 23 || i_WeaponArchetype[entity] == 16)	// Kazimierz and Lord
 	{
 		// +75% damage bonus while over half health
 		Attributes_SetMulti(entity, 225, 1.75);

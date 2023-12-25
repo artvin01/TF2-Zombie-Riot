@@ -11,7 +11,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122:
+		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224:
 		{
 			return true;
 		}
@@ -288,6 +288,30 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
 			guraneedGib = true;
+
+			
+		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
+		if(value)
+		{
+			float flMaxHealth = float(SDKCall_GetMaxHealth(client));
+			float flHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+			if((flHealth / flMaxHealth) >= 0.5)
+			{
+				damage *= value;
+			} 
+		}
+
+		value = Attributes_Get(weapon, 224, 0.0);	// if Below Half Health
+		if(value)
+		{
+			float flMaxHealth = float(SDKCall_GetMaxHealth(client));
+			float flHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+			if((flHealth / flMaxHealth) <= 0.5)
+			{
+				damage *= value;
+			} 
+		}
+		
 		/*
 		if(Attributes_GetOnPlayer(client, weapon, 2067))	// attack_minicrits_and_consumes_burning
 		{
