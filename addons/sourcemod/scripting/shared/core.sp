@@ -519,6 +519,13 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
 #define ZR_SLAY_DAMAGE							(1 << 8)
 
+#define HEAL_NO_RULES	            0     	 
+//Nothing special.
+#define HEAL_SELFHEAL				(1 << 1) 
+//Most healing debuffs shouldnt work with this.
+#define HEAL_ABSOLUTE				(1 << 2) 
+//Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -576,8 +583,6 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
-int i_assist_heal_player[MAXENTITIES];
-float f_assist_heal_player_time[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
@@ -2042,13 +2047,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						}
 						if(i_CurrentEquippedPerk[client] == 1)
 						{
-							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.02, 10);
-							StartHealingTimer(target, 0.1, float(SDKCall_GetMaxHealth(target)) * 0.02, 10);
+							HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.02, 1.0, 1.0, HEAL_ABSOLUTE);
+							HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(client)) * 0.02, 1.0, 1.0, HEAL_ABSOLUTE);
 						}
 						else
 						{
-							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.01, 10);
-							StartHealingTimer(target, 0.1, float(SDKCall_GetMaxHealth(target)) * 0.01, 10);
+							HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.01, 1.0, 1.0, HEAL_ABSOLUTE);
+							HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(client)) * 0.01, 1.0, 1.0, HEAL_ABSOLUTE);
 						}
 						
 						SetEntityRenderMode(target, RENDER_NORMAL);

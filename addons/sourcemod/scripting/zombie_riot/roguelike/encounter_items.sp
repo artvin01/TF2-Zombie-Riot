@@ -373,41 +373,6 @@ public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
 	}
 }
 
-public float Rogue_Encounter_Camp()
-{
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Camp, "Camp Title");
-	Vote vote;
-
-	strcopy(vote.Name, sizeof(vote.Name), "Camp Option");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Camp Desc");
-	list.PushArray(vote);
-
-	Rogue_StartGenericVote(20.0);
-
-	return 25.0;
-}
-
-public void Rogue_Vote_Camp(const Vote vote, int index)
-{
-	GrantAllPlayersCredits_Rogue(450);
-
-	Ammo_Count_Ready += 30;
-	PrintToChatAll("%t", "Camp Lore");
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
-			StartHealingTimer(client, 0.1, 10.0, 250, false);
-	}
-	
-	for(int i; i < i_MaxcountNpc_Allied; i++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-			StartHealingTimer(entity, 0.1, 10.0, 250, false);
-	}
-}
-
 public float Rogue_Encounter_CoffinOfEvil()
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_CoffinOfEvil, "Coffin of Evil Lore");

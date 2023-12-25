@@ -468,7 +468,7 @@ public Action SF_Random(int client, int entity, int first, int second, int third
 			PrintCenterText(client, "Random!");
 			ApplyTempAttrib(entity, 2, GetURandomFloat() * 6.0);
 			cooldown += GetURandomFloat() - 0.5;
-			StartHealingTimer(client, GetURandomFloat(), 2.0, GetURandomInt() % 50);
+			HealEntityGlobal(client, client, GetURandomFloat(), 1.0, 1.0, HEAL_SELFHEAL);
 		}
 
 		ClientCommand(client, "playgamesound ui/killsound_percussion.wav");
@@ -511,12 +511,12 @@ public Action SF_Leach(int client, int entity, int first, int second, int third,
 		if(stale)
 		{
 			PrintCenterText(client, "Health...");
-			StartHealingTimer(client, 0.5, 1.0, 2);
+			HealEntityGlobal(client, client, 1.0, 0.0, 1.0, HEAL_SELFHEAL);
 		}
 		else
 		{
 			PrintCenterText(client, "Health!");
-			StartHealingTimer(client, 0.1, 1.0, 50, false);
+			HealEntityGlobal(client, client, 50.0, 1.0, 1.0, HEAL_SELFHEAL);
 		}
 
 		cooldown += 1.0;

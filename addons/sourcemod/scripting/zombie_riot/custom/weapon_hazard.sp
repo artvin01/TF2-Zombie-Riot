@@ -337,17 +337,17 @@ public void Weapon_Hazard(int client, int weapon, bool crit, int slot)
 				}
 				case 7:
 				{
-					StartHealingTimer(client, 0.1,  MaxHealth * 0.003, 5);
+					HealEntityGlobal(client, client, MaxHealth * 0.015, 1.0, 0.5, _);
 				}
 				case 8:
 				{
 					if (flHealth < (MaxHealth * 0.05))
 					{
-						StartHealingTimer(client, 0.1,  MaxHealth * 0.003, 5);
+						HealEntityGlobal(client, client, MaxHealth * 0.015, 1.0, 0.5, _);
 					}
 					else
 					{
-						StartHealingTimer(client, 0.1, 	MaxHealth * -0.002, 5);
+						HealEntityGlobal(client, client, MaxHealth * -0.015, 1.0, 0.5, _);
 					}
 				}
 				case 9:

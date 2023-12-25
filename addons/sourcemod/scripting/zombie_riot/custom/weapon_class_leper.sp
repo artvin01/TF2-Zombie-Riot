@@ -170,12 +170,12 @@ public void Weapon_LeperSolemny(int client, int weapon, bool &result, int slot)
 		{
 			case WEAPON_LEPER_MELEE:
 			{
-				StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.018, 18);
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.33, _, 1.8,HEAL_SELFHEAL);
 				GiveArmorViaPercentage(client, 0.33, 1.0);
 			}
 			case WEAPON_LEPER_MELEE_PAP:
 			{
-				StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.028, 18);
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.5, _, 1.8,HEAL_SELFHEAL);
 				GiveArmorViaPercentage(client, 0.5, 1.0);
 			}
 		}

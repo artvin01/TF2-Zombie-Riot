@@ -2771,7 +2771,8 @@ void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float m
 				heal_ticks = 1.0;
 			}
 		}
-		StartHealingTimer(attacker, 0.1, heal_amount, RoundToNearest(heal_ticks));
+		heal_amount *= heal_ticks;
+		HealEntityGlobal(attacker, attacker, heal_amount, 1.0, 1.0, HEAL_SELFHEAL);
 	}
 }
 
