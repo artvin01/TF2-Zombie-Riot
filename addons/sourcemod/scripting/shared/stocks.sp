@@ -1259,12 +1259,13 @@ int MaxHealPermitted = 99999999)
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(reciever <= MaxClients)
 			HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
-	}
-	if(!(flag_extrarules & (HEAL_SELFHEAL|HEAL_ABSOLUTE)))
-	{
+
 		//healing bonus or penalty non self heal
-		if(reciever <= MaxClients)
-			HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
+		if(!(flag_extrarules & (HEAL_SELFHEAL)))
+		{
+			if(reciever <= MaxClients)
+				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
+		}
 	}
 	if(HealOverThisDuration == 0.0)
 		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
@@ -1287,7 +1288,7 @@ int MaxHealPermitted = 99999999)
 		DataPack pack;
 		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(reciever));
-		pack.WriteFloat(HealTotal * HealTotalTimer);
+		pack.WriteFloat(HealTotal / HealTotalTimer);
 		pack.WriteCell(flMaxHealth);
 		pack.WriteCell(RoundToNearest(HealTotalTimer));		
 		return 0; //this is a timer, we cant really quantify this.
