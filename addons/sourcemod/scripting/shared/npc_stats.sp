@@ -7507,6 +7507,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_PassangerDebuff[entity] = 0.0;
 	f_CrippleDebuff[entity] = 0.0;
 	f_CudgelDebuff[entity] = 0.0;
+	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
@@ -8453,6 +8454,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(IgniteFor[npc.index] > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%s~",HealthText);
+	}
+	if(f_DuelStatus[npc.index] > GetGameTime(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "%sVS",HealthText);
 	}
 #endif
 

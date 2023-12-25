@@ -2575,4 +2575,28 @@
 	{
 		"en"	"You deal more damage, you heal more, you trigger your double attack 2x as often.\nOverheal is increaced.\nCrit Chance Increaces."
 	}
+	"Broken Rapier Desc"
+	{
+		"en"	"A rapier that has been degraded to a state of hopelessness. It's barely usable.\nUnpredictable footing: You permanently take 20%% more damage.\nPin-Point Weakness: This weapon can headshot.\nDestreza: Every 2nd hit speeds you up."
+	}
+	"Bent Rapier Desc"
+	{
+		"en"	"Dios mio, this is an insult to the blacksmith that conceived this weapon.\nAt least it's not missing it's second half anymore...\nPin-Point Weakness: Damage is increased."
+	}
+	"Shoddy Rapier Desc"
+	{
+		"en"	"It seems that time itself hates this weapon, and yet it endures.\nDestreza: Buff lasts for a while longer."
+	}
+	"Restored Rapier Desc"
+	{
+		"en"	"And so, it has been restored to it's former glory.\nGains a new ability - Duel!\nDuel!: Only usable when facing an enemy. When used, dashes you back and \nmarks both you and the target.\nMarked entities take 50%% more damage from each other."
+	}
+	"Improved Rapier Desc"
+	{
+		"en"	"More experience. More improvements. More... Tears shed over the amount of money spent.\nUnpredictable footing: You permanently take 15%% more damage."
+	}
+	"Rapier Desc"
+	{
+		"en"	"A pinnacle of blacksmithing. Best of the best of the best. You've earned this, amigo.\nUnpredictable footing: You permanently take 10%% more damage."
+	}
 }
