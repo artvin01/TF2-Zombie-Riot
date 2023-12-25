@@ -183,7 +183,10 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					Attributes_Get(weapon, 111, 0.0);	// add_onhit_addhealth
 					
 				if(value)
-					StartHealingTimer(client, 0.1, value > 0 ? 1.0 : -1.0, value > 0 ? RoundFloat(value) : RoundFloat(-value));
+				{
+					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
+				}
+					
 
 				value = float(i_BleedDurationWeapon[weapon]);	// bleeding duration
 				if(value)
@@ -306,15 +309,6 @@ void Attributes_OnKill(int client, int weapon)
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills") + 1);
 
 	float value;
-	/*
-	float value = Attributes_GetOnPlayer(client, 203, false);	// drop health pack on kill
-	if(value)
-		StartHealingTimer(client, 0.1, 1, RoundToCeil(SDKCall_GetMaxHealth(client)*value/5.0));
-
-	value = Attributes_GetOnPlayer(client, 296, false);	// sapper kills collect crits
-	if(value)
-		SetEntProp(client, Prop_Send, "m_iRevengeCrits", GetEntProp(client, Prop_Send, "m_iRevengeCrits")+RoundFloat(value));
-	*/
 
 	value = Attributes_GetOnPlayer(client, 387, false);	// rage on kill
 	if(value)
@@ -330,10 +324,10 @@ void Attributes_OnKill(int client, int weapon)
 	{
 		value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
 
-		value *= TargetHealingPenaltyOrBonus(client);
-
 		if(value)
-			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
+		{
+			HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
+		}
 		
 		value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
 		if(value)

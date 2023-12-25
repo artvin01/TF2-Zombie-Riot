@@ -71,7 +71,7 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 		}
 		if (Board_Level[victim] == 5)
 		{
-			StartHealingTimer(victim, 0.1, MaxHealth * 0.01, 5);
+			HealEntityGlobal(victim, victim, MaxHealth * 0.05, _, 0.5,HEAL_SELFHEAL);
 			Board_Ability_1[victim] = false;
 		}
 		else if(Board_Level[victim] == 4)
@@ -691,11 +691,11 @@ public void PassiveBoardHeal(int client)
 	{
 		case 1, 4:
 		{
-			StartHealingTimer(client, 0.0, MaxHealth * 0.01, 1);
+			HealEntityGlobal(client, client, MaxHealth * 0.01, _, 0.0,HEAL_SELFHEAL);
 		}
 		default:
 		{
-			StartHealingTimer(client, 0.0, MaxHealth * 0.01, 3);
+			HealEntityGlobal(client, client, MaxHealth * 0.03, _, 0.3,HEAL_SELFHEAL);
 		}
 	}
 }

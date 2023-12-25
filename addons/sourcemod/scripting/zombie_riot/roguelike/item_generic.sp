@@ -129,26 +129,12 @@ public void Rogue_Item_HealingSalveRemove()
 	b_HealingSalve = false;
 }
 
-void Rogue_HealingSalve(int client, int &flHealth, flMaxHealth)
+void Rogue_HealingSalve(int client)
 {
 	if(b_HealingSalve)
 	{
-		if(flHealth < flMaxHealth)
-		{
-			int healing_Amount = 1;
-					
-			int newHealth = flHealth + healing_Amount;
-						
-			if(newHealth >= flMaxHealth)
-			{
-				healing_Amount -= newHealth - flMaxHealth;
-				newHealth = flMaxHealth;
-			}
-			ApplyHealEvent(client, healing_Amount);
-						
-			SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-			flHealth = newHealth;
-		}	
+		int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
+		ApplyHealEvent(client, healing_Amount);
 	}
 }
 
@@ -299,6 +285,7 @@ public void Rogue_Item_HandWrittenLetter()
 		}
 	}	
 }
+
 public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
@@ -608,6 +595,43 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 			{
 				// +10% damage bonus
 				npc.BonusDamageBonus *= 1.1;
+			}
+		}
+	}
+}
+
+
+
+public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +15% max health
+		map.GetValue("26", value);
+		map.SetValue("26", value * 1.15);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+
+			// +15% max health
+			int health = RoundToCeil((float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.15));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				// +15% max health
+				int health = RoundToCeil((float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.15));
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
 		}
 	}

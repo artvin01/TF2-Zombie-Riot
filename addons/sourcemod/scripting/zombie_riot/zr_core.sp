@@ -2199,13 +2199,3 @@ void GrantAllPlayersCredits_Rogue(int cash)
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;
 }
-
-float TargetHealingPenaltyOrBonus(int entity)
-{
-	float HealingPenalty = 1.0;
-	if(entity <= MaxClients)
-	{
-		HealingPenalty *= Attributes_GetOnPlayer(entity, 734, true, false);
-	}
-	return HealingPenalty;
-}

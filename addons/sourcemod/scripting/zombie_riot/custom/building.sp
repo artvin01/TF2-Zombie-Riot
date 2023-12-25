@@ -2107,24 +2107,13 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 				{
 					Building_Collect_Cooldown[entity][client] = GetGameTime() + 90.0;
 					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					int HealAmmount = 1;
-					int HealTime = 30;
+					float HealAmmount = 30.0;
 					if(IsValidClient(owner))
 					{
-						HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_GetOnPlayer(owner, 8, true, true));
+						HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
 					}
-					HealAmmount = RoundToCeil(float(HealAmmount) * TargetHealingPenaltyOrBonus(client));
-					/*
-					if(f_TimeUntillNormalHeal[client])
-					{
-						HealTime =/ 2;
-						if(HealTime < 1)
-						{
-							HealTime = 1;
-						}
-					}
-					*/
-					StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
+
+					HealEntityGlobal(owner, client, HealAmmount, _, 3.0, _);
 					if(!Rogue_Mode() && owner != -1 && i_Healing_station_money_limit[owner][client] < 10)
 					{
 						if(!Rogue_Mode() && owner != client)
@@ -3263,14 +3252,12 @@ public bool BuildingCustomCommand(int client)
 					{
 						Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-						int HealAmmount = 1;
-						int HealTime = 30;
+						float HealAmmount = 30.0;
 						if(IsValidClient(client))
 						{
-							HealAmmount = RoundToNearest(float(HealAmmount) * Attributes_GetOnPlayer(client, 8, true, true));
+							HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
 						}
-						HealAmmount = RoundToCeil(float(HealAmmount) * TargetHealingPenaltyOrBonus(client));
-						StartHealingTimer(client, 0.1, float(HealAmmount), HealTime);
+						HealEntityGlobal(client, client, HealAmmount, 1.0, 3.0, _);
 					}
 					else
 					{
@@ -3299,7 +3286,12 @@ public bool BuildingCustomCommand(int client)
 								{
 									Building_Collect_Cooldown[obj][client] = GetGameTime() + 75.0;
 									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-									StartHealingTimer(client, 0.1, 1.0, 30);
+									float HealAmmount = 30.0;
+									if(IsValidClient(client))
+									{
+										HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
+									}
+									HealEntityGlobal(client, client, HealAmmount, 1.0, 3.0, _);
 								}
 								else
 								{

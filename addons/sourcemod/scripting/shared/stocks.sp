@@ -1234,21 +1234,62 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	pack.WriteCell(entity-1, false);
 	return Plugin_Continue;
 }
-
-void StartHealingTimer(int entity, float delay, float health, int amount=0, bool maxhealth=true)
+/*
+#define HEAL_NO_RULES	            0     	 
+//Nothing special.
+#define HEAL_SELFHEAL				(1 << 1) 
+//Most healing debuffs shouldnt work with this.
+#define HEAL_ABSOLUTE				(1 << 2) 
+//Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+*/
+//this will return the amount of healing it actually did.
+int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES,
+int MaxHealPermitted = 99999999)
 {
-	DataPack pack;
-	CreateDataTimer(delay, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(entity));
-#if defined ZR
-	if(b_HealthyEssence) //see rouge.sp
+	/*
+		MaxHealPermitted is used for HealEntityViaFloat
+		Good for ammo based healing.
+	*/
+
+	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
-		health *= 1.25;
+		if(b_HealthyEssence)
+			HealTotal *= 1.25;
+
+		//Extra healing bonuses or penalty for all healing except absolute
+		HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
 	}
-#endif
-	pack.WriteFloat(health);
-	pack.WriteCell(maxhealth);
-	pack.WriteCell(amount);
+	if(!(flag_extrarules & (HEAL_SELFHEAL|HEAL_ABSOLUTE)))
+	{
+		//healing bonus or penalty non self heal
+		HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
+	}
+	if(HealOverThisDuration == 0.0)
+		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+	else
+	{
+		float HealTotalTimer = HealOverThisDuration / 0.1;
+
+		int flMaxHealth;
+		if(reciever > MaxClients)
+		{
+			flMaxHealth = GetEntProp(reciever, Prop_Data, "m_iMaxHealth");
+		}
+		else
+		{
+			flMaxHealth = SDKCall_GetMaxHealth(reciever);
+		}
+
+		flMaxHealth = RoundToNearest(float(flMaxHealth) * Maxhealth);
+	
+		DataPack pack;
+		CreateDataTimer(0.1, Timer_Healing, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(reciever));
+		pack.WriteFloat(HealTotal * HealTotalTimer);
+		pack.WriteCell(flMaxHealth);
+		pack.WriteCell(RoundToNearest(HealTotalTimer));		
+		return 0; //this is a timer, we cant really quantify this.
+	}
 }
 
 static float f_IncrementalSmallHeal[MAXENTITIES];
@@ -1284,7 +1325,7 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 	{
 		lastHealth = GetClientHealth(entity);
 	}
-
+	
 	// Our Current Health + Leftover Float Health + New Health Gained
 	float newHealth = float(lastHealth) + f_IncrementalSmallHeal[entity] + pack.ReadFloat();
 	
@@ -2798,12 +2839,6 @@ float[] CalculateExplosiveDamageForce(const float vec_Explosive[3], const float 
 	return vecForce;
 }
 
-public void Give_Assist_Points(int target, int assister)
-{
-	i_assist_heal_player[target] = assister;
-	f_assist_heal_player_time[target] = GetGameTime() + 10.0;	
-}
-
 int CountPlayersOnRed(bool alive = false)
 {
 	int amount;
@@ -4089,11 +4124,9 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 //bool identified if it went above max health or not.
 
 //No need to delele it, its just 1 ho difference, wow so huge.
-int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0)
+int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMulti = 1.0, int MaxHealingPermitted = 9999999)
 {
 //	bool isNotClient = false;
-	if(b_HealthyEssence)
-		healing_Amount *= 1.25;
 		
 	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
 	int flMaxHealth;
@@ -4133,6 +4166,11 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 			i_TargetHealAmount += 1;
 		}
 	}
+	if(i_TargetHealAmount > MaxHealingPermitted)
+	{
+		i_TargetHealAmount = MaxHealingPermitted;
+	}
+	//scale down the healing.
 	int newHealth = flHealth + i_TargetHealAmount;
 	int HealAmount = 0;
 	int MaxHeal = RoundToNearest(float(flMaxHealth) * MaxHealthOverMulti);
@@ -4149,6 +4187,10 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 		}
 		
 		HealAmount = newHealth - flHealth;
+	}
+	if(newHealth <= 0)
+	{
+		SDKHooks_TakeDamage(entity, 0, 0, 100.0 - newHealth);
 	}
 	return HealAmount;
 }

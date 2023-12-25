@@ -191,7 +191,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 							TeleportEntity(target, _, _, vecHit);
 							EmitSoundToAll("mvm/giant_soldier/giant_soldier_rocket_shoot.wav", target, _, 75, _, 0.60);
 
-							StartHealingTimer(target, 0.4, -300.0);
+							HealEntityGlobal(npc.index, target, -750.0, 1.0, 0.0, _);
 
 							npc.m_flNextMeleeAttack += 1.0;
 							npc.m_flDoingAnimation = gameTime + 0.35;
@@ -209,7 +209,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 
 								npc.m_flNextMeleeAttack += 1.0;
 
-								StartHealingTimer(target, 0.4, team == GetEntProp(target, Prop_Send, "m_iTeamNum") ? -3000.0 : -300.0);
+								HealEntityGlobal(npc.index, target, team == GetEntProp(target, Prop_Send, "m_iTeamNum") ? -10000.0 : -750.0, 1.0, 0.0, _);
 							}
 						}
 					}

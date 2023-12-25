@@ -420,48 +420,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						else
 							Increaced_Sentry_damage_Low[healTarget] = GetGameTime() + 0.11;
 					}
-					/*
-					else if(medigun_mode == 2)
-					{
-						
-						if(What_Uber_Type == 2)
-							Resistance_for_building_High[healTarget] = GetGameTime() + 0.11;
-							
-						else
-							Resistance_for_building_Low[healTarget] = GetGameTime() + 0.11;
-							
-							
-						int flHealth = GetEntProp(healTarget, Prop_Send, "m_iHealth");
-						int Healing_Value = healing_Amount;
-						int newHealth = flHealth + healing_Amount;
-						
-						int max_health = GetEntProp(healTarget, Prop_Send, "m_iMaxHealth");
-						
-						if(newHealth >= max_health)
-						{
-							healing_Amount -= newHealth - max_health;
-							newHealth = max_health;
-						}
-						
-					//	SetEntProp(healTarget, Prop_Send, "m_iHealth", newHealth);
-						int Remove_Ammo = healing_Amount / 2;
-						if(Remove_Ammo < 0)
-						{
-							Remove_Ammo = 0;
-						}
-						
-						new_ammo -= Remove_Ammo;
-						
-						if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
-						{
-							SetVariantInt(Healing_Value);
-							AcceptEntityInput(healTarget, "AddHealth");
-					//		SetEntityHealth(healTarget, newHealth);
-						//	SetEntProp(healTarget, Prop_Send, "m_iMaxHealth", max_health);
-						}
-					}
-					*/
-					
+
 					int i_HealingAmount = RoundToCeil(healing_Amount);
 					int flHealth = GetEntProp(healTarget, Prop_Send, "m_iHealth");
 					int Healing_Value = i_HealingAmount;
@@ -556,182 +515,57 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
 					Healing_Value *= Attributes_GetOnPlayer(owner, 8, true, true);
-#if defined ZR					
-					if(b_HealthyEssence)
-						Healing_Value *= 1.25;
-#endif
+					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
 						
 					if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
 					{
 						healing_Amount *= 0.25;
-					}
-					
+					}	
 					i_targethealedLastBy[healTarget] = owner;
-					
+
 					if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
 					{
 						healing_Amount *= 0.25;
 					}
-					healing_Amount *= TargetHealingPenaltyOrBonus(healTarget);
 					if(f_TimeUntillNormalHeal[owner] > GetGameTime())
 					{
 						healing_Amount_Self *= 0.25;
 					}
-					healing_Amount_Self *= TargetHealingPenaltyOrBonus(healTarget);
-					
-					
-					int i_SelfHealAmount;
-					int i_TargetHealAmount;
+					float flMaxHealth;
 					//The healing is less then 1 ? Do own logic.
-					
-					if (healing_Amount <= 1.0)
-					{
-						f_IncrementalSmallHeal[healTarget] += healing_Amount;
-						
-						if(f_IncrementalSmallHeal[healTarget] >= 1.0)
-						{
-							f_IncrementalSmallHeal[healTarget] -= 1.0;
-							i_TargetHealAmount = 1;
-						}
-						else
-						{
-							if(b_IsAlliedNpc[healTarget])
-							{
-								Calculate_And_Display_hp(owner, healTarget, 0.0, true);
-							}
-							return MRES_Ignored;
-						}
-					}
-					else
-					{
-						i_TargetHealAmount = RoundToFloor(healing_Amount);
-						
-						float Decimal_healing = FloatFraction(healing_Amount);
-						
-						
-						f_IncrementalSmallHeal[healTarget] += Decimal_healing;
-						
-						if(f_IncrementalSmallHeal[healTarget] >= 1.0)
-						{
-							f_IncrementalSmallHeal[healTarget] -= 1.0;
-							i_TargetHealAmount += 1;
-						}
-					}
-					
-					if (healing_Amount_Self <= 1.0)
-					{
-						f_IncrementalSmallHeal[owner] += healing_Amount_Self;
-						
-						if(f_IncrementalSmallHeal[owner] >= 1.0)
-						{
-							f_IncrementalSmallHeal[owner] -= 1.0;
-							i_SelfHealAmount = 1;
-						}
-						else
-						{
-							if(b_IsAlliedNpc[healTarget])
-							{
-								Calculate_And_Display_hp(owner, healTarget, 0.0, true);
-							}
-							return MRES_Ignored;
-						}
-					}
-					else
-					{
-						i_SelfHealAmount = RoundToFloor(healing_Amount_Self);
-						
-						float Decimal_healing = FloatFraction(healing_Amount_Self);
-						
-						
-						f_IncrementalSmallHeal[owner] += Decimal_healing;
-						
-						if(f_IncrementalSmallHeal[owner] >= 1.0)
-						{
-							f_IncrementalSmallHeal[owner] -= 1.0;
-							i_SelfHealAmount += 1;
-						}
-					}
-					
-					
-					
-					//HEALING STARTS NOW!
-					
-						
-					int flHealth = GetEntProp(healTarget, Prop_Data, "m_iHealth");
-					
-					int Current_health_target = flHealth;
-					
-					int newHealth = flHealth + i_TargetHealAmount;
-					
-					int flMaxHealth;
-					
 					if(!Is_Allied_Npc)
 					{
 #if defined RPG
-						flMaxHealth = SDKCall_GetMaxHealth(healTarget);
+						flMaxHealth = 1.1;
 #else
-						flMaxHealth = RoundToNearest(float(SDKCall_GetMaxHealth(healTarget)) * 1.5);
+						flMaxHealth = 1.5;
 #endif
 					}
 					else
 					{
-						flMaxHealth = RoundToNearest(float(GetEntProp(healTarget, Prop_Data, "m_iMaxHealth")) * 1.25);
+						flMaxHealth = 1.25;
 					}
-					
-					if(Current_health_target < flMaxHealth)
-					{	
-						//TARGET HEAL
-						if(newHealth >= flMaxHealth)
-						{
-							i_TargetHealAmount -= newHealth - flMaxHealth;
-							newHealth = flMaxHealth;
-						}
-						
-						ApplyHealEvent(healTarget, i_TargetHealAmount);
-						SetEntProp(healTarget, Prop_Data, "m_iHealth", newHealth);
-						new_ammo -= i_TargetHealAmount;
-#if defined ZR
-						Healing_done_in_total[owner] += i_TargetHealAmount;
-#endif
-						if(!b_IsAlliedNpc[healTarget])
-						{
-							Give_Assist_Points(healTarget, owner);
-						}
-						//TARGET HEAL
-					}
+					//self heal
+					int ammoSubtract;
+					ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
+					new_ammo -= ammoSubtract;
+					ApplyHealEvent(owner, ammoSubtract);
+
+					//Ally Heal
+					ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
+					new_ammo -= ammoSubtract;
+
 					if(b_IsAlliedNpc[healTarget])
 					{
 						Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 					}
-					flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
-					
-					
-					int Current_health_owner = flHealth;
-					
-					//SELF HEAL
-					newHealth = flHealth + i_SelfHealAmount;
-					
-					flMaxHealth = SDKCall_GetMaxHealth(owner);
-					
-					if(Current_health_owner < flMaxHealth)
+					else //is a player probably.
 					{
-						if(newHealth >= flMaxHealth)
-						{
-							i_SelfHealAmount -= newHealth - flMaxHealth;
-							newHealth = flMaxHealth;
-						}
-						ApplyHealEvent(owner, i_SelfHealAmount);
-						
-						SetEntProp(owner, Prop_Data, "m_iHealth", newHealth);
-						new_ammo -= i_SelfHealAmount;
-#if defined ZR
-						Healing_done_in_total[owner] += i_SelfHealAmount;
-#endif						
-						//SELF HEAL
-						
+						ApplyHealEvent(healTarget, ammoSubtract);
 					}
+					
 					float duration;
 
 					duration = Increaced_Overall_damage_Low[owner] - GetGameTime();

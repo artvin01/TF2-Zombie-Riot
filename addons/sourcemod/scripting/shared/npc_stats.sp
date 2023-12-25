@@ -5894,20 +5894,19 @@ public void GibCollidePlayerInteraction(int gib, int player)
 						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
 				
 						
-						int Heal_Amount_calc;
+						float Heal_Amount_calc;
 						
-						Heal_Amount_calc = RoundToNearest(Heal_Amount * 0.75);
+						Heal_Amount_calc = Heal_Amount * 0.75;
 
 						
-						if(Heal_Amount_calc > 0)
+						if(Heal_Amount_calc > 0.0)
 						{
 							b_IsAGib[gib] = false; //we dont want the same gib to heal twice.
 							if(b_LimitedGibGiveMoreHealth[gib])
 							{
-								Heal_Amount_calc *= 3;
+								Heal_Amount_calc *= 3.0;
 							}
-							Heal_Amount_calc = RoundToCeil(float(Heal_Amount_calc) * TargetHealingPenaltyOrBonus(player));
-							StartHealingTimer(player, 0.1, 1.0, Heal_Amount_calc);
+							HealEntityGlobal(player, player, Heal_Amount_calc, 1.0, 1.0, _);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 						//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));

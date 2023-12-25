@@ -451,7 +451,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 			heal *= HealMultIfHurt;
 		}
 
-		int healingdone = HealEntityViaFloat(attacker, heal, 1.0);
+		int healingdone = HealEntityGlobal(attacker, attacker, heal, _,1.0,HEAL_SELFHEAL);
 		if(healingdone > 0)
 			ApplyHealEvent(attacker, healingdone);
 	}
