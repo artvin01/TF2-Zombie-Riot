@@ -1257,12 +1257,14 @@ int MaxHealPermitted = 99999999)
 			HealTotal *= 1.25;
 
 		//Extra healing bonuses or penalty for all healing except absolute
-		HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
+		if(reciever <= MaxClients)
+			HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
 	}
 	if(!(flag_extrarules & (HEAL_SELFHEAL|HEAL_ABSOLUTE)))
 	{
 		//healing bonus or penalty non self heal
-		HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
+		if(reciever <= MaxClients)
+			HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 	}
 	if(HealOverThisDuration == 0.0)
 		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
