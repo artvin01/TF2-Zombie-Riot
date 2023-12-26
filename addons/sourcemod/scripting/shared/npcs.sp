@@ -1837,6 +1837,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 		return true;
 	else if(f_CudgelDebuff[npc] > GameTime)
 		return true;
+	else if(f_DuelStatus[npc] > GameTime)
+		return true;
 	else if(f_MaimDebuff[npc] > GameTime)
 		return true;
 	else if(NpcStats_IsEnemySilenced(npc))
@@ -2160,6 +2162,10 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		case WEAPON_ANGELIC_SHOTGUN:
 		{
 			Weapon_AngelicShotgun(attacker, damage, damagetype);
+		}
+		case WEAPON_RAPIER:
+		{
+			NPC_OnTakeDamage_Rapier(attacker, victim, damage, weapon);
 		}
 	}
 #endif
@@ -3007,6 +3013,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		case WEAPON_CASINO:
 		{
 			CasinoSalaryPerKill(attacker, weapon);
+		}
+		case WEAPON_RAPIER:
+		{
+			RapierEndDuelOnKill(attacker, victim);
 		}
 	}
 }

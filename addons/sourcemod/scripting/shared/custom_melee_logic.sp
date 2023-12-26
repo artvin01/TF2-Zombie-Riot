@@ -200,6 +200,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
+			case WEAPON_RAPIER:
+			{
+				Rapier_DoSwingTrace(CustomMeleeRange, CustomMeleeWide);
+			}
 			case WEAPON_ANGELIC_SHOTGUN:
 			{
 				Angelic_Shotgun_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);

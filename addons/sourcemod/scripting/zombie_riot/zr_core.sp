@@ -148,6 +148,7 @@ enum
 	WEAPON_KIT_BLITZKRIEG_CORE = 77,
 	WEAPON_QUIBAI = 78,
 	WEAPON_ANGELIC_SHOTGUN = 79,
+	WEAPON_RAPIER = 80,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -464,6 +465,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
+#include "zombie_riot/custom/weapon_rapier.sp"
 
 void ZR_PluginLoad()
 {
@@ -556,6 +558,7 @@ void ZR_MapStart()
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
 	ShieldLogic_OnMapStart();
+	Weapon_RapierMapChange();
 	Rogue_OnAbilityUseMapStart();
 	Weapon_TexanBuisnesMapChange();
 	AngelicShotgun_MapStart();

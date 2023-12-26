@@ -2134,6 +2134,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Flagellant_OnTakeDamage(victim, damage);
 		}
+		case WEAPON_RAPIER:
+		{
+			Player_OnTakeDamage_Rapier(victim, attacker, damage);
+		}
 	}
 	return damage;
 }

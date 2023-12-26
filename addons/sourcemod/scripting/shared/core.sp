@@ -450,6 +450,7 @@ float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
+float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
@@ -2454,6 +2455,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BuffBannerNpcBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;
+		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_IsVehicle[entity] = false;

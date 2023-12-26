@@ -6001,6 +6001,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Saga_Enable(client, entity);
 		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
+		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
 		Enable_Judge(client, entity);
 		Enable_SpikeLayer(client, entity);
