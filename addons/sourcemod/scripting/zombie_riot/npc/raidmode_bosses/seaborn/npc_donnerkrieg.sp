@@ -1328,7 +1328,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, int Infection=0 , bool creep=
 				float Dist3 = DONNERKRIEG_HEAVENS_STAGE_3;
 				Do_Trace_Heavens_Fall(EndLoc2, tempAngles3, EndLoc3, Dist3);
 
-			//	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);
+				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);
 
 				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);
 				int color[4];
