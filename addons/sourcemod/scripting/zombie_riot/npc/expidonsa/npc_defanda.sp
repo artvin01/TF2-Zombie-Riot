@@ -357,27 +357,28 @@ void DefandaAllyHeal(int entity, int victim, float damage, int weapon)
 	{
 		if(victim <= MaxClients)
 		{
-			DefandaAllyHealInternal(victim, 50.0);
+			DefandaAllyHealInternal(entity, victim, 50.0);
 		}
 		else if (b_IsAlliedNpc[victim])
 		{
-			DefandaAllyHealInternal(victim, 50.0);
+			DefandaAllyHealInternal(entity, victim, 50.0);
 		}
 	}
 	else
 	{
 		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
 		{
-			DefandaAllyHealInternal(victim, 100.0);
+			DefandaAllyHealInternal(entity, victim, 100.0);
 		}
 	}
 }
 
-void DefandaAllyHealInternal(int victim, float heal)
+void DefandaAllyHealInternal(int entity, int victim, float heal)
 {
 	if(b_ExpidonsaWasAttackingNonPlayer)
 		heal *= 0.5;
-	HealEntityViaFloat(victim, heal, 1.0);
+
+	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
 	float ProjLoc[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 	ProjLoc[2] += 100.0;

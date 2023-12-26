@@ -140,7 +140,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 							amount *= float(maxhealth);
 
-							StartHealingTimer(client, 0.0, amount);
+							HealEntityGlobal(client, client, amount, _, 0.0,HEAL_SELFHEAL);
 
 							if(ParticleRef[client] == -1)
 							{

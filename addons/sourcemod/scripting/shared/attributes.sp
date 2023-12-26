@@ -11,7 +11,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122:
+		case 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
 		{
 			return true;
 		}
@@ -183,7 +183,10 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 					Attributes_Get(weapon, 111, 0.0);	// add_onhit_addhealth
 					
 				if(value)
-					StartHealingTimer(client, 0.1, value > 0 ? 1.0 : -1.0, value > 0 ? RoundFloat(value) : RoundFloat(-value));
+				{
+					HealEntityGlobal(client, client, value, 1.0, 0.0, HEAL_SELFHEAL);
+				}
+					
 
 				value = float(i_BleedDurationWeapon[weapon]);	// bleeding duration
 				if(value)
@@ -285,6 +288,30 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
 			guraneedGib = true;
+
+			
+		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
+		if(value)
+		{
+			float flMaxHealth = float(SDKCall_GetMaxHealth(client));
+			float flHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+			if((flHealth / flMaxHealth) >= 0.5)
+			{
+				damage *= value;
+			} 
+		}
+
+		value = Attributes_Get(weapon, 224, 0.0);	// if Below Half Health
+		if(value)
+		{
+			float flMaxHealth = float(SDKCall_GetMaxHealth(client));
+			float flHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+			if((flHealth / flMaxHealth) <= 0.5)
+			{
+				damage *= value;
+			} 
+		}
+		
 		/*
 		if(Attributes_GetOnPlayer(client, weapon, 2067))	// attack_minicrits_and_consumes_burning
 		{
@@ -306,15 +333,6 @@ void Attributes_OnKill(int client, int weapon)
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills") + 1);
 
 	float value;
-	/*
-	float value = Attributes_GetOnPlayer(client, 203, false);	// drop health pack on kill
-	if(value)
-		StartHealingTimer(client, 0.1, 1, RoundToCeil(SDKCall_GetMaxHealth(client)*value/5.0));
-
-	value = Attributes_GetOnPlayer(client, 296, false);	// sapper kills collect crits
-	if(value)
-		SetEntProp(client, Prop_Send, "m_iRevengeCrits", GetEntProp(client, Prop_Send, "m_iRevengeCrits")+RoundFloat(value));
-	*/
 
 	value = Attributes_GetOnPlayer(client, 387, false);	// rage on kill
 	if(value)
@@ -330,10 +348,10 @@ void Attributes_OnKill(int client, int weapon)
 	{
 		value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
 
-		value *= TargetHealingPenaltyOrBonus(client);
-
 		if(value)
-			StartHealingTimer(client, 0.1, (value > 0) ? 1.0 : -1.0, (value > 0) ? RoundFloat(value) : RoundFloat(-value));
+		{
+			HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
+		}
 		
 		value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
 		if(value)

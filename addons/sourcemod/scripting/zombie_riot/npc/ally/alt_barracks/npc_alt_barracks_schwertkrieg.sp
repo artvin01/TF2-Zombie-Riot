@@ -64,7 +64,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+		NpcSpeechBubble(this.index, "", 5, {255,255,255,255}, {0.0,0.0,60.0}, "...");
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
@@ -72,7 +72,7 @@ methodmap Barrack_Alt_Shwertkrieg < BarrackBody
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
+		NpcSpeechBubble(this.index, "", 5, {255,255,255,255}, {0.0,0.0,60.0}, "!!!");
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}

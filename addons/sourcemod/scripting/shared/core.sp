@@ -286,6 +286,8 @@ bool b_PlayerIsInAnotherPart[MAXENTITIES];
 float f_ShowHudDelayForServerMessage[MAXTF2PLAYERS];
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
+bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
+int i_MeleeHitboxHit[MAXENTITIES]={false, ...};
 //float Check_Standstill_Delay[MAXTF2PLAYERS];
 //bool Check_Standstill_Applied[MAXTF2PLAYERS];
 
@@ -450,6 +452,7 @@ float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
 float f_CrippleDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
+float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
@@ -519,6 +522,13 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
 #define ZR_SLAY_DAMAGE							(1 << 8)
 
+#define HEAL_NO_RULES	            0     	 
+//Nothing special.
+#define HEAL_SELFHEAL				(1 << 1) 
+//Most healing debuffs shouldnt work with this.
+#define HEAL_ABSOLUTE				(1 << 2) 
+//Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -576,8 +586,6 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
-int i_assist_heal_player[MAXENTITIES];
-float f_assist_heal_player_time[MAXENTITIES];
 float f_ClientMusicVolume[MAXTF2PLAYERS];
 bool b_FirstPersonUsesWorldModel[MAXTF2PLAYERS];
 float f_BegPlayerToSetDuckConvar[MAXTF2PLAYERS];
@@ -2042,13 +2050,13 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						}
 						if(i_CurrentEquippedPerk[client] == 1)
 						{
-							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.02, 10);
-							StartHealingTimer(target, 0.1, float(SDKCall_GetMaxHealth(target)) * 0.02, 10);
+							HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.02, 1.0, 1.0, HEAL_ABSOLUTE);
+							HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(client)) * 0.02, 1.0, 1.0, HEAL_ABSOLUTE);
 						}
 						else
 						{
-							StartHealingTimer(client, 0.1, float(SDKCall_GetMaxHealth(client)) * 0.01, 10);
-							StartHealingTimer(target, 0.1, float(SDKCall_GetMaxHealth(target)) * 0.01, 10);
+							HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.01, 1.0, 1.0, HEAL_ABSOLUTE);
+							HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(client)) * 0.01, 1.0, 1.0, HEAL_ABSOLUTE);
 						}
 						
 						SetEntityRenderMode(target, RENDER_NORMAL);
@@ -2449,6 +2457,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BuffBannerNpcBuff[entity] = 0.0;
 		f_BattilonsNpcBuff[entity] = 0.0;
 		f_AncientBannerNpcBuff[entity] = 0.0;
+		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
 		b_IsVehicle[entity] = false;

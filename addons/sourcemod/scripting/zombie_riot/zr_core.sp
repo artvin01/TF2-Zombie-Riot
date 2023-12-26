@@ -148,7 +148,8 @@ enum
 	WEAPON_KIT_BLITZKRIEG_CORE = 77,
 	WEAPON_QUIBAI = 78,
 	WEAPON_ANGELIC_SHOTGUN = 79,
-	WEAPON_RED_BLADE = 80,
+	WEAPON_RAPIER = 80,
+  WEAPON_RED_BLADE = 81,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -464,6 +465,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
+#include "zombie_riot/custom/weapon_rapier.sp"
 
 void ZR_PluginLoad()
 {
@@ -556,6 +558,7 @@ void ZR_MapStart()
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
 	ShieldLogic_OnMapStart();
+	Weapon_RapierMapChange();
 	Rogue_OnAbilityUseMapStart();
 	Weapon_TexanBuisnesMapChange();
 	AngelicShotgun_MapStart();
@@ -2199,14 +2202,4 @@ void GrantAllPlayersCredits_Rogue(int cash)
 	cash *= (Rogue_GetRound()+1);
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;
-}
-
-float TargetHealingPenaltyOrBonus(int entity)
-{
-	float HealingPenalty = 1.0;
-	if(entity <= MaxClients)
-	{
-		HealingPenalty *= Attributes_GetOnPlayer(entity, 734, true, false);
-	}
-	return HealingPenalty;
 }

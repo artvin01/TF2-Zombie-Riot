@@ -1002,7 +1002,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25%% more damage {green}but heal +100%% faster{yellow}."
+		"en"	"{red}Players take +25%% more damage {green}but heal +100%% more{yellow}."
 	}
 	"Sensitive Lore"
 	{
@@ -1101,8 +1101,7 @@
 	}
 	"Spearhead Squad Desc"
 	{
-		"en"	"{green}Allies gain +15%% damage bonus and +50 max health"
-		"ru"	"{green}Союзники получают +15%% бонус к урону и +50 макс. запаса здоровья"
+		"en"	"{green}All Allies gain +15%% damage bonus and +50 max health"
 	}
 	"Research Squad"
 	{
@@ -1190,8 +1189,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' weapons on hit get 1 seconds of reduced cooldown."
-		"ru"	"Это мини-статуэтка сломанной руки.\n- Всё оружие «Мастер цепей» и «Мультизаклинатель» при попадании получает 1 сек. уменьшения времени восстановления."
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 1 seconds of reduced cooldown."
 	}
 	"Bracelets of Agility"
 	{
@@ -1379,8 +1377,7 @@
 	}
 	"Blademace Desc"
 	{
-		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15%% movement speed{yellow}."
-		"ru"	"Меч, застрявший в камне. Неужели кому-то было настолько скучно, чтобы сделать это?\n{green}Все союзники получают +15%% бонуса к урону, +15%% макс. запаса здоровья, +1,5%% сопр. урону{red}, но -15%% скор-ти передвиж{yellow}."
+		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15%% movement speed{yellow}."
 	}
 	"Brokenblade"
 	{
@@ -1459,8 +1456,7 @@
 	}
 	"Bedrock Desc"
 	{
-		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15% movement speed{yellow}."
-		"ru"	"Оружие, которое, как говорят, было создано специально для охотника Бездны..\n{green}Все союзники получают +15%% бонуса к урону, +15%% макс. запаса здоровья, +1,5%% сопр. урону{red}, но -15% скор-ти передвиж{yellow}."
+		"en"	"A weapon said to have been made specifically for an Abyssal Hunter.\n{green}All Allies gain +15%% damage bonus, +15%% max health, +1.5%% damage resistance {red}but -15% movement speed{yellow}."
 	}
 	"Wavebreaker"
 	{
@@ -1488,7 +1484,7 @@
 	}
 	"Broken Combine Crown Desc"
 	{
-		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}Allies receive -5%% max health {blue}and the ending is changed."
+		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5%% max health {blue}and the ending is changed."
 	}
 	"Bob's Reseach Papers"
 	{
@@ -1504,7 +1500,7 @@
 	}
 	"Bob's Final Draft Desc"
 	{
-		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
+		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15%% damage bonus and +20%% movement speed {blue}and the ending is changed."
 	}
 	"Hand of Sticks"
 	{
@@ -1512,23 +1508,7 @@
 	}
 	"Hand of Sticks Desc"
 	{
-		"en"	"Real close and personal.\n{green}''Multi Pellet'' weapons gain +35%% melee damage resistance."
-	}
-	"Hand of Superspeed"
-	{
-		"en"	"Hand of Superspeed"
-	}
-	"Hand of Superspeed Desc"
-	{
-		"en"	"Gotta catch up!\n{green}''Rapid Fire'' weapons gain 0.5 seconds of speed boost on hit."
-	}
-	"Hand of Mailbox"
-	{
-		"en"	"Hand of Mailbox"
-	}
-	"Hand of Mailbox Desc"
-	{
-		"en"	"Look inside.\n{green}Hand grenade weapons gain +200%% damage bonus."
+		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35%% melee damage resistance and gain 0.5 seconds of speed boost on hit."
 	}
 	"Hand of Quake"
 	{
@@ -1536,7 +1516,7 @@
 	}
 	"Hand of Quake Desc"
 	{
-		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' weapons grant +150%% jump height."
+		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150%% jump height and 50%% more damage."
 	}
 	"Hand of Travel"
 	{
@@ -1544,7 +1524,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Team Support'' weapons grant +10 health regen."
+		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knife and ''Abyssal hunter'' weapons weapons grant +10 health regen."
 	}
 	"Hand of Flesh"
 	{
@@ -1568,23 +1548,15 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	"You want my drugs?\n{green}''Infinite Fire'' weapons grant +3 health on hit."
+		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' weapons grant +3 health on hit and 35%% Ranged Damage REsistance."
 	}
-	"Hand of Panic"
-	{
-		"en"	"Hand of Panic"
-	}
-	"Hand of Panic Desc"
-	{
-		"en"	"WHY DID WE VOTE FOR THIS MAP???\n{green}''Single Pellet'' weapons gain up to +75%% firing speed with less health."
-	}
-	"Hand of Fisting"
+	"Hand of Incredible Speeds"
 	{
 		"en"	"Hand of Fisting"
 	}
-	"Hand of Fisting Desc"
+	"Hand of Incredible Speeds Desc"
 	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' weapons gain +50%% firing speed."
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' weapons gain +50%% firing speed and +50%% Faster Reload Speed."
 	}
 	"Hand of Suprise"
 	{
@@ -1592,23 +1564,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' weapons inflict 5 seconds of bleed on hit."
-	}
-	"Hand of Suppression"
-	{
-		"en"	"Hand of Suppression"
-	}
-	"Hand of Suppression Desc"
-	{
-		"en"	"More cripple, more cripple!\n{green}''Debuff'' weapons grant 80%% ranged damage resistance."
-	}
-	"Hand of Flood"
-	{
-		"en"	"Hand of Flood"
-	}
-	"Hand of Flood Desc"
-	{
-		"en"	"Healing flows.\n{green}''Aberration'' weapons gain +300%% damage bonus while being healed by a Medi-Gun."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 25%% faster."
 	}
 	"Hand of Revenge"
 	{
@@ -1616,15 +1572,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	"Better not touch me then.\n{green}''Duelist'' weapons gain +150%% damage bonus while below half health."
-	}
-	"Hand of Discounts"
-	{
-		"en"	"Hand of Discounts"
-	}
-	"Hand of Discounts Desc"
-	{
-		"en"	"Yeah I sold my soul to the devil.\n{green}''Summoner'' weapons gain -90%% mana cost."
+		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' weapons gain +150%% damage bonus while below half health."
 	}
 	"Hand of Stock"
 	{
@@ -1632,14 +1580,14 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100%% max mana and regen"
+		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100%% max mana and regen and attack +50%% faster."
 	}
-	"Hand of Poland"
+	"Hand of the Elite"
 	{
-		"en"	"Hand of Poland"
+		"en"	"Hand of the Elite"
 	}
-	"Hand of Poland Desc"
+	"Hand of the Elite Desc"
 	{
-		"en"	"Still reading.\n{green}''Kazimierz'' weapons gain +75%% damage bonus while over half health"
+		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75%% damage bonus while over half health"
 	}
 }

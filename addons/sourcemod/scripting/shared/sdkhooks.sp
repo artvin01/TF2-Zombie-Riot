@@ -380,81 +380,38 @@ public void OnPostThink(int client)
 	if(Armor_regen_delay[client] < GameTime)
 	{
 		Armour_Level_Current[client] = 0;
-		int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
-		int flMaxHealth = SDKCall_GetMaxHealth(client);
 		if(Saga_RegenHealth(client))
 		{
-			if(dieingstate[client] == 0 && flHealth < flMaxHealth)
+			if(dieingstate[client] == 0)
 			{
-				int healing_Amount = 10;
-					
-				int newHealth = flHealth + healing_Amount;
-							
-				if(newHealth >= flMaxHealth)
-				{
-					healing_Amount -= newHealth - flMaxHealth;
-					newHealth = flMaxHealth;
-				}
-				ApplyHealEvent(client, healing_Amount);
-				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-				flHealth = newHealth;	
+				int healing_Amount = HealEntityGlobal(client, client, 10.0, 0.0, 0.0, HEAL_SELFHEAL);	
+				ApplyHealEvent(client, healing_Amount);	
 			}
 		}
 		if (Jesus_Blessing[client] == 1)
 		{	
-			int flMaxHealthJesus;
-				
-			flMaxHealthJesus = flMaxHealth;
-				
-			flMaxHealthJesus /= 2;
-				
-			if(flHealth < flMaxHealthJesus)
+			int healing_Amount;
+			ApplyHealEvent(client, healing_Amount);	
+			
+			if(dieingstate[client] > 0)
 			{
-					
-				int healing_Amount = flMaxHealthJesus / 50;
-					
-				if(dieingstate[client] > 0)
-				{
-					healing_Amount = 3;
-				}
-				else
-				{
-					if(b_HealthyEssence)
-						healing_Amount = RoundToCeil(float(healing_Amount) * 1.25);
-				}
-				int newHealth = flHealth + healing_Amount;
-
-
-				if(newHealth >= flMaxHealthJesus)
-				{
-					healing_Amount -= newHealth - flMaxHealthJesus;
-					newHealth = flMaxHealthJesus;
-				}
-				ApplyHealEvent(client, healing_Amount);
-				SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-				flHealth = newHealth;
+				healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
 			}
+			else
+			{
+				healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+			}
+
+			ApplyHealEvent(client, healing_Amount);
 		}
 		if(dieingstate[client] == 0)
 		{
-			Rogue_HealingSalve(client,flHealth,flMaxHealth );
+			Rogue_HealingSalve(client);
+			Rogue_HandSupport_HealTick(client);
 			if(i_BadHealthRegen[client] == 1)
 			{
-				if(flHealth < flMaxHealth)
-				{
-					int healing_Amount = 1;
-					
-					int newHealth = flHealth + healing_Amount;
-						
-					if(newHealth >= flMaxHealth)
-					{
-						healing_Amount -= newHealth - flMaxHealth;
-						newHealth = flMaxHealth;
-					}
-					ApplyHealEvent(client, healing_Amount);
-						
-					SetEntProp(client, Prop_Send, "m_iHealth", newHealth);
-				}				
+				int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
+				ApplyHealEvent(client, healing_Amount);			
 			}
 		}
 		Armor_regen_delay[client] = GameTime + 1.0;
@@ -1953,44 +1910,47 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 #if defined ZR
-float Replicate_Damage_Medications(int victim, float damage, int damagetype)
+float Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
+	float Replicated_Dmg = damage;
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
 		if(!(damagetype & (DMG_CRIT)))
 		{
-			damage *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
+			Replicated_Dmg *= 1.35; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
 		}
 	}
-	if(TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
-	{
-		if(damagetype & (DMG_CRIT))
-		{
-			damage /= 3.0; //Remove crit shit from the calcs!, there are no minicrits here, so i dont have to care
-		}
-		damage *= 0.65;
-	}
+
 	float value;
 
 	if(damagetype & (DMG_CLUB|DMG_SLASH))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 206);	// MELEE damage resitance
 		if(value)
+		{
+			Replicated_Dmg *= value;
 			damage *= value;
+		}
 	}
-	else
+	else if(!(damagetype & DMG_FALL))
 	{
 		value = Attributes_FindOnPlayerZR(victim, 205);	// RANGED damage resistance
 		if(value)
+		{
+			Replicated_Dmg *= value;
 			damage *= value;
-			//Everything else should be counted as ranged reistance probably.
+		}
+		//Everything else should be counted as ranged reistance probably.
 	}
 		
 	value = Attributes_FindOnPlayerZR(victim, 412);	// Overall damage resistance
 	if(value)
-		damage *= value;	
+	{
+		Replicated_Dmg *= value;
+		damage *= value;
+	}	
 		
-	return damage;
+	return Replicated_Dmg;
 }
 #endif	// ZR
 
@@ -2176,6 +2136,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
 		{
 			Flagellant_OnTakeDamage(victim, damage);
+		}
+		case WEAPON_RAPIER:
+		{
+			Player_OnTakeDamage_Rapier(victim, attacker, damage);
 		}
 	}
 	return damage;

@@ -245,11 +245,10 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 				
 				healing = healing / 5 * 5;
 
-				StartHealingTimer(target, 0.5, 5.0, healing / 5);
+				HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
-				Give_Assist_Points(target, client);
 
 				float cooldown = float(health) / 5.0;
 				if(cooldown < 1.0)
@@ -347,11 +346,10 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				
 				healing = healing / 5 * 5;
 
-				StartHealingTimer(target, 0.5, 5.0, healing / 5);
+				HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
-				Give_Assist_Points(target, client);
 
 				float cooldown = float(health) / 10.0;
 				if(cooldown < 1.0)

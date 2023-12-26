@@ -1,17 +1,9 @@
 public void Rogue_HandMulti_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 1)	// Multi Pellet
+	if(i_WeaponArchetype[entity] == 1 || i_WeaponArchetype[entity] == 2)	// Multi Pellet
 	{
 		// +35% melee resistance
 		Attributes_SetMulti(entity, 206, 0.65);
-	}
-}
-
-public void Rogue_HandRapid_Weapon(int entity)
-{
-	if(i_WeaponArchetype[entity] == 2)	// Rapid Fire
-	{
-		// 0.5s speed on hit
 		Attributes_SetAdd(entity, 877, 0.5);
 	}
 }
@@ -20,29 +12,39 @@ public void Rogue_HandGrenade_Weapon(int entity)
 {
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
-	if(!StrContains(classname, "tf_weapon_jar"))
+	if(!StrContains(classname, "tf_weapon_jar") || i_WeaponArchetype[entity] == 8)
 	{
 		// +200% damage bonus
-		Attributes_SetMulti(entity, 2, 3.0);
-	}
-}
-
-public void Rogue_HandExplosive_Weapon(int entity)
-{
-	if(i_WeaponArchetype[entity] == 8)	// Explosive Mind
-	{
-		// +150% jump height
+		Attributes_SetMulti(entity, 2, 1.5);
 		Attributes_SetMulti(entity, 524, 2.5);
 	}
 }
 
-public void Rogue_HandSupport_Weapon(int entity)
+public void Rogue_HandSupport_HealTick(int client)
 {
-	if(i_WeaponArchetype[entity] == 9)	// Team Support
+	if(!b_SupportHealHandPassive)
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		
+	if(IsValidEntity(weapon))
 	{
-		// +10 health regen
-		Attributes_SetAdd(entity, 57, 10.0);
+		if(i_WeaponArchetype[weapon] == 9 || i_WeaponArchetype[weapon] == 25 || i_WeaponArchetype[weapon] == 24 ||i_WeaponArchetype[weapon] == 22)	// Team Support and vamp knives
+		{
+			// +10 health regen
+			int healing_Amount = HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);		
+			ApplyHealEvent(client, healing_Amount);	
+		}
 	}
+}
+public void Rogue_HandSupport_Collect()
+{
+	b_SupportHealHandPassive = true;
+}
+
+public void Rogue_HandSupport_Remove()
+{
+	b_SupportHealHandPassive = false;
 }
 
 public void Rogue_HandFlame_Weapon(int entity)
@@ -99,75 +101,42 @@ public void Rogue_HandTrap_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandInfinite_Weapon(int entity)
-{
-	if(i_WeaponArchetype[entity] == 3)	// Infinite Fire
-	{
-		// +3 health on hit
-		Attributes_SetAdd(entity, 16, 3.0);
-	}
-}
-
-public void Rogue_HandleSingle_Weapon(int entity)
-{
-	if(i_WeaponArchetype[entity] == 5)	// Single Pellet
-	{
-		// +75% fire rate at low health
-		Attributes_SetMulti(entity, 651, 0.25);
-	}
-}
 
 public void Rogue_HandleBrawler_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 11)	// Brawler
+	if(i_WeaponArchetype[entity] == 11 || i_WeaponArchetype[entity] == 5)	// Or Single Pellet
 	{
 		// +50% fire rate
 		Attributes_SetMulti(entity, 6, 0.5);
+		Attributes_SetMulti(entity, 97, 0.5);
 	}
 }
 
 public void Rogue_HandAmbusher_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 12)	// Ambusher
+	if(i_WeaponArchetype[entity] == 12 || i_WeaponArchetype[entity] == 13)	// Ambusher && combatant
 	{
 		// +5s bleed duration
 		Attributes_SetAdd(entity, 149, 5.0);
+		Attributes_SetMulti(entity, 6, 0.76);
 	}
 }
-
-public void Rogue_HandDebuff_Weapon(int entity)
+public void Rogue_HandInfinite_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 10)	// Debuff
+	if(i_WeaponArchetype[entity] == 3 || i_WeaponArchetype[entity] == 10)	// Infinite Fire && // Debuff
 	{
-		// +80% ranged resistance
-		Attributes_SetMulti(entity, 205, 0.2);
-	}
-}
-
-public void Rogue_HandAberration_Weapon(int entity)
-{
-	if(i_WeaponArchetype[entity] == 14)	// Aberration
-	{
-		// +300% damage bonus when being healed
-		Attributes_SetMulti(entity, 232, 4.0);
+		// +3 health on hit
+		Attributes_SetAdd(entity, 16, 3.0);
+		Attributes_SetMulti(entity, 205, 0.65);
 	}
 }
 
 public void Rogue_HandDuelist_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 15)	// Duelist
+	if(i_WeaponArchetype[entity] == 15 || i_WeaponArchetype[entity] == 14)	// Duelist and abberition
 	{
 		// +150% damage bonus when half health
 		Attributes_SetMulti(entity, 224, 2.5);
-	}
-}
-
-public void Rogue_HandSummoner_Weapon(int entity)
-{
-	if(i_WeaponArchetype[entity] == 18)	// Summoner
-	{
-		// -90% mana cost
-		Attributes_Set(entity, 733, 0.1);
 	}
 }
 
@@ -177,12 +146,13 @@ public void Rogue_HandCaster_Weapon(int entity)
 	{
 		// +100% max mana
 		Attributes_Set(entity, 405, 2.0);
+		Attributes_Set(entity, 6, 0.5);
 	}
 }
 
 public void Rogue_HandKazimierz_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 23)	// Kazimierz
+	if(i_WeaponArchetype[entity] == 23 || i_WeaponArchetype[entity] == 16)	// Kazimierz and Lord
 	{
 		// +75% damage bonus while over half health
 		Attributes_SetMulti(entity, 225, 1.75);

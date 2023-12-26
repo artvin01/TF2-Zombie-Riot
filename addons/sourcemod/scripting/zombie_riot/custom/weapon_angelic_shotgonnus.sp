@@ -364,7 +364,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
 
-				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.35);
+				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.35,_,HEAL_SELFHEAL);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
 
@@ -383,7 +383,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.25);
+				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
 			}
@@ -401,7 +401,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.25);
+				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
 			}
@@ -419,7 +419,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int weapon
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				int healingdone = HealEntityViaFloat(client, HealingPerHit, 1.15);
+				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.15,_,HEAL_SELFHEAL);
 				if(healingdone > 0)
 					ApplyHealEvent(client, healingdone);
 			}
@@ -567,6 +567,11 @@ public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 
 public void Angelic_ShotgunAbilityM2(int client, int weapon, bool crit, int slot)
 {
+	if(i_AbilityActiveAngelic[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	switch(i_Current_Pap[client])
 	{
 		case 2,3:

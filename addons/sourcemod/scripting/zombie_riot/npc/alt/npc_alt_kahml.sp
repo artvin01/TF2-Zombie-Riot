@@ -2,9 +2,8 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static const char g_HurtSounds[][] = {
@@ -177,7 +176,7 @@ methodmap Kahmlstein < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 100);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -248,6 +247,8 @@ methodmap Kahmlstein < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		
+		npc.m_bDissapearOnDeath = true;
 		
 		
 		SDKHook(npc.index, SDKHook_Think, Kahmlstein_ClotThink);
@@ -919,12 +920,10 @@ public Action Kahmlstein_OnTakeDamage(int victim, int &attacker, int &inflictor,
 public void Kahmlstein_NPCDeath(int entity)
 {
 	Kahmlstein npc = view_as<Kahmlstein>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
-	
-	
+	npc.PlayDeathSound();	
+	ParticleEffectAt(WorldSpaceCenter(npc.index), "teleported_blue", 0.5);
+	CPrintToChatAll("{blue}Kahmlstein{default}: You're boring me, im leaving.");
+
 	SDKUnhook(npc.index, SDKHook_Think, Kahmlstein_ClotThink);
 	
 	if(IsValidEntity(npc.m_iWearable1))	//used for all weps

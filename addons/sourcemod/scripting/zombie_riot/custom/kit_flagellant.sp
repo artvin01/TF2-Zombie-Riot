@@ -268,7 +268,7 @@ public Action Flagellant_MoreFinishTimer(Handle timer, DataPack pack)
 				HealedAllyRand[2] += GetRandomFloat(-10.0, 10.0);
 				TE_Particle("healthgained_red", HealedAllyRand, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);	
 			}
-			StartHealingTimer(client, 0.2, float(healing) / 20.0, 20);	// Over 4 seconds
+			HealEntityGlobal(client, client, float(healing), _, 4.0, _);
 		}
 	}
 	return Plugin_Stop;
@@ -350,8 +350,8 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 				
-				StartHealingTimer(target, 0.1, healing / 20.0, 20);
-				StartHealingTimer(client, 0.1, healthLost / -20.0, 20);
+				HealEntityGlobal(client, target, healing, 1.0, 2.0, _);
+				HealEntityGlobal(client, client, healthLost, 1.0, 2.0, _);
 				MoreMoreHits[client] += 10;
 				float HealedAlly[3];
 				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", HealedAlly);
@@ -370,8 +370,6 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 
 				if(target < MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-				Give_Assist_Points(target, client);
 
 				float cooldown = healing / 30.0;
 				if(cooldown < 2.0)
@@ -528,7 +526,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
 		{
-			StartHealingTimer(client, 0.1, healing / 20.0, 20);
+			HealEntityGlobal(client, client, float(healing), 1.0, 2.0, _);
 			float HealedAlly[3];
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
 			HealedAlly[2] += 70.0;
@@ -646,7 +644,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 			TriggerDeathDoor(client, healing);
 			if(healing > 0)
 			{
-				StartHealingTimer(client, 0.1, healing / 10.0, 10);
+				HealEntityGlobal(client, client, float(healing), 1.0, 1.0, _);
 				float HealedAlly[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", HealedAlly);
 				HealedAlly[2] += 70.0;

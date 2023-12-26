@@ -99,13 +99,3 @@ public void Rogue_Research_Collect()
 {
 	b_ResearchSquad = true;
 }
-
-public void Rogue_FirstClass_Collect()
-{
-	int entity = Citizen_SpawnAtPoint("a");
-	if(entity != -1)
-	{
-		Citizen_ReviveTicks(entity, 999, 0);
-		Citizen_GivePerk(entity, 2);
-	}
-}

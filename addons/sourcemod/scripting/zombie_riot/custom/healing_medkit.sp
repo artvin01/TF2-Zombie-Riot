@@ -83,8 +83,7 @@ public Action Medikit_healing(int client, int buttons)
 											{
 												ammo_amount_left = Health_To_Max;
 											}
-											
-											StartHealingTimer(player_looking_at, 0.1, 1.0, ammo_amount_left);
+											HealEntityGlobal(client, player_looking_at, float(ammo_amount_left), _, 0.0, _);
 											Healing_done_in_total[client] += ammo_amount_left;
 											healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 5);
 											
@@ -94,7 +93,6 @@ public Action Medikit_healing(int client, int buttons)
 											f_cooldown_per_usage_global[client] = GetGameTime() + 1.0;
 											PrintHintText(client,"You Healed %N for %i HP!, you gain a %i healing cooldown.", player_looking_at, ammo_amount_left, ammo_amount_left / 5);
 											
-											Give_Assist_Points(player_looking_at, client);
 											SetAmmo(client, 21, new_ammo);
 											for(int i; i<Ammo_MAX; i++)
 											{
@@ -168,8 +166,7 @@ public Action Medikit_healing(int client, int buttons)
 									{
 										ammo_amount_left = Health_To_Max;
 									}
-									
-									StartHealingTimer(client, 0.1, 1.0, ammo_amount_left);
+									HealEntityGlobal(client, client, float(ammo_amount_left), 1.0, 0.0, _);
 									Healing_done_in_total[client] += ammo_amount_left;
 									int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 									

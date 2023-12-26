@@ -1981,7 +1981,6 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 		{
 			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
 		}
-		HealAmmount *= TargetHealingPenaltyOrBonus(target);
 		
 		if(ammo_amount_left > RoundToCeil(HealAmmount))
 		{
@@ -2012,9 +2011,8 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 			{
 				ammo_amount_left = Health_To_Max;
 			}
-			Give_Assist_Points(target, owner);
-			
-			StartHealingTimer(target, 0.1, float(ammo_amount_left) * 0.1, 10, true);
+
+			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
 #if defined ZR
 			Healing_done_in_total[owner] += ammo_amount_left;
